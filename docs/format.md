@@ -187,3 +187,60 @@ The baseline implementation defaults are:
 These values bound what the implementation accepts; they do not select codec
 parameters. For example, the later Blocked Huffman format may specify a maximum
 code length lower than the policy ceiling.
+
+## Blocked Huffman variant 1
+
+Blocked Huffman consumes the dictionary-serialized byte stream in consecutive
+blocks of the stream header's entropy block size. No block crosses a frame.
+The block count is exactly
+`ceil(dictionary_serialized_size / entropy_block_size)`. Every block except the
+last has the configured size; the last contains the remaining bytes. A
+nonempty frame cannot contain an empty entropy block.
+
+The entropy-parameter region is empty for variant 1. Each block contributes one
+16-byte descriptor to the frame descriptor region. Any Huffman model follows
+its descriptor immediately. Descriptors and models occur in block order; the
+payload region then contains each corresponding payload in the same order.
+
+### Block descriptor
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | symbol count | input bytes in this block |
+| 4 | 4 | payload size | stored payload bytes |
+| 8 | 2 | model size | raw: 0; Huffman: 256 |
+| 10 | 1 | flags | bit 0 raw; all other bits zero |
+| 11 | 1 | final valid bits | 1 through 8; raw requires 8 |
+| 12 | 4 | reserved | zero |
+
+A Huffman model is 256 bytes in symbol order `0..255`; each byte is that
+symbol's code length. Length zero means absent and lengths 1 through 15 are
+valid. Multi-symbol models must describe a complete, non-oversubscribed prefix
+code. A one-symbol model must use length 1. Canonical codes are assigned by
+increasing length and then increasing symbol value. Encoder codes reverse those
+bits within their lengths for physical LSB-first output.
+
+The decoder derives the exact payload bit count from decoded symbols and must
+consume precisely the declared payload. For a final partial byte, unused high
+bits are zero. `final valid bits` is 8 when the final byte is completely used.
+Payload size is nonzero for every nonempty block.
+
+Raw representation stores the input bytes unchanged and has no model. Huffman
+representation is selected only when
+`256 + ceil(payload_bits / 8) < symbol_count`; ties select raw. This choice is
+mandatory, not an encoder heuristic.
+
+### Hand-checkable raw block
+
+Four bytes `41 41 41 41` select raw representation because the Huffman model
+overhead exceeds the input size. The descriptor and payload are:
+
+```text
+04 00 00 00 04 00 00 00 00 00 01 08 00 00 00 00
+41 41 41 41
+```
+
+The corresponding internal one-symbol Huffman model has length 1 for symbol
+`41`, zero for every other symbol, canonical and reversed code zero, payload
+byte `00`, and four valid bits. It remains a primitive test vector even though
+the mandatory stored-size rule selects raw for this block.

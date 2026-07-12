@@ -201,3 +201,36 @@ Finalize requires an exactly sized caller-owned digest buffer and is terminal
 after success. Hash algorithm failures and byte-count overflow are terminal;
 invalid caller arguments leave the running state retryable. Reset is explicit
 so frame, block, and whole-stream scopes cannot be conflated implicitly.
+
+## DD-015: Blocked Huffman uses explicit canonical length tables
+
+- Date: 2026-07-12
+- Status: accepted
+
+Represent a Huffman model as exactly 256 code-length bytes in symbol order.
+Version 1 limits lengths to 15 bits. Construct optimal bounded lengths with
+Package-Merge, using symbol value as the final deterministic tie break. Assign
+conventional canonical numeric codes and reverse each code within its length
+only when forming the LSB-first encoder table.
+
+Reject oversubscribed and incomplete multi-symbol code spaces. The sole
+incomplete exception is a one-symbol model, represented by length 1 and code
+zero. The all-zero model is valid only as the internal empty-block model; an
+empty serialized entropy block is not permitted inside a nonempty frame.
+
+## DD-016: Raw Blocked Huffman blocks win ties
+
+- Date: 2026-07-12
+- Status: accepted
+
+For every nonempty block, select Huffman representation only when its complete
+stored body is strictly smaller than raw bytes:
+
+```text
+256 + ceil(huffman_payload_bits / 8) < symbol_count
+```
+
+Otherwise select raw representation. The fixed per-block descriptor is common
+to both alternatives and therefore cancels from the comparison. This makes the
+choice deterministic and prevents table overhead from expanding small or
+incompressible blocks.

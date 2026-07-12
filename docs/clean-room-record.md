@@ -120,3 +120,22 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement and exhaustively split-test an
   allocation-free accumulator for future stream and frame header prefixes.
 - Similarity review: no external implementation compared.
+
+## 2026-07-12 - Blocked Huffman variant 1 specification
+
+- Authoring method: specification-driven independent design from algorithmic
+  papers, a public standard, and the repository requirements.
+- References used: Huffman's 1952 minimum-redundancy-code paper; Larmore and
+  Hirschberg's 1990 Package-Merge paper; ITU-T T.81 Annex C for canonical table
+  generation concepts. Full citations are in `references.md`.
+- Implementation sources consulted: none.
+- Known implementations intentionally not consulted: GPL, LGPL, and AGPL
+  Huffman implementations, and third-party compression-library source code.
+- Independent decisions: direct 256-byte length models, 15-bit maximum,
+  complete multi-symbol tables, a one-symbol exception, LSB-first code
+  reversal, mandatory raw-size selection, and the 16-byte descriptor layout.
+- Generated-code task description: define the bounded internal canonical
+  Huffman primitives and exact Blocked Huffman variant 1 representation before
+  implementing its validator, encoder, or decoder.
+- Similarity review: no external stream representation or implementation was
+  compared.
