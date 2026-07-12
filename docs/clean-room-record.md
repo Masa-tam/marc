@@ -153,3 +153,18 @@ no legal guarantee of non-infringement.
   exceptions, decoding tables, or encoder logic.
 - Similarity review: the implementation follows the repository terminology and
   structure; no external source structure was compared.
+
+## 2026-07-12 - Length-limited Huffman construction
+
+- Authoring method: independently implemented from the Package-Merge method
+  recorded in `references.md` and the deterministic rules in
+  `design-decisions.md`.
+- Implementation sources consulted: none.
+- Independent decisions: fixed-capacity package lists and node arena; iterative
+  expansion instead of recursion; checked package weights; transactional
+  output; weight, minimum-symbol, node-kind, and creation-order tie breaking.
+- Generated-code task description: count byte frequencies and construct optimal
+  length-limited Huffman lengths for a bounded 256-symbol block without dynamic
+  allocation or recursion.
+- Similarity review: no external implementation structure or test suite was
+  consulted.

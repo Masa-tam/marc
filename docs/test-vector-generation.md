@@ -26,3 +26,9 @@ The initial vector set must cover:
 Negative vectors must independently cover an out-of-range length,
 oversubscribed and incomplete tables, nonzero final padding, contradictory
 sizes, and truncated model and payload regions.
+
+The initial hand-checkable Package-Merge vector uses frequencies
+`5, 7, 10, 15, 20, 45` for symbols `0..5`. With maximum length 15, the expected
+lengths are `4, 4, 3, 3, 3, 1`; all other symbols have length zero. Three
+equal-weight symbols `0, 1, 2` with maximum length 2 produce lengths `2, 2, 1`
+under the deterministic package ordering.

@@ -13,6 +13,8 @@ inline constexpr std::uint8_t huffman_max_code_length = 15;
 
 using HuffmanCodeLengths =
     std::array<std::uint8_t, huffman_alphabet_size>;
+using HuffmanFrequencies =
+    std::array<std::uint64_t, huffman_alphabet_size>;
 
 enum class HuffmanTableError : std::uint8_t {
     none,
@@ -21,6 +23,14 @@ enum class HuffmanTableError : std::uint8_t {
     code_length_exceeded,
     oversubscribed,
     incomplete,
+};
+
+enum class HuffmanBuildError : std::uint8_t {
+    none,
+    invalid_max_code_length,
+    impossible_symbol_count,
+    frequency_overflow,
+    internal_error,
 };
 
 struct CanonicalHuffmanCode {
@@ -40,6 +50,15 @@ using CanonicalHuffmanTable =
     std::span<const std::uint8_t, huffman_alphabet_size> lengths,
     CanonicalHuffmanTable& table,
     bool allow_empty = false) noexcept;
+
+[[nodiscard]] HuffmanBuildError count_frequencies(
+    std::span<const std::byte> input,
+    HuffmanFrequencies& frequencies) noexcept;
+
+[[nodiscard]] HuffmanBuildError build_length_limited_code_lengths(
+    std::span<const std::uint64_t, huffman_alphabet_size> frequencies,
+    HuffmanCodeLengths& lengths,
+    std::uint8_t max_code_length = huffman_max_code_length) noexcept;
 
 } // namespace marc::entropy::internal
 

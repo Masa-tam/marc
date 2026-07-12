@@ -209,9 +209,10 @@ so frame, block, and whole-stream scopes cannot be conflated implicitly.
 
 Represent a Huffman model as exactly 256 code-length bytes in symbol order.
 Version 1 limits lengths to 15 bits. Construct optimal bounded lengths with
-Package-Merge, using symbol value as the final deterministic tie break. Assign
-conventional canonical numeric codes and reverse each code within its length
-only when forming the LSB-first encoder table.
+Package-Merge. Order leaves and packages first by total weight, then by their
+lowest contained symbol, then with a leaf before a package, and finally by
+stable creation order. Assign conventional canonical numeric codes and reverse
+each code within its length only when forming the LSB-first encoder table.
 
 Reject oversubscribed and incomplete multi-symbol code spaces. The sole
 incomplete exception is a one-symbol model, represented by length 1 and code
