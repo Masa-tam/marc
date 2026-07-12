@@ -288,3 +288,15 @@ no legal guarantee of non-infringement.
   planning, encoding, and atomic strict decoding for the initial profile.
 - Similarity review: no external stream controller or container loop was
   compared.
+
+## 2026-07-12 - Buffered incremental Blocked Huffman encoder
+
+- Authoring method: independently wrapped the complete reference stream path in
+  the repository's `ProcessResult` contract and caller-owned workspaces.
+- Implementation sources consulted: none.
+- Independent decisions: immutable encode direction; running, draining, ended,
+  and terminal-error states; deferred non-terminal flush; unsupported explicit
+  reset; repeatable end-of-stream; exact input-size enforcement.
+- Generated-code task description: accept arbitrary input chunking and output
+  capacity while producing bytes identical to the one-shot encoder.
+- Similarity review: no external streaming codec state machine was compared.

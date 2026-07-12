@@ -353,3 +353,18 @@ complete validation-only frame traversal before a second output traversal.
 This reference behavior prevents corruption in a later frame from exposing an
 earlier decoded frame. It is intentionally stronger than the future streaming
 API, whose commit boundary will be documented explicitly.
+
+## DD-025: Begin incremental work with a buffered encoder oracle
+
+- Date: 2026-07-12
+- Status: accepted
+
+The first stateful encoder accumulates the known-size input in caller-owned
+storage, invokes the complete reference stream encoder at `EndInput`, and then
+drains caller-owned encoded storage. This immediately exercises independent
+input consumption, output production, one-byte output, zero-byte final input,
+and stable terminal states without changing the format.
+
+It deliberately defers output until finish and treats non-terminal `Flush` as
+non-mutating. `ResetBlock` remains unsupported until the frame-at-a-time state
+machine can give it exact format semantics.

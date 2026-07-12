@@ -15,6 +15,18 @@ enum class StreamStatus : std::uint32_t {
     error,
 };
 
+enum class ProcessFlags : std::uint32_t {
+    none = 0,
+    flush = 1U << 0,
+    end_input = 1U << 1,
+    reset_block = 1U << 2,
+};
+
+[[nodiscard]] constexpr std::uint32_t flag_value(
+    const ProcessFlags flag) noexcept {
+    return static_cast<std::uint32_t>(flag);
+}
+
 enum class ErrorCode : std::uint32_t {
     none,
     invalid_argument,

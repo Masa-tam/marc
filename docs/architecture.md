@@ -97,3 +97,16 @@ algorithm and may be retried. Reset explicitly begins a new scope.
 
 Hash target/scope descriptors and concrete algorithms remain pending. They will
 be specified before nonzero stream or frame hash regions are accepted.
+
+## Buffered incremental reference encoder
+
+The first `ProcessResult`-based Blocked Huffman encoder is a correctness
+reference with caller-owned whole-input and whole-encoded-stream workspaces.
+It accepts arbitrarily split input and drains arbitrarily small output spans,
+but does not emit bytes before `EndInput`. Non-terminal `Flush` therefore does
+not alter or close a frame; `ResetBlock` is rejected as unsupported.
+
+This buffered reference is not the final bounded-frame streaming design. Its
+encoded bytes must match the one-shot reference for every chunking pattern. A
+later frame-at-a-time implementation will reduce workspace requirements while
+retaining that deterministic representation and the same terminal-state rules.
