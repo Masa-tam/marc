@@ -1,14 +1,15 @@
 # C API
 
-The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman and
-Adaptive Huffman variant 1 with known-size encoding and bounded, caller-owned
-workspace. All functions are `noexcept` in C++ translation units, and no C++
-type appears in the ABI.
+The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
+Adaptive Huffman, and Dynamic Range variant 1 with known-size encoding and
+bounded, caller-owned workspace. All functions are `noexcept` in C++
+translation units, and no C++ type appears in the ABI.
 
 ## Lifecycle
 
 1. Call the matching `marc_blocked_huffman_config_init()` or
-   `marc_adaptive_huffman_config_init()` for encode or decode direction.
+   `marc_adaptive_huffman_config_init()` or
+   `marc_dynamic_range_config_init()` for encode or decode direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
@@ -27,6 +28,8 @@ frame storage and `secondary_bytes` is decoded-frame storage. Blocked Huffman
 decoding additionally uses `views_bytes` for a private block table; Adaptive
 Huffman requires no views workspace. Adaptive encoder requirements
 conservatively allow 264 bits per input symbol before fixed frame overhead.
+Dynamic Range also requires no views workspace; its encoder reserves at most
+two normalization bytes per input symbol plus five termination bytes.
 
 ## Processing contract
 

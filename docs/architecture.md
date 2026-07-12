@@ -273,6 +273,12 @@ normalizations. Encoder payload storage is therefore bounded by
 `2 * largest_frame + 5`, plus fixed descriptor and frame headers. Decoder sizing
 uses only local limits and requires policy support for the variant's model total.
 
+The Dynamic Range C ABI adds a separate size-tagged configuration and factory
+without changing ABI version 1 or existing profile layouts. It carries the
+range-model-total policy explicitly, uses only primary and secondary byte
+workspaces, and returns the common opaque transform processed and destroyed by
+the shared lifecycle functions.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

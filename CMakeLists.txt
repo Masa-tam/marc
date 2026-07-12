@@ -243,4 +243,15 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_adaptive_c_api_tests PRIVATE marc::static)
     endif()
     add_test(NAME marc_adaptive_c_api_tests COMMAND marc_adaptive_c_api_tests)
+
+    add_executable(marc_dynamic_range_c_api_tests
+        tests/dynamic_range_c_api_tests.c)
+    target_compile_features(marc_dynamic_range_c_api_tests PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_dynamic_range_c_api_tests PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_dynamic_range_c_api_tests PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_dynamic_range_c_api_tests
+        COMMAND marc_dynamic_range_c_api_tests)
 endif()

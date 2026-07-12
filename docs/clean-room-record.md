@@ -694,3 +694,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: normalize Dynamic Range variant 1 settings
   and calculate allocation-safe transform workspaces before C ABI exposure.
 - Similarity review: no external capacity formula or factory was compared.
+
+## 2026-07-13 - Dynamic Range C ABI factory
+
+- Authoring method: extended marc's opaque transform boundary with a profile-
+  specific size-tagged configuration and factory.
+- References used: repository architecture, C API contract, and Dynamic Range
+  workspace query only.
+- Known implementations intentionally not consulted: external compression ABIs,
+  adapters, wrappers, and language bindings.
+- Independent decisions: preserve ABI version 1 and existing layouts; explicit
+  range-model policy; separate entry points; shared opaque lifecycle; no views
+  workspace; pure-C shared-library round-trip coverage.
+- Generated-code task description: expose bounded Dynamic Range streaming
+  transforms through the small C ABI without changing existing layouts.
+- Similarity review: no external C ABI or adapter structure was compared.

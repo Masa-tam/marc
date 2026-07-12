@@ -756,3 +756,18 @@ Size the raw workspace from the largest frame that can actually occur. Size
 decoder workspaces solely from local frame and buffered-byte limits because no
 stream field is trusted before construction. Reject a policy whose maximum
 range-model total is below the variant-required 32768.
+
+## DD-049: Dynamic Range extends ABI version 1 with a separate config
+
+- Date: 2026-07-13
+- Status: accepted
+
+Preserve ABI version 1 and all existing Blocked and Adaptive configuration
+layouts. Add a separate size-tagged Dynamic Range configuration, initializer,
+workspace query, and factory. Carry maximum range-model total explicitly because
+it is a required decoder policy rather than an irrelevant shared-core field.
+
+Return the common opaque transform and reuse the common process and destroy
+operations. Dynamic Range uses primary and secondary byte workspaces and no
+views workspace. Verify the shared-library boundary with a pure-C round trip,
+reserved-field rejection, and insufficient model-policy rejection.
