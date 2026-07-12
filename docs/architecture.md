@@ -197,6 +197,13 @@ header drains independently. Pending output has priority, non-terminal flush
 does not shorten a frame, and explicit reset remains unsupported because the
 format already fixes reset at outer frame boundaries.
 
+The matching Adaptive streaming decoder collects only fixed headers and one
+declared serialized frame in caller storage. A complete frame is strictly
+decoded into one decoded-frame workspace before any of its bytes are exposed.
+Decoded output has priority over later encoded input, so `NeedOutput` may leave
+an input suffix unconsumed. Earlier validated frames remain committed if a
+later frame is malformed; the malformed frame contributes no output.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,

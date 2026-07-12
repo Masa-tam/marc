@@ -515,3 +515,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: encode known-size Adaptive frames
   incrementally with arbitrary input chunks and one-byte output capacity.
 - Similarity review: no external streaming state machine was compared.
+
+## 2026-07-12 - Frame-at-a-time Adaptive Huffman decoder
+
+- Authoring method: specialized marc's established bounded frame-commit state
+  model for the Adaptive descriptor and strict frame decoder.
+- References used: repository architecture and complete Adaptive frame path.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman streaming decoders and tests.
+- Independent decisions: fixed-prefix incremental collection; exact frame
+  workspace; strict decode-before-drain; decoded-output priority; prior-frame
+  commit preservation; stable workspace versus malformed categories.
+- Generated-code task description: decode arbitrary input chunks and one-byte
+  outputs while buffering and committing exactly one validated Adaptive frame.
+- Similarity review: no external decoder state machine was compared.

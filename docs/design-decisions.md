@@ -610,3 +610,20 @@ Explicit reset is unsupported. Map encoded-workspace exhaustion to out of
 memory, format/local planning limits to limit exceeded, boundary misuse to
 invalid argument, and impossible post-plan failures to internal error. Every
 input/output chunking must match the complete stream reference byte-for-byte.
+
+## DD-040: Adaptive streaming decoding commits validated frames
+
+- Date: 2026-07-12
+- Status: accepted
+
+Incrementally collect the fixed stream header, fixed frame header, and exact
+declared frame remainder into caller-owned storage. Validate workspace capacity
+immediately after the frame header. Strictly decode the complete frame into a
+separate decoded workspace, then drain it before accepting later frame bytes.
+
+This makes one validated outer frame the streaming commit boundary. Pending
+decoded output leaves later input unconsumed, and callers re-present that suffix
+with applicable flags. Truncation, trailing final bytes, malformed descriptors,
+and payload errors are terminal, but cannot retract previously drained frames.
+Empty streams remain header-only and repeated calls after completion return
+end-of-stream.
