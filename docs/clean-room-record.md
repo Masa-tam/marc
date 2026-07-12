@@ -139,3 +139,17 @@ no legal guarantee of non-infringement.
   implementing its validator, encoder, or decoder.
 - Similarity review: no external stream representation or implementation was
   compared.
+
+## 2026-07-12 - Canonical Huffman table validation
+
+- Authoring method: implemented directly from the preceding variant 1
+  specification and its recorded primary references.
+- Implementation sources consulted: none.
+- Independent decisions: integer Kraft-capacity validation with distinct
+  oversubscribed and incomplete errors; transactional table construction;
+  fixed-size caller-owned arrays; explicit canonical and LSB-first code values.
+- Generated-code task description: implement and test bounded validation,
+  canonical assignment, and within-length bit reversal without allocation,
+  exceptions, decoding tables, or encoder logic.
+- Similarity review: the implementation follows the repository terminology and
+  structure; no external source structure was compared.

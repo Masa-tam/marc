@@ -20,6 +20,7 @@ set(MARC_SOURCES
     src/core/hash_tap.cpp
     src/core/limits.cpp
     src/core/status.cpp
+    src/entropy/canonical_huffman.cpp
     src/frame/frame_header.cpp
     src/frame/stream_header.cpp
     src/marc.cpp
@@ -82,6 +83,7 @@ if(MARC_BUILD_TESTS)
     add_executable(marc_core_tests
         tests/bit_io_tests.cpp
         tests/checked_math_tests.cpp
+        tests/canonical_huffman_tests.cpp
         tests/endian_tests.cpp
         tests/header_accumulator_tests.cpp
         tests/hash_tap_tests.cpp
