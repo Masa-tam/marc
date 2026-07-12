@@ -650,3 +650,18 @@ no legal guarantee of non-infringement.
   known-size multi-frame Dynamic Range streams.
 - Similarity review: no external stream composition or scan structure was
   compared.
+
+## 2026-07-13 - Frame-at-a-time Dynamic Range encoder
+
+- Authoring method: specialized marc's existing caller-buffered frame state
+  contract for the complete Dynamic Range reference stream.
+- References used: repository architecture and Dynamic Range frame and stream
+  paths only.
+- Known implementations intentionally not consulted: all external range-coder
+  streaming encoders, adapters, and tests.
+- Independent decisions: stream-header-first drain; one raw and one serialized
+  frame workspace; pending-output priority; deterministic flush deferral;
+  reference-byte identity under one-byte chunking.
+- Generated-code task description: encode known-size Dynamic Range frames
+  incrementally with bounded caller storage and arbitrary chunk boundaries.
+- Similarity review: no external streaming state machine was compared.

@@ -253,6 +253,13 @@ and semantically validates every exact frame extent without output, then repeats
 the traversal into caller storage. This preserves whole-stream atomicity while
 each frame independently resets the range state and adaptive model.
 
+The frame-at-a-time Dynamic Range encoder drains the fixed stream header, then
+collects at most one raw frame in caller storage. A complete full or final short
+frame is encoded atomically into a second caller workspace and drained before
+reuse. Pending output has priority; non-terminal flush leaves a partial frame
+open, and explicit reset remains unsupported because outer frames define every
+coder and model reset.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

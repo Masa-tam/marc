@@ -710,3 +710,18 @@ Strict reference decoding first scans and semantically validates every frame
 without output, rejects truncation and trailing bytes, and only then repeats the
 scan into caller storage. This gives the oracle whole-stream atomicity while
 proving that each frame resets the coder and order-0 model independently.
+
+## DD-046: Dynamic Range streaming encoding commits complete frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Drain the stream header first, then retain at most one configured raw frame and
+one serialized frame in caller-owned workspaces. Encode a frame only when its
+known original-size boundary is complete, and drain pending output before
+consuming later input. Arbitrary input and output chunking must reproduce the
+complete reference stream byte for byte.
+
+Non-terminal flush does not shorten a frame. Explicit reset is unsupported.
+Preserve limit-exceeded, invalid-boundary, workspace-exhaustion, and internal
+failure as distinct stable core error categories.
