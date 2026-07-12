@@ -46,3 +46,16 @@ no legal guarantee of non-infringement.
 - Generated-code task description: add conservative decoder defaults and an
   overflow-safe validator for parsed frame bounds with negative tests.
 - Similarity review: no external implementation compared.
+
+## 2026-07-12 — GoogleTest migration
+
+- Dependency: GoogleTest v1.17.0 at commit
+  `52eb8108c5bdec04579160ae17225d66034bd723`, BSD-3-Clause.
+- Scope: test registration, assertions, reporting, and CTest discovery only.
+- Compression implementation use: none. GoogleTest source is not an algorithm
+  reference and is not linked into marc library artifacts.
+- Design decisions: pinned Git submodule, no implicit network download, tests
+  disabled by default when marc is embedded as a CMake subproject, pure-C ABI
+  smoke test retained.
+- Generated-code task description: migrate existing assertion-based C++ tests
+  into named GoogleTest suites without changing production behavior.

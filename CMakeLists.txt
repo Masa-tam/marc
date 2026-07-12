@@ -4,7 +4,12 @@ project(marc VERSION 0.1.0 LANGUAGES C CXX)
 
 option(MARC_BUILD_SHARED "Build the marc shared library" ON)
 option(MARC_BUILD_STATIC "Build the marc static library" ON)
-option(MARC_BUILD_TESTS "Build marc tests" ON)
+if(PROJECT_IS_TOP_LEVEL)
+    set(MARC_BUILD_TESTS_DEFAULT ON)
+else()
+    set(MARC_BUILD_TESTS_DEFAULT OFF)
+endif()
+option(MARC_BUILD_TESTS "Build marc tests" ${MARC_BUILD_TESTS_DEFAULT})
 
 if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
     message(FATAL_ERROR "At least one of MARC_BUILD_SHARED or MARC_BUILD_STATIC must be ON")
@@ -57,15 +62,35 @@ endif()
 
 if(MARC_BUILD_TESTS)
     enable_testing()
-    add_executable(marc_core_tests tests/core_tests.cpp)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt")
+        message(FATAL_ERROR
+            "MARC_BUILD_TESTS=ON requires the GoogleTest submodule. "
+            "Run: git submodule update --init --recursive")
+    endif()
+
+    if(MSVC)
+        set(gtest_force_shared_crt ON CACHE BOOL
+            "Use the shared MSVC runtime for GoogleTest" FORCE)
+    endif()
+    set(INSTALL_GTEST OFF CACHE BOOL "Do not install marc's test dependency" FORCE)
+    add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
+    include(GoogleTest)
+
+    add_executable(marc_core_tests
+        tests/bit_io_tests.cpp
+        tests/checked_math_tests.cpp
+        tests/endian_tests.cpp
+        tests/limits_tests.cpp
+        tests/status_tests.cpp
+    )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     if(TARGET marc_static)
-        target_link_libraries(marc_core_tests PRIVATE marc::static)
+        target_link_libraries(marc_core_tests PRIVATE marc::static GTest::gtest_main)
     else()
-        target_link_libraries(marc_core_tests PRIVATE marc::shared)
+        target_link_libraries(marc_core_tests PRIVATE marc::shared GTest::gtest_main)
     endif()
-    add_test(NAME marc_core_tests COMMAND marc_core_tests)
+    gtest_discover_tests(marc_core_tests DISCOVERY_MODE PRE_TEST)
 
     add_executable(marc_c_api_tests tests/c_api_tests.c)
     target_compile_features(marc_c_api_tests PRIVATE c_std_11)

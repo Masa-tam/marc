@@ -98,3 +98,21 @@ an error.
 Initial conservative policy defaults are implementation defaults, not encoded
 format limits. Applications may lower them. A future format may impose stricter
 limits, but no format declaration may raise an application's configured limit.
+
+## DD-009: GoogleTest as test-only infrastructure
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use GoogleTest for C++ unit tests and CTest discovery. Keep the pure-C ABI smoke
+test as a C translation unit independent of GoogleTest. GoogleTest is a test-only
+Git submodule pinned to a reviewed commit; marc library targets never link it.
+
+Tests default to enabled only when marc is the top-level CMake project. A parent
+project can build marc without initializing the submodule. When tests are
+explicitly enabled and the submodule is absent, configuration fails with an
+actionable diagnostic rather than downloading code implicitly.
+
+After publication, Dependabot may propose gitlink updates. Updates are reviewed
+and accepted only after CI succeeds; the default branch always records one exact
+GoogleTest commit.
