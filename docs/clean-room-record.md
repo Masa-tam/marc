@@ -529,3 +529,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: decode arbitrary input chunks and one-byte
   outputs while buffering and committing exactly one validated Adaptive frame.
 - Similarity review: no external decoder state machine was compared.
+
+## 2026-07-12 - Adaptive Huffman profile and workspace queries
+
+- Authoring method: derived guaranteed capacities from marc's maximum tree
+  depth, literal representation, fixed descriptor, frame header, and limits.
+- References used: repository format and implemented bounded tree only.
+- Known implementations intentionally not consulted: external Adaptive Huffman
+  factories, allocation policies, and workspace estimators.
+- Independent decisions: 264-bit per-symbol encoder bound; actual-largest-frame
+  sizing; empty zero workspace; conservative decoder sizing from local limits;
+  stable coarse profile errors.
+- Generated-code task description: normalize Adaptive variant 1 configuration
+  and calculate allocation-safe transform workspaces before C ABI exposure.
+- Similarity review: no external factory or capacity formula was compared.

@@ -204,6 +204,14 @@ Decoded output has priority over later encoded input, so `NeedOutput` may leave
 an input suffix unconsumed. Earlier validated frames remain committed if a
 later frame is malformed; the malformed frame contributes no output.
 
+Adaptive profile normalization constructs only the fixed variant 1 stream
+header and reports caller workspace before transform creation. Encoder sizing
+uses the largest frame that can occur and a conservative 264 bits per symbol:
+at most 256 path bits plus an 8-bit new-symbol literal. Decoder sizing uses
+only local limits because no stream header is trusted yet. Empty encoding needs
+no frame workspace, and all multiplication, rounding, and `size_t` conversion
+are checked.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,

@@ -41,6 +41,7 @@ set(MARC_SOURCES
     src/frame/adaptive_huffman_stream.cpp
     src/frame/adaptive_huffman_frame_streaming_encoder.cpp
     src/frame/adaptive_huffman_frame_streaming_decoder.cpp
+    src/frame/adaptive_huffman_profile.cpp
     src/frame/blocked_huffman_frame.cpp
     src/frame/blocked_huffman_stream.cpp
     src/frame/blocked_huffman_incremental_encoder.cpp
@@ -194,6 +195,7 @@ if(MARC_BUILD_TESTS)
         tests/adaptive_huffman_stream_tests.cpp
         tests/adaptive_huffman_frame_streaming_encoder_tests.cpp
         tests/adaptive_huffman_frame_streaming_decoder_tests.cpp
+        tests/adaptive_huffman_profile_tests.cpp
         tests/status_tests.cpp
         tests/stream_header_tests.cpp
     )

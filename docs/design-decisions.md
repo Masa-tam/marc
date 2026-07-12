@@ -627,3 +627,21 @@ with applicable flags. Truncation, trailing final bytes, malformed descriptors,
 and payload errors are terminal, but cannot retract previously drained frames.
 Empty streams remain header-only and repeated calls after completion return
 end-of-stream.
+
+## DD-041: Adaptive workspace queries guarantee worst-case input
+
+- Date: 2026-07-12
+- Status: accepted
+
+Normalize known-size encoder settings into Adaptive Huffman variant 1 before
+construction. Size raw input storage from the smaller of original size and
+configured frame size. Without inspecting future input, bound every symbol by
+the maximum 256-bit tree path plus an 8-bit NYT literal, round the total upward,
+and add the fixed descriptor and frame header. Reject a profile whose guaranteed
+worst case exceeds compressed-payload or buffered-memory policy.
+
+For decoding, report one frame header plus maximum locally buffered frame body
+and one decoded frame capped by both local and variant frame limits. No block
+view workspace is needed. Empty streams require no frame storage. Profile
+errors map to the same stable invalid-argument, unsupported, and limit-exceeded
+categories used by the existing C boundary.
