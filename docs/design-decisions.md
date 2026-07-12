@@ -558,3 +558,21 @@ bounded traversal into caller output. A failure in the validation pass leaves
 the entire output span unchanged. This frame-local two-pass policy matches the
 reference encoder's clarity and provides a strong oracle for a later streaming
 decoder whose commit boundary will remain a complete validated frame.
+
+## DD-037: Adaptive frame composition is exact-span and algorithm-specific
+
+- Date: 2026-07-12
+- Status: accepted
+
+Extend generic frame validation with an explicit Adaptive Huffman variant 1
+case requiring block count one and descriptor bytes 16. Count the descriptor
+and compressed payload together toward buffered-memory limits, while leaving
+stream entropy block size zero because the outer frame itself is the model
+reset boundary.
+
+Plan and validate the entropy body before constructing the generic header.
+Encoding checks total `header + descriptor + payload` capacity first. Strict
+decoding accepts exactly one serialized frame span, parses the header and
+descriptor in sequence, then delegates payload validation and output atomicity
+to the strict reference decoder. Algorithm-specific descriptors remain typed
+and cannot be cross-parsed merely because their fixed sizes match.

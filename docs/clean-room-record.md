@@ -471,3 +471,18 @@ no legal guarantee of non-infringement.
   reject malformed suffixes without exposing partial output.
 - Similarity review: no external decoder control flow or malformed vector was
   compared.
+
+## 2026-07-12 - Complete Adaptive Huffman frame path
+
+- Authoring method: composed marc's existing generic frame header with the
+  specified Adaptive descriptor and reference payload codec.
+- References used: repository format and architecture only.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman framing, container, encoder, and decoder source or vectors.
+- Independent decisions: explicit generic-header validation branch; one
+  descriptor per frame; exact serialized-span requirement; whole-frame capacity
+  preflight; typed error preservation; canonical 75-byte `ABA` frame vector.
+- Generated-code task description: plan, encode, and strictly decode one complete
+  version 1 Adaptive Huffman frame with frame-local atomicity.
+- Similarity review: no external frame layout or composition control flow was
+  compared.

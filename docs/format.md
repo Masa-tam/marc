@@ -337,3 +337,19 @@ valid bits:
 ```text
 03 00 00 00 03 00 00 00 02 00 00 00 00 00 00 00
 ```
+
+For a one-frame stream whose frame size and original size are both 3, the
+complete encoded `ABA` frame is 75 bytes:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+03 00 00 00 03 00 00 00 03 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+03 00 00 00 03 00 00 00 02 00 00 00 00 00 00 00
+41 84 02
+```
+
+The first 56 bytes are the frame header, the next 16 are the Adaptive
+descriptor, and the final 3 are the payload. Sequence is zero, entropy block
+count is one, and descriptor byte count is 16.

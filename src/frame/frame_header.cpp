@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
+#include "entropy/adaptive_huffman_format.hpp"
 
 #include <algorithm>
 #include <array>
@@ -69,8 +70,15 @@ FrameHeaderError validate_frame_header(
             header.block_descriptors_size == 0) {
             return FrameHeaderError::contradictory_sizes;
         }
-    } else if (header.entropy_block_count != 0 ||
-               header.block_descriptors_size != 0) {
+    } else if (context.stream.entropy_algorithm
+               == EntropyAlgorithm::adaptive_huffman) {
+        if (header.entropy_block_count != 1
+            || header.block_descriptors_size
+                != entropy::internal::adaptive_huffman_descriptor_size) {
+            return FrameHeaderError::contradictory_sizes;
+        }
+    } else if (header.entropy_block_count != 0
+               || header.block_descriptors_size != 0) {
         return FrameHeaderError::contradictory_sizes;
     }
 
@@ -80,9 +88,10 @@ FrameHeaderError validate_frame_header(
     bounds.compressed_payload_size = header.compressed_payload_size;
     bounds.largest_block_size = context.stream.entropy_block_size;
     bounds.model_buffered_bytes = header.block_descriptors_size;
-    bounds.payload_buffered_bytes = buffered
-        ? header.compressed_payload_size
-        : 0;
+    bounds.payload_buffered_bytes =
+        context.stream.entropy_algorithm == EntropyAlgorithm::none
+        ? 0
+        : header.compressed_payload_size;
     bounds.block_count = header.entropy_block_count;
 
     const auto limit_error = core::validate_frame_bounds(

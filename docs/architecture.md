@@ -174,6 +174,14 @@ orders and symbols, parent/child reciprocity, internal weight sums, adjacent
 siblings, and nondecreasing weight order. It is used at validation and test
 boundaries rather than in the per-symbol update path.
 
+The complete Adaptive reference frame composes the generic 56-byte frame
+header, exactly one 16-byte algorithm-specific descriptor, and the planned
+payload. Generic frame validation recognizes this descriptor-bearing
+non-block-buffered profile explicitly; it does not infer Adaptive layout from
+the Blocked Huffman structure. Encode capacity is checked for the whole frame
+before header mutation, and decoding requires an exact one-frame input span
+before invoking the frame-atomic strict entropy decoder.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,
