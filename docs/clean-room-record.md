@@ -57,6 +57,19 @@ no legal guarantee of non-infringement.
   path remains outside repository files.
 - Production-code effect: none; this changes build orchestration only.
 
+## 2026-07-12 — generic HashTap
+
+- Authoring method: independently derived from the composable hashing and
+  partial-write requirements in `AGENTS.md`.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: non-owning algorithm injection, exact committed-prefix
+  updates, caller-owned digest output, checked byte total, explicit reset, and
+  terminal finalized/error states.
+- Concrete hash algorithms and serialized descriptors implemented: none.
+- Generated-code task description: implement and test a chunking-invariant hash
+  observer without embedding hashing into codecs.
+
 ## 2026-07-12 — version 1.0 frame header
 
 - Authoring method: independently designed from the frame coordination,

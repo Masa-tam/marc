@@ -17,6 +17,7 @@ endif()
 
 set(MARC_SOURCES
     src/core/bit_io.cpp
+    src/core/hash_tap.cpp
     src/core/limits.cpp
     src/core/status.cpp
     src/frame/frame_header.cpp
@@ -83,6 +84,7 @@ if(MARC_BUILD_TESTS)
         tests/checked_math_tests.cpp
         tests/endian_tests.cpp
         tests/header_accumulator_tests.cpp
+        tests/hash_tap_tests.cpp
         tests/limits_tests.cpp
         tests/frame_header_tests.cpp
         tests/status_tests.cpp

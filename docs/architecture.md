@@ -82,3 +82,18 @@ testable without allocating from stream-controlled data.
 
 Variable-size header regions will be accepted only after their lengths have
 been parsed from a complete fixed prefix and checked against decoder limits.
+
+## Hash taps
+
+`HashTap` observes bytes committed at one explicitly named pipeline boundary.
+The caller supplies both the available span and the committed prefix length, so
+unused output capacity is never hashed. A tap owns no algorithm object; the
+injected `IHashAlgorithm` must outlive it. Neither interface allocates or throws.
+
+Successful finalization is terminal. Algorithm failure and committed-byte count
+overflow enter a terminal error state. Caller mistakes such as a committed
+length beyond the available span or a wrong digest-buffer size do not mutate the
+algorithm and may be retried. Reset explicitly begins a new scope.
+
+Hash target/scope descriptors and concrete algorithms remain pending. They will
+be specified before nonzero stream or frame hash regions are accepted.

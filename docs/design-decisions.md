@@ -186,3 +186,18 @@ against an older internal structure layout. A clean build detected no production
 defect, but relying on localized diagnostic text is unnecessarily fragile.
 Presets contain no installation path; CMake selects the Visual Studio instance,
 while machine-specific overrides belong in ignored `CMakeUserPresets.json`.
+
+## DD-014: Hash only explicitly committed byte prefixes
+
+- Date: 2026-07-12
+- Status: accepted
+
+Inject hash implementations through a non-owning, no-throw `IHashAlgorithm`
+interface. `HashTap::commit` accepts an available span and committed prefix
+length, updates exactly that prefix, and tracks a checked 64-bit total. This
+matches partial downstream writes without coupling codecs to hash algorithms.
+
+Finalize requires an exactly sized caller-owned digest buffer and is terminal
+after success. Hash algorithm failures and byte-count overflow are terminal;
+invalid caller arguments leave the running state retryable. Reset is explicit
+so frame, block, and whole-stream scopes cannot be conflated implicitly.
