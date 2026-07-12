@@ -665,3 +665,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: encode known-size Dynamic Range frames
   incrementally with bounded caller storage and arbitrary chunk boundaries.
 - Similarity review: no external streaming state machine was compared.
+
+## 2026-07-13 - Frame-at-a-time Dynamic Range decoder
+
+- Authoring method: specialized marc's bounded frame-commit decoder contract
+  for the typed Dynamic Range frame and strict payload decoder.
+- References used: repository architecture and complete Dynamic Range frame and
+  stream paths only.
+- Known implementations intentionally not consulted: external range-coder
+  streaming decoders, adapters, and tests.
+- Independent decisions: fixed-prefix incremental collection; exact encoded
+  frame workspace; strict decode-before-drain; pending-output priority;
+  previous-frame commit preservation; noncanonical second-frame regression.
+- Generated-code task description: decode arbitrary Dynamic Range input chunks
+  and one-byte outputs while committing exactly one validated outer frame.
+- Similarity review: no external decoder state machine was compared.

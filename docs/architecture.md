@@ -260,6 +260,12 @@ reuse. Pending output has priority; non-terminal flush leaves a partial frame
 open, and explicit reset remains unsupported because outer frames define every
 coder and model reset.
 
+The matching Dynamic Range streaming decoder incrementally collects the fixed
+stream and frame headers, then exactly one declared serialized frame in caller
+storage. Strict frame decoding completes into a separate decoded workspace
+before any byte of that frame is exposed. Pending decoded output has priority;
+previously drained frames remain committed if a later frame is malformed.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

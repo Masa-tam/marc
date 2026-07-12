@@ -725,3 +725,18 @@ complete reference stream byte for byte.
 Non-terminal flush does not shorten a frame. Explicit reset is unsupported.
 Preserve limit-exceeded, invalid-boundary, workspace-exhaustion, and internal
 failure as distinct stable core error categories.
+
+## DD-047: Dynamic Range streaming decoding commits validated frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Incrementally collect fixed headers and exactly one declared frame in bounded
+caller storage. Strictly decode that frame into a separate decoded workspace,
+then drain it before accepting later frame bytes. Pending decoded output leaves
+later input unconsumed so the caller can re-present the suffix.
+
+This makes one validated outer frame the streaming commit boundary. Truncation,
+noncanonical range state, malformed descriptors, unexpected trailing bytes, and
+workspace failures are terminal for the transform but cannot retract earlier
+drained frames or expose bytes from the malformed frame.
