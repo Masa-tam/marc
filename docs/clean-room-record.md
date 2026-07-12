@@ -327,3 +327,17 @@ no legal guarantee of non-infringement.
   frame while preserving arbitrary input/output chunking and terminal states.
 - Similarity review: no external streaming encoder buffering strategy or state
   machine was compared.
+
+## 2026-07-12 - Frame-at-a-time Blocked Huffman decoder
+
+- Authoring method: independently refined the buffered decoder using fixed
+  prefix parsing, contextual frame validation, and the complete frame decoder.
+- Implementation sources consulted: none.
+- Independent decisions: incremental fixed-header collection; exact one-frame
+  encoded workspace; one decoded-frame workspace; validated-frame commit
+  boundary; decoded-output priority; re-presented unconsumed input suffixes;
+  frame-local atomicity for malformed later input.
+- Generated-code task description: bound decoder workspace by one frame while
+  preserving arbitrary input/output chunking and strict malformed detection.
+- Similarity review: no external streaming decoder buffering strategy or state
+  machine was compared.

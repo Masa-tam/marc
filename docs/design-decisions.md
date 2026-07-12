@@ -397,3 +397,18 @@ Pending output has priority and may stop input consumption with `NeedOutput`.
 Non-terminal `Flush` cannot shorten a deterministic outer frame and therefore
 leaves a partial frame open. This reduces workspace from whole-stream size to
 configured frame size without changing a byte of the format.
+
+## DD-028: The bounded decoder commits only validated frames
+
+- Date: 2026-07-12
+- Status: accepted
+
+Collect stream and frame prefixes incrementally, but allocate no
+stream-controlled storage. After a frame header passes contextual and local
+limit validation, collect its exact declared body into caller-owned frame
+workspace, validate and decode it atomically, then drain that decoded frame.
+
+Decoded output has priority over consuming the next frame. Consequently a call
+may return `NeedOutput` with an encoded-input suffix unconsumed; `EndInput`
+continues to apply when that suffix is re-presented. Truncation and trailing
+data become terminal only after all earlier committed frame output is drained.

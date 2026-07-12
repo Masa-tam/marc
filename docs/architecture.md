@@ -131,3 +131,16 @@ If output capacity prevents a pending header or frame from draining, input is
 left unconsumed and `NeedOutput` is returned. Once a complete frame drains, the
 same call may resume input consumption. The emitted representation remains
 identical to the buffered and one-shot references.
+
+### Frame-at-a-time decoder
+
+The bounded decoder incrementally collects the fixed stream header and each
+fixed frame header, validates declared sizes, then buffers exactly one complete
+serialized frame. A frame is decoded atomically into one caller-owned decoded
+frame workspace and may be drained before later encoded frames arrive.
+
+Its commit boundary is therefore one validated frame, not the whole stream. If
+later input is malformed, previously drained frames remain committed while the
+malformed frame contributes no output. Pending decoded output has priority:
+`NeedOutput` may leave later encoded input unconsumed, and callers must re-present
+that suffix with the applicable flags.
