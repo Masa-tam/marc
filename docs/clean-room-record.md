@@ -558,3 +558,19 @@ no legal guarantee of non-infringement.
 - Generated-code task description: expose the bounded Adaptive streaming
   encoder and decoder through the small C ABI without changing existing layouts.
 - Similarity review: no external C ABI or adapter structure was compared.
+
+## 2026-07-12 - Dynamic Range Coder variant 1 specification
+
+- Authoring method: derived a bounded integer interval coder from the published
+  range-encoding principle and independently fixed marc's byte representation.
+- References used: G. Nigel N. Martin's 1979 range-encoding paper and marc's
+  existing frame, limit, and serialization rules.
+- Known implementations intentionally not consulted: all external range-coder
+  source, source-derived pseudocode, test vectors, and container formats.
+- Independent decisions: 32-bit range and 64-bit low; 2^24 normalization;
+  explicit delayed base-256 carry; five final shifts; uniform order-0 model;
+  total-32768 upward-rounded rescale; frame-local reset; 16-byte descriptor.
+- Generated-code task description: specify an exact deterministic and bounded
+  Dynamic Range Coder representation before implementing its validator.
+- Similarity review: no external implementation structure or byte vector was
+  compared.

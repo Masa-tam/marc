@@ -662,3 +662,21 @@ workspace. Normalize the otherwise irrelevant decoder block-size limit to a
 bounded internal value before common limit validation. Verify the shared-library
 boundary with a pure-C Adaptive round-trip test, including reserved-field
 rejection.
+
+## DD-043: Dynamic Range Coder variant 1 uses delayed byte carry
+
+- Date: 2026-07-12
+- Status: accepted
+
+Define variant 1 as a frame-reset adaptive order-0 byte-symbol coder with a
+32-bit range, 64-bit low accumulator, base-256 normalization below 2^24, and an
+explicit cached-byte carry procedure. Terminate every nonempty frame with five
+`shift_low` operations and use the descriptor's symbol count instead of an end
+symbol. This makes payload extent, decoder initialization, and trailing-byte
+rejection exact.
+
+Initialize all 256 frequencies to one. Increment after each symbol and halve
+with upward rounding when total reaches 32768. This keeps every symbol active,
+bounds all arithmetic, and gives encoder and decoder one deterministic update
+point. Reset the coder and model at every outer frame; a different model,
+normalization threshold, carry rule, or reset policy requires another variant.

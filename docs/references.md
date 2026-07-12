@@ -66,3 +66,15 @@ Adaptive Huffman design references:
 
 No Adaptive Huffman implementation source, source-derived pseudocode, or test
 suite was consulted.
+
+Dynamic Range Coder design reference:
+
+- G. Nigel N. Martin, "Range Encoding: An Algorithm for Removing Redundancy
+  from a Digitised Message," Video and Data Recording Conference,
+  Southampton, 1979. Used for the finite-precision interval subdivision and
+  range-normalization foundation.
+  <https://aghorui.github.io/stuff/docs/ffmpeg-flif-gsoc-2020/renc.pdf>
+
+The byte normalization, delayed-carry representation, adaptive model, frame
+layout, and vectors are independently specified for marc. No range-coder
+implementation source, source-derived pseudocode, or test suite was consulted.

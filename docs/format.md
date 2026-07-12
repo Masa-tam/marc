@@ -123,9 +123,9 @@ The decoder rejects a frame after the declared original size is reached.
 With no dictionary transform, dictionary serialized size equals uncompressed
 size. With no entropy transform, compressed payload size also equals that size,
 and block count and descriptor size are zero. Blocked Huffman, rANS, and tANS
-require nonzero block count and descriptor size. Adaptive Huffman variant 1
-uses exactly one descriptor and one entropy block per nonempty frame. Dynamic
-Range Coder uses zero for both until its representation is defined.
+require nonzero block count and descriptor size. Adaptive Huffman and Dynamic
+Range Coder variant 1 use exactly one descriptor and one entropy block per
+nonempty frame.
 
 ### Raw three-byte frame vector
 
@@ -353,3 +353,102 @@ complete encoded `ABA` frame is 75 bytes:
 The first 56 bytes are the frame header, the next 16 are the Adaptive
 descriptor, and the final 3 are the payload. Sequence is zero, entropy block
 count is one, and descriptor byte count is 16.
+
+## Dynamic Range Coder variant 1
+
+Dynamic Range Coder variant 1 is a byte-oriented integer range coder with an
+adaptive order-0 model over symbols `0..255`. It has no entropy parameter region
+and requires stream entropy block size zero. Each nonempty outer frame is one
+independent entropy block and resets the complete coder and model. The format-
+level maximum uncompressed frame size is 2^24 bytes.
+
+The model starts with frequency 1 for every symbol and total 256. Cumulative
+frequency is the sum for all numerically smaller symbols. After coding a symbol,
+increment its frequency and the total. When the total becomes 32768, replace
+every frequency `f` with `(f + 1) / 2`, using integer division, then recompute
+the total. Thus every symbol remains active. Encoder and decoder update only
+after completing the same symbol.
+
+### Interval update and byte normalization
+
+Coder state is unsigned `low` (64 bits) and `range` (32 bits), initialized to 0
+and `0xFFFFFFFF`. For cumulative frequency `c`, symbol frequency `f`, and model
+total `t`, encode one symbol in this exact order:
+
+```text
+range = range / t
+low   = low + c * range
+range = range * f
+while range < 0x01000000:
+    range = range << 8
+    shift_low()
+```
+
+The pre-division range is always at least `0x01000000`, and `t <= 32768`, so
+the unit range is nonzero. Products fit their declared types. `shift_low()`
+performs delayed carry in base 256. State includes an 8-bit `cache`, initialized
+to 0, and a positive `pending` count, initialized to 1:
+
+```text
+lo32  = low & 0xFFFFFFFF
+carry = low >> 32
+if lo32 < 0xFF000000 or carry != 0:
+    emit (cache + carry) & 0xFF
+    emit pending - 1 bytes of (0xFF + carry) & 0xFF
+    cache = lo32 >> 24
+    pending = 0
+pending = pending + 1
+low = (lo32 << 8) as an unsigned 64-bit value
+```
+
+The stated invariants constrain `carry` to 0 or 1; emitted additions are reduced
+to their low 8 bits as shown. After all symbols, call `shift_low()` exactly five
+times. There is no end symbol. The payload is byte aligned and contains the
+normalization bytes plus the five-byte termination sequence.
+
+Decoding initializes `range` to `0xFFFFFFFF` and reads exactly five payload
+bytes into a 32-bit `code`, in stored order, using
+`code = (code << 8) | byte`. For each declared symbol:
+
+```text
+unit   = range / total
+scaled = code / unit
+find the unique symbol with cumulative <= scaled
+    and scaled < cumulative + frequency
+code   = code - cumulative * unit
+range  = unit * frequency
+while range < 0x01000000:
+    range = range << 8
+    code = (code << 8) | next_payload_byte
+```
+
+Reject `scaled >= total`, a missing normalization byte, arithmetic invariant
+failure, or any payload bytes left after the declared symbol count. Model update
+then follows the encoder rule. All shifts and wraparound of `code` are unsigned
+32-bit operations.
+
+### Range descriptor and vectors
+
+Exactly one 16-byte descriptor precedes each frame payload:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | symbol count | equals dictionary serialized size |
+| 4 | 4 | payload size | equals frame compressed payload size; at least 5 |
+| 8 | 1 | flags | zero |
+| 9 | 7 | reserved | zero |
+
+Fresh-frame payload vectors are:
+
+| Input | Payload |
+|---|---|
+| `A` | `00 80 FE FE 7E 00` |
+| `AA` | `00 81 80 7C FE FC` |
+| `AB` | `00 81 84 7A 02 F4 00` |
+| `ABA` | `00 81 84 FA 80 78 E0` |
+
+For `A`, the descriptor is:
+
+```text
+01 00 00 00 06 00 00 00 00 00 00 00 00 00 00 00
+```

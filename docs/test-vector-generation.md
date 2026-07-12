@@ -81,3 +81,16 @@ The initial reset vector is input `AAAA` with frame size 2. Each frame encodes
 serialized frame size 74. Including the 64-byte stream header, total stream
 size is 212 bytes. Corrupting high padding in the second payload must identify
 frame index 1 while leaving the whole strict-reference output untouched.
+
+Dynamic Range Coder vectors are generated from the equations in `format.md`,
+using arbitrary-precision scratch arithmetic only to audit the declared 32- and
+64-bit bounds. Record `low`, `range`, cumulative frequency, symbol frequency,
+total, cached byte, pending count, carry, and each emitted byte after every
+symbol. The initial hand vectors are `A`, `AA`, `AB`, and `ABA`.
+
+Negative vectors independently cover payloads shorter than five bytes,
+truncated normalization, `scaled >= total`, contradictory descriptor sizes,
+nonzero flags or reserved bytes, trailing payload, and frames beyond 2^24
+symbols. Boundary vectors cross total 32768 and record every post-rescale
+frequency and the recomputed total. Multi-frame tests repeat the same input to
+prove complete model and coder reset at the outer frame boundary.
