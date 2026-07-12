@@ -181,3 +181,16 @@ no legal guarantee of non-infringement.
   decode table without allocation, recursion, or byte-source coupling.
 - Similarity review: no external decode-table layout or implementation was
   compared.
+
+## 2026-07-12 - Blocked Huffman descriptor validation
+
+- Authoring method: implemented from the repository-defined variant 1 layout
+  in `format.md` and the existing bounded frame model.
+- Implementation sources consulted: none.
+- Independent decisions: transactional fixed-descriptor parsing; separate raw
+  and Huffman invariants; pre-model payload-bit bounds; exact final-short-block
+  accounting; checked descriptor, model, payload, and combined-buffer totals.
+- Generated-code task description: serialize, parse, and prevalidate Blocked
+  Huffman descriptors and their frame-level aggregate before model allocation
+  or payload decoding.
+- Similarity review: no external container descriptor or parser was compared.
