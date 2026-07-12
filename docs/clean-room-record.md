@@ -651,6 +651,20 @@ no legal guarantee of non-infringement.
 - Similarity review: no external stream composition or scan structure was
   compared.
 
+## 2026-07-13 - rANS C transform API
+
+- Authoring method: adapted marc's established size-tagged ABI pattern to its
+  completed rANS streaming transforms and profile query.
+- References used: repository C API contract and implemented rANS components.
+- Known implementations intentionally not consulted: external ANS library ABI,
+  wrapper source, bindings, allocation conventions, and tests.
+- Independent decisions: separate ABI-version-1 config; explicit block policy;
+  three caller-owned decoder workspaces; aligned block views; pure-C shared-
+  library round trip; unchanged existing configuration layouts.
+- Generated-code task description: expose rANS variant 1 through the common
+  opaque transform without exceptions or C++ types crossing the ABI.
+- Similarity review: no external C API layout or wrapper structure was compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

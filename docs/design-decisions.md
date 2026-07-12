@@ -851,3 +851,18 @@ to the next frame.
 Malformed later frames cannot retract earlier committed output and cannot expose
 any bytes from the failing frame. Decoder workspace sizes are derived only from
 local limits because stream fields remain untrusted until parsed.
+
+## DD-055: rANS extends ABI version 1 with a separate config
+
+- Date: 2026-07-13
+- Status: accepted
+
+Preserve ABI version 1 and every existing configuration layout. Add a separate
+size-tagged rANS configuration with explicit frame size, entropy block size,
+and relevant local limits. Reuse the common opaque transform, process result,
+and destroy function.
+
+Encoding uses primary raw-frame and secondary serialized-frame byte workspaces.
+Decoding uses primary serialized-frame, secondary decoded-frame, and aligned
+block-view workspaces. Validate reserved fields, workspace extents, and view
+alignment before allocating the C++ implementation object.
