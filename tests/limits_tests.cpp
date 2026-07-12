@@ -10,6 +10,7 @@ namespace {
 [[nodiscard]] marc::core::FrameBounds valid_frame() {
     marc::core::FrameBounds frame{};
     frame.uncompressed_size = UINT64_C(1) << 20;
+    frame.dictionary_serialized_size = UINT64_C(1) << 20;
     frame.compressed_payload_size = 1023;
     frame.largest_block_size = UINT64_C(1) << 16;
     frame.dictionary_entries = UINT64_C(1) << 12;
@@ -60,6 +61,15 @@ TEST(FrameBoundsTest, RejectsOversizedBlock) {
     frame.largest_block_size = limits.max_block_size + 1;
     EXPECT_EQ(marc::core::validate_frame_bounds(limits, frame, 0),
               LimitError::block_size);
+}
+
+TEST(FrameBoundsTest, RejectsOversizedDictionarySerialization) {
+    const DecoderLimits limits{};
+    auto frame = valid_frame();
+    frame.dictionary_serialized_size =
+        limits.max_dictionary_serialized_size + 1;
+    EXPECT_EQ(marc::core::validate_frame_bounds(limits, frame, 0),
+              LimitError::dictionary_serialized_size);
 }
 
 TEST(FrameBoundsTest, RejectsBufferedSizeOverflow) {

@@ -27,6 +27,7 @@ LimitError validate_limits(const DecoderLimits& limits) noexcept {
     if (limits.max_total_output_size == 0 || limits.max_frame_size == 0 ||
         limits.max_block_size == 0 ||
         limits.max_compressed_payload_size == 0 ||
+        limits.max_dictionary_serialized_size == 0 ||
         limits.max_dictionary_entries == 0 || limits.max_lz_distance == 0 ||
         limits.max_lz_match_length == 0 ||
         limits.max_huffman_code_length == 0 ||
@@ -67,6 +68,10 @@ LimitError validate_frame_bounds(const DecoderLimits& limits,
     }
     if (frame.compressed_payload_size > limits.max_compressed_payload_size) {
         return LimitError::compressed_payload_size;
+    }
+    if (frame.dictionary_serialized_size >
+        limits.max_dictionary_serialized_size) {
+        return LimitError::dictionary_serialized_size;
     }
     if (frame.dictionary_entries > limits.max_dictionary_entries) {
         return LimitError::dictionary_entries;

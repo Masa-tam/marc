@@ -91,6 +91,58 @@ meaning.
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ```
 
+## Version 1.0 frame header
+
+After the stream-level parameter regions, the stream contains frames until the
+sum of frame uncompressed sizes equals the stream header's original size. An
+original size of zero has no frames. Every frame begins with this fixed 56-byte
+header.
+
+| Offset | Size | Field | Version 1.0 rule |
+|---:|---:|---|---|
+| 0 | 4 | frame magic | ASCII `MRF1`, bytes `4D 52 46 31` |
+| 4 | 2 | fixed frame-header size | `56` |
+| 6 | 2 | frame flags | `0`; unknown bits are rejected |
+| 8 | 8 | frame sequence | zero-based, exactly one greater per frame |
+| 16 | 4 | uncompressed size | expected fixed size or final remainder |
+| 20 | 4 | dictionary serialized size | entropy-decoder output bytes |
+| 24 | 4 | compressed payload size | exact payload bytes in this frame |
+| 28 | 4 | entropy block count | nonzero only for block-buffered entropy |
+| 32 | 4 | block descriptor bytes | precedes compressed payload |
+| 36 | 4 | checksum trailer bytes | must be zero until checksums are defined |
+| 40 | 16 | reserved | all zero; nonzero is malformed |
+
+The frame body order is block descriptors, compressed payload, then checksum
+trailer. Version 1.0 currently requires a zero-sized checksum trailer.
+
+Frame boundaries are deterministic. If `remaining = original_size - committed`
+then the next frame's uncompressed size must equal
+`min(stream_frame_size, remaining)`. Thus only the final frame may be short.
+The decoder rejects a frame after the declared original size is reached.
+
+With no dictionary transform, dictionary serialized size equals uncompressed
+size. With no entropy transform, compressed payload size also equals that size,
+and block count and descriptor size are zero. Blocked Huffman, rANS, and tANS
+require nonzero block count and descriptor size. Adaptive Huffman and Dynamic
+Range Coder use zero for both because their baseline variants are not block
+buffered at this layer.
+
+### Raw three-byte frame vector
+
+For a stream selecting no transforms, original size 3, frame size 1 MiB, and raw
+bytes `61 62 63`, the frame header and body are:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+03 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+61 62 63
+```
+
+The first 56 bytes are the frame header; the final three bytes are its raw
+compressed payload.
+
 ## Foundational hand-checkable vectors
 
 These vectors define primitives used by every later format variant.
@@ -121,6 +173,7 @@ The baseline implementation defaults are:
 | one uncompressed frame | 16 MiB |
 | one entropy block | 1 MiB |
 | one compressed frame payload | 64 MiB |
+| dictionary serialized bytes per frame | 64 MiB |
 | dictionary entries | 16,777,216 |
 | LZ distance | 16 MiB |
 | LZ match length | 1 MiB |

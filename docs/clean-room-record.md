@@ -47,6 +47,19 @@ no legal guarantee of non-infringement.
   overflow-safe validator for parsed frame bounds with negative tests.
 - Similarity review: no external implementation compared.
 
+## 2026-07-12 — version 1.0 frame header
+
+- Authoring method: independently designed from the frame coordination,
+  bounded-allocation, and deterministic-boundary requirements in `AGENTS.md`.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: fixed 56-byte header, distinct raw/dictionary/compressed
+  sizes, monotonic sequence, original-size-derived boundaries, exact descriptor
+  region length, zeroed reserved and unsupported checksum regions.
+- Generated-code task description: specify and implement version 1.0 frame
+  header parsing, serialization, context validation, and malformed tests.
+- Similarity review: no external format or implementation compared.
+
 ## 2026-07-12 — version 1.0 stream prefix
 
 - Authoring method: independently designed from the framing requirements in

@@ -149,3 +149,24 @@ Only variant 1 baseline names from `format.md` are recognized. Feature flags,
 hash descriptors, and header extensions remain zero until their exact layouts
 are defined; this prevents permissive parsing from assigning them accidental
 semantics.
+
+## DD-012: Frames are sequenced deterministic decode units
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use a fixed 56-byte frame header with its own `MRF1` magic. Store both the
+uncompressed output size and dictionary-serialized byte size because entropy
+decoding and dictionary decoding have distinct bounded outputs. Store exact
+compressed payload and block-descriptor lengths so both can be validated before
+buffered entropy decoding.
+
+Apply an independent local limit to dictionary-serialized bytes. This field is
+the entropy decoder's output bound even when it can be streamed, so it must not
+inherit either the raw frame limit or compressed-payload limit implicitly.
+
+Derive the required uncompressed frame size from the stream's known original
+size and configured frame size. Non-final frames cannot be short, frames cannot
+continue after declared output completion, and sequence numbers must match the
+controller's expected zero-based value. This makes frame boundaries and output
+deterministic without a separate end marker.

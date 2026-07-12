@@ -10,6 +10,7 @@ struct DecoderLimits {
     std::uint64_t max_frame_size{UINT64_C(16) << 20};
     std::uint64_t max_block_size{UINT64_C(1) << 20};
     std::uint64_t max_compressed_payload_size{UINT64_C(64) << 20};
+    std::uint64_t max_dictionary_serialized_size{UINT64_C(64) << 20};
     std::uint64_t max_dictionary_entries{UINT64_C(1) << 24};
     std::uint64_t max_lz_distance{UINT64_C(16) << 20};
     std::uint64_t max_lz_match_length{UINT64_C(1) << 20};
@@ -24,6 +25,7 @@ struct DecoderLimits {
 
 struct FrameBounds {
     std::uint64_t uncompressed_size{};
+    std::uint64_t dictionary_serialized_size{};
     std::uint64_t compressed_payload_size{};
     std::uint64_t largest_block_size{};
     std::uint64_t dictionary_entries{};
@@ -44,6 +46,7 @@ enum class LimitError : std::uint8_t {
     frame_size,
     block_size,
     compressed_payload_size,
+    dictionary_serialized_size,
     dictionary_entries,
     lz_distance,
     lz_match_length,
