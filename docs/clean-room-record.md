@@ -209,3 +209,16 @@ no legal guarantee of non-infringement.
   and exact capacity reporting.
 - Similarity review: no external Huffman encoder or block-selection code was
   compared.
+
+## 2026-07-12 - Blocked Huffman reference block decoder
+
+- Authoring method: composed from the repository's descriptor validator,
+  canonical-model validator, physical LSB-first decode table, and local limits.
+- Implementation sources consulted: none.
+- Independent decisions: exact region sizing; strict zero padding; distinct
+  truncated, invalid-path, and trailing-bit errors; validation-only first pass
+  followed by an output pass so malformed blocks do not partially mutate
+  caller output.
+- Generated-code task description: implement and negatively test a bounded
+  one-block Blocked Huffman decoder for raw and Huffman representations.
+- Similarity review: no external decoder control flow or tests were compared.

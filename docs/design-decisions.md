@@ -264,3 +264,18 @@ This reference path uses fixed working storage and direct, bounds-proven
 LSB-first packing. It is intentionally one bounded block rather than a public
 one-shot stream codec; the later streaming controller owns block buffering and
 draining.
+
+## DD-019: Reference block decoding validates before output
+
+- Date: 2026-07-12
+- Status: accepted
+
+The one-block reference decoder validates descriptor fields, exact model and
+payload region sizes, local limits, the complete code-length model, decode-table
+bounds, and zero padding before decoding. It then scans the Huffman payload
+without output to prove the exact symbol count and exact bit termination.
+
+Only after that scan succeeds does a second bounded scan write caller output.
+This intentionally trades reference-decoder throughput for the stronger rule
+that malformed input never exposes a partially decoded block. A later streaming
+controller may commit smaller validated units, but must document that boundary.

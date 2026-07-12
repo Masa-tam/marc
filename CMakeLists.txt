@@ -22,6 +22,7 @@ set(MARC_SOURCES
     src/core/status.cpp
     src/entropy/blocked_huffman_format.cpp
     src/entropy/blocked_huffman_encoder.cpp
+    src/entropy/blocked_huffman_decoder.cpp
     src/entropy/canonical_huffman.cpp
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
@@ -87,6 +88,7 @@ if(MARC_BUILD_TESTS)
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp
         tests/blocked_huffman_encoder_tests.cpp
+        tests/blocked_huffman_decoder_tests.cpp
         tests/checked_math_tests.cpp
         tests/canonical_huffman_tests.cpp
         tests/endian_tests.cpp
