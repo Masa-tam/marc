@@ -1,4 +1,4 @@
-﻿#include "frame/dynamic_range_frame_streaming_encoder.hpp"
+#include "frame/dynamic_range_frame_streaming_encoder.hpp"
 
 #include <algorithm>
 #include <cstddef>

@@ -1,4 +1,4 @@
-﻿#include "frame/dynamic_range_stream.hpp"
+#include "frame/dynamic_range_stream.hpp"
 
 #include "core/checked_math.hpp"
 

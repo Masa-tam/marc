@@ -740,3 +740,19 @@ This makes one validated outer frame the streaming commit boundary. Truncation,
 noncanonical range state, malformed descriptors, unexpected trailing bytes, and
 workspace failures are terminal for the transform but cannot retract earlier
 drained frames or expose bytes from the malformed frame.
+
+## DD-048: Dynamic Range workspace uses a two-byte-per-symbol bound
+
+- Date: 2026-07-13
+- Status: accepted
+
+Before every interval update, range is at least 2^24 and model total is at most
+2^15. Division therefore leaves a unit of at least 2^9. Since every frequency
+is nonzero, at most two base-256 normalizations restore range to at least 2^24.
+Together with five termination shifts, `2 * frame_symbols + 5` is a conservative
+input-independent payload bound for encoder workspace.
+
+Size the raw workspace from the largest frame that can actually occur. Size
+decoder workspaces solely from local frame and buffered-byte limits because no
+stream field is trusted before construction. Reject a policy whose maximum
+range-model total is below the variant-required 32768.

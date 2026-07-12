@@ -680,3 +680,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: decode arbitrary Dynamic Range input chunks
   and one-byte outputs while committing exactly one validated outer frame.
 - Similarity review: no external decoder state machine was compared.
+
+## 2026-07-13 - Dynamic Range profile and workspace queries
+
+- Authoring method: derived guaranteed capacities from marc's normalization
+  threshold, model-total bound, termination rule, descriptor, and frame header.
+- References used: repository format and implemented bounded range state only.
+- Known implementations intentionally not consulted: external range factories,
+  allocation policies, and workspace estimators.
+- Independent decisions: two normalization bytes per symbol plus five-byte
+  termination bound; actual-largest-frame sizing; empty zero workspace;
+  decoder sizing from local limits; mandatory model-total policy support.
+- Generated-code task description: normalize Dynamic Range variant 1 settings
+  and calculate allocation-safe transform workspaces before C ABI exposure.
+- Similarity review: no external capacity formula or factory was compared.

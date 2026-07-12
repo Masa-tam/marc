@@ -266,6 +266,13 @@ storage. Strict frame decoding completes into a separate decoded workspace
 before any byte of that frame is exposed. Pending decoded output has priority;
 previously drained frames remain committed if a later frame is malformed.
 
+Dynamic Range profile normalization fixes algorithm and variant IDs and reports
+caller workspace before construction. Since `range >= 2^24` before each symbol
+and total is at most 2^15, a minimum-frequency symbol needs at most two byte
+normalizations. Encoder payload storage is therefore bounded by
+`2 * largest_frame + 5`, plus fixed descriptor and frame headers. Decoder sizing
+uses only local limits and requires policy support for the variant's model total.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

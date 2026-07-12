@@ -1,4 +1,4 @@
-﻿#include "frame/dynamic_range_frame_streaming_decoder.hpp"
+#include "frame/dynamic_range_frame_streaming_decoder.hpp"
 #include "core/checked_math.hpp"
 #include <algorithm>
 #include <cstring>
