@@ -75,3 +75,9 @@ produce identical payload bytes for every input and output split. A two-frame
 vector repeats the same first symbol in each frame to prove that the second
 frame begins with an empty NYT path and an 8-bit literal rather than retaining
 the preceding frame's tree.
+
+The initial reset vector is input `AAAA` with frame size 2. Each frame encodes
+`AA` independently and therefore has payload `41 01`, descriptor size 16, and
+serialized frame size 74. Including the 64-byte stream header, total stream
+size is 212 bytes. Corrupting high padding in the second payload must identify
+frame index 1 while leaving the whole strict-reference output untouched.

@@ -57,6 +57,11 @@ struct AdaptiveHuffmanFrameCodecResult {
     std::uint64_t expected_sequence, std::uint64_t output_already_committed,
     std::span<const std::byte> input, std::span<std::byte> output) noexcept;
 
+[[nodiscard]] AdaptiveHuffmanFrameCodecResult validate_adaptive_huffman_frame(
+    const StreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence, std::uint64_t output_already_committed,
+    std::span<const std::byte> input) noexcept;
+
 } // namespace marc::frame
 
 #endif

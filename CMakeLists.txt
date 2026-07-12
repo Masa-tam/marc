@@ -38,6 +38,7 @@ set(MARC_SOURCES
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
     src/frame/adaptive_huffman_frame.cpp
+    src/frame/adaptive_huffman_stream.cpp
     src/frame/blocked_huffman_frame.cpp
     src/frame/blocked_huffman_stream.cpp
     src/frame/blocked_huffman_incremental_encoder.cpp
@@ -188,6 +189,7 @@ if(MARC_BUILD_TESTS)
         tests/limits_tests.cpp
         tests/frame_header_tests.cpp
         tests/adaptive_huffman_frame_tests.cpp
+        tests/adaptive_huffman_stream_tests.cpp
         tests/status_tests.cpp
         tests/stream_header_tests.cpp
     )

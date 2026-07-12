@@ -182,6 +182,14 @@ the Blocked Huffman structure. Encode capacity is checked for the whole frame
 before header mutation, and decoding requires an exact one-frame input span
 before invoking the frame-atomic strict entropy decoder.
 
+The known-size Adaptive stream reference emits the fixed stream header and
+then independently plans and encodes every original-size-derived frame. Its
+strict decoder first scans exact frame extents and calls explicit
+validation-only frame decoding, which performs full FGK traversal without
+requiring or touching output. Only a successful whole-stream scan is repeated
+into caller output. Thus the reference stream has whole-stream atomicity while
+retaining independently reset and independently validatable frames.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,

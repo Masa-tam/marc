@@ -486,3 +486,18 @@ no legal guarantee of non-infringement.
   version 1 Adaptive Huffman frame with frame-local atomicity.
 - Similarity review: no external frame layout or composition control flow was
   compared.
+
+## 2026-07-12 - Complete known-size Adaptive Huffman stream path
+
+- Authoring method: composed the repository's fixed stream header and complete
+  Adaptive frame path using deterministic original-size boundaries.
+- References used: repository format, architecture, and prior hand vectors.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman stream/container code and test vectors.
+- Independent decisions: explicit entropy and frame validation-only APIs;
+  two-pass whole-stream decoding; header-only empty stream; exact trailing-data
+  rejection; `AAAA` two-frame reset vector with identical payloads.
+- Generated-code task description: plan, encode, and atomically decode a
+  complete known-size multi-frame Adaptive Huffman stream.
+- Similarity review: no external stream traversal or validation structure was
+  compared.

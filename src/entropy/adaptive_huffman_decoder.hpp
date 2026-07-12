@@ -30,6 +30,11 @@ struct AdaptiveHuffmanDecodeResult {
     AdaptiveHuffmanDecodeError error{AdaptiveHuffmanDecodeError::none};
 };
 
+[[nodiscard]] AdaptiveHuffmanDecodeResult validate_adaptive_huffman_frame(
+    const AdaptiveHuffmanDescriptor& descriptor,
+    std::span<const std::byte> payload,
+    const core::DecoderLimits& limits) noexcept;
+
 [[nodiscard]] AdaptiveHuffmanDecodeResult decode_adaptive_huffman_frame(
     const AdaptiveHuffmanDescriptor& descriptor,
     std::span<const std::byte> payload,

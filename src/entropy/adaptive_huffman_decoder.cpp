@@ -88,13 +88,12 @@ struct DecodePassResult {
     return {bit_offset, AdaptiveHuffmanDecodeError::none};
 }
 
-} // namespace
-
-AdaptiveHuffmanDecodeResult decode_adaptive_huffman_frame(
+[[nodiscard]] AdaptiveHuffmanDecodeResult preflight(
     const AdaptiveHuffmanDescriptor& descriptor,
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
-    const std::span<std::byte> output) noexcept {
+    std::uint64_t& valid_bits) noexcept {
+    valid_bits = 0;
     if (validate_adaptive_huffman_descriptor(
             descriptor, descriptor.symbol_count, descriptor.payload_size,
             limits) != AdaptiveHuffmanFormatError::none) {
@@ -116,19 +115,11 @@ AdaptiveHuffmanDecodeResult decode_adaptive_huffman_frame(
         return {descriptor.symbol_count, 0,
                 AdaptiveHuffmanDecodeError::payload_size_mismatch};
     }
-    if (output.size() < descriptor.symbol_count) {
-        return {descriptor.symbol_count, 0,
-                AdaptiveHuffmanDecodeError::output_too_small};
-    }
     std::uint64_t leading_bits{};
     if (!core::checked_multiply(
             static_cast<std::uint64_t>(descriptor.payload_size - 1),
-            UINT64_C(8), leading_bits)) {
-        return {descriptor.symbol_count, 0,
-                AdaptiveHuffmanDecodeError::arithmetic_overflow};
-    }
-    std::uint64_t valid_bits{};
-    if (!core::checked_add(
+            UINT64_C(8), leading_bits)
+        || !core::checked_add(
             leading_bits,
             static_cast<std::uint64_t>(descriptor.final_valid_bits),
             valid_bits)) {
@@ -144,7 +135,39 @@ AdaptiveHuffmanDecodeResult decode_adaptive_huffman_frame(
                     AdaptiveHuffmanDecodeError::nonzero_padding};
         }
     }
+    return {descriptor.symbol_count, 0, AdaptiveHuffmanDecodeError::none};
+}
 
+} // namespace
+
+AdaptiveHuffmanDecodeResult validate_adaptive_huffman_frame(
+    const AdaptiveHuffmanDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const core::DecoderLimits& limits) noexcept {
+    std::uint64_t valid_bits{};
+    const auto checked = preflight(descriptor, payload, limits, valid_bits);
+    if (checked.error != AdaptiveHuffmanDecodeError::none) return checked;
+    const auto validation = decode_pass(descriptor, payload, valid_bits, {});
+    if (validation.error != AdaptiveHuffmanDecodeError::none) {
+        return {descriptor.symbol_count, validation.bits_consumed,
+                validation.error};
+    }
+    return {descriptor.symbol_count, validation.bits_consumed,
+            AdaptiveHuffmanDecodeError::none};
+}
+
+AdaptiveHuffmanDecodeResult decode_adaptive_huffman_frame(
+    const AdaptiveHuffmanDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> output) noexcept {
+    std::uint64_t valid_bits{};
+    const auto checked = preflight(descriptor, payload, limits, valid_bits);
+    if (checked.error != AdaptiveHuffmanDecodeError::none) return checked;
+    if (output.size() < descriptor.symbol_count) {
+        return {descriptor.symbol_count, 0,
+                AdaptiveHuffmanDecodeError::output_too_small};
+    }
     const auto validation = decode_pass(descriptor, payload, valid_bits, {});
     if (validation.error != AdaptiveHuffmanDecodeError::none) {
         return {descriptor.symbol_count, validation.bits_consumed,

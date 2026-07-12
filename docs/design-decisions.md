@@ -576,3 +576,20 @@ decoding accepts exactly one serialized frame span, parses the header and
 descriptor in sequence, then delegates payload validation and output atomicity
 to the strict reference decoder. Algorithm-specific descriptors remain typed
 and cannot be cross-parsed merely because their fixed sizes match.
+
+## DD-038: Adaptive stream reference validates every frame before output
+
+- Date: 2026-07-12
+- Status: accepted
+
+Compose the known-size stream as one fixed stream header followed by the exact
+original-size-determined frame sequence. Empty input is header-only. Planning
+visits every finite frame and proves total capacity before encoding mutates the
+stream output.
+
+Provide explicit validation-only entry points at entropy-frame and serialized-
+frame levels. The strict stream decoder scans and semantically validates every
+frame with no output, rejects truncation or trailing bytes, and only then
+repeats decoding into caller storage. Do not treat output-too-small as evidence
+of semantic validation. This reference preserves whole-stream atomicity and
+will serve as the oracle for a later frame-committing streaming transform.
