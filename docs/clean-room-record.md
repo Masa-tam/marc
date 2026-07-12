@@ -772,3 +772,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: strictly decode and atomically reject
   malformed finite rANS blocks before outer frame composition.
 - Similarity review: no external decoder or table control flow was compared.
+
+## 2026-07-13 - rANS descriptor-region controller
+
+- Authoring method: composed marc's fixed descriptor validator with its frame
+  boundary and checked-offset rules.
+- References used: repository rANS format, descriptor, and decoder limits only.
+- Known implementations intentionally not consulted: external ANS container,
+  descriptor-controller, offset-table, source, and tests.
+- Independent decisions: fixed descriptor extent preflight; validation-before-
+  publication two-pass scan; caller-owned block views; checked aggregate payload
+  offsets; exact final-short block sizing.
+- Generated-code task description: validate all rANS block descriptors and build
+  bounded payload views before decoding any frame payload.
+- Similarity review: no external controller structure was compared.

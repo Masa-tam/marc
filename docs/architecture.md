@@ -303,6 +303,12 @@ requiring valid symbol-boundary states, exact renormalization-byte consumption,
 and terminal state `L`. Only a successful validation pass is repeated into
 caller output, so malformed blocks remain output-atomic.
 
+The rANS frame controller validates the complete fixed-size descriptor region
+twice. Its first pass proves block count, fixed and final-short symbol counts,
+every model, checked payload offsets, exact aggregate payload size, and combined
+buffer limits without publishing views. The second pass fills caller-provided
+bounded block views used by the later frame decoder.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
