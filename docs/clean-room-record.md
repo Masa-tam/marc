@@ -47,6 +47,19 @@ no legal guarantee of non-infringement.
   overflow-safe validator for parsed frame bounds with negative tests.
 - Similarity review: no external implementation compared.
 
+## 2026-07-12 — version 1.0 stream prefix
+
+- Authoring method: independently designed from the framing requirements in
+  `AGENTS.md`; no external container format was used as a template.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: 64-byte fixed prefix, explicit little-endian fields, zeroed
+  reserved bytes, independent ABI/format versions, pre-allocation validation,
+  stable algorithm ID namespaces without a Static Huffman public ID.
+- Generated-code task description: specify, serialize, parse, and negatively
+  test the fixed version 1.0 stream prefix without implementing a codec.
+- Similarity review: no external format or implementation compared.
+
 ## 2026-07-12 — GoogleTest migration
 
 - Dependency: GoogleTest v1.17.0 at commit

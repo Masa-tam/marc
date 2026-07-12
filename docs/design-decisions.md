@@ -132,3 +132,20 @@ Reset zeroes storage before reuse so stale header bytes are not exposed through
 diagnostics or future mistakes. A zero-sized accumulator is valid and complete
 at construction. The accumulator does not define a wire format; it supports a
 future versioned parser without prematurely assigning format identifiers.
+
+## DD-011: Version 1.0 has a fixed 64-byte stream prefix
+
+- Date: 2026-07-12
+- Status: accepted
+
+Assign the `MARC` magic and stream-format version 1.0 to a 64-byte fixed prefix.
+Keep ABI and stream-format versions independent. The prefix identifies the
+pipeline, bounded region lengths, frame and entropy-block units, and the known
+original size without serializing a native structure.
+
+Reserve explicit algorithm IDs now, while leaving codec-specific parameter and
+payload layouts pending until each codec's documentation-first implementation.
+Only variant 1 baseline names from `format.md` are recognized. Feature flags,
+hash descriptors, and header extensions remain zero until their exact layouts
+are defined; this prevents permissive parsing from assigning them accidental
+semantics.

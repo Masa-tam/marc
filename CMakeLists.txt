@@ -19,6 +19,7 @@ set(MARC_SOURCES
     src/core/bit_io.cpp
     src/core/limits.cpp
     src/core/status.cpp
+    src/frame/stream_header.cpp
     src/marc.cpp
 )
 
@@ -83,6 +84,7 @@ if(MARC_BUILD_TESTS)
         tests/header_accumulator_tests.cpp
         tests/limits_tests.cpp
         tests/status_tests.cpp
+        tests/stream_header_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
