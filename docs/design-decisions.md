@@ -249,3 +249,18 @@ input starvation, while a missing branch reports a malformed code path.
 Keep byte acquisition outside this primitive. This permits the same validated
 table to serve incremental bit readers without embedding buffering policy or
 assuming that 8 bits are always immediately available.
+
+## DD-018: Reference block encoding sizes output before mutation
+
+- Date: 2026-07-12
+- Status: accepted
+
+The one-block reference encoder completes frequency collection, length-limited
+construction, canonical assignment, exact payload-bit counting, raw selection,
+limit checks, and output-capacity checks before writing caller buffers. It
+reports required model and payload sizes when capacity is insufficient.
+
+This reference path uses fixed working storage and direct, bounds-proven
+LSB-first packing. It is intentionally one bounded block rather than a public
+one-shot stream codec; the later streaming controller owns block buffering and
+draining.

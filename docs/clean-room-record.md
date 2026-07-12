@@ -194,3 +194,18 @@ no legal guarantee of non-infringement.
   Huffman descriptors and their frame-level aggregate before model allocation
   or payload decoding.
 - Similarity review: no external container descriptor or parser was compared.
+
+## 2026-07-12 - Blocked Huffman reference block encoder
+
+- Authoring method: composed exclusively from the repository's independently
+  implemented frequency, Package-Merge, canonical-code, format, and checked
+  arithmetic primitives.
+- Implementation sources consulted: none.
+- Independent decisions: size and validate before mutation; caller-owned model
+  and payload spans; mandatory raw-on-tie selection; direct bounds-proven
+  LSB-first bit placement; no empty serialized block.
+- Generated-code task description: implement a deterministic allocation-free
+  encoder for one bounded Blocked Huffman input block, including raw fallback
+  and exact capacity reporting.
+- Similarity review: no external Huffman encoder or block-selection code was
+  compared.

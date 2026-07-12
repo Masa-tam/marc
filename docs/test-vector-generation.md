@@ -32,3 +32,15 @@ The initial hand-checkable Package-Merge vector uses frequencies
 lengths are `4, 4, 3, 3, 3, 1`; all other symbols have length zero. Three
 equal-weight symbols `0, 1, 2` with maximum length 2 produce lengths `2, 2, 1`
 under the deterministic package ordering.
+
+Reference block-encoder vectors:
+
+- Four `41` bytes select raw and produce the descriptor and payload already
+  shown in `format.md`.
+- Three hundred `41` bytes produce a model with length 1 only at symbol `41`,
+  a 38-byte all-zero payload, and 4 valid bits in the final byte. The stored
+  Huffman body is 294 bytes and therefore beats the 300-byte raw body.
+- 512 bytes alternating `41 42` produce length 1 for both symbols and a
+  64-byte payload containing only `AA`; the final byte has 8 valid bits.
+- 293 alternating two-symbol bytes select raw because the 256-byte model plus
+  37-byte Huffman payload ties the raw size; ties are raw.
