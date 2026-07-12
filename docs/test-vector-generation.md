@@ -51,3 +51,12 @@ and entropy block size 300, it serializes as the 64-byte stream header, a
 386-byte first frame, and a 366-byte second frame, for 816 bytes total. This
 records region composition and boundaries; individual header and block vectors
 remain the source of byte-level field values.
+
+The pure-C ABI regression reuses a 200-byte `5A` input with a 64-byte frame and
+32-byte entropy block. It first records the representation produced with large
+input/output spans, then requires one-byte input and one-byte output calls to
+produce byte-for-byte identical encoded data and decoded output. The driver
+re-presents unconsumed suffixes, applies `EndInput` to the final suffix until it
+is accepted, rejects progress without progress, and verifies repeatable
+end-of-stream. Flipping the first magic byte is the initial ABI-level malformed
+stream vector and must produce no decoded output.

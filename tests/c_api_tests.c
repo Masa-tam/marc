@@ -12,6 +12,47 @@ static marc_buffer allocate_buffer(size_t size) {
     return buffer;
 }
 
+static size_t run_one_byte_chunks(
+    marc_transform* transform,
+    const uint8_t* input,
+    size_t input_size,
+    uint8_t* output,
+    size_t output_capacity) {
+    size_t input_offset = 0;
+    size_t output_offset = 0;
+    marc_status status = MARC_STATUS_PROGRESS;
+    size_t calls = 0;
+    while (status != MARC_STATUS_END_OF_STREAM) {
+        const size_t input_chunk = input_offset < input_size ? 1 : 0;
+        const marc_process_flags flags =
+            input_offset + input_chunk == input_size
+                ? MARC_PROCESS_END_INPUT
+                : MARC_PROCESS_NONE;
+        marc_const_buffer source = {
+            input_chunk == 0 ? NULL : input + input_offset, input_chunk};
+        marc_buffer sink = {
+            output_capacity == output_offset ? NULL : output + output_offset,
+            output_capacity == output_offset ? 0 : 1};
+        const marc_process_result result = marc_transform_process(
+            transform, source, sink, flags);
+        assert(result.input_consumed <= source.size);
+        assert(result.output_produced <= sink.size);
+        assert(result.status == MARC_STATUS_PROGRESS
+            || result.status == MARC_STATUS_NEED_INPUT
+            || result.status == MARC_STATUS_NEED_OUTPUT
+            || result.status == MARC_STATUS_END_OF_STREAM);
+        assert(result.status != MARC_STATUS_PROGRESS
+            || result.input_consumed != 0 || result.output_produced != 0);
+        input_offset += result.input_consumed;
+        output_offset += result.output_produced;
+        status = result.status;
+        assert(output_offset <= output_capacity);
+        assert(++calls < 100000);
+    }
+    assert(input_offset == input_size);
+    return output_offset;
+}
+
 int main(void) {
     marc_process_result result = {0};
     result.status = MARC_STATUS_NEED_INPUT;
@@ -93,6 +134,83 @@ int main(void) {
     assert(result.output_produced == sizeof(decoded));
     assert(memcmp(decoded, input, sizeof(input)) == 0);
     marc_transform_destroy(decoder);
+
+    /* Arbitrary ABI chunking must not change the encoded representation. */
+    encoder = NULL;
+    assert(marc_blocked_huffman_create(
+        &encoder_config, encoder_primary, encoder_secondary, no_views,
+        &encoder) == MARC_STATUS_OK);
+    uint8_t encoded_chunked[2048];
+    const size_t encoded_chunked_size = run_one_byte_chunks(
+        encoder, input, sizeof(input), encoded_chunked,
+        sizeof(encoded_chunked));
+    assert(encoded_chunked_size == encoded_size);
+    assert(memcmp(encoded_chunked, encoded, encoded_size) == 0);
+    marc_const_buffer empty_input = {NULL, 0};
+    marc_buffer empty_output = {NULL, 0};
+    result = marc_transform_process(
+        encoder, empty_input, empty_output, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    marc_transform_destroy(encoder);
+
+    decoder = NULL;
+    assert(marc_blocked_huffman_create(
+        &decoder_config, decoder_primary, decoder_secondary, decoder_views,
+        &decoder) == MARC_STATUS_OK);
+    uint8_t decoded_chunked[200];
+    const size_t decoded_chunked_size = run_one_byte_chunks(
+        decoder, encoded_chunked, encoded_chunked_size, decoded_chunked,
+        sizeof(decoded_chunked));
+    assert(decoded_chunked_size == sizeof(input));
+    assert(memcmp(decoded_chunked, input, sizeof(input)) == 0);
+    result = marc_transform_process(
+        decoder, empty_input, empty_output, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    marc_transform_destroy(decoder);
+
+    /* Configuration tags, reserved fields, and capacities are strict. */
+    marc_blocked_huffman_config invalid_config = encoder_config;
+    invalid_config.abi_version += 1;
+    assert(marc_blocked_huffman_workspace_requirements(
+        &invalid_config, &encoder_requirements)
+        == MARC_STATUS_INVALID_ARGUMENT);
+    invalid_config = encoder_config;
+    invalid_config.reserved = 1;
+    assert(marc_blocked_huffman_workspace_requirements(
+        &invalid_config, &encoder_requirements)
+        == MARC_STATUS_INVALID_ARGUMENT);
+    marc_buffer short_primary = encoder_primary;
+    short_primary.size -= 1;
+    encoder = (marc_transform*)1;
+    assert(marc_blocked_huffman_create(
+        &encoder_config, short_primary, encoder_secondary, no_views,
+        &encoder) == MARC_STATUS_INVALID_ARGUMENT);
+    assert(encoder == NULL);
+    assert(marc_blocked_huffman_config_init(
+        99, &invalid_config) == MARC_STATUS_INVALID_ARGUMENT);
+    assert(marc_blocked_huffman_config_init(
+        MARC_DIRECTION_ENCODE, NULL) == MARC_STATUS_INVALID_ARGUMENT);
+    marc_transform_destroy(NULL);
+
+    /* A malformed stream reports the stable public category and no output. */
+    uint8_t malformed[2048];
+    memcpy(malformed, encoded, encoded_size);
+    malformed[0] ^= 1;
+    decoder = NULL;
+    assert(marc_blocked_huffman_create(
+        &decoder_config, decoder_primary, decoder_secondary, decoder_views,
+        &decoder) == MARC_STATUS_OK);
+    decoder_input.data = malformed;
+    decoder_input.size = encoded_size;
+    result = marc_transform_process(
+        decoder, decoder_input, decoder_output, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_MALFORMED_STREAM);
+    assert(result.output_produced == 0);
+    marc_transform_destroy(decoder);
+
+    result = marc_transform_process(
+        NULL, empty_input, empty_output, MARC_PROCESS_NONE);
+    assert(result.status == MARC_STATUS_INVALID_ARGUMENT);
 
     free(encoder_primary.data);
     free(encoder_secondary.data);

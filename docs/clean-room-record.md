@@ -367,3 +367,16 @@ no legal guarantee of non-infringement.
   queries, construction, destruction, and streaming processing to C callers.
 - Similarity review: no external compression-library C ABI or adapter source was
   consulted or compared.
+
+## 2026-07-12 - C ABI boundary regression suite
+
+- Authoring method: derived tests directly from the public C declarations and
+  the repository's chunk-independence and malformed-input requirements.
+- Implementation sources consulted: none.
+- Independent decisions: compare one-byte chunking with the one-shot C result;
+  re-present unconsumed suffixes; repeat end-of-stream; validate ABI tags,
+  reserved fields, workspace capacity, null behavior, and corrupt magic.
+- Generated-code task description: exercise the complete public adapter from a
+  C translation unit without relying on internal C++ types.
+- Similarity review: no external compression-library ABI test suite was
+  consulted or compared.
