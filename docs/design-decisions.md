@@ -448,3 +448,19 @@ all pointers, capacities, reserved fields, configuration limits, and alignment
 before publishing a handle. Destruction accepts null. The process adapter
 preserves independent input consumption and output production and maps internal
 errors to the existing stable C status constants.
+
+## DD-031: Install build-tree-equivalent static and shared targets
+
+- Date: 2026-07-12
+- Status: accepted
+
+Install public headers, license notices, package version files, and every
+enabled library in one relocatable CMake package. Export target names as
+`marc::shared` and `marc::static`, matching the build-tree aliases. Do not invent
+an ambiguous default target when both linkage forms are present; consumers make
+the linkage choice explicitly.
+
+Keep the example as both a top-level build target and a standalone consumer
+project using `find_package(marc CONFIG REQUIRED)`. This makes the installed
+package, transitive usage requirements, exported DLL import definition, and
+public C header independently testable without internal include paths.

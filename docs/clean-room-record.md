@@ -380,3 +380,16 @@ no legal guarantee of non-infringement.
   C translation unit without relying on internal C++ types.
 - Similarity review: no external compression-library ABI test suite was
   consulted or compared.
+
+## 2026-07-12 - C API guide, sample, and CMake package
+
+- Authoring method: documented the implemented public contract and exported the
+  existing build targets using standard CMake package generation facilities.
+- Implementation sources consulted: none; standard CMake package helper
+  semantics were used from existing project knowledge.
+- Independent decisions: explicit shared/static target selection; matching
+  build and install names; standalone pure-C consumer; no ambiguous default.
+- Generated-code task description: make the current public ABI discoverable,
+  installable, and verifiable by a consumer project using only installed files.
+- Similarity review: no external compression-library packaging or sample source
+  was copied or structurally compared.
