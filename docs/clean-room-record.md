@@ -635,3 +635,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: plan, encode, validate, and atomically decode
   one complete version 1 Dynamic Range frame.
 - Similarity review: no external frame composition structure was compared.
+
+## 2026-07-13 - Complete known-size Dynamic Range stream path
+
+- Authoring method: composed marc's fixed stream header and complete Dynamic
+  Range frame path using deterministic original-size boundaries.
+- References used: repository format, architecture, and hand vectors only.
+- Known implementations intentionally not consulted: all external range stream
+  and container code, traversal logic, and test vectors.
+- Independent decisions: two-pass whole-stream decoding; header-only empty
+  stream; exact trailing-data rejection; repeated-`AA` model-reset vector;
+  validation error reporting by zero-based frame index.
+- Generated-code task description: plan, encode, and atomically decode complete
+  known-size multi-frame Dynamic Range streams.
+- Similarity review: no external stream composition or scan structure was
+  compared.

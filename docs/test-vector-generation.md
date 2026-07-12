@@ -95,3 +95,9 @@ nonzero flags or reserved bytes, trailing payload, and frames beyond 2^24
 symbols. Boundary vectors cross total 32768 and record every post-rescale
 frequency and the recomputed total. Multi-frame tests repeat the same input to
 prove complete model and coder reset at the outer frame boundary.
+
+The initial Dynamic Range reset vector is input `AAAA` with frame size 2. Both
+frames independently encode `AA` as `00 41 40 BE FF 7E`; each serialized frame
+is 78 bytes and the complete stream is 220 bytes including its 64-byte header.
+Changing the second frame's initial payload byte to nonzero must report frame
+index 1 while leaving whole-stream reference output untouched.

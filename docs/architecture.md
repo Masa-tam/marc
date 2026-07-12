@@ -247,6 +247,12 @@ The reference encoder preflights the whole 79-byte `ABA` vector before mutation;
 the decoder requires an exact one-frame span and delegates body atomicity to the
 strict range decoder.
 
+The known-size Dynamic Range stream reference emits the fixed stream header and
+plans every original-size-derived frame before writing. Strict decoding scans
+and semantically validates every exact frame extent without output, then repeats
+the traversal into caller storage. This preserves whole-stream atomicity while
+each frame independently resets the range state and adaptive model.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

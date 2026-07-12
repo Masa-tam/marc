@@ -696,3 +696,17 @@ Require the first of the five decoder-initialization bytes to be zero. A 32-bit
 code calculation eventually shifts that byte out, so accepting other values
 would permit multiple payload representations for the same interval. Strict
 decoding rejects the nonzero prefix to preserve canonical deterministic streams.
+
+## DD-045: Dynamic Range reference streams validate before output
+
+- Date: 2026-07-13
+- Status: accepted
+
+Compose known-size streams as one fixed stream header followed by deterministic
+outer frames derived from original size and configured frame size. Empty input
+is header-only. Plan every frame before encoding mutates output.
+
+Strict reference decoding first scans and semantically validates every frame
+without output, rejects truncation and trailing bytes, and only then repeats the
+scan into caller storage. This gives the oracle whole-stream atomicity while
+proving that each frame resets the coder and order-0 model independently.
