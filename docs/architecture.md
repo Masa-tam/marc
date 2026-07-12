@@ -321,6 +321,12 @@ without output, reusing one caller-owned block-view workspace, then repeats the
 scan into caller storage. This preserves whole-stream atomicity while every
 frame and block independently rebuilds its model and resets state.
 
+The rANS streaming encoder buffers exactly one raw outer frame, commits its
+complete encoded representation to a second caller-owned workspace, and drains
+that representation before accepting bytes for the next frame. Its profile
+query derives both workspace extents from the largest possible frame and the
+configured entropy block size; no steady-state allocation is required.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

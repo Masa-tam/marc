@@ -651,6 +651,22 @@ no legal guarantee of non-infringement.
 - Similarity review: no external stream composition or scan structure was
   compared.
 
+## 2026-07-13 - rANS frame-streaming encoder and workspace profile
+
+- Authoring method: composed marc's transform contract, rANS frame encoder, and
+  independently derived byte-renormalization bound.
+- References used: repository architecture, rANS variant decision, encoder, and
+  complete-stream oracle only.
+- Known implementations intentionally not consulted: external ANS streaming,
+  buffering, workspace-sizing source, pseudocode, and tests.
+- Independent decisions: caller-owned raw and encoded frame workspaces; complete
+  outer-frame commit; partial-frame flush is a no-op; reset rejection; one-byte-
+  per-symbol plus eight-byte-per-block payload bound.
+- Generated-code task description: add a bounded frame-at-a-time rANS streaming
+  encoder whose output is invariant under one-byte input and output chunking.
+- Similarity review: no external streaming state machine or workspace formula
+  was compared.
+
 ## 2026-07-13 - Frame-at-a-time Dynamic Range encoder
 
 - Authoring method: specialized marc's existing caller-buffered frame state

@@ -120,3 +120,9 @@ eight-byte payload `00 00 00 80 00 00 00 00`. Each frame is 592 bytes and the
 complete stream is 1248 bytes including its 64-byte stream header. Corrupting
 the second frame's state must report frame index 1 while leaving strict-reference
 output untouched.
+
+The streaming encoder uses the complete known-size stream as its independent
+oracle. Feed the seven-byte `ABAAABA` vector through one-byte input and output
+buffers with frame size 4 and block size 2; the resulting bytes must exactly
+match the reference stream. A flush after `AB` must emit only the stream header
+and must not shorten the first frame.

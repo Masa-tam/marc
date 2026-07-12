@@ -818,3 +818,21 @@ Strict decoding first scans and semantically validates every exact frame extent
 without output, then repeats the traversal into caller storage. Reject truncation
 and trailing bytes. This reference provides whole-stream atomicity and serves as
 the oracle for the later frame-committing streaming transform.
+
+## DD-053: rANS streaming encoding commits complete outer frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Buffer at most one raw outer frame in caller-owned storage, encode it into a
+second caller-owned workspace, and drain the complete serialized frame before
+accepting later input. Non-terminal flush keeps a partial frame open and
+explicit reset is unsupported, so arbitrary chunking reproduces the complete
+reference stream byte for byte.
+
+For variant 1, the pre-update state is below `L * 256` and the minimum
+renormalization threshold is `L / 16`; one byte emission therefore always
+restores the threshold. Each input symbol contributes at most one payload byte,
+and each block contributes its eight-byte initial state. Encoder workspace is
+bounded by the frame header, `528 * block_count` descriptor bytes,
+`frame_symbols + 8 * block_count` payload bytes, and the separate raw frame.

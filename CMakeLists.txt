@@ -59,6 +59,8 @@ set(MARC_SOURCES
     src/frame/dynamic_range_profile.cpp
     src/frame/rans_frame.cpp
     src/frame/rans_stream.cpp
+    src/frame/rans_profile.cpp
+    src/frame/rans_frame_streaming_encoder.cpp
     src/frame/blocked_huffman_frame.cpp
     src/frame/blocked_huffman_stream.cpp
     src/frame/blocked_huffman_incremental_encoder.cpp
@@ -230,6 +232,8 @@ if(MARC_BUILD_TESTS)
         tests/dynamic_range_profile_tests.cpp
         tests/rans_frame_tests.cpp
         tests/rans_stream_tests.cpp
+        tests/rans_profile_tests.cpp
+        tests/rans_frame_streaming_encoder_tests.cpp
         tests/status_tests.cpp
         tests/stream_header_tests.cpp
     )
