@@ -59,3 +59,15 @@ no legal guarantee of non-infringement.
   smoke test retained.
 - Generated-code task description: migrate existing assertion-based C++ tests
   into named GoogleTest suites without changing production behavior.
+
+## 2026-07-12 — incremental fixed-header collection
+
+- Authoring method: independently derived from the partial-input and bounded
+  framing requirements in `AGENTS.md`.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: compile-time bounded storage, exact input consumption,
+  semantic access only after completion, zeroing on reset, no wire-format IDs.
+- Generated-code task description: implement and exhaustively split-test an
+  allocation-free accumulator for future stream and frame header prefixes.
+- Similarity review: no external implementation compared.

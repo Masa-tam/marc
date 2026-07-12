@@ -53,3 +53,15 @@ The frame controller will own the transition from header validation to model
 construction and payload decoding. No entropy or dictionary decoder may
 allocate from an unvalidated stream length. Validation failure leaves the
 controller in its terminal error state and must produce a stable limit error.
+
+### Incremental header collection
+
+The framing parser first collects each fixed-size prefix into a compile-time
+bounded accumulator. Collection consumes exactly the bytes still required for
+that prefix and leaves following payload bytes untouched. Header bytes are not
+exposed to semantic parsing until the prefix is complete. This keeps partial
+input, truncation, and header validation separate and makes every split point
+testable without allocating from stream-controlled data.
+
+Variable-size header regions will be accepted only after their lengths have
+been parsed from a complete fixed prefix and checked against decoder limits.

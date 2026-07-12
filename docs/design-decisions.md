@@ -116,3 +116,19 @@ actionable diagnostic rather than downloading code implicitly.
 After publication, Dependabot may propose gitlink updates. Updates are reviewed
 and accepted only after CI succeeds; the default branch always records one exact
 GoogleTest commit.
+
+## DD-010: Collect fixed framing prefixes before semantic parsing
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use an allocation-free, compile-time-sized accumulator for stream and frame
+header prefixes. It reports input consumption independently, accepts arbitrary
+splits including one byte at a time, and never consumes bytes following the
+prefix. Semantic parsers can obtain a read-only span only after collection is
+complete.
+
+Reset zeroes storage before reuse so stale header bytes are not exposed through
+diagnostics or future mistakes. A zero-sized accumulator is valid and complete
+at construction. The accumulator does not define a wire format; it supports a
+future versioned parser without prematurely assigning format identifiers.

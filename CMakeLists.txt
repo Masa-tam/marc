@@ -80,6 +80,7 @@ if(MARC_BUILD_TESTS)
         tests/bit_io_tests.cpp
         tests/checked_math_tests.cpp
         tests/endian_tests.cpp
+        tests/header_accumulator_tests.cpp
         tests/limits_tests.cpp
         tests/status_tests.cpp
     )
