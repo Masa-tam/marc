@@ -222,3 +222,16 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement and negatively test a bounded
   one-block Blocked Huffman decoder for raw and Huffman representations.
 - Similarity review: no external decoder control flow or tests were compared.
+
+## 2026-07-12 - Blocked Huffman descriptor-region controller
+
+- Authoring method: independently composed from the repository-defined frame
+  body ordering, block descriptor parser, model validator, and decoder limits.
+- Implementation sources consulted: none.
+- Independent decisions: two-pass validation/publication; caller-owned block
+  views; 32-bit region-relative model and payload offsets; exact final-short
+  block accounting; full model validation before payload access.
+- Generated-code task description: validate an entire interleaved
+  descriptor/model region and publish bounded block views without allocation.
+- Similarity review: no external frame controller or descriptor-index layout
+  was compared.

@@ -279,3 +279,17 @@ Only after that scan succeeds does a second bounded scan write caller output.
 This intentionally trades reference-decoder throughput for the stronger rule
 that malformed input never exposes a partially decoded block. A later streaming
 controller may commit smaller validated units, but must document that boundary.
+
+## DD-020: Descriptor regions publish views only after full validation
+
+- Date: 2026-07-12
+- Status: accepted
+
+The Blocked Huffman controller scans the complete interleaved descriptor/model
+region before publishing block views. It proves the exact block count, normal
+and final-short symbol counts, descriptor boundaries, model validity, local
+table limits, payload-size sum, and combined buffer limit.
+
+A second scan populates caller-owned views with descriptor values and 32-bit
+model and payload offsets. This avoids per-frame allocation and prevents later
+malformed blocks from leaving a partially initialized view list visible.
