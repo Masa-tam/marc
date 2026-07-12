@@ -341,3 +341,16 @@ no legal guarantee of non-infringement.
   preserving arbitrary input/output chunking and strict malformed detection.
 - Similarity review: no external streaming decoder buffering strategy or state
   machine was compared.
+
+## 2026-07-12 - Blocked Huffman profile factory and workspace queries
+
+- Authoring method: independently derived capacities from the repository's
+  version 1 framing rules, raw-selection rule, and existing decoder limits.
+- Implementation sources consulted: none.
+- Independent decisions: normalize public settings before construction; exact
+  known-size encoder requirements; conservative local-policy decoder
+  requirements; checked conversion to `size_t`; stable coarse error mapping.
+- Generated-code task description: create the internal construction boundary
+  needed before exposing stateful transforms through the small C ABI.
+- Similarity review: no external codec factory, ABI adapter, or workspace-query
+  implementation was compared.

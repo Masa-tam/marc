@@ -144,3 +144,17 @@ later input is malformed, previously drained frames remain committed while the
 malformed frame contributes no output. Pending decoded output has priority:
 `NeedOutput` may leave later encoded input unconsumed, and callers must re-present
 that suffix with the applicable flags.
+
+### Profile normalization and workspace queries
+
+Before the C ABI constructs either transform, an internal profile factory
+normalizes the public Blocked Huffman settings into the exact version 1 stream
+header and reports all required caller-owned workspace capacities. Encoder
+requirements use the largest frame that can actually occur for the known-size
+input. Decoder requirements are derived only from local hard limits because no
+untrusted stream field is available before construction. All capacity
+arithmetic is checked before conversion to `size_t`.
+
+Profile failures are collapsed into the stable core categories invalid
+argument, unsupported, and limit exceeded. The later C adapter therefore need
+not expose internal parser or codec-specific enumerations.

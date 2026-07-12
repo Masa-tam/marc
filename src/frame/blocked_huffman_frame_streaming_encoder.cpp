@@ -28,8 +28,8 @@ BlockedHuffmanFrameStreamingEncoder::BlockedHuffmanFrameStreamingEncoder(
         || stream_.dictionary_algorithm != DictionaryAlgorithm::none
         || stream_.entropy_algorithm != EntropyAlgorithm::blocked_huffman
         || stream_.entropy_variant != 1
-        || (stream_.original_size != 0
-            && frame_input_storage_.size() < stream_.frame_size)
+        || frame_input_storage_.size() < std::min<std::uint64_t>(
+            stream_.original_size, stream_.frame_size)
         || serialize_stream_header(stream_, limits_, stream_header_)
             != StreamHeaderError::none) {
         state_ = State::error;

@@ -412,3 +412,21 @@ Decoded output has priority over consuming the next frame. Consequently a call
 may return `NeedOutput` with an encoded-input suffix unconsumed; `EndInput`
 continues to apply when that suffix is re-presented. Truncation and trailing
 data become terminal only after all earlier committed frame output is drained.
+
+## DD-029: Normalize profiles and size workspaces before ABI construction
+
+- Date: 2026-07-12
+- Status: accepted
+
+Keep version-specific header construction and workspace arithmetic behind an
+internal factory boundary. For a known-size encoder, calculate from the smaller
+of original size and configured frame size; an empty stream needs no frame
+workspace. The raw-block upper bound is exact because a Huffman block is chosen
+only when its model plus payload is strictly smaller than its raw payload.
+
+A decoder cannot trust or inspect stream configuration before construction, so
+its requirement query uses local limits: one frame header plus the maximum
+internally buffered body, one maximum decoded frame, and the configured maximum
+block-view count. Arithmetic overflow is reported in the stable limit-exceeded
+category. This boundary keeps the future C ABI independent of internal enum
+layout and avoids hidden allocation-size assumptions.
