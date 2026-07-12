@@ -34,6 +34,8 @@ set(MARC_SOURCES
     src/entropy/rans_decode_table.cpp
     src/entropy/rans_decoder.cpp
     src/entropy/rans_controller.cpp
+    src/entropy/tans_format.cpp
+    src/entropy/tans_tables.cpp
     src/core/bit_io.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
@@ -199,6 +201,8 @@ if(MARC_BUILD_TESTS)
         tests/rans_decode_table_tests.cpp
         tests/rans_decoder_tests.cpp
         tests/rans_controller_tests.cpp
+        tests/tans_format_tests.cpp
+        tests/tans_tables_tests.cpp
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp
         tests/blocked_huffman_encoder_tests.cpp

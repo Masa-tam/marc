@@ -332,6 +332,14 @@ descriptors and payload state transitions, decodes into a separate bounded
 workspace, and only then drains output. Its caller-owned view array is sized
 from the local maximum-blocks-per-frame policy.
 
+### tANS foundation
+
+tANS variant 1 begins with a transactional fixed-descriptor validator and a
+deterministic table builder. The builder fills all 4096 spread positions,
+derives every decode transition, and constructs the exact inverse encode lookup
+in temporary bounded storage before publishing either table. No global mutable
+table or implementation-defined permutation is used.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and

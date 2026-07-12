@@ -682,6 +682,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external implementation structure or byte format was
   compared.
 
+## 2026-07-13 - Bounded tANS descriptor and table builder
+
+- Authoring method: directly implemented marc's specified descriptor fields,
+  step permutation, reduced-state enumeration, and inverse mapping.
+- References used: repository tANS variant 1 specification and core checked
+  serialization/limits helpers only.
+- Known implementations intentionally not consulted: external tANS/FSE table
+  builders, descriptor validators, source, pseudocode, and tests.
+- Independent decisions: transactional parse and build; explicit written-slot
+  audit; numeric state scan; compact cumulative encode lookup; validation of
+  every transition interval; fixed stack-owned tables.
+- Generated-code task description: validate finite tANS models and construct
+  deterministic mutually inverse bounded encode/decode tables.
+- Similarity review: no external table construction control flow was compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and
