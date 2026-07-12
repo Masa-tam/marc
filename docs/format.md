@@ -398,7 +398,7 @@ if lo32 < 0xFF000000 or carry != 0:
     cache = lo32 >> 24
     pending = 0
 pending = pending + 1
-low = (lo32 << 8) as an unsigned 64-bit value
+low = uint32(lo32 << 8), then widen that value to 64 bits
 ```
 
 The stated invariants constrain `carry` to 0 or 1; emitted additions are reduced
@@ -442,10 +442,10 @@ Fresh-frame payload vectors are:
 
 | Input | Payload |
 |---|---|
-| `A` | `00 80 FE FE 7E 00` |
-| `AA` | `00 81 80 7C FE FC` |
-| `AB` | `00 81 84 7A 02 F4 00` |
-| `ABA` | `00 81 84 FA 80 78 E0` |
+| `A` | `00 40 FF FF BF 00` |
+| `AA` | `00 41 40 BE FF 7E` |
+| `AB` | `00 41 42 BD 01 7A 00` |
+| `ABA` | `00 41 42 FD 40 3C F0` |
 
 For `A`, the descriptor is:
 

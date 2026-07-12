@@ -226,6 +226,13 @@ the exact total and nonzero frequencies, including immediately after the
 specified rescale boundary; a later Fenwick optimization must preserve the same
 updates and encoded bytes.
 
+The range reference encoder uses the same run loop first with a counting sink
+and then with the caller payload span. Planning validates frame size, model
+policy, exact encoded size, payload limits, and the resulting descriptor before
+the second pass can mutate output. A short output therefore leaves both payload
+and descriptor untouched, while successful encoding is required to reproduce
+the planned byte count exactly.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

@@ -590,3 +590,18 @@ no legal guarantee of non-infringement.
   range intervals.
 - Similarity review: no external data structure or update control flow was
   compared.
+
+## 2026-07-12 - Dynamic Range reference encoder
+
+- Authoring method: directly implemented the arithmetic and delayed-carry state
+  machine specified in marc's format document.
+- References used: repository format, bounded model, descriptor, and limits.
+- Known implementations intentionally not consulted: all external range-coder
+  encoder source, pseudocode, and byte vectors.
+- Independent decisions: shared count/write state machine; two-pass capacity
+  preflight; descriptor publication after exact byte-count agreement; explicit
+  carry and pending-count invariants; explicit 32-bit shift truncation;
+  rescale-crossing regression input.
+- Generated-code task description: implement a clear deterministic frame-local
+  range payload encoder matching marc's independently generated hand vectors.
+- Similarity review: no external encoder control flow was compared.
