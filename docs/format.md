@@ -468,3 +468,112 @@ complete encoded `ABA` frame is 79 bytes:
 
 The first 56 bytes are the generic frame header, the next 16 are the range
 descriptor, and the final 7 are the payload.
+
+## rANS variant 1
+
+rANS variant 1 is scalar, block buffered, and byte renormalized. The alphabet is
+`0..255`, `table_log` is exactly 12, normalized total `M` is 4096, internal state
+is unsigned 64-bit, and lower normalization bound `L` is 2^31. Stream entropy
+block size is nonzero and defaults to 65,536 input symbols. Every block rebuilds
+its static model independently; the final short block is valid.
+
+### Deterministic frequency normalization
+
+Count one finite block. Absent symbols receive normalized frequency zero. For a
+nonempty block of size `N`, initialize each present symbol `s` to
+`max(1, floor(count[s] * M / N))`. Let its signed normalization error be:
+
+```text
+error[s] = count[s] * M - normalized[s] * N
+```
+
+While the normalized sum is below `M`, increment the present symbol with largest
+current error, breaking ties toward the lower numeric symbol. Recompute that
+symbol's error after every increment. While the sum is above `M`, decrement a
+symbol whose normalized frequency exceeds one and whose current error is
+smallest, breaking ties toward the higher numeric symbol. Recompute after every
+decrement. The final frequencies are positive exactly for present symbols and
+sum to 4096. A one-symbol block therefore assigns that symbol 4096.
+
+Cumulative frequency is the sum of normalized frequencies for numerically
+smaller symbols. All normalization arithmetic uses exact integers.
+
+### State update and byte layout
+
+Initialize encoder state `x = L` and process block symbols in reverse logical
+order. For a symbol with frequency `f` and cumulative `c`:
+
+```text
+x_max = ((L >> table_log) << 8) * f
+while x >= x_max:
+    prepend byte(x & 0xFF) to the renormalization region
+    x = x >> 8
+x = floor(x / f) * M + (x mod f) + c
+```
+
+The prepend rule applies to the whole region, including multiple bytes from one
+symbol. The block payload is final `x` as an explicit little-endian uint64,
+followed by that completed renormalization region. Payload size is at least 8.
+The final state must satisfy `L <= x < L * 256`.
+
+Decoding reads the final state, then produces symbols in forward order:
+
+```text
+slot = x & (M - 1)
+find the unique symbol with c <= slot < c + f
+x = f * (x >> table_log) + slot - c
+while x < L:
+    x = (x << 8) | next_renormalization_byte
+```
+
+Reject a state outside `[L, L*256)` at initialization or a symbol boundary, an
+unmapped slot, arithmetic overflow, missing or trailing renormalization bytes,
+or a final state other than exactly `L`. A state below `L` immediately after the
+inverse update is valid only while the specified renormalization loop restores
+it before the next boundary. Exact terminal state and byte consumption make the
+payload canonical. Symbols appear in forward order even though encoding
+traverses them in reverse.
+
+### rANS descriptor and frame layout
+
+Each block has one 528-byte descriptor. All frame descriptors occur first in
+logical block order, followed by all block payloads in the same order.
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | symbol count | configured block size or final remainder |
+| 4 | 4 | payload size | this block's exact payload bytes; at least 8 |
+| 8 | 1 | table log | exactly 12 |
+| 9 | 1 | flags | zero |
+| 10 | 6 | reserved | zero |
+| 16 | 512 | normalized frequencies | 256 little-endian uint16 values |
+
+Descriptor frequencies must sum to 4096 and at least one must be nonzero; exact
+source counts and therefore the number of source-present symbols are not
+serialized. A one-symbol model has one frequency 4096. The decoder builds and
+validates a bounded 4096-entry slot table before payload traversal.
+
+Frame entropy block count is exactly
+`ceil(dictionary_serialized_size / stream_entropy_block_size)`. Descriptor size
+is exactly block count times 528. Frame compressed payload size is the checked
+sum of descriptor-declared payload sizes. No rANS block crosses an outer frame.
+
+### Hand-checkable rANS vectors
+
+Fresh-block normalized models and payloads are:
+
+| Input | Nonzero normalized frequencies | Payload |
+|---|---|---|
+| `A` | `A:4096` | `00 00 00 80 00 00 00 00` |
+| `AA` | `A:4096` | `00 00 00 80 00 00 00 00` |
+| `AB` | `A:2048, B:2048` | `00 10 00 00 02 00 00 00` |
+| `ABA` | `A:2731, B:1365` | `80 10 00 60 03 00 00 00` |
+
+For `A`, descriptor bytes 0 through 15 are:
+
+```text
+01 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00
+```
+
+All frequency entries are zero except symbol `41` at descriptor offset 146,
+whose little-endian uint16 value is `00 10`.

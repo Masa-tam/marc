@@ -101,3 +101,15 @@ frames independently encode `AA` as `00 41 40 BE FF 7E`; each serialized frame
 is 78 bytes and the complete stream is 220 bytes including its 64-byte header.
 Changing the second frame's initial payload byte to nonzero must report frame
 index 1 while leaving whole-stream reference output untouched.
+
+rANS normalization vectors record source counts, initial clamped frequencies,
+signed errors, every selected adjustment symbol, final cumulative frequencies,
+and the exact sum 4096. State vectors record reverse symbol order, `x_max`, every
+prepended renormalization byte, post-symbol state, serialized final state, and
+forward decoder states. Initial hand vectors are `A`, `AA`, `AB`, and `ABA`.
+
+Negative vectors independently cover zero or incorrect frequency sum, frequency
+for an impossible empty model, incorrect table log, nonzero flags or reserved
+bytes, contradictory sizes, state below `L` or at least `L*256`, unmapped slots,
+truncated and trailing renormalization bytes, non-`L` terminal state, descriptor-
+size multiplication overflow, and blocks crossing declared frame boundaries.

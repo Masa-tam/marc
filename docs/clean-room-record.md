@@ -709,3 +709,20 @@ no legal guarantee of non-infringement.
 - Generated-code task description: expose bounded Dynamic Range streaming
   transforms through the small C ABI without changing existing layouts.
 - Similarity review: no external C ABI or adapter structure was compared.
+
+## 2026-07-13 - rANS variant 1 specification
+
+- Authoring method: derived inverse range-ANS equations from published
+  mathematical descriptions and independently fixed marc's bounded byte format.
+- References used: Jarek Duda's ANS paper, James Townsend's rANS tutorial paper,
+  and marc's existing frame and serialization rules.
+- Known implementations intentionally not consulted: all external ANS source,
+  source-derived pseudocode, tables, byte layouts, and test vectors.
+- Independent decisions: scalar 64-bit state; 2^31 lower bound; table log 12;
+  exact error-based frequency normalization; fixed 528-byte descriptor; final-
+  state-first payload; globally prepended renormalization bytes; exact terminal
+  state; frame-contained blocks.
+- Generated-code task description: specify deterministic bounded scalar rANS
+  variant 1 completely before implementing descriptor validation.
+- Similarity review: no external implementation structure or byte vector was
+  compared.

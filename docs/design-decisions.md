@@ -771,3 +771,21 @@ Return the common opaque transform and reuse the common process and destroy
 operations. Dynamic Range uses primary and secondary byte workspaces and no
 views workspace. Verify the shared-library boundary with a pure-C round trip,
 reserved-field rejection, and insufficient model-policy rejection.
+
+## DD-050: rANS variant 1 is scalar and byte-renormalized
+
+- Date: 2026-07-13
+- Status: accepted
+
+Fix variant 1 to one unsigned 64-bit state, `table_log=12`, normalized total
+4096, lower bound 2^31, and byte-wise renormalization. Encode symbols in reverse
+logical order and serialize the final state little-endian before renormalization
+bytes arranged in decoder-consumption order. Require exact terminal state and
+payload consumption during strict decoding.
+
+Normalize each finite block with exact integer error correction and explicit
+numeric-symbol tie breaks. Serialize all 256 normalized uint16 frequencies in a
+fixed 528-byte descriptor. Blocks occur in logical order, reset independently,
+never cross outer frames, and use the stream entropy block size in byte-symbol
+units. A differing state count, table log, normalization rule, descriptor, or
+byte layout requires another variant.

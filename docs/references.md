@@ -78,3 +78,18 @@ Dynamic Range Coder design reference:
 The byte normalization, delayed-carry representation, adaptive model, frame
 layout, and vectors are independently specified for marc. No range-coder
 implementation source, source-derived pseudocode, or test suite was consulted.
+
+rANS design references:
+
+- Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for
+  the ANS state-machine and asymmetric numeral-system foundation.
+  <https://arxiv.org/abs/0902.0271>
+- James Townsend, "A tutorial on the range variant of asymmetric numeral
+  systems," arXiv:2001.09186, 2020. Used for a mathematical cross-check of the
+  rANS encode/decode inverse equations; accompanying implementation source was
+  not consulted.
+  <https://arxiv.org/abs/2001.09186>
+
+Frequency normalization, tie breaking, byte renormalization, state layout,
+descriptor layout, and vectors are independently specified for marc. No ANS
+implementation source, source-derived pseudocode, or test suite was consulted.
