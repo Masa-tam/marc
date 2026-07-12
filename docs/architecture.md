@@ -7,6 +7,23 @@ the reference toolchain, but the implementation avoids compiler extensions and
 keeps portable C++ as a design constraint. CMake is the canonical build
 description.
 
+On Windows, the canonical preset uses the Visual Studio 2026 generator and
+MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
+This avoids depending on localized MSVC `/showIncludes` text for incremental
+dependency tracking while retaining Ninja's straightforward portable workflow
+on platforms where compiler dependency files are locale-independent.
+
+Canonical commands are:
+
+```text
+cmake --preset windows-msvc
+cmake --build --preset windows-msvc-debug
+ctest --preset windows-msvc-debug
+```
+
+Use the corresponding `ninja-debug` or `ninja-release` presets on non-Windows
+hosts. `CMakeUserPresets.json` remains ignored for machine-local overrides.
+
 The same source list builds both a static library and a shared library. The C
 ABI is the binary boundary; C++ implementation types are never exported as ABI.
 

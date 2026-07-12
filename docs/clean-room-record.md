@@ -47,6 +47,16 @@ no legal guarantee of non-infringement.
   overflow-safe validator for parsed frame bounds with negative tests.
 - Similarity review: no external implementation compared.
 
+## 2026-07-12 — platform build-generator policy
+
+- Trigger: reproduced stale-object behavior from a localized MSVC
+  `/showIncludes` dependency prefix under Ninja.
+- Decision: Visual Studio generator and MSBuild for canonical Windows builds;
+  Ninja presets for non-Windows builds.
+- Local information recorded publicly: none. The Visual Studio installation
+  path remains outside repository files.
+- Production-code effect: none; this changes build orchestration only.
+
 ## 2026-07-12 — version 1.0 frame header
 
 - Authoring method: independently designed from the frame coordination,

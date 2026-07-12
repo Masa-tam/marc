@@ -170,3 +170,19 @@ size and configured frame size. Non-final frames cannot be short, frames cannot
 continue after declared output completion, and sequence numbers must match the
 controller's expected zero-based value. This makes frame boundaries and output
 deterministic without a separate end marker.
+
+## DD-013: Use MSBuild for the canonical Windows build
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use CMake's Visual Studio 2026 generator for the canonical Windows x64 build,
+which delegates dependency tracking and compilation to MSBuild. Use Ninja as
+the canonical preset on non-Windows hosts.
+
+This choice follows a reproduced failure where localized MSVC `/showIncludes`
+output was recorded with an encoding mismatch and Ninja retained an object built
+against an older internal structure layout. A clean build detected no production
+defect, but relying on localized diagnostic text is unnecessarily fragile.
+Presets contain no installation path; CMake selects the Visual Studio instance,
+while machine-specific overrides belong in ignored `CMakeUserPresets.json`.
