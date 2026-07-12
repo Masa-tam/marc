@@ -291,6 +291,12 @@ uses signed 64-bit normalization errors, bounded scans, and explicit symbol tie
 breaks; output is assigned only after the exact sum 4096 is reached. This clear
 reference path performs no dynamic allocation or input-controlled recursion.
 
+The rANS reference encoder first normalizes and runs the complete reverse state
+machine with a counting sink. After exact capacity and descriptor validation,
+the write pass stores renormalization bytes backward from the payload end and
+then writes the final state in the first eight bytes. This implements the global
+prepend rule without allocation and leaves output untouched on capacity failure.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

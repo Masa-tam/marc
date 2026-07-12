@@ -742,3 +742,18 @@ no legal guarantee of non-infringement.
   coding.
 - Similarity review: no external normalization structure or control flow was
   compared.
+
+## 2026-07-13 - rANS reference block encoder
+
+- Authoring method: directly implemented marc's reverse state equations and
+  globally prepended byte layout over its independently normalized model.
+- References used: repository rANS format, normalizer, descriptor, and limits.
+- Known implementations intentionally not consulted: all external ANS encoder
+  source, pseudocode, byte-buffer techniques, and test vectors.
+- Independent decisions: count/write two-pass state machine; backward payload
+  writes without temporary allocation; explicit state-bound checks; descriptor
+  publication after exact byte-count agreement; renormalizing regression input.
+- Generated-code task description: implement a deterministic finite-block rANS
+  encoder matching marc's hand-generated payload vectors.
+- Similarity review: no external encoder control flow or buffer layout was
+  compared.
