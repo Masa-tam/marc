@@ -235,3 +235,16 @@ no legal guarantee of non-infringement.
   descriptor/model region and publish bounded block views without allocation.
 - Similarity review: no external frame controller or descriptor-index layout
   was compared.
+
+## 2026-07-12 - Blocked Huffman frame decoder
+
+- Authoring method: independently composed from validated block views and the
+  reference block decoder.
+- Implementation sources consulted: none.
+- Independent decisions: full-frame validation pass before output; contiguous
+  payload offsets; exact payload end; checked total output; block-indexed error
+  reporting; caller-owned output only.
+- Generated-code task description: connect descriptor-region views to the
+  one-block decoder while preserving atomic output for malformed later blocks.
+- Similarity review: no external multi-block decoder control flow or tests were
+  compared.

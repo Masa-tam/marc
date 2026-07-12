@@ -31,6 +31,12 @@ struct BlockedHuffmanDecodeResult {
     BlockedHuffmanDecodeError error{BlockedHuffmanDecodeError::none};
 };
 
+[[nodiscard]] BlockedHuffmanDecodeResult validate_blocked_huffman_block(
+    const BlockedHuffmanDescriptor& descriptor,
+    std::span<const std::byte> model,
+    std::span<const std::byte> payload,
+    const core::DecoderLimits& limits) noexcept;
+
 [[nodiscard]] BlockedHuffmanDecodeResult decode_blocked_huffman_block(
     const BlockedHuffmanDescriptor& descriptor,
     std::span<const std::byte> model,

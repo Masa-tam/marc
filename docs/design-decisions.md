@@ -293,3 +293,17 @@ table limits, payload-size sum, and combined buffer limit.
 A second scan populates caller-owned views with descriptor values and 32-bit
 model and payload offsets. This avoids per-frame allocation and prevents later
 malformed blocks from leaving a partially initialized view list visible.
+
+## DD-021: Frame decoding validates every payload before output
+
+- Date: 2026-07-12
+- Status: accepted
+
+Given validated block views, frame decoding checks contiguous payload offsets,
+model and payload bounds, every block's complete payload semantics, the exact
+payload-region end, total dictionary-serialized output, and caller capacity
+before writing any byte.
+
+Only then are blocks decoded in order into disjoint output subspans. A reported
+block error includes its zero-based block index and the stable block-level error
+category. The reference path favors atomic frame output over throughput.

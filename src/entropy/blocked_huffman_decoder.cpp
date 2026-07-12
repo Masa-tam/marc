@@ -63,6 +63,43 @@ BlockedHuffmanDecodeResult decode_blocked_huffman_block(
     const core::DecoderLimits& limits,
     const std::span<std::byte> output) noexcept {
     const auto output_size = static_cast<std::size_t>(descriptor.symbol_count);
+    const auto validation = validate_blocked_huffman_block(
+        descriptor, model, payload, limits);
+    if (validation.error != BlockedHuffmanDecodeError::none) {
+        return validation;
+    }
+    if (output.size() < output_size) {
+        return {output_size, BlockedHuffmanDecodeError::output_too_small};
+    }
+
+    if ((descriptor.flags & blocked_huffman_raw_flag) != 0) {
+        std::ranges::copy(payload, output.begin());
+        return {output_size, BlockedHuffmanDecodeError::none};
+    }
+
+    HuffmanCodeLengths lengths{};
+    for (std::size_t symbol = 0; symbol < lengths.size(); ++symbol) {
+        lengths[symbol] = std::to_integer<std::uint8_t>(model[symbol]);
+    }
+    HuffmanDecodeTable table{};
+    if (build_decode_table(lengths, table) != HuffmanTableError::none) {
+        return {output_size, BlockedHuffmanDecodeError::internal_error};
+    }
+    const auto total_bits =
+        static_cast<std::uint64_t>(payload.size() - 1) * 8
+        + descriptor.final_valid_bits;
+    const auto decoded = scan_huffman_payload(
+        table, payload, total_bits, descriptor.symbol_count,
+        output.first(output_size));
+    return {output_size, decoded};
+}
+
+BlockedHuffmanDecodeResult validate_blocked_huffman_block(
+    const BlockedHuffmanDescriptor& descriptor,
+    const std::span<const std::byte> model,
+    const std::span<const std::byte> payload,
+    const core::DecoderLimits& limits) noexcept {
+    const auto output_size = static_cast<std::size_t>(descriptor.symbol_count);
     if (validate_block_descriptor(
             descriptor, descriptor.symbol_count, limits)
         != BlockedHuffmanFormatError::none) {
@@ -74,12 +111,8 @@ BlockedHuffmanDecodeResult decode_blocked_huffman_block(
     if (payload.size() != descriptor.payload_size) {
         return {output_size, BlockedHuffmanDecodeError::payload_size_mismatch};
     }
-    if (output.size() < output_size) {
-        return {output_size, BlockedHuffmanDecodeError::output_too_small};
-    }
 
     if ((descriptor.flags & blocked_huffman_raw_flag) != 0) {
-        std::ranges::copy(payload, output.begin());
         return {output_size, BlockedHuffmanDecodeError::none};
     }
 
@@ -113,13 +146,7 @@ BlockedHuffmanDecodeResult decode_blocked_huffman_block(
 
     const auto validation = scan_huffman_payload(
         table, payload, total_bits, descriptor.symbol_count, {});
-    if (validation != BlockedHuffmanDecodeError::none) {
-        return {output_size, validation};
-    }
-    const auto decoded = scan_huffman_payload(
-        table, payload, total_bits, descriptor.symbol_count,
-        output.first(output_size));
-    return {output_size, decoded};
+    return {output_size, validation};
 }
 
 } // namespace marc::entropy::internal
