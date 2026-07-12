@@ -89,7 +89,8 @@ total, cached byte, pending count, carry, and each emitted byte after every
 symbol. The initial hand vectors are `A`, `AA`, `AB`, and `ABA`.
 
 Negative vectors independently cover payloads shorter than five bytes,
-truncated normalization, `scaled >= total`, contradictory descriptor sizes,
+nonzero initial bytes, truncated normalization, `scaled >= total`,
+contradictory descriptor sizes,
 nonzero flags or reserved bytes, trailing payload, and frames beyond 2^24
 symbols. Boundary vectors cross total 32768 and record every post-rescale
 frequency and the recomputed total. Multi-frame tests repeat the same input to

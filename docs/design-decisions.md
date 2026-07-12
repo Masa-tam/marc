@@ -680,3 +680,19 @@ with upward rounding when total reaches 32768. This keeps every symbol active,
 bounds all arithmetic, and gives encoder and decoder one deterministic update
 point. Reset the coder and model at every outer frame; a different model,
 normalization threshold, carry rule, or reset policy requires another variant.
+
+## DD-044: Dynamic Range frames use one typed descriptor and canonical prefix
+
+- Date: 2026-07-13
+- Status: accepted
+
+Represent every nonempty Dynamic Range frame as the generic 56-byte header,
+exactly one 16-byte range descriptor, and one byte-aligned payload. Set entropy
+block count to one even though stream entropy block size is zero, because the
+outer frame is the single model-reset boundary. Generic frame validation checks
+the descriptor size and required model-total bound before body traversal.
+
+Require the first of the five decoder-initialization bytes to be zero. A 32-bit
+code calculation eventually shifts that byte out, so accepting other values
+would permit multiple payload representations for the same interval. Strict
+decoding rejects the nonzero prefix to preserve canonical deterministic streams.

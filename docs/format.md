@@ -408,7 +408,8 @@ normalization bytes plus the five-byte termination sequence.
 
 Decoding initializes `range` to `0xFFFFFFFF` and reads exactly five payload
 bytes into a 32-bit `code`, in stored order, using
-`code = (code << 8) | byte`. For each declared symbol:
+`code = (code << 8) | byte`. The first of these five bytes must be zero; this
+rejects otherwise equivalent noncanonical payloads. For each declared symbol:
 
 ```text
 unit   = range / total
@@ -452,3 +453,18 @@ For `A`, the descriptor is:
 ```text
 01 00 00 00 06 00 00 00 00 00 00 00 00 00 00 00
 ```
+
+For a one-frame stream whose frame size and original size are both 3, the
+complete encoded `ABA` frame is 79 bytes:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+03 00 00 00 03 00 00 00 07 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+03 00 00 00 07 00 00 00 00 00 00 00 00 00 00 00
+00 41 42 FD 40 3C F0
+```
+
+The first 56 bytes are the generic frame header, the next 16 are the range
+descriptor, and the final 7 are the payload.

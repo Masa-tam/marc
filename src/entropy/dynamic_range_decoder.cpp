@@ -35,6 +35,9 @@ struct DecodePassResult {
         if (!read_byte(payload, offset, byte)) {
             return {offset, DynamicRangeDecodeError::truncated_payload};
         }
+        if (index == 0 && byte != 0) {
+            return {offset, DynamicRangeDecodeError::invalid_interval};
+        }
         code = static_cast<std::uint32_t>((code << 8) | byte);
     }
 

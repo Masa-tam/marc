@@ -240,6 +240,13 @@ Only then may the second pass write caller output. Invalid scaled values,
 missing normalization bytes, trailing bytes, limit failures, and model failures
 therefore leave the entire frame output untouched.
 
+The complete Dynamic Range frame path composes the generic frame header, one
+typed 16-byte range descriptor, and one byte-aligned payload. Generic frame
+validation recognizes the required descriptor and model-total bound explicitly.
+The reference encoder preflights the whole 79-byte `ABA` vector before mutation;
+the decoder requires an exact one-frame span and delegates body atomicity to the
+strict range decoder.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

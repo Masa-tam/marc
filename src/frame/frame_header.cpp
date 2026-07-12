@@ -3,6 +3,7 @@
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
+#include "entropy/dynamic_range_format.hpp"
 
 #include <algorithm>
 #include <array>
@@ -77,6 +78,13 @@ FrameHeaderError validate_frame_header(
                 != entropy::internal::adaptive_huffman_descriptor_size) {
             return FrameHeaderError::contradictory_sizes;
         }
+    } else if (context.stream.entropy_algorithm
+               == EntropyAlgorithm::dynamic_range) {
+        if (header.entropy_block_count != 1
+            || header.block_descriptors_size
+                != entropy::internal::dynamic_range_descriptor_size) {
+            return FrameHeaderError::contradictory_sizes;
+        }
     } else if (header.entropy_block_count != 0
                || header.block_descriptors_size != 0) {
         return FrameHeaderError::contradictory_sizes;
@@ -93,6 +101,10 @@ FrameHeaderError validate_frame_header(
         ? 0
         : header.compressed_payload_size;
     bounds.block_count = header.entropy_block_count;
+    if (context.stream.entropy_algorithm == EntropyAlgorithm::dynamic_range) {
+        bounds.range_model_total =
+            entropy::internal::dynamic_range_model_total_limit;
+    }
 
     const auto limit_error = core::validate_frame_bounds(
         context.limits, bounds, context.output_already_committed);

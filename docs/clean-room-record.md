@@ -620,3 +620,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: strictly decode and atomically reject
   malformed Dynamic Range payloads before composing outer frames.
 - Similarity review: no external decoder control flow was compared.
+
+## 2026-07-13 - Complete Dynamic Range frame path
+
+- Authoring method: composed marc's generic frame header with its typed range
+  descriptor and strict reference payload codec.
+- References used: repository format, frame validation rules, and implemented
+  Dynamic Range components only.
+- Known implementations intentionally not consulted: external range containers,
+  frame adapters, source, and test vectors.
+- Independent decisions: one descriptor and block per frame; explicit generic-
+  header recognition; exact serialized-span parsing; typed error preservation;
+  zero initial byte for canonicality; canonical 79-byte `ABA` frame vector.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one complete version 1 Dynamic Range frame.
+- Similarity review: no external frame composition structure was compared.
