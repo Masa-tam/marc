@@ -113,3 +113,10 @@ for an impossible empty model, incorrect table log, nonzero flags or reserved
 bytes, contradictory sizes, state below `L` or at least `L*256`, unmapped slots,
 truncated and trailing renormalization bytes, non-`L` terminal state, descriptor-
 size multiplication overflow, and blocks crossing declared frame boundaries.
+
+The initial rANS reset stream is `AAAA` with frame size 2 and entropy block size
+2. Each frame independently models `AA` as a single symbol and has the identical
+eight-byte payload `00 00 00 80 00 00 00 00`. Each frame is 592 bytes and the
+complete stream is 1248 bytes including its 64-byte stream header. Corrupting
+the second frame's state must report frame index 1 while leaving strict-reference
+output untouched.

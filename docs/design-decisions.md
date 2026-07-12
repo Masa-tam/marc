@@ -804,3 +804,17 @@ Strict frame decoding first validates the complete descriptor region and every
 block payload without output. Only then decode blocks into caller output. This
 makes the outer frame the commit boundary even though individual rANS blocks are
 independently coded and validated.
+
+## DD-052: rANS reference streams validate before output
+
+- Date: 2026-07-13
+- Status: accepted
+
+Compose known-size streams as the fixed stream header followed by deterministic
+outer frames. Plan every frame before encoding mutates output; empty input is
+header-only. Reuse one caller-owned block-view workspace across frames.
+
+Strict decoding first scans and semantically validates every exact frame extent
+without output, then repeats the traversal into caller storage. Reject truncation
+and trailing bytes. This reference provides whole-stream atomicity and serves as
+the oracle for the later frame-committing streaming transform.

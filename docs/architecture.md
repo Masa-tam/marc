@@ -315,6 +315,12 @@ Strict decoding uses controller views to validate every payload before a second
 loop writes any block output. Capacity failure and malformed later blocks
 therefore leave the whole frame output untouched.
 
+The known-size rANS stream reference plans all deterministic outer frames before
+encoding. Strict decoding scans and semantically validates every complete frame
+without output, reusing one caller-owned block-view workspace, then repeats the
+scan into caller storage. This preserves whole-stream atomicity while every
+frame and block independently rebuilds its model and resets state.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
