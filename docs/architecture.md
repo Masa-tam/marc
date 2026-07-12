@@ -212,6 +212,20 @@ only local limits because no stream header is trusted yet. Empty encoding needs
 no frame workspace, and all multiplication, rounding, and `size_t` conversion
 are checked.
 
+### Dynamic Range Coder foundation
+
+Dynamic Range Coder variant 1 begins with a fixed 16-byte descriptor validator
+and an allocation-free 256-symbol model. Parsing publishes a descriptor only
+after its sizes, flags, reserved bytes, variant frame bound, payload bound,
+buffer bound, and required model-total policy all pass.
+
+The reference order-0 model stores 256 nonzero 16-bit frequencies inline and
+uses bounded linear cumulative lookup. This deliberately clear baseline has no
+dynamic allocation or input-controlled recursion. Its invariant check verifies
+the exact total and nonzero frequencies, including immediately after the
+specified rescale boundary; a later Fenwick optimization must preserve the same
+updates and encoded bytes.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

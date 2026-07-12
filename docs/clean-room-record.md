@@ -574,3 +574,19 @@ no legal guarantee of non-infringement.
   Dynamic Range Coder representation before implementing its validator.
 - Similarity review: no external implementation structure or byte vector was
   compared.
+
+## 2026-07-12 - Dynamic Range descriptor and adaptive model
+
+- Authoring method: translated marc's own variant 1 descriptor and model rules
+  into fixed-capacity validation structures.
+- References used: repository format, limits, and design decisions only.
+- Known implementations intentionally not consulted: all external range-model,
+  cumulative-table, descriptor, and range-coder source or tests.
+- Independent decisions: publish-on-success descriptor parsing; local model-
+  total policy enforcement; inline 256-entry frequency array; bounded linear
+  cumulative lookup; explicit invariant validation at test boundaries.
+- Generated-code task description: implement the bounded decoder-visible
+  descriptor validator and deterministic adaptive order-0 model before coding
+  range intervals.
+- Similarity review: no external data structure or update control flow was
+  compared.
