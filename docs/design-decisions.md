@@ -464,3 +464,23 @@ Keep the example as both a top-level build target and a standalone consumer
 project using `find_package(marc CONFIG REQUIRED)`. This makes the installed
 package, transitive usage requirements, exported DLL import definition, and
 public C header independently testable without internal include paths.
+
+## DD-032: CI fixes toolchain families and tests installed consumers
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use the explicit GitHub-hosted `windows-2025-vs2026` runner rather than a moving
+Windows alias, and build it through the Visual Studio 18 generator and MSBuild.
+Use Ubuntu 24.04 with Ninja as the first non-Windows portability check. Both
+jobs build shared and static libraries and run the complete test suite.
+
+Add a separate four-entry package matrix for Windows and Ubuntu crossed with
+shared-only and static-only builds. It disables repository tests and examples
+while producing the package, then builds and runs the standalone pure-C example
+from the installed prefix. Checkout the pinned GoogleTest submodule only in
+test-suite jobs; package jobs must not depend on it.
+
+Dependabot checks GitHub Actions and git submodules weekly. Updates remain pull
+requests that must pass CI rather than automatically changing the pinned
+GoogleTest revision or action major without review.

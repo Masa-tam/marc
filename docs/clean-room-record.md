@@ -393,3 +393,18 @@ no legal guarantee of non-infringement.
   installable, and verifiable by a consumer project using only installed files.
 - Similarity review: no external compression-library packaging or sample source
   was copied or structurally compared.
+
+## 2026-07-12 - CI and dependency update policy
+
+- Authoring method: composed repository build, test, install, and consumer
+  commands into a least-privilege GitHub Actions workflow.
+- References used: official GitHub runner-image inventory, checkout releases,
+  and Dependabot ecosystem documentation recorded in `references.md`.
+- Implementation sources consulted: no codec implementation.
+- Independent decisions: explicit VS 2026 and Ubuntu 24.04 runners; full tests
+  on both toolchain families; four-way installed-package matrix; no submodule
+  checkout in packaging jobs; reviewed weekly dependency PRs.
+- Generated-code task description: continuously validate MSBuild and Ninja plus
+  shared/static consumption while retaining pinned third-party revisions.
+- Similarity review: no external compression-project workflow was copied or
+  structurally compared.

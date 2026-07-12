@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-msvc:
+    name: Windows / Visual Studio 2026 / MSBuild
+    runs-on: windows-2025-vs2026
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Configure
+        run: cmake --preset windows-msvc
+      - name: Build
+        run: cmake --build --preset windows-msvc-release
+      - name: Test
+        run: ctest --preset windows-msvc-release
+
+  ubuntu-ninja:
+    name: Ubuntu 24.04 / Ninja
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Configure
+        run: cmake --preset ninja-release
+      - name: Build
+        run: cmake --build --preset ninja-release
+      - name: Test
+        run: ctest --preset ninja-release
+
+  installed-package:
+    name: ${{ matrix.os_name }} / ${{ matrix.linkage }} package
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os_name: [Windows, Ubuntu]
+        linkage: [shared, static]
+        include:
+          - os_name: Windows
+            runner: windows-2025-vs2026
+            generator: Visual Studio 18 2026
+            platform_args: -A x64
+          - os_name: Ubuntu
+            runner: ubuntu-24.04
+            generator: Ninja
+            platform_args: -DCMAKE_BUILD_TYPE=Release
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure package
+        shell: pwsh
+        run: |
+          $shared = if ('${{ matrix.linkage }}' -eq 'shared') { 'ON' } else { 'OFF' }
+          $static = if ('${{ matrix.linkage }}' -eq 'static') { 'ON' } else { 'OFF' }
+          cmake -S . -B out/package -G '${{ matrix.generator }}' ${{ matrix.platform_args }} `
+            -DMARC_BUILD_SHARED=$shared -DMARC_BUILD_STATIC=$static `
+            -DMARC_BUILD_TESTS=OFF -DMARC_BUILD_EXAMPLES=OFF `
+            -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/out/install'
+      - name: Build and install package
+        run: >-
+          cmake --build out/package --config Release
+          --target install
+      - name: Configure installed consumer
+        shell: pwsh
+        run: >-
+          cmake -S examples -B out/consumer -G '${{ matrix.generator }}'
+          ${{ matrix.platform_args }}
+          -Dmarc_DIR='${{ github.workspace }}/out/install/lib/cmake/marc'
+      - name: Build installed consumer
+        run: cmake --build out/consumer --config Release
+      - name: Run installed consumer on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:PATH = '${{ github.workspace }}\out\install\bin;' + $env:PATH
+          & '${{ github.workspace }}\out\consumer\Release\marc_c_roundtrip.exe'
+      - name: Run installed consumer on Ubuntu
+        if: runner.os == 'Linux'
+        shell: bash
+        run: >-
+          LD_LIBRARY_PATH='${{ github.workspace }}/out/install/lib'
+          '${{ github.workspace }}/out/consumer/marc_c_roundtrip'
