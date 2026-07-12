@@ -442,3 +442,17 @@ no legal guarantee of non-infringement.
   reset, and structural validation for the hand vectors.
 - Similarity review: identifiers, control flow, storage layout, and tests were
   produced for marc and not compared with an external implementation.
+
+## 2026-07-12 - Adaptive Huffman reference frame encoder
+
+- Authoring method: translated marc's path, literal, update, descriptor, and
+  bit-packing rules into a two-pass finite-frame encoder.
+- References used: repository specification and hand vectors only.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman encoder source, pseudocode, and encoded test data.
+- Independent decisions: checked planning replay; capacity atomicity; exact-span
+  zero initialization; separately named hand-vector tests; all-symbol planning
+  and encoding agreement.
+- Generated-code task description: produce the specified LSB-first FGK payload
+  and descriptor for one bounded nonempty frame without allocation.
+- Similarity review: no external encoder structure or vector was compared.

@@ -524,3 +524,20 @@ reject contradictory sizes and calculate exact regions before tree traversal.
 Do not reinterpret the Blocked Huffman descriptor even though both are 16
 bytes. They are algorithm-specific structures selected only after the stream
 algorithm and variant have been validated.
+
+## DD-035: Adaptive Huffman reference encoding plans before mutation
+
+- Date: 2026-07-12
+- Status: accepted
+
+For one finite nonempty frame, first replay FGK updates into a temporary bounded
+tree while summing every path and new-symbol literal bit with checked
+arithmetic. Validate the resulting payload size against format and local limits
+and publish the planned descriptor only on success.
+
+The encoder repeats the deterministic traversal only after output capacity has
+been proven. It zeroes exactly the planned payload span, writes path bits in
+root-to-leaf order and new literals numerically LSB-first, then publishes the
+descriptor. Capacity failure leaves both output and caller descriptor unchanged.
+This two-pass reference favors atomic behavior and testability; a later
+streaming encoder must produce identical bytes.
