@@ -713,6 +713,22 @@ no legal guarantee of non-infringement.
 - Similarity review: no external encoder control flow or bit-buffer layout was
   compared.
 
+## 2026-07-13 - Strict tANS decoder
+
+- Authoring method: inverted marc's specified decode-table transitions with a
+  validation-first two-pass traversal.
+- References used: repository tANS descriptor, tables, encoder vectors, bit
+  order, terminal-state rule, and limits only.
+- Known implementations intentionally not consulted: external tANS/FSE decoder
+  source, bit readers, pseudocode, malformed tests, and vectors.
+- Independent decisions: prepared bounded table bundle; exact valid-bit extent;
+  padding check before traversal; state check at every boundary; validation pass
+  before caller output; deterministic error categories.
+- Generated-code task description: strictly validate and atomically decode
+  finite tANS blocks under adversarial state and bit representations.
+- Similarity review: no external decoder control flow or bit-buffer structure
+  was compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

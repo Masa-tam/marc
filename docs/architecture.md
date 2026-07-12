@@ -346,6 +346,11 @@ reverse traversal writes each emitted chunk directly into its precomputed final
 bit position, avoiding block-size-proportional token or chunk storage while
 still producing decoder-consumption order.
 
+The strict tANS decoder builds validated tables and traverses the complete
+declared symbol count without output. It requires an in-range initial offset,
+available bits for every transition, exact terminal state and bit consumption,
+and zero high padding. Only a second identical traversal publishes bytes.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and
