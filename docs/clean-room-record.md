@@ -248,3 +248,17 @@ no legal guarantee of non-infringement.
   one-block decoder while preserving atomic output for malformed later blocks.
 - Similarity review: no external multi-block decoder control flow or tests were
   compared.
+
+## 2026-07-12 - Blocked Huffman frame encoder
+
+- Authoring method: independently composed from exact block planning, the
+  reference block encoder, and the repository-defined frame body ordering.
+- Implementation sources consulted: none.
+- Independent decisions: exact no-output planning pass; caller-owned
+  descriptor/model and payload regions; full capacity validation before
+  mutation; recomputation instead of retaining per-block models; checked final
+  short-block and aggregate sizes.
+- Generated-code task description: plan and encode multiple bounded Huffman
+  blocks into the variant 1 frame regions without dynamic allocation.
+- Similarity review: no external multi-block encoder layout or control flow was
+  compared.

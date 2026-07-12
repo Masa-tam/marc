@@ -27,6 +27,11 @@ struct BlockedHuffmanEncodeResult {
     BlockedHuffmanEncodeError error{BlockedHuffmanEncodeError::none};
 };
 
+[[nodiscard]] BlockedHuffmanEncodeResult plan_blocked_huffman_block(
+    std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    BlockedHuffmanDescriptor& descriptor) noexcept;
+
 [[nodiscard]] BlockedHuffmanEncodeResult encode_blocked_huffman_block(
     std::span<const std::byte> input,
     const core::DecoderLimits& limits,

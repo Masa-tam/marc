@@ -307,3 +307,18 @@ before writing any byte.
 Only then are blocks decoded in order into disjoint output subspans. A reported
 block error includes its zero-based block index and the stable block-level error
 category. The reference path favors atomic frame output over throughput.
+
+## DD-022: Frame encoding has a separate exact planning pass
+
+- Date: 2026-07-12
+- Status: accepted
+
+Expose an internal no-output block planning operation and use it across every
+frame block before mutation. The frame plan reports exact block count,
+interleaved descriptor/model bytes, and concatenated payload bytes, including
+raw/Huffman decisions and the final short block.
+
+Encoding requires both caller-owned regions to satisfy that plan before the
+first block is emitted. The reference implementation may recompute a Huffman
+model while emitting rather than retain per-block plans; this preserves bounded
+memory and deterministic bytes at the cost of extra CPU work.
