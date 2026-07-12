@@ -1,10 +1,10 @@
 # marc
 
 `marc` is a C++20 framework for independently designed, streaming lossless
-compression components. The current implemented public profile is the version
-1 framed Blocked Huffman codec, exposed through a small C ABI. The format and
-API are still under development and version 0.x streams are not yet promised
-long-term compatibility.
+compression components. The currently implemented public profiles are the
+version 1 framed Blocked and Adaptive Huffman codecs, exposed through a small
+C ABI. The format and API are still under development and version 0.x streams
+are not yet promised long-term compatibility.
 
 ## Build
 

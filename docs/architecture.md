@@ -212,14 +212,16 @@ only local limits because no stream header is trusted yet. Empty encoding needs
 no frame workspace, and all multiplication, rounding, and `size_t` conversion
 are checked.
 
-### Initial C transform ABI
+### C transform ABI
 
-The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,
-size-tagged configuration is initialized by the library, queried for workspace
-requirements, and then used to construct an opaque transform. Encoder
-workspaces hold one raw and one serialized frame. Decoder workspaces hold one
-serialized frame, one decoded frame, and an aligned array of internal block
-views. These buffers remain caller-owned and must outlive the handle.
+The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
+separate versioned, size-tagged configuration, workspace-query, and factory
+functions. Both profiles construct the same opaque transform type and share its
+process and destroy operations. Encoder workspaces hold one raw and one
+serialized frame. Decoder workspaces hold one serialized and one decoded frame;
+Blocked Huffman also uses an aligned internal block-view array, while Adaptive
+Huffman needs no views workspace. These buffers remain caller-owned and must
+outlive the handle.
 
 Only the small opaque handle and its C++ implementation object are allocated by
 the library with non-throwing allocation. Processing uses caller input/output

@@ -645,3 +645,20 @@ and one decoded frame capped by both local and variant frame limits. No block
 view workspace is needed. Empty streams require no frame storage. Profile
 errors map to the same stable invalid-argument, unsupported, and limit-exceeded
 categories used by the existing C boundary.
+
+## DD-042: Adaptive Huffman uses a separate configuration in ABI version 1
+
+- Date: 2026-07-12
+- Status: accepted
+
+Preserve the existing Blocked Huffman configuration layout and ABI version 1.
+Expose Adaptive Huffman through its own size-tagged configuration, initializer,
+workspace query, and create function. Both factories return the same opaque
+transform and therefore share process and destroy operations without exposing
+C++ implementation types.
+
+Adaptive transforms use primary and secondary byte workspaces but no block-view
+workspace. Normalize the otherwise irrelevant decoder block-size limit to a
+bounded internal value before common limit validation. Verify the shared-library
+boundary with a pure-C Adaptive round-trip test, including reserved-field
+rejection.

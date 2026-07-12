@@ -543,3 +543,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: normalize Adaptive variant 1 configuration
   and calculate allocation-safe transform workspaces before C ABI exposure.
 - Similarity review: no external factory or capacity formula was compared.
+
+## 2026-07-12 - Adaptive Huffman C ABI factory
+
+- Authoring method: extended marc's existing opaque transform boundary with a
+  profile-specific size-tagged configuration and factory.
+- References used: repository architecture, C API contract, and Adaptive
+  workspace-query implementation only.
+- Known implementations intentionally not consulted: external compression
+  library ABIs, adapters, and language bindings.
+- Independent decisions: preserve ABI version 1 and the existing Blocked
+  configuration layout; separate Adaptive entry points; shared opaque lifecycle;
+  no views workspace; pure-C shared-library round-trip coverage.
+- Generated-code task description: expose the bounded Adaptive streaming
+  encoder and decoder through the small C ABI without changing existing layouts.
+- Similarity review: no external C ABI or adapter structure was compared.

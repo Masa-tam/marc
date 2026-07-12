@@ -1,18 +1,19 @@
 # C API
 
-The public C ABI is declared by `<marc/marc.h>`. It currently exposes Blocked
-Huffman variant 1 with known-size encoding and bounded, caller-owned workspace.
-All functions are `noexcept` in C++ translation units, and no C++ type appears
-in the ABI.
+The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman and
+Adaptive Huffman variant 1 with known-size encoding and bounded, caller-owned
+workspace. All functions are `noexcept` in C++ translation units, and no C++
+type appears in the ABI.
 
 ## Lifecycle
 
-1. Call `marc_blocked_huffman_config_init()` for encode or decode direction.
+1. Call the matching `marc_blocked_huffman_config_init()` or
+   `marc_adaptive_huffman_config_init()` for encode or decode direction.
 2. Set the desired encoder sizes or decoder hard limits.
-3. Call `marc_blocked_huffman_workspace_requirements()`.
+3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
-5. Call `marc_blocked_huffman_create()` and retain every workspace unchanged
-   until after `marc_transform_destroy()`.
+5. Call the matching create function and retain every workspace unchanged until
+   after `marc_transform_destroy()`.
 6. Repeatedly call `marc_transform_process()`, advancing input and output only
    by the reported consumed and produced counts.
 7. Destroy the handle. Destroying a null handle is valid.
@@ -20,11 +21,12 @@ in the ABI.
 The library owns the opaque handle. It does not own the three workspaces or any
 input/output buffer. No allocator callback is required by this profile.
 
-For an encoder, `primary_bytes` is raw-frame storage and `secondary_bytes` is
-serialized-frame storage; the views workspace is empty. For a decoder,
-`primary_bytes` is serialized-frame storage, `secondary_bytes` is decoded-frame
-storage, and `views_bytes` holds an internal table whose representation remains
-private.
+For either encoder, `primary_bytes` is raw-frame storage and `secondary_bytes`
+is serialized-frame storage. For either decoder, `primary_bytes` is serialized-
+frame storage and `secondary_bytes` is decoded-frame storage. Blocked Huffman
+decoding additionally uses `views_bytes` for a private block table; Adaptive
+Huffman requires no views workspace. Adaptive encoder requirements
+conservatively allow 264 bits per input symbol before fixed frame overhead.
 
 ## Processing contract
 
