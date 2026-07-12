@@ -233,6 +233,13 @@ the second pass can mutate output. A short output therefore leaves both payload
 and descriptor untouched, while successful encoding is required to reproduce
 the planned byte count exactly.
 
+The strict range decoder performs the same bounded decode pass twice. The first
+pass has no output span and must consume exactly the declared payload while
+producing the declared symbol count with valid interval and model invariants.
+Only then may the second pass write caller output. Invalid scaled values,
+missing normalization bytes, trailing bytes, limit failures, and model failures
+therefore leave the entire frame output untouched.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

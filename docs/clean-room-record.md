@@ -605,3 +605,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement a clear deterministic frame-local
   range payload encoder matching marc's independently generated hand vectors.
 - Similarity review: no external encoder control flow was compared.
+
+## 2026-07-13 - Strict Dynamic Range decoder
+
+- Authoring method: inverted marc's documented interval equations and reused
+  its bounded model in a validation-first two-pass decoder.
+- References used: repository format, descriptor, limits, model, and reference
+  encoder only.
+- Known implementations intentionally not consulted: all external range-coder
+  decoder source, pseudocode, malformed tests, and byte vectors.
+- Independent decisions: five-byte code initialization; exact payload-consumed
+  accounting; scaled-total rejection; validation-only API; frame-atomic second
+  pass; model invariant check after the declared symbol count.
+- Generated-code task description: strictly decode and atomically reject
+  malformed Dynamic Range payloads before composing outer frames.
+- Similarity review: no external decoder control flow was compared.
