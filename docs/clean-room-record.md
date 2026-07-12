@@ -757,3 +757,18 @@ no legal guarantee of non-infringement.
   encoder matching marc's hand-generated payload vectors.
 - Similarity review: no external encoder control flow or buffer layout was
   compared.
+
+## 2026-07-13 - Bounded rANS decode table and strict decoder
+
+- Authoring method: inverted marc's documented rANS equations over a fixed slot
+  table and validation-first two-pass decoder.
+- References used: repository rANS format, descriptor, limits, and reference
+  encoder only.
+- Known implementations intentionally not consulted: external ANS decoder and
+  table source, pseudocode, malformed tests, and byte vectors.
+- Independent decisions: inline 4096-entry slot table; state-bound checks at
+  every symbol boundary; exact terminal-state and byte-consumption checks;
+  validation-only API; block-atomic output pass.
+- Generated-code task description: strictly decode and atomically reject
+  malformed finite rANS blocks before outer frame composition.
+- Similarity review: no external decoder or table control flow was compared.

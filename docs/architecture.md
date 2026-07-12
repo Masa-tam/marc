@@ -297,6 +297,12 @@ the write pass stores renormalization bytes backward from the payload end and
 then writes the final state in the first eight bytes. This implements the global
 prepend rule without allocation and leaves output untouched on capacity failure.
 
+The strict rANS decoder expands the validated frequency model into a fixed
+4096-entry slot table. It then runs the complete block once without output,
+requiring valid symbol-boundary states, exact renormalization-byte consumption,
+and terminal state `L`. Only a successful validation pass is repeated into
+caller output, so malformed blocks remain output-atomic.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
