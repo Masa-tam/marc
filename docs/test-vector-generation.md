@@ -44,3 +44,10 @@ Reference block-encoder vectors:
   64-byte payload containing only `AA`; the final byte has 8 valid bits.
 - 293 alternating two-symbol bytes select raw because the 256-byte model plus
   37-byte Huffman payload ties the raw size; ties are raw.
+
+The initial complete-stream composition vector contains 604 input bytes:
+300 `41` bytes, bytes `01 02 03 04`, then 300 `42` bytes. With frame size 304
+and entropy block size 300, it serializes as the 64-byte stream header, a
+386-byte first frame, and a 366-byte second frame, for 816 bytes total. This
+records region composition and boundaries; individual header and block vectors
+remain the source of byte-level field values.

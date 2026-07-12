@@ -337,3 +337,19 @@ The encoder plans the complete serialized size before writing. The strict
 decoder requires exactly one frame in its supplied span, rejects truncation and
 trailing bytes, validates sequence and original-size-derived boundaries, then
 uses the descriptor controller and atomic frame body decoder.
+
+## DD-024: The known-size stream reference path is whole-stream atomic
+
+- Date: 2026-07-12
+- Status: accepted
+
+For the implemented profile, serialize the fixed stream header followed by the
+original-size-determined sequence of complete frames. Empty input is exactly
+the stream header and contains no frame. Planning traverses every input frame
+before any output mutation.
+
+Strict decoding parses frame boundaries from validated headers and performs a
+complete validation-only frame traversal before a second output traversal.
+This reference behavior prevents corruption in a later frame from exposing an
+earlier decoded frame. It is intentionally stronger than the future streaming
+API, whose commit boundary will be documented explicitly.

@@ -275,3 +275,16 @@ no legal guarantee of non-infringement.
   frame for the no-dictionary/Blocked-Huffman-v1 profile.
 - Similarity review: no external container integration path or tests were
   compared.
+
+## 2026-07-12 - Complete known-size Blocked Huffman stream path
+
+- Authoring method: independently composed from the fixed stream header and
+  complete serialized frame path.
+- Implementation sources consulted: none.
+- Independent decisions: header-only empty stream; original-size-derived frame
+  count; exact whole-stream planning; reusable caller-owned per-frame views;
+  validation traversal before output traversal; strict final byte position.
+- Generated-code task description: implement deterministic whole-stream
+  planning, encoding, and atomic strict decoding for the initial profile.
+- Similarity review: no external stream controller or container loop was
+  compared.
