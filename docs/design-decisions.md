@@ -541,3 +541,20 @@ root-to-leaf order and new literals numerically LSB-first, then publishes the
 descriptor. Capacity failure leaves both output and caller descriptor unchanged.
 This two-pass reference favors atomic behavior and testability; a later
 streaming encoder must produce identical bytes.
+
+## DD-036: Strict Adaptive decoding validates twice and publishes once
+
+- Date: 2026-07-12
+- Status: accepted
+
+Validate descriptor fields, exact payload span, output capacity, combined frame
+limits, expansion policy, and zero high padding before tree traversal. Then
+decode the declared symbol count into no output, rejecting path/literal
+truncation, duplicate NYT literals, invalid tree transitions, and any mismatch
+between consumed and declared valid bits.
+
+Only after the complete validation pass succeeds, reset and repeat the same
+bounded traversal into caller output. A failure in the validation pass leaves
+the entire output span unchanged. This frame-local two-pass policy matches the
+reference encoder's clarity and provides a strong oracle for a later streaming
+decoder whose commit boundary will remain a complete validated frame.

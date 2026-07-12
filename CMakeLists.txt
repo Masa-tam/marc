@@ -22,6 +22,7 @@ endif()
 set(MARC_SOURCES
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
+    src/entropy/adaptive_huffman_decoder.cpp
     src/entropy/adaptive_huffman_tree.cpp
     src/core/bit_io.cpp
     src/core/hash_tap.cpp
@@ -161,6 +162,7 @@ if(MARC_BUILD_TESTS)
     add_executable(marc_core_tests
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp
+        tests/adaptive_huffman_decoder_tests.cpp
         tests/adaptive_huffman_tree_tests.cpp
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp

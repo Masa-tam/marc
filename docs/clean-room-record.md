@@ -456,3 +456,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: produce the specified LSB-first FGK payload
   and descriptor for one bounded nonempty frame without allocation.
 - Similarity review: no external encoder structure or vector was compared.
+
+## 2026-07-12 - Strict Adaptive Huffman reference decoder
+
+- Authoring method: independently inverted marc's specified path and literal
+  emission while reusing the bounded tree's synchronized update operations.
+- References used: repository format and hand vectors only.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman decoder source, source-derived pseudocode, and negative tests.
+- Independent decisions: two complete passes; no output during validation;
+  exact valid-bit equality; padding preflight; duplicate-NYT category; frame
+  and expansion-limit validation before traversal.
+- Generated-code task description: decode one bounded FGK frame strictly and
+  reject malformed suffixes without exposing partial output.
+- Similarity review: no external decoder control flow or malformed vector was
+  compared.
