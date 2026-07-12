@@ -697,6 +697,22 @@ no legal guarantee of non-infringement.
   deterministic mutually inverse bounded encode/decode tables.
 - Similarity review: no external table construction control flow was compared.
 
+## 2026-07-13 - tANS reference encoder
+
+- Authoring method: implemented the inverse lookup and reverse state traversal
+  directly from marc's variant 1 tables and payload definition.
+- References used: repository tANS specification, normalizer, table builder,
+  bit order, checked arithmetic, and hand vectors only.
+- Known implementations intentionally not consulted: external tANS/FSE encoder
+  source, backward bit writers, pseudocode, and vectors.
+- Independent decisions: count/write two-pass encoder; unique transition search;
+  direct backward-positioned chunk writes; no proportional chunk array;
+  transactional capacity failure; descriptor publication after exact agreement.
+- Generated-code task description: encode bounded tANS blocks deterministically
+  into the specified decoder-order LSB-first representation.
+- Similarity review: no external encoder control flow or bit-buffer layout was
+  compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

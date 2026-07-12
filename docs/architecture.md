@@ -340,6 +340,12 @@ derives every decode transition, and constructs the exact inverse encode lookup
 in temporary bounded storage before publishing either table. No global mutable
 table or implementation-defined permutation is used.
 
+The tANS reference encoder normalizes and builds the complete tables, then
+performs a count-only reverse traversal before touching caller output. A second
+reverse traversal writes each emitted chunk directly into its precomputed final
+bit position, avoiding block-size-proportional token or chunk storage while
+still producing decoder-consumption order.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and
