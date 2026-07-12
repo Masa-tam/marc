@@ -11,6 +11,7 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/core/bit_io.cpp
     src/core/status.cpp
     src/marc.cpp
 )

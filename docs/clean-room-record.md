@@ -19,3 +19,17 @@ no legal guarantee of non-infringement.
   core process-result invariant checker, ABI metadata functions, and build
   verification tests without implementing a compression algorithm.
 - Similarity review: not applicable; no codec implementation exists.
+
+## 2026-07-12 — serialization and bit primitives
+
+- Authoring method: independently implemented directly from the byte-order and
+  bit-order requirements in `AGENTS.md` and the hand-checkable vectors recorded
+  in `format.md`.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: bounded spans, checked unsigned arithmetic, stateful
+  one-byte LSB-first buffering, zero padding on finish, strict padding checks.
+- Generated-code task description: implement portable little-endian load/store,
+  checked arithmetic, and partial-buffer LSB-first bit I/O with tests.
+- Similarity review: simple direct expressions of the documented representation;
+  no external implementation compared.

@@ -61,3 +61,19 @@ Describe the project as a **specification-driven independent implementation**.
 Do not claim a formal clean-room process or a legal guarantee. Algorithm work
 is derived from recorded specifications, papers, and independently written
 designs rather than implementation source code with incompatible provenance.
+
+## DD-007: Foundational integer and bit primitives
+
+- Date: 2026-07-12
+- Status: accepted
+
+Serialization primitives accept bounded spans and explicit offsets. They return
+failure without performing an out-of-bounds access. Offset and allocation-size
+calculations use checked addition and multiplication helpers.
+
+The bit writer retains at most one pending byte across calls. A write may consume
+bits without producing a byte, and a later call may produce that byte without
+new logical input. Finishing emits the pending byte with zero high-bit padding.
+The bit reader exposes consumed-byte and produced-bit counts independently and
+can validate zero padding before byte alignment. These low-level results use a
+dedicated completion status rather than the transform-level `Progress` status.
