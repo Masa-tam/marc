@@ -425,3 +425,20 @@ no legal guarantee of non-infringement.
   variant and hand-checkable vectors before implementing validator or tree.
 - Similarity review: no external encoded vectors or implementation structure
   was compared.
+
+## 2026-07-12 - Adaptive Huffman descriptor and bounded FGK tree
+
+- Authoring method: implemented the repository's variant 1 specification
+  directly with explicit little-endian fields and fixed-size arrays.
+- References used: only the design record already derived from Gallager and
+  Knuth; no additional source was consulted.
+- Known implementations intentionally not consulted: all Adaptive Huffman
+  implementation source, pseudocode derived from source, and external tests.
+- Independent decisions: stable storage indices separate from FGK order;
+  allocation-free 513-node pool; direct symbol map; non-relative swaps; a
+  callable iterative invariant validator outside the symbol hot path.
+- Generated-code task description: validate the bounded descriptor before
+  payload access and implement deterministic tree insertion, lookup, update,
+  reset, and structural validation for the hand vectors.
+- Similarity review: identifiers, control flow, storage layout, and tests were
+  produced for marc and not compared with an external implementation.

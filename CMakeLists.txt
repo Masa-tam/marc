@@ -20,6 +20,8 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/entropy/adaptive_huffman_format.cpp
+    src/entropy/adaptive_huffman_tree.cpp
     src/core/bit_io.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
@@ -156,6 +158,8 @@ if(MARC_BUILD_TESTS)
     include(GoogleTest)
 
     add_executable(marc_core_tests
+        tests/adaptive_huffman_format_tests.cpp
+        tests/adaptive_huffman_tree_tests.cpp
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp
         tests/blocked_huffman_encoder_tests.cpp

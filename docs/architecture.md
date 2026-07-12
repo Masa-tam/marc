@@ -159,6 +159,21 @@ Profile failures are collapsed into the stable core categories invalid
 argument, unsupported, and limit exceeded. The later C adapter therefore need
 not expose internal parser or codec-specific enumerations.
 
+### Adaptive Huffman foundation
+
+Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A
+fixed descriptor parser validates frame-controlled symbol count, payload size,
+valid-bit count, flags, reserved bytes, format limits, and local limits before
+payload traversal. A 513-node FGK tree stores nodes and the 256-entry symbol map
+inline, so inserting every possible byte cannot allocate or exceed capacity.
+
+Tree nodes have stable storage indices and explicit FGK order numbers. Swapping
+changes parent/child positions and order numbers while symbol lookup continues
+to identify the same stable node. A separate invariant validator checks unique
+orders and symbols, parent/child reciprocity, internal weight sums, adjacent
+siblings, and nondecreasing weight order. It is used at validation and test
+boundaries rather than in the per-symbol update path.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,
