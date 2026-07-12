@@ -382,3 +382,18 @@ frame. Only successful whole-stream validation enters the draining state.
 Map malformed format conditions to a stable malformed-stream error and
 insufficient encoded, decoded, or view workspace to out-of-memory. Both are
 terminal for the instance. Repeated calls after success return end-of-stream.
+
+## DD-027: The bounded encoder commits complete frames
+
+- Date: 2026-07-12
+- Status: accepted
+
+Emit the stream header independently, then buffer exactly one uncompressed
+frame and one serialized frame. A full normal frame is encoded and may be
+drained before `EndInput`; only the final original-size-derived short frame
+depends on stream completion.
+
+Pending output has priority and may stop input consumption with `NeedOutput`.
+Non-terminal `Flush` cannot shorten a deterministic outer frame and therefore
+leaves a partial frame open. This reduces workspace from whole-stream size to
+configured frame size without changing a byte of the format.

@@ -33,6 +33,7 @@ set(MARC_SOURCES
     src/frame/blocked_huffman_stream.cpp
     src/frame/blocked_huffman_incremental_encoder.cpp
     src/frame/blocked_huffman_incremental_decoder.cpp
+    src/frame/blocked_huffman_frame_streaming_encoder.cpp
     src/frame/stream_header.cpp
     src/marc.cpp
 )
@@ -103,6 +104,7 @@ if(MARC_BUILD_TESTS)
         tests/blocked_huffman_stream_tests.cpp
         tests/blocked_huffman_incremental_encoder_tests.cpp
         tests/blocked_huffman_incremental_decoder_tests.cpp
+        tests/blocked_huffman_frame_streaming_encoder_tests.cpp
         tests/checked_math_tests.cpp
         tests/canonical_huffman_tests.cpp
         tests/endian_tests.cpp

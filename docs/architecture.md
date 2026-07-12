@@ -117,3 +117,17 @@ workspace capacity, and invokes the strict whole-stream decoder. Only a fully
 validated stream populates decoded workspace, which is then drained with
 arbitrary output capacity. Malformed input and workspace exhaustion are stable
 terminal errors.
+
+### Frame-at-a-time encoder
+
+The bounded encoder emits the fixed stream header immediately, collects at most
+one configured uncompressed frame, encodes that frame into a caller-owned
+serialized-frame workspace, and drains it before reusing both workspaces. It
+does not retain the whole input or whole encoded stream. A partial frame remains
+open across non-terminal `Flush`; known size determines when the final short
+frame is complete.
+
+If output capacity prevents a pending header or frame from draining, input is
+left unconsumed and `NeedOutput` is returned. Once a complete frame drains, the
+same call may resume input consumption. The emitted representation remains
+identical to the buffered and one-shot references.

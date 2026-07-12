@@ -314,3 +314,16 @@ no legal guarantee of non-infringement.
   decoded-output capacity without weakening strict reference validation.
 - Similarity review: no external incremental decoder state machine or tests
   were compared.
+
+## 2026-07-12 - Frame-at-a-time Blocked Huffman encoder
+
+- Authoring method: independently refined the buffered encoder using the
+  complete frame reference and immutable known-size boundaries.
+- Implementation sources consulted: none.
+- Independent decisions: immediate stream-header drain; one raw-frame and one
+  serialized-frame workspace; pending-output priority; full-frame commits
+  before end input; partial-frame flush deferral; identical reference bytes.
+- Generated-code task description: bound incremental encoder workspace by one
+  frame while preserving arbitrary input/output chunking and terminal states.
+- Similarity review: no external streaming encoder buffering strategy or state
+  machine was compared.
