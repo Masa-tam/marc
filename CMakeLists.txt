@@ -21,6 +21,7 @@ set(MARC_SOURCES
     src/core/limits.cpp
     src/core/status.cpp
     src/entropy/canonical_huffman.cpp
+    src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
     src/frame/stream_header.cpp
     src/marc.cpp
@@ -87,6 +88,7 @@ if(MARC_BUILD_TESTS)
         tests/endian_tests.cpp
         tests/header_accumulator_tests.cpp
         tests/hash_tap_tests.cpp
+        tests/huffman_decode_table_tests.cpp
         tests/limits_tests.cpp
         tests/frame_header_tests.cpp
         tests/status_tests.cpp

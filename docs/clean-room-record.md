@@ -168,3 +168,16 @@ no legal guarantee of non-infringement.
   allocation or recursion.
 - Similarity review: no external implementation structure or test suite was
   consulted.
+
+## 2026-07-12 - Bounded Huffman decode table
+
+- Authoring method: independently derived from the validated canonical codes,
+  LSB-first format rule, and bounded fallback requirement.
+- Implementation sources consulted: none.
+- Independent decisions: 8-bit direct table, 511-node fixed binary table,
+  caller-supplied bit reservoir, distinct input-starvation and invalid-path
+  results, and transactional table construction.
+- Generated-code task description: construct and test a bounded physical-code
+  decode table without allocation, recursion, or byte-source coupling.
+- Similarity review: no external decode-table layout or implementation was
+  compared.

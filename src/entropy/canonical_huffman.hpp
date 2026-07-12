@@ -23,6 +23,7 @@ enum class HuffmanTableError : std::uint8_t {
     code_length_exceeded,
     oversubscribed,
     incomplete,
+    internal_error,
 };
 
 enum class HuffmanBuildError : std::uint8_t {

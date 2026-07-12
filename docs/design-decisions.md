@@ -235,3 +235,17 @@ Otherwise select raw representation. The fixed per-block descriptor is common
 to both alternatives and therefore cancels from the comparison. This makes the
 choice deterministic and prevents table overhead from expanding small or
 incompressible blocks.
+
+## DD-017: Huffman decoding uses a bounded two-level strategy
+
+- Date: 2026-07-12
+- Status: accepted
+
+Build a fixed 8-bit direct lookup table for short physical LSB-first codes and
+a bounded binary table with at most 511 nodes for all codes. A lookup consumes
+no more than the supplied available-bit count. An incomplete prefix reports
+input starvation, while a missing branch reports a malformed code path.
+
+Keep byte acquisition outside this primitive. This permits the same validated
+table to serve incremental bit readers without embedding buffering policy or
+assuming that 8 bits are always immediately available.
