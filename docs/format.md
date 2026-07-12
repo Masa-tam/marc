@@ -582,3 +582,93 @@ With frame size 3 and entropy block size 2, input `ABA` produces two descriptors
 and two 8-byte payloads. The serialized frame size is
 `56 + 2*528 + 16 = 1128` bytes. Its first payload is the `AB` vector and its
 second payload is the one-symbol `A` vector above.
+
+## tANS variant 1
+
+tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
+`table_log` is exactly 12, table size `L` is 4096, and live states occupy
+`[L,2L)`. Stream entropy block size is nonzero and defaults to 65,536 byte
+symbols. Every block rebuilds and validates its model and tables independently.
+
+Normalize frequencies exactly as specified for rANS variant 1. Construct a
+4096-entry spread table as follows:
+
+```text
+position = 0
+step = 2563
+for symbol = 0..255:
+    repeat normalized_frequency[symbol] times:
+        spread[position] = symbol
+        position = (position + step) & 4095
+```
+
+After filling, `position` must return to zero and every slot must have been
+written exactly once. Scan spread positions `j=0..4095` in numeric order. For
+the symbol `s=spread[j]`, assign the next consecutive reduced state
+`q` from `[frequency[s], 2*frequency[s])`. The decode entry for live state
+`L+j` is:
+
+```text
+symbol = s
+bit_count = table_log - floor(log2(q))
+state_base = q << bit_count
+```
+
+`state_base` and `state_base + (1<<bit_count) - 1` must both lie in `[L,2L)`.
+The inverse encode lookup maps each pair `(s,q)` back to `L+j`.
+
+Initialize encoder state `x=L` and traverse source symbols in reverse. For the
+next symbol `s`, find the unique `k` for which `q=x>>k` is in
+`[frequency[s],2*frequency[s])` and that q's decode `bit_count` equals `k`.
+Logically prepend the `k` low bits of `x`, least-significant bit first, then set
+`x=encode_lookup[s,q]`. The completed block bit sequence is therefore already
+in decoder consumption order even though source traversal was reversed.
+
+The payload begins with little-endian uint16 `x-L`, followed by that bit
+sequence packed by the repository LSB-first rule. Decoding starts at
+`x=L+state_offset`; for every declared symbol it selects the decode entry,
+reads `bit_count` bits as an LSB-first numeric value, and sets
+`x=state_base+value`. Reject an offset at least L, an invalid table entry,
+missing bits, extra declared valid bits, nonzero high padding, or a terminal
+state other than exactly L.
+
+### tANS descriptor and frame layout
+
+Each block has one 528-byte descriptor. All descriptors precede all payloads in
+logical block order, matching the rANS frame-region convention.
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | symbol count | configured block size or final remainder |
+| 4 | 4 | payload size | exact bytes; at least 2 |
+| 8 | 1 | table log | exactly 12 |
+| 9 | 1 | final valid bits | 0 iff no bit bytes; otherwise 1..8 |
+| 10 | 1 | flags | zero |
+| 11 | 5 | reserved | zero |
+| 16 | 512 | normalized frequencies | 256 little-endian uint16 values |
+
+Payload size is exactly `2 + ceil(encoded_bit_count/8)`. When payload size is
+two, final valid bits is zero. Otherwise it identifies the valid low bits of the
+last byte; unused high bits are zero. Frequencies sum to 4096 and are nonzero
+for at least one symbol. Frame block count, descriptor extent, payload sum, and
+outer-frame boundary rules are identical to rANS.
+
+### Hand-checkable tANS vectors
+
+Using the deterministic spread above:
+
+| Input | Nonzero normalized frequencies | Payload | Final valid bits |
+|---|---|---|---:|
+| `A` | `A:4096` | `00 00` | 0 |
+| `AA` | `A:4096` | `00 00` | 0 |
+| `AB` | `A:2048, B:2048` | `06 00 00` | 2 |
+| `ABA` | `A:2731, B:1365` | `0C 0B 00` | 2 |
+
+For `A`, descriptor bytes 0 through 15 are:
+
+```text
+01 00 00 00 02 00 00 00 0C 00 00 00 00 00 00 00
+```
+
+All frequency entries are zero except symbol `41` at descriptor offset 146,
+whose little-endian uint16 value is `00 10`.

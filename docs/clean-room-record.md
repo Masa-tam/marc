@@ -665,6 +665,23 @@ no legal guarantee of non-infringement.
   opaque transform without exceptions or C++ types crossing the ABI.
 - Similarity review: no external C API layout or wrapper structure was compared.
 
+## 2026-07-13 - tANS variant 1 specification
+
+- Authoring method: specialized the published tabled-ANS finite-state model
+  into a repository-defined deterministic bounded format.
+- References used: Duda arXiv:1311.2540 and marc's existing serialization,
+  normalization, limits, framing, and bit-order rules.
+- Known implementations intentionally not consulted: all tANS/FSE source,
+  pseudocode derived from implementations, table builders, formats, and vectors.
+- Independent decisions: fixed 4096-state interval; step-2563 numeric-symbol
+  spread; numeric-position reduced-state assignment; uint16 state offset;
+  decoder-order LSB-first bits; exact terminal state and padding; fixed
+  528-byte descriptor.
+- Generated-code task description: define an independently reconstructible tANS
+  automaton and exact strict block representation before implementation.
+- Similarity review: no external implementation structure or byte format was
+  compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

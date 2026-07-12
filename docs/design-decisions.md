@@ -866,3 +866,20 @@ Encoding uses primary raw-frame and secondary serialized-frame byte workspaces.
 Decoding uses primary serialized-frame, secondary decoded-frame, and aligned
 block-view workspaces. Validate reserved fields, workspace extents, and view
 alignment before allocating the C++ implementation object.
+
+## DD-056: tANS variant 1 uses a deterministic 4096-state automaton
+
+- Date: 2026-07-13
+- Status: accepted
+
+Fix variant 1 to `table_log=12`, `L=4096`, state interval `[L,2L)`, and the
+same exact normalized frequencies as rANS variant 1. Spread normalized symbol
+occurrences by walking the table with step 2563 from position zero, processing
+symbols in numeric order. The odd step permutes every table position exactly
+once and makes table reconstruction independent of host or library behavior.
+
+Serialize the final encoder-state offset as little-endian uint16 followed by
+the decoder-consumption-order bit sequence packed LSB-first. Encode source
+symbols in reverse and prepend each emitted low-bit chunk logically. Require
+exact bit consumption, zero high padding, and terminal state `L`. This is a
+repository-defined tANS representation and is not claimed to be FSE-compatible.

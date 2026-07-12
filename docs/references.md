@@ -93,3 +93,16 @@ rANS design references:
 Frequency normalization, tie breaking, byte renormalization, state layout,
 descriptor layout, and vectors are independently specified for marc. No ANS
 implementation source, source-derived pseudocode, or test suite was consulted.
+
+tANS design reference:
+
+- Jarek Duda, "Asymmetric numeral systems: entropy coding combining speed of
+  Huffman coding with compression rate of arithmetic coding," arXiv:1311.2540,
+  2013. Used for the finite-state interval, symbol-spreading, inverse table, and
+  bulk bit-transfer foundations of tabled ANS.
+  <https://arxiv.org/abs/1311.2540>
+
+marc's normalization, deterministic spreading step, descriptor, bit layout,
+terminal-state rule, and vectors are independently specified below. No tANS or
+FSE implementation source, source-derived pseudocode, or test suite was
+consulted.

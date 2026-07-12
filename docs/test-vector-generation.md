@@ -131,3 +131,10 @@ For streaming decode, feed that reference stream through one-byte input and
 output buffers. Corrupt the initial state of the second frame and verify that
 the first four raw bytes are committed while no byte from the corrupt frame is
 published.
+
+tANS hand vectors are generated independently from DD-056 by filling the entire
+4096-slot spread permutation, scanning numeric state positions to assign each
+symbol's reduced states, and then applying the inverse lookup to `A`, `AA`,
+`AB`, and `ABA`. Record the final state offset, decoder-order bit chunks,
+LSB-first packed bytes, valid-bit count, terminal state, and exact bit
+consumption. Single-symbol vectors intentionally produce no bit bytes.
