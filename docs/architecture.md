@@ -110,3 +110,10 @@ This buffered reference is not the final bounded-frame streaming design. Its
 encoded bytes must match the one-shot reference for every chunking pattern. A
 later frame-at-a-time implementation will reduce workspace requirements while
 retaining that deterministic representation and the same terminal-state rules.
+
+The matching buffered decoder accumulates the encoded stream in caller-owned
+storage. At `EndInput` it parses the stream header, checks decoded and view
+workspace capacity, and invokes the strict whole-stream decoder. Only a fully
+validated stream populates decoded workspace, which is then drained with
+arbitrary output capacity. Malformed input and workspace exhaustion are stable
+terminal errors.

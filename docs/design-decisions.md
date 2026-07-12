@@ -368,3 +368,17 @@ and stable terminal states without changing the format.
 It deliberately defers output until finish and treats non-terminal `Flush` as
 non-mutating. `ResetBlock` remains unsupported until the frame-at-a-time state
 machine can give it exact format semantics.
+
+## DD-026: The buffered decoder preserves whole-stream validation atomicity
+
+- Date: 2026-07-12
+- Status: accepted
+
+Accumulate encoded bytes in caller-owned storage until `EndInput`, then parse
+the fixed stream header to validate required decoded capacity before invoking
+the strict reference decoder. Reuse a caller-owned block-view array for every
+frame. Only successful whole-stream validation enters the draining state.
+
+Map malformed format conditions to a stable malformed-stream error and
+insufficient encoded, decoded, or view workspace to out-of-memory. Both are
+terminal for the instance. Repeated calls after success return end-of-stream.

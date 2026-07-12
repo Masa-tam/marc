@@ -300,3 +300,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: accept arbitrary input chunking and output
   capacity while producing bytes identical to the one-shot encoder.
 - Similarity review: no external streaming codec state machine was compared.
+
+## 2026-07-12 - Buffered incremental Blocked Huffman decoder
+
+- Authoring method: independently wrapped the strict complete stream decoder in
+  the `ProcessResult` contract and caller-owned workspaces.
+- Implementation sources consulted: none.
+- Independent decisions: accumulate until explicit end; preflight decoded size
+  from the fixed header; reusable caller view workspace; whole-stream atomic
+  validation; stable malformed versus workspace-exhaustion errors; terminal
+  error and ended states.
+- Generated-code task description: accept arbitrary encoded-input chunking and
+  decoded-output capacity without weakening strict reference validation.
+- Similarity review: no external incremental decoder state machine or tests
+  were compared.
