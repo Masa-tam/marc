@@ -501,3 +501,17 @@ no legal guarantee of non-infringement.
   complete known-size multi-frame Adaptive Huffman stream.
 - Similarity review: no external stream traversal or validation structure was
   compared.
+
+## 2026-07-12 - Frame-at-a-time Adaptive Huffman encoder
+
+- Authoring method: refined the complete Adaptive stream reference into the
+  repository's caller-buffered `ProcessResult` state machine.
+- References used: repository architecture and reference stream only.
+- Known implementations intentionally not consulted: all external Adaptive
+  Huffman streaming encoder implementations and tests.
+- Independent decisions: stream-header-first drain; one raw and one serialized
+  frame workspace; pending-output priority; deterministic flush deferral;
+  explicit preparation-error categories; reference-byte identity.
+- Generated-code task description: encode known-size Adaptive frames
+  incrementally with arbitrary input chunks and one-byte output capacity.
+- Similarity review: no external streaming state machine was compared.

@@ -593,3 +593,20 @@ frame with no output, rejects truncation or trailing bytes, and only then
 repeats decoding into caller storage. Do not treat output-too-small as evidence
 of semantic validation. This reference preserves whole-stream atomicity and
 will serve as the oracle for a later frame-committing streaming transform.
+
+## DD-039: Adaptive streaming encoding commits complete outer frames
+
+- Date: 2026-07-12
+- Status: accepted
+
+Emit the stream header first, then retain at most one configured raw frame and
+one serialized frame in caller-owned workspaces. Encode and expose a normal
+full frame before end input; the final short frame is complete only when its
+known original-size boundary is reached. Drain pending output before consuming
+later input, so callers can re-present an unconsumed suffix after `NeedOutput`.
+
+Non-terminal flush leaves a partial frame open and does not change bytes.
+Explicit reset is unsupported. Map encoded-workspace exhaustion to out of
+memory, format/local planning limits to limit exceeded, boundary misuse to
+invalid argument, and impossible post-plan failures to internal error. Every
+input/output chunking must match the complete stream reference byte-for-byte.

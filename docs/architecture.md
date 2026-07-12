@@ -190,6 +190,13 @@ requiring or touching output. Only a successful whole-stream scan is repeated
 into caller output. Thus the reference stream has whole-stream atomicity while
 retaining independently reset and independently validatable frames.
 
+The frame-at-a-time Adaptive encoder shares the same commit boundary as its
+reference format: it collects one original-size-derived raw frame, encodes it
+atomically into one caller workspace, and drains it before reuse. The stream
+header drains independently. Pending output has priority, non-terminal flush
+does not shorten a frame, and explicit reset remains unsupported because the
+format already fixes reset at outer frame boundaries.
+
 ### Initial C transform ABI
 
 The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,
