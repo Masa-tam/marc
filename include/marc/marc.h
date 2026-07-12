@@ -7,7 +7,10 @@
 #include "marc/export.h"
 
 #ifdef __cplusplus
+#define MARC_NOEXCEPT noexcept
 extern "C" {
+#else
+#define MARC_NOEXCEPT
 #endif
 
 #define MARC_ABI_VERSION UINT32_C(1)
@@ -56,19 +59,64 @@ typedef struct marc_process_result {
 
 typedef struct marc_transform marc_transform;
 
-/* ABI-safe library metadata. These functions never throw across the C ABI. */
-MARC_API uint32_t marc_abi_version(void);
-MARC_API const char* marc_version_string(void);
-MARC_API const char* marc_status_name(marc_status status);
+typedef struct marc_blocked_huffman_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t block_size;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_block_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_internal_buffered_bytes;
+    uint32_t max_blocks_per_frame;
+    uint32_t reserved2;
+} marc_blocked_huffman_config;
 
+typedef struct marc_workspace_requirements {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    size_t primary_bytes;
+    size_t secondary_bytes;
+    size_t views_bytes;
+    size_t views_alignment;
+} marc_workspace_requirements;
+
+/* ABI-safe library metadata. These functions never throw across the C ABI. */
+MARC_API uint32_t marc_abi_version(void) MARC_NOEXCEPT;
+MARC_API const char* marc_version_string(void) MARC_NOEXCEPT;
+MARC_API const char* marc_status_name(marc_status status) MARC_NOEXCEPT;
+
+MARC_API marc_status marc_blocked_huffman_config_init(
+    marc_direction direction, marc_blocked_huffman_config* config)
+    MARC_NOEXCEPT;
+MARC_API marc_status marc_blocked_huffman_workspace_requirements(
+    const marc_blocked_huffman_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
 /*
- * Transform creation and configuration will be added with the first framed
- * format variant. Handles are always owned and destroyed by marc; the ABI will
- * not expose C++ objects or library-allocated variable-sized result buffers.
+ * primary/secondary meanings follow direction: encoder input/encoded-frame,
+ * decoder encoded-frame/decoded-frame. views_workspace is decoder-only and
+ * its address must satisfy views_alignment. All workspaces remain caller-owned
+ * and must outlive the transform.
  */
+MARC_API marc_status marc_blocked_huffman_create(
+    const marc_blocked_huffman_config* config,
+    marc_buffer primary_workspace,
+    marc_buffer secondary_workspace,
+    marc_buffer views_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API void marc_transform_destroy(marc_transform* transform) MARC_NOEXCEPT;
+MARC_API marc_process_result marc_transform_process(
+    marc_transform* transform, marc_const_buffer input, marc_buffer output,
+    marc_process_flags flags) MARC_NOEXCEPT;
 
 #ifdef __cplusplus
 }
 #endif
+
+#undef MARC_NOEXCEPT
 
 #endif

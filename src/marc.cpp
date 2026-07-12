@@ -1,16 +1,89 @@
 #include "marc/marc.h"
 
+#include "core/status.hpp"
+#include "entropy/blocked_huffman_controller.hpp"
+#include "frame/blocked_huffman_frame_streaming_decoder.hpp"
+#include "frame/blocked_huffman_frame_streaming_encoder.hpp"
+#include "frame/blocked_huffman_profile.hpp"
+
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <new>
+#include <span>
+
+struct marc_transform {
+    marc::core::Transform* implementation;
+};
+
+namespace {
+
+marc_status status_for(const marc::core::ErrorCode code) noexcept {
+    switch (code) {
+    case marc::core::ErrorCode::none: return MARC_STATUS_OK;
+    case marc::core::ErrorCode::invalid_argument:
+        return MARC_STATUS_INVALID_ARGUMENT;
+    case marc::core::ErrorCode::unsupported: return MARC_STATUS_UNSUPPORTED;
+    case marc::core::ErrorCode::limit_exceeded:
+        return MARC_STATUS_LIMIT_EXCEEDED;
+    case marc::core::ErrorCode::out_of_memory:
+        return MARC_STATUS_OUT_OF_MEMORY;
+    case marc::core::ErrorCode::malformed_stream:
+        return MARC_STATUS_MALFORMED_STREAM;
+    case marc::core::ErrorCode::internal_error:
+        return MARC_STATUS_INTERNAL_ERROR;
+    }
+    return MARC_STATUS_INTERNAL_ERROR;
+}
+
+marc_status status_for(const marc::core::StreamStatus status) noexcept {
+    switch (status) {
+    case marc::core::StreamStatus::progress: return MARC_STATUS_PROGRESS;
+    case marc::core::StreamStatus::need_input: return MARC_STATUS_NEED_INPUT;
+    case marc::core::StreamStatus::need_output: return MARC_STATUS_NEED_OUTPUT;
+    case marc::core::StreamStatus::end_of_stream:
+        return MARC_STATUS_END_OF_STREAM;
+    case marc::core::StreamStatus::error: return MARC_STATUS_INTERNAL_ERROR;
+    }
+    return MARC_STATUS_INTERNAL_ERROR;
+}
+
+bool valid_buffer(const void* data, const std::size_t size) noexcept {
+    return size == 0 || data != nullptr;
+}
+
+bool load_config(const marc_blocked_huffman_config* config,
+                 marc::core::DecoderLimits& limits) noexcept {
+    if (config == nullptr
+        || config->struct_size != sizeof(marc_blocked_huffman_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0) {
+        return false;
+    }
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_block_size = config->max_block_size;
+    limits.max_compressed_payload_size =
+        config->max_compressed_payload_size;
+    limits.max_dictionary_serialized_size = config->max_frame_size;
+    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    limits.max_blocks_per_frame = config->max_blocks_per_frame;
+    return true;
+}
+
+} // namespace
+
 extern "C" {
 
-uint32_t marc_abi_version(void) {
+uint32_t marc_abi_version(void) noexcept {
     return MARC_ABI_VERSION;
 }
 
-const char* marc_version_string(void) {
+const char* marc_version_string(void) noexcept {
     return "0.1.0";
 }
 
-const char* marc_status_name(const marc_status status) {
+const char* marc_status_name(const marc_status status) noexcept {
     switch (status) {
     case MARC_STATUS_OK: return "ok";
     case MARC_STATUS_PROGRESS: return "progress";
@@ -25,6 +98,169 @@ const char* marc_status_name(const marc_status status) {
     case MARC_STATUS_INTERNAL_ERROR: return "internal_error";
     default: return "unknown";
     }
+}
+
+marc_status marc_blocked_huffman_config_init(
+    const marc_direction direction,
+    marc_blocked_huffman_config* config) noexcept {
+    if (config == nullptr || (direction != MARC_DIRECTION_ENCODE
+        && direction != MARC_DIRECTION_DECODE)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    *config = {};
+    config->struct_size = sizeof(*config);
+    config->abi_version = MARC_ABI_VERSION;
+    config->direction = direction;
+    config->frame_size = UINT32_C(1) << 20;
+    config->block_size = UINT32_C(1) << 16;
+    const marc::core::DecoderLimits limits{};
+    config->max_total_output_size = limits.max_total_output_size;
+    config->max_frame_size = limits.max_frame_size;
+    config->max_block_size = limits.max_block_size;
+    config->max_compressed_payload_size =
+        limits.max_compressed_payload_size;
+    config->max_internal_buffered_bytes = limits.max_internal_buffered_bytes;
+    config->max_blocks_per_frame = limits.max_blocks_per_frame;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_blocked_huffman_workspace_requirements(
+    const marc_blocked_huffman_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {};
+    requirements->struct_size = sizeof(*requirements);
+    requirements->abi_version = MARC_ABI_VERSION;
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        marc::frame::StreamHeader stream{};
+        marc::frame::EncoderWorkspaceRequirements needed{};
+        const auto error = marc::frame::make_blocked_huffman_profile(
+            {config->original_size, config->frame_size, config->block_size},
+            limits, stream, needed);
+        if (error != marc::frame::ProfileError::none) {
+            return status_for(marc::frame::profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_input_bytes;
+        requirements->secondary_bytes = needed.frame_encoded_bytes;
+        requirements->views_alignment = 1;
+        return MARC_STATUS_OK;
+    }
+    if (config->direction == MARC_DIRECTION_DECODE) {
+        marc::frame::DecoderWorkspaceRequirements needed{};
+        const auto error =
+            marc::frame::calculate_blocked_huffman_decoder_workspace(
+                limits, needed);
+        if (error != marc::frame::ProfileError::none) {
+            return status_for(marc::frame::profile_error_code(error));
+        }
+        using View = marc::entropy::internal::BlockedHuffmanBlockView;
+        if (needed.block_view_count
+            > std::numeric_limits<std::size_t>::max() / sizeof(View)) {
+            return MARC_STATUS_LIMIT_EXCEEDED;
+        }
+        requirements->primary_bytes = needed.frame_encoded_bytes;
+        requirements->secondary_bytes = needed.frame_decoded_bytes;
+        requirements->views_bytes = needed.block_view_count * sizeof(View);
+        requirements->views_alignment = alignof(View);
+        return MARC_STATUS_OK;
+    }
+    return MARC_STATUS_INVALID_ARGUMENT;
+}
+
+marc_status marc_blocked_huffman_create(
+    const marc_blocked_huffman_config* config,
+    const marc_buffer primary_workspace,
+    const marc_buffer secondary_workspace,
+    const marc_buffer views_workspace,
+    marc_transform** transform) noexcept {
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *transform = nullptr;
+    marc_workspace_requirements needed{};
+    const auto query = marc_blocked_huffman_workspace_requirements(
+        config, &needed);
+    if (query != MARC_STATUS_OK) return query;
+    if (!valid_buffer(primary_workspace.data, primary_workspace.size)
+        || !valid_buffer(secondary_workspace.data, secondary_workspace.size)
+        || !valid_buffer(views_workspace.data, views_workspace.size)
+        || primary_workspace.size < needed.primary_bytes
+        || secondary_workspace.size < needed.secondary_bytes
+        || views_workspace.size < needed.views_bytes
+        || (needed.views_bytes != 0
+            && reinterpret_cast<std::uintptr_t>(views_workspace.data)
+                % needed.views_alignment != 0)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    marc::core::Transform* implementation{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        marc::frame::StreamHeader stream{};
+        marc::frame::EncoderWorkspaceRequirements ignored{};
+        if (marc::frame::make_blocked_huffman_profile(
+                {config->original_size, config->frame_size,
+                 config->block_size}, limits, stream, ignored)
+            != marc::frame::ProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        implementation = new (std::nothrow)
+            marc::frame::BlockedHuffmanFrameStreamingEncoder(
+                stream, limits,
+                {reinterpret_cast<std::byte*>(primary_workspace.data),
+                 needed.primary_bytes},
+                {reinterpret_cast<std::byte*>(secondary_workspace.data),
+                 needed.secondary_bytes});
+    } else {
+        using View = marc::entropy::internal::BlockedHuffmanBlockView;
+        implementation = new (std::nothrow)
+            marc::frame::BlockedHuffmanFrameStreamingDecoder(
+                limits,
+                {reinterpret_cast<std::byte*>(primary_workspace.data),
+                 needed.primary_bytes},
+                {reinterpret_cast<std::byte*>(secondary_workspace.data),
+                 needed.secondary_bytes},
+                {reinterpret_cast<View*>(views_workspace.data),
+                 needed.views_bytes / sizeof(View)});
+    }
+    if (implementation == nullptr) return MARC_STATUS_OUT_OF_MEMORY;
+    auto* handle = new (std::nothrow) marc_transform{implementation};
+    if (handle == nullptr) {
+        delete implementation;
+        return MARC_STATUS_OUT_OF_MEMORY;
+    }
+    *transform = handle;
+    return MARC_STATUS_OK;
+}
+
+void marc_transform_destroy(marc_transform* transform) noexcept {
+    if (transform != nullptr) {
+        delete transform->implementation;
+        delete transform;
+    }
+}
+
+marc_process_result marc_transform_process(
+    marc_transform* transform, const marc_const_buffer input,
+    const marc_buffer output, const marc_process_flags flags) noexcept {
+    marc_process_result result{};
+    if (transform == nullptr || transform->implementation == nullptr
+        || !valid_buffer(input.data, input.size)
+        || !valid_buffer(output.data, output.size)) {
+        result.status = MARC_STATUS_INVALID_ARGUMENT;
+        return result;
+    }
+    const auto core_result = transform->implementation->process(
+        {reinterpret_cast<const std::byte*>(input.data), input.size},
+        {reinterpret_cast<std::byte*>(output.data), output.size}, flags);
+    result.input_consumed = core_result.input_consumed;
+    result.output_produced = core_result.output_produced;
+    result.status = core_result.status == marc::core::StreamStatus::error
+        ? status_for(core_result.error.code)
+        : status_for(core_result.status);
+    result.error_byte_position = core_result.error.byte_position;
+    result.error_bit_position = core_result.error.bit_position;
+    return result;
 }
 
 }

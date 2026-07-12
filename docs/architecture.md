@@ -158,3 +158,17 @@ arithmetic is checked before conversion to `size_t`.
 Profile failures are collapsed into the stable core categories invalid
 argument, unsupported, and limit exceeded. The later C adapter therefore need
 not expose internal parser or codec-specific enumerations.
+
+### Initial C transform ABI
+
+The first stateful C ABI exposes only Blocked Huffman variant 1. A versioned,
+size-tagged configuration is initialized by the library, queried for workspace
+requirements, and then used to construct an opaque transform. Encoder
+workspaces hold one raw and one serialized frame. Decoder workspaces hold one
+serialized frame, one decoded frame, and an aligned array of internal block
+views. These buffers remain caller-owned and must outlive the handle.
+
+Only the small opaque handle and its C++ implementation object are allocated by
+the library with non-throwing allocation. Processing uses caller input/output
+spans and maps stable core status and error categories into fixed C constants.
+Every exported function is `noexcept` when compiled as C++.

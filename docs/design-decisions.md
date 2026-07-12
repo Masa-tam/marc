@@ -430,3 +430,21 @@ internally buffered body, one maximum decoded frame, and the configured maximum
 block-view count. Arithmetic overflow is reported in the stable limit-exceeded
 category. This boundary keeps the future C ABI independent of internal enum
 layout and avoids hidden allocation-size assumptions.
+
+## DD-030: The initial C ABI uses caller-owned typed workspaces
+
+- Date: 2026-07-12
+- Status: accepted
+
+Expose the frame-at-a-time Blocked Huffman variant 1 path through a small opaque
+handle. Require callers to initialize a size-tagged, ABI-versioned config, ask
+for workspace requirements, and retain three direction-dependent byte buffers
+for the transform lifetime. Report the decoder view-buffer alignment explicitly
+rather than exposing the internal view type.
+
+The library owns only the fixed-size handle and implementation object, allocated
+with non-throwing `new`; no allocator callback is introduced. Creation validates
+all pointers, capacities, reserved fields, configuration limits, and alignment
+before publishing a handle. Destruction accepts null. The process adapter
+preserves independent input consumption and output production and maps internal
+errors to the existing stable C status constants.

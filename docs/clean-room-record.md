@@ -354,3 +354,16 @@ no legal guarantee of non-infringement.
   needed before exposing stateful transforms through the small C ABI.
 - Similarity review: no external codec factory, ABI adapter, or workspace-query
   implementation was compared.
+
+## 2026-07-12 - Initial stateful C ABI
+
+- Authoring method: independently adapted the repository's profile factory and
+  core transform contract to plain C structures and an opaque handle.
+- Implementation sources consulted: none.
+- Independent decisions: size and ABI tags; caller-owned direction-specific
+  workspaces; explicit decoder-view alignment; non-throwing fixed-size handle
+  allocation; null-safe destruction; stable status translation.
+- Generated-code task description: expose Blocked Huffman variant 1 workspace
+  queries, construction, destruction, and streaming processing to C callers.
+- Similarity review: no external compression-library C ABI or adapter source was
+  consulted or compared.
