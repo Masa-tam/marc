@@ -484,3 +484,43 @@ test-suite jobs; package jobs must not depend on it.
 Dependabot checks GitHub Actions and git submodules weekly. Updates remain pull
 requests that must pass CI rather than automatically changing the pinned
 GoogleTest revision or action major without review.
+
+## DD-033: Adaptive Huffman baseline is framed FGK variant 1
+
+- Date: 2026-07-12
+- Status: accepted
+
+Use byte-alphabet FGK as Adaptive Huffman variant 1. Begin every outer frame
+with one NYT root and reset the complete model at the next frame. A non-empty
+frame contains exactly one entropy block; it never crosses a frame boundary.
+This makes frames independently decodable and gives model reset, corruption
+containment, and bounded counter lifetime one shared boundary.
+
+Number the initial root 512. Splitting NYT number `n` retains `n` for the new
+internal node, assigns `n-1` to the new symbol as its right child, and `n-2` to
+the new NYT as its left child. Left and right edges emit 0 and 1 respectively.
+For an existing symbol, visit its leaf upward: swap with the highest-numbered
+node of equal weight that is neither the node, its parent, nor an ancestor or
+descendant, increment, then continue at its parent. For a new symbol, create
+NYT weight 0, symbol weight 1, and internal weight 1, then continue updates at
+the new internal node's former parent.
+
+The format caps this variant's uncompressed frame at 2^24 bytes. Node weights
+use 32-bit unsigned storage, so the mandatory frame-boundary full reset occurs
+long before overflow. This baseline deliberately uses synchronized reset as its
+rescaling policy and has no mid-frame halving or reconstruction rule. A future
+continuous or differently rescaled model requires a distinct variant ID.
+
+## DD-034: Adaptive payload final bits use a bounded descriptor
+
+- Date: 2026-07-12
+- Status: accepted
+
+Place one fixed 16-byte Adaptive Huffman descriptor between every non-empty
+frame header and payload. It repeats the symbol count and payload byte count,
+records final valid bits, and reserves all other fields. This lets the decoder
+reject contradictory sizes and calculate exact regions before tree traversal.
+
+Do not reinterpret the Blocked Huffman descriptor even though both are 16
+bytes. They are algorithm-specific structures selected only after the stream
+algorithm and variant have been validated.

@@ -1,9 +1,9 @@
 # Stream format
 
-The baseline stream prefix is assigned format version 1.0. Frame headers,
-algorithm parameter regions, payloads, and trailers remain incomplete. No
-encoder implementation may be added until its complete decoder-visible layout
-is specified here and accompanied by hand-checkable vectors.
+The baseline stream prefix is assigned format version 1.0. Representations not
+defined below remain incomplete. No encoder implementation may be added until
+its complete decoder-visible layout is specified here and accompanied by
+hand-checkable vectors.
 
 Accepted baseline constraints:
 
@@ -69,8 +69,8 @@ block, and original sizes must not exceed local decoder limits.
 | Entropy ID | Algorithm | Variant 1 |
 |---:|---|---|
 | 0 | None | variant 0 only |
-| 1 | Adaptive Huffman | FGK |
-| 2 | Blocked Huffman | canonical baseline, details pending |
+| 1 | Adaptive Huffman | framed FGK baseline defined below |
+| 2 | Blocked Huffman | canonical baseline defined below |
 | 3 | Dynamic Range Coder | byte-oriented adaptive order-0 baseline |
 | 4 | rANS | scalar 64-bit byte-renormalized baseline |
 | 5 | tANS | table-based baseline |
@@ -107,7 +107,7 @@ header.
 | 16 | 4 | uncompressed size | expected fixed size or final remainder |
 | 20 | 4 | dictionary serialized size | entropy-decoder output bytes |
 | 24 | 4 | compressed payload size | exact payload bytes in this frame |
-| 28 | 4 | entropy block count | nonzero only for block-buffered entropy |
+| 28 | 4 | entropy block count | algorithm-specific bounded block count |
 | 32 | 4 | block descriptor bytes | precedes compressed payload |
 | 36 | 4 | checksum trailer bytes | must be zero until checksums are defined |
 | 40 | 16 | reserved | all zero; nonzero is malformed |
@@ -123,9 +123,9 @@ The decoder rejects a frame after the declared original size is reached.
 With no dictionary transform, dictionary serialized size equals uncompressed
 size. With no entropy transform, compressed payload size also equals that size,
 and block count and descriptor size are zero. Blocked Huffman, rANS, and tANS
-require nonzero block count and descriptor size. Adaptive Huffman and Dynamic
-Range Coder use zero for both because their baseline variants are not block
-buffered at this layer.
+require nonzero block count and descriptor size. Adaptive Huffman variant 1
+uses exactly one descriptor and one entropy block per nonempty frame. Dynamic
+Range Coder uses zero for both until its representation is defined.
 
 ### Raw three-byte frame vector
 
@@ -244,3 +244,96 @@ The corresponding internal one-symbol Huffman model has length 1 for symbol
 `41`, zero for every other symbol, canonical and reversed code zero, payload
 byte `00`, and four valid bits. It remains a primitive test vector even though
 the mandatory stored-size rule selects raw for this block.
+
+## Adaptive Huffman FGK variant 1
+
+Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy
+parameter region, and requires stream entropy block size zero. Every nonempty
+frame is one independently coded entropy block and starts from the initial NYT
+tree. The variant's format-level maximum uncompressed frame size is 2^24 bytes,
+even if a decoder's local frame limit is larger.
+
+The initial tree is one NYT leaf of weight 0 and number 512. An internal node's
+left edge is bit 0 and right edge is bit 1. Path bits are emitted root to leaf.
+Because physical packing is LSB-first, the first path bit occupies the next
+available low-order bit; the path is not numerically reversed as a unit.
+
+To encode a symbol already present, emit its current root-to-leaf path. To
+encode a new symbol, emit the current NYT path followed by the symbol's numeric
+8-bit value least-significant bit first. The decoder rejects a literal following
+NYT if that symbol is already present.
+
+### Tree insertion and update
+
+Splitting NYT number `n` replaces it with an internal node retaining number
+`n`. Its left child is the new NYT with number `n-2` and weight 0. Its right
+child is the new symbol with number `n-1` and weight 1. The internal node starts
+at weight 1. At most 513 nodes exist.
+
+For an existing symbol, the update cursor begins at its leaf. For a new symbol,
+it begins at the former parent of the replaced NYT internal node; if the split
+node was the root, updating is complete. At each cursor node:
+
+1. Find the highest-numbered equal-weight node that is not the cursor, its
+   parent, an ancestor, or a descendant. If one exists, exchange the two nodes'
+   parent/child positions and node numbers. Roots are never exchanged.
+2. Increment the cursor weight by one.
+3. Continue with the cursor's parent after any exchange.
+
+Ties therefore have one exact outcome. Encoder and decoder perform insertion
+and update only after the complete symbol has been emitted or decoded.
+
+Every frame boundary resets all nodes, weights, and symbol mappings to the
+single NYT root. Weights are unsigned 32-bit integers. Since at most 2^24
+symbols occur before the mandatory reset, overflow is impossible. This full
+frame reset is variant 1's frequency-rescaling rule; there is no mid-frame
+halving. A different reset or rescale policy requires another variant ID.
+
+### Adaptive descriptor
+
+Exactly one 16-byte descriptor precedes each frame payload:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | symbol count | equals dictionary serialized size |
+| 4 | 4 | payload size | equals frame compressed payload size |
+| 8 | 1 | final valid bits | 1 through 8 |
+| 9 | 1 | flags | zero |
+| 10 | 6 | reserved | zero |
+
+Both sizes and the payload are nonzero. After exactly `symbol count` symbols,
+the decoder must have consumed precisely the declared valid payload bits.
+Unused high bits of the final byte are zero. Truncation, a duplicate NYT
+literal, an invalid tree relationship, excess valid bits, trailing payload
+bytes, or nonzero padding is malformed.
+
+### Hand-checkable payload vectors
+
+These vectors begin from a fresh frame. ASCII `A` is `0x41`, and `B` is
+`0x42`.
+
+| Input | Logical emission | Payload | Final valid bits |
+|---|---|---|---:|
+| `A` | empty NYT path, literal `41` | `41` | 8 |
+| `AA` | literal `41`, existing path `1` | `41 01` | 1 |
+| `AB` | literal `41`, NYT path `0`, literal `42` | `41 84 00` | 1 |
+| `ABA` | preceding `AB`, existing `A` path `1` | `41 84 02` | 2 |
+
+After `A`, node 512 is the weight-1 root with left NYT 510 weight 0 and
+right `A` 511 weight 1. After `AB`, root 512 has weight 2, left internal 510
+weight 1, right `A` 511 weight 1; node 510 has left NYT 508 weight 0 and right
+`B` 509 weight 1. Updating the final `A` selects no other leader, leaving the
+same shape with weights root 3 and `A` 2.
+
+The descriptor for the one-symbol `A` vector is:
+
+```text
+01 00 00 00 01 00 00 00 08 00 00 00 00 00 00 00
+```
+
+The descriptor for `ABA` declares symbol count 3, payload size 3, and two
+valid bits:
+
+```text
+03 00 00 00 03 00 00 00 02 00 00 00 00 00 00 00
+```

@@ -47,3 +47,22 @@ Blocked Huffman design references:
   <https://www.w3.org/Graphics/JPEG/itu-t81.pdf>
 
 No implementation source code was consulted for these primitives.
+
+Adaptive Huffman design references:
+
+- Robert G. Gallager, "Variations on a Theme by Huffman," IEEE Transactions on
+  Information Theory, volume 24, issue 6, pages 668-674, 1978,
+  DOI `10.1109/TIT.1978.1055959`. Used for the sibling-property
+  characterization and adaptive prefix-code foundation.
+  <https://doi.org/10.1109/TIT.1978.1055959>
+- Donald E. Knuth, "Dynamic Huffman Coding," Journal of Algorithms, volume 6,
+  issue 2, pages 163-180, 1985, DOI `10.1016/0196-6774(85)90036-7`.
+  Used for the FGK node-order update model.
+  <https://doi.org/10.1016/0196-6774(85)90036-7>
+- Newton Faller, "An Adaptive System for Data Compression," Record of the 7th
+  Asilomar Conference on Circuits, Systems and Computers, pages 593-597, 1973.
+  Bibliographic provenance for the independently originated adaptive method;
+  full text was not consulted.
+
+No Adaptive Huffman implementation source, source-derived pseudocode, or test
+suite was consulted.

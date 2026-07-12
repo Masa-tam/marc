@@ -60,3 +60,18 @@ re-presents unconsumed suffixes, applies `EndInput` to the final suffix until it
 is accepted, rejects progress without progress, and verifies repeatable
 end-of-stream. Flipping the first magic byte is the initial ABI-level malformed
 stream vector and must produce no decoded output.
+
+Adaptive Huffman FGK vectors record, after every symbol, the emitted NYT or
+symbol path, literal bits for a new symbol, node numbers, weights, parents,
+children, selected equal-weight leader, swaps, and final packed payload. Initial
+hand vectors are `A`, `AA`, `AB`, and `ABA` from `format.md`. Negative vectors
+independently cover truncated paths, truncated NYT literals, duplicate symbols
+after NYT, contradictory descriptor sizes, zero or excessive final-valid-bit
+counts, nonzero padding, trailing bits, invalid node relationships, and frames
+larger than the variant's 2^24-byte format limit.
+
+Chunk tests reset the model only at outer frame boundaries. The same frame must
+produce identical payload bytes for every input and output split. A two-frame
+vector repeats the same first symbol in each frame to prove that the second
+frame begins with an empty NYT path and an 8-bit literal rather than retaining
+the preceding frame's tree.

@@ -408,3 +408,20 @@ no legal guarantee of non-infringement.
   shared/static consumption while retaining pinned third-party revisions.
 - Similarity review: no external compression-project workflow was copied or
   structurally compared.
+
+## 2026-07-12 - Adaptive Huffman FGK variant 1 specification
+
+- Authoring method: derived a byte-alphabet framed representation from the
+  sibling-property and dynamic-tree descriptions in the cited papers, then
+  fixed every serialization and tie-breaking choice independently.
+- References used: Gallager 1978 and Knuth 1985 as recorded in
+  `references.md`; Faller 1973 bibliographic record only.
+- Known implementations intentionally not consulted: all Adaptive Huffman
+  source implementations, source-derived pseudocode, and test suites.
+- Independent decisions: node range 0..512; NYT-left/symbol-right insertion;
+  highest-number eligible leader; explicit non-relative swap exclusions;
+  one descriptor and model reset per frame; 2^24 frame cap; reset-only rescale.
+- Generated-code task description: define the complete decoder-visible FGK
+  variant and hand-checkable vectors before implementing validator or tree.
+- Similarity review: no external encoded vectors or implementation structure
+  was compared.
