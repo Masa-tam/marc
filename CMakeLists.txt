@@ -28,6 +28,8 @@ set(MARC_SOURCES
     src/entropy/dynamic_range_model.cpp
     src/entropy/dynamic_range_encoder.cpp
     src/entropy/dynamic_range_decoder.cpp
+    src/entropy/rans_format.cpp
+    src/entropy/rans_normalizer.cpp
     src/core/bit_io.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
@@ -182,6 +184,8 @@ if(MARC_BUILD_TESTS)
         tests/dynamic_range_model_tests.cpp
         tests/dynamic_range_encoder_tests.cpp
         tests/dynamic_range_decoder_tests.cpp
+        tests/rans_format_tests.cpp
+        tests/rans_normalizer_tests.cpp
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp
         tests/blocked_huffman_encoder_tests.cpp

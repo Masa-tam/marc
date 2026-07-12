@@ -726,3 +726,19 @@ no legal guarantee of non-infringement.
   variant 1 completely before implementing descriptor validation.
 - Similarity review: no external implementation structure or byte vector was
   compared.
+
+## 2026-07-13 - rANS descriptor and frequency normalizer
+
+- Authoring method: translated marc's fixed descriptor and exact normalization
+  rules into bounded, allocation-free validation structures.
+- References used: repository rANS format, limits, and design decision only.
+- Known implementations intentionally not consulted: all external ANS table,
+  normalization, descriptor, source, and tests.
+- Independent decisions: publish-on-success descriptor parsing; combined model-
+  payload buffer check; inline count and frequency arrays; signed-error rescans;
+  lower-symbol increment and higher-symbol decrement ties.
+- Generated-code task description: implement decoder-visible rANS descriptor
+  validation and deterministic finite-block frequency normalization before state
+  coding.
+- Similarity review: no external normalization structure or control flow was
+  compared.

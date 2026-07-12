@@ -279,6 +279,18 @@ range-model-total policy explicitly, uses only primary and secondary byte
 workspaces, and returns the common opaque transform processed and destroyed by
 the shared lifecycle functions.
 
+### rANS foundation
+
+rANS variant 1 begins with a fixed 528-byte descriptor validator and an
+allocation-free block normalizer. Descriptor parsing publishes only after fixed
+fields, reserved bytes, exact normalized sum, caller-expected sizes, table
+limits, block limits, payload limits, and combined buffered bytes pass.
+
+The normalizer stores 256 source counts and 256 uint16 frequencies inline. It
+uses signed 64-bit normalization errors, bounded scans, and explicit symbol tie
+breaks; output is assigned only after the exact sum 4096 is reached. This clear
+reference path performs no dynamic allocation or input-controlled recursion.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
