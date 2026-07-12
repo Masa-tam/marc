@@ -77,3 +77,24 @@ new logical input. Finishing emits the pending byte with zero high-bit padding.
 The bit reader exposes consumed-byte and produced-bit counts independently and
 can validate zero padding before byte alignment. These low-level results use a
 dedicated completion status rather than the transform-level `Progress` status.
+
+## DD-008: Limits precede frame-format allocation
+
+- Date: 2026-07-12
+- Status: accepted
+
+Keep policy limits separate from decoder state and parsed frame bounds. Validate
+the policy at decoder creation. After reading only the bounded fixed header,
+validate all declared regions and their checked sum before allocating model or
+block buffers. Track cumulative output separately so individually valid frames
+cannot exceed the whole-stream limit.
+
+Expansion validation uses `compressed_size * ratio + fixed_slack`. The fixed
+slack permits valid small and low-payload frames, while the ratio constrains
+large malicious expansion. Overflow in this calculation saturates the allowed
+value at the unsigned 64-bit maximum; overflow in a declared allocation sum is
+an error.
+
+Initial conservative policy defaults are implementation defaults, not encoded
+format limits. Applications may lower them. A future format may impose stricter
+limits, but no format declaration may raise an application's configured limit.

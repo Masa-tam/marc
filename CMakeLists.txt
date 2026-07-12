@@ -12,6 +12,7 @@ endif()
 
 set(MARC_SOURCES
     src/core/bit_io.cpp
+    src/core/limits.cpp
     src/core/status.cpp
     src/marc.cpp
 )

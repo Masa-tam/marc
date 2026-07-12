@@ -31,3 +31,32 @@ These vectors define primitives used by every later format variant.
 
 For the final vector, bits 3 through 7 are padding and must be zero. Strict
 alignment rejects, for example, byte `FD` after consuming its low three bits.
+
+## Limits versus format fields
+
+Decoder limits are local policy and are not serialized. The future stream and
+frame headers will declare the sizes required to validate one frame. Header
+parsing must not allocate based on those declarations until all applicable
+policy checks succeed.
+
+The baseline implementation defaults are:
+
+| Limit | Default |
+|---|---:|
+| total decoded output | 1 TiB |
+| one uncompressed frame | 16 MiB |
+| one entropy block | 1 MiB |
+| one compressed frame payload | 64 MiB |
+| dictionary entries | 16,777,216 |
+| LZ distance | 16 MiB |
+| LZ match length | 1 MiB |
+| Huffman code length | 24 bits |
+| entropy table entries | 1,048,576 |
+| range-model total | 16,777,216 |
+| simultaneously buffered bytes | 128 MiB |
+| entropy blocks per frame | 65,536 |
+| expansion ratio | 1024:1 plus 1 MiB slack |
+
+These values bound what the implementation accepts; they do not select codec
+parameters. For example, the later Blocked Huffman format may specify a maximum
+code length lower than the policy ceiling.

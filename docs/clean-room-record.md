@@ -33,3 +33,16 @@ no legal guarantee of non-infringement.
   checked arithmetic, and partial-buffer LSB-first bit I/O with tests.
 - Similarity review: simple direct expressions of the documented representation;
   no external implementation compared.
+
+## 2026-07-12 — decoder limits and frame bounds
+
+- Authoring method: independently derived from the resource-limit requirements
+  in `AGENTS.md` before defining a decoder-visible frame layout.
+- References used: none beyond the repository requirements.
+- Implementation sources consulted: none.
+- Design decisions: application policy is separate from format declarations;
+  validate cumulative output, individual dimensions, simultaneous buffering,
+  and expansion before allocation or decoding.
+- Generated-code task description: add conservative decoder defaults and an
+  overflow-safe validator for parsed frame bounds with negative tests.
+- Similarity review: no external implementation compared.

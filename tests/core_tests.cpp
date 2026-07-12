@@ -1,6 +1,7 @@
 #include "core/bit_io.hpp"
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
+#include "core/limits.hpp"
 #include "core/status.hpp"
 #include "marc/marc.h"
 
@@ -98,4 +99,53 @@ int main() {
     read = strict_reader.read_bits(bad_padding, 3);
     assert(read.value == 5);
     assert(strict_reader.align_to_byte(true) == BitIoStatus::invalid_padding);
+
+    using marc::core::DecoderLimits;
+    using marc::core::FrameBounds;
+    using marc::core::LimitError;
+
+    const DecoderLimits limits{};
+    assert(marc::core::validate_limits(limits) == LimitError::none);
+    DecoderLimits invalid_limits = limits;
+    invalid_limits.max_huffman_code_length = 65;
+    assert(marc::core::validate_limits(invalid_limits) ==
+           LimitError::invalid_configuration);
+
+    FrameBounds frame{};
+    frame.uncompressed_size = UINT64_C(1) << 20;
+    frame.compressed_payload_size = 1023;
+    frame.largest_block_size = UINT64_C(1) << 16;
+    frame.dictionary_entries = UINT64_C(1) << 12;
+    frame.lz_distance = UINT64_C(1) << 15;
+    frame.lz_match_length = UINT64_C(1) << 10;
+    frame.huffman_code_length = 15;
+    frame.entropy_table_entries = UINT64_C(1) << 12;
+    frame.range_model_total = UINT64_C(1) << 15;
+    frame.model_buffered_bytes = UINT64_C(1) << 16;
+    frame.payload_buffered_bytes = UINT64_C(1) << 20;
+    frame.block_count = 16;
+    assert(marc::core::validate_frame_bounds(limits, frame, 0) ==
+           LimitError::none);
+
+    auto invalid_frame = frame;
+    invalid_frame.uncompressed_size = limits.max_frame_size + 1;
+    assert(marc::core::validate_frame_bounds(limits, invalid_frame, 0) ==
+           LimitError::frame_size);
+    invalid_frame = frame;
+    invalid_frame.largest_block_size = limits.max_block_size + 1;
+    assert(marc::core::validate_frame_bounds(limits, invalid_frame, 0) ==
+           LimitError::block_size);
+    invalid_frame = frame;
+    invalid_frame.model_buffered_bytes = std::numeric_limits<std::uint64_t>::max();
+    invalid_frame.payload_buffered_bytes = 1;
+    assert(marc::core::validate_frame_bounds(limits, invalid_frame, 0) ==
+           LimitError::arithmetic_overflow);
+    invalid_frame = frame;
+    invalid_frame.compressed_payload_size = 0;
+    invalid_frame.uncompressed_size = limits.expansion_slack + 1;
+    assert(marc::core::validate_frame_bounds(limits, invalid_frame, 0) ==
+           LimitError::expansion_ratio);
+    assert(marc::core::validate_frame_bounds(
+               limits, frame, std::numeric_limits<std::uint64_t>::max()) ==
+           LimitError::arithmetic_overflow);
 }

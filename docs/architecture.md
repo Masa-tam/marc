@@ -40,3 +40,16 @@ The baseline framed format requires the original uncompressed size to be known
 when encoding begins. Unknown-size streams are a future format capability, not
 a baseline requirement. The transform API remains incremental; known size does
 not imply that the complete input must be buffered.
+
+## Decoder limits and frame validation
+
+Limits are supplied to the decoder before stream parsing. Their configuration
+is validated once, and every decoder-visible size is checked before allocation
+or payload decoding. A parsed frame is represented by a `FrameBounds` summary;
+validation checks individual dimensions, cumulative output, expansion, and the
+sum of simultaneously buffered regions using checked arithmetic.
+
+The frame controller will own the transition from header validation to model
+construction and payload decoding. No entropy or dictionary decoder may
+allocate from an unvalidated stream length. Validation failure leaves the
+controller in its terminal error state and must produce a stable limit error.
