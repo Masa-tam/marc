@@ -322,3 +322,18 @@ Encoding requires both caller-owned regions to satisfy that plan before the
 first block is emitted. The reference implementation may recompute a Huffman
 model while emitting rather than retain per-block plans; this preserves bounded
 memory and deterministic bytes at the cost of extra CPU work.
+
+## DD-023: The first complete frame path is deliberately profile-specific
+
+- Date: 2026-07-12
+- Status: accepted
+
+Join the version 1 frame header and body only for the currently implemented
+profile: no dictionary transform and Blocked Huffman variant 1 with no parameter
+regions. Reject other otherwise-known pipeline IDs rather than interpreting an
+incomplete implementation.
+
+The encoder plans the complete serialized size before writing. The strict
+decoder requires exactly one frame in its supplied span, rejects truncation and
+trailing bytes, validates sequence and original-size-derived boundaries, then
+uses the descriptor controller and atomic frame body decoder.

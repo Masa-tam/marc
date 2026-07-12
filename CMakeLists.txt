@@ -29,6 +29,7 @@ set(MARC_SOURCES
     src/entropy/canonical_huffman.cpp
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
+    src/frame/blocked_huffman_frame.cpp
     src/frame/stream_header.cpp
     src/marc.cpp
 )
@@ -95,6 +96,7 @@ if(MARC_BUILD_TESTS)
         tests/blocked_huffman_controller_tests.cpp
         tests/blocked_huffman_frame_decoder_tests.cpp
         tests/blocked_huffman_frame_encoder_tests.cpp
+        tests/blocked_huffman_serialized_frame_tests.cpp
         tests/checked_math_tests.cpp
         tests/canonical_huffman_tests.cpp
         tests/endian_tests.cpp

@@ -262,3 +262,16 @@ no legal guarantee of non-infringement.
   blocks into the variant 1 frame regions without dynamic allocation.
 - Similarity review: no external multi-block encoder layout or control flow was
   compared.
+
+## 2026-07-12 - Complete version 1 Blocked Huffman frame path
+
+- Authoring method: independently joined the repository's version 1 frame
+  header, Blocked Huffman frame body, and validation contexts.
+- Implementation sources consulted: none.
+- Independent decisions: profile-specific pipeline gate; exact single-frame
+  input span; plan-before-write serialization; strict trailing-data rejection;
+  caller-owned block views and decoded output; nested stable error categories.
+- Generated-code task description: encode and decode one complete serialized
+  frame for the no-dictionary/Blocked-Huffman-v1 profile.
+- Similarity review: no external container integration path or tests were
+  compared.
