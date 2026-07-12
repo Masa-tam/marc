@@ -21,6 +21,12 @@ struct RansEncoderWorkspaceRequirements {
     std::size_t frame_encoded_bytes{};
 };
 
+struct RansDecoderWorkspaceRequirements {
+    std::size_t frame_encoded_bytes{};
+    std::size_t frame_decoded_bytes{};
+    std::size_t block_view_count{};
+};
+
 enum class RansProfileError : std::uint8_t {
     none,
     invalid_configuration,
@@ -33,6 +39,10 @@ enum class RansProfileError : std::uint8_t {
     const RansProfileConfig& config, const core::DecoderLimits& limits,
     StreamHeader& stream,
     RansEncoderWorkspaceRequirements& workspace) noexcept;
+
+[[nodiscard]] RansProfileError calculate_rans_decoder_workspace(
+    const core::DecoderLimits& limits,
+    RansDecoderWorkspaceRequirements& workspace) noexcept;
 
 [[nodiscard]] core::ErrorCode rans_profile_error_code(
     RansProfileError error) noexcept;

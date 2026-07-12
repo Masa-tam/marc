@@ -81,6 +81,27 @@ RansProfileError make_rans_profile(
     return RansProfileError::none;
 }
 
+RansProfileError calculate_rans_decoder_workspace(
+    const core::DecoderLimits& limits,
+    RansDecoderWorkspaceRequirements& workspace) noexcept {
+    workspace = {};
+    if (core::validate_limits(limits) != core::LimitError::none) {
+        return RansProfileError::invalid_configuration;
+    }
+    std::uint64_t encoded_bytes{};
+    if (!core::checked_add(
+            static_cast<std::uint64_t>(frame_header_size),
+            limits.max_internal_buffered_bytes, encoded_bytes)
+        || !to_size(encoded_bytes, workspace.frame_encoded_bytes)
+        || !to_size(limits.max_frame_size, workspace.frame_decoded_bytes)
+        || !to_size(limits.max_blocks_per_frame,
+                    workspace.block_view_count)) {
+        workspace = {};
+        return RansProfileError::arithmetic_overflow;
+    }
+    return RansProfileError::none;
+}
+
 core::ErrorCode rans_profile_error_code(
     const RansProfileError error) noexcept {
     switch (error) {

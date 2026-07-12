@@ -667,6 +667,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external streaming state machine or workspace formula
   was compared.
 
+## 2026-07-13 - rANS frame-streaming decoder
+
+- Authoring method: composed marc's generic incremental frame collection with
+  its validation-first rANS frame decoder.
+- References used: repository transform contract, rANS frame decoder, stream
+  oracle, and local decoder limits only.
+- Known implementations intentionally not consulted: external ANS streaming
+  decoder source, buffering strategies, state machines, and tests.
+- Independent decisions: complete outer-frame commit; separate encoded and
+  decoded caller storage; caller-owned reusable block views; no output from a
+  malformed frame; decoder workspace derived solely from local policy.
+- Generated-code task description: incrementally collect, atomically validate,
+  decode, and drain bounded rANS frames under arbitrary byte chunking.
+- Similarity review: no external streaming decoder structure was compared.
+
 ## 2026-07-13 - Frame-at-a-time Dynamic Range encoder
 
 - Authoring method: specialized marc's existing caller-buffered frame state

@@ -327,6 +327,11 @@ that representation before accepting bytes for the next frame. Its profile
 query derives both workspace extents from the largest possible frame and the
 configured entropy block size; no steady-state allocation is required.
 
+The matching rANS streaming decoder collects one declared frame, validates all
+descriptors and payload state transitions, decodes into a separate bounded
+workspace, and only then drains output. Its caller-owned view array is sized
+from the local maximum-blocks-per-frame policy.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through

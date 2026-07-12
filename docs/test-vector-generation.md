@@ -126,3 +126,8 @@ oracle. Feed the seven-byte `ABAAABA` vector through one-byte input and output
 buffers with frame size 4 and block size 2; the resulting bytes must exactly
 match the reference stream. A flush after `AB` must emit only the stream header
 and must not shorten the first frame.
+
+For streaming decode, feed that reference stream through one-byte input and
+output buffers. Corrupt the initial state of the second frame and verify that
+the first four raw bytes are committed while no byte from the corrupt frame is
+published.

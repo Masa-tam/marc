@@ -836,3 +836,18 @@ restores the threshold. Each input symbol contributes at most one payload byte,
 and each block contributes its eight-byte initial state. Encoder workspace is
 bounded by the frame header, `528 * block_count` descriptor bytes,
 `frame_symbols + 8 * block_count` payload bytes, and the separate raw frame.
+
+## DD-054: rANS streaming decoding commits validated outer frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Collect one exact serialized frame in bounded caller storage and use a separate
+decoded workspace plus caller-owned block views. Parse the generic header,
+validate the complete descriptor region, validate every rANS payload, and only
+then decode the frame. Drain that decoded frame before accepting bytes belonging
+to the next frame.
+
+Malformed later frames cannot retract earlier committed output and cannot expose
+any bytes from the failing frame. Decoder workspace sizes are derived only from
+local limits because stream fields remain untrusted until parsed.
