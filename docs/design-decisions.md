@@ -789,3 +789,18 @@ fixed 528-byte descriptor. Blocks occur in logical order, reset independently,
 never cross outer frames, and use the stream entropy block size in byte-symbol
 units. A differing state count, table log, normalization rule, descriptor, or
 byte layout requires another variant.
+
+## DD-051: rANS frames validate all blocks before output
+
+- Date: 2026-07-13
+- Status: accepted
+
+Serialize one generic frame header, all fixed-size block descriptors in logical
+order, then all corresponding payloads in logical order. Plan every block and
+the complete frame extent before encoder mutation. Descriptor count is derived
+from dictionary byte size and stream entropy block size.
+
+Strict frame decoding first validates the complete descriptor region and every
+block payload without output. Only then decode blocks into caller output. This
+makes the outer frame the commit boundary even though individual rANS blocks are
+independently coded and validated.

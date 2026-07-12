@@ -786,3 +786,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: validate all rANS block descriptors and build
   bounded payload views before decoding any frame payload.
 - Similarity review: no external controller structure was compared.
+
+## 2026-07-13 - Complete rANS frame path
+
+- Authoring method: composed marc's generic frame header, descriptor controller,
+  and strict reference block codec.
+- References used: repository rANS format and implemented components only.
+- Known implementations intentionally not consulted: external ANS frame,
+  container, composition source, and test vectors.
+- Independent decisions: descriptors-first region; payloads-second region;
+  whole-frame capacity preflight; validation of every block before output;
+  caller-owned views; canonical 1128-byte two-block `ABA` frame.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one complete multi-block rANS frame.
+- Similarity review: no external frame composition control flow was compared.

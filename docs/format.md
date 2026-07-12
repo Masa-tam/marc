@@ -577,3 +577,8 @@ For `A`, descriptor bytes 0 through 15 are:
 
 All frequency entries are zero except symbol `41` at descriptor offset 146,
 whose little-endian uint16 value is `00 10`.
+
+With frame size 3 and entropy block size 2, input `ABA` produces two descriptors
+and two 8-byte payloads. The serialized frame size is
+`56 + 2*528 + 16 = 1128` bytes. Its first payload is the `AB` vector and its
+second payload is the one-symbol `A` vector above.

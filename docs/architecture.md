@@ -309,6 +309,12 @@ every model, checked payload offsets, exact aggregate payload size, and combined
 buffer limits without publishing views. The second pass fills caller-provided
 bounded block views used by the later frame decoder.
 
+The complete rANS frame path plans every block before writing, then serializes
+the generic header, all fixed descriptors, and all payloads in separate regions.
+Strict decoding uses controller views to validate every payload before a second
+loop writes any block output. Capacity failure and malformed later blocks
+therefore leave the whole frame output untouched.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman and Adaptive Huffman variant 1 through
