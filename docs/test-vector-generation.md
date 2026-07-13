@@ -145,3 +145,8 @@ two-byte state-offset payload `00 00`. Each frame is 586 bytes and the complete
 stream is 1236 bytes including its 64-byte stream header. Corrupting the second
 frame's state offset reports frame index 1 while leaving strict-reference output
 untouched.
+
+Use the complete known-size tANS stream as the streaming encoder oracle. Feed
+`ABAAABA` through one-byte input and output buffers with frame size 4 and block
+size 2; output must match byte for byte. A flush after `AB` emits only the stream
+header and does not shorten the first frame.

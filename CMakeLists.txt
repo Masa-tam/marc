@@ -69,6 +69,8 @@ set(MARC_SOURCES
     src/frame/rans_frame_streaming_decoder.cpp
     src/frame/tans_frame.cpp
     src/frame/tans_stream.cpp
+    src/frame/tans_profile.cpp
+    src/frame/tans_frame_streaming_encoder.cpp
     src/frame/blocked_huffman_frame.cpp
     src/frame/blocked_huffman_stream.cpp
     src/frame/blocked_huffman_incremental_encoder.cpp
@@ -250,6 +252,8 @@ if(MARC_BUILD_TESTS)
         tests/rans_frame_streaming_decoder_tests.cpp
         tests/tans_frame_tests.cpp
         tests/tans_stream_tests.cpp
+        tests/tans_profile_tests.cpp
+        tests/tans_frame_streaming_encoder_tests.cpp
         tests/status_tests.cpp
         tests/stream_header_tests.cpp
     )

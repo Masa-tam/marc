@@ -651,6 +651,22 @@ no legal guarantee of non-infringement.
 - Similarity review: no external stream composition or scan structure was
   compared.
 
+## 2026-07-13 - tANS frame-streaming encoder and workspace profile
+
+- Authoring method: composed marc's transform contract, complete tANS frame
+  encoder, and the independently specified 12-bit transition bound.
+- References used: repository architecture, tANS variant, frame encoder, and
+  complete-stream oracle only.
+- Known implementations intentionally not consulted: external tANS/FSE
+  streaming encoders, workspace formulas, adapters, source, and tests.
+- Independent decisions: caller-owned raw and encoded frame workspaces; complete
+  frame commit; partial-frame flush deferral; reset rejection; checked per-block
+  `2 + ceil(12*N/8)` payload bound.
+- Generated-code task description: add a bounded frame-at-a-time tANS streaming
+  encoder with output invariant under one-byte input and output chunking.
+- Similarity review: no external streaming state machine or sizing formula was
+  compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its

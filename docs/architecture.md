@@ -320,6 +320,11 @@ encoding. Strict decoding scans and validates the complete stream without
 output, reusing one caller-owned block-view workspace, then repeats the
 traversal into caller storage for whole-stream atomicity.
 
+The tANS streaming encoder buffers one raw outer frame and one complete encoded
+frame in caller-owned storage, drains pending output before accepting later
+input, and keeps partial frames open across flush. Its profile computes the
+exact format-independent maximum from 12 bits per symbol plus each block state.
+
 The known-size rANS stream reference plans all deterministic outer frames before
 encoding. Strict decoding scans and semantically validates every complete frame
 without output, reusing one caller-owned block-view workspace, then repeats the

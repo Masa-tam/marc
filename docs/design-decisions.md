@@ -912,3 +912,19 @@ Strict reference decoding scans and semantically validates every exact frame
 extent without output, then repeats the traversal into caller storage. Reject
 truncation and trailing bytes. Two independent `AA` frames each occupy 586
 bytes, making the canonical four-byte `AAAA` reset stream 1236 bytes.
+
+## DD-059: tANS streaming encoding commits complete outer frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Buffer one raw outer frame in caller-owned storage, encode it into a second
+caller-owned workspace, and drain the complete serialized frame before accepting
+later input. Non-terminal flush keeps a partial frame open; explicit reset is
+unsupported. Arbitrary chunking therefore reproduces the reference stream.
+
+Each symbol emits at most `table_log=12` bits and every block adds its two-byte
+state offset. Calculate encoder workspace per block as
+`2 + ceil(12 * block_symbols / 8)`, then add every 528-byte descriptor and the
+generic frame header with checked arithmetic. Decoder workspace remains derived
+only from local limits and includes caller-owned block views.
