@@ -21,6 +21,7 @@ endif()
 
 set(MARC_SOURCES
     src/dictionary/lz77_decoder.cpp
+    src/dictionary/lz77_encoder.cpp
     src/dictionary/lz77_format.cpp
     src/dictionary/lz77_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
@@ -199,6 +200,7 @@ if(MARC_BUILD_TESTS)
 
     add_executable(marc_core_tests
         tests/lz77_decoder_tests.cpp
+        tests/lz77_encoder_tests.cpp
         tests/lz77_format_tests.cpp
         tests/lz77_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp

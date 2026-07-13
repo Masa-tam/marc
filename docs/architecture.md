@@ -16,6 +16,9 @@ validates the complete 16-byte-token region without allocating or producing
 output and reports the stable failing token index. The reference decoder first
 validates the entire token region and output capacity, then performs the
 overlap-safe bytewise copy pass, preserving output on all caller-visible errors.
+The reference encoder uses a deliberately clear bounded exhaustive match search,
+with the format-defined greedy longest match and nearest-distance tie break. A
+planning pass fixes token count and serialized size before output is touched.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

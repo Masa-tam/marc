@@ -743,6 +743,21 @@ no legal guarantee of non-infringement.
   marc's canonical fixed-width LZ77 token stream.
 - Similarity review: no external decoder control flow was compared.
 
+## 2026-07-13 - LZ77 reference encoder
+
+- Authoring method: implemented directly from marc LZ77 variant 1 greedy parse
+  and deterministic tie-breaking rules.
+- References used: repository format and design decision, plus marc's parameter
+  serializer, decoder, checked arithmetic, and limits.
+- Known implementations intentionally not consulted: external LZ77 match finder
+  or encoder source, pseudocode, tests, formats, and optimization structure.
+- Independent decisions: exhaustive ascending-distance reference search;
+  planning and emission passes; fixed-capacity output; no match-finder state or
+  allocation inside the implementation.
+- Generated-code task description: add the deterministic bounded reference
+  encoder for marc's fixed-width LZ77 token format.
+- Similarity review: no external encoder control flow was compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its
