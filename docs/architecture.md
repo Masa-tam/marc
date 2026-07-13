@@ -13,7 +13,9 @@ LZ77 variant 1 begins with transactional fixed parameter and token parsers.
 Contextual validation separates structural token canonicality from frame-local
 history, distance, match-length, and output-extent rules. A bounded scanner
 validates the complete 16-byte-token region without allocating or producing
-output and reports the stable failing token index before decoder implementation.
+output and reports the stable failing token index. The reference decoder first
+validates the entire token region and output capacity, then performs the
+overlap-safe bytewise copy pass, preserving output on all caller-visible errors.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

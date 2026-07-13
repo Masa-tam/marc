@@ -728,6 +728,21 @@ no legal guarantee of non-infringement.
   tokens, and complete frame token regions before decoding bytes.
 - Similarity review: no external parser or validator control flow was compared.
 
+## 2026-07-13 - LZ77 reference decoder
+
+- Authoring method: implemented directly from marc LZ77 variant 1 token and
+  overlap-copy rules after completing the independent validator.
+- References used: repository format, design decision, validator, limits, and
+  atomic decode conventions only.
+- Known implementations intentionally not consulted: external LZ77 decoder
+  source, pseudocode, tests, formats, and optimization structure.
+- Independent decisions: full preflight before output mutation; explicit
+  capacity and host-size checks; bytewise forward overlap copy; second-pass
+  internal consistency guard.
+- Generated-code task description: add a bounded atomic one-shot decoder for
+  marc's canonical fixed-width LZ77 token stream.
+- Similarity review: no external decoder control flow was compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its

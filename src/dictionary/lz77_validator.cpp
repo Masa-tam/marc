@@ -9,6 +9,10 @@ Lz77ValidationResult validate_lz77_token_stream(
     const core::DecoderLimits& limits) noexcept {
     Lz77ValidationResult result{};
     result.output_size = 0;
+    if (core::validate_limits(limits) != core::LimitError::none) {
+        result.error = Lz77ValidationError::limit_exceeded;
+        return result;
+    }
     const auto parameter_error = validate_lz77_parameters(parameters, limits);
     if (parameter_error != Lz77FormatError::none) {
         result.format_error = parameter_error;
@@ -17,6 +21,7 @@ Lz77ValidationResult validate_lz77_token_stream(
     }
     if (declared_frame_size > limits.max_frame_size
         || input.size() > limits.max_internal_buffered_bytes
+        || input.size() > limits.max_dictionary_serialized_size
         || input.size() > limits.max_compressed_payload_size) {
         result.error = Lz77ValidationError::limit_exceeded;
         return result;
