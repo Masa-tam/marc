@@ -995,6 +995,21 @@ no legal guarantee of non-infringement.
   throughput, and caller-workspace measurement through the public C ABI.
 - Similarity review: no external benchmark-driver structure was compared.
 
+## 2026-07-14 - LZSS strict and streaming fuzz harness
+
+- Authoring method: composed marc's bounded decoder APIs, ProcessResult
+  invariants, caller workspaces, and local limits into an independent harness.
+- References used: repository specifications and libFuzzer's conventional entry
+  point only; no external compression fuzz target was consulted.
+- Known implementations intentionally not consulted: external LZSS fuzzers,
+  mutation schedules, corpora, crash inputs, source, and regression suites.
+- Independent decisions: dual strict/streaming exercise; byte-derived chunks;
+  4 KiB total output; 1 KiB frames; fixed storage; call guard; ordinary-build
+  compile smoke; canonical truncation and extreme-length regressions.
+- Generated-code task description: add bounded LZSS decoder fuzzing plus
+  permanent malformed-stream atomicity regressions and corpus policy.
+- Similarity review: no external fuzz-harness structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

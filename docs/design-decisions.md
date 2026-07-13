@@ -1302,3 +1302,19 @@ Report complete-stream encoded/input ratio, raw-byte encode and decode MiB/s,
 direction-specific primary and secondary workspace, and the larger combined
 codec workspace. Do not label this last value process peak memory. Require
 Release builds and recorded environment/corpus metadata for published results.
+
+## DD-083: LZSS fuzzing covers strict and streaming decode together
+
+- Date: 2026-07-14
+- Status: accepted
+
+Feed each arbitrary byte sequence to both the one-shot known-size LZSS decoder
+and the outer frame-streaming decoder. Derive streaming input/output chunks from
+the bytes, enforce small fixed local limits and workspaces, validate every
+ProcessResult, and abort on an exceeded call guard or invalid no-progress state.
+
+Build the full static library and harness with Clang libFuzzer, ASan, and UBSan
+only when explicitly requested. Keep normal MSVC builds independent of sanitizer
+flags while compiling the harness as a test-build object smoke check. Every fuzz
+finding requires a minimized permanent GoogleTest regression and retained corpus
+input with provenance.

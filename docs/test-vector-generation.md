@@ -192,6 +192,12 @@ Feed the twelve raw bytes through one-byte input and output buffers; the output
 must match byte for byte. A Flush after three bytes emits only the 80-byte
 prefix and does not shorten the first six-byte frame.
 
+The initial LZSS fuzz regressions truncate the complete 214-byte stream at every
+byte boundary and require strict decode failure with untouched output. A second
+fixture fills the first frame's raw and payload length fields with `FF` bytes and
+requires bounded header rejection. New minimized findings must become permanent
+regressions and retained corpus entries before the defect is considered fixed.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

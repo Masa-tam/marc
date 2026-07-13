@@ -90,6 +90,9 @@ passing C++ ownership across the boundary.
 An opt-in benchmark executable drives the public LZ77 and LZSS C transforms
 over caller-selected files. It reports full-stream ratio, timed transform
 throughput, and profile-derived codec workspace under one documented method.
+The first dictionary fuzz harness presents the same bounded arbitrary input to
+the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
+chunk-derived scheduling, and a call guard keep malformed exploration bounded.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

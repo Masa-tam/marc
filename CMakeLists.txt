@@ -16,6 +16,7 @@ option(MARC_BUILD_TESTS "Build marc tests" ${MARC_BUILD_TESTS_DEFAULT})
 option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
+option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
 
 if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
     message(FATAL_ERROR "At least one of MARC_BUILD_SHARED or MARC_BUILD_STATIC must be ON")
@@ -197,6 +198,30 @@ if(MARC_BUILD_BENCHMARKS)
     endif()
 endif()
 
+if(MARC_BUILD_FUZZERS)
+    if(NOT TARGET marc_static)
+        message(FATAL_ERROR "MARC_BUILD_FUZZERS requires MARC_BUILD_STATIC=ON")
+    endif()
+    if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR MSVC)
+        message(FATAL_ERROR
+            "MARC_BUILD_FUZZERS requires Clang with the GNU-style driver")
+    endif()
+    target_compile_options(marc_static PRIVATE
+        -fsanitize=fuzzer-no-link,address,undefined
+        -fno-omit-frame-pointer)
+    add_executable(marc_fuzz_lzss_stream fuzz/lzss_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_stream PRIVATE marc::static)
+endif()
+
 set(MARC_INSTALL_TARGETS)
 if(TARGET marc_shared)
     list(APPEND MARC_INSTALL_TARGETS marc_shared)
@@ -325,6 +350,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_stream_tests.cpp
         tests/lzss_frame_streaming_decoder_tests.cpp
         tests/lzss_frame_streaming_encoder_tests.cpp
+        tests/lzss_fuzz_regression_tests.cpp
         tests/adaptive_huffman_frame_tests.cpp
         tests/adaptive_huffman_stream_tests.cpp
         tests/adaptive_huffman_frame_streaming_encoder_tests.cpp
@@ -356,6 +382,19 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_core_tests PRIVATE marc::shared GTest::gtest_main)
     endif()
     gtest_discover_tests(marc_core_tests DISCOVERY_MODE PRE_TEST)
+
+    add_library(marc_lzss_fuzz_compile_smoke OBJECT
+        fuzz/lzss_stream_fuzz.cpp)
+    target_compile_features(marc_lzss_fuzz_compile_smoke PRIVATE cxx_std_20)
+    target_include_directories(marc_lzss_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_lzss_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_lzss_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
 
     add_executable(marc_c_api_tests tests/c_api_tests.c)
     target_compile_features(marc_c_api_tests PRIVATE c_std_11)

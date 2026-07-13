@@ -63,6 +63,12 @@ Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 and peak caller-owned codec workspace for LZ77 or LZSS. See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 
+## Fuzzing
+
+Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
+the bounded LZSS stream-decoder fuzz target. Build and corpus instructions are
+in [`docs/fuzzing.md`](docs/fuzzing.md).
+
 The standalone project in `examples/` demonstrates installed-package use. See
 [`docs/c-api.md`](docs/c-api.md) for the C transform lifecycle and
 [`docs/format.md`](docs/format.md) for the current byte representation.
