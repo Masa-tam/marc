@@ -1576,3 +1576,19 @@ no legal guarantee of non-infringement.
   chunks.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-14 - Streaming LZ78 frame encoder
+
+- Authoring method: composed marc's process contract with its complete LZ78
+  stream prefix, reference frame planner, and reference frame encoder.
+- References used: repository LZ78 format and encoder, stream/frame format,
+  checked arithmetic, limits, and repository-owned reset vector only.
+- Known implementations intentionally not consulted: external LZ78 streaming
+  containers, encoder state machines, tests, and byte vectors.
+- Independent decisions: complete-frame buffering; byte-identical one-shot
+  oracle; caller-owned raw, encoded, and phrase workspaces; aggregate byte
+  accounting; non-closing Flush; retained EndInput while draining.
+- Generated-code task description: encode known-size multi-frame LZ78 streams
+  with arbitrary input/output chunks and bounded caller-owned state.
+- Similarity review: no external streaming state machine or control flow was
+  compared.

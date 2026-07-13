@@ -252,6 +252,14 @@ Also consume the complete stream without EndInput, drain all six bytes, and
 require a later empty EndInput call to make the terminal transition. ResetBlock
 is unsupported by this outer decoder and must fail without consuming input.
 
+Use the same 224-byte two-frame reset stream as the outer streaming encoder
+oracle. Supply and drain one byte at a time, then repeat with Flush after two
+raw bytes and require the identical stream. Exercise short raw-frame, encoded-
+frame, and encoder phrase-table workspaces, plus an aggregate limit one byte
+below three raw bytes, a 72-byte complete frame, and three phrase records.
+Verify premature EndInput, trailing input, empty input, delayed EndInput, and
+unsupported ResetBlock independently.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

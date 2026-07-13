@@ -1476,3 +1476,21 @@ and required phrase-table bytes together against the aggregate internal buffer
 limit before collecting the payload. Retain terminal input while a decoded
 frame drains, reject ResetBlock, and require an explicit EndInput observation
 before reporting EndOfStream.
+
+## DD-093: Streaming LZ78 encode preserves reference frame bytes
+
+- Date: 2026-07-14
+- Status: accepted
+
+Emit the fixed stream prefix, collect one exact known-size raw frame in
+caller-owned storage, and invoke the complete reference LZ78/None frame planner
+and encoder. Drain that completed frame from separate caller-owned encoded
+storage. This keeps the stream byte-for-byte identical to one-shot encoding for
+every input and output chunking pattern.
+
+Require caller-owned encoder phrase entries for the largest possible frame at
+construction. Before encoding each frame, count its raw bytes, planned complete
+frame extent, and required phrase-entry bytes together against the aggregate
+internal buffer limit. Flush does not close a partial frame, ResetBlock remains
+unsupported at the outer controller, and a received EndInput remains effective
+until every final frame byte has drained.
