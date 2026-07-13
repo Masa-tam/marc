@@ -820,6 +820,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external parser structure or validation flow was
   compared.
 
+## 2026-07-13 - LZSS reference decoder
+
+- Authoring method: implemented the documented LZSS inverse transform after a
+  complete allocation-free validation pass.
+- References used: repository LZSS format, validator, limits, and overlap-copy
+  definition only.
+- Known implementations intentionally not consulted: external LZSS decoder
+  source, pseudocode, output loops, error handling, and tests.
+- Independent decisions: validation-before-output; capacity preflight; second
+  variable-token traversal; bytewise overlap copy; stable token and byte
+  positions; internal consistency check against the validation result.
+- Generated-code task description: atomically decode a validated LZSS token
+  stream into exact caller storage without exposing malformed partial output.
+- Similarity review: no external decoder control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

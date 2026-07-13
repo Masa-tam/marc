@@ -28,6 +28,7 @@ set(MARC_SOURCES
     src/dictionary/lz77_streaming_encoder.cpp
     src/dictionary/lz77_validator.cpp
     src/dictionary/lzss_format.cpp
+    src/dictionary/lzss_decoder.cpp
     src/dictionary/lzss_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
@@ -235,6 +236,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_streaming_encoder_tests.cpp
         tests/lz77_validator_tests.cpp
         tests/lzss_format_tests.cpp
+        tests/lzss_decoder_tests.cpp
         tests/lzss_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp
