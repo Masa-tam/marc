@@ -713,6 +713,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external implementation structure or byte format was
   compared.
 
+## 2026-07-13 - LZ77 parameter, token, and stream validation
+
+- Authoring method: directly implemented marc's fixed parameter and token
+  layouts plus its frame-local contextual invariants.
+- References used: repository LZ77 variant 1 specification, endian helpers,
+  checked arithmetic, and decoder limits only.
+- Known implementations intentionally not consulted: external LZ77 parsers,
+  decoders, match finders, formats, source, pseudocode, and tests.
+- Independent decisions: transactional fixed-field parsing; structural versus
+  contextual validation; output-free complete token scan; stable token index;
+  explicit terminal placement; no recursive or allocated parser state.
+- Generated-code task description: validate bounded canonical LZ77 parameters,
+  tokens, and complete frame token regions before decoding bytes.
+- Similarity review: no external parser or validator control flow was compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its

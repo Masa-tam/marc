@@ -20,6 +20,8 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/dictionary/lz77_format.cpp
+    src/dictionary/lz77_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
     src/entropy/adaptive_huffman_decoder.cpp
@@ -195,6 +197,8 @@ if(MARC_BUILD_TESTS)
     include(GoogleTest)
 
     add_executable(marc_core_tests
+        tests/lz77_format_tests.cpp
+        tests/lz77_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp
         tests/adaptive_huffman_decoder_tests.cpp

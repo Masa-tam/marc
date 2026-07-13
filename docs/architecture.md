@@ -7,6 +7,14 @@ the reference toolchain, but the implementation avoids compiler extensions and
 keeps portable C++ as a design constraint. CMake is the canonical build
 description.
 
+### LZ77 foundation
+
+LZ77 variant 1 begins with transactional fixed parameter and token parsers.
+Contextual validation separates structural token canonicality from frame-local
+history, distance, match-length, and output-extent rules. A bounded scanner
+validates the complete 16-byte-token region without allocating or producing
+output and reports the stable failing token index before decoder implementation.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental
