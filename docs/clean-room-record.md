@@ -1482,3 +1482,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: add an atomic bounded reference decoder for
   marc's fixed eight-byte LZ78 token representation.
 - Similarity review: no external decoder structure or control flow was compared.
+
+## 2026-07-14 - LZ78 reference encoder
+
+- Authoring method: implemented marc's documented greedy phrase parse using
+  bounded spans into the immutable input frame and exact two-pass planning.
+- References used: repository LZ78 format, parameter validator, reference
+  decoder, limits, and hand vectors only.
+- Known implementations intentionally not consulted: external LZ78 encoder,
+  trie, hash table, phrase-search source, pseudocode, tests, and containers.
+- Independent decisions: input-offset/length phrase records; ascending-index
+  linear search; conservative caller-workspace query; frozen dictionary reuse;
+  plan-before-publication serialization; deterministic repeated-plan tests.
+- Generated-code task description: implement a clear bounded LZ78 reference
+  encoder matching marc's fixed token vectors and atomic failure contract.
+- Similarity review: no external encoder structure or control flow was compared.

@@ -1369,3 +1369,20 @@ following prefix indices toward the implicit root, and writing trailing symbols
 backward into that extent. Append the Pair symbol afterward. This produces
 forward phrase order without recursion or a phrase-sized temporary buffer and
 retains exact behavior after dictionary freeze.
+
+## DD-087: LZ78 reference encoding keeps input-backed phrases
+
+- Date: 2026-07-14
+- Status: accepted
+
+Keep the clear reference encoder independent of a trie or hash-chain
+optimization. Represent each retained phrase in caller-owned workspace by the
+offset and length of its first occurrence in the immutable frame input. Find
+the longest phrase by comparing these bounded input spans in ascending phrase
+index order; the first equal-length phrase therefore remains selected.
+
+Query worst-case workspace as `min(input_size, maximum_entries)` records and
+enforce its byte extent against the local buffered-memory limit before parsing.
+Run the same deterministic parse for exact planning and serialization. Complete
+planning, policy checks, workspace checks, and output-capacity checks before
+writing any token so expected failures leave output untouched.
