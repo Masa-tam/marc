@@ -1592,3 +1592,18 @@ no legal guarantee of non-infringement.
   with arbitrary input/output chunks and bounded caller-owned state.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-14 - LZ78 profile and workspace bounds
+
+- Authoring method: derived worst-case frame and typed phrase workspace bounds
+  directly from marc's fixed LZ78 token and caller-owned state definitions.
+- References used: repository LZ78 format, frame header, encoder/validator
+  workspace helpers, checked arithmetic, and local decoder limits only.
+- Known implementations intentionally not consulted: external LZ78 profiles,
+  allocation formulas, source, tests, and capacity recommendations.
+- Independent decisions: typed entry counts rather than ABI-dependent byte
+  serialization; one-token-per-byte encoder bound; coupled monotonic decoder
+  payload search; one-byte minimum decoded extent; 32-bit entry-space cap.
+- Generated-code task description: construct the canonical LZ78/None profile
+  and calculate bounded encoder and decoder workspaces before processing data.
+- Similarity review: no external profile or allocation logic was compared.

@@ -1494,3 +1494,22 @@ frame extent, and required phrase-entry bytes together against the aggregate
 internal buffer limit. Flush does not close a partial frame, ResetBlock remains
 unsupported at the outer controller, and a received EndInput remains effective
 until every final frame byte has drained.
+
+## DD-094: LZ78 profiles expose typed phrase workspace counts
+
+- Date: 2026-07-14
+- Status: accepted
+
+Build the canonical LZ78 variant 1 plus entropy None stream header from an
+original size, uncompressed-byte frame size, and LZ78 parameters. Encoder
+requirements report raw-frame bytes, worst-case complete-frame bytes, and a
+count of typed `Lz78EncoderEntry` records; the worst case emits one eight-byte
+Pair token per raw byte and freezes the phrase count at `maximum_entries`.
+
+Decoder requirements depend only on trusted local limits and report encoded-
+frame bytes, decoded-frame bytes, and typed `Lz78PhraseEntry` records. Find the
+largest collectable payload with a monotonic search over the coupled aggregate
+bound: header, payload, at least one decoded byte, and the phrase records
+implied by complete eight-byte tokens must fit simultaneously. Cap phrase
+records by the local dictionary-entry limit and the format's 32-bit entry
+space. Stream-supplied parameters never enlarge these local requirements.

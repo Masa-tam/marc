@@ -260,6 +260,16 @@ below three raw bytes, a 72-byte complete frame, and three phrase records.
 Verify premature EndInput, trailing input, empty input, delayed EndInput, and
 unsupported ResetBlock independently.
 
+For the canonical LZ78 profile with original size 7 and frame size 4, require
+four raw-frame bytes, an 88-byte worst-case complete frame, and four encoder
+phrase records. With maximum entries 2, only the phrase-record count shrinks.
+For decoder limits of 200 aggregate bytes and otherwise-loose payload and
+dictionary bounds, require the largest payload `P` satisfying
+`56 + P + 1 + floor(P / 8) * sizeof(Lz78PhraseEntry) <= 200`; the next byte must
+fail the same inequality. On the current MSVC x64 ABI a phrase record occupies
+16 bytes, so the boundary is 47 payload bytes and five phrase records; the
+sixth record introduced at 48 payload bytes exceeds the limit.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
