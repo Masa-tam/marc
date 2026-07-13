@@ -143,6 +143,96 @@ bytes `61 62 63`, the frame header and body are:
 The first 56 bytes are the frame header; the final three bytes are its raw
 compressed payload.
 
+## LZ77 variant 1
+
+LZ77 variant 1 is a frame-local byte dictionary transform. Its stream dictionary
+parameter region is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | window size | bytes; default 65,536; nonzero |
+| 4 | 4 | minimum match length | default 3; at least 3 |
+| 8 | 4 | maximum match length | default 258; at least minimum |
+| 12 | 4 | flags/reserved | zero |
+
+All integers are little-endian. Window size must not exceed the local maximum
+LZ distance. Maximum match length must not exceed the local maximum LZ match
+length. Dictionary history starts empty and resets at every outer frame; no
+reference crosses a frame boundary.
+
+The encoder parses raw frame bytes from left to right. At each position, search
+distances `1..min(window_size, bytes_already_parsed)`. A candidate compares
+bytewise and may overlap: candidate byte `i` is the raw input byte at
+`position - distance + i`, including bytes within the same match. Choose the
+longest match up to the configured maximum and remaining frame input; on equal
+length choose the smaller distance. Matches shorter than the configured minimum
+are not selected.
+
+If no match is selected, emit Literal and advance by one raw byte. If the chosen
+match reaches the frame end, emit TerminalMatch and advance by its length.
+Otherwise emit MatchThenLiteral using the raw byte immediately after the match
+and advance by `length + 1`. This greedy rule is deterministic.
+
+Every dictionary token is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 1 | tag | 0 Literal, 1 MatchThenLiteral, 2 TerminalMatch |
+| 1 | 3 | reserved | zero |
+| 4 | 4 | distance | rules below |
+| 8 | 4 | match length | rules below |
+| 12 | 1 | literal | rules below |
+| 13 | 3 | reserved | zero |
+
+For tag 0, distance and length are zero and literal is the one raw byte. For tag
+1, distance is `1..window_size`, length is within the configured match range,
+and literal follows the copied bytes. For tag 2, distance and length follow the
+same rules, literal is zero, the match must end exactly at the raw frame size,
+and this must be the final token. Tag 1 must leave room for its following
+literal. Any unused field or reserved byte must be zero.
+
+The decoder copies match bytes one at a time from `output_position-distance`,
+so overlap has defined repeating-copy semantics. Before every token it validates
+distance against both configured window size and produced history, length
+against configured and local limits, checked output extent, and the declared
+raw frame size. Unknown tags, impossible references, premature token end,
+output beyond the declared size, bytes after completion, and a TerminalMatch
+that does not end the frame are malformed.
+
+The dictionary serialized size in the generic frame header is exactly
+`16 * token_count`. It is the byte input to the selected entropy layer. When the
+entropy algorithm is None, compressed payload size equals dictionary serialized
+size and the frame body contains these tokens directly. The worst-case reference
+expansion is 16 serialized bytes per raw byte and must fit local buffered and
+payload limits before allocation.
+
+### Hand-checkable LZ77 token vectors
+
+With default parameters, spaces divide fields only for readability:
+
+```text
+Input `A`:
+00 00 00 00  00 00 00 00  00 00 00 00  41 00 00 00
+
+Input `AAAA`:
+00 00 00 00  00 00 00 00  00 00 00 00  41 00 00 00
+02 00 00 00  01 00 00 00  03 00 00 00  00 00 00 00
+
+Input `ABABA`:
+00 00 00 00  00 00 00 00  00 00 00 00  41 00 00 00
+00 00 00 00  00 00 00 00  00 00 00 00  42 00 00 00
+02 00 00 00  02 00 00 00  03 00 00 00  00 00 00 00
+
+Input `ABCABCX`:
+00 00 00 00  00 00 00 00  00 00 00 00  41 00 00 00
+00 00 00 00  00 00 00 00  00 00 00 00  42 00 00 00
+00 00 00 00  00 00 00 00  00 00 00 00  43 00 00 00
+01 00 00 00  03 00 00 00  03 00 00 00  58 00 00 00
+```
+
+`AAAA` explicitly exercises overlapping distance-1 copying. `ABCABCX`
+exercises MatchThenLiteral rather than TerminalMatch.
+
 ## Foundational hand-checkable vectors
 
 These vectors define primitives used by every later format variant.

@@ -79,6 +79,19 @@ The byte normalization, delayed-carry representation, adaptive model, frame
 layout, and vectors are independently specified for marc. No range-coder
 implementation source, source-derived pseudocode, or test suite was consulted.
 
+LZ77 design reference:
+
+- Jacob Ziv and Abraham Lempel, "A Universal Algorithm for Sequential Data
+  Compression," IEEE Transactions on Information Theory, volume 23, issue 3,
+  pages 337-343, May 1977, DOI `10.1109/TIT.1977.1055714`. Used for the
+  recent-history maximum-length copying foundation.
+  <https://www.itsoc.org/publications/papers/a-universal-algorithm-for-sequential-data-compression>
+
+marc's parameters, fixed token serialization, deterministic tie breaking,
+terminal-match form, frame resets, limits, and vectors are independently
+specified. No LZ77 implementation source, source-derived pseudocode, container
+format, or test suite was consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

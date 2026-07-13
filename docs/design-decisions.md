@@ -958,3 +958,21 @@ Encoding uses primary raw-frame and secondary serialized-frame workspaces.
 Decoding additionally uses an aligned caller-owned tANS block-view workspace.
 Validate tags, reserved fields, extents, and alignment before constructing the
 C++ transform. Verify both directions through the shared library from pure C.
+
+## DD-062: LZ77 variant 1 uses fixed canonical copy tokens
+
+- Date: 2026-07-13
+- Status: accepted
+
+Use a frame-local sliding window with default size 65,536 bytes, minimum match
+length 3, and maximum match length 258. Select the longest match; on equal
+length select the nearest distance. Matching may extend through overlap using
+the same bytewise semantics as decoding. Dictionary history resets at every
+outer frame.
+
+Serialize every token as a fixed 16-byte record with explicit Literal,
+MatchThenLiteral, and TerminalMatch tags. The terminal form represents a final
+existing match without inventing a following byte. Fixed records prioritize
+strict validation and canonical byte-stream integration over compression ratio
+in the reference variant. A future compact token representation requires a new
+variant ID.

@@ -146,6 +146,19 @@ stream is 1236 bytes including its 64-byte stream header. Corrupting the second
 frame's state offset reports frame index 1 while leaving strict-reference output
 untouched.
 
+LZ77 vectors record, at every raw position, all candidate distances, bounded
+match lengths, the chosen longest length, nearest-distance tie break, selected
+token tag, and the exact 16-byte serialization. Include empty input, every
+single byte, distance-1 overlap (`AAAA`), terminal match (`ABABA`),
+match-then-literal (`ABCABCX`), equal-length distance ties, window boundaries,
+maximum-length boundaries, final unmatched bytes, and frame resets.
+
+Negative vectors independently cover unknown tags, nonzero reserved and unused
+fields, truncated tokens, zero or excessive distance, reference before history,
+length below minimum or above configured/local maximum, output overflow,
+misplaced TerminalMatch, trailing tokens, contradictory dictionary serialized
+size, and references that would cross an outer frame.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

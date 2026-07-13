@@ -696,6 +696,23 @@ no legal guarantee of non-infringement.
   opaque transform without exceptions or C++ types crossing the ABI.
 - Similarity review: no external C API layout or wrapper structure was compared.
 
+## 2026-07-13 - LZ77 variant 1 specification
+
+- Authoring method: specialized the published recent-history copying principle
+  into a repository-defined bounded, deterministic frame transform.
+- References used: Ziv and Lempel's 1977 paper and marc's existing framing,
+  serialization, transform, and decoder-limit rules.
+- Known implementations intentionally not consulted: all LZ77/DEFLATE/LZ4
+  encoder or decoder source, token formats, match finders, pseudocode derived
+  from implementations, and test suites.
+- Independent decisions: 64 KiB default window; lengths 3..258; longest then
+  nearest match; overlap semantics; frame reset; fixed 16-byte tokens; separate
+  terminal-match tag; strict zero unused fields.
+- Generated-code task description: define an exact canonical LZ77 byte transform
+  and malformed-stream rules before implementing either direction.
+- Similarity review: no external implementation structure or byte format was
+  compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its
