@@ -1434,3 +1434,21 @@ no legal guarantee of non-infringement.
   known-size multi-frame rANS streams.
 - Similarity review: no external stream composition or scan structure was
   compared.
+
+## 2026-07-14 - LZ78 variant 1 specification
+
+- Authoring method: derived a bounded frame-local phrase transform from the
+  original LZ78 dictionary principle, then specified marc-owned parameters,
+  tokens, termination, reset behavior, and vectors independently.
+- References used: Ziv and Lempel's 1978 paper as cited in
+  `docs/references.md`, plus marc's existing frame, limit, and serialization
+  rules.
+- Known implementations intentionally not consulted: all external LZ78 source,
+  source-derived pseudocode, container formats, byte layouts, and test vectors.
+- Independent decisions: fixed 32-bit phrase indices; eight-byte Pair and
+  FinalIndex tokens; root index zero; explicit final-existing-phrase handling;
+  bounded dictionary freeze; frame-local reset; eight-to-one payload bound.
+- Generated-code task description: define an exact deterministic LZ78 byte
+  transform and malformed-stream rules before implementing parsing structures.
+- Similarity review: no external implementation structure or byte vector was
+  compared.

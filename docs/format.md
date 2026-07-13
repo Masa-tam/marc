@@ -61,7 +61,7 @@ block, and original sizes must not exceed local decoder limits.
 | 0 | None | variant 0 only |
 | 1 | LZ77 | fixed canonical copy-token variant defined below |
 | 2 | LZSS | explicit literal/match byte-token variant defined below |
-| 3 | LZ78 | baseline, details pending |
+| 3 | LZ78 | fixed phrase-index byte-token variant defined below |
 | 4 | LZW | baseline, details pending |
 | 5 | LZD | Lempel-Ziv Double baseline, details pending |
 | 6 | LZMW | baseline, details pending |
@@ -357,6 +357,116 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 ```
 
 The 16-byte LZSS parameter region belongs after the stream prefix and before
+the first frame; it is not repeated inside this frame.
+
+## LZ78 variant 1
+
+LZ78 variant 1 is a frame-local phrase dictionary transform. Its stream
+dictionary parameter region is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum phrase entries | default 65,536; nonzero |
+| 4 | 4 | flags/reserved | zero |
+| 8 | 8 | reserved | zero |
+
+All integers are little-endian. The configured maximum counts non-root phrase
+entries, must not exceed `UINT32_MAX`, and must not exceed the local maximum
+dictionary-entry limit. Dictionary index 0 denotes the empty root phrase and
+does not count toward this maximum. Non-root phrases receive consecutive
+indices beginning at 1. Every serialized phrase index is a fixed little-endian
+`uint32`; its width never grows within a frame.
+
+The phrase dictionary starts with only the root and resets at every outer frame.
+The encoder parses raw frame bytes from left to right. At each position it finds
+the longest dictionary phrase `P` matching the remaining input. If at least one
+input byte `C` follows `P`, it emits Pair `(index(P), C)`, inserts `P || C` at
+the next consecutive index when capacity remains, and advances by
+`length(P) + 1`. If the matched phrase consumes all remaining input, it emits
+FinalIndex `(index(P))`, inserts nothing, and ends the frame. FinalIndex is
+therefore never needed for the root. The dictionary freezes once it reaches the
+configured maximum; subsequent Pair tokens remain valid but do not add entries.
+No in-band clear token exists.
+
+This parse is deterministic. Before the dictionary freezes, every phrase added
+by the canonical encoder is new, so the longest match has one index. A frozen
+dictionary is likewise searched by phrase value. Decoder acceptance does not
+depend on rechecking encoder optimality.
+
+Every dictionary token is exactly 8 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 1 | tag | 0 Pair, 1 FinalIndex |
+| 1 | 1 | symbol | Pair byte; zero for FinalIndex |
+| 2 | 2 | reserved | zero |
+| 4 | 4 | phrase index | little-endian; rules below |
+
+For Pair, phrase index is zero or names an existing non-root entry. The decoder
+outputs that phrase followed by symbol, then inserts the same concatenation at
+the next index if capacity remains. For FinalIndex, phrase index must name an
+existing non-root entry, symbol must be zero, the expanded phrase must end
+exactly at the declared raw frame size, and the token must be last. A Pair may
+also end the frame and then must be last. Frame size, not an end token, is the
+primary termination rule; empty frames contain no tokens.
+
+The decoder stores each phrase as a bounded prefix index, trailing byte, and
+checked expanded length. It validates an index before following it, validates
+the expanded length against the remaining declared frame size and local output
+limits, and expands without input-controlled recursion. Unknown tags, nonzero
+reserved or unused fields, forward references, a FinalIndex for root, checked
+length overflow, premature serialized end, output beyond the declared frame,
+or bytes after raw completion are malformed.
+
+The dictionary serialized size in the generic frame header is exactly
+`8 * token_count`. It is the byte input to the selected entropy layer. With
+entropy None, compressed payload size equals dictionary serialized size and the
+frame body contains these tokens directly. A nonempty token expands to at least
+one raw byte, so the input-independent serialized upper bound is 8 bytes per raw
+frame byte. Token count, dictionary growth, phrase lengths, and this bound must
+be checked before allocation.
+
+### Hand-checkable LZ78 token vectors
+
+With default parameters:
+
+```text
+Input `A`:
+00 41 00 00 00 00 00 00
+
+Input `AA`:
+00 41 00 00 00 00 00 00
+01 00 00 00 01 00 00 00
+
+Input `ABA`:
+00 41 00 00 00 00 00 00
+00 42 00 00 00 00 00 00
+01 00 00 00 01 00 00 00
+
+Input `ABAB`:
+00 41 00 00 00 00 00 00
+00 42 00 00 00 00 00 00
+00 42 00 00 01 00 00 00
+```
+
+`AA` and `ABA` exercise the otherwise ambiguous final existing phrase.
+`ABAB` inserts phrase `AB` from Pair `(1, 'B')` and needs no FinalIndex.
+
+### Hand-checkable LZ78 plus None frame vector
+
+For a stream selecting LZ78 variant 1 and entropy None, with one raw byte `A`,
+the complete frame is 64 bytes. Its header declares one raw byte and one 8-byte
+dictionary/payload token; entropy block and descriptor fields are zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 41 00 00 00 00 00 00
+```
+
+The 16-byte LZ78 parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
 
 ## Foundational hand-checkable vectors

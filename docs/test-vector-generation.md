@@ -198,6 +198,20 @@ fixture fills the first frame's raw and payload length fields with `FF` bytes an
 requires bounded header rejection. New minimized findings must become permanent
 regressions and retained corpus entries before the defect is considered fixed.
 
+LZ78 vectors independently record the longest known phrase at each raw position,
+its fixed 32-bit index, the following byte when present, the next consecutive
+dictionary index, and the exact eight-byte Pair or FinalIndex serialization.
+Include empty input, every one-byte value, final existing phrases (`AA`, `ABA`),
+pair-at-frame-end (`ABAB`), binary zero symbols, maximum-entry boundaries,
+dictionary freeze, phrase-length boundaries, and outer-frame resets.
+
+Negative LZ78 vectors cover unknown tags, nonzero reserved or unused fields,
+truncated tokens, forward phrase references, FinalIndex zero, misplaced
+FinalIndex, checked phrase-length overflow, a phrase crossing the declared raw
+frame size, premature serialized end, trailing tokens after raw completion,
+non-multiple-of-eight dictionary size, excessive entry parameters, and phrase
+references crossing an outer frame reset.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

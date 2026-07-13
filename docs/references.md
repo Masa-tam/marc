@@ -106,6 +106,20 @@ match selection, overlap rule, frame resets, limits, and vectors are
 independently specified. No LZSS implementation source, source-derived
 pseudocode, container format, or test suite was consulted.
 
+LZ78 design reference:
+
+- Jacob Ziv and Abraham Lempel, "Compression of Individual Sequences via
+  Variable-Rate Coding," IEEE Transactions on Information Theory, volume 24,
+  issue 5, pages 530-536, September 1978,
+  DOI `10.1109/TIT.1978.1055934`. Used for the finite phrase-dictionary and
+  `(phrase index, next symbol)` parsing foundation.
+  <https://doi.org/10.1109/TIT.1978.1055934>
+
+marc's fixed-width token representation, explicit final-index form, bounded
+dictionary-freeze rule, parameters, frame resets, limits, and vectors are
+independently specified. No LZ78 implementation source, source-derived
+pseudocode, container format, or test suite was consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

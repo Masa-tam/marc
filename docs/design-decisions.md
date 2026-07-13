@@ -1318,3 +1318,21 @@ only when explicitly requested. Keep normal MSVC builds independent of sanitizer
 flags while compiling the harness as a test-build object smoke check. Every fuzz
 finding requires a minimized permanent GoogleTest regression and retained corpus
 input with provenance.
+
+## DD-084: LZ78 variant 1 uses fixed phrase-index tokens
+
+- Date: 2026-07-14
+- Status: accepted
+
+Use frame-local LZ78 phrases numbered consecutively from 1, with index 0 as an
+unstored empty root. Serialize every index as a fixed little-endian `uint32` in
+an eight-byte Pair or FinalIndex token; index width does not grow. FinalIndex
+resolves a frame ending in an already-known phrase without inventing a following
+byte. The declared raw frame size remains the primary termination rule.
+
+Bound non-root entries by an explicit stream parameter and local decoder limit.
+When that capacity is reached, freeze the dictionary until the next outer frame
+rather than adding a clear token or changing the representation. Store prefix,
+trailing byte, and checked expanded length, and require non-recursive bounded
+expansion. With entropy None, the canonical worst-case payload bound is eight
+serialized bytes per raw byte.
