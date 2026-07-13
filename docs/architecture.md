@@ -46,6 +46,9 @@ The matching outer decoder collects the fixed prefix and one exact serialized
 frame into caller-owned storage, atomically decodes it into a second frame
 workspace, then drains raw bytes before accepting the next frame. This makes a
 validated frame the streaming commit boundary.
+LZ77 profile helpers normalize the stream configuration and calculate encoder
+workspace from the exact fixed-token worst case. Decoder workspace is derived
+only from local limits, before any untrusted stream bytes are inspected.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

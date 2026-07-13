@@ -742,6 +742,21 @@ no legal guarantee of non-infringement.
   with one-byte buffers and validated-frame commit boundaries.
 - Similarity review: no external streaming controller flow was compared.
 
+## 2026-07-13 - LZ77 profile and workspace bounds
+
+- Authoring method: derived exact workspace arithmetic from marc's fixed token,
+  generic frame, and caller-owned streaming controller layouts.
+- References used: repository format, checked arithmetic, decoder limits, and
+  implemented LZ77 controllers only.
+- Known implementations intentionally not consulted: external LZ77 workspace
+  calculators, APIs, allocation policies, source, and tests.
+- Independent decisions: 16-byte-per-raw-byte encoder bound; aggregate raw plus
+  serialized check; decoder requirement derived solely from local limits;
+  actual-use aggregate validation retained in the controller.
+- Generated-code task description: normalize LZ77 profiles and calculate
+  portable bounded encoder and decoder workspace requirements.
+- Similarity review: no external workspace calculation structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

@@ -1075,3 +1075,19 @@ Malformed later frames cannot retract earlier output and expose no bytes from
 the failing frame. Truncation, trailing bytes, invalid parameters or tokens,
 insufficient encoded or decoded workspace, aggregate memory limits, and
 unsupported reset become stable terminal transform errors.
+
+## DD-069: LZ77 profiles expose bounded workspace requirements
+
+- Date: 2026-07-13
+- Status: accepted
+
+For encoding, derive the largest raw frame from the smaller of original size
+and configured frame size. Its conservative serialized frame bound is the
+56-byte generic header plus one 16-byte Literal token per raw byte. Require the
+raw and serialized extents together to fit the internal-buffer limit.
+
+For decoding, configuration is not trusted or available before construction.
+Derive the encoded workspace only from local dictionary, payload, and internal
+limits after reserving the generic header and at least one raw byte, and derive
+decoded workspace from the local maximum frame size. Actual frame collection
+still enforces the combined encoded-plus-decoded extent.
