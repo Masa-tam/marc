@@ -909,6 +909,20 @@ no legal guarantee of non-infringement.
   known-size streams containing one or more canonical LZSS/None frames.
 - Similarity review: no external stream composition structure was compared.
 
+## 2026-07-14 - LZSS frame-streaming decoder
+
+- Authoring method: composed marc's transform state contract with its LZSS
+  known-size stream, frame validator, and atomic reference decoder.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  decoders, buffering structures, source, vectors, and tests.
+- Independent decisions: prefix/header/body collection states; separate encoded
+  and raw caller workspaces; frame-atomic publication; retained EndInput;
+  ResetBlock rejection; combined workspace limit.
+- Generated-code task description: incrementally decode canonical known-size
+  LZSS/None streams with arbitrary input and output chunks.
+- Similarity review: no external streaming decoder structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

@@ -182,6 +182,11 @@ complete stream is 214 bytes including its 80-byte header-and-parameter prefix.
 Changing the second frame's Match distance to 2 must report frame index 1 while
 leaving strict-reference output untouched.
 
+For streaming LZSS decode, feed that reference stream through one-byte input and
+output buffers. Corrupt the second frame's Match distance and verify that the
+first six raw bytes are committed while no byte from the corrupt frame is
+published. Exercise short encoded and decoded frame workspaces independently.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

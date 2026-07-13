@@ -75,6 +75,9 @@ The known-size LZSS stream repeats this frame-local reset profile until the
 declared original size is reached. Reference decode validates every frame before
 publishing any output, so corruption in a later frame leaves the caller's whole
 output buffer unchanged.
+The streaming decoder instead commits one fully validated frame at a time. It
+buffers encoded and decoded forms in separate caller-owned workspaces, allowing
+arbitrary input/output chunking without exposing bytes from a malformed frame.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

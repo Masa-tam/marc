@@ -9,6 +9,9 @@
 
 namespace marc::frame {
 
+inline constexpr std::size_t lzss_stream_prefix_size =
+    stream_header_size + dictionary::internal::lzss_parameter_size;
+
 enum class LzssStreamCodecError : std::uint8_t {
     none,
     invalid_stream_header,

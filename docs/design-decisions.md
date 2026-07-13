@@ -1206,3 +1206,18 @@ Strict reference decode first scans and validates every frame, including exact
 stream extent and cumulative raw size, then performs a second scan that commits
 output. A malformed later frame therefore cannot expose an earlier frame's raw
 bytes through this one-shot API.
+
+## DD-077: LZSS streaming decode commits complete validated frames
+
+- Date: 2026-07-14
+- Status: accepted
+
+Collect one complete serialized LZSS frame in caller-owned storage, decode it
+atomically into a separate caller-owned raw-frame workspace, and only then drain
+raw bytes. A valid earlier frame may be committed before a later frame arrives;
+no byte from a malformed current frame is published.
+
+Retain a consumed EndInput request while draining. Reject ResetBlock because
+boundaries are carried by the canonical frame headers. Require the sum of the
+encoded and decoded frame workspaces to fit the configured internal-buffer
+limit before accepting a frame body.

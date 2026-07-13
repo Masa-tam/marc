@@ -8,9 +8,6 @@
 namespace marc::frame {
 namespace {
 
-constexpr std::size_t lzss_stream_prefix_size =
-    stream_header_size + dictionary::internal::lzss_parameter_size;
-
 [[nodiscard]] bool supported_pipeline(const StreamHeader& stream) noexcept {
     return stream.dictionary_algorithm == DictionaryAlgorithm::lzss
         && stream.dictionary_variant == 1
