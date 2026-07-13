@@ -1237,3 +1237,21 @@ frame. Reject ResetBlock because fixed frame boundaries come from the stream
 header. Require raw plus serialized frame storage to fit the configured
 internal-buffer limit. Output must match the one-shot reference stream for all
 input and output chunking.
+
+## DD-079: LZSS profiles expose bounded workspace requirements
+
+- Date: 2026-07-14
+- Status: accepted
+
+Normalize a known-size LZSS/None configuration into the canonical stream header
+and report caller-owned workspace before constructing a transform. Size encoder
+raw storage from the largest frame that can occur. Since every unmatched byte
+is a two-byte Literal and a Match is selected only when strictly cheaper, the
+exact input-independent payload upper bound is twice the raw frame size. Add the
+generic frame header and enforce dictionary, compressed-payload, and aggregate
+buffer limits with checked arithmetic.
+
+Derive decoder encoded workspace solely from local dictionary, payload, and
+aggregate limits, reserving one byte for decoded output in the aggregate bound;
+derive decoded workspace from the local maximum frame size. Map overflow and
+limit failures to the stable core limit-exceeded category.

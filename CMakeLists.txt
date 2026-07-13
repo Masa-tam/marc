@@ -71,6 +71,7 @@ set(MARC_SOURCES
     src/frame/lz77_streaming_decoder.cpp
     src/frame/lz77_streaming_encoder.cpp
     src/frame/lzss_frame.cpp
+    src/frame/lzss_profile.cpp
     src/frame/lzss_stream.cpp
     src/frame/lzss_streaming_decoder.cpp
     src/frame/lzss_streaming_encoder.cpp
@@ -295,6 +296,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_frame_streaming_decoder_tests.cpp
         tests/lz77_frame_streaming_encoder_tests.cpp
         tests/lzss_frame_tests.cpp
+        tests/lzss_profile_tests.cpp
         tests/lzss_stream_tests.cpp
         tests/lzss_frame_streaming_decoder_tests.cpp
         tests/lzss_frame_streaming_encoder_tests.cpp

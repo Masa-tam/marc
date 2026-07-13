@@ -81,6 +81,9 @@ arbitrary input/output chunking without exposing bytes from a malformed frame.
 The streaming encoder similarly buffers one raw frame and its complete encoded
 form in separate caller-owned workspaces. Completed frames drain immediately;
 partial-frame Flush does not create a format boundary.
+The LZSS profile builder normalizes this pipeline and reports encoder workspace
+from the exact two-byte-per-input worst case. Decoder workspace depends only on
+local frame, dictionary-payload, compressed-payload, and aggregate limits.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

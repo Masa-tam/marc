@@ -937,6 +937,20 @@ no legal guarantee of non-infringement.
   LZSS/None streams with arbitrary input and output chunks.
 - Similarity review: no external streaming encoder structure was compared.
 
+## 2026-07-14 - LZSS profile and workspace bounds
+
+- Authoring method: derived workspace arithmetic from marc's canonical LZSS
+  Literal/Match cost rule, generic frame size, and local decoder limits.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS profile or
+  allocation APIs, workspace formulas, source, and tests.
+- Independent decisions: exact two-byte Literal worst case; largest actual raw
+  frame; header-inclusive encoded workspace; local-only decoder sizing; one-byte
+  decoded reserve in the aggregate decoder bound; stable error mapping.
+- Generated-code task description: normalize LZSS configuration and calculate
+  bounded encoder and decoder caller-owned workspace requirements.
+- Similarity review: no external workspace-query structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
