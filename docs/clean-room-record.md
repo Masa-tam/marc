@@ -1497,3 +1497,19 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement a clear bounded LZ78 reference
   encoder matching marc's fixed token vectors and atomic failure contract.
 - Similarity review: no external encoder structure or control flow was compared.
+
+## 2026-07-14 - LZ78 streaming decoder
+
+- Authoring method: extended marc's process state contract directly with an
+  eight-byte token collector and resumable phrase-output state.
+- References used: repository LZ78 format, phrase validator, reference decoder,
+  stream-status contract, limits, and fixed vectors only.
+- Known implementations intentionally not consulted: external LZ78 streaming
+  decoder source, phrase-cache techniques, pseudocode, tests, and containers.
+- Independent decisions: caller-owned prefix table only; per-byte iterative
+  prefix lookup; no phrase staging buffer; terminal-input retention; exact
+  cumulative serialized limit; stable partial-output malformed behavior.
+- Generated-code task description: decode marc LZ78 tokens with one-byte input
+  and output capacities while preserving bounded state and deterministic errors.
+- Similarity review: no external streaming state machine or control flow was
+  compared.

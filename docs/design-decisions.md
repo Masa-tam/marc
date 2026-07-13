@@ -1386,3 +1386,22 @@ enforce its byte extent against the local buffered-memory limit before parsing.
 Run the same deterministic parse for exact planning and serialization. Complete
 planning, policy checks, workspace checks, and output-capacity checks before
 writing any token so expected failures leave output untouched.
+
+## DD-088: LZ78 streaming decode retains partial tokens and phrases
+
+- Date: 2026-07-14
+- Status: accepted
+
+Collect one fixed eight-byte token across arbitrary input splits, validate its
+reference and complete expanded extent, then drain its phrase across arbitrary
+output splits. Retain dictionary entries in caller-owned prefix/symbol/length
+workspace sized for `min(frame_size, maximum_entries)` phrases. Enforce the
+workspace byte extent before accepting input.
+
+Avoid a second phrase-sized staging buffer in the reference decoder. For each
+forward output position, iteratively follow the bounded prefix chain until its
+stored length identifies that byte. This deliberately simple strategy may be
+replaced by a tested optimization later. Preserve terminal input while draining,
+accept EndInput with zero final bytes, reject ResetBlock, and return EndOfStream
+only after the exact declared frame output has drained and no trailing token
+bytes remain.

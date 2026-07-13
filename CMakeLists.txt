@@ -38,6 +38,7 @@ set(MARC_SOURCES
     src/dictionary/lz78_format.cpp
     src/dictionary/lz78_decoder.cpp
     src/dictionary/lz78_encoder.cpp
+    src/dictionary/lz78_streaming_decoder.cpp
     src/dictionary/lz78_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
@@ -306,6 +307,7 @@ if(MARC_BUILD_TESTS)
         tests/lz78_format_tests.cpp
         tests/lz78_decoder_tests.cpp
         tests/lz78_encoder_tests.cpp
+        tests/lz78_streaming_decoder_tests.cpp
         tests/lz78_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp

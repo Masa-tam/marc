@@ -212,6 +212,13 @@ frame size, premature serialized end, trailing tokens after raw completion,
 non-multiple-of-eight dictionary size, excessive entry parameters, and phrase
 references crossing an outer frame reset.
 
+For streaming LZ78 decode, feed the nested `AABABCABC` vector through one-byte
+input and output buffers. Repeat with EndInput first observed while a phrase is
+still draining, and with EndInput supplied on a later zero-byte call. Verify
+dictionary freeze with maximum entry count one. Truncated final tokens, trailing
+bytes, and a forward reference must report stable malformed-stream errors while
+preserving only bytes committed by earlier valid tokens.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
