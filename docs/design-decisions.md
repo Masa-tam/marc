@@ -1336,3 +1336,20 @@ rather than adding a clear token or changing the representation. Store prefix,
 trailing byte, and checked expanded length, and require non-recursive bounded
 expansion. With entropy None, the canonical worst-case payload bound is eight
 serialized bytes per raw byte.
+
+## DD-085: LZ78 validation uses a caller-owned prefix table
+
+- Date: 2026-07-14
+- Status: accepted
+
+Parse parameters and fixed eight-byte tokens transactionally. Validate a
+complete token stream with a caller-owned table containing only prefix index,
+trailing byte, and checked expanded length for each retained phrase. Index the
+root implicitly, reject forward references before table access, and never use
+input-controlled recursion.
+
+Require table capacity for `min(token_count, maximum_entries)` phrases. Once
+that many configured entries have been retained, continue validating against
+the frozen table without growing it. Report stable token index, byte offset,
+committed output length, dictionary-entry count, and format error at the first
+failure.

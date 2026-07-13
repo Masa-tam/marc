@@ -1452,3 +1452,18 @@ no legal guarantee of non-infringement.
   transform and malformed-stream rules before implementing parsing structures.
 - Similarity review: no external implementation structure or byte vector was
   compared.
+
+## 2026-07-14 - LZ78 parameter, token, and phrase validation
+
+- Authoring method: translated marc's LZ78 variant 1 format directly into
+  transactional serializers and a bounded caller-workspace validator.
+- References used: repository LZ78 format, decoder limits, checked arithmetic,
+  and endian primitives only.
+- Known implementations intentionally not consulted: external LZ78 parsers,
+  phrase tables, decoder source, pseudocode, malformed tests, and byte vectors.
+- Independent decisions: implicit root entry; caller-owned prefix/symbol/length
+  table; exact minimum workspace query; publish-after-token-validation updates;
+  stable token and byte failure positions; non-recursive phrase metadata walk.
+- Generated-code task description: implement bounded LZ78 parsing structures
+  and negative tests before decoding phrase bytes.
+- Similarity review: no external parser structure or control flow was compared.
