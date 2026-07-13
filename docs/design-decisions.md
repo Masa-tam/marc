@@ -1191,3 +1191,18 @@ Plan the whole frame before writing its header or body. Strict validation and
 reference decoding traverse the variable token sequence to obtain token count;
 the count is never inferred by dividing the payload size. Decode validates the
 complete token payload and output capacity before publishing frame output.
+
+## DD-076: Known-size LZSS reference streams validate before decode
+
+- Date: 2026-07-14
+- Status: accepted
+
+Serialize the stream header and 16-byte LZSS parameter record once, followed by
+frame-size-bounded LZSS/None frames with sequence numbers starting at zero. An
+empty stream contains only the 80-byte prefix. Each non-empty frame resets its
+dictionary history and emits the same canonical bytes independently.
+
+Strict reference decode first scans and validates every frame, including exact
+stream extent and cumulative raw size, then performs a second scan that commits
+output. A malformed later frame therefore cannot expose an earlier frame's raw
+bytes through this one-shot API.

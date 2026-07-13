@@ -71,6 +71,10 @@ The first complete LZSS pipeline binds these canonical bytes directly to the
 generic frame through entropy `None`. Frame planning fixes both raw and
 variable-token extents, while strict decode validates the entire payload before
 committing any raw byte.
+The known-size LZSS stream repeats this frame-local reset profile until the
+declared original size is reached. Reference decode validates every frame before
+publishing any output, so corruption in a later frame leaves the caller's whole
+output buffer unchanged.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

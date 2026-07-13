@@ -895,6 +895,20 @@ no legal guarantee of non-infringement.
   one generic frame carrying canonical LZSS tokens directly.
 - Similarity review: no external frame composition structure was compared.
 
+## 2026-07-14 - Known-size LZSS reference stream
+
+- Authoring method: composed marc's generic known-size stream and complete LZSS
+  frame contracts using the repository's established strict-reference policy.
+- References used: repository stream header, frame, LZSS parameter, checked
+  arithmetic, and limit specifications only.
+- Known implementations intentionally not consulted: external LZSS stream or
+  archive formats, source, vectors, and tests.
+- Independent decisions: one parameter record; frame-local dictionary resets;
+  empty 80-byte prefix; exact extent scan; validate-all-then-decode atomicity.
+- Generated-code task description: plan, encode, validate, and decode complete
+  known-size streams containing one or more canonical LZSS/None frames.
+- Similarity review: no external stream composition structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

@@ -175,6 +175,13 @@ overflow, a token crossing the declared raw frame size, premature serialized
 end, trailing tokens after raw completion, contradictory dictionary serialized
 size, and references that would cross an outer frame.
 
+The initial known-size LZSS reset stream is twelve `A` bytes with frame size 6.
+Each frame independently emits one Literal followed by a distance-1, length-5
+Match, so each payload is the same 11 bytes. Each frame is 67 bytes and the
+complete stream is 214 bytes including its 80-byte header-and-parameter prefix.
+Changing the second frame's Match distance to 2 must report frame index 1 while
+leaving strict-reference output untouched.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
