@@ -15,6 +15,7 @@ endif()
 option(MARC_BUILD_TESTS "Build marc tests" ${MARC_BUILD_TESTS_DEFAULT})
 option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
+option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 
 if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
     message(FATAL_ERROR "At least one of MARC_BUILD_SHARED or MARC_BUILD_STATIC must be ON")
@@ -169,6 +170,30 @@ if(MARC_BUILD_TOOLS)
         target_link_libraries(marc_cli PRIVATE marc::shared)
     else()
         target_link_libraries(marc_cli PRIVATE marc::static)
+    endif()
+endif()
+
+if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
+    target_compile_features(marc_benchmark PRIVATE cxx_std_20)
+    set_target_properties(marc_benchmark PROPERTIES CXX_EXTENSIONS OFF)
+    if(MSVC)
+        target_compile_options(marc_benchmark
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_benchmark
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    if(TARGET marc_static)
+        target_link_libraries(marc_benchmark PRIVATE marc::static)
+    else()
+        target_link_libraries(marc_benchmark PRIVATE marc::shared)
+    endif()
+    if(MARC_BUILD_TESTS)
+        add_test(NAME marc_benchmark_lzss_smoke
+            COMMAND marc_benchmark lzss ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzss_smoke
+            PROPERTIES LABELS benchmark-smoke)
     endif()
 endif()
 

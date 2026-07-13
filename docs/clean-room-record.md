@@ -981,6 +981,20 @@ no legal guarantee of non-infringement.
   CLI and run the existing overwrite, malformed, empty, and round-trip suite.
 - Similarity review: no external CLI dispatch structure was compared.
 
+## 2026-07-14 - LZ77 and LZSS benchmark driver
+
+- Authoring method: composed marc's public C transform lifecycle, canonical
+  profile workspace queries, and standard C++ steady-clock measurement.
+- References used: repository C API and LZ77/LZSS profile specifications only.
+- Known implementations intentionally not consulted: external compression
+  benchmark harness source, reporting layouts, corpus runners, and tests.
+- Independent decisions: opt-in dependency-free target; caller corpus; verified
+  round trip; process-call-only timing; full-stream ratio; binary MiB/s; explicit
+  codec-workspace metric and exclusions.
+- Generated-code task description: add reproducible LZ77/LZSS ratio,
+  throughput, and caller-workspace measurement through the public C ABI.
+- Similarity review: no external benchmark-driver structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

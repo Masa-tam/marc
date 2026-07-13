@@ -1286,3 +1286,19 @@ Derive each codec's workspace limits from its canonical worst-case payload: 16
 bytes per raw byte for LZ77 and two for LZSS. Preserve staged output commit,
 bounded 64 KiB I/O, malformed-input cleanup, overwrite refusal, and empty-file
 round trips for both profiles.
+
+## DD-082: Dictionary benchmarks use the public C transform path
+
+- Date: 2026-07-14
+- Status: accepted
+
+Provide an opt-in, dependency-free C++20 benchmark executable for LZ77 and LZSS
+that reads a caller-selected corpus and verifies a canonical round trip before
+timing. Time only the single complete `marc_transform_process()` call; exclude
+file I/O, allocation, workspace query, factory construction/destruction, and
+verification. Recreate the terminal transform for every iteration.
+
+Report complete-stream encoded/input ratio, raw-byte encode and decode MiB/s,
+direction-specific primary and secondary workspace, and the larger combined
+codec workspace. Do not label this last value process peak memory. Require
+Release builds and recorded environment/corpus metadata for published results.

@@ -87,6 +87,9 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
+An opt-in benchmark executable drives the public LZ77 and LZSS C transforms
+over caller-selected files. It reports full-stream ratio, timed transform
+throughput, and profile-derived codec workspace under one documented method.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
