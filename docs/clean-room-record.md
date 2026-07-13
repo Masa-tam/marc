@@ -804,6 +804,22 @@ no legal guarantee of non-infringement.
 - Similarity review: no external serialization or implementation structure was
   compared.
 
+## 2026-07-13 - LZSS parameter, token, and stream validation
+
+- Authoring method: directly implemented the repository LZSS variant 1 tables,
+  contextual copy rules, and decoder-limit contract.
+- References used: repository LZSS specification, endian helpers, checked
+  arithmetic, and existing marc result conventions only.
+- Known implementations intentionally not consulted: external LZSS parsers,
+  validators, source, malformed corpora, and test suites.
+- Independent decisions: transactional variable-token parsing; consumed byte
+  count published only on success; distinct truncation category; stable token
+  index and serialized offset; no output allocation or publication.
+- Generated-code task description: implement strict bounded LZSS parameter and
+  token parsing plus whole-frame validation before decoder implementation.
+- Similarity review: no external parser structure or validation flow was
+  compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
