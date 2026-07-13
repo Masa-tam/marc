@@ -1405,3 +1405,21 @@ replaced by a tested optimization later. Preserve terminal input while draining,
 accept EndInput with zero final bytes, reject ResetBlock, and return EndOfStream
 only after the exact declared frame output has drained and no trailing token
 bytes remain.
+
+## DD-089: LZ78 streaming encode buffers one known-size frame
+
+- Date: 2026-07-14
+- Status: accepted
+
+Collect exactly the declared raw frame in caller-owned storage, then invoke the
+reference LZ78 planner and encoder with a separate caller-owned phrase table.
+Drain the resulting canonical token bytes from caller-owned encoded storage.
+This deliberately buffered baseline makes encoded bytes independent of input
+and output chunking while preserving the exact reference parse.
+
+Require raw storage for the complete frame and dictionary records for
+`min(frame_size, maximum_entries)` phrases before accepting input. After exact
+planning, require encoded storage for the actual token extent and enforce the
+sum of raw, dictionary, and encoded workspace bytes against the local aggregate
+buffer limit. Flush does not close a partial frame; ResetBlock remains
+unsupported at this layer; terminal input is retained while encoded bytes drain.

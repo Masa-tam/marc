@@ -1513,3 +1513,19 @@ no legal guarantee of non-infringement.
   and output capacities while preserving bounded state and deterministic errors.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-14 - LZ78 streaming encoder
+
+- Authoring method: composed marc's process state contract with its exact LZ78
+  reference planner and encoder over one bounded known-size frame.
+- References used: repository LZ78 format, reference encoder, stream-status
+  contract, limits, and fixed vectors only.
+- Known implementations intentionally not consulted: external LZ78 streaming
+  encoders, buffering strategies, source, pseudocode, tests, and containers.
+- Independent decisions: three caller-owned workspaces; exact post-plan encoded
+  extent; aggregate raw/dictionary/encoded memory check; non-terminal Flush;
+  retained EndInput during draining; byte-for-byte reference oracle tests.
+- Generated-code task description: buffer and encode one known-size LZ78 frame
+  with arbitrary input/output chunks and bounded caller-owned state.
+- Similarity review: no external streaming state machine or control flow was
+  compared.

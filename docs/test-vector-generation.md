@@ -219,6 +219,13 @@ dictionary freeze with maximum entry count one. Truncated final tokens, trailing
 bytes, and a forward reference must report stable malformed-stream errors while
 preserving only bytes committed by earlier valid tokens.
 
+Use the same nested `AABABCABC` vector as the streaming LZ78 encoder oracle.
+Feed raw bytes and drain canonical tokens one byte at a time; output must equal
+the reference encoder byte for byte. A Flush after four raw bytes must emit
+nothing and must not shorten the frame. Exercise terminal input while draining,
+dictionary freeze, short raw/token/dictionary workspaces, and the aggregate
+workspace limit independently.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
