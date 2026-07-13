@@ -1441,3 +1441,20 @@ generic header and exact payload extent, then let the atomic LZ78 decoder
 validate the entire token stream before publishing raw bytes. The canonical
 single-byte `A` frame is exactly 64 bytes: a 56-byte frame header followed by
 one eight-byte Pair token.
+
+## DD-091: Known-size LZ78 streams validate every frame first
+
+- Date: 2026-07-14
+- Status: accepted
+
+Serialize the fixed stream header, the 16-byte LZ78 parameter region, and the
+deterministic sequence of complete LZ78/None frames. Reuse caller-owned encoder
+or decoder phrase workspace at each frame; frame-local parsing starts entry
+numbering from 1 and overwrites prior scratch, thereby enforcing dictionary
+reset without serializing an extra reset marker.
+
+Strict reference decode performs a complete validation scan before a second
+decode scan. A malformed later frame therefore leaves the entire raw output and
+caller-visible parsed stream/parameters untouched. Empty input is exactly the
+80-byte header-and-parameter prefix. Two independent `AAA` frames produce equal
+16-byte token payloads and a canonical 224-byte reset stream.

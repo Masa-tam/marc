@@ -233,6 +233,13 @@ total extent. Negative frame vectors alter a later phrase index, truncate or
 extend the payload, corrupt the frame sequence, and shorten each typed phrase
 workspace independently; malformed decode must leave raw output untouched.
 
+The initial known-size LZ78 reset stream is six `A` bytes with frame size 3.
+Each frame independently emits Pair `(0, 'A')` followed by Pair `(1, 'A')`, so
+both have the same 16-byte payload and 72-byte total extent. Including the
+80-byte stream prefix, the complete stream is 224 bytes. Corrupt the second
+frame's second phrase index and require frame index 1 while raw output and
+caller-visible parsed metadata remain untouched.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

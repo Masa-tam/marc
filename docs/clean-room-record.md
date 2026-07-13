@@ -1544,3 +1544,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: plan, encode, validate, and atomically decode
   one complete LZ78/None frame using marc's generic frame header.
 - Similarity review: no external frame composition or control flow was compared.
+
+## 2026-07-14 - Complete known-size LZ78 stream path
+
+- Authoring method: composed marc's fixed stream prefix, explicit LZ78
+  parameters, deterministic frame boundaries, and complete LZ78/None frames.
+- References used: repository stream/frame format, LZ78 parameter codec, frame
+  path, limits, and hand vectors only.
+- Known implementations intentionally not consulted: external LZ78 containers,
+  multi-frame formats, traversal source, tests, and byte vectors.
+- Independent decisions: reusable typed frame workspace; validation-first
+  two-pass decode; atomic parsed metadata; 80-byte empty stream; identical reset
+  payloads; zero-based corrupt-frame reporting.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  complete known-size multi-frame LZ78 streams.
+- Similarity review: no external stream composition or traversal was compared.
