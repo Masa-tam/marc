@@ -226,6 +226,13 @@ nothing and must not shorten the frame. Exercise terminal input while draining,
 dictionary freeze, short raw/token/dictionary workspaces, and the aggregate
 workspace limit independently.
 
+The canonical LZ78/None frame for raw `A` is 64 bytes: the generic 56-byte frame
+header declares raw size 1 and equal dictionary/payload sizes of 8, followed by
+Pair `(0, 'A')`. The nested `AABABCABC` frame has four tokens and an 88-byte
+total extent. Negative frame vectors alter a later phrase index, truncate or
+extend the payload, corrupt the frame sequence, and shorten each typed phrase
+workspace independently; malformed decode must leave raw output untouched.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

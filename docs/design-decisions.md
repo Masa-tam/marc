@@ -1423,3 +1423,21 @@ planning, require encoded storage for the actual token extent and enforce the
 sum of raw, dictionary, and encoded workspace bytes against the local aggregate
 buffer limit. Flush does not close a partial frame; ResetBlock remains
 unsupported at this layer; terminal input is retained while encoded bytes drain.
+
+## DD-090: The first complete LZ78 frame path uses entropy None
+
+- Date: 2026-07-14
+- Status: accepted
+
+Compose LZ78 variant 1 directly with the generic frame header and entropy None.
+Set dictionary serialized size and compressed payload size to the exact
+eight-byte token extent; entropy block count, descriptor size, and checksum
+trailer size remain zero. Retain separate caller-owned encoder and decoder
+phrase-table types because their reference representations serve different
+bounded operations and are never serialized.
+
+Plan the complete frame before writing its header. During decoding, validate the
+generic header and exact payload extent, then let the atomic LZ78 decoder
+validate the entire token stream before publishing raw bytes. The canonical
+single-byte `A` frame is exactly 64 bytes: a 56-byte frame header followed by
+one eight-byte Pair token.

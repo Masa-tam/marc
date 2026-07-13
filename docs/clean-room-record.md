@@ -1529,3 +1529,18 @@ no legal guarantee of non-infringement.
   with arbitrary input/output chunks and bounded caller-owned state.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-14 - Complete LZ78 frame path
+
+- Authoring method: composed marc's generic frame header with its independently
+  specified and implemented LZ78 token codec and entropy None.
+- References used: repository frame format, LZ78 format, encoder, validator,
+  decoder, limits, and hand vectors only.
+- Known implementations intentionally not consulted: external LZ78 containers,
+  frame formats, composition source, tests, and byte vectors.
+- Independent decisions: exact token payload extent; separate typed encoder and
+  decoder workspaces; generic-header-first validation; atomic raw publication;
+  canonical 64-byte one-symbol frame; final-frame context tests.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one complete LZ78/None frame using marc's generic frame header.
+- Similarity review: no external frame composition or control flow was compared.
