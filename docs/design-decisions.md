@@ -1124,3 +1124,25 @@ rename it only after successful stream completion and close. This prevents a
 malformed stream from exposing partial decoded output and avoids silently
 overwriting an existing file. Archive metadata and unknown-size sources remain
 outside this first tool's scope.
+
+## DD-072: LZSS variant 1 uses locally costed byte tokens
+
+- Date: 2026-07-13
+- Status: accepted
+
+Reuse LZ77's frame-local 65,536-byte default window, overlapping copy semantics,
+longest-match parsing, nearest-distance tie break, and maximum match length 258.
+Use a default and minimum permitted match length of 5 because of the exact token
+cost below. Reset history at every outer frame.
+
+Serialize Literal as a one-byte tag plus its byte, for a total cost of 2 bytes.
+Serialize Match as a one-byte tag plus little-endian 32-bit distance and length,
+for a total cost of 9 bytes. Match is eligible only when `9 < 2 * length`, so
+length 5 is the first strictly beneficial substitution. Independent Literal
+tokens keep this comparison local and avoid run-boundary lookahead or dynamic
+programming in the reference encoder.
+
+A Match may end the frame, eliminating LZ77's combined following-literal and
+terminal forms. Variable-size explicit tokens retain byte-stream composition,
+simple bounded parsing, and a 2-to-1 worst-case serialization expansion. A
+different packing or literal-run representation requires another variant ID.

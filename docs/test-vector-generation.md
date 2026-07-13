@@ -159,6 +159,22 @@ length below minimum or above configured/local maximum, output overflow,
 misplaced TerminalMatch, trailing tokens, contradictory dictionary serialized
 size, and references that would cross an outer frame.
 
+LZSS vectors independently enumerate every candidate distance at each raw
+position, including overlapping candidates, then record bounded length,
+serialized Match cost, equivalent Literal cost, selected longest length,
+nearest-distance tie break, and exact variable-size bytes. Include empty input,
+every single byte, the strict cost boundary at lengths 4 and 5, distance-1
+overlap (`AAAAAA`), a frame-ending Match (`ABCABCABC`), a Match followed by a
+Literal (`ABCABCABCX`), equal-length distance ties, window and maximum-length
+boundaries, and frame resets.
+
+Negative LZSS vectors cover unknown tags, truncated Literal and Match fields,
+zero or excessive distance, reference before produced history, length below
+the configured minimum or above configured/local maximum, checked output
+overflow, a token crossing the declared raw frame size, premature serialized
+end, trailing tokens after raw completion, contradictory dictionary serialized
+size, and references that would cross an outer frame.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

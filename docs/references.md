@@ -92,6 +92,20 @@ terminal-match form, frame resets, limits, and vectors are independently
 specified. No LZ77 implementation source, source-derived pseudocode, container
 format, or test suite was consulted.
 
+LZSS design reference:
+
+- James A. Storer and Thomas G. Szymanski, "Data Compression via Textual
+  Substitution," Journal of the ACM, volume 29, issue 4, pages 928-951,
+  October 1982, DOI `10.1145/322344.322346`. Used for the principle that a
+  dictionary substitution is emitted only when its explicit representation is
+  shorter than the text it replaces.
+  <https://doi.org/10.1145/322344.322346>
+
+marc's byte-token representation, parameters, exact cost test, deterministic
+match selection, overlap rule, frame resets, limits, and vectors are
+independently specified. No LZSS implementation source, source-derived
+pseudocode, container format, or test suite was consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

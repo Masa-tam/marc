@@ -787,6 +787,23 @@ no legal guarantee of non-infringement.
   only marc's public C ABI and rejects malformed input without partial output.
 - Similarity review: no external command-line tool structure was compared.
 
+## 2026-07-13 - LZSS variant 1 specification
+
+- Authoring method: derived a byte-token format from the substitution-cost
+  principle in the original LZSS paper and marc's existing frame contract.
+- References used: Storer and Szymanski's 1982 paper at the conceptual level,
+  repository dictionary requirements, framing, limits, and byte-order rules.
+- Known implementations intentionally not consulted: all external LZSS source,
+  source-derived pseudocode, token formats, containers, and test suites.
+- Independent decisions: two-byte Literal; nine-byte Match; strict local cost
+  inequality; minimum length 5; 32-bit little-endian fields; overlapping copy;
+  longest match and nearest tie; frame-local reset; no terminal token.
+- Generated-code task description: independently specify exact LZSS variant 1
+  parameters, parsing, cost selection, validation, bounds, and hand vectors
+  before implementation.
+- Similarity review: no external serialization or implementation structure was
+  compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

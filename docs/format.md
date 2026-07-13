@@ -60,7 +60,7 @@ block, and original sizes must not exceed local decoder limits.
 |---:|---|---|
 | 0 | None | variant 0 only |
 | 1 | LZ77 | fixed canonical copy-token variant defined below |
-| 2 | LZSS | baseline, details pending |
+| 2 | LZSS | explicit literal/match byte-token variant defined below |
 | 3 | LZ78 | baseline, details pending |
 | 4 | LZW | baseline, details pending |
 | 5 | LZD | Lempel-Ziv Double baseline, details pending |
@@ -249,6 +249,114 @@ token; entropy block and descriptor fields are zero:
 ```
 
 The 16-byte LZ77 parameter region belongs after the stream prefix and before
+the first frame; it is not repeated inside this frame.
+
+## LZSS variant 1
+
+LZSS variant 1 is a frame-local byte dictionary transform with explicit
+Literal and Match tokens. Its stream dictionary parameter region is exactly
+16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | window size | bytes; default 65,536; nonzero |
+| 4 | 4 | minimum match length | default 5; at least 5 |
+| 8 | 4 | maximum match length | default 258; at least minimum |
+| 12 | 4 | flags/reserved | zero |
+
+All integers are little-endian. Window size must not exceed the local maximum
+LZ distance. Maximum match length must not exceed the local maximum LZ match
+length. Dictionary history starts empty and resets at every outer frame; no
+reference crosses a frame boundary.
+
+The encoder parses raw frame bytes from left to right. At each position, search
+distances `1..min(window_size, bytes_already_parsed)`. A candidate compares
+bytewise and may overlap: candidate byte `i` is the raw input byte at
+`position - distance + i`, including bytes within the same match. Consider only
+matches within the configured length range. Choose the longest match; on equal
+length choose the smaller distance.
+
+A Literal token costs exactly 2 serialized bytes and represents one raw byte.
+A Match token costs exactly 9 serialized bytes and represents `length` raw
+bytes. Emit the selected Match only when its serialized cost is strictly less
+than the corresponding Literal sequence:
+
+```text
+9 < 2 * length
+```
+
+The minimum permitted match length of 5 makes this true for every encodable
+Match. If no eligible and beneficial match exists, emit one Literal. Advance by
+one byte after a Literal or by the complete match length after a Match. This
+greedy rule and nearest-distance tie break make encoder output deterministic.
+
+Tokens are concatenated without padding:
+
+| Tag | Serialized size | Fields |
+|---:|---:|---|
+| 0 | 2 | tag, then one literal byte |
+| 1 | 9 | tag, `uint32` distance, then `uint32` match length |
+
+Distance and match length in tag 1 are little-endian. There are no implicit
+native fields and no terminal-only token: a Match may end exactly at the frame
+boundary. Tags other than 0 and 1 are malformed.
+
+The decoder copies Match bytes one at a time from
+`output_position - distance`, so overlap has defined repeating-copy semantics.
+Before every token it validates distance against both configured window size
+and produced history, length against configured and local limits, checked
+output extent, and the declared raw frame size. It rejects truncated fields,
+impossible references, output beyond the declared frame, premature token end,
+bytes after the declared output size, and any token crossing an outer frame.
+
+The dictionary serialized size in the generic frame header is the exact sum of
+2 bytes per Literal and 9 bytes per Match. It is the byte input to the selected
+entropy layer. With entropy None, compressed payload size equals dictionary
+serialized size and the frame body contains these tokens directly. The
+worst-case reference expansion is 2 serialized bytes per raw byte and must fit
+local buffered and payload limits before allocation.
+
+### Hand-checkable LZSS token vectors
+
+With default parameters:
+
+```text
+Input `A`:
+00 41
+
+Input `AAAAAA`:
+00 41
+01 01 00 00 00 05 00 00 00
+
+Input `ABCABCABC`:
+00 41 00 42 00 43
+01 03 00 00 00 06 00 00 00
+
+Input `ABCABCABCX`:
+00 41 00 42 00 43
+01 03 00 00 00 06 00 00 00
+00 58
+```
+
+`AAAAAA` exercises distance-1 overlap. `ABCABCABC` shows that Match naturally
+ends a frame without a separate terminal form. `ABCABCABCX` shows that a Match
+does not absorb the following Literal.
+
+### Hand-checkable LZSS plus None frame vector
+
+For a stream selecting LZSS variant 1 and entropy None, with one raw byte `A`,
+the complete frame is 58 bytes. Its header declares one raw byte and one 2-byte
+dictionary/payload token; entropy block and descriptor fields are zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  02 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 41
+```
+
+The 16-byte LZSS parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
 
 ## Foundational hand-checkable vectors
