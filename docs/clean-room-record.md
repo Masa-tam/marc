@@ -666,6 +666,21 @@ no legal guarantee of non-infringement.
   decoder supporting arbitrary one-byte input and output chunking.
 - Similarity review: no external streaming decoder control flow was compared.
 
+## 2026-07-13 - LZ77 streaming encoder
+
+- Authoring method: composed marc's independently implemented deterministic
+  reference encoder with the repository transform contract.
+- References used: repository LZ77 format, reference encoder, limits, and core
+  process-state conventions only.
+- Known implementations intentionally not consulted: external LZ77 streaming
+  encoder source, pseudocode, buffering strategies, tests, and APIs.
+- Independent decisions: one known-size caller-owned raw frame; separate
+  serialized workspace; full-frame preparation before draining; retained
+  `EndInput`; non-terminal flush leaves the frame open.
+- Generated-code task description: implement bounded allocation-free streaming
+  emission identical to marc's LZ77 reference encoder for arbitrary chunking.
+- Similarity review: no external streaming encoder control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

@@ -26,6 +26,10 @@ every byte without buffering a decoded frame.
 The caller supplies a bounded circular history region of
 `min(window_size, frame_size)` bytes so references remain valid when output
 buffers change between calls.
+The streaming encoder buffers exactly one declared raw frame in caller-owned
+storage because the canonical greedy parse depends on later bytes and the exact
+frame end. It generates the reference token stream into separate caller-owned
+storage, then drains it with arbitrary output capacity.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

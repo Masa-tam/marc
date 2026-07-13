@@ -995,3 +995,21 @@ output capacity without allocating or buffering the decoded frame. `EndInput`
 is retained after all supplied input is consumed while output is still pending.
 Non-terminal flush is a no-op and explicit reset remains unsupported at this
 frame-local transform boundary.
+
+## DD-064: LZ77 streaming encoding buffers one known-size frame
+
+- Date: 2026-07-13
+- Status: accepted
+
+Collect exactly the declared raw frame size in caller-owned storage. Once full,
+run the deterministic reference planner and encoder into separate caller-owned
+serialized storage, then drain those bytes before accepting any later input.
+This preserves identical output across input and output chunking while keeping
+all memory bounded and allocation-free inside the transform. The exact raw plus
+serialized working extents must also fit the aggregate internal-buffer limit.
+
+A full frame may be encoded before `EndInput` because its declared end is known;
+the transform then waits for an explicit terminal signal after draining. A
+non-terminal flush leaves a partial frame open. Premature `EndInput`, bytes past
+the declared frame, insufficient workspace, and unsupported reset are terminal
+errors.
