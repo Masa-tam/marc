@@ -1013,3 +1013,19 @@ the transform then waits for an explicit terminal signal after draining. A
 non-terminal flush leaves a partial frame open. Premature `EndInput`, bytes past
 the declared frame, insufficient workspace, and unsupported reset are terminal
 errors.
+
+## DD-065: The first complete LZ77 frame path uses entropy None
+
+- Date: 2026-07-13
+- Status: accepted
+
+Bind LZ77 variant 1 to the generic outer frame with entropy algorithm `None`.
+The stream-level dictionary parameter region is exactly 16 bytes. Each frame's
+dictionary serialized size and compressed payload size both equal the complete
+canonical LZ77 token extent; entropy block count and descriptor size are zero.
+
+Plan the token stream before writing the frame. Strict decode validates the
+generic header, exact frame extent, and every token before raw output mutation,
+making one complete frame the atomic rejection boundary. Later entropy
+combinations reuse the same canonical dictionary bytes without altering this
+pipeline's representation.

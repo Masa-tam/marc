@@ -59,7 +59,7 @@ block, and original sizes must not exceed local decoder limits.
 | Dictionary ID | Algorithm | Variant 1 |
 |---:|---|---|
 | 0 | None | variant 0 only |
-| 1 | LZ77 | baseline, details pending |
+| 1 | LZ77 | fixed canonical copy-token variant defined below |
 | 2 | LZSS | baseline, details pending |
 | 3 | LZ78 | baseline, details pending |
 | 4 | LZW | baseline, details pending |
@@ -232,6 +232,24 @@ Input `ABCABCX`:
 
 `AAAA` explicitly exercises overlapping distance-1 copying. `ABCABCX`
 exercises MatchThenLiteral rather than TerminalMatch.
+
+### Hand-checkable LZ77 plus None frame vector
+
+For a stream selecting LZ77 variant 1 and entropy None, with original size and
+frame size both permitting the one-byte raw input `A`, the complete frame is 72
+bytes. Its header declares one raw byte and one 16-byte dictionary/payload
+token; entropy block and descriptor fields are zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 10 00 00 00  10 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 41 00 00 00
+```
+
+The 16-byte LZ77 parameter region belongs after the stream prefix and before
+the first frame; it is not repeated inside this frame.
 
 ## Foundational hand-checkable vectors
 

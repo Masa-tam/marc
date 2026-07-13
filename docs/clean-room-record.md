@@ -681,6 +681,21 @@ no legal guarantee of non-infringement.
   emission identical to marc's LZ77 reference encoder for arbitrary chunking.
 - Similarity review: no external streaming encoder control flow was compared.
 
+## 2026-07-13 - Complete LZ77 frame path with entropy None
+
+- Authoring method: composed marc's generic frame header with its independently
+  specified and implemented LZ77 token codec.
+- References used: repository format, frame validation, LZ77 components, and
+  checked extent conventions only.
+- Known implementations intentionally not consulted: external LZ77 containers,
+  frame formats, composition source, tests, and byte vectors.
+- Independent decisions: entropy-None baseline; equal dictionary and payload
+  extents; whole-frame validation before raw output; exact contextual sequence
+  and final-frame checks.
+- Generated-code task description: add plan, encode, validate, and atomic decode
+  for one generic outer frame carrying canonical LZ77 tokens directly.
+- Similarity review: no external frame composition control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

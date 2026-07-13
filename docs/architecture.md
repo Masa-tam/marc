@@ -30,6 +30,10 @@ The streaming encoder buffers exactly one declared raw frame in caller-owned
 storage because the canonical greedy parse depends on later bytes and the exact
 frame end. It generates the reference token stream into separate caller-owned
 storage, then drains it with arbitrary output capacity.
+The first complete LZ77 pipeline binds variant 1 to entropy `None`: the generic
+frame header declares the raw and token extents, and the payload is the exact
+canonical token stream. Strict decoding validates the whole frame before
+committing raw output.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
