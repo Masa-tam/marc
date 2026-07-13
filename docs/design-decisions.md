@@ -1353,3 +1353,19 @@ that many configured entries have been retained, continue validating against
 the frozen table without growing it. Report stable token index, byte offset,
 committed output length, dictionary-entry count, and format error at the first
 failure.
+
+## DD-086: LZ78 reference decoding validates before publication
+
+- Date: 2026-07-14
+- Status: accepted
+
+Validate the complete frame token stream and build its caller-owned phrase
+table before checking output capacity or publishing any decoded byte. Invalid
+input and short output therefore leave the output span untouched; phrase
+workspace remains scratch and may be modified by validation.
+
+Expand a phrase iteratively by reserving its already-validated output extent,
+following prefix indices toward the implicit root, and writing trailing symbols
+backward into that extent. Append the Pair symbol afterward. This produces
+forward phrase order without recursion or a phrase-sized temporary buffer and
+retains exact behavior after dictionary freeze.

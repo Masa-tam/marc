@@ -1467,3 +1467,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement bounded LZ78 parsing structures
   and negative tests before decoding phrase bytes.
 - Similarity review: no external parser structure or control flow was compared.
+
+## 2026-07-14 - LZ78 reference decoder
+
+- Authoring method: implemented the documented LZ78 token inverse directly on
+  the previously validated caller-owned prefix table.
+- References used: repository LZ78 format, validator, decoder limits, and hand
+  vectors only.
+- Known implementations intentionally not consulted: external LZ78 decoder
+  source, pseudocode, phrase-expansion techniques, tests, and containers.
+- Independent decisions: full validation before output publication; backward
+  iterative phrase writes; no phrase scratch allocation; stable validator error
+  propagation; explicit internal-consistency checks during the second pass.
+- Generated-code task description: add an atomic bounded reference decoder for
+  marc's fixed eight-byte LZ78 token representation.
+- Similarity review: no external decoder structure or control flow was compared.
