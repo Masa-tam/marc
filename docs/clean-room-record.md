@@ -729,6 +729,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external decoder control flow or bit-buffer structure
   was compared.
 
+## 2026-07-13 - tANS descriptor-region controller
+
+- Authoring method: composed marc's fixed tANS descriptor validator with its
+  generic checked frame-boundary rules.
+- References used: repository tANS format, limits, and existing internal
+  controller contract only.
+- Known implementations intentionally not consulted: external tANS/FSE frame
+  controllers, containers, offset tables, source, and tests.
+- Independent decisions: exact descriptor extent preflight; two-pass
+  validation-before-publication; caller-owned block views; checked aggregate
+  payload offsets; exact final-short block size; stable error categories.
+- Generated-code task description: validate all tANS block descriptors and
+  derive bounded payload views before any frame payload decode.
+- Similarity review: no external controller layout or traversal was compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

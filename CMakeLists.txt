@@ -38,6 +38,7 @@ set(MARC_SOURCES
     src/entropy/tans_tables.cpp
     src/entropy/tans_encoder.cpp
     src/entropy/tans_decoder.cpp
+    src/entropy/tans_controller.cpp
     src/core/bit_io.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
@@ -207,6 +208,7 @@ if(MARC_BUILD_TESTS)
         tests/tans_tables_tests.cpp
         tests/tans_encoder_tests.cpp
         tests/tans_decoder_tests.cpp
+        tests/tans_controller_tests.cpp
         tests/bit_io_tests.cpp
         tests/blocked_huffman_format_tests.cpp
         tests/blocked_huffman_encoder_tests.cpp

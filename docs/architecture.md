@@ -351,6 +351,11 @@ declared symbol count without output. It requires an in-range initial offset,
 available bits for every transition, exact terminal state and bit consumption,
 and zero high padding. Only a second identical traversal publishes bytes.
 
+The tANS frame controller validates the exact fixed-descriptor extent, expected
+full and final-short block symbol counts, each descriptor model, checked payload
+offset sums, and local frame limits in a first scan. A second scan publishes
+caller-owned block views only after the whole region is known valid.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and
