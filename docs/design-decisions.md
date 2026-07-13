@@ -883,3 +883,18 @@ the decoder-consumption-order bit sequence packed LSB-first. Encode source
 symbols in reverse and prepend each emitted low-bit chunk logically. Require
 exact bit consumption, zero high padding, and terminal state `L`. This is a
 repository-defined tANS representation and is not claimed to be FSE-compatible.
+
+## DD-057: tANS frames validate every block before output
+
+- Date: 2026-07-13
+- Status: accepted
+
+Use the generic descriptors-first, payloads-second outer-frame composition,
+while retaining the distinct tANS descriptor and payload semantics. Plan every
+block and the complete frame extent before encoder output mutation.
+
+Strict frame decoding validates the descriptor region and every complete tANS
+payload before decoding any block into caller output. One frame is therefore
+the atomic commit boundary. With frame size 3 and block size 2, `ABA` is a
+canonical 1117-byte frame: 56 header bytes, 1056 descriptor bytes, and five
+payload bytes.

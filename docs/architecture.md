@@ -356,6 +356,11 @@ full and final-short block symbol counts, each descriptor model, checked payload
 offset sums, and local frame limits in a first scan. A second scan publishes
 caller-owned block views only after the whole region is known valid.
 
+The complete tANS frame path plans every block before writing, serializes all
+descriptors before all payloads, and validates every block state and bitstream
+before a second loop writes output. Capacity failure and malformed later blocks
+therefore leave the whole frame output untouched.
+
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and

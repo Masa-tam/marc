@@ -744,6 +744,20 @@ no legal guarantee of non-infringement.
   derive bounded payload views before any frame payload decode.
 - Similarity review: no external controller layout or traversal was compared.
 
+## 2026-07-13 - Complete tANS frame path
+
+- Authoring method: composed marc's generic frame header, tANS descriptor
+  controller, and strict reference block codec.
+- References used: repository tANS format and implemented components only.
+- Known implementations intentionally not consulted: external tANS/FSE frames,
+  containers, composition source, and test vectors.
+- Independent decisions: descriptors-first and payloads-second regions;
+  whole-frame capacity preflight; validation of every block before output;
+  caller-owned views; canonical 1117-byte two-block `ABA` frame.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one complete multi-block tANS outer frame.
+- Similarity review: no external frame composition control flow was compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and
