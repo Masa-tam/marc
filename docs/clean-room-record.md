@@ -711,6 +711,22 @@ no legal guarantee of non-infringement.
   known-size multi-frame LZ77 streams with entropy None.
 - Similarity review: no external stream composition control flow was compared.
 
+## 2026-07-13 - LZ77 outer streaming encoder
+
+- Authoring method: composed marc's stream prefix, parameter serializer, and
+  independently implemented complete LZ77 frame encoder as a bounded state
+  machine.
+- References used: repository process contract, known-size LZ77 stream and frame
+  paths, checked memory bounds, and existing marc controller conventions only.
+- Known implementations intentionally not consulted: external LZ77 streaming
+  container writers, source, pseudocode, workspace layouts, tests, and APIs.
+- Independent decisions: 80-byte prefix drain; one raw and one serialized frame
+  workspace; output-priority backpressure; full-frame early commit; retained
+  final `EndInput`; aggregate workspace enforcement.
+- Generated-code task description: emit complete LZ77 streams incrementally
+  with deterministic frame boundaries and arbitrary partial buffers.
+- Similarity review: no external streaming controller flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

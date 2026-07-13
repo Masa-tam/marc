@@ -38,6 +38,10 @@ The known-size stream path writes the fixed stream prefix, one canonical LZ77
 parameter region, then deterministic frame extents. Strict decoding scans every
 frame before a second output pass, so corruption in a later frame leaves the
 entire caller output untouched.
+The outer streaming encoder emits that 80-byte prefix, then reuses one raw and
+one serialized caller-owned frame workspace. Pending prefix or frame output has
+priority over accepting later raw input, and arbitrary chunking matches the
+known-size reference stream exactly.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

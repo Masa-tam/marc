@@ -1044,3 +1044,18 @@ Strict reference decoding parses parameters transactionally, scans and
 validates all exact frame extents without output, rejects truncation and trailing
 bytes, then repeats the traversal into caller storage. A malformed later frame
 cannot expose output from any earlier frame in this one-shot API.
+
+## DD-067: LZ77 outer streaming encoding commits complete frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Emit the fixed stream prefix and LZ77 parameter region first. Buffer one raw
+outer frame in caller-owned storage, encode it into a separate reusable frame
+workspace, then drain the complete generic frame before accepting later raw
+input. Pending output has priority and may leave an input suffix unconsumed.
+
+Known original and frame sizes allow every full frame to be committed before
+whole-stream termination. Non-terminal flush keeps a partial frame open; final
+short-frame completion requires `EndInput`. The output is byte-identical to the
+known-size reference stream for every input and output chunking.
