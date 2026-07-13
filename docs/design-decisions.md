@@ -1255,3 +1255,19 @@ Derive decoder encoded workspace solely from local dictionary, payload, and
 aggregate limits, reserving one byte for decoded output in the aggregate bound;
 derive decoded workspace from the local maximum frame size. Map overflow and
 limit failures to the stable core limit-exceeded category.
+
+## DD-080: LZSS uses a separate size-tagged C transform API
+
+- Date: 2026-07-14
+- Status: accepted
+
+Add a versioned `marc_lzss_config` with explicit format parameters and local
+decoder limits, plus initializer, workspace query, and transform factory.
+Retain ABI version 1 because no existing layout or symbol changes. Both
+directions use the common opaque transform and process/destroy operations.
+
+Encoding uses primary raw-frame and secondary serialized-frame workspaces.
+Decoding uses primary serialized-frame and secondary decoded-frame workspaces.
+LZSS needs no views workspace. Reject incorrect size/version tags, nonzero
+reserved fields, invalid parameters or limits, and insufficient caller buffers
+before construction.

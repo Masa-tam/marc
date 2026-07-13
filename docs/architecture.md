@@ -84,6 +84,9 @@ partial-frame Flush does not create a format boundary.
 The LZSS profile builder normalizes this pipeline and reports encoder workspace
 from the exact two-byte-per-input worst case. Decoder workspace depends only on
 local frame, dictionary-payload, compressed-payload, and aggregate limits.
+The C ABI exposes the same path through an independent size-tagged LZSS config,
+workspace query, and encoder/decoder factory without changing ABI version 1 or
+passing C++ ownership across the boundary.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
@@ -457,7 +460,7 @@ therefore leave the whole frame output untouched.
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range,
-rANS, and tANS variant 1 through
+rANS, tANS, LZ77, and LZSS variant 1 through
 separate versioned, size-tagged configuration, workspace-query, and factory
 functions. All profiles construct the same opaque transform type and share its
 process and destroy operations. Encoder workspaces hold one raw and one

@@ -951,6 +951,21 @@ no legal guarantee of non-infringement.
   bounded encoder and decoder caller-owned workspace requirements.
 - Similarity review: no external workspace-query structure was compared.
 
+## 2026-07-14 - LZSS C transform API
+
+- Authoring method: connected marc's independently implemented LZSS profile and
+  streaming transforms to the repository's existing small C ABI contract.
+- References used: repository C ABI, LZSS profile, and transform specifications
+  only.
+- Known implementations intentionally not consulted: external compression C
+  APIs, LZSS bindings, allocation interfaces, source, and tests.
+- Independent decisions: separate size-tagged config; unchanged ABI version 1;
+  no views workspace; explicit LZ limits; non-throwing opaque factory; pure-C
+  214-byte stream round trip.
+- Generated-code task description: expose LZSS workspace query and streaming
+  encoder/decoder factories through the stable C ABI and test from pure C.
+- Similarity review: no external C ABI or adapter structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
