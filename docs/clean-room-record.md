@@ -757,6 +757,21 @@ no legal guarantee of non-infringement.
   portable bounded encoder and decoder workspace requirements.
 - Similarity review: no external workspace calculation structure was compared.
 
+## 2026-07-13 - LZ77 C transform API
+
+- Authoring method: adapted marc's established size-tagged ABI pattern to its
+  independently implemented LZ77 profile and streaming controllers.
+- References used: repository public C header, common transform adapter, LZ77
+  profile, and pure-C test conventions only.
+- Known implementations intentionally not consulted: external compression C
+  APIs, LZ77 wrappers, ABI layouts, factory source, and tests.
+- Independent decisions: separate LZ77 config without ABI revision; explicit
+  match and relevant limit fields; two caller-owned workspaces; no views or
+  allocator callback; decoder configuration remains local-policy-only.
+- Generated-code task description: expose complete LZ77 streaming transforms
+  through the stable C ABI and verify shared-library round-trip from pure C.
+- Similarity review: no external ABI wrapper structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

@@ -1091,3 +1091,19 @@ Derive the encoded workspace only from local dictionary, payload, and internal
 limits after reserving the generic header and at least one raw byte, and derive
 decoded workspace from the local maximum frame size. Actual frame collection
 still enforces the combined encoded-plus-decoded extent.
+
+## DD-070: LZ77 extends ABI version 1 with a separate config
+
+- Date: 2026-07-13
+- Status: accepted
+
+Preserve ABI version 1 and every existing configuration layout. Add a distinct
+size-tagged LZ77 configuration containing frame and match parameters plus the
+relevant local hard limits. Reuse the common opaque transform, process result,
+workspace descriptor, and destruction operation; LZ77 requires no views
+workspace.
+
+The encoder factory normalizes a known-size profile before constructing the
+outer streaming encoder. The decoder factory derives workspace only from local
+limits and learns stream parameters from the encoded prefix. Validate sizes,
+ABI tags, reserved fields, buffers, and limits before object construction.

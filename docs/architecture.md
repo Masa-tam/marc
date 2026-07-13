@@ -49,6 +49,9 @@ validated frame the streaming commit boundary.
 LZ77 profile helpers normalize the stream configuration and calculate encoder
 workspace from the exact fixed-token worst case. Decoder workspace is derived
 only from local limits, before any untrusted stream bytes are inspected.
+The C ABI exposes this path through a separate size-tagged LZ77 configuration,
+workspace query, and transform factory while retaining ABI version 1. No C++
+types, exceptions, or ownership cross the shared-library boundary.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
