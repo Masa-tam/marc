@@ -2,9 +2,10 @@
 
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. The currently implemented public profiles are the
-version 1 framed Blocked Huffman, Adaptive Huffman, and Dynamic Range codecs,
-exposed through a small C ABI. The format and API are still under development
-and version 0.x streams are not yet promised long-term compatibility.
+version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
+and LZ77 codecs, exposed through a small C ABI. The format and API are still
+under development and version 0.x streams are not yet promised long-term
+compatibility.
 
 ## Build
 
@@ -23,6 +24,21 @@ enabled; initialize the pinned submodule with:
 ```console
 git submodule update --init --recursive
 ```
+
+## Command-line tool
+
+Top-level builds produce a minimal `marc` executable that exercises the public
+C ABI with bounded streaming buffers. It currently writes the version 1 LZ77
+profile with no entropy layer:
+
+```console
+marc encode input.bin output.marc
+marc decode output.marc restored.bin
+```
+
+The destination and its `.tmp` staging path must not already exist. A successful
+operation renames the staging file; a failed operation removes it, so malformed
+input does not leave a partially decoded destination.
 
 ## CMake consumption
 

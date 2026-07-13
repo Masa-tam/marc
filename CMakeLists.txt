@@ -14,6 +14,7 @@ else()
 endif()
 option(MARC_BUILD_TESTS "Build marc tests" ${MARC_BUILD_TESTS_DEFAULT})
 option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
+option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 
 if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
     message(FATAL_ERROR "At least one of MARC_BUILD_SHARED or MARC_BUILD_STATIC must be ON")
@@ -144,6 +145,22 @@ if(MARC_BUILD_EXAMPLES)
     endif()
 endif()
 
+if(MARC_BUILD_TOOLS)
+    add_executable(marc_cli tools/marc_cli.cpp)
+    target_compile_features(marc_cli PRIVATE cxx_std_20)
+    set_target_properties(marc_cli PROPERTIES OUTPUT_NAME marc CXX_EXTENSIONS OFF)
+    if(MSVC)
+        target_compile_options(marc_cli PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_cli PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    if(TARGET marc_shared)
+        target_link_libraries(marc_cli PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_cli PRIVATE marc::static)
+    endif()
+endif()
+
 set(MARC_INSTALL_TARGETS)
 if(TARGET marc_shared)
     list(APPEND MARC_INSTALL_TARGETS marc_shared)
@@ -158,6 +175,9 @@ install(TARGETS ${MARC_INSTALL_TARGETS}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+if(TARGET marc_cli)
+    install(TARGETS marc_cli RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(EXPORT marcTargets
     FILE marcTargets.cmake
@@ -345,4 +365,12 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_lz77_c_api_tests PRIVATE marc::static)
     endif()
     add_test(NAME marc_lz77_c_api_tests COMMAND marc_lz77_c_api_tests)
+
+    if(TARGET marc_cli)
+        add_test(NAME marc_cli_lz77_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+    endif()
 endif()

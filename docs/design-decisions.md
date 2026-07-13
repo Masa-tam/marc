@@ -1107,3 +1107,20 @@ The encoder factory normalizes a known-size profile before constructing the
 outer streaming encoder. The decoder factory derives workspace only from local
 limits and learns stream parameters from the encoded prefix. Validate sizes,
 ABI tags, reserved fields, buffers, and limits before object construction.
+
+## DD-071: The first CLI dogfoods the public LZ77 C ABI
+
+- Date: 2026-07-13
+- Status: accepted
+
+Build a portable `marc encode|decode <input> <output>` executable from the
+public header and link it as an ordinary library consumer. The initial tool
+selects the version 1 LZ77-plus-None profile with 1 MiB raw frames and uses
+fixed 64 KiB I/O chunks; codec workspaces remain bounded and caller-owned.
+
+Require a known-size regular input and a nonexistent destination. Write to a
+sibling `.tmp` path, delete that path on every transform or I/O failure, and
+rename it only after successful stream completion and close. This prevents a
+malformed stream from exposing partial decoded output and avoids silently
+overwriting an existing file. Archive metadata and unknown-size sources remain
+outside this first tool's scope.

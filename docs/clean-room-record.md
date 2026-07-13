@@ -772,6 +772,21 @@ no legal guarantee of non-infringement.
   through the stable C ABI and verify shared-library round-trip from pure C.
 - Similarity review: no external ABI wrapper structure was compared.
 
+## 2026-07-13 - LZ77 file CLI
+
+- Authoring method: drove marc's public C transform contract from portable C++20
+  filesystem and stream facilities.
+- References used: repository C API documentation, LZ77 profile bounds, and
+  process-result contract only.
+- Known implementations intentionally not consulted: external compression CLI
+  source, argument handling, file staging logic, and integration tests.
+- Independent decisions: two explicit commands; fixed 64 KiB I/O chunks;
+  1 MiB LZ77 frames; caller-owned bounded workspaces; nonexistent destination;
+  sibling temporary output removed on failure and renamed after completion.
+- Generated-code task description: add a minimal real-file LZ77 CLI that uses
+  only marc's public C ABI and rejects malformed input without partial output.
+- Similarity review: no external command-line tool structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
