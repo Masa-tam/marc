@@ -1161,3 +1161,19 @@ mirroring each committed byte into a caller-owned circular history region of
 `min(window_size, frame_size)` bytes. Preserve partial Match progress and a
 consumed `EndInput` request across output starvation. This keeps steady-state
 decode allocation-free and permits every input and output boundary.
+
+## DD-074: LZSS streaming encode buffers one known-size frame
+
+- Date: 2026-07-14
+- Status: accepted
+
+Collect exactly the declared raw frame in caller-owned storage because greedy
+longest-match selection depends on later input and the exact frame end. A
+non-terminal Flush does not shorten that frame. Reject premature EndInput and
+raw bytes beyond the declared size.
+
+After collection, run the reference planning pass, enforce the combined raw and
+serialized workspace limit, encode into a separate caller-owned region, and
+drain without consuming later input. Retain a consumed EndInput request while
+output is blocked. This makes output byte-identical to the reference encoder
+for every chunking and bounds worst-case token storage at twice the raw size.

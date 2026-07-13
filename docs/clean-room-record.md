@@ -865,6 +865,21 @@ no legal guarantee of non-infringement.
   buffers, bounded history, exact malformed detection, and no allocation.
 - Similarity review: no external streaming control flow was compared.
 
+## 2026-07-14 - LZSS streaming encoder
+
+- Authoring method: adapted marc's reference LZSS planning and encoding passes
+  to the repository process contract with caller-owned finite frame storage.
+- References used: repository LZSS reference encoder, process contract, limits,
+  and checked arithmetic only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  encoders, buffering strategies, state machines, source, and tests.
+- Independent decisions: exact known-frame collection; non-shortening Flush;
+  separate raw/token workspaces; aggregate memory preflight; pending-output
+  priority; retained EndInput; reference-identical output.
+- Generated-code task description: buffer and deterministically encode one LZSS
+  frame with arbitrary input/output chunks and no internal allocation.
+- Similarity review: no external streaming encoder structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

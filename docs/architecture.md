@@ -63,6 +63,10 @@ The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,
 and `EndInput` survive arbitrary input and output splits without allocation.
+The streaming encoder buffers one complete known-size raw frame and its
+canonical token stream in separate caller-owned regions, then drains bytes
+without accepting later input. Its output is identical to the reference encoder
+for every input and output chunking.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
