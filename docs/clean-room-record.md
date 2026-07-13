@@ -1559,3 +1559,20 @@ no legal guarantee of non-infringement.
 - Generated-code task description: plan, encode, validate, and atomically decode
   complete known-size multi-frame LZ78 streams.
 - Similarity review: no external stream composition or traversal was compared.
+
+## 2026-07-14 - Streaming LZ78 frame decoder
+
+- Authoring method: composed marc's process contract, fixed stream/frame
+  headers, and atomic LZ78 frame decoder into a bounded outer state machine.
+- References used: repository stream/frame format, LZ78 frame decoder, checked
+  arithmetic, limits, and repository-owned hand vectors only.
+- Known implementations intentionally not consulted: external LZ78 streaming
+  containers, decoder state machines, tests, and byte vectors.
+- Independent decisions: complete-frame validation before publication;
+  caller-owned encoded, decoded, and phrase workspaces; aggregate byte limit;
+  retained terminal input while draining; prior-frame commit semantics.
+- Generated-code task description: decode complete known-size LZ78 streams from
+  arbitrary input chunks and publish validated frames through arbitrary output
+  chunks.
+- Similarity review: no external streaming state machine or control flow was
+  compared.

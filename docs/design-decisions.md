@@ -1458,3 +1458,21 @@ decode scan. A malformed later frame therefore leaves the entire raw output and
 caller-visible parsed stream/parameters untouched. Empty input is exactly the
 80-byte header-and-parameter prefix. Two independent `AAA` frames produce equal
 16-byte token payloads and a canonical 224-byte reset stream.
+
+## DD-092: Streaming LZ78 decode commits complete validated frames
+
+- Date: 2026-07-14
+- Status: accepted
+
+Collect the fixed stream prefix and then one complete LZ78/None frame at a time
+in caller-owned storage. Validate and decode the complete token payload into a
+caller-owned raw-frame buffer before publishing any byte from that frame. A
+malformed later frame therefore preserves bytes from earlier committed frames
+while publishing no bytes from the failing frame.
+
+Require a separate caller-owned phrase table sized for the current payload's
+bounded token count. Count the used encoded-frame extent, decoded-frame extent,
+and required phrase-table bytes together against the aggregate internal buffer
+limit before collecting the payload. Retain terminal input while a decoded
+frame drains, reject ResetBlock, and require an explicit EndInput observation
+before reporting EndOfStream.

@@ -240,6 +240,18 @@ both have the same 16-byte payload and 72-byte total extent. Including the
 frame's second phrase index and require frame index 1 while raw output and
 caller-visible parsed metadata remain untouched.
 
+Feed that 224-byte reset stream to the outer streaming decoder with one-byte
+input and output buffers. Corrupt the second frame's second phrase reference
+and require the first three raw bytes to remain committed while the failing
+frame publishes none. Exercise the encoded-frame, decoded-frame, and phrase
+table workspaces independently, then set the aggregate workspace limit one byte
+below the required 72 encoded bytes, three decoded bytes, and two phrase
+records.
+
+Also consume the complete stream without EndInput, drain all six bytes, and
+require a later empty EndInput call to make the terminal transition. ResetBlock
+is unsupported by this outer decoder and must fail without consuming input.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
