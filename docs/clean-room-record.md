@@ -880,6 +880,21 @@ no legal guarantee of non-infringement.
   frame with arbitrary input/output chunks and no internal allocation.
 - Similarity review: no external streaming encoder structure was compared.
 
+## 2026-07-14 - Complete LZSS frame path with entropy None
+
+- Authoring method: composed marc's generic frame contract with its independently
+  specified and implemented LZSS token codec.
+- References used: repository frame format, validation, LZSS components, and
+  checked arithmetic only.
+- Known implementations intentionally not consulted: external LZSS containers,
+  frame formats, composition source, vectors, and tests.
+- Independent decisions: None entropy binding; exact variable payload extent;
+  no inferred token count; full plan before output; whole-payload validation;
+  frame-atomic decode; canonical 58-byte single-literal vector.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one generic frame carrying canonical LZSS tokens directly.
+- Similarity review: no external frame composition structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

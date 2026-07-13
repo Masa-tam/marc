@@ -1177,3 +1177,17 @@ serialized workspace limit, encode into a separate caller-owned region, and
 drain without consuming later input. Retain a consumed EndInput request while
 output is blocked. This makes output byte-identical to the reference encoder
 for every chunking and bounds worst-case token storage at twice the raw size.
+
+## DD-075: The first complete LZSS frame path uses entropy None
+
+- Date: 2026-07-14
+- Status: accepted
+
+Bind LZSS variant 1 to the generic outer frame with entropy algorithm `None`.
+The frame's dictionary serialized size and compressed payload size are the same
+exact variable-token extent; entropy block count and descriptor size are zero.
+
+Plan the whole frame before writing its header or body. Strict validation and
+reference decoding traverse the variable token sequence to obtain token count;
+the count is never inferred by dividing the payload size. Decode validates the
+complete token payload and output capacity before publishing frame output.

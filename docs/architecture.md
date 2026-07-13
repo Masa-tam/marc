@@ -67,6 +67,10 @@ The streaming encoder buffers one complete known-size raw frame and its
 canonical token stream in separate caller-owned regions, then drains bytes
 without accepting later input. Its output is identical to the reference encoder
 for every input and output chunking.
+The first complete LZSS pipeline binds these canonical bytes directly to the
+generic frame through entropy `None`. Frame planning fixes both raw and
+variable-token extents, while strict decode validates the entire payload before
+committing any raw byte.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
