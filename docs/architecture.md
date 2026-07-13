@@ -378,13 +378,13 @@ therefore leave the whole frame output untouched.
 
 ### C transform ABI
 
-The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range, and
-rANS variant 1 through
+The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range,
+rANS, and tANS variant 1 through
 separate versioned, size-tagged configuration, workspace-query, and factory
 functions. All profiles construct the same opaque transform type and share its
 process and destroy operations. Encoder workspaces hold one raw and one
 serialized frame. Decoder workspaces hold one serialized and one decoded frame;
-Blocked Huffman and rANS also use aligned internal block-view arrays, while
+Blocked Huffman, rANS, and tANS also use aligned internal block-view arrays, while
 Adaptive Huffman and Dynamic Range need no views workspace. These buffers remain
 caller-owned and must outlive the handle.
 

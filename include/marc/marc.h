@@ -122,6 +122,23 @@ typedef struct marc_rans_config {
     uint32_t reserved2;
 } marc_rans_config;
 
+typedef struct marc_tans_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t block_size;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_block_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_internal_buffered_bytes;
+    uint32_t max_blocks_per_frame;
+    uint32_t reserved2;
+} marc_tans_config;
+
 typedef struct marc_workspace_requirements {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -185,6 +202,17 @@ MARC_API marc_status marc_rans_workspace_requirements(
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;
 MARC_API marc_status marc_rans_create(
     const marc_rans_config* config,
+    marc_buffer primary_workspace,
+    marc_buffer secondary_workspace,
+    marc_buffer views_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API marc_status marc_tans_config_init(
+    marc_direction direction, marc_tans_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_tans_workspace_requirements(
+    const marc_tans_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+MARC_API marc_status marc_tans_create(
+    const marc_tans_config* config,
     marc_buffer primary_workspace,
     marc_buffer secondary_workspace,
     marc_buffer views_workspace,

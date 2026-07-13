@@ -1,7 +1,8 @@
 # C API
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
-Adaptive Huffman, Dynamic Range, and rANS variant 1 with known-size encoding and
+Adaptive Huffman, Dynamic Range, rANS, and tANS variant 1 with known-size
+encoding and
 bounded, caller-owned workspace. All functions are `noexcept` in C++
 translation units, and no C++ type appears in the ABI.
 
@@ -9,8 +10,8 @@ translation units, and no C++ type appears in the ABI.
 
 1. Call the matching `marc_blocked_huffman_config_init()` or
    `marc_adaptive_huffman_config_init()` or
-   `marc_dynamic_range_config_init()` or `marc_rans_config_init()` for encode
-   or decode direction.
+   `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
+   `marc_tans_config_init()` for encode or decode direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
@@ -34,6 +35,8 @@ two normalization bytes per input symbol plus five termination bytes.
 rANS decoding uses `views_bytes` for its validated block descriptors. Its
 encoder reserves at most one renormalization byte per input symbol plus an
 eight-byte state and fixed descriptor for every entropy block.
+tANS likewise uses aligned decoder views; its encoder workspace uses the strict
+12-bit-per-symbol transition bound plus a two-byte state per block.
 
 ## Processing contract
 

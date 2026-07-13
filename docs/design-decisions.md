@@ -943,3 +943,18 @@ Malformed later frames cannot retract earlier committed output and cannot expose
 bytes from the failing frame. Truncation, trailing bytes, insufficient encoded,
 decoded, or view workspace, invalid states, bit extents, and padding are terminal
 transform errors with stable categories.
+
+## DD-061: tANS extends ABI version 1 with a separate config
+
+- Date: 2026-07-13
+- Status: accepted
+
+Preserve ABI version 1 and all existing configuration layouts. Add a separate
+size-tagged tANS configuration with explicit frame size, entropy block size, and
+relevant local limits. Reuse the common opaque transform, process result, and
+destroy operation.
+
+Encoding uses primary raw-frame and secondary serialized-frame workspaces.
+Decoding additionally uses an aligned caller-owned tANS block-view workspace.
+Validate tags, reserved fields, extents, and alignment before constructing the
+C++ transform. Verify both directions through the shared library from pure C.

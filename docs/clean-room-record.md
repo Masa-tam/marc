@@ -682,6 +682,20 @@ no legal guarantee of non-infringement.
   decode, and drain bounded tANS frames under arbitrary byte chunking.
 - Similarity review: no external streaming decoder structure was compared.
 
+## 2026-07-13 - tANS C transform API
+
+- Authoring method: adapted marc's established size-tagged ABI pattern to its
+  completed tANS streaming transforms and profile query.
+- References used: repository C API contract and implemented tANS components.
+- Known implementations intentionally not consulted: external tANS/FSE library
+  ABIs, wrapper source, bindings, allocation conventions, and tests.
+- Independent decisions: separate ABI-version-1 config; explicit block policy;
+  three caller-owned decoder workspaces; aligned block views; pure-C shared-
+  library round trip; unchanged existing configuration layouts.
+- Generated-code task description: expose tANS variant 1 through the common
+  opaque transform without exceptions or C++ types crossing the ABI.
+- Similarity review: no external C API layout or wrapper structure was compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its
