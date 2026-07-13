@@ -34,6 +34,10 @@ The first complete LZ77 pipeline binds variant 1 to entropy `None`: the generic
 frame header declares the raw and token extents, and the payload is the exact
 canonical token stream. Strict decoding validates the whole frame before
 committing raw output.
+The known-size stream path writes the fixed stream prefix, one canonical LZ77
+parameter region, then deterministic frame extents. Strict decoding scans every
+frame before a second output pass, so corruption in a later frame leaves the
+entire caller output untouched.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

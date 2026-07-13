@@ -1029,3 +1029,18 @@ generic header, exact frame extent, and every token before raw output mutation,
 making one complete frame the atomic rejection boundary. Later entropy
 combinations reuse the same canonical dictionary bytes without altering this
 pipeline's representation.
+
+## DD-066: Known-size LZ77 streams reset at deterministic frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Serialize the 64-byte stream prefix, the single 16-byte LZ77 parameter region,
+then zero or more complete LZ77-plus-None frames. Empty input is therefore an
+80-byte stream. Partition nonempty input by the declared uncompressed frame
+size; reset dictionary history and token parsing at every frame.
+
+Strict reference decoding parses parameters transactionally, scans and
+validates all exact frame extents without output, rejects truncation and trailing
+bytes, then repeats the traversal into caller storage. A malformed later frame
+cannot expose output from any earlier frame in this one-shot API.

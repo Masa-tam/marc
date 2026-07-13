@@ -696,6 +696,21 @@ no legal guarantee of non-infringement.
   for one generic outer frame carrying canonical LZ77 tokens directly.
 - Similarity review: no external frame composition control flow was compared.
 
+## 2026-07-13 - Complete known-size LZ77 stream path
+
+- Authoring method: composed marc's stream prefix, canonical LZ77 parameter
+  region, and complete frame path using deterministic raw-frame boundaries.
+- References used: repository format, implemented LZ77 frame codec, checked
+  extent helpers, and strict stream traversal conventions only.
+- Known implementations intentionally not consulted: external LZ77 stream or
+  archive formats, traversal source, parameter layouts, tests, and vectors.
+- Independent decisions: 80-byte empty stream; frame-local dictionary reset;
+  raw-byte committed accounting; transactional parameter publication; two-pass
+  whole-stream atomic decoding.
+- Generated-code task description: plan, encode, validate, and decode complete
+  known-size multi-frame LZ77 streams with entropy None.
+- Similarity review: no external stream composition control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

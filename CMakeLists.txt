@@ -59,6 +59,7 @@ set(MARC_SOURCES
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
     src/frame/lz77_frame.cpp
+    src/frame/lz77_stream.cpp
     src/frame/adaptive_huffman_frame.cpp
     src/frame/adaptive_huffman_stream.cpp
     src/frame/adaptive_huffman_frame_streaming_encoder.cpp
@@ -250,6 +251,7 @@ if(MARC_BUILD_TESTS)
         tests/limits_tests.cpp
         tests/frame_header_tests.cpp
         tests/lz77_frame_tests.cpp
+        tests/lz77_stream_tests.cpp
         tests/adaptive_huffman_frame_tests.cpp
         tests/adaptive_huffman_stream_tests.cpp
         tests/adaptive_huffman_frame_streaming_encoder_tests.cpp
