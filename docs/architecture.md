@@ -315,6 +315,11 @@ Strict decoding uses controller views to validate every payload before a second
 loop writes any block output. Capacity failure and malformed later blocks
 therefore leave the whole frame output untouched.
 
+The known-size tANS stream reference plans all deterministic outer frames before
+encoding. Strict decoding scans and validates the complete stream without
+output, reusing one caller-owned block-view workspace, then repeats the
+traversal into caller storage for whole-stream atomicity.
+
 The known-size rANS stream reference plans all deterministic outer frames before
 encoding. Strict decoding scans and semantically validates every complete frame
 without output, reusing one caller-owned block-view workspace, then repeats the

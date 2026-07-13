@@ -138,3 +138,10 @@ symbol's reduced states, and then applying the inverse lookup to `A`, `AA`,
 `AB`, and `ABA`. Record the final state offset, decoder-order bit chunks,
 LSB-first packed bytes, valid-bit count, terminal state, and exact bit
 consumption. Single-symbol vectors intentionally produce no bit bytes.
+
+The initial tANS reset stream is `AAAA` with frame size 2 and entropy block size
+2. Each frame independently models `AA` as one symbol and has the identical
+two-byte state-offset payload `00 00`. Each frame is 586 bytes and the complete
+stream is 1236 bytes including its 64-byte stream header. Corrupting the second
+frame's state offset reports frame index 1 while leaving strict-reference output
+untouched.

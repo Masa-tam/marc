@@ -758,6 +758,21 @@ no legal guarantee of non-infringement.
   one complete multi-block tANS outer frame.
 - Similarity review: no external frame composition control flow was compared.
 
+## 2026-07-13 - Complete known-size tANS stream path
+
+- Authoring method: composed marc's fixed stream header and complete tANS frame
+  path using deterministic original-size boundaries.
+- References used: repository format, architecture, and tANS frame vectors only.
+- Known implementations intentionally not consulted: external tANS/FSE streams,
+  containers, traversal source, and test vectors.
+- Independent decisions: two-pass whole-stream decoding; reusable caller-owned
+  block views; header-only empty stream; exact trailing rejection; identical
+  two-frame `AA` reset vector; zero-based corrupt-frame reporting.
+- Generated-code task description: plan, encode, and atomically decode complete
+  known-size multi-frame tANS streams.
+- Similarity review: no external stream composition or scan structure was
+  compared.
+
 ## 2026-07-13 - rANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, rANS frame encoder, and

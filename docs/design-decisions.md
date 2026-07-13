@@ -898,3 +898,17 @@ payload before decoding any block into caller output. One frame is therefore
 the atomic commit boundary. With frame size 3 and block size 2, `ABA` is a
 canonical 1117-byte frame: 56 header bytes, 1056 descriptor bytes, and five
 payload bytes.
+
+## DD-058: tANS reference streams validate before output
+
+- Date: 2026-07-13
+- Status: accepted
+
+Compose known-size tANS streams as the fixed stream header followed by
+deterministic outer frames. Plan every frame before encoder mutation; empty
+input is header-only. Reuse one caller-owned block-view workspace across frames.
+
+Strict reference decoding scans and semantically validates every exact frame
+extent without output, then repeats the traversal into caller storage. Reject
+truncation and trailing bytes. Two independent `AA` frames each occupy 586
+bytes, making the canonical four-byte `AAAA` reset stream 1236 bytes.
