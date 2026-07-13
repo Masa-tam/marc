@@ -42,6 +42,10 @@ The outer streaming encoder emits that 80-byte prefix, then reuses one raw and
 one serialized caller-owned frame workspace. Pending prefix or frame output has
 priority over accepting later raw input, and arbitrary chunking matches the
 known-size reference stream exactly.
+The matching outer decoder collects the fixed prefix and one exact serialized
+frame into caller-owned storage, atomically decodes it into a second frame
+workspace, then drains raw bytes before accepting the next frame. This makes a
+validated frame the streaming commit boundary.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

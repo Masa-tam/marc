@@ -727,6 +727,21 @@ no legal guarantee of non-infringement.
   with deterministic frame boundaries and arbitrary partial buffers.
 - Similarity review: no external streaming controller flow was compared.
 
+## 2026-07-13 - LZ77 outer streaming decoder
+
+- Authoring method: composed marc's prefix and parameter parsers, contextual
+  frame header, and independently implemented atomic LZ77 frame decoder.
+- References used: repository process contract, LZ77 stream and frame formats,
+  checked extent helpers, and existing marc controller conventions only.
+- Known implementations intentionally not consulted: external LZ77 streaming
+  container readers, source, pseudocode, workspace layouts, tests, and APIs.
+- Independent decisions: transactional 80-byte prefix; exact frame collection;
+  separate encoded and decoded caller workspaces; frame-atomic publication;
+  output-priority backpressure; aggregate workspace validation.
+- Generated-code task description: incrementally decode complete LZ77 streams
+  with one-byte buffers and validated-frame commit boundaries.
+- Similarity review: no external streaming controller flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

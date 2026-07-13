@@ -1059,3 +1059,19 @@ Known original and frame sizes allow every full frame to be committed before
 whole-stream termination. Non-terminal flush keeps a partial frame open; final
 short-frame completion requires `EndInput`. The output is byte-identical to the
 known-size reference stream for every input and output chunking.
+
+## DD-068: LZ77 outer streaming decoding commits validated frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Collect the fixed prefix transactionally, then collect each generic frame header
+and its exact declared token payload in bounded caller-owned storage. Validate
+and decode the complete frame into separate caller-owned raw storage before
+publishing any byte from that frame. Drain committed raw bytes before consuming
+the next frame.
+
+Malformed later frames cannot retract earlier output and expose no bytes from
+the failing frame. Truncation, trailing bytes, invalid parameters or tokens,
+insufficient encoded or decoded workspace, aggregate memory limits, and
+unsupported reset become stable terminal transform errors.
