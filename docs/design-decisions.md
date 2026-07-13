@@ -1271,3 +1271,18 @@ Decoding uses primary serialized-frame and secondary decoded-frame workspaces.
 LZSS needs no views workspace. Reject incorrect size/version tags, nonzero
 reserved fields, invalid parameters or limits, and insufficient caller buffers
 before construction.
+
+## DD-081: CLI codec selection is explicit and defaults to LZ77
+
+- Date: 2026-07-14
+- Status: accepted
+
+Retain `marc encode|decode <input> <output>` as the LZ77-compatible default and
+add `--codec lz77|lzss` before the paths. Require the same explicit selection
+for LZSS decode because the CLI deliberately uses only public algorithm-specific
+C factories and does not parse headers through private C++ APIs.
+
+Derive each codec's workspace limits from its canonical worst-case payload: 16
+bytes per raw byte for LZ77 and two for LZSS. Preserve staged output commit,
+bounded 64 KiB I/O, malformed-input cleanup, overwrite refusal, and empty-file
+round trips for both profiles.

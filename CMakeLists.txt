@@ -403,5 +403,17 @@ if(MARC_BUILD_TESTS)
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lz77_explicit_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lz77"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lz77-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
     endif()
 endif()

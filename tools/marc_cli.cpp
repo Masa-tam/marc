@@ -15,11 +15,20 @@ namespace {
 
 constexpr std::size_t io_buffer_size = 64U * 1024U;
 constexpr std::uint64_t frame_size = UINT64_C(1) << 20;
-constexpr std::uint64_t token_size = 16;
 constexpr std::uint64_t frame_header_size = 56;
-constexpr std::uint64_t maximum_frame_payload = frame_size * token_size;
-constexpr std::uint64_t maximum_buffered_bytes =
-    frame_size + frame_header_size + maximum_frame_payload;
+
+enum class Codec {
+    lz77,
+    lzss,
+};
+
+constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
+    return frame_size * (codec == Codec::lz77 ? UINT64_C(16) : UINT64_C(2));
+}
+
+constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
+    return frame_size + frame_header_size + maximum_frame_payload(codec);
+}
 
 struct TransformDeleter {
     void operator()(marc_transform* transform) const noexcept {
@@ -44,22 +53,48 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
     config.original_size = original_size;
     config.frame_size = static_cast<std::uint32_t>(frame_size);
     config.max_frame_size = frame_size;
-    config.max_compressed_payload_size = maximum_frame_payload;
-    config.max_dictionary_serialized_size = maximum_frame_payload;
-    config.max_internal_buffered_bytes = maximum_buffered_bytes;
+    config.max_compressed_payload_size = maximum_frame_payload(Codec::lz77);
+    config.max_dictionary_serialized_size = maximum_frame_payload(Codec::lz77);
+    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lz77);
+    config.max_lz_distance = UINT64_C(1) << 16;
+    config.max_lz_match_length = 258;
+    return true;
+}
+
+bool configure(const marc_direction direction, const std::uint64_t original_size,
+               marc_lzss_config& config) {
+    const auto status = marc_lzss_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.max_frame_size = frame_size;
+    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzss);
+    config.max_dictionary_serialized_size = maximum_frame_payload(Codec::lzss);
+    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzss);
     config.max_lz_distance = UINT64_C(1) << 16;
     config.max_lz_match_length = 258;
     return true;
 }
 
 bool process_file(const marc_direction direction,
+                  const Codec codec,
                   const std::uint64_t source_size,
                   std::ifstream& source, std::ofstream& sink) {
     marc_lz77_config config{};
-    if (!configure(direction, source_size, config)) return false;
+    marc_lzss_config lzss_config{};
+    if (codec == Codec::lz77) {
+        if (!configure(direction, source_size, config)) return false;
+    } else if (!configure(direction, source_size, lzss_config)) {
+        return false;
+    }
 
     marc_workspace_requirements needed{};
-    auto status = marc_lz77_workspace_requirements(&config, &needed);
+    auto status = codec == Codec::lz77
+        ? marc_lz77_workspace_requirements(&config, &needed)
+        : marc_lzss_workspace_requirements(&lzss_config, &needed);
     if (status != MARC_STATUS_OK) {
         print_status("workspace query failed", status);
         return false;
@@ -79,9 +114,13 @@ bool process_file(const marc_direction direction,
     }
 
     marc_transform* raw_transform{};
-    status = marc_lz77_create(
-        &config, {primary.get(), needed.primary_bytes},
-        {secondary.get(), needed.secondary_bytes}, &raw_transform);
+    const marc_buffer primary_buffer{primary.get(), needed.primary_bytes};
+    const marc_buffer secondary_buffer{secondary.get(), needed.secondary_bytes};
+    status = codec == Codec::lz77
+        ? marc_lz77_create(&config, primary_buffer, secondary_buffer,
+                           &raw_transform)
+        : marc_lzss_create(&lzss_config, primary_buffer, secondary_buffer,
+                           &raw_transform);
     if (status != MARC_STATUS_OK) {
         print_status("transform creation failed", status);
         return false;
@@ -162,7 +201,8 @@ bool process_file(const marc_direction direction,
     }
 }
 
-bool run(const marc_direction direction, const std::filesystem::path& input,
+bool run(const marc_direction direction, const Codec codec,
+         const std::filesystem::path& input,
          const std::filesystem::path& output) {
     std::error_code error;
     if (!std::filesystem::is_regular_file(input, error) || error) {
@@ -194,7 +234,8 @@ bool run(const marc_direction direction, const std::filesystem::path& input,
         return false;
     }
     const bool succeeded = process_file(
-        direction, static_cast<std::uint64_t>(source_size_value), source, sink);
+        direction, codec, static_cast<std::uint64_t>(source_size_value), source,
+        sink);
     sink.close();
     const bool close_succeeded = static_cast<bool>(sink);
     source.close();
@@ -214,13 +255,15 @@ bool run(const marc_direction direction, const std::filesystem::path& input,
 
 void usage() {
     std::cerr << "usage: marc encode <input> <output>\n"
-                 "       marc decode <input> <output>\n";
+                 "       marc decode <input> <output>\n"
+                 "       marc encode --codec <lz77|lzss> <input> <output>\n"
+                 "       marc decode --codec <lz77|lzss> <input> <output>\n";
 }
 
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
-    if (argc != 4) {
+    if (argc != 4 && argc != 6) {
         usage();
         return 2;
     }
@@ -232,6 +275,22 @@ int main(const int argc, const char* const argv[]) {
         usage();
         return 2;
     }
-    return run(direction, std::filesystem::path{argv[2]},
-               std::filesystem::path{argv[3]}) ? 0 : 1;
+    Codec codec{Codec::lz77};
+    int path_offset = 2;
+    if (argc == 6) {
+        if (std::string_view{argv[2]} != "--codec") {
+            usage();
+            return 2;
+        }
+        const std::string_view name{argv[3]};
+        if (name == "lz77") codec = Codec::lz77;
+        else if (name == "lzss") codec = Codec::lzss;
+        else {
+            usage();
+            return 2;
+        }
+        path_offset = 4;
+    }
+    return run(direction, codec, std::filesystem::path{argv[path_offset]},
+               std::filesystem::path{argv[path_offset + 1]}) ? 0 : 1;
 }

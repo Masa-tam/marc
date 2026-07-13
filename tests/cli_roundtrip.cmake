@@ -10,22 +10,27 @@ set(decoded "${TEST_DIR}/decoded.bin")
 string(REPEAT "ABRACADABRA-0123456789\n" 3200 payload)
 file(WRITE "${input}" "${payload}")
 
+set(codec_args)
+if(DEFINED CLI_CODEC AND NOT CLI_CODEC STREQUAL "")
+    list(APPEND codec_args --codec "${CLI_CODEC}")
+endif()
+
 execute_process(
-    COMMAND "${MARC_CLI}" encode "${input}" "${encoded}"
+    COMMAND "${MARC_CLI}" encode ${codec_args} "${input}" "${encoded}"
     RESULT_VARIABLE encode_result)
 if(NOT encode_result EQUAL 0)
     message(FATAL_ERROR "CLI encode failed: ${encode_result}")
 endif()
 
 execute_process(
-    COMMAND "${MARC_CLI}" encode "${input}" "${encoded}"
+    COMMAND "${MARC_CLI}" encode ${codec_args} "${input}" "${encoded}"
     RESULT_VARIABLE overwrite_result)
 if(overwrite_result EQUAL 0)
     message(FATAL_ERROR "CLI unexpectedly overwrote an existing output")
 endif()
 
 execute_process(
-    COMMAND "${MARC_CLI}" decode "${encoded}" "${decoded}"
+    COMMAND "${MARC_CLI}" decode ${codec_args} "${encoded}" "${decoded}"
     RESULT_VARIABLE decode_result)
 if(NOT decode_result EQUAL 0)
     message(FATAL_ERROR "CLI decode failed: ${decode_result}")
@@ -41,7 +46,7 @@ set(malformed "${TEST_DIR}/malformed.marc")
 set(rejected "${TEST_DIR}/rejected.bin")
 file(WRITE "${malformed}" "not-a-marc-stream")
 execute_process(
-    COMMAND "${MARC_CLI}" decode "${malformed}" "${rejected}"
+    COMMAND "${MARC_CLI}" decode ${codec_args} "${malformed}" "${rejected}"
     RESULT_VARIABLE malformed_result)
 if(malformed_result EQUAL 0)
     message(FATAL_ERROR "CLI accepted malformed input")
@@ -55,10 +60,10 @@ set(empty_encoded "${TEST_DIR}/empty.marc")
 set(empty_decoded "${TEST_DIR}/empty-decoded.bin")
 file(WRITE "${empty}" "")
 execute_process(
-    COMMAND "${MARC_CLI}" encode "${empty}" "${empty_encoded}"
+    COMMAND "${MARC_CLI}" encode ${codec_args} "${empty}" "${empty_encoded}"
     RESULT_VARIABLE empty_encode_result)
 execute_process(
-    COMMAND "${MARC_CLI}" decode "${empty_encoded}" "${empty_decoded}"
+    COMMAND "${MARC_CLI}" decode ${codec_args} "${empty_encoded}" "${empty_decoded}"
     RESULT_VARIABLE empty_decode_result)
 if(NOT empty_encode_result EQUAL 0 OR NOT empty_decode_result EQUAL 0)
     message(FATAL_ERROR "CLI empty round trip failed")

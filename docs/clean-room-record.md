@@ -966,6 +966,21 @@ no legal guarantee of non-infringement.
   encoder/decoder factories through the stable C ABI and test from pure C.
 - Similarity review: no external C ABI or adapter structure was compared.
 
+## 2026-07-14 - LZSS CLI profile selection
+
+- Authoring method: extended marc's existing public-C-ABI file driver with a
+  small explicit codec selector and LZSS-specific workspace bounds.
+- References used: repository CLI, public C API, and canonical LZ77/LZSS profile
+  specifications only.
+- Known implementations intentionally not consulted: external archive CLI
+  syntax, codec autodetection, dispatch source, and integration tests.
+- Independent decisions: backward-compatible LZ77 default; explicit `--codec`;
+  same selection on decode; public C factories only; separate LZSS CTest path;
+  retained staged output and cleanup semantics.
+- Generated-code task description: add explicit LZSS selection to the real-file
+  CLI and run the existing overwrite, malformed, empty, and round-trip suite.
+- Similarity review: no external CLI dispatch structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

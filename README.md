@@ -29,13 +29,18 @@ git submodule update --init --recursive
 ## Command-line tool
 
 Top-level builds produce a minimal `marc` executable that exercises the public
-C ABI with bounded streaming buffers. It currently writes the version 1 LZ77
-profile with no entropy layer:
+C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
+LZSS variant 1 can be selected explicitly. Both use no entropy layer:
 
 ```console
 marc encode input.bin output.marc
 marc decode output.marc restored.bin
+marc encode --codec lzss input.bin output.marc
+marc decode --codec lzss output.marc restored.bin
 ```
+
+Use the same codec selection for decode that was used for encode. An explicit
+`--codec lz77` is equivalent to omitting the option.
 
 The destination and its `.tmp` staging path must not already exist. A successful
 operation renames the staging file; a failed operation removes it, so malformed
