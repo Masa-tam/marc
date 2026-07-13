@@ -850,6 +850,21 @@ no legal guarantee of non-infringement.
   LZSS tokens matching marc's hand vectors and round-trip through its decoder.
 - Similarity review: no external encoder structure or control flow was compared.
 
+## 2026-07-14 - LZSS streaming decoder
+
+- Authoring method: converted marc's specified variable-token inverse transform
+  into the repository process contract and caller-owned history model.
+- References used: repository LZSS format, validator, reference decoder, core
+  status contract, and limits only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  decoder source, state machines, ring buffers, pseudocode, and tests.
+- Independent decisions: tag-first 2/9-byte accumulation; token-atomic
+  validation; caller-owned circular history; direct overlap drain; retained
+  EndInput; stable cumulative serialized limit and terminal error.
+- Generated-code task description: incrementally decode LZSS with one-byte
+  buffers, bounded history, exact malformed detection, and no allocation.
+- Similarity review: no external streaming control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

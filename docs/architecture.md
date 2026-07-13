@@ -53,6 +53,17 @@ The C ABI exposes this path through a separate size-tagged LZ77 configuration,
 workspace query, and transform factory while retaining ABI version 1. No C++
 types, exceptions, or ownership cross the shared-library boundary.
 
+### LZSS foundation
+
+LZSS variant 1 uses transactional variable-size token parsing and a strict
+frame scanner before its atomic reference decoder. The deterministic reference
+encoder shares one exhaustive nearest-first greedy parse between planning and
+writing, and applies the exact two-byte Literal versus nine-byte Match cost.
+The streaming decoder accumulates at most one nine-byte token, validates it
+against committed frame history, and drains its Literal or Match through a
+caller-owned circular history region. Token collection, overlap-copy progress,
+and `EndInput` survive arbitrary input and output splits without allocation.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

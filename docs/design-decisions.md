@@ -1146,3 +1146,18 @@ A Match may end the frame, eliminating LZ77's combined following-literal and
 terminal forms. Variable-size explicit tokens retain byte-stream composition,
 simple bounded parsing, and a 2-to-1 worst-case serialization expansion. A
 different packing or literal-run representation requires another variant ID.
+
+## DD-073: LZSS streaming decode accumulates one variable token
+
+- Date: 2026-07-14
+- Status: accepted
+
+Read the one-byte tag first, then accumulate exactly 2 bytes for Literal or
+9 bytes for Match in a fixed local buffer. Validate the completed token against
+the committed frame position before publishing any byte from that token.
+
+Drain a Literal or bytewise overlapping Match directly to caller output while
+mirroring each committed byte into a caller-owned circular history region of
+`min(window_size, frame_size)` bytes. Preserve partial Match progress and a
+consumed `EndInput` request across output starvation. This keeps steady-state
+decode allocation-free and permits every input and output boundary.
