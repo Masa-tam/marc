@@ -78,6 +78,9 @@ output buffer unchanged.
 The streaming decoder instead commits one fully validated frame at a time. It
 buffers encoded and decoded forms in separate caller-owned workspaces, allowing
 arbitrary input/output chunking without exposing bytes from a malformed frame.
+The streaming encoder similarly buffers one raw frame and its complete encoded
+form in separate caller-owned workspaces. Completed frames drain immediately;
+partial-frame Flush does not create a format boundary.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

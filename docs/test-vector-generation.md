@@ -187,6 +187,11 @@ output buffers. Corrupt the second frame's Match distance and verify that the
 first six raw bytes are committed while no byte from the corrupt frame is
 published. Exercise short encoded and decoded frame workspaces independently.
 
+Use the same complete known-size LZSS stream as the streaming encoder oracle.
+Feed the twelve raw bytes through one-byte input and output buffers; the output
+must match byte for byte. A Flush after three bytes emits only the 80-byte
+prefix and does not shorten the first six-byte frame.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

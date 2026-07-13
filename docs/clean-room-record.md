@@ -923,6 +923,20 @@ no legal guarantee of non-infringement.
   LZSS/None streams with arbitrary input and output chunks.
 - Similarity review: no external streaming decoder structure was compared.
 
+## 2026-07-14 - LZSS frame-streaming encoder
+
+- Authoring method: composed marc's transform contract, known-size LZSS stream,
+  canonical frame planner, and reference encoder.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  encoders, buffering structures, source, vectors, and tests.
+- Independent decisions: prefix-first drain; complete raw-frame collection;
+  separate serialized workspace; non-boundary Flush; retained EndInput;
+  ResetBlock rejection; combined workspace limit.
+- Generated-code task description: incrementally encode canonical known-size
+  LZSS/None streams with arbitrary input and output chunks.
+- Similarity review: no external streaming encoder structure was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

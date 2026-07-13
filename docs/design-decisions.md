@@ -1221,3 +1221,19 @@ Retain a consumed EndInput request while draining. Reject ResetBlock because
 boundaries are carried by the canonical frame headers. Require the sum of the
 encoded and decoded frame workspaces to fit the configured internal-buffer
 limit before accepting a frame body.
+
+## DD-078: LZSS streaming encode preserves reference frame boundaries
+
+- Date: 2026-07-14
+- Status: accepted
+
+Buffer one complete known-size raw frame in caller-owned storage, plan and
+encode it into a separate caller-owned serialized-frame workspace, then drain
+the canonical bytes before consuming later frame input. Emit the stream prefix
+first and retain a consumed EndInput request until the final frame is drained.
+
+Flush only exposes already representable bytes; it does not shorten a partial
+frame. Reject ResetBlock because fixed frame boundaries come from the stream
+header. Require raw plus serialized frame storage to fit the configured
+internal-buffer limit. Output must match the one-shot reference stream for all
+input and output chunking.
