@@ -651,6 +651,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external stream composition or scan structure was
   compared.
 
+## 2026-07-13 - LZ77 streaming decoder
+
+- Authoring method: derived an incremental state machine directly from marc's
+  fixed token parser, contextual validator, and bytewise overlap semantics.
+- References used: repository LZ77 format, core process contract, limits, and
+  existing marc transform-state conventions only.
+- Known implementations intentionally not consulted: external LZ77 streaming
+  decoder source, pseudocode, history-buffer designs, tests, and APIs.
+- Independent decisions: one-token accumulation; caller-owned circular history;
+  token-by-token output commitment; retained match and `EndInput` state; exact
+  cumulative serialized-input limit enforcement.
+- Generated-code task description: implement a bounded allocation-free LZ77
+  decoder supporting arbitrary one-byte input and output chunking.
+- Similarity review: no external streaming decoder control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame

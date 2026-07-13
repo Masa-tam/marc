@@ -976,3 +976,22 @@ existing match without inventing a following byte. Fixed records prioritize
 strict validation and canonical byte-stream integration over compression ratio
 in the reference variant. A future compact token representation requires a new
 variant ID.
+
+## DD-063: LZ77 streaming decoding retains a caller-owned history ring
+
+- Date: 2026-07-13
+- Status: accepted
+
+Accumulate one fixed 16-byte token, validate it against the current frame-local
+output position, then drain its match and optional literal directly to caller
+output. Retain partial token, match-copy, literal, and terminal state across
+calls. Decoded bytes are committed token by token; a malformed later token does
+not retract earlier output.
+
+Because caller output buffers may change on every call, retain dictionary
+history in caller-owned circular storage sized to
+`min(window_size, declared_frame_size)`. This supports overlap copy with one-byte
+output capacity without allocating or buffering the decoded frame. `EndInput`
+is retained after all supplied input is consumed while output is still pending.
+Non-terminal flush is a no-op and explicit reset remains unsupported at this
+frame-local transform boundary.

@@ -19,6 +19,13 @@ overlap-safe bytewise copy pass, preserving output on all caller-visible errors.
 The reference encoder uses a deliberately clear bounded exhaustive match search,
 with the format-defined greedy longest match and nearest-distance tie break. A
 planning pass fixes token count and serialized size before output is touched.
+The streaming decoder accumulates only one fixed token, then drains its match
+and optional literal directly to caller output. Match progress and `EndInput`
+are retained across calls, so both encoded input and raw output may be split at
+every byte without buffering a decoded frame.
+The caller supplies a bounded circular history region of
+`min(window_size, frame_size)` bytes so references remain valid when output
+buffers change between calls.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
