@@ -835,6 +835,21 @@ no legal guarantee of non-infringement.
   stream into exact caller storage without exposing malformed partial output.
 - Similarity review: no external decoder control flow was compared.
 
+## 2026-07-14 - LZSS reference encoder
+
+- Authoring method: directly implemented the documented greedy parse and exact
+  two-versus-nine-byte token cost over finite caller input.
+- References used: repository LZSS variant, formatter, decoder, validator, and
+  checked-arithmetic primitives only.
+- Known implementations intentionally not consulted: external LZSS match
+  finders, encoder source, pseudocode, optimization structures, and tests.
+- Independent decisions: exhaustive nearest-first window scan; overlapping raw
+  comparison; strict local cost gate; shared planning/writing token generator;
+  exact size preflight; no output mutation on capacity or policy failure.
+- Generated-code task description: deterministically plan and encode canonical
+  LZSS tokens matching marc's hand vectors and round-trip through its decoder.
+- Similarity review: no external encoder structure or control flow was compared.
+
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
