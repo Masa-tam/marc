@@ -150,3 +150,9 @@ Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
 header and does not shorten the first frame.
+
+For streaming decode, feed that reference stream through one-byte input and
+output buffers. Corrupt the second frame's initial tANS state offset and verify
+that the first four raw bytes are committed while no byte from the corrupt frame
+is published. Exercise short encoded, decoded, and block-view workspaces
+independently.

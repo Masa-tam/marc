@@ -928,3 +928,18 @@ state offset. Calculate encoder workspace per block as
 `2 + ceil(12 * block_symbols / 8)`, then add every 528-byte descriptor and the
 generic frame header with checked arithmetic. Decoder workspace remains derived
 only from local limits and includes caller-owned block views.
+
+## DD-060: tANS streaming decoding commits validated outer frames
+
+- Date: 2026-07-13
+- Status: accepted
+
+Collect one exact serialized frame in bounded caller storage and decode it into
+a separate workspace using caller-owned block views. Validate the complete
+descriptor region and every tANS payload before publishing any byte from that
+frame, then drain it before accepting bytes for the next frame.
+
+Malformed later frames cannot retract earlier committed output and cannot expose
+bytes from the failing frame. Truncation, trailing bytes, insufficient encoded,
+decoded, or view workspace, invalid states, bit extents, and padding are terminal
+transform errors with stable categories.

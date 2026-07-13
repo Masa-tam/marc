@@ -1,0 +1,74 @@
+﻿#ifndef MARC_FRAME_TANS_FRAME_STREAMING_DECODER_HPP
+#define MARC_FRAME_TANS_FRAME_STREAMING_DECODER_HPP
+
+#include "core/limits.hpp"
+#include "core/status.hpp"
+#include "entropy/tans_controller.hpp"
+#include "frame/tans_frame.hpp"
+#include "frame/stream_header.hpp"
+
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <span>
+
+namespace marc::frame {
+
+class TansFrameStreamingDecoder final : public core::Transform {
+public:
+    TansFrameStreamingDecoder(
+        core::DecoderLimits limits,
+        std::span<std::byte> frame_encoded_storage,
+        std::span<std::byte> frame_decoded_storage,
+        std::span<entropy::internal::TansBlockView> frame_views)
+        noexcept;
+
+    [[nodiscard]] core::ProcessResult process(
+        std::span<const std::byte> input,
+        std::span<std::byte> output,
+        std::uint32_t flags) noexcept override;
+
+private:
+    enum class State : std::uint8_t {
+        collecting_stream_header,
+        collecting_frame_header,
+        collecting_frame_body,
+        draining_frame,
+        awaiting_end,
+        ended,
+        error,
+    };
+
+    [[nodiscard]] core::ProcessResult fail(
+        core::ErrorCode code,
+        std::size_t input_consumed,
+        std::size_t output_produced) noexcept;
+    [[nodiscard]] bool parse_collected_stream_header() noexcept;
+    [[nodiscard]] bool parse_collected_frame_header() noexcept;
+    [[nodiscard]] bool decode_collected_frame() noexcept;
+
+    core::DecoderLimits limits_{};
+    std::span<std::byte> frame_encoded_storage_{};
+    std::span<std::byte> frame_decoded_storage_{};
+    std::span<entropy::internal::TansBlockView> frame_views_{};
+    std::array<std::byte, stream_header_size> stream_header_bytes_{};
+    std::array<std::byte, frame_header_size> frame_header_bytes_{};
+    StreamHeader stream_{};
+    FrameHeader frame_{};
+    std::size_t header_collected_{};
+    std::size_t frame_serialized_size_{};
+    std::size_t frame_collected_{};
+    std::size_t decoded_size_{};
+    std::size_t output_offset_{};
+    std::uint64_t input_position_{};
+    std::uint64_t output_committed_{};
+    std::uint64_t frame_sequence_{};
+    bool end_seen_{};
+    core::ErrorCode preparation_error_{core::ErrorCode::malformed_stream};
+    State state_{State::collecting_stream_header};
+    core::StreamError terminal_error_{};
+};
+
+} // namespace marc::frame
+
+#endif

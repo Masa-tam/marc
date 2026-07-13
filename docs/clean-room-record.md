@@ -667,6 +667,21 @@ no legal guarantee of non-infringement.
 - Similarity review: no external streaming state machine or sizing formula was
   compared.
 
+## 2026-07-13 - tANS frame-streaming decoder
+
+- Authoring method: composed marc's generic incremental frame collection with
+  its validation-first tANS frame decoder.
+- References used: repository transform contract, tANS frame decoder, stream
+  oracle, workspace profile, and local decoder limits only.
+- Known implementations intentionally not consulted: external tANS/FSE
+  streaming decoders, buffering strategies, state machines, source, and tests.
+- Independent decisions: complete outer-frame commit; separate encoded and
+  decoded caller storage; reusable aligned block views; no output from malformed
+  frames; decoder workspace derived solely from local policy.
+- Generated-code task description: incrementally collect, atomically validate,
+  decode, and drain bounded tANS frames under arbitrary byte chunking.
+- Similarity review: no external streaming decoder structure was compared.
+
 ## 2026-07-13 - rANS C transform API
 
 - Authoring method: adapted marc's established size-tagged ABI pattern to its
