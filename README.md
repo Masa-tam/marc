@@ -1,4 +1,5 @@
 # marc
+![marc logo](.github/assets/images/marc.png)
 
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. The currently implemented public profiles are the
