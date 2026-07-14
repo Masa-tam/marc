@@ -1742,3 +1742,23 @@ malformed frame therefore cannot alter that frame's staging operation, but it
 does not retract bytes already committed from earlier frames. Retain EndInput
 while staged output drains, accept a later empty EndInput, reject trailing
 bytes and ResetBlock, and return EndOfStream only after final output drains.
+
+## DD-107: LZW outer streaming encode preserves one-shot stream bytes
+
+- Date: 2026-07-15
+- Status: accepted
+
+Serialize the fixed stream prefix during construction and drain it before raw
+frame processing. Collect exactly the next declared raw frame in caller-owned
+storage, invoke the reference frame planner and encoder with a separate
+input-backed phrase table, then drain the complete serialized frame before
+accepting or preparing another frame. This preserves the one-shot stream's
+framing, sequence numbers, resets, and exact bytes under arbitrary chunking.
+
+Require raw storage and conservative phrase entries from the largest possible
+frame before accepting input. After exact planning, enforce raw, serialized
+frame, and phrase bytes together against the internal-buffer limit and require
+serialized-frame capacity before encoding. Flush may drain the prefix or a
+completed frame but does not shorten a partial frame. Retain EndInput while
+output drains, accept a later empty EndInput, and reject premature EndInput,
+trailing raw input, and ResetBlock.

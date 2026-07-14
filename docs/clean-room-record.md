@@ -1802,3 +1802,20 @@ no legal guarantee of non-infringement.
   bounded frame at a time with arbitrary output capacity and stable errors.
 - Similarity review: no external streaming structure or control flow was
   compared.
+
+## 2026-07-15 - LZW outer frame-streaming encoder
+
+- Authoring method: composed marc's process state contract, generic stream
+  prefix, LZW frame encoder, and caller-owned bounded staging policy.
+- References used: repository stream and frame formats, LZW frame API, process
+  invariants, checked arithmetic, limits, and repository-owned vectors only.
+- Known implementations intentionally not consulted: external LZW streaming
+  containers, source, state machines, buffering strategies, tests, and
+  pseudocode.
+- Independent decisions: prebuilt prefix; exact raw-frame collection;
+  reference frame planning and emission; drain before buffer reuse; retained
+  EndInput; non-terminal Flush; aggregate buffer accounting.
+- Generated-code task description: encode split known-size raw input as a
+  byte-identical bounded LZW plus None frame stream with arbitrary output.
+- Similarity review: no external streaming structure or control flow was
+  compared.

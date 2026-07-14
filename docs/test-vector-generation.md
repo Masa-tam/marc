@@ -372,6 +372,15 @@ published. Exercise short serialized-frame, decoded-frame, and phrase storage,
 an aggregate buffered limit one byte below the exact requirement, truncation,
 empty streams, trailing bytes, a later empty EndInput, and ResetBlock.
 
+Use the same 198-byte two-frame LZW stream as the outer streaming encoder
+oracle. Supply raw input and drain encoded output one byte at a time, requiring
+exact one-shot byte identity and stable ended calls. Flush after two of three
+frame bytes must emit only the 80-byte prefix and leave the partial frame open.
+Exercise short raw-frame, serialized-frame, and encoder phrase storage, an
+aggregate buffered limit one byte below the exact requirement, premature
+EndInput, trailing raw input, empty streams, a later empty EndInput, and
+ResetBlock.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

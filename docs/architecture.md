@@ -128,6 +128,10 @@ serialized frame in caller storage, atomically decodes that frame into a
 caller-owned raw staging buffer, and drains it before accepting the next frame.
 Consequently an accepted frame is committed independently while later frame
 corruption remains locally detectable.
+The outer streaming encoder emits the same 80-byte prefix, buffers one raw
+frame, invokes the exact LZW frame planner and encoder into caller-owned
+storage, and drains that complete serialized frame before reusing the buffers.
+Its output is byte-identical to the one-shot stream for every chunking pattern.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
