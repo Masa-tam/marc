@@ -1879,3 +1879,17 @@ no legal guarantee of non-infringement.
 - Generated-code task description: defensively fuzz bounded LZW strict and
   streaming decoders and preserve representative failures as normal tests.
 - Similarity review: no external fuzz harness structure or corpus was compared.
+
+## 2026-07-15 - LZW local completion audit
+
+- Authoring method: mapped the repository completion criteria to a consolidated
+  deterministic LZW plus None test matrix and recorded remaining release gates.
+- References used: repository requirements, LZW format and process contracts,
+  existing repository-owned tests, benchmark, C ABI, and fuzz policy only.
+- Known implementations intentionally not consulted: external LZW completion
+  suites, corpora, encoded streams, source, and release checklists.
+- Independent decisions: 64-byte frames; boundary lengths 63/64/65; fixed LCG
+  data; four-frame unequal-chunk comparisons; separate local and release status.
+- Generated-code task description: audit LZW completion without overstating
+  cross-toolchain or sanitizer evidence and close explicit local vector gaps.
+- Similarity review: no external test structure or expected bytes were compared.

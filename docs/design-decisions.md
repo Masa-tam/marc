@@ -1839,3 +1839,22 @@ Compile the harness in ordinary MSVC test builds but execute coverage-guided
 fuzzing only in the explicit Clang sanitizer build. Keep canonical truncation,
 invalid first-code, padding, extreme header, and cross-frame reset mutations as
 permanent GoogleTest regressions with one-shot atomicity assertions.
+
+## DD-112: LZW completion distinguishes local readiness from release evidence
+
+- Date: 2026-07-15
+- Status: accepted
+
+Treat LZW variant 1 plus entropy None as locally implementation-complete only
+after a single completion matrix covers empty, one-byte, every-byte,
+repetitive, patterned, deterministic pseudo-random, and frame-boundary data.
+Require byte-identical one-shot encodes and byte-identical outer streaming
+encodes with one-byte and unequal input/output chunks across multiple frames.
+
+This local status does not imply release-complete portability evidence. A
+release still requires the planned CI to build and test with a non-MSVC
+toolchain and to run the bounded sanitizer fuzz target. Cross-toolchain stream
+comparisons and any promoted fuzz discoveries become permanent regression
+vectors. The current LZW plus None profile stores no hashes, so codec-specific
+hash verification is not applicable; the generic HashTap contract remains
+independently tested at arbitrary byte-stream boundaries.
