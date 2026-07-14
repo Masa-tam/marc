@@ -347,6 +347,15 @@ profile. Exercise premature and trailing input, short raw, encoded, and phrase
 workspaces, an aggregate limit one byte below the exact requirement, empty and
 ended calls, and unsupported ResetBlock.
 
+For the LZW plus entropy None frame adapter, require the documented 58-byte
+single-`A` frame byte for byte. Plan, encode, validate, and decode `ABABABA`,
+requiring four codes, five payload bytes, and exact raw recovery. Exercise a
+short contextual final frame after prior committed output. Verify that short
+output, insufficient encoder and decoder phrase workspaces, a non-literal
+first code, a truncated frame, trailing bytes, an unexpected sequence, an
+empty raw frame, and an unsupported entropy selection fail without publishing
+raw output.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

@@ -1753,3 +1753,20 @@ no legal guarantee of non-infringement.
   with arbitrary input/output chunks and byte-identical reference output.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-15 - LZW plus None frame adapter
+
+- Authoring method: composed marc's generic frame-header contract with its
+  independently specified and implemented LZW reference codec.
+- References used: repository frame format, LZW variant 1 format, reference
+  encoder, validator and decoder, checked arithmetic, limits, and
+  repository-owned hand vectors only.
+- Known implementations intentionally not consulted: external LZW containers,
+  frame adapters, source, pseudocode, tests, and format layouts.
+- Independent decisions: exact one-frame extent; equal dictionary and payload
+  sizes for entropy None; separate planning and emission; strict trailing-data
+  rejection; layered error reporting; atomic reference decode publication.
+- Generated-code task description: wrap one bounded LZW code stream in marc's
+  generic frame header and validate or decode it transactionally.
+- Similarity review: no external container structure or control flow was
+  compared.

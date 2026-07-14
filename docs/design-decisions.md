@@ -1689,3 +1689,21 @@ empty frame. Enforce raw plus phrase bytes against the aggregate buffered limit;
 after planning, add the exact encoded extent to the same check before writing.
 Flush does not close a partial frame, ResetBlock is unsupported at this layer,
 and EndInput remains effective while encoded bytes drain.
+
+## DD-104: LZW plus None frames reuse the generic atomic adapter contract
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent each nonempty LZW variant 1 code stream as the complete body of one
+generic frame when entropy is None. Set dictionary serialized size and
+compressed payload size to the same exact padded code-byte count, and leave
+entropy block and descriptor fields zero. The outer frame size and committed
+output position determine the only accepted raw extent.
+
+Provide independent plan, encode, validate, and decode entry points. Planning
+uses the reference LZW parser before emitting a header; validation checks the
+entire header and payload extent before decoding; reference decode preserves
+its atomic publication guarantee. Reject trailing frame bytes, unsupported
+pipelines, insufficient workspaces, and malformed packed codes with stable
+layered errors. The dictionary is frame-local and is never shared across calls.

@@ -115,7 +115,11 @@ metadata before draining the accepted phrase, and resolves each requested
 forward byte through bounded prefix links without phrase-sized staging. The
 streaming encoder buffers one declared raw frame, invokes the exact reference
 planner and encoder into separate caller-owned storage, then drains those fixed
-bytes without accepting later input.
+bytes without accepting later input. The LZW plus entropy None frame adapter
+wraps one nonempty code stream in the generic 56-byte frame header, keeps the
+dictionary and compressed extents identical, and exposes separate plan,
+encode, validate, and atomic decode operations. It accepts only the exact
+declared frame extent and resets the LZW dictionary at that boundary.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
