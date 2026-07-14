@@ -142,6 +142,10 @@ counts and alignment cross the ABI; private LZW phrase-record layouts do not.
 The CLI and benchmark consume only that public ABI. Their LZW profile uses a
 1 MiB frame, width 16, the matching 65,280-entry local decoder ceiling, and
 bounded aligned workspace supplied by the application.
+The LZW fuzz harness presents bounded arbitrary bytes to both the strict and
+outer streaming decoders with width capped at 10, fixed caller workspaces, and
+a call-count guard. Ordinary builds compile this harness without executing it;
+permanent malformed cases remain normal deterministic tests.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

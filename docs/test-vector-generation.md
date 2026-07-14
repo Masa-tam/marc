@@ -403,6 +403,14 @@ must reproduce the source and failed decode must leave no destination or
 temporary file. Run one LZW benchmark smoke iteration over README input and
 require its internal C-ABI round-trip verification to succeed.
 
+For permanent LZW fuzz regressions, truncate the canonical 198-byte reset
+stream at every byte and require atomic one-shot rejection. Independently
+mutate the first code to 256, set nonzero final padding, saturate frame extent
+fields, and use code 256 as the first code after a frame reset. The bounded
+fuzz harness applies arbitrary bytes to strict and streaming decode with 4 KiB
+total output, 1 KiB frames, 4 KiB payloads, 768 phrase records, input-derived
+chunks, and a finite call guard.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

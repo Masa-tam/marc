@@ -1,12 +1,14 @@
 # Fuzzing
 
-`marc_fuzz_lzss_stream` and `marc_fuzz_lz78_stream` exercise both the strict
+`marc_fuzz_lzss_stream`, `marc_fuzz_lz78_stream`, and `marc_fuzz_lzw_stream`
+exercise both the strict
 one-shot stream decoder and the matching frame-streaming decoder with chunk
 sizes derived from the input. They use small fixed local limits and
 caller-owned workspaces so arbitrary inputs cannot request unbounded
 allocation. A call-count guard turns a stalled state machine into a
 reproducible failure. The LZ78 target additionally bounds its phrase table to
-512 records.
+512 records. The LZW target permits at most width 10 and bounds its phrase
+table to 768 records.
 
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
@@ -19,9 +21,10 @@ cmake -S . -B out/build/fuzz -G Ninja \
   -DMARC_BUILD_SHARED=OFF -DMARC_BUILD_STATIC=ON \
   -DMARC_BUILD_TESTS=OFF -DMARC_BUILD_TOOLS=OFF \
   -DMARC_BUILD_EXAMPLES=OFF -DMARC_BUILD_FUZZERS=ON
-cmake --build out/build/fuzz --target marc_fuzz_lzss_stream marc_fuzz_lz78_stream
+cmake --build out/build/fuzz --target marc_fuzz_lzss_stream marc_fuzz_lz78_stream marc_fuzz_lzw_stream
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_stream fuzz/corpus/lz78_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 ```
 
 MSVC remains the reference normal-build toolchain, but its native driver is not

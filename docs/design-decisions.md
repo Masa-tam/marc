@@ -1820,3 +1820,22 @@ loop, so partial input/output and failures retain the same behavior. Benchmark
 the canonical full stream through the C ABI, verify a round trip before timing,
 and report compression ratio, directional throughput, direction-specific
 workspace components, and their maximum without calling LZW internals.
+
+## DD-111: LZW fuzzing uses fixed width, memory, output, and call bounds
+
+- Date: 2026-07-15
+- Status: accepted
+
+Feed each arbitrary input independently to the strict one-shot LZW stream
+decoder and the outer frame-streaming decoder. Fix total output at 4 KiB, raw
+frame size at 1 KiB, serialized payload at 4 KiB, and phrase metadata at 768
+records. This local dictionary limit admits maximum code widths 9 and 10 only,
+covering the first width transition without allowing input-controlled
+workspace growth.
+
+Derive streaming input and output chunks from bounded input bytes, validate
+every `ProcessResult`, and cap calls by input size plus a fixed output margin.
+Compile the harness in ordinary MSVC test builds but execute coverage-guided
+fuzzing only in the explicit Clang sanitizer build. Keep canonical truncation,
+invalid first-code, padding, extreme header, and cross-frame reset mutations as
+permanent GoogleTest regressions with one-shot atomicity assertions.

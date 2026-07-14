@@ -1864,3 +1864,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: add real-file LZW CLI round trips and
   C-ABI-only benchmark smoke coverage with bounded caller workspace.
 - Similarity review: no external CLI or benchmark control flow was compared.
+
+## 2026-07-15 - Bounded LZW decoder fuzz harness
+
+- Authoring method: applied marc's bounded decoder-test policy to its strict
+  and outer streaming LZW paths with explicit fixed resource ceilings.
+- References used: repository process invariants, LZW limits and workspaces,
+  strict/streaming decoder APIs, canonical stream, and sanitizer build policy.
+- Known implementations intentionally not consulted: external LZW fuzz
+  harnesses, corpora, mutation dictionaries, source, tests, and scheduling.
+- Independent decisions: 4 KiB output and payload; 1 KiB frames; 768 records;
+  width 9/10 acceptance; input-derived chunks; finite call guard; compile-only
+  ordinary target; canonical atomic regression mutations.
+- Generated-code task description: defensively fuzz bounded LZW strict and
+  streaming decoders and preserve representative failures as normal tests.
+- Similarity review: no external fuzz harness structure or corpus was compared.
