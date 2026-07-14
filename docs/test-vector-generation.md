@@ -473,6 +473,17 @@ decoded through the independent strict decoder. Short output, short workspace,
 invalid parameters, serialized limits, frame limits, and aggregate raw-plus-
 workspace limits remain ordinary atomic negative tests.
 
+LZD streaming decode feeds the published-example token stream through one-byte
+input and output spans, with `EndInput` attached only to the final encoded byte.
+A second vector supplies all encoded bytes with one output byte, then drains
+without repeating `EndInput`. Separate cases finish with a zero-byte EndInput,
+decode an empty frame, reject a token truncated at byte offset 8 without
+changing patterned output, and reject a ninth byte for a one-byte raw frame
+before consuming it. Flush while collecting does not close the frame.
+Construction tests independently cover each of the four short workspaces,
+their aggregate limit, unsupported host extents, and unsupported reset.
+Repeated calls after a malformed frame return the same terminal error.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

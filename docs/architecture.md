@@ -167,8 +167,13 @@ reference encoder retains each generated phrase as an offset and length into
 the immutable raw frame, performs two deterministic longest-match searches
 per token, and runs the same parse for exact planning and serialization. Raw
 input plus phrase records are bounded before parsing, and output capacity is
-checked before publication. The streaming wrapper remains later LZD work, so
-this does not mark the codec complete.
+checked before publication. The streaming decoder buffers one known-size frame
+in caller-owned encoded storage, invokes the atomic reference decoder into a
+separate caller-owned raw frame, and drains only after complete validation.
+Its workspace query derives conservative encoded, phrase, expansion-stack,
+and decoded extents from the declared raw size; construction enforces their
+aggregate limit. The streaming encoder and outer profile remain later LZD
+work, so this does not mark the codec complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

@@ -1960,3 +1960,20 @@ no legal guarantee of non-infringement.
   atomic LZD reference encoder for the already specified variant 1 format.
 - Similarity review: structure follows marc's own one-shot encoder conventions;
   no external encoder expression, data structure, or control flow was compared.
+
+## 2026-07-15 - LZD validated-frame streaming decoder
+
+- Authoring method: wrapped only marc's strict atomic LZD decoder in the
+  repository transform contract with caller-owned bounded frame storage.
+- References used: repository LZD format, reference decoder, core status and
+  limit contracts, existing repository streaming state-machine conventions,
+  and repository-owned vectors.
+- Known implementations intentionally not consulted: external LZD streaming
+  decoders, source, pseudocode, tests, corpora, streams, and containers.
+- Independent decisions: full token-region collection; four explicit workspace
+  extents; validated raw staging; EndInput retention; strict offset propagation;
+  pre-consumption rejection beyond the theoretical serialized bound.
+- Generated-code task description: implement and test a bounded LZD streaming
+  decoder that publishes only complete validated frames under arbitrary splits.
+- Similarity review: state and error handling follow marc's own transform API;
+  no external LZD streaming structure or control flow was compared.

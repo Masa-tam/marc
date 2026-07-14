@@ -1945,3 +1945,25 @@ token consumes at least two raw bytes. Check raw input plus phrase records
 against the aggregate internal-buffer limit, then check serialized limits and
 output capacity before emitting any token. This quadratic reference search is
 the format oracle; later indexed searches must produce identical bytes.
+
+## DD-117: LZD streaming decode commits one validated frame
+
+- Date: 2026-07-15
+- Status: accepted
+
+Collect the complete dictionary-token region for one known-size raw frame in
+caller-owned encoded storage. `EndInput` fixes that region: invoke the strict
+atomic decoder into a separate caller-owned raw frame, then drain validated
+bytes across arbitrary output splits. Preserve the draining state without
+requiring callers to repeat `EndInput`. A malformed token anywhere in the
+frame therefore publishes no raw byte, and the strict decoder's failing token
+offset becomes the streaming error byte position.
+
+Derive the conservative encoded extent as `8 * ceil(raw_size / 2)`. From that
+extent derive the validator phrase records, an explicit expansion stack, and
+the exact decoded extent. Reject unsupported host sizes, arithmetic overflow,
+insufficient caller spans, or an aggregate encoded-plus-phrase-plus-stack-plus-
+decoded extent beyond the local internal-buffer limit during construction.
+Reject input beyond the conservative encoded extent before consuming any of
+the offending call. Flush does not close a frame; `ResetBlock` remains
+unsupported because the outer frame owns LZD dictionary reset.
