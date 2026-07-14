@@ -1858,3 +1858,28 @@ comparisons and any promoted fuzz discoveries become permanent regression
 vectors. The current LZW plus None profile stores no hashes, so codec-specific
 hash verification is not applicable; the generic HashTap contract remains
 independently tested at arbitrary byte-stream boundaries.
+
+## DD-113: LZD variant 1 serializes two dictionary references per phrase
+
+- Date: 2026-07-15
+- Status: accepted
+
+Define LZD as Lempel-Ziv Double: select the longest existing byte or phrase at
+the current position, then independently select the longest at the following
+position, and add their concatenation as one new phrase. Scope the dictionary
+to one outer frame and freeze it, without clearing, at the configured nonzero
+entry maximum. Phrase references are assigned consecutively from 256 while
+`0..255` name literal bytes.
+
+Serialize every token as two little-endian `uint32` references. Reserve
+`0xFFFFFFFF` solely for an absent right reference on the final token. This
+terminal form replaces the literature's unique sentinel for an arbitrary byte
+alphabet and leaves the declared frame raw size as the primary termination
+rule. It also keeps all ordinary phrases binary grammar productions and makes
+the decoder independent of encoder longest-match validation.
+
+Require references to name only the implicit alphabet or earlier frame-local
+phrases. Store phrase lengths with checked arithmetic and expand the acyclic
+binary grammar with a bounded explicit stack rather than recursion. Fixed
+eight-byte tokens give the checked worst-case bound
+`8 * ceil(raw_frame_size / 2)`.

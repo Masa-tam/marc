@@ -430,6 +430,21 @@ width-boundary schedule from both adjacent off-by-one schedules. Strict
 reference failure leaves raw output and caller-visible parsed metadata
 untouched.
 
+LZD variant 1 vectors are derived by maintaining the implicit literal
+references `0..255` and assigning generated phrases from reference 256. At
+each position, record the longest current dictionary match, then repeat at the
+position immediately after it. Use absent right only when the first match
+reaches the exact frame end. This gives `A -> (A,absent)`,
+`AB -> (A,B)`, `ABA -> (A,B)(A,absent)`,
+`ABAB -> (A,B)(256,absent)`, and
+`ABABAB -> (A,B)(256,256)`. Independently expand every pair through only prior
+entries and verify the raw extent rather than consulting an LZD encoder.
+
+The published illustrative input without its theoretical sentinel,
+`abbaababaaba`, must parse as `ab | ba | abab | aab | a`, represented by
+`(a,b), (b,a), (256,256), (a,256), (a,absent)`. The one-byte `A` frame is the
+generic 56-byte frame header followed by `41 00 00 00 FF FF FF FF`.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

@@ -1893,3 +1893,22 @@ no legal guarantee of non-infringement.
 - Generated-code task description: audit LZW completion without overstating
   cross-toolchain or sanitizer evidence and close explicit local vector gaps.
 - Similarity review: no external test structure or expected bytes were compared.
+
+## 2026-07-15 - LZD variant 1 specification
+
+- Authoring method: derived a bounded binary-byte stream representation from
+  the published Lempel-Ziv Double factorization definition before coding.
+- References used: Goto, Bannai, Inenaga, and Takeda (CPM 2015), DOI
+  `10.1007/978-3-319-19929-0_19`; Badkobeh et al., arXiv:1705.09538.
+- Patent-reference check: a limited title, algorithm-name, and inventor-name
+  search of public patent indexes found no apparent LZD-specific publication;
+  this is provenance documentation, not a freedom-to-operate conclusion.
+- Known implementations intentionally not consulted: all LZD source,
+  supplementary code, corpora, tests, serialized formats, and containers.
+- Independent decisions: implicit byte references; phrase references from 256;
+  fixed reference pairs; absent-right final form; frame reset; bounded freeze;
+  exact raw-size termination; iterative acyclic expansion; local limits.
+- Generated-code task description: specify marc LZD variant 1, including tail,
+  malformed-stream, bound, and hand-vector rules, before implementation.
+- Similarity review: algorithmic terminology follows cited papers; the byte
+  format, parameter block, terminal rule, limits, and vectors are marc-specific.

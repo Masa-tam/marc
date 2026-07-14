@@ -134,6 +134,28 @@ vectors are independently specified. No LZW implementation source,
 source-derived pseudocode, external container format, or test suite was
 consulted.
 
+LZD design references:
+
+- Keisuke Goto, Hideo Bannai, Shunsuke Inenaga, and Masayuki Takeda,
+  "LZD Factorization: Simple and Practical Online Grammar Compression with
+  Variable-to-Fixed Encoding," Proceedings of CPM 2015, LNCS 9133,
+  pages 219-230, 2015, DOI `10.1007/978-3-319-19929-0_19`. Used for the
+  Lempel-Ziv Double rule that each new factor concatenates the two longest
+  matching previous factors or alphabet symbols.
+  <https://doi.org/10.1007/978-3-319-19929-0_19>
+- Golnaz Badkobeh, Travis Gagie, Shunsuke Inenaga, Tomasz Kociumaka, Dmitry
+  Kosolobov, and Simon J. Puglisi, "On Two LZ78-style Grammars: Compression
+  Bounds and Compressed-Space Computation," arXiv:1705.09538, 2017. Used as a
+  formal-definition and worked-factorization cross-check; its accompanying
+  implementation and supplementary source were not consulted.
+  <https://arxiv.org/abs/1705.09538>
+
+marc's byte-reference namespace, absent-right terminal form, fixed token
+serialization, bounded dictionary-freeze rule, frame reset, malformed-stream
+policy, and vectors are independently specified. No LZD implementation source,
+source-derived pseudocode, corpus, container format, or test suite was
+consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

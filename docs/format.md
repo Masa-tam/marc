@@ -63,7 +63,7 @@ block, and original sizes must not exceed local decoder limits.
 | 2 | LZSS | explicit literal/match byte-token variant defined below |
 | 3 | LZ78 | fixed phrase-index byte-token variant defined below |
 | 4 | LZW | variable-width frame-local variant defined below |
-| 5 | LZD | Lempel-Ziv Double baseline, details pending |
+| 5 | LZD | fixed phrase-pair Lempel-Ziv Double variant defined below |
 | 6 | LZMW | baseline, details pending |
 
 | Entropy ID | Algorithm | Variant 1 |
@@ -578,6 +578,126 @@ dictionary/payload bytes; entropy block and descriptor fields are zero:
 ```
 
 The 16-byte LZW parameter region belongs after the stream prefix and before the
+first frame; it is not repeated inside this frame.
+
+## LZD variant 1
+
+LZD means Lempel-Ziv Double. Variant 1 is a frame-local phrase grammar in which
+each ordinary phrase is the concatenation of two longest dictionary matches.
+Its stream dictionary parameter region is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum phrase entries | default 65,536; range 1..`0xFFFFFEFF` |
+| 4 | 4 | flags/reserved | zero |
+| 8 | 8 | reserved | zero |
+
+All integers are little-endian. The configured maximum counts generated phrase
+entries, not the implicit byte alphabet, and must not exceed the local maximum
+dictionary-entry limit. Phrase codes begin at 256. At most `0xFFFFFEFF`
+phrases can be represented because `0xFFFFFFFF` is reserved as described
+below. There is no in-band clear token. The dictionary resets at every outer
+frame and freezes when it reaches the configured maximum.
+
+The dictionary initially contains the 256 one-byte strings at reference values
+`0..255`. Generated phrases receive consecutive reference values beginning at
+256. At each raw position, the encoder chooses the longest string in the
+current byte-or-phrase dictionary that matches the remaining input; this is
+the left component. If input remains, it independently chooses the longest
+dictionary string at the new position as the right component, emits both
+references, and inserts their concatenation at the next phrase reference when
+the dictionary is not frozen. It advances by the sum of both component
+lengths. Existing dictionary strings are unique, so no equal-length tie exists.
+
+If the left component consumes the final input suffix, the encoder emits it
+with an absent right component, inserts nothing, and ends the frame. This is
+marc's binary-input replacement for the theoretical unique end symbol: no byte
+value is reserved and no sentinel becomes part of the decoded data. Empty
+frames contain no tokens. A right-present token may also end the frame and is
+inserted normally when capacity remains. Dictionary freeze changes only future
+insertion; both longest searches continue over the fixed dictionary.
+
+Every dictionary token is exactly 8 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | left reference | little-endian byte or prior-phrase reference |
+| 4 | 4 | right reference | same, or `0xFFFFFFFF` only for terminal absence |
+
+Reference values `0..255` denote the corresponding literal byte.
+`256..0xFFFFFFFE` denote phrase number `reference - 256` and must name an
+entry inserted by an earlier token in the same frame. `0xFFFFFFFF` is invalid
+as a left reference. It is valid as a right reference only on the final token,
+when expanding the left reference alone ends exactly at the declared raw frame
+size. A right-present token expands left followed by right. Its combined
+checked length must fit the remaining raw extent; if it reaches that extent,
+the token must be last.
+
+The decoder records each inserted phrase as two backward references plus a
+checked expanded length. References are validated before insertion, so the
+phrase graph is acyclic. Expansion uses a bounded explicit work stack, never
+input-controlled recursion. The decoder rejects a non-multiple-of-eight token
+region, an unknown or forward phrase reference, absent left, nonterminal absent
+right, checked length or reference overflow, output beyond the declared frame,
+premature serialized end, bytes after raw completion, or workspace and local
+limit violations. Decoder acceptance does not depend on reproducing the
+encoder's longest-match decisions.
+
+The generic frame header's dictionary serialized size is exactly
+`8 * token_count`. It is the byte input to the selected entropy layer. With
+entropy None, compressed payload size equals dictionary serialized size and the
+frame body contains these tokens directly. Every right-present token consumes
+at least two raw bytes and an optional final absent-right token consumes at
+least one, so the input-independent serialized bound is
+`8 * ceil(raw_frame_size / 2)` bytes, with checked arithmetic.
+
+### Hand-checkable LZD token vectors
+
+With default parameters:
+
+```text
+Input `A`:
+41 00 00 00 FF FF FF FF
+
+Input `AB`:
+41 00 00 00 42 00 00 00
+
+Input `ABA`:
+41 00 00 00 42 00 00 00
+41 00 00 00 FF FF FF FF
+
+Input `ABAB`:
+41 00 00 00 42 00 00 00
+00 01 00 00 FF FF FF FF
+
+Input `ABABAB`:
+41 00 00 00 42 00 00 00
+00 01 00 00 00 01 00 00
+```
+
+The first token of `AB` inserts phrase 0, string `AB`, at reference 256.
+`ABAB` then uses that phrase as its terminal left component. `ABABAB` uses the
+same existing phrase for both components and inserts `ABAB` at reference 257.
+
+For comparison with the published factorization example but without its
+theoretical sentinel, `abbaababaaba` parses as `ab | ba | abab | aab | a` and
+serializes as `(a,b), (b,a), (256,256), (a,256), (a,absent)`.
+
+### Hand-checkable LZD plus None frame vector
+
+For a stream selecting LZD variant 1 and entropy None, with one raw byte `A`,
+the complete frame is 64 bytes. Its header declares one raw byte and one 8-byte
+dictionary/payload token; entropy block and descriptor fields are zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+41 00 00 00 FF FF FF FF
+```
+
+The 16-byte LZD parameter region belongs after the stream prefix and before the
 first frame; it is not repeated inside this frame.
 
 ## Foundational hand-checkable vectors
