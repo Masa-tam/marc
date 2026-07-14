@@ -1612,3 +1612,22 @@ the BitReader's buffered high bits for zero before rejecting unread trailing
 bytes. Enforce the sum of serialized input and required phrase-record bytes
 against the aggregate internal-buffer limit. Parameter parsing publishes only
 a fully validated 16-byte value.
+
+## DD-100: LZW reference decoding validates before output publication
+
+- Date: 2026-07-15
+- Status: accepted
+
+Run the complete packed-code validator before checking output capacity or
+writing a raw byte. On success, repeat the exact width schedule in a second
+pass, use the validated caller-owned phrase records as the decode table, and
+expand each non-literal phrase backward into its final output range. This needs
+no phrase-sized staging allocation and preserves the natural forward byte order.
+
+During the second pass, verify each record expected at the next-free code:
+prefix equals the previous code, trailing byte equals the current phrase's first
+byte, stored first byte equals the previous phrase's first byte, and stored
+length is exactly previous length plus one. Prefix codes must decrease while
+walking a phrase, bounding the iterative traversal and excluding cycles. Treat
+any post-validation discrepancy as an internal error rather than reclassifying
+the already accepted byte stream.

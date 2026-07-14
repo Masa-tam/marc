@@ -103,7 +103,10 @@ non-literal phrase occupies one caller-owned prefix, trailing-byte, first-byte,
 and checked-length record. The validator reads repository LSB-first fields,
 applies the separately specified encoder/decoder width boundary, resolves the
 `KwKwK` case without recursion, and validates exact output extent and zero
-padding without publishing raw bytes.
+padding without publishing raw bytes. The atomic reference decoder then repeats
+the packed-code traversal over that validated metadata, verifies each expected
+insertion record, and writes every phrase backward through bounded prefix links
+into its final caller-owned output range.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

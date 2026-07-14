@@ -1690,3 +1690,18 @@ no legal guarantee of non-infringement.
   structures and exact LSB-first validator before producing decoded bytes.
 - Similarity review: no external parser structure, control flow, or vector was
   compared.
+
+## 2026-07-15 - LZW atomic reference decoder
+
+- Authoring method: implemented the documented inverse directly as a second
+  pass over marc's validated packed codes and caller-owned phrase metadata.
+- References used: repository LZW format, validator, BitReader, limits, and
+  repository-owned hand and width-boundary vectors only.
+- Known implementations intentionally not consulted: external LZW decoders,
+  phrase-expansion source, pseudocode, optimizations, tests, and containers.
+- Independent decisions: validation before output capacity; backward iterative
+  phrase writes; second-pass insertion-record verification; decreasing-prefix
+  invariant; no phrase staging buffer; stable validation-error propagation.
+- Generated-code task description: implement an atomic bounded LZW reference
+  decoder for marc's exact variable-width LSB-first representation.
+- Similarity review: no external decoder structure or control flow was compared.

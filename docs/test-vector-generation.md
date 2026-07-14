@@ -307,6 +307,14 @@ declared output is 259 zero bytes. Require 258 codes, 257 new dictionary
 entries, 2324 logical code bits, and four zero padding bits. A decoder that
 changes width one code late observes the `08` data bit as nonzero padding.
 
+For atomic LZW reference decoding, decode the documented `A`, `AA`, `AAA`, and
+`ABABABA` payloads, including both `KwKwK` cases, then decode the 291-byte width-
+boundary vector into exactly 259 zero bytes. Decode all 256 one-byte values from
+their literal nine-bit representation. With maximum width 9, decode 258 literal-
+zero codes from 291 zero payload bytes after the 256-entry dictionary freezes.
+A forward code, nonzero padding, short workspace, local-limit failure, and short
+output must not publish any raw byte.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and
