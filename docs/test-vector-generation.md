@@ -504,6 +504,16 @@ Invalid parameters, token limits, encoder aggregate limits, invalid local
 limits, unsupported host extents, and an aggregate too small for even an empty
 payload are stable negative cases.
 
+LZD frame tests wrap the published `abbaababaaba` factorization in a generic
+header and require five tokens. The documented one-byte `A` frame is compared
+against all 64 literal bytes from `docs/format.md`. A contextual final frame
+uses sequence 1 at committed raw offset 8. Short encoder and decoder output,
+forward phrase references, short phrase and expansion workspaces, truncation,
+trailing bytes, sequence corruption, unsupported pipelines, and missing
+encoder workspace are atomic or stable negative cases. Separate thresholds
+prove that encoder planning, validation, and decoding each count the generic
+header and their complete caller-owned workspaces in the aggregate limit.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

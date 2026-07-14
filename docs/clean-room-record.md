@@ -2009,3 +2009,19 @@ no legal guarantee of non-infringement.
   profile that precedes LZD one-shot frame and stream integration.
 - Similarity review: profile organization follows marc's generic container API;
   no external LZD profile structure or calculations were compared.
+
+## 2026-07-15 - LZD plus None one-shot frame codec
+
+- Authoring method: composed marc's generic frame header with its independently
+  written strict LZD encoder, validator, and atomic decoder.
+- References used: repository LZD format and codecs, generic frame validation,
+  local limits, accepted profile, design decisions, and documented vectors.
+- Known implementations intentionally not consulted: external LZD containers,
+  frame codecs, source, pseudocode, tests, corpora, or serialized streams.
+- Independent decisions: exact single-frame parsing; None size equality;
+  contextual sequence and extent validation; header-inclusive aggregate limits;
+  staged validation before raw publication; stable nested error categories.
+- Generated-code task description: implement and test one complete LZD plus
+  None frame with planning, encoding, validation, and atomic decoding.
+- Similarity review: composition follows marc's own generic header contracts;
+  no external LZD frame expression or control flow was compared.

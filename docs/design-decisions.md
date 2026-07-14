@@ -2009,3 +2009,24 @@ memory limits. Include the complete encoded frame, phrase records, and an
 explicit phrase-count-plus-one expansion stack in that aggregate. Use a
 monotonic binary search and reject a local configuration when even zero payload
 cannot coexist with the frame header, raw frame, and minimum stack entry.
+
+## DD-120: LZD None frames remain atomic across the generic header
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent each nonempty outer frame as the generic 56-byte frame header followed
+by the exact canonical LZD token region. With entropy None, dictionary-
+serialized size and compressed-payload size are identical. Validate pipeline,
+sequence, contextual raw size, lengths, and generic reserved fields before
+passing the payload to the strict LZD validator or decoder. Empty streams have
+no frame; individual encoded frames are therefore always nonempty.
+
+Plan the complete header-plus-payload extent before encoding and reject short
+output without publication. Decode first parses an exact single-frame span,
+checks output capacity, validates the full phrase grammar, and only then expands
+raw bytes. Enforce raw plus complete frame plus encoder records when encoding;
+complete frame plus phrase records when validating; and complete frame plus
+raw output, phrase records, and expansion stack when decoding. These checks
+keep standalone frame entry points within the same aggregate policy as the
+profile and outer streaming path.
