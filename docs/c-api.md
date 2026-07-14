@@ -2,7 +2,7 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, LZSS variant 1,
-and LZ78 variant 1 with known-size encoding and bounded, caller-owned
+LZ78 variant 1, and LZW variant 1 with known-size encoding and bounded, caller-owned
 workspace. All functions are `noexcept` in C++ translation units, and no C++
 type appears in the ABI.
 
@@ -12,8 +12,8 @@ type appears in the ABI.
    `marc_adaptive_huffman_config_init()` or
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`, or
-   `marc_lzss_config_init()`, or `marc_lz78_config_init()` for encode or decode
-   direction.
+   `marc_lzss_config_init()`, `marc_lz78_config_init()`, or
+   `marc_lzw_config_init()` for encode or decode direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
@@ -50,6 +50,11 @@ reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local
 limits. The requirements query supplies direction-specific `views_bytes` and
 `views_alignment`; no private C++ record layout appears in the public ABI.
+LZW uses the same opaque aligned-workspace convention. Its encoder requirements
+use the configured maximum code width and frame size; decoder requirements use
+only trusted local limits and conservatively cover any permitted serialized
+LZW parameter width. `maximum_code_width` affects encoding only because decode
+parameters are read from the stream and checked against local policy.
 
 ## Processing contract
 

@@ -136,6 +136,9 @@ The LZW profile builder converts a high-level known-size configuration into the
 canonical LZW plus None stream header and conservative encoder workspace. Its
 decoder workspace calculator couples serialized-frame, raw-frame, phrase-table,
 and aggregate local limits without trusting an unparsed stream parameter.
+The C ABI exposes those calculations through an initialized plain-C config,
+direction-specific workspace query, and opaque transform factory. Only byte
+counts and alignment cross the ABI; private LZW phrase-record layouts do not.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

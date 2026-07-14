@@ -390,6 +390,13 @@ decoder sizing, verify the largest discrete code width permitted by the local
 dictionary-entry limit, then independently enumerate the payload boundary
 under a tight aggregate limit and prove that the next byte does not fit.
 
+For the LZW C ABI, encode six `A` bytes as two three-byte frames using caller
+workspaces and require the canonical 198-byte stream. Query decoder workspace
+from restricted local limits, decode through the opaque transform, and require
+exact recovery. Verify default maximum width 16, public structure metadata,
+nonzero aligned phrase workspace, misalignment rejection, reserved-field and
+zero-limit rejection, and an invalid encoder code width.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

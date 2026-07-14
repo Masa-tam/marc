@@ -1834,3 +1834,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: construct canonical LZW profile metadata
   and bounded encoder/decoder workspace requirements without allocation.
 - Similarity review: no external sizing structure or formulas were compared.
+
+## 2026-07-15 - LZW C ABI integration
+
+- Authoring method: applied marc's existing plain-C transform lifecycle to its
+  independently implemented LZW profile and outer streaming transforms.
+- References used: repository C ABI conventions, LZW profile, streaming
+  encoder and decoder, checked arithmetic, and repository-owned tests only.
+- Known implementations intentionally not consulted: external LZW C APIs,
+  wrappers, workspace layouts, source, headers, tests, and naming schemes.
+- Independent decisions: fixed-layout config; encode-only maximum width;
+  direction-specific workspace roles; opaque aligned phrase bytes; strict tag,
+  reserved, buffer, size, and alignment validation; `nothrow` factory.
+- Generated-code task description: expose bounded known-size LZW encode and
+  decode through marc's allocator-free workspace-oriented C ABI.
+- Similarity review: no external ABI structure or control flow was compared.

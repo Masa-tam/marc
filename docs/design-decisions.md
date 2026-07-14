@@ -1783,3 +1783,22 @@ that permitted capacity, and binary-search the largest payload consistent with
 serialized, compressed, and aggregate-buffer limits. Return raw staging for
 the local maximum frame size. If even 9-bit LZW is forbidden, report a limit
 failure rather than creating a decoder that cannot accept any valid profile.
+
+## DD-109: LZW C ABI exposes opaque aligned phrase workspace
+
+- Date: 2026-07-15
+- Status: accepted
+
+Add `marc_lzw_config_init`, `marc_lzw_workspace_requirements`, and
+`marc_lzw_create` alongside the existing transform process and destroy calls.
+The config contains the known original size, frame size, encoder maximum code
+width, and decoder hard limits using fixed-width C types. Reserved fields,
+structure size, ABI version, direction, and all buffers are validated before
+constructing a C++ object.
+
+Report raw/serialized frame storage through primary and secondary bytes by
+direction. Report encoder or decoder phrase storage only as opaque
+`views_bytes` plus `views_alignment`; no private C++ type appears in the ABI.
+The factory places the selected outer streaming transform behind the existing
+opaque handle with `nothrow` allocation. Decoder stream parameters remain
+authoritative format input and the config maximum code width is encode-only.
