@@ -1671,3 +1671,21 @@ frame. Preserve EndInput while output drains, accept a later zero-byte EndInput,
 strictly align zero padding after exact raw completion, reject unread trailing
 bytes, and keep Flush non-terminal. ResetBlock remains unsupported at this
 single-frame layer.
+
+## DD-103: LZW streaming encode buffers one known-size frame
+
+- Date: 2026-07-15
+- Status: accepted
+
+Collect exactly the declared raw frame in caller-owned storage, then invoke the
+reference LZW planner and encoder with a separate input-backed phrase table.
+Write the exact canonical result into caller-owned encoded storage and drain it
+through arbitrary output capacities. This makes streaming bytes identical to
+the reference representation for every input and output chunking.
+
+Before accepting input, require complete raw storage and
+`min(frame_size - 1, code_capacity)` phrase records, with zero records for an
+empty frame. Enforce raw plus phrase bytes against the aggregate buffered limit;
+after planning, add the exact encoded extent to the same check before writing.
+Flush does not close a partial frame, ResetBlock is unsupported at this layer,
+and EndInput remains effective while encoded bytes drain.

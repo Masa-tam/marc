@@ -112,7 +112,10 @@ longest phrase by ascending code, and runs the same parse for exact planning and
 LSB-first serialization. The streaming decoder retains partial numeric fields
 inside BitReader plus an explicit partial-code accumulator, inserts phrase
 metadata before draining the accepted phrase, and resolves each requested
-forward byte through bounded prefix links without phrase-sized staging.
+forward byte through bounded prefix links without phrase-sized staging. The
+streaming encoder buffers one declared raw frame, invokes the exact reference
+planner and encoder into separate caller-owned storage, then drains those fixed
+bytes without accepting later input.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

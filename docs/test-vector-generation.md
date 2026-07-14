@@ -338,6 +338,15 @@ preserve only raw bytes committed by earlier accepted codes. Exercise empty and
 ended calls, short dictionary workspace, invalid parameters and limits,
 cumulative serialized limits, and unsupported ResetBlock independently.
 
+Use the same canonical `ABABABA` bytes as the LZW streaming encoder oracle.
+Feed and drain one byte at a time, drain a complete frame before a later empty
+EndInput, and retain EndInput while output drains. Flush after three raw bytes
+must emit nothing and must not shorten the frame. Require byte identity for the
+2048-byte width fixture at both the default maximum and the 9-bit freeze
+profile. Exercise premature and trailing input, short raw, encoded, and phrase
+workspaces, an aggregate limit one byte below the exact requirement, empty and
+ended calls, and unsupported ResetBlock.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

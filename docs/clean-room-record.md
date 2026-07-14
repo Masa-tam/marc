@@ -1737,3 +1737,19 @@ no legal guarantee of non-infringement.
   and output capacity while preserving bounded state and deterministic errors.
 - Similarity review: no external streaming state machine or control flow was
   compared.
+
+## 2026-07-15 - LZW streaming encoder
+
+- Authoring method: composed marc's process state contract with its exact LZW
+  reference planner and encoder over one bounded known-size frame.
+- References used: repository LZW format, reference encoder, process contract,
+  checked arithmetic, limits, and repository-owned vectors only.
+- Known implementations intentionally not consulted: external LZW streaming
+  encoders, buffering strategies, source, pseudocode, tests, and containers.
+- Independent decisions: separate raw and encoded caller storage; conservative
+  input-backed phrase table; exact post-plan encoded extent; aggregate buffer
+  accounting; non-terminal Flush; retained EndInput during drain.
+- Generated-code task description: buffer and encode one known-size LZW frame
+  with arbitrary input/output chunks and byte-identical reference output.
+- Similarity review: no external streaming state machine or control flow was
+  compared.
