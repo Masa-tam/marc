@@ -44,6 +44,7 @@ set(MARC_SOURCES
     src/dictionary/lzw_format.cpp
     src/dictionary/lzw_decoder.cpp
     src/dictionary/lzw_encoder.cpp
+    src/dictionary/lzw_streaming_decoder.cpp
     src/dictionary/lzw_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
@@ -338,6 +339,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_format_tests.cpp
         tests/lzw_decoder_tests.cpp
         tests/lzw_encoder_tests.cpp
+        tests/lzw_streaming_decoder_tests.cpp
         tests/lzw_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp

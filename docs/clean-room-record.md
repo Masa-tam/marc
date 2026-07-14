@@ -1720,3 +1720,20 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement a clear deterministic LZW
   reference encoder with atomic preflight and byte-identical repeated output.
 - Similarity review: no external encoder structure or control flow was compared.
+
+## 2026-07-15 - LZW streaming decoder
+
+- Authoring method: extended marc's process state contract directly with its
+  exact variable-width code schedule and validated prefix-record semantics.
+- References used: repository LZW format, reference validator and decoder,
+  BitReader, process invariants, limits, and repository-owned vectors only.
+- Known implementations intentionally not consulted: external LZW streaming
+  decoders, bit-accumulator state machines, phrase caches, pseudocode, tests,
+  and containers.
+- Independent decisions: explicit partial-code accumulator; insertion before
+  phrase draining; iterative per-byte prefix lookup; retained EndInput; strict
+  completion padding; conservative frame-derived caller workspace.
+- Generated-code task description: decode marc LZW codes with one-byte input
+  and output capacity while preserving bounded state and deterministic errors.
+- Similarity review: no external streaming state machine or control flow was
+  compared.

@@ -328,6 +328,16 @@ entries, and 1412 bytes, followed by an exact round trip after dictionary
 freeze. Short output, serialized-size policy, workspace, parameter, input, and
 workspace-limit failures must occur before any encoded byte is published.
 
+For LZW streaming decode, feed `ABABABA` through one-byte input and output
+buffers, retain EndInput while a phrase drains, and also supply EndInput on a
+later zero-byte call. Feed the 2048-byte generated width fixture one encoded
+byte at a time with three-byte output capacity, and require the exact raw
+fixture. Repeat the complete fixture at maximum width 9 after dictionary
+freeze. Truncation, nonzero padding, trailing bytes, and a forward code may
+preserve only raw bytes committed by earlier accepted codes. Exercise empty and
+ended calls, short dictionary workspace, invalid parameters and limits,
+cumulative serialized limits, and unsupported ResetBlock independently.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

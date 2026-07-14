@@ -1651,3 +1651,23 @@ enforce all parameters, limits, workspace, and output capacity before a second
 pass writes through BitWriter. Raise encoder width only after insertion advances
 the next-free code to the power-of-two boundary. Finish once to emit canonical
 zero padding.
+
+## DD-102: LZW streaming decode retains partial codes and drains phrases directly
+
+- Date: 2026-07-15
+- Status: accepted
+
+Retain BitReader state, a partial numeric code, collected-bit count, current
+width, next-free code, and previous phrase metadata across process calls. Raise
+width only when beginning a later code at the documented decoder boundary.
+After a complete code validates, insert its derived dictionary record before
+draining; this makes the `code == next_free` phrase available through the same
+prefix representation as every ordinary phrase.
+
+Emit a phrase one forward byte at a time by following decreasing prefix codes
+until stored lengths identify the requested position. Require caller workspace
+for `min(frame_size - 1, code_capacity)` records, with zero records for an empty
+frame. Preserve EndInput while output drains, accept a later zero-byte EndInput,
+strictly align zero padding after exact raw completion, reject unread trailing
+bytes, and keep Flush non-terminal. ResetBlock remains unsupported at this
+single-frame layer.

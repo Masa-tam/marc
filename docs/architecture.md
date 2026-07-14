@@ -109,7 +109,10 @@ insertion record, and writes every phrase backward through bounded prefix links
 into its final caller-owned output range. The reference encoder stores each
 non-literal phrase as a bounded span into the immutable input frame, finds the
 longest phrase by ascending code, and runs the same parse for exact planning and
-LSB-first serialization.
+LSB-first serialization. The streaming decoder retains partial numeric fields
+inside BitReader plus an explicit partial-code accumulator, inserts phrase
+metadata before draining the accepted phrase, and resolves each requested
+forward byte through bounded prefix links without phrase-sized staging.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
