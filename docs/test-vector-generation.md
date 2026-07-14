@@ -300,6 +300,13 @@ every one-byte input, the transitions immediately before/at/after codes 512 and
 outer-frame reset. Independently regenerate packed bytes from the listed
 numeric codes rather than using an external LZW encoder.
 
+The exact first width-boundary vector is 288 zero bytes followed by
+`00 00 08`. It represents 256 literal-zero codes at 9 bits, one literal-zero
+code at 10 bits, and `code 512` at 10 bits. The last code is `KwKwK`, so the
+declared output is 259 zero bytes. Require 258 codes, 257 new dictionary
+entries, 2324 logical code bits, and four zero padding bits. A decoder that
+changes width one code late observes the `08` data bit as nonzero padding.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

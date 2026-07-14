@@ -95,6 +95,16 @@ The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.
 
+### LZW foundation
+
+LZW variant 1 begins with a transactional 16-byte parameter codec and a strict
+packed-code validator. The initial 256 literal strings are implicit; every
+non-literal phrase occupies one caller-owned prefix, trailing-byte, first-byte,
+and checked-length record. The validator reads repository LSB-first fields,
+applies the separately specified encoder/decoder width boundary, resolves the
+`KwKwK` case without recursion, and validates exact output extent and zero
+padding without publishing raw bytes.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

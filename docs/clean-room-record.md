@@ -1672,3 +1672,21 @@ no legal guarantee of non-infringement.
   implementing parsing structures.
 - Similarity review: no external implementation structure, byte layout, or
   vector was compared.
+
+## 2026-07-14 - LZW parameter and packed-code validation
+
+- Authoring method: translated marc's LZW variant 1 specification directly
+  into transactional parameter serialization and a bounded code scanner.
+- References used: repository LZW format, BitReader contract, checked
+  arithmetic, decoder limits, and repository-owned hand vectors only.
+- Known implementations intentionally not consulted: external LZW parameter
+  codecs, dictionary structures, decoders, pseudocode, tests, byte vectors,
+  width-switch implementations, and containers.
+- Independent decisions: implicit literal table; caller-owned prefix, trailing,
+  first-byte, and length records; conservative workspace query; stable bit and
+  byte positions independent of reader lookahead; validation-before-insertion;
+  aggregate workspace accounting; explicit boundary discriminator.
+- Generated-code task description: implement the bounded decoder-side parsing
+  structures and exact LSB-first validator before producing decoded bytes.
+- Similarity review: no external parser structure, control flow, or vector was
+  compared.

@@ -1591,3 +1591,24 @@ for the reference decoder, without recursive phrase expansion. Treat the
 declared raw frame size as the commit bound and reject a phrase crossing it,
 premature code bits, trailing bytes, invalid forward codes, and nonzero padding
 before publishing output in the strict reference path.
+
+## DD-099: LZW validation scans packed codes into caller-owned phrase metadata
+
+- Date: 2026-07-14
+- Status: accepted
+
+Validate the complete packed code region without producing raw bytes. Retain
+one caller-owned record per possible non-literal code, bounded conservatively
+by `floor(serialized_bytes * 8 / 9) - 1` and the configured code capacity. Each
+record stores prefix code, trailing byte, first byte, and checked expanded
+length; literals remain implicit.
+
+Report stable code index, failing-code byte and bit offset, dictionary entry
+count, and validated output extent. Track loaded bytes separately so partial
+reads do not move the reported failure position. Resolve `KwKwK` from the previous
+phrase metadata, insert only after the current phrase and output bound validate,
+and never follow input-controlled recursion. After exact raw completion, check
+the BitReader's buffered high bits for zero before rejecting unread trailing
+bytes. Enforce the sum of serialized input and required phrase-record bytes
+against the aggregate internal-buffer limit. Parameter parsing publishes only
+a fully validated 16-byte value.

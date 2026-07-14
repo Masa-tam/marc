@@ -555,6 +555,14 @@ dictionary reference. The high seven bits of the final `A` byte, high six bits
 of the final `AA`, `AAA`, and `AB` bytes, and high four bits of the final
 `ABABABA` byte are zero padding.
 
+The 9-to-10-bit boundary validator vector contains 256 literal-zero codes at
+9 bits, one literal-zero code at 10 bits, then `code 512` at 10 bits. The final
+code is a valid `KwKwK` expansion, producing two bytes, so the decoded result is
+259 zero bytes. Its 291-byte representation is 288 zero bytes followed by
+`00 00 08`; bits 4..7 of the last byte are padding. This vector rejects a
+decoder that changes width one code late because the `08` data bit then appears
+in padding.
+
 ### Hand-checkable LZW plus None frame vector
 
 For a stream selecting LZW variant 1 and entropy None, with one raw byte `A`,
