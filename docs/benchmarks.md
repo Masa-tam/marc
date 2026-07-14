@@ -6,6 +6,7 @@ Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 ```console
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lzss corpus.bin 5
+marc_benchmark lz78 corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -22,8 +23,9 @@ and verification are outside the timed region.
 parameters, frame headers, and payload. Empty input reports ratio zero because
 division by zero has no useful interpretation. Throughput uses raw input bytes
 and binary MiB. `codec_peak_workspace_bytes` is the larger of the encoder and
-decoder caller-owned primary-plus-secondary workspace requirements; it excludes
-the input, encoded, decoded, executable, and operating-system memory.
+decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
+it excludes the input, encoded, decoded, executable, and operating-system
+memory. Direction-specific views-workspace bytes are also reported separately.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

@@ -1530,3 +1530,20 @@ decoder's trusted `max_dictionary_entries` limit separately. Decoder workspace
 calculation ignores the encoder parameter field and remains a function only of
 local limits. Adding the new config type and entry points is additive within
 ABI version 1 and does not alter existing structures or function signatures.
+
+## DD-096: CLI and benchmarks consume LZ78 only through the C ABI
+
+- Date: 2026-07-14
+- Status: accepted
+
+Add `lz78` to the explicit CLI codec selector and benchmark driver without
+including private LZ78 headers. Configure a 1 MiB uncompressed frame, an
+eight-byte-per-input-byte worst-case payload bound, and a conservative 64 MiB
+aggregate local buffer policy. Query all concrete workspace sizes through the
+public C ABI.
+
+Allocate opaque views storage with `alignment - 1` spare bytes and derive an
+explicitly aligned pointer from the reported requirement; do not rely on the
+incidental alignment of a byte array or `vector<uint8_t>`. CLI output retains
+the existing temporary-file commit semantics. Benchmarks include views bytes in
+peak workspace reporting and verify a complete round trip before timing.

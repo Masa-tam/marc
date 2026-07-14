@@ -20,13 +20,17 @@ constexpr std::uint64_t frame_header_size = 56;
 enum class Codec {
     lz77,
     lzss,
+    lz78,
 };
 
 constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
-    return frame_size * (codec == Codec::lz77 ? UINT64_C(16) : UINT64_C(2));
+    if (codec == Codec::lz77) return frame_size * UINT64_C(16);
+    if (codec == Codec::lzss) return frame_size * UINT64_C(2);
+    return frame_size * UINT64_C(8);
 }
 
 constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
+    if (codec == Codec::lz78) return UINT64_C(64) << 20;
     return frame_size + frame_header_size + maximum_frame_payload(codec);
 }
 
@@ -37,6 +41,29 @@ struct TransformDeleter {
 };
 
 using TransformPtr = std::unique_ptr<marc_transform, TransformDeleter>;
+
+struct AlignedBuffer {
+    std::unique_ptr<std::uint8_t[]> storage{};
+    std::uint8_t* data{};
+
+    [[nodiscard]] bool allocate(const std::size_t size,
+                                const std::size_t alignment) noexcept {
+        storage.reset();
+        data = nullptr;
+        if (size == 0) return true;
+        if (alignment == 0
+            || size > std::numeric_limits<std::size_t>::max()
+                           - (alignment - 1))
+            return false;
+        storage.reset(new (std::nothrow)
+                          std::uint8_t[size + alignment - 1]);
+        if (storage == nullptr) return false;
+        const auto address = reinterpret_cast<std::uintptr_t>(storage.get());
+        const auto remainder = address % alignment;
+        data = storage.get() + (remainder == 0 ? 0 : alignment - remainder);
+        return true;
+    }
+};
 
 void print_status(const char* operation, const marc_status status) {
     std::cerr << "marc: " << operation << ": "
@@ -79,22 +106,47 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
     return true;
 }
 
+bool configure(const marc_direction direction, const std::uint64_t original_size,
+               marc_lz78_config& config) {
+    const auto status = marc_lz78_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.max_frame_size = frame_size;
+    config.max_compressed_payload_size = maximum_frame_payload(Codec::lz78);
+    config.max_dictionary_serialized_size =
+        maximum_frame_payload(Codec::lz78);
+    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lz78);
+    config.max_dictionary_entries = config.maximum_entries;
+    return true;
+}
+
 bool process_file(const marc_direction direction,
                   const Codec codec,
                   const std::uint64_t source_size,
                   std::ifstream& source, std::ofstream& sink) {
     marc_lz77_config config{};
     marc_lzss_config lzss_config{};
+    marc_lz78_config lz78_config{};
     if (codec == Codec::lz77) {
         if (!configure(direction, source_size, config)) return false;
-    } else if (!configure(direction, source_size, lzss_config)) {
+    } else if (codec == Codec::lzss) {
+        if (!configure(direction, source_size, lzss_config)) return false;
+    } else if (!configure(direction, source_size, lz78_config)) {
         return false;
     }
 
     marc_workspace_requirements needed{};
-    auto status = codec == Codec::lz77
-        ? marc_lz77_workspace_requirements(&config, &needed)
-        : marc_lzss_workspace_requirements(&lzss_config, &needed);
+    marc_status status{};
+    if (codec == Codec::lz77)
+        status = marc_lz77_workspace_requirements(&config, &needed);
+    else if (codec == Codec::lzss)
+        status = marc_lzss_workspace_requirements(&lzss_config, &needed);
+    else
+        status = marc_lz78_workspace_requirements(&lz78_config, &needed);
     if (status != MARC_STATUS_OK) {
         print_status("workspace query failed", status);
         return false;
@@ -107,8 +159,12 @@ bool process_file(const marc_direction direction,
         needed.secondary_bytes == 0
             ? nullptr
             : new (std::nothrow) std::uint8_t[needed.secondary_bytes]);
+    AlignedBuffer views{};
+    const bool views_allocated = views.allocate(
+        needed.views_bytes, needed.views_alignment);
     if ((needed.primary_bytes != 0 && primary == nullptr)
-        || (needed.secondary_bytes != 0 && secondary == nullptr)) {
+        || (needed.secondary_bytes != 0 && secondary == nullptr)
+        || !views_allocated) {
         print_status("workspace allocation failed", MARC_STATUS_OUT_OF_MEMORY);
         return false;
     }
@@ -116,11 +172,17 @@ bool process_file(const marc_direction direction,
     marc_transform* raw_transform{};
     const marc_buffer primary_buffer{primary.get(), needed.primary_bytes};
     const marc_buffer secondary_buffer{secondary.get(), needed.secondary_bytes};
-    status = codec == Codec::lz77
-        ? marc_lz77_create(&config, primary_buffer, secondary_buffer,
-                           &raw_transform)
-        : marc_lzss_create(&lzss_config, primary_buffer, secondary_buffer,
-                           &raw_transform);
+    const marc_buffer views_buffer{views.data, needed.views_bytes};
+    if (codec == Codec::lz77)
+        status = marc_lz77_create(
+            &config, primary_buffer, secondary_buffer, &raw_transform);
+    else if (codec == Codec::lzss)
+        status = marc_lzss_create(
+            &lzss_config, primary_buffer, secondary_buffer, &raw_transform);
+    else
+        status = marc_lz78_create(
+            &lz78_config, primary_buffer, secondary_buffer, views_buffer,
+            &raw_transform);
     if (status != MARC_STATUS_OK) {
         print_status("transform creation failed", status);
         return false;
@@ -156,7 +218,8 @@ bool process_file(const marc_direction direction,
 
         const bool final_input = loaded == source_size;
         const marc_const_buffer source_buffer{
-            input.get() + input_offset, input_size - input_offset};
+            input == nullptr ? nullptr : input.get() + input_offset,
+            input_size - input_offset};
         const marc_buffer sink_buffer{output.get(), io_buffer_size};
         const auto result = marc_transform_process(
             transform.get(), source_buffer, sink_buffer,
@@ -256,8 +319,8 @@ bool run(const marc_direction direction, const Codec codec,
 void usage() {
     std::cerr << "usage: marc encode <input> <output>\n"
                  "       marc decode <input> <output>\n"
-                 "       marc encode --codec <lz77|lzss> <input> <output>\n"
-                 "       marc decode --codec <lz77|lzss> <input> <output>\n";
+                 "       marc encode --codec <lz77|lzss|lz78> <input> <output>\n"
+                 "       marc decode --codec <lz77|lzss|lz78> <input> <output>\n";
 }
 
 } // namespace
@@ -285,6 +348,7 @@ int main(const int argc, const char* const argv[]) {
         const std::string_view name{argv[3]};
         if (name == "lz77") codec = Codec::lz77;
         else if (name == "lzss") codec = Codec::lzss;
+        else if (name == "lz78") codec = Codec::lz78;
         else {
             usage();
             return 2;

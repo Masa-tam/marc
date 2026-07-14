@@ -87,9 +87,10 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
-An opt-in benchmark executable drives the public LZ77 and LZSS C transforms
-over caller-selected files. It reports full-stream ratio, timed transform
-throughput, and profile-derived codec workspace under one documented method.
+An opt-in benchmark executable drives the public LZ77, LZSS, and LZ78 C
+transforms over caller-selected files. It reports full-stream ratio, timed
+transform throughput, and profile-derived codec workspace under one documented
+method.
 The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.

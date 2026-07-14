@@ -1622,3 +1622,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: expose known-size LZ78 encode and decode to
   C callers without leaking C++ types or exceptions across the ABI.
 - Similarity review: no external C ABI layout or wrapper logic was compared.
+
+## 2026-07-14 - LZ78 CLI and benchmark integration
+
+- Authoring method: extended marc's existing algorithm selector and benchmark
+  harness through the newly added public LZ78 C ABI only.
+- References used: repository CLI atomic-output policy, benchmark measurement
+  contract, LZ78 C workspace query, and generic CLI test script only.
+- Known implementations intentionally not consulted: external compression
+  CLIs, LZ78 benchmark harnesses, allocation wrappers, source, or reports.
+- Independent decisions: explicit `lz78` selector; 1 MiB frame; 64 MiB local
+  aggregate policy; query-driven opaque workspace; manual alignment within
+  spare byte storage; views-inclusive peak memory; pre-timing round trip.
+- Generated-code task description: add real-file LZ78 CLI round trips and
+  dependency-free encode/decode measurement through the public C interface.
+- Similarity review: no external CLI or benchmark control flow was compared.

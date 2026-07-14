@@ -30,17 +30,21 @@ git submodule update --init --recursive
 
 Top-level builds produce a minimal `marc` executable that exercises the public
 C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
-LZSS variant 1 can be selected explicitly. Both use no entropy layer:
+LZSS variant 1 and LZ78 variant 1 can be selected explicitly. All three use no
+entropy layer:
 
 ```console
 marc encode input.bin output.marc
 marc decode output.marc restored.bin
 marc encode --codec lzss input.bin output.marc
 marc decode --codec lzss output.marc restored.bin
+marc encode --codec lz78 input.bin output.marc
+marc decode --codec lz78 output.marc restored.bin
 ```
 
-Use the same codec selection for decode that was used for encode. An explicit
-`--codec lz77` is equivalent to omitting the option.
+Use the same codec selection (`lz77`, `lzss`, or `lz78`) for decode that was
+used for encode. An explicit `--codec lz77` is equivalent to omitting the
+option.
 
 The destination and its `.tmp` staging path must not already exist. A successful
 operation renames the staging file; a failed operation removes it, so malformed
@@ -60,7 +64,7 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for LZ77 or LZSS. See
+and peak caller-owned codec workspace for LZ77, LZSS, or LZ78. See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 
 ## Fuzzing

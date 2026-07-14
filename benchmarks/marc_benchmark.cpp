@@ -23,6 +23,7 @@ constexpr std::uint64_t stream_prefix_size = 80;
 enum class Codec {
     lz77,
     lzss,
+    lz78,
 };
 
 struct TransformDeleter {
@@ -37,12 +38,15 @@ struct CodecConfig {
     Codec codec{};
     marc_lz77_config lz77{};
     marc_lzss_config lzss{};
+    marc_lz78_config lz78{};
 };
 
 struct Workspace {
     marc_workspace_requirements requirements{};
     std::vector<std::uint8_t> primary{};
     std::vector<std::uint8_t> secondary{};
+    std::vector<std::uint8_t> views_storage{};
+    std::uint8_t* views{};
 };
 
 struct Measurement {
@@ -51,11 +55,15 @@ struct Measurement {
 };
 
 [[nodiscard]] const char* codec_name(const Codec codec) noexcept {
-    return codec == Codec::lz77 ? "lz77" : "lzss";
+    if (codec == Codec::lz77) return "lz77";
+    if (codec == Codec::lzss) return "lzss";
+    return "lz78";
 }
 
 [[nodiscard]] std::uint64_t payload_factor(const Codec codec) noexcept {
-    return codec == Codec::lz77 ? UINT64_C(16) : UINT64_C(2);
+    if (codec == Codec::lz77) return UINT64_C(16);
+    if (codec == Codec::lzss) return UINT64_C(2);
+    return UINT64_C(8);
 }
 
 [[nodiscard]] bool configure(const Codec codec, const marc_direction direction,
@@ -77,7 +85,7 @@ struct Measurement {
         result.lz77.max_internal_buffered_bytes = maximum_buffered;
         result.lz77.max_lz_distance = UINT64_C(1) << 16;
         result.lz77.max_lz_match_length = 258;
-    } else {
+    } else if (codec == Codec::lzss) {
         if (marc_lzss_config_init(direction, &result.lzss) != MARC_STATUS_OK)
             return false;
         result.lzss.original_size = original_size;
@@ -88,6 +96,16 @@ struct Measurement {
         result.lzss.max_internal_buffered_bytes = maximum_buffered;
         result.lzss.max_lz_distance = UINT64_C(1) << 16;
         result.lzss.max_lz_match_length = 258;
+    } else {
+        if (marc_lz78_config_init(direction, &result.lz78) != MARC_STATUS_OK)
+            return false;
+        result.lz78.original_size = original_size;
+        result.lz78.frame_size = static_cast<std::uint32_t>(frame_size);
+        result.lz78.max_frame_size = frame_size;
+        result.lz78.max_compressed_payload_size = maximum_payload;
+        result.lz78.max_dictionary_serialized_size = maximum_payload;
+        result.lz78.max_internal_buffered_bytes = UINT64_C(64) << 20;
+        result.lz78.max_dictionary_entries = result.lz78.maximum_entries;
     }
     return true;
 }
@@ -95,9 +113,11 @@ struct Measurement {
 [[nodiscard]] marc_status query_workspace(
     const CodecConfig& config,
     marc_workspace_requirements& requirements) noexcept {
-    return config.codec == Codec::lz77
-        ? marc_lz77_workspace_requirements(&config.lz77, &requirements)
-        : marc_lzss_workspace_requirements(&config.lzss, &requirements);
+    if (config.codec == Codec::lz77)
+        return marc_lz77_workspace_requirements(&config.lz77, &requirements);
+    if (config.codec == Codec::lzss)
+        return marc_lzss_workspace_requirements(&config.lzss, &requirements);
+    return marc_lz78_workspace_requirements(&config.lz78, &requirements);
 }
 
 [[nodiscard]] marc_status create_transform(
@@ -107,9 +127,14 @@ struct Measurement {
                               workspace.primary.size()};
     const marc_buffer secondary{workspace.secondary.data(),
                                 workspace.secondary.size()};
-    return config.codec == Codec::lz77
-        ? marc_lz77_create(&config.lz77, primary, secondary, transform)
-        : marc_lzss_create(&config.lzss, primary, secondary, transform);
+    const marc_buffer views{workspace.views,
+                            workspace.requirements.views_bytes};
+    if (config.codec == Codec::lz77)
+        return marc_lz77_create(&config.lz77, primary, secondary, transform);
+    if (config.codec == Codec::lzss)
+        return marc_lzss_create(&config.lzss, primary, secondary, transform);
+    return marc_lz78_create(
+        &config.lz78, primary, secondary, views, transform);
 }
 
 [[nodiscard]] bool prepare_workspace(const CodecConfig& config,
@@ -123,6 +148,23 @@ struct Measurement {
     }
     workspace.primary.resize(workspace.requirements.primary_bytes);
     workspace.secondary.resize(workspace.requirements.secondary_bytes);
+    if (workspace.requirements.views_bytes != 0) {
+        const auto alignment = workspace.requirements.views_alignment;
+        if (alignment == 0
+            || workspace.requirements.views_bytes
+                   > std::numeric_limits<std::size_t>::max()
+                       - (alignment - 1)) {
+            std::cerr << "views workspace size overflow\n";
+            return false;
+        }
+        workspace.views_storage.resize(
+            workspace.requirements.views_bytes + alignment - 1);
+        const auto address = reinterpret_cast<std::uintptr_t>(
+            workspace.views_storage.data());
+        const auto remainder = address % alignment;
+        workspace.views = workspace.views_storage.data()
+            + (remainder == 0 ? 0 : alignment - remainder);
+    }
     return true;
 }
 
@@ -234,7 +276,7 @@ struct Measurement {
 }
 
 void print_usage() {
-    std::cerr << "usage: marc_benchmark <lz77|lzss> <input> [iterations]\n";
+    std::cerr << "usage: marc_benchmark <lz77|lzss|lz78> <input> [iterations]\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -288,12 +330,16 @@ void print_usage() {
         static_cast<std::uint64_t>(
             encoder_workspace.requirements.primary_bytes)
         + static_cast<std::uint64_t>(
-            encoder_workspace.requirements.secondary_bytes);
+            encoder_workspace.requirements.secondary_bytes)
+        + static_cast<std::uint64_t>(
+            encoder_workspace.requirements.views_bytes);
     const auto decoder_workspace_bytes =
         static_cast<std::uint64_t>(
             decoder_workspace.requirements.primary_bytes)
         + static_cast<std::uint64_t>(
-            decoder_workspace.requirements.secondary_bytes);
+            decoder_workspace.requirements.secondary_bytes)
+        + static_cast<std::uint64_t>(
+            decoder_workspace.requirements.views_bytes);
     const auto ratio = input.empty() ? 0.0
         : static_cast<double>(encoded_size) / static_cast<double>(input.size());
     std::cout << std::fixed << std::setprecision(3)
@@ -310,10 +356,14 @@ void print_usage() {
               << encoder_workspace.requirements.primary_bytes << '\n'
               << "encoder_secondary_workspace_bytes="
               << encoder_workspace.requirements.secondary_bytes << '\n'
+              << "encoder_views_workspace_bytes="
+              << encoder_workspace.requirements.views_bytes << '\n'
               << "decoder_primary_workspace_bytes="
               << decoder_workspace.requirements.primary_bytes << '\n'
               << "decoder_secondary_workspace_bytes="
               << decoder_workspace.requirements.secondary_bytes << '\n'
+              << "decoder_views_workspace_bytes="
+              << decoder_workspace.requirements.views_bytes << '\n'
               << "codec_peak_workspace_bytes="
               << std::max(encoder_workspace_bytes, decoder_workspace_bytes)
               << '\n';
@@ -331,6 +381,7 @@ int main(const int argc, const char* const argv[]) {
     const std::string_view name{argv[1]};
     if (name == "lz77") codec = Codec::lz77;
     else if (name == "lzss") codec = Codec::lzss;
+    else if (name == "lz78") codec = Codec::lz78;
     else {
         print_usage();
         return 2;

@@ -277,6 +277,13 @@ handle and compare all six bytes. The encoder query reports three raw bytes, an
 Reject a deliberately misaligned phrase region, nonzero reserved configuration,
 and a zero local dictionary-entry limit.
 
+Run the existing CLI overwrite, malformed-input, empty-input, and file
+round-trip script with explicit codec `lz78`. The generated stream must decode
+back to the exact repeated-text fixture and a rejected malformed stream must
+leave neither destination nor temporary file. Run one LZ78 benchmark smoke
+iteration over `README.md`; timing begins only around transform processing and
+the untimed preflight round trip must succeed first.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
