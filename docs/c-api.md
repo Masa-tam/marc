@@ -1,9 +1,10 @@
 # C API
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
-Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, and LZSS variant 1
-with known-size encoding and bounded, caller-owned workspace. All functions are
-`noexcept` in C++ translation units, and no C++ type appears in the ABI.
+Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, LZSS variant 1,
+and LZ78 variant 1 with known-size encoding and bounded, caller-owned
+workspace. All functions are `noexcept` in C++ translation units, and no C++
+type appears in the ABI.
 
 ## Lifecycle
 
@@ -11,7 +12,7 @@ with known-size encoding and bounded, caller-owned workspace. All functions are
    `marc_adaptive_huffman_config_init()` or
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`, or
-   `marc_lzss_config_init()` for encode or decode
+   `marc_lzss_config_init()`, or `marc_lz78_config_init()` for encode or decode
    direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
@@ -44,6 +45,11 @@ and one validated decoded frame.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.
+LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
+reserves one eight-byte token and at most one phrase record per raw byte; its
+decoder derives the payload and phrase capacities jointly from trusted local
+limits. The requirements query supplies direction-specific `views_bytes` and
+`views_alignment`; no private C++ record layout appears in the public ABI.
 
 ## Processing contract
 

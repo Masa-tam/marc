@@ -483,6 +483,15 @@ if(MARC_BUILD_TESTS)
     endif()
     add_test(NAME marc_lzss_c_api_tests COMMAND marc_lzss_c_api_tests)
 
+    add_executable(marc_lz78_c_api_tests tests/lz78_c_api_tests.c)
+    target_compile_features(marc_lz78_c_api_tests PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_lz78_c_api_tests PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_lz78_c_api_tests PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_lz78_c_api_tests COMMAND marc_lz78_c_api_tests)
+
     if(TARGET marc_cli)
         add_test(NAME marc_cli_lz77_round_trip
             COMMAND ${CMAKE_COMMAND}

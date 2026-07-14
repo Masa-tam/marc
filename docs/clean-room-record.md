@@ -1607,3 +1607,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: construct the canonical LZ78/None profile
   and calculate bounded encoder and decoder workspaces before processing data.
 - Similarity review: no external profile or allocation logic was compared.
+
+## 2026-07-14 - LZ78 C ABI integration
+
+- Authoring method: mapped marc's existing opaque transform lifecycle onto the
+  independently implemented LZ78 profile and outer streaming transforms.
+- References used: repository public C ABI conventions, LZ78 profile,
+  streaming encoder/decoder, status mapping, and reset-stream vector only.
+- Known implementations intentionally not consulted: external LZ78 C APIs,
+  wrappers, allocation interfaces, source, tests, and naming schemes.
+- Independent decisions: additive ABI version 1 entry points; separate encoder
+  parameter and decoder limit; opaque aligned phrase workspace; no allocator
+  callback; canonical two-frame C round trip; explicit misalignment rejection.
+- Generated-code task description: expose known-size LZ78 encode and decode to
+  C callers without leaking C++ types or exceptions across the ABI.
+- Similarity review: no external C ABI layout or wrapper logic was compared.

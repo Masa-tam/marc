@@ -1513,3 +1513,20 @@ bound: header, payload, at least one decoded byte, and the phrase records
 implied by complete eight-byte tokens must fit simultaneously. Cap phrase
 records by the local dictionary-entry limit and the format's 32-bit entry
 space. Stream-supplied parameters never enlarge these local requirements.
+
+## DD-095: The LZ78 C ABI uses the opaque aligned views workspace
+
+- Date: 2026-07-14
+- Status: accepted
+
+Expose LZ78 variant 1 through the existing config, workspace-query, create,
+process, and destroy lifecycle. Keep encoder and decoder phrase records private
+by reporting only their direction-specific byte count and alignment through
+`marc_workspace_requirements.views_*`. The create function validates size and
+alignment before constructing a transform over caller-owned memory.
+
+The C configuration carries the encoder's `maximum_entries` parameter and the
+decoder's trusted `max_dictionary_entries` limit separately. Decoder workspace
+calculation ignores the encoder parameter field and remains a function only of
+local limits. Adding the new config type and entry points is additive within
+ABI version 1 and does not alter existing structures or function signatures.

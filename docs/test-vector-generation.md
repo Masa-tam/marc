@@ -270,6 +270,13 @@ fail the same inequality. On the current MSVC x64 ABI a phrase record occupies
 16 bytes, so the boundary is 47 payload bytes and five phrase records; the
 sixth record introduced at 48 payload bytes exceeds the limit.
 
+For the LZ78 C ABI, encode six `A` bytes in two three-byte frames and require
+the canonical 224-byte stream, then decode it through a separately initialized
+handle and compare all six bytes. The encoder query reports three raw bytes, an
+80-byte worst-case complete frame, and a nonempty aligned opaque phrase region.
+Reject a deliberately misaligned phrase region, nonzero reserved configuration,
+and a zero local dictionary-entry limit.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
