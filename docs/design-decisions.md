@@ -1547,3 +1547,21 @@ explicitly aligned pointer from the reported requirement; do not rely on the
 incidental alignment of a byte array or `vector<uint8_t>`. CLI output retains
 the existing temporary-file commit semantics. Benchmarks include views bytes in
 peak workspace reporting and verify a complete round trip before timing.
+
+## DD-097: LZ78 fuzzing is bounded and paired with permanent regressions
+
+- Date: 2026-07-14
+- Status: accepted
+
+Exercise the strict LZ78 stream decoder and outer frame-streaming decoder in one
+libFuzzer entry point. Fix total output at 4 KiB, frame output at 1 KiB,
+serialized payload at 4 KiB, and phrase workspace at 512 records. Derive input
+and output chunk sizes from the candidate bytes and cap process calls at input
+length plus a fixed output margin so a stalled state becomes a reproducible
+failure rather than an unbounded run.
+
+Normal MSVC builds compile the harness without invoking a fuzz runtime. Keep
+canonical truncation, token-field corruption, extreme frame lengths, and
+cross-frame phrase references as ordinary GoogleTest regressions with atomic
+one-shot output expectations. Sanitizer fuzz execution remains an explicit,
+separate Clang workflow with a bounded maximum input length.

@@ -1637,3 +1637,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: add real-file LZ78 CLI round trips and
   dependency-free encode/decode measurement through the public C interface.
 - Similarity review: no external CLI or benchmark control flow was compared.
+
+## 2026-07-14 - Bounded LZ78 decoder fuzz harness
+
+- Authoring method: applied marc's existing bounded decoder-testing policy to
+  its independently implemented LZ78 strict and outer streaming paths.
+- References used: repository process invariants, LZ78 limits and workspaces,
+  canonical reset stream, and existing repository fuzzing policy only.
+- Known implementations intentionally not consulted: external LZ78 fuzz
+  targets, dictionaries, mutation strategies, corpora, source, or findings.
+- Independent decisions: 4 KiB total output and payload caps; 1 KiB frame cap;
+  512 phrase records; input-derived chunk schedule; finite call guard; compile-
+  only MSVC target; fixed atomicity regressions; hand-authored truncated magic.
+- Generated-code task description: add a bounded defensive LZ78 decoder harness
+  and permanent malformed-stream tests without running an open-ended campaign.
+- Similarity review: no external fuzz harness structure or corpus was compared.

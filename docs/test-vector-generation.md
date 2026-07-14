@@ -284,6 +284,13 @@ leave neither destination nor temporary file. Run one LZ78 benchmark smoke
 iteration over `README.md`; timing begins only around transform processing and
 the untimed preflight round trip must succeed first.
 
+For permanent LZ78 fuzz regressions, truncate the canonical 224-byte reset
+stream at every earlier byte and require one-shot decode to leave all raw output
+untouched. Mutate the first token's tag, reserved bytes, and root reference;
+replace the first frame's three size fields with all ones; and reference phrase
+1 from the first token of the reset second frame. Every case must fail without
+publishing caller-visible stream metadata or raw bytes.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

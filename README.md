@@ -70,8 +70,8 @@ and peak caller-owned codec workspace for LZ77, LZSS, or LZ78. See
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-the bounded LZSS stream-decoder fuzz target. Build and corpus instructions are
-in [`docs/fuzzing.md`](docs/fuzzing.md).
+the bounded LZSS and LZ78 stream-decoder fuzz targets. Build and corpus
+instructions are in [`docs/fuzzing.md`](docs/fuzzing.md).
 
 The standalone project in `examples/` demonstrates installed-package use. See
 [`docs/c-api.md`](docs/c-api.md) for the C transform lifecycle and
