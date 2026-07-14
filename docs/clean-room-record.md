@@ -1928,3 +1928,19 @@ no legal guarantee of non-infringement.
   codecs and the decoder-side bounded parsing structures before decoding.
 - Similarity review: structure follows existing marc transactional component
   conventions; no external LZD expression or control flow was compared.
+
+## 2026-07-15 - LZD atomic reference decoder
+
+- Authoring method: expanded only the repository's validated acyclic phrase
+  view through a newly written bounded iterative traversal.
+- References used: repository LZD format, validator, local limit contract,
+  checked arithmetic, hand vectors, and atomic decoder conventions.
+- Known implementations intentionally not consulted: external LZD decoders,
+  source, pseudocode, tests, corpora, encoded streams, and containers.
+- Independent decisions: validate before publication; caller-owned `uint32`
+  stack; right-before-left traversal; phrase-count-plus-one stack bound; input,
+  phrase-record, and stack aggregate accounting; stable internal-error result.
+- Generated-code task description: implement and test a strict atomic LZD
+  reference decoder without recursion or unbounded allocation.
+- Similarity review: traversal and failure handling follow marc's own validated
+  grammar and transactional API patterns; no external decoder was compared.

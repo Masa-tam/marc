@@ -157,8 +157,14 @@ expanded length in caller-owned workspace, and reports the stable failing token
 and byte offset. Dictionary freeze preserves the existing reference namespace
 without allocating further records. An absent right reference is accepted only
 on the last token when its left expansion reaches the declared raw extent.
-Phrase expansion and raw-byte publication remain decoder work for a later
-step; this foundation does not mark the LZD codec complete.
+The atomic reference decoder completes validation and all capacity checks
+before publishing output, then expands the acyclic grammar without recursion
+through a caller-owned reference stack. Pushing the right reference before the
+left preserves byte order; at most the stored phrase count plus one stack
+entries are required. Serialized input, phrase records, and expansion stack
+are checked together against the aggregate internal-buffer limit. The encoder
+and streaming wrapper remain later LZD work, so this does not mark the codec
+complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

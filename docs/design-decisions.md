@@ -1902,3 +1902,25 @@ truncation at the first incomplete token boundary and retain token index, byte
 offset, committed logical output length, format category, and stable validation
 category on failure. Reject forward references before any later decoder can
 traverse them, making the stored grammar acyclic by construction.
+
+## DD-115: LZD reference decoding validates before atomic expansion
+
+- Date: 2026-07-15
+- Status: accepted
+
+Run the strict validator across the complete token region before writing any
+raw byte. Reject insufficient output capacity, phrase workspace, expansion
+workspace, or configured memory limits before publication, so these expected
+failures leave the caller's output unchanged. Reusing the validator during
+reference decoding is preferable to maintaining a second subtly different
+parser while the clear implementation remains the priority.
+
+Expand validated references iteratively with a caller-owned `uint32` stack.
+Push a phrase's right reference before its left reference so last-in-first-out
+processing preserves logical byte order. A grammar containing `N` stored
+phrases needs at most `N + 1` stack entries because each expansion replaces
+one phrase reference with two strictly earlier references. Include serialized
+input, validator phrase records, and this expansion stack in the checked
+aggregate internal-buffer limit. Treat a contradiction in already-validated
+grammar metadata as an internal error rather than reading or writing outside
+the supplied spans.

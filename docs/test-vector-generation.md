@@ -454,6 +454,15 @@ For checked length overflow, begin with `(A,A)`, then emit 63 tokens whose two
 components both reference the phrase inserted immediately before. Token 63
 attempts to add two lengths of `2^63` and must fail before insertion.
 
+LZD decoder tests expand the hand vectors and the published illustrative
+factorization above without consulting an encoder. An iterative-depth vector
+uses `(A,A)`, `(256,B)`, `(257,C)`, and `(258,258)`, whose four token outputs
+concatenate to `AAAABAABCAABC`; it exercises nested left references and the
+right-before-left stack rule. A frozen-dictionary vector verifies that later
+tokens still reference the last stored phrase. Invalid input, short output,
+short phrase workspace, short expansion workspace, and aggregate memory-limit
+failures each begin with a nonzero output pattern and verify atomic rejection.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
