@@ -24,6 +24,7 @@ enum class Codec {
     lz77,
     lzss,
     lz78,
+    lzw,
 };
 
 struct TransformDeleter {
@@ -39,6 +40,7 @@ struct CodecConfig {
     marc_lz77_config lz77{};
     marc_lzss_config lzss{};
     marc_lz78_config lz78{};
+    marc_lzw_config lzw{};
 };
 
 struct Workspace {
@@ -57,13 +59,15 @@ struct Measurement {
 [[nodiscard]] const char* codec_name(const Codec codec) noexcept {
     if (codec == Codec::lz77) return "lz77";
     if (codec == Codec::lzss) return "lzss";
-    return "lz78";
+    if (codec == Codec::lz78) return "lz78";
+    return "lzw";
 }
 
 [[nodiscard]] std::uint64_t payload_factor(const Codec codec) noexcept {
     if (codec == Codec::lz77) return UINT64_C(16);
     if (codec == Codec::lzss) return UINT64_C(2);
-    return UINT64_C(8);
+    if (codec == Codec::lz78) return UINT64_C(8);
+    return UINT64_C(2);
 }
 
 [[nodiscard]] bool configure(const Codec codec, const marc_direction direction,
@@ -96,7 +100,7 @@ struct Measurement {
         result.lzss.max_internal_buffered_bytes = maximum_buffered;
         result.lzss.max_lz_distance = UINT64_C(1) << 16;
         result.lzss.max_lz_match_length = 258;
-    } else {
+    } else if (codec == Codec::lz78) {
         if (marc_lz78_config_init(direction, &result.lz78) != MARC_STATUS_OK)
             return false;
         result.lz78.original_size = original_size;
@@ -106,6 +110,17 @@ struct Measurement {
         result.lz78.max_dictionary_serialized_size = maximum_payload;
         result.lz78.max_internal_buffered_bytes = UINT64_C(64) << 20;
         result.lz78.max_dictionary_entries = result.lz78.maximum_entries;
+    } else {
+        if (marc_lzw_config_init(direction, &result.lzw) != MARC_STATUS_OK)
+            return false;
+        result.lzw.original_size = original_size;
+        result.lzw.frame_size = static_cast<std::uint32_t>(frame_size);
+        result.lzw.max_frame_size = frame_size;
+        result.lzw.max_compressed_payload_size = maximum_payload;
+        result.lzw.max_dictionary_serialized_size = maximum_payload;
+        result.lzw.max_internal_buffered_bytes = UINT64_C(64) << 20;
+        result.lzw.max_dictionary_entries =
+            (UINT64_C(1) << result.lzw.maximum_code_width) - 256;
     }
     return true;
 }
@@ -117,7 +132,9 @@ struct Measurement {
         return marc_lz77_workspace_requirements(&config.lz77, &requirements);
     if (config.codec == Codec::lzss)
         return marc_lzss_workspace_requirements(&config.lzss, &requirements);
-    return marc_lz78_workspace_requirements(&config.lz78, &requirements);
+    if (config.codec == Codec::lz78)
+        return marc_lz78_workspace_requirements(&config.lz78, &requirements);
+    return marc_lzw_workspace_requirements(&config.lzw, &requirements);
 }
 
 [[nodiscard]] marc_status create_transform(
@@ -133,8 +150,11 @@ struct Measurement {
         return marc_lz77_create(&config.lz77, primary, secondary, transform);
     if (config.codec == Codec::lzss)
         return marc_lzss_create(&config.lzss, primary, secondary, transform);
-    return marc_lz78_create(
-        &config.lz78, primary, secondary, views, transform);
+    if (config.codec == Codec::lz78)
+        return marc_lz78_create(
+            &config.lz78, primary, secondary, views, transform);
+    return marc_lzw_create(
+        &config.lzw, primary, secondary, views, transform);
 }
 
 [[nodiscard]] bool prepare_workspace(const CodecConfig& config,
@@ -276,7 +296,7 @@ struct Measurement {
 }
 
 void print_usage() {
-    std::cerr << "usage: marc_benchmark <lz77|lzss|lz78> <input> [iterations]\n";
+    std::cerr << "usage: marc_benchmark <lz77|lzss|lz78|lzw> <input> [iterations]\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -382,6 +402,7 @@ int main(const int argc, const char* const argv[]) {
     if (name == "lz77") codec = Codec::lz77;
     else if (name == "lzss") codec = Codec::lzss;
     else if (name == "lz78") codec = Codec::lz78;
+    else if (name == "lzw") codec = Codec::lzw;
     else {
         print_usage();
         return 2;

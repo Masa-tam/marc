@@ -1849,3 +1849,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: expose bounded known-size LZW encode and
   decode through marc's allocator-free workspace-oriented C ABI.
 - Similarity review: no external ABI structure or control flow was compared.
+
+## 2026-07-15 - LZW CLI and benchmark integration
+
+- Authoring method: extended marc's existing explicit codec dispatch and
+  measurement harness through the public LZW C ABI only.
+- References used: repository CLI transaction policy, benchmark contract, LZW
+  C workspace query, generic round-trip script, and README fixture only.
+- Known implementations intentionally not consulted: external LZW CLIs,
+  benchmark drivers, allocation wrappers, source, reports, and option syntax.
+- Independent decisions: explicit `lzw` selector; unchanged LZ77 default;
+  1 MiB/16-bit/65,280-entry profile; 64 MiB aggregate policy; generic
+  transactional files; verified pre-timing round trip; workspace reporting.
+- Generated-code task description: add real-file LZW CLI round trips and
+  C-ABI-only benchmark smoke coverage with bounded caller workspace.
+- Similarity review: no external CLI or benchmark control flow was compared.

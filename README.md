@@ -4,7 +4,7 @@
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. The currently implemented public profiles are the
 version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
-LZ77, and LZSS codecs, exposed through a small C ABI. The format and API are
+LZ77, LZSS, LZ78, and LZW codecs, exposed through a small C ABI. The format and API are
 still under development and version 0.x streams are not yet promised long-term
 compatibility.
 
@@ -30,7 +30,7 @@ git submodule update --init --recursive
 
 Top-level builds produce a minimal `marc` executable that exercises the public
 C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
-LZSS variant 1 and LZ78 variant 1 can be selected explicitly. All three use no
+LZSS, LZ78, and LZW variant 1 can be selected explicitly. All four use no
 entropy layer:
 
 ```console
@@ -40,9 +40,11 @@ marc encode --codec lzss input.bin output.marc
 marc decode --codec lzss output.marc restored.bin
 marc encode --codec lz78 input.bin output.marc
 marc decode --codec lz78 output.marc restored.bin
+marc encode --codec lzw input.bin output.marc
+marc decode --codec lzw output.marc restored.bin
 ```
 
-Use the same codec selection (`lz77`, `lzss`, or `lz78`) for decode that was
+Use the same codec selection (`lz77`, `lzss`, `lz78`, or `lzw`) for decode that was
 used for encode. An explicit `--codec lz77` is equivalent to omitting the
 option.
 
@@ -64,7 +66,7 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for LZ77, LZSS, or LZ78. See
+and peak caller-owned codec workspace for LZ77, LZSS, LZ78, or LZW. See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 
 ## Fuzzing

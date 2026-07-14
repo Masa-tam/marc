@@ -397,6 +397,12 @@ exact recovery. Verify default maximum width 16, public structure metadata,
 nonzero aligned phrase workspace, misalignment rejection, reserved-field and
 zero-limit rejection, and an invalid encoder code width.
 
+For CLI integration, run the generic nonempty, overwrite-rejection, malformed,
+and empty-file round-trip script with explicit codec `lzw`; successful output
+must reproduce the source and failed decode must leave no destination or
+temporary file. Run one LZW benchmark smoke iteration over README input and
+require its internal C-ABI round-trip verification to succeed.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

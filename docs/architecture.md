@@ -139,6 +139,9 @@ and aggregate local limits without trusting an unparsed stream parameter.
 The C ABI exposes those calculations through an initialized plain-C config,
 direction-specific workspace query, and opaque transform factory. Only byte
 counts and alignment cross the ABI; private LZW phrase-record layouts do not.
+The CLI and benchmark consume only that public ABI. Their LZW profile uses a
+1 MiB frame, width 16, the matching 65,280-entry local decoder ceiling, and
+bounded aligned workspace supplied by the application.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

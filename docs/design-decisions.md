@@ -1802,3 +1802,21 @@ direction. Report encoder or decoder phrase storage only as opaque
 The factory places the selected outer streaming transform behind the existing
 opaque handle with `nothrow` allocation. Decoder stream parameters remain
 authoritative format input and the config maximum code width is encode-only.
+
+## DD-110: CLI and benchmarks consume LZW only through the C ABI
+
+- Date: 2026-07-15
+- Status: accepted
+
+Add `lzw` to the explicit CLI codec selector and benchmark driver without
+including private LZW headers. Use a 1 MiB raw frame, maximum code width 16,
+two payload bytes per raw byte as the conservative encoder bound, a 65,280
+entry local dictionary ceiling, and a 64 MiB aggregate workspace policy. Keep
+LZ77 as the backward-compatible CLI default and require explicit matching
+codec selection for decode.
+
+Reuse the existing transactional temporary-file workflow and generic process
+loop, so partial input/output and failures retain the same behavior. Benchmark
+the canonical full stream through the C ABI, verify a round trip before timing,
+and report compression ratio, directional throughput, direction-specific
+workspace components, and their maximum without calling LZW internals.

@@ -221,6 +221,10 @@ if(MARC_BUILD_BENCHMARKS)
             COMMAND marc_benchmark lz78 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lz78_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lzw_smoke
+            COMMAND marc_benchmark lzw ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzw_smoke
+            PROPERTIES LABELS benchmark-smoke)
     endif()
 endif()
 
@@ -575,6 +579,12 @@ if(MARC_BUILD_TESTS)
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
                 "-DCLI_CODEC=lz78"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lz78-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzw_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzw"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzw-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
     endif()
 endif()
