@@ -119,7 +119,10 @@ bytes without accepting later input. The LZW plus entropy None frame adapter
 wraps one nonempty code stream in the generic 56-byte frame header, keeps the
 dictionary and compressed extents identical, and exposes separate plan,
 encode, validate, and atomic decode operations. It accepts only the exact
-declared frame extent and resets the LZW dictionary at that boundary.
+declared frame extent and resets the LZW dictionary at that boundary. The
+one-shot stream adapter prepends the generic stream header and one 16-byte LZW
+parameter region, partitions known-size raw input by the configured frame
+extent, and validates every frame before publishing any decoded stream bytes.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

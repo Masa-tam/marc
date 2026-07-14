@@ -1707,3 +1707,20 @@ entire header and payload extent before decoding; reference decode preserves
 its atomic publication guarantee. Reject trailing frame bytes, unsupported
 pipelines, insufficient workspaces, and malformed packed codes with stable
 layered errors. The dictionary is frame-local and is never shared across calls.
+
+## DD-105: LZW one-shot streams validate every frame before publication
+
+- Date: 2026-07-15
+- Status: accepted
+
+Serialize one generic stream header and one LZW parameter region, followed by
+zero or more LZW plus None frames. Partition nonempty raw input at the declared
+frame size, number frames from zero, and reset the implicit alphabet and phrase
+dictionary for every frame. Empty input contains only the 80-byte prefix.
+
+Planning requires the raw input size to equal the declared original size and
+adds every exact frame extent with checked arithmetic. Decoding parses stream
+configuration transactionally, scans and validates every frame and the exact
+final stream extent, then performs a second scan to publish raw bytes. Thus a
+malformed later frame cannot expose output from an earlier valid frame, and
+the caller's stream and parameter outputs remain unchanged on all failures.

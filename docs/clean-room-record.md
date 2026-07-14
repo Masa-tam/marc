@@ -1770,3 +1770,18 @@ no legal guarantee of non-infringement.
   generic frame header and validate or decode it transactionally.
 - Similarity review: no external container structure or control flow was
   compared.
+
+## 2026-07-15 - LZW one-shot stream adapter
+
+- Authoring method: composed marc's stream prefix, LZW frame adapter, and
+  repository-wide transactional one-shot decode policy.
+- References used: repository stream and frame formats, LZW parameter codec,
+  LZW frame API, checked arithmetic, limits, and repository-owned vectors only.
+- Known implementations intentionally not consulted: external LZW containers,
+  multi-frame codecs, source, pseudocode, tests, and layout conventions.
+- Independent decisions: one parameter prefix; deterministic frame partition;
+  frame-local reset; validation pass before output pass; unchanged parsed
+  configuration on error; exact trailing-data rejection.
+- Generated-code task description: plan, encode, validate, and atomically
+  decode a known-size sequence of independently reset LZW plus None frames.
+- Similarity review: no external stream structure or control flow was compared.

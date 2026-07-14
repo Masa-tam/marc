@@ -356,6 +356,14 @@ first code, a truncated frame, trailing bytes, an unexpected sequence, an
 empty raw frame, and an unsupported entropy selection fail without publishing
 raw output.
 
+For the one-shot LZW stream adapter, split six `A` bytes into two three-byte
+frames. Require an 80-byte prefix, two identical 59-byte reset frames, a
+198-byte total stream, and exact round trip. Empty input must contain only the
+prefix. Corrupt the first code of the second frame and require that neither raw
+output nor parsed configuration is published. Exercise short encoded and raw
+output, truncation, trailing bytes, invalid parameters, insufficient encoder
+and decoder phrase workspaces, and declared input-size mismatch.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and
