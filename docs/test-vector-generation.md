@@ -445,6 +445,15 @@ The published illustrative input without its theoretical sentinel,
 `(a,b), (b,a), (256,256), (a,256), (a,absent)`. The one-byte `A` frame is the
 generic 56-byte frame header followed by `41 00 00 00 FF FF FF FF`.
 
+Negative LZD validator vectors cover every incomplete-token remainder, absent
+left, a phrase reference one beyond the current dictionary, absent right before
+the final token or before exact raw completion, a pair crossing raw extent,
+tokens after raw completion, premature token-stream end, short phrase
+workspace, serialized/frame/aggregate local limits, and dictionary freeze.
+For checked length overflow, begin with `(A,A)`, then emit 63 tokens whose two
+components both reference the phrase inserted immediately before. Token 63
+attempts to add two lengths of `2^63` and must fail before insertion.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

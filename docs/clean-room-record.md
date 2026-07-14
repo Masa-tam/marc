@@ -1912,3 +1912,19 @@ no legal guarantee of non-infringement.
   malformed-stream, bound, and hand-vector rules, before implementation.
 - Similarity review: algorithmic terminology follows cited papers; the byte
   format, parameter block, terminal rule, limits, and vectors are marc-specific.
+
+## 2026-07-15 - LZD parameter, token, and bounded validation foundation
+
+- Authoring method: translated only marc's accepted LZD variant 1 format into
+  transactional serializers and a non-producing bounded validator.
+- References used: repository LZD format, endian helpers, checked arithmetic,
+  local limit contract, process safety requirements, and repository vectors.
+- Known implementations intentionally not consulted: external LZD parsers,
+  validators, decoders, source, pseudocode, tests, corpora, and containers.
+- Independent decisions: caller-owned pair records; conservative workspace
+  count; aggregate byte accounting; stable token offsets; 64-token overflow
+  construction; no recursion and no raw output during validation.
+- Generated-code task description: implement and test LZD parameter/token
+  codecs and the decoder-side bounded parsing structures before decoding.
+- Similarity review: structure follows existing marc transactional component
+  conventions; no external LZD expression or control flow was compared.

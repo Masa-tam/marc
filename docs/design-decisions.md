@@ -1883,3 +1883,22 @@ phrases. Store phrase lengths with checked arithmetic and expand the acyclic
 binary grammar with a bounded explicit stack rather than recursion. Fixed
 eight-byte tokens give the checked worst-case bound
 `8 * ceil(raw_frame_size / 2)`.
+
+## DD-114: LZD validation builds a bounded acyclic phrase view
+
+- Date: 2026-07-15
+- Status: accepted
+
+Parse parameter blocks and individual tokens transactionally: caller-visible
+objects change only after complete structural validation. Scan a full token
+region without producing raw output. For every right-present token below the
+configured freeze threshold, store its two already-valid references and
+checked expanded length in caller-owned `LzdPhraseEntry` workspace.
+
+Derive the conservative workspace count from complete eight-byte tokens and
+the configured phrase maximum. Count serialized input and phrase records
+together against the aggregate internal-buffer limit before scanning. Report
+truncation at the first incomplete token boundary and retain token index, byte
+offset, committed logical output length, format category, and stable validation
+category on failure. Reject forward references before any later decoder can
+traverse them, making the stored grammar acyclic by construction.

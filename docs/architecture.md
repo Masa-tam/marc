@@ -147,6 +147,19 @@ outer streaming decoders with width capped at 10, fixed caller workspaces, and
 a call-count guard. Ordinary builds compile this harness without executing it;
 permanent malformed cases remain normal deterministic tests.
 
+### LZD foundation
+
+LZD variant 1 begins with a transactional 16-byte parameter codec and fixed
+eight-byte reference-pair codec. The strict validator accepts no output buffer:
+it scans one complete token region, resolves only literals or earlier
+frame-local phrases, records each inserted binary production and checked
+expanded length in caller-owned workspace, and reports the stable failing token
+and byte offset. Dictionary freeze preserves the existing reference namespace
+without allocating further records. An absent right reference is accepted only
+on the last token when its left expansion reaches the declared raw extent.
+Phrase expansion and raw-byte publication remain decoder work for a later
+step; this foundation does not mark the LZD codec complete.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental
