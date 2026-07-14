@@ -123,6 +123,11 @@ declared frame extent and resets the LZW dictionary at that boundary. The
 one-shot stream adapter prepends the generic stream header and one 16-byte LZW
 parameter region, partitions known-size raw input by the configured frame
 extent, and validates every frame before publishing any decoded stream bytes.
+The outer streaming decoder accumulates the fixed prefix and one bounded
+serialized frame in caller storage, atomically decodes that frame into a
+caller-owned raw staging buffer, and drains it before accepting the next frame.
+Consequently an accepted frame is committed independently while later frame
+corruption remains locally detectable.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

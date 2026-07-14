@@ -1724,3 +1724,21 @@ configuration transactionally, scans and validates every frame and the exact
 final stream extent, then performs a second scan to publish raw bytes. Thus a
 malformed later frame cannot expose output from an earlier valid frame, and
 the caller's stream and parameter outputs remain unchanged on all failures.
+
+## DD-106: LZW outer streaming decode commits complete frames independently
+
+- Date: 2026-07-15
+- Status: accepted
+
+Collect the 80-byte stream prefix and each complete serialized LZW plus None
+frame across arbitrary input splits. Validate its header before accepting the
+body, require caller-owned storage for the exact serialized and raw frame
+extents plus the conservative LZW phrase metadata, and enforce their aggregate
+bytes against the internal-buffer limit before collecting the body.
+
+Decode one complete frame atomically into raw staging storage, then drain it
+through arbitrary output capacities before accepting another frame. A later
+malformed frame therefore cannot alter that frame's staging operation, but it
+does not retract bytes already committed from earlier frames. Retain EndInput
+while staged output drains, accept a later empty EndInput, reject trailing
+bytes and ResetBlock, and return EndOfStream only after final output drains.

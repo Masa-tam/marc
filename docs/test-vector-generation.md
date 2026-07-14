@@ -364,6 +364,14 @@ output nor parsed configuration is published. Exercise short encoded and raw
 output, truncation, trailing bytes, invalid parameters, insufficient encoder
 and decoder phrase workspaces, and declared input-size mismatch.
 
+Feed the same 198-byte two-frame LZW stream to the outer streaming decoder one
+input byte at a time with one-byte output capacity, and require exact recovery
+plus stable ended calls. Corrupt the first code in the second frame and require
+the first frame's three bytes to remain committed while no second-frame byte is
+published. Exercise short serialized-frame, decoded-frame, and phrase storage,
+an aggregate buffered limit one byte below the exact requirement, truncation,
+empty streams, trailing bytes, a later empty EndInput, and ResetBlock.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and

@@ -1785,3 +1785,20 @@ no legal guarantee of non-infringement.
 - Generated-code task description: plan, encode, validate, and atomically
   decode a known-size sequence of independently reset LZW plus None frames.
 - Similarity review: no external stream structure or control flow was compared.
+
+## 2026-07-15 - LZW outer frame-streaming decoder
+
+- Authoring method: composed marc's process state contract, generic headers,
+  LZW frame decoder, and caller-owned bounded staging policy.
+- References used: repository stream and frame formats, LZW frame API, process
+  invariants, checked arithmetic, limits, and repository-owned vectors only.
+- Known implementations intentionally not consulted: external LZW streaming
+  containers, source, state machines, buffering strategies, tests, and
+  pseudocode.
+- Independent decisions: split prefix and frame-header accumulators; exact
+  serialized-frame collection; atomic per-frame decode staging; drain before
+  next-frame input; retained EndInput; aggregate buffer accounting.
+- Generated-code task description: decode a split LZW plus None stream one
+  bounded frame at a time with arbitrary output capacity and stable errors.
+- Similarity review: no external streaming structure or control flow was
+  compared.
