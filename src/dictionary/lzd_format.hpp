@@ -48,6 +48,9 @@ enum class LzdFormatError : std::uint8_t {
     limit_exceeded,
 };
 
+[[nodiscard]] bool lzd_maximum_token_stream_size(
+    std::uint64_t raw_size, std::size_t& serialized_size) noexcept;
+
 [[nodiscard]] LzdFormatError validate_lzd_parameters(
     const LzdParameters& parameters,
     const core::DecoderLimits& limits) noexcept;

@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <cstring>
-#include <limits>
 
 namespace marc::dictionary::internal {
 namespace {
@@ -40,26 +39,11 @@ lzd_streaming_decoder_workspace_requirements(
     const std::uint64_t declared_frame_size,
     const LzdParameters& parameters) noexcept {
     LzdStreamingDecoderWorkspaceRequirements result{};
-    if (declared_frame_size
-        > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max()))
+    if (!lzd_maximum_token_stream_size(
+            declared_frame_size, result.encoded_bytes))
         return result;
-    std::uint64_t token_count = declared_frame_size / 2;
-    if ((declared_frame_size & 1U) != 0
-        && !core::checked_add(token_count, UINT64_C(1), token_count))
-        return result;
-    std::uint64_t encoded_bytes{};
-    if (!core::checked_multiply(
-            token_count, static_cast<std::uint64_t>(lzd_token_size),
-            encoded_bytes)
-        || encoded_bytes
-            > static_cast<std::uint64_t>(
-                std::numeric_limits<std::size_t>::max()))
-        return result;
-
-    result.encoded_bytes = static_cast<std::size_t>(encoded_bytes);
-    result.phrase_entries = std::min(
-        static_cast<std::size_t>(token_count),
-        static_cast<std::size_t>(parameters.maximum_entries));
+    result.phrase_entries = lzd_validation_workspace_entries(
+        result.encoded_bytes, parameters);
     result.expansion_entries = lzd_expansion_workspace_entries(
         result.phrase_entries, declared_frame_size != 0);
     result.decoded_bytes = static_cast<std::size_t>(declared_frame_size);

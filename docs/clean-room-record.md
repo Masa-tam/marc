@@ -1977,3 +1977,19 @@ no legal guarantee of non-infringement.
   decoder that publishes only complete validated frames under arbitrary splits.
 - Similarity review: state and error handling follow marc's own transform API;
   no external LZD streaming structure or control flow was compared.
+
+## 2026-07-15 - LZD deterministic streaming encoder
+
+- Authoring method: wrapped marc's independently written reference encoder in
+  the repository transform contract using bounded caller-owned frame storage.
+- References used: repository LZD format and shared extent bound, reference
+  encoder, core status and limit contracts, design decisions, and local vectors.
+- Known implementations intentionally not consulted: external LZD streaming
+  encoders, source, pseudocode, tests, corpora, streams, and containers.
+- Independent decisions: exact raw collection; conservative token allocation;
+  input-backed phrase workspace; construction-time aggregate validation; full-
+  frame early drain; EndInput retention; non-closing Flush behavior.
+- Generated-code task description: implement and test an LZD streaming encoder
+  whose bytes remain identical to the deterministic one-shot reference stream.
+- Similarity review: state transitions follow marc's own transform conventions;
+  no external LZD streaming expression or control flow was compared.

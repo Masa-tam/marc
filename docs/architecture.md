@@ -172,8 +172,11 @@ in caller-owned encoded storage, invokes the atomic reference decoder into a
 separate caller-owned raw frame, and drains only after complete validation.
 Its workspace query derives conservative encoded, phrase, expansion-stack,
 and decoded extents from the declared raw size; construction enforces their
-aggregate limit. The streaming encoder and outer profile remain later LZD
-work, so this does not mark the codec complete.
+aggregate limit. The streaming encoder similarly collects one exact raw frame,
+uses the reference planner and encoder, and drains canonical tokens from a
+caller-owned maximum token extent. Encoder and decoder workspace queries share
+one checked format-level `8 * ceil(raw_size / 2)` helper. The outer profile
+remains later LZD work, so this does not mark the codec complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

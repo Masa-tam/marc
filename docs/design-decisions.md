@@ -1967,3 +1967,24 @@ decoded extent beyond the local internal-buffer limit during construction.
 Reject input beyond the conservative encoded extent before consuming any of
 the offending call. Flush does not close a frame; `ResetBlock` remains
 unsupported because the outer frame owns LZD dictionary reset.
+
+## DD-118: LZD streaming encode preserves reference frame bytes
+
+- Date: 2026-07-15
+- Status: accepted
+
+Collect exactly the declared raw frame in caller-owned storage, then run the
+reference planner and encoder with caller-owned input-backed phrase records.
+Drain the resulting canonical token region across arbitrary output splits.
+This makes output independent of input and output chunking and permits a full
+frame to encode and drain before a later zero-byte `EndInput`. When terminal
+input accompanies the final raw bytes, retain it internally until all encoded
+bytes drain.
+
+Use a shared format helper for the checked `8 * ceil(raw_size / 2)` maximum
+token extent so encoder and decoder workspace calculations cannot diverge.
+Derive phrase records as `min(floor(raw_size / 2), maximum_entries)`. Validate
+raw storage, maximum encoded storage, phrase records, and their aggregate byte
+extent during construction before consuming input. Reject premature EndInput,
+bytes beyond the declared frame, and `ResetBlock`; Flush exposes no output for
+an incomplete frame and does not change the canonical parse.

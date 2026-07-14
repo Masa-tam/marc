@@ -1,8 +1,32 @@
 #include "dictionary/lzd_format.hpp"
 
+#include "core/checked_math.hpp"
 #include "core/endian.hpp"
 
+#include <limits>
+
 namespace marc::dictionary::internal {
+
+bool lzd_maximum_token_stream_size(
+    const std::uint64_t raw_size,
+    std::size_t& serialized_size) noexcept {
+    if (raw_size
+        > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max()))
+        return false;
+    std::uint64_t token_count = raw_size / 2;
+    if ((raw_size & 1U) != 0
+        && !core::checked_add(token_count, UINT64_C(1), token_count))
+        return false;
+    std::uint64_t extent{};
+    if (!core::checked_multiply(
+            token_count, static_cast<std::uint64_t>(lzd_token_size), extent)
+        || extent
+            > static_cast<std::uint64_t>(
+                std::numeric_limits<std::size_t>::max()))
+        return false;
+    serialized_size = static_cast<std::size_t>(extent);
+    return true;
+}
 
 LzdFormatError validate_lzd_parameters(
     const LzdParameters& parameters,

@@ -63,6 +63,21 @@ TEST(LzdFormat, AcceptsExactMaximumWithMatchingLocalLimit) {
               LzdFormatError::none);
 }
 
+TEST(LzdFormat, ComputesMaximumTokenExtentTransactionally) {
+    std::size_t extent = 99;
+    EXPECT_TRUE(lzd_maximum_token_stream_size(0, extent));
+    EXPECT_EQ(extent, 0U);
+    EXPECT_TRUE(lzd_maximum_token_stream_size(1, extent));
+    EXPECT_EQ(extent, 8U);
+    EXPECT_TRUE(lzd_maximum_token_stream_size(2, extent));
+    EXPECT_EQ(extent, 8U);
+    EXPECT_TRUE(lzd_maximum_token_stream_size(3, extent));
+    EXPECT_EQ(extent, 16U);
+    extent = 99;
+    EXPECT_FALSE(lzd_maximum_token_stream_size(UINT64_MAX, extent));
+    EXPECT_EQ(extent, 99U);
+}
+
 TEST(LzdFormat, SerializesAndParsesHandVectors) {
     std::array<std::byte, lzd_token_size> bytes{};
     ASSERT_EQ(serialize_lzd_token({'A', lzd_absent_reference}, bytes),

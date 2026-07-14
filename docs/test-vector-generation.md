@@ -484,6 +484,16 @@ Construction tests independently cover each of the four short workspaces,
 their aggregate limit, unsupported host extents, and unsupported reset.
 Repeated calls after a malformed frame return the same terminal error.
 
+LZD streaming encode feeds `abbaababaaba` through one-byte raw and token spans
+and compares every byte with the one-shot reference encoder. Separate vectors
+drain a full frame before a zero-byte EndInput, retain EndInput while a token
+region drains, leave a partial frame open across Flush, and preserve the
+one-entry frozen dictionary for `ABABABABAB`. Workspace calculations check
+empty, one-byte, frozen, and unsupported extents through the shared format
+bound. Premature input end, trailing raw bytes, each of the three short caller
+workspaces, aggregate limits, empty input, and unsupported reset remain stable
+negative or terminal cases.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
