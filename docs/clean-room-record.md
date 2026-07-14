@@ -1652,3 +1652,23 @@ no legal guarantee of non-infringement.
 - Generated-code task description: add a bounded defensive LZ78 decoder harness
   and permanent malformed-stream tests without running an open-ended campaign.
 - Similarity review: no external fuzz harness structure or corpus was compared.
+
+## 2026-07-14 - LZW variant 1 specification
+
+- Authoring method: derived a frame-local variable-width byte-string transform
+  from Welch's published algorithmic description, then independently specified
+  marc-owned parameters, termination, packing, width changes, and validation.
+- References used: Welch's 1984 paper as cited in `docs/references.md`, plus
+  marc's existing frame, LSB-first bit, limit, and serialization rules.
+- Known implementations intentionally not consulted: external LZW source,
+  source-derived pseudocode, GIF/TIFF or other container implementations, test
+  suites, byte vectors, width-switch conventions, and dictionaries.
+- Independent decisions: no clear/end codes; frame-local reset; 9..24-bit
+  configured maximum; 16-bit default; frozen full dictionary; paired encoder
+  and decoder boundary tests; strict zero padding; bounded non-recursive phrase
+  records; repository-owned hand vectors.
+- Generated-code task description: define one exact deterministic and bounded
+  LZW byte transform, including `KwKwK` and malformed-stream rules, before
+  implementing parsing structures.
+- Similarity review: no external implementation structure, byte layout, or
+  vector was compared.

@@ -120,6 +120,20 @@ dictionary-freeze rule, parameters, frame resets, limits, and vectors are
 independently specified. No LZ78 implementation source, source-derived
 pseudocode, container format, or test suite was consulted.
 
+LZW design reference:
+
+- Terry A. Welch, "A Technique for High-Performance Data Compression,"
+  *Computer*, volume 17, issue 6, pages 8-19, June 1984,
+  DOI `10.1109/MC.1984.1659158`. Used for the initial byte-string table,
+  longest-known-string emission, and decoder table-reconstruction foundation.
+  <https://doi.org/10.1109/MC.1984.1659158>
+
+marc's code space, frame termination, LSB-first packing, exact width-change
+schedule, dictionary-freeze rule, parameters, malformed-stream policy, and
+vectors are independently specified. No LZW implementation source,
+source-derived pseudocode, external container format, or test suite was
+consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

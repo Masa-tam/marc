@@ -62,7 +62,7 @@ block, and original sizes must not exceed local decoder limits.
 | 1 | LZ77 | fixed canonical copy-token variant defined below |
 | 2 | LZSS | explicit literal/match byte-token variant defined below |
 | 3 | LZ78 | fixed phrase-index byte-token variant defined below |
-| 4 | LZW | baseline, details pending |
+| 4 | LZW | variable-width frame-local variant defined below |
 | 5 | LZD | Lempel-Ziv Double baseline, details pending |
 | 6 | LZMW | baseline, details pending |
 
@@ -468,6 +468,109 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 
 The 16-byte LZ78 parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
+
+## LZW variant 1
+
+LZW variant 1 is a frame-local byte-string dictionary transform. Its stream
+dictionary parameter region is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum code width | default 16; range 9..24 bits |
+| 4 | 4 | flags/reserved | zero |
+| 8 | 8 | reserved | zero |
+
+All integers are little-endian. The initial dictionary contains every
+one-byte string: codes `0..255` name the byte of the same value. The first free
+code is 256. There is no clear code and no end code. The dictionary resets to
+the initial alphabet at every outer frame and freezes when the next free code
+would equal `2^maximum_code_width`. A decoder also rejects a parameter whose
+`2^maximum_code_width - 256` possible non-literal entries exceed its local
+dictionary-entry limit.
+
+The encoder parses a nonempty raw frame from left to right. It retains the
+longest dictionary string `W` matching the current input. If a following byte
+`K` makes `W || K` an existing dictionary string, that longer string becomes
+`W`. Otherwise the encoder emits `code(W)`, inserts `W || K` at the next free
+code when capacity remains, and continues with the one-byte string `K`. At the
+end of the frame it emits the remaining `code(W)`. Empty input emits no codes.
+The dictionary maps each byte string to exactly one code, so this parse is
+deterministic.
+
+Codes are packed as unsigned numeric fields through the repository LSB-first
+BitWriter. Code width begins at 9. The encoder writes a code at the current
+width, performs the insertion caused by the following failed extension, and
+increments the width for future codes when the incremented next-free code is
+exactly `2^current_width`. It never increments beyond the configured maximum.
+This is the only width-change schedule for variant 1.
+
+The decoder reads the first code at width 9; it must be a literal code below
+256. Before reading each later code, it increments the width when the next-free
+code is exactly `2^current_width - 1` and the current width is below the
+configured maximum. This one-entry-earlier decoder test compensates for the
+encoder having performed the pending insertion before emitting its next code.
+After resolving the new code, the decoder inserts
+`previous_string || first_byte(current_string)` when capacity remains.
+
+A later code below the next-free code names its existing dictionary string. A
+code equal to the next-free code is the `KwKwK` case and expands to
+`previous_string || first_byte(previous_string)`; it is valid only while a new
+entry can still be inserted. A code greater than the next-free code, or equal
+to it after the dictionary has frozen, is malformed. Phrase expansion and
+first-byte discovery use bounded prefix links and no input-controlled
+recursion.
+
+The declared raw frame size is the primary termination rule. Every decoded
+string must fit completely in the remaining raw extent. Immediately after the
+code that completes that extent, the dictionary byte region may contain only
+zero padding to the next byte boundary. There are therefore between zero and
+seven padding bits, all high bits of the final byte. Premature bits, an extra
+complete or partial byte, nonzero padding, a first non-literal code, an invalid
+forward code, checked phrase-length overflow, or output beyond the declared
+frame size is malformed. Decoder acceptance does not depend on rechecking the
+encoder's longest-match choice.
+
+The generic frame header's dictionary serialized size is the exact number of
+packed code bytes, including final zero padding. With entropy None, compressed
+payload size equals dictionary serialized size and the frame body contains
+those bytes directly. A nonempty raw byte contributes at most one code, so the
+input-independent bound is
+`ceil(raw_frame_size * maximum_code_width / 8)` bytes, with checked arithmetic.
+
+### Hand-checkable LZW code vectors
+
+With default parameters, every code in these short vectors is nine bits:
+
+| Input | Decimal codes | Packed bytes |
+|---|---|---|
+| `A` | `65` | `41 00` |
+| `AA` | `65, 65` | `41 82 00` |
+| `AAA` | `65, 256` | `41 00 02` |
+| `AB` | `65, 66` | `41 84 00` |
+| `ABABABA` | `65, 66, 256, 258` | `41 84 00 14 08` |
+
+`AAA` makes the second code equal to the decoder's next-free code and is the
+smallest `KwKwK` vector. `ABABABA` exercises the same rule after an ordinary
+dictionary reference. The high seven bits of the final `A` byte, high six bits
+of the final `AA`, `AAA`, and `AB` bytes, and high four bits of the final
+`ABABABA` byte are zero padding.
+
+### Hand-checkable LZW plus None frame vector
+
+For a stream selecting LZW variant 1 and entropy None, with one raw byte `A`,
+the complete frame is 58 bytes. Its header declares one raw byte and two
+dictionary/payload bytes; entropy block and descriptor fields are zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  02 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+41 00
+```
+
+The 16-byte LZW parameter region belongs after the stream prefix and before the
+first frame; it is not repeated inside this frame.
 
 ## Foundational hand-checkable vectors
 

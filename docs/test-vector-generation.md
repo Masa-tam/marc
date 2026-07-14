@@ -291,6 +291,23 @@ replace the first frame's three size fields with all ones; and reference phrase
 1 from the first token of the reset second frame. Every case must fail without
 publishing caller-visible stream metadata or raw bytes.
 
+LZW variant 1 vectors record the longest current string, emitted numeric code,
+new prefix-plus-byte entry, next-free code, encoder and decoder width before
+each code, and exact LSB-first packed bytes. Begin with `A`, `AA`, `AB`, and
+`AAA`, then `ABABABA`; `AAA` is the smallest `KwKwK` case. Add binary zero and
+every one-byte input, the transitions immediately before/at/after codes 512 and
+1024, the maximum-width boundary, dictionary freeze, final partial bytes, and
+outer-frame reset. Independently regenerate packed bytes from the listed
+numeric codes rather than using an external LZW encoder.
+
+Negative LZW vectors cover a non-literal first code, a code above next-free,
+`code == next_free` after freeze, premature code bits, a phrase crossing the
+declared raw size, checked phrase-length overflow, excess payload bytes, and
+every nonzero final-padding position. Decoder tests must distinguish the exact
+width-boundary schedule from both adjacent off-by-one schedules. Strict
+reference failure leaves raw output and caller-visible parsed metadata
+untouched.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

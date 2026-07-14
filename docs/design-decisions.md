@@ -1565,3 +1565,29 @@ canonical truncation, token-field corruption, extreme frame lengths, and
 cross-frame phrase references as ordinary GoogleTest regressions with atomic
 one-shot output expectations. Sanitizer fuzz execution remains an explicit,
 separate Clang workflow with a bounded maximum input length.
+
+## DD-098: LZW variant 1 uses frame termination and an explicit width schedule
+
+- Date: 2026-07-14
+- Status: accepted
+
+Initialize codes `0..255` as the byte alphabet and allocate new strings from
+code 256. Do not reserve clear or end codes: every outer frame resets the table,
+and its declared raw and dictionary-serialized sizes provide exact termination.
+Freeze the table at `2^maximum_code_width`, with a configurable 9..24-bit
+maximum and a 16-bit default. Pack codes LSB-first and require zero final
+padding.
+
+Remove the conventional early-change/late-change ambiguity by specifying the
+two operational views. After insertion, the encoder raises the width when its
+incremented next-free code equals the current power-of-two boundary. Before
+each code after the first, the decoder raises the width when its one-entry-
+behind next-free code equals that boundary minus one. Accept `code ==
+next_free` only as the bounded `KwKwK` expansion while insertion remains
+possible; reject it after dictionary freeze.
+
+Use caller-owned prefix, trailing-byte, first-byte, and checked-length records
+for the reference decoder, without recursive phrase expansion. Treat the
+declared raw frame size as the commit bound and reject a phrase crossing it,
+premature code bits, trailing bytes, invalid forward codes, and nonzero padding
+before publishing output in the strict reference path.
