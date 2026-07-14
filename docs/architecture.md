@@ -176,7 +176,11 @@ aggregate limit. The streaming encoder similarly collects one exact raw frame,
 uses the reference planner and encoder, and drains canonical tokens from a
 caller-owned maximum token extent. Encoder and decoder workspace queries share
 one checked format-level `8 * ceil(raw_size / 2)` helper. The outer profile
-remains later LZD work, so this does not mark the codec complete.
+now fixes LZD variant 1 plus entropy None and derives trusted encoder workspace
+from the configured largest frame. Decoder workspace depends only on coupled
+local limits and includes the frame header, token payload, raw frame, phrase
+records, and expansion stack. One-shot frame and stream codecs remain later
+LZD work, so this does not mark the codec complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

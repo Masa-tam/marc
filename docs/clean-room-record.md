@@ -1993,3 +1993,19 @@ no legal guarantee of non-infringement.
   whose bytes remain identical to the deterministic one-shot reference stream.
 - Similarity review: state transitions follow marc's own transform conventions;
   no external LZD streaming expression or control flow was compared.
+
+## 2026-07-15 - LZD plus None outer profile
+
+- Authoring method: connected marc's fixed LZD parameters and workspace bounds
+  to the repository's generic stream and frame limit contracts.
+- References used: repository LZD format and codec APIs, generic headers,
+  checked arithmetic, local limits, design decisions, and local test vectors.
+- Known implementations intentionally not consulted: external LZD containers,
+  profiles, workspace calculators, source, pseudocode, tests, and streams.
+- Independent decisions: LZD-plus-None identifiers; trusted encoder largest-
+  frame sizing; untrusted decoder local-limit sizing; coupled phrase and stack
+  accounting; monotonic payload search; impossible-zero-payload rejection.
+- Generated-code task description: implement and test the bounded workspace
+  profile that precedes LZD one-shot frame and stream integration.
+- Similarity review: profile organization follows marc's generic container API;
+  no external LZD profile structure or calculations were compared.

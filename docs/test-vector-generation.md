@@ -494,6 +494,16 @@ bound. Premature input end, trailing raw bytes, each of the three short caller
 workspaces, aggregate limits, empty input, and unsupported reset remain stable
 negative or terminal cases.
 
+The LZD None profile uses a ten-byte stream with four-byte frames to verify a
+largest-frame encoder requirement of 4 raw bytes, 16 maximum token bytes, a
+56-byte frame header, and two phrase records. Empty and final-short-frame cases
+exercise zero and odd raw sizes. Decoder workspace tests first allow a 1,024-
+byte payload capped at ten phrase records, then enumerate the last payload byte
+that fits a 300-byte aggregate limit and compare the binary-search result.
+Invalid parameters, token limits, encoder aggregate limits, invalid local
+limits, unsupported host extents, and an aggregate too small for even an empty
+payload are stable negative cases.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

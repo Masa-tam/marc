@@ -1988,3 +1988,24 @@ raw storage, maximum encoded storage, phrase records, and their aggregate byte
 extent during construction before consuming input. Reject premature EndInput,
 bytes beyond the declared frame, and `ResetBlock`; Flush exposes no output for
 an incomplete frame and does not change the canonical parse.
+
+## DD-119: The LZD None profile couples all frame workspaces
+
+- Date: 2026-07-15
+- Status: accepted
+
+Define the first outer LZD pipeline as dictionary algorithm LZD variant 1 with
+entropy None variant 0, a 16-byte dictionary parameter region, no entropy
+parameters, and no entropy block size. For a trusted encoder configuration,
+derive the largest raw frame, its shared `8 * ceil(raw_size / 2)` token bound,
+`min(floor(raw_size / 2), maximum_entries)` input-backed records, and the
+56-byte generic frame header. Require raw, complete encoded frame, and phrase
+records together to fit the local internal-buffer limit.
+
+Decoder workspace must not depend on untrusted stream parameters. Reserve the
+local maximum raw frame and find the largest token payload allowed jointly by
+dictionary-serialized, compressed-payload, dictionary-entry, and aggregate
+memory limits. Include the complete encoded frame, phrase records, and an
+explicit phrase-count-plus-one expansion stack in that aggregate. Use a
+monotonic binary search and reject a local configuration when even zero payload
+cannot coexist with the frame header, raw frame, and minimum stack entry.
