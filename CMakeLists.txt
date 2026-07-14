@@ -49,6 +49,7 @@ set(MARC_SOURCES
     src/dictionary/lzw_validator.cpp
     src/dictionary/lzd_format.cpp
     src/dictionary/lzd_decoder.cpp
+    src/dictionary/lzd_encoder.cpp
     src/dictionary/lzd_validator.cpp
     src/entropy/adaptive_huffman_format.cpp
     src/entropy/adaptive_huffman_encoder.cpp
@@ -368,6 +369,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_validator_tests.cpp
         tests/lzd_format_tests.cpp
         tests/lzd_decoder_tests.cpp
+        tests/lzd_encoder_tests.cpp
         tests/lzd_validator_tests.cpp
         tests/adaptive_huffman_format_tests.cpp
         tests/adaptive_huffman_encoder_tests.cpp

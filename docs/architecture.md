@@ -162,9 +162,13 @@ before publishing output, then expands the acyclic grammar without recursion
 through a caller-owned reference stack. Pushing the right reference before the
 left preserves byte order; at most the stored phrase count plus one stack
 entries are required. Serialized input, phrase records, and expansion stack
-are checked together against the aggregate internal-buffer limit. The encoder
-and streaming wrapper remain later LZD work, so this does not mark the codec
-complete.
+are checked together against the aggregate internal-buffer limit. The atomic
+reference encoder retains each generated phrase as an offset and length into
+the immutable raw frame, performs two deterministic longest-match searches
+per token, and runs the same parse for exact planning and serialization. Raw
+input plus phrase records are bounded before parsing, and output capacity is
+checked before publication. The streaming wrapper remains later LZD work, so
+this does not mark the codec complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

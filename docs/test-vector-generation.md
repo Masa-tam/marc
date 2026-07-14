@@ -463,6 +463,16 @@ tokens still reference the last stored phrase. Invalid input, short output,
 short phrase workspace, short expansion workspace, and aggregate memory-limit
 failures each begin with a nonzero output pattern and verify atomic rejection.
 
+LZD encoder tests generate every hand-checkable token vector directly from raw
+input and require the published `abbaababaaba` factorization byte for byte.
+Encoding `ABABABABAB` with one phrase slot must retain reference 256 after
+freeze and emit `(A,B), (256,256), (256,256)`. The deterministic binary vector
+contains all byte values twice; a separate 1,025-byte fixed-LCG vector checks
+the `8 * ceil(raw_size / 2)` serialized bound. Both are encoded repeatedly and
+decoded through the independent strict decoder. Short output, short workspace,
+invalid parameters, serialized limits, frame limits, and aggregate raw-plus-
+workspace limits remain ordinary atomic negative tests.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

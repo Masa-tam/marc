@@ -1944,3 +1944,19 @@ no legal guarantee of non-infringement.
   reference decoder without recursion or unbounded allocation.
 - Similarity review: traversal and failure handling follow marc's own validated
   grammar and transactional API patterns; no external decoder was compared.
+
+## 2026-07-15 - LZD deterministic reference encoder
+
+- Authoring method: translated marc's previously fixed longest-pair rules into
+  a clear input-backed dictionary search and two-pass atomic serializer.
+- References used: repository LZD format, design decisions, token codec,
+  checked arithmetic, local limits, decoder, and repository-owned vectors.
+- Known implementations intentionally not consulted: external LZD encoders,
+  source, pseudocode, tests, corpora, serialized streams, and containers.
+- Independent decisions: input offset/length records; ascending reference
+  search; strict-longer replacement; floor-half workspace bound; identical
+  planning and encoding parse; raw-plus-workspace aggregate accounting.
+- Generated-code task description: implement and test a deterministic bounded
+  atomic LZD reference encoder for the already specified variant 1 format.
+- Similarity review: structure follows marc's own one-shot encoder conventions;
+  no external encoder expression, data structure, or control flow was compared.

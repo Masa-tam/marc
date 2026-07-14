@@ -1924,3 +1924,24 @@ input, validator phrase records, and this expansion stack in the checked
 aggregate internal-buffer limit. Treat a contradiction in already-validated
 grammar metadata as an internal error rather than reading or writing outside
 the supplied spans.
+
+## DD-116: LZD reference encoding uses input-backed phrase records
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent every generated phrase by the offset and length of its first
+occurrence in the immutable raw frame. Search these bounded spans in ascending
+reference order after considering the matching literal byte. Select only a
+strictly longer candidate; LZD's longest-pair insertion rule makes generated
+strings unique, while ascending traversal supplies deterministic behavior if
+an internal contradiction were ever introduced.
+
+Compute the exact token extent by running the same clear parse used for
+serialization. A right-present token stores its complete input-backed span
+when capacity remains; an absent-right terminal token stores nothing. Query at
+most `min(floor(raw_size / 2), maximum_entries)` records because every inserted
+token consumes at least two raw bytes. Check raw input plus phrase records
+against the aggregate internal-buffer limit, then check serialized limits and
+output capacity before emitting any token. This quadratic reference search is
+the format oracle; later indexed searches must produce identical bytes.
