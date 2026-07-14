@@ -106,7 +106,10 @@ applies the separately specified encoder/decoder width boundary, resolves the
 padding without publishing raw bytes. The atomic reference decoder then repeats
 the packed-code traversal over that validated metadata, verifies each expected
 insertion record, and writes every phrase backward through bounded prefix links
-into its final caller-owned output range.
+into its final caller-owned output range. The reference encoder stores each
+non-literal phrase as a bounded span into the immutable input frame, finds the
+longest phrase by ascending code, and runs the same parse for exact planning and
+LSB-first serialization.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

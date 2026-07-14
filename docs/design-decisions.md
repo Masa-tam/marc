@@ -1631,3 +1631,23 @@ length is exactly previous length plus one. Prefix codes must decrease while
 walking a phrase, bounding the iterative traversal and excluding cycles. Treat
 any post-validation discrepancy as an internal error rather than reclassifying
 the already accepted byte stream.
+
+## DD-101: LZW reference encoding uses input-backed phrases and exact planning
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent every non-literal encoder phrase as an offset and length into the
+immutable input frame. At each position, begin with its literal byte and scan
+the populated records in ascending code order for a strictly longer match.
+Before dictionary freeze each phrase value is unique, so no additional tie rule
+is observable. Insert the selected phrase plus its following byte when both
+exist and capacity remains.
+
+Query the conservative workspace bound as zero for empty input and otherwise
+`min(input_size - 1, 2^maximum_code_width - 256)` records. Run the identical
+parse once without output to obtain exact code, bit, byte, and entry counts;
+enforce all parameters, limits, workspace, and output capacity before a second
+pass writes through BitWriter. Raise encoder width only after insertion advances
+the next-free code to the power-of-two boundary. Finish once to emit canonical
+zero padding.

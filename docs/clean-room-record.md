@@ -1705,3 +1705,18 @@ no legal guarantee of non-infringement.
 - Generated-code task description: implement an atomic bounded LZW reference
   decoder for marc's exact variable-width LSB-first representation.
 - Similarity review: no external decoder structure or control flow was compared.
+
+## 2026-07-15 - LZW deterministic reference encoder
+
+- Authoring method: implemented marc's documented longest-known-string parse
+  with bounded spans into the immutable input and exact two-pass serialization.
+- References used: repository LZW format, decoder, BitWriter contract, limits,
+  and repository-owned short and generated width-boundary vectors only.
+- Known implementations intentionally not consulted: external LZW encoders,
+  trie or hash-table implementations, pseudocode, tests, and containers.
+- Independent decisions: input-offset/length records; ascending-code exhaustive
+  match search; conservative input-derived workspace; shared planning and write
+  parse; post-insertion width increase; exact result-count cross-checks.
+- Generated-code task description: implement a clear deterministic LZW
+  reference encoder with atomic preflight and byte-identical repeated output.
+- Similarity review: no external encoder structure or control flow was compared.
