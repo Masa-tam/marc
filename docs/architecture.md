@@ -132,6 +132,10 @@ The outer streaming encoder emits the same 80-byte prefix, buffers one raw
 frame, invokes the exact LZW frame planner and encoder into caller-owned
 storage, and drains that complete serialized frame before reusing the buffers.
 Its output is byte-identical to the one-shot stream for every chunking pattern.
+The LZW profile builder converts a high-level known-size configuration into the
+canonical LZW plus None stream header and conservative encoder workspace. Its
+decoder workspace calculator couples serialized-frame, raw-frame, phrase-table,
+and aggregate local limits without trusting an unparsed stream parameter.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

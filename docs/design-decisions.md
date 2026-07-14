@@ -1762,3 +1762,24 @@ serialized-frame capacity before encoding. Flush may drain the prefix or a
 completed frame but does not shorten a partial frame. Retain EndInput while
 output drains, accept a later empty EndInput, and reject premature EndInput,
 trailing raw input, and ResetBlock.
+
+## DD-108: LZW profiles derive bounded workspace from format maxima
+
+- Date: 2026-07-15
+- Status: accepted
+
+For encoding, derive the largest raw frame from original size and configured
+frame size. Reserve at most one code per raw byte, each at the configured
+maximum width, so the payload bound is
+`ceil(largest_frame * maximum_code_width / 8)`. Reserve phrase records for
+`min(largest_frame - 1, 2^maximum_code_width - 256)`, with checked arithmetic
+and zero records for empty input. Include the 56-byte frame header in encoded
+storage and enforce raw, encoded, and phrase bytes as one aggregate.
+
+For decoding, first select the largest LZW code width whose phrase capacity is
+permitted by the local dictionary-entry limit. Derive the maximum possible
+phrase count from serialized bytes at the minimum 9-bit code width, cap it by
+that permitted capacity, and binary-search the largest payload consistent with
+serialized, compressed, and aggregate-buffer limits. Return raw staging for
+the local maximum frame size. If even 9-bit LZW is forbidden, report a limit
+failure rather than creating a decoder that cannot accept any valid profile.

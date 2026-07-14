@@ -1819,3 +1819,18 @@ no legal guarantee of non-infringement.
   byte-identical bounded LZW plus None frame stream with arbitrary output.
 - Similarity review: no external streaming structure or control flow was
   compared.
+
+## 2026-07-15 - LZW workspace profile
+
+- Authoring method: derived workspace formulas directly from marc's LZW code
+  bounds, generic frame size, caller-owned staging design, and local limits.
+- References used: repository LZW format, encoder and validator workspace
+  contracts, frame header, checked arithmetic, limits, and tests only.
+- Known implementations intentionally not consulted: external LZW workspace
+  calculators, allocation policies, source, pseudocode, and tests.
+- Independent decisions: one-code-per-byte encoder bound; configured-width
+  payload bound; discrete locally permitted decoder width; 9-bit decoder code
+  count bound; binary-searched aggregate payload; explicit host-size checks.
+- Generated-code task description: construct canonical LZW profile metadata
+  and bounded encoder/decoder workspace requirements without allocation.
+- Similarity review: no external sizing structure or formulas were compared.

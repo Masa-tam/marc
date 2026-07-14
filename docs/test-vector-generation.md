@@ -381,6 +381,15 @@ aggregate buffered limit one byte below the exact requirement, premature
 EndInput, trailing raw input, empty streams, a later empty EndInput, and
 ResetBlock.
 
+For LZW profile calculation, require a four-byte default-width frame to reserve
+eight payload bytes, a 64-byte serialized frame, and three encoder phrase
+records. At maximum width 9, require a 300-byte frame to reserve 338 payload
+bytes and freeze at 256 records. Empty input reserves only the frame header.
+Exercise invalid widths and an aggregate encoder limit one byte short. For
+decoder sizing, verify the largest discrete code width permitted by the local
+dictionary-entry limit, then independently enumerate the payload boundary
+under a tight aggregate limit and prove that the next byte does not fit.
+
 Negative LZW vectors cover a non-literal first code, a code above next-free,
 `code == next_free` after freeze, premature code bits, a phrase crossing the
 declared raw size, checked phrase-length overflow, excess payload bytes, and
