@@ -2631,3 +2631,19 @@ no legal guarantee of non-infringement.
   pairs were byte-identical on Windows x64.
 - Similarity review: the comparison used only two builds of marc and one
   repository-owned input; no external implementation output was examined.
+
+## 2026-07-16 - CI interoperability artifact protocol
+
+- Authoring method: composed marc's existing CLI profiles into a deterministic
+  bundle generator, strict external verifier, and GitHub Actions upload steps.
+- References used: DD-158, repository CLI behavior, deterministic format rules,
+  and GitHub's official workflow-artifact documentation.
+- Known implementations intentionally not consulted: external compressor
+  interoperability suites, corpora, manifests, source code, or test scripts.
+- Independent decisions: 8,193-byte mixed binary fixture; seven complete
+  archives; versioned JSON manifest; leaf-name validation; foreign decode plus
+  local exact re-encode; caller-supplied fresh output directory.
+- Generated-code task description: publish portable CI artifacts that a user
+  can verify on another OS or architecture and report with stable metadata.
+- Similarity review: the protocol composes only marc-owned formats and inputs;
+  no external archive representation or interoperability harness was compared.

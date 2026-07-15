@@ -828,3 +828,11 @@ Run all 863 tests under both optimized builds. Then encode the same checked-out
 byte. All seven pairs matched. Treat the files as disposable evidence because
 the README input changes with documentation; canonical hand vectors remain the
 permanent representation tests.
+
+The CI interoperability fixture has exactly 8,193 bytes. Bytes `0..255` contain
+their own values, bytes `256..1279` are zero, and bytes `1280..3327` repeat
+`41 42 41 42 58 00 FF`. For every later zero-based position `i`, generate
+`(i*73 + (i>>3)*19 + 41) & 0xFF`. Generate this input independently on every
+platform, round-trip each of the seven CLI profiles before publication, and
+record every file's size and SHA-256 in the bundle manifest. Generated archives
+are CI evidence rather than permanent canonical vectors.

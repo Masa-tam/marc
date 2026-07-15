@@ -771,3 +771,11 @@ Clang command-line tools encode one common input through every public dictionary
 profile and the combined LZ77 plus Blocked Huffman profile; all seven complete
 archives must compare byte for byte. This establishes compiler independence on
 one architecture, while cross-architecture evidence remains a separate gate.
+
+CI turns this check into an externally consumable protocol. Each reference job
+generates the same 8,193-byte binary fixture, validates a local round trip for
+all seven profiles, and uploads the fixture, complete archives, and a JSON
+manifest containing the source revision. The external verifier first validates
+manifest bounds and hashes, then decodes foreign archives and independently
+re-encodes the fixture with the local CLI. Artifact hashes detect transfer
+mistakes but are not authentication.

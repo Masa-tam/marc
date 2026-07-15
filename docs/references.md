@@ -207,3 +207,10 @@ marc's normalization, deterministic spreading step, descriptor, bit layout,
 terminal-state rule, and vectors are independently specified below. No tANS or
 FSE implementation source, source-derived pseudocode, or test suite was
 consulted.
+
+Build and interoperability workflow reference:
+
+- GitHub Docs, "Store and share data with workflow artifacts." Used only for
+  the workflow artifact publication and retention model; it is not an
+  algorithm or stream-format reference.
+  <https://docs.github.com/en/actions/tutorials/store-and-share-data>

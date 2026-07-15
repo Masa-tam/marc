@@ -85,6 +85,13 @@ Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
 the bounded LZSS, LZ78, LZW, LZD, and LZMW stream-decoder fuzz targets. Build and
 corpus instructions are in [`docs/fuzzing.md`](docs/fuzzing.md).
 
+## Interoperability
+
+Successful Windows and Ubuntu CI jobs publish deterministic archive bundles for
+external platform checks. See
+[`docs/interoperability.md`](docs/interoperability.md) for download, verification,
+and result-reporting instructions.
+
 The standalone project in `examples/` demonstrates installed-package use. See
 [`docs/c-api.md`](docs/c-api.md) for the C transform lifecycle and
 [`docs/format.md`](docs/format.md) for the current byte representation.

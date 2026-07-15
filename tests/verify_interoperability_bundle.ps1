@@ -1,0 +1,123 @@
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$MarcCli,
+
+    [Parameter(Mandatory = $true)]
+    [string]$BundleDirectory,
+
+    [Parameter(Mandatory = $true)]
+    [string]$OutputDirectory
+)
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+
+function Get-Sha256([string]$Path) {
+    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+
+function Test-FileBytesEqual([string]$Left, [string]$Right) {
+    $leftBytes = [System.IO.File]::ReadAllBytes($Left)
+    $rightBytes = [System.IO.File]::ReadAllBytes($Right)
+    if ($leftBytes.Length -ne $rightBytes.Length) {
+        return $false
+    }
+    for ($index = 0; $index -lt $leftBytes.Length; ++$index) {
+        if ($leftBytes[$index] -ne $rightBytes[$index]) {
+            return $false
+        }
+    }
+    return $true
+}
+
+function Assert-LeafName([string]$Name) {
+    if ([System.IO.Path]::GetFileName($Name) -ne $Name) {
+        throw "Manifest file name is not a leaf name: $Name"
+    }
+}
+
+function Invoke-Marc([string[]]$Arguments) {
+    & $script:resolvedCli @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "marc failed with exit code ${LASTEXITCODE}: $($Arguments -join ' ')"
+    }
+}
+
+$resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
+$resolvedBundle = (Resolve-Path -LiteralPath $BundleDirectory).Path
+if (Test-Path -LiteralPath $OutputDirectory) {
+    throw "Output directory already exists: $OutputDirectory"
+}
+$null = New-Item -ItemType Directory -Path $OutputDirectory
+$resolvedOutput = (Resolve-Path -LiteralPath $OutputDirectory).Path
+
+$manifestPath = Join-Path $resolvedBundle 'manifest.json'
+$manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+if ($manifest.schema_version -ne 1) {
+    throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
+}
+if (-not [System.Text.RegularExpressions.Regex]::IsMatch(
+        [string]$manifest.source_revision,
+        '^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')) {
+    throw 'Manifest source revision is not a full Git object ID'
+}
+
+$expectedProfiles = @(
+    'lz77',
+    'lz77-blocked-huffman',
+    'lzss',
+    'lz78',
+    'lzw',
+    'lzd',
+    'lzmw'
+)
+if (@($manifest.archives).Count -ne $expectedProfiles.Count) {
+    throw 'Interoperability manifest must contain exactly seven archives'
+}
+
+Assert-LeafName $manifest.input.file
+$inputPath = Join-Path $resolvedBundle $manifest.input.file
+$input = Get-Item -LiteralPath $inputPath
+if ($input.Length -ne $manifest.input.bytes -or
+        (Get-Sha256 $inputPath) -ne $manifest.input.sha256) {
+    throw 'Input size or SHA-256 does not match the manifest'
+}
+
+$verified = 0
+$seenProfiles = @{}
+foreach ($entry in $manifest.archives) {
+    $codec = [string]$entry.codec
+    if ($expectedProfiles -notcontains $codec -or
+            $seenProfiles.ContainsKey($codec)) {
+        throw "Unknown or duplicate codec in manifest: $codec"
+    }
+    $seenProfiles[$codec] = $true
+    Assert-LeafName $entry.file
+    $archivePath = Join-Path $resolvedBundle $entry.file
+    $archive = Get-Item -LiteralPath $archivePath
+    if ($archive.Length -ne $entry.bytes -or
+            (Get-Sha256 $archivePath) -ne $entry.sha256) {
+        throw "Archive size or SHA-256 does not match: $codec"
+    }
+
+    $decodedPath = Join-Path $resolvedOutput "$codec.decoded"
+    $reencodedPath = Join-Path $resolvedOutput "$codec.marc"
+    Invoke-Marc @(
+        'decode', '--codec', $codec, $archivePath, $decodedPath)
+    if (-not (Test-FileBytesEqual $inputPath $decodedPath)) {
+        throw "Decoded bytes differ from the fixture: $codec"
+    }
+
+    Invoke-Marc @(
+        'encode', '--codec', $codec, $inputPath, $reencodedPath)
+    if (-not (Test-FileBytesEqual $archivePath $reencodedPath)) {
+        throw "Locally re-encoded archive differs: $codec"
+    }
+    ++$verified
+}
+
+Write-Host (
+    "Verified {0} archives from {1} ({2}, {3}), revision {4}" -f
+    $verified, $manifest.platform, $manifest.compiler, $manifest.architecture,
+    $manifest.source_revision)

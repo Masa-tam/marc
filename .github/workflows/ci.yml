@@ -25,6 +25,21 @@ jobs:
         run: cmake --build --preset windows-msvc-release
       - name: Test
         run: ctest --preset windows-msvc-release
+      - name: Generate interoperability bundle
+        shell: pwsh
+        run: >-
+          ./tests/create_interoperability_bundle.ps1
+          -MarcCli '${{ github.workspace }}/out/build/windows-msvc/Release/marc.exe'
+          -OutputDirectory '${{ github.workspace }}/out/interoperability/windows-msvc-x64'
+          -Platform 'windows-msvc-x64'
+          -Compiler 'MSVC via Visual Studio 2026'
+          -SourceRevision '${{ github.sha }}'
+      - name: Upload interoperability bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: marc-interoperability-windows-msvc-x64
+          path: out/interoperability/windows-msvc-x64
+          if-no-files-found: error
 
   ubuntu-ninja:
     name: Ubuntu 24.04 / Ninja
@@ -39,6 +54,21 @@ jobs:
         run: cmake --build --preset ninja-release
       - name: Test
         run: ctest --preset ninja-release
+      - name: Generate interoperability bundle
+        shell: pwsh
+        run: >-
+          ./tests/create_interoperability_bundle.ps1
+          -MarcCli '${{ github.workspace }}/out/build/ninja-release/marc'
+          -OutputDirectory '${{ github.workspace }}/out/interoperability/ubuntu-ninja-x64'
+          -Platform 'ubuntu-ninja-x64'
+          -Compiler 'default Ubuntu 24.04 C++ compiler via Ninja'
+          -SourceRevision '${{ github.sha }}'
+      - name: Upload interoperability bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: marc-interoperability-ubuntu-ninja-x64
+          path: out/interoperability/ubuntu-ninja-x64
+          if-no-files-found: error
 
   installed-package:
     name: ${{ matrix.os_name }} / ${{ matrix.linkage }} package

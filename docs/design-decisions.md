@@ -2742,3 +2742,22 @@ Blocked Huffman profile. Compare complete output files byte for byte across the
 two compilers. This check covers explicit serialization and coder decisions but
 does not claim cross-architecture identity; that remains a distinct release
 gate.
+
+## DD-158: CI publishes self-describing interoperability bundles
+
+- Date: 2026-07-16
+- Status: accepted
+
+After their complete test suites pass, the Windows/MSVC and Ubuntu/Ninja jobs
+generate the same bounded binary fixture and encode it with every public
+dictionary-oriented CLI selection. Publish the fixture, seven archives, and a
+versioned JSON manifest as platform-named workflow artifacts. The manifest
+records the source revision, platform metadata, file sizes, and SHA-256 values
+without embedding machine-local paths.
+
+Provide one external verifier that treats manifest fields as untrusted, accepts
+only the exact codec set and leaf file names, checks sizes and hashes, decodes
+every foreign archive, and re-encodes the fixture for exact archive comparison.
+Require a new output directory so verification never overwrites caller files.
+The bundle proves reproducibility and interoperability only; unsigned hashes do
+not authenticate the workflow producer.
