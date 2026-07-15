@@ -75,7 +75,7 @@ See
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-the bounded LZSS, LZ78, LZW, and LZD stream-decoder fuzz targets. Build and
+the bounded LZSS, LZ78, LZW, LZD, and LZMW stream-decoder fuzz targets. Build and
 corpus instructions are in [`docs/fuzzing.md`](docs/fuzzing.md).
 
 The standalone project in `examples/` demonstrates installed-package use. See

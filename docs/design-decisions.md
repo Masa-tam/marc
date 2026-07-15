@@ -2390,9 +2390,30 @@ one-byte and mixed chunking, and after a bounded decoder fuzz harness has its
 compile-smoke and permanent regressions in the suite. Require a C-ABI-only
 benchmark smoke that verifies its round trip before reporting ratio,
 encode/decode throughput, and workspace. This change establishes the matrix
-and benchmark; the fuzz gate remains pending.
+and benchmark; DD-140 establishes the bounded fuzz compile-smoke and permanent
+regression gate.
 
 This status does not claim release completion. Cross-platform deterministic
 evidence, sanitizer and coverage-guided fuzz execution, representative Release
 benchmark records, and the final similarity review remain explicit release
 gates.
+
+## DD-140: LZMW fuzzing bounds fixed references, phrase expansion, and calls
+
+- Date: 2026-07-16
+- Status: accepted
+
+Feed each arbitrary input independently to the strict one-shot LZMW stream
+decoder and the outer frame-streaming decoder. Fix total output at 4 KiB, raw
+frame size at 1 KiB, serialized payload at 4 KiB, phrase metadata at 1024
+records, and the explicit expansion stack at 1025 entries. Set the aggregate
+limit to the exact encoded-frame, raw-frame, phrase-record, and expansion-stack
+sum so input fields cannot request unbounded allocation.
+
+Derive streaming input and output chunks from bounded input bytes, validate
+every `ProcessResult`, and cap calls by input size plus a fixed output margin.
+Compile the harness in ordinary MSVC test builds, but execute coverage-guided
+fuzzing only in the explicit Clang sanitizer build. Keep every canonical
+truncation, absent or forward fixed reference, invalid token extent, extreme
+frame length, and cross-frame reset reference as permanent GoogleTest
+regressions with one-shot output and metadata atomicity assertions.

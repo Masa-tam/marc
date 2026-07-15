@@ -2335,3 +2335,19 @@ no legal guarantee of non-infringement.
   consolidated deterministic round-trip and chunking completion matrix.
 - Similarity review: the work reuses marc's own benchmark and test contracts;
   no external LZMW benchmark or completion structure was compared.
+
+## 2026-07-16 - Bounded LZMW decoder fuzz harness
+
+- Authoring method: applied marc's bounded decoder-harness contract to its
+  independently specified fixed-reference LZMW grammar and outer controller.
+- References used: DD-140, repository process invariants, LZMW limits and
+  workspaces, one-shot atomicity contract, and canonical stream vector.
+- Known implementations intentionally not consulted: external LZMW fuzz
+  harnesses, corpora, mutation dictionaries, source, pseudocode, or findings.
+- Independent decisions: 4 KiB output/payload ceilings; 1 KiB frames; 1024
+  phrase records; 1025 expansion entries; input-derived chunks; finite call
+  guard; MSVC compile-smoke separated from explicit Clang sanitizer execution.
+- Generated-code task description: add a bounded one-shot and streaming LZMW
+  decoder fuzz target, permanent malformed regressions, and a local seed.
+- Similarity review: the harness follows marc's own bounded fuzz contract; no
+  external LZMW fuzz structure or corpus expression was compared.

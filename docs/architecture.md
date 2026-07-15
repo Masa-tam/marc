@@ -264,8 +264,10 @@ one-byte and mixed input/output chunking. The benchmark uses the same public
 configuration, workspace query, factory, process, and destroy surface, verifies
 a round trip before timing, and reports full-stream ratio, throughput, and
 caller-owned workspace. These are local readiness checks, not release evidence.
-The remaining local readiness gate is a bounded LZMW decoder fuzz harness with
-permanent regressions for any discovered crash or hang.
+A bounded LZMW decoder fuzz harness now covers both one-shot and outer
+streaming decode with compile-smoke and permanent malformed regressions.
+Coverage-guided sanitizer execution remains release evidence rather than a
+claim made by the normal MSBuild suite.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

@@ -692,3 +692,12 @@ Re-encode every case and require exact bytes. For a 193-byte stream, compare
 one-shot-equivalent processing with 1/1, 7/5, and 13/17 input/output chunks and
 round-trip each result. Run one public-C-ABI benchmark smoke iteration over the
 README input; the benchmark must verify the decoded bytes before timing.
+
+The bounded LZMW fuzz harness invokes both one-shot and outer streaming
+decoders with 4 KiB total output, 1 KiB raw frames, 4 KiB payloads, 1024 phrase
+records, and 1025 expansion entries. Input-derived chunk sizes remain under a
+finite call guard. Permanent GoogleTest cases reject every truncation of the
+208-byte canonical stream and mutate absent/forward references, token extents,
+extreme frame lengths, and a second-frame phrase reference while proving
+one-shot raw/configuration atomicity. The repository-owned corpus begins with
+the five-byte truncated frame magic `MRF1\n`.
