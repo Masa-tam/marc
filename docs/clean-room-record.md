@@ -2269,3 +2269,19 @@ no legal guarantee of non-infringement.
   atomic decoding.
 - Similarity review: composition uses marc's own prefix and frame contracts; no
   external LZMW stream expression or control flow was compared.
+
+## 2026-07-16 - LZMW outer frame-streaming decoder
+
+- Authoring method: connected marc's independently written LZMW prefix, frame
+  validator, and atomic decoder through its bounded transform state contract.
+- References used: repository LZMW stream and frame codecs, DD-136, process
+  invariants, checked arithmetic, workspace profile, and local limits.
+- Known implementations intentionally not consulted: external LZMW streaming
+  containers, decoders, state machines, source, pseudocode, tests, or APIs.
+- Independent decisions: contextual header-first collection; reusable bounded
+  frame storage; atomic per-frame staging; prior-frame commit semantics; stable
+  terminal errors.
+- Generated-code task description: implement and test one-byte-capable outer
+  LZMW frame-streaming decode with no publication from a corrupt frame.
+- Similarity review: the controller composes marc's own transform and frame
+  contracts; no external LZMW streaming expression or control flow was compared.

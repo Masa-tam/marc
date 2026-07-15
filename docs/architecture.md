@@ -245,6 +245,13 @@ at most fixed tokens minus one, while a potentially nonempty frame always
 reserves one additional iterative expansion-stack entry. Frame header, staged
 payload/raw bytes, and typed records must fit the configured aggregate.
 
+The outer frame-streaming decoder consumes the complete stream prefix and then
+reuses one encoded-frame buffer, decoded-frame staging buffer, phrase-record
+workspace, and expansion stack. Each frame header is validated contextually
+before its bounded payload is collected. A frame is decoded atomically into
+staging and only then drained, so a later corrupt frame cannot expose any of
+its raw bytes or retract already committed earlier frames.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

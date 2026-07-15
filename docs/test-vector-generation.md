@@ -658,3 +658,12 @@ preflight a later frame's expansion workspace and aggregate before publication.
 Reject truncated and trailing streams, invalid parameter bytes, short phrase
 and expansion workspaces, input/original-size mismatch, short output, and short
 encoder workspace.
+
+For outer frame-streaming decode, feed the documented two-frame LZMW stream
+through one-byte input and output spans. Corrupt the second frame's first
+reference and require exactly the first frame's two raw bytes to be committed.
+Exercise short encoded-frame, decoded-frame, phrase-record, and expansion
+workspaces independently, plus the full per-frame aggregate one byte short.
+Verify truncated input, empty stream, trailing data, an empty final `EndInput`,
+partial-input `Flush`, unknown flags, `ResetBlock`, invalid limits, and stable
+terminal states.

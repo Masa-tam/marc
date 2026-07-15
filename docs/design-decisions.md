@@ -2323,3 +2323,20 @@ validates every frame and required expansion workspace before publishing any
 raw byte, then performs a second decode scan. Reject truncation, bytes after the
 declared output completes, sequence or extent errors, and invalid parameters.
 Publish parsed stream metadata only after the entire decode succeeds.
+
+## DD-136: LZMW outer streaming decode commits only whole valid frames
+
+- Date: 2026-07-16
+- Status: accepted
+
+Collect and validate the complete 80-byte LZMW plus None prefix, then process
+each generic frame as header collection, bounded body collection, atomic frame
+decode into caller-owned staging, and arbitrary raw-byte draining. Reuse all
+frame, phrase, and expansion workspaces after each independently reset frame.
+
+Validate sequence, remaining declared output, payload extent, every typed
+workspace, and the full per-frame aggregate before collecting or decoding the
+body. A corrupt frame publishes none of its bytes, while fully drained earlier
+frames remain committed. Preserve a final `EndInput` while draining, accept a
+later empty terminal call, keep `Flush` non-terminal, reject `ResetBlock` and
+trailing bytes, and retain stable ended and error states.
