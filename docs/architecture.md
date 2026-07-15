@@ -763,3 +763,11 @@ stream directions. It repeats encoding for byte identity and compares
 multi-frame output across one-byte and mixed chunk schedules. This is a local
 readiness assertion, not a substitute for sanitizer campaigns or portability
 evidence on independent toolchains and architectures.
+
+The first independent-toolchain check builds the complete project with Clang's
+GNU-style driver and Ninja on Windows, then runs the same optimized 863-test
+suite used by the MSVC build. As a separate representation check, the MSVC and
+Clang command-line tools encode one common input through every public dictionary
+profile and the combined LZ77 plus Blocked Huffman profile; all seven complete
+archives must compare byte for byte. This establishes compiler independence on
+one architecture, while cross-architecture evidence remains a separate gate.

@@ -819,3 +819,12 @@ five-second per-input timeout, and a 512 MiB RSS limit. The six campaigns
 completed 60,000 total executions without a crash, hang, or sanitizer finding;
 generated mutations remain build artifacts unless promoted as a minimized
 permanent regression.
+
+For the 2026-07-16 compiler-independence check, build RelWithDebInfo with Clang
+22.1.3's GNU-style driver and Ninja, and build Release with MSVC and MSBuild.
+Run all 863 tests under both optimized builds. Then encode the same checked-out
+`README.md` through `lz77`, `lz77-blocked-huffman`, `lzss`, `lz78`, `lzw`,
+`lzd`, and `lzmw` using each compiler's CLI and compare every pair byte for
+byte. All seven pairs matched. Treat the files as disposable evidence because
+the README input changes with documentation; canonical hand vectors remain the
+permanent representation tests.

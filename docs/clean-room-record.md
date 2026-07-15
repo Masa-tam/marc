@@ -2601,3 +2601,33 @@ no legal guarantee of non-infringement.
   finding; no generated mutation was promoted to the repository corpus.
 - Similarity review: execution used only marc-owned harnesses and seeds and did
   not compare behavior or structure with another implementation.
+
+## 2026-07-16 - Optimized C ABI test execution
+
+- Authoring method: diagnosed a Clang RelWithDebInfo test stall from the
+  repository's CMake flags and pure-C test control flow.
+- References used: DD-156, C preprocessor and `assert` semantics, CTest timeout
+  properties, and the existing marc C ABI tests.
+- Known implementations intentionally not consulted: external test harnesses,
+  build scripts, source code, or CI configurations.
+- Independent decisions: keep assertions active through a test-only header;
+  impose a 30-second per-test timeout; leave library build flags unchanged.
+- Generated-code task description: make optimized C ABI tests execute their
+  call-and-check expressions identically to Debug tests and bound future stalls.
+- Similarity review: the correction is local to marc's own build and tests; no
+  external implementation structure or expression was compared.
+
+## 2026-07-16 - MSVC and Clang archive identity
+
+- Authoring method: built marc independently with MSVC/MSBuild and Clang/Ninja,
+  ran both optimized test suites, and compared complete CLI-produced archives.
+- References used: DD-157, repository CMake configuration, public CLI profiles,
+  checked-out README input, and marc's deterministic serialization rules.
+- Known implementations intentionally not consulted: external compressors,
+  conformance tools, byte streams, source code, or comparison suites.
+- Independent decisions: compare all seven public dictionary-oriented CLI
+  selections; use exact binary comparison; retain outputs only as build artifacts.
+- Result: both 863-test optimized builds passed, and all seven MSVC/Clang archive
+  pairs were byte-identical on Windows x64.
+- Similarity review: the comparison used only two builds of marc and one
+  repository-owned input; no external implementation output was examined.

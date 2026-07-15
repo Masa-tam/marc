@@ -1,6 +1,6 @@
 #include <marc/marc.h>
 
-#include <assert.h>
+#include "test_assert.h"
 #include <stdlib.h>
 #include <string.h>
 

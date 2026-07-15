@@ -774,6 +774,24 @@ if(MARC_BUILD_TESTS)
     endif()
     add_test(NAME marc_lzmw_c_api_tests COMMAND marc_lzmw_c_api_tests)
 
+    set(MARC_C_API_TEST_TARGETS
+        marc_c_api_tests
+        marc_adaptive_c_api_tests
+        marc_dynamic_range_c_api_tests
+        marc_rans_c_api_tests
+        marc_tans_c_api_tests
+        marc_lz77_c_api_tests
+        marc_lz77_blocked_huffman_c_api_tests
+        marc_lzss_c_api_tests
+        marc_lz78_c_api_tests
+        marc_lzw_c_api_tests
+        marc_lzd_c_api_tests
+        marc_lzmw_c_api_tests
+    )
+    foreach(target IN LISTS MARC_C_API_TEST_TARGETS)
+        set_tests_properties(${target} PROPERTIES TIMEOUT 30)
+    endforeach()
+
     if(TARGET marc_cli)
         add_test(NAME marc_cli_lz77_round_trip
             COMMAND ${CMAKE_COMMAND}

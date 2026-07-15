@@ -2709,3 +2709,36 @@ Keep the compiler installation path local. Discover the Clang resource directory
 through the compiler and add its `lib/windows` child to `PATH` when executing a
 sanitizer binary. This is runner setup rather than a stream-format or public-ABI
 property and does not affect ordinary MSVC builds where fuzzers are disabled.
+
+## DD-156: C ABI assertions remain active in optimized test builds
+
+- Date: 2026-07-16
+- Status: accepted
+
+The pure-C ABI tests use the standard C `assert` facility for both status
+checks and compact call-and-check expressions. Include a test-only wrapper that
+undefines `NDEBUG` before including the standard header so Release and
+RelWithDebInfo builds execute the same API calls and validations as Debug
+builds. This policy is test-local and does not alter marc or its consumers.
+
+Give each C ABI test a 30-second CTest timeout. A missing assertion or stalled
+transform must become a bounded test failure rather than an indefinitely
+running CI job. Cross-compiler verification must include an optimized build so
+this test-configuration contract remains exercised.
+
+## DD-157: Compiler independence requires complete archive comparison
+
+- Date: 2026-07-16
+- Status: accepted
+
+Use MSVC with MSBuild as the Windows reference and Clang's GNU-style driver with
+Ninja as an independent compiler path. Both optimized builds must compile the
+shared library, static library, C11 ABI clients, CLI, tests, and benchmarks and
+must pass the same test suite.
+
+In addition to in-process determinism tests, encode one common repository-owned
+input through every public dictionary CLI profile and the combined LZ77 plus
+Blocked Huffman profile. Compare complete output files byte for byte across the
+two compilers. This check covers explicit serialization and coder decisions but
+does not claim cross-architecture identity; that remains a distinct release
+gate.
