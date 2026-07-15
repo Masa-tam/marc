@@ -788,3 +788,10 @@ through multiple 64 KiB I/O chunks, reject overwrite of the completed archive,
 reject a malformed stream without committing output, and compare restored
 bytes exactly. Keep the existing unqualified and explicit standalone LZ77 CLI
 tests to prove the default mapping did not change.
+
+For the combined benchmark smoke test, use README input and one iteration under
+the exact selector `lz77-blocked-huffman`. The driver must allocate only queried
+C ABI workspaces, verify the encoded stream by decoding it byte-for-byte before
+timing, then report complete-stream ratio, both throughputs, each workspace
+region, and their direction-wise peak. The smoke result is validation of the
+measurement path, not a stable performance threshold.

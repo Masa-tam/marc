@@ -2539,3 +2539,18 @@ no legal guarantee of non-infringement.
   creation, usage text, and a full file-level regression test.
 - Similarity review: the change composes only marc-owned CLI and C ABI paths;
   no external command-line implementation was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman benchmark
+
+- Authoring method: extended marc's existing public-C-ABI measurement driver
+  with its independently designed combined profile and workspace formulas.
+- References used: DD-152, benchmark measurement contract, combined C ABI,
+  profile worst-case derivation, and CLI fixed policy.
+- Known implementations intentionally not consulted: external compression
+  benchmarks, harnesses, capacity formulas, source, reports, or tests.
+- Independent decisions: exact public selector; descriptor-aware destination
+  bound; pre-timing round trip; unchanged workspace-only peak definition.
+- Generated-code task description: add combined configuration, dispatch,
+  capacity planning, reporting, documentation, and a bounded smoke test.
+- Similarity review: the work reuses only marc-owned benchmark and ABI
+  conventions; no external benchmark structure was compared.

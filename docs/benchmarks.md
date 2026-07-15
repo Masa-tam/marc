@@ -5,6 +5,7 @@ Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 
 ```console
 marc_benchmark lz77 corpus.bin 5
+marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lzw corpus.bin 5
@@ -29,6 +30,13 @@ and binary MiB. `codec_peak_workspace_bytes` is the larger of the encoder and
 decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
 it excludes the input, encoded, decoded, executable, and operating-system
 memory. Direction-specific views-workspace bytes are also reported separately.
+
+`lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
+entropy block as the CLI profile. Its capacity calculation includes the
+worst-case 16-byte LZ77 token per raw byte, one 16-byte Blocked Huffman
+descriptor per entropy block, and raw entropy fallback. Reported workspace
+therefore includes dictionary staging and decoder block views in addition to
+the ordinary primary and secondary frame regions.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

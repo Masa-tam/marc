@@ -240,6 +240,11 @@ if(MARC_BUILD_BENCHMARKS)
         target_link_libraries(marc_benchmark PRIVATE marc::shared)
     endif()
     if(MARC_BUILD_TESTS)
+        add_test(NAME marc_benchmark_lz77_blocked_huffman_smoke
+            COMMAND marc_benchmark lz77-blocked-huffman
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lz77_blocked_huffman_smoke
+            PROPERTIES LABELS benchmark-smoke)
         add_test(NAME marc_benchmark_lzss_smoke
             COMMAND marc_benchmark lzss ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzss_smoke

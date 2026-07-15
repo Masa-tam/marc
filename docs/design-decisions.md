@@ -2637,3 +2637,20 @@ profile: 16 bytes of dictionary serialization per raw byte, 16 descriptor
 bytes per entropy block, and the complete three-way encoder aggregate. The CLI
 continues to require known-size regular-file input and atomically renames a
 temporary output only after transform completion.
+
+## DD-152: Combined benchmarks use the public ABI and complete-stream bounds
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add `lz77-blocked-huffman` to the dependency-free benchmark selector without
+introducing an internal C++ shortcut. Configure, query, create, process, and
+destroy through the public combined C ABI, and verify a full round trip before
+timing under the existing measurement contract.
+
+Size the encoded destination for the 16-byte-per-input dictionary worst case,
+the 56-byte header of every outer frame, and 16 descriptor bytes for each of
+the maximum 256 entropy blocks per full frame. Use the same three-way aggregate
+limit as the CLI and profile. Report the exact queried primary, secondary, and
+views workspaces and include them in the existing peak caller-owned workspace
+metric; do not count corpus, encoded, or decoded vectors.

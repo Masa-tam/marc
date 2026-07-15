@@ -87,10 +87,10 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
-An opt-in benchmark executable drives the public LZ77, LZSS, LZ78, LZW, LZD,
-and LZMW C transforms over caller-selected files. It reports full-stream ratio,
-timed transform throughput, and profile-derived codec workspace under one
-documented method.
+An opt-in benchmark executable drives the public LZ77, LZ77 plus Blocked
+Huffman, LZSS, LZ78, LZW, LZD, and LZMW C transforms over caller-selected
+files. It reports full-stream ratio, timed transform throughput, and
+profile-derived codec workspace under one documented method.
 The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.
@@ -745,3 +745,8 @@ The command-line adapter selects the combined path only through the public C
 ABI name `lz77-blocked-huffman`. Its fixed frame/block policy is translated to
 the same checked worst-case limits before querying workspace, so file I/O never
 becomes an alternate allocation or codec-control path.
+
+The benchmark adapter uses that identical public name and profile policy. Its
+encoded destination bound additionally counts every worst-case entropy block
+descriptor, while its peak-workspace report continues to sum only the three
+caller-owned ABI regions and excludes corpus and result buffers.
