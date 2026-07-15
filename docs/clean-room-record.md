@@ -2524,3 +2524,18 @@ no legal guarantee of non-infringement.
   symbol-export, and round-trip behavior from C11.
 - Similarity review: the adapter uses only marc-owned ABI and transform
   conventions; no external API layout or naming scheme was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman CLI profile
+
+- Authoring method: extended marc's existing public-C-ABI CLI dispatcher with
+  the repository's independently designed combined profile.
+- References used: DD-151, combined C workspace query, existing CLI lifecycle,
+  and repository round-trip script.
+- Known implementations intentionally not consulted: external compression CLI
+  naming, dispatch, buffer sizing, source, pseudocode, or tests.
+- Independent decisions: explicit `lz77-blocked-huffman` name; unchanged LZ77
+  default; formula-derived fixed CLI limits; reuse of atomic output commit.
+- Generated-code task description: add combined CLI configuration, query,
+  creation, usage text, and a full file-level regression test.
+- Similarity review: the change composes only marc-owned CLI and C ABI paths;
+  no external command-line implementation was compared.

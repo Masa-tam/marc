@@ -781,3 +781,10 @@ worst-case workspace partition, decoder byte/view requirements, a one-byte
 short secondary region, and rejection of a nonzero reserved field. Compile the
 test as C11 and link it to the shared library so the public declaration and
 exported ABI are exercised rather than internal C++ entry points.
+
+For CLI composition, run the shared round-trip script with the exact codec name
+`lz77-blocked-huffman`. Its repeated binary-safe fixture must encode and decode
+through multiple 64 KiB I/O chunks, reject overwrite of the completed archive,
+reject a malformed stream without committing output, and compare restored
+bytes exactly. Keep the existing unqualified and explicit standalone LZ77 CLI
+tests to prove the default mapping did not change.

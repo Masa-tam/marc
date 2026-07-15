@@ -740,3 +740,8 @@ recomputed from the validated configuration at creation. The decoder retains
 the existing aligned views workspace convention for its private entropy block
 records. Thus C callers allocate three regions while the C++ transforms still
 receive four disjoint spans where decoding requires them.
+
+The command-line adapter selects the combined path only through the public C
+ABI name `lz77-blocked-huffman`. Its fixed frame/block policy is translated to
+the same checked worst-case limits before querying workspace, so file I/O never
+becomes an alternate allocation or codec-control path.

@@ -2620,3 +2620,20 @@ validates all capacities and view alignment before constructing the transform,
 and exposes none of the private C++ record layouts. This keeps the ABI small
 without weakening caller ownership, bounded allocation, or strict separation
 between dictionary and entropy staging.
+
+## DD-151: CLI composition selection is explicit and keeps LZ77 default
+
+- Date: 2026-07-16
+- Status: accepted
+
+Name the composed command-line profile `lz77-blocked-huffman`. Keep unqualified
+`marc encode` and `marc decode` mapped to standalone LZ77 variant 1 so adding an
+entropy layer does not silently change existing output. Both directions use
+the public combined C ABI; the CLI does not reach into C++ codec internals.
+
+For the fixed 1 MiB outer frame and 65,536-symbol entropy block, derive local
+workspace policy from the same all-Literal and all-raw bounds as the combined
+profile: 16 bytes of dictionary serialization per raw byte, 16 descriptor
+bytes per entropy block, and the complete three-way encoder aggregate. The CLI
+continues to require known-size regular-file input and atomically renames a
+temporary output only after transform completion.

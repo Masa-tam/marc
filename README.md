@@ -31,12 +31,15 @@ git submodule update --init --recursive
 
 Top-level builds produce a minimal `marc` executable that exercises the public
 C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
-LZSS, LZ78, LZW, LZD, and LZMW variant 1 can be selected explicitly. All six
-use no entropy layer:
+LZSS, LZ78, LZW, LZD, and LZMW variant 1 can be selected explicitly without an
+entropy layer. `lz77-blocked-huffman` selects the composed LZ77 plus Blocked
+Huffman profile:
 
 ```console
 marc encode input.bin output.marc
 marc decode output.marc restored.bin
+marc encode --codec lz77-blocked-huffman input.bin output.marc
+marc decode --codec lz77-blocked-huffman output.marc restored.bin
 marc encode --codec lzss input.bin output.marc
 marc decode --codec lzss output.marc restored.bin
 marc encode --codec lz78 input.bin output.marc
