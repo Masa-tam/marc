@@ -22,17 +22,20 @@ enum class Codec {
     lzss,
     lz78,
     lzw,
+    lzd,
 };
 
 constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
     if (codec == Codec::lz77) return frame_size * UINT64_C(16);
     if (codec == Codec::lzss) return frame_size * UINT64_C(2);
     if (codec == Codec::lz78) return frame_size * UINT64_C(8);
-    return frame_size * UINT64_C(2);
+    if (codec == Codec::lzw) return frame_size * UINT64_C(2);
+    return frame_size * UINT64_C(4);
 }
 
 constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
-    if (codec == Codec::lz78 || codec == Codec::lzw)
+    if (codec == Codec::lz78 || codec == Codec::lzw
+        || codec == Codec::lzd)
         return UINT64_C(64) << 20;
     return frame_size + frame_header_size + maximum_frame_payload(codec);
 }
@@ -146,6 +149,24 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
     return true;
 }
 
+bool configure(const marc_direction direction, const std::uint64_t original_size,
+               marc_lzd_config& config) {
+    const auto status = marc_lzd_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.max_frame_size = frame_size;
+    config.max_compressed_payload_size = maximum_frame_payload(Codec::lzd);
+    config.max_dictionary_serialized_size =
+        maximum_frame_payload(Codec::lzd);
+    config.max_internal_buffered_bytes = maximum_buffered_bytes(Codec::lzd);
+    config.max_dictionary_entries = config.maximum_entries;
+    return true;
+}
+
 bool process_file(const marc_direction direction,
                   const Codec codec,
                   const std::uint64_t source_size,
@@ -154,13 +175,16 @@ bool process_file(const marc_direction direction,
     marc_lzss_config lzss_config{};
     marc_lz78_config lz78_config{};
     marc_lzw_config lzw_config{};
+    marc_lzd_config lzd_config{};
     if (codec == Codec::lz77) {
         if (!configure(direction, source_size, config)) return false;
     } else if (codec == Codec::lzss) {
         if (!configure(direction, source_size, lzss_config)) return false;
     } else if (codec == Codec::lz78) {
         if (!configure(direction, source_size, lz78_config)) return false;
-    } else if (!configure(direction, source_size, lzw_config)) {
+    } else if (codec == Codec::lzw) {
+        if (!configure(direction, source_size, lzw_config)) return false;
+    } else if (!configure(direction, source_size, lzd_config)) {
         return false;
     }
 
@@ -172,8 +196,10 @@ bool process_file(const marc_direction direction,
         status = marc_lzss_workspace_requirements(&lzss_config, &needed);
     else if (codec == Codec::lz78)
         status = marc_lz78_workspace_requirements(&lz78_config, &needed);
-    else
+    else if (codec == Codec::lzw)
         status = marc_lzw_workspace_requirements(&lzw_config, &needed);
+    else
+        status = marc_lzd_workspace_requirements(&lzd_config, &needed);
     if (status != MARC_STATUS_OK) {
         print_status("workspace query failed", status);
         return false;
@@ -210,9 +236,13 @@ bool process_file(const marc_direction direction,
         status = marc_lz78_create(
             &lz78_config, primary_buffer, secondary_buffer, views_buffer,
             &raw_transform);
-    else
+    else if (codec == Codec::lzw)
         status = marc_lzw_create(
             &lzw_config, primary_buffer, secondary_buffer, views_buffer,
+            &raw_transform);
+    else
+        status = marc_lzd_create(
+            &lzd_config, primary_buffer, secondary_buffer, views_buffer,
             &raw_transform);
     if (status != MARC_STATUS_OK) {
         print_status("transform creation failed", status);
@@ -350,8 +380,8 @@ bool run(const marc_direction direction, const Codec codec,
 void usage() {
     std::cerr << "usage: marc encode <input> <output>\n"
                  "       marc decode <input> <output>\n"
-                 "       marc encode --codec <lz77|lzss|lz78|lzw> <input> <output>\n"
-                 "       marc decode --codec <lz77|lzss|lz78|lzw> <input> <output>\n";
+                 "       marc encode --codec <lz77|lzss|lz78|lzw|lzd> <input> <output>\n"
+                 "       marc decode --codec <lz77|lzss|lz78|lzw|lzd> <input> <output>\n";
 }
 
 } // namespace
@@ -381,6 +411,7 @@ int main(const int argc, const char* const argv[]) {
         else if (name == "lzss") codec = Codec::lzss;
         else if (name == "lz78") codec = Codec::lz78;
         else if (name == "lzw") codec = Codec::lzw;
+        else if (name == "lzd") codec = Codec::lzd;
         else {
             usage();
             return 2;

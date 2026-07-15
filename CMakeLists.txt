@@ -673,5 +673,12 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_CODEC=lzw"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzw-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzd_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzd"
+                "-DCLI_REPEAT=320"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzd-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
     endif()
 endif()

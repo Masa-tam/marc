@@ -2151,3 +2151,20 @@ smoke in the same regression suite.
 This status does not claim release completion. Cross-architecture deterministic
 evidence, sanitizer and coverage-guided fuzz runs, representative benchmark
 records, and the release similarity review remain explicit release gates.
+
+## DD-127: LZD CLI remains a thin C-ABI streaming client
+
+- Date: 2026-07-15
+- Status: accepted
+
+Add `lzd` as an explicit CLI codec without exposing or calling internal C++
+types. Configure the same one-MiB known-size LZD plus None profile through the
+public C ABI, use the existing 64-MiB aggregate workspace policy for
+dictionary-based profiles, and retain the generic bounded I/O loop, temporary-
+file commit, overwrite rejection, and malformed-input cleanup behavior.
+
+Use a smaller deterministic repeated-text fixture for the LZD CLI smoke test
+because the clear reference LZD encoder intentionally prioritizes correctness
+over search performance. Arbitrary chunking and multi-frame behavior remain
+covered independently by the completion matrix; reducing this integration
+fixture does not change the format or codec acceptance surface.

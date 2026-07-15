@@ -555,6 +555,16 @@ extreme frame lengths, and a second-frame phrase reference while proving
 one-shot raw/configuration atomicity. The initial repository-owned corpus seed
 is the five-byte truncated frame magic `MRF1\n`.
 
+For the public LZD integration path, encode and decode `ABAB` through separately
+initialized C ABI handles and require the documented 208-byte stream. Query and
+honor both direction-specific opaque views regions, reject misalignment and
+invalid reserved or entry-limit fields, and run the full completion data-class
+matrix through that same public surface. Run the generic CLI overwrite,
+malformed cleanup, empty input, and file round-trip script with explicit codec
+`lzd`; its repeated-text count is 320 to keep this clear reference encoder
+smoke bounded. Run one C-ABI-only LZD benchmark iteration
+over `README.md` after its untimed round-trip preflight succeeds.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

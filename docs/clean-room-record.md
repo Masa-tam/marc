@@ -2115,3 +2115,19 @@ no legal guarantee of non-infringement.
   data classes and arbitrary chunking.
 - Similarity review: the surface follows marc's own existing ABI vocabulary and
   transform lifecycle; no external LZD API or benchmark structure was compared.
+
+## 2026-07-15 - LZD command-line integration
+
+- Authoring method: connected the existing marc CLI's generic bounded file loop
+  to the independently written public LZD C ABI.
+- References used: repository CLI safety contract, C ABI documentation, LZD
+  workspace policy, and the existing repository-owned round-trip script.
+- Known implementations intentionally not consulted: external LZD command-line
+  tools, interfaces, source, tests, help text, or file-handling behavior.
+- Independent decisions: explicit `--codec lzd`; no internal C++ dependency;
+  one-MiB frames; 64-MiB aggregate policy; reduced integration fixture;
+  unchanged atomic temporary-file commit and cleanup.
+- Generated-code task description: expose LZD through the existing safe CLI
+  workflow and verify nonempty, empty, overwrite, and malformed-input cases.
+- Similarity review: only marc's own CLI dispatch and safety structure was
+  extended; no external LZD CLI expression or control flow was compared.
