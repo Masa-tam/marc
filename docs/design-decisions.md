@@ -2340,3 +2340,22 @@ body. A corrupt frame publishes none of its bytes, while fully drained earlier
 frames remain committed. Preserve a final `EndInput` while draining, accept a
 later empty terminal call, keep `Flush` non-terminal, reject `ResetBlock` and
 trailing bytes, and retain stable ended and error states.
+
+## DD-137: LZMW outer streaming encode stages complete canonical frames
+
+- Date: 2026-07-16
+- Status: accepted
+
+Serialize and drain the canonical 80-byte LZMW plus None prefix before
+collecting raw bytes into one caller-owned frame buffer. Once a declared frame
+is complete, plan and encode it atomically with the reference frame codec into
+a second caller-owned buffer, then drain that exact representation through
+arbitrary output spans. Reuse both buffers and the input-backed phrase-span
+workspace for every independently reset frame.
+
+Include the raw frame, full encoded frame, and active phrase-span records in
+one checked aggregate. Preserve `EndInput` while pending bytes drain, permit a
+full final frame to await a later empty terminal call, and treat `Flush` as
+non-terminal so it never closes a partial frame. Reject premature or excess
+raw input, `ResetBlock`, unsupported flags, and invalid configuration with
+stable terminal errors.

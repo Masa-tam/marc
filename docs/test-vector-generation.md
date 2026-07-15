@@ -667,3 +667,12 @@ workspaces independently, plus the full per-frame aggregate one byte short.
 Verify truncated input, empty stream, trailing data, an empty final `EndInput`,
 partial-input `Flush`, unknown flags, `ResetBlock`, invalid limits, and stable
 terminal states.
+
+For outer frame-streaming encode, use the complete one-shot LZMW stream as the
+byte-for-byte oracle. Feed the documented two-frame `ABAB` input through
+one-byte input and output spans, keep a partial frame open across `Flush`, and
+encode a binary final short frame. Exercise empty input, a full final frame
+followed by a later empty `EndInput`, premature and excess input, unsupported
+flags, every independently short workspace, and the complete per-frame
+aggregate one byte below its required size. Terminal ended and error states
+must remain stable.

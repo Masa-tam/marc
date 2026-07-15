@@ -252,6 +252,13 @@ before its bounded payload is collected. A frame is decoded atomically into
 staging and only then drained, so a later corrupt frame cannot expose any of
 its raw bytes or retract already committed earlier frames.
 
+The matching outer frame-streaming encoder drains the canonical 80-byte prefix,
+collects at most one raw frame, encodes that frame atomically into reusable
+caller-owned storage, and drains it before proceeding. Full frames are emitted
+without inventing an end boundary, a final short frame is committed only after
+the declared final input arrives, and non-terminal `Flush` keeps a partial
+frame open. Its bytes are identical to the one-shot complete-stream encoding.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

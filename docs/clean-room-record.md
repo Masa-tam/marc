@@ -2285,3 +2285,20 @@ no legal guarantee of non-infringement.
   LZMW frame-streaming decode with no publication from a corrupt frame.
 - Similarity review: the controller composes marc's own transform and frame
   contracts; no external LZMW streaming expression or control flow was compared.
+
+## 2026-07-16 - LZMW outer frame-streaming encoder
+
+- Authoring method: connected marc's independently written LZMW prefix,
+  deterministic frame planner, and atomic frame encoder through its bounded
+  transform state contract.
+- References used: repository LZMW stream and frame codecs, DD-137, process
+  invariants, checked arithmetic, workspace profile, and local limits.
+- Known implementations intentionally not consulted: external LZMW streaming
+  containers, encoders, state machines, source, pseudocode, tests, or APIs.
+- Independent decisions: canonical prefix-first draining; one complete staged
+  frame; reference-byte identity; non-terminal flush; preserved terminal input;
+  stable terminal states.
+- Generated-code task description: implement and test one-byte-capable outer
+  LZMW frame-streaming encode identical to the one-shot complete stream.
+- Similarity review: the controller composes marc's own transform and frame
+  contracts; no external LZMW streaming expression or control flow was compared.
