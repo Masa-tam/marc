@@ -2318,3 +2318,20 @@ no legal guarantee of non-infringement.
   a pure-C workspace, alignment, lifecycle, and round-trip test.
 - Similarity review: the addition follows marc's own ABI and LZMW transform
   contracts; no external LZMW API structure or expression was compared.
+
+## 2026-07-16 - LZMW benchmark and local completion audit
+
+- Authoring method: extended marc's existing public-ABI benchmark selector and
+  applied the repository completion criteria through the new LZMW C surface.
+- References used: DD-139, repository benchmark measurement contract, C ABI,
+  existing LZMW boundary and malformed-stream tests, and completion criteria.
+- Known implementations intentionally not consulted: external LZMW benchmark
+  harnesses, completion suites, corpora, source, pseudocode, or measurements.
+- Independent decisions: four payload bytes per worst-case input byte with no
+  odd-tail overhead; frame-64 completion fixture; deterministic generated data;
+  explicit separation of local readiness, its pending fuzz gate, and release
+  evidence.
+- Generated-code task description: add a C-ABI-only LZMW benchmark path and a
+  consolidated deterministic round-trip and chunking completion matrix.
+- Similarity review: the work reuses marc's own benchmark and test contracts;
+  no external LZMW benchmark or completion structure was compared.

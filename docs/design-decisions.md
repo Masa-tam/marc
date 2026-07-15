@@ -2376,3 +2376,23 @@ records for encode, or phrase records followed by an aligned iterative
 expansion stack for decode. Validate sizes and alignment before constructing a
 non-throwing C++ transform. No internal C++ type, count, or offset crosses the
 ABI, and all processing continues through the common opaque transform API.
+
+## DD-139: LZMW local completion remains distinct from release evidence
+
+- Date: 2026-07-16
+- Status: accepted
+
+Treat LZMW variant 1 plus entropy None as locally implementation-ready only
+after a public-C-ABI completion matrix covers empty input, every one-byte value,
+all byte values, repeated bytes and patterns, deterministic high-entropy data,
+frame-boundary neighbors, deterministic re-encoding, multiple frames, and
+one-byte and mixed chunking, and after a bounded decoder fuzz harness has its
+compile-smoke and permanent regressions in the suite. Require a C-ABI-only
+benchmark smoke that verifies its round trip before reporting ratio,
+encode/decode throughput, and workspace. This change establishes the matrix
+and benchmark; the fuzz gate remains pending.
+
+This status does not claim release completion. Cross-platform deterministic
+evidence, sanitizer and coverage-guided fuzz execution, representative Release
+benchmark records, and the final similarity review remain explicit release
+gates.

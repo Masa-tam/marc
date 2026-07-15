@@ -87,11 +87,10 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
-An opt-in benchmark executable drives the public LZ77, LZSS, LZ78, LZW, and
-LZD C
-transforms over caller-selected files. It reports full-stream ratio, timed
-transform throughput, and profile-derived codec workspace under one documented
-method.
+An opt-in benchmark executable drives the public LZ77, LZSS, LZ78, LZW, LZD,
+and LZMW C transforms over caller-selected files. It reports full-stream ratio,
+timed transform throughput, and profile-derived codec workspace under one
+documented method.
 The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.
@@ -258,6 +257,15 @@ caller-owned storage, and drains it before proceeding. Full frames are emitted
 without inventing an end boundary, a final short frame is committed only after
 the declared final input arrives, and non-terminal `Flush` keeps a partial
 frame open. Its bytes are identical to the one-shot complete-stream encoding.
+
+The public-ABI completion matrix exercises required binary data classes,
+deterministic re-encoding, frame-boundary neighbors, multiple frames, and
+one-byte and mixed input/output chunking. The benchmark uses the same public
+configuration, workspace query, factory, process, and destroy surface, verifies
+a round trip before timing, and reports full-stream ratio, throughput, and
+caller-owned workspace. These are local readiness checks, not release evidence.
+The remaining local readiness gate is a bounded LZMW decoder fuzz harness with
+permanent regressions for any discovered crash or hang.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

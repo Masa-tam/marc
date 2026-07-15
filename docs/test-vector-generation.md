@@ -684,3 +684,11 @@ require 208 bytes, then decode it through a separately created transform and
 compare all raw bytes. Test a deliberately misaligned views address, nonzero
 reserved configuration data, a zero dictionary limit, and zero maximum entries
 through a translation unit compiled strictly as C11.
+
+The LZMW completion matrix uses frame size 64 and validates empty input, all
+256 one-byte inputs, all byte values in sequence, repeated zeroes, a repeated
+binary pattern, deterministic pseudorandom bytes, and lengths 63, 64, and 65.
+Re-encode every case and require exact bytes. For a 193-byte stream, compare
+one-shot-equivalent processing with 1/1, 7/5, and 13/17 input/output chunks and
+round-trip each result. Run one public-C-ABI benchmark smoke iteration over the
+README input; the benchmark must verify the decoded bytes before timing.

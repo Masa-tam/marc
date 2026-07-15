@@ -26,6 +26,7 @@ enum class Codec {
     lz78,
     lzw,
     lzd,
+    lzmw,
 };
 
 struct TransformDeleter {
@@ -43,6 +44,7 @@ struct CodecConfig {
     marc_lz78_config lz78{};
     marc_lzw_config lzw{};
     marc_lzd_config lzd{};
+    marc_lzmw_config lzmw{};
 };
 
 struct Workspace {
@@ -63,7 +65,8 @@ struct Measurement {
     if (codec == Codec::lzss) return "lzss";
     if (codec == Codec::lz78) return "lz78";
     if (codec == Codec::lzw) return "lzw";
-    return "lzd";
+    if (codec == Codec::lzd) return "lzd";
+    return "lzmw";
 }
 
 [[nodiscard]] std::uint64_t payload_factor(const Codec codec) noexcept {
@@ -130,7 +133,7 @@ struct Measurement {
         result.lzw.max_internal_buffered_bytes = UINT64_C(64) << 20;
         result.lzw.max_dictionary_entries =
             (UINT64_C(1) << result.lzw.maximum_code_width) - 256;
-    } else {
+    } else if (codec == Codec::lzd) {
         if (marc_lzd_config_init(direction, &result.lzd) != MARC_STATUS_OK)
             return false;
         result.lzd.original_size = original_size;
@@ -140,6 +143,16 @@ struct Measurement {
         result.lzd.max_dictionary_serialized_size = maximum_payload;
         result.lzd.max_internal_buffered_bytes = UINT64_C(64) << 20;
         result.lzd.max_dictionary_entries = result.lzd.maximum_entries;
+    } else {
+        if (marc_lzmw_config_init(direction, &result.lzmw) != MARC_STATUS_OK)
+            return false;
+        result.lzmw.original_size = original_size;
+        result.lzmw.frame_size = static_cast<std::uint32_t>(frame_size);
+        result.lzmw.max_frame_size = frame_size;
+        result.lzmw.max_compressed_payload_size = maximum_payload;
+        result.lzmw.max_dictionary_serialized_size = maximum_payload;
+        result.lzmw.max_internal_buffered_bytes = UINT64_C(64) << 20;
+        result.lzmw.max_dictionary_entries = result.lzmw.maximum_entries;
     }
     return true;
 }
@@ -155,7 +168,9 @@ struct Measurement {
         return marc_lz78_workspace_requirements(&config.lz78, &requirements);
     if (config.codec == Codec::lzw)
         return marc_lzw_workspace_requirements(&config.lzw, &requirements);
-    return marc_lzd_workspace_requirements(&config.lzd, &requirements);
+    if (config.codec == Codec::lzd)
+        return marc_lzd_workspace_requirements(&config.lzd, &requirements);
+    return marc_lzmw_workspace_requirements(&config.lzmw, &requirements);
 }
 
 [[nodiscard]] marc_status create_transform(
@@ -177,8 +192,11 @@ struct Measurement {
     if (config.codec == Codec::lzw)
         return marc_lzw_create(
             &config.lzw, primary, secondary, views, transform);
-    return marc_lzd_create(
-        &config.lzd, primary, secondary, views, transform);
+    if (config.codec == Codec::lzd)
+        return marc_lzd_create(
+            &config.lzd, primary, secondary, views, transform);
+    return marc_lzmw_create(
+        &config.lzmw, primary, secondary, views, transform);
 }
 
 [[nodiscard]] bool prepare_workspace(const CodecConfig& config,
@@ -322,7 +340,8 @@ struct Measurement {
 }
 
 void print_usage() {
-    std::cerr << "usage: marc_benchmark <lz77|lzss|lz78|lzw|lzd> <input> [iterations]\n";
+    std::cerr << "usage: marc_benchmark <lz77|lzss|lz78|lzw|lzd|lzmw> "
+                 "<input> [iterations]\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -430,6 +449,7 @@ int main(const int argc, const char* const argv[]) {
     else if (name == "lz78") codec = Codec::lz78;
     else if (name == "lzw") codec = Codec::lzw;
     else if (name == "lzd") codec = Codec::lzd;
+    else if (name == "lzmw") codec = Codec::lzmw;
     else {
         print_usage();
         return 2;
