@@ -704,3 +704,11 @@ LZ77 tokens into caller-owned staging, then computes the Blocked Huffman model
 choice and exact extents for every dictionary-byte block. Encoding repeats only
 the deterministic entropy traversal into already-sized descriptor and payload
 regions. No raw-frame-sized hidden allocation or duplicate token copy is used.
+
+At complete-stream scope, the combined controller places the fixed LZ77
+parameter region immediately after the stream header and reuses frame-local
+staging and views. Encoding plans all frames before emitting the prefix.
+Decoding first validates the full serialized stream without raw publication,
+then decodes it in a second pass. This gives whole-stream atomicity for the
+one-shot API while keeping memory bounded by the largest frame and its entropy
+block count rather than total stream size.

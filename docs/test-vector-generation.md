@@ -738,3 +738,13 @@ Repeat with 300-symbol entropy blocks, require four blocks with a final
 124-symbol block, and round-trip the complete frame. Short staging and
 serialized destinations remain sentinel-filled; empty and contextually wrong
 raw frame extents are rejected.
+
+For the combined complete stream, encode raw `ABABX` with raw frame size 2 and
+entropy block size 16. Require three frames of raw extents 2, 2, and 1 and an
+exact total of 408 bytes including the 80-byte prefix. Compare the two `AB`
+frame bodies to prove both layers reset, then decode the stream and re-encode it
+deterministically. Require empty input to produce only the 80-byte prefix.
+Reject every strict prefix and trailing data. Corrupt the second frame's first
+staged token and require the full raw output plus parsed stream/parameter
+outputs to remain unchanged. Exercise serialized-output, raw-output, block-view,
+and dictionary-staging capacity failures independently.

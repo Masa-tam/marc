@@ -2516,3 +2516,24 @@ a short serialized destination may contain the planned staging but leaves the
 serialized destination unchanged. Entropy blocks measure dictionary bytes,
 may occur multiple times per frame, and retain the existing final-short-block
 rule. Serialized output is not counted as intermediate workspace.
+
+## DD-146: Combined complete streams use two-pass atomic decode
+
+- Date: 2026-07-16
+- Status: accepted
+
+Serialize a known-size LZ77 plus Blocked Huffman stream as the existing 64-byte
+stream header, the existing 16-byte LZ77 parameter region, and zero or more
+combined frames. Empty input is exactly the 80-byte prefix. Reuse one
+caller-owned dictionary staging span and one caller-owned block-view array for
+every frame; their capacities must cover the largest frame, not the sum of all
+frames.
+
+Plan every frame before whole-stream encoding so a short serialized destination
+is unchanged. Decode in two complete passes: the first parses and validates all
+frames through canonical dictionary staging without raw output, and the second
+repeats the deterministic traversal and publishes raw frame extents. Publish
+the parsed stream header and LZ77 parameters only after both passes succeed.
+Consequently malformed later frames leave the entire raw destination and
+configuration outputs unchanged. Both LZ77 history and every Blocked Huffman
+model reset at each outer-frame boundary.

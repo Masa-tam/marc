@@ -2437,3 +2437,22 @@ no legal guarantee of non-infringement.
 - Similarity review: the encoder is a direct sequencing of independently
   implemented marc components; no external combined encoder structure was
   compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman complete stream
+
+- Authoring method: composed marc's stream header and parameter serializers
+  with its independently implemented combined frame planner, validator,
+  encoder, and decoder.
+- References used: DD-142 through DD-146, repository one-shot stream atomicity
+  contract, and existing standalone LZ77 and Blocked Huffman controllers.
+- Known implementations intentionally not consulted: external LZ/Huffman
+  stream containers, controllers, source, pseudocode, or tests.
+- Independent decisions: 80-byte empty prefix; reusable largest-frame staging
+  and views; all-frame validation pass before raw decode; delayed configuration
+  publication; explicit reset-body comparison.
+- Generated-code task description: implement deterministic known-size combined
+  stream planning, encoding, strict two-pass decoding, multi-frame reset tests,
+  and whole-stream malformed atomicity.
+- Similarity review: the controller follows marc's own one-shot stream
+  contracts and component APIs; no external combined stream structure was
+  compared.
