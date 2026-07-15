@@ -214,3 +214,19 @@ Build and interoperability workflow reference:
   the workflow artifact publication and retention model; it is not an
   algorithm or stream-format reference.
   <https://docs.github.com/en/actions/tutorials/store-and-share-data>
+
+CRC-32C references:
+
+- RFC 3385, "Internet Protocol Small Computer System Interface (iSCSI)
+  Cyclic Redundancy Check (CRC)/Checksum Considerations," September 2002.
+  Used for selection and identification of the Castagnoli CRC-32C polynomial.
+  <https://www.rfc-editor.org/rfc/rfc3385>
+- RFC 3720, "Internet Small Computer Systems Interface (iSCSI)," April 2004,
+  Section 12.1 and Appendix B. Used for the reflected CRC-32C parameters and
+  independently published check values. The accompanying example source code
+  was intentionally not consulted.
+  <https://www.rfc-editor.org/rfc/rfc3720>
+
+marc independently specifies its algorithm ID, byte-at-a-time reference update,
+little-endian digest serialization, API lifecycle, and tests. No CRC library or
+implementation source was consulted.

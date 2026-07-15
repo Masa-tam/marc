@@ -2761,3 +2761,19 @@ every foreign archive, and re-encodes the fixture for exact archive comparison.
 Require a new output directory so verification never overwrites caller files.
 The bundle proves reproducibility and interoperability only; unsigned hashes do
 not authenticate the workflow producer.
+
+## DD-159: CRC-32C begins as a format-neutral hash primitive
+
+- Date: 2026-07-16
+- Status: accepted
+
+Reserve hash algorithm ID 1 for CRC-32C using the reflected Castagnoli
+parameters documented in `docs/format.md`. Serialize its final 32-bit numeric
+value little-endian so digest bytes follow the repository-wide integer rule.
+
+Implement a clear byte-at-a-time, table-free reference algorithm with constant
+state and no platform intrinsics. Finalization is a non-mutating snapshot;
+`HashTap`, rather than the algorithm object, owns terminal lifecycle policy.
+Reject every digest span whose size is not exactly four bytes without changing
+it. Do not yet permit hash descriptors or checksum trailers in version 1.0
+streams; their target, scope, and inclusion ranges require a separate decision.

@@ -2647,3 +2647,22 @@ no legal guarantee of non-infringement.
   can verify on another OS or architecture and report with stable metadata.
 - Similarity review: the protocol composes only marc-owned formats and inputs;
   no external archive representation or interoperability harness was compared.
+
+## 2026-07-16 - CRC-32C reference primitive
+
+- Authoring method: implemented the reflected Castagnoli recurrence from the
+  RFC parameters and marc's existing `IHashAlgorithm` contract.
+- References used: RFC 3385 polynomial selection; RFC 3720 Section 12.1 and
+  Appendix B parameters and check values; marc little-endian serialization.
+- Known implementations intentionally not consulted: CRC library source,
+  hardware-intrinsic implementations, lookup tables, generated tables, or
+  external test suites.
+- Independent decisions: hash ID 1; table-free byte-at-a-time update;
+  non-mutating final snapshot; exact four-byte little-endian digest; stream
+  descriptors remain disabled.
+- Generated-code task description: add a bounded, allocation-free CRC-32C hash
+  primitive with published vectors, split invariance, reset, HashTap composition,
+  and transactional wrong-size behavior.
+- Similarity review: the implementation is a direct expression of the
+  polynomial recurrence and repository interfaces; no implementation structure
+  or source expression was compared.

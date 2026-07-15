@@ -836,3 +836,10 @@ their own values, bytes `256..1279` are zero, and bytes `1280..3327` repeat
 platform, round-trip each of the seven CLI profiles before publication, and
 record every file's size and SHA-256 in the bundle manifest. Generated archives
 are CI evidence rather than permanent canonical vectors.
+
+For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
+from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
+The numeric result is `E3069283`; serialize it through marc's little-endian
+digest rule as `83 92 06 E3`. Also require empty input to produce four zero
+bytes, every split of the check string to produce the same digest, reset to
+restore the empty state, and wrong-sized digest spans to remain unchanged.

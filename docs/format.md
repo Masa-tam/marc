@@ -78,6 +78,19 @@ block, and original sizes must not exceed local decoder limits.
 Static Huffman has no public algorithm ID. IDs outside these tables and variant
 IDs other than those listed are rejected.
 
+### Hash algorithm IDs and digest bytes
+
+The hash interface reserves algorithm ID `1` for CRC-32C (Castagnoli). This ID
+does not enable a version 1.0 stream field: stream hash descriptor size and
+frame checksum trailer size must remain zero until their complete layouts are
+defined.
+
+CRC-32C uses width 32, polynomial `0x1EDC6F41`, reflected input and output,
+initial register `0xFFFFFFFF`, and final XOR `0xFFFFFFFF`. The reflected update
+uses polynomial `0x82F63B78`. Its numeric check value for ASCII `123456789` is
+`0xE3069283`. A four-byte marc digest stores that numeric value little-endian,
+so the check vector is `83 92 06 E3`.
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

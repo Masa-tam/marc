@@ -375,8 +375,11 @@ overflow enter a terminal error state. Caller mistakes such as a committed
 length beyond the available span or a wrong digest-buffer size do not mutate the
 algorithm and may be retried. Reset explicitly begins a new scope.
 
-Hash target/scope descriptors and concrete algorithms remain pending. They will
-be specified before nonzero stream or frame hash regions are accepted.
+CRC-32C is the first concrete `IHashAlgorithm`. Its clear byte-at-a-time
+reference update has bounded constant state, no allocation, and no platform
+intrinsics; `HashTap` supplies lifecycle enforcement and committed-byte
+accounting. Hash target/scope descriptors and stream integration remain
+pending and will be specified before nonzero hash regions are accepted.
 
 ## Buffered incremental reference encoder
 

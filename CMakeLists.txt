@@ -87,6 +87,7 @@ set(MARC_SOURCES
     src/entropy/tans_decoder.cpp
     src/entropy/tans_controller.cpp
     src/core/bit_io.cpp
+    src/core/crc32c.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
     src/core/status.cpp
@@ -494,6 +495,7 @@ if(MARC_BUILD_TESTS)
         tests/blocked_huffman_profile_tests.cpp
         tests/checked_math_tests.cpp
         tests/canonical_huffman_tests.cpp
+        tests/crc32c_tests.cpp
         tests/endian_tests.cpp
         tests/header_accumulator_tests.cpp
         tests/hash_tap_tests.cpp
