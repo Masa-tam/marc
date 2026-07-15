@@ -2186,3 +2186,19 @@ no legal guarantee of non-infringement.
 - Similarity review: the implementation follows marc's own encoder transaction
   contract and input-span observation; no external LZMW encoder expression or
   control flow was compared.
+
+## 2026-07-15 - Bounded LZMW streaming decoder
+
+- Authoring method: wrapped marc's atomic validator-first decoder in the
+  repository's immutable-direction transform and frame publication contract.
+- References used: repository LZMW format, decoder, DD-131, stream status
+  invariants, checked arithmetic, and local workspace limits.
+- Known implementations intentionally not consulted: external LZMW streaming
+  decoders, buffering policies, source, pseudocode, tests, or APIs.
+- Independent decisions: worst-case four-byte token extent per raw byte;
+  end-input-triggered whole-frame validation; caller-owned raw staging;
+  aggregate construction check; stable terminal states.
+- Generated-code task description: implement and test a bounded LZMW streaming
+  decoder that never publishes bytes from a malformed frame.
+- Similarity review: the adapter follows marc's own transform and atomic frame
+  patterns; no external LZMW streaming expression or control flow was compared.

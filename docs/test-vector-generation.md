@@ -611,3 +611,13 @@ independent validator-first decoder. Short output, short phrase-span workspace,
 serialized-size rejection, invalid parameters, frame-size rejection, and the
 full input-plus-workspace aggregate limit must fail before any patterned output
 byte is changed.
+
+For streaming decode, generate the fixed reference stream with the independent
+reference encoder and feed it through one-byte input and output spans. Exercise
+`EndInput` both with the final token bytes and in a later empty call, drain a
+nonempty frame without repeating the flag, and accept an empty frame. A
+truncated final token must publish no raw byte and retain its stable byte
+position on repeated error calls. Also reject a call exceeding the conservative
+encoded extent before consuming it, every unsupported flag, each independently
+short workspace, and an aggregate limit one byte below the complete encoded,
+phrase, stack, and staged-output requirement.

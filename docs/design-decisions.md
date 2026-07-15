@@ -2230,3 +2230,22 @@ dictionary strings. Use an exact planning pass to determine token count and
 serialized size, enforce input-plus-workspace and serialized limits, and check
 all caller capacity before publishing any token byte. The conservative
 workspace count is `min(max(input_size - 1, 0), maximum_entries)`.
+
+## DD-131: LZMW streaming decode publishes only complete validated frames
+
+- Date: 2026-07-15
+- Status: accepted
+
+Adapt the atomic validator-first LZMW decoder to the transform contract by
+collecting one declared frame's reference bytes, decoding into caller-owned raw
+staging storage only when `EndInput` is observed, and draining that storage
+after complete success. The maximum encoded extent is four bytes per declared
+raw byte because every phrase emits one fixed token and every phrase expands to
+at least one byte.
+
+Include the encoded extent, phrase records, iterative expansion stack, and raw
+staging extent in the constructor's aggregate limit. Reject excess encoded
+input before consuming any part of that call. Preserve the draining state after
+the final-input call, reject later input as trailing data, and make the ended
+and error states stable across repeated calls. `Flush` does not terminate a
+partial frame and `ResetBlock` is unsupported at this layer.

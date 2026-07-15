@@ -223,6 +223,13 @@ a strictly longer match. Thus it emits the smallest numeric reference on equal
 lengths without copying phrase bytes. Capacity and aggregate-limit failures
 occur before output is modified.
 
+The streaming reference decoder is a bounded frame adapter around the atomic
+decoder. It collects no more than the declared frame's worst-case fixed-token
+extent, validates and expands the complete frame into caller-owned staging
+storage at `EndInput`, and only then drains raw bytes through arbitrary output
+spans. Encoded tokens, phrase records, expansion stack, and staged raw bytes
+are included in one checked aggregate before construction succeeds.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental
