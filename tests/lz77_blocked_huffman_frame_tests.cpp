@@ -1,4 +1,5 @@
 #include "frame/lz77_blocked_huffman_frame.hpp"
+#include "entropy/blocked_huffman_format.hpp"
 
 #include <gtest/gtest.h>
 
@@ -24,6 +25,65 @@ using marc::frame::Lz77BlockedHuffmanFrameValidationError;
         marc::dictionary::internal::lz77_parameter_size;
     stream.original_size = 1;
     return stream;
+}
+
+[[nodiscard]] marc::frame::StreamHeader stream_for_repeated_a() {
+    auto stream = stream_for_a();
+    stream.frame_size = 5;
+    stream.entropy_block_size = 32;
+    stream.original_size = 5;
+    return stream;
+}
+
+[[nodiscard]] std::array<std::byte, 104> repeated_a_frame() {
+    std::array<std::byte, 104> encoded{};
+    const auto stream = stream_for_repeated_a();
+    const marc::core::DecoderLimits limits{};
+
+    marc::frame::FrameHeader header{};
+    header.uncompressed_size = 5;
+    header.dictionary_serialized_size = 32;
+    header.compressed_payload_size = 32;
+    header.entropy_block_count = 1;
+    header.block_descriptors_size = 16;
+    const marc::frame::FrameValidationContext context{stream, limits, 0, 0};
+    std::span<std::byte, marc::frame::frame_header_size> header_output{
+        encoded.data(), marc::frame::frame_header_size};
+    EXPECT_EQ(marc::frame::serialize_frame_header(
+                  header, context, header_output),
+              marc::frame::FrameHeaderError::none);
+
+    const marc::entropy::internal::BlockedHuffmanDescriptor descriptor{
+        32, 32, 0, marc::entropy::internal::blocked_huffman_raw_flag, 8};
+    std::span<std::byte,
+              marc::entropy::internal::blocked_huffman_descriptor_size>
+        descriptor_output{encoded.data() + marc::frame::frame_header_size,
+                          marc::entropy::internal::
+                              blocked_huffman_descriptor_size};
+    EXPECT_EQ(marc::entropy::internal::serialize_block_descriptor(
+                  descriptor, 32, limits, descriptor_output),
+              marc::entropy::internal::BlockedHuffmanFormatError::none);
+
+    const auto payload_offset = marc::frame::frame_header_size
+        + marc::entropy::internal::blocked_huffman_descriptor_size;
+    const marc::dictionary::internal::Lz77Token literal{
+        marc::dictionary::internal::Lz77TokenTag::literal, 0, 0, 'A'};
+    const marc::dictionary::internal::Lz77Token match{
+        marc::dictionary::internal::Lz77TokenTag::terminal_match, 1, 4, 0};
+    std::span<std::byte, marc::dictionary::internal::lz77_token_size>
+        literal_output{encoded.data() + payload_offset,
+                       marc::dictionary::internal::lz77_token_size};
+    std::span<std::byte, marc::dictionary::internal::lz77_token_size>
+        match_output{encoded.data() + payload_offset
+                         + marc::dictionary::internal::lz77_token_size,
+                     marc::dictionary::internal::lz77_token_size};
+    EXPECT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  literal, literal_output),
+              marc::dictionary::internal::Lz77FormatError::none);
+    EXPECT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  match, match_output),
+              marc::dictionary::internal::Lz77FormatError::none);
+    return encoded;
 }
 
 constexpr std::array<std::byte, 88> single_literal_frame{
@@ -168,4 +228,73 @@ TEST(Lz77BlockedHuffmanFrameValidator, RejectsWrongSequenceAndPipeline) {
                   stream, {}, {}, 0, 0, single_literal_frame, views, staging)
                   .error,
               Lz77BlockedHuffmanFrameValidationError::unsupported_pipeline);
+}
+
+TEST(Lz77BlockedHuffmanFrameDecoder, DecodesHandVectorWithoutTouchingTail) {
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 16> staging{};
+    std::array<std::byte, 3> output{};
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, single_literal_frame, views, staging,
+        output);
+    ASSERT_EQ(result.error, Lz77BlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(Lz77BlockedHuffmanFrameDecoder, DecodesOverlappingMatch) {
+    const auto encoded = repeated_a_frame();
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 32> staging{};
+    std::array<std::byte, 5> output{};
+    const auto result = marc::frame::decode_lz77_blocked_huffman_frame(
+        stream_for_repeated_a(), {}, {}, 0, 0, encoded, views, staging,
+        output);
+    ASSERT_EQ(result.error, Lz77BlockedHuffmanFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(Lz77BlockedHuffmanFrameDecoder, ShortRawOutputIsAtomic) {
+    const auto encoded = repeated_a_frame();
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 32> staging{};
+    std::array<std::byte, 4> output{};
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_blocked_huffman_frame(
+        stream_for_repeated_a(), {}, {}, 0, 0, encoded, views, staging,
+        output);
+    EXPECT_EQ(result.error, Lz77BlockedHuffmanFrameValidationError::
+                                raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+}
+
+TEST(Lz77BlockedHuffmanFrameDecoder, MalformedLayersDoNotPublishRawBytes) {
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 16> staging{};
+    std::array<std::byte, 1> output{std::byte{0x5a}};
+
+    auto invalid_descriptor = single_literal_frame;
+    invalid_descriptor[64] = std::byte{1};
+    EXPECT_EQ(marc::frame::decode_lz77_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_descriptor, views,
+                  staging, output)
+                  .error,
+              Lz77BlockedHuffmanFrameValidationError::controller_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
+
+    auto invalid_token = single_literal_frame;
+    invalid_token[72] = std::byte{0xff};
+    EXPECT_EQ(marc::frame::decode_lz77_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_token, views,
+                  staging, output)
+                  .error,
+              Lz77BlockedHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
 }

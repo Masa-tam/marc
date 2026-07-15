@@ -720,3 +720,11 @@ view and staging workspaces, aggregate workspace exhaustion, invalid raw-block
 metadata, and an invalid staged LZ77 token. The validator has no raw-output
 parameter, so these tests establish non-publication structurally before raw
 decode is added.
+
+For combined raw decode, use the same 88-byte `A` frame and require that bytes
+beyond its one-byte raw extent remain unchanged. Independently construct a raw
+Blocked Huffman frame whose dictionary payload is a Literal `A` followed by a
+distance-one, length-four terminal LZ77 match; require output `AAAAA` to exercise
+overlap-copy semantics without relying on a combined encoder. A four-byte raw
+destination for that five-byte frame and corrupt descriptor/token variants must
+leave every raw destination byte unchanged.

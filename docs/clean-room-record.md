@@ -2402,3 +2402,19 @@ no legal guarantee of non-infringement.
 - Similarity review: the implementation is direct composition of marc-owned
   interfaces and formats; no external combined decoder expression was
   compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman raw frame decoder
+
+- Authoring method: added a commit stage over marc's combined-frame validator
+  and existing transactional LZ77 decoder.
+- References used: DD-142 through DD-144, repository frame-atomicity contract,
+  canonical LZ77 overlap semantics, and the two constituent format serializers.
+- Known implementations intentionally not consulted: external LZ/Huffman
+  combined decoders, containers, source, pseudocode, or tests.
+- Independent decisions: validate into staging before output-capacity checking;
+  raw destination excluded from intermediate workspace accounting; exact raw
+  subspan publication; an independently serialized overlap-copy test frame.
+- Generated-code task description: decode one fully validated combined frame
+  into raw bytes while proving short-output and malformed-layer atomicity.
+- Similarity review: the decoder only sequences repository-owned transactional
+  components; no external control flow or representation was compared.

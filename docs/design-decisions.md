@@ -2480,3 +2480,20 @@ the descriptor/model bytes, entropy payload bytes, dictionary staging, and
 typed block views together against `max_internal_buffered_bytes`, using checked
 arithmetic. Capacity, aggregate-limit, entropy-layout, entropy-payload, and
 dictionary-token failures receive distinct stable categories.
+
+## DD-144: Combined raw decode reuses the validated dictionary extent
+
+- Date: 2026-07-16
+- Status: accepted
+
+Build the first combined raw decoder directly on DD-143. A frame must complete
+generic, entropy-layout, entropy-payload, and canonical LZ77 validation into
+dictionary staging before raw-output capacity is considered. Then invoke the
+standalone transactional LZ77 decoder over exactly that validated staging and
+exactly the declared raw extent.
+
+Keep raw output outside the internal-workspace aggregate because it is the
+caller's committed destination, not buffered intermediate state. A short raw
+span returns its own stable error after validation and changes no raw byte.
+Malformed entropy or dictionary data likewise cannot reach the raw decoder.
+Output beyond `uncompressed_size` is never written.

@@ -690,3 +690,10 @@ required extents are derived from the validated frame header. Descriptor/model
 bytes, entropy payload bytes, dictionary staging, and the typed view array form
 one checked aggregate workspace bound. This preserves bounded memory while
 keeping all allocation policy outside the validator.
+
+The complete-frame raw decoder is a thin commit stage over this boundary. It
+first runs the same validator, checks raw destination capacity, and then passes
+only the validated dictionary staging to the standalone transactional LZ77
+decoder. Raw output is therefore unreachable from malformed generic headers,
+entropy metadata, entropy payloads, or token streams. The standalone decoder's
+prevalidation also protects the raw destination if its API is used separately.

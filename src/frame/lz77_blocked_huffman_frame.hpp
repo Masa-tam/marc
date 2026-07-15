@@ -1,7 +1,7 @@
 #ifndef MARC_FRAME_LZ77_BLOCKED_HUFFMAN_FRAME_HPP
 #define MARC_FRAME_LZ77_BLOCKED_HUFFMAN_FRAME_HPP
 
-#include "dictionary/lz77_validator.hpp"
+#include "dictionary/lz77_decoder.hpp"
 #include "entropy/blocked_huffman_controller.hpp"
 #include "entropy/blocked_huffman_frame_decoder.hpp"
 #include "frame/frame_header.hpp"
@@ -25,6 +25,8 @@ enum class Lz77BlockedHuffmanFrameValidationError : std::uint8_t {
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    raw_output_too_small,
+    dictionary_decode_error,
     arithmetic_overflow,
 };
 
@@ -42,12 +44,15 @@ struct Lz77BlockedHuffmanFrameValidationResult {
         dictionary::internal::Lz77ValidationError::none};
     dictionary::internal::Lz77FormatError dictionary_format_error{
         dictionary::internal::Lz77FormatError::none};
+    dictionary::internal::Lz77DecodeError dictionary_decode_error{
+        dictionary::internal::Lz77DecodeError::none};
     Lz77BlockedHuffmanFrameValidationError error{
         Lz77BlockedHuffmanFrameValidationError::none};
 };
 
 // Validates and entropy-decodes one complete frame into dictionary_staging.
-// It deliberately does not expose or write decoded raw bytes.
+// Input and staging must not overlap. This function deliberately does not
+// expose or write decoded raw bytes.
 [[nodiscard]] Lz77BlockedHuffmanFrameValidationResult
 validate_lz77_blocked_huffman_frame(
     const StreamHeader& stream,
@@ -58,6 +63,21 @@ validate_lz77_blocked_huffman_frame(
     std::span<const std::byte> input,
     std::span<entropy::internal::BlockedHuffmanBlockView> views,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Validates the complete frame before publishing any raw byte. The serialized
+// input, dictionary staging, and raw output extents must be mutually
+// non-overlapping.
+[[nodiscard]] Lz77BlockedHuffmanFrameValidationResult
+decode_lz77_blocked_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::BlockedHuffmanBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

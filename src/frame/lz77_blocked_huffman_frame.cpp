@@ -157,4 +157,40 @@ validate_lz77_blocked_huffman_frame(
     return result;
 }
 
+Lz77BlockedHuffmanFrameValidationResult
+decode_lz77_blocked_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::BlockedHuffmanBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_lz77_blocked_huffman_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging);
+    if (result.error != Lz77BlockedHuffmanFrameValidationError::none) {
+        return result;
+    }
+    if (output.size() < result.raw_size) {
+        result.error =
+            Lz77BlockedHuffmanFrameValidationError::raw_output_too_small;
+        return result;
+    }
+
+    const auto decoded = dictionary::internal::decode_lz77_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, output.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error != dictionary::internal::Lz77DecodeError::none) {
+        result.dictionary_error = decoded.validation_error;
+        result.dictionary_format_error = decoded.format_error;
+        result.error =
+            Lz77BlockedHuffmanFrameValidationError::dictionary_decode_error;
+    }
+    return result;
+}
+
 } // namespace marc::frame
