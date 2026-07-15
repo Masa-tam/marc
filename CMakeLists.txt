@@ -18,6 +18,14 @@ option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
 
+if(MARC_BUILD_FUZZERS AND WIN32
+        AND CMAKE_CXX_COMPILER_ID MATCHES "Clang"
+        AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
+    # The Windows libFuzzer runtime is built against the static release CRT.
+    # Select the matching runtime before creating marc_static or any fuzzer.
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+endif()
+
 if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
     message(FATAL_ERROR "At least one of MARC_BUILD_SHARED or MARC_BUILD_STATIC must be ON")
 endif()

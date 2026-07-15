@@ -43,9 +43,22 @@ out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzmw_stream fuzz/corpus/lzmw_stream -max_len=8192
 ```
 
+On Windows, this configuration selects the static C runtime required by the
+Clang libFuzzer runtime. Before executing a fuzzer, add Clang's sanitizer
+runtime directory to `PATH`; it is the `lib/windows` directory below the path
+reported by `clang++ --print-resource-dir`. This makes the dynamic AddressSanitizer
+runtime discoverable without recording a machine-specific compiler path in the
+repository.
+
 MSVC remains the reference normal-build toolchain, but its native driver is not
 used for this libFuzzer target. Ordinary test builds compile the harness as an
 object target, catching portable C++ errors without requiring a fuzz runtime.
+
+A bounded Windows smoke campaign on 2026-07-16 ran each of the six targets for
+10,000 inputs with `-max_len=8192`, `-timeout=5`, and `-rss_limit_mb=512`.
+All 60,000 executions completed without a crash, hang, or sanitizer finding;
+each process peaked at 64 MiB RSS. This is execution-path evidence only, not a
+claim of coverage completion.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

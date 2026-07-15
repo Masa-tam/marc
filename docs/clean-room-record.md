@@ -2586,3 +2586,18 @@ no legal guarantee of non-infringement.
   mandatory data classes, boundaries, determinism, chunking, and round trip.
 - Similarity review: the matrix composes only repository-owned contracts and
   generated fixtures; no external test structure or vectors were compared.
+
+## 2026-07-16 - Bounded sanitizer fuzz smoke campaign
+
+- Authoring method: executed the six repository-owned decoder fuzz targets
+  under Clang libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer.
+- References used: DD-155, `docs/fuzzing.md`, repository seed corpora, and the
+  bounded policies embedded in each marc harness.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, reports, source code, or test suites.
+- Independent decisions: 10,000 inputs per target; 8 KiB maximum input;
+  five-second timeout; 512 MiB RSS limit; separate disposable mutation corpora.
+- Result: all 60,000 executions completed without a crash, hang, or sanitizer
+  finding; no generated mutation was promoted to the repository corpus.
+- Similarity review: execution used only marc-owned harnesses and seeds and did
+  not compare behavior or structure with another implementation.

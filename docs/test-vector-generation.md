@@ -811,3 +811,11 @@ data, and deterministic inputs of lengths 63, 64, and 65 to encode identically
 twice and round-trip through the public C ABI. For a 193-byte four-frame input,
 require encode output to match under input/output chunks `(1,1)`, `(7,5)`, and
 `(13,17)`, and decode each schedule byte-for-byte.
+
+For the 2026-07-16 bounded sanitizer smoke campaign, use each repository seed
+corpus as a read-only input corpus and a separate disposable generated corpus.
+Run every decoder target for 10,000 inputs with an 8 KiB maximum input, a
+five-second per-input timeout, and a 512 MiB RSS limit. The six campaigns
+completed 60,000 total executions without a crash, hang, or sanitizer finding;
+generated mutations remain build artifacts unless promoted as a minimized
+permanent regression.

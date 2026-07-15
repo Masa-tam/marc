@@ -2694,3 +2694,18 @@ CLI, and benchmark tests. It does not claim release completion. A real
 sanitizer-backed fuzz campaign, cross-compiler and cross-architecture byte
 identity, package-consumer validation, and a final similarity review remain
 release evidence to gather separately.
+
+## DD-155: Windows sanitizer fuzzing uses the matching static CRT
+
+- Date: 2026-07-16
+- Status: accepted
+
+When the explicit fuzzer build uses Clang's GNU-style driver on Windows, select
+the static multithreaded C runtime before creating any target. The distributed
+libFuzzer runtime uses that runtime model, so mixing it with CMake's default
+dynamic runtime fails at link time before any test can execute.
+
+Keep the compiler installation path local. Discover the Clang resource directory
+through the compiler and add its `lib/windows` child to `PATH` when executing a
+sanitizer binary. This is runner setup rather than a stream-format or public-ABI
+property and does not affect ordinary MSVC builds where fuzzers are disabled.
