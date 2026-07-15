@@ -874,6 +874,30 @@ The 16-byte LZMW parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame. Every frame resets the
 LZMW phrase dictionary.
 
+### Hand-checkable LZMW plus None stream vector
+
+The complete known-size stream consists of the 64-byte stream prefix, one
+16-byte LZMW parameter region, and zero or more complete frames. Empty input is
+exactly the 80-byte prefix. For raw `ABAB`, frame size 2, default parameters,
+and entropy None, the stream is 208 bytes. Offsets 80 and 144 begin independent
+64-byte frames, and both reset to the literal references `A, B`:
+
+```text
+4D 41 52 43 01 00 00 00  40 00 00 00 06 00 01 00
+00 00 00 00 02 00 00 00  00 00 00 00 10 00 00 00
+00 00 00 00 00 00 00 00  04 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+02 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
+4D 52 46 31 38 00 00 00  01 00 00 00 00 00 00 00
+02 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
+```
+
 ## Blocked Huffman variant 1
 
 Blocked Huffman consumes the dictionary-serialized byte stream in consecutive

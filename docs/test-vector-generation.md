@@ -649,3 +649,12 @@ frame. Reject short encoded output atomically, short decoded output, an invalid
 phrase reference, short phrase and expansion workspaces, truncated and trailing
 frame extents, a wrong frame sequence, a non-None pipeline, and short encoder,
 validator, and full-decoder aggregates.
+
+For the complete LZMW plus None stream, compare raw `ABAB` with frame size 2
+against the documented 208-byte, two-reset-frame vector. Verify the exact
+80-byte empty stream and a binary final short frame. Corrupt only the later
+frame and require that output and parsed metadata remain unchanged; separately
+preflight a later frame's expansion workspace and aggregate before publication.
+Reject truncated and trailing streams, invalid parameter bytes, short phrase
+and expansion workspaces, input/original-size mismatch, short output, and short
+encoder workspace.

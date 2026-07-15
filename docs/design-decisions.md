@@ -2306,3 +2306,20 @@ Decoding parses the complete frame extent, rejects trailing bytes, validates
 the token grammar before expansion, and includes serialized frame, raw output,
 phrase records, and expansion stack in its aggregate. Short output and all
 malformed-body failures leave caller output unchanged.
+
+## DD-135: LZMW one-shot streams preflight every frame before publication
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent a complete known-size LZMW plus None stream as the 64-byte generic
+stream header, the 16-byte LZMW parameter region, and zero or more complete
+independently reset frames. Partition nonempty input by the declared raw frame
+size, number frames from zero, and permit only the final frame to be short.
+
+Encoding plans every frame and the exact total extent before writing the
+prefix. Decoding parses header and parameters transactionally, scans and fully
+validates every frame and required expansion workspace before publishing any
+raw byte, then performs a second decode scan. Reject truncation, bytes after the
+declared output completes, sequence or extent errors, and invalid parameters.
+Publish parsed stream metadata only after the entire decode succeeds.

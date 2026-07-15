@@ -2251,3 +2251,21 @@ no legal guarantee of non-infringement.
   validation, and decoding.
 - Similarity review: framing follows marc's own generic envelope and LZMW body;
   no external LZMW frame expression or control flow was compared.
+
+## 2026-07-15 - Atomic LZMW plus None complete stream
+
+- Authoring method: composed marc's generic stream prefix, independently
+  specified LZMW parameters, and atomic frame codec into a two-pass one-shot
+  stream controller.
+- References used: repository stream and frame formats, LZMW parameters and
+  frame codec, DD-135, checked arithmetic, and local limits.
+- Known implementations intentionally not consulted: external LZMW stream
+  containers, controllers, source, pseudocode, tests, vectors, or APIs.
+- Independent decisions: exact planning before encode; independent frame
+  resets; complete validation scan before raw publication; strict trailing-data
+  rejection; transactional metadata publication.
+- Generated-code task description: specify the complete reset-stream vector and
+  implement bounded one-shot LZMW plus None stream planning, encoding, and
+  atomic decoding.
+- Similarity review: composition uses marc's own prefix and frame contracts; no
+  external LZMW stream expression or control flow was compared.
