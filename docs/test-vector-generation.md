@@ -527,6 +527,16 @@ must reject it before publishing any first-frame bytes. The same vector sets an
 aggregate limit that admits the smaller first frame but not the larger second
 frame and requires the same atomic rejection.
 
+The LZD outer streaming decoder uses the documented 208-byte `ABAB` stream as
+its one-byte input/output oracle. It must match the one-shot raw bytes while
+retaining EndInput across final-frame draining. Corrupting the second payload
+must still publish the complete first frame but none of the corrupt frame.
+Independent construction cases cover short encoded-frame storage, raw staging,
+phrase records, expansion stack, and their aggregate limit. Truncation, empty
+streams, trailing bytes, a later empty EndInput, and ResetBlock are stable state
+machine cases. Flush across a partial frame must not close it; invalid
+construction and unknown flags enter a reproducible terminal error.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

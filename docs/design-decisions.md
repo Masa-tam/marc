@@ -2055,3 +2055,22 @@ The validation scan also preflights the complete serialized frame, raw frame,
 phrase records, and conservative expansion stack against the aggregate internal
 buffer limit, so no expected workspace or limit failure remains for the
 publication scan.
+
+## DD-122: LZD outer streaming decode commits complete frames independently
+
+- Date: 2026-07-15
+- Status: accepted
+
+Collect the fixed 80-byte LZD stream prefix and then each complete serialized
+LZD plus None frame across arbitrary input splits. Validate a frame header
+before collecting its body and require caller-owned storage for the exact
+serialized frame, raw frame, conservative phrase records, and conservative
+expansion stack. Check all four regions together against the aggregate internal
+buffer limit before accepting body bytes.
+
+Decode one complete frame atomically into raw staging storage and drain that
+storage through arbitrary output capacities before collecting the next frame.
+A later malformed frame therefore cannot alter its own staging output, although
+bytes already committed from earlier frames are not retracted. Retain EndInput
+while staged output drains, accept a later empty EndInput, reject trailing bytes
+and ResetBlock, and return EndOfStream only after the final frame has drained.

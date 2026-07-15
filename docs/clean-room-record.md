@@ -2043,3 +2043,21 @@ no legal guarantee of non-infringement.
   known-size LZD plus None streams over zero or more generic frames.
 - Similarity review: the controller follows marc's own layer composition and
   error contracts; no external LZD stream structure or control flow was used.
+
+## 2026-07-15 - LZD plus None outer streaming decoder
+
+- Authoring method: composed marc's independently written LZD prefix, frame
+  validator/decoder, workspace profile, and core process contract into a bounded
+  frame-staging state machine.
+- References used: repository format, LZD decisions and vectors, one-shot LZD
+  stream, local limits, and existing marc streaming-controller contracts as
+  internal architectural precedent.
+- Known implementations intentionally not consulted: external LZD streaming
+  decoders, containers, source, pseudocode, tests, corpora, or byte streams.
+- Independent decisions: fixed prefix collection; pre-body validation of all
+  four caller-owned regions and their aggregate; atomic frame staging; draining
+  before later input; retained EndInput; terminal error behavior.
+- Generated-code task description: specify, implement, and test a bounded LZD
+  plus None outer streaming decoder under arbitrary input/output chunking.
+- Similarity review: the state machine follows marc's own transform invariants;
+  no external LZD streaming expression or control flow was compared.
