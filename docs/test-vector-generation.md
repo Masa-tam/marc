@@ -803,3 +803,11 @@ one bits and require the same atomic rejection. Retain the hand-authored
 five-byte `MRF1` plus newline truncated-magic seed; it contains no externally
 sourced data. Compile the bounded fuzz entry point under every normal build,
 but do not treat compilation or a short smoke run as coverage completion.
+
+The combined completion matrix uses 64-byte outer frames and 64-symbol entropy
+blocks. Require empty input, every individual byte, byte values `0..255`, 257
+zeros, a 259-byte `00 FF 55 AA` pattern, deterministic 513-byte high-entropy
+data, and deterministic inputs of lengths 63, 64, and 65 to encode identically
+twice and round-trip through the public C ABI. For a 193-byte four-frame input,
+require encode output to match under input/output chunks `(1,1)`, `(7,5)`, and
+`(13,17)`, and decode each schedule byte-for-byte.

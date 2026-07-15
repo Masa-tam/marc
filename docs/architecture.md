@@ -756,3 +756,10 @@ the incremental frame state machine. Before either sees bytes, the harness
 caps the case and supplies only fixed stack workspaces and local limits. Chunk
 scheduling is data-derived but the total call count is independently bounded,
 so malformed scheduling cannot create an unbounded test loop.
+
+The combined public-ABI completion matrix closes the local implementation loop
+by driving required binary data classes through queried workspaces and both
+stream directions. It repeats encoding for byte identity and compares
+multi-frame output across one-byte and mixed chunk schedules. This is a local
+readiness assertion, not a substitute for sanitizer campaigns or portability
+evidence on independent toolchains and architectures.

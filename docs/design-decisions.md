@@ -2676,3 +2676,21 @@ explicit Clang/libFuzzer workflow with sanitizer coverage.
 
 Treat every file below `fuzz/corpus/` as binary in Git so checkout-time line
 ending conversion cannot change a reproducer or seed byte sequence.
+
+## DD-154: Combined local completion remains distinct from release evidence
+
+- Date: 2026-07-16
+- Status: accepted
+
+Treat LZ77 variant 1 plus Blocked Huffman variant 1 as locally
+implementation-complete only after one public-C-ABI completion matrix covers
+empty input, every one-byte value, all byte values in sequence, long zero runs,
+repeated binary patterns, deterministic high-entropy data, frame boundaries,
+multiple frames, repeat encoding, and mixed input/output chunk sizes.
+
+This local status depends on the existing exact format, validator, one-shot and
+streaming codecs, profiles, malformed regressions, bounded fuzz harness, C ABI,
+CLI, and benchmark tests. It does not claim release completion. A real
+sanitizer-backed fuzz campaign, cross-compiler and cross-architecture byte
+identity, package-consumer validation, and a final similarity review remain
+release evidence to gather separately.

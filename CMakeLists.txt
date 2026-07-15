@@ -495,6 +495,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_encoder_tests.cpp
+        tests/lz77_blocked_huffman_completion_tests.cpp
         tests/lz77_blocked_huffman_fuzz_regression_tests.cpp
         tests/lz77_blocked_huffman_profile_tests.cpp
         tests/lz77_blocked_huffman_stream_tests.cpp

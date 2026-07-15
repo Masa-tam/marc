@@ -2570,3 +2570,19 @@ no legal guarantee of non-infringement.
   target, portable compile smoke, atomic malformed regressions, seed, and docs.
 - Similarity review: all scheduling and limits follow marc-owned contracts; no
   external fuzz harness structure or corpus content was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman local completion matrix
+
+- Authoring method: assembled marc's existing combined public ABI into the
+  repository's independently defined completion data classes and chunk rules.
+- References used: DD-154, AGENTS.md completion criteria, combined format,
+  profiles, C ABI lifecycle, malformed tests, benchmark, and fuzz boundary.
+- Known implementations intentionally not consulted: external completion
+  suites, interoperability matrices, corpora, source, or release checklists.
+- Independent decisions: 64-byte frame and entropy block; public-ABI-only
+  matrix; repeated byte identity; three mixed multi-frame chunk schedules;
+  explicit separation of local readiness from release evidence.
+- Generated-code task description: add a single combined completion matrix for
+  mandatory data classes, boundaries, determinism, chunking, and round trip.
+- Similarity review: the matrix composes only repository-owned contracts and
+  generated fixtures; no external test structure or vectors were compared.
