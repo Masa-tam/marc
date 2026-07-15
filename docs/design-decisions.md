@@ -2192,3 +2192,22 @@ Use a 16-byte parameter region containing maximum entries, zero flags, and zero
 reserved bytes. Terminate by exact outer-frame size rather than a delimiter or
 end token. Validate the complete fixed token grammar and checked phrase lengths
 before implementing raw expansion or an encoder.
+
+## DD-129: LZMW reference decode expands only validated acyclic grammar
+
+- Date: 2026-07-15
+- Status: accepted
+
+Run the complete LZMW token validator before checking publication capacity or
+writing raw output. Generated entry `i` contains only byte references or
+generated references below `i`, because both adjacent phrases were available
+before the new entry was registered. The grammar is therefore acyclic without
+requiring a runtime visited set.
+
+Expand iteratively through a caller-owned reference stack, pushing the right
+child before the left child. A conservative `generated entries + 1` stack
+bound covers one deferred right child per grammar depth. Check serialized token
+bytes, validator phrase records, and the expansion stack together against the
+aggregate internal-buffer limit. Any validation, output-capacity, stack-
+capacity, host-size, or aggregate-limit failure must leave caller output
+unchanged.

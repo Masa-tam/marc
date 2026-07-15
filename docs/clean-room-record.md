@@ -2152,3 +2152,19 @@ no legal guarantee of non-infringement.
   decoder-side token validator before decoder expansion or encoding.
 - Similarity review: the mathematical phrase rule matches the cited papers;
   serialization, freeze policy, validation states, and tests are marc-specific.
+
+## 2026-07-15 - Atomic LZMW reference decoder
+
+- Authoring method: expanded marc's independently specified binary phrase
+  records only after its strict token validator accepted the complete frame.
+- References used: repository LZMW format and DD-128, core checked arithmetic,
+  local limits, and marc's nonrecursive grammar-expansion safety policy.
+- Known implementations intentionally not consulted: external LZMW decoders,
+  source, pseudocode, tests, stack strategies, formats, or corpora.
+- Independent decisions: validation-first atomicity; caller-owned stack;
+  right-before-left traversal; phrase-count-plus-one bound; combined token,
+  phrase, and stack policy; stable nested error reporting.
+- Generated-code task description: implement and test a bounded atomic LZMW
+  token-to-byte decoder without recursion or output on caller-visible failure.
+- Similarity review: the decoder follows marc's own validated-DAG contracts;
+  no external LZMW decoder expression or control flow was compared.

@@ -591,3 +591,13 @@ workspace, invalid parameters, and each local serialized/frame/aggregate
 limit. Check stable token index and byte offset. The workspace requirement is
 `min(max(token_count - 1, 0), maximum_entries)` phrase records because the first
 token does not create an adjacent-pair entry.
+
+Reference decode uses the same empty, `A`, `ABAB`, frozen `ABABAB`, and
+published `abbaababaaba` token vectors. Add the phrase-reference sequence
+`A, A, 256, 257, 258`, whose phrase lengths are `1, 1, 2, 3, 5`, to exercise
+iterative expansion of the growing binary grammar. Require the complete raw
+concatenation `AAAAAAAAAAAA` (12 `A` bytes) and a five-entry expansion stack
+for its four generated entries. Corrupt a later reference, shorten raw output,
+shorten the expansion stack, omit phrase records, and lower the full token plus
+phrase plus stack aggregate by one byte; every failure leaves patterned output
+untouched.

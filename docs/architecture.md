@@ -211,9 +211,12 @@ The validator enforces exact frame output length, fixed token alignment,
 stable token index and byte offset, dictionary and serialized limits, and the
 complete token-plus-phrase-workspace aggregate before recording entries. It
 detects overflow even for adversarial phrase sequences whose lengths grow like
-Fibonacci numbers. It deliberately performs no raw expansion yet; the bounded
-iterative decoder and deterministic longest-match encoder remain subsequent
-layers over this validated grammar.
+Fibonacci numbers. The atomic reference decoder runs that validator first and
+then expands only its acyclic phrase records through a caller-owned iterative
+stack, pushing right before left to preserve byte order. Output capacity and
+the complete token, phrase-record, and stack aggregate are checked before the
+first raw byte is published. The deterministic longest-match encoder remains a
+subsequent layer over this validated representation.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
