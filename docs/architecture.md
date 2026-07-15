@@ -712,3 +712,10 @@ Decoding first validates the full serialized stream without raw publication,
 then decodes it in a second pass. This gives whole-stream atomicity for the
 one-shot API while keeping memory bounded by the largest frame and its entropy
 block count rather than total stream size.
+
+The combined streaming encoder is the incremental counterpart of the one-shot
+planner. It owns no variable-size storage: callers provide raw-frame,
+dictionary-token, and serialized-frame spans. The transform drains the prefix
+and each completed frame through partial output buffers, while frame collection
+continues across non-terminal `Flush`. Dictionary and entropy state are rebuilt
+only when a complete outer frame is prepared.

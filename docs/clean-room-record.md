@@ -2456,3 +2456,20 @@ no legal guarantee of non-infringement.
 - Similarity review: the controller follows marc's own one-shot stream
   contracts and component APIs; no external combined stream structure was
   compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman streaming encoder
+
+- Authoring method: specialized marc's existing bounded frame-streaming state
+  machine around its independently implemented combined planner and encoder.
+- References used: DD-147, core process invariants, complete combined-stream
+  oracle, and repository workspace/terminal-state contracts.
+- Known implementations intentionally not consulted: external streaming
+  LZ/Huffman encoders, buffering strategies, source, pseudocode, or tests.
+- Independent decisions: three caller-owned reusable extents; worst-case token
+  capacity at construction; actual three-way aggregate per frame; non-closing
+  flush; exact known-size end requirement.
+- Generated-code task description: add a bounded partial-buffer combined
+  streaming encoder and prove oracle identity, workspace errors, protocol
+  errors, empty input, and stable completion.
+- Similarity review: the state machine follows marc's own transform contract;
+  no external combined streaming control flow was compared.

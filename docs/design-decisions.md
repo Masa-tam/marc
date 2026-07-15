@@ -2537,3 +2537,23 @@ the parsed stream header and LZ77 parameters only after both passes succeed.
 Consequently malformed later frames leave the entire raw destination and
 configuration outputs unchanged. Both LZ77 history and every Blocked Huffman
 model reset at each outer-frame boundary.
+
+## DD-147: Combined streaming encode stages three bounded extents
+
+- Date: 2026-07-16
+- Status: accepted
+
+Implement known-size combined streaming encode with three disjoint,
+caller-owned workspaces: one raw outer frame, its worst-case canonical LZ77
+token bytes, and one complete serialized combined frame. Emit the fixed 80-byte
+prefix first, collect exactly one raw frame, plan and encode it transactionally,
+then drain it before accepting bytes for the next frame. Reuse all three spans
+after each drain.
+
+Count the actual raw frame, dictionary staging, and serialized frame together
+against `max_internal_buffered_bytes` before committing the frame. Require
+dictionary staging for the worst-case 16 bytes per raw input byte at
+construction so arbitrary frame contents cannot cause a later capacity
+surprise. `Flush` does not close a partial outer frame, `ResetBlock` is
+unsupported, and `EndInput` must accompany exactly all remaining known-size
+input. Repeated ended/error calls retain stable terminal results.

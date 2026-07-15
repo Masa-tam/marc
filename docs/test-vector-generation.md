@@ -748,3 +748,11 @@ Reject every strict prefix and trailing data. Corrupt the second frame's first
 staged token and require the full raw output plus parsed stream/parameter
 outputs to remain unchanged. Exercise serialized-output, raw-output, block-view,
 and dictionary-staging capacity failures independently.
+
+For combined streaming encode, use the complete `ABABX` stream as the exact
+oracle and feed it through one-byte input and output spans. Keep the first
+partial raw frame open across `Flush`, then finish all remaining frames with
+`EndInput`. Exercise empty input, stable ended state, premature `EndInput`,
+unsupported `ResetBlock`, independently short raw-frame, dictionary-token, and
+serialized-frame workspaces, and the actual three-workspace aggregate one byte
+below its required 154 bytes.
