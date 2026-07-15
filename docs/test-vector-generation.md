@@ -575,3 +575,19 @@ output buffers. Corrupt the second frame's initial tANS state offset and verify
 that the first four raw bytes are committed while no byte from the corrupt frame
 is published. Exercise short encoded, decoded, and block-view workspaces
 independently.
+
+LZMW variant 1 vectors start from the formal `abbaababaaba$` factorization but
+remove the external delimiter because marc terminates at the declared frame
+size. Record `a | b | b | a | ab | ab | aab | a` and the eight references
+`97, 98, 98, 97, 256, 256, 259, 97`. Independently derive entry 256 as `ab`,
+257 as `bb`, 258 as `ba`, and 259 as `aab` from consecutive emitted phrases.
+Also test empty input, `A`, `ABAB`, and maximum-entries-1 `ABABAB` before any
+encoder is implemented.
+
+The validator must reject every one-to-three-byte truncated token suffix,
+first-token and later forward references, exact-output trailing tokens,
+premature token end, phrase-length and output-length overflow, short phrase
+workspace, invalid parameters, and each local serialized/frame/aggregate
+limit. Check stable token index and byte offset. The workspace requirement is
+`min(max(token_count - 1, 0), maximum_entries)` phrase records because the first
+token does not create an adjacent-pair entry.

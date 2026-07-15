@@ -64,7 +64,7 @@ block, and original sizes must not exceed local decoder limits.
 | 3 | LZ78 | fixed phrase-index byte-token variant defined below |
 | 4 | LZW | variable-width frame-local variant defined below |
 | 5 | LZD | fixed phrase-pair Lempel-Ziv Double variant defined below |
-| 6 | LZMW | baseline, details pending |
+| 6 | LZMW | fixed phrase-reference Miller-Wegman variant defined below |
 
 | Entropy ID | Algorithm | Variant 1 |
 |---:|---|---|
@@ -772,6 +772,88 @@ The baseline implementation defaults are:
 These values bound what the implementation accepts; they do not select codec
 parameters. For example, the later Blocked Huffman format may specify a maximum
 code length lower than the policy ceiling.
+
+## LZMW variant 1
+
+LZMW variant 1 is a frame-local byte dictionary transform. Its stream
+dictionary parameter region is exactly 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum generated entries | default 65,536; nonzero |
+| 4 | 4 | flags | zero |
+| 8 | 8 | reserved | zero |
+
+References `0..255` denote the corresponding one-byte alphabet symbol.
+Generated references begin at 256 and are assigned consecutively. Values that
+do not denote a byte or an already generated entry are malformed. The maximum
+entry count must not exhaust the 32-bit reference namespace or exceed the local
+dictionary-entry limit.
+
+At the start of every outer frame the generated dictionary and previous phrase
+are empty. Parse raw bytes greedily from left to right. The first phrase is
+necessarily one byte. Each later phrase is the longest remaining-input prefix
+equal to either one byte or a generated entry that existed before that phrase
+was selected. On equal lengths, select the smaller numeric reference. Emit its
+reference and advance by the phrase length.
+
+After emitting a phrase other than the first, if the generated dictionary is
+not full, append exactly one entry equal to the concatenation of the previous
+phrase and current phrase. The entry receives reference
+`256 + generated_entry_index`. Each adjacent pair consumes one entry even if
+its expanded bytes equal an earlier entry; the smaller-reference tie rule makes
+such duplicates harmless and keeps encoder and decoder numbering independent
+of string-equality searches. Once `maximum generated entries` is reached, the
+dictionary freezes for the rest of the frame. It is not cleared, replaced, or
+updated, and parsing continues against the frozen entries. This bounded freeze
+rule is marc-specific and does not claim byte compatibility with the original
+LRU-replacement proposal.
+
+Every token is exactly four bytes: one unsigned little-endian reference. There
+is no end code. The generic frame's declared uncompressed size terminates
+decoding, and the token region must end at exactly the same point. Empty input
+has no tokens. A nonempty frame must contain at least one token. Premature end,
+tokens after exact output completion, forward or unavailable references,
+checked length overflow, or expansion beyond the declared frame size are
+malformed.
+
+The decoder reconstructs each generated entry as two already valid references
+plus their checked combined length. Later raw expansion must be iterative and
+bounded; input-controlled recursion is forbidden. The dictionary serialized
+size is `4 * token_count`, at most four bytes per raw input byte. With entropy
+None, compressed payload size equals dictionary serialized size and the frame
+body contains these token references directly.
+
+### Hand-checkable LZMW token vectors
+
+The empty input produces no token bytes. `A` emits reference 65:
+
+```text
+41 00 00 00
+```
+
+`ABAB` parses as `A | B | AB`. After `B`, entry 256 is `AB`, so the token bytes
+are:
+
+```text
+41 00 00 00  42 00 00 00  00 01 00 00
+```
+
+For `abbaababaaba`, the formal LZMW parsing without an external delimiter is
+`a | b | b | a | ab | ab | aab | a`. Generated entry 256 is `ab`, and entry
+259 is `aab`. The 32 token bytes are:
+
+```text
+61 00 00 00  62 00 00 00  62 00 00 00  61 00 00 00
+00 01 00 00  00 01 00 00  03 01 00 00  61 00 00 00
+```
+
+With maximum entries 1, `ABABAB` parses as `A | B | AB | AB`. Entry 256 is
+created after the second phrase and the dictionary then freezes:
+
+```text
+41 00 00 00  42 00 00 00  00 01 00 00  00 01 00 00
+```
 
 ## Blocked Huffman variant 1
 

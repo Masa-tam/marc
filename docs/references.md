@@ -156,6 +156,26 @@ policy, and vectors are independently specified. No LZD implementation source,
 source-derived pseudocode, corpus, container format, or test suite was
 consulted.
 
+LZMW design references:
+
+- Victor S. Miller and Mark N. Wegman, "Variations on a Theme by Ziv and
+  Lempel," *Combinatorial Algorithms on Words*, NATO ASI Series F, volume 12,
+  pages 131-140, Springer, 1985, DOI `10.1007/978-3-642-82456-2_9`. Used for
+  the Miller-Wegman adjacent-phrase concatenation foundation.
+  <https://doi.org/10.1007/978-3-642-82456-2_9>
+- Golnaz Badkobeh, Travis Gagie, Shunsuke Inenaga, Tomasz Kociumaka, Dmitry
+  Kosolobov, and Simon J. Puglisi, "On Two LZ78-style Grammars: Compression
+  Bounds and Compressed-Space Computation," 2017, arXiv:1705.09538. Used for
+  the formal longest-prefix definition and the published
+  `abbaababaaba$` factorization cross-check. The linked supplementary source
+  and experimental implementation were intentionally not consulted.
+  <https://arxiv.org/abs/1705.09538>
+
+marc's fixed references, duplicate-entry numbering, smallest-reference tie
+break, bounded freeze rule, frame reset, limits, and byte vectors are
+independently specified. No LZMW implementation source, source-derived
+pseudocode, supplementary code, container format, or test suite was consulted.
+
 rANS design references:
 
 - Jarek Duda, "Asymmetric Numeral Systems," arXiv:0902.0271, 2009. Used for

@@ -87,7 +87,8 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
-An opt-in benchmark executable drives the public LZ77, LZSS, and LZ78 C
+An opt-in benchmark executable drives the public LZ77, LZSS, LZ78, LZW, and
+LZD C
 transforms over caller-selected files. It reports full-stream ratio, timed
 transform throughput, and profile-derived codec workspace under one documented
 method.
@@ -191,9 +192,28 @@ drains the canonical prefix, collects one bounded raw frame, emits it through
 the reference frame codec, and drains arbitrary output spans with bytes equal
 to one-shot encoding. A bounded decoder fuzz harness now covers the one-shot
 and outer streaming paths with compile-smoke and permanent malformed-stream
-regressions. Clang sanitizer fuzz execution, benchmarks, and broader
-pipeline/public integration remain later LZD work, so this does not mark the
-codec complete.
+regressions. The C ABI, benchmark, completion matrix, and CLI now use only the
+public bounded transform surface. Cross-platform determinism, sanitizer fuzz
+execution, representative measurements, and release similarity review remain
+release evidence rather than locally completed implementation work.
+
+### LZMW foundation
+
+LZMW variant 1 begins with a transactional 16-byte parameter codec, fixed
+four-byte reference tokens, and a strict decoder-side grammar validator. Bytes
+`0..255` are implicit phrases. After every phrase except the first, the
+validator records the previous-plus-current binary production and its checked
+expanded length in caller-owned workspace until the configured dictionary
+freezes. Each token may reference only the byte alphabet or an entry that
+already existed before that token.
+
+The validator enforces exact frame output length, fixed token alignment,
+stable token index and byte offset, dictionary and serialized limits, and the
+complete token-plus-phrase-workspace aggregate before recording entries. It
+detects overflow even for adversarial phrase sequences whose lengths grow like
+Fibonacci numbers. It deliberately performs no raw expansion yet; the bounded
+iterative decoder and deterministic longest-match encoder remain subsequent
+layers over this validated grammar.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

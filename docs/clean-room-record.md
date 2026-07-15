@@ -2131,3 +2131,24 @@ no legal guarantee of non-infringement.
   workflow and verify nonempty, empty, overwrite, and malformed-input cases.
 - Similarity review: only marc's own CLI dispatch and safety structure was
   extended; no external LZD CLI expression or control flow was compared.
+
+## 2026-07-15 - LZMW format and validator foundation
+
+- Authoring method: derived the adjacent-phrase parsing rule from the original
+  publication and a later formal paper, then independently designed marc's
+  bounded byte representation and validator contract.
+- References used: Miller and Wegman (1985), DOI
+  `10.1007/978-3-642-82456-2_9`; Badkobeh et al. (2017), arXiv:1705.09538;
+  repository endian, limit, transactionality, and frame contracts.
+- Known implementations intentionally not consulted: the formal paper's linked
+  supplementary repository and all external LZMW source, pseudocode, tests,
+  formats, corpora, or command-line tools.
+- Independent decisions: 16-byte parameters; fixed 32-bit references;
+  byte alphabet 0..255; one entry per adjacent token pair including duplicates;
+  smallest-reference tie break; dictionary freeze instead of LRU replacement;
+  frame reset and exact-size termination.
+- Generated-code task description: specify LZMW variant 1 completely, add
+  hand-checkable vectors, and implement only bounded format parsing and the
+  decoder-side token validator before decoder expansion or encoding.
+- Similarity review: the mathematical phrase rule matches the cited papers;
+  serialization, freeze policy, validation states, and tests are marc-specific.

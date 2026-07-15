@@ -2168,3 +2168,27 @@ because the clear reference LZD encoder intentionally prioritizes correctness
 over search performance. Arbitrary chunking and multi-frame behavior remain
 covered independently by the completion matrix; reducing this integration
 fixture does not change the format or codec acceptance surface.
+
+## DD-128: LZMW uses fixed references and bounded dictionary freeze
+
+- Date: 2026-07-15
+- Status: accepted
+
+Define LZMW variant 1 from the formal Miller-Wegman parsing: choose the longest
+prefix among the byte alphabet and concatenations of previously adjacent
+phrases, then register the just-completed previous-plus-current phrase pair.
+Use the smallest numeric reference for equal expanded lengths and reset all
+generated state at every outer frame.
+
+Serialize each phrase as one little-endian 32-bit reference, with bytes at
+`0..255` and generated entries from 256. Append one generated entry after every
+phrase except the first while capacity remains, including a bytewise duplicate,
+so decoder numbering never depends on an expensive equality search. Freeze the
+dictionary at the configured maximum rather than implementing the original
+LRU replacement proposal; this is a deterministic bounded marc variant and is
+not claimed to interoperate with another LZMW representation.
+
+Use a 16-byte parameter region containing maximum entries, zero flags, and zero
+reserved bytes. Terminate by exact outer-frame size rather than a delimiter or
+end token. Validate the complete fixed token grammar and checked phrase lengths
+before implementing raw expansion or an encoder.
