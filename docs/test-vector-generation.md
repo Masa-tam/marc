@@ -546,6 +546,15 @@ premature EndInput; trailing raw bytes; empty input; a later empty EndInput;
 ResetBlock; unknown flags; invalid construction; and reproducible terminal
 errors.
 
+The bounded LZD fuzz harness invokes both one-shot and outer streaming decoders
+with 4 KiB total output, 1 KiB raw frames, 4 KiB payloads, 512 phrase records,
+and 513 expansion entries. Input-derived chunk sizes remain subordinate to a
+finite call guard. Permanent GoogleTest cases reject every truncation of the
+208-byte canonical stream and mutate absent/forward references, token extents,
+extreme frame lengths, and a second-frame phrase reference while proving
+one-shot raw/configuration atomicity. The initial repository-owned corpus seed
+is the five-byte truncated frame magic `MRF1\n`.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

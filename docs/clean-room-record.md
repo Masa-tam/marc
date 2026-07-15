@@ -2080,3 +2080,19 @@ no legal guarantee of non-infringement.
   arbitrary input/output chunking.
 - Similarity review: the state machine follows marc's own transform invariants;
   no external LZD streaming expression or control flow was compared.
+
+## 2026-07-15 - Bounded LZD decoder fuzz harness
+
+- Authoring method: applied marc's bounded decoder-test policy to its strict
+  and outer streaming LZD paths with explicit phrase and expansion ceilings.
+- References used: repository process invariants, LZD limits and workspaces,
+  strict/streaming decoder APIs, canonical stream, and sanitizer build policy.
+- Known implementations intentionally not consulted: external LZD fuzz
+  harnesses, corpora, mutation dictionaries, source, tests, or scheduling.
+- Independent decisions: 4 KiB output and payload; 1 KiB frames; 512 phrase
+  records; 513-entry expansion stack; input-derived chunks; finite call guard;
+  compile-only ordinary target; canonical atomic regression mutations.
+- Generated-code task description: defensively fuzz bounded LZD strict and
+  streaming decoders and preserve representative malformed cases as normal
+  tests without running an unbounded campaign in the reference build.
+- Similarity review: no external fuzz harness structure or corpus was compared.

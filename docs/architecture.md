@@ -189,8 +189,11 @@ one complete frame into bounded caller storage, decodes it atomically into raw
 staging, and then drains arbitrary output spans. The outer streaming encoder
 drains the canonical prefix, collects one bounded raw frame, emits it through
 the reference frame codec, and drains arbitrary output spans with bytes equal
-to one-shot encoding. Fuzz integration, benchmarks, and broader pipeline/public
-integration remain later LZD work, so this does not mark the codec complete.
+to one-shot encoding. A bounded decoder fuzz harness now covers the one-shot
+and outer streaming paths with compile-smoke and permanent malformed-stream
+regressions. Clang sanitizer fuzz execution, benchmarks, and broader
+pipeline/public integration remain later LZD work, so this does not mark the
+codec complete.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

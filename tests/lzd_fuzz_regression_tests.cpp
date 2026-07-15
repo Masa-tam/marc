@@ -1,0 +1,103 @@
+#include "frame/lzd_stream.hpp"
+
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <array>
+#include <vector>
+
+namespace {
+using namespace marc::frame;
+
+constexpr std::array raw{
+    std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+
+StreamHeader config() {
+    StreamHeader stream{};
+    stream.dictionary_algorithm = DictionaryAlgorithm::lzd;
+    stream.dictionary_variant = 1;
+    stream.entropy_algorithm = EntropyAlgorithm::none;
+    stream.entropy_variant = 0;
+    stream.frame_size = 2;
+    stream.dictionary_parameters_size =
+        marc::dictionary::internal::lzd_parameter_size;
+    stream.original_size = raw.size();
+    return stream;
+}
+
+std::vector<std::byte> canonical_stream() {
+    const auto stream = config();
+    std::array<marc::dictionary::internal::LzdEncoderEntry, 1> dictionary{};
+    const auto plan = plan_lzd_stream(stream, {}, {}, raw, dictionary);
+    std::vector<std::byte> encoded(plan.serialized_size);
+    EXPECT_EQ(encode_lzd_stream(
+                  stream, {}, {}, raw, dictionary, encoded).error,
+              LzdStreamCodecError::none);
+    return encoded;
+}
+
+void expect_atomic_failure(const std::span<const std::byte> input) {
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 1> phrases{};
+    std::array<std::uint32_t, 2> expansion{};
+    std::array<std::byte, raw.size()> output{};
+    output.fill(std::byte{0xa5});
+    StreamHeader stream{};
+    stream.original_size = 99;
+    marc::dictionary::internal::LzdParameters parameters{};
+    parameters.maximum_entries = 9;
+    const auto result = decode_lzd_stream(
+        input, {}, phrases, expansion, output, stream, parameters);
+    EXPECT_NE(result.error, LzdStreamCodecError::none);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+    EXPECT_EQ(stream.original_size, 99U);
+    EXPECT_EQ(parameters.maximum_entries, 9U);
+}
+
+TEST(LzdFuzzRegression, EveryCanonicalTruncationIsAtomic) {
+    const auto encoded = canonical_stream();
+    for (std::size_t size = 0; size < encoded.size(); ++size)
+        expect_atomic_failure(std::span<const std::byte>{encoded}.first(size));
+}
+
+TEST(LzdFuzzRegression, TokenExtentAndHeaderMutationsAreAtomic) {
+    const auto canonical = canonical_stream();
+    constexpr std::size_t first_frame = lzd_stream_prefix_size;
+    constexpr std::size_t first_payload = first_frame + frame_header_size;
+
+    auto absent_left = canonical;
+    std::fill(absent_left.begin() + first_payload,
+              absent_left.begin() + first_payload + 4, std::byte{0xff});
+    expect_atomic_failure(absent_left);
+
+    auto absent_right = canonical;
+    std::fill(absent_right.begin() + first_payload + 4,
+              absent_right.begin() + first_payload + 8, std::byte{0xff});
+    expect_atomic_failure(absent_right);
+
+    auto forward = canonical;
+    forward[first_payload] = std::byte{0};
+    forward[first_payload + 1] = std::byte{1};
+    expect_atomic_failure(forward);
+
+    auto extent = canonical;
+    extent[first_frame + 20] = std::byte{7};
+    extent[first_frame + 24] = std::byte{7};
+    expect_atomic_failure(extent);
+
+    auto extreme = canonical;
+    std::fill(extreme.begin() + first_frame + 16,
+              extreme.begin() + first_frame + 28, std::byte{0xff});
+    expect_atomic_failure(extreme);
+}
+
+TEST(LzdFuzzRegression, CrossFramePhraseReferenceIsAtomic) {
+    auto encoded = canonical_stream();
+    constexpr std::size_t second_payload = 144 + frame_header_size;
+    encoded[second_payload] = std::byte{0};
+    encoded[second_payload + 1] = std::byte{1};
+    expect_atomic_failure(encoded);
+}
+
+} // namespace

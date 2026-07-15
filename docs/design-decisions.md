@@ -2096,3 +2096,23 @@ Flush may drain the prefix or a completed frame but does not shorten a partial
 raw frame. Retain EndInput while output drains, accept a later empty EndInput,
 and reject premature EndInput, trailing raw bytes, ResetBlock, and unknown
 flags with stable terminal errors.
+
+## DD-124: LZD fuzzing bounds phrase grammar, expansion, output, and calls
+
+- Date: 2026-07-15
+- Status: accepted
+
+Feed each arbitrary input independently to the strict one-shot LZD stream
+decoder and the outer frame-streaming decoder. Fix total output at 4 KiB, raw
+frame size at 1 KiB, serialized payload at 4 KiB, phrase metadata at 512
+records, and the explicit expansion stack at 513 entries. Set the aggregate
+limit to the exact encoded-frame, raw-frame, phrase-record, and expansion-stack
+sum so input fields cannot request unbounded allocation.
+
+Derive streaming input and output chunks from bounded input bytes, validate
+every `ProcessResult`, and cap calls by input size plus a fixed output margin.
+Compile the harness in ordinary MSVC test builds but execute coverage-guided
+fuzzing only in the explicit Clang sanitizer build. Keep every canonical
+truncation, absent/forward phrase references, invalid token extent, extreme
+frame lengths, and cross-frame reset references as permanent GoogleTest
+regressions with one-shot atomicity assertions.
