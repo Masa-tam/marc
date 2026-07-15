@@ -2268,3 +2268,23 @@ draining. Reject premature termination and bytes beyond the declared raw size
 before publishing more staged token bytes. Keep `Flush` non-terminal, reject
 `ResetBlock`, and make ended and error states stable. The resulting token bytes
 must equal one-shot reference encoding for every input and chunking.
+
+## DD-133: LZMW plus None profile couples all frame workspace limits
+
+- Date: 2026-07-15
+- Status: accepted
+
+Define the baseline outer profile as dictionary LZMW variant 1 followed by
+entropy None variant 0, with the 16-byte LZMW parameter region and no entropy
+parameter region. Encoder requirements use the largest actual frame,
+`min(original_size, frame_size)`, its four-byte-per-raw-byte token bound, and at
+most raw-size-minus-one phrase-span records.
+
+Derive decoder requirements only from validated local limits, before any
+untrusted stream header is accepted. Search the largest payload satisfying the
+serialized, compressed-payload, dictionary-entry, and complete internal-buffer
+limits. For `n` complete fixed tokens reserve
+`min(max(n - 1, 0), max_dictionary_entries)` phrase records and, because a
+nonempty declared frame may begin with a literal, one more expansion-stack
+entry. Include the outer frame header and maximum decoded frame in the coupled
+aggregate.

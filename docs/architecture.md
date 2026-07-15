@@ -238,6 +238,13 @@ caller-owned and covered by one checked construction aggregate. A full frame
 may drain before the caller later confirms `EndInput`; a partial-frame `Flush`
 does not create a format boundary.
 
+The LZMW plus None profile builder derives encoder storage from the largest
+actual frame and decoder storage solely from coupled local limits. Encoder
+phrase-span capacity is at most raw bytes minus one. Decoder phrase capacity is
+at most fixed tokens minus one, while a potentially nonempty frame always
+reserves one additional iterative expansion-stack entry. Frame header, staged
+payload/raw bytes, and typed records must fit the configured aggregate.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

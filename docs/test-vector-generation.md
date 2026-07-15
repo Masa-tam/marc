@@ -632,3 +632,12 @@ independently short raw/token/dictionary workspace, and a construction
 aggregate exactly one byte below the complete requirement. After beginning a
 one-byte drain, supply a new raw byte and require rejection without consuming
 it or publishing another token byte.
+
+For the LZMW plus None profile, verify a ten-byte stream with four-byte frames,
+an empty stream, and a final frame shorter than the configured frame size.
+Check exact raw, frame-header-plus-token, phrase-span, phrase-record, and
+expansion-stack workspace counts. Reject zero frame size, invalid LZMW
+parameters, serialized-token limits, and a complete encoder aggregate one byte
+too small. Derive decoder workspace from two independent coupled-limit sets,
+including a binary-searched aggregate boundary, and reject an aggregate unable
+to hold even the frame header, maximum raw frame, and one expansion reference.

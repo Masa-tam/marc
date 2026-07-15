@@ -2218,3 +2218,19 @@ no legal guarantee of non-infringement.
   LZMW streaming encoder whose output is independent of input/output chunking.
 - Similarity review: the adapter uses marc's own transform and one-shot encoder
   contracts; no external LZMW streaming expression or control flow was compared.
+
+## 2026-07-15 - LZMW plus None workspace profile
+
+- Authoring method: applied marc's generic outer-frame limit model to the
+  independently specified LZMW fixed-token and adjacent-phrase bounds.
+- References used: repository LZMW format, encoder and decoder workspace
+  formulas, DD-133, frame header size, checked arithmetic, and local limits.
+- Known implementations intentionally not consulted: external LZMW container
+  profiles, workspace calculators, source, pseudocode, tests, or APIs.
+- Independent decisions: LZMW variant 1 plus entropy None; actual-largest-frame
+  encoder sizing; local-limit-only decoder sizing; binary-searched payload
+  bound; complete typed-workspace aggregate.
+- Generated-code task description: implement and test safe encoder and decoder
+  workspace derivation for the LZMW plus None outer profile.
+- Similarity review: formulas follow marc's own fixed representation and frame
+  policy; no external LZMW profile expression or structure was compared.
