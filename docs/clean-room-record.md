@@ -2418,3 +2418,22 @@ no legal guarantee of non-infringement.
   into raw bytes while proving short-output and malformed-layer atomicity.
 - Similarity review: the decoder only sequences repository-owned transactional
   components; no external control flow or representation was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman frame encoder
+
+- Authoring method: composed marc's deterministic LZ77 encoder, Blocked
+  Huffman planner/encoder, and generic frame serializer through caller-owned
+  canonical-token staging.
+- References used: DD-142 through DD-145, the documented 88-byte frame, and
+  repository deterministic planning and output-atomicity contracts.
+- Known implementations intentionally not consulted: external combined
+  LZ/Huffman encoders, containers, source, pseudocode, or test vectors.
+- Independent decisions: staging-backed exact planning; serialized capacity
+  check before output; existing raw-versus-Huffman choice per entropy block;
+  explicit multi-block and final-short-block verification.
+- Generated-code task description: plan and encode one deterministic combined
+  frame, reproduce the hand vector, and round-trip raw, Huffman, overlap, and
+  entropy-boundary cases.
+- Similarity review: the encoder is a direct sequencing of independently
+  implemented marc components; no external combined encoder structure was
+  compared.

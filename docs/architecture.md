@@ -697,3 +697,10 @@ only the validated dictionary staging to the standalone transactional LZ77
 decoder. Raw output is therefore unreachable from malformed generic headers,
 entropy metadata, entropy payloads, or token streams. The standalone decoder's
 prevalidation also protects the raw destination if its API is used separately.
+
+The matching frame encoder exposes an exact planner because the generic header
+must precede entropy descriptors and payloads. Planning first emits canonical
+LZ77 tokens into caller-owned staging, then computes the Blocked Huffman model
+choice and exact extents for every dictionary-byte block. Encoding repeats only
+the deterministic entropy traversal into already-sized descriptor and payload
+regions. No raw-frame-sized hidden allocation or duplicate token copy is used.

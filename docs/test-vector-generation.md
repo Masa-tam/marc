@@ -728,3 +728,13 @@ distance-one, length-four terminal LZ77 match; require output `AAAAA` to exercis
 overlap-copy semantics without relying on a combined encoder. A four-byte raw
 destination for that five-byte frame and corrupt descriptor/token variants must
 leave every raw destination byte unchanged.
+
+For combined encode, require plan and encode of raw `A` to reproduce the exact
+documented 88-byte frame. Encode the `AAAAA` overlap vector twice and require
+identical 104-byte streams plus decoder round-trip. Encode byte values `0..63`
+as 1024 canonical Literal-token bytes with one 1024-symbol entropy block and
+require the static canonical Huffman representation rather than raw storage.
+Repeat with 300-symbol entropy blocks, require four blocks with a final
+124-symbol block, and round-trip the complete frame. Short staging and
+serialized destinations remain sentinel-filled; empty and contextually wrong
+raw frame extents are rejected.

@@ -2497,3 +2497,22 @@ caller's committed destination, not buffered intermediate state. A short raw
 span returns its own stable error after validation and changes no raw byte.
 Malformed entropy or dictionary data likewise cannot reach the raw decoder.
 Output beyond `uncompressed_size` is never written.
+
+## DD-145: Exact combined planning materializes dictionary bytes
+
+- Date: 2026-07-16
+- Status: accepted
+
+Require caller-owned dictionary staging in both the exact frame planner and
+encoder. LZ77 token count alone cannot determine Blocked Huffman frequencies,
+model selection, descriptor extent, or payload extent. The planner therefore
+materializes the canonical token stream, plans every entropy block from those
+exact bytes, validates the resulting generic frame header, and reports all
+component extents before serialized output is touched.
+
+Treat dictionary staging as scratch that may change on any plan reaching LZ77
+encoding. A short staging span changes neither staging nor serialized output;
+a short serialized destination may contain the planned staging but leaves the
+serialized destination unchanged. Entropy blocks measure dictionary bytes,
+may occur multiple times per frame, and retain the existing final-short-block
+rule. Serialized output is not counted as intermediate workspace.
