@@ -2460,3 +2460,23 @@ entropy layout, decode exactly the declared dictionary byte count into bounded
 staging, validate the full LZ77 token stream against the raw frame extent, and
 only then publish raw bytes. A failure in either layer publishes no byte from
 that frame; previously committed frames remain committed in streaming decode.
+
+## DD-143: Combined-frame validation stops at canonical dictionary bytes
+
+- Date: 2026-07-16
+- Status: accepted
+
+Make the first executable LZ77 plus Blocked Huffman component a strict,
+complete-frame validator rather than an encoder or raw-output decoder. Parse
+the generic header, validate and publish caller-owned entropy block views only
+after the complete descriptor/model region is valid, entropy-decode exactly
+`dictionary_serialized_size` bytes into caller-owned staging, and validate that
+staged extent as a complete canonical LZ77 token stream producing exactly
+`uncompressed_size` bytes.
+
+Do not accept a raw-output span in this API. This makes premature publication
+structurally impossible while the combined decoder is still being built. Count
+the descriptor/model bytes, entropy payload bytes, dictionary staging, and
+typed block views together against `max_internal_buffered_bytes`, using checked
+arithmetic. Capacity, aggregate-limit, entropy-layout, entropy-payload, and
+dictionary-token failures receive distinct stable categories.

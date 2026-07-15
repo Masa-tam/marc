@@ -713,6 +713,10 @@ For LZ77 plus Blocked Huffman, start with raw `A`. Generate the 16-byte LZ77
 Literal token from the independent dictionary vector, then apply the mandatory
 Blocked Huffman size rule by hand: a 256-byte model cannot beat 16 raw bytes,
 so the single entropy block is raw. Require the exact 88-byte combined frame in
-`docs/format.md`. Future validator tests must independently corrupt the generic
-sizes, descriptor count and extent, raw-block fields, entropy payload, and LZ77
-token while proving frame-atomic raw output.
+`docs/format.md`. The decoder-side validator test consumes that exact byte
+array, checks the staged 16-byte Literal token, rejects every strict prefix and
+trailing data, and independently exercises sequence/pipeline mismatch, short
+view and staging workspaces, aggregate workspace exhaustion, invalid raw-block
+metadata, and an invalid staged LZ77 token. The validator has no raw-output
+parameter, so these tests establish non-publication structurally before raw
+decode is added.

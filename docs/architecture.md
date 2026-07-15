@@ -676,3 +676,17 @@ Only the small opaque handle and its C++ implementation object are allocated by
 the library with non-throwing allocation. Processing uses caller input/output
 spans and maps stable core status and error categories into fixed C constants.
 Every exported function is `noexcept` when compiled as C++.
+
+### LZ77 plus Blocked Huffman validation boundary
+
+The first combined-pipeline component accepts exactly one serialized frame and
+has no raw-output parameter. It reuses the generic frame parser, transactional
+Blocked Huffman controller and decoder, and canonical LZ77 token validator in
+that order. Entropy output is written only to caller-owned dictionary staging;
+raw-byte reconstruction is deliberately deferred to the later decoder step.
+
+The caller supplies both the block-view array and dictionary staging. Their
+required extents are derived from the validated frame header. Descriptor/model
+bytes, entropy payload bytes, dictionary staging, and the typed view array form
+one checked aggregate workspace bound. This preserves bounded memory while
+keeping all allocation policy outside the validator.

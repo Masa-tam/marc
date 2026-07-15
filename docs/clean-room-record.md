@@ -2382,3 +2382,23 @@ no legal guarantee of non-infringement.
   profile and freeze its exact frame representation before implementation.
 - Similarity review: the design is a composition of marc-owned formats; no
   external combined pipeline expression or layout was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman frame validator
+
+- Authoring method: composed marc's existing generic frame validator,
+  transactional Blocked Huffman controller/decoder, and canonical LZ77 token
+  validator without changing any constituent representation.
+- References used: DD-142, DD-143, repository frame and workspace contracts,
+  the documented 88-byte combined vector, and existing internal component
+  tests.
+- Known implementations intentionally not consulted: external LZ/Huffman
+  containers, validators, combined decoder source, pseudocode, or tests.
+- Independent decisions: validator-only API with no raw output; caller-owned
+  dictionary staging and typed views; aggregate descriptor, payload, staging,
+  and view bound; layer-specific stable errors.
+- Generated-code task description: implement the bounded decoder-side
+  validator for one LZ77 plus Blocked Huffman frame and test every validation
+  boundary before implementing raw decode.
+- Similarity review: the implementation is direct composition of marc-owned
+  interfaces and formats; no external combined decoder expression was
+  compared.
