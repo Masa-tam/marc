@@ -2025,3 +2025,21 @@ no legal guarantee of non-infringement.
   None frame with planning, encoding, validation, and atomic decoding.
 - Similarity review: composition follows marc's own generic header contracts;
   no external LZD frame expression or control flow was compared.
+
+## 2026-07-15 - LZD plus None one-shot stream codec
+
+- Authoring method: composed marc's generic stream prefix, independently
+  written LZD parameter format, and the accepted LZD plus None frame codec.
+- References used: repository stream and frame formats, LZD decisions and
+  vectors, local limits, profile calculations, and existing marc one-shot
+  stream contracts as internal architectural precedent.
+- Known implementations intentionally not consulted: external LZD stream or
+  archive formats, source, pseudocode, tests, corpora, or serialized streams.
+- Independent decisions: exact 80-byte prefix; deterministic raw partitioning;
+  per-frame dictionary reset; checked frame scan; two-pass atomic decode;
+  conservative preflight of phrase and expansion workspaces and their complete
+  decode aggregate.
+- Generated-code task description: specify, implement, and test complete
+  known-size LZD plus None streams over zero or more generic frames.
+- Similarity review: the controller follows marc's own layer composition and
+  error contracts; no external LZD stream structure or control flow was used.

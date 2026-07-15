@@ -107,6 +107,7 @@ set(MARC_SOURCES
     src/frame/lzw_streaming_encoder.cpp
     src/frame/lzd_frame.cpp
     src/frame/lzd_profile.cpp
+    src/frame/lzd_stream.cpp
     src/frame/adaptive_huffman_frame.cpp
     src/frame/adaptive_huffman_stream.cpp
     src/frame/adaptive_huffman_frame_streaming_encoder.cpp
@@ -444,6 +445,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_frame_streaming_encoder_tests.cpp
         tests/lzd_frame_tests.cpp
         tests/lzd_profile_tests.cpp
+        tests/lzd_stream_tests.cpp
         tests/adaptive_huffman_frame_tests.cpp
         tests/adaptive_huffman_stream_tests.cpp
         tests/adaptive_huffman_frame_streaming_encoder_tests.cpp

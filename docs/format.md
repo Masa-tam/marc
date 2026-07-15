@@ -700,6 +700,34 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 The 16-byte LZD parameter region belongs after the stream prefix and before the
 first frame; it is not repeated inside this frame.
 
+### Hand-checkable LZD plus None stream vector
+
+The complete known-size stream consists of the 64-byte stream prefix, one
+16-byte LZD parameter region, and then zero or more complete frames. Empty input
+has exactly the 80-byte prefix and no frame. Nonempty input is partitioned at
+the declared raw frame size; sequence numbers begin at zero, and the LZD phrase
+dictionary resets for every frame.
+
+For raw input `ABAB`, frame size 2, default LZD parameters, and entropy None,
+the complete stream is 208 bytes. Offsets 80 and 144 begin its two 64-byte
+frames. Both payloads are the independently reset token `(A,B)`:
+
+```text
+4D 41 52 43 01 00 00 00  40 00 00 00 05 00 01 00
+00 00 00 00 02 00 00 00  00 00 00 00 10 00 00 00
+00 00 00 00 00 00 00 00  04 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+02 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
+4D 52 46 31 38 00 00 00  01 00 00 00 00 00 00 00
+02 00 00 00 08 00 00 00  08 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
+```
+
 ## Foundational hand-checkable vectors
 
 These vectors define primitives used by every later format variant.

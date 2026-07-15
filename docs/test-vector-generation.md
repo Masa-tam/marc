@@ -514,6 +514,19 @@ encoder workspace are atomic or stable negative cases. Separate thresholds
 prove that encoder planning, validation, and decoding each count the generic
 header and their complete caller-owned workspaces in the aggregate limit.
 
+The complete LZD plus None stream vector encodes `ABAB` with raw frame size 2.
+It is exactly 208 bytes: an 80-byte prefix followed by two 64-byte frames at
+offsets 80 and 144. Each independently reset frame emits the identical `(A,B)`
+token. Empty input is the 80-byte prefix alone. Corrupting the second frame is
+used to prove that one-shot decode publishes neither the first frame nor parsed
+configuration; truncation, trailing bytes, invalid parameters, short output,
+and missing phrase or expansion workspaces are stable negative cases. A second
+two-frame vector gives an expansion stack that is sufficient for the first
+repetitive frame but one entry short for the later incompressible frame; decode
+must reject it before publishing any first-frame bytes. The same vector sets an
+aggregate limit that admits the smaller first frame but not the larger second
+frame and requires the same atomic rejection.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream

@@ -2030,3 +2030,28 @@ complete frame plus phrase records when validating; and complete frame plus
 raw output, phrase records, and expansion stack when decoding. These checks
 keep standalone frame entry points within the same aggregate policy as the
 profile and outer streaming path.
+
+## DD-121: LZD one-shot streams validate every frame before publication
+
+- Date: 2026-07-15
+- Status: accepted
+
+Serialize one generic stream header and one LZD parameter region, followed by
+zero or more LZD plus None frames. Partition nonempty raw input at the declared
+frame size, number frames from zero, and reset the byte alphabet and generated
+phrase dictionary for every frame. Empty input contains only the 80-byte
+prefix.
+
+Planning requires the raw input size to equal the declared original size and
+adds each exact planned frame extent with checked arithmetic. Decoding parses
+the stream configuration transactionally, scans and validates every exact
+frame extent, and only then performs a second scan that expands raw bytes.
+Consequently a malformed later frame cannot publish bytes from an earlier
+valid frame, and caller-visible stream and parameter objects remain unchanged
+on every failure. The same phrase workspace is reused between frames because
+frame validation rebuilds it after every dictionary reset; expansion uses its
+own caller-supplied bounded stack during the publication scan.
+The validation scan also preflights the complete serialized frame, raw frame,
+phrase records, and conservative expansion stack against the aggregate internal
+buffer limit, so no expected workspace or limit failure remains for the
+publication scan.
