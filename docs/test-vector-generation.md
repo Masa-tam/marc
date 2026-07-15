@@ -641,3 +641,11 @@ parameters, serialized-token limits, and a complete encoder aggregate one byte
 too small. Derive decoder workspace from two independent coupled-limit sets,
 including a binary-searched aggregate boundary, and reject an aggregate unable
 to hold even the frame header, maximum raw frame, and one expansion reference.
+
+For the one-shot LZMW plus None frame codec, encode raw `A` and compare all 60
+bytes with the documented frame vector. Encode, validate, and decode the
+published `abbaababaaba` factorization, then exercise a contextual final short
+frame. Reject short encoded output atomically, short decoded output, an invalid
+phrase reference, short phrase and expansion workspaces, truncated and trailing
+frame extents, a wrong frame sequence, a non-None pipeline, and short encoder,
+validator, and full-decoder aggregates.

@@ -2234,3 +2234,20 @@ no legal guarantee of non-infringement.
   workspace derivation for the LZMW plus None outer profile.
 - Similarity review: formulas follow marc's own fixed representation and frame
   policy; no external LZMW profile expression or structure was compared.
+
+## 2026-07-15 - Atomic LZMW plus None frame codec
+
+- Authoring method: placed marc's independently specified LZMW fixed-reference
+  body inside its existing generic contextual frame envelope.
+- References used: repository frame-header format and validator, LZMW format,
+  validator, encoder, decoder, DD-134, checked arithmetic, and local limits.
+- Known implementations intentionally not consulted: external LZMW containers,
+  frame codecs, source, pseudocode, tests, vectors, or APIs.
+- Independent decisions: direct token payload; equal dictionary and compressed
+  sizes; no descriptors or models; exact frame extent; validation-first atomic
+  decode; complete typed-workspace aggregates.
+- Generated-code task description: specify the hand-checkable frame bytes and
+  implement bounded one-shot LZMW plus None frame planning, encoding,
+  validation, and decoding.
+- Similarity review: framing follows marc's own generic envelope and LZMW body;
+  no external LZMW frame expression or control flow was compared.

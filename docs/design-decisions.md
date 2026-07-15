@@ -2288,3 +2288,21 @@ limits. For `n` complete fixed tokens reserve
 nonempty declared frame may begin with a literal, one more expansion-stack
 entry. Include the outer frame header and maximum decoded frame in the coupled
 aggregate.
+
+## DD-134: LZMW plus None frames reuse the generic atomic envelope
+
+- Date: 2026-07-15
+- Status: accepted
+
+Store one independently reset LZMW token stream directly after the 56-byte
+generic frame header. Set dictionary serialized size and compressed payload
+size to the same fixed-token byte count; keep descriptor, model, hash, and
+entropy-block fields zero. Do not repeat the 16-byte LZMW parameter region
+inside a frame.
+
+Encoding performs exact body planning and validates the complete contextual
+header and raw-plus-frame-plus-encoder-workspace aggregate before publishing.
+Decoding parses the complete frame extent, rejects trailing bytes, validates
+the token grammar before expansion, and includes serialized frame, raw output,
+phrase records, and expansion stack in its aggregate. Short output and all
+malformed-body failures leave caller output unchanged.

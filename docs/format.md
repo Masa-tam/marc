@@ -855,6 +855,25 @@ created after the second phrase and the dictionary then freezes:
 41 00 00 00  42 00 00 00  00 01 00 00  00 01 00 00
 ```
 
+### Hand-checkable LZMW plus None frame vector
+
+For a stream selecting LZMW variant 1 and entropy None, with one raw byte `A`,
+the complete frame is 60 bytes. Its header declares one raw byte and one
+four-byte dictionary/payload reference; entropy block and descriptor fields are
+zero:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 04 00 00 00  04 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+41 00 00 00
+```
+
+The 16-byte LZMW parameter region belongs after the stream prefix and before
+the first frame; it is not repeated inside this frame. Every frame resets the
+LZMW phrase dictionary.
+
 ## Blocked Huffman variant 1
 
 Blocked Huffman consumes the dictionary-serialized byte stream in consecutive
