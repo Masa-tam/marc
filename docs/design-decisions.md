@@ -2557,3 +2557,24 @@ construction so arbitrary frame contents cannot cause a later capacity
 surprise. `Flush` does not close a partial outer frame, `ResetBlock` is
 unsupported, and `EndInput` must accompany exactly all remaining known-size
 input. Repeated ended/error calls retain stable terminal results.
+
+## DD-148: Combined streaming decode commits one validated frame at a time
+
+- Date: 2026-07-16
+- Status: accepted
+
+Use four reusable caller-owned decoder workspaces: one complete serialized
+frame, its entropy-decoded dictionary bytes, its raw decoded bytes, and the
+Blocked Huffman views for that frame. After collecting the 80-byte prefix,
+collect and validate each complete frame, decode it into raw frame staging, and
+only then drain that staging through partial output buffers. A malformed frame
+publishes none of its raw bytes, while earlier fully drained frames remain
+committed.
+
+At frame-header acceptance, check every workspace independently and count the
+serialized frame, dictionary staging, raw staging, and typed views together
+against `max_internal_buffered_bytes`. Latch `EndInput` whenever its complete
+input span has been consumed, including while a non-final decoded frame is
+still draining. Every later collection state must observe that latch so output
+starvation cannot turn premature termination into an indefinite `NeedInput`.
+`Flush` does not change framing and `ResetBlock` remains unsupported.

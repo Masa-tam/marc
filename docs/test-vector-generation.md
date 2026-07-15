@@ -756,3 +756,11 @@ partial raw frame open across `Flush`, then finish all remaining frames with
 unsupported `ResetBlock`, independently short raw-frame, dictionary-token, and
 serialized-frame workspaces, and the actual three-workspace aggregate one byte
 below its required 154 bytes.
+
+For combined streaming decode, feed the same complete stream through one-byte
+input and output spans. Corrupt the second frame's first token and require only
+the first frame's two raw bytes to be committed. Exercise short serialized,
+dictionary, raw, and view workspaces independently, plus the four-way aggregate
+one byte short. Verify truncation, trailing input, empty input, temporary
+`Flush` starvation, unsupported `ResetBlock`, stable error/end states, and a
+premature `EndInput` latched while a non-final frame still needs output.

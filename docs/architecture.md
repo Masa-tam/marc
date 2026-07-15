@@ -719,3 +719,10 @@ dictionary-token, and serialized-frame spans. The transform drains the prefix
 and each completed frame through partial output buffers, while frame collection
 continues across non-terminal `Flush`. Dictionary and entropy state are rebuilt
 only when a complete outer frame is prepared.
+
+The combined streaming decoder mirrors this with serialized-frame,
+dictionary-byte, raw-frame, and block-view workspaces. It never drains directly
+from dictionary decode: a complete frame reaches raw staging only after both
+entropy and LZ77 validation succeed. Its source-ended latch is independent of
+output draining, so a terminal input indication survives any number of
+`NeedOutput` calls.

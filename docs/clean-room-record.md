@@ -2473,3 +2473,20 @@ no legal guarantee of non-infringement.
   errors, empty input, and stable completion.
 - Similarity review: the state machine follows marc's own transform contract;
   no external combined streaming control flow was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman streaming decoder
+
+- Authoring method: composed marc's prefix/frame accumulators with its combined
+  transactional frame decoder and explicit raw-frame drain state.
+- References used: DD-148, core partial-buffer and terminal-state invariants,
+  combined complete-stream vector, and repository decoder workspace policy.
+- Known implementations intentionally not consulted: external streaming
+  LZ/Huffman decoders, state machines, source, pseudocode, or tests.
+- Independent decisions: four reusable workspace extents; per-frame atomic raw
+  staging; earlier-frame commit semantics; four-way aggregate accounting;
+  source-ended latch across output starvation.
+- Generated-code task description: add bounded combined streaming decode and
+  verify one-byte chunking, later-frame corruption, all workspace failures,
+  truncation/trailing input, and terminal-state preservation.
+- Similarity review: the decoder sequences marc-owned formats and contracts;
+  no external combined streaming expression was compared.
