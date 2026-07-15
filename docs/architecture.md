@@ -631,15 +631,16 @@ therefore leave the whole frame output untouched.
 ### C transform ABI
 
 The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range,
-rANS, tANS, LZ77, LZSS, LZ78, LZW, and LZD variant 1 through
+rANS, tANS, LZ77, LZSS, LZ78, LZW, LZD, and LZMW variant 1 through
 separate versioned, size-tagged configuration, workspace-query, and factory
 functions. All profiles construct the same opaque transform type and share its
 process and destroy operations. Encoder workspaces hold one raw and one
 serialized frame. Decoder workspaces hold one serialized and one decoded frame;
 Blocked Huffman, rANS, and tANS use aligned internal block-view arrays. LZ78 and
-LZW use opaque aligned phrase-table workspaces. LZD uses one opaque aligned
-region for its phrase table when encoding and partitions the region into phrase
-records plus an iterative expansion stack when decoding. Adaptive Huffman,
+LZW use opaque aligned phrase-table workspaces. LZD and LZMW each use one
+opaque aligned region for input-backed phrase records when encoding and
+partition that region into phrase records plus an iterative expansion stack
+when decoding. Adaptive Huffman,
 Dynamic Range, LZ77, and LZSS need no views workspace. These buffers remain
 caller-owned and must outlive the handle.
 

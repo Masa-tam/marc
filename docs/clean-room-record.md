@@ -2302,3 +2302,19 @@ no legal guarantee of non-infringement.
   LZMW frame-streaming encode identical to the one-shot complete stream.
 - Similarity review: the controller composes marc's own transform and frame
   contracts; no external LZMW streaming expression or control flow was compared.
+
+## 2026-07-16 - LZMW public C transform ABI
+
+- Authoring method: connected the accepted LZMW profile and outer streaming
+  transforms to marc's existing size-tagged opaque C transform lifecycle.
+- References used: repository C ABI contract, LZMW profile workspace formulas,
+  DD-138, checked layout arithmetic, and the documented two-frame vector.
+- Known implementations intentionally not consulted: external LZMW APIs,
+  bindings, workspace layouts, source, pseudocode, tests, or benchmarks.
+- Independent decisions: additive configuration and symbols; query-owned opaque
+  extents; aligned encoder records; decoder phrase/stack partition; C11-only
+  round-trip validation.
+- Generated-code task description: expose LZMW through the small C ABI and add
+  a pure-C workspace, alignment, lifecycle, and round-trip test.
+- Similarity review: the addition follows marc's own ABI and LZMW transform
+  contracts; no external LZMW API structure or expression was compared.

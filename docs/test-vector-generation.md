@@ -676,3 +676,11 @@ followed by a later empty `EndInput`, premature and excess input, unsupported
 flags, every independently short workspace, and the complete per-frame
 aggregate one byte below its required size. Terminal ended and error states
 must remain stable.
+
+For the public LZMW C integration path, initialize independent encode and
+decode configurations and query every workspace extent rather than reproducing
+private C++ layout formulas. Encode the documented two-frame `ABAB` stream and
+require 208 bytes, then decode it through a separately created transform and
+compare all raw bytes. Test a deliberately misaligned views address, nonzero
+reserved configuration data, a zero dictionary limit, and zero maximum entries
+through a translation unit compiled strictly as C11.

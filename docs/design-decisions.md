@@ -2359,3 +2359,20 @@ full final frame to await a later empty terminal call, and treat `Flush` as
 non-terminal so it never closes a partial frame. Reject premature or excess
 raw input, `ResetBlock`, unsupported flags, and invalid configuration with
 stable terminal errors.
+
+## DD-138: LZMW C ABI publishes only opaque aligned workspace extents
+
+- Date: 2026-07-16
+- Status: accepted
+
+Expose the known-size LZMW variant 1 plus entropy None pipeline through a new
+size-tagged `marc_lzmw_config`, workspace query, and transform factory. Preserve
+all existing ABI constants and declarations; this integration adds symbols and
+one independent configuration type without changing an existing layout.
+
+Return the raw and encoded/decoded frame buffers as primary and secondary
+extents. Return one aligned opaque views extent containing input-backed phrase
+records for encode, or phrase records followed by an aligned iterative
+expansion stack for decode. Validate sizes and alignment before constructing a
+non-throwing C++ transform. No internal C++ type, count, or offset crosses the
+ABI, and all processing continues through the common opaque transform API.

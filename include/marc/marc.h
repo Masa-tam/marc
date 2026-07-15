@@ -230,6 +230,23 @@ typedef struct marc_lzd_config {
     uint64_t reserved2;
 } marc_lzd_config;
 
+typedef struct marc_lzmw_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t maximum_entries;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_dictionary_serialized_size;
+    uint64_t max_internal_buffered_bytes;
+    uint64_t max_dictionary_entries;
+    uint64_t reserved2;
+} marc_lzmw_config;
+
 typedef struct marc_workspace_requirements {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -365,6 +382,21 @@ MARC_API marc_status marc_lzd_workspace_requirements(
  */
 MARC_API marc_status marc_lzd_create(
     const marc_lzd_config* config,
+    marc_buffer primary_workspace,
+    marc_buffer secondary_workspace,
+    marc_buffer views_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzmw_config_init(
+    marc_direction direction, marc_lzmw_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzmw_workspace_requirements(
+    const marc_lzmw_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+/*
+ * LZMW uses one aligned, opaque views_workspace. The decoder partitions it
+ * internally into a phrase table and a bounded phrase-expansion stack.
+ */
+MARC_API marc_status marc_lzmw_create(
+    const marc_lzmw_config* config,
     marc_buffer primary_workspace,
     marc_buffer secondary_workspace,
     marc_buffer views_workspace,
