@@ -795,3 +795,11 @@ C ABI workspaces, verify the encoded stream by decoding it byte-for-byte before
 timing, then report complete-stream ratio, both throughputs, each workspace
 region, and their direction-wise peak. The smoke result is validation of the
 measurement path, not a stable performance threshold.
+
+For combined fuzz regression, encode the exact three-frame `ABABX` stream and
+require every strict truncation to leave raw output, parsed stream metadata,
+and LZ77 parameters unchanged. Replace the first frame's size fields with all
+one bits and require the same atomic rejection. Retain the hand-authored
+five-byte `MRF1` plus newline truncated-magic seed; it contains no externally
+sourced data. Compile the bounded fuzz entry point under every normal build,
+but do not treat compilation or a short smoke run as coverage completion.

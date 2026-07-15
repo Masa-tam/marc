@@ -750,3 +750,9 @@ The benchmark adapter uses that identical public name and profile policy. Its
 encoded destination bound additionally counts every worst-case entropy block
 descriptor, while its peak-workspace report continues to sum only the three
 caller-owned ABI regions and excludes corpus and result buffers.
+
+The combined decoder fuzz boundary invokes both complete-stream validation and
+the incremental frame state machine. Before either sees bytes, the harness
+caps the case and supplies only fixed stack workspaces and local limits. Chunk
+scheduling is data-derived but the total call count is independently bounded,
+so malformed scheduling cannot create an unbounded test loop.

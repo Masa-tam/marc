@@ -2654,3 +2654,25 @@ the maximum 256 entropy blocks per full frame. Use the same three-way aggregate
 limit as the CLI and profile. Report the exact queried primary, secondary, and
 views workspaces and include them in the existing peak caller-owned workspace
 metric; do not count corpus, encoded, or decoded vectors.
+
+## DD-153: Combined fuzzing is bounded before parsing
+
+- Date: 2026-07-16
+- Status: accepted
+
+Exercise both the strict one-shot and frame-streaming LZ77 plus Blocked Huffman
+decoders from one coverage-guided entry point. Truncate supplied cases to 8 KiB
+inside the harness rather than relying only on a runner option. Fix local
+policy at 4 KiB total output, 1 KiB per frame, 4 KiB dictionary/payload staging,
+and eight entropy block views. Count serialized, dictionary, raw, and typed-view
+storage in the aggregate bound.
+
+Derive input and output chunk sizes from bounded input bytes, validate every
+`ProcessResult`, and cap calls at bounded input plus bounded output plus a small
+state-transition margin. Treat an invalid result, stalled non-starvation state,
+or exhausted call guard as a reproducible failure. Normal MSVC test builds only
+compile this entry point as an object; instrumented exploration remains an
+explicit Clang/libFuzzer workflow with sanitizer coverage.
+
+Treat every file below `fuzz/corpus/` as binary in Git so checkout-time line
+ending conversion cannot change a reproducer or seed byte sequence.

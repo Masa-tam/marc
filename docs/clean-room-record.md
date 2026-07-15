@@ -2554,3 +2554,19 @@ no legal guarantee of non-infringement.
   capacity planning, reporting, documentation, and a bounded smoke test.
 - Similarity review: the work reuses only marc-owned benchmark and ABI
   conventions; no external benchmark structure was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman fuzz boundary
+
+- Authoring method: composed marc's strict combined decoder and incremental
+  decoder under the repository's independently designed bounded fuzz contract.
+- References used: DD-153, core process invariants, combined workspace policy,
+  and existing marc fuzz safety rules.
+- Known implementations intentionally not consulted: external compression fuzz
+  harnesses, corpora, scheduling logic, source, reports, or test suites.
+- Independent decisions: in-harness 8 KiB truncation; fixed four-workspace
+  aggregate; data-derived chunks; finite call guard; hand-authored magic seed;
+  binary Git treatment for byte-exact corpus checkout.
+- Generated-code task description: add a sanitizer-ready combined decoder
+  target, portable compile smoke, atomic malformed regressions, seed, and docs.
+- Similarity review: all scheduling and limits follow marc-owned contracts; no
+  external fuzz harness structure or corpus content was compared.
