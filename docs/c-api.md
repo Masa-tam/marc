@@ -2,9 +2,9 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, LZSS variant 1,
-LZ78 variant 1, LZW variant 1, and LZD variant 1 with known-size encoding and bounded, caller-owned
-workspace. All functions are `noexcept` in C++ translation units, and no C++
-type appears in the ABI.
+LZ78 variant 1, LZW variant 1, LZD variant 1, and LZMW variant 1 with known-size
+encoding and bounded, caller-owned workspace. All functions are `noexcept` in
+C++ translation units, and no C++ type appears in the ABI.
 
 ## Lifecycle
 
@@ -13,7 +13,8 @@ type appears in the ABI.
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`, or
    `marc_lzss_config_init()`, `marc_lz78_config_init()`, or
-   `marc_lzw_config_init()` or `marc_lzd_config_init()` for encode or decode
+   `marc_lzw_config_init()`, `marc_lzd_config_init()`, or
+   `marc_lzmw_config_init()` for encode or decode
    direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
@@ -62,6 +63,10 @@ records and bounded iterative expansion stack; the partition and both private
 C++ record layouts remain outside the ABI. Encoder requirements use the known
 original size and frame size, while decoder requirements derive every region
 solely from trusted local payload, frame, entry, and aggregate-buffer limits.
+LZMW follows the same opaque aligned-workspace ownership model. Its encoder
+stores input-backed phrase spans; its decoder partitions the region into fixed
+reference phrase records and an iterative expansion stack. All extents are
+queried through `marc_lzmw_workspace_requirements()` before factory creation.
 
 ## Processing contract
 

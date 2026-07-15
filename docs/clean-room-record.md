@@ -2351,3 +2351,18 @@ no legal guarantee of non-infringement.
   decoder fuzz target, permanent malformed regressions, and a local seed.
 - Similarity review: the harness follows marc's own bounded fuzz contract; no
   external LZMW fuzz structure or corpus expression was compared.
+
+## 2026-07-16 - LZMW command-line integration
+
+- Authoring method: extended marc's existing transactional CLI selector and
+  connected it only to the independently written public LZMW C ABI.
+- References used: DD-141, repository CLI safety contract, C ABI documentation,
+  LZMW workspace policy, and generic file-level integration script.
+- Known implementations intentionally not consulted: external LZMW command-line
+  tools, interfaces, option syntax, source, pseudocode, or tests.
+- Independent decisions: explicit `--codec lzmw`; 64 MiB aggregate policy;
+  bounded 320-repeat smoke; shared temporary-file commit and cleanup behavior.
+- Generated-code task description: expose LZMW through the safe CLI C-ABI path
+  and verify round-trip, overwrite, malformed cleanup, and empty input.
+- Similarity review: only marc's existing CLI contract was extended; no external
+  LZMW CLI expression or control flow was compared.

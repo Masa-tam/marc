@@ -2417,3 +2417,20 @@ fuzzing only in the explicit Clang sanitizer build. Keep every canonical
 truncation, absent or forward fixed reference, invalid token extent, extreme
 frame length, and cross-frame reset reference as permanent GoogleTest
 regressions with one-shot output and metadata atomicity assertions.
+
+## DD-141: LZMW CLI remains a transactional public-C-ABI client
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add `lzmw` as an explicit command-line codec without exposing or invoking an
+internal C++ LZMW type. Configure the one-MiB known-size LZMW plus None profile
+through `marc_lzmw_*`, use the common 64-MiB dictionary-profile aggregate
+policy, query all direction-specific workspaces, and retain the shared bounded
+process loop.
+
+Preserve destination and `.tmp` overwrite rejection, remove staged output on
+every failure, and rename only after complete successful close. Use the bounded
+320-repeat integration fixture because the reference phrase search prioritizes
+clarity. Completion-matrix chunking remains independent of this file-level
+smoke and the stream representation is unchanged.

@@ -269,6 +269,11 @@ streaming decode with compile-smoke and permanent malformed regressions.
 Coverage-guided sanitizer execution remains release evidence rather than a
 claim made by the normal MSBuild suite.
 
+The command-line tool selects LZMW explicitly through the public C ABI and
+shares the generic bounded streaming loop and transactional output-file policy.
+It never names an internal LZMW C++ type. The integration smoke verifies file
+and empty round trips, overwrite rejection, and malformed-input cleanup.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

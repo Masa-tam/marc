@@ -701,3 +701,10 @@ finite call guard. Permanent GoogleTest cases reject every truncation of the
 extreme frame lengths, and a second-frame phrase reference while proving
 one-shot raw/configuration atomicity. The repository-owned corpus begins with
 the five-byte truncated frame magic `MRF1\n`.
+
+For CLI integration, run the generic file-level round-trip script with explicit
+codec `lzmw` and a 320-repeat deterministic text fixture. Require encode and
+decode success, byte-for-byte restoration, rejection of an existing output,
+rejection of malformed input without either destination or `.tmp` residue, and
+an empty-file round trip. The executable must reach LZMW only through the public
+C ABI configuration, workspace-query, factory, process, and destroy functions.

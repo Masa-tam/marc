@@ -4,7 +4,7 @@
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. The currently implemented public profiles are the
 version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
-LZ77, LZSS, LZ78, LZW, and LZD codecs, exposed through a small C ABI. The
+LZ77, LZSS, LZ78, LZW, LZD, and LZMW codecs, exposed through a small C ABI. The
 format and API are still under development and version 0.x streams are not yet
 promised long-term compatibility.
 
@@ -30,8 +30,8 @@ git submodule update --init --recursive
 
 Top-level builds produce a minimal `marc` executable that exercises the public
 C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
-LZSS, LZ78, LZW, and LZD variant 1 can be selected explicitly. All five use no
-entropy layer:
+LZSS, LZ78, LZW, LZD, and LZMW variant 1 can be selected explicitly. All six
+use no entropy layer:
 
 ```console
 marc encode input.bin output.marc
@@ -44,11 +44,13 @@ marc encode --codec lzw input.bin output.marc
 marc decode --codec lzw output.marc restored.bin
 marc encode --codec lzd input.bin output.marc
 marc decode --codec lzd output.marc restored.bin
+marc encode --codec lzmw input.bin output.marc
+marc decode --codec lzmw output.marc restored.bin
 ```
 
-Use the same codec selection (`lz77`, `lzss`, `lz78`, `lzw`, or `lzd`) for
-decode that was used for encode. An explicit `--codec lz77` is equivalent to
-omitting the option.
+Use the same codec selection (`lz77`, `lzss`, `lz78`, `lzw`, `lzd`, or `lzmw`)
+for decode that was used for encode. An explicit `--codec lz77` is equivalent
+to omitting the option.
 
 The destination and its `.tmp` staging path must not already exist. A successful
 operation renames the staging file; a failed operation removes it, so malformed
