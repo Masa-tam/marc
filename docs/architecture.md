@@ -215,8 +215,13 @@ Fibonacci numbers. The atomic reference decoder runs that validator first and
 then expands only its acyclic phrase records through a caller-owned iterative
 stack, pushing right before left to preserve byte order. Output capacity and
 the complete token, phrase-record, and stack aggregate are checked before the
-first raw byte is published. The deterministic longest-match encoder remains a
-subsequent layer over this validated representation.
+first raw byte is published. The deterministic reference encoder represents
+every generated phrase as a caller-owned `{input offset, length}` record over
+the immutable raw frame. It performs an exact planning pass before publication,
+searches available entries in reference order, and replaces a literal only on
+a strictly longer match. Thus it emits the smallest numeric reference on equal
+lengths without copying phrase bytes. Capacity and aggregate-limit failures
+occur before output is modified.
 
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.

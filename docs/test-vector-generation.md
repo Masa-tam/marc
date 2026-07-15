@@ -601,3 +601,13 @@ for its four generated entries. Corrupt a later reference, shorten raw output,
 shorten the expansion stack, omit phrase records, and lower the full token plus
 phrase plus stack aggregate by one byte; every failure leaves patterned output
 untouched.
+
+The reference encoder must reproduce each preceding LZMW vector byte for byte,
+including the eight-reference published factorization and the frozen one-entry
+dictionary sequence. Test every possible one-byte input, repeated planning and
+encoding, all 256 byte values followed by a second copy, and deterministic
+pseudorandom binary input. Decode each nontrivial generated stream through the
+independent validator-first decoder. Short output, short phrase-span workspace,
+serialized-size rejection, invalid parameters, frame-size rejection, and the
+full input-plus-workspace aggregate limit must fail before any patterned output
+byte is changed.

@@ -2211,3 +2211,22 @@ bytes, validator phrase records, and the expansion stack together against the
 aggregate internal-buffer limit. Any validation, output-capacity, stack-
 capacity, host-size, or aggregate-limit failure must leave caller output
 unchanged.
+
+## DD-130: LZMW reference encode uses input-backed phrase spans
+
+- Date: 2026-07-15
+- Status: accepted
+
+Represent every generated encoder phrase as an offset and length into the
+immutable raw frame. Consecutive parsed phrases are adjacent input spans, so
+their concatenation is exactly the span from the previous phrase start through
+the current phrase end; phrase bytes need not be copied into dictionary
+storage.
+
+Search generated entries in ascending reference order and replace the initial
+one-byte literal only for a strictly longer match. This directly implements
+longest match with the smallest-reference tie break, including duplicate
+dictionary strings. Use an exact planning pass to determine token count and
+serialized size, enforce input-plus-workspace and serialized limits, and check
+all caller capacity before publishing any token byte. The conservative
+workspace count is `min(max(input_size - 1, 0), maximum_entries)`.

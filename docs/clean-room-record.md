@@ -2168,3 +2168,21 @@ no legal guarantee of non-infringement.
   token-to-byte decoder without recursion or output on caller-visible failure.
 - Similarity review: the decoder follows marc's own validated-DAG contracts;
   no external LZMW decoder expression or control flow was compared.
+
+## 2026-07-15 - Deterministic LZMW reference encoder
+
+- Authoring method: derived an input-span representation from marc's already
+  specified adjacent parsed-phrase rule and implemented exact longest matching
+  against the immutable caller frame.
+- References used: repository LZMW format, DD-128 and DD-130, checked
+  arithmetic, local limit policy, and the repository's published vectors.
+- Known implementations intentionally not consulted: external LZMW encoders,
+  source, pseudocode, tests, match structures, formats, or corpora.
+- Independent decisions: caller-owned offset-length records; ascending exact
+  match search; strict-longer replacement for the smallest-reference tie break;
+  exact preflight planning; atomic capacity and limit failures.
+- Generated-code task description: implement and test a bounded deterministic
+  LZMW raw-byte-to-reference encoder over the previously validated format.
+- Similarity review: the implementation follows marc's own encoder transaction
+  contract and input-span observation; no external LZMW encoder expression or
+  control flow was compared.
