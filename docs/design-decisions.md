@@ -2074,3 +2074,25 @@ A later malformed frame therefore cannot alter its own staging output, although
 bytes already committed from earlier frames are not retracted. Retain EndInput
 while staged output drains, accept a later empty EndInput, reject trailing bytes
 and ResetBlock, and return EndOfStream only after the final frame has drained.
+
+## DD-123: LZD outer streaming encode preserves one-shot stream bytes
+
+- Date: 2026-07-15
+- Status: accepted
+
+Serialize the fixed 80-byte stream prefix during construction and drain it
+before raw frame processing. Collect exactly the next declared raw frame in
+caller-owned storage, invoke the reference LZD frame planner and encoder with a
+separate input-backed phrase table, and drain the complete serialized frame
+before preparing another one. Sequence numbers, dictionary resets, terminal
+absent-right tokens, and every output byte therefore match the one-shot stream
+under arbitrary input and output chunking.
+
+Require raw storage and conservative encoder entries for the largest possible
+frame before accepting input. After exact planning, enforce raw bytes, the
+complete serialized frame, and encoder records together against the aggregate
+internal-buffer limit and require serialized-frame capacity before encoding.
+Flush may drain the prefix or a completed frame but does not shorten a partial
+raw frame. Retain EndInput while output drains, accept a later empty EndInput,
+and reject premature EndInput, trailing raw bytes, ResetBlock, and unknown
+flags with stable terminal errors.

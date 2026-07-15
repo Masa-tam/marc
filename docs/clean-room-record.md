@@ -2061,3 +2061,22 @@ no legal guarantee of non-infringement.
   plus None outer streaming decoder under arbitrary input/output chunking.
 - Similarity review: the state machine follows marc's own transform invariants;
   no external LZD streaming expression or control flow was compared.
+
+## 2026-07-15 - LZD plus None outer streaming encoder
+
+- Authoring method: composed marc's independently written LZD stream prefix,
+  reference frame planner/encoder, workspace profile, and core process contract
+  into a bounded raw-frame staging state machine.
+- References used: repository format, LZD decisions and vectors, one-shot LZD
+  stream, local limits, and existing marc streaming-controller contracts as
+  internal architectural precedent.
+- Known implementations intentionally not consulted: external LZD streaming
+  encoders, containers, source, pseudocode, tests, corpora, or byte streams.
+- Independent decisions: eager canonical prefix; exact raw-frame collection;
+  reference-frame generation; drain-before-collect sequencing; exact aggregate
+  preflight; nonterminal Flush; retained EndInput; terminal error behavior.
+- Generated-code task description: specify, implement, and test a bounded LZD
+  plus None outer streaming encoder whose bytes match one-shot encoding under
+  arbitrary input/output chunking.
+- Similarity review: the state machine follows marc's own transform invariants;
+  no external LZD streaming expression or control flow was compared.

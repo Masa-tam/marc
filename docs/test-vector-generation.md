@@ -537,6 +537,15 @@ streams, trailing bytes, a later empty EndInput, and ResetBlock are stable state
 machine cases. Flush across a partial frame must not close it; invalid
 construction and unknown flags enter a reproducible terminal error.
 
+The LZD outer streaming encoder feeds raw `ABAB` through one-byte input and
+output spans and requires byte-for-byte equality with the documented 208-byte
+one-shot stream. Flush after one raw byte may drain only the 80-byte prefix and
+must leave the partial two-byte frame open. Separate cases cover raw-frame,
+serialized-frame, and encoder-entry storage; their complete aggregate limit;
+premature EndInput; trailing raw bytes; empty input; a later empty EndInput;
+ResetBlock; unknown flags; invalid construction; and reproducible terminal
+errors.
+
 Use the complete known-size tANS stream as the streaming encoder oracle. Feed
 `ABAAABA` through one-byte input and output buffers with frame size 4 and block
 size 2; output must match byte for byte. A flush after `AB` emits only the stream
