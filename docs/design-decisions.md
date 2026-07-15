@@ -2434,3 +2434,29 @@ every failure, and rename only after complete successful close. Use the bounded
 320-repeat integration fixture because the reference phrase search prioritizes
 clarity. Completion-matrix chunking remains independent of this file-level
 smoke and the stream representation is unchanged.
+
+## DD-142: The first combined pipeline is LZ77 plus Blocked Huffman
+
+- Date: 2026-07-16
+- Status: accepted
+
+Define the first dictionary-plus-entropy profile as LZ77 variant 1 followed by
+Blocked Huffman variant 1. LZ77 produces its unchanged canonical 16-byte token
+stream. Blocked Huffman consumes those bytes as symbols in fixed-size blocks;
+no entropy block crosses an outer frame, and every frame resets both dictionary
+history and Huffman models.
+
+Keep the 16-byte LZ77 parameter region and the empty Blocked Huffman parameter
+region in normal stream-prefix order. In each frame, `uncompressed_size` is raw
+LZ77 output bytes, `dictionary_serialized_size` is the exact token extent, and
+`compressed_payload_size` is the sum of stored entropy payload bytes. Store the
+Blocked Huffman descriptor/model region immediately after the generic frame
+header and all entropy payloads after that region. Do not store a second copy
+of the dictionary token stream.
+
+Use the existing algorithm and variant IDs without changing either standalone
+profile. The combined decoder must validate the generic header and complete
+entropy layout, decode exactly the declared dictionary byte count into bounded
+staging, validate the full LZ77 token stream against the raw frame extent, and
+only then publish raw bytes. A failure in either layer publishes no byte from
+that frame; previously committed frames remain committed in streaming decode.

@@ -274,6 +274,19 @@ shares the generic bounded streaming loop and transactional output-file policy.
 It never names an internal LZMW C++ type. The integration smoke verifies file
 and empty round trips, overwrite rejection, and malformed-input cleanup.
 
+### Combined dictionary and entropy pipelines
+
+The first combined profile is LZ77 variant 1 followed by Blocked Huffman
+variant 1. It preserves the existing canonical LZ77 byte serialization and
+feeds those bytes directly into frame-local fixed-size Huffman blocks. The
+generic frame already separates raw, dictionary, descriptor/model, and payload
+extents, so this profile requires no new algorithm ID or envelope revision.
+
+Combined decode is frame-transactional: entropy output is staged and checked
+against the declared dictionary extent, then the complete LZ77 token region is
+validated before raw output is published. Streaming may retain already drained
+earlier frames, but a failing current frame contributes no raw bytes.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

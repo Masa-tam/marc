@@ -955,6 +955,51 @@ The corresponding internal one-symbol Huffman model has length 1 for symbol
 byte `00`, and four valid bits. It remains a primitive test vector even though
 the mandatory stored-size rule selects raw for this block.
 
+## LZ77 variant 1 plus Blocked Huffman variant 1
+
+This combined profile uses dictionary algorithm ID 1, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. The stream parameter regions are
+the 16-byte LZ77 parameters followed by the empty Blocked Huffman parameter
+region. `entropy block size` counts bytes in the canonical LZ77 token stream;
+the default is 65,536. Blocks reset at and cannot cross an outer frame.
+
+For every frame, the LZ77 encoder first determines the complete canonical token
+stream. The generic frame header records raw bytes as `uncompressed size`, token
+bytes as `dictionary serialized size`, stored entropy bytes as `compressed
+payload size`, the exact Blocked Huffman block count, and the complete
+descriptor/model region size. The body is:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate dictionary-token region is stored. The entropy decoder must produce
+exactly `dictionary serialized size` bytes. The LZ77 validator then consumes
+that complete staged region and must derive exactly `uncompressed size` raw
+bytes before raw publication begins.
+
+### Hand-checkable combined raw-block frame
+
+For raw input `A`, LZ77 emits the documented 16-byte Literal token. With an
+entropy block size at least 16, Blocked Huffman selects raw representation. The
+complete 88-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 10 00 00 00  10 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+10 00 00 00 10 00 00 00  00 00 01 08 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 41 00 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final 16 bytes are the unchanged LZ77 token.
+The 16-byte LZ77 parameter region remains stream-level and is not repeated in
+this frame.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

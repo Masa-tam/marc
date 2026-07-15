@@ -708,3 +708,11 @@ decode success, byte-for-byte restoration, rejection of an existing output,
 rejection of malformed input without either destination or `.tmp` residue, and
 an empty-file round trip. The executable must reach LZMW only through the public
 C ABI configuration, workspace-query, factory, process, and destroy functions.
+
+For LZ77 plus Blocked Huffman, start with raw `A`. Generate the 16-byte LZ77
+Literal token from the independent dictionary vector, then apply the mandatory
+Blocked Huffman size rule by hand: a 256-byte model cannot beat 16 raw bytes,
+so the single entropy block is raw. Require the exact 88-byte combined frame in
+`docs/format.md`. Future validator tests must independently corrupt the generic
+sizes, descriptor count and extent, raw-block fields, entropy payload, and LZ77
+token while proving frame-atomic raw output.

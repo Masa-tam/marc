@@ -92,6 +92,10 @@ terminal-match form, frame resets, limits, and vectors are independently
 specified. No LZ77 implementation source, source-derived pseudocode, container
 format, or test suite was consulted.
 
+The LZ77 plus Blocked Huffman pipeline composes only the two repository-defined
+representations above. It introduces no new algorithmic reference and does not
+use an external combined-container implementation or test suite.
+
 LZSS design reference:
 
 - James A. Storer and Thomas G. Szymanski, "Data Compression via Textual

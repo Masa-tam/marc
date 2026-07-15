@@ -2366,3 +2366,19 @@ no legal guarantee of non-infringement.
   and verify round-trip, overwrite, malformed cleanup, and empty input.
 - Similarity review: only marc's existing CLI contract was extended; no external
   LZMW CLI expression or control flow was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman combined format
+
+- Authoring method: composed marc's independently specified canonical LZ77
+  token bytes and Blocked Huffman block representation inside its generic frame.
+- References used: repository LZ77 and Blocked Huffman references, DD-142,
+  stream/frame headers, mandatory raw-block rule, and existing hand vectors.
+- Known implementations intentionally not consulted: external combined LZ77
+  and Huffman containers, implementations, source, pseudocode, or test vectors.
+- Independent decisions: existing IDs; dictionary-byte entropy units; frame-
+  synchronized resets; descriptor/model then payload layout; staged atomic
+  decode; 88-byte raw-block frame vector.
+- Generated-code task description: specify the first dictionary-plus-entropy
+  profile and freeze its exact frame representation before implementation.
+- Similarity review: the design is a composition of marc-owned formats; no
+  external combined pipeline expression or layout was compared.
