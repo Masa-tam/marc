@@ -732,3 +732,11 @@ future C ABI. Encoder requirements are exact worst-case bounds for the selected
 known-size stream and frame/block configuration. Decoder requirements are
 conservative bounds derived solely from local limits; untrusted serialized
 headers never influence allocation requests before parsing.
+
+The public C adapter exposes this profile without adding a fourth generic
+workspace field. Its secondary byte workspace is an opaque concatenation of
+the two adjacent frame-local staging spans, whose individual extents are
+recomputed from the validated configuration at creation. The decoder retains
+the existing aligned views workspace convention for its private entropy block
+records. Thus C callers allocate three regions while the C++ transforms still
+receive four disjoint spans where decoding requires them.

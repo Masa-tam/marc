@@ -772,3 +772,12 @@ aggregate policy, invalid LZ77 parameters, decoder requirements derived only
 from local limits, and stable error mapping. Finally allocate every reported
 encoder and decoder workspace for the `ABABX` fixture and require the streaming
 transforms to produce and consume the exact 408-byte stream.
+
+For the combined C ABI, initialize rather than hand-construct both direction
+configurations. Encode binary `ABABABX` with a seven-byte frame and 16-symbol
+entropy blocks, then decode the resulting stream through independently queried
+local limits and require exact byte equality. Check the encoder's hand-derived
+worst-case workspace partition, decoder byte/view requirements, a one-byte
+short secondary region, and rejection of a nonzero reserved field. Compile the
+test as C11 and link it to the shared library so the public declaration and
+exported ABI are exercised rather than internal C++ entry points.

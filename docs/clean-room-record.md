@@ -2507,3 +2507,20 @@ no legal guarantee of non-infringement.
   queries, stable error mapping, boundary tests, and streaming integration test.
 - Similarity review: all formulas follow marc-owned serialized extents and
   limits; no external workspace scheme was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman C ABI
+
+- Authoring method: adapted marc's independently designed combined streaming
+  profile to the repository's existing versioned, caller-owned C ABI pattern.
+- References used: DD-150, the public marc C lifecycle, combined workspace
+  calculator, and existing marc C tests.
+- Known implementations intentionally not consulted: external compression C
+  APIs, bindings, workspace layouts, source, pseudocode, or tests.
+- Independent decisions: one combined configuration; opaque secondary-region
+  partition; decoder-only aligned entropy views; checked partition arithmetic;
+  pure-C shared-library round trip.
+- Generated-code task description: expose combined configuration, workspace
+  query, and transform factory functions and test capacity, reserved-field,
+  symbol-export, and round-trip behavior from C11.
+- Similarity review: the adapter uses only marc-owned ABI and transform
+  conventions; no external API layout or naming scheme was compared.

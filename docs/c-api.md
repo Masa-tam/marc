@@ -1,17 +1,19 @@
 # C API
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
-Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, LZSS variant 1,
-LZ78 variant 1, LZW variant 1, LZD variant 1, and LZMW variant 1 with known-size
-encoding and bounded, caller-owned workspace. All functions are `noexcept` in
-C++ translation units, and no C++ type appears in the ABI.
+Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
+Blocked Huffman profile, LZSS variant 1, LZ78 variant 1, LZW variant 1, LZD
+variant 1, and LZMW variant 1 with known-size encoding and bounded,
+caller-owned workspace. All functions are `noexcept` in C++ translation units,
+and no C++ type appears in the ABI.
 
 ## Lifecycle
 
 1. Call the matching `marc_blocked_huffman_config_init()` or
    `marc_adaptive_huffman_config_init()` or
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
-   `marc_tans_config_init()`, `marc_lz77_config_init()`, or
+   `marc_tans_config_init()`, `marc_lz77_config_init()`,
+   `marc_lz77_blocked_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lz78_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzd_config_init()`, or
    `marc_lzmw_config_init()` for encode or decode
@@ -44,6 +46,13 @@ tANS likewise uses aligned decoder views; its encoder workspace uses the strict
 LZ77 uses no views workspace. Its encoder buffers one raw frame and the
 conservative fixed-token representation; its decoder buffers one encoded frame
 and one validated decoded frame.
+The LZ77 plus Blocked Huffman profile keeps the common three-workspace ABI.
+Its primary region holds raw input while encoding and serialized input while
+decoding. Its secondary region is opaque to callers and is internally
+partitioned into dictionary staging followed by encoded-frame staging for the
+encoder, or dictionary staging followed by raw-frame staging for the decoder.
+Only decoding uses the aligned views region, for validated entropy block
+descriptors. Query requirements again whenever any size or limit changes.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

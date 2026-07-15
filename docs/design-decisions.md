@@ -2600,3 +2600,23 @@ the four-way aggregate to actual declared extents. Empty known-size streams
 require no frame workspace. Map profile failures to stable core categories and
 prove that returned requirements can directly construct both streaming
 transforms for a round trip.
+
+## DD-150: The combined C ABI retains three caller-owned regions
+
+- Date: 2026-07-16
+- Status: accepted
+
+Expose the LZ77 plus Blocked Huffman profile through its own versioned C
+configuration while retaining the common `marc_workspace_requirements` shape.
+The primary region has the usual frame role. Partition the secondary byte
+region internally: dictionary staging precedes serialized-frame staging for
+encode, and dictionary staging precedes raw-frame staging for decode. The
+decoder's aligned views region contains the private Blocked Huffman block-view
+array; encoding requires no views.
+
+The requirements query performs every partition sum and typed-view byte
+calculation with checked arithmetic. Creation repeats the profile calculation,
+validates all capacities and view alignment before constructing the transform,
+and exposes none of the private C++ record layouts. This keeps the ABI small
+without weakening caller ownership, bounded allocation, or strict separation
+between dictionary and entropy staging.

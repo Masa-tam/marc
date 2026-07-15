@@ -4,7 +4,8 @@
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. The currently implemented public profiles are the
 version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
-LZ77, LZSS, LZ78, LZW, LZD, and LZMW codecs, exposed through a small C ABI. The
+LZ77, LZ77 plus Blocked Huffman, LZSS, LZ78, LZW, LZD, and LZMW codecs, exposed
+through a small C ABI. The
 format and API are still under development and version 0.x streams are not yet
 promised long-term compatibility.
 
