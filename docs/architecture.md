@@ -230,6 +230,14 @@ storage at `EndInput`, and only then drains raw bytes through arbitrary output
 spans. Encoded tokens, phrase records, expansion stack, and staged raw bytes
 are included in one checked aggregate before construction succeeds.
 
+The matching streaming encoder collects exactly one declared raw frame,
+invokes the deterministic reference encoder once, and drains its staged token
+bytes without changing their representation. Raw storage, the four-bytes-per-
+raw-byte worst-case token extent, and input-backed phrase-span records are all
+caller-owned and covered by one checked construction aggregate. A full frame
+may drain before the caller later confirms `EndInput`; a partial-frame `Flush`
+does not create a format boundary.
+
 On Windows, the canonical preset uses the Visual Studio 2026 generator and
 MSBuild. Non-Windows presets use Ninja with the platform's selected compiler.
 This avoids depending on localized MSVC `/showIncludes` text for incremental

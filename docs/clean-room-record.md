@@ -2202,3 +2202,19 @@ no legal guarantee of non-infringement.
   decoder that never publishes bytes from a malformed frame.
 - Similarity review: the adapter follows marc's own transform and atomic frame
   patterns; no external LZMW streaming expression or control flow was compared.
+
+## 2026-07-15 - Deterministic LZMW streaming encoder
+
+- Authoring method: adapted marc's independently written one-shot encoder to
+  the repository's known-size bounded transform and exact-byte contract.
+- References used: repository LZMW encoder, DD-130 and DD-132, stream status
+  invariants, checked arithmetic, and local workspace policy.
+- Known implementations intentionally not consulted: external LZMW streaming
+  encoders, buffering strategies, source, pseudocode, tests, or APIs.
+- Independent decisions: one raw frame per invocation state; conservative
+  fixed-token staging; exact one-shot byte oracle; retained terminal request
+  while draining; complete construction aggregate.
+- Generated-code task description: implement and test a bounded deterministic
+  LZMW streaming encoder whose output is independent of input/output chunking.
+- Similarity review: the adapter uses marc's own transform and one-shot encoder
+  contracts; no external LZMW streaming expression or control flow was compared.

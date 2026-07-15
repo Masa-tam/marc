@@ -621,3 +621,14 @@ position on repeated error calls. Also reject a call exceeding the conservative
 encoded extent before consuming it, every unsupported flag, each independently
 short workspace, and an aggregate limit one byte below the complete encoded,
 phrase, stack, and staged-output requirement.
+
+For streaming encode, use one-shot LZMW encoding as the byte-for-byte oracle.
+Feed `abbaababaaba` through one-byte raw and output spans, let a full `ABAB`
+frame drain before a later empty `EndInput`, and preserve `EndInput` while a
+larger token stream drains. Verify that `Flush` after a partial frame produces
+no token and that maximum-entries-1 preserves the frozen dictionary result.
+Test empty input, premature and excess raw input, `ResetBlock`, each
+independently short raw/token/dictionary workspace, and a construction
+aggregate exactly one byte below the complete requirement. After beginning a
+one-byte drain, supply a new raw byte and require rejection without consuming
+it or publishing another token byte.

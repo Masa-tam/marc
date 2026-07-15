@@ -2249,3 +2249,22 @@ input before consuming any part of that call. Preserve the draining state after
 the final-input call, reject later input as trailing data, and make the ended
 and error states stable across repeated calls. `Flush` does not terminate a
 partial frame and `ResetBlock` is unsupported at this layer.
+
+## DD-132: LZMW streaming encode preserves exact reference tokens
+
+- Date: 2026-07-15
+- Status: accepted
+
+Buffer exactly one known-size raw frame, run the deterministic LZMW planning
+and encoding passes once the declared size is collected, and drain the staged
+fixed-reference bytes through arbitrary output spans. Allocate caller-owned
+storage for the raw frame, the conservative four-byte token per raw-byte
+extent, and `min(max(frame_size - 1, 0), maximum_entries)` phrase-span records;
+check their complete aggregate before accepting input.
+
+A full frame may encode and drain before `EndInput`, then wait for an empty
+terminal call. Remember `EndInput` received while token bytes are still
+draining. Reject premature termination and bytes beyond the declared raw size
+before publishing more staged token bytes. Keep `Flush` non-terminal, reject
+`ResetBlock`, and make ended and error states stable. The resulting token bytes
+must equal one-shot reference encoding for every input and chunking.
