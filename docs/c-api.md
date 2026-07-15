@@ -2,7 +2,7 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, LZSS variant 1,
-LZ78 variant 1, and LZW variant 1 with known-size encoding and bounded, caller-owned
+LZ78 variant 1, LZW variant 1, and LZD variant 1 with known-size encoding and bounded, caller-owned
 workspace. All functions are `noexcept` in C++ translation units, and no C++
 type appears in the ABI.
 
@@ -13,7 +13,8 @@ type appears in the ABI.
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`, or
    `marc_lzss_config_init()`, `marc_lz78_config_init()`, or
-   `marc_lzw_config_init()` for encode or decode direction.
+   `marc_lzw_config_init()` or `marc_lzd_config_init()` for encode or decode
+   direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
@@ -55,6 +56,12 @@ use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized
 LZW parameter width. `maximum_code_width` affects encoding only because decode
 parameters are read from the stream and checked against local policy.
+LZD also uses one opaque aligned views workspace. Encoding uses it for the
+input-backed phrase table. Decoding partitions it internally into the phrase
+records and bounded iterative expansion stack; the partition and both private
+C++ record layouts remain outside the ABI. Encoder requirements use the known
+original size and frame size, while decoder requirements derive every region
+solely from trusted local payload, frame, entry, and aggregate-buffer limits.
 
 ## Processing contract
 

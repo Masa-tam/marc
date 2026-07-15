@@ -8,6 +8,7 @@ marc_benchmark lz77 corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lzw corpus.bin 5
+marc_benchmark lzd corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,

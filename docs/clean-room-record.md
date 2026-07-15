@@ -2096,3 +2096,22 @@ no legal guarantee of non-infringement.
   streaming decoders and preserve representative malformed cases as normal
   tests without running an unbounded campaign in the reference build.
 - Similarity review: no external fuzz harness structure or corpus was compared.
+
+## 2026-07-15 - LZD C ABI, benchmark, and completion matrix
+
+- Authoring method: adapted marc's own versioned transform ABI and benchmark
+  lifecycle to the independently written LZD plus None streaming controllers.
+- References used: repository C ABI contract, LZD profile/workspace formulas,
+  accepted LZD format decisions and vectors, and existing marc completion-test
+  categories as internal architectural precedent.
+- Known implementations intentionally not consulted: external LZD APIs,
+  libraries, benchmarks, test suites, source, pseudocode, or serialized data.
+- Independent decisions: ABI v1 remains unchanged; decoder phrase records and
+  expansion stack share one checked alignment-padded opaque view; benchmark
+  capacity includes odd-frame token headroom; readiness and release evidence
+  remain separate statuses.
+- Generated-code task description: expose LZD through the small C ABI, add a
+  C-ABI-only benchmark path, and prove deterministic round trips over required
+  data classes and arbitrary chunking.
+- Similarity review: the surface follows marc's own existing ABI vocabulary and
+  transform lifecycle; no external LZD API or benchmark structure was compared.

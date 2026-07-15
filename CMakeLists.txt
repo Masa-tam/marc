@@ -236,6 +236,10 @@ if(MARC_BUILD_BENCHMARKS)
             COMMAND marc_benchmark lzw ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzw_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lzd_smoke
+            COMMAND marc_benchmark lzd ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzd_smoke
+            PROPERTIES LABELS benchmark-smoke)
     endif()
 endif()
 
@@ -457,6 +461,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_frame_streaming_decoder_tests.cpp
         tests/lzw_frame_streaming_encoder_tests.cpp
         tests/lzd_frame_tests.cpp
+        tests/lzd_completion_tests.cpp
         tests/lzd_fuzz_regression_tests.cpp
         tests/lzd_frame_streaming_decoder_tests.cpp
         tests/lzd_frame_streaming_encoder_tests.cpp
@@ -628,6 +633,15 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_lzw_c_api_tests PRIVATE marc::static)
     endif()
     add_test(NAME marc_lzw_c_api_tests COMMAND marc_lzw_c_api_tests)
+
+    add_executable(marc_lzd_c_api_tests tests/lzd_c_api_tests.c)
+    target_compile_features(marc_lzd_c_api_tests PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_lzd_c_api_tests PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_lzd_c_api_tests PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_lzd_c_api_tests COMMAND marc_lzd_c_api_tests)
 
     if(TARGET marc_cli)
         add_test(NAME marc_cli_lz77_round_trip

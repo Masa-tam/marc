@@ -2116,3 +2116,38 @@ fuzzing only in the explicit Clang sanitizer build. Keep every canonical
 truncation, absent/forward phrase references, invalid token extent, extreme
 frame lengths, and cross-frame reset references as permanent GoogleTest
 regressions with one-shot atomicity assertions.
+
+## DD-125: LZD C ABI keeps both decoder tables in one opaque view
+
+- Date: 2026-07-15
+- Status: accepted
+
+Expose the known-size LZD plus None profile through the existing C ABI v1
+transform lifecycle. Keep `maximum_entries` as the encoder format parameter and
+all `max_*` fields as trusted local policy. Report encoder raw-frame,
+serialized-frame, and input-backed phrase-table storage through the existing
+three workspace fields.
+
+The decoder additionally needs both phrase records and an iterative expansion
+stack. Preserve the ABI v1 workspace record by reporting their checked,
+alignment-padded sum as one opaque `views_workspace`; partition it internally
+after validating the base address against the stricter alignment. No private
+C++ type or offset crosses the ABI. Build the public LZD benchmark only through
+this C surface, including four payload bytes of per-frame headroom for an odd
+final byte.
+
+## DD-126: LZD completion distinguishes local readiness from release evidence
+
+- Date: 2026-07-15
+- Status: accepted
+
+Treat LZD variant 1 plus None as locally implementation-ready only after a
+single public-ABI completion matrix covers empty input, every one-byte value,
+all byte values, repeated bytes and patterns, deterministic high-entropy data,
+frame-boundary neighbors, deterministic re-encoding, multi-frame operation,
+and one-byte and mixed chunking. Require the C ABI lifecycle and benchmark
+smoke in the same regression suite.
+
+This status does not claim release completion. Cross-architecture deterministic
+evidence, sanitizer and coverage-guided fuzz runs, representative benchmark
+records, and the release similarity review remain explicit release gates.
