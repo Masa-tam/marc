@@ -2490,3 +2490,20 @@ no legal guarantee of non-infringement.
   truncation/trailing input, and terminal-state preservation.
 - Similarity review: the decoder sequences marc-owned formats and contracts;
   no external combined streaming expression was compared.
+
+## 2026-07-16 - LZ77 plus Blocked Huffman profile and workspaces
+
+- Authoring method: derived checked upper bounds directly from marc's 16-byte
+  token grammar, mandatory Blocked Huffman raw fallback, frame layout, and
+  streaming aggregate contracts.
+- References used: DD-149, repository limits API, combined frame format, and
+  streaming encoder/decoder workspace checks.
+- Known implementations intentionally not consulted: external compression
+  profile calculators, workspace formulas, source, pseudocode, or tests.
+- Independent decisions: all-Literal/all-raw encoder worst case; actual largest
+  short frame; conservative decoder capacities from local limits; direct
+  construction-and-round-trip proof for all returned requirements.
+- Generated-code task description: add the combined profile, checked workspace
+  queries, stable error mapping, boundary tests, and streaming integration test.
+- Similarity review: all formulas follow marc-owned serialized extents and
+  limits; no external workspace scheme was compared.

@@ -2578,3 +2578,25 @@ input span has been consumed, including while a non-final decoded frame is
 still draining. Every later collection state must observe that latch so output
 starvation cannot turn premature termination into an indefinite `NeedInput`.
 `Flush` does not change framing and `ResetBlock` remains unsupported.
+
+## DD-149: Combined profiles bound the uncompressed dictionary worst case
+
+- Date: 2026-07-16
+- Status: accepted
+
+Define the encoder's worst case independently of input content: every raw byte
+becomes one 16-byte LZ77 Literal token and every Blocked Huffman block selects
+its mandatory raw representation. For the largest actual raw frame, derive the
+dictionary extent, entropy block count, descriptor extent, complete serialized
+frame extent, and the streaming encoder's three-workspace aggregate with
+checked arithmetic. Reject profiles that cannot encode arbitrary frame content
+within local dictionary, payload, block-count, or aggregate limits.
+
+Derive decoder workspace from local policy rather than trusted stream fields:
+`56 + max_internal_buffered_bytes` serialized bytes,
+`max_dictionary_serialized_size` dictionary bytes, `max_frame_size` raw bytes,
+and `max_blocks_per_frame` typed views. Runtime frame validation still applies
+the four-way aggregate to actual declared extents. Empty known-size streams
+require no frame workspace. Map profile failures to stable core categories and
+prove that returned requirements can directly construct both streaming
+transforms for a round trip.

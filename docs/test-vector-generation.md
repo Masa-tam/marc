@@ -764,3 +764,11 @@ dictionary, raw, and view workspaces independently, plus the four-way aggregate
 one byte short. Verify truncation, trailing input, empty input, temporary
 `Flush` starvation, unsupported `ResetBlock`, stable error/end states, and a
 premature `EndInput` latched while a non-final frame still needs output.
+
+For the combined profile, check a one-million-byte largest frame as sixteen
+million worst-case LZ77 token bytes split into 245 entropy blocks. Check a
+17-byte final-only stream, empty input, block-count exhaustion, one-byte-short
+aggregate policy, invalid LZ77 parameters, decoder requirements derived only
+from local limits, and stable error mapping. Finally allocate every reported
+encoder and decoder workspace for the `ABABX` fixture and require the streaming
+transforms to produce and consume the exact 408-byte stream.

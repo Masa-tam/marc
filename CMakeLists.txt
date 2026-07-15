@@ -94,6 +94,7 @@ set(MARC_SOURCES
     src/frame/lz77_blocked_huffman_frame.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_decoder.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_encoder.cpp
+    src/frame/lz77_blocked_huffman_profile.cpp
     src/frame/lz77_blocked_huffman_stream.cpp
     src/frame/lz77_frame.cpp
     src/frame/lz77_profile.cpp
@@ -475,6 +476,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_encoder_tests.cpp
+        tests/lz77_blocked_huffman_profile_tests.cpp
         tests/lz77_blocked_huffman_stream_tests.cpp
         tests/lz77_frame_tests.cpp
         tests/lz77_profile_tests.cpp

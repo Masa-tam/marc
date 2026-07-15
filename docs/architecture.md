@@ -726,3 +726,9 @@ from dictionary decode: a complete frame reaches raw staging only after both
 entropy and LZ77 validation succeed. Its source-ended latch is independent of
 output draining, so a terminal input indication survives any number of
 `NeedOutput` calls.
+
+The combined profile layer centralizes workspace arithmetic for callers and the
+future C ABI. Encoder requirements are exact worst-case bounds for the selected
+known-size stream and frame/block configuration. Decoder requirements are
+conservative bounds derived solely from local limits; untrusted serialized
+headers never influence allocation requests before parsing.
