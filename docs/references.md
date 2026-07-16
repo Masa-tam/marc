@@ -302,6 +302,11 @@ integer range-coder variant, framing, model-total rule, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no
 external range-coder corpus, harness, or implementation was consulted.
 
+The Dynamic Range command-line selector composes only marc's independently
+specified integer range profile, public C ABI, bounded workspace policy, and
+common file adapter. No external range-coder tool, command-line implementation,
+archive format, or test suite was consulted.
+
 The rANS stream fuzz boundary uses only marc's independently specified scalar
 rANS format, normalized-table limits, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external ANS

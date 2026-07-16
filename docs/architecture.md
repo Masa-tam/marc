@@ -726,6 +726,13 @@ pins the accepted model total to 32,768, while byte-derived chunk schedules and
 a checked call ceiling expose invalid partial-I/O progress or stalls as
 reproducible findings.
 
+The command-line adapter names the adaptive order-0 profile `dynamic-range`
+and reaches it only through the public C lifecycle. Its one MiB frame policy
+uses the exact model-total limit 32,768, a conservative `2*n+5` payload bound,
+and one fixed descriptor per frame. Decoder workspaces come from these local
+limits before parsing, while the shared temporary-file boundary prevents any
+failed stream from publishing a destination.
+
 ### rANS foundation
 
 rANS variant 1 begins with a fixed 528-byte descriptor validator and an

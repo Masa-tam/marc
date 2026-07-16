@@ -923,6 +923,14 @@ bounds. Fix `max_range_model_total` to 32,768 and cap byte-derived incremental
 chunks at 17 input and 19 output bytes. Both decoder paths share this policy and
 use fixed arrays only.
 
+For Dynamic Range CLI integration, run the shared file harness with explicit
+codec `dynamic-range` over enough repeated text to cross the one MiB frame
+boundary. Use model total 32,768, payload bound `2*n+5`, and a fixed 16-byte
+descriptor. Require exact nonempty and empty round trips, overwrite rejection,
+malformed-prefix rejection, trailing-byte rejection, and cleanup of both final
+and temporary outputs after failure. Do not alter a versioned interoperability
+codec set without introducing a new set identifier.
+
 For rANS fuzzing, use the repository-authored five-byte truncated-prefix seed.
 Bound input/output/frame/block/payload/internal bytes to
 8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB, allow at most eight block views, and cap the

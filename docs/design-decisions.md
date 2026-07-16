@@ -3274,3 +3274,20 @@ profile, C ABI, CLI, fuzz, benchmark, and documentation evidence, classify
 Adaptive Huffman variant 1 as locally implementation-complete. External
 cross-platform deterministic execution, representative benchmark records, and
 the final similarity review remain release evidence.
+
+## DD-186: CLI exposes Dynamic Range variant 1 through the public C ABI
+
+- Date: 2026-07-17
+- Status: accepted
+
+Name the explicit command-line profile `dynamic-range`. Use one MiB outer
+frames, adaptive order-0 model total 32,768, the conservative `2*n+5` payload
+bound, and one 16-byte descriptor per nonempty frame. Configure, query
+workspace, create transforms, and process data exclusively through the public
+C ABI using local limits fixed before serialized input is inspected.
+
+Apply the shared multi-frame file harness for exact nonempty and empty round
+trips, overwrite rejection, malformed prefix, trailing bytes, and atomic
+temporary-file cleanup. Keep existing versioned interoperability codec sets
+unchanged. This CLI surface is prerequisite evidence for benchmarking and the
+local completion audit, not release completion.

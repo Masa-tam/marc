@@ -23,6 +23,7 @@ enum class Codec {
     checksum_raw,
     blocked_huffman,
     adaptive_huffman,
+    dynamic_range,
     lz77,
     lz77_blocked_huffman,
     lzss,
@@ -37,6 +38,8 @@ constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
     if (codec == Codec::blocked_huffman) return frame_size;
     if (codec == Codec::adaptive_huffman)
         return frame_size * UINT64_C(33);
+    if (codec == Codec::dynamic_range)
+        return frame_size * UINT64_C(2) + UINT64_C(5);
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return frame_size * UINT64_C(16);
@@ -55,6 +58,9 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
             + block_count * (entropy_descriptor_size + UINT64_C(256));
     }
     if (codec == Codec::adaptive_huffman) {
+        return entropy_descriptor_size + maximum_frame_payload(codec);
+    }
+    if (codec == Codec::dynamic_range) {
         return entropy_descriptor_size + maximum_frame_payload(codec);
     }
     if (codec == Codec::lz77_blocked_huffman) {
@@ -159,6 +165,25 @@ bool configure(
         maximum_frame_payload(Codec::adaptive_huffman);
     config.max_internal_buffered_bytes =
         maximum_buffered_bytes(Codec::adaptive_huffman);
+    return true;
+}
+
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
+    marc_dynamic_range_config& config) {
+    const auto status = marc_dynamic_range_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.max_frame_size = frame_size;
+    config.max_compressed_payload_size =
+        maximum_frame_payload(Codec::dynamic_range);
+    config.max_internal_buffered_bytes =
+        maximum_buffered_bytes(Codec::dynamic_range);
+    config.max_range_model_total = UINT64_C(1) << 15;
     return true;
 }
 
@@ -307,6 +332,7 @@ bool process_file(const marc_direction direction,
     marc_checksum_raw_config checksum_config{};
     marc_blocked_huffman_config blocked_huffman_config{};
     marc_adaptive_huffman_config adaptive_huffman_config{};
+    marc_dynamic_range_config dynamic_range_config{};
     marc_lz77_config config{};
     marc_lz77_blocked_huffman_config combined_config{};
     marc_lzss_config lzss_config{};
@@ -321,6 +347,9 @@ bool process_file(const marc_direction direction,
             return false;
     } else if (codec == Codec::adaptive_huffman) {
         if (!configure(direction, source_size, adaptive_huffman_config))
+            return false;
+    } else if (codec == Codec::dynamic_range) {
+        if (!configure(direction, source_size, dynamic_range_config))
             return false;
     } else if (codec == Codec::lz77) {
         if (!configure(direction, source_size, config)) return false;
@@ -349,6 +378,9 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::adaptive_huffman)
         status = marc_adaptive_huffman_workspace_requirements(
             &adaptive_huffman_config, &needed);
+    else if (codec == Codec::dynamic_range)
+        status = marc_dynamic_range_workspace_requirements(
+            &dynamic_range_config, &needed);
     else if (codec == Codec::lz77)
         status = marc_lz77_workspace_requirements(&config, &needed);
     else if (codec == Codec::lz77_blocked_huffman)
@@ -400,6 +432,10 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::adaptive_huffman)
         status = marc_adaptive_huffman_create(
             &adaptive_huffman_config, primary_buffer, secondary_buffer,
+            &raw_transform);
+    else if (codec == Codec::dynamic_range)
+        status = marc_dynamic_range_create(
+            &dynamic_range_config, primary_buffer, secondary_buffer,
             &raw_transform);
     else if (codec == Codec::lz77)
         status = marc_lz77_create(
@@ -566,7 +602,8 @@ void usage() {
                  "       marc encode --codec <codec> <input> <output>\n"
                  "       marc decode --codec <codec> <input> <output>\n"
                  "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
-                 "lz77, lz77-blocked-huffman, lzss, lz78, lzw, lzd, lzmw\n";
+                 "dynamic-range, lz77, lz77-blocked-huffman, lzss, lz78, "
+                 "lzw, lzd, lzmw\n";
 }
 
 } // namespace
@@ -595,6 +632,7 @@ int main(const int argc, const char* const argv[]) {
         if (name == "checksum-raw") codec = Codec::checksum_raw;
         else if (name == "blocked-huffman") codec = Codec::blocked_huffman;
         else if (name == "adaptive-huffman") codec = Codec::adaptive_huffman;
+        else if (name == "dynamic-range") codec = Codec::dynamic_range;
         else if (name == "lz77") codec = Codec::lz77;
         else if (name == "lz77-blocked-huffman")
             codec = Codec::lz77_blocked_huffman;

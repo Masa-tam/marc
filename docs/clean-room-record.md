@@ -3088,6 +3088,24 @@ discarded and the reviewed seed retained.
 - Local validation: the three focused completion tests and all 944 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Dynamic Range CLI adapter
+
+- Authoring method: composed marc's existing public range profile with its
+  bounded atomic file adapter after specifying DD-186.
+- References used: DD-186, marc's Dynamic Range variant 1 format, exact model
+  total, profile sizing, public C lifecycle, and common CLI policy.
+- Known implementations intentionally not consulted: external range-coder
+  source, compression tools, command-line adapters, or test suites.
+- Independent decisions: codec name `dynamic-range`; one MiB frames; `2*n+5`
+  payload; one descriptor; model total 32,768; multi-frame/trailing harness;
+  unchanged versioned interoperability sets.
+- Generated-code task description: expose the adaptive order-0 range profile
+  through the CLI using only public C operations and bounded workspaces.
+- Similarity review: the change extends repository-owned dispatch and file
+  policy without consulting an external implementation.
+- Local validation: the focused multi-frame CLI test and all 945 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
