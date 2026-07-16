@@ -415,6 +415,13 @@ four-byte trailer without allocation. Keeping this boundary independent lets
 frame codecs later connect their already validated raw staging span without
 duplicating CRC lifecycle or inclusion-range decisions.
 
+The staged frame-header gate couples three previously independent declarations:
+stream descriptor-region size, parsed descriptor objects, and frame trailer
+extent. Its version-specific entry point validates all three and includes the
+trailer in bounded frame accounting. Existing frame codecs remain attached to
+the strict version 1.0 gate, which rejects descriptor objects as well as a
+nonzero trailer.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

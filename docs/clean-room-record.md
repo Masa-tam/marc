@@ -2756,3 +2756,21 @@ no legal guarantee of non-infringement.
   version 1.1 streams.
 - Similarity review: the component composes only marc-owned fixed records,
   frame terminology, and the independently implemented CRC primitive.
+
+## 2026-07-16 - Isolated version 1.1 frame-header gate
+
+- Authoring method: factored marc's existing frame-header validation by stream
+  version and connected the staged path to its repository-owned checksum
+  profile without changing codec call sites.
+- References used: DD-165, version 1.0 frame header, staged version 1.1 prefix,
+  canonical descriptor region, and per-frame CRC-32C profile.
+- Known implementations intentionally not consulted: external archive frame
+  validators, checksum-enabled containers, source code, tests, or vectors.
+- Independent decisions: same 56-byte layout; strict version-specific entry
+  points; prefix/descriptor/trailer three-way agreement; trailer included in
+  frame-local bounds.
+- Generated-code task description: stage hash-aware frame-header parsing and
+  serialization while preserving complete rejection by current version 1.0
+  codec paths.
+- Similarity review: layout reuse and factoring derive only from marc's prior
+  header and checksum components.

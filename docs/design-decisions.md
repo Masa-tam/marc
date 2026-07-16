@@ -2865,3 +2865,20 @@ byte, padding bit, and the digest itself. Implement profile validation,
 one-shot trailer generation, and verification as an allocation-free component
 before changing generic frame or stream codecs. Checksums detect corruption;
 this profile does not provide authenticity.
+
+## DD-165: Version 1.1 frame headers require three-way checksum agreement
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add isolated version 1.1 frame-header entry points. They accept the existing
+56-byte frame layout only when the stream prefix declares one 16-byte hash
+record, the caller supplies exactly the supported per-frame CRC-32C descriptor,
+and the frame declares a four-byte checksum trailer. Validate descriptor-region
+size, descriptor semantics, and trailer size together before body traversal.
+
+Keep the ordinary frame-header entry points strict to version 1.0, an empty
+descriptor view, and a zero trailer. Include the trailer extent in checked
+frame-local buffered-byte accounting. Do not yet change any public stream or
+codec adapter; staged frame parsing remains unreachable from their version 1.0
+paths.

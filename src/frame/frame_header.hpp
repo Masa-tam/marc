@@ -2,6 +2,7 @@
 #define MARC_FRAME_FRAME_HEADER_HPP
 
 #include "core/limits.hpp"
+#include "frame/hash_descriptor.hpp"
 #include "frame/stream_header.hpp"
 
 #include <cstddef>
@@ -28,6 +29,7 @@ struct FrameValidationContext {
     const core::DecoderLimits& limits;
     std::uint64_t expected_sequence{};
     std::uint64_t output_already_committed{};
+    std::span<const HashDescriptor> hash_descriptors{};
 };
 
 enum class FrameHeaderError : std::uint8_t {
@@ -42,6 +44,8 @@ enum class FrameHeaderError : std::uint8_t {
     limit_exceeded,
     arithmetic_overflow,
     nonzero_reserved,
+    unsupported_stream_version,
+    invalid_checksum_profile,
 };
 
 [[nodiscard]] FrameHeaderError validate_frame_header(
@@ -54,6 +58,20 @@ enum class FrameHeaderError : std::uint8_t {
     FrameHeader& header) noexcept;
 
 [[nodiscard]] FrameHeaderError serialize_frame_header(
+    const FrameHeader& header,
+    const FrameValidationContext& context,
+    std::span<std::byte, frame_header_size> output) noexcept;
+
+[[nodiscard]] FrameHeaderError validate_frame_header_v1_1(
+    const FrameHeader& header,
+    const FrameValidationContext& context) noexcept;
+
+[[nodiscard]] FrameHeaderError parse_frame_header_v1_1(
+    std::span<const std::byte, frame_header_size> input,
+    const FrameValidationContext& context,
+    FrameHeader& header) noexcept;
+
+[[nodiscard]] FrameHeaderError serialize_frame_header_v1_1(
     const FrameHeader& header,
     const FrameValidationContext& context,
     std::span<std::byte, frame_header_size> output) noexcept;

@@ -192,6 +192,26 @@ verification of its trailer. Public stream codecs remain on version 1.0 until
 the version 1.1 frame-header gate and complete stream composition are wired and
 tested.
 
+### Staged version 1.1 frame-header gate
+
+The staged version 1.1 frame header retains the version 1.0 56-byte layout and
+`MRF1` magic. Under the initial checksum profile, `checksum trailer bytes` at
+offset 36 is exactly little-endian 4 rather than zero. The stream prefix must
+declare exactly 16 hash-descriptor bytes, the parsed region must contain the
+single supported CRC-32C descriptor, and the frame header must declare the
+matching four-byte trailer. Any disagreement is malformed before frame-body
+processing.
+
+The ordinary version 1.0 frame-header entry points continue to require a
+version 1.0 stream context, no descriptor objects, and a zero checksum trailer.
+The dedicated staged entry points require a version 1.1 stream context and the
+initial profile. Neither entry point accepts the other's version.
+
+For a raw three-byte version 1.1 frame whose uncompressed bytes are `61 62 63`,
+the frame header is the version 1.0 raw vector below except bytes 36 through 39
+are `04 00 00 00`. Its body is payload `61 62 63`, followed by CRC-32C trailer
+`B7 3F 4B 36`.
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

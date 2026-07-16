@@ -4,6 +4,7 @@
 #include "core/endian.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
 #include "entropy/dynamic_range_format.hpp"
+#include "frame/frame_checksum.hpp"
 
 #include <algorithm>
 #include <array>
@@ -20,14 +21,37 @@ constexpr std::array magic{
            algorithm == EntropyAlgorithm::tans;
 }
 
-} // namespace
-
-FrameHeaderError validate_frame_header(
+[[nodiscard]] FrameHeaderError validate_common(
     const FrameHeader& header,
-    const FrameValidationContext& context) noexcept {
-    if (validate_stream_header(context.stream, context.limits) !=
-        StreamHeaderError::none) {
+    const FrameValidationContext& context,
+    const bool hash_aware) noexcept {
+    const auto stream_error = hash_aware
+        ? validate_stream_header_v1_1(context.stream, context.limits)
+        : validate_stream_header(context.stream, context.limits);
+    if (stream_error == StreamHeaderError::unsupported_version) {
+        return FrameHeaderError::unsupported_stream_version;
+    }
+    if (stream_error != StreamHeaderError::none) {
         return FrameHeaderError::limit_exceeded;
+    }
+    if (!hash_aware && !context.hash_descriptors.empty()) {
+        return FrameHeaderError::unsupported_feature;
+    }
+    if (hash_aware) {
+        std::size_t descriptor_bytes{};
+        if (!core::checked_multiply(context.hash_descriptors.size(),
+                                    hash_descriptor_size,
+                                    descriptor_bytes)) {
+            return FrameHeaderError::arithmetic_overflow;
+        }
+        if (descriptor_bytes != context.stream.hash_descriptors_size
+            || validate_hash_descriptor_region(context.hash_descriptors)
+                != HashDescriptorRegionError::none
+            || validate_frame_checksum_profile_v1_1(
+                context.hash_descriptors, header.checksum_trailer_size)
+                != FrameChecksumError::none) {
+            return FrameHeaderError::invalid_checksum_profile;
+        }
     }
     if (header.flags != 0) {
         return FrameHeaderError::unknown_flags;
@@ -35,7 +59,7 @@ FrameHeaderError validate_frame_header(
     if (header.sequence != context.expected_sequence) {
         return FrameHeaderError::unexpected_sequence;
     }
-    if (header.checksum_trailer_size != 0) {
+    if (!hash_aware && header.checksum_trailer_size != 0) {
         return FrameHeaderError::unsupported_feature;
     }
     if (context.output_already_committed >= context.stream.original_size) {
@@ -95,7 +119,12 @@ FrameHeaderError validate_frame_header(
     bounds.dictionary_serialized_size = header.dictionary_serialized_size;
     bounds.compressed_payload_size = header.compressed_payload_size;
     bounds.largest_block_size = context.stream.entropy_block_size;
-    bounds.model_buffered_bytes = header.block_descriptors_size;
+    if (!core::checked_add(
+            static_cast<std::uint64_t>(header.block_descriptors_size),
+            static_cast<std::uint64_t>(header.checksum_trailer_size),
+            bounds.model_buffered_bytes)) {
+        return FrameHeaderError::arithmetic_overflow;
+    }
     bounds.payload_buffered_bytes =
         context.stream.entropy_algorithm == EntropyAlgorithm::none
         ? 0
@@ -117,9 +146,10 @@ FrameHeaderError validate_frame_header(
     return FrameHeaderError::none;
 }
 
-FrameHeaderError parse_frame_header(
+[[nodiscard]] FrameHeaderError parse_for_version(
     const std::span<const std::byte, frame_header_size> input,
     const FrameValidationContext& context,
+    const bool hash_aware,
     FrameHeader& header) noexcept {
     if (!std::ranges::equal(input.first<magic.size()>(), magic)) {
         return FrameHeaderError::invalid_magic;
@@ -148,18 +178,19 @@ FrameHeaderError parse_frame_header(
         return FrameHeaderError::nonzero_reserved;
     }
 
-    const auto error = validate_frame_header(parsed, context);
+    const auto error = validate_common(parsed, context, hash_aware);
     if (error == FrameHeaderError::none) {
         header = parsed;
     }
     return error;
 }
 
-FrameHeaderError serialize_frame_header(
+[[nodiscard]] FrameHeaderError serialize_for_version(
     const FrameHeader& header,
     const FrameValidationContext& context,
+    const bool hash_aware,
     const std::span<std::byte, frame_header_size> output) noexcept {
-    const auto error = validate_frame_header(header, context);
+    const auto error = validate_common(header, context, hash_aware);
     if (error != FrameHeaderError::none) {
         return error;
     }
@@ -178,6 +209,48 @@ FrameHeaderError serialize_frame_header(
         core::store_le(output, 36, header.checksum_trailer_size);
     return stored ? FrameHeaderError::none
                   : FrameHeaderError::invalid_header_size;
+}
+
+} // namespace
+
+FrameHeaderError validate_frame_header(
+    const FrameHeader& header,
+    const FrameValidationContext& context) noexcept {
+    return validate_common(header, context, false);
+}
+
+FrameHeaderError parse_frame_header(
+    const std::span<const std::byte, frame_header_size> input,
+    const FrameValidationContext& context,
+    FrameHeader& header) noexcept {
+    return parse_for_version(input, context, false, header);
+}
+
+FrameHeaderError serialize_frame_header(
+    const FrameHeader& header,
+    const FrameValidationContext& context,
+    const std::span<std::byte, frame_header_size> output) noexcept {
+    return serialize_for_version(header, context, false, output);
+}
+
+FrameHeaderError validate_frame_header_v1_1(
+    const FrameHeader& header,
+    const FrameValidationContext& context) noexcept {
+    return validate_common(header, context, true);
+}
+
+FrameHeaderError parse_frame_header_v1_1(
+    const std::span<const std::byte, frame_header_size> input,
+    const FrameValidationContext& context,
+    FrameHeader& header) noexcept {
+    return parse_for_version(input, context, true, header);
+}
+
+FrameHeaderError serialize_frame_header_v1_1(
+    const FrameHeader& header,
+    const FrameValidationContext& context,
+    const std::span<std::byte, frame_header_size> output) noexcept {
+    return serialize_for_version(header, context, true, output);
 }
 
 } // namespace marc::frame

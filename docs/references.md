@@ -262,3 +262,7 @@ The initial per-frame checksum profile reuses the documented CRC-32C algorithm
 and repository-native descriptor. Its exact raw-byte inclusion range, reset
 boundary, trailer placement, and single-descriptor restriction are independent
 marc format decisions; no additional external format was consulted.
+
+The staged version 1.1 frame-header gate reuses marc's fixed frame header and
+initial checksum profile. Its three-way agreement rule and version isolation
+are repository-native validation policy and use no new external reference.

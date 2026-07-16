@@ -890,3 +890,14 @@ four. Generate `83 92 06 E3` from uncompressed ASCII `123456789` and four zero
 bytes from an empty frame byte span. Verify both, reject each one-byte digest
 corruption as a mismatch, and require descriptor or output-size failures to
 leave caller-owned trailer output unchanged.
+
+For the staged version 1.1 frame-header gate, use the raw three-byte frame
+vector and set checksum trailer size at offset 36 to little-endian four. Supply
+a version 1.1 stream prefix declaring 16 descriptor bytes and the single
+CRC-32C / UncompressedBytes / PerFrame descriptor. Require dedicated parse and
+serialization to reproduce the 56-byte header. Reject it through the version
+1.0 entry point; reject a version 1.0 context through the staged entry point;
+and independently reject a missing descriptor, a descriptor-region size
+mismatch, an unsupported descriptor, trailer sizes zero and five, and a local
+buffer limit one byte below the frame's checked staged extent. All parse and
+serialization failures remain transactional.
