@@ -386,3 +386,9 @@ The standalone LZ77 completion matrix uses only marc's public C ABI,
 repository-defined fixed-token stream, required data classes, deterministic
 generator, and process-contract assertions. No external LZ vectors, corpus,
 test suite, or implementation behavior was consulted.
+
+The standalone LZSS completion matrix uses only marc's public C ABI,
+repository-defined variable-token stream and literal/match cost rule, required
+data classes, deterministic generator, and process-contract assertions. No
+external LZSS vectors, corpus, test suite, or implementation behavior was
+consulted.

@@ -105,6 +105,12 @@ profile-derived codec workspace under one documented method.
 The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.
+The standalone public-ABI completion matrix consolidates local LZSS readiness
+above these component paths. It covers required binary data classes, frame
+boundary neighbors, deterministic re-encoding, one-byte and mixed chunking,
+repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
+truncation, and trailing bytes. This is local implementation evidence rather
+than external cross-platform release completion.
 
 ### LZW foundation
 

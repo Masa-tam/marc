@@ -652,6 +652,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_stream_tests.cpp
         tests/lzss_frame_streaming_decoder_tests.cpp
         tests/lzss_frame_streaming_encoder_tests.cpp
+        tests/lzss_completion_tests.cpp
         tests/lzss_fuzz_regression_tests.cpp
         tests/lz78_frame_tests.cpp
         tests/lz78_fuzz_regression_tests.cpp
