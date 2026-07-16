@@ -3160,3 +3160,21 @@ checks, and a checked call ceiling. Compile warning-clean in ordinary builds,
 expose a Clang sanitizer target, and begin with the reviewed truncated-prefix
 seed. A bounded campaign is execution evidence and does not establish coverage
 completion.
+
+## DD-180: CLI exposes standalone Blocked Huffman through the public C ABI
+
+- Date: 2026-07-17
+- Status: accepted
+
+Name the explicit command-line profile `blocked-huffman`. Configure one MiB
+outer frames and 65,536-symbol entropy blocks, then obtain all workspace sizes
+and create both directions exclusively through the public C API. Derive decoder
+limits from this fixed local policy rather than serialized fields. Continue to
+stage output in a sibling temporary file and publish only after successful
+EndOfStream.
+
+Exercise nonempty input across a frame boundary, empty input, overwrite
+rejection, malformed input, and trailing bytes through the shared CLI harness.
+Do not add this selector to the already versioned interoperability codec set;
+that requires a separately identified manifest update. CLI publication is a
+step toward benchmark and local-completion evidence, not release completion.

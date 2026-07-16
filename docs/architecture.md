@@ -551,6 +551,13 @@ decoders share eight fixed views, bounded byte arrays, a 24-bit code-length cap,
 and a 512-node decode-table cap; byte-derived chunks and a checked call ceiling
 turn invalid progress or stalls into reproducible findings.
 
+The command-line adapter names this profile `blocked-huffman` and reaches it
+only through the public C workspace query, transform factory, and process
+contract. Its one MiB frame and 65,536-symbol block policy is translated into
+checked local decoder bounds before any archive bytes are parsed. File output
+retains the common temporary-file commit boundary. This selector does not
+silently change the existing versioned interoperability bundle codec set.
+
 ### Adaptive Huffman foundation
 
 Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A

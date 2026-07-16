@@ -1008,6 +1008,14 @@ if(MARC_BUILD_TESTS)
     endforeach()
 
     if(TARGET marc_cli)
+        add_test(NAME marc_cli_blocked_huffman_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=blocked-huffman"
+                "-DCLI_REPEAT=50000"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-bh-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_checksum_raw_round_trip
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"

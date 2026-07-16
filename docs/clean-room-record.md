@@ -2978,6 +2978,24 @@ discarded and the reviewed seed retained.
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
 
+## 2026-07-17 - Standalone Blocked Huffman CLI adapter
+
+- Authoring method: composed marc's existing public C profile with its common
+  bounded file adapter after specifying DD-180.
+- References used: DD-180, the repository-defined Blocked Huffman format,
+  public C lifecycle, profile workspace query, and atomic CLI policy.
+- Known implementations intentionally not consulted: external compression
+  tools, archive formats, command-line adapters, or test suites.
+- Independent decisions: codec name `blocked-huffman`; one MiB frames;
+  65,536-symbol blocks; fixed local decode limits; shared multi-frame trailing
+  rejection test; no change to the versioned interoperability codec set.
+- Generated-code task description: expose standalone Blocked Huffman through
+  the existing CLI using only public C ABI operations and bounded workspaces.
+- Similarity review: the change extends repository-owned dispatch and policy
+  patterns without consulting an external tool.
+- Local validation: the new multi-frame CLI test and all 935 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

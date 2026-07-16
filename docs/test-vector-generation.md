@@ -61,6 +61,14 @@ is accepted, rejects progress without progress, and verifies repeatable
 end-of-stream. Flipping the first magic byte is the initial ABI-level malformed
 stream vector and must produce no decoded output.
 
+For standalone Blocked Huffman CLI integration, run the shared file harness
+with explicit codec `blocked-huffman` over enough repeated text to cross the
+one MiB frame boundary. Require exact nonempty and empty round trips, existing
+destination rejection, malformed-prefix rejection, and trailing-byte rejection
+after a valid multi-frame stream. Failed decode must leave neither destination
+nor temporary output. Keep this selector outside an existing versioned
+interoperability bundle until that manifest receives a new codec-set version.
+
 Adaptive Huffman FGK vectors record, after every symbol, the emitted NYT or
 symbol path, literal bits for a new symbol, node numbers, weights, parents,
 children, selected equal-weight leader, swaps, and final packed payload. Initial

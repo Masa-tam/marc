@@ -306,3 +306,8 @@ The standalone LZ77 stream fuzz boundary uses only marc's independently
 specified fixed token representation, outer framing, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no
 external LZ corpus, fuzz harness, or implementation behavior was consulted.
+
+The standalone Blocked Huffman command-line selector composes only marc's
+public C ABI, repository-defined format, bounded profile, and common atomic
+file adapter. No external command-line tool, archive format, or implementation
+behavior was consulted.

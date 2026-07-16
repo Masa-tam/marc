@@ -21,6 +21,7 @@ constexpr std::uint64_t entropy_descriptor_size = 16;
 
 enum class Codec {
     checksum_raw,
+    blocked_huffman,
     lz77,
     lz77_blocked_huffman,
     lzss,
@@ -32,6 +33,7 @@ enum class Codec {
 
 constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
     if (codec == Codec::checksum_raw) return frame_size;
+    if (codec == Codec::blocked_huffman) return frame_size;
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return frame_size * UINT64_C(16);
@@ -44,6 +46,11 @@ constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
 constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
     if (codec == Codec::checksum_raw)
         return frame_header_size + frame_size + UINT64_C(4);
+    if (codec == Codec::blocked_huffman) {
+        const auto block_count = frame_size / entropy_block_size;
+        return frame_size + frame_header_size + frame_size
+            + block_count * (entropy_descriptor_size + UINT64_C(256));
+    }
     if (codec == Codec::lz77_blocked_huffman) {
         const auto dictionary_bytes = maximum_frame_payload(codec);
         const auto block_count = dictionary_bytes / entropy_block_size;
@@ -106,6 +113,28 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
     config.max_dictionary_serialized_size = frame_size;
     config.max_internal_buffered_bytes =
         maximum_buffered_bytes(Codec::checksum_raw);
+    return true;
+}
+
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
+    marc_blocked_huffman_config& config) {
+    const auto status = marc_blocked_huffman_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.block_size = static_cast<std::uint32_t>(entropy_block_size);
+    config.max_frame_size = frame_size;
+    config.max_block_size = entropy_block_size;
+    config.max_compressed_payload_size =
+        maximum_frame_payload(Codec::blocked_huffman);
+    config.max_internal_buffered_bytes =
+        maximum_buffered_bytes(Codec::blocked_huffman);
+    config.max_blocks_per_frame =
+        static_cast<std::uint32_t>(frame_size / entropy_block_size);
     return true;
 }
 
@@ -252,6 +281,7 @@ bool process_file(const marc_direction direction,
                   const std::uint64_t source_size,
                   std::ifstream& source, std::ofstream& sink) {
     marc_checksum_raw_config checksum_config{};
+    marc_blocked_huffman_config blocked_huffman_config{};
     marc_lz77_config config{};
     marc_lz77_blocked_huffman_config combined_config{};
     marc_lzss_config lzss_config{};
@@ -261,6 +291,9 @@ bool process_file(const marc_direction direction,
     marc_lzmw_config lzmw_config{};
     if (codec == Codec::checksum_raw) {
         if (!configure(direction, source_size, checksum_config)) return false;
+    } else if (codec == Codec::blocked_huffman) {
+        if (!configure(direction, source_size, blocked_huffman_config))
+            return false;
     } else if (codec == Codec::lz77) {
         if (!configure(direction, source_size, config)) return false;
     } else if (codec == Codec::lz77_blocked_huffman) {
@@ -282,6 +315,9 @@ bool process_file(const marc_direction direction,
     if (codec == Codec::checksum_raw)
         status = marc_checksum_raw_workspace_requirements(
             &checksum_config, &needed);
+    else if (codec == Codec::blocked_huffman)
+        status = marc_blocked_huffman_workspace_requirements(
+            &blocked_huffman_config, &needed);
     else if (codec == Codec::lz77)
         status = marc_lz77_workspace_requirements(&config, &needed);
     else if (codec == Codec::lz77_blocked_huffman)
@@ -326,6 +362,10 @@ bool process_file(const marc_direction direction,
     if (codec == Codec::checksum_raw)
         status = marc_checksum_raw_create(
             &checksum_config, primary_buffer, &raw_transform);
+    else if (codec == Codec::blocked_huffman)
+        status = marc_blocked_huffman_create(
+            &blocked_huffman_config, primary_buffer, secondary_buffer,
+            views_buffer, &raw_transform);
     else if (codec == Codec::lz77)
         status = marc_lz77_create(
             &config, primary_buffer, secondary_buffer, &raw_transform);
@@ -490,8 +530,8 @@ void usage() {
                  "       marc decode <input> <output>\n"
                  "       marc encode --codec <codec> <input> <output>\n"
                  "       marc decode --codec <codec> <input> <output>\n"
-                 "codecs: checksum-raw, lz77, lz77-blocked-huffman, lzss, "
-                 "lz78, lzw, lzd, lzmw\n";
+                 "codecs: checksum-raw, blocked-huffman, lz77, "
+                 "lz77-blocked-huffman, lzss, lz78, lzw, lzd, lzmw\n";
 }
 
 } // namespace
@@ -518,6 +558,7 @@ int main(const int argc, const char* const argv[]) {
         }
         const std::string_view name{argv[3]};
         if (name == "checksum-raw") codec = Codec::checksum_raw;
+        else if (name == "blocked-huffman") codec = Codec::blocked_huffman;
         else if (name == "lz77") codec = Codec::lz77;
         else if (name == "lz77-blocked-huffman")
             codec = Codec::lz77_blocked_huffman;
