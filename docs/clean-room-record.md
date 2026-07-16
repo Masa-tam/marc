@@ -2880,3 +2880,20 @@ discarded and the reviewed seed retained.
   I/O and failure cleanup.
 - Similarity review: dispatch and allocation structure are repository-owned CLI
   conventions; the new branch contains no externally sourced expression.
+
+## 2026-07-16 - Raw checksum benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark dispatcher and
+  measurement contract with the public checksum profile.
+- References used: DD-171, `marc_checksum_raw_*`, exact version 1.1 prefix and
+  per-frame extents, and existing benchmark output definitions.
+- Known implementations intentionally not consulted: external checksum or
+  compression benchmarks and third-party measurement harnesses.
+- Independent decisions: name `checksum-raw`; payload factor one; 60-byte frame
+  overhead; one primary workspace; framing/CRC baseline interpretation; README
+  one-iteration smoke.
+- Generated-code task description: benchmark the public raw-checksum C ABI with
+  verified round trip, deterministic capacity bounds, throughput, ratio, and
+  caller-owned workspace reporting.
+- Similarity review: measurement flow and output keys are marc-owned existing
+  conventions; new arithmetic follows the repository format exactly.

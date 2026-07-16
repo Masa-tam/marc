@@ -460,6 +460,12 @@ temporary-file publication means a malformed checksum stream leaves no partial
 destination even though the streaming decoder may have produced verified bytes
 internally before a later-frame error.
 
+The benchmark adapter selects the same `checksum-raw` public ABI and reports it
+as a framing-plus-CRC baseline. Its destination bound uses one raw byte per
+input byte plus the 80-byte prefix and 60 bytes per frame. Peak codec workspace
+therefore reflects the single caller-owned serialized-frame span rather than
+the benchmark's corpus or result vectors.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

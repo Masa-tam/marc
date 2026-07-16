@@ -2996,5 +2996,23 @@ serialized bytes to one frame and aggregate serialized-frame workspace to
 overwrite rejection, and malformed-input cleanup behavior. Add a complete and
 empty round-trip CTest plus a multi-frame trailing-data cleanup regression
 through the common CLI script. CLI publication does not yet add this profile
-to the fixed interoperability artifact manifest; that
-manifest change requires a separately versioned codec set.
+to the fixed interoperability artifact manifest; that manifest change requires
+a separately versioned codec set.
+
+## DD-171: Raw checksum benchmarking establishes framing baseline cost
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add `checksum-raw` to the dependency-free benchmark selector through the public
+C ABI only. Measure the same verified encode/decode lifecycle, serialized to
+input ratio, MiB/s, and caller-owned workspace fields reported for every other
+profile. This mode is a framing and CRC baseline, not a compression-ratio
+competitor.
+
+Use payload factor one, an 80-byte stream prefix, and per-frame overhead
+`56 + 4` when computing the bounded destination capacity. Use one primary
+workspace of `56 + frame_size + 4` in either direction and report zero secondary
+and views regions as returned by the ABI. Run a one-iteration optimized smoke
+against the repository README. Do not include corpus/result buffers or the two
+small allocated transform objects in `codec_peak_workspace_bytes`.

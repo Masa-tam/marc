@@ -23,6 +23,7 @@ constexpr std::uint64_t entropy_block_size = UINT64_C(1) << 16;
 constexpr std::uint64_t entropy_descriptor_size = 16;
 
 enum class Codec {
+    checksum_raw,
     lz77,
     lz77_blocked_huffman,
     lzss,
@@ -42,6 +43,7 @@ using TransformPtr = std::unique_ptr<marc_transform, TransformDeleter>;
 
 struct CodecConfig {
     Codec codec{};
+    marc_checksum_raw_config checksum_raw{};
     marc_lz77_config lz77{};
     marc_lz77_blocked_huffman_config lz77_blocked_huffman{};
     marc_lzss_config lzss{};
@@ -65,6 +67,7 @@ struct Measurement {
 };
 
 [[nodiscard]] const char* codec_name(const Codec codec) noexcept {
+    if (codec == Codec::checksum_raw) return "checksum-raw";
     if (codec == Codec::lz77) return "lz77";
     if (codec == Codec::lz77_blocked_huffman)
         return "lz77-blocked-huffman";
@@ -76,6 +79,7 @@ struct Measurement {
 }
 
 [[nodiscard]] std::uint64_t payload_factor(const Codec codec) noexcept {
+    if (codec == Codec::checksum_raw) return UINT64_C(1);
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return UINT64_C(16);
@@ -87,6 +91,7 @@ struct Measurement {
 
 [[nodiscard]] std::uint64_t payload_overhead_per_frame(
     const Codec codec) noexcept {
+    if (codec == Codec::checksum_raw) return UINT64_C(4);
     if (codec == Codec::lz77_blocked_huffman) {
         return frame_size * payload_factor(codec) / entropy_block_size
             * entropy_descriptor_size;
@@ -100,11 +105,27 @@ struct Measurement {
     result = {};
     result.codec = codec;
     const auto maximum_payload = frame_size * payload_factor(codec);
-    const auto maximum_buffered = codec == Codec::lz77_blocked_huffman
-        ? frame_size + maximum_payload + frame_header_size
-            + payload_overhead_per_frame(codec) + maximum_payload
-        : frame_size + frame_header_size + maximum_payload;
-    if (codec == Codec::lz77) {
+    std::uint64_t maximum_buffered{};
+    if (codec == Codec::checksum_raw) {
+        maximum_buffered = frame_header_size + maximum_payload + UINT64_C(4);
+    } else if (codec == Codec::lz77_blocked_huffman) {
+        maximum_buffered = frame_size + maximum_payload + frame_header_size
+            + payload_overhead_per_frame(codec) + maximum_payload;
+    } else {
+        maximum_buffered = frame_size + frame_header_size + maximum_payload;
+    }
+    if (codec == Codec::checksum_raw) {
+        auto& config = result.checksum_raw;
+        if (marc_checksum_raw_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size = static_cast<std::uint32_t>(frame_size);
+        config.max_frame_size = frame_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_dictionary_serialized_size = maximum_payload;
+        config.max_internal_buffered_bytes = maximum_buffered;
+    } else if (codec == Codec::lz77) {
         if (marc_lz77_config_init(direction, &result.lz77) != MARC_STATUS_OK)
             return false;
         result.lz77.original_size = original_size;
@@ -192,6 +213,9 @@ struct Measurement {
 [[nodiscard]] marc_status query_workspace(
     const CodecConfig& config,
     marc_workspace_requirements& requirements) noexcept {
+    if (config.codec == Codec::checksum_raw)
+        return marc_checksum_raw_workspace_requirements(
+            &config.checksum_raw, &requirements);
     if (config.codec == Codec::lz77)
         return marc_lz77_workspace_requirements(&config.lz77, &requirements);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -217,6 +241,9 @@ struct Measurement {
                                 workspace.secondary.size()};
     const marc_buffer views{workspace.views,
                             workspace.requirements.views_bytes};
+    if (config.codec == Codec::checksum_raw)
+        return marc_checksum_raw_create(
+            &config.checksum_raw, primary, transform);
     if (config.codec == Codec::lz77)
         return marc_lz77_create(&config.lz77, primary, secondary, transform);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -380,8 +407,8 @@ struct Measurement {
 
 void print_usage() {
     std::cerr << "usage: marc_benchmark <codec> <input> [iterations]\n"
-                 "codecs: lz77, lz77-blocked-huffman, lzss, lz78, lzw, "
-                 "lzd, lzmw\n";
+                 "codecs: checksum-raw, lz77, lz77-blocked-huffman, lzss, "
+                 "lz78, lzw, lzd, lzmw\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -484,7 +511,8 @@ int main(const int argc, const char* const argv[]) {
     }
     Codec codec{};
     const std::string_view name{argv[1]};
-    if (name == "lz77") codec = Codec::lz77;
+    if (name == "checksum-raw") codec = Codec::checksum_raw;
+    else if (name == "lz77") codec = Codec::lz77;
     else if (name == "lz77-blocked-huffman")
         codec = Codec::lz77_blocked_huffman;
     else if (name == "lzss") codec = Codec::lzss;
