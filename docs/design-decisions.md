@@ -3349,3 +3349,21 @@ trips, overwrite rejection, malformed prefix, trailing bytes, and atomic
 temporary-file cleanup. Keep existing versioned interoperability codec sets
 unchanged. This CLI path is prerequisite evidence for benchmarking and local
 completion, not release completion.
+
+## DD-190: rANS benchmark retains scalar block and view policy
+
+- Date: 2026-07-17
+- Status: accepted
+
+Add `rans` to the dependency-free benchmark with the CLI's one MiB frames and
+65,536-symbol blocks. Reserve one payload byte per input symbol, eight final
+state bytes and one 528-byte descriptor for each of at most 16 blocks per
+frame, one 56-byte frame header, and the 64-byte stream prefix. Use public
+workspace queries and transform factories exclusively, including the queried
+decoder views extent and alignment.
+
+Perform an untimed full round trip before measurement. Time only process calls
+and retain the existing ratio, raw-byte throughput, direction-workspace, and
+peak-workspace definitions. Report all three workspace regions. The Release
+smoke validates the path and schema, but it is neither a stable performance
+record nor complete local-readiness evidence.

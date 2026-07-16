@@ -3162,6 +3162,26 @@ discarded and the reviewed seed retained.
 - Local validation: the focused multi-frame CLI test and all 950 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - rANS benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark after specifying
+  DD-190's public scalar-profile measurement policy.
+- References used: DD-190, marc's rANS variant 1 format, profile bounds, public
+  C lifecycle, aligned block views, and benchmark contract.
+- Known implementations intentionally not consulted: external benchmark
+  suites, ANS source, compression tools, or published results.
+- Independent decisions: codec name `rans`; one MiB frames; 65,536-symbol
+  blocks; one byte per symbol; eight state bytes and 528 descriptor bytes per
+  block; 64-byte prefix; untimed preflight; public three-region workspace peak.
+- Generated-code task description: report scalar rANS ratio, throughput, and
+  caller-owned workspace entirely through the public C ABI.
+- Similarity review: the adapter uses repository-authored measurement flow,
+  profile bounds, and alignment policy only.
+- Local validation: focused Release benchmark smoke and all 951 tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed
+  ratio, throughput, aligned decoder views, direction workspaces, and peak
+  workspace.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

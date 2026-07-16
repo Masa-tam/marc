@@ -8,6 +8,7 @@ marc_benchmark checksum-raw corpus.bin 5
 marc_benchmark blocked-huffman corpus.bin 5
 marc_benchmark adaptive-huffman corpus.bin 5
 marc_benchmark dynamic-range corpus.bin 5
+marc_benchmark rans corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
@@ -55,6 +56,12 @@ frames and model total 32,768. Capacity planning includes two bytes per input
 symbol, the five-byte canonical termination sequence, one 16-byte descriptor,
 one 56-byte frame header, and the 64-byte stream prefix. The fixed model is
 transform-owned, so the views workspace is zero.
+
+`rans` selects scalar byte-renormalized variant 1 with one MiB frames and
+65,536-symbol blocks. Capacity planning reserves one byte per input symbol,
+eight final-state bytes and one 528-byte descriptor for each of at most 16
+blocks per frame, each 56-byte frame header, and the 64-byte stream prefix.
+Reported decoder workspace includes the aligned caller-owned block-view region.
 
 `lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
 entropy block as the CLI profile. Its capacity calculation includes the

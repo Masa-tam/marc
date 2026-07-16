@@ -836,6 +836,13 @@ bounded by one payload byte per symbol, one eight-byte final state and one
 count and alignment before parsing input. The shared temporary-file boundary
 prevents failed streams from publishing a destination.
 
+The benchmark adapter uses the same scalar profile and public C lifecycle. Its
+capacity bound includes the 64-byte stream prefix, one 56-byte header per
+frame, one payload byte per input symbol, and an eight-byte state plus 528-byte
+descriptor for each of at most 16 blocks per frame. An untimed complete round
+trip gates measurement; direction and peak workspace totals include the
+queried aligned decoder views region.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

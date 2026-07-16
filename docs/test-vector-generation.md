@@ -965,6 +965,13 @@ rejection, trailing-byte rejection, and cleanup of both final and temporary
 outputs after failure. Do not alter a versioned interoperability codec set
 without introducing a new set identifier.
 
+Run the rANS benchmark smoke over `README.md` for one iteration. Require an
+untimed public-C-ABI round trip before output. Capacity planning must count one
+payload byte per input symbol, then reserve eight final-state bytes, one
+528-byte descriptor for each of at most 16 blocks per frame, one 56-byte header
+per frame, and the 64-byte stream prefix. Report all three direction workspaces
+and their larger total as the codec peak.
+
 For tANS fuzzing, use the same reviewed truncated-prefix seed and
 8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB byte limits as rANS. Supply eight fixed
 `TansBlockView` records, cap the state table at 4,096 entries, and drive the
