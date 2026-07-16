@@ -26,6 +26,7 @@ enum class Codec {
     checksum_raw,
     blocked_huffman,
     adaptive_huffman,
+    dynamic_range,
     lz77,
     lz77_blocked_huffman,
     lzss,
@@ -48,6 +49,7 @@ struct CodecConfig {
     marc_checksum_raw_config checksum_raw{};
     marc_blocked_huffman_config blocked_huffman{};
     marc_adaptive_huffman_config adaptive_huffman{};
+    marc_dynamic_range_config dynamic_range{};
     marc_lz77_config lz77{};
     marc_lz77_blocked_huffman_config lz77_blocked_huffman{};
     marc_lzss_config lzss{};
@@ -74,6 +76,7 @@ struct Measurement {
     if (codec == Codec::checksum_raw) return "checksum-raw";
     if (codec == Codec::blocked_huffman) return "blocked-huffman";
     if (codec == Codec::adaptive_huffman) return "adaptive-huffman";
+    if (codec == Codec::dynamic_range) return "dynamic-range";
     if (codec == Codec::lz77) return "lz77";
     if (codec == Codec::lz77_blocked_huffman)
         return "lz77-blocked-huffman";
@@ -88,6 +91,7 @@ struct Measurement {
     if (codec == Codec::checksum_raw) return UINT64_C(1);
     if (codec == Codec::blocked_huffman) return UINT64_C(1);
     if (codec == Codec::adaptive_huffman) return UINT64_C(33);
+    if (codec == Codec::dynamic_range) return UINT64_C(2);
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return UINT64_C(16);
@@ -105,6 +109,8 @@ struct Measurement {
     }
     if (codec == Codec::adaptive_huffman)
         return entropy_descriptor_size;
+    if (codec == Codec::dynamic_range)
+        return entropy_descriptor_size + UINT64_C(5);
     if (codec == Codec::lz77_blocked_huffman) {
         return frame_size * payload_factor(codec) / entropy_block_size
             * entropy_descriptor_size;
@@ -117,7 +123,8 @@ struct Measurement {
                              CodecConfig& result) noexcept {
     result = {};
     result.codec = codec;
-    const auto maximum_payload = frame_size * payload_factor(codec);
+    const auto maximum_payload = frame_size * payload_factor(codec)
+        + (codec == Codec::dynamic_range ? UINT64_C(5) : UINT64_C(0));
     std::uint64_t maximum_buffered{};
     if (codec == Codec::checksum_raw) {
         maximum_buffered = frame_header_size + maximum_payload + UINT64_C(4);
@@ -126,6 +133,8 @@ struct Measurement {
             + payload_overhead_per_frame(codec) + maximum_payload;
     } else if (codec == Codec::adaptive_huffman) {
         maximum_buffered = payload_overhead_per_frame(codec) + maximum_payload;
+    } else if (codec == Codec::dynamic_range) {
+        maximum_buffered = entropy_descriptor_size + maximum_payload;
     } else if (codec == Codec::lz77_blocked_huffman) {
         maximum_buffered = frame_size + maximum_payload + frame_header_size
             + payload_overhead_per_frame(codec) + maximum_payload;
@@ -167,6 +176,17 @@ struct Measurement {
         config.max_frame_size = frame_size;
         config.max_compressed_payload_size = maximum_payload;
         config.max_internal_buffered_bytes = maximum_buffered;
+    } else if (codec == Codec::dynamic_range) {
+        auto& config = result.dynamic_range;
+        if (marc_dynamic_range_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size = static_cast<std::uint32_t>(frame_size);
+        config.max_frame_size = frame_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_internal_buffered_bytes = maximum_buffered;
+        config.max_range_model_total = UINT64_C(1) << 15;
     } else if (codec == Codec::lz77) {
         if (marc_lz77_config_init(direction, &result.lz77) != MARC_STATUS_OK)
             return false;
@@ -264,6 +284,9 @@ struct Measurement {
     if (config.codec == Codec::adaptive_huffman)
         return marc_adaptive_huffman_workspace_requirements(
             &config.adaptive_huffman, &requirements);
+    if (config.codec == Codec::dynamic_range)
+        return marc_dynamic_range_workspace_requirements(
+            &config.dynamic_range, &requirements);
     if (config.codec == Codec::lz77)
         return marc_lz77_workspace_requirements(&config.lz77, &requirements);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -298,6 +321,9 @@ struct Measurement {
     if (config.codec == Codec::adaptive_huffman)
         return marc_adaptive_huffman_create(
             &config.adaptive_huffman, primary, secondary, transform);
+    if (config.codec == Codec::dynamic_range)
+        return marc_dynamic_range_create(
+            &config.dynamic_range, primary, secondary, transform);
     if (config.codec == Codec::lz77)
         return marc_lz77_create(&config.lz77, primary, secondary, transform);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -358,6 +384,7 @@ struct Measurement {
     const auto factor = static_cast<std::size_t>(payload_factor(codec));
     const auto prefix_size = codec == Codec::blocked_huffman
             || codec == Codec::adaptive_huffman
+            || codec == Codec::dynamic_range
         ? std::size_t{64}
         : static_cast<std::size_t>(parameterized_stream_prefix_size);
     if (input_size > (std::numeric_limits<std::size_t>::max()
@@ -465,7 +492,8 @@ struct Measurement {
 void print_usage() {
     std::cerr << "usage: marc_benchmark <codec> <input> [iterations]\n"
                  "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
-                 "lz77, lz77-blocked-huffman, lzss, lz78, lzw, lzd, lzmw\n";
+                 "dynamic-range, lz77, lz77-blocked-huffman, lzss, lz78, "
+                 "lzw, lzd, lzmw\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -571,6 +599,7 @@ int main(const int argc, const char* const argv[]) {
     if (name == "checksum-raw") codec = Codec::checksum_raw;
     else if (name == "blocked-huffman") codec = Codec::blocked_huffman;
     else if (name == "adaptive-huffman") codec = Codec::adaptive_huffman;
+    else if (name == "dynamic-range") codec = Codec::dynamic_range;
     else if (name == "lz77") codec = Codec::lz77;
     else if (name == "lz77-blocked-huffman")
         codec = Codec::lz77_blocked_huffman;

@@ -733,6 +733,13 @@ and one fixed descriptor per frame. Decoder workspaces come from these local
 limits before parsing, while the shared temporary-file boundary prevents any
 failed stream from publishing a destination.
 
+The benchmark adapter uses the same adaptive order-0 profile and public C
+lifecycle. Its output bound separates two bytes per input symbol from the
+per-frame five-byte termination, 16-byte descriptor, and 56-byte header, with
+one 64-byte stream prefix. An untimed full round trip gates measurement, and
+the reported peak is the larger public direction workspace; views remain zero
+because the fixed model is transform-owned.
+
 ### rANS foundation
 
 rANS variant 1 begins with a fixed 528-byte descriptor validator and an

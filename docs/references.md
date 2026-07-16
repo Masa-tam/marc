@@ -307,6 +307,11 @@ specified integer range profile, public C ABI, bounded workspace policy, and
 common file adapter. No external range-coder tool, command-line implementation,
 archive format, or test suite was consulted.
 
+The Dynamic Range benchmark composes only marc's independently specified
+integer range profile, public C ABI, profile bounds, and repository measurement
+contract. No external benchmark harness, published result, range-coder source,
+or test suite was consulted.
+
 The rANS stream fuzz boundary uses only marc's independently specified scalar
 rANS format, normalized-table limits, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external ANS

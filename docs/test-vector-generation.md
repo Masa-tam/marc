@@ -931,6 +931,13 @@ malformed-prefix rejection, trailing-byte rejection, and cleanup of both final
 and temporary outputs after failure. Do not alter a versioned interoperability
 codec set without introducing a new set identifier.
 
+Run the Dynamic Range benchmark smoke over `README.md` for one iteration.
+Require an untimed public-C-ABI round trip before output. Capacity planning
+must count two payload bytes per input symbol, then add a five-byte termination,
+16-byte descriptor, and 56-byte header for each nonempty frame plus the 64-byte
+stream prefix. Report model total 32,768, zero views workspace, both direction
+workspaces, and their larger total as the codec peak.
+
 For rANS fuzzing, use the repository-authored five-byte truncated-prefix seed.
 Bound input/output/frame/block/payload/internal bytes to
 8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB, allow at most eight block views, and cap the

@@ -7,6 +7,7 @@ Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 marc_benchmark checksum-raw corpus.bin 5
 marc_benchmark blocked-huffman corpus.bin 5
 marc_benchmark adaptive-huffman corpus.bin 5
+marc_benchmark dynamic-range corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
@@ -48,6 +49,12 @@ planning uses the conservative 264-bit, or 33-byte, payload bound per symbol,
 one 16-byte descriptor per nonempty frame, and the 64-byte stream header. Its
 workspace report contains no views region because the fixed FGK tree is owned
 by the transform rather than sized from serialized input.
+
+`dynamic-range` selects the adaptive order-0 integer range variant with one MiB
+frames and model total 32,768. Capacity planning includes two bytes per input
+symbol, the five-byte canonical termination sequence, one 16-byte descriptor,
+one 56-byte frame header, and the 64-byte stream prefix. The fixed model is
+transform-owned, so the views workspace is zero.
 
 `lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
 entropy block as the CLI profile. Its capacity calculation includes the

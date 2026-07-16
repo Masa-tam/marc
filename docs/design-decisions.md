@@ -3291,3 +3291,20 @@ trips, overwrite rejection, malformed prefix, trailing bytes, and atomic
 temporary-file cleanup. Keep existing versioned interoperability codec sets
 unchanged. This CLI surface is prerequisite evidence for benchmarking and the
 local completion audit, not release completion.
+
+## DD-187: Dynamic Range benchmark separates symbol and frame overhead
+
+- Date: 2026-07-17
+- Status: accepted
+
+Add `dynamic-range` to the dependency-free benchmark with one MiB frames and
+model total 32,768. Reserve two payload bytes per input symbol, then add the
+canonical five-byte termination, one 16-byte descriptor, and one 56-byte header
+for every nonempty frame, plus the 64-byte stream prefix. Use public workspace
+queries and transform factories exclusively.
+
+Perform an untimed full round trip before measurement. Time only process calls
+and retain the existing ratio, raw-byte throughput, direction-workspace, and
+peak-workspace definitions. Views must remain zero. The Release smoke validates
+the path and schema, but it is neither a stable performance record nor complete
+local-readiness evidence.

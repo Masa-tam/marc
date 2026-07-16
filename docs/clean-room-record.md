@@ -3106,6 +3106,25 @@ discarded and the reviewed seed retained.
 - Local validation: the focused multi-frame CLI test and all 945 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Dynamic Range benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark after specifying
+  DD-187's public range-profile measurement policy.
+- References used: DD-187, marc's Dynamic Range variant 1 format, profile
+  bounds, exact model total, public C lifecycle, and benchmark contract.
+- Known implementations intentionally not consulted: external benchmark
+  suites, range-coder source, compression tools, or published results.
+- Independent decisions: codec name `dynamic-range`; two bytes per symbol;
+  five termination bytes; 16-byte descriptor; 64-byte prefix; model total
+  32,768; untimed preflight; zero views; public workspace peak.
+- Generated-code task description: report Dynamic Range ratio, throughput, and
+  caller-owned workspace entirely through the public C ABI.
+- Similarity review: the adapter uses repository-authored measurement flow and
+  independently specified range bounds only.
+- Local validation: focused Release benchmark smoke and all 946 tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed
+  ratio, throughput, zero views, direction workspaces, and peak workspace.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
