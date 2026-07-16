@@ -3608,3 +3608,22 @@ review remain release evidence.
 Classify unknown-size input, allocator callbacks, authentication, archive
 metadata, solid grouping, BWT-family transforms, and additional composed
 profiles as future extensions rather than baseline failures.
+
+## DD-202: Interoperability schema 3 appends the entropy profiles
+
+- Date: 2026-07-17
+- Status: accepted
+
+Define schema 3 with codec set `marc-cli-v3`. Preserve the exact schema-2 order
+as its prefix, then append `blocked-huffman`, `adaptive-huffman`,
+`dynamic-range`, `rans`, and `tans`, for thirteen archives total. The generator
+emits schema 3 by default.
+
+Keep schema 1 frozen at its seven profiles without a codec-set field. Keep
+schema 2 frozen at `marc-cli-v2` and its eight profiles. The verifier must select
+one exact list from the manifest version and reject missing, extra, duplicate,
+or mismatched-set entries.
+
+Register a PowerShell compatibility test that generates schema 3, verifies it,
+derives exact schema-2 and schema-1 bundles, and verifies both legacy forms.
+CI artifact names remain unchanged; their manifest self-identifies schema 3.

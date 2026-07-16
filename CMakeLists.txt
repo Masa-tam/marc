@@ -1139,5 +1139,17 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_REPEAT=320"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzmw-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+
+        find_program(MARC_POWERSHELL_EXECUTABLE
+            NAMES pwsh powershell.exe powershell)
+        if(MARC_POWERSHELL_EXECUTABLE)
+            add_test(NAME marc_interoperability_schema_compatibility
+                COMMAND ${MARC_POWERSHELL_EXECUTABLE}
+                    -NoProfile -ExecutionPolicy Bypass
+                    -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/interoperability_schema_compatibility.ps1
+                    -MarcCli $<TARGET_FILE:marc_cli>)
+            set_tests_properties(marc_interoperability_schema_compatibility
+                PROPERTIES TIMEOUT 180)
+        endif()
     endif()
 endif()

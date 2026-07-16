@@ -8,9 +8,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-2 bundle contains the same generated `input.bin`, one
-archive for `checksum-raw` and every public dictionary-oriented CLI profile,
-and `manifest.json`. The manifest declares codec set `marc-cli-v2` and records
+Each current schema-3 bundle contains the same generated `input.bin`, one
+archive for every public CLI profile, and `manifest.json`. The manifest declares
+codec set `marc-cli-v3` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -31,7 +31,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set, leaf-only file names,
    sizes, and SHA-256 values;
-2. decodes all eight foreign archives and compares their output byte for byte
+2. decodes all thirteen foreign archives and compares their output byte for byte
    with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -44,12 +44,13 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 8 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 13 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 The verifier remains able to validate legacy schema-1 bundles with their exact
-seven-codec set. It never treats a schema-1 bundle as schema 2, and schema 2
-requires the explicit `marc-cli-v2` identifier and all eight archives.
+seven-profile set and schema-2 bundles with `marc-cli-v2` and exactly eight
+archives. Schema 3 requires `marc-cli-v3` and all thirteen archives. No schema
+silently inherits profiles added by a later schema.
 
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted

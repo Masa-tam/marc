@@ -3388,6 +3388,25 @@ discarded and the reviewed seed retained.
 - Local validation: the status baseline references the latest complete 973-test
   MSVC/Visual Studio 2026 and Clang 22.1.3 Release runs.
 
+## 2026-07-17 - Interoperability schema 3
+
+- Authoring method: extended the repository-owned manifest protocol after
+  specifying DD-202, without changing any encoded stream representation.
+- References used: DD-158, DD-172, DD-202, public CLI names, schema-1 and
+  schema-2 generator/verifier behavior, and the repository fixture.
+- Known implementations intentionally not consulted: external archive formats,
+  interoperability suites, manifests, or compression tools.
+- Independent decisions: retain schema-2 order as a prefix; append five entropy
+  profiles; use `marc-cli-v3`; preserve exact legacy lists; keep artifact names.
+- Generated-code task description: generate and verify thirteen current
+  archives while permanently regression-testing schemas 1, 2, and 3.
+- Similarity review: protocol and test changes are repository-specific and
+  contain no third-party stream or manifest expression.
+- Local validation: generated and verified schema 3 with thirteen archives,
+  schema 2 with eight, and schema 1 with seven through one compatibility test;
+  all 974 MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed; all
+  thirteen schema-3 archives matched byte for byte across those compilers.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

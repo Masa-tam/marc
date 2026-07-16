@@ -63,7 +63,15 @@ $legacyProfiles = @(
     'lzd',
     'lzmw'
 )
-$currentProfiles = @('checksum-raw') + $legacyProfiles
+$schema2Profiles = @('checksum-raw') + $legacyProfiles
+$entropyProfiles = @(
+    'blocked-huffman',
+    'adaptive-huffman',
+    'dynamic-range',
+    'rans',
+    'tans'
+)
+$schema3Profiles = $schema2Profiles + $entropyProfiles
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -73,7 +81,12 @@ if ($manifest.schema_version -eq 1) {
     if ([string]$manifest.codec_set -ne 'marc-cli-v2') {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
-    $expectedProfiles = $currentProfiles
+    $expectedProfiles = $schema2Profiles
+} elseif ($manifest.schema_version -eq 3) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v3') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema3Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }

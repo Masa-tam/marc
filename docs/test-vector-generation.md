@@ -874,6 +874,13 @@ and SHA-256 in the bundle manifest. Generated archives are CI evidence rather
 than permanent canonical vectors. Legacy schema 1 retains its original exact
 seven-profile meaning.
 
+Schema 3 / codec set `marc-cli-v3` preserves the eight schema-2 profiles in
+their existing order, then appends Blocked Huffman, Adaptive Huffman, Dynamic
+Range, rANS, and tANS. Generate and locally round-trip all thirteen archives.
+For compatibility testing, filter that bundle to the exact schema-2 and
+schema-1 profile lists, rewrite only the versioned manifest fields, and require
+the same verifier to accept all three generations.
+
 The raw-checksum completion matrix uses 64-byte frames. Require empty input,
 every individual byte, byte values `0..255`, 257 zeros, a 259-byte
 `00 FF 55 AA` pattern, deterministic 513-byte high-entropy data, and lengths

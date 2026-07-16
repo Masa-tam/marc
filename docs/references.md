@@ -418,3 +418,8 @@ The baseline-readiness matrix is derived only from repository-owned format,
 test, C ABI, CLI, benchmark, fuzz, CI, and interoperability records. No external
 completion checklist, product comparison, or third-party implementation status
 was consulted.
+
+Interoperability schema 3 composes only marc's public CLI profiles, frozen
+earlier manifest rules, repository-generated fixture, and SHA-256 metadata. No
+external archive format, interoperability suite, or third-party tool behavior
+was consulted.
