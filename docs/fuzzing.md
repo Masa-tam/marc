@@ -17,9 +17,11 @@ combined LZ77 plus Blocked Huffman target additionally truncates every supplied
 case to 8 KiB, permits at most 4 KiB total output, one 1 KiB frame, 4 KiB of
 dictionary bytes, and eight entropy blocks, and includes all four frame-local
 workspace extents in one fixed aggregate limit.
-The raw-checksum target exercises its strict two-pass decoder with at most
-8 KiB of serialized input, 4 KiB of output, 1 KiB frames, and 4 KiB of internal
-buffer allowance; it performs no input-controlled allocation.
+The raw-checksum target exercises both its strict two-pass decoder and its
+incremental decoder with at most 8 KiB of serialized input, 4 KiB of output,
+1 KiB frames, and 4 KiB of internal-buffer allowance. The incremental path uses
+one-byte chunks and a fixed iteration ceiling; neither path performs
+input-controlled allocation.
 
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
@@ -71,6 +73,10 @@ The raw-checksum target received an initial bounded sanitizer smoke on
 and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer finding
 and peaked at 37 MiB RSS. Automatically generated reductions were discarded;
 only the reviewed hand-authored seed remains in the repository.
+
+After adding the incremental decoder path on 2026-07-16, the same bounded
+1,000-input sanitizer smoke again completed without a crash, hang, or sanitizer
+finding at 37 MiB peak RSS. Generated reductions were again discarded.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

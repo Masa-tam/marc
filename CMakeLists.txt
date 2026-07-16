@@ -103,6 +103,8 @@ set(MARC_SOURCES
     src/frame/frame_header.cpp
     src/frame/frame_checksum.cpp
     src/frame/checksum_raw_stream.cpp
+    src/frame/checksum_raw_streaming_encoder.cpp
+    src/frame/checksum_raw_streaming_decoder.cpp
     src/frame/hash_descriptor.cpp
     src/frame/lz77_blocked_huffman_frame.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_decoder.cpp
@@ -522,6 +524,7 @@ if(MARC_BUILD_TESTS)
         tests/frame_header_tests.cpp
         tests/frame_checksum_tests.cpp
         tests/checksum_raw_stream_tests.cpp
+        tests/checksum_raw_streaming_tests.cpp
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_encoder_tests.cpp

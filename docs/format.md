@@ -239,6 +239,13 @@ validated raw payload spans. Thus corruption in a later frame cannot expose an
 accepted prefix of output. This profile is initially an internal reference
 composition; existing public codec selectors and the C ABI remain version 1.0.
 
+Incremental encoding produces exactly the same bytes as one-shot encoding.
+`Flush` does not end a partial raw frame; the fixed partition remains solely a
+function of `original_size` and `frame_size`. Incremental decoding verifies the
+four-byte trailer before releasing that frame's payload. Consequently checksum
+failure suppresses the complete affected frame even when earlier frames have
+already been released.
+
 For raw input `61 62 63` in one frame, serialized size is 143 bytes: the
 80-byte prefix and descriptor, the 56-byte checksum frame header, three payload
 bytes, and trailer `B7 3F 4B 36`.

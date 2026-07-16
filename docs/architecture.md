@@ -434,6 +434,14 @@ array and local limits; arbitrary bytes cannot request workspace or alter the
 harness call count. Normal builds compile the boundary without a fuzz runtime,
 while the separate Clang configuration links libFuzzer and sanitizers.
 
+The incremental raw-checksum path uses one caller-owned serialized-frame
+workspace in each direction. Encoding collects raw bytes at the payload offset
+and later fills the surrounding header and CRC trailer. Decoding buffers
+header, payload, and trailer together, verifies the complete frame, and only
+then drains the raw payload. This is transactional per frame rather than across
+the whole stream: earlier verified frames may already be visible when a later
+frame fails.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

@@ -2906,3 +2906,28 @@ Clang/libFuzzer target. Cap supplied bytes at 8 KiB and decoded output at 4 KiB;
 use only fixed caller-owned storage and conservative local limits. A short
 hand-authored `MARC` prefix seed exercises truncation without importing an
 external corpus.
+
+## DD-167: Raw checksum streaming commits at verified frame boundaries
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add allocation-free incremental transforms for the complete None / None
+version 1.1 profile. The encoder stores one raw frame directly in its
+caller-owned serialized-frame workspace, then writes the header and CRC around
+that payload before draining it. It never needs a second frame-sized copy.
+
+The decoder collects one complete serialized frame in caller-owned storage and
+verifies its header, extent, and CRC before making any byte from that frame
+available downstream. A later malformed frame may follow already committed
+frames, as required by streaming operation, but no prefix of the malformed
+frame is published. Prefix, input, and output may all be split one byte at a
+time; terminal input remains latched while verified bytes drain through short
+output buffers.
+
+Both transforms reject ResetBlock because frame boundaries are determined by
+the known original size and configured frame size. Flush does not create a
+short frame and only exposes already completed representation. Repeated calls
+after completion return EndOfStream, while every terminal error remains sticky.
+Keep these transforms internal until a profile workspace query and C ABI
+construction contract are separately accepted.

@@ -2797,3 +2797,32 @@ truncated-magic seed. No external corpus, fuzzer harness, or crash input was
 consulted; fixed limits and caller-owned storage follow marc's existing safety
 policy. An initial 1,000-input sanitizer smoke completed without a crash, hang,
 or sanitizer finding at 37 MiB peak RSS; generated reductions were discarded.
+
+## 2026-07-16 - Version 1.1 raw checksum streaming transforms
+
+- Authoring method: independent composition from marc's documented process
+  contract and complete version 1.1 raw checksum representation.
+- References used: DD-167, the repository process contract, the complete
+  version 1.1 raw checksum layout, and existing independently authored marc
+  streaming state machines for local API consistency.
+- Known implementations intentionally not consulted: external archive,
+  framing, checksum-stream, and compression-library implementations.
+- Independent decisions: collect raw encoder bytes directly at the serialized
+  payload offset; use one serialized-frame workspace in each direction; verify
+  a decoder frame before entering its drain state; retain EndInput across
+  NeedOutput; keep Flush representation-neutral and reject ResetBlock.
+- Generated-code task description: implement bounded allocation-free
+  incremental encoder and decoder transforms for the existing None / None
+  version 1.1 per-frame CRC-32C stream, prove byte identity with the one-shot
+  encoder, and test one-byte chunking, sticky terminal state, workspace bounds,
+  truncation, trailing input, and later-frame corruption.
+- Similarity review: the state machines use marc's local status conventions but
+  their workspace layout and checksum commit boundary were designed for this
+  profile; no external source was consulted.
+
+The existing checksum raw-stream fuzz boundary now also drives the incremental
+decoder one byte at a time. Its fixed workspace, one-byte output, and independent
+iteration ceiling preserve the original bounded-resource policy.
+The updated target completed a 1,000-input sanitizer smoke without a crash,
+hang, or sanitizer finding at 37 MiB peak RSS; generated reductions were
+discarded and the reviewed seed retained.
