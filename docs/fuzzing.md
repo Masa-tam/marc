@@ -1,20 +1,19 @@
 # Fuzzing
 
-`marc_fuzz_lz77_stream`, `marc_fuzz_lzss_stream`,
-`marc_fuzz_lz77_blocked_huffman_stream`,
-`marc_fuzz_lz78_stream`, `marc_fuzz_lzw_stream`, `marc_fuzz_lzd_stream`, and
-`marc_fuzz_lzmw_stream`, plus `marc_fuzz_checksum_raw_stream`,
-exercise both the strict
-one-shot stream decoder and the matching frame-streaming decoder with chunk
-sizes derived from the input. They use small fixed local limits and
-caller-owned workspaces so arbitrary inputs cannot request unbounded
-allocation. A call-count guard turns a stalled state machine into a
-reproducible failure. The LZ78 target additionally bounds its phrase table to
-512 records. The LZW target permits at most width 10 and bounds its phrase
-table to 768 records. The LZD target bounds its phrase table to 512 records and
-its iterative expansion stack to 513 entries. The LZMW target bounds its phrase
-table to 1024 records and its iterative expansion stack to 1025 entries. The
-combined LZ77 plus Blocked Huffman target additionally truncates every supplied
+The thirteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
+the composed LZ77 plus Blocked Huffman and checksum-raw profiles. Each target
+exercises both the strict one-shot stream decoder and the matching
+frame-streaming decoder with chunk sizes derived from the input. They use small
+fixed local limits and caller-owned workspaces so arbitrary inputs cannot
+request unbounded allocation. A call-count guard turns a stalled state machine
+into a reproducible failure. The LZ78 target additionally bounds its phrase
+table to 512 records. The LZW target permits at most width 10 and bounds its
+phrase table to 768 records. The LZD target bounds its phrase table to 512
+records and its iterative expansion stack to 513 entries. The LZMW target
+bounds its phrase table to 1024 records and its iterative expansion stack to
+1025 entries. The combined LZ77 plus Blocked Huffman target additionally
+truncates every supplied
 case to 8 KiB, permits at most 4 KiB total output, one 1 KiB frame, 4 KiB of
 dictionary bytes, and eight entropy blocks, and includes all four frame-local
 workspace extents in one fixed aggregate limit.

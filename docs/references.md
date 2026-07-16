@@ -413,3 +413,8 @@ The strengthened LZMW completion matrix uses only marc's public C ABI,
 repository-defined fixed-reference stream, deterministic generator, aligned
 workspace contract, and process assertions. No external LZMW vectors, corpus,
 test suite, or implementation behavior was consulted.
+
+The baseline-readiness matrix is derived only from repository-owned format,
+test, C ABI, CLI, benchmark, fuzz, CI, and interoperability records. No external
+completion checklist, product comparison, or third-party implementation status
+was consulted.

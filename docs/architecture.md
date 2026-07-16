@@ -364,6 +364,12 @@ hosts. `CMakeUserPresets.json` remains ignored for machine-local overrides.
 The same source list builds both a static library and a shared library. The C
 ABI is the binary boundary; C++ implementation types are never exported as ABI.
 
+The cross-profile implementation and release-evidence status is maintained in
+`docs/baseline-readiness.md`. Local completion requires the same bounded public
+transform evidence for every required codec; external interoperability,
+representative measurements, longer sanitizer campaigns, and final similarity
+review remain separate release gates.
+
 ## Layers
 
 Encoding flows from raw input through an optional dictionary transform, an

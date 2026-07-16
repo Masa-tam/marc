@@ -3584,3 +3584,27 @@ only the first three validated frames, and preserve the final output sentinel.
 This strengthens DD-139 without changing LZMW parsing, format, or workspace
 policy. External cross-platform deterministic execution, representative
 benchmark records, and the final similarity review remain release evidence.
+
+## DD-201: Baseline readiness separates local codec completion from release evidence
+
+- Date: 2026-07-17
+- Status: accepted
+
+Maintain `docs/baseline-readiness.md` as the cross-profile status index. Mark
+all six required dictionary codecs and five required entropy codecs locally
+ready only because each now has exact format and validation, bounded one-shot
+and streaming paths, public C ABI, CLI, benchmark, decoder fuzz boundary, and a
+public-ABI completion matrix. Keep the composed LZ77 plus Blocked Huffman and
+checksum-raw profiles in a separate additional-profile table.
+
+Do not infer release completion from this local status. Interoperability schema
+2 and codec set `marc-cli-v2` remain frozen at eight archives: six standalone
+dictionary profiles, LZ77 plus Blocked Huffman, and checksum-raw. The five
+standalone entropy profiles require a new schema and codec-set identifier.
+External CI artifacts, additional platform and architecture checks,
+representative measurements, longer sanitizer campaigns, and final similarity
+review remain release evidence.
+
+Classify unknown-size input, allocator callbacks, authentication, archive
+metadata, solid grouping, BWT-family transforms, and additional composed
+profiles as future extensions rather than baseline failures.

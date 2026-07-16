@@ -3369,6 +3369,25 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused LZMW completion tests and all 973 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Baseline readiness audit
+
+- Authoring method: mechanically inventoried repository format, public ABI,
+  CLI, benchmark, fuzz, completion, CI, and interoperability evidence after
+  specifying DD-201.
+- References used: AGENTS.md completion criteria, DD-201, repository source and
+  tests, CMake target registration, CI workflow, and interoperability schemas.
+- Known implementations intentionally not consulted: external compression
+  products, completion matrices, source trees, release checklists, or claims.
+- Independent decisions: separate eleven required codecs from two additional
+  public profiles; freeze schema-2 meaning; classify entropy interoperability as
+  the next infrastructure gap; keep future extensions outside baseline failure.
+- Generated-code task description: create an auditable local-versus-release
+  status index without weakening per-codec completion requirements.
+- Similarity review: the matrix records repository facts and contains no
+  implementation expression derived from an external project.
+- Local validation: the status baseline references the latest complete 973-test
+  MSVC/Visual Studio 2026 and Clang 22.1.3 Release runs.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
