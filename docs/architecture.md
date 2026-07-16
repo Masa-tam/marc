@@ -112,6 +112,30 @@ repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
 truncation, and trailing bytes. This is local implementation evidence rather
 than external cross-platform release completion.
 
+### LZ78 foundation
+
+LZ78 variant 1 serializes each phrase as one fixed eight-byte index-plus-byte
+token and resets its phrase table at every outer frame. Strict validation uses
+caller-owned phrase records, rejects forward or out-of-range references, and
+checks the declared raw extent before atomic decode. The deterministic encoder
+selects the longest existing phrase with stable index-order tie breaking and
+handles a final existing phrase through the specified terminal token form.
+
+The one-shot and outer streaming paths prepend the common 80-byte parameterized
+prefix and wrap each canonical token region in the generic frame header.
+Profiles derive encoded, raw, and phrase-table workspace from checked local
+limits. The public C ABI exposes only byte extents and alignment; CLI,
+benchmark, and fuzz paths use that same bounded transform surface.
+
+The public-ABI completion matrix uses queried, explicitly aligned phrase-table
+views in both directions. It covers required binary data classes, frame
+boundary neighbors, deterministic re-encoding, one-byte and mixed chunking,
+repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
+truncation, and trailing bytes. An empty encoder queries zero phrase-view bytes
+because it can emit no phrase; non-empty encoders and decoders query nonzero
+aligned view storage. These are local implementation checks, not external
+release evidence.
+
 ### LZW foundation
 
 LZW variant 1 begins with a transactional 16-byte parameter codec and a strict
@@ -220,14 +244,11 @@ public bounded transform surface. Cross-platform determinism, sanitizer fuzz
 execution, representative measurements, and release similarity review remain
 release evidence rather than locally completed implementation work.
 
-The public-ABI completion matrix uses queried, explicitly aligned phrase-table
-views in both directions. It covers required binary data classes, frame
-boundary neighbors, deterministic re-encoding, one-byte and mixed chunking,
-repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
-truncation, and trailing bytes. This closes local implementation evidence
-without treating external release gates as locally satisfied.
-An empty encoder queries zero phrase-view bytes because it can emit no phrase;
-non-empty encoders and decoders query nonzero aligned view storage.
+The strengthened public-ABI completion matrix adds repeatable terminal-state
+checks and frame-atomic rejection of final-frame corruption, truncation, and
+trailing bytes to the existing deterministic data and chunking matrix. This
+closes current local LZD implementation evidence without treating external
+release gates as locally satisfied.
 
 ### LZMW foundation
 

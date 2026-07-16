@@ -403,3 +403,8 @@ The supplemental LZW public completion matrix uses only marc's public C ABI,
 repository-defined packed-code stream, required data classes, deterministic
 generator, aligned-view contract, and process assertions. No external LZW
 vectors, corpus, test suite, or implementation behavior was consulted.
+
+The strengthened LZD completion matrix uses only marc's public C ABI,
+repository-defined reference-pair stream, deterministic generator, aligned
+workspace contract, and process assertions. No external LZD vectors, corpus,
+test suite, or implementation behavior was consulted.

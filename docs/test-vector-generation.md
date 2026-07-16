@@ -1061,6 +1061,15 @@ data. Each error must remain sticky, commit exactly the first 192 bytes, and
 preserve the last output sentinel. Repeated successful calls must remain
 EndOfStream.
 
+For the strengthened LZD completion matrix, retain 64-byte frames, 32 phrase
+entries, the required binary data classes, 63/64/65 boundaries, and the
+193-byte chunk pairs `(1,1)`, `(7,5)`, and `(13,17)`. Require every successful
+terminal call to remain EndOfStream when repeated.
+
+Independently corrupt the final frame header, truncate its reference-pair
+payload, and append trailing data. Each error must remain sticky, commit exactly
+the first 192 bytes, and preserve the last output sentinel.
+
 For the supplemental LZW public completion matrix, use 64-byte frames, maximum
 code width 9, and a 256-entry decoder phrase ceiling. Round-trip empty input,
 every one-byte value, all byte values in order, 257 zero bytes, a 259-byte
