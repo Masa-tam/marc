@@ -3051,6 +3051,25 @@ discarded and the reviewed seed retained.
 - Local validation: the focused multi-frame CLI test and all 940 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Adaptive Huffman benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark dispatch after
+  specifying DD-184's public FGK measurement policy.
+- References used: DD-184, marc's Adaptive Huffman variant 1 format, profile
+  bounds, public C lifecycle, and existing benchmark contract.
+- Known implementations intentionally not consulted: external benchmark
+  suites, Adaptive Huffman source, compression tools, or published results.
+- Independent decisions: codec name `adaptive-huffman`; 64-byte prefix;
+  33-byte-per-symbol payload; one descriptor per frame; untimed preflight;
+  zero views; public workspace peak; one-iteration README smoke.
+- Generated-code task description: report Adaptive Huffman ratio, throughput,
+  and caller-owned workspace exclusively through the public C ABI.
+- Similarity review: the adapter reuses repository-owned measurement control
+  flow and independently specified FGK bounds only.
+- Local validation: focused Release benchmark smoke and all 941 tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed
+  ratio, throughput, zero views, direction workspaces, and peak workspace.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

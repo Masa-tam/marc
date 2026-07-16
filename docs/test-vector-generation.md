@@ -899,6 +899,13 @@ Failed decode must leave neither destination nor temporary output. Keep the
 selector outside existing versioned interoperability bundles until a new codec
 set is specified.
 
+Run the Adaptive Huffman benchmark smoke over `README.md` for one iteration.
+Require its untimed public-C-ABI encode/decode preflight to reproduce the input
+before reporting timing. Capacity must include the 64-byte prefix, one 56-byte
+header and 16-byte descriptor per frame, and 33 payload bytes per input byte.
+Report zero views workspace and the larger direction-specific caller workspace
+as the codec peak.
+
 For Dynamic Range fuzzing, use the same five-byte repository-authored
 truncated-prefix seed and 8 KiB/4 KiB/1 KiB input, output/internal, and frame
 bounds. Fix `max_range_model_total` to 32,768 and cap byte-derived incremental

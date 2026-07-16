@@ -92,6 +92,11 @@ terminal-match form, frame resets, limits, and vectors are independently
 specified. No LZ77 implementation source, source-derived pseudocode, container
 format, or test suite was consulted.
 
+The Adaptive Huffman benchmark composes only marc's independently specified
+FGK profile, public C ABI, profile sizing, and repository measurement contract.
+No external benchmark harness, published result, implementation, or test suite
+was consulted.
+
 The LZ77 plus Blocked Huffman pipeline composes only the two repository-defined
 representations above. It introduces no new algorithmic reference and does not
 use an external combined-container implementation or test suite.

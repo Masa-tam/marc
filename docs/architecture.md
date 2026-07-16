@@ -639,6 +639,13 @@ per symbol plus the fixed descriptor. Decoder allocation is derived from those
 local limits before input parsing, and the common temporary-file commit policy
 prevents failed streams from publishing partial files.
 
+The benchmark adapter uses that same FGK profile and public C lifecycle. Its
+capacity bound includes the 64-byte stream prefix, one 56-byte frame header and
+16-byte descriptor per frame, and 33 payload bytes per input symbol. It runs an
+untimed full round trip before measuring process calls and reports the larger
+encoder/decoder caller-owned workspace; the views extent remains zero because
+the fixed FGK tree is transform-owned.
+
 ### Dynamic Range Coder foundation
 
 Dynamic Range Coder variant 1 begins with a fixed 16-byte descriptor validator

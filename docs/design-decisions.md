@@ -3235,3 +3235,20 @@ overwrite rejection, malformed prefix, trailing bytes, exact round trip, and
 temporary-file cleanup. Do not silently change an existing versioned
 interoperability codec set. This CLI path is prerequisite evidence for later
 benchmarking and local completion, not release completion.
+
+## DD-184: Adaptive Huffman benchmark retains the public FGK profile
+
+- Date: 2026-07-17
+- Status: accepted
+
+Add `adaptive-huffman` to the dependency-free benchmark with the CLI's one MiB
+frame and FGK variant 1 policy. Use the conservative 33-byte payload bound per
+symbol, a 16-byte descriptor per nonempty frame, and the 64-byte stream prefix
+when reserving encoded output. Obtain all actual workspace extents and create
+both transform directions only through the public C ABI.
+
+Require an untimed complete round trip before measuring. Time only the process
+call, retain the existing ratio and throughput definitions, and report peak
+caller-owned workspace with a zero views extent. The Release smoke validates
+the path and output schema; it is not a stable performance record or sufficient
+local-completion evidence alone.

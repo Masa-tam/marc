@@ -6,6 +6,7 @@ Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 ```console
 marc_benchmark checksum-raw corpus.bin 5
 marc_benchmark blocked-huffman corpus.bin 5
+marc_benchmark adaptive-huffman corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
@@ -41,6 +42,12 @@ frame's 56-byte header plus four-byte checksum trailer.
 capacity includes the 64-byte stream header, one 16-byte descriptor per block,
 and raw fallback for every input byte. Reported decoder workspace includes the
 aligned caller-owned block-view region.
+
+`adaptive-huffman` selects FGK variant 1 with one MiB outer frames. Capacity
+planning uses the conservative 264-bit, or 33-byte, payload bound per symbol,
+one 16-byte descriptor per nonempty frame, and the 64-byte stream header. Its
+workspace report contains no views region because the fixed FGK tree is owned
+by the transform rather than sized from serialized input.
 
 `lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
 entropy block as the CLI profile. Its capacity calculation includes the
