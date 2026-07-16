@@ -3390,3 +3390,22 @@ stream, profile, C ABI, CLI, fuzz, benchmark, and documentation evidence,
 classify scalar rANS variant 1 as locally implementation-complete. External
 cross-platform deterministic execution, representative benchmark records, and
 the final similarity review remain release evidence.
+
+## DD-192: CLI exposes tabled tANS variant 1 through the public C ABI
+
+- Date: 2026-07-17
+- Status: accepted
+
+Name the explicit command-line profile `tans`. Use one MiB outer frames and
+65,536-symbol entropy blocks, yielding at most 16 blocks per frame. Reserve the
+strict 12-bit transition bound per input symbol plus each block's two-byte
+state, and reserve the fixed 528-byte descriptor separately for every possible
+block. Configure, query workspace, create transforms, and process bytes
+exclusively through the public C ABI; decoder views must be allocated from the
+local block count and reported alignment before serialized input is inspected.
+
+Apply the shared multi-frame file harness for exact nonempty and empty round
+trips, overwrite rejection, malformed prefix, trailing bytes, and atomic
+temporary-file cleanup. Keep existing versioned interoperability codec sets
+unchanged. This CLI path is prerequisite evidence for benchmarking and local
+completion, not release completion.

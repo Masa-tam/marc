@@ -3200,6 +3200,25 @@ discarded and the reviewed seed retained.
 - Local validation: the three focused completion tests and all 954 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - tANS CLI adapter
+
+- Authoring method: composed marc's existing public tabled tANS profile with
+  its bounded atomic file adapter after specifying DD-192.
+- References used: DD-192, marc's tANS variant 1 format, profile sizing, public
+  C lifecycle, block-view alignment, and common CLI policy.
+- Known implementations intentionally not consulted: external FSE/ANS source,
+  compression tools, command-line adapters, archive formats, or test suites.
+- Independent decisions: codec name `tans`; one MiB frames; 65,536-symbol
+  blocks; 16-block limit; 12 bits per symbol plus two state bytes per block;
+  528-byte descriptors; shared multi-frame and trailing-data harness; unchanged
+  interoperability sets.
+- Generated-code task description: expose tabled tANS through the CLI using
+  only public C operations and bounded caller-owned workspaces.
+- Similarity review: the adapter extends repository-owned dispatch, alignment,
+  and atomic-file policy without consulting an external implementation.
+- Local validation: the focused multi-frame CLI test and all 955 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

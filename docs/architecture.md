@@ -880,6 +880,14 @@ descriptors before all payloads, and validates every block state and bitstream
 before a second loop writes output. Capacity failure and malformed later blocks
 therefore leave the whole frame output untouched.
 
+The command-line adapter names tabled variant 1 `tans` and uses only the public
+C configuration, workspace query, factory, and process lifecycle. Its one MiB
+frame and 65,536-symbol block policy permits at most 16 blocks. Capacity is
+bounded by 12 transition bits per input symbol, one two-byte state and one
+528-byte descriptor per block; decoder views are allocated from the queried
+count and alignment before parsing input. The shared temporary-file boundary
+prevents failed streams from publishing a destination.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -347,6 +347,11 @@ ANS format, fixed table-log rule, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external FSE/ANS
 corpus, fuzz harness, or implementation behavior was consulted.
 
+The tANS command-line selector composes only marc's independently specified
+tabled profile, public C ABI, bounded workspace and aligned-view policy, and
+common file adapter. No external FSE/ANS tool, command-line implementation,
+archive format, or test suite was consulted.
+
 The standalone LZ77 stream fuzz boundary uses only marc's independently
 specified fixed token representation, outer framing, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no

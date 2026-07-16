@@ -989,6 +989,15 @@ For tANS fuzzing, use the same reviewed truncated-prefix seed and
 `TansBlockView` records, cap the state table at 4,096 entries, and drive the
 incremental path with at most 17 input and 19 output bytes per call.
 
+For tANS CLI integration, run the shared file harness with explicit codec
+`tans` over enough repeated text to cross the one MiB frame boundary. Use
+65,536-symbol blocks, at most 16 blocks per frame, the 12-bit-per-symbol
+transition bound, a two-byte state and 528-byte descriptor per block. Require
+exact nonempty and empty round trips, overwrite rejection, malformed-prefix
+rejection, trailing-byte rejection, and cleanup of both final and temporary
+outputs after failure. Do not alter a versioned interoperability codec set
+without introducing a new set identifier.
+
 For standalone Blocked Huffman fuzzing, retain the reviewed five-byte prefix
 seed and use 8 KiB input/internal, 4 KiB output/payload, 1 KiB frame,
 256-symbol block, and eight-view bounds. Cap code lengths at 24 and decode table
