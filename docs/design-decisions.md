@@ -3142,3 +3142,21 @@ metadata. Retain 17/19-byte chunk caps, ProcessResult and starvation checks, and
 the checked call ceiling. Add normal-build compile-smoke, a Clang sanitizer
 target, and the reviewed truncated-prefix seed. A short campaign proves only
 that the instrumented boundary executes without an observed finding.
+
+## DD-179: Standalone LZ77 receives a dedicated dual-decoder fuzz boundary
+
+- Date: 2026-07-17
+- Status: accepted
+
+Do not rely on the LZ77 plus Blocked Huffman composition target to cover the
+entropy-None LZ77 stream header, payload, and strict decoder branches. Exercise
+both its one-shot decoder and frame-committing outer decoder from one libFuzzer
+entry point. Truncate input to 8 KiB and permit 4 KiB total output, 1 KiB
+frames, 4 KiB canonical token payloads, and only fixed caller-owned frame
+arrays.
+
+Retain the byte-derived 17/19-byte chunk schedule, ProcessResult and starvation
+checks, and a checked call ceiling. Compile warning-clean in ordinary builds,
+expose a Clang sanitizer target, and begin with the reviewed truncated-prefix
+seed. A bounded campaign is execution evidence and does not establish coverage
+completion.

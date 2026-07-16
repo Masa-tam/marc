@@ -159,6 +159,13 @@ length below minimum or above configured/local maximum, output overflow,
 misplaced TerminalMatch, trailing tokens, contradictory dictionary serialized
 size, and references that would cross an outer frame.
 
+The standalone LZ77 fuzz boundary supplies every bounded case to both strict
+whole-stream decode and frame-committing streaming decode. It permits 8 KiB of
+serialized input, 4 KiB of total output and dictionary payload, 1 KiB frames,
+fixed encoded and decoded frame arrays, 17/19-byte chunk caps, and an
+independent checked call ceiling. The initial five-byte `MARC` plus newline
+seed is a deliberately truncated repository prefix.
+
 LZSS vectors independently enumerate every candidate distance at each raw
 position, including overlapping candidates, then record bounded length,
 serialized Match cost, equivalent Literal cost, selected longest length,

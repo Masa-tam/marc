@@ -52,6 +52,11 @@ only from local limits, before any untrusted stream bytes are inspected.
 The C ABI exposes this path through a separate size-tagged LZ77 configuration,
 workspace query, and transform factory while retaining ABI version 1. No C++
 types, exceptions, or ownership cross the shared-library boundary.
+The standalone LZ77 fuzz boundary drives both the strict complete-stream
+decoder and the frame-committing outer decoder. It fixes all byte extents in
+caller-owned arrays, derives chunk sizes from bounded input, and enforces an
+independent call ceiling so malformed token streams cannot allocate or stall
+without becoming a reproducible finding.
 
 ### LZSS foundation
 

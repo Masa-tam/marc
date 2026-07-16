@@ -2978,6 +2978,26 @@ discarded and the reviewed seed retained.
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
 
+## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
+
+- Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
+  strict and frame-committing entropy-None LZ77 stream paths.
+- References used: DD-179, marc's fixed LZ77 tokens, outer framing, decoder
+  limits, and the repository-owned bounded harness contract.
+- Known implementations intentionally not consulted: external LZ source,
+  fuzz harnesses, corpora, dictionaries, or crash collections.
+- Independent decisions: 8 KiB input; 4 KiB output and payload; 1 KiB frames;
+  fixed workspaces; 17/19-byte chunks; checked call ceiling; truncated-prefix
+  seed.
+- Generated-code task description: fuzz both standalone LZ77 stream decoder
+  paths without input-controlled allocation or dependence on entropy decoding.
+- Similarity review: the harness composes only repository APIs and the already
+  reviewed marc harness safety contract.
+- Local validation: warning-clean compile-smoke passed under MSVC/Visual Studio
+  2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
+  inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
+  934 Release tests passed under both normal toolchains.
+
 ## 2026-07-17 - tANS dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

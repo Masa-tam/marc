@@ -301,3 +301,8 @@ The tANS stream fuzz boundary uses only marc's independently specified tabled
 ANS format, fixed table-log rule, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external FSE/ANS
 corpus, fuzz harness, or implementation behavior was consulted.
+
+The standalone LZ77 stream fuzz boundary uses only marc's independently
+specified fixed token representation, outer framing, decoder limits, and
+transform contract. Its seed and schedules are repository-authored; no
+external LZ corpus, fuzz harness, or implementation behavior was consulted.

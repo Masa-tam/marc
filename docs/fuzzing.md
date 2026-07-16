@@ -1,6 +1,7 @@
 # Fuzzing
 
-`marc_fuzz_lzss_stream`, `marc_fuzz_lz77_blocked_huffman_stream`,
+`marc_fuzz_lz77_stream`, `marc_fuzz_lzss_stream`,
+`marc_fuzz_lz77_blocked_huffman_stream`,
 `marc_fuzz_lz78_stream`, `marc_fuzz_lzw_stream`, `marc_fuzz_lzd_stream`, and
 `marc_fuzz_lzmw_stream`, plus `marc_fuzz_checksum_raw_stream`,
 exercise both the strict
@@ -22,6 +23,12 @@ incremental decoder with at most 8 KiB of serialized input, 4 KiB of output,
 1 KiB frames, and 4 KiB of internal-buffer allowance. The incremental path uses
 one-byte chunks and a fixed iteration ceiling; neither path performs
 input-controlled allocation.
+
+`marc_fuzz_lz77_stream` separately covers the entropy-None LZ77 profile. It
+uses at most 8 KiB of input, 4 KiB of output and canonical token payload,
+1 KiB frames, fixed frame arrays, byte-derived chunking, and the common checked
+call ceiling. This reaches standalone prefix and payload branches absent from
+the combined entropy target.
 
 `marc_fuzz_adaptive_huffman_stream` applies the same dual-decoder structure to
 the framed FGK profile. It caps input at 8 KiB, output and frame-local buffered
@@ -64,6 +71,7 @@ cmake -S . -B out/build/fuzz -G Ninja \
   -DMARC_BUILD_TESTS=OFF -DMARC_BUILD_TOOLS=OFF \
   -DMARC_BUILD_EXAMPLES=OFF -DMARC_BUILD_FUZZERS=ON
 cmake --build out/build/fuzz --target \
+  marc_fuzz_lz77_stream \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_checksum_raw_stream \
@@ -74,6 +82,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_blocked_huffman_stream \
   marc_fuzz_lz78_stream marc_fuzz_lzw_stream \
   marc_fuzz_lzd_stream marc_fuzz_lzmw_stream
+out/build/fuzz/marc_fuzz_lz77_stream fuzz/corpus/lz77_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
@@ -149,6 +158,11 @@ The standalone Blocked Huffman dual-decoder target received the same bounded
 24, and the 512-node table cap, it completed without a crash, hang, or sanitizer
 finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
 corpus.
+
+The standalone LZ77 dual-decoder target received the same bounded 1,000-input
+sanitizer smoke on 2026-07-17. With fixed frame arrays and the documented byte
+limits, it completed without a crash, hang, or sanitizer finding and peaked at
+37 MiB RSS. Mutations remained in the disposable build corpus.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest
