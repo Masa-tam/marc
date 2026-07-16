@@ -3178,3 +3178,20 @@ rejection, malformed input, and trailing bytes through the shared CLI harness.
 Do not add this selector to the already versioned interoperability codec set;
 that requires a separately identified manifest update. CLI publication is a
 step toward benchmark and local-completion evidence, not release completion.
+
+## DD-181: Standalone Blocked Huffman benchmark uses public profile sizing
+
+- Date: 2026-07-17
+- Status: accepted
+
+Add `blocked-huffman` to the dependency-free benchmark selector with the same
+one MiB frame and 65,536-symbol block policy as the CLI. Configure, query
+workspace, and create transforms only through the public C ABI. Bound encoded
+storage by the 64-byte stream prefix, one 56-byte header per frame, one 16-byte
+descriptor per possible block, and raw fallback for every input byte.
+
+Before measuring, perform an untimed complete encode/decode comparison. Time
+only the single full-buffer process call for each new transform and report the
+existing ratio, throughput, and caller-owned peak-workspace fields. Add a
+Release smoke test, but treat its timing as path validation rather than stable
+performance evidence or local-completion evidence by itself.

@@ -2996,6 +2996,25 @@ discarded and the reviewed seed retained.
 - Local validation: the new multi-frame CLI test and all 935 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Standalone Blocked Huffman benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark dispatch after
+  specifying the public-profile measurement policy in DD-181.
+- References used: DD-181, marc's Blocked Huffman format and profile query,
+  public C lifecycle, and existing benchmark contract.
+- Known implementations intentionally not consulted: external benchmark
+  suites, compression tools, implementations, or published result tables.
+- Independent decisions: codec name `blocked-huffman`; 64-byte prefix bound;
+  raw fallback plus per-block descriptors; untimed preflight round trip; public
+  workspace totals; one-iteration README smoke.
+- Generated-code task description: measure standalone Blocked Huffman ratio,
+  throughput, and caller-owned workspace entirely through the public C ABI.
+- Similarity review: the adapter reuses only repository-authored benchmark
+  control flow and the codec's independently specified bounds.
+- Local validation: the Release benchmark smoke and all 936 tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed ratio,
+  throughput, direction-specific workspaces, and peak workspace as specified.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

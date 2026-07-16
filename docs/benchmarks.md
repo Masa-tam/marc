@@ -5,6 +5,7 @@ Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 
 ```console
 marc_benchmark checksum-raw corpus.bin 5
+marc_benchmark blocked-huffman corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
@@ -35,6 +36,11 @@ memory. Direction-specific views-workspace bytes are also reported separately.
 `checksum-raw` is the version 1.1 framing and CRC-32C baseline. It intentionally
 does not compress payload bytes; its ratio reflects the 80-byte prefix and each
 frame's 56-byte header plus four-byte checksum trailer.
+
+`blocked-huffman` uses one MiB outer frames and 65,536-symbol blocks. Its
+capacity includes the 64-byte stream header, one 16-byte descriptor per block,
+and raw fallback for every input byte. Reported decoder workspace includes the
+aligned caller-owned block-view region.
 
 `lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
 entropy block as the CLI profile. Its capacity calculation includes the

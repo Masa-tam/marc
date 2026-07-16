@@ -69,6 +69,13 @@ after a valid multi-frame stream. Failed decode must leave neither destination
 nor temporary output. Keep this selector outside an existing versioned
 interoperability bundle until that manifest receives a new codec-set version.
 
+Run the standalone Blocked Huffman benchmark smoke over `README.md` for one
+iteration. Its untimed preflight must reproduce the file exactly before any
+throughput is reported. Require the public encoder and decoder workspace
+queries to supply the measured primary, secondary, and aligned views extents;
+capacity planning must include the 64-byte prefix, each possible 16-byte block
+descriptor, raw fallback bytes, and each 56-byte outer frame header.
+
 Adaptive Huffman FGK vectors record, after every symbol, the emitted NYT or
 symbol path, literal bits for a new symbol, node numbers, weights, parents,
 children, selected equal-weight leader, swaps, and final packed payload. Initial

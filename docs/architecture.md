@@ -558,6 +558,13 @@ checked local decoder bounds before any archive bytes are parsed. File output
 retains the common temporary-file commit boundary. This selector does not
 silently change the existing versioned interoperability bundle codec set.
 
+The benchmark adapter uses the same public profile name and fixed frame/block
+policy. It calculates a raw-fallback capacity from the 64-byte stream prefix,
+one frame header, one descriptor per possible block, and one payload byte per
+input byte. An untimed full round trip precedes timing; reported peak workspace
+is the larger public encoder or decoder requirement, including aligned block
+views.
+
 ### Adaptive Huffman foundation
 
 Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A

@@ -311,3 +311,8 @@ The standalone Blocked Huffman command-line selector composes only marc's
 public C ABI, repository-defined format, bounded profile, and common atomic
 file adapter. No external command-line tool, archive format, or implementation
 behavior was consulted.
+
+The standalone Blocked Huffman benchmark composes only marc's public C ABI,
+repository-defined format, profile sizing, and existing measurement contract.
+No external benchmark harness, compression tool, or implementation behavior
+was consulted.
