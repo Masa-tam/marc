@@ -2848,3 +2848,20 @@ descriptor bytes as a frame header. The staged serializer produces only a
 prefix primitive for hand vectors and future composition; no public stream
 encoder may select it until digest targets, inclusion ranges, and trailers are
 fully specified and implemented.
+
+## DD-164: The first hash profile is per-frame CRC-32C over raw bytes
+
+- Date: 2026-07-16
+- Status: accepted
+
+Limit the first version 1.1 hash profile to exactly one descriptor: CRC-32C,
+UncompressedBytes, PerFrame. Store one four-byte little-endian numeric digest
+after every nonempty frame payload and require the frame header's checksum
+trailer size to be exactly four.
+
+Hash only the decoded frame's logical uncompressed bytes and reset CRC state at
+each frame boundary. Exclude every header, parameter, descriptor, compressed
+byte, padding bit, and the digest itself. Implement profile validation,
+one-shot trailer generation, and verification as an allocation-free component
+before changing generic frame or stream codecs. Checksums detect corruption;
+this profile does not provide authenticity.

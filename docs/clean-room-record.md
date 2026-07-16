@@ -2738,3 +2738,21 @@ no legal guarantee of non-infringement.
   preventing current decoders from misidentifying descriptor bytes as frames.
 - Similarity review: the change factors only repository-owned header rules and
   introduces no externally derived layout or control flow.
+
+## 2026-07-16 - Initial per-frame CRC-32C profile
+
+- Authoring method: selected one baseline descriptor from marc's own hash
+  vocabulary and specified its exact inclusion range and trailer lifecycle
+  before frame-codec integration.
+- References used: DD-164, the repository CRC-32C primitive and descriptor,
+  frame body ordering, and transactional span conventions.
+- Known implementations intentionally not consulted: external archive checksum
+  layouts, container code, source-derived pseudocode, tests, or byte streams.
+- Independent decisions: exactly one CRC-32C / UncompressedBytes / PerFrame
+  descriptor; four-byte trailer; raw frame bytes only; reset per frame; no
+  authentication claim.
+- Generated-code task description: add allocation-free profile validation,
+  trailer generation, and corruption verification without enabling public
+  version 1.1 streams.
+- Similarity review: the component composes only marc-owned fixed records,
+  frame terminology, and the independently implemented CRC primitive.

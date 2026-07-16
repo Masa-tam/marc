@@ -257,3 +257,8 @@ was consulted.
 The staged version 1.1 prefix gate reuses marc's independently defined 1.0
 prefix and hash region. Its version isolation and combined-limit policy are
 internal format-evolution decisions and use no new external reference.
+
+The initial per-frame checksum profile reuses the documented CRC-32C algorithm
+and repository-native descriptor. Its exact raw-byte inclusion range, reset
+boundary, trailer placement, and single-descriptor restriction are independent
+marc format decisions; no additional external format was consulted.

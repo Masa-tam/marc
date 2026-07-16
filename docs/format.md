@@ -165,6 +165,33 @@ SHA-256, UncompressedBytes, WholeStream:
 02 00 00 00 01 01 20 00 00 00 00 00 00 00 00 00
 ```
 
+### Initial version 1.1 per-frame checksum profile
+
+The first supported descriptor set for future version 1.1 stream composition
+contains exactly one record: CRC-32C, target UncompressedBytes, scope PerFrame,
+digest size 4, and flags zero. No other target, scope, algorithm, or additional
+descriptor is accepted by this profile.
+
+Each nonempty frame declares a checksum trailer size of exactly 4. The trailer
+follows the block descriptors and compressed payload and contains the CRC-32C
+numeric result in marc's little-endian digest representation. The hash input is
+exactly the frame's `uncompressed_size` logical output bytes in their decoded
+order. It excludes the stream header, descriptor region, frame header,
+dictionary serialization, block descriptors, compressed payload, padding, and
+the checksum trailer itself. CRC state resets at every frame boundary. An empty
+stream has no frames and therefore no per-frame trailer.
+
+For a frame whose uncompressed bytes are ASCII `123456789`, the trailer is:
+
+```text
+83 92 06 E3
+```
+
+This profile definition enables standalone validation, generation, and
+verification of its trailer. Public stream codecs remain on version 1.0 until
+the version 1.1 frame-header gate and complete stream composition are wired and
+tested.
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

@@ -408,6 +408,13 @@ adapter, so staged metadata cannot shift their expected frame offset. The 1.1
 helper validates only the fixed prefix and declared bounded region extent; it
 does not activate a complete stream representation or connect hash taps.
 
+The initial hash profile component narrows the broad descriptor vocabulary to
+one per-frame CRC-32C over logical uncompressed bytes. It validates the exact
+descriptor set and declared trailer extent, then generates or verifies the
+four-byte trailer without allocation. Keeping this boundary independent lets
+frame codecs later connect their already validated raw staging span without
+duplicating CRC lifecycle or inclusion-range decisions.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

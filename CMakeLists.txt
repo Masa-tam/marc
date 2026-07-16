@@ -101,6 +101,7 @@ set(MARC_SOURCES
     src/entropy/canonical_huffman.cpp
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
+    src/frame/frame_checksum.cpp
     src/frame/hash_descriptor.cpp
     src/frame/lz77_blocked_huffman_frame.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_decoder.cpp
@@ -506,6 +507,7 @@ if(MARC_BUILD_TESTS)
         tests/limits_tests.cpp
         tests/sha256_tests.cpp
         tests/frame_header_tests.cpp
+        tests/frame_checksum_tests.cpp
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_encoder_tests.cpp

@@ -881,3 +881,12 @@ the dedicated entry point rejects a 1.0 prefix and unknown minor versions.
 Reject descriptor sizes 1 and 17, a nonzero extension, and checked aggregate
 dictionary/entropy/descriptor bytes beyond the local internal-buffer limit;
 all parse failures leave the destination header unchanged.
+
+For the initial version 1.1 checksum profile, accept only the single canonical
+CRC-32C / UncompressedBytes / PerFrame descriptor and a declared trailer size
+of four. Reject no descriptor, an additional descriptor, every other target or
+scope, SHA-256, mismatched digest length, flags, and any trailer size other than
+four. Generate `83 92 06 E3` from uncompressed ASCII `123456789` and four zero
+bytes from an empty frame byte span. Verify both, reject each one-byte digest
+corruption as a mismatch, and require descriptor or output-size failures to
+leave caller-owned trailer output unchanged.
