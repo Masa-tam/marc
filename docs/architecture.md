@@ -57,6 +57,12 @@ decoder and the frame-committing outer decoder. It fixes all byte extents in
 caller-owned arrays, derives chunk sizes from bounded input, and enforces an
 independent call ceiling so malformed token streams cannot allocate or stall
 without becoming a reproducible finding.
+The standalone public-ABI completion matrix consolidates local LZ77 readiness
+above these component paths. It covers required binary data classes, frame
+boundary neighbors, deterministic re-encoding, one-byte and mixed chunking,
+repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
+truncation, and trailing bytes. This establishes local implementation evidence,
+not external cross-platform release completion.
 
 ### LZSS foundation
 

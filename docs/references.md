@@ -381,3 +381,8 @@ The standalone Blocked Huffman completion matrix uses only the repository's
 public C ABI, format, required data classes, deterministic generator, and
 existing process-contract assertions. No external vectors, corpus, test suite,
 or implementation behavior was consulted.
+
+The standalone LZ77 completion matrix uses only marc's public C ABI,
+repository-defined fixed-token stream, required data classes, deterministic
+generator, and process-contract assertions. No external LZ vectors, corpus,
+test suite, or implementation behavior was consulted.

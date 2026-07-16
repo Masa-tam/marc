@@ -3257,6 +3257,24 @@ discarded and the reviewed seed retained.
 - Local validation: the three focused completion tests and all 959 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Standalone LZ77 local completion audit
+
+- Authoring method: applied AGENTS.md completion criteria through marc's public
+  entropy-None LZ77 C ABI after specifying DD-195.
+- References used: DD-195, marc's fixed-token format, frame and stream
+  validators, process contract, fuzz boundary, CLI, and benchmark.
+- Known implementations intentionally not consulted: external LZ source,
+  vectors, corpora, test suites, or completion checklists.
+- Independent decisions: 64-byte frames; required binary classes; 63/64/65
+  boundaries; 193-byte chunk matrix; final-frame header corruption, truncation,
+  trailing bytes, sticky errors, and repeated EOS.
+- Generated-code task description: consolidate deterministic, partial-buffer,
+  malformed-frame, and terminal evidence through the public LZ77 transform.
+- Similarity review: all vectors and control flow are repository-authored and
+  reuse marc's established public-ABI completion conventions only.
+- Local validation: the three focused completion tests and all 962 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
