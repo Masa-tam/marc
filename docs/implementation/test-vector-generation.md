@@ -1,5 +1,7 @@
 # Test-vector generation
 
+This development record is indexed from [`README.md`](README.md).
+
 The version 1 stream and frame prefixes are assigned, but complete codec
 payload vectors are added independently before each encoder is implemented.
 

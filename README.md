@@ -10,6 +10,9 @@ per-frame CRC-32C is also available through its dedicated C ABI. The
 format and API are still under development and version 0.x streams are not yet
 promised long-term compatibility.
 
+The [documentation index](docs/README.md) separates library and format guides
+from validation material and chronological implementation records.
+
 ## Build
 
 Initialize the compiler environment, then use the repository presets:
@@ -126,5 +129,5 @@ The standalone project in `examples/` demonstrates installed-package use. See
 The repository is MIT licensed. Its implementation process is described as a
 specification-driven independent implementation; provenance and intentionally
 unconsulted implementation sources are recorded in
-[`docs/clean-room-record.md`](docs/clean-room-record.md). This process is not a
-legal guarantee of non-infringement.
+[`docs/implementation/clean-room-record.md`](docs/implementation/clean-room-record.md).
+This process is not a legal guarantee of non-infringement.

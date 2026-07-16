@@ -1,5 +1,7 @@
 # Specification-driven independent implementation record
 
+This provenance record is indexed from [`README.md`](README.md).
+
 This project follows a specification-driven independent implementation
 process. It does not claim a formal clean-room development process and provides
 no legal guarantee of non-infringement.
@@ -1441,7 +1443,8 @@ no legal guarantee of non-infringement.
   original LZ78 dictionary principle, then specified marc-owned parameters,
   tokens, termination, reset behavior, and vectors independently.
 - References used: Ziv and Lempel's 1978 paper as cited in
-  `docs/references.md`, plus marc's existing frame, limit, and serialization
+  `docs/implementation/references.md`, plus marc's existing frame, limit, and
+  serialization
   rules.
 - Known implementations intentionally not consulted: all external LZ78 source,
   source-derived pseudocode, container formats, byte layouts, and test vectors.
@@ -1658,7 +1661,8 @@ no legal guarantee of non-infringement.
 - Authoring method: derived a frame-local variable-width byte-string transform
   from Welch's published algorithmic description, then independently specified
   marc-owned parameters, termination, packing, width changes, and validation.
-- References used: Welch's 1984 paper as cited in `docs/references.md`, plus
+- References used: Welch's 1984 paper as cited in
+  `docs/implementation/references.md`, plus
   marc's existing frame, LSB-first bit, limit, and serialization rules.
 - Known implementations intentionally not consulted: external LZW source,
   source-derived pseudocode, GIF/TIFF or other container implementations, test
@@ -3406,6 +3410,29 @@ discarded and the reviewed seed retained.
   schema 2 with eight, and schema 1 with seven through one compatibility test;
   all 974 MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed; all
   thirteen schema-3 archives matched byte for byte across those compilers.
+
+## 2026-07-17 - Documentation record separation
+
+- Authoring method: reorganized repository-owned documentation according to
+  reader intent after specifying DD-203; no codec or stream representation was
+  changed.
+- References used: existing marc documentation roles, relative links, CMake
+  install layout, and AGENTS.md provenance requirements.
+- Known implementations intentionally not consulted: external documentation
+  sites, project layouts, generators, or templates.
+- Independent decisions: retain reader-facing and operational documents under
+  `docs/`; move chronological implementation evidence to
+  `docs/implementation/`; add indexes at both levels; preserve that hierarchy
+  in installed packages.
+- Generated-code task description: separate implementation records from
+  reader-facing documentation and update every repository path and install
+  rule without losing provenance requirements.
+- Similarity review: the taxonomy, wording, and CMake changes describe marc's
+  existing repository content and contain no external documentation structure.
+- Local validation: all relative links and images resolved in both the source
+  and installed 14-document sets; the installed hierarchy preserved both
+  indexes and the implementation-record directory; all 974 MSVC/Visual Studio
+  2026 and Clang 22.1.3 Release tests passed.
 
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 

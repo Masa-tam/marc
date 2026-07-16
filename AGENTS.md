@@ -77,13 +77,14 @@ Maintain these documents:
 docs/
     architecture.md
     format.md
-    references.md
-    design-decisions.md
-    clean-room-record.md
-    test-vector-generation.md
+    implementation/
+        references.md
+        design-decisions.md
+        clean-room-record.md
+        test-vector-generation.md
 ```
 
-`clean-room-record.md` must record:
+`docs/implementation/clean-room-record.md` must record:
 
 - references used;
 - known implementations intentionally not consulted;
@@ -852,8 +853,9 @@ Do not import GPL/LGPL test suites merely because they are convenient.
 
 For each algorithm, work in this order:
 
-1. Write or update `docs/references.md`.
-2. Define exact terminology and variant in `docs/design-decisions.md`.
+1. Write or update `docs/implementation/references.md`.
+2. Define exact terminology and variant in
+   `docs/implementation/design-decisions.md`.
 3. Define the complete bitstream representation in `docs/format.md`.
 4. Add hand-checkable test vectors.
 5. Implement the decoder-side validator and bounded parsing structures.
@@ -861,7 +863,7 @@ For each algorithm, work in this order:
 7. Add round-trip, split-buffer, malformed-input, and fuzz tests.
 8. Add benchmarks.
 9. Optimize only with tests proving identical behavior.
-10. Update `docs/clean-room-record.md`.
+10. Update `docs/implementation/clean-room-record.md`.
 
 Recommended implementation order:
 

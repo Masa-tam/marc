@@ -1,5 +1,7 @@
 # References
 
+These implementation references are indexed from [`README.md`](README.md).
+
 ## Build and dependency automation
 
 - GitHub, `actions/runner-images`, "Available Images", consulted 2026-07-12.

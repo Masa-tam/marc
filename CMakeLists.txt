@@ -521,10 +521,13 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/marcConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marc
 )
-install(FILES LICENSE THIRD_PARTY_NOTICES.md
+install(FILES LICENSE THIRD_PARTY_NOTICES.md README.md
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc)
-install(FILES README.md docs/c-api.md docs/format.md
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/docs)
+install(FILES .github/assets/images/marc.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/.github/assets/images)
+install(DIRECTORY docs/
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/docs
+    FILES_MATCHING PATTERN "*.md")
 install(FILES examples/CMakeLists.txt examples/c_roundtrip.c
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/examples)
 

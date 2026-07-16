@@ -1,5 +1,7 @@
 # Design decisions
 
+This development record is indexed from [`README.md`](README.md).
+
 ## DD-001: Language and build system
 
 - Date: 2026-07-12
@@ -3627,3 +3629,19 @@ or mismatched-set entries.
 Register a PowerShell compatibility test that generates schema 3, verifies it,
 derives exact schema-2 and schema-1 bundles, and verifies both legacy forms.
 CI artifact names remain unchanged; their manifest self-identifies schema 3.
+
+## DD-203: Separate implementation records from reader-facing documentation
+
+- Date: 2026-07-17
+- Status: accepted
+
+Keep public format, API, architecture, validation, and project-operation
+documents directly under `docs/`. Place chronological design decisions,
+independent-implementation provenance, implementation references, and
+test-vector construction records under `docs/implementation/`. Provide an
+index at each level and label the record set as development evidence rather
+than additional public API or format specification.
+
+Preserve the same hierarchy when installing documentation. Install the project
+README beside the package license and install the complete `docs/` tree below
+the package documentation directory so relative links remain valid.
