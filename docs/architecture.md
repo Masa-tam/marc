@@ -402,6 +402,12 @@ then does a second pass populate the caller's bounded descriptor span. The same
 canonical-order validator runs before serialization, so malformed metadata
 cannot partially publish parsed objects or bytes.
 
+Hash-aware prefix work is isolated behind version-specific 1.1 helpers. The
+ordinary header parser remains a strict 1.0 gate used by every existing stream
+adapter, so staged metadata cannot shift their expected frame offset. The 1.1
+helper validates only the fixed prefix and declared bounded region extent; it
+does not activate a complete stream representation or connect hash taps.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

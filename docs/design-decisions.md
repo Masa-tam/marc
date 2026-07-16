@@ -2830,3 +2830,21 @@ published count unchanged on failure. Serialization likewise validates the
 complete input and checked required byte count before writing. Region capacity
 is supplied by the caller now and will be coupled to explicit decoder limits
 when a later stream version activates descriptors.
+
+## DD-163: Version 1.1 prefix parsing is an isolated staged gate
+
+- Date: 2026-07-16
+- Status: accepted
+
+Reserve minor version 1 for hash-aware framing while keeping its complete
+stream layout disabled. Add separate prefix validation, parsing, and
+serialization entry points that require version 1.1, a descriptor byte count
+divisible by 16, zero extensions, and a checked combined variable-region size
+within the local buffer limit.
+
+Do not broaden the existing version 1.0 entry points. Every current stream
+adapter continues to call them and therefore rejects 1.1 before it could treat
+descriptor bytes as a frame header. The staged serializer produces only a
+prefix primitive for hand vectors and future composition; no public stream
+encoder may select it until digest targets, inclusion ranges, and trailers are
+fully specified and implemented.

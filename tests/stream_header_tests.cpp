@@ -23,6 +23,14 @@ empty_header_vector() {
     return bytes;
 }
 
+[[nodiscard]] std::array<std::byte, marc::frame::stream_header_size>
+hash_header_vector() {
+    auto bytes = empty_header_vector();
+    bytes[6] = std::byte{0x01};
+    bytes[36] = std::byte{0x10};
+    return bytes;
+}
+
 } // namespace
 
 using marc::frame::StreamHeaderError;
@@ -176,5 +184,106 @@ TEST(StreamHeaderTest, RejectsUndefinedHashAndExtensionRegions) {
     header.header_extension_size = 1;
     EXPECT_EQ(marc::frame::validate_stream_header(
                   header, marc::core::DecoderLimits{}),
+              StreamHeaderError::unsupported_feature);
+}
+
+TEST(StreamHeaderTest, StagedV11SerializesAndParsesHandVector) {
+    marc::frame::StreamHeader header{};
+    header.minor_version = marc::frame::hash_format_minor_version;
+    header.hash_descriptors_size = 16;
+    std::array<std::byte, marc::frame::stream_header_size> output{};
+    ASSERT_EQ(marc::frame::serialize_stream_header_v1_1(
+                  header, marc::core::DecoderLimits{}, output),
+              StreamHeaderError::none);
+    EXPECT_EQ(output, hash_header_vector());
+
+    marc::frame::StreamHeader parsed{};
+    ASSERT_EQ(marc::frame::parse_stream_header_v1_1(
+                  output, marc::core::DecoderLimits{}, parsed),
+              StreamHeaderError::none);
+    EXPECT_EQ(parsed.minor_version, marc::frame::hash_format_minor_version);
+    EXPECT_EQ(parsed.hash_descriptors_size, 16U);
+}
+
+TEST(StreamHeaderTest, VersionSpecificEntryPointsRemainIsolated) {
+    marc::frame::StreamHeader output{};
+    output.original_size = 123;
+    EXPECT_EQ(marc::frame::parse_stream_header(
+                  hash_header_vector(), marc::core::DecoderLimits{}, output),
+              StreamHeaderError::unsupported_version);
+    EXPECT_EQ(output.original_size, 123U);
+    EXPECT_EQ(marc::frame::parse_stream_header_v1_1(
+                  empty_header_vector(), marc::core::DecoderLimits{}, output),
+              StreamHeaderError::unsupported_version);
+    EXPECT_EQ(output.original_size, 123U);
+
+    auto unknown = hash_header_vector();
+    unknown[6] = std::byte{0x02};
+    EXPECT_EQ(marc::frame::parse_stream_header_v1_1(
+                  unknown, marc::core::DecoderLimits{}, output),
+              StreamHeaderError::unsupported_version);
+    EXPECT_EQ(output.original_size, 123U);
+
+    std::array<std::byte, marc::frame::stream_header_size> bytes{};
+    bytes.fill(std::byte{0xa5});
+    const auto unchanged = bytes;
+    marc::frame::StreamHeader header{};
+    header.minor_version = marc::frame::hash_format_minor_version;
+    header.hash_descriptors_size = 16;
+    EXPECT_EQ(marc::frame::serialize_stream_header(
+                  header, marc::core::DecoderLimits{}, bytes),
+              StreamHeaderError::unsupported_version);
+    EXPECT_EQ(bytes, unchanged);
+
+    header = {};
+    EXPECT_EQ(marc::frame::serialize_stream_header_v1_1(
+                  header, marc::core::DecoderLimits{}, bytes),
+              StreamHeaderError::unsupported_version);
+    EXPECT_EQ(bytes, unchanged);
+}
+
+TEST(StreamHeaderTest, StagedV11RejectsMalformedDescriptorExtent) {
+    marc::frame::StreamHeader header{};
+    header.minor_version = marc::frame::hash_format_minor_version;
+    header.hash_descriptors_size = 1;
+    EXPECT_EQ(marc::frame::validate_stream_header_v1_1(
+                  header, marc::core::DecoderLimits{}),
+              StreamHeaderError::invalid_hash_descriptor_size);
+    header.hash_descriptors_size = 17;
+    EXPECT_EQ(marc::frame::validate_stream_header_v1_1(
+                  header, marc::core::DecoderLimits{}),
+              StreamHeaderError::invalid_hash_descriptor_size);
+
+    auto malformed = hash_header_vector();
+    malformed[36] = std::byte{0x01};
+    marc::frame::StreamHeader output{};
+    output.original_size = 123;
+    EXPECT_EQ(marc::frame::parse_stream_header_v1_1(
+                  malformed, marc::core::DecoderLimits{}, output),
+              StreamHeaderError::invalid_hash_descriptor_size);
+    EXPECT_EQ(output.original_size, 123U);
+}
+
+TEST(StreamHeaderTest, StagedV11BoundsCombinedVariableRegions) {
+    marc::frame::StreamHeader header{};
+    header.minor_version = marc::frame::hash_format_minor_version;
+    header.dictionary_algorithm = marc::frame::DictionaryAlgorithm::lz77;
+    header.dictionary_variant = 1;
+    header.dictionary_parameters_size = 16;
+    header.hash_descriptors_size = 32;
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_internal_buffered_bytes = 47;
+    limits.max_block_size = 47;
+    EXPECT_EQ(marc::frame::validate_stream_header_v1_1(header, limits),
+              StreamHeaderError::limit_exceeded);
+
+    limits.max_internal_buffered_bytes = 48;
+    limits.max_block_size = 48;
+    EXPECT_EQ(marc::frame::validate_stream_header_v1_1(header, limits),
+              StreamHeaderError::none);
+
+    header.header_extension_size = 1;
+    EXPECT_EQ(marc::frame::validate_stream_header_v1_1(header, limits),
               StreamHeaderError::unsupported_feature);
 }

@@ -12,6 +12,7 @@ namespace marc::frame {
 inline constexpr std::size_t stream_header_size = 64;
 inline constexpr std::uint16_t format_major_version = 1;
 inline constexpr std::uint16_t format_minor_version = 0;
+inline constexpr std::uint16_t hash_format_minor_version = 1;
 
 enum class DictionaryAlgorithm : std::uint16_t {
     none = 0,
@@ -45,6 +46,7 @@ struct StreamHeader {
     std::uint32_t hash_descriptors_size{};
     std::uint64_t original_size{};
     std::uint32_t header_extension_size{};
+    std::uint16_t minor_version{format_minor_version};
 };
 
 enum class StreamHeaderError : std::uint8_t {
@@ -62,6 +64,7 @@ enum class StreamHeaderError : std::uint8_t {
     limit_exceeded,
     arithmetic_overflow,
     nonzero_reserved,
+    invalid_hash_descriptor_size,
 };
 
 [[nodiscard]] StreamHeaderError validate_stream_header(
@@ -74,6 +77,20 @@ enum class StreamHeaderError : std::uint8_t {
     StreamHeader& header) noexcept;
 
 [[nodiscard]] StreamHeaderError serialize_stream_header(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits,
+    std::span<std::byte, stream_header_size> output) noexcept;
+
+[[nodiscard]] StreamHeaderError validate_stream_header_v1_1(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits) noexcept;
+
+[[nodiscard]] StreamHeaderError parse_stream_header_v1_1(
+    std::span<const std::byte, stream_header_size> input,
+    const core::DecoderLimits& limits,
+    StreamHeader& header) noexcept;
+
+[[nodiscard]] StreamHeaderError serialize_stream_header_v1_1(
     const StreamHeader& header,
     const core::DecoderLimits& limits,
     std::span<std::byte, stream_header_size> output) noexcept;

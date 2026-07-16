@@ -2722,3 +2722,19 @@ no legal guarantee of non-infringement.
   version 1.0 activation.
 - Similarity review: the region grammar and implementation structure follow
   only marc's preceding descriptor primitive and safety contracts.
+
+## 2026-07-16 - Isolated version 1.1 hash-prefix gate
+
+- Authoring method: extended marc's own fixed prefix validation behind a new
+  version-specific entry point without enabling it in existing stream codecs.
+- References used: DD-163, version 1.0 prefix rules, canonical hash descriptor
+  regions, checked arithmetic, and local decoder limits.
+- Known implementations intentionally not consulted: external archive version
+  schemes, hash-enabled containers, source code, tests, or byte streams.
+- Independent decisions: minor version 1 reservation; separate strict entry
+  points; 16-byte descriptor divisibility; combined variable-region limit;
+  existing 1.0 rejection preserved.
+- Generated-code task description: stage a bounded hash-aware prefix while
+  preventing current decoders from misidentifying descriptor bytes as frames.
+- Similarity review: the change factors only repository-owned header rules and
+  introduces no externally derived layout or control flow.

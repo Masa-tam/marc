@@ -131,6 +131,30 @@ An out-of-order region is noncanonical. Region parsing must validate every
 record and the complete ordering before publishing any caller-owned descriptor
 output. These region rules remain inactive in version 1.0 streams.
 
+### Staged version 1.1 hash-prefix gate
+
+Version 1.1 retains the 64-byte prefix layout and all version 1.0 field rules,
+except that minor version is `1` and the hash-descriptor byte count may be
+nonzero. That count must be an exact multiple of 16. Dictionary parameters,
+entropy parameters, and hash descriptors together must fit the decoder's local
+internal-buffer limit. Header extensions remain zero.
+
+This is a prefix-level gate only, not yet a complete version 1.1 stream format.
+No public stream encoder or decoder may select it until supported target/scope
+combinations, digest placement, precise inclusion ranges, and frame/stream
+trailers are defined. Existing version 1.0 header entry points must reject a
+1.1 prefix so a descriptor region cannot be mistaken for frame bytes. The
+separate staged 1.1 entry points must reject 1.0 and every other version.
+
+A staged empty-transform prefix declaring one 16-byte descriptor region is:
+
+```text
+4D 41 52 43 01 00 01 00 40 00 00 00 00 00 00 00
+00 00 00 00 00 00 10 00 00 00 00 00 00 00 00 00
+00 00 00 00 10 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
+
 Hand-checkable records are:
 
 ```text

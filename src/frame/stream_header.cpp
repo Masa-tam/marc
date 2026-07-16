@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
+#include "frame/hash_descriptor.hpp"
 
 #include <algorithm>
 #include <array>
@@ -28,10 +29,10 @@ constexpr std::array magic{
            algorithm == EntropyAlgorithm::tans;
 }
 
-} // namespace
-
-StreamHeaderError validate_stream_header(const StreamHeader& header,
-                                         const core::DecoderLimits& limits) noexcept {
+[[nodiscard]] StreamHeaderError validate_common(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits,
+    const bool allow_hash_descriptors) noexcept {
     if (core::validate_limits(limits) != core::LimitError::none) {
         return StreamHeaderError::limit_exceeded;
     }
@@ -61,8 +62,13 @@ StreamHeaderError validate_stream_header(const StreamHeader& header,
          header.entropy_parameters_size != 0)) {
         return StreamHeaderError::contradictory_parameters;
     }
-    if (header.hash_descriptors_size != 0 || header.header_extension_size != 0) {
+    if ((!allow_hash_descriptors && header.hash_descriptors_size != 0)
+        || header.header_extension_size != 0) {
         return StreamHeaderError::unsupported_feature;
+    }
+    if (allow_hash_descriptors
+        && header.hash_descriptors_size % hash_descriptor_size != 0) {
+        return StreamHeaderError::invalid_hash_descriptor_size;
     }
     if (header.frame_size == 0 || header.frame_size > limits.max_frame_size ||
         header.original_size > limits.max_total_output_size ||
@@ -74,22 +80,28 @@ StreamHeaderError validate_stream_header(const StreamHeader& header,
         return StreamHeaderError::contradictory_parameters;
     }
 
-    std::uint64_t parameter_bytes{};
+    std::uint64_t variable_region_bytes{};
     if (!core::checked_add(
             static_cast<std::uint64_t>(header.dictionary_parameters_size),
             static_cast<std::uint64_t>(header.entropy_parameters_size),
-            parameter_bytes)) {
+            variable_region_bytes)
+        || (allow_hash_descriptors
+            && !core::checked_add(
+                variable_region_bytes,
+                static_cast<std::uint64_t>(header.hash_descriptors_size),
+                variable_region_bytes))) {
         return StreamHeaderError::arithmetic_overflow;
     }
-    if (parameter_bytes > limits.max_internal_buffered_bytes) {
+    if (variable_region_bytes > limits.max_internal_buffered_bytes) {
         return StreamHeaderError::limit_exceeded;
     }
     return StreamHeaderError::none;
 }
 
-StreamHeaderError parse_stream_header(
+[[nodiscard]] StreamHeaderError parse_for_minor_version(
     const std::span<const std::byte, stream_header_size> input,
     const core::DecoderLimits& limits,
+    const std::uint16_t expected_minor_version,
     StreamHeader& header) noexcept {
     if (!std::ranges::equal(input.first<magic.size()>(), magic)) {
         return StreamHeaderError::invalid_magic;
@@ -117,7 +129,7 @@ StreamHeaderError parse_stream_header(
         !core::load_le(input, 48, parsed.header_extension_size)) {
         return StreamHeaderError::invalid_header_size;
     }
-    if (major != format_major_version || minor != format_minor_version) {
+    if (major != format_major_version || minor != expected_minor_version) {
         return StreamHeaderError::unsupported_version;
     }
     if (encoded_header_size != stream_header_size) {
@@ -133,18 +145,24 @@ StreamHeaderError parse_stream_header(
     parsed.dictionary_algorithm =
         static_cast<DictionaryAlgorithm>(dictionary_algorithm);
     parsed.entropy_algorithm = static_cast<EntropyAlgorithm>(entropy_algorithm);
-    const auto error = validate_stream_header(parsed, limits);
+    parsed.minor_version = minor;
+    const auto error = expected_minor_version == format_minor_version
+        ? validate_stream_header(parsed, limits)
+        : validate_stream_header_v1_1(parsed, limits);
     if (error == StreamHeaderError::none) {
         header = parsed;
     }
     return error;
 }
 
-StreamHeaderError serialize_stream_header(
+[[nodiscard]] StreamHeaderError serialize_for_minor_version(
     const StreamHeader& header,
     const core::DecoderLimits& limits,
+    const std::uint16_t expected_minor_version,
     const std::span<std::byte, stream_header_size> output) noexcept {
-    const auto error = validate_stream_header(header, limits);
+    const auto error = expected_minor_version == format_minor_version
+        ? validate_stream_header(header, limits)
+        : validate_stream_header_v1_1(header, limits);
     if (error != StreamHeaderError::none) {
         return error;
     }
@@ -157,7 +175,7 @@ StreamHeaderError serialize_stream_header(
         static_cast<std::uint16_t>(header.entropy_algorithm);
     const auto stored =
         core::store_le(output, 4, format_major_version) &&
-        core::store_le(output, 6, format_minor_version) &&
+        core::store_le(output, 6, expected_minor_version) &&
         core::store_le(output, 8, static_cast<std::uint16_t>(stream_header_size)) &&
         core::store_le(output, 10, header.flags) &&
         core::store_le(output, 12, dictionary_algorithm) &&
@@ -173,6 +191,57 @@ StreamHeaderError serialize_stream_header(
         core::store_le(output, 48, header.header_extension_size);
     return stored ? StreamHeaderError::none
                   : StreamHeaderError::invalid_header_size;
+}
+
+} // namespace
+
+StreamHeaderError validate_stream_header(const StreamHeader& header,
+                                         const core::DecoderLimits& limits) noexcept {
+    if (header.minor_version != format_minor_version) {
+        return StreamHeaderError::unsupported_version;
+    }
+    return validate_common(header, limits, false);
+}
+
+StreamHeaderError parse_stream_header(
+    const std::span<const std::byte, stream_header_size> input,
+    const core::DecoderLimits& limits,
+    StreamHeader& header) noexcept {
+    return parse_for_minor_version(
+        input, limits, format_minor_version, header);
+}
+
+StreamHeaderError serialize_stream_header(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, stream_header_size> output) noexcept {
+    return serialize_for_minor_version(
+        header, limits, format_minor_version, output);
+}
+
+StreamHeaderError validate_stream_header_v1_1(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits) noexcept {
+    if (header.minor_version != hash_format_minor_version) {
+        return StreamHeaderError::unsupported_version;
+    }
+    return validate_common(header, limits, true);
+}
+
+StreamHeaderError parse_stream_header_v1_1(
+    const std::span<const std::byte, stream_header_size> input,
+    const core::DecoderLimits& limits,
+    StreamHeader& header) noexcept {
+    return parse_for_minor_version(
+        input, limits, hash_format_minor_version, header);
+}
+
+StreamHeaderError serialize_stream_header_v1_1(
+    const StreamHeader& header,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, stream_header_size> output) noexcept {
+    return serialize_for_minor_version(
+        header, limits, hash_format_minor_version, output);
 }
 
 } // namespace marc::frame

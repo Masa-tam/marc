@@ -872,3 +872,12 @@ insufficient descriptor output before publication, corrupt the second record's
 reserved field to prove whole-region atomicity, and distinguish an identical
 tuple duplicate from a descending tuple. Invalid serialization and a
 one-byte-short byte span must remain transactional.
+
+For the staged version 1.1 prefix, start with the 64-byte empty framing vector,
+set minor version byte 6 to `01`, and set hash-descriptor byte count at offset
+36 to little-endian 16. Require the dedicated 1.1 parser and serializer to
+round-trip this prefix while the existing 1.0 parser rejects it. Conversely,
+the dedicated entry point rejects a 1.0 prefix and unknown minor versions.
+Reject descriptor sizes 1 and 17, a nonzero extension, and checked aggregate
+dictionary/entropy/descriptor bytes beyond the local internal-buffer limit;
+all parse failures leave the destination header unchanged.

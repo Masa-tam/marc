@@ -253,3 +253,7 @@ target/scope IDs, fixed layout, validation rules, and vectors were designed
 independently for marc. Its tuple ordering, duplicate policy, and two-pass
 publication contract are also repository-native; no external container format
 was consulted.
+
+The staged version 1.1 prefix gate reuses marc's independently defined 1.0
+prefix and hash region. Its version isolation and combined-limit policy are
+internal format-evolution decisions and use no new external reference.
