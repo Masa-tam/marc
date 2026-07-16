@@ -2958,6 +2958,26 @@ discarded and the reviewed seed retained.
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
 
+## 2026-07-17 - Standalone Blocked Huffman dual-decoder fuzz boundary
+
+- Authoring method: separated dictionary-none Blocked Huffman decoding from the
+  existing combined pipeline and applied AGENTS.md untrusted-input criteria.
+- References used: DD-178, marc's Blocked Huffman format, block controller,
+  canonical table bounds, raw-block rule, and bounded harness contract.
+- Known implementations intentionally not consulted: external Huffman source,
+  fuzz harnesses, corpora, tables, dictionaries, or crash collections.
+- Independent decisions: 8 KiB input/internal; 4 KiB output/payload; 1 KiB
+  frames; 256-symbol blocks; eight views; length 24; 512 table nodes;
+  17/19-byte chunks; checked call ceiling; truncated-prefix seed.
+- Generated-code task description: fuzz standalone strict and incremental
+  Blocked Huffman streams independently of dictionary composition.
+- Similarity review: the harness uses only repository-owned APIs, structures,
+  limits, and previously reviewed safety checks.
+- Local validation: warning-clean compile-smoke passed under MSVC/Visual Studio
+  2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
+  inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
+  934 Release tests passed under both normal toolchains.
+
 ## 2026-07-17 - tANS dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

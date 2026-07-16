@@ -540,6 +540,12 @@ Profile failures are collapsed into the stable core categories invalid
 argument, unsupported, and limit exceeded. The later C adapter therefore need
 not expose internal parser or codec-specific enumerations.
 
+The standalone Blocked Huffman fuzz boundary covers dictionary-none stream
+validation that the combined profile cannot reach. Strict and frame-committing
+decoders share eight fixed views, bounded byte arrays, a 24-bit code-length cap,
+and a 512-node decode-table cap; byte-derived chunks and a checked call ceiling
+turn invalid progress or stalls into reproducible findings.
+
 ### Adaptive Huffman foundation
 
 Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A

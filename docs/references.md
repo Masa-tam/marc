@@ -292,6 +292,11 @@ rANS format, normalized-table limits, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external ANS
 corpus, fuzz harness, or implementation behavior was consulted.
 
+The standalone Blocked Huffman fuzz boundary uses only marc's bounded canonical
+Huffman primitives, raw-block alternative, block views, outer framing, and
+transform contract. Its seed and schedules are repository-authored; no external
+Huffman corpus, fuzz harness, table, or implementation behavior was consulted.
+
 The tANS stream fuzz boundary uses only marc's independently specified tabled
 ANS format, fixed table-log rule, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external FSE/ANS

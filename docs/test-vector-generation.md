@@ -873,6 +873,12 @@ For tANS fuzzing, use the same reviewed truncated-prefix seed and
 `TansBlockView` records, cap the state table at 4,096 entries, and drive the
 incremental path with at most 17 input and 19 output bytes per call.
 
+For standalone Blocked Huffman fuzzing, retain the reviewed five-byte prefix
+seed and use 8 KiB input/internal, 4 KiB output/payload, 1 KiB frame,
+256-symbol block, and eight-view bounds. Cap code lengths at 24 and decode table
+nodes at 512. Feed both decoder paths fixed arrays and drive incremental input
+and output with the common 17/19-byte chunk caps.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian

@@ -3124,3 +3124,21 @@ starvation assertions, and a checked call ceiling. Compile warning-clean in
 normal builds, expose a Clang sanitizer target, and start from the reviewed
 truncated-prefix seed. A bounded campaign is execution evidence, not coverage
 completion or FSE compatibility evidence.
+
+## DD-178: Standalone Blocked Huffman receives its own fuzz boundary
+
+- Date: 2026-07-17
+- Status: accepted
+
+Do not treat the combined LZ77 plus Blocked Huffman target as complete coverage
+of the dictionary-none Blocked Huffman stream. Exercise its strict one-shot and
+frame-committing decoders from a dedicated libFuzzer entry point with 8 KiB
+input, 4 KiB output, 1 KiB frames, 256-symbol blocks, 4 KiB payload, 8 KiB
+descriptor-plus-payload buffering, and at most eight fixed block views.
+
+Cap canonical code lengths at 24 and decoder table nodes at 512, covering both
+canonical and raw block representations without allocating from serialized
+metadata. Retain 17/19-byte chunk caps, ProcessResult and starvation checks, and
+the checked call ceiling. Add normal-build compile-smoke, a Clang sanitizer
+target, and the reviewed truncated-prefix seed. A short campaign proves only
+that the instrumented boundary executes without an observed finding.
