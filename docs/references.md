@@ -266,3 +266,8 @@ marc format decisions; no additional external format was consulted.
 The staged version 1.1 frame-header gate reuses marc's fixed frame header and
 initial checksum profile. Its three-way agreement rule and version isolation
 are repository-native validation policy and use no new external reference.
+
+The complete raw-checksum reference profile is a composition of marc's own
+prefix, descriptor, frame, and CRC components. Its two-pass publication policy
+and hand vectors were independently defined without an external container or
+codec reference.

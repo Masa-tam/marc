@@ -2882,3 +2882,27 @@ descriptor view, and a zero trailer. Include the trailer extent in checked
 frame-local buffered-byte accounting. Do not yet change any public stream or
 codec adapter; staged frame parsing remains unreachable from their version 1.0
 paths.
+
+## DD-166: The first complete 1.1 stream is a transactional raw profile
+
+- Date: 2026-07-16
+- Status: accepted
+
+Compose the staged prefix, canonical CRC descriptor, staged frame header, raw
+payload, and per-frame trailer into an internal None / None version 1.1
+reference stream. Require known original size, deterministic frame partitioning,
+and the exact 80-byte prefix-plus-descriptor even for empty input.
+
+Plan encoding completely before publication. Decode in two passes: the first
+parses every header, proves every extent, and verifies every CRC without writing
+raw output; the second copies the previously validated payload spans. Reject
+truncation, trailing data, descriptor disagreement, size overflow, and checksum
+mismatch transactionally. Keep public selectors and C ABI construction on
+version 1.0 until this reference composition has broader streaming and profile
+integration.
+
+Compile its decoder fuzz boundary in every test build and provide a dedicated
+Clang/libFuzzer target. Cap supplied bytes at 8 KiB and decoded output at 4 KiB;
+use only fixed caller-owned storage and conservative local limits. A short
+hand-authored `MARC` prefix seed exercises truncation without importing an
+external corpus.

@@ -422,6 +422,18 @@ trailer in bounded frame accounting. Existing frame codecs remain attached to
 the strict version 1.0 gate, which rejects descriptor objects as well as a
 nonzero trailer.
 
+The raw-checksum reference stream is the first end-to-end consumer of the staged
+1.1 components. It owns no dynamic storage: encoding plans exact extents before
+writing, while decoding scans the caller's serialized span twice. The first
+scan validates all frame headers and CRC trailers; the second copies raw payload
+spans to caller output. This establishes complete-stream atomicity independently
+of dictionary and entropy implementations.
+
+Its fuzz boundary invokes the same strict two-pass decoder with one fixed output
+array and local limits; arbitrary bytes cannot request workspace or alter the
+harness call count. Normal builds compile the boundary without a fuzz runtime,
+while the separate Clang configuration links libFuzzer and sanitizers.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

@@ -901,3 +901,19 @@ and independently reject a missing descriptor, a descriptor-region size
 mismatch, an unsupported descriptor, trailer sizes zero and five, and a local
 buffer limit one byte below the frame's checked staged extent. All parse and
 serialization failures remain transactional.
+
+For the complete raw-checksum reference profile, encode `61 62 63` as one
+frame and require total size 143: 80-byte prefix/descriptor, 56-byte frame
+header, three raw payload bytes, and `B7 3F 4B 36`. Require empty input to
+produce exactly 80 bytes and no frame. Use a five-byte input with frame size two
+to prove three independent checksum resets and exact round trip. Repeat encoding
+for byte identity; reject every strict truncation of the one-frame vector,
+trailing input, short output, version 1.0, unsupported algorithms, malformed or
+extra descriptors, corrupted frame sizes, altered payload, and every checksum
+byte corruption. No decode failure may modify output stream metadata,
+descriptor output, or raw output.
+
+The raw-checksum fuzz boundary truncates cases to 8 KiB, supplies a fixed 4 KiB
+output, permits at most 1 KiB per frame, and uses no input-sized allocation.
+Compile it under normal MSVC and Clang test builds and retain the hand-authored
+truncated `MARC` seed as the initial permanent corpus entry.

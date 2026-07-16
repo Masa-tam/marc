@@ -212,6 +212,37 @@ the frame header is the version 1.0 raw vector below except bytes 36 through 39
 are `04 00 00 00`. Its body is payload `61 62 63`, followed by CRC-32C trailer
 `B7 3F 4B 36`.
 
+### Complete version 1.1 raw-checksum reference profile
+
+The first complete version 1.1 stream profile selects dictionary None and
+entropy None, has no algorithm parameter regions, and contains exactly the
+single initial CRC-32C descriptor. Its byte order is:
+
+```text
+64-byte version 1.1 stream prefix
+16-byte CRC-32C / UncompressedBytes / PerFrame descriptor
+zero or more frames, each:
+    56-byte staged version 1.1 frame header
+    uncompressed bytes (also the compressed payload under None / None)
+    4-byte CRC-32C trailer
+```
+
+The stream prefix's original size is known. Frames use the deterministic fixed
+size/final remainder rule. Empty input is represented by only the 80-byte
+prefix and descriptor and contains no frame or checksum. Strict decoding
+rejects truncation at every byte, extra trailing bytes, any prefix/descriptor/
+frame disagreement, and any checksum mismatch.
+
+The reference decoder validates the entire stream and every checksum before
+publishing any uncompressed output. Its second pass copies only already
+validated raw payload spans. Thus corruption in a later frame cannot expose an
+accepted prefix of output. This profile is initially an internal reference
+composition; existing public codec selectors and the C ABI remain version 1.0.
+
+For raw input `61 62 63` in one frame, serialized size is 143 bytes: the
+80-byte prefix and descriptor, the 56-byte checksum frame header, three payload
+bytes, and trailer `B7 3F 4B 36`.
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

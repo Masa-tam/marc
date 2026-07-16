@@ -2,7 +2,7 @@
 
 `marc_fuzz_lzss_stream`, `marc_fuzz_lz77_blocked_huffman_stream`,
 `marc_fuzz_lz78_stream`, `marc_fuzz_lzw_stream`, `marc_fuzz_lzd_stream`, and
-`marc_fuzz_lzmw_stream`
+`marc_fuzz_lzmw_stream`, plus `marc_fuzz_checksum_raw_stream`,
 exercise both the strict
 one-shot stream decoder and the matching frame-streaming decoder with chunk
 sizes derived from the input. They use small fixed local limits and
@@ -17,6 +17,9 @@ combined LZ77 plus Blocked Huffman target additionally truncates every supplied
 case to 8 KiB, permits at most 4 KiB total output, one 1 KiB frame, 4 KiB of
 dictionary bytes, and eight entropy blocks, and includes all four frame-local
 workspace extents in one fixed aggregate limit.
+The raw-checksum target exercises its strict two-pass decoder with at most
+8 KiB of serialized input, 4 KiB of output, 1 KiB frames, and 4 KiB of internal
+buffer allowance; it performs no input-controlled allocation.
 
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
@@ -32,11 +35,14 @@ cmake -S . -B out/build/fuzz -G Ninja \
 cmake --build out/build/fuzz --target \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
+  marc_fuzz_checksum_raw_stream \
   marc_fuzz_lz78_stream marc_fuzz_lzw_stream \
   marc_fuzz_lzd_stream marc_fuzz_lzmw_stream
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_checksum_raw_stream \
+  fuzz/corpus/checksum_raw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_stream fuzz/corpus/lz78_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
@@ -59,6 +65,12 @@ A bounded Windows smoke campaign on 2026-07-16 ran each of the six targets for
 All 60,000 executions completed without a crash, hang, or sanitizer finding;
 each process peaked at 64 MiB RSS. This is execution-path evidence only, not a
 claim of coverage completion.
+
+The raw-checksum target received an initial bounded sanitizer smoke on
+2026-07-16: 1,000 inputs, 8 KiB maximum input, five-second per-input timeout,
+and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer finding
+and peaked at 37 MiB RSS. Automatically generated reductions were discarded;
+only the reviewed hand-authored seed remains in the repository.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

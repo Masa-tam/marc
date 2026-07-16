@@ -102,6 +102,7 @@ set(MARC_SOURCES
     src/entropy/huffman_decode_table.cpp
     src/frame/frame_header.cpp
     src/frame/frame_checksum.cpp
+    src/frame/checksum_raw_stream.cpp
     src/frame/hash_descriptor.cpp
     src/frame/lz77_blocked_huffman_frame.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_decoder.cpp
@@ -316,6 +317,18 @@ if(MARC_BUILD_FUZZERS)
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lz77_blocked_huffman_stream
         PRIVATE marc::static)
+    add_executable(marc_fuzz_checksum_raw_stream
+        fuzz/checksum_raw_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_checksum_raw_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_checksum_raw_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_checksum_raw_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_checksum_raw_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_checksum_raw_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lz78_stream fuzz/lz78_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz78_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lz78_stream
@@ -508,6 +521,7 @@ if(MARC_BUILD_TESTS)
         tests/sha256_tests.cpp
         tests/frame_header_tests.cpp
         tests/frame_checksum_tests.cpp
+        tests/checksum_raw_stream_tests.cpp
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_encoder_tests.cpp
@@ -612,6 +626,20 @@ if(MARC_BUILD_TESTS)
     else()
         target_compile_options(
             marc_lz77_blocked_huffman_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_checksum_raw_fuzz_compile_smoke OBJECT
+        fuzz/checksum_raw_stream_fuzz.cpp)
+    target_compile_features(marc_checksum_raw_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_include_directories(marc_checksum_raw_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_checksum_raw_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_checksum_raw_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

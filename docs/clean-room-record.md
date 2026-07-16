@@ -2774,3 +2774,26 @@ no legal guarantee of non-infringement.
   codec paths.
 - Similarity review: layout reuse and factoring derive only from marc's prior
   header and checksum components.
+
+## 2026-07-16 - Complete raw-checksum version 1.1 reference stream
+
+- Authoring method: composed previously documented marc-owned 1.1 primitives
+  into a bounded None / None stream and implemented exact planning plus
+  validation-before-publication.
+- References used: DD-166, staged stream and frame headers, canonical CRC
+  descriptor, frame checksum profile, and existing one-shot atomicity policy.
+- Known implementations intentionally not consulted: external archive raw
+  modes, checksum containers, source code, tests, or serialized streams.
+- Independent decisions: 80-byte empty representation; deterministic frames;
+  header/payload/trailer layout; two-pass atomic decode; internal-only initial
+  exposure.
+- Generated-code task description: create a complete allocation-free 1.1 raw
+  reference stream that detects any frame corruption before publishing bytes.
+- Similarity review: the composition and control flow follow only marc's prior
+  components and safety requirements.
+
+The same task added a bounded decoder fuzz boundary and a hand-authored
+truncated-magic seed. No external corpus, fuzzer harness, or crash input was
+consulted; fixed limits and caller-owned storage follow marc's existing safety
+policy. An initial 1,000-input sanitizer smoke completed without a crash, hang,
+or sanitizer finding at 37 MiB peak RSS; generated reductions were discarded.
