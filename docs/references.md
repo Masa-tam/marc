@@ -276,3 +276,8 @@ The raw-checksum public-ABI completion matrix uses only that repository-defined
 format, its public process contract, and the general data classes required by
 AGENTS.md. No additional algorithm, format, implementation, corpus, or external
 test-suite reference was used.
+
+The Adaptive Huffman stream fuzz boundary uses only marc's independently
+specified FGK variant, outer framing, decoder limits, and transform contract.
+Its seed and input schedules are repository-authored; no external corpus,
+fuzzer harness, or implementation behavior was consulted.

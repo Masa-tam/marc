@@ -593,6 +593,12 @@ only local limits because no stream header is trusted yet. Empty encoding needs
 no frame workspace, and all multiplication, rounding, and `size_t` conversion
 are checked.
 
+The bounded Adaptive fuzz boundary sends every case through both the strict
+whole-stream decoder and the frame-committing decoder. Fixed encoded-frame,
+decoded-frame, and aggregate-output arrays enforce the same local policy in
+both paths; byte-derived chunk schedules and a checked call ceiling turn
+partial-I/O invariant failures or stalls into reproducible findings.
+
 ### Dynamic Range Coder foundation
 
 Dynamic Range Coder variant 1 begins with a fixed 16-byte descriptor validator

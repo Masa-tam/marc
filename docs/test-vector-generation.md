@@ -849,6 +849,13 @@ one-byte frame, then append trailing data independently; each case must report
 a stable malformed-stream error, preserve the first 192 verified bytes, and
 suppress the final frame. Successful repeated calls remain EndOfStream.
 
+For Adaptive Huffman fuzzing, retain the five-byte repository-authored
+`MARC`-plus-newline truncated-prefix seed. Bound fuzzer input to 8 KiB, decoded
+output to 4 KiB, frames to 1 KiB, compressed payload and frame-local buffering
+to 4 KiB, and drive the incremental decoder with byte-derived chunks of at most
+17 input and 19 output bytes. The one-shot and streaming paths share the same
+limits; neither allocates from input-controlled sizes.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian

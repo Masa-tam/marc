@@ -23,6 +23,12 @@ incremental decoder with at most 8 KiB of serialized input, 4 KiB of output,
 one-byte chunks and a fixed iteration ceiling; neither path performs
 input-controlled allocation.
 
+`marc_fuzz_adaptive_huffman_stream` applies the same dual-decoder structure to
+the framed FGK profile. It caps input at 8 KiB, output and frame-local buffered
+bytes at 4 KiB, and individual frames at 1 KiB. Fixed arrays hold the encoded
+frame, decoded frame, and total output; byte-derived chunk sizes and a checked
+call ceiling exercise partial I/O without input-controlled allocation.
+
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
 and UndefinedBehaviorSanitizer:
@@ -38,6 +44,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_checksum_raw_stream \
+  marc_fuzz_adaptive_huffman_stream \
   marc_fuzz_lz78_stream marc_fuzz_lzw_stream \
   marc_fuzz_lzd_stream marc_fuzz_lzmw_stream
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
@@ -45,6 +52,8 @@ out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_checksum_raw_stream \
   fuzz/corpus/checksum_raw_stream -max_len=8192
+out/build/fuzz/marc_fuzz_adaptive_huffman_stream \
+  fuzz/corpus/adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_stream fuzz/corpus/lz78_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
@@ -77,6 +86,12 @@ only the reviewed hand-authored seed remains in the repository.
 After adding the incremental decoder path on 2026-07-16, the same bounded
 1,000-input sanitizer smoke again completed without a crash, hang, or sanitizer
 finding at 37 MiB peak RSS. Generated reductions were again discarded.
+
+The Adaptive Huffman dual-decoder target received its initial bounded sanitizer
+smoke on 2026-07-17: 1,000 inputs, 8 KiB maximum input, five-second per-input
+timeout, and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer
+finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
+corpus; the repository retains only the reviewed five-byte seed.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

@@ -337,6 +337,20 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_checksum_raw_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_checksum_raw_stream PRIVATE marc::static)
+    add_executable(marc_fuzz_adaptive_huffman_stream
+        fuzz/adaptive_huffman_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_adaptive_huffman_stream
+        PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_adaptive_huffman_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_adaptive_huffman_stream
+        PRIVATE marc::static)
     add_executable(marc_fuzz_lz78_stream fuzz/lz78_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz78_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lz78_stream
@@ -651,6 +665,20 @@ if(MARC_BUILD_TESTS)
             PRIVATE /W4 /permissive- /Zc:__cplusplus)
     else()
         target_compile_options(marc_checksum_raw_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_adaptive_huffman_fuzz_compile_smoke OBJECT
+        fuzz/adaptive_huffman_stream_fuzz.cpp)
+    target_compile_features(marc_adaptive_huffman_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_include_directories(marc_adaptive_huffman_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_adaptive_huffman_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_adaptive_huffman_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

@@ -3051,3 +3051,21 @@ three verified 64-byte frames may be returned, while the final one-byte frame
 remains uncommitted in all three cases. This local status includes existing
 format, component, C, CLI, fuzz, benchmark, and interoperability evidence, but
 does not claim release completion without external cross-platform execution.
+
+## DD-174: Adaptive Huffman gets a bounded dual-decoder fuzz boundary
+
+- Date: 2026-07-17
+- Status: accepted
+
+Exercise both the strict one-shot Adaptive Huffman stream decoder and the
+frame-committing incremental decoder from one libFuzzer entry point. Truncate
+each supplied case to 8 KiB, permit at most 4 KiB total output, 1 KiB frames,
+4 KiB payloads, and 4 KiB of frame-local buffered descriptor-plus-payload
+bytes. Use fixed caller-owned arrays only.
+
+Derive bounded input and output chunk sizes from supplied bytes, validate every
+ProcessResult, and abort on an invalid result, an impossible starvation state,
+or exhaustion of the checked call ceiling. Compile the harness in every normal
+test build and provide an instrumented Clang target plus a repository-authored
+truncated-magic seed. A bounded smoke run is execution evidence, not coverage
+completion.

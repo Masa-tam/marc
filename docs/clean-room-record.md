@@ -2937,3 +2937,23 @@ discarded and the reviewed seed retained.
   streaming contract.
 - Local validation: all 934 Release tests passed with MSVC/Visual Studio 2026
   and independently with Clang 22.1.3/Ninja.
+
+## 2026-07-17 - Adaptive Huffman dual-decoder fuzz boundary
+
+- Authoring method: applied AGENTS.md malformed-input requirements to marc's
+  existing one-shot and frame-streaming FGK decoders.
+- References used: DD-174, the repository-defined Adaptive Huffman format,
+  decoder limits, streaming contract, and existing marc fuzz conventions.
+- Known implementations intentionally not consulted: external Adaptive Huffman
+  source, fuzz harnesses, corpora, dictionaries, or crash collections.
+- Independent decisions: 8 KiB input; 4 KiB output, payload, and internal
+  bounds; 1 KiB frames; fixed workspaces; byte-derived 17/19-byte chunk caps;
+  checked call ceiling; hand-authored truncated-prefix seed.
+- Generated-code task description: fuzz both public-format decoder paths under
+  identical bounded policy without permitting input-controlled allocation.
+- Similarity review: the harness composes only repository-owned APIs and safety
+  conventions; no external control flow or test data was examined.
+- Local validation: warning-clean compile-smoke passed with MSVC/Visual Studio
+  2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
+  inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
+  934 Release tests passed under both normal toolchains.
