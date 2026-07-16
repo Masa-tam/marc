@@ -669,6 +669,7 @@ if(MARC_BUILD_TESTS)
         tests/adaptive_huffman_frame_streaming_encoder_tests.cpp
         tests/adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/adaptive_huffman_profile_tests.cpp
+        tests/adaptive_huffman_completion_tests.cpp
         tests/dynamic_range_frame_tests.cpp
         tests/dynamic_range_stream_tests.cpp
         tests/dynamic_range_frame_streaming_encoder_tests.cpp

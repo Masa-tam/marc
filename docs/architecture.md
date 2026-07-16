@@ -646,6 +646,13 @@ untimed full round trip before measuring process calls and reports the larger
 encoder/decoder caller-owned workspace; the views extent remains zero because
 the fixed FGK tree is transform-owned.
 
+The public-ABI completion matrix consolidates Adaptive local-readiness evidence
+above the format and tree tests. It covers every one-byte symbol, binary and
+generated data, frame boundaries, deterministic re-encoding, one-byte and
+mixed chunk schedules, repeatable EndOfStream, and frame-atomic rejection of a
+malformed final frame, truncation, and trailing bytes. This closes the local
+implementation loop without claiming external release evidence.
+
 ### Dynamic Range Coder foundation
 
 Dynamic Range Coder variant 1 begins with a fixed 16-byte descriptor validator

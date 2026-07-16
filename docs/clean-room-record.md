@@ -3070,6 +3070,24 @@ discarded and the reviewed seed retained.
   under MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed
   ratio, throughput, zero views, direction workspaces, and peak workspace.
 
+## 2026-07-17 - Adaptive Huffman local completion audit
+
+- Authoring method: applied AGENTS.md completion criteria through marc's public
+  FGK C ABI after specifying DD-185.
+- References used: DD-185, marc's Adaptive Huffman format and tree invariants,
+  public process contract, profile, fuzz, CLI, and benchmark evidence.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman source, vectors, corpora, test suites, or completion checklists.
+- Independent decisions: 64-byte frames; required binary classes; 63/64/65
+  boundaries; 193-byte chunk matrix; final-frame sequence corruption,
+  truncation, trailing bytes, sticky errors, and repeated EndOfStream.
+- Generated-code task description: consolidate deterministic, partial-buffer,
+  malformed-frame, and terminal evidence through the public FGK transform.
+- Similarity review: all vectors and control flow are repository-authored and
+  reuse marc's established public-ABI completion conventions only.
+- Local validation: the three focused completion tests and all 944 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

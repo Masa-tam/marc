@@ -3252,3 +3252,25 @@ call, retain the existing ratio and throughput definitions, and report peak
 caller-owned workspace with a zero views extent. The Release smoke validates
 the path and output schema; it is not a stable performance record or sufficient
 local-completion evidence alone.
+
+## DD-185: Adaptive Huffman receives a public-ABI completion matrix
+
+- Date: 2026-07-17
+- Status: accepted
+
+Audit local FGK readiness through the public C transform path with 64-byte
+frames. Cover empty input, every one-byte symbol, all byte values, repetitive
+and patterned data, deterministic generated data, and lengths 63/64/65. Require
+identical re-encoding and exact round trips.
+
+For a four-frame stream, compare one-byte and mixed input/output chunking with
+the full-buffer representation. Corrupt the final frame sequence, truncate its
+payload, and append trailing data independently. Each error must be sticky and
+publish only the first three validated frames; successful terminal calls must
+remain EndOfStream.
+
+After this matrix passes with the existing FGK tree, format, frame, stream,
+profile, C ABI, CLI, fuzz, benchmark, and documentation evidence, classify
+Adaptive Huffman variant 1 as locally implementation-complete. External
+cross-platform deterministic execution, representative benchmark records, and
+the final similarity review remain release evidence.

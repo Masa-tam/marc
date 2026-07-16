@@ -92,11 +92,6 @@ terminal-match form, frame resets, limits, and vectors are independently
 specified. No LZ77 implementation source, source-derived pseudocode, container
 format, or test suite was consulted.
 
-The Adaptive Huffman benchmark composes only marc's independently specified
-FGK profile, public C ABI, profile sizing, and repository measurement contract.
-No external benchmark harness, published result, implementation, or test suite
-was consulted.
-
 The LZ77 plus Blocked Huffman pipeline composes only the two repository-defined
 representations above. It introduces no new algorithmic reference and does not
 use an external combined-container implementation or test suite.
@@ -291,6 +286,16 @@ The Adaptive Huffman command-line selector composes only marc's independently
 specified FGK profile, public C ABI, bounded workspace policy, and common file
 adapter. No external compression tool, command-line implementation, archive
 format, or test suite was consulted.
+
+The Adaptive Huffman benchmark composes only marc's independently specified
+FGK profile, public C ABI, profile sizing, and repository measurement contract.
+No external benchmark harness, published result, implementation, or test suite
+was consulted.
+
+The Adaptive Huffman completion matrix uses only marc's public FGK C ABI,
+repository-defined format, required data classes, deterministic generator, and
+process-contract assertions. No external vector, corpus, test suite, or
+implementation behavior was consulted.
 
 The Dynamic Range stream fuzz boundary uses only marc's independently defined
 integer range-coder variant, framing, model-total rule, decoder limits, and
