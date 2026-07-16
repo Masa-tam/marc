@@ -3367,3 +3367,26 @@ and retain the existing ratio, raw-byte throughput, direction-workspace, and
 peak-workspace definitions. Report all three workspace regions. The Release
 smoke validates the path and schema, but it is neither a stable performance
 record nor complete local-readiness evidence.
+
+## DD-191: rANS receives a public-ABI completion matrix
+
+- Date: 2026-07-17
+- Status: accepted
+
+Audit local scalar variant 1 readiness through the public C transform path with
+64-byte frames and 32-symbol blocks. Cover empty input, every one-byte value,
+all byte values, one-symbol and patterned data, deterministic generated data,
+block lengths 31/32/33, and frame lengths 63/64/65. Require byte-identical
+re-encoding and exact round trips through aligned queried views.
+
+For one four-frame stream, compare one-byte and mixed input/output chunking with
+the full-buffer representation. Corrupt the final frame sequence, truncate its
+payload, and append trailing data independently. Each error must be sticky and
+publish only the first three validated frames; successful terminal calls must
+remain EndOfStream.
+
+After this matrix passes with the existing normalization, state, format, frame,
+stream, profile, C ABI, CLI, fuzz, benchmark, and documentation evidence,
+classify scalar rANS variant 1 as locally implementation-complete. External
+cross-platform deterministic execution, representative benchmark records, and
+the final similarity review remain release evidence.

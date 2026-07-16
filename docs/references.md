@@ -332,6 +332,11 @@ public C ABI, profile bounds, aligned view policy, and repository measurement
 contract. No external benchmark harness, published result, ANS source, or test
 suite was consulted.
 
+The rANS completion matrix uses only marc's public scalar C ABI,
+repository-defined format, required data classes, deterministic generator,
+aligned view contract, and process assertions. No external vector, corpus, test
+suite, or implementation behavior was consulted.
+
 The standalone Blocked Huffman fuzz boundary uses only marc's bounded canonical
 Huffman primitives, raw-block alternative, block views, outer framing, and
 transform contract. Its seed and schedules are repository-authored; no external
