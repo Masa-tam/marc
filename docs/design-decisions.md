@@ -3566,3 +3566,21 @@ This strengthens DD-126 without changing Lempel-Ziv Double parsing, format, or
 workspace policy. External cross-platform deterministic execution,
 representative benchmark records, and the final similarity review remain
 release evidence.
+
+## DD-200: LZMW completion adds malformed and terminal public-ABI evidence
+
+- Date: 2026-07-17
+- Status: accepted
+
+Retain the existing LZMW public-C-ABI data and chunking matrix. Require every
+successful transform to return repeatable EndOfStream with zero consumption and
+production on later calls.
+
+For the existing 64-byte-frame, 32-entry profile, encode one 193-byte four-frame
+stream. Corrupt the final frame header, truncate its fixed-reference payload,
+and append trailing data independently. Each failure must be sticky, publish
+only the first three validated frames, and preserve the final output sentinel.
+
+This strengthens DD-139 without changing LZMW parsing, format, or workspace
+policy. External cross-platform deterministic execution, representative
+benchmark records, and the final similarity review remain release evidence.

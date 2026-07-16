@@ -114,6 +114,12 @@ std::vector<std::uint8_t> process_all(
         produced += result.output_produced;
         if (result.status == MARC_STATUS_END_OF_STREAM) {
             ended = true;
+            const auto repeated = marc_transform_process(
+                transform.get(), {nullptr, 0}, {nullptr, 0},
+                MARC_PROCESS_END_INPUT);
+            EXPECT_EQ(repeated.status, MARC_STATUS_END_OF_STREAM);
+            EXPECT_EQ(repeated.input_consumed, 0U);
+            EXPECT_EQ(repeated.output_produced, 0U);
             break;
         }
         if (result.input_consumed == 0 && result.output_produced == 0
@@ -159,6 +165,44 @@ void expect_round_trip(const std::span<const std::uint8_t> input) {
     EXPECT_TRUE(std::ranges::equal(decoded, input));
 }
 
+std::uint32_t load_le32(const std::span<const std::uint8_t> input,
+                        const std::size_t offset) {
+    return static_cast<std::uint32_t>(input[offset])
+        | static_cast<std::uint32_t>(input[offset + 1]) << 8
+        | static_cast<std::uint32_t>(input[offset + 2]) << 16
+        | static_cast<std::uint32_t>(input[offset + 3]) << 24;
+}
+
+std::size_t frame_extent(const std::span<const std::uint8_t> stream,
+                         const std::size_t offset) {
+    return 56 + load_le32(stream, offset + 32)
+        + load_le32(stream, offset + 24);
+}
+
+marc_process_result decode_once(const std::span<const std::uint8_t> input,
+                                const std::size_t original_size,
+                                const std::span<std::uint8_t> output,
+                                marc_process_result* repeated) {
+    auto settings = config(MARC_DIRECTION_DECODE, original_size);
+    auto workspace = workspace_for(settings);
+    auto transform = create(settings, workspace);
+    const auto result = marc_transform_process(
+        transform.get(), {input.data(), input.size()},
+        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+    *repeated = marc_transform_process(
+        transform.get(), {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_END_INPUT);
+    return result;
+}
+
+void expect_sticky_error(const marc_process_result& first,
+                         const marc_process_result& repeated) {
+    EXPECT_EQ(repeated.status, first.status);
+    EXPECT_EQ(repeated.error_byte_position, first.error_byte_position);
+    EXPECT_EQ(repeated.error_bit_position, first.error_bit_position);
+    EXPECT_EQ(repeated.input_consumed, 0U);
+    EXPECT_EQ(repeated.output_produced, 0U);
+}
+
 TEST(LzmwCompletion, RequiredDataClassesRoundTripDeterministically) {
     expect_round_trip({});
     for (std::uint32_t value = 0; value < 256; ++value) {
@@ -193,6 +237,49 @@ TEST(LzmwCompletion, MultiFrameStreamIsIndependentOfChunking) {
             chunks.second, input.size());
         EXPECT_EQ(decoded, input);
     }
+}
+
+TEST(LzmwCompletion, MalformedFinalFrameIsNeverCommitted) {
+    const auto input = generated_bytes(193, UINT32_C(0x13579bdf));
+    const auto encoded = encode(input);
+    auto final_frame = std::size_t{80};
+    for (std::size_t frame = 0; frame < 3; ++frame)
+        final_frame += frame_extent(encoded, final_frame);
+    ASSERT_LT(final_frame + 8, encoded.size());
+
+    std::vector<std::uint8_t> output(input.size(), UINT8_C(0xa5));
+    auto corrupted = encoded;
+    corrupted[final_frame + 8] ^= 1;
+    marc_process_result repeated{};
+    const auto corrupt_result = decode_once(
+        corrupted, input.size(), output, &repeated);
+    EXPECT_EQ(corrupt_result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(corrupt_result.output_produced, 192U);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span{output}.first(192), std::span{input}.first(192)));
+    EXPECT_EQ(output.back(), UINT8_C(0xa5));
+    expect_sticky_error(corrupt_result, repeated);
+
+    output.assign(input.size(), UINT8_C(0xa5));
+    const auto truncated = std::span{encoded}.first(encoded.size() - 1);
+    const auto truncate_result = decode_once(
+        truncated, input.size(), output, &repeated);
+    EXPECT_EQ(truncate_result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(truncate_result.output_produced, 192U);
+    EXPECT_EQ(output.back(), UINT8_C(0xa5));
+    expect_sticky_error(truncate_result, repeated);
+
+    auto trailing = encoded;
+    trailing.push_back(0);
+    output.assign(input.size(), UINT8_C(0xa5));
+    const auto trailing_result = decode_once(
+        trailing, input.size(), output, &repeated);
+    EXPECT_EQ(trailing_result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(trailing_result.output_produced, 192U);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span{output}.first(192), std::span{input}.first(192)));
+    EXPECT_EQ(output.back(), UINT8_C(0xa5));
+    expect_sticky_error(trailing_result, repeated);
 }
 
 } // namespace

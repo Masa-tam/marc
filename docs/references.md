@@ -408,3 +408,8 @@ The strengthened LZD completion matrix uses only marc's public C ABI,
 repository-defined reference-pair stream, deterministic generator, aligned
 workspace contract, and process assertions. No external LZD vectors, corpus,
 test suite, or implementation behavior was consulted.
+
+The strengthened LZMW completion matrix uses only marc's public C ABI,
+repository-defined fixed-reference stream, deterministic generator, aligned
+workspace contract, and process assertions. No external LZMW vectors, corpus,
+test suite, or implementation behavior was consulted.

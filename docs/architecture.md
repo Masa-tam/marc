@@ -318,6 +318,9 @@ one-byte and mixed input/output chunking. The benchmark uses the same public
 configuration, workspace query, factory, process, and destroy surface, verifies
 a round trip before timing, and reports full-stream ratio, throughput, and
 caller-owned workspace. These are local readiness checks, not release evidence.
+The strengthened matrix also requires repeatable terminal states and
+frame-atomic rejection of final-frame corruption, truncation, and trailing
+bytes, with only earlier validated frames remaining committed.
 A bounded LZMW decoder fuzz harness now covers both one-shot and outer
 streaming decode with compile-smoke and permanent malformed regressions.
 Coverage-guided sanitizer execution remains release evidence rather than a

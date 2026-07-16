@@ -3351,6 +3351,24 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused LZD completion tests and all 972 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - LZMW public-ABI completion re-audit
+
+- Authoring method: applied current AGENTS.md malformed and terminal criteria
+  to the existing public LZMW completion matrix after specifying DD-200.
+- References used: DD-139, DD-200, marc's fixed-reference format, frame and
+  stream validators, aligned workspace contract, fuzz, CLI, and benchmark.
+- Known implementations intentionally not consulted: external LZMW source,
+  vectors, corpora, test suites, or completion checklists.
+- Independent decisions: preserve the 64-byte/32-entry profile and 193-byte
+  chunk matrix; add repeated EOS, final-header corruption, truncation, trailing
+  data, sticky errors, and exact 192-byte commit assertions.
+- Generated-code task description: strengthen the existing completion matrix
+  with malformed-frame and stable-terminal evidence through the public ABI.
+- Similarity review: all mutations and control flow are repository-authored and
+  reuse marc's established completion conventions only.
+- Local validation: all three focused LZMW completion tests and all 973 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
