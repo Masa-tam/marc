@@ -632,6 +632,13 @@ decoded-frame, and aggregate-output arrays enforce the same local policy in
 both paths; byte-derived chunk schedules and a checked call ceiling turn
 partial-I/O invariant failures or stalls into reproducible findings.
 
+The command-line adapter selects FGK variant 1 as `adaptive-huffman` and uses
+only the public C configuration, workspace query, factory, and process calls.
+Its one MiB frame policy reserves the profile's conservative 33 payload bytes
+per symbol plus the fixed descriptor. Decoder allocation is derived from those
+local limits before input parsing, and the common temporary-file commit policy
+prevents failed streams from publishing partial files.
+
 ### Dynamic Range Coder foundation
 
 Dynamic Range Coder variant 1 begins with a fixed 16-byte descriptor validator

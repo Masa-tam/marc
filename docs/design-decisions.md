@@ -3218,3 +3218,20 @@ C ABI, CLI, fuzz, benchmark, and documentation evidence, classify standalone
 Blocked Huffman as locally implementation-complete. Do not claim release
 completion without external cross-platform deterministic execution,
 representative benchmark records, and final similarity review.
+
+## DD-183: CLI exposes Adaptive Huffman FGK through the public C ABI
+
+- Date: 2026-07-17
+- Status: accepted
+
+Name the explicit command-line profile `adaptive-huffman`. Use one MiB outer
+frames and variant 1's conservative worst case of 264 bits, or 33 bytes, per
+input symbol. Reserve the fixed 16-byte descriptor separately. Configure,
+query workspace, create transforms, and process bytes exclusively through the
+public C ABI; serialized input must never control pre-parse allocation.
+
+Run the common file harness across a frame boundary and cover empty input,
+overwrite rejection, malformed prefix, trailing bytes, exact round trip, and
+temporary-file cleanup. Do not silently change an existing versioned
+interoperability codec set. This CLI path is prerequisite evidence for later
+benchmarking and local completion, not release completion.

@@ -3033,6 +3033,24 @@ discarded and the reviewed seed retained.
 - Local validation: the three focused completion tests and all 939 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - Adaptive Huffman CLI adapter
+
+- Authoring method: composed the existing public FGK profile with marc's common
+  bounded file adapter after specifying DD-183.
+- References used: DD-183, marc's Adaptive Huffman variant 1 format, profile
+  sizing, public C lifecycle, and atomic CLI policy.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman source, compression tools, command-line adapters, or test suites.
+- Independent decisions: codec name `adaptive-huffman`; one MiB frames;
+  33-byte-per-symbol payload bound; fixed descriptor; shared multi-frame and
+  trailing-data test; unchanged interoperability codec sets.
+- Generated-code task description: expose FGK Adaptive Huffman through the
+  CLI using only public C API operations and caller-owned bounded workspaces.
+- Similarity review: the change extends repository-owned dispatch and file
+  policy without consulting an external implementation.
+- Local validation: the focused multi-frame CLI test and all 940 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

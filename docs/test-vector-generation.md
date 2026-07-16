@@ -891,6 +891,14 @@ to 4 KiB, and drive the incremental decoder with byte-derived chunks of at most
 17 input and 19 output bytes. The one-shot and streaming paths share the same
 limits; neither allocates from input-controlled sizes.
 
+For Adaptive Huffman CLI integration, run the shared file harness with explicit
+codec `adaptive-huffman` over enough repeated text to cross the one MiB frame
+boundary. Require exact nonempty and empty round trips, existing-destination
+rejection, malformed-prefix rejection, and strict trailing-byte rejection.
+Failed decode must leave neither destination nor temporary output. Keep the
+selector outside existing versioned interoperability bundles until a new codec
+set is specified.
+
 For Dynamic Range fuzzing, use the same five-byte repository-authored
 truncated-prefix seed and 8 KiB/4 KiB/1 KiB input, output/internal, and frame
 bounds. Fix `max_range_model_total` to 32,768 and cap byte-derived incremental

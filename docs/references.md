@@ -282,6 +282,11 @@ specified FGK variant, outer framing, decoder limits, and transform contract.
 Its seed and input schedules are repository-authored; no external corpus,
 fuzzer harness, or implementation behavior was consulted.
 
+The Adaptive Huffman command-line selector composes only marc's independently
+specified FGK profile, public C ABI, bounded workspace policy, and common file
+adapter. No external compression tool, command-line implementation, archive
+format, or test suite was consulted.
+
 The Dynamic Range stream fuzz boundary uses only marc's independently defined
 integer range-coder variant, framing, model-total rule, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no
