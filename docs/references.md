@@ -357,6 +357,11 @@ public C ABI, 12-bit transition bound, aligned view policy, and repository
 measurement contract. No external benchmark harness, published result,
 FSE/ANS source, or test suite was consulted.
 
+The tANS completion matrix uses only marc's public tabled C ABI,
+repository-defined format, required data classes, deterministic generator,
+aligned view contract, and process assertions. No external vector, corpus, test
+suite, or implementation behavior was consulted.
+
 The standalone LZ77 stream fuzz boundary uses only marc's independently
 specified fixed token representation, outer framing, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no

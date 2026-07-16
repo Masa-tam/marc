@@ -895,6 +895,15 @@ descriptor for each of at most 16 blocks per frame. An untimed complete round
 trip gates measurement; direction and peak workspace totals include the
 queried aligned decoder views region.
 
+The public-ABI completion matrix consolidates tabled tANS local-readiness
+evidence above normalization, spread, and transition-table tests. It covers
+every one-byte symbol, one-symbol and generated data, block and frame
+boundaries, deterministic re-encoding, one-byte and mixed chunk schedules,
+repeatable EndOfStream, and frame-atomic rejection of a malformed final frame,
+truncation, and trailing bytes. Queried aligned views are used throughout. This
+closes the local implementation loop without claiming external release
+evidence.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

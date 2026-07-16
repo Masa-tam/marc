@@ -3239,6 +3239,24 @@ discarded and the reviewed seed retained.
   ratio, throughput, aligned decoder views, direction workspaces, and peak
   workspace.
 
+## 2026-07-17 - tANS local completion audit
+
+- Authoring method: applied AGENTS.md completion criteria through marc's public
+  tabled tANS C ABI after specifying DD-194.
+- References used: DD-194, marc's normalization, spread, transition, and state
+  invariants, format, process contract, aligned views, fuzz, CLI, and benchmark.
+- Known implementations intentionally not consulted: external FSE/ANS source,
+  vectors, corpora, test suites, or completion checklists.
+- Independent decisions: 64-byte frames; 32-symbol blocks; required binary
+  classes; 31/32/33 and 63/64/65 boundaries; 193-byte chunk matrix; final-frame
+  sequence corruption, truncation, trailing bytes, sticky errors, repeated EOS.
+- Generated-code task description: consolidate deterministic, partial-buffer,
+  malformed-frame, and terminal evidence through the public tabled transform.
+- Similarity review: all vectors and control flow are repository-authored and
+  reuse marc's established public-ABI completion conventions only.
+- Local validation: the three focused completion tests and all 959 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
