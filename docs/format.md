@@ -91,6 +91,12 @@ uses polynomial `0x82F63B78`. Its numeric check value for ASCII `123456789` is
 `0xE3069283`. A four-byte marc digest stores that numeric value little-endian,
 so the check vector is `83 92 06 E3`.
 
+Hash algorithm ID `2` is SHA-256 as defined by FIPS 180-4. Its digest is the
+standard ordered 32-byte string produced by concatenating `H(0)` through
+`H(7)`, each word most-significant byte first. Digest bytes are not reinterpreted
+as a repository integer and therefore are not reversed. For ASCII `abc`, the
+digest begins `BA 78 16 BF` and ends `F2 00 15 AD`.
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

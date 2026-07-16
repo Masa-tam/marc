@@ -230,3 +230,19 @@ CRC-32C references:
 marc independently specifies its algorithm ID, byte-at-a-time reference update,
 little-endian digest serialization, API lifecycle, and tests. No CRC library or
 implementation source was consulted.
+
+SHA-256 references:
+
+- National Institute of Standards and Technology, FIPS PUB 180-4, "Secure Hash
+  Standard (SHS)," August 2015, Sections 5.1.1, 5.2.1, 6.2, and 8. Used for
+  SHA-256 padding, initial values, constants, message schedule, compression
+  function, and standard digest representation.
+  <https://csrc.nist.gov/pubs/fips/180-4/upd1/final>
+- NIST Cryptographic Standards and Guidelines, "Examples with Intermediate
+  Values." Used only for independently published SHA-256 check messages and
+  digests; downloadable implementation source was not consulted.
+  <https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/example-values>
+
+marc independently specifies hash ID 2, bounded incremental buffering, checked
+message-length policy, API lifecycle, and tests. No SHA implementation source,
+generated constants, library code, or external test suite was consulted.

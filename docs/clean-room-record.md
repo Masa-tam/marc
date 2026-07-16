@@ -2666,3 +2666,22 @@ no legal guarantee of non-infringement.
 - Similarity review: the implementation is a direct expression of the
   polynomial recurrence and repository interfaces; no implementation structure
   or source expression was compared.
+
+## 2026-07-16 - SHA-256 reference primitive
+
+- Authoring method: implemented FIPS 180-4 padding, schedule, and compression
+  equations directly within marc's existing `IHashAlgorithm` contract.
+- References used: FIPS 180-4 Sections 5.1.1, 5.2.1, 6.2, and 8; NIST example
+  messages and digests; marc's bounded streaming and no-exception policies.
+- Known implementations intentionally not consulted: SHA library source,
+  optimized or hardware-specific implementations, generated constants,
+  pseudocode derived from source, or external test suites.
+- Independent decisions: hash ID 2; standard digest byte string; one buffered
+  block; whole-update length rejection; non-mutating copied finalization;
+  format descriptors remain disabled.
+- Generated-code task description: add a portable, allocation-free incremental
+  SHA-256 primitive with NIST vectors, every-split and one-byte chunking,
+  snapshot continuation, reset, and transactional output-size tests.
+- Similarity review: names and control flow follow the FIPS equations and marc
+  interfaces only; no implementation structure or source expression was
+  compared.

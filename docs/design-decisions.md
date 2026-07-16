@@ -2777,3 +2777,21 @@ state and no platform intrinsics. Finalization is a non-mutating snapshot;
 Reject every digest span whose size is not exactly four bytes without changing
 it. Do not yet permit hash descriptors or checksum trailers in version 1.0
 streams; their target, scope, and inclusion ranges require a separate decision.
+
+## DD-160: SHA-256 preserves its standard digest byte string
+
+- Date: 2026-07-16
+- Status: accepted
+
+Reserve hash algorithm ID 2 for SHA-256 exactly as defined by FIPS 180-4. The
+32-byte digest is an algorithm-defined byte string, not a repository integer;
+retain the standard most-significant-byte-first word concatenation rather than
+reversing it under marc's little-endian integer rule.
+
+Use a clear incremental reference implementation with one 64-byte buffer,
+eight state words, and checked 64-bit message-bit length. Reject an entire
+update before mutation if its length cannot be represented by the FIPS length
+field. Finalize through a copied state so repeated snapshots are identical and
+further updates remain possible. Require exactly 32 output bytes and leave a
+wrong-sized span unchanged. Keep SHA-256 format-neutral until whole-stream hash
+descriptor scope and inclusion ranges are separately specified.

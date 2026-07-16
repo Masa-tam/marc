@@ -843,3 +843,14 @@ The numeric result is `E3069283`; serialize it through marc's little-endian
 digest rule as `83 92 06 E3`. Also require empty input to produce four zero
 bytes, every split of the check string to produce the same digest, reset to
 restore the empty state, and wrong-sized digest spans to remain unchanged.
+
+For SHA-256, use the FIPS standard byte ordering without applying marc integer
+endianness to the digest string. Empty input produces
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+ASCII `abc` produces
+`ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`.
+Also use the 56-byte message `abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq`,
+whose digest is
+`248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1`.
+Test every split of the 56-byte vector, repeated final snapshots, reset, exact
+digest capacity, and one-byte incremental updates across multiple blocks.

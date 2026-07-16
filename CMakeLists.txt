@@ -90,6 +90,7 @@ set(MARC_SOURCES
     src/core/crc32c.cpp
     src/core/hash_tap.cpp
     src/core/limits.cpp
+    src/core/sha256.cpp
     src/core/status.cpp
     src/entropy/blocked_huffman_format.cpp
     src/entropy/blocked_huffman_encoder.cpp
@@ -501,6 +502,7 @@ if(MARC_BUILD_TESTS)
         tests/hash_tap_tests.cpp
         tests/huffman_decode_table_tests.cpp
         tests/limits_tests.cpp
+        tests/sha256_tests.cpp
         tests/frame_header_tests.cpp
         tests/lz77_blocked_huffman_frame_tests.cpp
         tests/lz77_blocked_huffman_frame_streaming_decoder_tests.cpp

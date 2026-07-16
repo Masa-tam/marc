@@ -381,6 +381,13 @@ intrinsics; `HashTap` supplies lifecycle enforcement and committed-byte
 accounting. Hash target/scope descriptors and stream integration remain
 pending and will be specified before nonzero hash regions are accepted.
 
+SHA-256 is the corresponding format-neutral cryptographic hash primitive. It
+buffers at most one 64-byte message block, checks the FIPS 64-bit bit-length
+bound before accepting a complete update span, and finalizes through a private
+state snapshot so observation does not mutate the incremental state. The clear
+reference transform uses only fixed arrays and portable 32-bit integer
+operations; hardware acceleration is a later interchangeable optimization.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness
