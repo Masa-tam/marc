@@ -3195,3 +3195,26 @@ only the single full-buffer process call for each new transform and report the
 existing ratio, throughput, and caller-owned peak-workspace fields. Add a
 Release smoke test, but treat its timing as path validation rather than stable
 performance evidence or local-completion evidence by itself.
+
+## DD-182: Standalone Blocked Huffman receives a public-ABI completion matrix
+
+- Date: 2026-07-17
+- Status: accepted
+
+Audit local implementation readiness through the public C transform path with
+64-byte frames and 32-symbol entropy blocks. Cover empty input, every one-byte
+value, all byte values, repetitive and patterned data, deterministic generated
+data, block lengths 31/32/33, and frame lengths 63/64/65. Require byte-identical
+re-encoding and exact round trips.
+
+For one four-frame stream, compare one-byte and mixed chunk schedules against
+the full-buffer representation. Corrupt the final frame sequence, truncate the
+final body, and append trailing data independently; each failure must be sticky
+and must publish only the first three validated frames. Successful terminal
+calls must remain EndOfStream.
+
+After this matrix passes alongside the existing format, component, profile,
+C ABI, CLI, fuzz, benchmark, and documentation evidence, classify standalone
+Blocked Huffman as locally implementation-complete. Do not claim release
+completion without external cross-platform deterministic execution,
+representative benchmark records, and final similarity review.

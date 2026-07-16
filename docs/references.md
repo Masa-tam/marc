@@ -316,3 +316,8 @@ The standalone Blocked Huffman benchmark composes only marc's public C ABI,
 repository-defined format, profile sizing, and existing measurement contract.
 No external benchmark harness, compression tool, or implementation behavior
 was consulted.
+
+The standalone Blocked Huffman completion matrix uses only the repository's
+public C ABI, format, required data classes, deterministic generator, and
+existing process-contract assertions. No external vectors, corpus, test suite,
+or implementation behavior was consulted.

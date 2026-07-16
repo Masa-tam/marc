@@ -3015,6 +3015,24 @@ discarded and the reviewed seed retained.
   MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed ratio,
   throughput, direction-specific workspaces, and peak workspace as specified.
 
+## 2026-07-17 - Standalone Blocked Huffman local completion audit
+
+- Authoring method: applied AGENTS.md completion criteria through the existing
+  public C ABI after specifying DD-182.
+- References used: DD-182, marc's Blocked Huffman format, public process
+  contract, profile limits, fuzz boundary, CLI, and benchmark evidence.
+- Known implementations intentionally not consulted: external Huffman source,
+  vectors, test suites, corpora, tools, or completion checklists.
+- Independent decisions: 64-byte frames; 32-symbol blocks; required binary
+  classes; 31/32/33 and 63/64/65 boundaries; 193-byte chunk matrix; final-frame
+  sequence corruption, truncation, and trailing data; sticky terminal checks.
+- Generated-code task description: consolidate deterministic, partial-buffer,
+  malformed-frame, and terminal-state evidence through the public C transform.
+- Similarity review: all vectors and control flow are repository-authored and
+  reuse only marc's established completion-test conventions.
+- Local validation: the three focused completion tests and all 939 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

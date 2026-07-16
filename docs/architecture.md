@@ -565,6 +565,14 @@ input byte. An untimed full round trip precedes timing; reported peak workspace
 is the larger public encoder or decoder requirement, including aligned block
 views.
 
+The public-ABI completion matrix consolidates local readiness evidence above
+the component tests. It covers every one-byte value, representative binary and
+generated data, both sides of frame and entropy-block boundaries, deterministic
+re-encoding, one-byte and mixed chunk schedules, repeatable EndOfStream, and
+frame-atomic rejection of a malformed final frame, truncation, and trailing
+data. This closes local implementation evidence without claiming external
+cross-platform release completion.
+
 ### Adaptive Huffman foundation
 
 Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A

@@ -597,6 +597,7 @@ if(MARC_BUILD_TESTS)
         tests/blocked_huffman_frame_streaming_encoder_tests.cpp
         tests/blocked_huffman_frame_streaming_decoder_tests.cpp
         tests/blocked_huffman_profile_tests.cpp
+        tests/blocked_huffman_completion_tests.cpp
         tests/checked_math_tests.cpp
         tests/canonical_huffman_tests.cpp
         tests/crc32c_tests.cpp
