@@ -35,7 +35,8 @@ C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
 LZSS, LZ78, LZW, LZD, and LZMW variant 1 can be selected explicitly without an
 entropy layer. `blocked-huffman` selects standalone Blocked Huffman, while
 `adaptive-huffman` selects the FGK Adaptive Huffman profile and
-`dynamic-range` selects the adaptive order-0 Dynamic Range profile.
+`dynamic-range` selects the adaptive order-0 Dynamic Range profile. `rans`
+selects the scalar byte-renormalized rANS profile.
 `lz77-blocked-huffman` selects the composed LZ77 plus Blocked Huffman profile.
 `checksum-raw` selects version 1.1 raw framing with mandatory per-frame
 CRC-32C:
@@ -51,6 +52,8 @@ marc encode --codec adaptive-huffman input.bin output.marc
 marc decode --codec adaptive-huffman output.marc restored.bin
 marc encode --codec dynamic-range input.bin output.marc
 marc decode --codec dynamic-range output.marc restored.bin
+marc encode --codec rans input.bin output.marc
+marc decode --codec rans output.marc restored.bin
 marc encode --codec lz77-blocked-huffman input.bin output.marc
 marc decode --codec lz77-blocked-huffman output.marc restored.bin
 marc encode --codec lzss input.bin output.marc
@@ -66,8 +69,9 @@ marc decode --codec lzmw output.marc restored.bin
 ```
 
 Use the same codec selection (`checksum-raw`, `blocked-huffman`,
-`adaptive-huffman`, `dynamic-range`, `lz77`, `lz77-blocked-huffman`, `lzss`,
-`lz78`, `lzw`, `lzd`, or `lzmw`) for decode that was used for encode.
+`adaptive-huffman`, `dynamic-range`, `rans`, `lz77`,
+`lz77-blocked-huffman`, `lzss`, `lz78`, `lzw`, `lzd`, or `lzmw`) for decode
+that was used for encode.
 An explicit `--codec lz77` is equivalent to omitting the option.
 
 The destination and its `.tmp` staging path must not already exist. A successful

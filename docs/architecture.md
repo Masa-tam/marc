@@ -828,6 +828,14 @@ and separate descriptor-plus-payload, frame, and output arrays prevent
 serialized metadata from controlling allocation; byte-derived chunk schedules
 and a checked call ceiling expose invalid progress or stalls.
 
+The command-line adapter names scalar variant 1 `rans` and uses only the public
+C configuration, workspace query, factory, and process lifecycle. Its one MiB
+frame and 65,536-symbol block policy permits at most 16 blocks. Capacity is
+bounded by one payload byte per symbol, one eight-byte final state and one
+528-byte descriptor per block; decoder views are allocated from the queried
+count and alignment before parsing input. The shared temporary-file boundary
+prevents failed streams from publishing a destination.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

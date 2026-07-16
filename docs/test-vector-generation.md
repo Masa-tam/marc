@@ -956,6 +956,15 @@ Bound input/output/frame/block/payload/internal bytes to
 entropy table at 4,096 entries. Drive the incremental path with at most 17 input
 and 19 output bytes per call; both decoder paths use fixed view and byte arrays.
 
+For rANS CLI integration, run the shared file harness with explicit codec
+`rans` over enough repeated text to cross the one MiB frame boundary. Use
+65,536-symbol blocks, at most 16 blocks per frame, one payload byte per symbol,
+an eight-byte final state and 528-byte descriptor per block. Require exact
+nonempty and empty round trips, overwrite rejection, malformed-prefix
+rejection, trailing-byte rejection, and cleanup of both final and temporary
+outputs after failure. Do not alter a versioned interoperability codec set
+without introducing a new set identifier.
+
 For tANS fuzzing, use the same reviewed truncated-prefix seed and
 8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB byte limits as rANS. Supply eight fixed
 `TansBlockView` records, cap the state table at 4,096 entries, and drive the
