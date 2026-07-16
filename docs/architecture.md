@@ -453,6 +453,13 @@ views region. Encoding queries the exact profile size; decoding queries the
 limits-only conservative size. The adapter offers no hash selector, so every
 successful encoder construction emits the same canonical CRC descriptor.
 
+The command-line adapter names the profile `checksum-raw` and reaches it only
+through that public C ABI. Its fixed 1 MiB frame policy maps to one-frame raw,
+dictionary, and aggregate workspace limits before querying storage. Existing
+temporary-file publication means a malformed checksum stream leaves no partial
+destination even though the streaming decoder may have produced verified bytes
+internally before a later-frame error.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

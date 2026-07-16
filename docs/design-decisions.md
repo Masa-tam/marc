@@ -2979,3 +2979,22 @@ the handle lifetime. Test exact one-shot and one-byte-chunk encoding identity,
 round trip, configuration tags, workspace capacity, and corruption in a later
 frame. Streaming decode may publish earlier verified frames, but must suppress
 the complete corrupted frame.
+
+## DD-170: The CLI dogfoods checksum framing through the C ABI
+
+- Date: 2026-07-16
+- Status: accepted
+
+Add the explicit command-line codec name `checksum-raw`. Keep LZ77 as the
+default and require callers to use the same explicit name for decode. The CLI
+must configure, query, create, process, and destroy this profile only through
+`marc_checksum_raw_*`; it must not include or invoke internal C++ frame code.
+
+Use the existing 1 MiB outer-frame policy. Bound raw payload and dictionary
+serialized bytes to one frame and aggregate serialized-frame workspace to
+`56 + frame_size + 4`. Preserve existing partial I/O, temporary-file commit,
+overwrite rejection, and malformed-input cleanup behavior. Add a complete and
+empty round-trip CTest plus a multi-frame trailing-data cleanup regression
+through the common CLI script. CLI publication does not yet add this profile
+to the fixed interoperability artifact manifest; that
+manifest change requires a separately versioned codec set.

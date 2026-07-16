@@ -58,6 +58,23 @@ if(EXISTS "${rejected}" OR EXISTS "${rejected}.tmp")
     message(FATAL_ERROR "CLI retained partial output after failure")
 endif()
 
+if(DEFINED CLI_TRAILING_TEST AND CLI_TRAILING_TEST)
+    set(trailing "${TEST_DIR}/trailing.marc")
+    set(trailing_rejected "${TEST_DIR}/trailing-rejected.bin")
+    file(COPY_FILE "${encoded}" "${trailing}")
+    file(APPEND "${trailing}" "x")
+    execute_process(
+        COMMAND "${MARC_CLI}" decode ${codec_args}
+            "${trailing}" "${trailing_rejected}"
+        RESULT_VARIABLE trailing_result)
+    if(trailing_result EQUAL 0)
+        message(FATAL_ERROR "CLI accepted trailing stream data")
+    endif()
+    if(EXISTS "${trailing_rejected}" OR EXISTS "${trailing_rejected}.tmp")
+        message(FATAL_ERROR "CLI retained output after a later stream error")
+    endif()
+endif()
+
 set(empty "${TEST_DIR}/empty.bin")
 set(empty_encoded "${TEST_DIR}/empty.marc")
 set(empty_decoded "${TEST_DIR}/empty-decoded.bin")

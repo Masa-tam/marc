@@ -2862,3 +2862,21 @@ discarded and the reviewed seed retained.
   deterministic chunking, round trip, malformed input, and validation behavior.
 - Similarity review: symbol shapes follow marc's own ABI family; format and
   workspace behavior come only from the independently documented profile.
+
+## 2026-07-16 - Raw checksum CLI adapter
+
+- Authoring method: extended marc's own public-C-ABI CLI dispatcher with one
+  explicit profile branch and the existing bounded file-processing loop.
+- References used: DD-170, `marc_checksum_raw_*`, the CLI's 1 MiB frame policy,
+  and its temporary-file publication contract.
+- Known implementations intentionally not consulted: external archive command
+  lines, checksum utilities, or file-commit implementations.
+- Independent decisions: public name `checksum-raw`; LZ77 default unchanged;
+  one-frame-plus-header-and-trailer aggregate limit; shared complete/empty/
+  malformed CLI regression script; multi-frame late-error cleanup;
+  interoperability manifest deferred.
+- Generated-code task description: dogfood the version 1.1 raw-checksum C ABI
+  from the CLI without internal C++ access and preserve deterministic streaming
+  I/O and failure cleanup.
+- Similarity review: dispatch and allocation structure are repository-owned CLI
+  conventions; the new branch contains no externally sourced expression.
