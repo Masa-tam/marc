@@ -2931,3 +2931,27 @@ short frame and only exposes already completed representation. Repeated calls
 after completion return EndOfStream, while every terminal error remains sticky.
 Keep these transforms internal until a profile workspace query and C ABI
 construction contract are separately accepted.
+
+## DD-168: The raw checksum profile owns canonical construction and sizing
+
+- Date: 2026-07-16
+- Status: accepted
+
+Centralize version 1.1 raw-checksum construction in one internal profile. Given
+known original size and frame size, it produces the None / None stream header,
+the sole canonical CRC-32C / UncompressedBytes / PerFrame descriptor, and the
+exact largest serialized-frame workspace required by the encoder. Empty input
+requires no frame workspace because its complete representation is held in the
+transform's fixed prefix storage.
+
+Calculate decoder workspace using only caller policy limits, never untrusted
+stream fields. The maximum accepted raw payload is bounded jointly by frame,
+compressed-payload, dictionary-serialized, uint32 representation, and aggregate
+internal-buffer limits. Report the one serialized-frame span shared by the
+incremental decoder's collection and drain phases. Profile failure clears every
+output and maps to the existing stable core error categories.
+
+Do not expose a configurable hash choice in this initial profile. A selectable
+descriptor set would define a different compatibility and workspace contract.
+Keep C ABI publication as the next separate step so its size-tagged structure
+can depend only on this tested profile layer.

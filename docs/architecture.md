@@ -442,6 +442,11 @@ then drains the raw payload. This is transactional per frame rather than across
 the whole stream: earlier verified frames may already be visible when a later
 frame fails.
 
+The raw-checksum profile is the construction boundary above these transforms.
+It emits the canonical 1.1 header and descriptor and computes one serialized
+frame workspace. Encoder sizing uses the actual largest frame; decoder sizing
+uses only local limits and therefore occurs before parsing untrusted bytes.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

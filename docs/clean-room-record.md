@@ -2826,3 +2826,21 @@ iteration ceiling preserve the original bounded-resource policy.
 The updated target completed a 1,000-input sanitizer smoke without a crash,
 hang, or sanitizer finding at 37 MiB peak RSS; generated reductions were
 discarded and the reviewed seed retained.
+
+## 2026-07-16 - Version 1.1 raw checksum profile sizing
+
+- Authoring method: derived a profile construction and workspace boundary from
+  marc's complete raw-checksum layout and incremental workspace design.
+- References used: DD-168, version 1.1 stream/frame bounds, canonical CRC-32C
+  descriptor, checked arithmetic helpers, and local DecoderLimits semantics.
+- Known implementations intentionally not consulted: external archive profile,
+  allocator, checksum, or workspace-query implementations.
+- Independent decisions: one fixed descriptor rather than a hash selector;
+  exact largest-frame encoder sizing; decoder sizing from the minimum of all
+  applicable local payload limits; empty encoder workspace of zero; atomic
+  output clearing on profile failure.
+- Generated-code task description: add the internal profile that constructs the
+  canonical version 1.1 raw-checksum metadata and computes bounded one-span
+  encoder and decoder workspace requirements before C ABI exposure.
+- Similarity review: naming follows marc's existing profile convention; all
+  size equations derive from the repository-owned 56 + payload + 4 layout.
