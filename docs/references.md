@@ -392,3 +392,9 @@ repository-defined variable-token stream and literal/match cost rule, required
 data classes, deterministic generator, and process-contract assertions. No
 external LZSS vectors, corpus, test suite, or implementation behavior was
 consulted.
+
+The standalone LZ78 completion matrix uses only marc's public C ABI,
+repository-defined phrase-index token stream, required data classes,
+deterministic generator, aligned-view contract, and process assertions. No
+external LZ78 vectors, corpus, test suite, or implementation behavior was
+consulted.

@@ -3497,3 +3497,30 @@ frame, stream, profile, C ABI, CLI, fuzz, benchmark, and documentation evidence,
 classify standalone LZSS variant 1 as locally implementation-complete. External
 cross-platform deterministic execution, representative benchmark records, and
 the final similarity review remain release evidence.
+
+## DD-197: Standalone LZ78 receives a public-ABI completion matrix
+
+- Date: 2026-07-17
+- Status: accepted
+
+Audit local entropy-None LZ78 variant 1 readiness through the public C
+transform path with 64-byte frames and at most 64 phrase entries per frame.
+Cover empty input, every one-byte value, all byte values, repetitive and
+patterned data, deterministic generated data, and frame lengths 63, 64, and 65.
+Require byte-identical re-encoding and exact round trips through queried,
+explicitly aligned phrase-table views.
+The empty encoder must query zero view bytes; non-empty encoders and decoders
+must query nonzero view bytes with a nonzero alignment.
+
+For one four-frame stream, compare one-byte and mixed input/output chunking with
+the full-buffer representation. Corrupt the final frame header, truncate its
+payload, and append trailing data independently. Each error must be sticky and
+publish only the first three validated frames; successful terminal calls must
+remain EndOfStream.
+
+After this matrix passes with the existing phrase-index format, validators,
+frame and stream paths, profile, C ABI, CLI, fuzz, benchmark, and documentation
+evidence, classify standalone LZ78 variant 1 as locally
+implementation-complete. External cross-platform deterministic execution,
+representative benchmark records, and the final similarity review remain
+release evidence.

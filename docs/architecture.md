@@ -213,6 +213,15 @@ public bounded transform surface. Cross-platform determinism, sanitizer fuzz
 execution, representative measurements, and release similarity review remain
 release evidence rather than locally completed implementation work.
 
+The public-ABI completion matrix uses queried, explicitly aligned phrase-table
+views in both directions. It covers required binary data classes, frame
+boundary neighbors, deterministic re-encoding, one-byte and mixed chunking,
+repeatable EndOfStream, and frame-atomic rejection of final-frame corruption,
+truncation, and trailing bytes. This closes local implementation evidence
+without treating external release gates as locally satisfied.
+An empty encoder queries zero phrase-view bytes because it can emit no phrase;
+non-empty encoders and decoders query nonzero aligned view storage.
+
 ### LZMW foundation
 
 LZMW variant 1 begins with a transactional 16-byte parameter codec, fixed
