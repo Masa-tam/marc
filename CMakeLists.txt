@@ -709,6 +709,17 @@ if(MARC_BUILD_TESTS)
     endif()
     add_test(NAME marc_c_api_tests COMMAND marc_c_api_tests)
 
+    add_executable(marc_checksum_raw_c_api_tests
+        tests/checksum_raw_c_api_tests.c)
+    target_compile_features(marc_checksum_raw_c_api_tests PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_checksum_raw_c_api_tests PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_checksum_raw_c_api_tests PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_checksum_raw_c_api_tests
+        COMMAND marc_checksum_raw_c_api_tests)
+
     add_executable(marc_adaptive_c_api_tests tests/adaptive_c_api_tests.c)
     target_compile_features(marc_adaptive_c_api_tests PRIVATE c_std_11)
     if(TARGET marc_shared)
@@ -817,6 +828,7 @@ if(MARC_BUILD_TESTS)
 
     set(MARC_C_API_TEST_TARGETS
         marc_c_api_tests
+        marc_checksum_raw_c_api_tests
         marc_adaptive_c_api_tests
         marc_dynamic_range_c_api_tests
         marc_rans_c_api_tests

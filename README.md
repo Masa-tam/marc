@@ -5,7 +5,8 @@
 compression components. The currently implemented public profiles are the
 version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
 LZ77, LZ77 plus Blocked Huffman, LZSS, LZ78, LZW, LZD, and LZMW codecs, exposed
-through a small C ABI. The
+through a small C ABI. A version 1.1 raw framing profile with mandatory
+per-frame CRC-32C is also available through its dedicated C ABI. The
 format and API are still under development and version 0.x streams are not yet
 promised long-term compatibility.
 

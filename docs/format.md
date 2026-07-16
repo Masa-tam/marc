@@ -237,7 +237,8 @@ The reference decoder validates the entire stream and every checksum before
 publishing any uncompressed output. Its second pass copies only already
 validated raw payload spans. Thus corruption in a later frame cannot expose an
 accepted prefix of output. This profile is initially an internal reference
-composition; existing public codec selectors and the C ABI remain version 1.0.
+composition. The dedicated `marc_checksum_raw_*` C ABI selects this version 1.1
+profile; all previously published codec selectors continue to emit version 1.0.
 
 Incremental encoding produces exactly the same bytes as one-shot encoding.
 `Flush` does not end a partial raw frame; the fixed partition remains solely a

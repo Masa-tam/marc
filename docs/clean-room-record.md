@@ -2844,3 +2844,21 @@ discarded and the reviewed seed retained.
   encoder and decoder workspace requirements before C ABI exposure.
 - Similarity review: naming follows marc's existing profile convention; all
   size equations derive from the repository-owned 56 + payload + 4 layout.
+
+## 2026-07-16 - Version 1.1 raw checksum C ABI
+
+- Authoring method: adapted the tested marc profile and transforms to the
+  repository's existing size-tagged C ABI lifecycle.
+- References used: DD-169, `marc.h` ABI conventions, the raw-checksum profile,
+  stable status mapping, and caller-owned workspace policy.
+- Known implementations intentionally not consulted: external checksum,
+  compression, foreign-function, or allocator APIs.
+- Independent decisions: one new config rather than extending an existing ABI
+  struct; one primary workspace; fixed CRC descriptor with no selector; five
+  relevant limits; zero-checked reserved fields; prior verified frames remain
+  visible when a later frame checksum fails.
+- Generated-code task description: publish the canonical raw-checksum version
+  1.1 profile through additive C ABI v1 functions and prove C11 lifecycle,
+  deterministic chunking, round trip, malformed input, and validation behavior.
+- Similarity review: symbol shapes follow marc's own ABI family; format and
+  workspace behavior come only from the independently documented profile.

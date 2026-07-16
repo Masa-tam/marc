@@ -447,6 +447,12 @@ It emits the canonical 1.1 header and descriptor and computes one serialized
 frame workspace. Encoder sizing uses the actual largest frame; decoder sizing
 uses only local limits and therefore occurs before parsing untrusted bytes.
 
+The public C adapter exposes this fixed profile through a distinct size-tagged
+configuration. It has one caller-owned primary workspace and no secondary or
+views region. Encoding queries the exact profile size; decoding queries the
+limits-only conservative size. The adapter offers no hash selector, so every
+successful encoder construction emits the same canonical CRC descriptor.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness
@@ -727,19 +733,20 @@ therefore leave the whole frame output untouched.
 
 ### C transform ABI
 
-The stateful C ABI exposes Blocked Huffman, Adaptive Huffman, Dynamic Range,
-rANS, tANS, LZ77, LZSS, LZ78, LZW, LZD, and LZMW variant 1 through
+The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
+Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZSS, LZ78,
+LZW, LZD, and LZMW variant 1 through
 separate versioned, size-tagged configuration, workspace-query, and factory
 functions. All profiles construct the same opaque transform type and share its
-process and destroy operations. Encoder workspaces hold one raw and one
-serialized frame. Decoder workspaces hold one serialized and one decoded frame;
-Blocked Huffman, rANS, and tANS use aligned internal block-view arrays. LZ78 and
-LZW use opaque aligned phrase-table workspaces. LZD and LZMW each use one
-opaque aligned region for input-backed phrase records when encoding and
-partition that region into phrase records plus an iterative expansion stack
-when decoding. Adaptive Huffman,
-Dynamic Range, LZ77, and LZSS need no views workspace. These buffers remain
-caller-owned and must outlive the handle.
+process and destroy operations. The raw-checksum profile uses one serialized
+frame workspace in either direction. Other encoder workspaces hold one raw and
+one serialized frame, while decoder workspaces hold one serialized and one
+decoded frame. Blocked Huffman, rANS, and tANS use aligned internal block-view
+arrays. LZ78 and LZW use opaque aligned phrase-table workspaces. LZD and LZMW
+each use one opaque aligned region for input-backed phrase records when encoding
+and partition that region into phrase records plus an iterative expansion stack
+when decoding. Adaptive Huffman, Dynamic Range, LZ77, and LZSS need no views
+workspace. These buffers remain caller-owned and must outlive the handle.
 
 Only the small opaque handle and its C++ implementation object are allocated by
 the library with non-throwing allocation. Processing uses caller input/output

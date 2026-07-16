@@ -59,6 +59,22 @@ typedef struct marc_process_result {
 
 typedef struct marc_transform marc_transform;
 
+typedef struct marc_checksum_raw_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t reserved2;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_dictionary_serialized_size;
+    uint64_t max_internal_buffered_bytes;
+    uint64_t reserved3;
+} marc_checksum_raw_config;
+
 typedef struct marc_blocked_huffman_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -283,6 +299,22 @@ typedef struct marc_workspace_requirements {
 MARC_API uint32_t marc_abi_version(void) MARC_NOEXCEPT;
 MARC_API const char* marc_version_string(void) MARC_NOEXCEPT;
 MARC_API const char* marc_status_name(marc_status status) MARC_NOEXCEPT;
+
+/*
+ * Version 1.1 None/None framing with one fixed per-frame CRC-32C over raw
+ * bytes. The sole primary workspace remains caller-owned for the transform's
+ * lifetime; secondary and views workspaces are not used.
+ */
+MARC_API marc_status marc_checksum_raw_config_init(
+    marc_direction direction, marc_checksum_raw_config* config)
+    MARC_NOEXCEPT;
+MARC_API marc_status marc_checksum_raw_workspace_requirements(
+    const marc_checksum_raw_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+MARC_API marc_status marc_checksum_raw_create(
+    const marc_checksum_raw_config* config,
+    marc_buffer primary_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
 
 MARC_API marc_status marc_blocked_huffman_config_init(
     marc_direction direction, marc_blocked_huffman_config* config)

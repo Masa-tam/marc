@@ -6,6 +6,9 @@
 #include "frame/blocked_huffman_frame_streaming_decoder.hpp"
 #include "frame/blocked_huffman_frame_streaming_encoder.hpp"
 #include "frame/blocked_huffman_profile.hpp"
+#include "frame/checksum_raw_profile.hpp"
+#include "frame/checksum_raw_streaming_decoder.hpp"
+#include "frame/checksum_raw_streaming_encoder.hpp"
 #include "frame/adaptive_huffman_frame_streaming_decoder.hpp"
 #include "frame/adaptive_huffman_frame_streaming_encoder.hpp"
 #include "frame/adaptive_huffman_profile.hpp"
@@ -85,6 +88,28 @@ marc_status status_for(const marc::core::StreamStatus status) noexcept {
 
 bool valid_buffer(const void* data, const std::size_t size) noexcept {
     return size == 0 || data != nullptr;
+}
+
+bool load_config(const marc_checksum_raw_config* config,
+                 marc::core::DecoderLimits& limits) noexcept {
+    if (config == nullptr
+        || config->struct_size != sizeof(marc_checksum_raw_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0
+        || config->reserved3 != 0) {
+        return false;
+    }
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_compressed_payload_size =
+        config->max_compressed_payload_size;
+    limits.max_dictionary_serialized_size =
+        config->max_dictionary_serialized_size;
+    limits.max_internal_buffered_bytes =
+        config->max_internal_buffered_bytes;
+    limits.max_block_size = std::min(
+        limits.max_block_size, limits.max_internal_buffered_bytes);
+    return true;
 }
 
 bool load_config(const marc_blocked_huffman_config* config,
@@ -382,6 +407,107 @@ const char* marc_status_name(const marc_status status) noexcept {
     case MARC_STATUS_INTERNAL_ERROR: return "internal_error";
     default: return "unknown";
     }
+}
+
+marc_status marc_checksum_raw_config_init(
+    const marc_direction direction,
+    marc_checksum_raw_config* config) noexcept {
+    if (config == nullptr || (direction != MARC_DIRECTION_ENCODE
+        && direction != MARC_DIRECTION_DECODE)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    *config = {};
+    config->struct_size = sizeof(*config);
+    config->abi_version = MARC_ABI_VERSION;
+    config->direction = direction;
+    config->frame_size = UINT32_C(1) << 20;
+    const marc::core::DecoderLimits limits{};
+    config->max_total_output_size = limits.max_total_output_size;
+    config->max_frame_size = limits.max_frame_size;
+    config->max_compressed_payload_size =
+        limits.max_compressed_payload_size;
+    config->max_dictionary_serialized_size =
+        limits.max_dictionary_serialized_size;
+    config->max_internal_buffered_bytes =
+        limits.max_internal_buffered_bytes;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_checksum_raw_workspace_requirements(
+    const marc_checksum_raw_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {};
+    requirements->struct_size = sizeof(*requirements);
+    requirements->abi_version = MARC_ABI_VERSION;
+    requirements->views_alignment = 1;
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+
+    marc::frame::ChecksumRawWorkspaceRequirements needed{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        marc::frame::StreamHeader stream{};
+        marc::frame::HashDescriptor descriptor{};
+        const auto error = marc::frame::make_checksum_raw_profile_v1_1(
+            {config->original_size, config->frame_size}, limits, stream,
+            descriptor, needed);
+        if (error != marc::frame::ChecksumRawProfileError::none) {
+            return status_for(
+                marc::frame::checksum_raw_profile_error_code(error));
+        }
+    } else if (config->direction == MARC_DIRECTION_DECODE) {
+        const auto error =
+            marc::frame::calculate_checksum_raw_decoder_workspace_v1_1(
+                limits, needed);
+        if (error != marc::frame::ChecksumRawProfileError::none) {
+            return status_for(
+                marc::frame::checksum_raw_profile_error_code(error));
+        }
+    } else {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    requirements->primary_bytes = needed.serialized_frame_bytes;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_checksum_raw_create(
+    const marc_checksum_raw_config* config,
+    const marc_buffer primary_workspace,
+    marc_transform** transform) noexcept {
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *transform = nullptr;
+    marc_workspace_requirements needed{};
+    const auto query = marc_checksum_raw_workspace_requirements(
+        config, &needed);
+    if (query != MARC_STATUS_OK) return query;
+    if (!valid_buffer(primary_workspace.data, primary_workspace.size)
+        || primary_workspace.size < needed.primary_bytes) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    const std::span<std::byte> workspace{
+        reinterpret_cast<std::byte*>(primary_workspace.data),
+        needed.primary_bytes};
+    marc::core::Transform* implementation{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        marc::frame::StreamHeader stream{};
+        marc::frame::HashDescriptor descriptor{};
+        marc::frame::ChecksumRawWorkspaceRequirements ignored{};
+        if (marc::frame::make_checksum_raw_profile_v1_1(
+                {config->original_size, config->frame_size}, limits, stream,
+                descriptor, ignored)
+            != marc::frame::ChecksumRawProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        implementation = new (std::nothrow)
+            marc::frame::ChecksumRawStreamingEncoder(
+                stream, descriptor, limits, workspace);
+    } else {
+        implementation = new (std::nothrow)
+            marc::frame::ChecksumRawStreamingDecoder(limits, workspace);
+    }
+    return publish_transform(implementation, transform);
 }
 
 marc_status marc_blocked_huffman_config_init(

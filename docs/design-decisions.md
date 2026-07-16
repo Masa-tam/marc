@@ -2955,3 +2955,27 @@ Do not expose a configurable hash choice in this initial profile. A selectable
 descriptor set would define a different compatibility and workspace contract.
 Keep C ABI publication as the next separate step so its size-tagged structure
 can depend only on this tested profile layer.
+
+## DD-169: A dedicated C ABI publishes the fixed checksum profile
+
+- Date: 2026-07-16
+- Status: accepted
+
+Expose the complete version 1.1 None / None plus per-frame CRC-32C profile
+through `marc_checksum_raw_config`, a workspace query, and a transform factory.
+Add these symbols under C ABI version 1 without changing any existing structure
+or function. Existing public codec selectors retain their version 1.0 stream
+representations.
+
+The size-tagged config contains known original size, frame size, the five local
+limits relevant to raw framing, and zero-checked reserved fields. There is no
+hash algorithm field: the public name selects exactly the canonical descriptor
+defined by the profile. Both directions use only `primary_workspace`; report
+zero secondary/views bytes and alignment one.
+
+The C adapter allocates only the small opaque transform and implementation
+objects with non-throwing allocation. Frame storage remains caller-owned for
+the handle lifetime. Test exact one-shot and one-byte-chunk encoding identity,
+round trip, configuration tags, workspace capacity, and corruption in a later
+frame. Streaming decode may publish earlier verified frames, but must suppress
+the complete corrupted frame.
