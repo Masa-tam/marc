@@ -376,6 +376,17 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_rans_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_rans_stream PRIVATE marc::static)
+    add_executable(marc_fuzz_tans_stream fuzz/tans_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_tans_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_tans_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_tans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_tans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_tans_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lz78_stream fuzz/lz78_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz78_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lz78_stream
@@ -731,6 +742,19 @@ if(MARC_BUILD_TESTS)
             PRIVATE /W4 /permissive- /Zc:__cplusplus)
     else()
         target_compile_options(marc_rans_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_tans_fuzz_compile_smoke OBJECT
+        fuzz/tans_stream_fuzz.cpp)
+    target_compile_features(marc_tans_fuzz_compile_smoke PRIVATE cxx_std_20)
+    target_include_directories(marc_tans_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_tans_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_tans_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

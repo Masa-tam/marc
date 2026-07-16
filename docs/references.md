@@ -291,3 +291,8 @@ The rANS stream fuzz boundary uses only marc's independently specified scalar
 rANS format, normalized-table limits, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external ANS
 corpus, fuzz harness, or implementation behavior was consulted.
+
+The tANS stream fuzz boundary uses only marc's independently specified tabled
+ANS format, fixed table-log rule, block views, outer framing, and transform
+contract. Its seed and schedules are repository-authored; no external FSE/ANS
+corpus, fuzz harness, or implementation behavior was consulted.

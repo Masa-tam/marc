@@ -3106,3 +3106,21 @@ checked call ceiling. Provide warning-clean normal-build compilation, an
 instrumented Clang target, and the repository-authored truncated-prefix seed.
 A short sanitizer campaign is execution evidence rather than coverage
 completion.
+
+## DD-177: tANS fuzzing fixes views, table size, and transition storage
+
+- Date: 2026-07-17
+- Status: accepted
+
+Exercise the strict one-shot and frame-committing tANS stream decoders from one
+libFuzzer entry point. Use the rANS boundary's 8 KiB input, 4 KiB output,
+1 KiB frame, 256-symbol block, 4 KiB payload, 8 KiB internal, eight-block, and
+4,096-table-entry limits. The latter fixes variant 1's table log at 12 while
+still sending malformed state and additional-bit transitions to validation.
+
+Give both paths fixed aligned arrays of eight `TansBlockView` records and fixed
+byte workspaces. Retain byte-derived 17/19-byte chunks, ProcessResult checks,
+starvation assertions, and a checked call ceiling. Compile warning-clean in
+normal builds, expose a Clang sanitizer target, and start from the reviewed
+truncated-prefix seed. A bounded campaign is execution evidence, not coverage
+completion or FSE compatibility evidence.

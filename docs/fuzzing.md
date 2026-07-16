@@ -41,6 +41,11 @@ table cap, 8 KiB of descriptor-plus-payload buffering, and the common input,
 output, frame, payload, chunking, and call-count limits. Both decoder paths use
 the same fixed views and byte arrays.
 
+`marc_fuzz_tans_stream` applies those same block, view, table, byte, chunking,
+and call-count limits to the tabled ANS decoder paths. It thereby exercises
+malformed state transitions and additional-bit traversal without deriving
+workspace size from serialized metadata.
+
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
 and UndefinedBehaviorSanitizer:
@@ -59,6 +64,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_adaptive_huffman_stream \
   marc_fuzz_dynamic_range_stream \
   marc_fuzz_rans_stream \
+  marc_fuzz_tans_stream \
   marc_fuzz_lz78_stream marc_fuzz_lzw_stream \
   marc_fuzz_lzd_stream marc_fuzz_lzmw_stream
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
@@ -72,6 +78,8 @@ out/build/fuzz/marc_fuzz_dynamic_range_stream \
   fuzz/corpus/dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_rans_stream \
   fuzz/corpus/rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_tans_stream \
+  fuzz/corpus/tans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_stream fuzz/corpus/lz78_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
@@ -121,6 +129,11 @@ The rANS dual-decoder target received the same bounded 1,000-input sanitizer
 smoke on 2026-07-17. With the eight-view and 4,096-entry table caps, it completed
 without a crash, hang, or sanitizer finding and peaked at 37 MiB RSS. Generated
 mutations remained in the disposable build corpus.
+
+The tANS dual-decoder target received the same bounded 1,000-input sanitizer
+smoke on 2026-07-17. With eight fixed views and the 4,096-state table cap, it
+completed without a crash, hang, or sanitizer finding and peaked at 37 MiB RSS.
+Generated mutations remained in the disposable build corpus.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

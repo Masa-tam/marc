@@ -723,6 +723,12 @@ descriptor and payload semantics, decodes into separate caller storage, and only
 then drains output. Later malformed frames cannot expose partial frame output or
 retract already drained frames.
 
+The bounded tANS fuzz boundary supplies the strict and frame-committing
+decoders with eight aligned views, fixed byte arrays, and a 4,096-entry table
+cap. It exercises malformed state and additional-bit transitions under
+byte-derived chunk schedules, while a checked call ceiling turns invalid
+progress or stalls into reproducible findings.
+
 The known-size rANS stream reference plans all deterministic outer frames before
 encoding. Strict decoding scans and semantically validates every complete frame
 without output, reusing one caller-owned block-view workspace, then repeats the

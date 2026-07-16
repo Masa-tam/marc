@@ -868,6 +868,11 @@ Bound input/output/frame/block/payload/internal bytes to
 entropy table at 4,096 entries. Drive the incremental path with at most 17 input
 and 19 output bytes per call; both decoder paths use fixed view and byte arrays.
 
+For tANS fuzzing, use the same reviewed truncated-prefix seed and
+8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB byte limits as rANS. Supply eight fixed
+`TansBlockView` records, cap the state table at 4,096 entries, and drive the
+incremental path with at most 17 input and 19 output bytes per call.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian
