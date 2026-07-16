@@ -854,3 +854,12 @@ whose digest is
 `248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1`.
 Test every split of the 56-byte vector, repeated final snapshots, reset, exact
 digest capacity, and one-byte incremental updates across multiple blocks.
+
+For the fixed hash descriptor, serialize CRC-32C target UncompressedBytes with
+scope PerFrame as
+`01 00 00 00 01 02 04 00 00 00 00 00 00 00 00 00`. Parse SHA-256 target
+UncompressedBytes with scope WholeStream from
+`02 00 00 00 01 01 20 00 00 00 00 00 00 00 00 00`. Reject unknown algorithm,
+target, and scope IDs, an algorithm/digest-size mismatch, flags, and each of the
+four reserved bytes independently. Require failed parse and serialization to
+leave caller-owned destinations unchanged.

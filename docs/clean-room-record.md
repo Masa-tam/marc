@@ -2685,3 +2685,22 @@ no legal guarantee of non-infringement.
 - Similarity review: names and control flow follow the FIPS equations and marc
   interfaces only; no implementation structure or source expression was
   compared.
+
+## 2026-07-16 - Bounded hash descriptor serialization
+
+- Authoring method: specified a repository-native fixed record, then
+  implemented its validator, transactional parser, serializer, and negative
+  tests from that specification.
+- References used: DD-161, marc's CRC-32C and SHA-256 algorithm IDs and digest
+  sizes, little-endian helpers, and version 1.0 feature-gating policy.
+- Known implementations intentionally not consulted: external archive or
+  compression formats, hash-descriptor implementations, source code, tests, or
+  wire vectors.
+- Independent decisions: 16-byte fixed record; explicit target and scope IDs;
+  exact algorithm/digest-size coupling; zero flags and reserved bytes; no
+  version 1.0 activation.
+- Generated-code task description: add an allocation-free descriptor primitive
+  that rejects malformed metadata without mutating caller-owned destinations
+  and preserves every existing version 1.0 stream byte.
+- Similarity review: layout, validation order, names, and hand vectors derive
+  only from marc's documented architecture and implemented hash interface.

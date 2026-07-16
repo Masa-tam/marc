@@ -246,3 +246,8 @@ SHA-256 references:
 marc independently specifies hash ID 2, bounded incremental buffering, checked
 message-length policy, API lifecycle, and tests. No SHA implementation source,
 generated constants, library code, or external test suite was consulted.
+
+The hash descriptor record is a repository-defined serialization layer. Its
+algorithm IDs refer to the CRC-32C and SHA-256 definitions above, while its
+target/scope IDs, fixed layout, validation rules, and vectors were designed
+independently for marc; no external container format was consulted.

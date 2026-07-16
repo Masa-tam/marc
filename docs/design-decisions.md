@@ -2795,3 +2795,20 @@ field. Finalize through a copied state so repeated snapshots are identical and
 further updates remain possible. Require exactly 32 output bytes and leave a
 wrong-sized span unchanged. Keep SHA-256 format-neutral until whole-stream hash
 descriptor scope and inclusion ranges are separately specified.
+
+## DD-161: Hash descriptors are validated before stream integration
+
+- Date: 2026-07-16
+- Status: accepted
+
+Define one fixed 16-byte, little-endian hash descriptor containing algorithm,
+target, scope, digest size, zero flags, and zero reserved bytes. Recognize only
+the two implemented algorithms and require their exact digest sizes. Keep the
+parser allocation-free and transactional: malformed input must not publish a
+partially parsed descriptor, and invalid serialization must not alter output.
+
+This record is a bounded format primitive, not an activation of hashing in
+version 1.0. Continue rejecting nonzero version 1.0 hash regions. A later
+stream version must separately define descriptor ordering, supported
+target/scope combinations, exact inclusion ranges, and digest placement. This
+prevents a provisional helper from silently changing an existing stream.

@@ -97,6 +97,42 @@ standard ordered 32-byte string produced by concatenating `H(0)` through
 as a repository integer and therefore are not reversed. For ASCII `abc`, the
 digest begins `BA 78 16 BF` and ends `F2 00 15 AD`.
 
+### Hash descriptor record reserved for a later stream version
+
+A hash descriptor has the following canonical 16-byte representation. This
+record definition permits allocation-free parsing and validation before stream
+integration. It does **not** permit a nonzero hash-descriptor region in version
+1.0; version 1.0 decoders continue to reject one as an unsupported feature.
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | hash algorithm ID | `1` CRC-32C or `2` SHA-256 |
+| 4 | 1 | target | table below |
+| 5 | 1 | scope | table below |
+| 6 | 2 | digest size | exactly 4 for ID 1; exactly 32 for ID 2 |
+| 8 | 4 | flags | zero |
+| 12 | 4 | reserved | zero |
+
+Target IDs are `1` UncompressedBytes, `2` DictionarySerializedBytes, `3`
+CompressedPayload, and `4` FrameCanonicalBytes. Scope IDs are `1` WholeStream,
+`2` PerFrame, and `3` PerBlock. Unknown IDs, a digest-size mismatch, nonzero
+flags, or nonzero reserved bytes are malformed.
+
+The descriptor alone does not define where a digest is stored or its precise
+inclusion range. A later stream-format version must define those properties,
+descriptor ordering and uniqueness, supported target/scope combinations, and
+the trailer layout before enabling this record in a stream.
+
+Hand-checkable records are:
+
+```text
+CRC-32C, UncompressedBytes, PerFrame:
+01 00 00 00 01 02 04 00 00 00 00 00 00 00 00 00
+
+SHA-256, UncompressedBytes, WholeStream:
+02 00 00 00 01 01 20 00 00 00 00 00 00 00 00 00
+```
+
 ### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,

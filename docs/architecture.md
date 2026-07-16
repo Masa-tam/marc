@@ -388,6 +388,14 @@ state snapshot so observation does not mutate the incremental state. The clear
 reference transform uses only fixed arrays and portable 32-bit integer
 operations; hardware acceleration is a later interchangeable optimization.
 
+The frame layer also owns a fixed-size hash-descriptor parser and serializer.
+It recognizes implemented algorithm IDs, target and scope vocabularies, exact
+digest sizes, flags, and reserved bytes without allocation. Parsing publishes
+only a fully validated value. This is deliberately separate from stream
+activation: version 1.0 still rejects hash regions, and a later version must
+define inclusion ranges and digest placement before connecting descriptors to
+`HashTap` instances.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness
