@@ -396,6 +396,12 @@ activation: version 1.0 still rejects hash regions, and a later version must
 define inclusion ranges and digest placement before connecting descriptors to
 `HashTap` instances.
 
+Descriptor-region handling adds no container allocation. A first pass validates
+each fixed record and its strict `(target, scope, algorithm ID)` ordering; only
+then does a second pass populate the caller's bounded descriptor span. The same
+canonical-order validator runs before serialization, so malformed metadata
+cannot partially publish parsed objects or bytes.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

@@ -120,8 +120,16 @@ flags, or nonzero reserved bytes are malformed.
 
 The descriptor alone does not define where a digest is stored or its precise
 inclusion range. A later stream-format version must define those properties,
-descriptor ordering and uniqueness, supported target/scope combinations, and
-the trailer layout before enabling this record in a stream.
+supported target/scope combinations, and the trailer layout before enabling
+this record in a stream.
+
+A structurally valid descriptor region is empty or has a byte length that is
+an exact multiple of 16. Records are strictly ordered by the unsigned tuple
+`(target, scope, hash algorithm ID)`. Two records may use different algorithms
+for the same target and scope, but an identical tuple is a forbidden duplicate.
+An out-of-order region is noncanonical. Region parsing must validate every
+record and the complete ordering before publishing any caller-owned descriptor
+output. These region rules remain inactive in version 1.0 streams.
 
 Hand-checkable records are:
 

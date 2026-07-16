@@ -42,6 +42,16 @@ enum class HashDescriptorError : std::uint8_t {
     nonzero_reserved,
 };
 
+enum class HashDescriptorRegionError : std::uint8_t {
+    none,
+    invalid_region_size,
+    output_too_small,
+    arithmetic_overflow,
+    invalid_descriptor,
+    duplicate_descriptor,
+    noncanonical_order,
+};
+
 [[nodiscard]] HashDescriptorError validate_hash_descriptor(
     const HashDescriptor& descriptor) noexcept;
 
@@ -52,6 +62,18 @@ enum class HashDescriptorError : std::uint8_t {
 [[nodiscard]] HashDescriptorError serialize_hash_descriptor(
     const HashDescriptor& descriptor,
     std::span<std::byte, hash_descriptor_size> output) noexcept;
+
+[[nodiscard]] HashDescriptorRegionError validate_hash_descriptor_region(
+    std::span<const HashDescriptor> descriptors) noexcept;
+
+[[nodiscard]] HashDescriptorRegionError parse_hash_descriptor_region(
+    std::span<const std::byte> input,
+    std::span<HashDescriptor> descriptor_output,
+    std::size_t& descriptor_count) noexcept;
+
+[[nodiscard]] HashDescriptorRegionError serialize_hash_descriptor_region(
+    std::span<const HashDescriptor> descriptors,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

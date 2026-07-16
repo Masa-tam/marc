@@ -1,6 +1,7 @@
 #include "frame/hash_descriptor.hpp"
 
 #include "core/crc32c.hpp"
+#include "core/checked_math.hpp"
 #include "core/endian.hpp"
 #include "core/sha256.hpp"
 
@@ -28,6 +29,24 @@ namespace {
         return core::sha256_digest_size;
     }
     return 0;
+}
+
+[[nodiscard]] constexpr bool same_key(const HashDescriptor& left,
+                                      const HashDescriptor& right) noexcept {
+    return left.target == right.target
+        && left.scope == right.scope
+        && left.algorithm_id == right.algorithm_id;
+}
+
+[[nodiscard]] constexpr bool key_before(const HashDescriptor& left,
+                                        const HashDescriptor& right) noexcept {
+    if (left.target != right.target) {
+        return left.target < right.target;
+    }
+    if (left.scope != right.scope) {
+        return left.scope < right.scope;
+    }
+    return left.algorithm_id < right.algorithm_id;
 }
 
 } // namespace
@@ -95,6 +114,98 @@ HashDescriptorError serialize_hash_descriptor(
     output[4] = static_cast<std::byte>(descriptor.target);
     output[5] = static_cast<std::byte>(descriptor.scope);
     return HashDescriptorError::none;
+}
+
+HashDescriptorRegionError validate_hash_descriptor_region(
+    const std::span<const HashDescriptor> descriptors) noexcept {
+    for (std::size_t index = 0; index < descriptors.size(); ++index) {
+        if (validate_hash_descriptor(descriptors[index])
+            != HashDescriptorError::none) {
+            return HashDescriptorRegionError::invalid_descriptor;
+        }
+        if (index == 0) {
+            continue;
+        }
+        if (same_key(descriptors[index - 1], descriptors[index])) {
+            return HashDescriptorRegionError::duplicate_descriptor;
+        }
+        if (key_before(descriptors[index], descriptors[index - 1])) {
+            return HashDescriptorRegionError::noncanonical_order;
+        }
+    }
+    return HashDescriptorRegionError::none;
+}
+
+HashDescriptorRegionError parse_hash_descriptor_region(
+    const std::span<const std::byte> input,
+    const std::span<HashDescriptor> descriptor_output,
+    std::size_t& descriptor_count) noexcept {
+    if (input.size() % hash_descriptor_size != 0) {
+        return HashDescriptorRegionError::invalid_region_size;
+    }
+    const auto count = input.size() / hash_descriptor_size;
+    if (descriptor_output.size() < count) {
+        return HashDescriptorRegionError::output_too_small;
+    }
+
+    HashDescriptor previous{};
+    for (std::size_t index = 0; index < count; ++index) {
+        HashDescriptor parsed{};
+        const std::span<const std::byte, hash_descriptor_size> record{
+            input.data() + index * hash_descriptor_size, hash_descriptor_size};
+        if (parse_hash_descriptor(record, parsed) != HashDescriptorError::none) {
+            return HashDescriptorRegionError::invalid_descriptor;
+        }
+        if (index != 0) {
+            if (same_key(previous, parsed)) {
+                return HashDescriptorRegionError::duplicate_descriptor;
+            }
+            if (key_before(parsed, previous)) {
+                return HashDescriptorRegionError::noncanonical_order;
+            }
+        }
+        previous = parsed;
+    }
+
+    for (std::size_t index = 0; index < count; ++index) {
+        const std::span<const std::byte, hash_descriptor_size> record{
+            input.data() + index * hash_descriptor_size, hash_descriptor_size};
+        HashDescriptor parsed{};
+        const auto error = parse_hash_descriptor(record, parsed);
+        if (error != HashDescriptorError::none) {
+            return HashDescriptorRegionError::invalid_descriptor;
+        }
+        descriptor_output[index] = parsed;
+    }
+    descriptor_count = count;
+    return HashDescriptorRegionError::none;
+}
+
+HashDescriptorRegionError serialize_hash_descriptor_region(
+    const std::span<const HashDescriptor> descriptors,
+    const std::span<std::byte> output) noexcept {
+    const auto validation = validate_hash_descriptor_region(descriptors);
+    if (validation != HashDescriptorRegionError::none) {
+        return validation;
+    }
+    std::size_t required_size{};
+    if (!core::checked_multiply(descriptors.size(), hash_descriptor_size,
+                                required_size)) {
+        return HashDescriptorRegionError::arithmetic_overflow;
+    }
+    if (output.size() < required_size) {
+        return HashDescriptorRegionError::output_too_small;
+    }
+
+    for (std::size_t index = 0; index < descriptors.size(); ++index) {
+        const std::span<std::byte, hash_descriptor_size> record{
+            output.data() + index * hash_descriptor_size, hash_descriptor_size};
+        if (serialize_hash_descriptor(descriptors[index], record)
+            != HashDescriptorError::none) {
+            return HashDescriptorRegionError::invalid_descriptor;
+        }
+    }
+    return HashDescriptorRegionError::none;
 }
 
 } // namespace marc::frame

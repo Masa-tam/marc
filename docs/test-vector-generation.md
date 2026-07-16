@@ -863,3 +863,12 @@ UncompressedBytes with scope WholeStream from
 target, and scope IDs, an algorithm/digest-size mismatch, flags, and each of the
 four reserved bytes independently. Require failed parse and serialization to
 leave caller-owned destinations unchanged.
+
+For a three-record canonical region, concatenate SHA-256 UncompressedBytes /
+WholeStream, CRC-32C UncompressedBytes / PerFrame, and SHA-256
+UncompressedBytes / PerFrame in that order. Require exact 48-byte serialization
+and parsing. Also accept an empty region, reject a 17-byte region, reject
+insufficient descriptor output before publication, corrupt the second record's
+reserved field to prove whole-region atomicity, and distinguish an identical
+tuple duplicate from a descending tuple. Invalid serialization and a
+one-byte-short byte span must remain transactional.

@@ -2704,3 +2704,21 @@ no legal guarantee of non-infringement.
   and preserves every existing version 1.0 stream byte.
 - Similarity review: layout, validation order, names, and hand vectors derive
   only from marc's documented architecture and implemented hash interface.
+
+## 2026-07-16 - Canonical hash descriptor regions
+
+- Authoring method: extended the independently specified fixed descriptor with
+  a bounded region grammar, then implemented validation-before-publication and
+  canonical serialization.
+- References used: DD-162, the repository hash descriptor record, checked
+  arithmetic, and caller-owned span conventions.
+- Known implementations intentionally not consulted: external container
+  formats, metadata-list parsers, source code, tests, or serialized regions.
+- Independent decisions: exact 16-byte divisibility; target/scope/algorithm
+  tuple order; exact-key duplicate rejection; two-pass transactional parsing;
+  caller-provided capacity.
+- Generated-code task description: validate and serialize zero or more hash
+  descriptors without allocation, partial publication, ambiguous ordering, or
+  version 1.0 activation.
+- Similarity review: the region grammar and implementation structure follow
+  only marc's preceding descriptor primitive and safety contracts.

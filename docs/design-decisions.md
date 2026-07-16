@@ -2812,3 +2812,21 @@ version 1.0. Continue rejecting nonzero version 1.0 hash regions. A later
 stream version must separately define descriptor ordering, supported
 target/scope combinations, exact inclusion ranges, and digest placement. This
 prevents a provisional helper from silently changing an existing stream.
+
+## DD-162: Hash descriptor regions have one canonical tuple order
+
+- Date: 2026-07-16
+- Status: accepted
+
+Represent a descriptor region as zero or more complete 16-byte records ordered
+strictly by `(target, scope, algorithm ID)`. Reject a partial final record,
+identical tuple duplicates, and descending tuples. Permit different algorithms
+at one target/scope boundary so a checksum and cryptographic hash are not made
+artificially exclusive.
+
+Parse in two allocation-free passes: validate all bytes and ordering first,
+then publish to a caller-owned descriptor span. Leave both that span and its
+published count unchanged on failure. Serialization likewise validates the
+complete input and checked required byte count before writing. Region capacity
+is supplied by the caller now and will be coupled to explicit decoder limits
+when a later stream version activates descriptors.

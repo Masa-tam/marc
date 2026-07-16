@@ -250,4 +250,6 @@ generated constants, library code, or external test suite was consulted.
 The hash descriptor record is a repository-defined serialization layer. Its
 algorithm IDs refer to the CRC-32C and SHA-256 definitions above, while its
 target/scope IDs, fixed layout, validation rules, and vectors were designed
-independently for marc; no external container format was consulted.
+independently for marc. Its tuple ordering, duplicate policy, and two-pass
+publication contract are also repository-native; no external container format
+was consulted.
