@@ -3016,3 +3016,20 @@ workspace of `56 + frame_size + 4` in either direction and report zero secondary
 and views regions as returned by the ABI. Run a one-iteration optimized smoke
 against the repository README. Do not include corpus/result buffers or the two
 small allocated transform objects in `codec_peak_workspace_bytes`.
+
+## DD-172: Interoperability schema 2 adds the checksum profile explicitly
+
+- Date: 2026-07-16
+- Status: accepted
+
+Publish new interoperability bundles as schema version 2 with codec-set ID
+`marc-cli-v2`. Its exact eight-profile set is `checksum-raw` followed by the
+seven schema-1 profiles. Generate, locally round-trip, hash, upload, foreign
+decode, and exact re-encode the checksum archive under the same bounded fixture
+protocol as the existing archives.
+
+Keep the verifier backward compatible with schema 1 and its exact seven-profile
+set. A schema-1 manifest must not acquire the new profile implicitly. Schema 2
+must declare the exact codec-set ID, archive count, unique allowed codec names,
+leaf file names, sizes, and hashes before invoking the CLI. Continue to treat
+artifact hashes as transfer integrity rather than producer authentication.

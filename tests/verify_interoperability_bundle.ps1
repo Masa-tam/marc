@@ -54,16 +54,7 @@ $resolvedOutput = (Resolve-Path -LiteralPath $OutputDirectory).Path
 
 $manifestPath = Join-Path $resolvedBundle 'manifest.json'
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-if ($manifest.schema_version -ne 1) {
-    throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
-}
-if (-not [System.Text.RegularExpressions.Regex]::IsMatch(
-        [string]$manifest.source_revision,
-        '^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')) {
-    throw 'Manifest source revision is not a full Git object ID'
-}
-
-$expectedProfiles = @(
+$legacyProfiles = @(
     'lz77',
     'lz77-blocked-huffman',
     'lzss',
@@ -72,8 +63,28 @@ $expectedProfiles = @(
     'lzd',
     'lzmw'
 )
+$currentProfiles = @('checksum-raw') + $legacyProfiles
+if ($manifest.schema_version -eq 1) {
+    if ($null -ne $manifest.PSObject.Properties['codec_set']) {
+        throw 'Schema 1 interoperability manifests must not declare a codec set'
+    }
+    $expectedProfiles = $legacyProfiles
+} elseif ($manifest.schema_version -eq 2) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v2') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $currentProfiles
+} else {
+    throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
+}
+if (-not [System.Text.RegularExpressions.Regex]::IsMatch(
+        [string]$manifest.source_revision,
+        '^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')) {
+    throw 'Manifest source revision is not a full Git object ID'
+}
+
 if (@($manifest.archives).Count -ne $expectedProfiles.Count) {
-    throw 'Interoperability manifest must contain exactly seven archives'
+    throw "Interoperability manifest must contain exactly $($expectedProfiles.Count) archives"
 }
 
 Assert-LeafName $manifest.input.file

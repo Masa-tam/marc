@@ -466,6 +466,11 @@ input byte plus the 80-byte prefix and 60 bytes per frame. Peak codec workspace
 therefore reflects the single caller-owned serialized-frame span rather than
 the benchmark's corpus or result vectors.
 
+Interoperability schema 2 names codec set `marc-cli-v2` and includes the
+checksum archive alongside the seven original CLI profiles. The external
+verifier dispatches the manifest's exact versioned set through the public CLI,
+while retaining a separate schema-1 path whose seven-codec meaning is frozen.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

@@ -70,6 +70,7 @@ $inputPath = Join-Path $resolvedOutput 'input.bin'
 [System.IO.File]::WriteAllBytes($inputPath, $fixture)
 
 $profiles = @(
+    'checksum-raw',
     'lz77',
     'lz77-blocked-huffman',
     'lzss',
@@ -99,7 +100,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 1
+    schema_version = 2
+    codec_set = 'marc-cli-v2'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

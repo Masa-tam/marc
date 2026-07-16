@@ -2897,3 +2897,24 @@ discarded and the reviewed seed retained.
   caller-owned workspace reporting.
 - Similarity review: measurement flow and output keys are marc-owned existing
   conventions; new arithmetic follows the repository format exactly.
+
+## 2026-07-16 - Interoperability codec set version 2
+
+- Authoring method: versioned marc's existing self-describing bundle protocol
+  before adding the newly public checksum CLI profile.
+- References used: DD-172, schema-1 generator/verifier behavior, deterministic
+  checksum CLI output, and the repository-owned 8,193-byte fixture.
+- Known implementations intentionally not consulted: external interoperability
+  manifests, archive suites, compatibility registries, or test vectors.
+- Independent decisions: schema 2 plus explicit `marc-cli-v2`; checksum profile
+  first in canonical generation order; exact eight-entry validation; preserved
+  schema-1 seven-entry verifier path; unchanged artifact names.
+- Generated-code task description: extend CI interoperability artifacts with
+  checksum-raw without changing the meaning of already published schema-1
+  bundles, then locally generate and externally verify the new bundle.
+- Similarity review: protocol changes extend only marc's prior manifest and CLI
+  conventions; no external bundle design was examined.
+- Local validation: schema 2 generated and verified all eight archives; the
+  legacy schema-1 path verified its frozen seven archives; an unknown schema-2
+  codec set and a schema-1 manifest carrying a codec-set field were rejected;
+  and all eight MSVC and Clang archive bytes matched.
