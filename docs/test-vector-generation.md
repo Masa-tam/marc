@@ -998,6 +998,13 @@ rejection, trailing-byte rejection, and cleanup of both final and temporary
 outputs after failure. Do not alter a versioned interoperability codec set
 without introducing a new set identifier.
 
+Run the tANS benchmark smoke over `README.md` for one iteration. Require an
+untimed public-C-ABI round trip before output. Capacity planning must use
+`ceil(3*n/2)` bytes for transitions, then reserve two state bytes and one
+528-byte descriptor for each of at most 16 blocks per frame, one 56-byte header
+per frame, and the 64-byte stream prefix. Report all three direction workspaces
+and their larger total as the codec peak.
+
 For standalone Blocked Huffman fuzzing, retain the reviewed five-byte prefix
 seed and use 8 KiB input/internal, 4 KiB output/payload, 1 KiB frame,
 256-symbol block, and eight-view bounds. Cap code lengths at 24 and decode table

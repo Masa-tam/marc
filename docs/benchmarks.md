@@ -9,6 +9,7 @@ marc_benchmark blocked-huffman corpus.bin 5
 marc_benchmark adaptive-huffman corpus.bin 5
 marc_benchmark dynamic-range corpus.bin 5
 marc_benchmark rans corpus.bin 5
+marc_benchmark tans corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
@@ -60,6 +61,12 @@ transform-owned, so the views workspace is zero.
 `rans` selects scalar byte-renormalized variant 1 with one MiB frames and
 65,536-symbol blocks. Capacity planning reserves one byte per input symbol,
 eight final-state bytes and one 528-byte descriptor for each of at most 16
+blocks per frame, each 56-byte frame header, and the 64-byte stream prefix.
+Reported decoder workspace includes the aligned caller-owned block-view region.
+
+`tans` selects tabled variant 1 with one MiB frames and 65,536-symbol blocks.
+Capacity planning uses `ceil(3*n/2)` bytes for the strict 12-bit transition
+bound, plus two state bytes and one 528-byte descriptor for each of at most 16
 blocks per frame, each 56-byte frame header, and the 64-byte stream prefix.
 Reported decoder workspace includes the aligned caller-owned block-view region.
 

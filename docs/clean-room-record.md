@@ -3219,6 +3219,26 @@ discarded and the reviewed seed retained.
 - Local validation: the focused multi-frame CLI test and all 955 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - tANS benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark after specifying
+  DD-193's public tabled-profile measurement policy.
+- References used: DD-193, marc's tANS variant 1 format, profile bounds, public
+  C lifecycle, aligned block views, and benchmark contract.
+- Known implementations intentionally not consulted: external benchmark
+  suites, FSE/ANS source, compression tools, or published results.
+- Independent decisions: codec name `tans`; one MiB frames; 65,536-symbol
+  blocks; `ceil(3*n/2)` transition bytes; two state bytes and 528 descriptor
+  bytes per block; 64-byte prefix; untimed preflight; three-region workspace.
+- Generated-code task description: report tabled tANS ratio, throughput, and
+  caller-owned workspace entirely through the public C ABI.
+- Similarity review: the adapter uses repository-authored measurement flow,
+  profile bounds, and alignment policy only.
+- Local validation: focused Release benchmark smoke and all 956 tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3; direct MSVC output exposed
+  ratio, throughput, aligned decoder views, direction workspaces, and peak
+  workspace.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

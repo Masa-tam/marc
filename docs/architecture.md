@@ -888,6 +888,13 @@ bounded by 12 transition bits per input symbol, one two-byte state and one
 count and alignment before parsing input. The shared temporary-file boundary
 prevents failed streams from publishing a destination.
 
+The benchmark adapter uses the same tabled profile and public C lifecycle. Its
+capacity bound includes the 64-byte stream prefix, one 56-byte header per
+frame, `ceil(3*n/2)` transition bytes, and a two-byte state plus 528-byte
+descriptor for each of at most 16 blocks per frame. An untimed complete round
+trip gates measurement; direction and peak workspace totals include the
+queried aligned decoder views region.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -23,6 +23,8 @@ constexpr std::uint64_t entropy_block_size = UINT64_C(1) << 16;
 constexpr std::uint64_t entropy_descriptor_size = 16;
 constexpr std::uint64_t rans_descriptor_size = 528;
 constexpr std::uint64_t rans_state_size = 8;
+constexpr std::uint64_t tans_descriptor_size = 528;
+constexpr std::uint64_t tans_state_size = 2;
 
 enum class Codec {
     checksum_raw,
@@ -30,6 +32,7 @@ enum class Codec {
     adaptive_huffman,
     dynamic_range,
     rans,
+    tans,
     lz77,
     lz77_blocked_huffman,
     lzss,
@@ -54,6 +57,7 @@ struct CodecConfig {
     marc_adaptive_huffman_config adaptive_huffman{};
     marc_dynamic_range_config dynamic_range{};
     marc_rans_config rans{};
+    marc_tans_config tans{};
     marc_lz77_config lz77{};
     marc_lz77_blocked_huffman_config lz77_blocked_huffman{};
     marc_lzss_config lzss{};
@@ -82,6 +86,7 @@ struct Measurement {
     if (codec == Codec::adaptive_huffman) return "adaptive-huffman";
     if (codec == Codec::dynamic_range) return "dynamic-range";
     if (codec == Codec::rans) return "rans";
+    if (codec == Codec::tans) return "tans";
     if (codec == Codec::lz77) return "lz77";
     if (codec == Codec::lz77_blocked_huffman)
         return "lz77-blocked-huffman";
@@ -98,6 +103,7 @@ struct Measurement {
     if (codec == Codec::adaptive_huffman) return UINT64_C(33);
     if (codec == Codec::dynamic_range) return UINT64_C(2);
     if (codec == Codec::rans) return UINT64_C(1);
+    if (codec == Codec::tans) return UINT64_C(1);
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return UINT64_C(16);
@@ -121,6 +127,10 @@ struct Measurement {
         const auto block_count = frame_size / entropy_block_size;
         return block_count * (rans_descriptor_size + rans_state_size);
     }
+    if (codec == Codec::tans) {
+        const auto block_count = frame_size / entropy_block_size;
+        return block_count * (tans_descriptor_size + tans_state_size);
+    }
     if (codec == Codec::lz77_blocked_huffman) {
         return frame_size * payload_factor(codec) / entropy_block_size
             * entropy_descriptor_size;
@@ -137,7 +147,10 @@ struct Measurement {
     const auto maximum_payload = frame_size * payload_factor(codec)
         + (codec == Codec::dynamic_range ? UINT64_C(5) : UINT64_C(0))
         + (codec == Codec::rans
-            ? block_count * rans_state_size : UINT64_C(0));
+            ? block_count * rans_state_size : UINT64_C(0))
+        + (codec == Codec::tans
+            ? frame_size / UINT64_C(2) + block_count * tans_state_size
+            : UINT64_C(0));
     std::uint64_t maximum_buffered{};
     if (codec == Codec::checksum_raw) {
         maximum_buffered = frame_header_size + maximum_payload + UINT64_C(4);
@@ -151,6 +164,9 @@ struct Measurement {
     } else if (codec == Codec::rans) {
         maximum_buffered = maximum_payload
             + block_count * rans_descriptor_size;
+    } else if (codec == Codec::tans) {
+        maximum_buffered = maximum_payload
+            + block_count * tans_descriptor_size;
     } else if (codec == Codec::lz77_blocked_huffman) {
         maximum_buffered = frame_size + maximum_payload + frame_header_size
             + payload_overhead_per_frame(codec) + maximum_payload;
@@ -206,6 +222,18 @@ struct Measurement {
     } else if (codec == Codec::rans) {
         auto& config = result.rans;
         if (marc_rans_config_init(direction, &config) != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size = static_cast<std::uint32_t>(frame_size);
+        config.block_size = static_cast<std::uint32_t>(entropy_block_size);
+        config.max_frame_size = frame_size;
+        config.max_block_size = entropy_block_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_internal_buffered_bytes = maximum_buffered;
+        config.max_blocks_per_frame = static_cast<std::uint32_t>(block_count);
+    } else if (codec == Codec::tans) {
+        auto& config = result.tans;
+        if (marc_tans_config_init(direction, &config) != MARC_STATUS_OK)
             return false;
         config.original_size = original_size;
         config.frame_size = static_cast<std::uint32_t>(frame_size);
@@ -318,6 +346,9 @@ struct Measurement {
     if (config.codec == Codec::rans)
         return marc_rans_workspace_requirements(
             &config.rans, &requirements);
+    if (config.codec == Codec::tans)
+        return marc_tans_workspace_requirements(
+            &config.tans, &requirements);
     if (config.codec == Codec::lz77)
         return marc_lz77_workspace_requirements(&config.lz77, &requirements);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -358,6 +389,9 @@ struct Measurement {
     if (config.codec == Codec::rans)
         return marc_rans_create(
             &config.rans, primary, secondary, views, transform);
+    if (config.codec == Codec::tans)
+        return marc_tans_create(
+            &config.tans, primary, secondary, views, transform);
     if (config.codec == Codec::lz77)
         return marc_lz77_create(&config.lz77, primary, secondary, transform);
     if (config.codec == Codec::lz77_blocked_huffman)
@@ -415,6 +449,24 @@ struct Measurement {
                                         std::size_t& result) noexcept {
     const auto frames = input_size == 0 ? std::size_t{0}
         : std::size_t{1} + (input_size - 1) / static_cast<std::size_t>(frame_size);
+    if (codec == Codec::tans) {
+        constexpr auto prefix_size = std::size_t{64};
+        const auto half = input_size / 2 + input_size % 2;
+        if (input_size > std::numeric_limits<std::size_t>::max() - half)
+            return false;
+        const auto payload = input_size + half;
+        const auto block_count = static_cast<std::size_t>(
+            frame_size / entropy_block_size);
+        const auto per_frame = static_cast<std::size_t>(frame_header_size)
+            + block_count * static_cast<std::size_t>(
+                tans_descriptor_size + tans_state_size);
+        if (payload > std::numeric_limits<std::size_t>::max() - prefix_size
+            || frames > (std::numeric_limits<std::size_t>::max()
+                          - prefix_size - payload) / per_frame)
+            return false;
+        result = prefix_size + payload + frames * per_frame;
+        return true;
+    }
     const auto factor = static_cast<std::size_t>(payload_factor(codec));
     const auto prefix_size = codec == Codec::blocked_huffman
             || codec == Codec::adaptive_huffman
@@ -527,8 +579,8 @@ struct Measurement {
 void print_usage() {
     std::cerr << "usage: marc_benchmark <codec> <input> [iterations]\n"
                  "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
-                 "dynamic-range, rans, lz77, lz77-blocked-huffman, lzss, "
-                 "lz78, lzw, lzd, lzmw\n";
+                 "dynamic-range, rans, tans, lz77, lz77-blocked-huffman, "
+                 "lzss, lz78, lzw, lzd, lzmw\n";
 }
 
 [[nodiscard]] int run(const Codec codec, const std::filesystem::path& path,
@@ -636,6 +688,7 @@ int main(const int argc, const char* const argv[]) {
     else if (name == "adaptive-huffman") codec = Codec::adaptive_huffman;
     else if (name == "dynamic-range") codec = Codec::dynamic_range;
     else if (name == "rans") codec = Codec::rans;
+    else if (name == "tans") codec = Codec::tans;
     else if (name == "lz77") codec = Codec::lz77;
     else if (name == "lz77-blocked-huffman")
         codec = Codec::lz77_blocked_huffman;

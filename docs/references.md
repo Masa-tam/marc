@@ -352,6 +352,11 @@ tabled profile, public C ABI, bounded workspace and aligned-view policy, and
 common file adapter. No external FSE/ANS tool, command-line implementation,
 archive format, or test suite was consulted.
 
+The tANS benchmark composes only marc's independently specified tabled profile,
+public C ABI, 12-bit transition bound, aligned view policy, and repository
+measurement contract. No external benchmark harness, published result,
+FSE/ANS source, or test suite was consulted.
+
 The standalone LZ77 stream fuzz boundary uses only marc's independently
 specified fixed token representation, outer framing, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no
