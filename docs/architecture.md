@@ -740,6 +740,14 @@ one 64-byte stream prefix. An untimed full round trip gates measurement, and
 the reported peak is the larger public direction workspace; views remain zero
 because the fixed model is transform-owned.
 
+The public-ABI completion matrix consolidates Dynamic Range local-readiness
+evidence above the model and interval tests. It covers every one-byte symbol,
+binary and generated data, frame boundaries, deterministic re-encoding,
+one-byte and mixed chunk schedules, repeatable EndOfStream, and frame-atomic
+rejection of a malformed final frame, truncation, and trailing bytes. This
+closes the local implementation loop without claiming external release
+evidence.
+
 ### rANS foundation
 
 rANS variant 1 begins with a fixed 528-byte descriptor validator and an

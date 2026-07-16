@@ -938,6 +938,18 @@ must count two payload bytes per input symbol, then add a five-byte termination,
 stream prefix. Report model total 32,768, zero views workspace, both direction
 workspaces, and their larger total as the codec peak.
 
+The Dynamic Range completion matrix uses 64-byte frames and model total 32,768.
+Round-trip empty input, every one-byte symbol, all byte values in order, 257
+zero bytes, a 259-byte `00 FF 55 AA` pattern, and 513 deterministic generated
+bytes. Exercise lengths 63, 64, and 65. Encode every case twice and require byte
+identity.
+
+For a 193-byte four-frame generated input, require the same stream and decoded
+bytes under chunk pairs `(1,1)`, `(7,5)`, and `(13,17)`. Independently corrupt
+the final frame sequence, truncate its payload, and append trailing data. Each
+error must remain sticky, commit exactly the first 192 bytes, and preserve the
+last output sentinel. Repeated successful calls must remain EndOfStream.
+
 For rANS fuzzing, use the repository-authored five-byte truncated-prefix seed.
 Bound input/output/frame/block/payload/internal bytes to
 8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB, allow at most eight block views, and cap the

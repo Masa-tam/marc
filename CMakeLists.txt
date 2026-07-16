@@ -680,6 +680,7 @@ if(MARC_BUILD_TESTS)
         tests/dynamic_range_frame_streaming_encoder_tests.cpp
         tests/dynamic_range_frame_streaming_decoder_tests.cpp
         tests/dynamic_range_profile_tests.cpp
+        tests/dynamic_range_completion_tests.cpp
         tests/rans_frame_tests.cpp
         tests/rans_stream_tests.cpp
         tests/rans_profile_tests.cpp

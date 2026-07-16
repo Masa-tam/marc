@@ -3308,3 +3308,25 @@ and retain the existing ratio, raw-byte throughput, direction-workspace, and
 peak-workspace definitions. Views must remain zero. The Release smoke validates
 the path and schema, but it is neither a stable performance record nor complete
 local-readiness evidence.
+
+## DD-188: Dynamic Range receives a public-ABI completion matrix
+
+- Date: 2026-07-17
+- Status: accepted
+
+Audit local variant 1 readiness through the public C transform path with
+64-byte frames and model total 32,768. Cover empty input, every one-byte symbol,
+all byte values, repetitive and patterned data, deterministic generated data,
+and lengths 63/64/65. Require byte-identical re-encoding and exact round trips.
+
+For one four-frame stream, compare one-byte and mixed input/output chunking with
+the full-buffer representation. Corrupt the final frame sequence, truncate its
+payload, and append trailing data independently. Each error must be sticky and
+publish only the first three validated frames; successful terminal calls must
+remain EndOfStream.
+
+After this matrix passes with the existing model, format, frame, stream,
+profile, C ABI, CLI, fuzz, benchmark, and documentation evidence, classify
+Dynamic Range variant 1 as locally implementation-complete. External
+cross-platform deterministic execution, representative benchmark records, and
+the final similarity review remain release evidence.

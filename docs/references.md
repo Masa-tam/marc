@@ -312,6 +312,11 @@ integer range profile, public C ABI, profile bounds, and repository measurement
 contract. No external benchmark harness, published result, range-coder source,
 or test suite was consulted.
 
+The Dynamic Range completion matrix uses only marc's public integer range C
+ABI, repository-defined format, required data classes, deterministic generator,
+and process-contract assertions. No external vector, corpus, test suite, or
+implementation behavior was consulted.
+
 The rANS stream fuzz boundary uses only marc's independently specified scalar
 rANS format, normalized-table limits, block views, outer framing, and transform
 contract. Its seed and schedules are repository-authored; no external ANS
