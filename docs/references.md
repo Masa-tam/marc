@@ -271,3 +271,8 @@ The complete raw-checksum reference profile is a composition of marc's own
 prefix, descriptor, frame, and CRC components. Its two-pass publication policy
 and hand vectors were independently defined without an external container or
 codec reference.
+
+The raw-checksum public-ABI completion matrix uses only that repository-defined
+format, its public process contract, and the general data classes required by
+AGENTS.md. No additional algorithm, format, implementation, corpus, or external
+test-suite reference was used.

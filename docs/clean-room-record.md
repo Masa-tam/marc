@@ -2918,3 +2918,22 @@ discarded and the reviewed seed retained.
   legacy schema-1 path verified its frozen seven archives; an unknown schema-2
   codec set and a schema-1 manifest carrying a codec-set field were rejected;
   and all eight MSVC and Clang archive bytes matched.
+
+## 2026-07-16 - Raw checksum public-ABI completion matrix
+
+- Authoring method: mapped AGENTS.md completion criteria onto marc's published
+  fixed checksum profile after its component and integration layers existed.
+- References used: DD-173, the public `marc_checksum_raw_*` contract, existing
+  version 1.1 format decisions, and repository-owned deterministic generators.
+- Known implementations intentionally not consulted: external checksum test
+  suites, corpora, fuzz findings, compatibility tools, or implementation code.
+- Independent decisions: 64-byte frames; required data-class matrix; three
+  short-buffer schedules; final-frame corruption, truncation, and trailing-data
+  suppression; stable ended and error-state checks.
+- Generated-code task description: consolidate local completion evidence using
+  only the public C ABI and explicitly test verified-frame commit boundaries.
+- Similarity review: the harness follows marc's own completion-test convention;
+  all profile-specific expectations derive from marc's documented format and
+  streaming contract.
+- Local validation: all 934 Release tests passed with MSVC/Visual Studio 2026
+  and independently with Clang 22.1.3/Ninja.

@@ -3033,3 +3033,21 @@ set. A schema-1 manifest must not acquire the new profile implicitly. Schema 2
 must declare the exact codec-set ID, archive count, unique allowed codec names,
 leaf file names, sizes, and hashes before invoking the CLI. Continue to treat
 artifact hashes as transfer integrity rather than producer authentication.
+
+## DD-173: Raw checksum local completion is audited through the public ABI
+
+- Date: 2026-07-16
+- Status: accepted
+
+Mark the fixed checksum-raw profile locally implementation-complete only after
+one public-C-ABI matrix covers empty input, every one-byte value, the full byte
+alphabet, repetitive and deterministic high-entropy inputs, frame-boundary
+lengths, deterministic output, and multi-frame input/output chunk schedules.
+Repeated calls after successful completion must remain EndOfStream.
+
+Independently corrupt and truncate the last frame and append trailing data.
+Require a stable malformed-stream state and frame-atomic publication: the first
+three verified 64-byte frames may be returned, while the final one-byte frame
+remains uncommitted in all three cases. This local status includes existing
+format, component, C, CLI, fuzz, benchmark, and interoperability evidence, but
+does not claim release completion without external cross-platform execution.

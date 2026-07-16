@@ -471,6 +471,14 @@ checksum archive alongside the seven original CLI profiles. The external
 verifier dispatches the manifest's exact versioned set through the public CLI,
 while retaining a separate schema-1 path whose seven-codec meaning is frozen.
 
+The checksum profile's public-ABI completion matrix is the consolidated local
+audit above the component, streaming, C, CLI, fuzz, benchmark, and
+interoperability tests. It proves required binary data classes, deterministic
+encoding, representative short-buffer schedules, stable terminal states, and
+frame-atomic suppression for checksum failure, truncation, and trailing data.
+This is local implementation evidence rather than cross-platform release
+completion.
+
 ## Buffered incremental reference encoder
 
 The first `ProcessResult`-based Blocked Huffman encoder is a correctness

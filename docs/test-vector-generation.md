@@ -839,6 +839,16 @@ and SHA-256 in the bundle manifest. Generated archives are CI evidence rather
 than permanent canonical vectors. Legacy schema 1 retains its original exact
 seven-profile meaning.
 
+The raw-checksum completion matrix uses 64-byte frames. Require empty input,
+every individual byte, byte values `0..255`, 257 zeros, a 259-byte
+`00 FF 55 AA` pattern, deterministic 513-byte high-entropy data, and lengths
+63, 64, and 65 to encode identically twice and round-trip through the public C
+ABI. For a 193-byte four-frame input, require byte-identical encode and decode
+under chunk pairs `(1,1)`, `(7,5)`, and `(13,17)`. Corrupt or truncate the last
+one-byte frame, then append trailing data independently; each case must report
+a stable malformed-stream error, preserve the first 192 verified bytes, and
+suppress the final frame. Successful repeated calls remain EndOfStream.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian
