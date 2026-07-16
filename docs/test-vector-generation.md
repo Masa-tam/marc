@@ -862,6 +862,12 @@ bounds. Fix `max_range_model_total` to 32,768 and cap byte-derived incremental
 chunks at 17 input and 19 output bytes. Both decoder paths share this policy and
 use fixed arrays only.
 
+For rANS fuzzing, use the repository-authored five-byte truncated-prefix seed.
+Bound input/output/frame/block/payload/internal bytes to
+8 KiB/4 KiB/1 KiB/256/4 KiB/8 KiB, allow at most eight block views, and cap the
+entropy table at 4,096 entries. Drive the incremental path with at most 17 input
+and 19 output bytes per call; both decoder paths use fixed view and byte arrays.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian

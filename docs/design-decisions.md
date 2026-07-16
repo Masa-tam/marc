@@ -3087,3 +3087,22 @@ invalid progress, impossible starvation, or checked call-ceiling exhaustion.
 Compile the harness in every normal test build and expose an instrumented Clang
 target with a repository-authored truncated-prefix seed. Smoke execution is
 evidence of the path, not a claim of coverage completion.
+
+## DD-176: rANS fuzzing bounds block metadata and decode tables explicitly
+
+- Date: 2026-07-17
+- Status: accepted
+
+Exercise both the strict one-shot rANS stream decoder and frame-committing
+incremental decoder from one libFuzzer entry point. Truncate input to 8 KiB,
+permit 4 KiB total output, 1 KiB frames, 256-symbol blocks, 4 KiB compressed
+payloads, 8 KiB descriptor-plus-payload buffering, at most eight blocks per
+frame, and exactly the variant's 4,096 entropy table entries.
+
+Supply fixed aligned arrays for eight `RansBlockView` records to both paths;
+never allocate views from serialized block counts. Retain the bounded
+byte-derived chunk schedule, ProcessResult validation, starvation checks, and
+checked call ceiling. Provide warning-clean normal-build compilation, an
+instrumented Clang target, and the repository-authored truncated-prefix seed.
+A short sanitizer campaign is execution evidence rather than coverage
+completion.

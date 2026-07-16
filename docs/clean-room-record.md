@@ -2958,6 +2958,26 @@ discarded and the reviewed seed retained.
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
 
+## 2026-07-17 - rANS dual-decoder fuzz boundary
+
+- Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
+  strict and frame-streaming scalar rANS paths.
+- References used: DD-176, marc's rANS format, block views, table limits,
+  decoder policy, and existing bounded harness contract.
+- Known implementations intentionally not consulted: external ANS source,
+  FSE-compatible code, fuzz harnesses, corpora, or crash collections.
+- Independent decisions: 8 KiB input/internal bounds; 4 KiB output/payload;
+  1 KiB frames; 256-symbol blocks; eight fixed views; 4,096 table entries;
+  17/19-byte chunks; checked call ceiling; truncated-prefix seed.
+- Generated-code task description: fuzz both rANS decoder paths while bounding
+  serialized block metadata independently of input-controlled allocation.
+- Similarity review: the harness uses only repository APIs, data structures,
+  and previously reviewed safety checks.
+- Local validation: warning-clean compile-smoke passed under MSVC/Visual Studio
+  2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
+  inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
+  934 Release tests passed under both normal toolchains.
+
 ## 2026-07-17 - Dynamic Range dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md malformed-input requirements to marc's

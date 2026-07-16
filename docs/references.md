@@ -286,3 +286,8 @@ The Dynamic Range stream fuzz boundary uses only marc's independently defined
 integer range-coder variant, framing, model-total rule, decoder limits, and
 transform contract. Its seed and schedules are repository-authored; no
 external range-coder corpus, harness, or implementation was consulted.
+
+The rANS stream fuzz boundary uses only marc's independently specified scalar
+rANS format, normalized-table limits, block views, outer framing, and transform
+contract. Its seed and schedules are repository-authored; no external ANS
+corpus, fuzz harness, or implementation behavior was consulted.

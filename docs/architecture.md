@@ -740,6 +740,12 @@ descriptors and payload state transitions, decodes into a separate bounded
 workspace, and only then drains output. Its caller-owned view array is sized
 from the local maximum-blocks-per-frame policy.
 
+The bounded rANS fuzz boundary applies the same fixed policy to the strict and
+frame-committing decoders. Eight aligned block views, a 4,096-entry table cap,
+and separate descriptor-plus-payload, frame, and output arrays prevent
+serialized metadata from controlling allocation; byte-derived chunk schedules
+and a checked call ceiling expose invalid progress or stalls.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
