@@ -2957,3 +2957,23 @@ discarded and the reviewed seed retained.
   2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
+
+## 2026-07-17 - Dynamic Range dual-decoder fuzz boundary
+
+- Authoring method: applied AGENTS.md malformed-input requirements to marc's
+  existing one-shot and frame-streaming Dynamic Range decoders.
+- References used: DD-175, the repository-defined range format, exact 32,768
+  model total, decoder limits, and marc's bounded fuzz conventions.
+- Known implementations intentionally not consulted: external range-coder
+  source, fuzz harnesses, corpora, dictionaries, or crash collections.
+- Independent decisions: 8 KiB input; 4 KiB output, payload, and internal
+  bounds; 1 KiB frames; fixed workspaces; 17/19-byte chunk caps; checked call
+  ceiling; hand-authored truncated-prefix seed.
+- Generated-code task description: fuzz strict and incremental range stream
+  decoding under identical fixed policy without input-controlled allocation.
+- Similarity review: all control flow composes repository-owned APIs and the
+  previously reviewed marc harness safety contract.
+- Local validation: warning-clean compile-smoke passed under MSVC/Visual Studio
+  2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
+  inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
+  934 Release tests passed under both normal toolchains.

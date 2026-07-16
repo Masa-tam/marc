@@ -666,6 +666,12 @@ range-model-total policy explicitly, uses only primary and secondary byte
 workspaces, and returns the common opaque transform processed and destroyed by
 the shared lifecycle functions.
 
+The bounded Dynamic Range fuzz boundary drives both the strict whole-stream and
+frame-committing decoders under identical fixed storage limits. It additionally
+pins the accepted model total to 32,768, while byte-derived chunk schedules and
+a checked call ceiling expose invalid partial-I/O progress or stalls as
+reproducible findings.
+
 ### rANS foundation
 
 rANS variant 1 begins with a fixed 528-byte descriptor validator and an

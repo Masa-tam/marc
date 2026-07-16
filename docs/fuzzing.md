@@ -29,6 +29,12 @@ bytes at 4 KiB, and individual frames at 1 KiB. Fixed arrays hold the encoded
 frame, decoded frame, and total output; byte-derived chunk sizes and a checked
 call ceiling exercise partial I/O without input-controlled allocation.
 
+`marc_fuzz_dynamic_range_stream` covers the corresponding one-shot and
+incremental range-decoder paths with the same byte and workspace bounds. It
+also fixes the accepted adaptive model total to 32,768 so malformed descriptors
+cannot enlarge model policy. Fixed arrays, byte-derived chunks, and the same
+checked call ceiling retain bounded execution.
+
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
 and UndefinedBehaviorSanitizer:
@@ -45,6 +51,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_checksum_raw_stream \
   marc_fuzz_adaptive_huffman_stream \
+  marc_fuzz_dynamic_range_stream \
   marc_fuzz_lz78_stream marc_fuzz_lzw_stream \
   marc_fuzz_lzd_stream marc_fuzz_lzmw_stream
 out/build/fuzz/marc_fuzz_lzss_stream fuzz/corpus/lzss_stream -max_len=8192
@@ -54,6 +61,8 @@ out/build/fuzz/marc_fuzz_checksum_raw_stream \
   fuzz/corpus/checksum_raw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_adaptive_huffman_stream \
   fuzz/corpus/adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_dynamic_range_stream \
+  fuzz/corpus/dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_stream fuzz/corpus/lz78_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
@@ -92,6 +101,12 @@ smoke on 2026-07-17: 1,000 inputs, 8 KiB maximum input, five-second per-input
 timeout, and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer
 finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
 corpus; the repository retains only the reviewed five-byte seed.
+
+The Dynamic Range dual-decoder target received the same bounded 1,000-input
+sanitizer smoke on 2026-07-17. With an 8 KiB maximum input, five-second timeout,
+and 512 MiB RSS limit, it completed without a crash, hang, or sanitizer finding
+and peaked at 37 MiB RSS. Generated mutations remained outside the source
+corpus.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

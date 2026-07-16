@@ -856,6 +856,12 @@ to 4 KiB, and drive the incremental decoder with byte-derived chunks of at most
 17 input and 19 output bytes. The one-shot and streaming paths share the same
 limits; neither allocates from input-controlled sizes.
 
+For Dynamic Range fuzzing, use the same five-byte repository-authored
+truncated-prefix seed and 8 KiB/4 KiB/1 KiB input, output/internal, and frame
+bounds. Fix `max_range_model_total` to 32,768 and cap byte-derived incremental
+chunks at 17 input and 19 output bytes. Both decoder paths share this policy and
+use fixed arrays only.
+
 For CRC-32C, feed ASCII `123456789` into the reflected Castagnoli recurrence
 from initial register `FFFFFFFF`, then XOR the final register with `FFFFFFFF`.
 The numeric result is `E3069283`; serialize it through marc's little-endian

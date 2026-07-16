@@ -3069,3 +3069,21 @@ or exhaustion of the checked call ceiling. Compile the harness in every normal
 test build and provide an instrumented Clang target plus a repository-authored
 truncated-magic seed. A bounded smoke run is execution evidence, not coverage
 completion.
+
+## DD-175: Dynamic Range gets a bounded dual-decoder fuzz boundary
+
+- Date: 2026-07-17
+- Status: accepted
+
+Exercise both the strict one-shot Dynamic Range stream decoder and its
+frame-committing incremental decoder from one libFuzzer entry point. Use the
+same 8 KiB input, 4 KiB total-output, 1 KiB frame, 4 KiB payload, and 4 KiB
+frame-local buffered-byte limits as the adjacent entropy fuzz boundary, while
+fixing the accepted adaptive-model total to variant 1's exact 32,768.
+
+Use only fixed caller-owned arrays, derive bounded 17-byte input and 19-byte
+output chunks from supplied bytes, validate every ProcessResult, and abort on
+invalid progress, impossible starvation, or checked call-ceiling exhaustion.
+Compile the harness in every normal test build and expose an instrumented Clang
+target with a repository-authored truncated-prefix seed. Smoke execution is
+evidence of the path, not a claim of coverage completion.
