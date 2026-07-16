@@ -3313,6 +3313,26 @@ discarded and the reviewed seed retained.
 - Local validation: the three focused completion tests and all 968 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
 
+## 2026-07-17 - LZW public-ABI completion re-audit
+
+- Authoring method: applied the current AGENTS.md completion criteria through
+  marc's public entropy-None LZW C ABI after specifying DD-198.
+- References used: DD-112, DD-198, marc's packed-code format, validators,
+  aligned-view contract, frame and stream paths, fuzz, CLI, and benchmark.
+- Known implementations intentionally not consulted: external LZW source,
+  vectors, corpora, test suites, or completion checklists.
+- Independent decisions: 64-byte frames; 9-bit width; 256 phrase entries;
+  required binary classes; 63/64/65 boundaries; 193-byte chunk matrix;
+  final-frame header corruption, truncation, trailing data, sticky errors,
+  repeated EOS, and exact zero-view cases.
+- Generated-code task description: supplement the internal completion matrix
+  with deterministic, malformed-frame, aligned-workspace, and terminal evidence
+  through the public transform.
+- Similarity review: all vectors and control flow are repository-authored and
+  reuse marc's established public-ABI completion conventions only.
+- Local validation: the three focused public-ABI tests and all 971 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

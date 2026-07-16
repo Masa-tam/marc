@@ -3524,3 +3524,26 @@ evidence, classify standalone LZ78 variant 1 as locally
 implementation-complete. External cross-platform deterministic execution,
 representative benchmark records, and the final similarity review remain
 release evidence.
+
+## DD-198: LZW local completion is re-audited through the public ABI
+
+- Date: 2026-07-17
+- Status: accepted
+
+Retain the original internal reference and streaming completion matrix, and add
+a supplemental public-C-ABI matrix using 64-byte frames, maximum code width 9,
+and a 256-entry local phrase ceiling. Cover empty input, every one-byte value,
+all byte values, repetitive and patterned data, deterministic generated data,
+and frame lengths 63, 64, and 65. Require byte-identical re-encoding and exact
+round trips through queried aligned views. Zero- and one-byte encoders query no
+phrase entries; larger encoders and decoders query nonzero views.
+
+For one four-frame stream, compare one-byte and mixed input/output chunking with
+the full-buffer representation. Corrupt the final frame header, truncate its
+payload, and append trailing data independently. Each error must be sticky and
+publish only the first three validated frames; successful terminal calls must
+remain EndOfStream.
+
+This matrix strengthens DD-112 without changing the LZW variant or stream
+format. External cross-platform deterministic execution, representative
+benchmark records, and the final similarity review remain release evidence.

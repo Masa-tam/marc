@@ -163,6 +163,13 @@ The LZW fuzz harness presents bounded arbitrary bytes to both the strict and
 outer streaming decoders with width capped at 10, fixed caller workspaces, and
 a call-count guard. Ordinary builds compile this harness without executing it;
 permanent malformed cases remain normal deterministic tests.
+The supplemental public-ABI completion matrix closes the gap left by the
+original internal-API matrix. It uses a bounded 9-bit profile, queried aligned
+phrase views, required binary data classes, deterministic re-encoding,
+one-byte and mixed chunking, repeatable EndOfStream, and frame-atomic rejection
+of final-frame corruption, truncation, and trailing bytes. Encoders for zero or
+one raw byte query no phrase entries; larger encoders and all decoders use
+nonzero aligned view storage.
 
 ### LZD foundation
 

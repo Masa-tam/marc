@@ -663,6 +663,7 @@ if(MARC_BUILD_TESTS)
         tests/lz78_completion_tests.cpp
         tests/lzw_frame_tests.cpp
         tests/lzw_completion_tests.cpp
+        tests/lzw_public_completion_tests.cpp
         tests/lzw_fuzz_regression_tests.cpp
         tests/lzw_profile_tests.cpp
         tests/lzw_stream_tests.cpp

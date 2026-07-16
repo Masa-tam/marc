@@ -398,3 +398,8 @@ repository-defined phrase-index token stream, required data classes,
 deterministic generator, aligned-view contract, and process assertions. No
 external LZ78 vectors, corpus, test suite, or implementation behavior was
 consulted.
+
+The supplemental LZW public completion matrix uses only marc's public C ABI,
+repository-defined packed-code stream, required data classes, deterministic
+generator, aligned-view contract, and process assertions. No external LZW
+vectors, corpus, test suite, or implementation behavior was consulted.
