@@ -71,6 +71,20 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
+## Specified composed-profile queue
+
+`Specified` fixes a decoder-visible representation and reserved public name but
+does not imply that a factory or tool selector exists. Each row moves to the
+public-profile evidence matrix only after every local evidence column is
+implemented and tested.
+
+| Planned profile | Current boundary | Public status |
+|---|---|---|
+| `lz78-blocked-huffman` | Exact format, bounds, commit order, workspace roles, and hand vector | Not callable |
+| LZW plus Blocked Huffman | Candidate components | Unspecified |
+| LZD plus Blocked Huffman | Candidate components | Unspecified |
+| LZMW plus Blocked Huffman | Candidate components | Unspecified |
+
 ## Remaining release evidence
 
 The following items remain open even though local codec implementation is
@@ -129,7 +143,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-222, the complete Release suite contains 1025 tests and passes under both
+At DD-223, the complete Release suite contains 1025 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

@@ -3917,3 +3917,25 @@ discarded and the reviewed seed retained.
   was performed. This result is not a legal guarantee of non-infringement.
 - Local validation: documentation topology and all 1025 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman composition specification
+
+- Authoring method: composed marc's frozen LZ78 token representation and
+  Blocked Huffman framing rules at their canonical byte-stream boundary before
+  writing a combined implementation.
+- References used: DD-223, existing LZ78 and Blocked Huffman format sections,
+  generic frame header, standalone validators, and caller-owned workspace
+  contracts.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, compression libraries, source, formats, corpora, tests, workspace
+  layouts, or generated adapters.
+- Independent decisions: reserved additive name; eight-times-raw token bound;
+  byte-counted entropy blocks; entropy-before-phrase validation; one opaque
+  aligned region for phrase entries and block views; no callable API yet.
+- Generated-code task description: specify the first composition whose
+  dictionary and entropy layers both require typed aligned workspace and supply
+  a hand-checkable raw-block frame before implementation.
+- Similarity review: terminology and bytes come from marc's existing specified
+  components; no external combined expression was compared.
+- Local validation: documentation topology and all 1025 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

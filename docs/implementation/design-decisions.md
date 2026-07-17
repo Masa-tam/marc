@@ -3982,3 +3982,27 @@ similarity-search technique. That would conflict with the repository's
 independent-implementation boundary. Record only whether first-party expression
 is accounted for by marc's specifications, decisions, references, and prior
 provenance. State the review's limits and make no non-infringement guarantee.
+
+## DD-223: LZ78 is the first typed-workspace Blocked Huffman composition
+
+- Date: 2026-07-18
+- Status: accepted
+
+Reserve `lz78-blocked-huffman` for dictionary ID 3 variant 1 plus entropy ID 2
+variant 1. Preserve the standalone 16-byte LZ78 parameter region, empty entropy
+parameters, fixed eight-byte token serialization, and ordinary version 1.0
+frame header. Entropy blocks count serialized token bytes, never raw bytes or
+phrase entries, and both codec states reset at every outer frame.
+
+Bound token staging by eight times the raw frame size and phrase entries by the
+lesser of token count and configured maximum. Entropy-decode into staging,
+validate the complete LZ78 token stream and phrase graph, and only then decode
+to raw output. The encoder likewise fixes its LZ78 parse before planning
+Blocked Huffman. This preserves deterministic bytes and frame-atomic failure.
+
+Unlike LZ77 and LZSS, LZ78 needs an aligned private phrase table in both
+directions, while combined decoding also needs aligned entropy block views.
+Retain the three-region public workspace convention, but require one checked
+opaque views partition for both private types. Specification does not publish
+the C factory, CLI name, or compatibility promise; those follow only after the
+normal implementation and evidence sequence.

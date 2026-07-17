@@ -488,3 +488,9 @@ and the official
 [GoogleTest 1.17.0 release record](https://github.com/google/googletest/releases/tag/v1.17.0).
 These were used only to verify hosted infrastructure and the pinned test
 dependency. No compression implementation source was consulted.
+
+The LZ78 plus Blocked Huffman composition specification uses only marc's
+already documented LZ78 variant 1 token grammar, Blocked Huffman variant 1
+block format, generic frame format, checked workspace policy, and the original
+LZ78 references recorded above. No external combined codec, implementation
+source, profile, stream, test vector, or workspace layout was consulted.

@@ -1323,3 +1323,14 @@ project using only the installed `marc_DIR`, build its pure-C executable, and
 require the public C ABI round trip to succeed. Add the installed shared
 library directory to `PATH` only for the shared execution; the static consumer
 must run without an installed runtime library search path.
+
+For the first LZ78 plus Blocked Huffman vector, encode raw `A` through the
+already frozen standalone LZ78 grammar to obtain the eight-byte Pair token
+`00 41 00 00 00 00 00 00`. Select entropy block size eight. The mandatory
+Blocked Huffman size rule chooses raw storage, producing one 16-byte descriptor
+with symbol count and payload size eight, no model, raw flag one, and eight
+valid bits. Prepend a generic frame header declaring raw size one, dictionary
+and compressed sizes eight, one block, and 16 descriptor bytes. The resulting
+frame is exactly 80 bytes. When implementation begins, require the planner,
+encoder, validator, and decoder to reproduce or accept this vector before
+adding larger round trips.

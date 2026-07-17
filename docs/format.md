@@ -1267,6 +1267,93 @@ The CLI name `lzss-blocked-huffman` selects this exact representation with
 one-MiB raw frames and 65,536-symbol entropy blocks. The name and fixed local
 policy do not add format fields.
 
+## LZ78 variant 1 plus Blocked Huffman variant 1
+
+This composition uses dictionary algorithm ID 3, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
+are the 16-byte LZ78 parameters followed by the empty Blocked Huffman parameter
+region. `entropy block size` counts bytes in the canonical fixed-width LZ78
+token stream. Blocks reset at and cannot cross an outer frame.
+
+The generic frame header records raw bytes as `uncompressed size`, LZ78 token
+bytes as `dictionary serialized size`, stored entropy bytes as `compressed
+payload size`, the exact Blocked Huffman block count, and the complete
+descriptor/model region size. The body is:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate LZ78 token region is stored. Entropy decoding must produce exactly
+`dictionary serialized size` bytes, and that size must be a multiple of eight.
+Before any raw-byte publication, the LZ78 validator must consume the complete
+staged token region, validate all phrase references and dictionary growth, and
+derive exactly `uncompressed size` bytes. Phrase expansion remains iterative;
+the entropy layer does not change LZ78's frame-local dictionary rules.
+
+For a raw frame of `F` bytes, the token count is at most `F`, so the canonical
+dictionary staging bound is `8F` bytes. The maximum phrase-entry count for
+encoding or validation is the lesser of the token count and the configured
+LZ78 maximum. For entropy block size `E`, the block-count bound is
+`ceil(8F/E)`. Every multiplication, ceiling division, descriptor extent,
+aligned phrase-table extent, and aggregate workspace sum must be checked before
+allocation or output.
+
+### Hand-checkable LZ78 combined raw-block frame
+
+For raw input `A`, LZ78 emits the eight-byte Pair token
+`00 41 00 00 00 00 00 00`. With entropy block size eight, Blocked Huffman
+selects raw representation. The complete 80-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  08 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+08 00 00 00 08 00 00 00  00 00 01 08 00 00 00 00
+00 41 00 00 00 00 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final eight bytes are the unchanged LZ78
+Pair token. The 16-byte LZ78 parameter region remains stream-level and is not
+repeated in this frame.
+
+The reference frame encoder must first plan the complete LZ78 parse using an
+aligned caller-owned phrase table, emit the canonical tokens once into staging,
+and then plan Blocked Huffman over those exact bytes. Only after all extents and
+the generic header validate may it publish serialized output. Repeating the
+plan during encoding must reproduce both token and entropy bytes exactly.
+
+The reference frame decoder treats entropy output and phrase records as
+uncommitted state. It must validate the complete token stream into an aligned
+caller-owned phrase table before checking raw destination capacity and running
+the transactional LZ78 decoder. A header, entropy, token, phrase-reference,
+declared-size, workspace, or raw-capacity failure publishes no raw byte.
+
+The known-size stream uses the ordinary 64-byte version 1.0 header, followed by
+the 16-byte LZ78 parameter region and zero or more combined frames. Empty input
+is exactly this 80-byte prefix. Both the LZ78 phrase dictionary and every
+Blocked Huffman model reset at each frame. Strict decoding requires the frames
+to derive exactly `original size` bytes and rejects trailing serialized data.
+
+Incremental encoding and decoding must emit and accept exactly this
+representation under arbitrary input and output chunking. A final short frame
+is emitted only after the known-size input contract is satisfied. A decoded
+frame is not exposed until its entropy payload, token stream, phrase table, and
+raw extent validate completely; earlier frames may already be committed when a
+later frame fails. Nonterminal `Flush` does not shorten a frame, and
+`ResetBlock` is unsupported at this profile boundary.
+
+The reserved public name for this exact representation is
+`lz78-blocked-huffman`. Its future C ABI must retain the three caller-workspace
+shape while treating the aligned views region as opaque storage partitioned for
+LZ78 phrase entries and Blocked Huffman block views. Reserving the name and
+format here does not publish a factory, CLI selector, or compatibility promise
+until the normal completion criteria pass.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy
