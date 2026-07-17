@@ -426,8 +426,8 @@ earlier manifest rules, repository-generated fixture, and SHA-256 metadata. No
 external archive format, interoperability suite, or third-party tool behavior
 was consulted.
 
-The LZSS plus Blocked Huffman frame format and validator compose only marc's
-repository-defined LZSS variant 1 token grammar, Blocked Huffman variant 1
-representation, generic frame header, checked arithmetic, and decoder limits.
-No external combined format, implementation, vector, or test suite was
-consulted.
+The LZSS plus Blocked Huffman frame format, exact encoder, and validator compose
+only marc's repository-defined LZSS variant 1 token grammar, Blocked Huffman
+variant 1 representation, generic frame header, checked arithmetic, and
+decoder limits. No external combined format, implementation, vector, or test
+suite was consulted.

@@ -1058,9 +1058,14 @@ output and performs no input-controlled allocation.
 
 This boundary demonstrates that composition is not coupled to LZ77's fixed
 16-byte tokens. Descriptor/model bytes, payload bytes, staged LZSS bytes, and
-the aligned block-view array are checked as one aggregate workspace. Complete
-encoding, raw reconstruction, stream controllers, and public adapters build on
-this boundary rather than weakening its commit order.
+the aligned block-view array are checked as one aggregate workspace.
+
+The matching exact planner first determines the variable LZSS token extent,
+emits those tokens once into caller-owned staging, and then plans Blocked
+Huffman over the actual bytes. Only after the generic header and both entropy
+regions have exact extents does the frame encoder check serialized capacity and
+publish output. Raw reconstruction, stream controllers, and public adapters
+continue from these frame boundaries without weakening their commit order.
 
 The public C adapter exposes this profile without adding a fourth generic
 workspace field. Its secondary byte workspace is an opaque concatenation of

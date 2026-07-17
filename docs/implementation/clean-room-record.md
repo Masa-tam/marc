@@ -3642,3 +3642,22 @@ discarded and the reviewed seed retained.
 - Local validation: the seven focused frame-validator tests passed; all 982
   Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-17 - LZSS plus Blocked Huffman exact frame encoder
+
+- Authoring method: extended the independently specified DD-209 frame with
+  token-first planning using marc's existing bounded component encoders.
+- References used: DD-210, the repository LZSS encoder, Blocked Huffman frame
+  planner/encoder, generic frame serializer, and 74-byte hand vector.
+- Known implementations intentionally not consulted: external compression
+  pipelines, combined formats, source, vectors, or tests.
+- Independent decisions: plan variable token size before entropy; stage one
+  canonical token copy; validate all frame extents before serialized output;
+  cover raw and canonical Huffman blocks plus a final short block.
+- Generated-code task description: add an exact LZSS plus Blocked Huffman frame
+  planner and atomic encoder over the existing strict validation boundary.
+- Similarity review: the implementation composes only marc-owned component
+  contracts and follows the already documented generic frame order.
+- Local validation: all twelve focused LZSS-composition frame tests passed;
+  all 987 Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

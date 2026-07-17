@@ -1219,6 +1219,13 @@ Blocked Huffman descriptor, and the final two bytes are the unchanged LZSS
 Literal token. The 16-byte LZSS parameter region is stream-level and is not
 repeated in this frame.
 
+The reference frame encoder plans the complete LZSS token stream into
+caller-owned staging before writing the frame. It then derives the exact
+Blocked Huffman descriptor and payload extents from those bytes, validates the
+generic header, and checks the complete serialized destination before emitting
+any header or entropy byte. Repeating the plan during encoding must reproduce
+the same token and entropy representation byte for byte.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

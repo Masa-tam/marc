@@ -3745,3 +3745,20 @@ publish raw bytes, a C ABI factory, or a CLI name from this slice.
 Continue forward from this validation nucleus with encoder planning, raw
 commit, complete-stream and streaming controllers, public adapters, malformed
 and fuzz coverage, benchmark registration, and interoperability evidence.
+
+## DD-210: LZSS composition uses token-first exact frame planning
+
+- Date: 2026-07-17
+- Status: accepted
+
+Plan the LZSS token stream before any combined frame byte is published because
+its two-byte Literal and nine-byte Match forms prevent deriving the dictionary
+extent directly from raw size. Encode the planned tokens once into caller-owned
+staging, then run the bounded Blocked Huffman planner over that exact extent.
+
+Construct and validate the generic frame header from the resulting dictionary,
+descriptor, payload, and block extents. The frame encoder repeats the
+deterministic entropy traversal only after verifying complete serialized output
+capacity. A short dictionary staging span or serialized destination must leave
+that destination unchanged. Retain the frame-only internal status until raw
+commit and stream-level behavior are implemented and tested.

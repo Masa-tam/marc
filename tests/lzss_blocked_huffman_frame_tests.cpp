@@ -169,3 +169,161 @@ TEST(LzssBlockedHuffmanFrameValidator, RejectsWrongSequenceAndPipeline) {
                   .error,
               LzssBlockedHuffmanFrameValidationError::unsupported_pipeline);
 }
+
+TEST(LzssBlockedHuffmanFrameEncoder, PlansAndEmitsExactHandVector) {
+    const std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(plan.raw_size, 1U);
+    EXPECT_EQ(plan.dictionary_size, 2U);
+    EXPECT_EQ(plan.descriptor_size, 16U);
+    EXPECT_EQ(plan.payload_size, 2U);
+    EXPECT_EQ(plan.block_count, 1U);
+    EXPECT_EQ(plan.serialized_size, single_literal_frame.size());
+
+    std::array<std::byte, single_literal_frame.size()> encoded{};
+    const auto result = marc::frame::encode_lzss_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, raw, staging, encoded);
+    ASSERT_EQ(result.error, LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(encoded, single_literal_frame);
+}
+
+TEST(LzssBlockedHuffmanFrameEncoder,
+     DeterministicallyRoundTripsVariableTokenStaging) {
+    const std::array raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'},
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'}};
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.original_size = raw.size();
+    stream.entropy_block_size = 32;
+    std::array<std::byte, 12> encode_staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, raw, encode_staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    ASSERT_EQ(plan.dictionary_size, 11U);
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, encode_staging, first)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, encode_staging, second)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 12> decode_staging{};
+    const auto validated = marc::frame::validate_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, first, views, decode_staging);
+    ASSERT_EQ(validated.error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{decode_staging}.first(
+            validated.dictionary_size),
+        std::span<const std::byte>{encode_staging}.first(
+            plan.dictionary_size)));
+}
+
+TEST(LzssBlockedHuffmanFrameEncoder, UsesCanonicalHuffmanWhenSmaller) {
+    std::array<std::byte, 1024> raw{};
+    std::uint32_t state = 0x6d617263U;
+    for (auto& value : raw) {
+        state ^= state << 13U;
+        state ^= state >> 17U;
+        state ^= state << 5U;
+        value = static_cast<std::byte>(state & 0xffU);
+    }
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.original_size = raw.size();
+    stream.entropy_block_size = 2048;
+    std::array<std::byte, 2048> encode_staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, raw, encode_staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(plan.descriptor_size, 272U);
+    EXPECT_LT(plan.payload_size, plan.dictionary_size);
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, encode_staging, encoded)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 2048> decode_staging{};
+    ASSERT_EQ(marc::frame::validate_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, encoded, views, decode_staging)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(views[0].descriptor.flags, 0U);
+}
+
+TEST(LzssBlockedHuffmanFrameEncoder,
+     CapacityFailuresDoNotModifyDestinations) {
+    const std::array raw{std::byte{'A'}};
+    std::array<std::byte, 1> short_staging{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::plan_lzss_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, raw, short_staging)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::
+                  dictionary_staging_too_small);
+    EXPECT_EQ(short_staging[0], std::byte{0x5a});
+
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, single_literal_frame.size() - 1> short_output{};
+    short_output.fill(std::byte{0x5a});
+    const auto result = marc::frame::encode_lzss_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, raw, staging, short_output);
+    EXPECT_EQ(result.error, LzssBlockedHuffmanFrameValidationError::
+                                serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, single_literal_frame.size());
+    EXPECT_TRUE(std::ranges::all_of(short_output, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+}
+
+TEST(LzssBlockedHuffmanFrameEncoder,
+     PlansMultipleBlocksAndRejectsUnexpectedFrameExtent) {
+    std::array<std::byte, 64> raw{};
+    for (std::size_t index = 0; index < raw.size(); ++index) {
+        raw[index] = static_cast<std::byte>(index);
+    }
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.original_size = raw.size();
+    stream.entropy_block_size = 30;
+    std::array<std::byte, 128> staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(plan.dictionary_size, 128U);
+    EXPECT_EQ(plan.block_count, 5U);
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, staging, encoded)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 5> views{};
+    std::array<std::byte, 128> decoded_staging{};
+    ASSERT_EQ(marc::frame::validate_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, encoded, views, decoded_staging)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(views[4].descriptor.symbol_count, 8U);
+
+    EXPECT_EQ(marc::frame::plan_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0,
+                  std::span<const std::byte>{}, staging)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::input_size_mismatch);
+    EXPECT_EQ(marc::frame::plan_lzss_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, raw, staging)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::input_size_mismatch);
+}

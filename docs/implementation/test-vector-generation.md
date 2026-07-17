@@ -1195,3 +1195,13 @@ strict truncation and one trailing byte; insufficient views or staging before
 writing; aggregate workspace one byte short; malformed entropy metadata before
 staging writes; an unknown staged LZSS tag; a wrong frame sequence; and an
 unsupported pipeline variant.
+
+Require the exact planner and encoder to reproduce that 74-byte frame from raw
+`A`. Encode six `A` bytes twice to prove deterministic composition of a
+two-byte Literal and nine-byte Match token, then entropy-decode and compare the
+complete staged token extent. Generate 1,024 deterministic xorshift bytes to
+exercise canonical Huffman selection when smaller. Use 64 distinct bytes with
+a 30-symbol entropy block to produce five blocks and a final short block.
+Require one-byte-short dictionary staging and serialized output to leave their
+respective destinations unchanged, and reject empty or contextually oversized
+raw frames.
