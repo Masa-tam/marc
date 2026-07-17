@@ -9,17 +9,17 @@ not yet a supported stream contract.
 ## Current matrix
 
 The table shows every baseline byte-stream dictionary/entropy pairing. A named
-cell is a currently published CLI and C ABI profile. `Stream` means the exact
-known-size stream planner/encoder and whole-stream-atomic decoder exist, but
-incremental streaming, the C ABI, CLI, and release evidence do not. `Candidate`
-means both components exist and meet at the canonical byte-stream boundary,
-but that pairing has no public format or API guarantee yet.
+cell is a currently published CLI and C ABI profile. `Streaming encoder` means
+the exact known-size stream codec and incremental encoder exist, but the
+incremental decoder, C ABI, CLI, and release evidence do not. `Candidate` means
+both components exist and meet at the canonical byte-stream boundary, but that
+pairing has no public format or API guarantee yet.
 
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZSS | `lzss` | Stream | Candidate | Candidate | Candidate | Candidate |
+| LZSS | `lzss` | Streaming encoder | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
@@ -29,7 +29,7 @@ but that pairing has no public format or API guarantee yet.
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. All named cells are included in interoperability schema 3.
 
-Stream and Candidate cells must not be encoded or decoded by substituting
+In-progress and Candidate cells must not be encoded or decoded by substituting
 standalone factories. Until a cell receives a named profile, streams for that
 pairing have no public compatibility promise.
 

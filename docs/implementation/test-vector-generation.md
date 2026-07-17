@@ -1225,3 +1225,11 @@ Require deterministic encoding, prefix-only empty input, every strict
 truncation, one trailing byte, and independent output/view/staging capacity
 failures. Corrupt the first LZSS tag in the second frame and require raw output
 and caller-visible stream/parameter objects to remain unchanged.
+
+Drive the incremental encoder for `ABABX` with one-byte input and output spans
+and require byte identity with the 306-byte complete-stream oracle. Repeat with
+a nonterminal `Flush` after the first raw byte and a terminal call containing
+the remainder. Verify the 80-byte empty stream, repeated ended calls, premature
+`EndInput`, unsupported `ResetBlock`, and independent short raw/token/frame
+workspaces. For a two-byte raw frame, set the aggregate limit to 81 and require
+failure because raw 2 plus tokens 4 plus serialized frame 76 requires 82 bytes.

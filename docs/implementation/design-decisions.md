@@ -3796,3 +3796,20 @@ repeat the bounded frame traversal to publish raw bytes. Publish parsed stream
 and parameter outputs only after the second pass succeeds. This makes later
 frame corruption whole-stream atomic while reusing storage sized for only the
 largest frame and its entropy block views.
+
+## DD-213: LZSS combined incremental encoding preserves exact stream bytes
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement the `ProcessResult` encoder with caller-owned raw-frame, LZSS-token,
+and serialized-frame workspaces. Size the worst-case token staging as twice the
+largest raw frame because every input byte may become a two-byte Literal. Before
+preparing a frame, check raw bytes plus actual token bytes plus exact serialized
+frame bytes as one aggregate internal-buffer bound.
+
+Drain the canonical 80-byte prefix and each complete frame independently
+through partial output buffers. Do not let nonterminal `Flush` close a partial
+frame. Latch `EndInput` while draining and report `EndOfStream` only after the
+final frame byte is emitted. Require byte identity with DD-212 for all chunking
+and retain a stable ended response on repeated calls.

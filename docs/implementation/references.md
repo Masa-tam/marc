@@ -436,3 +436,8 @@ The LZSS plus Blocked Huffman complete-stream controller uses only marc's
 version 1.0 stream header, LZSS parameter serialization, combined frame codec,
 and two-pass atomic decode convention. No external container, stream scanner,
 profile, vector, or implementation was consulted.
+
+The LZSS plus Blocked Huffman incremental encoder uses only marc's
+`ProcessResult` contract, complete-stream oracle, exact frame planner/encoder,
+and caller-owned workspace policy. No external streaming encoder, buffering
+scheme, source, or test schedule was consulted.

@@ -1240,6 +1240,12 @@ and every Blocked Huffman model reset at each frame. Strict decoding requires
 the frames to derive exactly `original size` bytes and rejects any remaining
 serialized byte.
 
+Incremental encoding does not define another representation. Input and output
+chunking, temporary starvation, and nonterminal `Flush` leave these exact bytes
+unchanged. A full uncompressed frame may be emitted before whole-stream
+`EndInput`; a final short frame is emitted only after the known-size input
+contract is satisfied. `ResetBlock` is unsupported at this profile boundary.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

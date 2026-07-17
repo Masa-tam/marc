@@ -3699,3 +3699,22 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused complete-stream tests passed; all 998
   Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman incremental encoder
+
+- Authoring method: applied marc's `ProcessResult` state contract to the
+  reviewed combined frame and complete-stream encoders.
+- References used: DD-213, repository status model, exact 306-byte oracle,
+  frame planner/encoder, checked arithmetic, and caller-owned workspace rules.
+- Known implementations intentionally not consulted: external streaming
+  compression source, buffering state machines, tests, or chunk schedules.
+- Independent decisions: worst-case token staging is two times raw frame size;
+  aggregate raw/token/serialized bounds; nonterminal flush stays open; terminal
+  state is latched through output drain; `ResetBlock` is rejected.
+- Generated-code task description: implement a bounded incremental combined
+  encoder whose bytes are invariant under one-byte input/output chunking.
+- Similarity review: the state machine follows marc's existing public process
+  contract and composed codec boundaries; no external implementation was used.
+- Local validation: all four focused incremental-encoder tests passed; all
+  1002 Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

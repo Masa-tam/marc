@@ -1081,6 +1081,14 @@ first pass with no raw output; only a successful complete scan permits the
 second commit pass. A malformed later frame therefore cannot expose an earlier
 raw frame or partially replace caller-visible configuration.
 
+The incremental encoder owns no variable-size allocation. Caller-provided raw
+frame, LZSS-token, and serialized-frame spans bound its state. It drains the
+canonical prefix and each complete encoded frame through arbitrary output
+capacity, including one byte. Nonterminal `Flush` does not close a partial
+frame, and an `EndInput` indication remains latched until the final serialized
+frame has completely drained. Its output is byte-identical to the known-size
+encoder for every input/output chunk schedule.
+
 The public C adapter exposes this profile without adding a fourth generic
 workspace field. Its secondary byte workspace is an opaque concatenation of
 the two adjacent frame-local staging spans, whose individual extents are
