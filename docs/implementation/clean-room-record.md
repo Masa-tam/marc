@@ -3434,6 +3434,25 @@ discarded and the reviewed seed retained.
   indexes and the implementation-record directory; all 974 MSVC/Visual Studio
   2026 and Clang 22.1.3 Release tests passed.
 
+## 2026-07-17 - Portable documentation topology regression
+
+- Authoring method: converted the completed DD-203 layout audit into a
+  repository-owned CMake script after specifying DD-204.
+- References used: DD-203, current marc Markdown links, required provenance
+  paths in AGENTS.md, and CMake script-mode file and regular-expression APIs.
+- Known implementations intentionally not consulted: external link checkers,
+  documentation generators, project layouts, or CI actions.
+- Independent decisions: require fourteen indexed documents; reject the four
+  obsolete root record paths; validate relative Markdown links and images;
+  ignore external URLs and document-local anchors; use no extra runtime.
+- Generated-code task description: permanently test documentation separation
+  and relative-link integrity through portable CTest infrastructure.
+- Similarity review: the validator expresses only marc's selected document
+  taxonomy and local link rules.
+- Local validation: the focused documentation test passed under both MSVC and
+  ClangCL configurations and reported 27 relative links across 14 documents;
+  all 975 MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

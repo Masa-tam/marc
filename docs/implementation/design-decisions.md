@@ -3645,3 +3645,18 @@ than additional public API or format specification.
 Preserve the same hierarchy when installing documentation. Install the project
 README beside the package license and install the complete `docs/` tree below
 the package documentation directory so relative links remain valid.
+
+## DD-204: Validate documentation topology with CMake
+
+- Date: 2026-07-17
+- Status: accepted
+
+Register a script-mode CMake test that requires the reader-facing index and all
+implementation-record files, rejects the four former root-level record paths,
+and resolves every relative Markdown link and image target. Use only CMake so
+the check runs through the same CTest entry on Windows and non-Windows hosts
+without introducing another documentation-tool dependency.
+
+Keep asset relocation separate from this validator. The test describes the
+selected topology and link integrity but does not prescribe where a valid
+linked image must live.

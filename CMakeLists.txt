@@ -533,6 +533,10 @@ install(FILES examples/CMakeLists.txt examples/c_roundtrip.c
 
 if(MARC_BUILD_TESTS)
     enable_testing()
+    add_test(NAME marc_documentation_layout
+        COMMAND ${CMAKE_COMMAND}
+            "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/verify_documentation.cmake)
     if(TARGET marc_c_roundtrip_example)
         add_test(NAME marc_c_roundtrip_example COMMAND marc_c_roundtrip_example)
     endif()
