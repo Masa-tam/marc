@@ -3689,3 +3689,20 @@ factories. Every additional pairing needs an additive named profile with exact
 format parameters, bounded workspace derivation, transactional validation,
 streaming behavior, public ABI coverage, malformed tests, fuzzing, benchmarks,
 interoperability policy, and provenance before publication.
+
+## DD-207: Publish one contributor contract before external collaboration
+
+- Date: 2026-07-17
+- Status: accepted
+
+Add a root `CONTRIBUTING.md` that routes contributors to the normative format,
+architecture, C API, design decisions, references, and provenance record. State
+the independent-implementation hygiene, documentation-first algorithm
+sequence, build/test entry points, and permanent-regression policy without
+claiming legal guarantees.
+
+Include a composed-profile admission checklist so reusable internal parts do
+not imply an automatically supported public cross product. Install the
+contributor contract beside the project README and include it in portable
+documentation link validation. Install `AGENTS.md` beside it so the linked
+complete repository contract remains available in packaged documentation.

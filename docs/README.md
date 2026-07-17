@@ -27,3 +27,8 @@ The chronological decisions, source provenance, and test-vector construction
 records are collected under [implementation records](implementation/README.md).
 They document how marc was produced; they are not additional public API or
 stream-format specifications.
+
+## Project
+
+- [Contributing](../CONTRIBUTING.md): implementation sequence, provenance,
+  composed-profile admission, and validation requirements.

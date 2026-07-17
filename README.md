@@ -88,6 +88,10 @@ The standalone project in `examples/` demonstrates installed-package use. See
 
 ## License and provenance
 
+Contribution requirements, including the specification-driven independent
+implementation process, are documented in
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 The repository is MIT licensed. Its implementation process is described as a
 specification-driven independent implementation; provenance and intentionally
 unconsulted implementation sources are recorded in

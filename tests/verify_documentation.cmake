@@ -7,6 +7,7 @@ endif()
 file(REAL_PATH "${SOURCE_DIR}" source_dir)
 set(required_documents
     README.md
+    CONTRIBUTING.md
     docs/README.md
     docs/architecture.md
     docs/baseline-readiness.md
@@ -41,7 +42,9 @@ foreach(relative_path IN LISTS legacy_record_paths)
 endforeach()
 
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
-list(APPEND documentation_files "${source_dir}/README.md")
+list(APPEND documentation_files
+    "${source_dir}/README.md"
+    "${source_dir}/CONTRIBUTING.md")
 list(SORT documentation_files)
 
 set(relative_link_count 0)

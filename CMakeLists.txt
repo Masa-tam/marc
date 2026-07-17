@@ -521,7 +521,8 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/marcConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/marc
 )
-install(FILES LICENSE THIRD_PARTY_NOTICES.md README.md
+install(FILES
+    LICENSE THIRD_PARTY_NOTICES.md README.md CONTRIBUTING.md AGENTS.md
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc)
 install(FILES assets/images/marc.png
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/assets/images)

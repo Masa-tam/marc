@@ -3497,6 +3497,28 @@ discarded and the reviewed seed retained.
   links across 15 documents; all 975 MSVC/Visual Studio 2026 and Clang 22.1.3
   Release tests passed.
 
+## 2026-07-17 - Public contributor contract
+
+- Authoring method: consolidated existing repository requirements after
+  specifying DD-207; no algorithm, API, or format rule was newly imported.
+- References used: AGENTS.md, marc architecture, format, C API, design
+  decisions, provenance records, CMake presets, fuzzing guide, MIT license, and
+  third-party notices.
+- Known implementations intentionally not consulted: external contribution
+  guides, project templates, legal boilerplate, or profile registries.
+- Independent decisions: provide one root contributor entry point; route to
+  authoritative details instead of duplicating them fully; highlight the
+  composed-profile evidence checklist; install and link-check the document.
+- Generated-code task description: prepare a public contribution contract that
+  preserves marc's independent implementation, bounded-decoder, deterministic
+  format, and profile-publication standards.
+- Similarity review: the guide summarizes only repository-owned requirements
+  and commands and makes no legal guarantee.
+- Local validation: source and installed documentation validation resolved 43
+  relative links across 16 documents; `CONTRIBUTING.md` and its complete
+  `AGENTS.md` contract installed beside the project README; all 975
+  MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's
