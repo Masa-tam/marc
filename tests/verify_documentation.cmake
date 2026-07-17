@@ -12,6 +12,7 @@ set(required_documents
     docs/baseline-readiness.md
     docs/benchmarks.md
     docs/c-api.md
+    docs/cli.md
     docs/format.md
     docs/fuzzing.md
     docs/interoperability.md

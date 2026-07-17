@@ -3453,6 +3453,29 @@ discarded and the reviewed seed retained.
   ClangCL configurations and reported 27 relative links across 14 documents;
   all 975 MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
 
+## 2026-07-17 - Command-line documentation separation
+
+- Authoring method: reorganized repository-owned CLI descriptions after
+  specifying DD-205; no command syntax, codec behavior, or stream format was
+  changed.
+- References used: the current `marc` usage function, public profile dispatch,
+  root README, documentation index, and installed documentation layout.
+- Known implementations intentionally not consulted: external project
+  READMEs, CLI manuals, documentation templates, or archive tools.
+- Independent decisions: retain one default and one explicitly selected
+  round-trip example in the GitHub entry point; place the exact
+  thirteen-profile table, staging behavior, and exit codes in one dedicated
+  installed document; add that document to topology validation.
+- Generated-code task description: separate detailed CLI reference material
+  from the public landing page without losing executable behavior details.
+- Similarity review: the text and table describe only marc's own command
+  parser, profile names, and file-commit policy.
+- Local validation: topology validation reported 31 relative links across 15
+  source documents; the installed 15-document set had no broken relative link
+  or image; actual CLI runs returned 0 for a matching explicit-profile round
+  trip, 1 for an operation failure, and 2 for invalid usage; all 975
+  MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

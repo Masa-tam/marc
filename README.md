@@ -33,56 +33,18 @@ git submodule update --init --recursive
 
 ## Command-line tool
 
-Top-level builds produce a minimal `marc` executable that exercises the public
-C ABI with bounded streaming buffers. LZ77 variant 1 remains the default;
-LZSS, LZ78, LZW, LZD, and LZMW variant 1 can be selected explicitly without an
-entropy layer. `blocked-huffman` selects standalone Blocked Huffman, while
-`adaptive-huffman` selects the FGK Adaptive Huffman profile and
-`dynamic-range` selects the adaptive order-0 Dynamic Range profile. `rans`
-selects the scalar byte-renormalized rANS profile, and `tans` selects the
-table-based tANS profile.
-`lz77-blocked-huffman` selects the composed LZ77 plus Blocked Huffman profile.
-`checksum-raw` selects version 1.1 raw framing with mandatory per-frame
-CRC-32C:
+Top-level builds produce a small `marc` executable that exercises the public C
+ABI with bounded streaming buffers. LZ77 variant 1 is the default profile:
 
 ```console
 marc encode input.bin output.marc
 marc decode output.marc restored.bin
-marc encode --codec checksum-raw input.bin output.marc
-marc decode --codec checksum-raw output.marc restored.bin
 marc encode --codec blocked-huffman input.bin output.marc
 marc decode --codec blocked-huffman output.marc restored.bin
-marc encode --codec adaptive-huffman input.bin output.marc
-marc decode --codec adaptive-huffman output.marc restored.bin
-marc encode --codec dynamic-range input.bin output.marc
-marc decode --codec dynamic-range output.marc restored.bin
-marc encode --codec rans input.bin output.marc
-marc decode --codec rans output.marc restored.bin
-marc encode --codec tans input.bin output.marc
-marc decode --codec tans output.marc restored.bin
-marc encode --codec lz77-blocked-huffman input.bin output.marc
-marc decode --codec lz77-blocked-huffman output.marc restored.bin
-marc encode --codec lzss input.bin output.marc
-marc decode --codec lzss output.marc restored.bin
-marc encode --codec lz78 input.bin output.marc
-marc decode --codec lz78 output.marc restored.bin
-marc encode --codec lzw input.bin output.marc
-marc decode --codec lzw output.marc restored.bin
-marc encode --codec lzd input.bin output.marc
-marc decode --codec lzd output.marc restored.bin
-marc encode --codec lzmw input.bin output.marc
-marc decode --codec lzmw output.marc restored.bin
 ```
 
-Use the same codec selection (`checksum-raw`, `blocked-huffman`,
-`adaptive-huffman`, `dynamic-range`, `rans`, `tans`, `lz77`,
-`lz77-blocked-huffman`, `lzss`, `lz78`, `lzw`, `lzd`, or `lzmw`) for decode
-that was used for encode.
-An explicit `--codec lz77` is equivalent to omitting the option.
-
-The destination and its `.tmp` staging path must not already exist. A successful
-operation renames the staging file; a failed operation removes it, so malformed
-input does not leave a partially decoded destination.
+See the [command-line reference](docs/cli.md) for all profiles and file/error
+behavior.
 
 ## CMake consumption
 

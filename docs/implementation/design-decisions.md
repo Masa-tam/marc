@@ -3660,3 +3660,14 @@ without introducing another documentation-tool dependency.
 Keep asset relocation separate from this validator. The test describes the
 selected topology and link integrity but does not prescribe where a valid
 linked image must live.
+
+## DD-205: Keep the repository README as a concise entry point
+
+- Date: 2026-07-17
+- Status: accepted
+
+Keep one default and one explicitly selected command-line example in the root
+README. Move the complete profile matrix, exact CLI behavior, and exit codes to
+`docs/cli.md`, linked from both the root README and documentation index. This
+keeps the GitHub landing page focused while retaining an installed, versioned
+reference for every public CLI profile.

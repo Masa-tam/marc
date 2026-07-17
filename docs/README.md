@@ -6,6 +6,7 @@ navigate chronological development records.
 
 ## Library and format
 
+- [Command-line tool](cli.md): usage, profiles, and file/error behavior.
 - [C API](c-api.md): public ABI, lifecycle, configuration, and errors.
 - [Stream format](format.md): decoder-visible byte and bit representation.
 - [Architecture](architecture.md): component boundaries, streaming contracts,
