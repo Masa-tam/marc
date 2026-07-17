@@ -1336,3 +1336,14 @@ byte for byte; the validator and decoder accept it, recover the exact Pair
 token, build phrase entry `{root, A, length 1}`, and publish only the single raw
 byte. Larger tests additionally require deterministic multi-block output and a
 canonical-Huffman block when that representation is smaller than raw storage.
+
+For incremental LZ78 plus Blocked Huffman testing, independently assemble the
+80-byte stream prefix and each complete frame with the already tested frame
+planner/encoder. Feed raw `ABABX` through two-byte frames and compare the
+streaming encoder byte for byte against that assembly while limiting both
+input and output to one byte per call. Decode the same stream under the same
+schedule. Corrupt the first payload byte of the second frame and require only
+the first `AB` frame to be published, followed by a sticky malformed-stream
+error. Also construct both transforms directly from the profile sizing and
+typed partition results so layout metadata is exercised as a construction
+contract rather than only as an arithmetic result.

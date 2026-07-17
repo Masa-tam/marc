@@ -498,3 +498,6 @@ The later profile-sizing and typed-partition work likewise derives only from
 marc's private record sizes, checked arithmetic helpers, and established
 three-region C ABI convention; no external allocator or layout implementation
 was used.
+The incremental transforms reuse only marc's existing composed-profile state
+machine and the LZ78-specific typed partition contract; no external streaming
+adapter, combined codec, or error policy was consulted.

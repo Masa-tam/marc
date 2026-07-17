@@ -3999,3 +3999,26 @@ discarded and the reviewed seed retained.
   compared.
 - Local validation: documentation topology and all 1046 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman incremental frame transforms
+
+- Authoring method: composed marc's existing incremental frame state machine
+  with the independently specified LZ78 plus Blocked Huffman frame codec and
+  DD-226 typed workspace partitions.
+- References used: DD-223 through DD-227, existing composed-profile streaming
+  contracts, and the repository's LZ78/Blocked Huffman frame tests.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, stream adapters, source, state machines, tests, or malformed corpora.
+- Independent decisions: stage and validate a complete frame before
+  publication; count only current-frame typed entries; preserve terminal state
+  across partial draining; keep reset control unsupported pending a format
+  policy.
+- Generated-code task description: implement bounded incremental encoder and
+  decoder transforms, consume profile-generated typed views directly, and
+  verify one-byte boundaries, multiple frames, truncation, sticky errors, and
+  frame-atomic corruption handling.
+- Similarity review: state transitions follow marc's own existing transform
+  contracts and LZ78-specific workspace rules; no external combined expression
+  was compared.
+- Local validation: documentation topology and all 1052 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

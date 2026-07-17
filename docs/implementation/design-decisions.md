@@ -4065,3 +4065,25 @@ alignment; reject altered requirements, short storage, and a misaligned base
 before returning typed spans. Empty encoding requires zero opaque bytes and
 alignment one. The profile remains non-callable until streaming transforms and
 public construction use these helpers.
+
+## DD-227: LZ78 composition streams only validated complete frames
+
+- Date: 2026-07-18
+- Status: accepted
+
+Use the common composed-profile state machine for the LZ78 plus Blocked
+Huffman incremental encoder and decoder. The encoder collects at most one raw
+frame, fixes its complete LZ78 token stream in bounded staging, prepares the
+complete encoded frame, and then drains it independently of later input. The
+decoder collects one complete serialized frame, entropy-decodes into private
+staging, validates the complete LZ78 phrase graph and exact raw extent, and
+only then makes that frame available for incremental output.
+
+Both directions consume the typed spans returned by the DD-226 partition
+helpers. Count only the entries required by the current frame, together with
+serialized, staging, and raw storage, against the aggregate buffered-memory
+limit. Preserve `EndInput` while a nonfinal decoded frame is draining, reject
+truncation or trailing bytes, make terminal errors sticky, and return stable
+end-of-stream on repeated calls. `ResetBlock` remains unsupported because
+caller-selected dictionary resets require a separately specified frame-control
+policy.
