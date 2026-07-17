@@ -3759,3 +3759,23 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused profile tests passed; all 1015 Release
   tests, including documentation topology, passed under both MSVC/Visual Studio
   2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman C ABI factory
+
+- Authoring method: independently adapted marc's size-tagged opaque transform
+  boundary to the reviewed LZSS combined profile and streaming codecs.
+- References used: DD-216, DD-215, public `marc.h` lifecycle, combined profile,
+  checked workspace arithmetic, and aligned entropy-view convention.
+- Known implementations intentionally not consulted: external compression
+  ABIs, language bindings, allocator designs, implementation source, or tests.
+- Independent decisions: additive ABI-v1 structure and functions; secondary
+  workspace concatenation; decode-only aligned views; creation-time repeat
+  validation; no CLI publication in this step.
+- Generated-code task description: expose the LZSS composition as a dedicated
+  C configuration/query/factory trio and validate it from a C11 translation
+  unit.
+- Similarity review: the adapter follows marc-owned ABI and workspace patterns
+  with LZSS-specific transform types; no external interface was compared.
+- Local validation: the focused pure-C ABI test and all 1016 Release tests,
+  including documentation topology, passed under both MSVC/Visual Studio 2026
+  and Clang 22.1.3 on Windows x64.

@@ -452,3 +452,8 @@ marc's documented LZSS all-Literal worst case, Blocked Huffman raw-fallback
 layout, generic frame header, local decoder limits, checked arithmetic, and
 existing internal profile conventions. No external profile API, allocator,
 workspace formula, implementation, or test suite was consulted.
+
+The LZSS plus Blocked Huffman C adapter uses only marc's public opaque-transform
+lifecycle, size-tagged configuration convention, DD-215 workspace query, and
+the repository's combined streaming transforms. No external compression ABI,
+binding, allocator interface, source, or C test suite was consulted.

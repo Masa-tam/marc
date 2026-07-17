@@ -1257,3 +1257,13 @@ the returned four regions construct the incremental decoder. Use those
 encoder and decoder queries to round-trip the exact 306-byte `ABABX` oracle,
 so the arithmetic is exercised by the transforms rather than tested only as
 isolated numbers.
+
+For the pure-C combined LZSS adapter vector, configure `ABABX` as three raw
+frames of at most two bytes with four-symbol entropy blocks. Require the encode
+query to return primary 2, secondary 80, and no views; require the public
+transform to emit a 306-byte three-frame stream. Under decoder limits of
+frame 2, dictionary serialization 4, aggregate body 200, and one block,
+require primary 256, secondary 6, and one nonzero aligned views region, then
+recover `ABABX`.
+Reject secondary storage one byte short, a deliberately misaligned full-sized
+views region, and a nonzero reserved configuration field.

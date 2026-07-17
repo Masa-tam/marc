@@ -2,18 +2,19 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
-Blocked Huffman profile, LZSS variant 1, LZ78 variant 1, LZW variant 1, LZD
-variant 1, and LZMW variant 1 with known-size encoding and bounded,
-caller-owned workspace. All functions are `noexcept` in C++ translation units,
-and no C++ type appears in the ABI.
+Blocked Huffman profile, LZSS variant 1, the LZSS plus Blocked Huffman profile,
+LZ78 variant 1, LZW variant 1, LZD variant 1, and LZMW variant 1 with known-size
+encoding and bounded, caller-owned workspace. All functions are `noexcept` in
+C++ translation units, and no C++ type appears in the ABI.
 
 ## Profiles and composition
 
 The C ABI exposes complete, validated stream profiles rather than separate
 dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
-binds dictionary `None`. `marc_lz77_blocked_huffman_*` is the first and
-currently only public dictionary-plus-entropy profile.
+binds dictionary `None`. `marc_lz77_blocked_huffman_*` and
+`marc_lzss_blocked_huffman_*` are the currently public
+dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
 other algorithms. The byte-stream architecture can feed any canonical
@@ -31,7 +32,8 @@ already a supported public profile.
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`,
    `marc_lz77_blocked_huffman_config_init()`, or
-   `marc_lzss_config_init()`, `marc_lz78_config_init()`, or
+   `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
+   `marc_lz78_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzd_config_init()`, or
    `marc_lzmw_config_init()` for encode or decode
    direction.
@@ -73,6 +75,12 @@ descriptors. Query requirements again whenever any size or limit changes.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.
+The LZSS plus Blocked Huffman factory keeps the same three-region convention as
+the LZ77 composition. Its secondary region contains token staging followed by
+serialized-frame staging while encoding, or token staging followed by raw
+staging while decoding. Only decode requires aligned entropy-block views.
+Call `marc_lzss_blocked_huffman_workspace_requirements()` again after changing
+any size, LZSS parameter, or local limit.
 LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
 reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local

@@ -1114,9 +1114,16 @@ before an untrusted stream header is parsed and gives a future C adapter an
 opaque allocation contract without changing the transform's four distinct
 internal spans.
 
-This profile remains internal. A C ABI factory, CLI name, benchmark, bounded
-fuzz boundary, and interoperability entry are separate admission steps and
-must not be inferred from the profile/workspace implementation.
+The dedicated C adapter publishes this configuration through the ordinary
+opaque transform lifecycle. It preserves the three-workspace ABI: encoder
+secondary storage is partitioned into LZSS token staging and serialized-frame
+staging; decoder secondary storage is partitioned into token and raw staging;
+only decode uses the aligned views region. The adapter re-runs the checked
+profile calculation at creation and never exposes private C++ view layout.
+
+This C factory is not yet a CLI profile. A CLI name, benchmark, bounded fuzz
+boundary, completion matrix, and interoperability entry remain separate
+admission steps and must not be inferred from ABI availability.
 
 ### Published composed-profile evidence
 

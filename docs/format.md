@@ -1258,6 +1258,10 @@ configuration and calculates caller workspace. It introduces no additional
 field, algorithm ID, variant, padding rule, or alternative byte
 representation.
 
+The dedicated C ABI factory constructs this same representation. Its
+configuration and workspace structures are process-local ABI data and are not
+serialized into the stream.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

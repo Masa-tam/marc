@@ -3852,3 +3852,22 @@ for the two byte-staging regions, and the local block-count maximum for aligned
 views. Do not inspect an untrusted stream to answer the decoder query. Keep
 this contract internal until the separate public-profile admission steps are
 complete.
+
+## DD-216: LZSS composition uses a dedicated size-tagged C factory
+
+- Date: 2026-07-18
+- Status: accepted
+
+Expose LZSS variant 1 plus Blocked Huffman variant 1 through additive
+`marc_lzss_blocked_huffman_*` configuration, workspace-query, and creation
+functions. Keep ABI version 1 because existing structures and entry points are
+unchanged; the new configuration is independently size-tagged and requires all
+reserved fields to remain zero.
+
+Retain the common three-workspace transform lifecycle. Concatenate token and
+serialized-frame staging in encoder secondary storage, concatenate token and
+raw staging in decoder secondary storage, and use the aligned views region only
+for decoder entropy block records. Recalculate and partition every extent from
+validated configuration during creation. Reject short, null-inconsistent, or
+misaligned caller regions before constructing the opaque transform. Do not add
+a CLI selector or claim full profile readiness in this step.
