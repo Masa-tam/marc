@@ -1089,6 +1089,15 @@ frame, and an `EndInput` indication remains latched until the final serialized
 frame has completely drained. Its output is byte-identical to the known-size
 encoder for every input/output chunk schedule.
 
+The incremental decoder collects the fixed prefix, one frame header, and one
+complete frame body into caller-owned storage. It entropy-decodes and validates
+the complete LZSS token stream, reconstructs raw into frame staging, and only
+then drains that frame through partial output capacity. This intentionally
+commits validated earlier frames even if a later frame is malformed, while no
+byte from the malformed frame is exposed. A terminal indication remains
+latched across `NeedOutput` and becomes truncation after a nonfinal frame has
+finished draining without more serialized input.
+
 The public C adapter exposes this profile without adding a fourth generic
 workspace field. Its secondary byte workspace is an opaque concatenation of
 the two adjacent frame-local staging spans, whose individual extents are

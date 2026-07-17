@@ -1233,3 +1233,13 @@ the remainder. Verify the 80-byte empty stream, repeated ended calls, premature
 `EndInput`, unsupported `ResetBlock`, and independent short raw/token/frame
 workspaces. For a two-byte raw frame, set the aggregate limit to 81 and require
 failure because raw 2 plus tokens 4 plus serialized frame 76 requires 82 bytes.
+
+Decode the 306-byte combined stream with one-byte input and output spans and
+require `ABABX`. Corrupt the second frame's first staged token tag and require
+only the first validated `AB` frame to be published. Independently shorten the
+76-byte serialized-frame storage, four-byte token staging, two-byte raw
+staging, and one-view region; then set the aggregate bound one byte below
+serialized 76 plus tokens 4 plus raw 2 plus one typed view. Also require final
+truncation, trailing data, unsupported `ResetBlock`, empty input, flush
+starvation, repeated terminal error, and premature terminal state preserved
+across a one-byte raw drain.

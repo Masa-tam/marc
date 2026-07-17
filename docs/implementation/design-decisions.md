@@ -3813,3 +3813,20 @@ through partial output buffers. Do not let nonterminal `Flush` close a partial
 frame. Latch `EndInput` while draining and report `EndOfStream` only after the
 final frame byte is emitted. Require byte identity with DD-212 for all chunking
 and retain a stable ended response on repeated calls.
+
+## DD-214: LZSS combined incremental decoding commits complete frames
+
+- Date: 2026-07-18
+- Status: accepted
+
+Collect the canonical prefix, one generic frame header, and one complete frame
+body using caller-owned serialized-frame storage. Before raw drain, enforce the
+aggregate serialized frame, LZSS staging, raw staging, and typed block-view
+bound; entropy-decode and validate all tokens; and reconstruct the entire raw
+frame into staging.
+
+Commit only that validated frame through partial output buffers. Preserve an
+`EndInput` indication while draining. If it arrived after a nonfinal frame,
+report truncation after the remaining validated raw bytes drain. This differs
+intentionally from the one-shot whole-stream-atomic decoder: earlier complete
+frames may be visible, but a malformed frame contributes no raw prefix.

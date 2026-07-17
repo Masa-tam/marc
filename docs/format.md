@@ -1246,6 +1246,13 @@ unchanged. A full uncompressed frame may be emitted before whole-stream
 `EndInput`; a final short frame is emitted only after the known-size input
 contract is satisfied. `ResetBlock` is unsupported at this profile boundary.
 
+Incremental decoding likewise does not alter the representation. A frame is
+not exposed until its complete serialized body, entropy metadata and payload,
+LZSS token stream, and declared raw extent validate. Earlier validated frames
+may already have been committed when a later frame fails. `EndInput` received
+while raw staging is draining remains effective after the drain and makes a
+missing subsequent frame a truncation error.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

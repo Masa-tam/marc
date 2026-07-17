@@ -441,3 +441,8 @@ The LZSS plus Blocked Huffman incremental encoder uses only marc's
 `ProcessResult` contract, complete-stream oracle, exact frame planner/encoder,
 and caller-owned workspace policy. No external streaming encoder, buffering
 scheme, source, or test schedule was consulted.
+
+The LZSS plus Blocked Huffman incremental decoder uses only marc's prefix and
+frame parsers, transactional combined frame decoder, `ProcessResult` contract,
+and caller-owned staging policy. No external streaming decoder, parser state
+machine, source, malformed corpus, or test schedule was consulted.

@@ -3718,3 +3718,22 @@ discarded and the reviewed seed retained.
 - Local validation: all four focused incremental-encoder tests passed; all
   1002 Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman incremental decoder
+
+- Authoring method: applied marc's staged frame-decoding and `ProcessResult`
+  contracts to the reviewed LZSS combined frame codec.
+- References used: DD-214, repository prefix/frame formats, combined
+  transactional decoder, checked arithmetic, and caller-owned workspace rules.
+- Known implementations intentionally not consulted: external streaming
+  decompression source, parser state machines, malformed corpora, or tests.
+- Independent decisions: collect one complete frame; aggregate four workspace
+  roles; commit only validated frame staging; latch terminal state through raw
+  drain; permit earlier validated frames before later corruption.
+- Generated-code task description: implement a bounded incremental combined
+  decoder with one-byte chunk support and no malformed-frame raw publication.
+- Similarity review: state and commit order follow marc-owned contracts and
+  previously reviewed frame boundaries; no external implementation was used.
+- Local validation: all six focused incremental-decoder tests passed; all 1008
+  Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
