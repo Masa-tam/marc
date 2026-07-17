@@ -1165,9 +1165,13 @@ primary/secondary/views C ABI shape, but its opaque views region must be
 partitioned with checked alignment and size arithmetic for both private record
 types. The internal frame API accepts separate typed spans so capacity and
 aggregate-memory failures occur before entropy output or serialized output.
-Profile sizing, streaming, public C creation, and the opaque partition helper
-remain to be implemented and must use the same sizing rule. The specified
-`lz78-blocked-huffman` name is therefore not yet a callable profile.
+Profile sizing now fixes the future three-region ABI: frame bytes occupy the
+primary and secondary regions, while the aligned opaque views region contains
+an encoder phrase table or a decoder block-view array followed by checked
+padding and the decoder phrase table. Partition helpers rederive and validate
+the complete layout before exposing typed spans. Streaming and public C
+creation remain to be implemented, so the specified `lz78-blocked-huffman`
+name is not yet a callable profile.
 
 ### Published composed-profile evidence
 

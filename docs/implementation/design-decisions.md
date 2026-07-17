@@ -4046,3 +4046,22 @@ failures therefore publish no serialized byte. Require the specified 80-byte
 raw-block vector, multi-block deterministic output, canonical-Huffman
 selection, and round-trip decoding before building streaming or public profile
 layers.
+
+## DD-226: LZ78 composition profile owns one checked opaque typed layout
+
+- Date: 2026-07-18
+- Status: accepted
+
+Retain the common public primary/secondary/views workspace shape. Profile
+sizing reports exact frame input, token staging, encoded frame, decoded frame,
+typed record counts, opaque byte count, and maximum alignment. The encoder
+views region contains only `Lz78EncoderEntry`. The decoder views region contains
+the complete `BlockedHuffmanBlockView` array first, checked padding up to
+`alignof(Lz78PhraseEntry)`, and then the phrase array.
+
+Do not let a C adapter duplicate this pointer arithmetic. Provide internal
+partition helpers that recompute multiplication, padding, total size, and
+alignment; reject altered requirements, short storage, and a misaligned base
+before returning typed spans. Empty encoding requires zero opaque bytes and
+alignment one. The profile remains non-callable until streaming transforms and
+public construction use these helpers.

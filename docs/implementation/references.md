@@ -494,3 +494,7 @@ already documented LZ78 variant 1 token grammar, Blocked Huffman variant 1
 block format, generic frame format, checked workspace policy, and the original
 LZ78 references recorded above. No external combined codec, implementation
 source, profile, stream, test vector, or workspace layout was consulted.
+The later profile-sizing and typed-partition work likewise derives only from
+marc's private record sizes, checked arithmetic helpers, and established
+three-region C ABI convention; no external allocator or layout implementation
+was used.

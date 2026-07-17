@@ -3979,3 +3979,23 @@ discarded and the reviewed seed retained.
   expression was compared.
 - Local validation: documentation topology and all 1039 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman profile and typed partition
+
+- Authoring method: derived profile bounds from marc's specified 8F token
+  limit, Blocked Huffman raw worst case, typed record sizes, and the existing
+  three-region caller-workspace convention.
+- References used: DD-223 through DD-226, existing LZ78 and composed profile
+  contracts, and C ABI workspace terminology.
+- Known implementations intentionally not consulted: external combined LZ78
+  profiles, allocators, layout helpers, adapters, source, or tests.
+- Independent decisions: report exact byte/alignment metadata; order decoder
+  block views before aligned phrase entries; recompute layout at partition;
+  distinguish invalid requirements, short storage, and misalignment.
+- Generated-code task description: create the common sizing and safe typed
+  partition layer needed by future streaming and C factory implementations.
+- Similarity review: arithmetic and layout follow marc's independently chosen
+  workspace contract and private record types; no external expression was
+  compared.
+- Local validation: documentation topology and all 1046 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

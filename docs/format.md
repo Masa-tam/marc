@@ -1348,11 +1348,14 @@ later frame fails. Nonterminal `Flush` does not shorten a frame, and
 `ResetBlock` is unsupported at this profile boundary.
 
 The reserved public name for this exact representation is
-`lz78-blocked-huffman`. Its future C ABI must retain the three caller-workspace
-shape while treating the aligned views region as opaque storage partitioned for
-LZ78 phrase entries and Blocked Huffman block views. Reserving the name and
-format here does not publish a factory, CLI selector, or compatibility promise
-until the normal completion criteria pass.
+`lz78-blocked-huffman`. Profile sizing retains the three caller-workspace shape
+while treating the aligned views region as opaque storage. Encoding uses one
+LZ78 encoder-entry array. Decoding places Blocked Huffman block views first,
+aligns the next offset for LZ78 phrase entries, and places the phrase array
+there. The checked partition helper must accept this exact derived layout
+before exposing either typed span. Reserving the name and format here does not
+publish a factory, CLI selector, or compatibility promise until the normal
+completion criteria pass.
 
 ## Adaptive Huffman FGK variant 1
 
