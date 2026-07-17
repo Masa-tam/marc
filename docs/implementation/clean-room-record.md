@@ -3804,6 +3804,28 @@ discarded and the reviewed seed retained.
   Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
 
+## 2026-07-18 - Public-profile evidence matrix and composed completion
+
+- Authoring method: audited repository-owned public profile surfaces and added
+  the missing combined-LZSS completion test through the public C ABI, then
+  brought the older combined-LZ77 completion test to the same standard.
+- References used: DD-220, `AGENTS.md` completion criteria, the combined LZSS
+  C configuration/query/create contract, and marc-owned completion tests.
+- Known implementations intentionally not consulted: external compression
+  APIs, support matrices, compatibility tables, corpora, source, or tests.
+- Independent decisions: eight evidence columns; interoperability remains
+  external; 64-byte frames and blocks for boundary density; four-frame atomic
+  corruption, truncation, and trailing-data checks; sticky terminal results.
+- Generated-code task description: prove the locally implemented combined
+  profile across required data classes, chunking, determinism, terminal state,
+  and malformed final-frame behavior, then publish the audited local matrix.
+- Similarity review: the test follows marc's own public-ABI lifecycle and
+  fixture conventions with profile-specific bounds; no external expression
+  or stream was compared.
+- Local validation: all six focused composed completion tests and all 1025
+  Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
 ## 2026-07-18 - LZSS plus Blocked Huffman CLI profile
 
 - Authoring method: extended marc's existing C-ABI-only file adapter with the

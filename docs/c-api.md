@@ -25,6 +25,11 @@ C ABI configuration, and complete test surface to be fixed together. A
 standalone factory therefore does not imply that every cross-product pairing is
 already a supported public profile.
 
+The [public-profile evidence matrix](baseline-readiness.md#public-profile-evidence-matrix)
+records which complete factories have format, streaming, tooling, fuzz, and
+completion coverage. It deliberately does not represent unpublished
+cross-product pairings as callable C ABI features.
+
 ## Lifecycle
 
 1. Call the matching `marc_blocked_huffman_config_init()` or

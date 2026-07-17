@@ -15,7 +15,7 @@ namespace {
 
 constexpr std::size_t test_frame_size = 64;
 constexpr std::size_t test_block_size = 64;
-constexpr std::size_t maximum_dictionary_size = test_frame_size * 16;
+constexpr std::size_t maximum_dictionary_size = test_frame_size * 2;
 constexpr std::size_t maximum_blocks =
     maximum_dictionary_size / test_block_size;
 constexpr std::size_t maximum_descriptor_size = maximum_blocks * 16;
@@ -35,10 +35,10 @@ struct Workspace {
     std::uint8_t* views{};
 };
 
-marc_lz77_blocked_huffman_config config(
+marc_lzss_blocked_huffman_config config(
     const marc_direction direction, const std::size_t original_size) {
-    marc_lz77_blocked_huffman_config result{};
-    EXPECT_EQ(marc_lz77_blocked_huffman_config_init(direction, &result),
+    marc_lzss_blocked_huffman_config result{};
+    EXPECT_EQ(marc_lzss_blocked_huffman_config_init(direction, &result),
               MARC_STATUS_OK);
     result.original_size = original_size;
     result.frame_size = test_frame_size;
@@ -50,15 +50,15 @@ marc_lz77_blocked_huffman_config config(
     result.max_dictionary_serialized_size = maximum_dictionary_size;
     result.max_internal_buffered_bytes = 4096;
     result.max_blocks_per_frame = maximum_blocks;
-    result.max_lz_distance = UINT64_C(1) << 16;
-    result.max_lz_match_length = 258;
+    result.max_lz_distance = result.window_size;
+    result.max_lz_match_length = result.max_match_length;
     return result;
 }
 
 Workspace workspace_for(
-    const marc_lz77_blocked_huffman_config& settings) {
+    const marc_lzss_blocked_huffman_config& settings) {
     Workspace result{};
-    EXPECT_EQ(marc_lz77_blocked_huffman_workspace_requirements(
+    EXPECT_EQ(marc_lzss_blocked_huffman_workspace_requirements(
                   &settings, &result.requirements),
               MARC_STATUS_OK);
     result.primary.resize(result.requirements.primary_bytes);
@@ -76,10 +76,10 @@ Workspace workspace_for(
     return result;
 }
 
-Transform create(const marc_lz77_blocked_huffman_config& settings,
+Transform create(const marc_lzss_blocked_huffman_config& settings,
                  Workspace& workspace) {
     marc_transform* raw{};
-    EXPECT_EQ(marc_lz77_blocked_huffman_create(
+    EXPECT_EQ(marc_lzss_blocked_huffman_create(
                   &settings,
                   {workspace.primary.data(), workspace.primary.size()},
                   {workspace.secondary.data(), workspace.secondary.size()},
@@ -162,7 +162,7 @@ std::vector<std::uint8_t> encode(
     const std::size_t output_chunk = SIZE_MAX) {
     const auto frames = input.empty() ? std::size_t{0}
         : std::size_t{1} + (input.size() - 1) / test_frame_size;
-    const auto capacity = 80 + input.size() * 16
+    const auto capacity = 80 + input.size() * 2
         + frames * (56 + maximum_descriptor_size);
     return process_all(MARC_DIRECTION_ENCODE, input, input.size(), input_chunk,
                        output_chunk, capacity);
@@ -215,7 +215,7 @@ void expect_sticky_error(const marc_process_result& first,
     EXPECT_EQ(repeated.output_produced, 0U);
 }
 
-TEST(Lz77BlockedHuffmanCompletion,
+TEST(LzssBlockedHuffmanCompletion,
      RequiredDataClassesRoundTripDeterministically) {
     expect_round_trip({});
     for (std::uint32_t value = 0; value < 256; ++value) {
@@ -238,7 +238,8 @@ TEST(Lz77BlockedHuffmanCompletion,
         expect_round_trip(generated_bytes(size, 1));
 }
 
-TEST(Lz77BlockedHuffmanCompletion, MultiFrameStreamIsIndependentOfChunking) {
+TEST(LzssBlockedHuffmanCompletion,
+     MultiFrameStreamIsIndependentOfChunking) {
     const auto input = generated_bytes(193, UINT32_C(0x6d617263));
     const auto expected = encode(input);
     for (const auto chunks : {std::pair{1U, 1U}, std::pair{7U, 5U},
@@ -252,7 +253,7 @@ TEST(Lz77BlockedHuffmanCompletion, MultiFrameStreamIsIndependentOfChunking) {
     }
 }
 
-TEST(Lz77BlockedHuffmanCompletion, MalformedFinalFrameIsNeverCommitted) {
+TEST(LzssBlockedHuffmanCompletion, MalformedFinalFrameIsNeverCommitted) {
     const auto input = generated_bytes(193, UINT32_C(0x13579bdf));
     const auto encoded = encode(input);
     auto final_frame = std::size_t{80};

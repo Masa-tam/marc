@@ -37,21 +37,39 @@ by component tests and exercised through Blocked Huffman.
 | Profile | Purpose | Local status | Interoperability schema 3 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
+| `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 3 contains thirteen archives: the frozen schema-2 set followed by the
 five standalone entropy profiles. Schema 1 remains seven profiles and schema 2
 remains eight; their meanings are frozen by their version and codec-set rules.
+Adding the locally ready LZSS composition to a future bundle requires a new
+schema version rather than changing schema 3 in place.
 
-## In-progress composed profiles
+## Public-profile evidence matrix
 
-| Pairing | Implemented boundary | Local status | Interoperability schema 3 |
-|---|---|---|---|
-| LZSS plus Blocked Huffman | C ABI, CLI, benchmark, and bounded fuzz target | In progress | Not included |
+Every `Yes` below names an implemented and test-covered repository boundary.
+`Completion` is the public C ABI matrix covering required data classes,
+deterministic output, one-byte and mixed chunking, repeated terminal calls,
+and transactional rejection of a malformed final frame. Interoperability is
+kept separate because it requires artifacts produced outside the local build.
 
-This row records an available public profile but not local implementation
-completion. A completion matrix and interoperability evidence remain to be
-added before it can be classified as locally ready.
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 3 |
+|---|---|---|---|---|---|---|---|---|
+| `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lz78` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzd` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzmw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lz77-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Remaining release evidence
 
@@ -76,7 +94,7 @@ pairings from algorithm incompatibility and records the staged generation path.
 
 ## Current validation baseline
 
-At DD-219, the complete Release suite contains 1021 tests and passes under both
+At DD-220, the complete Release suite contains 1025 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

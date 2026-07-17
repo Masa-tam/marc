@@ -3928,3 +3928,21 @@ starvation status, or exhaustion of that ceiling. Retain only a reviewed
 five-byte truncated-magic seed in source control. Permanently test all
 canonical truncations, extreme frame lengths, and an invalid LZSS tag exposed
 only after successful entropy decoding.
+
+## DD-220: Public-profile readiness is an evidence matrix
+
+- Date: 2026-07-18
+- Status: accepted
+
+Classify a public profile as locally ready only when its exact format and
+validator, bounded streaming implementation, C ABI, CLI, benchmark, bounded
+decoder fuzz target, and public-ABI completion test all exist. Record these as
+separate columns so an implemented component cannot be mistaken for a
+complete callable profile.
+
+The completion test must exercise required binary data classes,
+deterministic output, one-byte and mixed input/output chunking, stable repeated
+end-of-stream behavior, sticky malformed-stream errors, and frame-atomic
+rejection of corrupt, truncated, and trailing final-frame input. Keep external
+interoperability as a separate evidence column. A profile may be locally ready
+while awaiting a new, immutable interoperability bundle schema.

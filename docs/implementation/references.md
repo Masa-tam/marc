@@ -473,3 +473,9 @@ decoders, local limit model, fixed-workspace policy, `ProcessResult` invariants,
 and repository-owned canonical stream. No external fuzzer harness, malformed
 corpus, compression implementation, source-derived seed, or regression suite
 was consulted.
+
+The public-profile evidence matrix and combined LZSS completion test use only
+the repository's C ABI contract, required test classes in `AGENTS.md`, existing
+marc-owned completion-test conventions, and the already specified combined
+stream representation. No external API matrix, compression test suite,
+implementation, stream corpus, or compatibility claim was consulted.

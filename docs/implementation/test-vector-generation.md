@@ -1299,3 +1299,18 @@ sanitizer smoke, copy the reviewed `MRF1` plus newline seed into a disposable
 build corpus and run 10,000 cases with 8 KiB maximum input, five-second timeout,
 and 512 MiB RSS limit. Do not copy generated mutations back into the repository
 unless one reproduces a reviewed defect and becomes a permanent regression.
+
+For the combined LZSS public-ABI completion matrix, use 64-byte raw frames and
+64-symbol entropy blocks. Round-trip empty input, all 256 one-byte inputs, all
+byte values in sequence, zero runs, repeated binary patterns, deterministic
+pseudorandom input, and lengths 63, 64, and 65. Require identical archives for
+unchunked, one-byte, and mixed chunk schedules. For a 193-byte four-frame
+stream, corrupt the final frame header, truncate its last byte, and append one
+trailing byte; in every case require the first 192 bytes to remain committed,
+the final byte to remain untouched, and the same positioned error to be
+returned on a repeated call.
+
+Apply the same four-frame corruption, truncation, trailing-data, sticky-error,
+and repeated-end checks to the existing LZ77 plus Blocked Huffman completion
+fixture. This closes the older composed profile against the same matrix rather
+than granting it readiness under a weaker historical test definition.
