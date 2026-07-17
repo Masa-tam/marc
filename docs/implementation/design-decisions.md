@@ -3963,3 +3963,22 @@ separate pure-C consumer through `find_package(marc CONFIG REQUIRED)`, and run
 it against the installed tree. Test shared-only and static-only packages on
 both Windows and Ubuntu. Keep external interoperability artifact generation in
 the implementation jobs, where the tested CLI and complete codec suite exist.
+
+## DD-222: Similarity review does not inspect external codec source
+
+- Date: 2026-07-18
+- Status: accepted
+
+Perform the pre-publication review over tracked first-party source, tests,
+headers, build files, public documentation, provenance entries, and license
+markers. Treat the pinned GoogleTest submodule as separately licensed test
+infrastructure. Check for unexplained third-party notices or distinctive names,
+terminology inconsistent with the selected variants, stale future-work claims,
+and language that overstates legal, security, compatibility, or release
+guarantees.
+
+Do not compare marc source against external codec implementations as a
+similarity-search technique. That would conflict with the repository's
+independent-implementation boundary. Record only whether first-party expression
+is accounted for by marc's specifications, decisions, references, and prior
+provenance. State the review's limits and make no non-infringement guarantee.

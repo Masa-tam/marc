@@ -3890,3 +3890,30 @@ discarded and the reviewed seed retained.
   trips succeeded. The benchmark-enabled Windows configure/build succeeded,
   and all 1025 Release tests passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - Pre-publication similarity and public-claims review
+
+- Authoring method: reviewed tracked first-party implementation, tests,
+  headers, build files, public documents, provenance, and license markers
+  without consulting external codec source.
+- References used: DD-222, repository format and architecture, public-profile
+  matrix, implementation references, prior chronological provenance, MIT
+  license, and the separately recorded GoogleTest notice.
+- Known implementations intentionally not consulted: all external compression
+  implementation source, source-derived tests, naming schemes, control flow,
+  tables, comments, and optimization structures.
+- Independent decisions: exclude the separately licensed submodule from
+  first-party expression review; search for copyright/copyleft markers,
+  distinctive external product names, stale completion language, terminology
+  drift, and overbroad legal, security, compatibility, or readiness claims.
+- Generated-code task description: perform the final local similarity and
+  claims audit before initial publication, correct internal contradictions,
+  and record both the result and its limitations.
+- Similarity review: no unexplained third-party copyright or copyleft marker
+  was found in first-party source. Algorithm names, mathematical vocabulary,
+  and cited terminology are accounted for by repository references. Historical
+  wording around version 1.1 hash integration and the second composition was
+  corrected to the current public state. No external codec source comparison
+  was performed. This result is not a legal guarantee of non-infringement.
+- Local validation: documentation topology and all 1025 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

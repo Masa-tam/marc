@@ -448,8 +448,10 @@ algorithm and may be retried. Reset explicitly begins a new scope.
 CRC-32C is the first concrete `IHashAlgorithm`. Its clear byte-at-a-time
 reference update has bounded constant state, no allocation, and no platform
 intrinsics; `HashTap` supplies lifecycle enforcement and committed-byte
-accounting. Hash target/scope descriptors and stream integration remain
-pending and will be specified before nonzero hash regions are accepted.
+accounting. The version 1.1 `checksum-raw` profile is the sole current stream
+integration and fixes one per-frame CRC-32C descriptor over uncompressed bytes.
+Other target/scope combinations remain reserved and cannot activate a nonzero
+hash region.
 
 SHA-256 is the corresponding format-neutral cryptographic hash primitive. It
 buffers at most one 64-byte message block, checks the FIPS 64-bit bit-length
@@ -462,9 +464,8 @@ The frame layer also owns a fixed-size hash-descriptor parser and serializer.
 It recognizes implemented algorithm IDs, target and scope vocabularies, exact
 digest sizes, flags, and reserved bytes without allocation. Parsing publishes
 only a fully validated value. This is deliberately separate from stream
-activation: version 1.0 still rejects hash regions, and a later version must
-define inclusion ranges and digest placement before connecting descriptors to
-`HashTap` instances.
+activation: version 1.0 rejects hash regions, while version 1.1 currently
+defines inclusion ranges and digest placement only for `checksum-raw`.
 
 Descriptor-region handling adds no container allocation. A first pass validates
 each fixed record and its strict `(target, scope, algorithm ID)` ordering; only
@@ -473,29 +474,32 @@ canonical-order validator runs before serialization, so malformed metadata
 cannot partially publish parsed objects or bytes.
 
 Hash-aware prefix work is isolated behind version-specific 1.1 helpers. The
-ordinary header parser remains a strict 1.0 gate used by every existing stream
-adapter, so staged metadata cannot shift their expected frame offset. The 1.1
-helper validates only the fixed prefix and declared bounded region extent; it
-does not activate a complete stream representation or connect hash taps.
+ordinary header parser remains a strict 1.0 gate used by every version 1.0
+stream adapter, so descriptor metadata cannot shift their expected frame
+offset. The 1.1 helper validates only the fixed prefix and declared bounded
+region extent; the `checksum-raw` profile supplies the separate complete-stream
+policy and CRC connection.
 
 The initial hash profile component narrows the broad descriptor vocabulary to
 one per-frame CRC-32C over logical uncompressed bytes. It validates the exact
 descriptor set and declared trailer extent, then generates or verifies the
 four-byte trailer without allocation. Keeping this boundary independent lets
-frame codecs later connect their already validated raw staging span without
-duplicating CRC lifecycle or inclusion-range decisions.
+`checksum-raw` connect its already validated raw staging span without
+duplicating CRC lifecycle or inclusion-range decisions, and leaves the same
+component available to a separately specified future profile.
 
-The staged frame-header gate couples three previously independent declarations:
+The version 1.1 frame-header gate couples three declarations:
 stream descriptor-region size, parsed descriptor objects, and frame trailer
 extent. Its version-specific entry point validates all three and includes the
-trailer in bounded frame accounting. Existing frame codecs remain attached to
-the strict version 1.0 gate, which rejects descriptor objects as well as a
-nonzero trailer.
+trailer in bounded frame accounting. Version 1.0 codec frames remain attached
+to the strict 1.0 gate, while `checksum-raw` uses this version 1.1 gate. The 1.0
+gate rejects descriptor objects as well as a nonzero trailer.
 
-The raw-checksum reference stream is the first end-to-end consumer of the staged
-1.1 components. It owns no dynamic storage: encoding plans exact extents before
-writing, while decoding scans the caller's serialized span twice. The first
-scan validates all frame headers and CRC trailers; the second copies raw payload
+The raw-checksum reference stream is the first end-to-end consumer of the
+version 1.1 components. It owns no dynamic storage: encoding plans exact
+extents before writing, while decoding scans the caller's serialized span
+twice. The first scan validates all frame headers and CRC trailers; the second
+copies raw payload
 spans to caller output. This establishes complete-stream atomicity independently
 of dictionary and entropy implementations.
 

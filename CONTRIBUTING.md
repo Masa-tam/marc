@@ -11,7 +11,7 @@ Before changing a codec or public profile, read:
 
 - [architecture](docs/architecture.md) for transform and ownership boundaries;
 - [stream format](docs/format.md) for normative serialized representations;
-- [C API](docs/c-api.md) for the stable public lifecycle;
+- [C API](docs/c-api.md) for the public lifecycle contract;
 - [design decisions](docs/implementation/design-decisions.md) for selected
   variants and policies;
 - [implementation references](docs/implementation/references.md) and the

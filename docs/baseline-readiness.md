@@ -83,8 +83,7 @@ ready:
 - record representative encode throughput, decode throughput, compression
   ratio, and peak workspace results rather than relying on benchmark smoke;
 - run longer sanitizer fuzz campaigns and convert every finding into a
-  permanent regression test;
-- perform and record the final pre-release similarity review.
+  permanent regression test.
 
 Unknown-size input, allocator callbacks, authentication, archive metadata,
 solid grouping, BWT-family transforms, and additional composed profiles remain
@@ -110,9 +109,27 @@ from top-level convenience targets. The selected GitHub-hosted Visual Studio
 upstream availability before publication; Dependabot remains responsible for
 subsequent Action and submodule update proposals.
 
+## Pre-publication similarity and claims audit
+
+The 2026-07-18 review covered tracked first-party implementation, tests, build
+files, public headers, and documentation; the pinned GoogleTest submodule was
+treated as separately licensed test infrastructure. It checked provenance
+entries, license markers, algorithm terminology, public-profile claims, format
+versions, unfinished-work markers, and wording that could imply legal,
+security, compatibility, or production-readiness guarantees.
+
+No unexplained third-party copyright or copyleft marker was found in first-party
+source, and no implementation was compared with external codec source. Shared
+algorithm names, mathematical terms, and cited paper/standard terminology are
+accounted for by the references record. The audit corrected historical wording
+that still described the now-public `checksum-raw` integration and second
+composed profile as future work. The result documents repository provenance
+and internal consistency; it is not a legal guarantee of non-infringement or a
+claim of long-term 0.x compatibility.
+
 ## Current validation baseline
 
-At DD-221, the complete Release suite contains 1025 tests and passes under both
+At DD-222, the complete Release suite contains 1025 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

@@ -131,7 +131,7 @@ An out-of-order region is noncanonical. Region parsing must validate every
 record and the complete ordering before publishing any caller-owned descriptor
 output. These region rules remain inactive in version 1.0 streams.
 
-### Staged version 1.1 hash-prefix gate
+### Version 1.1 hash-prefix gate
 
 Version 1.1 retains the 64-byte prefix layout and all version 1.0 field rules,
 except that minor version is `1` and the hash-descriptor byte count may be
@@ -139,14 +139,15 @@ nonzero. That count must be an exact multiple of 16. Dictionary parameters,
 entropy parameters, and hash descriptors together must fit the decoder's local
 internal-buffer limit. Header extensions remain zero.
 
-This is a prefix-level gate only, not yet a complete version 1.1 stream format.
-No public stream encoder or decoder may select it until supported target/scope
-combinations, digest placement, precise inclusion ranges, and frame/stream
-trailers are defined. Existing version 1.0 header entry points must reject a
-1.1 prefix so a descriptor region cannot be mistaken for frame bytes. The
-separate staged 1.1 entry points must reject 1.0 and every other version.
+This helper is a prefix-level gate, not a general configurable version 1.1
+stream format. It must not activate arbitrary target/scope combinations. The
+complete `checksum-raw` profile below is its only public stream use and fixes
+the descriptor, inclusion range, digest placement, and frame trailer. Existing
+version 1.0 header entry points reject a 1.1 prefix so a descriptor region
+cannot be mistaken for frame bytes. The separate 1.1 entry points reject 1.0
+and every other version.
 
-A staged empty-transform prefix declaring one 16-byte descriptor region is:
+A hand-checkable empty-transform prefix declaring one 16-byte descriptor region is:
 
 ```text
 4D 41 52 43 01 00 01 00 40 00 00 00 00 00 00 00
@@ -165,10 +166,10 @@ SHA-256, UncompressedBytes, WholeStream:
 02 00 00 00 01 01 20 00 00 00 00 00 00 00 00 00
 ```
 
-### Initial version 1.1 per-frame checksum profile
+### Version 1.1 per-frame checksum component
 
-The first supported descriptor set for future version 1.1 stream composition
-contains exactly one record: CRC-32C, target UncompressedBytes, scope PerFrame,
+The descriptor set used by the current version 1.1 stream composition contains
+exactly one record: CRC-32C, target UncompressedBytes, scope PerFrame,
 digest size 4, and flags zero. No other target, scope, algorithm, or additional
 descriptor is accepted by this profile.
 
@@ -187,15 +188,15 @@ For a frame whose uncompressed bytes are ASCII `123456789`, the trailer is:
 83 92 06 E3
 ```
 
-This profile definition enables standalone validation, generation, and
-verification of its trailer. Public stream codecs remain on version 1.0 until
-the version 1.1 frame-header gate and complete stream composition are wired and
-tested.
+This component enables standalone validation, generation, and verification of
+its trailer. The complete `checksum-raw` profile below wires it to the version
+1.1 prefix and frame-header gates. All other currently public codec profiles
+remain on version 1.0.
 
-### Staged version 1.1 frame-header gate
+### Version 1.1 frame-header gate
 
-The staged version 1.1 frame header retains the version 1.0 56-byte layout and
-`MRF1` magic. Under the initial checksum profile, `checksum trailer bytes` at
+The version 1.1 frame header retains the version 1.0 56-byte layout and
+`MRF1` magic. Under the checksum component, `checksum trailer bytes` at
 offset 36 is exactly little-endian 4 rather than zero. The stream prefix must
 declare exactly 16 hash-descriptor bytes, the parsed region must contain the
 single supported CRC-32C descriptor, and the frame header must declare the
@@ -204,7 +205,7 @@ processing.
 
 The ordinary version 1.0 frame-header entry points continue to require a
 version 1.0 stream context, no descriptor objects, and a zero checksum trailer.
-The dedicated staged entry points require a version 1.1 stream context and the
+The dedicated version 1.1 entry points require a 1.1 stream context and the
 initial profile. Neither entry point accepts the other's version.
 
 For a raw three-byte version 1.1 frame whose uncompressed bytes are `61 62 63`,
@@ -222,7 +223,7 @@ single initial CRC-32C descriptor. Its byte order is:
 64-byte version 1.1 stream prefix
 16-byte CRC-32C / UncompressedBytes / PerFrame descriptor
 zero or more frames, each:
-    56-byte staged version 1.1 frame header
+    56-byte version 1.1 frame header
     uncompressed bytes (also the compressed payload under None / None)
     4-byte CRC-32C trailer
 ```

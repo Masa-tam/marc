@@ -29,7 +29,7 @@ None/None factory. Interoperability schema 3 includes every named cell except
 the newly admitted `lzss-blocked-huffman` profile, which remains pending a
 future additive schema.
 
-In-progress and Candidate cells must not be encoded or decoded by substituting
+Candidate cells must not be encoded or decoded by substituting
 standalone factories. Until a cell receives a named profile, streams for that
 pairing have no public compatibility promise.
 
@@ -80,9 +80,9 @@ inputs.
 A safe adoption sequence is:
 
 1. define an internal declarative profile description without changing bytes;
-2. express the existing LZ77 plus Blocked Huffman profile through it;
-3. prove byte-for-byte and error-behavior identity with the current path;
-4. add one deliberately selected second composition;
+2. express the existing LZ77 and LZSS plus Blocked Huffman profiles through it;
+3. prove byte-for-byte and error-behavior identity with both current paths;
+4. select any next composition only after its non-mechanical facts are fixed;
 5. generate only the repetitive registry, adapter, and test surfaces;
 6. expand further only when each generated profile satisfies the normal
    completion criteria.
