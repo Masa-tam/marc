@@ -36,6 +36,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lz77` | LZ77 | None | Default profile |
 | `lz77-blocked-huffman` | LZ77 | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzss` | LZSS | None | Variant 1 |
+| `lzss-blocked-huffman` | LZSS | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lz78` | LZ78 | None | Variant 1 |
 | `lzw` | LZW | None | Variant 1 |
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |

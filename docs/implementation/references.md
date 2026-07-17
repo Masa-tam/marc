@@ -457,3 +457,8 @@ The LZSS plus Blocked Huffman C adapter uses only marc's public opaque-transform
 lifecycle, size-tagged configuration convention, DD-215 workspace query, and
 the repository's combined streaming transforms. No external compression ABI,
 binding, allocator interface, source, or C test suite was consulted.
+
+The `lzss-blocked-huffman` CLI adapter composes only marc's public combined C
+factory, existing bounded file-processing loop, atomic temporary-output policy,
+and repository-defined frame/block defaults. No external compression command,
+option vocabulary, file workflow, implementation, or CLI test was consulted.

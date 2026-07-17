@@ -3779,3 +3779,24 @@ discarded and the reviewed seed retained.
 - Local validation: the focused pure-C ABI test and all 1016 Release tests,
   including documentation topology, passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman CLI profile
+
+- Authoring method: extended marc's existing C-ABI-only file adapter with the
+  newly reviewed combined LZSS factory.
+- References used: DD-217, public combined C configuration/query/create API,
+  CLI bounded-I/O loop, atomic temporary-file policy, and shared round-trip
+  test driver.
+- Known implementations intentionally not consulted: external compression
+  commands, CLI option designs, file adapters, implementation source, or tests.
+- Independent decisions: explicit `lzss-blocked-huffman` name; one-MiB frames;
+  64-KiB entropy blocks; exact LZSS worst-case limits; trailing-data regression;
+  no benchmark, fuzz, or interoperability admission in this step.
+- Generated-code task description: route a named CLI profile exclusively
+  through the new public C ABI and verify atomic file behavior.
+- Similarity review: dispatch and file behavior reuse marc-owned conventions
+  with one additive profile branch; no external interface was compared.
+- Local validation: the focused CLI round-trip test and all 1017 Release tests,
+  including documentation topology, passed under both MSVC/Visual Studio 2026
+  and Clang 22.1.3 on Windows x64; their complete fixture archives compared
+  byte for byte.

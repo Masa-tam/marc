@@ -52,6 +52,10 @@ seven-profile set and schema-2 bundles with `marc-cli-v2` and exactly eight
 archives. Schema 3 requires `marc-cli-v3` and all thirteen archives. No schema
 silently inherits profiles added by a later schema.
 
+The public `lzss-blocked-huffman` CLI profile was admitted after schema 3 and
+is intentionally absent from those thirteen archives. It requires a future
+additive schema and codec-set identifier; existing manifests remain frozen.
+
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository

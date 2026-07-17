@@ -1121,16 +1121,23 @@ staging; decoder secondary storage is partitioned into token and raw staging;
 only decode uses the aligned views region. The adapter re-runs the checked
 profile calculation at creation and never exposes private C++ view layout.
 
-This C factory is not yet a CLI profile. A CLI name, benchmark, bounded fuzz
-boundary, completion matrix, and interoperability entry remain separate
-admission steps and must not be inferred from ABI availability.
+The command-line adapter names this profile `lzss-blocked-huffman` and reaches
+it only through the public C ABI. It fixes one-MiB raw frames, 64-KiB entropy
+blocks, and profile-specific limits derived from the two-byte-per-raw-byte LZSS
+worst case. File I/O therefore cannot bypass profile validation or introduce a
+second allocation policy. Failed decode removes the temporary destination even
+when earlier validated frames were already drained internally.
+
+A benchmark, bounded fuzz boundary, completion matrix, and interoperability
+entry remain separate admission steps and must not be inferred from CLI
+availability.
 
 ### Published composed-profile evidence
 
 The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the
 local implementation loop by driving required binary data classes through
-queried workspaces and both
-stream directions. It repeats encoding for byte identity and compares
+queried workspaces and both stream directions. It repeats encoding for byte
+identity and compares
 multi-frame output across one-byte and mixed chunk schedules. This is a local
 readiness assertion, not a substitute for sanitizer campaigns or portability
 evidence on independent toolchains and architectures.

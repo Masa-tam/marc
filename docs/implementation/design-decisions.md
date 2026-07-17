@@ -3871,3 +3871,21 @@ for decoder entropy block records. Recalculate and partition every extent from
 validated configuration during creation. Reject short, null-inconsistent, or
 misaligned caller regions before constructing the opaque transform. Do not add
 a CLI selector or claim full profile readiness in this step.
+
+## DD-217: The LZSS composition receives an explicit CLI profile
+
+- Date: 2026-07-18
+- Status: accepted
+
+Name the public command-line profile `lzss-blocked-huffman`. Configure it only
+through `marc_lzss_blocked_huffman_*`, using one-MiB raw frames, 65,536-symbol
+entropy blocks, the default LZSS variant parameters, and checked local limits
+derived from the two-byte-per-raw-byte token worst case. Do not let file I/O
+construct an internal C++ transform or reinterpret stream configuration.
+
+Use the common atomic-file adapter. Exercise nonempty and empty round trips,
+existing-output refusal, malformed-stream rejection, and trailing-data
+rejection. A failed operation must remove its temporary destination even though
+the incremental decoder may have internally drained earlier validated frames.
+CLI availability does not imply benchmark, fuzz, completion-matrix, or
+interoperability readiness.

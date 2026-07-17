@@ -1267,3 +1267,12 @@ require primary 256, secondary 6, and one nonzero aligned views region, then
 recover `ABABX`.
 Reject secondary storage one byte short, a deliberately misaligned full-sized
 views region, and a nonzero reserved configuration field.
+
+For `marc --codec lzss-blocked-huffman`, generate the common repeated
+`ABRACADABRA-0123456789` binary fixture, encode it through the public C ABI,
+decode it through a separately constructed transform, and compare the complete
+file. Require a second encode to refuse the existing destination. Also
+round-trip an empty file, reject a non-marc input, reject one appended trailing
+byte, and require neither failure to retain its destination or `.tmp` path.
+Encode the same fixture with the MSVC and ClangCL Release tools and require the
+two complete archives to compare byte for byte.
