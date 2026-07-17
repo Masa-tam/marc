@@ -3476,6 +3476,27 @@ discarded and the reviewed seed retained.
   trip, 1 for an operation failure, and 2 for invalid usage; all 975
   MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
 
+## 2026-07-17 - Public profile-composition clarification
+
+- Authoring method: clarified the existing C ABI and architectural boundary
+  after specifying DD-206; no factory, format, or supported profile changed.
+- References used: DD-142 through DD-150, DD-201, public `marc.h` factories,
+  byte-stream architecture, format definitions, and baseline-readiness scope.
+- Known implementations intentionally not consulted: external compression
+  APIs, pipeline frameworks, profile registries, or archive tools.
+- Independent decisions: describe standalone factories as binding the opposite
+  layer to None; identify LZ77 plus Blocked Huffman as a representative
+  completed composition; require full profile evidence before publishing any
+  additional pairing.
+- Generated-code task description: explain why the C header exposes one
+  combined profile without implying algorithm incompatibility or an arbitrary
+  public cross product.
+- Similarity review: the clarification restates marc's repository-owned format,
+  workspace, validation, and completion policies only.
+- Local validation: documentation topology validation passed with 31 relative
+  links across 15 documents; all 975 MSVC/Visual Studio 2026 and Clang 22.1.3
+  Release tests passed.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

@@ -3671,3 +3671,21 @@ README. Move the complete profile matrix, exact CLI behavior, and exit codes to
 `docs/cli.md`, linked from both the root README and documentation index. This
 keeps the GitHub landing page focused while retaining an installed, versioned
 reference for every public CLI profile.
+
+## DD-206: The C ABI enumerates validated profiles, not arbitrary pairings
+
+- Date: 2026-07-17
+- Status: accepted
+
+Treat each public C factory as selection of one complete stream profile. A
+standalone dictionary factory binds entropy None, and a standalone entropy
+factory binds dictionary None. Retain LZ77 plus Blocked Huffman as the sole
+baseline dictionary-plus-entropy profile because it is the completed
+representative composition, not because the byte-stream architecture prevents
+other pairings.
+
+Do not infer a supported cross product from the presence of individual
+factories. Every additional pairing needs an additive named profile with exact
+format parameters, bounded workspace derivation, transactional validation,
+streaming behavior, public ABI coverage, malformed tests, fuzzing, benchmarks,
+interoperability policy, and provenance before publication.

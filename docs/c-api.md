@@ -7,6 +7,23 @@ variant 1, and LZMW variant 1 with known-size encoding and bounded,
 caller-owned workspace. All functions are `noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
 
+## Profiles and composition
+
+The C ABI exposes complete, validated stream profiles rather than separate
+dictionary and entropy objects that callers combine at runtime. Each standalone
+dictionary factory binds entropy `None`, and each standalone entropy factory
+binds dictionary `None`. `marc_lz77_blocked_huffman_*` is the first and
+currently only public dictionary-plus-entropy profile.
+
+This is a scope and validation decision, not an incompatibility unique to the
+other algorithms. The byte-stream architecture can feed any canonical
+dictionary serialization into a byte-oriented entropy layer. Publishing an
+additional pairing still requires its exact format parameters, worst-case
+workspace calculation, transactional decoder validation, streaming behavior,
+C ABI configuration, and complete test surface to be fixed together. A
+standalone factory therefore does not imply that every cross-product pairing is
+already a supported public profile.
+
 ## Lifecycle
 
 1. Call the matching `marc_blocked_huffman_config_init()` or
@@ -28,7 +45,7 @@ and no C++ type appears in the ABI.
 7. Destroy the handle. Destroying a null handle is valid.
 
 The library owns the opaque handle. It does not own the three workspaces or any
-input/output buffer. No allocator callback is required by this profile.
+input/output buffer. No allocator callback is required by these profiles.
 
 For either encoder, `primary_bytes` is raw-frame storage and `secondary_bytes`
 is serialized-frame storage. For either decoder, `primary_bytes` is serialized-

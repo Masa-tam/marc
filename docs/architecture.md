@@ -339,6 +339,13 @@ feeds those bytes directly into frame-local fixed-size Huffman blocks. The
 generic frame already separates raw, dictionary, descriptor/model, and payload
 extents, so this profile requires no new algorithm ID or envelope revision.
 
+The choice is a representative baseline composition, not a special coupling
+between those algorithms. Other dictionary serializations can likewise feed a
+byte-oriented entropy layer, but the public C ABI enumerates only profiles with
+their complete format, bounds, validation, streaming, and test contracts.
+Supporting standalone components does not automatically publish their complete
+cross product.
+
 Combined decode is frame-transactional: entropy output is staged and checked
 against the declared dictionary extent, then the complete LZ77 token region is
 validated before raw output is published. Streaming may retain already drained
