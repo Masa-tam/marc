@@ -80,7 +80,7 @@ implemented and tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| `lz78-blocked-huffman` | Exact format, bounds, commit order, workspace roles, and hand vector | Not callable |
+| `lz78-blocked-huffman` | Exact format plus frame validator/decoder with typed workspace accounting | Not callable |
 | LZW plus Blocked Huffman | Candidate components | Unspecified |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
@@ -143,7 +143,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-223, the complete Release suite contains 1025 tests and passes under both
+At DD-224, the complete Release suite contains 1034 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

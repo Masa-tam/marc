@@ -4006,3 +4006,23 @@ Retain the three-region public workspace convention, but require one checked
 opaque views partition for both private types. Specification does not publish
 the C factory, CLI name, or compatibility promise; those follow only after the
 normal implementation and evidence sequence.
+
+## DD-224: Combined LZ78 decoding admits both typed workspaces atomically
+
+- Date: 2026-07-18
+- Status: accepted
+
+Make the first implementation step a complete-frame validator and decoder, not
+a public factory. Accept separate typed spans for Blocked Huffman block views
+and LZ78 phrase entries at the internal boundary. Check both capacities and the
+token staging capacity before entropy decoding, and count descriptors,
+compressed payload, token staging, block views, and phrase entries in the
+aggregate buffered-memory limit.
+
+Decode entropy only after the header, exact serialized extent, and all caller
+capacities pass. Validate the resulting fixed-width token stream and build the
+phrase graph before checking raw output capacity or invoking LZ78 expansion.
+This makes malformed entropy metadata, invalid phrase references, short typed
+workspaces, and short raw output frame-atomic. Defer the single opaque C ABI
+partition helper until profile sizing and public construction are implemented;
+it must reproduce these same two typed extents with checked alignment.

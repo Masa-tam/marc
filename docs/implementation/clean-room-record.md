@@ -3939,3 +3939,22 @@ discarded and the reviewed seed retained.
   components; no external combined expression was compared.
 - Local validation: documentation topology and all 1025 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman decoder-side frame admission
+
+- Authoring method: implemented DD-224 by composing marc's existing generic
+  frame parser, Blocked Huffman controller/decoder, and LZ78 validator/decoder
+  at their documented byte-stream boundary.
+- References used: DD-223, DD-224, the specified 80-byte hand vector, and the
+  repository's existing component contracts.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, source, adapters, workspace layouts, tests, or malformed corpora.
+- Independent decisions: expose separate typed spans internally; reject every
+  capacity shortage before entropy output; include both typed regions in the
+  aggregate memory bound; validate the phrase graph before raw capacity.
+- Generated-code task description: implement and test the decoder-side frame
+  admission boundary without prematurely publishing a factory or CLI profile.
+- Similarity review: the control stages and error categories follow marc's own
+  frame/component contracts; no external combined expression was compared.
+- Local validation: documentation topology and all 1034 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

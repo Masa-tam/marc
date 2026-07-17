@@ -1151,19 +1151,22 @@ a reproducible failure rather than an unbounded run.
 
 ### Specified LZ78 plus Blocked Huffman validation boundary
 
-The next composition is specified before implementation. It entropy-decodes a
-complete frame into fixed-width LZ78 token staging, then validates phrase
-references and the exact derived raw extent before publication. Unlike the
-first two compositions, both directions require an aligned LZ78 phrase table;
-decoding additionally requires aligned Blocked Huffman block views.
+The composition now has a decoder-side frame admission boundary. It
+entropy-decodes a complete frame into fixed-width LZ78 token staging, then
+validates phrase references and the exact derived raw extent before
+publication. Unlike the first two compositions, both directions require an
+aligned LZ78 phrase table; decoding additionally requires aligned Blocked
+Huffman block views.
 
 This makes typed-workspace composition an explicit admission problem rather
 than an implementation detail. A future public adapter may retain the common
 primary/secondary/views C ABI shape, but its opaque views region must be
 partitioned with checked alignment and size arithmetic for both private record
-types. Encoder planning, decoder validation, profile sizing, C creation, and
-tests must all use the same partition rule. The specified
-`lz78-blocked-huffman` name is not yet a callable profile.
+types. The internal frame API accepts separate typed spans so capacity and
+aggregate-memory failures occur before entropy output. Encoder planning,
+profile sizing, public C creation, and the opaque partition helper remain to be
+implemented and must use the same sizing rule. The specified
+`lz78-blocked-huffman` name is therefore not yet a callable profile.
 
 ### Published composed-profile evidence
 
