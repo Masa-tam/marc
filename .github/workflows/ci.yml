@@ -20,7 +20,7 @@ jobs:
         with:
           submodules: recursive
       - name: Configure
-        run: cmake --preset windows-msvc
+        run: cmake --preset windows-msvc -DMARC_BUILD_BENCHMARKS=ON
       - name: Build
         run: cmake --build --preset windows-msvc-release
       - name: Test
@@ -49,7 +49,7 @@ jobs:
         with:
           submodules: recursive
       - name: Configure
-        run: cmake --preset ninja-release
+        run: cmake --preset ninja-release -DMARC_BUILD_BENCHMARKS=ON
       - name: Build
         run: cmake --build --preset ninja-release
       - name: Test
@@ -97,6 +97,7 @@ jobs:
           cmake -S . -B out/package -G '${{ matrix.generator }}' ${{ matrix.platform_args }} `
             -DMARC_BUILD_SHARED=$shared -DMARC_BUILD_STATIC=$static `
             -DMARC_BUILD_TESTS=OFF -DMARC_BUILD_EXAMPLES=OFF `
+            -DMARC_BUILD_TOOLS=OFF -DMARC_BUILD_BENCHMARKS=OFF `
             -DCMAKE_INSTALL_PREFIX='${{ github.workspace }}/out/install'
       - name: Build and install package
         run: >-

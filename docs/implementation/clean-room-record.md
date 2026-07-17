@@ -3866,3 +3866,27 @@ discarded and the reviewed seed retained.
 - Local validation: the focused benchmark smoke and all 1018 Release tests,
   including documentation topology, passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - Pre-publication CI and installed-package audit
+
+- Authoring method: compared declared CI/package boundaries with fresh local
+  shared-only and static-only install/consumer builds and official hosted
+  infrastructure records.
+- References used: DD-221, CMake install/export definitions, pure-C installed
+  example, official GitHub runner/action documentation, and the official
+  GoogleTest 1.17.0 release record.
+- Known implementations intentionally not consulted: external compression
+  libraries, package layouts, build scripts, source, or tests.
+- Independent decisions: benchmark-enabled implementation jobs; minimal
+  library-only package jobs; separate installed consumer; immutable schema-3
+  artifact generation remains in the complete implementation jobs.
+- Generated-code task description: audit GitHub publication inputs, reproduce
+  both Windows linkage packages locally, and make clean-CI evidence explicit.
+- Similarity review: workflow changes are declarative option selection around
+  marc-owned targets; no external project workflow or package layout was
+  copied.
+- Local validation: fresh shared-only and static-only build/install trees each
+  configured and built an independent pure-C consumer; both public-ABI round
+  trips succeeded. The benchmark-enabled Windows configure/build succeeded,
+  and all 1025 Release tests passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64.

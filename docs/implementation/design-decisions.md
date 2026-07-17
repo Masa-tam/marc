@@ -3946,3 +3946,20 @@ end-of-stream behavior, sticky malformed-stream errors, and frame-atomic
 rejection of corrupt, truncated, and trailing final-frame input. Keep external
 interoperability as a separate evidence column. A profile may be locally ready
 while awaiting a new, immutable interoperability bundle schema.
+
+## DD-221: CI separates implementation evidence from package consumption
+
+- Date: 2026-07-18
+- Status: accepted
+
+Enable `MARC_BUILD_BENCHMARKS` explicitly in the clean Windows and Ubuntu
+implementation jobs. This makes every public benchmark adapter compile and
+runs its non-threshold smoke test alongside the normal suite instead of relying
+on a developer build cache.
+
+For the installed-package matrix, explicitly disable tests, examples, tools,
+and benchmarks. Build and install exactly one library linkage, configure a
+separate pure-C consumer through `find_package(marc CONFIG REQUIRED)`, and run
+it against the installed tree. Test shared-only and static-only packages on
+both Windows and Ubuntu. Keep external interoperability artifact generation in
+the implementation jobs, where the tested CLI and complete codec suite exist.

@@ -1314,3 +1314,12 @@ Apply the same four-frame corruption, truncation, trailing-data, sticky-error,
 and repeated-end checks to the existing LZ77 plus Blocked Huffman completion
 fixture. This closes the older composed profile against the same matrix rather
 than granting it readiness under a weaker historical test definition.
+
+For the installed-package audit, configure fresh Visual Studio 2026 x64 trees
+with tests, examples, tools, and benchmarks disabled. Build and install once
+with only `MARC_BUILD_SHARED` enabled and once with only `MARC_BUILD_STATIC`
+enabled. For each install prefix, configure `examples/` as an independent
+project using only the installed `marc_DIR`, build its pure-C executable, and
+require the public C ABI round trip to succeed. Add the installed shared
+library directory to `PATH` only for the shared execution; the static consumer
+must run without an installed runtime library search path.

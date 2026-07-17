@@ -92,9 +92,27 @@ future extensions. They are not baseline-readiness failures.
 The [composition matrix](composition.md) distinguishes these unpublished
 pairings from algorithm incompatibility and records the staged generation path.
 
+## Pre-publication CI and package audit
+
+The 2026-07-18 local audit verified both shared-only and static-only installs in
+fresh Visual Studio 2026 build trees. A separately configured pure-C consumer
+found each installed CMake package, linked the sole exported target, and
+completed its public-ABI round trip. The installed trees contained the public
+header, CMake config and version files, license and third-party notices,
+documentation, logo, and example sources.
+
+The Windows and Ubuntu CI configurations explicitly enable benchmarks, so all
+public adapters are compiled and their smoke tests run in clean CI builds. The
+four installed-package matrix entries explicitly disable tests, examples,
+tools, and benchmarks, isolating shared-only and static-only library packages
+from top-level convenience targets. The selected GitHub-hosted Visual Studio
+2026 image and Action major versions were checked against their official
+upstream availability before publication; Dependabot remains responsible for
+subsequent Action and submodule update proposals.
+
 ## Current validation baseline
 
-At DD-220, the complete Release suite contains 1025 tests and passes under both
+At DD-221, the complete Release suite contains 1025 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

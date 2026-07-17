@@ -479,3 +479,12 @@ the repository's C ABI contract, required test classes in `AGENTS.md`, existing
 marc-owned completion-test conventions, and the already specified combined
 stream representation. No external API matrix, compression test suite,
 implementation, stream corpus, or compatibility claim was consulted.
+
+The pre-publication CI audit consulted the official
+[GitHub Actions runner-image table](https://github.com/actions/runner-images#available-images),
+[`actions/checkout` usage and releases](https://github.com/actions/checkout),
+[workflow-artifact documentation](https://docs.github.com/en/actions/tutorials/store-and-share-data),
+and the official
+[GoogleTest 1.17.0 release record](https://github.com/google/googletest/releases/tag/v1.17.0).
+These were used only to verify hosted infrastructure and the pinned test
+dependency. No compression implementation source was consulted.
