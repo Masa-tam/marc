@@ -3519,6 +3519,29 @@ discarded and the reviewed seed retained.
   `AGENTS.md` contract installed beside the project README; all 975
   MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
 
+## 2026-07-17 - Composition status and generator roadmap
+
+- Authoring method: summarized existing repository component and profile state
+  after specifying DD-208; no candidate stream representation was assigned.
+- References used: public C factories and CLI names, baseline byte-stream
+  architecture, DD-142 through DD-150, DD-201, DD-206, completion criteria,
+  and interoperability schema 3.
+- Known implementations intentionally not consulted: external profile
+  generators, compression matrices, pipeline registries, schemas, or tools.
+- Independent decisions: show the full None/dictionary by None/entropy matrix;
+  reserve names for published profiles; define Candidate as components present
+  without a public combined contract; stage generation behind declarative,
+  reviewed semantic inputs and identity proof.
+- Generated-code task description: make existing composability visible without
+  misrepresenting unsupported pairings, and record a safe code-generation path
+  that preserves marc's profile-level guarantees.
+- Similarity review: the matrix and roadmap derive only from marc's own public
+  components, format policy, and validation requirements.
+- Local validation: the matrix matched all thirteen public CLI profiles and
+  listed twenty-nine candidate cells; source and installed documentation
+  validation resolved 47 relative links across 17 documents; all 975
+  MSVC/Visual Studio 2026 and Clang 22.1.3 Release tests passed.
+
 ## 2026-07-17 - Standalone LZ77 dual-decoder fuzz boundary
 
 - Authoring method: applied AGENTS.md untrusted-decoder requirements to marc's

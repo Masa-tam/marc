@@ -61,6 +61,8 @@ ready:
 Unknown-size input, allocator callbacks, authentication, archive metadata,
 solid grouping, BWT-family transforms, and additional composed profiles remain
 future extensions. They are not baseline-readiness failures.
+The [composition matrix](composition.md) distinguishes these unpublished
+pairings from algorithm incompatibility and records the staged generation path.
 
 ## Current validation baseline
 

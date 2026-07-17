@@ -59,7 +59,9 @@ requires an explicit format variant and its own tests and documentation.
 ## Adding a composed profile
 
 The presence of standalone dictionary and entropy factories does not publish
-their cross product. A new pairing is ready for public use only after it has:
+their cross product. The [composition matrix](docs/composition.md) distinguishes
+published profiles from component-ready candidates. A new pairing is ready for
+public use only after it has:
 
 - an additive name and exact algorithm/variant/parameter selection;
 - bounded worst-case workspace and checked size arithmetic;

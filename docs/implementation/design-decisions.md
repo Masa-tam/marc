@@ -3706,3 +3706,21 @@ not imply an automatically supported public cross product. Install the
 contributor contract beside the project README and include it in portable
 documentation link validation. Install `AGENTS.md` beside it so the linked
 complete repository contract remains available in packaged documentation.
+
+## DD-208: Distinguish unpublished compositions from incompatibility
+
+- Date: 2026-07-17
+- Status: accepted
+
+Publish `docs/composition.md` with the complete baseline dictionary/entropy
+matrix. Use named cells only for currently supported C ABI and CLI profiles.
+Label all remaining byte-boundary pairings as candidates, explicitly meaning
+that their components exist but their combined format and guarantees do not.
+Do not present candidate cells as usable streams or release commitments.
+
+Document a staged generator path: introduce a reviewed declarative internal
+profile description, reproduce the existing combined profile byte for byte,
+add one selected second composition, and generate only repetitive registries,
+adapters, tests, benchmarks, interoperability entries, and documentation.
+Worst-case formulas, workspace partitions, validation commit points, and
+boundary semantics remain reviewed inputs rather than generated assumptions.

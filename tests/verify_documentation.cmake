@@ -14,6 +14,7 @@ set(required_documents
     docs/benchmarks.md
     docs/c-api.md
     docs/cli.md
+    docs/composition.md
     docs/format.md
     docs/fuzzing.md
     docs/interoperability.md
