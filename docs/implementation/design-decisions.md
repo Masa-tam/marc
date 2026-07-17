@@ -3724,3 +3724,24 @@ add one selected second composition, and generate only repetitive registries,
 adapters, tests, benchmarks, interoperability entries, and documentation.
 Worst-case formulas, workspace partitions, validation commit points, and
 boundary semantics remain reviewed inputs rather than generated assumptions.
+
+## DD-209: The second composition starts with LZSS plus Blocked Huffman
+
+- Date: 2026-07-17
+- Status: accepted
+
+Select LZSS variant 1 plus Blocked Huffman variant 1 as the second composed
+pipeline. It exercises the same byte-stream seam with two-byte Literal and
+nine-byte Match tokens instead of LZ77's fixed 16-byte records, providing an
+early check that the composition architecture is generic.
+
+Fix the exact frame body and hand vector before exposing a public profile. The
+first executable slice is a strict complete-frame validator: parse the generic
+header, control and decode the entropy regions into caller-owned staging, then
+validate the entire LZSS token stream and declared raw size. Check descriptors,
+payload, staging, and block views under one aggregate workspace limit. Do not
+publish raw bytes, a C ABI factory, or a CLI name from this slice.
+
+Continue forward from this validation nucleus with encoder planning, raw
+commit, complete-stream and streaming controllers, public adapters, malformed
+and fuzz coverage, benchmark registration, and interoperability evidence.

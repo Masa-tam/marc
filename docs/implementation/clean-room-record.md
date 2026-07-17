@@ -3621,3 +3621,24 @@ discarded and the reviewed seed retained.
   2026 and Clang 22.1.3; the Clang libFuzzer/ASan/UBSan target completed 1,000
   inputs without a crash, hang, or sanitizer finding at 37 MiB peak RSS; all
   934 Release tests passed under both normal toolchains.
+
+## 2026-07-17 - LZSS plus Blocked Huffman frame validator
+
+- Authoring method: independently composed marc's documented LZSS variant 1,
+  Blocked Huffman variant 1, and generic frame-validation contracts.
+- References used: DD-209, repository format and architecture, canonical LZSS
+  tokens, Blocked Huffman controller/decoder, checked arithmetic, and decoder
+  limits.
+- Known implementations intentionally not consulted: external combined
+  formats, compression source, vectors, tests, or profile registries.
+- Independent decisions: select this pairing to exercise variable token sizes;
+  use the 74-byte raw-Literal hand frame; stage all entropy output; validate the
+  complete LZSS token stream before raw publication; include descriptors,
+  payload, staging, and typed views in one bounded workspace calculation.
+- Generated-code task description: add the exact second-composition frame
+  representation and a strict decoder-side validator without a public API.
+- Similarity review: control flow is direct composition of previously reviewed
+  marc-owned validators and formats; no external implementation was compared.
+- Local validation: the seven focused frame-validator tests passed; all 982
+  Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

@@ -43,6 +43,17 @@ Schema 3 contains thirteen archives: the frozen schema-2 set followed by the
 five standalone entropy profiles. Schema 1 remains seven profiles and schema 2
 remains eight; their meanings are frozen by their version and codec-set rules.
 
+## In-progress composed profiles
+
+| Pairing | Implemented boundary | Local status | Interoperability schema 3 |
+|---|---|---|---|
+| LZSS plus Blocked Huffman | Exact frame format and strict decoder-side validator | In progress | Not included |
+
+This row is deliberately not a public profile claim. Encoding, raw decoding,
+complete-stream and streaming controllers, the C ABI, CLI, fuzzing, benchmark,
+and interoperability evidence remain to be added before the cell receives a
+public profile name.
+
 ## Remaining release evidence
 
 The following items remain open even though local codec implementation is
@@ -66,7 +77,7 @@ pairings from algorithm incompatibility and records the staged generation path.
 
 ## Current validation baseline
 
-At DD-201, the complete Release suite contains 973 tests and passes under both
+At DD-209, the complete Release suite contains 982 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

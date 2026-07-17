@@ -1048,6 +1048,20 @@ known-size stream and frame/block configuration. Decoder requirements are
 conservative bounds derived solely from local limits; untrusted serialized
 headers never influence allocation requests before parsing.
 
+### LZSS plus Blocked Huffman validation boundary
+
+The second selected composition begins with the same deliberately narrow
+decoder-side boundary. It accepts one exact frame, entropy-decodes into
+caller-owned dictionary staging, and validates the complete variable-length
+LZSS token stream against the frame's declared raw size. It exposes no raw
+output and performs no input-controlled allocation.
+
+This boundary demonstrates that composition is not coupled to LZ77's fixed
+16-byte tokens. Descriptor/model bytes, payload bytes, staged LZSS bytes, and
+the aligned block-view array are checked as one aggregate workspace. Complete
+encoding, raw reconstruction, stream controllers, and public adapters build on
+this boundary rather than weakening its commit order.
+
 The public C adapter exposes this profile without adding a fourth generic
 workspace field. Its secondary byte workspace is an opaque concatenation of
 the two adjacent frame-local staging spans, whose individual extents are

@@ -1173,6 +1173,52 @@ Blocked Huffman descriptor, and the final 16 bytes are the unchanged LZ77 token.
 The 16-byte LZ77 parameter region remains stream-level and is not repeated in
 this frame.
 
+## LZSS variant 1 plus Blocked Huffman variant 1
+
+This composition uses dictionary algorithm ID 2, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
+are the 16-byte LZSS parameters followed by the empty Blocked Huffman parameter
+region. `entropy block size` counts bytes in the canonical variable-length
+LZSS token stream. Blocks reset at and cannot cross an outer frame.
+
+The generic frame header records raw bytes as `uncompressed size`, LZSS token
+bytes as `dictionary serialized size`, stored entropy bytes as `compressed
+payload size`, the exact Blocked Huffman block count, and the complete
+descriptor/model region size. The body uses the same ordering as the first
+composition:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate LZSS token region is stored. Entropy decoding must produce exactly
+`dictionary serialized size` bytes. Before any raw-byte publication, the LZSS
+validator must consume the complete staged token region and derive exactly
+`uncompressed size` bytes. This rule is significant because LZSS Literal
+tokens occupy two bytes while Match tokens occupy nine bytes.
+
+### Hand-checkable LZSS combined raw-block frame
+
+For raw input `A`, LZSS emits the two-byte Literal token `00 41`. With entropy
+block size two, Blocked Huffman selects raw representation. The complete
+74-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  02 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+02 00 00 00 02 00 00 00  00 00 01 08 00 00 00 00
+00 41
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final two bytes are the unchanged LZSS
+Literal token. The 16-byte LZSS parameter region is stream-level and is not
+repeated in this frame.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

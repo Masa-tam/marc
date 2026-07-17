@@ -9,15 +9,17 @@ not yet a supported stream contract.
 ## Current matrix
 
 The table shows every baseline byte-stream dictionary/entropy pairing. A named
-cell is a currently published CLI and C ABI profile. `Candidate` means both
-components exist and meet at the canonical byte-stream boundary, but that
-pairing has no public format or API guarantee yet.
+cell is a currently published CLI and C ABI profile. `Validator` means the
+exact frame representation and strict decoder-side validation boundary exist,
+but the complete stream, C ABI, CLI, and release evidence do not. `Candidate`
+means both components exist and meet at the canonical byte-stream boundary,
+but that pairing has no public format or API guarantee yet.
 
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZSS | `lzss` | Candidate | Candidate | Candidate | Candidate | Candidate |
+| LZSS | `lzss` | Validator | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
@@ -27,9 +29,9 @@ pairing has no public format or API guarantee yet.
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. All named cells are included in interoperability schema 3.
 
-Candidate cells must not be encoded or decoded by substituting standalone
-factories. Until a cell receives a named profile, streams for that pairing have
-no compatibility promise.
+Validator and Candidate cells must not be encoded or decoded by substituting
+standalone factories. Until a cell receives a named profile, streams for that
+pairing have no public compatibility promise.
 
 ## Why publication is not automatic
 

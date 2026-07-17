@@ -1182,3 +1182,16 @@ The raw-checksum fuzz boundary truncates cases to 8 KiB, supplies a fixed 4 KiB
 output, permits at most 1 KiB per frame, and uses no input-sized allocation.
 Compile it under normal MSVC and Clang test builds and retain the hand-authored
 truncated `MARC` seed as the initial permanent corpus entry.
+
+For LZSS plus Blocked Huffman, start with raw `A`. LZSS variant 1 emits the
+canonical Literal `00 41`. With entropy block size two, the mandatory stored
+size comparison selects one raw Blocked Huffman block. Prefix its 16-byte raw
+descriptor with the 56-byte generic frame header shown in `format.md` to obtain
+the exact 74-byte frame.
+
+Validate the hand frame without exposing raw output. Require two staged bytes,
+one block view, dictionary size two, and derived raw size one. Reject every
+strict truncation and one trailing byte; insufficient views or staging before
+writing; aggregate workspace one byte short; malformed entropy metadata before
+staging writes; an unknown staged LZSS tag; a wrong frame sequence; and an
+unsupported pipeline variant.
