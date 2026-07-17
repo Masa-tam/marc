@@ -1138,6 +1138,13 @@ times only `marc_transform_process`; allocation, transform lifecycle, file I/O,
 and mandatory round-trip verification remain outside the timed interval. Peak
 workspace is the larger queried sum of primary, secondary, and views regions.
 
+The bounded fuzz adapter invokes both the strict two-pass stream decoder and
+the incremental frame-committing decoder. It truncates each supplied case to
+8 KiB, uses fixed stack storage for at most 4 KiB of raw and token data, one
+1-KiB frame, and eight entropy views, and derives partial-I/O chunk sizes from
+the bytes. An independent call ceiling converts any stalled state machine into
+a reproducible failure rather than an unbounded run.
+
 ### Published composed-profile evidence
 
 The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the

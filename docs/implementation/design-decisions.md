@@ -3908,3 +3908,23 @@ complete-stream ratio, direction-specific throughput, each queried workspace
 region, and the larger direction's primary-plus-secondary-plus-views sum. Keep
 measured speed and ratio descriptive; the smoke test requires successful
 execution and stable report structure, not a performance threshold.
+
+## DD-219: Combined LZSS fuzzing is fixed-workspace and dual-decoder
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add a dedicated libFuzzer boundary for LZSS variant 1 plus Blocked Huffman
+variant 1. Feed every case to both the strict whole-stream-atomic decoder and
+the incremental frame-committing decoder. Truncate input to 8 KiB and use only
+fixed caller-owned arrays for 4 KiB total output, one 1-KiB frame, 4 KiB token
+staging, and eight entropy views. Include all four frame-local roles in the
+aggregate internal limit.
+
+Derive nonzero input and output chunk sizes from bounded input bytes, but cap
+the entire incremental schedule independently at input maximum plus output
+maximum plus 32 calls. Abort on an invalid `ProcessResult`, impossible
+starvation status, or exhaustion of that ceiling. Retain only a reviewed
+five-byte truncated-magic seed in source control. Permanently test all
+canonical truncations, extreme frame lengths, and an invalid LZSS tag exposed
+only after successful entropy decoding.

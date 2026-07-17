@@ -467,3 +467,9 @@ The `lzss-blocked-huffman` benchmark composes only marc's public combined C
 factory, documented profile bounds, existing measurement loop, and queried
 workspace accounting. No external benchmark harness, compression comparison,
 measurement code, implementation source, or performance result was consulted.
+
+The combined LZSS fuzz boundary uses only marc's strict and incremental
+decoders, local limit model, fixed-workspace policy, `ProcessResult` invariants,
+and repository-owned canonical stream. No external fuzzer harness, malformed
+corpus, compression implementation, source-derived seed, or regression suite
+was consulted.

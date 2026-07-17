@@ -3780,6 +3780,30 @@ discarded and the reviewed seed retained.
   including documentation topology, passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3 on Windows x64.
 
+## 2026-07-18 - LZSS plus Blocked Huffman bounded fuzz boundary
+
+- Authoring method: applied marc's fixed-workspace dual-decoder fuzz contract
+  to the reviewed variable-token composition.
+- References used: DD-219, strict and incremental combined LZSS decoders,
+  `ProcessResult` invariants, local limits, canonical 306-byte stream, and
+  repository fuzz build conventions.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, compression source, derived seeds, or regression suites.
+- Independent decisions: 8-KiB case cap; fixed raw/token/frame/view storage;
+  byte-derived chunking; independent call ceiling; staged invalid-tag
+  regression; only a hand-authored truncated-magic seed retained.
+- Generated-code task description: add a bounded combined LZSS libFuzzer
+  target, portable compile smoke, atomic malformed regressions, and disposable
+  sanitizer campaign.
+- Similarity review: harness structure follows marc-owned decoder and status
+  contracts with LZSS-specific types and validation; no external harness was
+  compared.
+- Local validation: all three focused regressions passed; the 10,000-input
+  Clang 22.1.3 AddressSanitizer/UndefinedBehaviorSanitizer campaign completed
+  without crash, hang, or sanitizer finding at 64 MiB peak RSS; all 1021
+  Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
 ## 2026-07-18 - LZSS plus Blocked Huffman CLI profile
 
 - Authoring method: extended marc's existing C-ABI-only file adapter with the

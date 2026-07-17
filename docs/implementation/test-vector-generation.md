@@ -1285,3 +1285,17 @@ and peak caller-owned workspace. Under the fixed one-MiB policy, the decoder
 query on the current Windows x64 builds reports 5,243,504 primary bytes,
 3,145,728 secondary bytes, and 640 aligned views bytes, for an 8,389,872-byte
 peak. Do not assert throughput or compression ratio values.
+
+For combined LZSS fuzz regression, generate the exact 306-byte `ABABX` stream
+and require every strict truncation to preserve raw output, parsed stream
+metadata, and LZSS parameters. Replace the first frame's size fields with all
+one bits and require the same atomic rejection. Then replace the first LZSS tag
+in the second frame's raw entropy payload with `0x7f`; entropy parsing succeeds
+far enough to stage the bytes, but token validation must still reject without
+publishing anything.
+
+Compile the dual-decoder harness under both ordinary toolchains. For the
+sanitizer smoke, copy the reviewed `MRF1` plus newline seed into a disposable
+build corpus and run 10,000 cases with 8 KiB maximum input, five-second timeout,
+and 512 MiB RSS limit. Do not copy generated mutations back into the repository
+unless one reproduces a reviewed defect and becomes a permanent regression.

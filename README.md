@@ -74,8 +74,9 @@ See
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
 bounded stream-decoder fuzz targets for all public standalone codec profiles,
-the composed LZ77 plus Blocked Huffman profile, and checksum-raw. Build and
-corpus instructions are in [`docs/fuzzing.md`](docs/fuzzing.md).
+the composed LZ77 plus Blocked Huffman and LZSS plus Blocked Huffman profiles,
+and checksum-raw. Build and corpus instructions are in
+[`docs/fuzzing.md`](docs/fuzzing.md).
 
 ## Interoperability
 
