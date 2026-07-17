@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZSS_BLOCKED_HUFFMAN_FRAME_HPP
 #define MARC_FRAME_LZSS_BLOCKED_HUFFMAN_FRAME_HPP
 
+#include "dictionary/lzss_decoder.hpp"
 #include "dictionary/lzss_encoder.hpp"
 #include "dictionary/lzss_validator.hpp"
 #include "entropy/blocked_huffman_controller.hpp"
@@ -29,6 +30,8 @@ enum class LzssBlockedHuffmanFrameValidationError : std::uint8_t {
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    raw_output_too_small,
+    dictionary_decode_error,
     dictionary_encode_error,
     entropy_encode_error,
     arithmetic_overflow,
@@ -51,6 +54,8 @@ struct LzssBlockedHuffmanFrameValidationResult {
         dictionary::internal::LzssValidationError::none};
     dictionary::internal::LzssFormatError dictionary_format_error{
         dictionary::internal::LzssFormatError::none};
+    dictionary::internal::LzssDecodeError dictionary_decode_error{
+        dictionary::internal::LzssDecodeError::none};
     dictionary::internal::LzssEncodeError dictionary_encode_error{
         dictionary::internal::LzssEncodeError::none};
     entropy::internal::BlockedHuffmanFrameEncodeError entropy_encode_error{
@@ -96,6 +101,21 @@ validate_lzss_blocked_huffman_frame(
     std::span<const std::byte> input,
     std::span<entropy::internal::BlockedHuffmanBlockView> views,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Validates the complete frame before publishing any raw byte. The serialized
+// input, dictionary staging, and raw output extents must be mutually
+// non-overlapping.
+[[nodiscard]] LzssBlockedHuffmanFrameValidationResult
+decode_lzss_blocked_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::BlockedHuffmanBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

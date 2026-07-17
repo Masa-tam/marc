@@ -3661,3 +3661,22 @@ discarded and the reviewed seed retained.
 - Local validation: all twelve focused LZSS-composition frame tests passed;
   all 987 Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman transactional frame decoder
+
+- Authoring method: added a raw commit stage over marc's independently
+  specified combined-frame validator and standalone transactional LZSS decoder.
+- References used: DD-211, repository frame format, Blocked Huffman decoder,
+  LZSS validator/decoder, decoder limits, and existing hand vector.
+- Known implementations intentionally not consulted: external combined
+  decoders, compression source, malformed corpora, vectors, or tests.
+- Independent decisions: validate all entropy-produced token bytes before raw
+  capacity; decode only the validated extent; preserve raw output on every
+  pre-commit failure; cover raw and canonical Huffman block representations.
+- Generated-code task description: implement complete-frame raw decoding while
+  retaining caller-owned staging and atomic publication semantics.
+- Similarity review: the commit order directly composes marc-owned validation
+  and decode contracts; no external control flow was compared.
+- Local validation: all sixteen focused LZSS-composition frame tests passed;
+  all 991 Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

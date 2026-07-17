@@ -9,12 +9,11 @@ not yet a supported stream contract.
 ## Current matrix
 
 The table shows every baseline byte-stream dictionary/entropy pairing. A named
-cell is a currently published CLI and C ABI profile. `Frame` means the exact
-frame planner/encoder and strict decoder-side validation boundary exist, but
-raw decoding, complete-stream behavior, the C ABI, CLI, and release evidence
-do not. `Candidate` means both components exist and meet at the canonical
-byte-stream boundary, but that pairing has no public format or API guarantee
-yet.
+cell is a currently published CLI and C ABI profile. `Frame` means exact,
+transactional frame encode and decode paths exist, but complete-stream
+behavior, the C ABI, CLI, and release evidence do not. `Candidate` means both
+components exist and meet at the canonical byte-stream boundary, but that
+pairing has no public format or API guarantee yet.
 
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|

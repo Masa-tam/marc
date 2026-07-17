@@ -3762,3 +3762,20 @@ deterministic entropy traversal only after verifying complete serialized output
 capacity. A short dictionary staging span or serialized destination must leave
 that destination unchanged. Retain the frame-only internal status until raw
 commit and stream-level behavior are implemented and tested.
+
+## DD-211: LZSS composition publishes raw only after whole-frame validation
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement raw frame decoding as a narrow commit stage over the DD-209 strict
+validator. First parse and entropy-decode the entire frame into caller-owned
+dictionary staging, and validate the complete variable-length LZSS token stream
+against the declared raw extent. Check raw destination capacity only after
+those operations succeed.
+
+Pass only the validated staging extent to the standalone transactional LZSS
+decoder. A malformed descriptor, entropy payload, token tag, match reference,
+derived size, or short raw destination must not publish a raw prefix. Exercise
+both raw Blocked Huffman representation and canonical Huffman representation,
+including overlapping LZSS match reconstruction.

@@ -170,6 +170,113 @@ TEST(LzssBlockedHuffmanFrameValidator, RejectsWrongSequenceAndPipeline) {
               LzssBlockedHuffmanFrameValidationError::unsupported_pipeline);
 }
 
+TEST(LzssBlockedHuffmanFrameDecoder, DecodesHandVectorWithoutTouchingTail) {
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, 3> output{};
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lzss_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, single_literal_frame, views, staging,
+        output);
+    ASSERT_EQ(result.error, LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(LzssBlockedHuffmanFrameDecoder, DecodesOverlappingMatch) {
+    const std::array raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'},
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'}};
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.original_size = raw.size();
+    stream.entropy_block_size = 32;
+    std::array<std::byte, 12> encode_staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, raw, encode_staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, encode_staging, encoded)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 12> decode_staging{};
+    std::array<std::byte, raw.size()> output{};
+    ASSERT_EQ(marc::frame::decode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, encoded, views, decode_staging,
+                  output)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(output, raw);
+}
+
+TEST(LzssBlockedHuffmanFrameDecoder, ShortRawOutputIsAtomic) {
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, 0> output{};
+    const auto result = marc::frame::decode_lzss_blocked_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, single_literal_frame, views, staging,
+        output);
+    EXPECT_EQ(result.error,
+              LzssBlockedHuffmanFrameValidationError::raw_output_too_small);
+
+    const std::array repeated_raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'},
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'}};
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(repeated_raw.size());
+    stream.original_size = repeated_raw.size();
+    stream.entropy_block_size = 32;
+    std::array<std::byte, 12> encode_staging{};
+    const auto plan = marc::frame::plan_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, repeated_raw, encode_staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanFrameValidationError::none);
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, repeated_raw, encode_staging,
+                  encoded)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    std::array<std::byte, 12> decode_staging{};
+    std::array<std::byte, 5> short_output{};
+    short_output.fill(std::byte{0x5a});
+    const auto short_result = marc::frame::decode_lzss_blocked_huffman_frame(
+        stream, {}, {}, 0, 0, encoded, views, decode_staging, short_output);
+    EXPECT_EQ(short_result.error,
+              LzssBlockedHuffmanFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(short_output, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+}
+
+TEST(LzssBlockedHuffmanFrameDecoder, MalformedLayersDoNotPublishRawBytes) {
+    std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, 1> output{std::byte{0x5a}};
+
+    auto invalid_descriptor = single_literal_frame;
+    invalid_descriptor[64] = std::byte{1};
+    EXPECT_EQ(marc::frame::decode_lzss_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_descriptor, views,
+                  staging, output)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::controller_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
+
+    auto invalid_token = single_literal_frame;
+    invalid_token[72] = std::byte{0xff};
+    EXPECT_EQ(marc::frame::decode_lzss_blocked_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_token, views,
+                  staging, output)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
+}
+
 TEST(LzssBlockedHuffmanFrameEncoder, PlansAndEmitsExactHandVector) {
     const std::array raw{std::byte{'A'}};
     std::array<std::byte, 2> staging{};
@@ -256,11 +363,14 @@ TEST(LzssBlockedHuffmanFrameEncoder, UsesCanonicalHuffmanWhenSmaller) {
               LzssBlockedHuffmanFrameValidationError::none);
     std::array<marc::entropy::internal::BlockedHuffmanBlockView, 1> views{};
     std::array<std::byte, 2048> decode_staging{};
-    ASSERT_EQ(marc::frame::validate_lzss_blocked_huffman_frame(
-                  stream, {}, {}, 0, 0, encoded, views, decode_staging)
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, encoded, views, decode_staging,
+                  decoded)
                   .error,
               LzssBlockedHuffmanFrameValidationError::none);
     EXPECT_EQ(views[0].descriptor.flags, 0U);
+    EXPECT_EQ(decoded, raw);
 }
 
 TEST(LzssBlockedHuffmanFrameEncoder,

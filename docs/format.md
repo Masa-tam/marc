@@ -1226,6 +1226,12 @@ generic header, and checks the complete serialized destination before emitting
 any header or entropy byte. Repeating the plan during encoding must reproduce
 the same token and entropy representation byte for byte.
 
+The reference frame decoder treats entropy output as uncommitted staging. It
+validates the complete LZSS token region and its exact derived raw extent before
+checking raw destination capacity and beginning LZSS reconstruction. A failure
+in the generic header, Blocked Huffman metadata or payload, LZSS token grammar,
+declared size, or raw capacity must publish no raw byte.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

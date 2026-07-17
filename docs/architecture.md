@@ -1064,7 +1064,13 @@ The matching exact planner first determines the variable LZSS token extent,
 emits those tokens once into caller-owned staging, and then plans Blocked
 Huffman over the actual bytes. Only after the generic header and both entropy
 regions have exact extents does the frame encoder check serialized capacity and
-publish output. Raw reconstruction, stream controllers, and public adapters
+publish output.
+
+The raw frame decoder is a commit stage over the strict validator. It checks
+raw destination capacity only after the complete entropy output has passed the
+LZSS token validator, then gives that validated staging to the standalone
+transactional LZSS decoder. Neither malformed outer layers nor a short raw
+destination can publish a raw prefix. Stream controllers and public adapters
 continue from these frame boundaries without weakening their commit order.
 
 The public C adapter exposes this profile without adding a fourth generic

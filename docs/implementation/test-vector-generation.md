@@ -1205,3 +1205,11 @@ a 30-symbol entropy block to produce five blocks and a final short block.
 Require one-byte-short dictionary staging and serialized output to leave their
 respective destinations unchanged, and reject empty or contextually oversized
 raw frames.
+
+Decode the 74-byte hand frame into an oversized raw destination and require
+only its first byte to change to `A`. Round-trip the six-`A` Literal/overlapping
+Match case through the complete frame decoder. Require one-byte-short raw
+capacity to preserve every destination byte, and corrupt the entropy descriptor
+and staged LZSS tag independently to prove neither layer can publish raw. The
+1,024-byte canonical-Huffman selection case must also round-trip to the exact
+raw input rather than stopping at token-staging comparison.
