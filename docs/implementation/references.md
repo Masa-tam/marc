@@ -462,3 +462,8 @@ The `lzss-blocked-huffman` CLI adapter composes only marc's public combined C
 factory, existing bounded file-processing loop, atomic temporary-output policy,
 and repository-defined frame/block defaults. No external compression command,
 option vocabulary, file workflow, implementation, or CLI test was consulted.
+
+The `lzss-blocked-huffman` benchmark composes only marc's public combined C
+factory, documented profile bounds, existing measurement loop, and queried
+workspace accounting. No external benchmark harness, compression comparison,
+measurement code, implementation source, or performance result was consulted.

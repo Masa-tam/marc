@@ -3800,3 +3800,23 @@ discarded and the reviewed seed retained.
   including documentation topology, passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3 on Windows x64; their complete fixture archives compared
   byte for byte.
+
+## 2026-07-18 - LZSS plus Blocked Huffman benchmark
+
+- Authoring method: extended marc's public-ABI benchmark registry and existing
+  measurement contract with the reviewed LZSS combined profile.
+- References used: DD-218, public combined C factory, CLI profile limits,
+  workspace query, encoded-capacity helpers, and benchmark smoke convention.
+- Known implementations intentionally not consulted: external compression
+  benchmarks, harnesses, result tables, implementation source, or tests.
+- Independent decisions: same policy as CLI; two-byte token factor; 32 maximum
+  descriptors; round-trip before timing; queried three-region peak; no numeric
+  performance threshold.
+- Generated-code task description: add the combined LZSS profile to the
+  benchmark registry, capacity model, public factory dispatch, and smoke test.
+- Similarity review: the adapter is one additive marc-owned profile branch and
+  reuses the repository measurement contract; no external benchmark code was
+  compared.
+- Local validation: the focused benchmark smoke and all 1018 Release tests,
+  including documentation topology, passed under both MSVC/Visual Studio 2026
+  and Clang 22.1.3 on Windows x64.

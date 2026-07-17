@@ -1276,3 +1276,12 @@ round-trip an empty file, reject a non-marc input, reject one appended trailing
 byte, and require neither failure to retain its destination or `.tmp` path.
 Encode the same fixture with the MSVC and ClangCL Release tools and require the
 two complete archives to compare byte for byte.
+
+For the combined LZSS benchmark smoke, use the repository README for one
+iteration. Require public-ABI encode/decode round-trip verification and a
+successful report containing codec name, input and encoded sizes, ratio,
+directional timings and throughput, all six direction/region workspace values,
+and peak caller-owned workspace. Under the fixed one-MiB policy, the decoder
+query on the current Windows x64 builds reports 5,243,504 primary bytes,
+3,145,728 secondary bytes, and 640 aligned views bytes, for an 8,389,872-byte
+peak. Do not assert throughput or compression ratio values.

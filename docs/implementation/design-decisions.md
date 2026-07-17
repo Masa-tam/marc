@@ -3889,3 +3889,22 @@ rejection. A failed operation must remove its temporary destination even though
 the incremental decoder may have internally drained earlier validated frames.
 CLI availability does not imply benchmark, fuzz, completion-matrix, or
 interoperability readiness.
+
+## DD-218: The LZSS composition benchmark uses public profile sizing
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzss-blocked-huffman` to the opt-in Release benchmark using only its
+public C configuration, workspace query, transform creation, processing, and
+destruction functions. Match the CLI's one-MiB frame, 65,536-symbol entropy
+block, and LZSS defaults. Bound output by the 80-byte parameterized prefix,
+twice the input size, every 56-byte frame header, and 32 worst-case 16-byte
+descriptors per full frame.
+
+Verify a complete round trip before timing. Exclude allocation, construction,
+destruction, file I/O, and verification from the timed interval. Report the
+complete-stream ratio, direction-specific throughput, each queried workspace
+region, and the larger direction's primary-plus-secondary-plus-views sum. Keep
+measured speed and ratio descriptive; the smoke test requires successful
+execution and stable report structure, not a performance threshold.

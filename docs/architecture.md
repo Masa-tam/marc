@@ -1128,9 +1128,15 @@ worst case. File I/O therefore cannot bypass profile validation or introduce a
 second allocation policy. Failed decode removes the temporary destination even
 when earlier validated frames were already drained internally.
 
-A benchmark, bounded fuzz boundary, completion matrix, and interoperability
-entry remain separate admission steps and must not be inferred from CLI
-availability.
+A bounded fuzz boundary, completion matrix, and interoperability entry remain
+separate admission steps and must not be inferred from CLI availability.
+
+The benchmark adapter uses the identical public profile and fixed policy. Its
+encoded destination bound counts the 80-byte prefix, two token bytes per raw
+byte, each generic frame header, and every worst-case entropy descriptor. It
+times only `marc_transform_process`; allocation, transform lifecycle, file I/O,
+and mandatory round-trip verification remain outside the timed interval. Peak
+workspace is the larger queried sum of primary, secondary, and views regions.
 
 ### Published composed-profile evidence
 

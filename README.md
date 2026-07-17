@@ -66,7 +66,7 @@ Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
 and peak caller-owned codec workspace for checksum-raw, standalone Blocked
 Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZ77 plus Blocked
-Huffman, LZSS, LZ78, LZW, LZD, or LZMW.
+Huffman, LZSS, LZSS plus Blocked Huffman, LZ78, LZW, LZD, or LZMW.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 

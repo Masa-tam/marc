@@ -47,11 +47,11 @@ remains eight; their meanings are frozen by their version and codec-set rules.
 
 | Pairing | Implemented boundary | Local status | Interoperability schema 3 |
 |---|---|---|---|
-| LZSS plus Blocked Huffman | Public C ABI and CLI profile | In progress | Not included |
+| LZSS plus Blocked Huffman | Public C ABI, CLI, and benchmark | In progress | Not included |
 
 This row records an available public profile but not local implementation
-completion. Fuzzing, benchmark, completion-matrix, and interoperability
-evidence remain to be added before it can be classified as locally ready.
+completion. Fuzzing, completion-matrix, and interoperability evidence remain
+to be added before it can be classified as locally ready.
 
 ## Remaining release evidence
 
@@ -76,7 +76,7 @@ pairings from algorithm incompatibility and records the staged generation path.
 
 ## Current validation baseline
 
-At DD-217, the complete Release suite contains 1017 tests and passes under both
+At DD-218, the complete Release suite contains 1018 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

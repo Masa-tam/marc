@@ -13,6 +13,7 @@ marc_benchmark tans corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
+marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzd corpus.bin 5
@@ -76,6 +77,12 @@ worst-case 16-byte LZ77 token per raw byte, one 16-byte Blocked Huffman
 descriptor per entropy block, and raw entropy fallback. Reported workspace
 therefore includes dictionary staging and decoder block views in addition to
 the ordinary primary and secondary frame regions.
+
+`lzss-blocked-huffman` uses the same frame and entropy-block policy. Capacity
+planning substitutes LZSS's two-byte all-Literal token bound, includes one
+16-byte descriptor per worst-case token block, and permits raw entropy fallback
+for the complete token stream. Reported workspace includes token staging and
+decode-side aligned block views.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when
