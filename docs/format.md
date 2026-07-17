@@ -1253,6 +1253,11 @@ may already have been committed when a later frame fails. `EndInput` received
 while raw staging is draining remains effective after the drain and makes a
 missing subsequent frame a truncation error.
 
+The internal profile factory only normalizes this already specified stream
+configuration and calculates caller workspace. It introduces no additional
+field, algorithm ID, variant, padding rule, or alternative byte
+representation.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

@@ -446,3 +446,9 @@ The LZSS plus Blocked Huffman incremental decoder uses only marc's prefix and
 frame parsers, transactional combined frame decoder, `ProcessResult` contract,
 and caller-owned staging policy. No external streaming decoder, parser state
 machine, source, malformed corpus, or test schedule was consulted.
+
+The LZSS plus Blocked Huffman profile and workspace calculation use only
+marc's documented LZSS all-Literal worst case, Blocked Huffman raw-fallback
+layout, generic frame header, local decoder limits, checked arithmetic, and
+existing internal profile conventions. No external profile API, allocator,
+workspace formula, implementation, or test suite was consulted.

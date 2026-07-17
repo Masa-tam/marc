@@ -3737,3 +3737,25 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused incremental-decoder tests passed; all 1008
   Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman profile workspaces
+
+- Authoring method: independently adapted marc's reviewed profile-normalization
+  and caller-owned workspace convention to the variable-size LZSS composition.
+- References used: DD-215, repository LZSS token format, combined frame layout,
+  decoder limits, checked arithmetic, and incremental transforms.
+- Known implementations intentionally not consulted: external compression
+  profile factories, allocation formulas, C APIs, source, or tests.
+- Independent decisions: exact two-byte-per-raw-byte encoder token bound;
+  descriptor count over worst-case token bytes; empty frame-local extent;
+  decoder query derived only from local limits; public admission remains
+  separate.
+- Generated-code task description: normalize the known-size combined stream,
+  calculate exact encoder and conservative decoder workspaces, and prove those
+  requirements by constructing both streaming transforms.
+- Similarity review: the formulas are direct consequences of marc-owned token
+  and frame representations and reuse repository profile structure; no
+  external implementation was compared.
+- Local validation: all seven focused profile tests passed; all 1015 Release
+  tests, including documentation topology, passed under both MSVC/Visual Studio
+  2026 and Clang 22.1.3 on Windows x64.

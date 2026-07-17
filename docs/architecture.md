@@ -1098,32 +1098,31 @@ byte from the malformed frame is exposed. A terminal indication remains
 latched across `NeedOutput` and becomes truncation after a nonfinal frame has
 finished draining without more serialized input.
 
-The public C adapter exposes this profile without adding a fourth generic
-workspace field. Its secondary byte workspace is an opaque concatenation of
-the two adjacent frame-local staging spans, whose individual extents are
-recomputed from the validated configuration at creation. The decoder retains
-the existing aligned views workspace convention for its private entropy block
-records. Thus C callers allocate three regions while the C++ transforms still
-receive four disjoint spans where decoding requires them.
+The internal profile factory fixes the version 1.0 algorithm and variant IDs,
+serializes the canonical 16-byte LZSS parameter record, and calculates exact
+known-size encoder workspace. If `F` is the largest raw frame, the worst-case
+LZSS staging extent is `2F`. For entropy block size `E`, the maximum number of
+blocks is `ceil(2F/E)`, and serialized frame staging is exactly the 56-byte
+generic header, one 16-byte descriptor per block, and the `2F` raw-fallback
+payload. The factory rejects every arithmetic, per-region, block-count, and
+aggregate-workspace limit before returning a configuration.
 
-The command-line adapter selects the combined path only through the public C
-ABI name `lz77-blocked-huffman`. Its fixed frame/block policy is translated to
-the same checked worst-case limits before querying workspace, so file I/O never
-becomes an alternate allocation or codec-control path.
+Decoder workspace calculation deliberately has no serialized configuration
+argument. It derives the serialized-frame, token-staging, raw-frame, and typed
+block-view capacities only from trusted local limits. This makes the query safe
+before an untrusted stream header is parsed and gives a future C adapter an
+opaque allocation contract without changing the transform's four distinct
+internal spans.
 
-The benchmark adapter uses that identical public name and profile policy. Its
-encoded destination bound additionally counts every worst-case entropy block
-descriptor, while its peak-workspace report continues to sum only the three
-caller-owned ABI regions and excludes corpus and result buffers.
+This profile remains internal. A C ABI factory, CLI name, benchmark, bounded
+fuzz boundary, and interoperability entry are separate admission steps and
+must not be inferred from the profile/workspace implementation.
 
-The combined decoder fuzz boundary invokes both complete-stream validation and
-the incremental frame state machine. Before either sees bytes, the harness
-caps the case and supplies only fixed stack workspaces and local limits. Chunk
-scheduling is data-derived but the total call count is independently bounded,
-so malformed scheduling cannot create an unbounded test loop.
+### Published composed-profile evidence
 
-The combined public-ABI completion matrix closes the local implementation loop
-by driving required binary data classes through queried workspaces and both
+The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the
+local implementation loop by driving required binary data classes through
+queried workspaces and both
 stream directions. It repeats encoding for byte identity and compares
 multi-frame output across one-byte and mixed chunk schedules. This is a local
 readiness assertion, not a substitute for sanitizer campaigns or portability

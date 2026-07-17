@@ -3830,3 +3830,25 @@ Commit only that validated frame through partial output buffers. Preserve an
 report truncation after the remaining validated raw bytes drain. This differs
 intentionally from the one-shot whole-stream-atomic decoder: earlier complete
 frames may be visible, but a malformed frame contributes no raw prefix.
+
+## DD-215: LZSS combined profiles expose trusted workspace bounds
+
+- Date: 2026-07-18
+- Status: accepted
+
+Normalize the known-size LZSS variant 1 plus Blocked Huffman variant 1
+configuration before constructing a transform. For largest raw-frame extent
+`F`, reserve exactly `2F` token bytes because the all-Literal representation is
+the LZSS worst case. For entropy block size `E`, reserve
+`56 + 16 * ceil(2F/E) + 2F` serialized frame bytes: one generic frame header,
+one descriptor for every worst-case token block, and the raw entropy fallback.
+The empty stream requires no frame-local workspace.
+
+Check every multiplication, addition, block count, region limit, and the
+aggregate `F + 2F + serialized-frame` encoder workspace. Calculate decoder
+requirements only from trusted local limits: `56 + max internal buffered` for
+serialized collection, the configured dictionary-serialized and frame maxima
+for the two byte-staging regions, and the local block-count maximum for aligned
+views. Do not inspect an untrusted stream to answer the decoder query. Keep
+this contract internal until the separate public-profile admission steps are
+complete.

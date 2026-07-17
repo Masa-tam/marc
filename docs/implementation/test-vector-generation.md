@@ -1243,3 +1243,17 @@ serialized 76 plus tokens 4 plus raw 2 plus one typed view. Also require final
 truncation, trailing data, unsupported `ResetBlock`, empty input, flush
 starvation, repeated terminal error, and premature terminal state preserved
 across a one-byte raw drain.
+
+For the combined LZSS profile query, require a 2,500,000-byte known stream with
+one-million-byte frames and 65,536-symbol entropy blocks to reserve 1,000,000
+raw bytes, 2,000,000 token bytes, and
+`56 + 31 * 16 + 2,000,000` serialized-frame bytes. A 17-byte largest frame with
+a 64-symbol entropy block reserves 17, 34, and 106 bytes respectively; empty
+input reserves no frame-local bytes. Reject an all-Literal block count above
+the local maximum and an aggregate workspace one byte above its limit.
+
+Derive decoder requirements solely from selected local limits and verify that
+the returned four regions construct the incremental decoder. Use those
+encoder and decoder queries to round-trip the exact 306-byte `ABABX` oracle,
+so the arithmetic is exercised by the transforms rather than tested only as
+isolated numbers.
