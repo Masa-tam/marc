@@ -3680,3 +3680,22 @@ discarded and the reviewed seed retained.
 - Local validation: all sixteen focused LZSS-composition frame tests passed;
   all 991 Release tests, including documentation topology, passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZSS plus Blocked Huffman complete stream
+
+- Authoring method: composed marc's reviewed stream prefix, LZSS parameters,
+  combined frames, and two-pass whole-stream atomicity convention.
+- References used: DD-212, repository stream/frame formats, combined frame
+  codec, checked arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external containers,
+  stream scanners, compression source, vectors, or tests.
+- Independent decisions: 80-byte canonical prefix; plan all frames before
+  output; first-pass validation without raw publication; second-pass commit;
+  publish parsed configuration only after complete success.
+- Generated-code task description: add a known-size complete-stream planner,
+  encoder, and whole-stream-atomic decoder for LZSS plus Blocked Huffman.
+- Similarity review: layout and traversal directly compose marc-owned formats
+  and established atomic stream policy; no external code was compared.
+- Local validation: all seven focused complete-stream tests passed; all 998
+  Release tests, including documentation topology, passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

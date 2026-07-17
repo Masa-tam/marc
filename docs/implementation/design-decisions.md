@@ -3779,3 +3779,20 @@ decoder. A malformed descriptor, entropy payload, token tag, match reference,
 derived size, or short raw destination must not publish a raw prefix. Exercise
 both raw Blocked Huffman representation and canonical Huffman representation,
 including overlapping LZSS match reconstruction.
+
+## DD-212: LZSS composition validates the complete stream before raw commit
+
+- Date: 2026-07-18
+- Status: accepted
+
+Compose the version 1.0 stream header, one canonical 16-byte LZSS parameter
+region, and consecutive DD-209 frames into a known-size complete stream. Empty
+input is the 80-byte prefix only. Plan all frames before writing the prefix so
+short serialized output remains atomic and the final size is exact.
+
+Decode in two passes. Parse stream configuration into local objects, validate
+every frame and the exact terminal serialized extent without raw output, then
+repeat the bounded frame traversal to publish raw bytes. Publish parsed stream
+and parameter outputs only after the second pass succeeds. This makes later
+frame corruption whole-stream atomic while reusing storage sized for only the
+largest frame and its entropy block views.

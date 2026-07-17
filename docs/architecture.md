@@ -1073,6 +1073,14 @@ transactional LZSS decoder. Neither malformed outer layers nor a short raw
 destination can publish a raw prefix. Stream controllers and public adapters
 continue from these frame boundaries without weakening their commit order.
 
+The known-size complete-stream controller writes the normal 64-byte stream
+header followed by the 16-byte LZSS parameter region and then consecutive
+combined frames. Encoding plans every frame before publishing the prefix.
+Decoding parses configuration into local objects and validates every frame in a
+first pass with no raw output; only a successful complete scan permits the
+second commit pass. A malformed later frame therefore cannot expose an earlier
+raw frame or partially replace caller-visible configuration.
+
 The public C adapter exposes this profile without adding a fourth generic
 workspace field. Its secondary byte workspace is an opaque concatenation of
 the two adjacent frame-local staging spans, whose individual extents are

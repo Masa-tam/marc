@@ -1213,3 +1213,15 @@ capacity to preserve every destination byte, and corrupt the entropy descriptor
 and staged LZSS tag independently to prove neither layer can publish raw. The
 1,024-byte canonical-Huffman selection case must also round-trip to the exact
 raw input rather than stopping at token-staging comparison.
+
+For the known-size combined stream, split ASCII `ABABX` into uncompressed
+two-byte frames. Each `AB` frame produces four LZSS Literal bytes and one raw
+Blocked Huffman block, so the first two 76-byte frames have identical bodies;
+the final `X` frame is 74 bytes. Prefix them with the 80-byte stream header and
+LZSS parameters for an exact 306-byte, three-frame vector. Compare the first
+two bodies to prove both resets.
+
+Require deterministic encoding, prefix-only empty input, every strict
+truncation, one trailing byte, and independent output/view/staging capacity
+failures. Corrupt the first LZSS tag in the second frame and require raw output
+and caller-visible stream/parameter objects to remain unchanged.

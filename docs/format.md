@@ -1232,6 +1232,14 @@ checking raw destination capacity and beginning LZSS reconstruction. A failure
 in the generic header, Blocked Huffman metadata or payload, LZSS token grammar,
 declared size, or raw capacity must publish no raw byte.
 
+The known-size complete stream uses the ordinary 64-byte version 1.0 stream
+header, followed by the 16-byte LZSS parameter region and zero or more combined
+frames in sequence. Empty input is exactly this 80-byte prefix. Nonempty input
+is split by the declared uncompressed frame size; both LZSS dictionary state
+and every Blocked Huffman model reset at each frame. Strict decoding requires
+the frames to derive exactly `original size` bytes and rejects any remaining
+serialized byte.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

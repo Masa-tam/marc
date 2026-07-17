@@ -431,3 +431,8 @@ repository-defined transactional LZSS variant 1 codec, Blocked Huffman variant
 1 representation, generic frame header, checked arithmetic, and decoder
 limits. No external combined format, implementation, vector, or test suite was
 consulted.
+
+The LZSS plus Blocked Huffman complete-stream controller uses only marc's
+version 1.0 stream header, LZSS parameter serialization, combined frame codec,
+and two-pass atomic decode convention. No external container, stream scanner,
+profile, vector, or implementation was consulted.

@@ -47,11 +47,11 @@ remains eight; their meanings are frozen by their version and codec-set rules.
 
 | Pairing | Implemented boundary | Local status | Interoperability schema 3 |
 |---|---|---|---|
-| LZSS plus Blocked Huffman | Transactional frame encode and decode | In progress | Not included |
+| LZSS plus Blocked Huffman | Known-size complete-stream encode and atomic decode | In progress | Not included |
 
-This row is deliberately not a public profile claim. Complete-stream and
-streaming controllers, the C ABI, CLI, fuzzing, benchmark, and interoperability
-evidence remain to be added before the cell receives a public profile name.
+This row is deliberately not a public profile claim. Incremental streaming
+controllers, the C ABI, CLI, fuzzing, benchmark, and interoperability evidence
+remain to be added before the cell receives a public profile name.
 
 ## Remaining release evidence
 
@@ -76,7 +76,7 @@ pairings from algorithm incompatibility and records the staged generation path.
 
 ## Current validation baseline
 
-At DD-211, the complete Release suite contains 991 tests and passes under both
+At DD-212, the complete Release suite contains 998 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.
