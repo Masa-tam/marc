@@ -523,8 +523,8 @@ install(FILES
 )
 install(FILES LICENSE THIRD_PARTY_NOTICES.md README.md
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc)
-install(FILES .github/assets/images/marc.png
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/.github/assets/images)
+install(FILES assets/images/marc.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/assets/images)
 install(DIRECTORY docs/
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/docs
     FILES_MATCHING PATTERN "*.md")
