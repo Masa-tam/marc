@@ -4026,3 +4026,23 @@ This makes malformed entropy metadata, invalid phrase references, short typed
 workspaces, and short raw output frame-atomic. Defer the single opaque C ABI
 partition helper until profile sizing and public construction are implemented;
 it must reproduce these same two typed extents with checked alignment.
+
+## DD-225: Combined LZ78 encoding freezes tokens before entropy planning
+
+- Date: 2026-07-18
+- Status: accepted
+
+Require the frame planner to validate the pipeline and LZ78 parameters, admit
+the complete caller-owned `Lz78EncoderEntry` table, and plan the deterministic
+LZ78 parse before touching token staging. Count the typed encoder table plus
+the exact token staging extent against the aggregate buffered-memory limit.
+Encode the canonical token stream once into staging, then plan Blocked Huffman
+over precisely those bytes.
+
+The frame encoder repeats that complete plan before checking serialized output
+capacity, writes the generic header, and entropy-encodes the already fixed
+staging bytes. Expected workspace, limit, frame-extent, and output-capacity
+failures therefore publish no serialized byte. Require the specified 80-byte
+raw-block vector, multi-block deterministic output, canonical-Huffman
+selection, and round-trip decoding before building streaming or public profile
+layers.

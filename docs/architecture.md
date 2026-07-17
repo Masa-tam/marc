@@ -1149,10 +1149,11 @@ the incremental frame-committing decoder. It truncates each supplied case to
 the bytes. An independent call ceiling converts any stalled state machine into
 a reproducible failure rather than an unbounded run.
 
-### Specified LZ78 plus Blocked Huffman validation boundary
+### Specified LZ78 plus Blocked Huffman frame boundary
 
-The composition now has a decoder-side frame admission boundary. It
-entropy-decodes a complete frame into fixed-width LZ78 token staging, then
+The composition now has matching frame planner/encoder and validator/decoder
+boundaries. Encoding fixes the LZ78 parse in token staging before Blocked
+Huffman planning; decoding entropy-decodes a complete frame into staging, then
 validates phrase references and the exact derived raw extent before
 publication. Unlike the first two compositions, both directions require an
 aligned LZ78 phrase table; decoding additionally requires aligned Blocked
@@ -1163,9 +1164,9 @@ than an implementation detail. A future public adapter may retain the common
 primary/secondary/views C ABI shape, but its opaque views region must be
 partitioned with checked alignment and size arithmetic for both private record
 types. The internal frame API accepts separate typed spans so capacity and
-aggregate-memory failures occur before entropy output. Encoder planning,
-profile sizing, public C creation, and the opaque partition helper remain to be
-implemented and must use the same sizing rule. The specified
+aggregate-memory failures occur before entropy output or serialized output.
+Profile sizing, streaming, public C creation, and the opaque partition helper
+remain to be implemented and must use the same sizing rule. The specified
 `lz78-blocked-huffman` name is therefore not yet a callable profile.
 
 ### Published composed-profile evidence

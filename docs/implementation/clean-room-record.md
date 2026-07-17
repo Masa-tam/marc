@@ -3958,3 +3958,24 @@ discarded and the reviewed seed retained.
   frame/component contracts; no external combined expression was compared.
 - Local validation: documentation topology and all 1034 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman frame planner and encoder
+
+- Authoring method: implemented DD-225 by composing marc's LZ78 planner and
+  encoder with its Blocked Huffman planner and encoder through canonical token
+  staging.
+- References used: DD-223 through DD-225, the specified 80-byte hand vector,
+  and the existing component/frame contracts.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, source, adapters, workspace layouts, tests, or encoded streams.
+- Independent decisions: admit and count the typed encoder table before token
+  output; freeze exact staging before entropy planning; plan completely before
+  serialized capacity or output; retain the profile as non-callable.
+- Generated-code task description: complete the internal frame codec, prove
+  exact hand-vector generation and deterministic multi-block round trips, and
+  defer streaming/public layers.
+- Similarity review: composition and failure ordering derive from marc's own
+  independently documented component contracts; no external combined
+  expression was compared.
+- Local validation: documentation topology and all 1039 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

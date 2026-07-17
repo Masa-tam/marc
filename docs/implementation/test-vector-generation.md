@@ -1331,7 +1331,8 @@ Blocked Huffman size rule chooses raw storage, producing one 16-byte descriptor
 with symbol count and payload size eight, no model, raw flag one, and eight
 valid bits. Prepend a generic frame header declaring raw size one, dictionary
 and compressed sizes eight, one block, and 16 descriptor bytes. The resulting
-frame is exactly 80 bytes. The combined frame validator and decoder now accept
-this vector, recover the exact Pair token, build phrase entry
-`{root, A, length 1}`, and publish only the single raw byte. The future planner
-and encoder must reproduce the same vector before larger round trips are added.
+frame is exactly 80 bytes. The combined frame planner and encoder reproduce it
+byte for byte; the validator and decoder accept it, recover the exact Pair
+token, build phrase entry `{root, A, length 1}`, and publish only the single raw
+byte. Larger tests additionally require deterministic multi-block output and a
+canonical-Huffman block when that representation is smaller than raw storage.
