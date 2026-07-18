@@ -407,6 +407,12 @@ bounded streaming loop, output-overwrite refusal, and cleanup on malformed or
 trailing input. Its fixed one-MiB raw frame, 64-KiB entropy block, four-MiB
 reference cap, 64-block limit, and 64-MiB aggregate policy are local admission
 choices rather than new serialized parameters.
+The dependency-free benchmark selects the same profile through the public C
+ABI, verifies a full round trip before measurement, and reports full-stream
+ratio, encode/decode throughput, each caller-owned workspace region, and their
+directional peak. Reserved workspace totals are reported separately from the
+decoder's active aggregate limit; they are intentionally not presented as the
+same memory quantity.
 
 ### Combined dictionary and entropy pipelines
 

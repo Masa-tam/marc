@@ -631,3 +631,7 @@ was consulted.
 The `lzmw-blocked-huffman` CLI adapter uses only DD-264, marc's public combined
 C ABI, common transactional file loop, and repository integration script. No
 external CLI, archive tool, adapter source, or test fixture was consulted.
+The `lzmw-blocked-huffman` benchmark adapter uses only DD-265, the public C
+factory, CLI profile constants, checked output-capacity formulas, and marc's
+existing measurement contract. No external benchmark implementation, result,
+corpus, or tuning guidance was consulted.

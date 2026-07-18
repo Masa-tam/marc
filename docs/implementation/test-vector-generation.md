@@ -1711,3 +1711,10 @@ the same lifecycle for an empty file. Require a second encode to refuse the
 existing output. Decode `not-a-marc-stream` and a valid archive with one
 trailing `x`; both must fail and leave neither the requested output nor its
 `.tmp` staging path.
+
+For benchmark smoke, run
+`marc_benchmark lzmw-blocked-huffman README.md 1`. Require a verified encode and
+decode before measurement and the standard codec name, input and encoded byte
+counts, ratio, encode/decode seconds and MiB/s, all six direction-specific
+workspace extents, and peak caller-reserved workspace fields. Values are local
+measurements rather than frozen performance thresholds.

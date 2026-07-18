@@ -4863,3 +4863,23 @@ refuse overwrite, reject malformed input, reject a valid stream with trailing
 data, and leave neither destination nor temporary output on either decode
 failure. CLI publication does not imply benchmark or interoperability
 admission.
+
+## DD-265: LZMW composition benchmark measures the public profile lifecycle
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzmw-blocked-huffman` to the dependency-free benchmark with exactly the
+CLI's one-MiB frame, 65,536-byte entropy block, `4F` maximum reference extent,
+64-block cap, 65,536-entry dictionary policy, and 64-MiB active aggregate
+limit. Construct encoder and decoder only through the public C configuration,
+requirements, create, process, and destroy functions. Bound the output buffer
+by the 80-byte prefix, four bytes per input byte, 56 bytes per frame, and one
+16-byte descriptor per maximum entropy block.
+
+Before timing, encode once, decode once, and require exact input equality.
+Measure encode and decode independently, report serialized ratio and each
+direction's primary, secondary, and opaque views bytes, and define peak
+workspace as the larger sum of those three caller-reserved regions. Keep this
+reservation measurement distinct from the limit on simultaneously active
+decoder data. Benchmark publication does not imply interoperability admission.

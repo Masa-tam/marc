@@ -21,6 +21,7 @@ marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
+marc_benchmark lzmw-blocked-huffman corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -108,6 +109,15 @@ LZD dictionary policy. Capacity includes one 16-byte descriptor per possible
 token block and raw entropy fallback. The public C ABI query supplies all
 reported encoder and decoder workspace bytes, including the decoder's private
 entropy-view, phrase, and iterative-expansion storage.
+
+`lzmw-blocked-huffman` uses the same one-MiB raw frame, 65,536-symbol entropy
+block, four-byte-per-raw-byte reference bound, 64-block cap, 65,536-entry
+dictionary policy, and 64-MiB active aggregate limit as the CLI. The benchmark
+obtains all three region sizes and alignment from the public C ABI and verifies
+a complete round trip before timing. `codec_peak_workspace_bytes` reports the
+sum of caller-reserved regions, which can exceed the active aggregate policy
+because the conservative maximum serialized-frame reservation coexists with
+reference, raw-frame, and typed-view reservations.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

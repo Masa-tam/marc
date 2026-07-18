@@ -4826,3 +4826,23 @@ discarded and the reviewed seed retained.
 - Local validation: the focused transactional CLI test and all 1,160 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman public-ABI benchmark adapter
+
+- Authoring method: extended marc's dependency-free benchmark registry with
+  the independently published combined C ABI and existing measurement loop.
+- References used: DD-265, CLI profile constants, public requirements/factory,
+  checked maximum-output formula, and repository benchmark output contract.
+- Known implementations intentionally not consulted: external LZMW benchmarks,
+  harnesses, corpora, measurements, optimization guidance, source, or tests.
+- Independent decisions: reuse the CLI policy; include Blocked Huffman
+  descriptor overhead in output capacity; verify a full round trip before
+  timing; report all caller-reserved regions separately from active limits.
+- Generated-code task description: add codec registry, name parser, public-C-
+  ABI config/query/create dispatch, checked capacity, verified encode/decode,
+  benchmark smoke, workspace and ratio documentation, and readiness evidence.
+- Similarity review: measurement lifecycle and output fields are marc-owned;
+  LZMW combined bounds derive from the local `4F` format and no external result
+  or benchmark expression was compared.
+- Local validation: the focused benchmark smoke and all 1,161 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
