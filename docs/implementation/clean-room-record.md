@@ -4127,3 +4127,24 @@ discarded and the reviewed seed retained.
   marc's existing benchmark structure; no external expression was compared.
 - Local validation: the benchmark smoke and all 1058 Release tests passed under
   both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - Interoperability schema 4
+
+- Authoring method: extended marc's versioned bundle protocol without changing
+  any encoded representation or historical schema profile set.
+- References used: DD-202, DD-220 through DD-233, the existing schema 1 through
+  3 generator/verifier contract, and the two completed composed CLI profiles.
+- Known implementations intentionally not consulted: external interoperability
+  suites, combined-codec archives, manifests, corpora, source, or vectors.
+- Independent decisions: preserve schema 3 as an exact thirteen-entry prefix;
+  append LZSS plus Blocked Huffman and LZ78 plus Blocked Huffman; identify the
+  fifteen-entry set as schema 4 / `marc-cli-v4`; retain artifact names.
+- Generated-code task description: generate and strictly verify schema 4, then
+  mechanically derive and verify the frozen schema 3, 2, and 1 sets.
+- Similarity review: the extension uses only marc's repository-owned profile
+  order, fixture, JSON fields, SHA-256 checks, and public CLI; no external
+  protocol expression was compared.
+- Local validation: schema 4 and all three historical forms verified under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3. The independently generated input
+  and all fifteen schema-4 archives were byte-identical between those compilers
+  on Windows x64. All 1058 Release tests passed under both toolchains.

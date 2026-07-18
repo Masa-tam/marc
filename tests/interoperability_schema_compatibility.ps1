@@ -40,6 +40,7 @@ function Convert-Bundle(
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema4 = Join-Path $root 'schema4'
 $schema3 = Join-Path $root 'schema3'
 $schema2 = Join-Path $root 'schema2'
 $schema1 = Join-Path $root 'schema1'
@@ -53,15 +54,29 @@ $legacyProfiles = @(
     'lzmw'
 )
 $schema2Profiles = @('checksum-raw') + $legacyProfiles
+$entropyProfiles = @(
+    'blocked-huffman',
+    'adaptive-huffman',
+    'dynamic-range',
+    'rans',
+    'tans'
+)
+$schema3Profiles = $schema2Profiles + $entropyProfiles
 
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema3 `
+        -OutputDirectory $schema4 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema4 `
+        -OutputDirectory (Join-Path $root 'verified4')
+
+    Convert-Bundle $schema4 $schema3 3 'marc-cli-v3' $schema3Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
         -BundleDirectory $schema3 `
@@ -79,7 +94,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1, 2, and 3'
+    Write-Host 'Verified interoperability schemas 1, 2, 3, and 4'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

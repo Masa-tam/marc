@@ -426,6 +426,11 @@ earlier manifest rules, repository-generated fixture, and SHA-256 metadata. No
 external archive format, interoperability suite, or third-party tool behavior
 was consulted.
 
+Interoperability schema 4 extends only marc's frozen schema-3 profile order
+with the repository-defined LZSS and LZ78 Blocked Huffman CLI profiles. No
+external combined-codec archive, compatibility suite, manifest, or test vector
+was consulted.
+
 The LZSS plus Blocked Huffman frame codec composes only marc's
 repository-defined transactional LZSS variant 1 codec, Blocked Huffman variant
 1 representation, generic frame header, checked arithmetic, and decoder

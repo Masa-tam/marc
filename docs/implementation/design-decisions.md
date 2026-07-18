@@ -4179,3 +4179,22 @@ Keep allocation, construction, file I/O, and verification outside the timed
 region, consistently with the existing benchmark contract. A benchmark smoke
 test proves adapter availability but is not a stable performance assertion.
 Benchmark admission does not imply interoperability completion.
+
+## DD-233: Interoperability schema 4 appends completed compositions
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define schema 4 with codec set `marc-cli-v4`. Preserve the exact thirteen-entry
+schema-3 order, then append `lzss-blocked-huffman` and
+`lz78-blocked-huffman`, for fifteen archives total. The generator emits schema
+4 by default while artifact names remain unchanged and manifests self-identify
+their schema and exact codec set.
+
+Keep schemas 1, 2, and 3 frozen at their existing seven, eight, and thirteen
+profiles. The verifier must accept each exact historical set and reject
+mismatched codec-set identifiers, missing, extra, or duplicate profiles. The
+compatibility test generates schema 4, verifies it, derives each earlier bundle
+by filtering only its versioned list, and verifies all four forms with the same
+public CLI. Local cross-compiler agreement is necessary evidence; external
+cross-platform execution remains release evidence after publication.

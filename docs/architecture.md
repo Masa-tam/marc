@@ -540,11 +540,11 @@ input byte plus the 80-byte prefix and 60 bytes per frame. Peak codec workspace
 therefore reflects the single caller-owned serialized-frame span rather than
 the benchmark's corpus or result vectors.
 
-Interoperability schema 3 names codec set `marc-cli-v3` and appends the five
-standalone entropy profiles to the exact schema-2 order. The external verifier
-dispatches each manifest's exact versioned set through the public CLI. Schema 1
-remains frozen at seven profiles and schema 2 at eight profiles under
-`marc-cli-v2`.
+Interoperability schema 4 names codec set `marc-cli-v4`, preserves the exact
+thirteen-profile schema-3 order, and appends the LZSS and LZ78 Blocked Huffman
+profiles. The external verifier dispatches each manifest's exact versioned set
+through the public CLI. Schemas 1, 2, and 3 remain frozen at seven, eight, and
+thirteen profiles respectively.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1200,13 +1200,13 @@ The first independent-toolchain check builds the complete project with Clang's
 GNU-style driver and Ninja on Windows, then runs the same optimized suite used
 by the MSVC build. As a separate representation check, the MSVC and Clang
 command-line tools encode one common input through every public CLI profile;
-all thirteen schema-3 archives must compare byte for byte. This establishes
+all fifteen schema-4 archives must compare byte for byte. This establishes
 compiler independence on one architecture, while cross-architecture evidence
 remains a separate gate.
 
 CI turns this check into an externally consumable protocol. Each reference job
 generates the same 8,193-byte binary fixture, validates a local round trip for
-all thirteen schema-3 profiles, and uploads the fixture, complete archives, and
+all fifteen schema-4 profiles, and uploads the fixture, complete archives, and
 a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect
