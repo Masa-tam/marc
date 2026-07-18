@@ -1283,6 +1283,78 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final four bytes are the FGK payload. This vector
 contains no separately stored LZ77 token bytes.
 
+## LZSS variant 1 plus Adaptive Huffman FGK variant 1
+
+The reserved profile name is `lzss-adaptive-huffman`. This composition uses
+dictionary algorithm ID 2, dictionary variant 1, entropy algorithm ID 1, and
+entropy variant 1. It uses format version 1.0. The stream parameter regions are
+the 16-byte LZSS parameters followed by the empty Adaptive Huffman parameter
+region. `entropy block size` is zero.
+
+The format-level maximum outer frame size is 2^20 raw bytes. The bounded
+reference profile uses 65,536 raw bytes per frame. For an `F`-byte raw frame,
+the canonical LZSS token stream is nonempty, no larger than `2F` bytes, and
+within the decoder's local dictionary-serialized limit. This follows from the
+exact two-byte Literal cost; every nine-byte Match represents at least five raw
+bytes and cannot increase the worst-case token extent.
+
+Every nonempty outer frame is exactly one Adaptive Huffman block. Its FGK tree
+starts from the single NYT root before the first LZSS token byte and is
+discarded after the frame. The LZSS dictionary likewise starts empty for every
+frame. Empty input has no frame, entropy descriptor, or payload.
+
+The generic frame header records raw bytes as `uncompressed size`, canonical
+LZSS token bytes as `dictionary serialized size`, Adaptive bytes as `compressed
+payload size`, entropy block count one, descriptor size 16, and checksum trailer
+size zero. The body is:
+
+```text
+generic frame header
+one Adaptive Huffman descriptor
+Adaptive Huffman payload over the canonical LZSS token bytes
+```
+
+The descriptor's `symbol count` equals `dictionary serialized size`, and its
+`payload size` equals `compressed payload size`. All descriptor flags,
+reserved bytes, final-valid-bit rules, exact bit consumption, zero padding,
+FGK numbering, swapping, and rescaling are unchanged from Adaptive Huffman
+variant 1. No separately stored LZSS token region exists.
+
+The conservative Adaptive bound is 264 bits, or 33 bytes, per token byte. A raw
+frame of `F` bytes therefore reserves at most `66F` compressed payload bytes.
+The format maximum remains valid only when the selected local compressed,
+dictionary, raw-frame, and aggregate limits admit its complete worst case. The
+65,536-byte reference frame bounds token staging at 131,072 bytes and payload
+at 4,325,376 bytes.
+
+Decoding is transactional at the outer frame boundary. Before publishing a raw
+byte, the decoder must:
+
+1. validate the exact pipeline, LZSS parameters, sequence, generic extents,
+   one-block count, and 16-byte descriptor extent;
+2. parse the Adaptive descriptor and decode exactly `dictionary serialized
+   size` bytes into bounded private token staging with exact bit exhaustion;
+3. validate every variable-length LZSS token, reserved and tag rule, distance,
+   overlap, length, and terminal extent, deriving exactly `uncompressed size`;
+4. reconstruct the validated token stream into separate bounded private raw
+   staging; and only then
+5. make that frame available to the caller.
+
+Failure at any stage publishes no byte from the current frame. Earlier frames
+may already be committed by the incremental decoder. Encoding completes the
+deterministic LZSS parse, immutable token staging, Adaptive plan, generic header,
+and complete destination-capacity check before writing the frame.
+
+The known-size stream is the ordinary 64-byte version-1.0 header followed by
+the 16-byte LZSS parameter region and zero or more consecutive frames. Empty
+input is exactly this 80-byte prefix. Input/output chunking does not change the
+bytes. Nonterminal `Flush` does not close a partial frame, and `ResetBlock` is
+unsupported at this cross-layer boundary.
+
+This section fixes only the decoder-visible representation and reserves the
+profile name. It does not publish a C factory, CLI selector, benchmark entry,
+or interoperability archive.
+
 ## LZSS variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 2, dictionary variant 1,

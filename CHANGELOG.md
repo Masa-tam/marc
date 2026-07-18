@@ -16,6 +16,8 @@ format versions, and C ABI versions are independent namespaces.
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability
   generation and verification.
+- The decoder-visible `lzss-adaptive-huffman` composition and its bounded
+  reference profile are specified for the next admission sequence.
 
 ## 0.1.0 - 2026-07-19
 

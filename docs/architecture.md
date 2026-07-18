@@ -1195,6 +1195,20 @@ CLI representation as its nineteenth archive. Generation verifies a local
 round trip; foreign verification checks manifest order and hashes, decodes to
 the common fixture, and requires byte-identical local re-encoding.
 
+### LZSS plus Adaptive Huffman specified boundary
+
+The next Adaptive composition retains LZSS's variable two-byte Literal and
+nine-byte Match grammar as the exact entropy input. One frame-local FGK tree
+reconstructs the entire token region into private staging before the ordinary
+LZSS validator may interpret any tag or reference. Complete validation and raw
+reconstruction occur before a current-frame byte becomes drainable.
+
+The exact all-Literal bound is two token bytes per raw byte; the conservative
+FGK bound is therefore 66 payload bytes per raw byte. The reference 64-KiB raw
+frame keeps token, payload, serialized-frame, and private raw regions within the
+common bounded policy. No aligned views region is required by either component.
+This is a specified architecture boundary, not yet a public implementation.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

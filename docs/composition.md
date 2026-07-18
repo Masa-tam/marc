@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | Specified `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
@@ -57,6 +57,11 @@ bounded public C factory and public-ABI completion matrix. Bounded frame and
 stream decoder fuzzing, a transactional CLI selector, and a public-C-ABI
 benchmark adapter are available. Interoperability schema 8 includes it as the
 nineteenth archive.
+
+`lzss-adaptive-huffman` has a fixed decoder-visible format and bounded
+reference policy. It remains specified rather than public until its independent
+vector, validator, encoder/decoder, streaming, C ABI, malformed-input, fuzz,
+tooling, benchmark, and interoperability evidence are complete.
 
 ## Why publication is not automatic
 

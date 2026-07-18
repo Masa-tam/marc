@@ -5421,3 +5421,29 @@ discarded and the reviewed seed retained.
   work directory was removed.
 - Scope limit: this is Windows/WSL2 x86-64 compiler and operating-system
   userland evidence, not a second-architecture or non-WSL-kernel result.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman composition specification
+
+- Authoring method: composed two already independently specified marc byte
+  transforms at their canonical token boundary before writing implementation
+  code.
+- References used: DD-289, marc's LZSS variant 1 token grammar, Adaptive
+  Huffman FGK variant 1 representation, generic framing, and existing
+  transactional composition policy.
+- Known implementations intentionally not consulted: external combined codecs,
+  formats, implementations, profiles, streams, vectors, workspace layouts, or
+  test suites.
+- Independent decisions: reserve `lzss-adaptive-huffman`; use dictionary ID 2
+  and entropy ID 1 with their existing variant IDs; reset both layers per outer
+  frame; derive the exact `2F` token and conservative `66F` payload bounds; use
+  a 64-KiB reference frame under a 1-MiB format maximum; require token and raw
+  private staging before publication.
+- Generated-code task description: define the complete decoder-visible stream,
+  limits, body ordering, validation/commit sequence, streaming semantics,
+  architecture boundary, composition-matrix state, and admission status without
+  publishing an implementation or public factory.
+- Similarity review: the specification combines only repository-owned format
+  rules and checked arithmetic; no external combined representation or source
+  structure was compared.
+- Local validation: documentation consistency and whitespace checks passed;
+  no compiled behavior changed in this specification-only step.

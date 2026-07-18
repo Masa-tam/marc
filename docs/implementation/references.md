@@ -714,3 +714,10 @@ The schema-8 external validation record uses the user-supplied execution report
 for revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817` and marc's own manifest
 verifier output. No external archive tool, decoder implementation, test suite,
 or third-party compatibility claim was used.
+
+The LZSS plus Adaptive Huffman composition specification uses only marc's
+documented LZSS variant 1 token grammar, Adaptive Huffman FGK variant 1
+bitstream, generic frame representation, checked decoder limits, and existing
+repository-owned composition rules. No external combined codec, format,
+implementation, profile, stream, test vector, or workspace layout was
+consulted.

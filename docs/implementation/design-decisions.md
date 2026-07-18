@@ -5312,3 +5312,29 @@ fixture, re-encode locally, and compare the complete canonical archive byte for
 byte. The compatibility regression must generate schema 8, reject a reordered
 schema-8 manifest, derive each frozen earlier schema by filtering only, and
 verify all eight generations.
+
+## DD-289: LZSS plus Adaptive Huffman preserves variable-token framing
+
+- Date: 2026-07-19
+- Status: accepted
+
+Reserve `lzss-adaptive-huffman` for LZSS variant 1 followed by Adaptive Huffman
+FGK variant 1. Serialize the existing 16-byte LZSS parameter region, no entropy
+parameters, and zero entropy block size. Every nonempty outer frame owns exactly
+one freshly reset FGK tree; neither LZSS history nor Adaptive state crosses the
+frame boundary.
+
+Retain a format-level raw-frame maximum of 1 MiB and use 65,536 raw bytes for
+the bounded reference profile. An `F`-byte raw frame produces at most `2F`
+canonical LZSS bytes because the all-Literal parse is the exact worst case.
+The conservative Adaptive payload bound is therefore `66F` bytes. Require all
+token, payload, frame, staging, and aggregate arithmetic to be checked before
+allocation or mutation.
+
+Decode one complete Adaptive block into private token staging, require exact
+payload-bit exhaustion, validate the complete variable-length LZSS grammar and
+derive exactly the declared raw size, reconstruct into separate private raw
+staging, and only then publish the frame. Encoding likewise completes the LZSS
+parse and Adaptive plan before emitting a frame byte. `Flush` does not shorten
+a frame, `ResetBlock` is unsupported at the composition boundary, and empty
+input remains the ordinary 80-byte parameterized prefix with no frame.
