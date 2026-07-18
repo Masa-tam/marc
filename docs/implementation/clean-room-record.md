@@ -5112,3 +5112,29 @@ discarded and the reviewed seed retained.
 - Local validation: the permanent vector test and all 1,163 Release tests passed
   under both MSVC via Visual Studio 2026 and Clang 22.1.3 via Ninja on Windows
   x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman frame validator
+
+- Authoring method: composed marc's existing generic frame, Adaptive FGK, and
+  LZ77 validation contracts at the documented byte-stream boundary without
+  consulting an external combined implementation.
+- References used: DD-277, the `lz77-adaptive-huffman` format section, marc's
+  independently implemented frame parser, Adaptive descriptor/decoder, LZ77
+  token validator, and checked arithmetic primitives.
+- Known implementations intentionally not consulted: external LZ/Huffman
+  pipelines, foreign frame validators, third-party decoder source, or external
+  malformed-input suites.
+- Independent decisions: stop the first executable boundary at private token
+  staging; reject impossible token and payload extents before mutation; count
+  the descriptor, payload, and token staging together; retain separate stable
+  categories for header, descriptor, entropy, and dictionary failures.
+- Generated-code task description: implement a bounded complete-frame validator
+  for the reserved composition and permanently test exact input extent,
+  pre-mutation capacity failures, strict padding, cross-layer invalidity, and
+  profile bounds without adding raw publication.
+- Similarity review: the control flow follows marc's published validation order
+  and local component contracts; no external code, tests, or distinctive
+  expression was used.
+- Local validation: the nine focused validator tests and all 1,172 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

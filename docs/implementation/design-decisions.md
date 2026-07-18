@@ -5086,3 +5086,22 @@ Add a permanent boundary test that separately invokes the existing LZ77 and
 Adaptive primitives and compares them with the independent token, descriptor,
 payload, and 76-byte frame. Do not introduce a combined encoder merely to
 generate its own oracle.
+
+## DD-277: LZ77 plus Adaptive validation ends at private token staging
+
+- Date: 2026-07-19
+- Status: accepted
+
+Introduce the combined profile's first executable decoder boundary as a
+validator that accepts exactly one complete serialized frame and writes only to
+caller-supplied private LZ77-token staging. It validates the stream pipeline,
+LZ77 parameters, generic frame header, exact serialized extent, 16-byte token
+alignment, the 2^24 Adaptive symbol cap, the LZ77 sixteen-byte-per-raw-byte
+bound, the Adaptive 33-byte-per-symbol payload bound, and the aggregate active
+workspace before entropy decoding.
+
+Parse the fixed Adaptive descriptor, require strict FGK payload exhaustion and
+zero padding, decode exactly the declared token bytes, then validate the entire
+canonical LZ77 token stream against the declared raw size. Do not reconstruct
+or publish raw bytes in this step. A later decoder may publish only after this
+validator succeeds and private raw reconstruction also completes.
