@@ -621,3 +621,6 @@ codec, error behavior, source, or test suite was consulted.
 The public factory reuses marc's size-tagged C ABI lifecycle, the local LZMW
 combined profile query, and its checked opaque partitions. No external C ABI,
 allocator convention, object layout, wrapper source, or test was consulted.
+The completion matrix uses only DD-262, marc's public combined C ABI, and
+deterministic repository-local inputs. No external vector, completion suite,
+malformed corpus, or codec implementation was consulted.

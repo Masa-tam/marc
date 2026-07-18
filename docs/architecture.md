@@ -392,6 +392,10 @@ between canonical references and serialized or raw frame storage, and one
 aligned opaque views region. Construction repeats profile validation and the
 complete checked typed partition before publishing a handle; no entropy view,
 phrase record, or expansion-stack representation crosses the ABI.
+The public completion matrix now exercises binary data classes, deterministic
+encoding, dictionary and frame-boundary neighbors, one-byte and mixed
+chunking, repeated terminal calls, and frame-atomic final corruption,
+truncation, and trailing-data rejection exclusively through that C factory.
 
 ### Combined dictionary and entropy pipelines
 

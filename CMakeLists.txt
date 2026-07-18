@@ -803,6 +803,7 @@ if(MARC_BUILD_TESTS)
         tests/lzmw_blocked_huffman_frame_tests.cpp
         tests/lzmw_blocked_huffman_frame_streaming_tests.cpp
         tests/lzmw_blocked_huffman_profile_tests.cpp
+        tests/lzmw_blocked_huffman_completion_tests.cpp
         tests/lzmw_frame_tests.cpp
         tests/lzmw_completion_tests.cpp
         tests/lzmw_fuzz_regression_tests.cpp

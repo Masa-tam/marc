@@ -4761,3 +4761,23 @@ discarded and the reviewed seed retained.
   with no external wrapper expression compared.
 - Local validation: the focused pure-C ABI test and all 1,153 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman public completion matrix
+
+- Authoring method: specialized marc's established public-profile completion
+  harness with independently re-derived LZMW fixed-reference capacities.
+- References used: DD-262, the public combined C ABI, process-result contract,
+  frame extent fields, and deterministic repository-local input generator.
+- Known implementations intentionally not consulted: external LZMW vectors,
+  completion suites, malformed corpora, codec source, or chunk schedules.
+- Independent decisions: bound each raw frame by 256 reference bytes, four
+  entropy descriptors, and 63 generated phrases; exercise all byte values,
+  dictionary/frame boundary neighbors, four frames, one-byte chunking, sticky
+  terminal state, and final-frame transactional failure.
+- Generated-code task description: add public-C-ABI-only deterministic data-
+  class round trips, chunk equivalence, repeated terminal calls, and corrupt,
+  truncated, and trailing final-frame regressions.
+- Similarity review: harness vocabulary is marc-owned; LZMW capacities and
+  fixtures were recomputed from `4F` and `F-1`, with no LZD sizing retained.
+- Local validation: three focused completion tests and all 1,156 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

@@ -1676,3 +1676,18 @@ query must report 2 primary bytes and 104 secondary bytes; the bounded decoder
 query must report 568 and 10 respectively. Reject a secondary region one byte
 short, a deliberately misaligned opaque region when alignment exceeds one, and
 a nonzero reserved field.
+
+For public completion, generate frames of 64 raw bytes and entropy blocks of
+64 canonical-reference bytes. Round-trip empty input, each possible one-byte
+input, the ordered byte alphabet, 257 zero bytes, a 259-byte `00 ff 55 aa`
+pattern, deterministic 513-byte pseudo-random data seeded with `c001d00d`, and
+deterministic lengths 63, 64, and 65. Re-encode every case and require exact
+bytes. For a 193-byte input seeded with `6d617263`, compare unchunked processing
+with `(1,1)`, `(7,5)`, and `(13,17)` input/output chunks.
+
+Generate a separate 193-byte stream with seed `13579bdf`. Locate its fourth
+frame from the serialized descriptor and payload extents. Flip its sequence
+field, truncate its last byte, and append one trailing zero as independent
+cases. Each decode must report malformed input after publishing exactly the
+first 192 bytes; the sentinel final output byte must remain unchanged and the
+same error and position must repeat on the next call.

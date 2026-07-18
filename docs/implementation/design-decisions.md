@@ -4801,3 +4801,24 @@ LZMW phrase-record, and expansion-reference layout. Factory construction must
 repeat the profile calculation and opaque partition, reject short or misaligned
 regions and nonzero reserved fields, and publish no handle on failure. Prove
 the lifecycle from a pure C11 translation unit linked to the shared library.
+
+## DD-262: LZMW composition completion is proved through the public C ABI
+
+- Date: 2026-07-18
+- Status: accepted
+
+Exercise the combined profile only through its public initialize, requirements,
+create, process, and destroy operations. Use 64-byte raw frames, 64-byte
+entropy blocks, the exact `4F` canonical-reference maximum, at most `F-1`
+generated LZMW entries, and locally bounded aggregate storage. Require empty
+input, every one-byte value, the ordered byte alphabet, repeated and periodic
+data, deterministic pseudo-random data, and lengths 63, 64, and 65 to round
+trip with byte-identical repeated encoding.
+
+For a 193-byte four-frame stream, require one-byte and mixed input/output
+chunking to preserve the encoded representation and decoded bytes. Corrupt,
+truncate, or append data to the final one-byte frame and require the decoder to
+commit exactly the earlier 192 raw bytes, leave the final output byte untouched,
+and repeat the same terminal error position without consuming or producing
+additional data. This admits completion evidence but does not imply CLI,
+benchmark, fuzz, or interoperability admission.
