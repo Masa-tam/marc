@@ -571,3 +571,7 @@ The incremental transforms reuse marc's existing composed-frame state machine,
 the LZD complete-frame codec, and the DD-248 three-view partition contract. No
 external streaming adapter, buffering policy, combined codec, error behavior,
 source, or test suite was consulted.
+The public C factory uses only marc's established configuration, requirements,
+opaque workspace, transform-handle, and pure-C test conventions together with
+the local LZD composition profile. No external compression ABI, factory,
+allocator convention, source, or test was consulted.

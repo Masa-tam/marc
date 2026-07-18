@@ -4545,3 +4545,25 @@ drains the 80-byte prefix returns `Progress`, not `NeedInput`, because the
 process contract reserves starvation statuses for zero-progress calls. Local
 dictionary limits must admit the maximum declared in the serialized LZD
 parameters even when a particular small frame needs only one record.
+
+## DD-250: LZD composition enters the public C ABI through opaque regions
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `marc_lzd_blocked_huffman_config` with known original size, frame and
+entropy-block sizes, maximum LZD entries, and the complete relevant local
+limits. Preserve the common three-region ABI: primary holds raw input or
+serialized input; secondary holds LZD token staging followed by encoded or
+decoded frame storage; aligned views hold encoder entries or the decoder's
+block views, phrase entries, and expansion references.
+
+The requirements query delegates all profile arithmetic to the internal
+calculators and reveals only byte extents and alignment. The factory repeats
+profile construction, revalidates the opaque partition, and creates the
+existing bounded transforms without exposing a C++ type. Reject invalid struct
+metadata, nonzero reserved fields, short regions, and misalignment before a
+handle is published. Fix the public boundary with a pure-C `ABABX` round trip:
+three 96-byte frames after the 80-byte prefix, for 368 bytes total. This admits
+only the factory; completion, fuzzing, CLI, benchmark, and interoperability are
+independent evidence.

@@ -1550,3 +1550,10 @@ withhold phrase and expansion workspaces, truncate the final byte, request
 the prefix, flush after one raw byte, and require the partial frame to remain
 open. Set both encoder and decoder aggregate limits one byte below their actual
 complete-frame regions and require `limit_exceeded` at the streaming boundary.
+
+Expose the same `ABABX` stream through the public C ABI. Configure two-byte
+frames, four-byte entropy blocks, 65,536 maximum LZD entries, and two entropy
+blocks per frame. Require the requirements query to produce directly usable
+three-region storage, encode exactly 368 bytes, decode the five input bytes,
+and reject a one-byte-short secondary region, a deliberately misaligned opaque
+region, and a nonzero reserved field before publishing a transform handle.

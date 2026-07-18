@@ -1325,4 +1325,10 @@ frame, expands into private raw storage, and then drains it. Consequently a
 malformed later frame cannot partially publish that frame or retract earlier
 output. Chunking down to one byte does not alter the stream, nonterminal flush
 does not shorten a frame, and reset remains an unsupported cross-layer request.
-No public factory admits this profile yet.
+The public C factory now admits this profile through the common transform
+handle and three caller-owned regions. The requirements query exposes only byte
+extents and maximum alignment. Factory construction repeats profile admission
+and checked opaque partitioning before publishing a handle, so entropy views,
+LZD phrase records, and expansion references never become ABI types. CLI,
+benchmark, decoder fuzzing, completion, and interoperability remain separate
+admissions.

@@ -84,7 +84,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, and bounded streaming transforms | Specified; public integration pending |
+| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, and public C factory | Public factory admitted; completion and remaining evidence pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence

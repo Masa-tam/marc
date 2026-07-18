@@ -4475,3 +4475,27 @@ discarded and the reviewed seed retained.
   contracts; no external streaming expression was compared.
 - Local validation: eight new tests and all 1118 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman public C factory
+
+- Authoring method: admitted the completed local profile through marc's
+  existing configuration, three-region requirements, common transform handle,
+  process-result, and destruction ABI.
+- References used: DD-245 through DD-250, the local profile calculators and
+  partition helpers, bounded streaming transforms, C lifecycle contract, and
+  repository-owned `ABABX` oracle.
+- Known implementations intentionally not consulted: external compression
+  ABIs, combined LZD factories, allocation conventions, source, tests, or
+  workspace layouts.
+- Independent decisions: expose one fixed-profile config; keep all encoder,
+  entropy-view, phrase, and expansion record types opaque; repeat checked
+  profile construction in the factory; reject invalid metadata and regions
+  before publishing a handle.
+- Generated-code task description: add public declarations and implementation,
+  requirements and creation functions, and a pure-C 368-byte round trip with
+  short-workspace, alignment, and reserved-field rejection.
+- Similarity review: the naming and lifecycle reuse only marc's stable public C
+  vocabulary; all profile-specific arithmetic stays in independently authored
+  internal code.
+- Local validation: the focused pure-C ABI test and all 1119 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
