@@ -4142,3 +4142,21 @@ after a fixed call ceiling. Abort on an invalid process result, zero-progress
 call ceiling. Treat output-limit `NeedOutput` as a bounded terminal condition.
 Keep a compile-smoke target in ordinary builds and a minimal truncated-magic
 seed corpus. CLI, benchmark, and interoperability remain separate gates.
+
+## DD-231: LZ78 composition CLI is a fixed C-ABI adapter
+
+- Date: 2026-07-18
+- Status: accepted
+
+Publish `lz78-blocked-huffman` as a command-line selector without adding a
+second construction path. Use one-MiB raw frames, 65,536-symbol entropy blocks,
+the exact eight-byte-per-raw-byte LZ78 token bound, at most 128 entropy blocks,
+and at most 65,536 phrase entries. Fix the local aggregate-buffer policy at
+64 MiB, then obtain the actual primary, secondary, and aligned views extents
+from `marc_lz78_blocked_huffman_workspace_requirements`.
+
+Require ordinary, empty, malformed, strict-trailing, existing-destination, and
+temporary-output cleanup tests through the same CLI round-trip script used by
+the other public profiles. The adapter must call only the public C factory;
+private typed layout and codec objects remain inaccessible. CLI admission does
+not imply benchmark or interoperability completion.

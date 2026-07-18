@@ -1358,3 +1358,11 @@ one identical stream. Locate the fourth frame from its serialized descriptor
 and payload sizes; corrupt its sequence field, truncate its last byte, or add
 one trailing byte. In each case require exactly 192 decoded bytes, an untouched
 sentinel in the final destination byte, and a sticky positioned error.
+
+For `marc --codec lz78-blocked-huffman`, generate the common repeated binary
+CLI fixture and encode it with one-MiB raw frames, 65,536-symbol entropy
+blocks, the eight-times token bound, 128 block views, and 65,536 phrase
+entries. Decode and compare the complete file, repeat with empty input, reject
+malformed and trailing streams without retaining either the destination or its
+temporary file, and reject an attempt to overwrite an existing encoded file.
+All transform creation must pass through the public C ABI workspace query.

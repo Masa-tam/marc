@@ -4087,3 +4087,24 @@ discarded and the reviewed seed retained.
   local runs without a crash, hang, or sanitizer finding. All 1056 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman CLI profile
+
+- Authoring method: added one selector and fixed policy to marc's existing
+  transactional file adapter, reaching the codec exclusively through the
+  public C ABI.
+- References used: DD-223 through DD-231, the local CLI and C API contracts,
+  and the existing CLI round-trip fixture.
+- Known implementations intentionally not consulted: external combined LZ78
+  tools, command-line interfaces, wrappers, allocation policies, source, or
+  tests.
+- Independent decisions: use one-MiB frames, 64-KiB entropy blocks, the 8F
+  token bound, 128 blocks, 65,536 phrases, and a 64-MiB aggregate limit; retain
+  the existing temporary-file commit policy.
+- Generated-code task description: publish the CLI selector through the public
+  C factory and verify ordinary, empty, malformed, trailing, overwrite, and
+  cleanup behavior.
+- Similarity review: selector dispatch and file handling follow marc's own
+  established CLI structure; no external expression was compared.
+- Local validation: documentation topology and all 1057 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

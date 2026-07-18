@@ -1347,15 +1347,15 @@ raw extent validate completely; earlier frames may already be committed when a
 later frame fails. Nonterminal `Flush` does not shorten a frame, and
 `ResetBlock` is unsupported at this profile boundary.
 
-The reserved public name for this exact representation is
+The public name for this exact representation is
 `lz78-blocked-huffman`. Profile sizing retains the three caller-workspace shape
 while treating the aligned views region as opaque storage. Encoding uses one
 LZ78 encoder-entry array. Decoding places Blocked Huffman block views first,
 aligns the next offset for LZ78 phrase entries, and places the phrase array
 there. The checked partition helper must accept this exact derived layout
-before exposing either typed span. Reserving the name and format here does not
-publish a factory, CLI selector, or compatibility promise until the normal
-completion criteria pass.
+before exposing either typed span. The public C factory and CLI selector emit
+and accept this representation; remaining benchmark and interoperability
+admission do not alter its bytes.
 
 ## Adaptive Huffman FGK variant 1
 

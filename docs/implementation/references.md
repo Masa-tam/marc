@@ -511,3 +511,7 @@ The bounded fuzz adapter derives only from marc's incremental transform
 contract, local decoder limits, private typed record sizes, and existing
 sanitizer target conventions. No external fuzz harness, corpus, or combined
 codec was consulted.
+The `lz78-blocked-huffman` CLI adapter uses only marc's public combined C
+factory, existing file-transaction policy, and fixed documented workspace
+bounds. No external command-line codec, wrapper, or allocation policy was
+consulted.
