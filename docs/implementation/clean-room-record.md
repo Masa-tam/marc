@@ -5091,3 +5091,24 @@ discarded and the reviewed seed retained.
 - Local validation: documentation-layout verification passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja. Independent hand-vector
   construction remains the next required step before decoder implementation.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman hand vector
+
+- Authoring method: derived the LZ77 Literal bytes from marc's published grammar
+  and ran a separate specification-only FGK state calculation over those fixed
+  bytes before comparing with repository primitives.
+- References used: DD-276, the documented LZ77 token table, Adaptive Huffman FGK
+  tree/update rules, LSB-first bit packing, and generic frame serialization.
+- Known implementations intentionally not consulted: external Adaptive Huffman
+  source, combined codec source, third-party vector generator, or foreign test.
+- Independent decisions: use raw `A`; require fifteen zero token bytes and one
+  `41`; fix 31 payload bits, `00 FF 17 74`, seven final valid bits, the exact
+  descriptor, and the complete 76-byte frame.
+- Generated-code task description: construct an independent minimal vector,
+  lock it into documentation and a permanent component-boundary test, and avoid
+  relying on an unimplemented combined encoder as its own oracle.
+- Similarity review: all expected bytes follow from marc's documented component
+  grammars and independent state traversal; no external expression was used.
+- Local validation: the permanent vector test and all 1,163 Release tests passed
+  under both MSVC via Visual Studio 2026 and Clang 22.1.3 via Ninja on Windows
+  x64.

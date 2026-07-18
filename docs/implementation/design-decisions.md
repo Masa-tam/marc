@@ -5070,3 +5070,19 @@ extents as checked workspace inputs.
 Specification reserves the name but does not publish it. Decoder, encoder,
 streaming, C ABI, completion, fuzz, CLI, benchmark, and schema evidence remain
 separate admission steps.
+
+## DD-276: The first combined Adaptive vector is independently layered
+
+- Date: 2026-07-19
+- Status: accepted
+
+Fix raw `A` as the first hand-checkable vector. Derive its 16-byte LZ77 Literal
+token from the token grammar, then calculate the FGK payload independently from
+the documented tree rules rather than obtaining the expected bytes from marc's
+combined implementation. The resulting 31 bits are stored as `00 FF 17 74`
+with seven valid final bits and one canonical 16-byte Adaptive descriptor.
+
+Add a permanent boundary test that separately invokes the existing LZ77 and
+Adaptive primitives and compares them with the independent token, descriptor,
+payload, and 76-byte frame. Do not introduce a combined encoder merely to
+generate its own oracle.

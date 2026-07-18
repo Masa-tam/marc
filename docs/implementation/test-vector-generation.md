@@ -1721,3 +1721,19 @@ decode before measurement and the standard codec name, input and encoded byte
 counts, ratio, encode/decode seconds and MiB/s, all six direction-specific
 workspace extents, and peak caller-reserved workspace fields. Values are local
 measurements rather than frozen performance thresholds.
+
+For the first LZ77 plus Adaptive Huffman vector, begin with raw byte `41` and
+derive the canonical 16-byte LZ77 Literal token directly from the published
+token table. Independently simulate FGK variant 1 from one NYT root: emit path
+bits root-to-leaf, literals LSB-first, select the highest permitted equal-weight
+order leader, exchange positions and order numbers, and update weights only
+after each complete symbol. The sixteen token bytes contain fifteen zeroes and
+one `41`; require 31 bits, payload `00 ff 17 74`, and seven final valid bits.
+
+As a separate implementation check, feed raw `41` through marc's existing LZ77
+encoder, compare all sixteen token bytes with the hand token, then feed that
+fixed token through the existing Adaptive encoder and compare the descriptor
+and payload with the independent result. Serialize the generic frame header and
+descriptor independently and require the exact documented 76-byte frame. This
+test establishes the component boundary without calling a combined-profile
+encoder that does not yet exist.

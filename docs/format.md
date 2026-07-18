@@ -1240,6 +1240,37 @@ factory, CLI selector, benchmark profile, fuzz target, or interoperability
 schema entry. Those surfaces require their normal completion evidence before
 the reserved name becomes public.
 
+### Hand-checkable single-Literal frame
+
+For raw input `A`, LZ77 emits one canonical Literal token:
+
+```text
+00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00
+```
+
+Starting from a fresh NYT tree, independent FGK traversal emits 31 payload bits.
+The payload is `00 FF 17 74`, with seven valid bits in the final byte. The
+Adaptive descriptor is:
+
+```text
+10 00 00 00 04 00 00 00 07 00 00 00 00 00 00 00
+```
+
+The complete 76-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 10 00 00 00  04 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+10 00 00 00 04 00 00 00  07 00 00 00 00 00 00 00
+00 FF 17 74
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Adaptive descriptor, and the final four bytes are the FGK payload. This vector
+contains no separately stored LZ77 token bytes.
+
 ## LZSS variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 2, dictionary variant 1,
