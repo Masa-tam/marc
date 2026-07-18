@@ -81,6 +81,20 @@ bundle. Direct SHA-256 comparison across the three bundles found identical
 
 This establishes deterministic x86-64 stream generation across MSVC and Clang
 and bidirectional decoding between Windows and the stated WSL2 Linux userland.
-It is historical schema-7 evidence; schema 8 requires a fresh pushed
-Windows/Linux cross-check after its CI artifacts exist. It is not evidence for
-a non-x86-64 architecture or a non-WSL Linux kernel.
+It is historical schema-7 evidence.
+
+Revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817` received the corresponding
+schema-8 cross-check on 2026-07-19. The external environment remained Ubuntu
+26.04 under WSL2 on x86-64 with Linux kernel
+`6.18.33.2-microsoft-standard-WSL2`, Ubuntu Clang 21.1.8, and CMake 4.2.3.
+
+That executable verified all nineteen archives from the pushed Windows/MSVC and
+Ubuntu 24.04/Ninja CI artifacts, generated an `ubuntu-26.04-ninja-x64` schema-8
+bundle, and verified all nineteen of its archives locally. The Windows/MSVC
+executable then verified that Ubuntu 26.04 bundle in the reverse direction.
+Every verification included exact local re-encoding, so the three producers
+generated the same canonical archive bytes for every schema-8 profile.
+
+Interoperability work products are kept outside the source repository; only
+the resulting environment and verifier evidence are recorded here. These
+checks remain x86-64 evidence and do not cover a non-WSL Linux kernel.

@@ -5396,3 +5396,28 @@ discarded and the reviewed seed retained.
   and all 19 archives. The focused compatibility regression and all 1,208
   Release tests passed under both toolchains. Pushed Windows/Linux schema-8
   artifacts and their external cross-check remain separate release evidence.
+
+## 2026-07-19 - External schema-8 x86-64 cross-check
+
+- Authoring method: recorded the user-executed repository verifier results for
+  the exact pushed revision without importing generated bundles into the source
+  tree.
+- References used: the Windows/MSVC and Ubuntu 24.04/Ninja CI schema-8
+  manifests, the Ubuntu 26.04/Clang-generated schema-8 manifest, and final lines
+  emitted by marc's repository-owned verifier.
+- Known implementations intentionally not consulted: external archive tools,
+  codec implementations, compatibility suites, or third-party result claims.
+- Environment: Ubuntu 26.04 under WSL2 x86-64, kernel
+  `6.18.33.2-microsoft-standard-WSL2`, Ubuntu Clang 21.1.8, CMake 4.2.3, and
+  revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817`; the reverse verifier used
+  the repository's Visual Studio 2026 MSVC build on Windows x64.
+- Validation result: the Ubuntu 26.04 executable verified all 19 archives from
+  both pushed CI artifacts, generated and verified its own 19-archive bundle,
+  and the Windows/MSVC executable verified all 19 Ubuntu 26.04 archives in the
+  reverse direction. Each pass required exact local re-encoding, establishing
+  canonical byte identity across all three producers for schema 8.
+- Workspace policy: interoperability bundles and verification outputs are kept
+  outside the `marc` source directory; the earlier in-tree `marc-interop`
+  work directory was removed.
+- Scope limit: this is Windows/WSL2 x86-64 compiler and operating-system
+  userland evidence, not a second-architecture or non-WSL-kernel result.

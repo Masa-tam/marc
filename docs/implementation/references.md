@@ -709,3 +709,8 @@ order, the completed public CLI selector, and the repository-owned generator,
 verifier, and compatibility regression. No external archive format,
 interoperability suite, manifest, combined-codec archive, corpus, or test vector
 was consulted.
+
+The schema-8 external validation record uses the user-supplied execution report
+for revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817` and marc's own manifest
+verifier output. No external archive tool, decoder implementation, test suite,
+or third-party compatibility claim was used.

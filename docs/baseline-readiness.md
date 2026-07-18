@@ -92,8 +92,6 @@ specified.
 The following items remain open even though local codec implementation is
 ready:
 
-- generate schema-8 bundles in pushed Windows and Ubuntu CI, then cross-decode
-  and byte-compare all nineteen archives between those producers;
 - repeat interoperability generation and cross-decoding on at least one
   non-x86-64 architecture;
 - record representative encode throughput, decode throughput, compression
@@ -131,6 +129,15 @@ reverse direction. All nineteen binary files in each bundle (`input.bin` plus
 eighteen archives) were byte-identical across the three producers. This closes
 the current x86-64 operating-system/compiler cross-check; a second architecture
 remains open.
+
+Revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817` subsequently completed its
+pushed Windows/MSVC and Ubuntu 24.04/Ninja CI run and produced schema-8
+artifacts. Ubuntu 26.04/Clang 21.1.8 verified all nineteen archives from both
+artifacts, generated a third schema-8 bundle, and verified that bundle locally.
+The Windows/MSVC executable then verified all nineteen Ubuntu 26.04 archives in
+the reverse direction. Because each verifier also requires byte-identical local
+re-encoding, this closes the current schema-8 x86-64 Windows/Linux/compiler
+cross-check. A second architecture remains open.
 
 ## Pre-publication CI and package audit
 
