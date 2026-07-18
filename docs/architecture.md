@@ -1346,3 +1346,10 @@ records, expansion references, and final output. Serialized input cannot alter
 those capacities. Byte-derived chunk schedules exercise partial I/O, while a
 fixed call ceiling converts any stalled state machine into a reproducible
 failure. This admits fuzzing without changing the public format or ABI.
+
+The CLI selector `lzd-blocked-huffman` is a fixed public-ABI adapter. It uses
+one-MiB raw frames, 64-KiB entropy blocks, the exact four-MiB LZD token bound,
+64 entropy blocks, 65,536 phrase entries, and the common 64-MiB aggregate
+policy. Workspace bytes and alignment come only from the public requirements
+query. The existing temporary-file protocol keeps malformed or trailing input
+from publishing a partial destination.

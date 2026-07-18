@@ -1578,3 +1578,11 @@ references, and 4,096 final output bytes. Begin with the five bytes `MARC` plus
 newline. Vary input chunks from one through seventeen bytes and output chunks
 from one through nineteen bytes using current input bytes, validate every
 process result, and abort on an impossible starvation state or call exhaustion.
+
+For the CLI adapter, repeat `ABRACADABRA-0123456789` plus newline 320 times,
+encode and decode with explicit `--codec lzd-blocked-huffman`, and compare the
+restored file byte for byte. Re-run encode against the existing archive and
+require overwrite rejection. Decode a hand-authored non-marc input and an
+otherwise valid archive with one appended byte; both must fail without leaving
+the requested destination or its `.tmp` staging path. Separately round-trip an
+empty file.

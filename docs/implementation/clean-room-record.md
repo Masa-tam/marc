@@ -4544,3 +4544,22 @@ discarded and the reviewed seed retained.
   Release tests passed under both compilers. A Clang 22 ASan/UBSan libFuzzer
   smoke completed 1,000 inputs with no crash, hang, or sanitizer finding at
   37 MiB peak RSS.
+
+## 2026-07-18 - LZD plus Blocked Huffman CLI profile
+
+- Authoring method: extended marc's existing atomic file adapter with one
+  selector that reaches the composition exclusively through its public C ABI.
+- References used: DD-245 through DD-253, public configuration and workspace
+  contracts, the local fixed profile bounds, and common CLI test harness.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined LZD wrappers, allocation policies, source, or tests.
+- Independent decisions: fix one-MiB frames, 64-KiB entropy blocks, four-MiB
+  token capacity, 64 block descriptors, 65,536 entries, and the 64-MiB
+  aggregate policy; obtain all actual region extents from the public query.
+- Generated-code task description: add selector parsing, configuration,
+  requirements and factory dispatch, usage and CLI documentation, plus ordinary,
+  empty, overwrite, malformed, trailing-data, and temporary-file tests.
+- Similarity review: the adapter reuses only marc's own public lifecycle and
+  file-commit protocol; no external command structure was compared.
+- Local validation: the focused CLI test and all 1123 Release tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

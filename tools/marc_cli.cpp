@@ -39,6 +39,7 @@ enum class Codec {
     lzw,
     lzw_blocked_huffman,
     lzd,
+    lzd_blocked_huffman,
     lzmw,
 };
 
@@ -70,6 +71,8 @@ constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
     if (codec == Codec::lzw
         || codec == Codec::lzw_blocked_huffman)
         return frame_size * UINT64_C(2);
+    if (codec == Codec::lzd_blocked_huffman)
+        return frame_size * UINT64_C(4);
     return frame_size * UINT64_C(4);
 }
 
@@ -106,7 +109,8 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
     }
     if (codec == Codec::lz78 || codec == Codec::lz78_blocked_huffman
         || codec == Codec::lzw || codec == Codec::lzw_blocked_huffman
-        || codec == Codec::lzd || codec == Codec::lzmw)
+        || codec == Codec::lzd || codec == Codec::lzd_blocked_huffman
+        || codec == Codec::lzmw)
         return UINT64_C(64) << 20;
     return frame_size + frame_header_size + maximum_frame_payload(codec);
 }
@@ -469,6 +473,34 @@ bool configure(const marc_direction direction, const std::uint64_t original_size
     return true;
 }
 
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
+    marc_lzd_blocked_huffman_config& config) {
+    const auto status =
+        marc_lzd_blocked_huffman_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.entropy_block_size =
+        static_cast<std::uint32_t>(entropy_block_size);
+    config.max_frame_size = frame_size;
+    config.max_block_size = entropy_block_size;
+    config.max_compressed_payload_size =
+        maximum_frame_payload(Codec::lzd_blocked_huffman);
+    config.max_dictionary_serialized_size =
+        maximum_frame_payload(Codec::lzd_blocked_huffman);
+    config.max_internal_buffered_bytes =
+        maximum_buffered_bytes(Codec::lzd_blocked_huffman);
+    config.max_dictionary_entries = config.maximum_entries;
+    config.max_blocks_per_frame = static_cast<std::uint32_t>(
+        maximum_frame_payload(Codec::lzd_blocked_huffman)
+        / entropy_block_size);
+    return true;
+}
+
 bool configure(const marc_direction direction, const std::uint64_t original_size,
                marc_lzmw_config& config) {
     const auto status = marc_lzmw_config_init(direction, &config);
@@ -506,6 +538,7 @@ bool process_file(const marc_direction direction,
     marc_lzw_config lzw_config{};
     marc_lzw_blocked_huffman_config lzw_combined_config{};
     marc_lzd_config lzd_config{};
+    marc_lzd_blocked_huffman_config lzd_combined_config{};
     marc_lzmw_config lzmw_config{};
     if (codec == Codec::checksum_raw) {
         if (!configure(direction, source_size, checksum_config)) return false;
@@ -543,6 +576,9 @@ bool process_file(const marc_direction direction,
             return false;
     } else if (codec == Codec::lzd) {
         if (!configure(direction, source_size, lzd_config)) return false;
+    } else if (codec == Codec::lzd_blocked_huffman) {
+        if (!configure(direction, source_size, lzd_combined_config))
+            return false;
     } else if (!configure(direction, source_size, lzmw_config)) {
         return false;
     }
@@ -587,6 +623,9 @@ bool process_file(const marc_direction direction,
             &lzw_combined_config, &needed);
     else if (codec == Codec::lzd)
         status = marc_lzd_workspace_requirements(&lzd_config, &needed);
+    else if (codec == Codec::lzd_blocked_huffman)
+        status = marc_lzd_blocked_huffman_workspace_requirements(
+            &lzd_combined_config, &needed);
     else
         status = marc_lzmw_workspace_requirements(&lzmw_config, &needed);
     if (status != MARC_STATUS_OK) {
@@ -672,6 +711,10 @@ bool process_file(const marc_direction direction,
         status = marc_lzd_create(
             &lzd_config, primary_buffer, secondary_buffer, views_buffer,
             &raw_transform);
+    else if (codec == Codec::lzd_blocked_huffman)
+        status = marc_lzd_blocked_huffman_create(
+            &lzd_combined_config, primary_buffer, secondary_buffer,
+            views_buffer, &raw_transform);
     else
         status = marc_lzmw_create(
             &lzmw_config, primary_buffer, secondary_buffer, views_buffer,
@@ -818,7 +861,7 @@ void usage() {
                  "dynamic-range, rans, tans, lz77, lz77-blocked-huffman, "
                  "lzss, lzss-blocked-huffman, lz78, "
                  "lz78-blocked-huffman, lzw, lzw-blocked-huffman, "
-                 "lzd, lzmw\n";
+                 "lzd, lzd-blocked-huffman, lzmw\n";
 }
 
 } // namespace
@@ -863,6 +906,8 @@ int main(const int argc, const char* const argv[]) {
         else if (name == "lzw-blocked-huffman")
             codec = Codec::lzw_blocked_huffman;
         else if (name == "lzd") codec = Codec::lzd;
+        else if (name == "lzd-blocked-huffman")
+            codec = Codec::lzd_blocked_huffman;
         else if (name == "lzmw") codec = Codec::lzmw;
         else {
             usage();

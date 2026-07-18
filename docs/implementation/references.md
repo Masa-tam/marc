@@ -583,3 +583,7 @@ The combined LZD fuzz boundary derives only from the local streaming decoder,
 DD-248 workspace layout, fixed LZD pair grammar, core process invariants, and
 marc's existing bounded fuzz conventions. No external fuzzer harness, corpus,
 combined decoder, allocation policy, or source was consulted.
+The `lzd-blocked-huffman` CLI adapter uses only marc's public C ABI, fixed local
+profile bounds, existing atomic file protocol, and repository-owned CLI test
+harness. No external command-line codec, wrapper, allocation policy, source,
+or test was consulted.

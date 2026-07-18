@@ -4608,3 +4608,21 @@ by `NeedOutput` as a normal harness stop. Retain an ordinary MSVC/Clang compile
 smoke, a sanitizer-enabled target, and one reviewed five-byte truncated-magic
 seed. This admits bounded decoder fuzzing only; CLI, benchmark, and
 interoperability remain separate gates.
+
+## DD-253: LZD composition CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzd-blocked-huffman` as an explicit CLI selector while preserving LZ77 as
+the default. Fix one-MiB raw frames, 65,536-symbol entropy blocks, the exact
+`8*ceil(F/2)` four-MiB token bound, at most 64 entropy blocks, the format-default
+65,536 LZD entries, and the existing 64-MiB aggregate workspace policy.
+
+Initialize, query, create, process, and destroy only through the public combined
+C ABI. Allocate all three regions from its direction-specific requirements and
+honor reported alignment; do not reproduce the decoder's private three-view
+layout. Reuse the common atomic file harness for ordinary and empty round trips,
+existing-output rejection, malformed and trailing input, and temporary-file
+cleanup. This admits CLI support only; benchmark and interoperability remain
+separate gates.
