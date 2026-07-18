@@ -3,6 +3,7 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <limits>
 
 namespace marc::dictionary::internal {
 namespace {
@@ -30,6 +31,19 @@ std::size_t lzd_validation_workspace_entries(
     const auto token_count = serialized_size / lzd_token_size;
     return std::min(token_count,
                     static_cast<std::size_t>(parameters.maximum_entries));
+}
+
+std::size_t lzd_validation_workspace_entries(
+    const std::size_t serialized_size,
+    const std::uint64_t declared_frame_size,
+    const LzdParameters& parameters) noexcept {
+    const auto token_count = serialized_size / lzd_token_size;
+    const auto raw_phrase_bound = declared_frame_size / 2;
+    constexpr auto size_max = std::numeric_limits<std::size_t>::max();
+    const auto size_bound = raw_phrase_bound > size_max
+        ? size_max : static_cast<std::size_t>(raw_phrase_bound);
+    return std::min({token_count, size_bound,
+                     static_cast<std::size_t>(parameters.maximum_entries)});
 }
 
 LzdValidationResult validate_lzd_token_stream(
@@ -67,8 +81,8 @@ LzdValidationResult validate_lzd_token_stream(
         return result;
     }
 
-    const auto required_entries =
-        lzd_validation_workspace_entries(input.size(), parameters);
+    const auto required_entries = lzd_validation_workspace_entries(
+        input.size(), declared_frame_size, parameters);
     std::uint64_t workspace_bytes{};
     std::uint64_t aggregate_bytes{};
     if (!core::checked_multiply(

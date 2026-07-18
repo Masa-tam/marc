@@ -555,3 +555,7 @@ already documented LZD variant 1 reference-pair grammar, Blocked Huffman
 variant 1 block format, generic frame format, checked workspace policy, and the
 LZD references recorded above. No external combined codec, format, source,
 profile, stream, test vector, or workspace layout was consulted.
+The complete-frame validator and decoder reuse marc's local Blocked Huffman
+controller/decoder, LZD validator/decoder, generic frame parser, and checked
+arithmetic helpers. No external combined decoder, validation order, workspace
+formula, source, test, or malformed-stream corpus was consulted.

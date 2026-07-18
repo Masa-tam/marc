@@ -40,7 +40,7 @@ LzdDecodeResult decode_lzd_token_stream(
     const auto required_expansion = lzd_expansion_workspace_entries(
         validated.dictionary_entries, output_size != 0);
     const auto required_phrases = lzd_validation_workspace_entries(
-        input.size(), parameters);
+        input.size(), declared_frame_size, parameters);
     std::uint64_t phrase_bytes{};
     std::uint64_t expansion_bytes{};
     std::uint64_t aggregate_bytes{};

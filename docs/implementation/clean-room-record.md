@@ -4385,3 +4385,27 @@ discarded and the reviewed seed retained.
   and safety contracts; no external combined expression was compared.
 - Local validation: documentation layout and all 1092 Release tests passed
   under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman complete-frame decoder
+
+- Authoring method: connected marc's existing complete-frame parser, Blocked
+  Huffman decoder, LZD grammar validator, and iterative LZD decoder through a
+  new internal transactional boundary.
+- References used: DD-245, DD-246, the repository-defined frame and algorithm
+  formats, and the local checked-workspace contracts.
+- Known implementations intentionally not consulted: external LZD or combined
+  codecs, decoders, validators, source, pseudocode, test suites, corpora, or
+  workspace layouts.
+- Independent decisions: reconstruct all entropy output before LZD validation;
+  refine phrase storage with `floor(F/2)`; retain the conservative legacy
+  query; separate arithmetic overflow from aggregate-limit exhaustion; defer
+  all raw publication until every frame-local validation succeeds.
+- Generated-code task description: implement and test the bounded internal
+  validator/decoder for the frozen 80-byte vector, truncations, trailing data,
+  workspace edges, layer-specific corruption, transactional output, aggregate
+  limits, and unsupported pipeline IDs.
+- Similarity review: the implementation composes only marc-owned parsers,
+  representations, and error contracts; no external combined expression was
+  compared.
+- Local validation: six new tests and all 1098 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

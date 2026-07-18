@@ -34,6 +34,10 @@ struct LzdValidationResult {
     std::size_t serialized_size,
     const LzdParameters& parameters) noexcept;
 
+[[nodiscard]] std::size_t lzd_validation_workspace_entries(
+    std::size_t serialized_size, std::uint64_t declared_frame_size,
+    const LzdParameters& parameters) noexcept;
+
 [[nodiscard]] LzdValidationResult validate_lzd_token_stream(
     std::span<const std::byte> input, const LzdParameters& parameters,
     std::uint64_t declared_frame_size, const core::DecoderLimits& limits,

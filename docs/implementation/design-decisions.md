@@ -4456,3 +4456,28 @@ phrase records, and explicit expansion-stack references in one checked opaque
 layout. This decision specifies bytes, bounds, validation order, a hand vector,
 and a reserved name only. Decoder, encoder, streaming, C ABI, CLI, fuzz,
 benchmark, completion, and interoperability remain separate steps.
+
+## DD-246: LZD composition validates before transactional expansion
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement the first executable boundary as a complete-frame validator and
+decoder, without admitting an encoder, streaming transform, factory, or public
+profile. Parse and validate the generic frame first, validate the Blocked
+Huffman controller, reconstruct the complete LZD token region into caller-owned
+staging, and then run the ordinary LZD grammar validator. Check final raw-output
+and expansion-stack capacities only after the entire serialized dictionary
+stream is known to be valid; expansion remains iterative and publishes no bytes
+on any earlier failure.
+
+Refine the LZD validation-workspace query with the declared raw frame size. An
+eight-byte terminal token for a one-byte frame admits zero stored phrases,
+whereas each successful right-present pair consumes at least two raw bytes;
+therefore the exact phrase bound is the lesser of the token count,
+`floor(F/2)`, and the configured entry maximum. Retain the older conservative
+query for callers that do not yet know `F`. Count descriptors, payload,
+dictionary staging, block views, phrase records, expansion references, and raw
+transactional output in checked aggregate limits appropriate to validation or
+decode. Report arithmetic overflow distinctly from an ordinary workspace-limit
+failure.

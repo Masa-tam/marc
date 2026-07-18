@@ -1479,3 +1479,19 @@ staging publication, a non-multiple-of-eight reconstructed token region,
 invalid or forward references, a nonterminal absent right, short block views,
 phrase or stack workspace, aggregate-limit overflow, and short raw output
 without publishing any byte from the frame.
+
+The complete-frame validator now consumes that exact 80-byte `A` vector and
+recovers the eight token bytes before the ordinary LZD validator confirms the
+one-byte raw extent. Require every proper truncation and one appended byte to
+fail, and independently withhold a block view, staging byte, or required phrase
+record. The one-byte vector fixes the exact zero-phrase workspace rule; a
+separate raw `AB` pair fixes the one-record boundary.
+
+Change the reconstructed left reference to 256 to require an LZD grammar error
+only after successful entropy decoding. Corrupt an entropy descriptor to
+require the controller or entropy error before dictionary validation. Decode
+into a sentinel-filled destination and require exact `A` publication only on
+success; withhold raw capacity or the expansion-stack entry and require the
+sentinel to remain unchanged. Finally set each individual region within its
+local cap but the checked validation or decode aggregate one byte too small,
+and reject an otherwise valid frame without publication.

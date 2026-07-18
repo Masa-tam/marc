@@ -1284,3 +1284,20 @@ a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect
 transfer mistakes but are not authentication.
+
+### Specified LZD plus Blocked Huffman boundary
+
+The reserved LZD composition now has an internal complete-frame validator and
+transactional decoder. Blocked Huffman first reconstructs the entire canonical
+eight-byte LZD token region into bounded caller-owned staging. The ordinary LZD
+validator then checks token extent, reference ordering, terminal form, phrase
+limits, and exact declared raw size before the decoder checks destination and
+iterative expansion-stack capacities or publishes raw bytes.
+
+Phrase workspace is derived from both serialized tokens and the declared raw
+frame size. A terminal one-byte frame stores no phrase record, while a
+right-present pair necessarily accounts for at least two raw bytes. Validation
+and decoding count their distinct caller-owned regions under checked aggregate
+limits. This is an internal decoder boundary only; encoder planning, streaming,
+the C ABI, CLI, benchmark, fuzz target, completion matrix, and interoperability
+admission remain future steps for this profile.
