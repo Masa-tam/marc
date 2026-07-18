@@ -1184,7 +1184,30 @@ CLI and benchmark reach the profile only through the C ABI and obtain all
 three workspace extents from its requirements query. The benchmark verifies a
 round trip before timing and reports complete-stream ratio, directional
 throughput, and the larger caller-owned workspace total. Interoperability
-admission remains a separate later step.
+schema 4 covers the same public profile through deterministic foreign decode
+and local re-encode checks.
+
+### Specified LZW plus Blocked Huffman boundary
+
+LZW's canonical dictionary output is a packed variable-width bitstream rather
+than a fixed-width token array. Composition nevertheless remains byte-oriented:
+the LZW encoder finishes its frame-local code stream, including zero padding to
+the next byte, before Blocked Huffman divides those exact bytes into entropy
+blocks. Entropy block boundaries therefore never split a byte but need not
+coincide with LZW code boundaries.
+
+Decoding reverses this transactionally. Blocked Huffman reconstructs the exact
+packed byte region into staging; the ordinary LZW validator then checks the
+width schedule, dictionary references, `KwKwK`, final padding, and exact raw
+extent before publication. This preserves both layers' existing validators
+instead of teaching either layer the other's token grammar.
+
+The future profile has the same typed-workspace issue as the LZ78 composition.
+Encoding requires an aligned LZW encoder-entry table. Decoding requires Blocked
+Huffman block views and an aligned LZW phrase table in one opaque public region.
+A checked profile partition must derive offsets, padding, and aggregate limits
+before either streaming transform is constructed. The format and reserved name
+are fixed; implementation and public admission remain later steps.
 
 ### Published composed-profile evidence
 

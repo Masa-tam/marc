@@ -1357,6 +1357,101 @@ before exposing either typed span. The public C factory, CLI selector,
 benchmark adapter, and interoperability schema-4 tools emit and accept this
 representation.
 
+## LZW variant 1 plus Blocked Huffman variant 1
+
+This composition uses dictionary algorithm ID 4, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
+are the 16-byte LZW parameters followed by the empty Blocked Huffman parameter
+region. `entropy block size` counts bytes in the canonical packed LZW code
+stream, including its final zero-padded byte. Blocks reset at and cannot cross
+an outer frame.
+
+The generic frame header records raw bytes as `uncompressed size`, packed LZW
+code bytes as `dictionary serialized size`, stored entropy bytes as
+`compressed payload size`, the exact Blocked Huffman block count, and the
+complete descriptor/model region size. The body is:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate packed-code region is stored. Entropy decoding must produce exactly
+`dictionary serialized size` bytes. Before any raw-byte publication, the LZW
+validator must consume that complete staged region, reproduce the specified
+width schedule and dictionary growth, validate the `KwKwK` case and final zero
+padding, and derive exactly `uncompressed size` bytes. The entropy boundary has
+no relationship to an LZW code boundary; a variable-width code may cross two
+entropy input bytes and an entropy block may end at any packed-byte boundary.
+
+For raw frame size `F` and configured maximum code width `W`, a nonempty raw
+byte contributes at most one LZW code. The canonical dictionary staging bound
+is therefore `S = ceil(F * W / 8)` bytes. The generated-entry bound is zero
+when `F` is zero; otherwise it is the lesser of `F - 1`, `2^W - 256`, and the
+local dictionary-entry limit. For entropy block size `E`, the block-count bound
+is `ceil(S / E)`. Every multiplication, ceiling division,
+descriptor extent, aligned typed-workspace extent, and aggregate sum must be
+checked before allocation or serialized output.
+
+### Hand-checkable LZW combined raw-block frame
+
+For raw input `A`, default LZW parameters emit one nine-bit code with packed
+bytes `41 00`. With entropy block size two, Blocked Huffman selects raw
+representation. The complete 74-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  02 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+02 00 00 00 02 00 00 00  00 00 01 08 00 00 00 00
+41 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final two bytes are the unchanged packed
+LZW code stream. The high seven bits of its final byte are LZW padding and are
+data bytes from the entropy layer's perspective. The 16-byte LZW parameter
+region remains stream-level and is not repeated in this frame.
+
+The reference frame encoder must first plan the complete LZW parse using an
+aligned caller-owned encoder table, emit the canonical packed codes once into
+staging, and then plan Blocked Huffman over those exact bytes. Only after all
+extents and the generic header validate may it publish serialized output.
+Repeating the plan during encoding must reproduce the packed-code and entropy
+bytes exactly.
+
+The reference frame decoder treats entropy output and LZW phrase records as
+uncommitted state. It must validate the complete packed-code stream into an
+aligned caller-owned phrase table before checking raw destination capacity and
+running transactional expansion. A header, entropy, code-width, code,
+dictionary, padding, declared-size, workspace, or raw-capacity failure
+publishes no raw byte.
+
+The known-size stream uses the ordinary 64-byte version 1.0 header, followed by
+the 16-byte LZW parameter region and zero or more combined frames. Empty input
+is exactly this 80-byte prefix. Both the LZW dictionary and every Blocked
+Huffman model reset at each frame. Strict decoding requires the frames to
+derive exactly `original size` bytes and rejects trailing serialized data.
+
+Incremental encoding and decoding must emit and accept exactly this
+representation under arbitrary input and output chunking. A final short frame
+is emitted only after the known-size input contract is satisfied. A decoded
+frame is not exposed until its entropy payload, packed code stream, phrase
+table, padding, and raw extent validate completely; earlier frames may already
+be committed when a later frame fails. Nonterminal `Flush` does not shorten a
+frame, and `ResetBlock` is unsupported at this profile boundary.
+
+The reserved public name for this exact representation is
+`lzw-blocked-huffman`. A future three-region C ABI may keep frame bytes in its
+primary and secondary regions and use aligned opaque views storage for one LZW
+encoder-entry array, or for Blocked Huffman block views followed by checked
+padding and one LZW decoder phrase array. The checked partition helper must
+rederive and validate the complete layout before exposing either typed span.
+This specification reserves no factory, CLI selector, or format variant beyond
+the IDs and bytes defined above.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

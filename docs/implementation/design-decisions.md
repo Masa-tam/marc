@@ -4198,3 +4198,28 @@ compatibility test generates schema 4, verifies it, derives each earlier bundle
 by filtering only its versioned list, and verifies all four forms with the same
 public CLI. Local cross-compiler agreement is necessary evidence; external
 cross-platform execution remains release evidence after publication.
+
+## DD-234: LZW composition entropizes canonical packed bytes
+
+- Date: 2026-07-18
+- Status: accepted
+
+Reserve `lzw-blocked-huffman` for dictionary ID 4 variant 1 plus entropy ID 2
+variant 1. Preserve the standalone 16-byte LZW parameter region, empty entropy
+parameters, LSB-first variable-width code schedule, and final LZW zero padding.
+Blocked Huffman consumes the resulting packed bytes without interpreting code
+boundaries; both codec states reset at every outer frame.
+
+For raw frame size `F`, maximum code width `W`, and entropy block size `E`, use
+`S = ceil(F*W/8)` as the checked dictionary staging bound and `ceil(S/E)` as
+the block-count bound. Encoding stages canonical code bytes
+before entropy planning. Decoding stages complete entropy output, then requires
+the ordinary LZW validator to accept width transitions, dictionary references,
+`KwKwK`, padding, and exact raw size before publication.
+
+Retain the three-region caller-workspace model for future admission. Encoding
+needs aligned LZW encoder entries; decoding needs Blocked Huffman block views
+plus a separately aligned LZW phrase array. Require checked partition helpers
+before constructing either transform. This decision specifies bytes and a
+reserved name only; it does not publish a factory, CLI selector, benchmark,
+fuzz target, completion claim, or interoperability entry.

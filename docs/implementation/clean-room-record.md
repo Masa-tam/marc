@@ -4148,3 +4148,24 @@ discarded and the reviewed seed retained.
   MSVC/Visual Studio 2026 and Clang 22.1.3. The independently generated input
   and all fifteen schema-4 archives were byte-identical between those compilers
   on Windows x64. All 1058 Release tests passed under both toolchains.
+
+## 2026-07-18 - LZW plus Blocked Huffman composition specification
+
+- Authoring method: composed marc's already frozen LZW packed-byte stream with
+  its repository-defined Blocked Huffman byte-stream boundary.
+- References used: DD-098 through DD-112, DD-198, DD-208, DD-223, DD-234, the
+  local LZW and Blocked Huffman format sections, and the Welch paper already
+  recorded for standalone LZW.
+- Known implementations intentionally not consulted: external combined LZW
+  codecs, archive formats, source, profiles, vectors, tests, or workspace
+  layouts.
+- Independent decisions: dictionary ID 4 plus entropy ID 2; preserve final LZW
+  padding as entropy input; use the checked `ceil(F*W/8)` staging bound; reset
+  both layers per frame; reserve `lzw-blocked-huffman` without publishing it.
+- Generated-code task description: specify exact framing, bounds,
+  transactional validation, typed workspace roles, and a hand-checkable raw
+  entropy-block vector before implementing any combined transform.
+- Similarity review: every byte and rule is derived from marc's existing layer
+  contracts; no external combined representation or expression was compared.
+- Local validation: documentation topology and consistency checks only; codec
+  implementation and public admission intentionally remain pending.

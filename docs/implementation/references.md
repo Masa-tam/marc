@@ -524,3 +524,9 @@ The `lz78-blocked-huffman` benchmark adapter uses only that same public C
 factory, fixed CLI profile, and marc's existing measurement contract. No
 external benchmark implementation, result, corpus, or combined-codec tuning
 was consulted.
+
+The LZW plus Blocked Huffman composition specification uses only marc's
+already documented LZW variant 1 packed-code grammar, Blocked Huffman variant 1
+block format, generic frame format, checked workspace policy, and the original
+LZW reference recorded above. No external combined codec, format, source,
+profile, stream, test vector, or workspace layout was consulted.

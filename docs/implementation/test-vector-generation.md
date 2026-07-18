@@ -1369,3 +1369,20 @@ entries. Decode and compare the complete file, repeat with empty input, reject
 malformed and trailing streams without retaining either the destination or its
 temporary file, and reject an attempt to overwrite an existing encoded file.
 All transform creation must pass through the public C ABI workspace query.
+
+For the specified LZW plus Blocked Huffman vector, encode raw `A` through the
+already frozen standalone LZW grammar. Code 65 at initial width nine produces
+packed bytes `41 00`, whose final seven high bits are zero LZW padding. Select
+entropy block size two. The mandatory Blocked Huffman size rule chooses raw
+storage, producing one 16-byte descriptor with symbol count and payload size
+two, no model, raw flag one, and eight entropy-valid bits. Prepend a generic
+frame header declaring raw size one, dictionary and compressed sizes two, one
+block, and 16 descriptor bytes. The specified frame is exactly 74 bytes.
+
+Future implementation tests must reproduce this vector byte for byte, then
+recover the packed bytes before invoking the ordinary LZW validator. Add a
+separate vector crossing the 9-to-10-bit LZW width boundary, with an entropy
+block boundary chosen inside the corresponding packed-code byte sequence, so
+neither layer can accidentally treat entropy blocks as code boundaries. Corrupt
+LZW padding only after valid entropy reconstruction and require transactional
+rejection before raw publication.

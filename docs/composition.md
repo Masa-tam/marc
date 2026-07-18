@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZW | `lzw` | Candidate | Candidate | Candidate | Candidate | Candidate |
+| LZW | `lzw` | Specified | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 

@@ -82,7 +82,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZW plus Blocked Huffman | Candidate components | Unspecified |
+| LZW plus Blocked Huffman | Exact combined format and reserved public name | Specified |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
