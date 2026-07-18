@@ -4247,3 +4247,25 @@ metadata before staging writes, nonzero LZW padding after valid entropy decode,
 and a 9-to-10-bit width-change vector split across thirty ten-byte entropy
 blocks. This admits only the frame validator/decoder boundary; encoder, profile,
 streaming, C ABI, and public evidence remain separate steps.
+
+## DD-236: LZW composition plans from finalized packed bytes
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement the frame planner and encoder as a two-stage transaction. First run
+the standalone LZW planner with caller-owned aligned encoder entries, encode
+the complete variable-width code stream into caller-owned staging, and retain
+its final zero-padded byte. Only then plan Blocked Huffman over precisely that
+staged span. The generic frame header records the actual packed-byte size, not
+the conservative `ceil(F*W/8)` allocation bound.
+
+Count the encoder-entry bytes and actual packed staging bytes together against
+the aggregate buffered-byte limit. Reject missing typed workspace or staging
+before entropy planning, and complete all planning before writing any byte of
+the serialized frame. A short final output therefore leaves the destination
+untouched. Require byte identity with the 74-byte `A` vector, deterministic
+multi-block encoding and round trip, independent workspace failures, aggregate
+limit enforcement, empty-frame rejection, and frame-extent enforcement. This
+admits the internal frame encoder only; profile sizing, streaming, C ABI, CLI,
+benchmark, fuzzing, and interoperability remain separate steps.

@@ -4191,3 +4191,25 @@ discarded and the reviewed seed retained.
 - Local validation: all ten focused tests and the complete 1068-test Release
   suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman frame encoding
+
+- Authoring method: composed marc's standalone LZW planner/encoder and Blocked
+  Huffman planner/encoder through a caller-owned packed-byte staging boundary.
+- References used: DD-234 through DD-236, the local generic frame contract,
+  standalone LZW encoder contract, Blocked Huffman frame encoder, and the
+  repository-derived 74-byte hand vector.
+- Known implementations intentionally not consulted: external combined LZW
+  encoders, archive formats, source, workspace layouts, tests, or vectors.
+- Independent decisions: finish and retain LZW padding before entropy
+  planning; report actual packed size and code count; aggregate aligned encoder
+  entries with staging; write no frame byte until all planning succeeds.
+- Generated-code task description: add a bounded two-stage frame planner and
+  transactional encoder, then prove exact-vector identity, deterministic
+  multi-block round trip, workspace failures, and short-output atomicity.
+- Similarity review: control flow uses only marc-owned layer APIs and mirrors
+  the repository's already documented staged-composition contract; no external
+  implementation expression was compared.
+- Local validation: all fourteen focused tests and the complete 1072-test
+  Release suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64.

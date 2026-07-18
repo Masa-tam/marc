@@ -1379,12 +1379,23 @@ two, no model, raw flag one, and eight entropy-valid bits. Prepend a generic
 frame header declaring raw size one, dictionary and compressed sizes two, one
 block, and 16 descriptor bytes. The specified frame is exactly 74 bytes.
 
-Future implementation tests must reproduce this vector byte for byte, then
-recover the packed bytes before invoking the ordinary LZW validator. Add a
-separate vector crossing the 9-to-10-bit LZW width boundary, with an entropy
+The frame planner and encoder reproduce this vector byte for byte, and the
+validator recovers the packed bytes before invoking the ordinary LZW validator.
+A separate vector crossing the 9-to-10-bit LZW width boundary, with an entropy
 block boundary chosen inside the corresponding packed-code byte sequence, so
 neither layer can accidentally treat entropy blocks as code boundaries. The
 implemented validator uses the documented 291-byte packed vector, splits it
 into thirty raw entropy blocks of at most ten bytes, and derives 259 zero bytes.
 Corrupt LZW padding only after valid entropy reconstruction and require
 transactional rejection before raw publication.
+
+For encoder scheduling, encode raw `AABABCABC` with two-byte entropy blocks.
+Plan once, encode twice from the same raw input and caller-owned typed
+workspace, and require identical complete frames. Entropy-decode into a
+distinct staging region, validate the packed code schedule, and require the
+ordinary LZW decoder to reproduce all nine bytes. For raw `AA`, independently
+withhold the single required encoder entry, the three-byte staging region, and
+one byte of final serialized capacity; each rejection occurs before modifying
+the affected destination. Set the aggregate limit to one byte below the
+encoder-entry-plus-staging total and require the combined planner to reject it
+even though each standalone region fits.

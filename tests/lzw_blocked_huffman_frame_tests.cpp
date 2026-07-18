@@ -297,3 +297,130 @@ TEST(LzwBlockedHuffmanFrameValidator, RejectsWrongSequenceAndPipeline) {
                 .error,
             LzwBlockedHuffmanFrameValidationError::unsupported_pipeline);
 }
+
+TEST(LzwBlockedHuffmanFrameEncoder, PlansAndEmitsSpecifiedHandVector) {
+  const std::array raw{std::byte{'A'}};
+  std::array<std::byte, 2> staging{};
+  const auto plan = marc::frame::plan_lzw_blocked_huffman_frame(
+      stream_for(1, 2), {}, {}, 0, 0, raw, {}, staging);
+  ASSERT_EQ(plan.error, LzwBlockedHuffmanFrameValidationError::none);
+  EXPECT_EQ(plan.raw_size, 1U);
+  EXPECT_EQ(plan.dictionary_size, 2U);
+  EXPECT_EQ(plan.encoder_entries, 0U);
+  EXPECT_EQ(plan.code_count, 1U);
+  EXPECT_EQ(plan.descriptor_size, 16U);
+  EXPECT_EQ(plan.payload_size, 2U);
+  EXPECT_EQ(plan.block_count, 1U);
+  EXPECT_EQ(plan.serialized_size, single_code_frame.size());
+
+  std::array<std::byte, single_code_frame.size()> encoded{};
+  ASSERT_EQ(marc::frame::encode_lzw_blocked_huffman_frame(
+                stream_for(1, 2), {}, {}, 0, 0, raw, {}, staging, encoded)
+                .error,
+            LzwBlockedHuffmanFrameValidationError::none);
+  EXPECT_EQ(encoded, single_code_frame);
+}
+
+TEST(LzwBlockedHuffmanFrameEncoder,
+     IsDeterministicAcrossMultipleEntropyBlocksAndRoundTrips) {
+  constexpr std::array raw{std::byte{'A'}, std::byte{'A'}, std::byte{'B'},
+                           std::byte{'A'}, std::byte{'B'}, std::byte{'C'},
+                           std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+  auto stream = stream_for(static_cast<std::uint32_t>(raw.size()), 2);
+  std::array<marc::dictionary::internal::LzwEncoderEntry, raw.size() - 1>
+      encoder_workspace{};
+  std::array<std::byte, raw.size() * 2> encode_staging{};
+  const auto plan = marc::frame::plan_lzw_blocked_huffman_frame(
+      stream, {}, {}, 0, 0, raw, encoder_workspace, encode_staging);
+  ASSERT_EQ(plan.error, LzwBlockedHuffmanFrameValidationError::none);
+  ASSERT_GT(plan.block_count, 1U);
+
+  std::vector<std::byte> first(plan.serialized_size);
+  std::vector<std::byte> second(plan.serialized_size);
+  ASSERT_EQ(
+      marc::frame::encode_lzw_blocked_huffman_frame(
+          stream, {}, {}, 0, 0, raw, encoder_workspace, encode_staging, first)
+          .error,
+      LzwBlockedHuffmanFrameValidationError::none);
+  ASSERT_EQ(
+      marc::frame::encode_lzw_blocked_huffman_frame(
+          stream, {}, {}, 0, 0, raw, encoder_workspace, encode_staging, second)
+          .error,
+      LzwBlockedHuffmanFrameValidationError::none);
+  EXPECT_EQ(first, second);
+
+  std::vector<marc::entropy::internal::BlockedHuffmanBlockView> views(
+      plan.block_count);
+  std::vector<std::byte> decode_staging(plan.dictionary_size);
+  std::vector<marc::dictionary::internal::LzwPhraseEntry> phrases(
+      marc::dictionary::internal::lzw_validation_workspace_entries(
+          plan.dictionary_size, {}));
+  std::array<std::byte, raw.size()> decoded{};
+  ASSERT_EQ(
+      marc::frame::decode_lzw_blocked_huffman_frame(
+          stream, {}, {}, 0, 0, first, views, decode_staging, phrases, decoded)
+          .error,
+      LzwBlockedHuffmanFrameValidationError::none);
+  EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzwBlockedHuffmanFrameEncoder,
+     RejectsWorkspaceAndOutputCapacityAtomically) {
+  const std::array raw{std::byte{'A'}, std::byte{'A'}};
+  std::array<std::byte, 3> staging{};
+  staging.fill(std::byte{0x5a});
+  EXPECT_EQ(marc::frame::plan_lzw_blocked_huffman_frame(
+                stream_for(2, 3), {}, {}, 0, 0, raw,
+                std::span<marc::dictionary::internal::LzwEncoderEntry>{},
+                staging)
+                .error,
+            LzwBlockedHuffmanFrameValidationError::encoder_workspace_too_small);
+  EXPECT_TRUE(std::ranges::all_of(
+      staging, [](const std::byte value) { return value == std::byte{0x5a}; }));
+
+  std::array<marc::dictionary::internal::LzwEncoderEntry, 1> workspace{};
+  EXPECT_EQ(
+      marc::frame::plan_lzw_blocked_huffman_frame(stream_for(2, 3), {}, {}, 0,
+                                                  0, raw, workspace,
+                                                  std::span<std::byte>{})
+          .error,
+      LzwBlockedHuffmanFrameValidationError::dictionary_staging_too_small);
+
+  std::array<std::byte, two_code_frame.size() - 1> short_output{};
+  short_output.fill(std::byte{0x5a});
+  const auto result = marc::frame::encode_lzw_blocked_huffman_frame(
+      stream_for(2, 3), {}, {}, 0, 0, raw, workspace, staging, short_output);
+  EXPECT_EQ(result.error,
+            LzwBlockedHuffmanFrameValidationError::serialized_output_too_small);
+  EXPECT_EQ(result.serialized_size, two_code_frame.size());
+  EXPECT_TRUE(std::ranges::all_of(short_output, [](const std::byte value) {
+    return value == std::byte{0x5a};
+  }));
+}
+
+TEST(LzwBlockedHuffmanFrameEncoder, EnforcesAggregateWorkspaceAndFrameExtent) {
+  const std::array raw{std::byte{'A'}, std::byte{'A'}};
+  std::array<marc::dictionary::internal::LzwEncoderEntry, 1> workspace{};
+  std::array<std::byte, 3> staging{};
+  auto limits = marc::core::DecoderLimits{};
+  limits.max_block_size = 3;
+  limits.max_internal_buffered_bytes = sizeof(workspace) + staging.size() - 1;
+  EXPECT_EQ(marc::frame::plan_lzw_blocked_huffman_frame(
+                stream_for(2, 3), {}, limits, 0, 0, raw, workspace, staging)
+                .error,
+            LzwBlockedHuffmanFrameValidationError::workspace_limit);
+
+  EXPECT_EQ(marc::frame::plan_lzw_blocked_huffman_frame(
+                stream_for(2, 3), {}, {}, 0, 0, std::span<const std::byte>{},
+                workspace, staging)
+                .error,
+            LzwBlockedHuffmanFrameValidationError::input_size_mismatch);
+  const std::array too_long{std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+  std::array<marc::dictionary::internal::LzwEncoderEntry, 2> larger_workspace{};
+  std::array<std::byte, 6> larger_staging{};
+  EXPECT_EQ(marc::frame::plan_lzw_blocked_huffman_frame(
+                stream_for(2, 3), {}, {}, 0, 0, too_long, larger_workspace,
+                larger_staging)
+                .error,
+            LzwBlockedHuffmanFrameValidationError::input_size_mismatch);
+}
