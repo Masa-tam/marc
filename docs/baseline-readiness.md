@@ -119,8 +119,10 @@ four installed-package matrix entries explicitly disable tests, examples,
 tools, and benchmarks, isolating shared-only and static-only library packages
 from top-level convenience targets. The selected GitHub-hosted Visual Studio
 2026 image and Action major versions were checked against their official
-upstream availability before publication; Dependabot remains responsible for
-subsequent Action and submodule update proposals.
+upstream availability before publication. The final audit retained
+`actions/checkout@v6` and updated artifact publication to
+`actions/upload-artifact@v7`; Dependabot remains responsible for subsequent
+Action and submodule update proposals.
 
 ## Pre-publication similarity and claims audit
 
@@ -134,15 +136,15 @@ security, compatibility, or production-readiness guarantees.
 No unexplained third-party copyright or copyleft marker was found in first-party
 source, and no implementation was compared with external codec source. Shared
 algorithm names, mathematical terms, and cited paper/standard terminology are
-accounted for by the references record. The audit corrected historical wording
-that still described the now-public `checksum-raw` integration and second
-composed profile as future work. The result documents repository provenance
-and internal consistency; it is not a legal guarantee of non-infringement or a
-claim of long-term 0.x compatibility.
+accounted for by the references record. The audits corrected historical wording
+that described published profiles as future work and synchronized the README
+inventory with all eighteen public profiles. The result documents repository
+provenance and internal consistency; it is not a legal guarantee of
+non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-266, the complete Release suite contains 1,161 tests and passes under both
+At DD-267, the complete Release suite contains 1,162 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

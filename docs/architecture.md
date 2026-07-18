@@ -98,10 +98,9 @@ local frame, dictionary-payload, compressed-payload, and aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
-An opt-in benchmark executable drives the public LZ77, LZ77 plus Blocked
-Huffman, LZSS, LZ78, LZW, LZD, and LZMW C transforms over caller-selected
-files. It reports full-stream ratio, timed transform throughput, and
-profile-derived codec workspace under one documented method.
+An opt-in benchmark executable drives every public C transform over
+caller-selected files. It reports full-stream ratio, timed transform
+throughput, and profile-derived codec workspace under one documented method.
 The first dictionary fuzz harness presents the same bounded arbitrary input to
 the strict and streaming LZSS decoders. Local limits, fixed caller workspaces,
 chunk-derived scheduling, and a call guard keep malformed exploration bounded.
@@ -250,7 +249,7 @@ trailing bytes to the existing deterministic data and chunking matrix. This
 closes current local LZD implementation evidence without treating external
 release gates as locally satisfied.
 
-### Specified LZD plus Blocked Huffman boundary
+### Published LZD plus Blocked Huffman boundary
 
 LZD composition remains byte-oriented. The dictionary layer finishes its
 canonical eight-byte reference-pair stream in bounded staging, and Blocked
@@ -261,11 +260,11 @@ Only a completely validated frame may be expanded to raw output.
 
 For raw frame size `F`, staging is bounded by `8*ceil(F/2)`, generated phrase
 records by `floor(F/2)` and the configured maximum, and the iterative expansion
-stack by the admitted phrase count plus one. A future checked opaque workspace
-partition must accommodate encoder records, or decoder Blocked Huffman views,
+stack by the admitted phrase count plus one. The checked opaque workspace
+partition accommodates encoder records, or decoder Blocked Huffman views,
 phrase records, and expansion-stack references without exposing their C++
-layouts. This step fixes the format, bounds, reserved name, and validation
-order only; it does not publish an implementation or public factory.
+layouts. The public factory, CLI, benchmark, fuzz target, completion matrix,
+and schema-6 interoperability entry all retain this validation order.
 
 ### LZMW foundation
 
@@ -652,9 +651,9 @@ It accepts arbitrarily split input and drains arbitrarily small output spans,
 but does not emit bytes before `EndInput`. Non-terminal `Flush` therefore does
 not alter or close a frame; `ResetBlock` is rejected as unsupported.
 
-This buffered reference is not the final bounded-frame streaming design. Its
-encoded bytes must match the one-shot reference for every chunking pattern. A
-later frame-at-a-time implementation will reduce workspace requirements while
+This buffered path is retained as a whole-stream correctness reference. Its
+encoded bytes must match the one-shot reference for every chunking pattern. The
+frame-at-a-time implementation below reduces workspace requirements while
 retaining that deterministic representation and the same terminal-state rules.
 
 The matching buffered decoder accumulates the encoded stream in caller-owned
@@ -702,7 +701,7 @@ untrusted stream field is available before construction. All capacity
 arithmetic is checked before conversion to `size_t`.
 
 Profile failures are collapsed into the stable core categories invalid
-argument, unsupported, and limit exceeded. The later C adapter therefore need
+argument, unsupported, and limit exceeded. The public C adapter therefore does
 not expose internal parser or codec-specific enumerations.
 
 The standalone Blocked Huffman fuzz boundary covers dictionary-none stream
@@ -1137,7 +1136,7 @@ output draining, so a terminal input indication survives any number of
 `NeedOutput` calls.
 
 The combined profile layer centralizes workspace arithmetic for callers and the
-future C ABI. Encoder requirements are exact worst-case bounds for the selected
+public C ABI. Encoder requirements are exact worst-case bounds for the selected
 known-size stream and frame/block configuration. Decoder requirements are
 conservative bounds derived solely from local limits; untrusted serialized
 headers never influence allocation requests before parsing.
@@ -1204,7 +1203,7 @@ aggregate-workspace limit before returning a configuration.
 Decoder workspace calculation deliberately has no serialized configuration
 argument. It derives the serialized-frame, token-staging, raw-frame, and typed
 block-view capacities only from trusted local limits. This makes the query safe
-before an untrusted stream header is parsed and gives a future C adapter an
+before an untrusted stream header is parsed and gives the C adapter an
 opaque allocation contract without changing the transform's four distinct
 internal spans.
 
@@ -1239,7 +1238,7 @@ the incremental frame-committing decoder. It truncates each supplied case to
 the bytes. An independent call ceiling converts any stalled state machine into
 a reproducible failure rather than an unbounded run.
 
-### Specified LZ78 plus Blocked Huffman frame boundary
+### Published LZ78 plus Blocked Huffman frame boundary
 
 The composition now has matching frame planner/encoder and validator/decoder
 boundaries. Encoding fixes the LZ78 parse in token staging before Blocked
@@ -1249,12 +1248,12 @@ publication. Unlike the first two compositions, both directions require an
 aligned LZ78 phrase table; decoding additionally requires aligned Blocked
 Huffman block views.
 
-This makes typed-workspace composition an explicit admission problem rather
-than an implementation detail. A future public adapter may retain the common
-primary/secondary/views C ABI shape, but its opaque views region must be
-partitioned with checked alignment and size arithmetic for both private record
-types. The internal frame API accepts separate typed spans so capacity and
-aggregate-memory failures occur before entropy output or serialized output.
+This makes typed-workspace composition an explicit admission boundary rather
+than an implementation detail. The public adapter retains the common
+primary/secondary/views C ABI shape, and its opaque views region is partitioned
+with checked alignment and size arithmetic for both private record types. The
+internal frame API accepts separate typed spans so capacity and aggregate-
+memory failures occur before entropy output or serialized output.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
@@ -1357,9 +1356,9 @@ validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect
 transfer mistakes but are not authentication.
 
-### Specified LZD plus Blocked Huffman boundary
+### Published LZD plus Blocked Huffman implementation evidence
 
-The reserved LZD composition now has an internal complete-frame validator and
+The LZD composition has a complete-frame validator and
 transactional decoder. Blocked Huffman first reconstructs the entire canonical
 eight-byte LZD token region into bounded caller-owned staging. The ordinary LZD
 validator then checks token extent, reference ordering, terminal form, phrase
@@ -1370,25 +1369,24 @@ Phrase workspace is derived from both serialized tokens and the declared raw
 frame size. A terminal one-byte frame stores no phrase record, while a
 right-present pair necessarily accounts for at least two raw bytes. Validation
 and decoding count their distinct caller-owned regions under checked aggregate
-limits. This is an internal decoder boundary only; encoder planning, streaming,
-the C ABI, CLI, benchmark, fuzz target, completion matrix, and interoperability
-admission remain future steps for this profile.
+limits. The public decoder retains this transactional boundary before exposing
+raw bytes through the streaming C ABI.
 
 The matching internal planner and encoder now complete the LZD parse and write
 the exact canonical token region before entropy planning. Blocked Huffman sees
 only that immutable byte span, so its blocks may split a token without changing
 dictionary parsing. The planner derives the generic header and final serialized
 extent from the chosen block representations; the encoder refuses a short final
-destination before publishing any frame byte. The profile still has no
-streaming transform or public factory.
+destination before publishing any frame byte. The streaming transform and
+public factory reuse this exact frame representation.
 
 The internal profile now gives the caller-owned third region a stable typed
 shape. Encoding exposes aligned LZD encoder records. Decoding exposes Blocked
 Huffman views followed by separately aligned LZD phrase records and iterative
 expansion references; both offsets and the complete extent are rederived before
 any span is returned. Primary raw/frame buffers and secondary token staging
-remain byte regions. These requirements are sufficient for a later streaming
-adapter, but no C ABI construction path is admitted yet.
+remain byte regions. The streaming adapter and C ABI construction path use
+these requirements without exposing the private layouts.
 
 The bounded incremental transforms now consume those exact profile regions.
 The encoder collects one raw frame and drains only its completed serialized
@@ -1402,15 +1400,15 @@ handle and three caller-owned regions. The requirements query exposes only byte
 extents and maximum alignment. Factory construction repeats profile admission
 and checked opaque partitioning before publishing a handle, so entropy views,
 LZD phrase records, and expansion references never become ABI types. CLI,
-benchmark, decoder fuzzing, completion, and interoperability remain separate
-admissions.
+benchmark, decoder fuzzing, completion, and interoperability were admitted
+independently against this same factory.
 
 The public-ABI completion matrix now fixes required binary data classes,
 determinism across one-byte and mixed chunking, stable repeated termination,
 and transactional final-frame rejection. Its 64-byte frame profile derives a
 256-byte maximum LZD token region and 32 phrase entries from the fixed pair
-grammar rather than borrowing another dictionary codec's bounds. CLI,
-benchmark, bounded decoder fuzzing, and interoperability remain unadmitted.
+grammar rather than borrowing another dictionary codec's bounds. The bounded
+decoder fuzz target, CLI, benchmark, and schema-6 entry cover the same profile.
 
 The bounded decoder fuzz boundary preallocates the complete combined working
 set: serialized frame, token staging, raw staging, entropy views, LZD phrase

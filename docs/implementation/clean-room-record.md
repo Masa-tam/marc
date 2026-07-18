@@ -4874,3 +4874,34 @@ discarded and the reviewed seed retained.
   7 were accepted under their exact frozen profile sets and order; all 1,161
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64.
+
+## 2026-07-18 - Final pre-publication repository audit
+
+- Authoring method: compared tracked public documentation, build/package
+  configuration, CI, license notices, Git metadata, submodule state, and the
+  exact CLI/benchmark/fuzz profile registries.
+- References used: DD-267, repository-owned public profile documentation, and
+  the official GitHub runner-images, checkout, and upload-artifact pages
+  recorded in `references.md`.
+- Known implementations intentionally not consulted: external compression
+  source, codec inventories, comparison tables, compatibility claims, or test
+  suites.
+- Independent decisions: express the public inventory as a capability-derived
+  eighteen-profile set; correct current architecture wording for published
+  LZ78 and LZD compositions; retain stable artifact names; update only the
+  official artifact-upload major; add the missing standalone-LZ77 benchmark
+  smoke; keep release evidence separate from local readiness.
+- Generated-code task description: audit the repository before first push for
+  local paths, secrets, generated artifacts, stale profile claims, broken
+  documentation links, package/CI inconsistencies, and Git/submodule problems;
+  fix locally verifiable findings and report external prerequisites separately.
+- Similarity review: all codec statements were reconciled solely against
+  marc's own public registries and completion evidence; external sources were
+  used only for GitHub Actions availability metadata.
+- Local validation: the documentation audit verified 48 relative links across
+  17 documents; CLI, benchmark, and fuzz registries each cover all 18 public
+  profiles; regeneration completed for both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja build trees; all 1,162 Release tests passed under both
+  toolchains, including all 18 labeled benchmark smokes. Tracked-file scans
+  found no local compiler path, private-key/token marker, generated build tree,
+  or file larger than one MiB outside the pinned submodule.

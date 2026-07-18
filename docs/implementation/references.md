@@ -216,6 +216,15 @@ Build and interoperability workflow reference:
   the workflow artifact publication and retention model; it is not an
   algorithm or stream-format reference.
   <https://docs.github.com/en/actions/tutorials/store-and-share-data>
+- GitHub `actions/runner-images`, supported-image table. Used on 2026-07-18 to
+  confirm the `windows-2025-vs2026` hosted-runner label.
+  <https://github.com/actions/runner-images>
+- GitHub `actions/checkout` release and usage documentation. Used on
+  2026-07-18 to confirm major version 6 for repository checkout.
+  <https://github.com/actions/checkout>
+- GitHub `actions/upload-artifact` release and usage documentation. Used on
+  2026-07-18 to select current major version 7 for interoperability artifacts.
+  <https://github.com/actions/upload-artifact>
 
 CRC-32C references:
 

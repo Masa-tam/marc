@@ -4903,3 +4903,30 @@ filter successively to frozen schemas 6, 5, 4, 3, 2, and 1 and verify each
 generation. Cross-platform execution remains release evidence produced after
 push; local admission proves deterministic generation and strict protocol
 compatibility without claiming foreign-platform results.
+
+## DD-267: Final publication audit derives inventories from public profiles
+
+- Date: 2026-07-18
+- Status: accepted
+
+Describe the repository's public surface as eighteen profiles: five standalone
+entropy codecs, six standalone dictionary codecs, all six dictionary codecs
+composed with Blocked Huffman, and the checksum-raw profile. Prefer this
+capability-derived count in the repository README over manually enumerating a
+partial subset. State that benchmark and bounded decoder-fuzz adapters cover
+the same complete public set, while the CLI reference remains the exact name
+registry.
+
+Require one labeled benchmark smoke test for each public profile. The audit
+found that the benchmark registry accepted standalone `lz77`, but its default
+CLI status had hidden the absence of an explicit benchmark-smoke registration.
+Add that eighteenth smoke without changing benchmark measurement behavior.
+
+Treat architecture text as a current contract rather than a chronological
+implementation log: published LZ78 and LZD compositions must not be described
+in the present tense as reserved, future, or unadmitted. Keep chronological
+staging in the implementation records. Retain `actions/checkout@v6`, advance
+artifact publication from v4 to the current official
+`actions/upload-artifact@v7`, and leave later dependency proposals to
+Dependabot. This audit changes no stream byte, C ABI, codec behavior, or
+artifact name.

@@ -2,14 +2,12 @@
 ![marc logo](assets/images/marc.png)
 
 `marc` is a C++20 framework for independently designed, streaming lossless
-compression components. The currently implemented public profiles are the
-version 1 framed Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS,
-LZ77, LZ77 plus Blocked Huffman, LZSS, LZSS plus Blocked Huffman, LZ78,
-LZ78 plus Blocked Huffman, LZW, LZW plus Blocked Huffman, LZD, and LZMW
-codecs, exposed through a small C ABI. A version 1.1 raw framing
-profile with mandatory
-per-frame CRC-32C is also available through its dedicated C ABI. The
-format and API are still under development and version 0.x streams are not yet
+compression components. Its public version 1 profiles include five standalone
+entropy codecs, all six required dictionary codecs, and every required
+dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
+profile with mandatory per-frame CRC-32C is also available. All eighteen
+profiles are exposed through a small C ABI and the command-line tool. The format
+and API are still under development and version 0.x streams are not yet
 promised long-term compatibility.
 
 The [documentation index](docs/README.md) separates library and format guides
@@ -65,18 +63,15 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for checksum-raw, standalone Blocked
-Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZ77 plus Blocked
-Huffman, LZSS, LZSS plus Blocked Huffman, LZ78, LZW, LZD, or LZMW.
+and peak caller-owned codec workspace for all eighteen public profiles.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-bounded stream-decoder fuzz targets for all public standalone codec profiles,
-the composed LZ77 plus Blocked Huffman and LZSS plus Blocked Huffman profiles,
-and checksum-raw. Build and corpus instructions are in
+bounded stream-decoder fuzz targets for all eighteen public profiles. Build and
+corpus instructions are in
 [`docs/fuzzing.md`](docs/fuzzing.md).
 
 ## Interoperability
