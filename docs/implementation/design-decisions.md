@@ -5105,3 +5105,20 @@ zero padding, decode exactly the declared token bytes, then validate the entire
 canonical LZ77 token stream against the declared raw size. Do not reconstruct
 or publish raw bytes in this step. A later decoder may publish only after this
 validator succeeds and private raw reconstruction also completes.
+
+## DD-278: Combined frame decode publishes only a completed raw staging extent
+
+- Date: 2026-07-19
+- Status: accepted
+
+Extend the LZ77 plus Adaptive frame boundary with a decoder that shares the
+validator's complete preflight path. Before entropy mutation, require sufficient
+dictionary staging, raw staging, and caller output, and include raw staging in
+the checked aggregate of descriptor, payload, token bytes, and reconstructed
+bytes.
+
+After Adaptive decode and complete LZ77-token validation, reconstruct the frame
+into private raw staging. Copy exactly the declared raw extent to caller output
+only when LZ77 reconstruction succeeds. Capacity, workspace, header,
+descriptor, entropy, token-validation, and reconstruction failures therefore
+publish no current-frame raw byte.

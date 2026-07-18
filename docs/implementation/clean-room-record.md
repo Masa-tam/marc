@@ -5138,3 +5138,27 @@ discarded and the reviewed seed retained.
 - Local validation: the nine focused validator tests and all 1,172 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman atomic frame decoder
+
+- Authoring method: extended the independently specified validator with marc's
+  existing LZ77 decoder and an explicit private-raw publication barrier.
+- References used: DD-278, the combined format's transactional decoding order,
+  marc's LZ77 overlap-copy semantics, checked workspace policy, and local
+  complete-frame decoder contracts.
+- Known implementations intentionally not consulted: external LZ/Huffman
+  decoder pipelines, foreign transactional decompression code, or third-party
+  tests.
+- Independent decisions: share one validation/preflight path; count private raw
+  staging in the decoder aggregate; reject all caller capacity shortages before
+  entropy staging changes; copy to public output only after LZ77 reconstruction
+  succeeds.
+- Generated-code task description: add the bounded frame decoder and tests for
+  exact one-byte publication, overlapping match reconstruction, pre-mutation
+  capacity checks, aggregate workspace, and malformed-layer non-publication.
+- Similarity review: implementation is a direct composition of marc's local
+  contracts and documented transactional sequence; no external expression or
+  test structure was used.
+- Local validation: all fourteen combined validator/decoder tests and all 1,177
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

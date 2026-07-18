@@ -3,6 +3,8 @@
 #include "core/checked_math.hpp"
 #include "dictionary/lz77_format.hpp"
 
+#include <algorithm>
+
 namespace marc::frame {
 namespace {
 
@@ -21,17 +23,17 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
         && stream.entropy_parameters_size == 0;
 }
 
-} // namespace
-
-Lz77AdaptiveHuffmanFrameValidationResult
-validate_lz77_adaptive_huffman_frame(
+[[nodiscard]] Lz77AdaptiveHuffmanFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::Lz77Parameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint64_t expected_sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
-    const std::span<std::byte> dictionary_staging) noexcept {
+    const std::span<std::byte> dictionary_staging,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
     Lz77AdaptiveHuffmanFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -117,6 +119,16 @@ validate_lz77_adaptive_huffman_frame(
             dictionary_staging_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error = Lz77AdaptiveHuffmanFrameValidationError::
+            raw_staging_too_small;
+        return result;
+    }
+    if (require_raw_staging && output.size() < result.raw_size) {
+        result.error =
+            Lz77AdaptiveHuffmanFrameValidationError::raw_output_too_small;
+        return result;
+    }
 
     std::uint64_t workspace_bytes{};
     if (!core::checked_add(
@@ -125,7 +137,11 @@ validate_lz77_adaptive_huffman_frame(
         || !core::checked_add(
             workspace_bytes,
             static_cast<std::uint64_t>(result.dictionary_size),
-            workspace_bytes)) {
+            workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             Lz77AdaptiveHuffmanFrameValidationError::arithmetic_overflow;
         return result;
@@ -178,6 +194,57 @@ validate_lz77_adaptive_huffman_frame(
         result.error = Lz77AdaptiveHuffmanFrameValidationError::
             dictionary_validation_error;
     }
+    return result;
+}
+
+} // namespace
+
+Lz77AdaptiveHuffmanFrameValidationResult
+validate_lz77_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, false, {}, {});
+}
+
+Lz77AdaptiveHuffmanFrameValidationResult
+decode_lz77_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, true,
+        raw_staging, output);
+    if (result.error
+        != Lz77AdaptiveHuffmanFrameValidationError::none) {
+        return result;
+    }
+
+    const auto decoded = dictionary::internal::decode_lz77_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error != dictionary::internal::Lz77DecodeError::none) {
+        result.dictionary_error = decoded.validation_error;
+        result.dictionary_format_error = decoded.format_error;
+        result.error = Lz77AdaptiveHuffmanFrameValidationError::
+            dictionary_decode_error;
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 
