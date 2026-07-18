@@ -4433,3 +4433,24 @@ discarded and the reviewed seed retained.
   compared.
 - Local validation: five new tests and all 1103 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD composition profile sizing and typed partition
+
+- Authoring method: derived worst-case frame regions from marc's fixed LZD
+  token grammar and Blocked Huffman raw fallback, then added checked typed-view
+  partition helpers.
+- References used: DD-245 through DD-248, local LZD limits, Blocked Huffman
+  descriptor size, generic frame size, and the existing three-region contract.
+- Known implementations intentionally not consulted: external combined
+  profiles, allocators, opaque workspace schemes, source, tests, or layouts.
+- Independent decisions: use exact `ceil(F/2)` token staging and `floor(F/2)`
+  phrase bounds; order decoder blocks, phrases, then expansion references;
+  record and rederive both offsets; give zero encoder records neutral alignment.
+- Generated-code task description: calculate encoder and decoder requirements,
+  partition all typed spans, and test short frames, freeze limits, block and
+  aggregate limits, coupled phrase bounds, zero views, corrupt requirements,
+  short storage, misalignment, stable errors, and invalid limits.
+- Similarity review: formulas and layouts derive only from marc-owned formats
+  and safety contracts; no external workspace expression was compared.
+- Local validation: seven new tests and all 1110 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

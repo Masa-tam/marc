@@ -4502,3 +4502,25 @@ under checked aggregate limits. Tests that isolate later frame-extent rejection
 must first supply the full `8*ceil(F/2)` staging capacity; otherwise the earlier
 and more specific staging-capacity error is correct. This preserves validation
 order instead of weakening an earlier check to satisfy a later expectation.
+
+## DD-248: LZD composition owns a three-view opaque decoder layout
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define internal known-size profile requirements before adding streaming or a C
+factory. Bound encoder staging by `8*ceil(F/2)`, encoder records by the lesser
+of `floor(F/2)` and the configured maximum, entropy views by the corresponding
+block ceiling, and complete serialized capacity by raw Blocked Huffman fallback
+for every staged byte. Count raw input, staging, serialized frame, and typed
+encoder records under one checked aggregate admission rule.
+
+Place decoder block views first in the opaque typed region, align and append
+LZD phrase records, then align and append 32-bit iterative expansion references.
+Derive phrase capacity as the lesser of staged whole tokens, `floor(max frame
+size/2)`, the local dictionary-entry limit, and the format maximum. Reserve one
+additional expansion reference. Record both offsets, total bytes, and maximum
+alignment, and require partition helpers to rederive every value before
+publishing any span. Zero encoder records use zero bytes and neutral alignment
+one. This fixes only internal sizing and layout; streaming and public admission
+remain separate steps.

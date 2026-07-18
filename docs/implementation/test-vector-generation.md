@@ -1518,3 +1518,19 @@ staging aggregate one byte below its exact requirement and reject it. Finally,
 test empty input and a three-byte input against a two-byte frame declaration;
 the latter receives its full 16-byte staging bound so frame extent is the only
 remaining failing condition.
+
+For profile sizing with original size 17, ten-byte frames, and 16-byte entropy
+blocks, reserve 40 staged token bytes, three worst-case raw block descriptors,
+five encoder records, and `56 + 48 + 40` serialized bytes. With a seven-byte
+final short frame and a two-entry freeze limit, reserve 32 staged bytes and two
+records. One-byte input must retain eight staging bytes but use zero opaque
+encoder bytes and neutral alignment one; empty input reserves no frame-local
+region.
+
+For decoder limits of 128 staged bytes, 64 raw bytes, four blocks, and ten
+dictionary entries, require ten phrase records and eleven expansion references.
+Place blocks, phrases, and expansion references in that order with independently
+checked alignment. Lower the raw frame limit to ten while raising the dictionary
+limit and require five phrases plus six expansion references. Increment either
+recorded offset, shorten storage by one byte, or shift its base address by one
+byte and reject the partition without exposing any typed view.

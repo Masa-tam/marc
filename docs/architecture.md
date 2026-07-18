@@ -1309,3 +1309,11 @@ dictionary parsing. The planner derives the generic header and final serialized
 extent from the chosen block representations; the encoder refuses a short final
 destination before publishing any frame byte. The profile still has no
 streaming transform or public factory.
+
+The internal profile now gives the caller-owned third region a stable typed
+shape. Encoding exposes aligned LZD encoder records. Decoding exposes Blocked
+Huffman views followed by separately aligned LZD phrase records and iterative
+expansion references; both offsets and the complete extent are rederived before
+any span is returned. Primary raw/frame buffers and secondary token staging
+remain byte regions. These requirements are sufficient for a later streaming
+adapter, but no C ABI construction path is admitted yet.
