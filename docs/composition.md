@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
+| LZMW | `lzmw` | Specified | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

@@ -1596,3 +1596,19 @@ complete one encode and one decode measurement. Its output must identify the
 selected codec and report input and encoded sizes, ratio, both elapsed times
 and throughputs, encoder and decoder primary/secondary/views workspace bytes,
 and the larger three-region sum. Do not freeze machine-dependent measurements.
+
+For the specified LZMW plus Blocked Huffman vector, encode raw `A` through the
+frozen LZMW grammar to literal reference `41 00 00 00`. With entropy block size
+four, independently select the Blocked Huffman raw form: one 16-byte descriptor
+followed by the unchanged token. Prepend the generic frame header declaring raw
+size one, dictionary size four, compressed payload four, one block, and 16
+descriptor bytes; require the exact documented 76-byte frame.
+
+For sizing, check raw sizes zero, one, two, and larger boundaries. Require token
+staging `4F`, phrase records `min(max(F-1, 0), maximum_entries)`, an expansion
+stack one larger than the admitted phrase count for a nonempty frame, and
+entropy block count `ceil(staging/E)`. Future decoder tests must reject entropy
+failure before staging publication, a non-multiple-of-four reconstructed token
+region, forward or unavailable references, phrase-length overflow, short block
+views, phrase or stack workspace, aggregate-limit overflow, and short raw
+output without publishing any byte from the frame.

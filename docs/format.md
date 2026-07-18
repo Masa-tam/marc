@@ -1534,6 +1534,83 @@ private. The CLI and benchmark use that public factory without defining another
 format variant. Interoperability schema 6 emits and accepts this exact profile
 as its seventeenth archive.
 
+## LZMW variant 1 plus Blocked Huffman variant 1
+
+This composition uses dictionary algorithm ID 6, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
+are the 16-byte LZMW parameters followed by the empty Blocked Huffman parameter
+region. The reserved public name is `lzmw-blocked-huffman`. Reserving the name
+and bytes does not yet publish a factory or tool selector.
+
+`entropy block size` counts bytes in the canonical fixed-width LZMW reference
+stream. Blocks reset at and cannot cross an outer frame; a block boundary need
+not coincide with a four-byte token boundary. The generic frame header records
+raw bytes as `uncompressed size`, LZMW token bytes as `dictionary serialized
+size`, stored entropy bytes as `compressed payload size`, the exact Blocked
+Huffman block count, and the complete descriptor/model region size. The body
+is:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate LZMW token region is stored. Entropy decoding must produce exactly
+`dictionary serialized size` bytes, and that size must be a multiple of four.
+Before any raw-byte publication, the ordinary LZMW validator must consume the
+complete staged token region, validate every backward phrase reference and
+adjacent-phrase production, construct the bounded acyclic phrase grammar, and
+derive exactly `uncompressed size` bytes. Expansion remains iterative through
+a bounded explicit stack; the entropy layer does not change LZMW's frame-local
+dictionary, duplicate-entry numbering, tie rule, or freeze behavior.
+
+For a raw frame of `F` bytes, at most `F` tokens are possible, so the canonical
+staging bound is `S = 4F` bytes. At most `max(F-1, 0)` adjacent phrase pairs can
+create entries. The phrase-record count is the lesser of that value and the
+configured LZMW maximum, and a nonempty expansion stack requires at most that
+count plus one reference. For entropy block size `E`, the block-count bound is
+`ceil(S/E)`. All ceiling divisions, products, descriptor extents, typed
+workspace extents, padding, and aggregate sums must use checked arithmetic
+before allocation or output.
+
+### Hand-checkable LZMW combined raw-block frame
+
+For raw input `A`, LZMW emits the four-byte literal reference
+`41 00 00 00`. With entropy block size four, Blocked Huffman selects raw
+representation. The complete 76-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 04 00 00 00  04 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+04 00 00 00 04 00 00 00  00 00 01 08 00 00 00 00
+41 00 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final four bytes are the unchanged LZMW
+token. The 16-byte LZMW parameter region is stream-level and is not repeated
+in the frame.
+
+The reference encoder must complete the deterministic LZMW parse using bounded
+caller-owned phrase-span records, serialize its exact references into staging,
+and only then plan Blocked Huffman. The reference decoder treats entropy
+output, phrase records, and the expansion stack as uncommitted state. It
+validates the entire token grammar and exact raw extent before checking raw
+destination capacity and expanding. A header, entropy, token, reference,
+workspace, limit, or capacity failure publishes no bytes from that frame.
+
+The known-size stream uses the ordinary 64-byte version 1.0 header, followed by
+the 16-byte LZMW parameter region and zero or more combined frames. Empty input
+is exactly this 80-byte prefix. Both the LZMW dictionary and every Blocked
+Huffman model reset at each outer frame. Strict decoding derives exactly
+`original size` bytes and rejects trailing serialized data. Incremental paths
+must preserve these exact bytes under arbitrary chunking; a frame is exposed
+only after complete validation. Nonterminal `Flush` does not shorten a frame,
+and `ResetBlock` is unsupported at this profile boundary.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

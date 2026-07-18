@@ -86,7 +86,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZMW plus Blocked Huffman | Candidate components | Unspecified |
+| LZMW plus Blocked Huffman | Exact format, bounds, hand vector, and transactional validation order | Specified; implementation pending |
 
 ## Remaining release evidence
 

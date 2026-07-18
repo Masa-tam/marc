@@ -4611,3 +4611,30 @@ discarded and the reviewed seed retained.
   through 6 were accepted under their exact frozen profile sets; all 1124
   Release tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman composition specification
+
+- Authoring method: composed marc's independently specified LZMW reference
+  grammar and Blocked Huffman block representation at their canonical byte
+  boundary.
+- References used: the local LZMW format and validator, Blocked Huffman variant
+  1, generic frame envelope, DD-128 through DD-141, DD-200, and DD-256.
+- Known implementations intentionally not consulted: external combined LZMW
+  codecs, formats, source, profiles, streams, test vectors, workspace layouts,
+  or malformed-input corpora.
+- Independent decisions: permit entropy boundaries within four-byte references;
+  bound staging by four bytes per raw byte, phrase records by raw bytes minus
+  one and the configured maximum, and the iterative stack by the admitted
+  phrase count plus one; require complete dictionary validation before raw
+  publication; reserve a three-region opaque workspace model.
+- Generated-code task description: specify the combined identifiers, parameter
+  and frame layout, checked bounds, validation order, exact one-literal raw-
+  block vector, stream reset and finish rules, roadmap state, and future
+  negative-test obligations without publishing an implementation.
+- Similarity review: the representation is a direct composition of marc-owned
+  formats and terminology; no external combined-codec expression was compared.
+- Local validation: the 76-byte hand vector was derived independently from the
+  existing four-byte LZMW literal and 16-byte Blocked Huffman raw descriptor;
+  its header, descriptor, and payload fields were extracted from the document
+  and verified by offset; documentation consistency and repository whitespace
+  checks passed.

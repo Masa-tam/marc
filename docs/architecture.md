@@ -348,6 +348,25 @@ shares the generic bounded streaming loop and transactional output-file policy.
 It never names an internal LZMW C++ type. The integration smoke verifies file
 and empty round trips, overwrite rejection, and malformed-input cleanup.
 
+### Specified LZMW plus Blocked Huffman boundary
+
+LZMW composition keeps the canonical four-byte reference stream as the exact
+byte boundary between layers. Blocked Huffman may divide that region without
+regard to reference alignment. Decode reconstructs the complete reference
+region before the existing LZMW validator checks fixed-token alignment,
+backward-only phrase references, adjacent-phrase productions, dictionary
+freeze, and exact raw extent. Expansion and publication occur only after the
+whole frame passes both entropy and dictionary validation.
+
+For raw frame size `F`, reference staging is bounded by `4F`, generated phrase
+records by the lesser of `max(F-1, 0)` and the configured maximum, and the
+iterative expansion stack by the admitted phrase count plus one for a nonempty
+frame. A future checked opaque workspace partition must accommodate encoder
+phrase spans, or decoder Blocked Huffman views, LZMW phrase records, and
+expansion-stack references without exposing their C++ layouts. This step fixes
+the format, bounds, reserved name, hand vector, and validation order only; it
+does not publish an implementation or public factory.
+
 ### Combined dictionary and entropy pipelines
 
 The first combined profile is LZ77 variant 1 followed by Blocked Huffman

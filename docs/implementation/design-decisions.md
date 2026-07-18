@@ -4663,3 +4663,30 @@ it, then filter successively to frozen schemas 5, 4, 3, 2, and 1 and verify each
 generation. Cross-platform execution remains release evidence produced after
 push; local admission proves deterministic generation and strict protocol
 compatibility without claiming foreign-platform results.
+
+## DD-256: LZMW composition entropizes canonical references
+
+- Date: 2026-07-18
+- Status: accepted
+
+Reserve `lzmw-blocked-huffman` for dictionary ID 6 variant 1 plus entropy ID 2
+variant 1. Preserve the standalone 16-byte LZMW parameter region, empty entropy
+parameters, fixed four-byte reference grammar, adjacent-phrase insertion,
+smallest-reference tie rule, dictionary freeze, and ordinary version 1.0 frame
+header. Entropy blocks count serialized token bytes and may split a token; both
+layers reset at every outer frame.
+
+For raw frame size `F` and entropy block size `E`, bound token staging by
+`S = 4F`, block count by `ceil(S/E)`, phrase records by the lesser of
+`max(F-1, 0)` and the configured maximum, and the iterative expansion stack by
+that admitted count plus one for a nonempty frame. Encoding fixes the entire
+LZMW parse before entropy planning. Decoding reconstructs the full token
+region, validates its acyclic adjacent-phrase grammar and exact raw extent, and
+only then expands transactionally.
+
+Retain the three-region caller-workspace model for future admission. Encoding
+needs aligned LZMW phrase-span records; decoding needs Blocked Huffman views,
+LZMW phrase records, and explicit expansion-stack references in one checked
+opaque layout. This decision specifies bytes, bounds, validation order, a hand
+vector, and a reserved name only. Decoder, encoder, streaming, C ABI, CLI,
+fuzz, benchmark, completion, and interoperability remain separate steps.
