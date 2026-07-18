@@ -3,8 +3,9 @@
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman profile, LZSS variant 1, the LZSS plus Blocked Huffman profile,
-LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, LZD
-variant 1, and LZMW variant 1 with known-size encoding and bounded,
+LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, the LZW
+plus Blocked Huffman profile, LZD variant 1, and LZMW variant 1 with known-size
+encoding and bounded,
 caller-owned workspace. All functions are `noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
 
@@ -13,9 +14,10 @@ and no C++ type appears in the ABI.
 The C ABI exposes complete, validated stream profiles rather than separate
 dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
-binds dictionary `None`. `marc_lz77_blocked_huffman_*` and
-`marc_lzss_blocked_huffman_*`, and `marc_lz78_blocked_huffman_*` are the
-currently public dictionary-plus-entropy factories.
+binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
+`marc_lzss_blocked_huffman_*`, `marc_lz78_blocked_huffman_*`, and
+`marc_lzw_blocked_huffman_*` are the currently public dictionary-plus-entropy
+factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
 other algorithms. The byte-stream architecture can feed any canonical
@@ -40,7 +42,8 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_blocked_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
-   `marc_lzw_config_init()`, `marc_lzd_config_init()`, or
+   `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
+   `marc_lzd_config_init()`, or
    `marc_lzmw_config_init()` for encode or decode
    direction.
 2. Set the desired encoder sizes or decoder hard limits.
@@ -106,6 +109,13 @@ use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized
 LZW parameter width. `maximum_code_width` affects encoding only because decode
 parameters are read from the stream and checked against local policy.
+The LZW plus Blocked Huffman factory retains the three-region composition
+contract. Its secondary region contains packed LZW staging followed by the
+serialized frame for encode, or packed staging followed by transactional raw
+output for decode. The aligned views region contains encoder dictionary entries
+in the first direction and a checked entropy-view/padding/phrase-entry layout
+in the second. Query `marc_lzw_blocked_huffman_workspace_requirements()` after
+changing any code width, block size, frame size, or hard limit.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

@@ -1224,8 +1224,10 @@ complete frame boundary, sizing, and safe partition feed bounded streaming
 transforms. The encoder buffers one raw frame and its finalized representation;
 the decoder buffers one serialized frame and reconstructs it privately before
 draining raw output. Consequently a malformed later frame cannot publish a
-partial raw frame or alter an earlier committed one. Public admission remains a
-later step.
+partial raw frame or alter an earlier committed one. The small C ABI now admits
+that exact implementation through a direction-specific requirements query and
+factory; no second codec construction path or private C++ record layout crosses
+the ABI.
 
 ### Published composed-profile evidence
 

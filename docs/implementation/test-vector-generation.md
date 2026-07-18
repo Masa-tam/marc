@@ -1426,3 +1426,13 @@ terminal error. Independently withhold the one required LZW phrase entry,
 truncate the final encoded byte, request `ResetBlock`, and finish the encoder
 before all declared raw input arrives; require bounded, atomic rejection in
 each case.
+
+For the first pure-C ABI fixture, use the same raw `ABABX`, two-byte frames,
+four-byte entropy blocks, and maximum 16-bit LZW width. The requirements query
+must report two primary encoder bytes and 80 secondary bytes: four packed-byte
+staging bytes plus a worst-case 76-byte frame. Encoding through the public
+factory produces the already derived 304-byte stream. Under decoder limits of
+four packed bytes, two raw bytes, one entropy block, and 512 aggregate bytes,
+the query reports 568 primary bytes and six secondary bytes. Decode and compare
+all five bytes, then reject one missing secondary byte, a one-byte-misaligned
+views region, and a nonzero reserved field.

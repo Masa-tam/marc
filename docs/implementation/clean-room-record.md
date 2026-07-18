@@ -4255,3 +4255,22 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused tests and the complete 1085-test Release
   suite passed under MSVC/Visual Studio 2026 on Windows x64; the same complete
   suite passed under Clang 22.1.3 before commit.
+
+## 2026-07-18 - LZW plus Blocked Huffman public C factory
+
+- Authoring method: exposed the completed internal profile solely through
+  marc's existing small C handle, requirements, and process-result ABI.
+- References used: DD-234 through DD-239, the local C lifecycle contract,
+  checked profile partitions, streaming transforms, and `ABABX` frame oracle.
+- Known implementations intentionally not consulted: external compression
+  ABIs, combined LZW factories, workspace conventions, source, or tests.
+- Independent decisions: add one fixed-profile config; preserve three opaque
+  caller-owned regions; repeat checked construction in the factory; expose no
+  private record size or codec object.
+- Generated-code task description: add the public struct, declarations,
+  requirements query, factory, pure-C round trip, malformed configuration, short
+  workspace, and alignment tests without adding CLI or benchmark dispatch.
+- Similarity review: names and lifecycle follow marc's own stable C vocabulary;
+  profile-specific arithmetic remains in the internal profile implementation.
+- Local validation: the focused pure-C ABI test and all 1086 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

@@ -4279,9 +4279,9 @@ Define an internal fixed-profile constructor for LZW variant 1 plus Blocked
 Huffman variant 1. For the largest raw frame `F`, maximum LZW width `W`, and
 entropy block size `E`, reserve `ceil(F*W/8)` packed staging bytes,
 `ceil(staging/E)` descriptors, staging-sized raw entropy payload capacity, and
-at most `min(F-1, 2^W-258)` LZW encoder entries. Count frame input, staging, worst-case
-serialized frame, and typed entries together against the aggregate buffer
-limit before admitting the profile.
+at most `min(F-1, 2^W-258)` LZW encoder entries. Count frame input, staging,
+worst-case serialized frame, and typed entries together against the aggregate
+buffer limit before admitting the profile.
 
 Derive decoder storage conservatively from local limits. The opaque typed
 region starts with Blocked Huffman block views, aligns the following LZW phrase
@@ -4317,3 +4317,24 @@ later-frame padding corruption, workspace shortage, truncation, unsupported
 reset, empty input, premature finish, and repeated ended/error behavior. This
 establishes internal streaming only; C ABI, CLI, benchmark, fuzzing, completion
 evidence, and interoperability remain separate admissions.
+
+## DD-239: LZW composition enters the public C ABI through one factory
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `marc_lzw_blocked_huffman_config` with known original size, frame size,
+entropy block size, maximum LZW code width, and the complete relevant decoder
+limits. Keep the common three-workspace ABI: primary is raw-frame input or
+serialized-frame input; secondary is packed LZW staging followed by encoded or
+decoded frame storage; aligned views contain encoder entries or the decoder's
+block-view/padding/phrase layout.
+
+The requirements function must use the internal profile calculators and expose
+only byte counts and alignment. The factory must repeat profile construction,
+partition the opaque view region through checked helpers, and instantiate the
+existing streaming transforms. Reject wrong struct metadata, reserved fields,
+short regions, and misalignment before publishing a handle. Require a pure-C
+five-byte, three-frame round trip whose 304-byte output is fixed by the existing
+frame oracle. This admits the public factory only; completion matrix, fuzzing,
+CLI, benchmark, and interoperability remain separate evidence steps.
