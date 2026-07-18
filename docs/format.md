@@ -1443,14 +1443,13 @@ table, padding, and raw extent validate completely; earlier frames may already
 be committed when a later frame fails. Nonterminal `Flush` does not shorten a
 frame, and `ResetBlock` is unsupported at this profile boundary.
 
-The reserved public name for this exact representation is
-`lzw-blocked-huffman`. A future three-region C ABI may keep frame bytes in its
-primary and secondary regions and use aligned opaque views storage for one LZW
-encoder-entry array, or for Blocked Huffman block views followed by checked
-padding and one LZW decoder phrase array. The checked partition helper must
-rederive and validate the complete layout before exposing either typed span.
-This specification reserves no factory, CLI selector, or format variant beyond
-the IDs and bytes defined above.
+The public name for this exact representation is `lzw-blocked-huffman`. Its
+three-region C ABI keeps frame bytes in its primary and secondary regions and
+uses aligned opaque views storage for one LZW encoder-entry array, or for
+Blocked Huffman block views followed by checked padding and one LZW decoder
+phrase array. The checked partition helper rederives and validates the complete
+layout before exposing either typed span. The CLI selector uses that public C
+factory and does not define another format variant.
 
 ## Adaptive Huffman FGK variant 1
 

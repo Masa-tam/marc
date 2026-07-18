@@ -4279,7 +4279,7 @@ Define an internal fixed-profile constructor for LZW variant 1 plus Blocked
 Huffman variant 1. For the largest raw frame `F`, maximum LZW width `W`, and
 entropy block size `E`, reserve `ceil(F*W/8)` packed staging bytes,
 `ceil(staging/E)` descriptors, staging-sized raw entropy payload capacity, and
-at most `min(F-1, 2^W-258)` LZW encoder entries. Count frame input, staging,
+at most `min(F-1, 2^W-256)` LZW encoder entries. Count frame input, staging,
 worst-case serialized frame, and typed entries together against the aggregate
 buffer limit before admitting the profile.
 
@@ -4377,3 +4377,21 @@ zero-progress `Progress`, impossible `NeedInput`, or call exhaustion.
 Treat output-limit `NeedOutput` as a bounded terminal condition. Retain an
 ordinary-build compile smoke and one reviewed truncated-magic seed. CLI,
 benchmark, and interoperability remain separate gates.
+
+## DD-242: LZW composition CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzw-blocked-huffman` as an explicit selector while retaining LZ77 as the
+default. Fix one-MiB raw frames, 65,536-symbol entropy blocks, the exact
+two-byte-per-raw-byte packed-code bound, at most 32 entropy blocks, and 65,280
+additional dictionary entries because the first free LZW code is 256. Keep the
+existing 64-MiB aggregate internal-buffer policy.
+
+Initialize, query, create, process, and destroy transforms only through the
+public combined C ABI. Allocate the primary, secondary, and aligned views
+regions from the queried requirements rather than duplicating their private
+partition. Reuse the transactional file harness for ordinary, empty,
+malformed, trailing-data, overwrite, and temporary-file-cleanup cases.
+Benchmark and interoperability admission remain separate evidence steps.

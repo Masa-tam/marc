@@ -4314,3 +4314,21 @@ discarded and the reviewed seed retained.
   build, then completed 1,000 runs without crash, hang, ASan, or UBSan finding
   at 37 MiB peak RSS. The complete 1090-test suite passed under MSVC and
   Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman CLI profile
+
+- Authoring method: added a thin transactional file adapter over marc's public
+  combined C ABI without exposing private C++ profile state.
+- References used: DD-242, the public combined configuration and workspace
+  query, the fixed profile bounds, and marc's existing CLI file contract.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined LZW tools, allocation wrappers, source, or test suites.
+- Independent decisions: use one-MiB frames, 65,536-symbol blocks, the exact
+  two-byte packed bound, 32 block descriptors, 65,280 additional entries, and
+  a 64-MiB aggregate policy; obtain actual region layouts from the C ABI.
+- Generated-code task description: publish the explicit selector and verify
+  round-trip, empty, malformed, trailing, overwrite, and cleanup behavior.
+- Similarity review: dispatch and transactions follow marc's own CLI; no
+  external command structure or combined-codec behavior was compared.
+- Local validation: the focused CLI test and all 1091 Release tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

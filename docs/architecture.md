@@ -1187,7 +1187,7 @@ throughput, and the larger caller-owned workspace total. Interoperability
 schema 4 covers the same public profile through deterministic foreign decode
 and local re-encode checks.
 
-### Specified LZW plus Blocked Huffman boundary
+### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather
 than a fixed-width token array. Composition nevertheless remains byte-oriented:
@@ -1234,6 +1234,10 @@ fix the zero-entry encoder view contract at zero bytes with neutral alignment
 one. A dedicated decoder fuzz target fixes serialized input, raw output,
 frame, packed-code staging, entropy views, LZW phrases, aggregate memory, and
 process-call limits before accepting arbitrary bytes.
+The CLI reaches this composed profile only through the public C ABI. It fixes
+one-MiB raw frames and 65,536-symbol entropy blocks, then obtains all three
+workspace extents and alignment from the requirements query. Benchmark and
+interoperability admission remain later evidence steps.
 
 ### Published composed-profile evidence
 

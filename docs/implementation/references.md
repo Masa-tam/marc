@@ -536,3 +536,7 @@ No external corpus, test suite, vector, or combined-codec behavior was used.
 The bounded fuzz adapter derives only from marc's incremental decoder contract,
 checked LZW workspace arithmetic, and existing sanitizer target conventions.
 No external fuzz harness, corpus, dictionary, or crash collection was used.
+The `lzw-blocked-huffman` CLI adapter uses only marc's public combined C
+factory, existing transactional file policy, fixed profile bounds, and common
+CLI test harness. No external command-line codec, wrapper, allocation policy,
+source, or test was consulted.

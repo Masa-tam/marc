@@ -40,6 +40,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lz78` | LZ78 | None | Variant 1 |
 | `lz78-blocked-huffman` | LZ78 | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzw` | LZW | None | Variant 1 |
+| `lzw-blocked-huffman` | LZW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |
 | `lzmw` | LZMW | None | Variant 1 |
 
@@ -51,6 +52,12 @@ entropy blocks, the eight-byte-per-raw-byte LZ78 token bound, at most 128
 entropy blocks per frame, and at most 65,536 phrase entries. All actual
 workspace extents and alignment still come from the public C ABI requirements
 query; the command-line layer does not reproduce the private typed layout.
+
+The `lzw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
+entropy blocks, the two-byte-per-raw-byte packed LZW bound, at most 32 entropy
+blocks per frame, and at most 65,280 additional LZW dictionary entries. Its
+actual three workspace extents and alignment likewise come from the public C
+ABI requirements query.
 
 ## File and error behavior
 

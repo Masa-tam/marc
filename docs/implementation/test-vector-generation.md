@@ -1447,3 +1447,11 @@ then corrupt its sequence, truncate its final byte, or append trailing data.
 Require exactly 192 decoded bytes, an untouched final sentinel, and a sticky
 positioned error. Separately require empty and one-byte encoder profiles to
 publish zero view bytes with alignment one.
+
+For CLI composition, run the common binary fixture through the exact selector
+`lzw-blocked-huffman` with one-MiB raw frames, 65,536-symbol entropy blocks, a
+two-byte-per-raw-byte packed bound, at most 32 blocks, 65,280 additional LZW
+entries, and the 64-MiB aggregate policy. Obtain all three workspace regions
+from the public C ABI query. Require ordinary and empty round trips, malformed
+and trailing-data rejection, overwrite refusal, and removal of the temporary
+destination after every failed decode.
