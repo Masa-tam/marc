@@ -1452,6 +1452,83 @@ layout before exposing either typed span. The CLI selector uses that public C
 factory and does not define another format variant. Interoperability schema 5
 emits and accepts this exact profile as its sixteenth archive.
 
+## LZD variant 1 plus Blocked Huffman variant 1
+
+This composition uses dictionary algorithm ID 5, dictionary variant 1,
+entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
+are the 16-byte LZD parameters followed by the empty Blocked Huffman parameter
+region. The reserved public name is `lzd-blocked-huffman`. Reserving the name
+and bytes does not yet publish a factory or tool selector.
+
+`entropy block size` counts bytes in the canonical fixed-width LZD reference-
+pair stream. Blocks reset at and cannot cross an outer frame; a block boundary
+need not coincide with an eight-byte token boundary. The generic frame header
+records raw bytes as `uncompressed size`, LZD token bytes as `dictionary
+serialized size`, stored entropy bytes as `compressed payload size`, the exact
+Blocked Huffman block count, and the complete descriptor/model region size.
+The body is:
+
+```text
+generic frame header
+Blocked Huffman descriptors and models in block order
+Blocked Huffman payloads in the same block order
+```
+
+No separate LZD token region is stored. Entropy decoding must produce exactly
+`dictionary serialized size` bytes, and that size must be a multiple of eight.
+Before any raw-byte publication, the ordinary LZD validator must consume the
+complete staged token region, validate every backward phrase reference and
+terminal absent-right form, construct the bounded acyclic phrase grammar, and
+derive exactly `uncompressed size` bytes. Expansion remains iterative through
+a bounded explicit stack; the entropy layer does not change LZD's frame-local
+dictionary or freeze rules.
+
+For a raw frame of `F` bytes, at most `ceil(F/2)` tokens are possible, so the
+canonical staging bound is `S = 8*ceil(F/2)` bytes. At most `floor(F/2)`
+right-present tokens can create phrase entries. The phrase-record count is the
+lesser of that value and the configured LZD maximum, and the expansion stack
+requires at most that count plus one reference. For entropy block size `E`,
+the block-count bound is `ceil(S/E)`. All ceiling divisions, products,
+descriptor extents, typed workspace extents, padding, and aggregate sums must
+use checked arithmetic before allocation or output.
+
+### Hand-checkable LZD combined raw-block frame
+
+For raw input `A`, LZD emits the eight-byte terminal token
+`41 00 00 00 FF FF FF FF`. With entropy block size eight, Blocked Huffman
+selects raw representation. The complete 80-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  08 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+08 00 00 00 08 00 00 00  00 00 01 08 00 00 00 00
+41 00 00 00 FF FF FF FF
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are one raw
+Blocked Huffman descriptor, and the final eight bytes are the unchanged LZD
+token. The 16-byte LZD parameter region is stream-level and is not repeated in
+the frame.
+
+The reference encoder must complete the deterministic LZD parse using bounded
+caller-owned phrase records, serialize its exact tokens into staging, and only
+then plan Blocked Huffman. The reference decoder treats entropy output, phrase
+records, and the expansion stack as uncommitted state. It validates the entire
+token grammar and exact raw extent before checking raw destination capacity and
+expanding. A header, entropy, token, reference, workspace, limit, or capacity
+failure publishes no bytes from that frame.
+
+The known-size stream uses the ordinary 64-byte version 1.0 header, followed by
+the 16-byte LZD parameter region and zero or more combined frames. Empty input
+is exactly this 80-byte prefix. Both the LZD dictionary and every Blocked
+Huffman model reset at each outer frame. Strict decoding derives exactly
+`original size` bytes and rejects trailing serialized data. Incremental paths
+must preserve these exact bytes under arbitrary chunking; a frame is exposed
+only after complete validation. Nonterminal `Flush` does not shorten a frame,
+and `ResetBlock` is unsupported at this profile boundary.
+
 ## Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy

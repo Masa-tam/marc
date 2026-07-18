@@ -549,3 +549,9 @@ The `lzw-blocked-huffman` benchmark adapter uses only the same public C
 factory, fixed CLI profile, conservative encoded-capacity rules, and marc's
 existing measurement contract. No external benchmark harness, result, corpus,
 implementation, or tuning data was consulted.
+
+The LZD plus Blocked Huffman composition specification uses only marc's
+already documented LZD variant 1 reference-pair grammar, Blocked Huffman
+variant 1 block format, generic frame format, checked workspace policy, and the
+LZD references recorded above. No external combined codec, format, source,
+profile, stream, test vector, or workspace layout was consulted.

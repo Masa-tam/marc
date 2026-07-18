@@ -4430,3 +4430,29 @@ missing, extra, duplicate, or mismatched entries. Generate schema 5 in the
 compatibility test, derive each earlier bundle mechanically, and verify all
 five with the public CLI. Require independent MSVC and ClangCL generation to
 produce byte-identical input and sixteen archives before local admission.
+
+## DD-245: LZD composition entropizes canonical reference pairs
+
+- Date: 2026-07-18
+- Status: accepted
+
+Reserve `lzd-blocked-huffman` for dictionary ID 5 variant 1 plus entropy ID 2
+variant 1. Preserve the standalone 16-byte LZD parameter region, empty entropy
+parameters, fixed eight-byte reference-pair grammar, terminal absent-right
+form, dictionary freeze, and ordinary version 1.0 frame header. Entropy blocks
+count serialized token bytes and may split a token; both layers reset at every
+outer frame.
+
+For raw frame size `F` and entropy block size `E`, bound token staging by
+`S = 8*ceil(F/2)`, block count by `ceil(S/E)`, phrase records by the lesser of
+`floor(F/2)` and the configured maximum, and the iterative expansion stack by
+that admitted count plus one. Encoding fixes the entire LZD parse before
+entropy planning. Decoding reconstructs the full token region, validates its
+acyclic grammar and exact raw extent, and only then expands transactionally.
+
+Retain the three-region caller-workspace model for future admission. Encoding
+needs aligned LZD encoder records; decoding needs Blocked Huffman views, LZD
+phrase records, and explicit expansion-stack references in one checked opaque
+layout. This decision specifies bytes, bounds, validation order, a hand vector,
+and a reserved name only. Decoder, encoder, streaming, C ABI, CLI, fuzz,
+benchmark, completion, and interoperability remain separate steps.

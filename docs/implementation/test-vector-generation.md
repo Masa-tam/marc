@@ -1463,3 +1463,19 @@ the identical CLI profile bounds. Require a successful public-C-ABI round trip
 before timing, sufficient complete-stream capacity for raw entropy fallback,
 and output of ratio, encode/decode throughput, each direction's three workspace
 extents, and the larger aggregate workspace.
+
+For the specified LZD plus Blocked Huffman vector, encode raw `A` through the
+frozen LZD grammar to terminal token `41 00 00 00 FF FF FF FF`. With entropy
+block size eight, independently select the Blocked Huffman raw form: one
+16-byte descriptor followed by the unchanged token. Prepend the generic frame
+header declaring raw size one, dictionary size eight, compressed payload eight,
+one block, and 16 descriptor bytes; require the exact documented 80-byte frame.
+
+For sizing, check raw sizes zero, one, two, and odd/even boundaries. Require
+token staging `8*ceil(F/2)`, phrase records `min(floor(F/2), maximum_entries)`,
+an expansion stack one larger than the admitted phrase count, and entropy block
+count `ceil(staging/E)`. Future decoder tests must reject entropy failure before
+staging publication, a non-multiple-of-eight reconstructed token region,
+invalid or forward references, a nonterminal absent right, short block views,
+phrase or stack workspace, aggregate-limit overflow, and short raw output
+without publishing any byte from the frame.

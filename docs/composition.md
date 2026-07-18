@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
+| LZD | `lzd` | Specified | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory

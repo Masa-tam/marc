@@ -4367,3 +4367,21 @@ discarded and the reviewed seed retained.
 - Local validation: schemas 1 through 5 verified under MSVC and Clang 22.1.3;
   independently generated input and all sixteen schema-5 archives were
   byte-identical between compilers. All 1092 Release tests passed under both.
+
+## 2026-07-18 - LZD plus Blocked Huffman composition specification
+
+- Authoring method: composed marc's frozen LZD reference-pair bytes with its
+  repository-defined bounded Blocked Huffman layer.
+- References used: DD-113 through DD-127, DD-199, DD-208, DD-245, the local LZD
+  and Blocked Huffman format sections, and the recorded LZD papers.
+- Known implementations intentionally not consulted: external LZD or combined
+  codecs, source, pseudocode, formats, corpora, tests, or workspace layouts.
+- Independent decisions: entropy-code exact token bytes; permit block splits
+  within tokens; bound staging by `8*ceil(F/2)` and phrases by `floor(F/2)`;
+  validate the complete grammar before iterative transactional expansion.
+- Generated-code task description: reserve the profile name and specify exact
+  IDs, parameters, body, bounds, workspace roles, failure order, and raw vector.
+- Similarity review: the composition reuses only marc-defined representations
+  and safety contracts; no external combined expression was compared.
+- Local validation: documentation layout and all 1092 Release tests passed
+  under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

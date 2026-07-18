@@ -250,6 +250,23 @@ trailing bytes to the existing deterministic data and chunking matrix. This
 closes current local LZD implementation evidence without treating external
 release gates as locally satisfied.
 
+### Specified LZD plus Blocked Huffman boundary
+
+LZD composition remains byte-oriented. The dictionary layer finishes its
+canonical eight-byte reference-pair stream in bounded staging, and Blocked
+Huffman divides those bytes without interpreting token boundaries. Decoding
+reconstructs the exact staged byte region before the ordinary LZD validator
+builds its acyclic phrase records and checks the terminal absent-right form.
+Only a completely validated frame may be expanded to raw output.
+
+For raw frame size `F`, staging is bounded by `8*ceil(F/2)`, generated phrase
+records by `floor(F/2)` and the configured maximum, and the iterative expansion
+stack by the admitted phrase count plus one. A future checked opaque workspace
+partition must accommodate encoder records, or decoder Blocked Huffman views,
+phrase records, and expansion-stack references without exposing their C++
+layouts. This step fixes the format, bounds, reserved name, and validation
+order only; it does not publish an implementation or public factory.
+
 ### LZMW foundation
 
 LZMW variant 1 begins with a transactional 16-byte parameter codec, fixed

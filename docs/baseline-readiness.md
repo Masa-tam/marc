@@ -84,7 +84,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Candidate components | Unspecified |
+| LZD plus Blocked Huffman | Exact format, bounds, validation order, workspace roles, vector, and reserved name | Specified; implementation pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence
@@ -145,7 +145,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-244, the complete Release suite contains 1092 tests and passes under both
+At DD-245, the complete Release suite contains 1092 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.
