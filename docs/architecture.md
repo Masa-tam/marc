@@ -1339,3 +1339,10 @@ and transactional final-frame rejection. Its 64-byte frame profile derives a
 256-byte maximum LZD token region and 32 phrase entries from the fixed pair
 grammar rather than borrowing another dictionary codec's bounds. CLI,
 benchmark, bounded decoder fuzzing, and interoperability remain unadmitted.
+
+The bounded decoder fuzz boundary preallocates the complete combined working
+set: serialized frame, token staging, raw staging, entropy views, LZD phrase
+records, expansion references, and final output. Serialized input cannot alter
+those capacities. Byte-derived chunk schedules exercise partial I/O, while a
+fixed call ceiling converts any stalled state machine into a reproducible
+failure. This admits fuzzing without changing the public format or ABI.

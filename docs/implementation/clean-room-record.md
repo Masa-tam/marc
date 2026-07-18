@@ -4521,3 +4521,26 @@ discarded and the reviewed seed retained.
   format; no external test expression was compared.
 - Local validation: three new tests and all 1122 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman bounded decoder fuzz boundary
+
+- Authoring method: specialized marc's fixed-workspace incremental fuzz
+  contract for the composition's three decoder view classes.
+- References used: DD-245 through DD-252, the local streaming decoder,
+  DD-248 layout, core process-result invariants, and repository fuzz policy.
+- Known implementations intentionally not consulted: external combined LZD
+  fuzzers, harnesses, corpora, allocation policies, source, or crash inputs.
+- Independent decisions: cap input at 8 KiB; preallocate encoded, token, raw,
+  entropy-view, phrase, expansion, and final-output storage; derive phrase and
+  expansion counts from the one-KiB raw frame; abort on invalid or stalled
+  process behavior; retain only the hand-authored truncated-magic seed.
+- Generated-code task description: add sanitizer and ordinary compile targets,
+  byte-derived partial-I/O scheduling, fixed call exhaustion, corpus routing,
+  bounded campaign instructions, and public readiness evidence.
+- Similarity review: the harness uses marc-owned transform vocabulary and
+  independently derived LZD composition bounds; no external fuzz expression
+  was compared.
+- Local validation: MSVC and ClangCL compile-smoke targets built; all 1122
+  Release tests passed under both compilers. A Clang 22 ASan/UBSan libFuzzer
+  smoke completed 1,000 inputs with no crash, hang, or sanitizer finding at
+  37 MiB peak RSS.

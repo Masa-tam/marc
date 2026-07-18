@@ -4588,3 +4588,23 @@ must commit exactly the first 192 raw bytes, leave the final destination byte
 untouched, and retain the same positioned terminal error on a later call. This
 admits completion evidence only; CLI, benchmark, decoder fuzzing, and
 interoperability remain separate gates.
+
+## DD-252: LZD composition fuzzing fixes every expansion workspace
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add a streaming-decoder libFuzzer boundary with no input-controlled allocation.
+Cap supplied input at 8 KiB, total output at 4 KiB, one raw frame at 1 KiB,
+compressed payload and reconstructed LZD tokens at 4 KiB each, and entropy
+views at eight records. Derive 512 phrase records and 513 iterative expansion
+references from the raw-frame limit, and count every frame-local region in one
+fixed aggregate limit before constructing the decoder.
+
+Derive partial input and output chunks from current bytes, validate every
+reported count and status, reject impossible zero-progress and exhausted-input
+states, and enforce a fixed call ceiling. Treat a full bounded output followed
+by `NeedOutput` as a normal harness stop. Retain an ordinary MSVC/Clang compile
+smoke, a sanitizer-enabled target, and one reviewed five-byte truncated-magic
+seed. This admits bounded decoder fuzzing only; CLI, benchmark, and
+interoperability remain separate gates.

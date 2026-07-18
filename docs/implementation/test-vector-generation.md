@@ -1570,3 +1570,11 @@ Independently alter its sequence number, remove the stream's final byte, and
 append one trailing byte. Require all three decodes to publish exactly the
 first 192 bytes, preserve a sentinel in the final destination byte, and return
 the same positioned malformed-stream error on a repeated terminal call.
+
+For the bounded fuzz boundary, truncate every supplied case to 8,192 bytes and
+preallocate 4,280 encoded-frame bytes, 4,096 reconstructed token bytes, 1,024
+raw frame bytes, eight entropy views, 512 LZD phrase records, 513 expansion
+references, and 4,096 final output bytes. Begin with the five bytes `MARC` plus
+newline. Vary input chunks from one through seventeen bytes and output chunks
+from one through nineteen bytes using current input bytes, validate every
+process result, and abort on an impossible starvation state or call exhaustion.

@@ -579,3 +579,7 @@ The public completion matrix uses only marc's C ABI, AGENTS.md data classes and
 chunking requirements, deterministic local generators, and the repository's
 transactional-frame contract. No external corpus, combined-codec test suite,
 malformed stream, source, or compatibility tool was consulted.
+The combined LZD fuzz boundary derives only from the local streaming decoder,
+DD-248 workspace layout, fixed LZD pair grammar, core process invariants, and
+marc's existing bounded fuzz conventions. No external fuzzer harness, corpus,
+combined decoder, allocation policy, or source was consulted.
