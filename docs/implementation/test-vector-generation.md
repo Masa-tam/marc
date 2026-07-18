@@ -1534,3 +1534,19 @@ checked alignment. Lower the raw frame limit to ten while raising the dictionary
 limit and require five phrases plus six expansion references. Increment either
 recorded offset, shorten storage by one byte, or shift its base address by one
 byte and reject the partition without exposing any typed view.
+
+For incremental composition, encode raw `ABABX` as two two-byte frames and one
+one-byte final frame, with four-byte entropy blocks. Every eight-byte LZD token
+is split across two raw Blocked Huffman blocks, so each frame is 96 bytes and
+the complete stream is the 80-byte prefix plus 288 frame bytes. Feed encoder
+and decoder one input and output byte at a time and require byte identity with
+the complete-frame oracle and exact raw recovery.
+
+Change the first reconstructed reference in the second frame to 256. Require
+only the first `AB` frame to be published, leave the third destination byte
+untouched, and make the positioned malformed-stream error sticky. Independently
+withhold phrase and expansion workspaces, truncate the final byte, request
+`ResetBlock`, end the encoder prematurely, and exercise an empty stream. Drain
+the prefix, flush after one raw byte, and require the partial frame to remain
+open. Set both encoder and decoder aggregate limits one byte below their actual
+complete-frame regions and require `limit_exceeded` at the streaming boundary.

@@ -567,3 +567,7 @@ The profile sizing and opaque typed partition derive only from marc's LZD bounds
 Blocked Huffman descriptor rules, checked arithmetic helpers, and established
 three-region ABI convention. No external allocator, combined profile, object
 layout, source, or workspace implementation was consulted.
+The incremental transforms reuse marc's existing composed-frame state machine,
+the LZD complete-frame codec, and the DD-248 three-view partition contract. No
+external streaming adapter, buffering policy, combined codec, error behavior,
+source, or test suite was consulted.

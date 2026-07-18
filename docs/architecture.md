@@ -1317,3 +1317,12 @@ expansion references; both offsets and the complete extent are rederived before
 any span is returned. Primary raw/frame buffers and secondary token staging
 remain byte regions. These requirements are sufficient for a later streaming
 adapter, but no C ABI construction path is admitted yet.
+
+The bounded incremental transforms now consume those exact profile regions.
+The encoder collects one raw frame and drains only its completed serialized
+representation. The decoder collects and validates one complete serialized
+frame, expands into private raw storage, and then drains it. Consequently a
+malformed later frame cannot partially publish that frame or retract earlier
+output. Chunking down to one byte does not alter the stream, nonterminal flush
+does not shorten a frame, and reset remains an unsupported cross-layer request.
+No public factory admits this profile yet.

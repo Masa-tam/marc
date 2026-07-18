@@ -4524,3 +4524,24 @@ alignment, and require partition helpers to rederive every value before
 publishing any span. Zero encoder records use zero bytes and neutral alignment
 one. This fixes only internal sizing and layout; streaming and public admission
 remain separate steps.
+
+## DD-249: LZD composition streams only complete transactional frames
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add bounded incremental transforms over the complete-frame codec and the
+DD-248 typed partitions. The encoder buffers one raw frame, fixes and entropy-
+codes it privately, then drains the complete serialized frame. The decoder
+buffers one serialized frame, reconstructs and validates all LZD state into
+private staging, expands into a private raw frame, and only then drains bytes to
+the caller. Earlier frames remain committed if a later frame is malformed.
+
+Count actual serialized frame, token staging, raw frame, block views, phrase
+records, and expansion references again at the streaming boundary; profile
+admission is not the sole safety check. `Flush` preserves a partial frame and
+does not create a boundary, while `ResetBlock` remains unsupported. A call that
+drains the 80-byte prefix returns `Progress`, not `NeedInput`, because the
+process contract reserves starvation statuses for zero-progress calls. Local
+dictionary limits must admit the maximum declared in the serialized LZD
+parameters even when a particular small frame needs only one record.

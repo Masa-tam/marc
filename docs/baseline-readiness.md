@@ -84,7 +84,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Exact format, complete-frame codec, and checked three-view internal profile layout | Specified; streaming and public integration pending |
+| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, and bounded streaming transforms | Specified; public integration pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence
@@ -145,7 +145,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-248, the complete Release suite contains 1110 tests and passes under both
+At DD-249, the complete Release suite contains 1118 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

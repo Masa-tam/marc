@@ -4454,3 +4454,24 @@ discarded and the reviewed seed retained.
   and safety contracts; no external workspace expression was compared.
 - Local validation: seven new tests and all 1110 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD composition bounded streaming transforms
+
+- Authoring method: adapted marc's repository-owned composed-frame state
+  machine to the LZD complete-frame functions and explicit expansion workspace.
+- References used: DD-245 through DD-249, the core process contract, local
+  frame codec, three-view profile layout, and existing streaming conventions.
+- Known implementations intentionally not consulted: external LZD or combined
+  streaming codecs, adapters, source, pseudocode, tests, or buffering policies.
+- Independent decisions: commit only complete frames; preflight expansion at
+  header collection; count all actual frame regions again; preserve partial
+  frames on flush; reject reset; keep later-frame errors sticky without
+  retracting earlier output.
+- Generated-code task description: connect encoder and decoder state machines,
+  prove direct profile construction, one-byte oracle identity, transactional
+  later corruption, phrase and expansion shortages, truncation, empty and
+  premature end, flush semantics, terminal repetition, and aggregate limits.
+- Similarity review: state transitions and assertions reuse only marc-owned
+  contracts; no external streaming expression was compared.
+- Local validation: eight new tests and all 1118 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
