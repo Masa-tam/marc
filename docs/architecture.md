@@ -1231,7 +1231,9 @@ the ABI. Its public completion matrix now covers required binary classes,
 deterministic and chunk-independent streams, stable terminal behavior, and
 transactional malformed-final-frame rejection. Empty and one-byte inputs also
 fix the zero-entry encoder view contract at zero bytes with neutral alignment
-one.
+one. A dedicated decoder fuzz target fixes serialized input, raw output,
+frame, packed-code staging, entropy views, LZW phrases, aggregate memory, and
+process-call limits before accepting arbitrary bytes.
 
 ### Published composed-profile evidence
 

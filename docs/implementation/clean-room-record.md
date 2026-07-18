@@ -4293,3 +4293,24 @@ discarded and the reviewed seed retained.
   documented contracts; no external combined expression was compared.
 - Local validation: four focused completion/profile tests and all 1090 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman bounded decoder fuzz target
+
+- Authoring method: wrapped marc's incremental decoder with fixed local arrays,
+  limits, byte-derived chunking, and a deterministic call ceiling.
+- References used: DD-234 through DD-241, AGENTS.md malformed-input and fuzz
+  requirements, and marc's existing sanitizer target convention.
+- Known implementations intentionally not consulted: external combined LZW
+  codecs, fuzz harnesses, corpora, dictionaries, source, or crash collections.
+- Independent decisions: cap input at 8 KiB; cap raw, packed, and compressed
+  bytes at 4 KiB; use 1 KiB frames, eight views, 4,096 dictionary entries, and
+  3,639 phrase records; aggregate all frame-local storage and bound output
+  separately.
+- Generated-code task description: add compile-smoke and sanitizer targets,
+  seed truncated magic, and execute a bounded 1,000-run local campaign.
+- Similarity review: the harness follows marc's own process invariants and
+  workspace formulas; no external harness expression was compared.
+- Local validation: the target compiled under MSVC and the Clang sanitizer
+  build, then completed 1,000 runs without crash, hang, ASan, or UBSan finding
+  at 37 MiB peak RSS. The complete 1090-test suite passed under MSVC and
+  Clang 22.1.3 on Windows x64.

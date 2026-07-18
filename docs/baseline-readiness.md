@@ -71,7 +71,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-blocked-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzw-blocked-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -84,7 +84,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZW plus Blocked Huffman | Public C factory and completion matrix over the complete internal streaming profile | Admitted; tooling pending |
+| LZW plus Blocked Huffman | Public C factory, completion matrix, and bounded fuzz target over the complete internal streaming profile | Admitted; CLI and benchmark pending |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
@@ -146,7 +146,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-240, the complete Release suite contains 1090 tests and passes under both
+At DD-241, the complete Release suite contains 1090 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

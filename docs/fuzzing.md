@@ -1,11 +1,12 @@
 # Fuzzing
 
-The fifteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The sixteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZSS plus Blocked Huffman, LZ78 plus
-Blocked Huffman, and checksum-raw profiles. Targets exercise their public
-frame-streaming decoder with chunk sizes derived from the input and also use a
-strict one-shot decoder where that internal helper exists. They use small fixed
+Blocked Huffman, LZW plus Blocked Huffman, and checksum-raw profiles. Targets
+exercise their public frame-streaming decoder with chunk sizes derived from the
+input and also use a strict one-shot decoder where that internal helper exists.
+They use small fixed
 local limits and caller-owned workspaces so arbitrary inputs cannot request
 unbounded allocation. A call-count guard turns a stalled state machine into a
 reproducible failure. The standalone LZ78 target additionally bounds its phrase
@@ -28,6 +29,11 @@ limit includes encoded-frame storage, token staging, raw staging, block views,
 and phrase records. Byte-derived input and output chunks plus a fixed call
 ceiling exercise the public incremental decoder without input-controlled
 allocation.
+The combined LZW plus Blocked Huffman target uses the same byte, block, and
+call-count bounds. Its 4 KiB packed-code cap permits at most 3,639 phrase
+records, while a 4,096-entry local dictionary limit admits serialized widths
+through 12 bits. All encoded-frame, staging, decoded-frame, block-view, phrase,
+and final-output storage remains fixed before processing.
 The raw-checksum target exercises both its strict two-pass decoder and its
 incremental decoder with at most 8 KiB of serialized input, 4 KiB of output,
 1 KiB frames, and 4 KiB of internal-buffer allowance. The incremental path uses
@@ -86,6 +92,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_lzss_blocked_huffman_stream \
   marc_fuzz_lz78_blocked_huffman_stream \
+  marc_fuzz_lzw_blocked_huffman_stream \
   marc_fuzz_checksum_raw_stream \
   marc_fuzz_adaptive_huffman_stream \
   marc_fuzz_dynamic_range_stream \
@@ -102,6 +109,8 @@ out/build/fuzz/marc_fuzz_lzss_blocked_huffman_stream \
   fuzz/corpus/lzss_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_blocked_huffman_stream \
   fuzz/corpus/lz78_blocked_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzw_blocked_huffman_stream \
+  fuzz/corpus/lzw_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_checksum_raw_stream \
   fuzz/corpus/checksum_raw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_adaptive_huffman_stream \
@@ -191,6 +200,13 @@ The composed LZSS plus Blocked Huffman dual-decoder target received a bounded
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 64 MiB RSS. Generated mutations remained in the disposable build
+corpus; the repository retains only the reviewed five-byte seed.
+
+The composed LZW plus Blocked Huffman decoder target received a bounded
+1,000-input sanitizer smoke on 2026-07-18 with 8 KiB maximum input, a
+five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
+crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
+and peaked at 37 MiB RSS. Generated mutations remained in the disposable build
 corpus; the repository retains only the reviewed five-byte seed.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

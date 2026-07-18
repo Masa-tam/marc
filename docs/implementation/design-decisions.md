@@ -4357,3 +4357,23 @@ with zero dictionary entries to require zero view bytes and neutral alignment
 one; this makes empty and one-byte construction agree with the checked
 partition contract. This admits only completion evidence. Fuzzing, CLI,
 benchmark, and interoperability remain independent gates.
+
+## DD-241: LZW composition fuzzing bounds packed codes and phrase state
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add a dedicated libFuzzer/ASan/UBSan target around the internal incremental LZW
+plus Blocked Huffman decoder. Truncate cases to 8 KiB and permit at most 4 KiB
+of raw output and packed-code staging, one 1 KiB frame, eight entropy blocks,
+and 4,096 local dictionary entries. The packed-byte bound yields at most 3,639
+decoder phrase records and admits serialized LZW widths through 12 bits.
+
+Allocate every byte array, block view, and phrase record before processing.
+Count all frame-local storage in one fixed aggregate limit and bound final raw
+output separately. Derive bounded input and output chunks from the current
+bytes, enforce a fixed call ceiling, and abort on an invalid result,
+zero-progress `Progress`, impossible `NeedInput`, or call exhaustion.
+Treat output-limit `NeedOutput` as a bounded terminal condition. Retain an
+ordinary-build compile smoke and one reviewed truncated-magic seed. CLI,
+benchmark, and interoperability remain separate gates.
