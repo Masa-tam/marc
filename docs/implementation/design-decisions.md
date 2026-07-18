@@ -4087,3 +4087,21 @@ truncation or trailing bytes, make terminal errors sticky, and return stable
 end-of-stream on repeated calls. `ResetBlock` remains unsupported because
 caller-selected dictionary resets require a separately specified frame-control
 policy.
+
+## DD-228: LZ78 composition publishes one opaque three-region C factory
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `marc_lz78_blocked_huffman_config`, requirements, and creation functions
+without exposing either private LZ78 record type or the entropy block-view
+type. Preserve the existing primary/secondary/views ownership model. The
+secondary region concatenates dictionary staging and frame storage; the views
+region uses the exact size and maximum alignment calculated by the profile.
+
+Creation must repeat profile sizing and invoke the DD-226 partition helpers
+over the admitted opaque extent. It must not duplicate typed pointer arithmetic
+in the C adapter. Reject null, short, reserved-field, and misaligned inputs
+before publishing a transform. Admission at this step covers the public C
+factory and exact round trip only; CLI naming, completion matrix, fuzz target,
+benchmark, and interoperability publication remain independent gates.

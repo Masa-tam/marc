@@ -4022,3 +4022,25 @@ discarded and the reviewed seed retained.
   was compared.
 - Local validation: documentation topology and all 1052 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman public C factory
+
+- Authoring method: connected the independently specified profile and
+  incremental transforms to marc's existing C ABI ownership and lifecycle
+  contract.
+- References used: DD-223 through DD-228, the local public C header, existing
+  composed-profile factories, and the DD-226 partition helpers.
+- Known implementations intentionally not consulted: external compression
+  APIs, combined LZ78 codecs, bindings, allocators, workspace layouts, source,
+  or tests.
+- Independent decisions: preserve three caller-owned regions; expose only
+  byte counts and alignment; repeat sizing at creation; delegate all typed
+  partitioning to the checked internal helpers; defer CLI and later admission
+  surfaces.
+- Generated-code task description: publish the smallest C ABI configuration,
+  requirements, and creation surface for LZ78 plus Blocked Huffman and verify
+  an exact multi-frame C round trip plus workspace rejection paths.
+- Similarity review: the adapter follows marc's own established C ABI and
+  profile contracts; no external combined expression was compared.
+- Local validation: documentation topology and all 1053 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

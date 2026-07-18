@@ -3,9 +3,10 @@
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman profile, LZSS variant 1, the LZSS plus Blocked Huffman profile,
-LZ78 variant 1, LZW variant 1, LZD variant 1, and LZMW variant 1 with known-size
-encoding and bounded, caller-owned workspace. All functions are `noexcept` in
-C++ translation units, and no C++ type appears in the ABI.
+LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, LZD
+variant 1, and LZMW variant 1 with known-size encoding and bounded,
+caller-owned workspace. All functions are `noexcept` in C++ translation units,
+and no C++ type appears in the ABI.
 
 ## Profiles and composition
 
@@ -13,8 +14,8 @@ The C ABI exposes complete, validated stream profiles rather than separate
 dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*` and
-`marc_lzss_blocked_huffman_*` are the currently public
-dictionary-plus-entropy factories.
+`marc_lzss_blocked_huffman_*`, and `marc_lz78_blocked_huffman_*` are the
+currently public dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
 other algorithms. The byte-stream architecture can feed any canonical
@@ -38,7 +39,7 @@ cross-product pairings as callable C ABI features.
    `marc_tans_config_init()`, `marc_lz77_config_init()`,
    `marc_lz77_blocked_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
-   `marc_lz78_config_init()`, or
+   `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzd_config_init()`, or
    `marc_lzmw_config_init()` for encode or decode
    direction.
@@ -91,6 +92,15 @@ reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local
 limits. The requirements query supplies direction-specific `views_bytes` and
 `views_alignment`; no private C++ record layout appears in the public ABI.
+The LZ78 plus Blocked Huffman factory retains that opaque convention while
+adding entropy views on decode. Its secondary region contains token staging
+followed by serialized-frame staging for encode, or token staging followed by
+raw-frame staging for decode. The aligned views region contains encoder phrase
+entries in the first direction and a checked block-view/padding/phrase-entry
+layout in the second. Only the internal partition helpers know these C++
+layouts; callers must allocate exactly from
+`marc_lz78_blocked_huffman_workspace_requirements()` and keep the region
+unchanged for the transform lifetime.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized

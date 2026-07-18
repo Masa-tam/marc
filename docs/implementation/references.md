@@ -501,3 +501,6 @@ was used.
 The incremental transforms reuse only marc's existing composed-profile state
 machine and the LZ78-specific typed partition contract; no external streaming
 adapter, combined codec, or error policy was consulted.
+The public C binding follows marc's existing caller-owned three-region ABI and
+the DD-226 internal partition helpers. No external compression API, allocator,
+workspace layout, or language binding was consulted.

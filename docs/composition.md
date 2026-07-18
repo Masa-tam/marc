@@ -9,18 +9,19 @@ not yet a supported stream contract.
 ## Current matrix
 
 The table shows every baseline byte-stream dictionary/entropy pairing. A name
-in backticks alone is a currently published CLI and C ABI profile. `Specified`
-reserves a name and fixes the complete representation but does not publish a
-factory or tool selector. `Candidate` means both components exist and meet at
-the canonical byte-stream boundary, but that pairing has no public format or
-API guarantee yet.
+in backticks alone is a currently published CLI and C ABI profile. `C ABI`
+marks a public factory whose CLI selector and full admission evidence remain
+pending. `Specified` reserves a name and fixes the complete representation but
+does not publish a factory or tool selector. `Candidate` means both components
+exist and meet at the canonical byte-stream boundary, but that pairing has no
+public format or API guarantee yet.
 
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZ78 | `lz78` | Specified (`lz78-blocked-huffman`) | Candidate | Candidate | Candidate | Candidate |
+| LZ78 | `lz78` | C ABI (`lz78-blocked-huffman`) | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
