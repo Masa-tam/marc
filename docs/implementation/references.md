@@ -225,6 +225,13 @@ Build and interoperability workflow reference:
 - GitHub `actions/upload-artifact` release and usage documentation. Used on
   2026-07-18 to select current major version 7 for interoperability artifacts.
   <https://github.com/actions/upload-artifact>
+- GitHub Docs, "Adding a workflow status badge." Used for the main-branch CI
+  badge URL in the repository README.
+  <https://docs.github.com/en/actions/how-tos/monitor-workflows/add-a-status-badge>
+- Masa-tam/mffv1, `THIRD_PARTY_NOTICES.md`. Used only as the requested
+  presentation precedent for development-only GoogleTest attribution and
+  inclusion of its license text; marc retains its own path and usage statement.
+  <https://github.com/Masa-tam/mffv1/blob/main/THIRD_PARTY_NOTICES.md>
 
 CRC-32C references:
 
