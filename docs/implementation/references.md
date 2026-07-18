@@ -525,6 +525,12 @@ and the official
 These were used only to verify hosted infrastructure and the pinned test
 dependency. No compression implementation source was consulted.
 
+The first public pushed-revision evidence was recorded from GitHub Actions
+[run 29647453799](https://github.com/Masa-tam/marc/actions/runs/29647453799)
+and its official Actions API metadata on 2026-07-18. This reference establishes
+job conclusions, source revision, artifact names, and retention dates only; it
+is not an external codec implementation or interoperability result.
+
 The LZ78 plus Blocked Huffman composition specification uses only marc's
 already documented LZ78 variant 1 token grammar, Blocked Huffman variant 1
 block format, generic frame format, checked workspace policy, and the original

@@ -89,8 +89,6 @@ exact decoder-visible representation and reserved public name are specified.
 The following items remain open even though local codec implementation is
 ready:
 
-- run the published Windows and Ubuntu CI jobs from a pushed revision and
-  retain their self-describing artifacts;
 - externally cross-decode and byte-compare foreign artifacts on additional
   operating systems and architectures;
 - record representative encode throughput, decode throughput, compression
@@ -103,6 +101,23 @@ solid grouping, BWT-family transforms, and additional composed profiles remain
 future extensions. They are not baseline-readiness failures.
 The [composition matrix](composition.md) distinguishes these unpublished
 pairings from algorithm incompatibility and records the staged generation path.
+
+## Published CI evidence
+
+Public GitHub Actions
+[run 29647453799](https://github.com/Masa-tam/marc/actions/runs/29647453799)
+completed successfully for pushed revision
+`c4f831917a43f75ca5c698d19d3674f12803f40b` on 2026-07-18. Its six successful
+jobs covered the complete Windows/Visual Studio 2026 and Ubuntu 24.04/Ninja
+suites plus shared-only and static-only installed-package consumers on both
+operating systems.
+
+The run retained the self-describing
+`marc-interoperability-windows-msvc-x64` and
+`marc-interoperability-ubuntu-ninja-x64` artifacts through 2026-10-16. This
+closes pushed-revision CI generation evidence. It does not by itself claim
+cross-decoding between the artifacts or evidence for a second architecture;
+those remain explicitly open above.
 
 ## Pre-publication CI and package audit
 
@@ -144,7 +159,8 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-270, the complete Release suite contains 1,162 tests and passes under both
+At DD-271, the complete Release suite contains 1,162 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
-compiler-independence evidence on one architecture; it is not a substitute for
-the external release evidence above.
+compiler-independence evidence on one architecture. Public run 29647453799 adds
+Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
+release-evidence limits are stated above.

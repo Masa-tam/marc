@@ -4981,3 +4981,19 @@ Allow Dependabot to propose patch-line advances through the explicit branch.
 Changing to a later GoogleTest release line remains a deliberate review that
 updates `.gitmodules`, the gitlink, and CI evidence together. GoogleTest remains
 development/test-only and this policy does not alter marc library artifacts.
+
+## DD-271: Public CI generation evidence is distinct from cross-decoding
+
+- Date: 2026-07-18
+- Status: accepted
+
+Record the first successful public pushed-revision workflow by immutable run ID
+and full source revision. Require the Windows/MSVC and Ubuntu/Ninja suite jobs,
+all four operating-system/linkage installed-package jobs, and both named
+interoperability artifacts before closing the CI-generation item in baseline
+readiness.
+
+Do not infer foreign cross-decoding, additional-architecture coverage,
+representative performance, or long-running sanitizer-fuzz evidence from green
+CI or artifact creation. Preserve those as separate release-evidence items so a
+status badge cannot broaden the claim.

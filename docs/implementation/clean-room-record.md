@@ -4978,3 +4978,23 @@ discarded and the reviewed seed retained.
   `v1.17.0`; all 1,162 Release tests passed under MSVC/Visual Studio 2026 and
   Clang 22.1.3/Ninja on Windows x64, including the exact-license and linked-badge
   documentation checks.
+
+## 2026-07-18 - First public pushed-revision CI evidence
+
+- Authoring method: queried the public GitHub Actions run, job, and artifact
+  metadata for the repository owner's confirmed successful push.
+- References used: DD-271, public Actions run 29647453799, its six job records,
+  and its two artifact records from GitHub's official API.
+- Known implementations intentionally not consulted: external codec source,
+  artifact payloads, foreign decoder source, or third-party test suites.
+- Independent decisions: bind evidence to the full source revision and immutable
+  run ID; require every configured job; distinguish artifact generation from
+  cross-decoding; retain architecture, performance, and fuzz gaps explicitly.
+- Generated-code task description: verify the first public post-push CI result,
+  record its jobs and retained interoperability artifacts, close only the
+  generation evidence item, and preserve all unsupported claims as open.
+- Similarity review: only repository-owned workflow results and GitHub metadata
+  were inspected; no algorithm expression or external implementation was used.
+- Validation result: run 29647453799 completed successfully for
+  `c4f831917a43f75ca5c698d19d3674f12803f40b`; all six jobs succeeded and both
+  platform artifacts were present, unexpired, with retention through 2026-10-16.
