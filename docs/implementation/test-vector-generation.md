@@ -1409,3 +1409,20 @@ required. Place four Blocked Huffman views first, align the phrase table, and
 require a partition round trip to reproduce both exact spans. Increment the
 recorded phrase offset or shift the base address by one byte and require
 rejection without exposing either typed view.
+
+For incremental LZW plus Blocked Huffman testing, independently assemble the
+80-byte stream prefix and three complete frames for raw `ABABX` using two-byte
+raw frames and four-byte entropy blocks. The first two frames each contain
+three packed LZW bytes and serialize to 75 bytes; the final one-byte frame
+contains two packed bytes and serializes to 74 bytes. Feed both streaming
+transforms one input and output byte at a time and require the encoder to match
+this oracle byte for byte and the decoder to recover all five raw bytes.
+
+Change the high padding bits in the second frame's final packed LZW byte only
+after its raw Blocked Huffman descriptor. A whole-stream decoder call may
+publish the first `AB` frame, but must leave the third output byte untouched,
+return malformed-stream at the stable encoded position, and repeat the same
+terminal error. Independently withhold the one required LZW phrase entry,
+truncate the final encoded byte, request `ResetBlock`, and finish the encoder
+before all declared raw input arrives; require bounded, atomic rejection in
+each case.

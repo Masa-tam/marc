@@ -4234,3 +4234,24 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused tests and the complete 1079-test Release
   suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman frame streaming
+
+- Authoring method: connected marc's combined frame APIs to its neutral
+  `ProcessResult` state-machine contract using the checked profile storage.
+- References used: DD-234 through DD-238, the local stream/frame formats,
+  combined frame APIs, profile partitions, and core streaming invariants.
+- Known implementations intentionally not consulted: external streaming LZW
+  compositions, archive readers, buffering strategies, source, or tests.
+- Independent decisions: finalize a whole frame before draining; reconstruct a
+  whole raw frame before publication; preserve earlier frames on later padding
+  corruption; retain sticky positioned errors and repeated end status.
+- Generated-code task description: implement bounded combined streaming
+  transforms and test profile construction, frame-oracle identity, one-byte
+  boundaries, later corruption, shortages, truncation, reset, and empty input.
+- Similarity review: the state machines specialize marc's established neutral
+  transform and transactional-frame vocabulary; no external implementation
+  expression was compared.
+- Local validation: all six focused tests and the complete 1085-test Release
+  suite passed under MSVC/Visual Studio 2026 on Windows x64; the same complete
+  suite passed under Clang 22.1.3 before commit.

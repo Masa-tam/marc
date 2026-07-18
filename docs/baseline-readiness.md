@@ -82,7 +82,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZW plus Blocked Huffman | Transactional frame boundary plus checked worst-case sizing and typed workspace partition | Specified; streaming and public profile pending |
+| LZW plus Blocked Huffman | Transactional frame boundary, checked typed workspace, and bounded frame streaming | Specified; public profile pending |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
@@ -144,7 +144,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-237, the complete Release suite contains 1079 tests and passes under both
+At DD-238, the complete Release suite contains 1085 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

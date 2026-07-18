@@ -4293,3 +4293,27 @@ block and aggregate limits, both partitions, tampered layout metadata, stable
 error mapping, and the minimum 9-bit LZW dictionary capacity. This establishes
 internal sizing and layout only; streaming, C ABI, CLI, benchmarks, fuzzing,
 completion evidence, and interoperability remain separate admissions.
+
+## DD-238: LZW composition streams only complete validated frames
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement bounded streaming transforms over the internal profile storage. The
+encoder emits the stream header and 16-byte LZW parameters first, collects one
+raw frame, fixes its packed LZW bytes and complete Blocked Huffman frame in
+caller-owned buffers, then drains that immutable frame. Output chunking must
+not affect any encoded byte.
+
+The decoder collects and validates the same prefix, then collects each generic
+frame header and its exact descriptor-plus-payload extent. Check the required
+block views, packed staging, decoded frame, LZW phrases, and their aggregate
+bytes before collecting the body. Entropy decode, LZW validation, and raw
+reconstruction all finish in private frame storage before any byte of that
+frame is published. A malformed later frame may not retract earlier committed
+frames and becomes a stable positioned error. Require direct construction from
+profile partitions, one-byte input and output, frame-oracle byte identity,
+later-frame padding corruption, workspace shortage, truncation, unsupported
+reset, empty input, premature finish, and repeated ended/error behavior. This
+establishes internal streaming only; C ABI, CLI, benchmark, fuzzing, completion
+evidence, and interoperability remain separate admissions.

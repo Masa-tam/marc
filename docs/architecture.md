@@ -1210,8 +1210,8 @@ while the conservative format bound remains an allocation admission rule.
 
 Decoding uses separate caller-owned Blocked Huffman views, packed-byte staging,
 and LZW phrase entries. It checks all three capacities and their aggregate
-bytes before entropy output,
-then validates LZW completely before checking raw output capacity. The
+bytes before entropy output, then validates LZW completely before checking raw
+output capacity. The
 9-to-10-bit width-transition test crosses thirty independent entropy blocks,
 demonstrating that block boundaries do not become code boundaries.
 
@@ -1220,8 +1220,12 @@ requirements expose an aligned LZW encoder-entry region. Decoder requirements
 combine Blocked Huffman views and a separately aligned LZW phrase table in one
 opaque region, recording the phrase offset, total bytes, and maximum alignment.
 Partition helpers recompute that layout before exposing either span. The format,
-complete frame boundary, sizing, and safe partition are fixed; streaming and
-public admission remain later steps.
+complete frame boundary, sizing, and safe partition feed bounded streaming
+transforms. The encoder buffers one raw frame and its finalized representation;
+the decoder buffers one serialized frame and reconstructs it privately before
+draining raw output. Consequently a malformed later frame cannot publish a
+partial raw frame or alter an earlier committed one. Public admission remains a
+later step.
 
 ### Published composed-profile evidence
 
