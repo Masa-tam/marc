@@ -4883,3 +4883,23 @@ direction's primary, secondary, and opaque views bytes, and define peak
 workspace as the larger sum of those three caller-reserved regions. Keep this
 reservation measurement distinct from the limit on simultaneously active
 decoder data. Benchmark publication does not imply interoperability admission.
+
+## DD-266: Interoperability schema 7 appends LZMW composition
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define schema 7 with codec set `marc-cli-v7`. Preserve the exact seventeen-entry
+schema-6 order and append `lzmw-blocked-huffman` as the eighteenth archive. The
+generator emits schema 7 by default while retaining the established artifact
+names, deterministic 8,193-byte fixture, per-file size and SHA-256 fields,
+complete source revision, and producer metadata.
+
+The verifier accepts schemas 1 through 7 only through their exact versioned
+profile lists and codec-set rules, rejecting missing, extra, duplicate, or
+mismatched entries and out-of-order archives. Generate schema 7 in the local
+compatibility test, verify it, reject a reordered copy before decoding, then
+filter successively to frozen schemas 6, 5, 4, 3, 2, and 1 and verify each
+generation. Cross-platform execution remains release evidence produced after
+push; local admission proves deterministic generation and strict protocol
+compatibility without claiming foreign-platform results.

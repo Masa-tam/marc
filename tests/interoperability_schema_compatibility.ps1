@@ -40,6 +40,8 @@ function Convert-Bundle(
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema7 = Join-Path $root 'schema7'
+$schema7Reordered = Join-Path $root 'schema7-reordered'
 $schema6 = Join-Path $root 'schema6'
 $schema5 = Join-Path $root 'schema5'
 $schema4 = Join-Path $root 'schema4'
@@ -69,15 +71,46 @@ $schema4Profiles = $schema3Profiles + @(
     'lz78-blocked-huffman'
 )
 $schema5Profiles = $schema4Profiles + @('lzw-blocked-huffman')
+$schema6Profiles = $schema5Profiles + @('lzd-blocked-huffman')
 
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema6 `
+        -OutputDirectory $schema7 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema7 `
+        -OutputDirectory (Join-Path $root 'verified7')
+
+    Copy-Item -LiteralPath $schema7 -Destination $schema7Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema7Reordered 'manifest.json'
+    $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
+        ConvertFrom-Json
+    $firstArchive = $reorderedManifest.archives[0]
+    $reorderedManifest.archives[0] = $reorderedManifest.archives[1]
+    $reorderedManifest.archives[1] = $firstArchive
+    Write-Manifest $reorderedManifestPath $reorderedManifest
+    $reorderedRejected = $false
+    try {
+        & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+            -MarcCli $resolvedCli `
+            -BundleDirectory $schema7Reordered `
+            -OutputDirectory (Join-Path $root 'verified7-reordered')
+    } catch {
+        if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
+            throw
+        }
+        $reorderedRejected = $true
+    }
+    if (-not $reorderedRejected) {
+        throw 'Verifier accepted a reordered schema-7 manifest'
+    }
+
+    Convert-Bundle $schema7 $schema6 6 'marc-cli-v6' $schema6Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
         -BundleDirectory $schema6 `
@@ -113,7 +146,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1, 2, 3, 4, 5, and 6'
+    Write-Host 'Verified interoperability schemas 1, 2, 3, 4, 5, 6, and 7'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

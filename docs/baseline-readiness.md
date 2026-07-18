@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 6 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 7 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,19 +34,20 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 6 |
+| Profile | Purpose | Local status | Interoperability schema 7 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
 | `lz78-blocked-huffman` | Third composed dictionary/entropy pipeline | Ready | Included |
 | `lzw-blocked-huffman` | Fourth composed dictionary/entropy pipeline | Ready | Included |
 | `lzd-blocked-huffman` | Fifth composed dictionary/entropy pipeline | Ready | Included |
+| `lzmw-blocked-huffman` | Sixth composed dictionary/entropy pipeline | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 6 contains seventeen archives: the frozen sixteen-entry schema-5 set
-followed by the LZD Blocked Huffman profile. Schemas 1 through 5 remain frozen
-at seven, eight, thirteen, fifteen, and sixteen profiles; their meanings are
-fixed by their version and codec-set rules.
+Schema 7 contains eighteen archives: the frozen seventeen-entry schema-6 set
+followed by the LZMW Blocked Huffman profile. Schemas 1 through 6 remain frozen
+at seven, eight, thirteen, fifteen, sixteen, and seventeen profiles; their
+meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -56,7 +57,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 6 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 7 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -74,20 +75,14 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
-`Specified` fixes a decoder-visible representation and reserved public name but
-does not imply that a factory or tool selector exists. A profile may gain a C
-factory and completion evidence before its remaining local surfaces. Each row
-leaves this queue only after every local evidence column is implemented and
-tested.
-
-| Planned profile | Current boundary | Public status |
-|---|---|---|
-| LZMW plus Blocked Huffman | Exact format, complete-frame codec, opaque workspace profile, bounded frame-transactional streaming, public C ABI, completion matrix, bounded decoder fuzzing, transactional CLI, and public-ABI benchmark | Interoperability pending |
+No composed profile is currently awaiting local admission. Candidate pairings
+remain listed in `docs/composition.md`; they enter this queue only after their
+exact decoder-visible representation and reserved public name are specified.
 
 ## Remaining release evidence
 
@@ -147,7 +142,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-249, the complete Release suite contains 1118 tests and passes under both
+At DD-266, the complete Release suite contains 1,161 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

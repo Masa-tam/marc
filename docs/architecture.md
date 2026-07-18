@@ -348,7 +348,7 @@ shares the generic bounded streaming loop and transactional output-file policy.
 It never names an internal LZMW C++ type. The integration smoke verifies file
 and empty round trips, overwrite rejection, and malformed-input cleanup.
 
-### Specified LZMW plus Blocked Huffman boundary
+### Published LZMW plus Blocked Huffman boundary
 
 LZMW composition keeps the canonical four-byte reference stream as the exact
 byte boundary between layers. Blocked Huffman may divide that region without
@@ -413,6 +413,8 @@ ratio, encode/decode throughput, each caller-owned workspace region, and their
 directional peak. Reserved workspace totals are reported separately from the
 decoder's active aggregate limit; they are intentionally not presented as the
 same memory quantity.
+Interoperability schema 7 appends this CLI representation to the frozen
+schema-6 profile set as its eighteenth archive.
 
 ### Combined dictionary and entropy pipelines
 
@@ -629,8 +631,10 @@ profiles. Schema 5 names `marc-cli-v5` and appends LZW plus Blocked Huffman to
 that frozen fifteen-profile order. The external verifier dispatches each
 manifest's exact versioned set through the public CLI. Schema 6 names
 `marc-cli-v6` and appends LZD plus Blocked Huffman to the frozen sixteen-profile
-schema-5 order. Schemas 1 through 5 remain frozen at seven, eight, thirteen,
-fifteen, and sixteen profiles respectively.
+schema-5 order. Schema 7 names `marc-cli-v7` and appends LZMW plus Blocked
+Huffman to the frozen seventeen-profile schema-6 order. Schemas 1 through 6
+remain frozen at seven, eight, thirteen, fifteen, sixteen, and seventeen
+profiles respectively.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1341,13 +1345,13 @@ The first independent-toolchain check builds the complete project with Clang's
 GNU-style driver and Ninja on Windows, then runs the same optimized suite used
 by the MSVC build. As a separate representation check, the MSVC and Clang
 command-line tools encode one common input through every public CLI profile;
-all seventeen schema-6 archives must compare byte for byte. This establishes
+all eighteen schema-7 archives must compare byte for byte. This establishes
 compiler independence on one architecture, while cross-architecture evidence
 remains a separate gate.
 
 CI turns this check into an externally consumable protocol. Each reference job
 generates the same 8,193-byte binary fixture, validates a local round trip for
-all seventeen schema-6 profiles, and uploads the fixture, complete archives, and
+all eighteen schema-7 profiles, and uploads the fixture, complete archives, and
 a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect

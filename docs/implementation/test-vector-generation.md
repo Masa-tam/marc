@@ -885,11 +885,14 @@ locally round-trip all fifteen archives. Schema 5 / codec set `marc-cli-v5`
 preserves the complete schema-4 order, then appends LZW plus Blocked Huffman.
 Generate and locally round-trip all sixteen archives. Schema 6 / codec set
 `marc-cli-v6` preserves the complete schema-5 order, then appends LZD plus
-Blocked Huffman. Generate and locally round-trip all seventeen archives. For
-compatibility testing, filter that bundle successively to the exact schema-5,
-schema-4, schema-3, schema-2, and schema-1 profile lists, rewrite only the
-versioned manifest fields, and require the same verifier to accept all six
-generations.
+Blocked Huffman. Generate and locally round-trip all seventeen archives.
+Schema 7 / codec set `marc-cli-v7` preserves the complete schema-6 order, then
+appends LZMW plus Blocked Huffman. Generate and locally round-trip all eighteen
+archives. For compatibility testing, filter that bundle successively to the
+exact schema-6, schema-5, schema-4, schema-3, schema-2, and schema-1 profile
+lists, rewrite only the versioned manifest fields, and require the same
+verifier to accept all seven generations. Swap the first two schema-7 manifest
+entries without changing any archive and require rejection before decoding.
 
 The raw-checksum completion matrix uses 64-byte frames. Require empty input,
 every individual byte, byte values `0..255`, 257 zeros, a 259-byte
