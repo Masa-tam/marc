@@ -4105,3 +4105,22 @@ in the C adapter. Reject null, short, reserved-field, and misaligned inputs
 before publishing a transform. Admission at this step covers the public C
 factory and exact round trip only; CLI naming, completion matrix, fuzz target,
 benchmark, and interoperability publication remain independent gates.
+
+## DD-229: LZ78 composition completion is proved through the public C ABI
+
+- Date: 2026-07-18
+- Status: accepted
+
+Drive the composed profile exclusively through its public configuration,
+workspace query, creation, process, and destruction functions. Cover empty
+input, every one-byte value, all byte values in sequence, long repetition,
+multi-byte patterns, deterministic pseudo-random data, dictionary/frame
+boundaries, and multiple frames. Repeat encoding and require byte identity.
+
+Require the same encoded stream under one-byte and mixed input/output chunk
+schedules. On the fourth frame, independently test header corruption, payload
+truncation, and strict trailing data. Only the preceding three complete frames
+may be published, the final output byte must remain untouched, and repeated
+calls must return the identical positioned terminal error. This admits the C
+ABI completion column only; it does not imply CLI, fuzz, benchmark, or
+interoperability completion.

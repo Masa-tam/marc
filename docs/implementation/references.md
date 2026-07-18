@@ -504,3 +504,6 @@ adapter, combined codec, or error policy was consulted.
 The public C binding follows marc's existing caller-owned three-region ABI and
 the DD-226 internal partition helpers. No external compression API, allocator,
 workspace layout, or language binding was consulted.
+The public completion matrix is derived only from AGENTS.md data classes and
+marc's existing public-profile evidence contract; no external corpus, test
+suite, or combined-codec vector was used.

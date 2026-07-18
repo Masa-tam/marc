@@ -32,6 +32,10 @@ None/None factory. Interoperability schema 3 includes every named cell except
 the newly admitted `lzss-blocked-huffman` profile, which remains pending a
 future additive schema.
 
+The LZ78 plus Blocked Huffman C factory has public-ABI completion coverage but
+is intentionally not shown as a CLI profile. Its tooling, fuzz, benchmark, and
+interoperability gates remain open.
+
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation
 and admission evidence are complete. Candidate pairings have no public

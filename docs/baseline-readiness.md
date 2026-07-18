@@ -69,18 +69,20 @@ kept separate because it requires artifacts produced outside the local build.
 | `tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lz78-blocked-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
-## Specified composed-profile queue
+## Composed-profile admission queue
 
 `Specified` fixes a decoder-visible representation and reserved public name but
-does not imply that a factory or tool selector exists. Each row moves to the
-public-profile evidence matrix only after every local evidence column is
-implemented and tested.
+does not imply that a factory or tool selector exists. A profile may gain a C
+factory and completion evidence before its remaining local surfaces. Each row
+leaves this queue only after every local evidence column is implemented and
+tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| `lz78-blocked-huffman` | Atomic frame codec plus checked profile sizing and opaque typed-workspace partition | Not callable |
+| `lz78-blocked-huffman` | Public C ABI and completion matrix; CLI, benchmark, fuzz, and interoperability pending | Callable through C ABI |
 | LZW plus Blocked Huffman | Candidate components | Unspecified |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
@@ -143,7 +145,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-228, the complete Release suite contains 1053 tests and passes under both
+At DD-229, the complete Release suite contains 1056 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

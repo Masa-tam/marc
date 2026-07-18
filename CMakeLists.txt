@@ -699,6 +699,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_fuzz_regression_tests.cpp
         tests/lz78_blocked_huffman_frame_tests.cpp
         tests/lz78_blocked_huffman_frame_streaming_tests.cpp
+        tests/lz78_blocked_huffman_completion_tests.cpp
         tests/lz78_blocked_huffman_profile_tests.cpp
         tests/lz78_frame_tests.cpp
         tests/lz78_fuzz_regression_tests.cpp

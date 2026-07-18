@@ -4044,3 +4044,24 @@ discarded and the reviewed seed retained.
   profile contracts; no external combined expression was compared.
 - Local validation: documentation topology and all 1053 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman public completion matrix
+
+- Authoring method: exercised the independently implemented composition only
+  through marc's public C ABI and locally generated deterministic inputs.
+- References used: DD-223 through DD-229, AGENTS.md completion criteria, and
+  the repository's existing public-profile evidence contract.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, test suites, corpora, vectors, source, or compatibility tools.
+- Independent decisions: use 64-byte frames and entropy blocks; cap phrases at
+  64; cover every one-byte value and deterministic binary classes; compare
+  unlimited and three partial-I/O schedules; corrupt only the fourth frame so
+  the exact prior commitment is observable.
+- Generated-code task description: add a public-ABI completion matrix proving
+  deterministic round trips, chunk-independent streams, stable completion,
+  and transactional final-frame rejection.
+- Similarity review: input generation and assertions follow marc's documented
+  contracts and local evidence conventions; no external expression was
+  compared.
+- Local validation: documentation topology and all 1056 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

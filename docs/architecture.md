@@ -1176,8 +1176,10 @@ publishes raw bytes only after a whole frame has passed entropy and phrase-graph
 validation. The public C factory exposes only byte counts and alignment, then
 delegates the opaque-region partition back to the checked internal helpers.
 The `lz78-blocked-huffman` profile is therefore callable through the C ABI;
-CLI, completion, fuzz, benchmark, and interoperability admission remain
-separate later steps.
+its completion matrix proves required binary classes, chunk independence,
+determinism, stable terminal behavior, and transactional malformed-final-frame
+rejection through that ABI. CLI, fuzz, benchmark, and interoperability
+admission remain separate later steps.
 
 ### Published composed-profile evidence
 
