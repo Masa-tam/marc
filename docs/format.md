@@ -1449,7 +1449,8 @@ uses aligned opaque views storage for one LZW encoder-entry array, or for
 Blocked Huffman block views followed by checked padding and one LZW decoder
 phrase array. The checked partition helper rederives and validates the complete
 layout before exposing either typed span. The CLI selector uses that public C
-factory and does not define another format variant.
+factory and does not define another format variant. Interoperability schema 5
+emits and accepts this exact profile as its sixteenth archive.
 
 ## Adaptive Huffman FGK variant 1
 

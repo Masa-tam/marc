@@ -28,7 +28,7 @@ public format or API guarantee yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 4 includes every named cell while
+None/None factory. Interoperability schema 5 includes every named cell while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -36,9 +36,8 @@ bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
 interoperability coverage.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
-bounded decoder fuzz target, a transactional CLI selector, and a public-ABI
-benchmark adapter. Its interoperability entry remains a separate admission
-step.
+bounded decoder fuzz target, a transactional CLI selector, a public-ABI
+benchmark adapter, and schema-5 interoperability coverage.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation

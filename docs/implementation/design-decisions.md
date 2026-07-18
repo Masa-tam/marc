@@ -4413,3 +4413,20 @@ buffer. Verify a complete round trip before timing, keep allocation and factory
 construction outside the timed region, and report direction-specific primary,
 secondary, and views extents plus their larger aggregate. This closes local
 profile admission; interoperability schema publication remains separate.
+
+## DD-244: Interoperability schema 5 appends LZW composition
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define schema 5 with codec set `marc-cli-v5`. Preserve the exact fifteen-entry
+schema-4 order and append `lzw-blocked-huffman` as the sixteenth archive. The
+generator emits schema 5 by default while retaining the established artifact
+names and self-describing manifest fields.
+
+Keep schemas 1 through 4 frozen at seven, eight, thirteen, and fifteen profiles.
+Select each exact set from its manifest version and codec-set identifier; reject
+missing, extra, duplicate, or mismatched entries. Generate schema 5 in the
+compatibility test, derive each earlier bundle mechanically, and verify all
+five with the public CLI. Require independent MSVC and ClangCL generation to
+produce byte-identical input and sixteen archives before local admission.

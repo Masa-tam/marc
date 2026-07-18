@@ -542,9 +542,10 @@ the benchmark's corpus or result vectors.
 
 Interoperability schema 4 names codec set `marc-cli-v4`, preserves the exact
 thirteen-profile schema-3 order, and appends the LZSS and LZ78 Blocked Huffman
-profiles. The external verifier dispatches each manifest's exact versioned set
-through the public CLI. Schemas 1, 2, and 3 remain frozen at seven, eight, and
-thirteen profiles respectively.
+profiles. Schema 5 names `marc-cli-v5` and appends LZW plus Blocked Huffman to
+that frozen fifteen-profile order. The external verifier dispatches each
+manifest's exact versioned set through the public CLI. Schemas 1 through 4
+remain frozen at seven, eight, thirteen, and fifteen profiles respectively.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1238,8 +1239,8 @@ The CLI reaches this composed profile only through the public C ABI. It fixes
 one-MiB raw frames and 65,536-symbol entropy blocks, then obtains all three
 workspace extents and alignment from the requirements query. The benchmark
 uses that same public profile and reports the queried direction-specific
-regions after verifying a complete round trip. Interoperability admission
-remains a later evidence step.
+regions after verifying a complete round trip. Schema 5 appends the resulting
+CLI representation to the frozen schema-4 profile set.
 
 ### Published composed-profile evidence
 
@@ -1255,13 +1256,13 @@ The first independent-toolchain check builds the complete project with Clang's
 GNU-style driver and Ninja on Windows, then runs the same optimized suite used
 by the MSVC build. As a separate representation check, the MSVC and Clang
 command-line tools encode one common input through every public CLI profile;
-all fifteen schema-4 archives must compare byte for byte. This establishes
+all sixteen schema-5 archives must compare byte for byte. This establishes
 compiler independence on one architecture, while cross-architecture evidence
 remains a separate gate.
 
 CI turns this check into an externally consumable protocol. Each reference job
 generates the same 8,193-byte binary fixture, validates a local round trip for
-all fifteen schema-4 profiles, and uploads the fixture, complete archives, and
+all sixteen schema-5 profiles, and uploads the fixture, complete archives, and
 a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect

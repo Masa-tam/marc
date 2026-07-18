@@ -77,6 +77,7 @@ $compositionProfiles = @(
     'lz78-blocked-huffman'
 )
 $schema4Profiles = $schema3Profiles + $compositionProfiles
+$schema5Profiles = $schema4Profiles + @('lzw-blocked-huffman')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -97,6 +98,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema4Profiles
+} elseif ($manifest.schema_version -eq 5) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v5') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema5Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }

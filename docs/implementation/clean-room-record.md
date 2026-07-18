@@ -4349,3 +4349,21 @@ discarded and the reviewed seed retained.
   benchmark structure; no external benchmark expression was compared.
 - Local validation: the benchmark smoke and all 1092 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - Interoperability schema 5
+
+- Authoring method: extended marc's immutable versioned bundle protocol by one
+  completed public CLI profile without altering historical schema meanings.
+- References used: DD-244, schemas 1 through 4, the repository fixture, public
+  CLI names, and LZW Blocked Huffman completion evidence.
+- Known implementations intentionally not consulted: external interoperability
+  suites, combined-codec bundles, manifests, corpora, source, or vectors.
+- Independent decisions: preserve schema 4 as an exact fifteen-entry prefix;
+  append LZW plus Blocked Huffman; identify the set as schema 5 / `marc-cli-v5`.
+- Generated-code task description: generate and strictly verify schema 5, then
+  derive and verify the four frozen historical schemas.
+- Similarity review: the extension uses only marc's profile order, fixture,
+  manifest, hashing, and CLI conventions; no external protocol was compared.
+- Local validation: schemas 1 through 5 verified under MSVC and Clang 22.1.3;
+  independently generated input and all sixteen schema-5 archives were
+  byte-identical between compilers. All 1092 Release tests passed under both.

@@ -881,10 +881,12 @@ their existing order, then appends Blocked Huffman, Adaptive Huffman, Dynamic
 Range, rANS, and tANS. Generate and locally round-trip all thirteen archives.
 Schema 4 / codec set `marc-cli-v4` preserves that thirteen-profile order, then
 appends LZSS plus Blocked Huffman and LZ78 plus Blocked Huffman. Generate and
-locally round-trip all fifteen archives. For compatibility testing, filter that
-bundle to the exact schema-3, schema-2, and schema-1 profile lists, rewrite only
-the versioned manifest fields, and require the same verifier to accept all four
-generations.
+locally round-trip all fifteen archives. Schema 5 / codec set `marc-cli-v5`
+preserves the complete schema-4 order, then appends LZW plus Blocked Huffman.
+Generate and locally round-trip all sixteen archives. For compatibility
+testing, filter that bundle successively to the exact schema-4, schema-3,
+schema-2, and schema-1 profile lists, rewrite only the versioned manifest
+fields, and require the same verifier to accept all five generations.
 
 The raw-checksum completion matrix uses 64-byte frames. Require empty input,
 every individual byte, byte values `0..255`, 257 zeros, a 259-byte
