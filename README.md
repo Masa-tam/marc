@@ -2,7 +2,7 @@
 
 ![marc logo](assets/images/marc.png)
 
-![CI](https://github.com/Masa-tam/marc/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Masa-tam/marc/actions/workflows/ci.yml)
+[![CI](https://github.com/Masa-tam/marc/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Masa-tam/marc/actions/workflows/ci.yml)
 
 `marc` is a C++20 framework for independently designed, streaming lossless
 compression components. Its public version 1 profiles include five standalone
