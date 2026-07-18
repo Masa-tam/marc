@@ -4223,3 +4223,27 @@ plus a separately aligned LZW phrase array. Require checked partition helpers
 before constructing either transform. This decision specifies bytes and a
 reserved name only; it does not publish a factory, CLI selector, benchmark,
 fuzz target, completion claim, or interoperability entry.
+
+## DD-235: LZW composition validates entropy before packed codes
+
+- Date: 2026-07-18
+- Status: accepted
+
+Implement the decoder-side frame boundary first. Parse and validate the generic
+header and complete extent, require caller-owned Blocked Huffman views, packed
+LZW staging, and LZW phrase entries, and count descriptors, payload, staging,
+views, and phrase records against the aggregate buffered-byte limit before
+entropy output.
+
+Decode Blocked Huffman into staging, then invoke the existing LZW validator with
+the declared raw frame size. Only after it accepts code-width changes,
+references, `KwKwK`, exact completion, trailing data, and zero padding may the
+decoder check raw output capacity and invoke transactional LZW reconstruction.
+No error may publish a raw byte.
+
+Require the 74-byte hand vector, every strict truncation, trailing data,
+independent workspace shortages, aggregate-limit accounting, malformed entropy
+metadata before staging writes, nonzero LZW padding after valid entropy decode,
+and a 9-to-10-bit width-change vector split across thirty ten-byte entropy
+blocks. This admits only the frame validator/decoder boundary; encoder, profile,
+streaming, C ABI, and public evidence remain separate steps.

@@ -1383,6 +1383,8 @@ Future implementation tests must reproduce this vector byte for byte, then
 recover the packed bytes before invoking the ordinary LZW validator. Add a
 separate vector crossing the 9-to-10-bit LZW width boundary, with an entropy
 block boundary chosen inside the corresponding packed-code byte sequence, so
-neither layer can accidentally treat entropy blocks as code boundaries. Corrupt
-LZW padding only after valid entropy reconstruction and require transactional
-rejection before raw publication.
+neither layer can accidentally treat entropy blocks as code boundaries. The
+implemented validator uses the documented 291-byte packed vector, splits it
+into thirty raw entropy blocks of at most ten bytes, and derives 259 zero bytes.
+Corrupt LZW padding only after valid entropy reconstruction and require
+transactional rejection before raw publication.

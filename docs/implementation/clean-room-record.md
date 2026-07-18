@@ -4169,3 +4169,25 @@ discarded and the reviewed seed retained.
   contracts; no external combined representation or expression was compared.
 - Local validation: documentation topology and consistency checks only; codec
   implementation and public admission intentionally remain pending.
+
+## 2026-07-18 - LZW plus Blocked Huffman frame validation
+
+- Authoring method: layered marc's existing Blocked Huffman controller/decoder
+  and standalone LZW validator/decoder behind one frame-atomic boundary.
+- References used: DD-234 and DD-235, the local generic frame contract, LZW
+  packed-code validator, Blocked Huffman descriptor contract, and specified
+  hand vectors.
+- Known implementations intentionally not consulted: external combined LZW
+  decoders, archive validators, workspace layouts, source, tests, or vectors.
+- Independent decisions: validate all capacities and aggregate bytes before
+  entropy output; retain packed bytes as uncommitted staging; validate LZW
+  before raw capacity; test the width transition across ten-byte blocks.
+- Generated-code task description: implement a bounded combined frame validator
+  and transactional decoder with independent malformed and workspace tests,
+  without adding an encoder or public factory.
+- Similarity review: control flow composes marc-owned layer APIs and follows the
+  repository's earlier typed-workspace frame boundary; no external expression
+  was compared.
+- Local validation: all ten focused tests and the complete 1068-test Release
+  suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64.

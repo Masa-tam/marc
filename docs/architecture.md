@@ -1202,12 +1202,20 @@ width schedule, dictionary references, `KwKwK`, final padding, and exact raw
 extent before publication. This preserves both layers' existing validators
 instead of teaching either layer the other's token grammar.
 
-The future profile has the same typed-workspace issue as the LZ78 composition.
-Encoding requires an aligned LZW encoder-entry table. Decoding requires Blocked
-Huffman block views and an aligned LZW phrase table in one opaque public region.
-A checked profile partition must derive offsets, padding, and aggregate limits
-before either streaming transform is constructed. The format and reserved name
-are fixed; implementation and public admission remain later steps.
+The decoder-side frame boundary now implements this ordering with separate
+caller-owned Blocked Huffman views, packed-byte staging, and LZW phrase entries.
+It checks all three capacities and their aggregate bytes before entropy output,
+then validates LZW completely before checking raw output capacity. The
+9-to-10-bit width-transition test crosses thirty independent entropy blocks,
+demonstrating that block boundaries do not become code boundaries.
+
+The future encoder and public profile retain the same typed-workspace issue as
+the LZ78 composition. Encoding requires an aligned LZW encoder-entry table. A
+public decoder must combine the implemented Blocked Huffman views and aligned
+LZW phrase table in one opaque region. A checked profile partition must derive
+offsets, padding, and aggregate limits before either streaming transform is
+constructed. The format and decoder-side frame boundary are fixed; encoder and
+public admission remain later steps.
 
 ### Published composed-profile evidence
 
