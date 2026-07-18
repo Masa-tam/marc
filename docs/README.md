@@ -22,6 +22,8 @@ navigate chronological development records.
   verification.
 - [Baseline readiness](baseline-readiness.md): current implementation and
   release-evidence status.
+- [Release process](releasing.md): version namespaces, evidence gates, tagging,
+  and publication.
 
 ## Implementation records
 
@@ -34,3 +36,4 @@ stream-format specifications.
 
 - [Contributing](../CONTRIBUTING.md): implementation sequence, provenance,
   composed-profile admission, and validation requirements.
+- [Changelog](../CHANGELOG.md): user-visible contents by project release.

@@ -5020,3 +5020,25 @@ discarded and the reviewed seed retained.
   Ubuntu 24.04 archives; Windows/MSVC verified all eighteen Ubuntu 26.04
   archives; SHA-256 comparison of `input.bin` and all eighteen archives across
   the three bundles reported 19 files and zero mismatches.
+
+## 2026-07-18 - Initial source-release procedure
+
+- Authoring method: derived a release checklist from marc's existing versioned
+  format, C ABI, CMake package, CI, interoperability, provenance, and readiness
+  contracts.
+- References used: DD-273 and repository-owned build, install, documentation,
+  validation, and public-evidence records.
+- Known implementations intentionally not consulted: external release scripts,
+  package-manager recipes, binary-distribution workflows, or codec source.
+- Independent decisions: keep four version namespaces separate; make `0.1.0`
+  source-oriented; install the changelog; require an annotated tag only after a
+  matching pushed workflow; retain all unsatisfied evidence explicitly.
+- Generated-code task description: prepare the first project release without
+  tagging it, add a user-visible changelog and reproducible maintainer checklist,
+  connect them to public documentation and installed files, and test the layout.
+- Similarity review: the procedure is assembled solely from marc's repository
+  contracts and does not reproduce another project's release expression.
+- Local validation: MSVC and Clang/Ninja Release build trees regenerated;
+  documentation-layout tests passed in both; separate temporary installs from
+  both trees contained `CHANGELOG.md` and `docs/releasing.md` alongside the
+  existing package documentation.

@@ -18,6 +18,9 @@ from validation material and chronological implementation records.
 The [composition matrix](docs/composition.md) distinguishes currently published
 profiles from byte-stream pairings whose components exist but whose public
 contracts are not yet defined.
+User-visible release contents are recorded in the
+[changelog](CHANGELOG.md); maintainer release gates are defined in the
+[release process](docs/releasing.md).
 
 ## Build
 

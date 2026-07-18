@@ -5013,3 +5013,20 @@ verify the Windows and Ubuntu CI bundles, and the Windows executable must verify
 the Ubuntu 26.04 bundle. Supplement the verifier results with a direct equality
 check over the common input and all eighteen archives. Keep non-x86-64 testing
 open even when every x86-64 producer is byte-identical.
+
+## DD-273: The initial project release is source-oriented
+
+- Date: 2026-07-18
+- Status: accepted
+
+Prepare `v0.1.0` as a deliberate source release whose project version is
+independent of stream-format, C ABI, and interoperability-schema versions.
+Publish a changelog and a repository release procedure before creating any tag.
+Install the changelog with the existing project documentation.
+
+Do not present CI interoperability bundles as installable binary packages and
+do not promise maintainer-built or signed binaries in the initial release.
+Require the final tagged commit to match the changelog, CMake version, pushed CI
+revision, and reviewed evidence. Preserve outstanding architecture, benchmark,
+and fuzz evidence as explicit release decisions rather than allowing a green
+status badge to erase them.

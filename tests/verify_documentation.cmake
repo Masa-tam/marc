@@ -7,6 +7,7 @@ endif()
 file(REAL_PATH "${SOURCE_DIR}" source_dir)
 set(required_documents
     README.md
+    CHANGELOG.md
     CONTRIBUTING.md
     THIRD_PARTY_NOTICES.md
     docs/README.md
@@ -19,6 +20,7 @@ set(required_documents
     docs/format.md
     docs/fuzzing.md
     docs/interoperability.md
+    docs/releasing.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md
@@ -67,6 +69,7 @@ endforeach()
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
+    "${source_dir}/CHANGELOG.md"
     "${source_dir}/CONTRIBUTING.md"
     "${source_dir}/THIRD_PARTY_NOTICES.md")
 list(SORT documentation_files)
