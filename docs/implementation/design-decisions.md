@@ -5239,3 +5239,22 @@ bytes, leave the final output sentinel unchanged, and retain the same stable
 error category and position on repetition. This admits local completion
 evidence only; fuzzing, CLI, benchmark, interoperability, and cross-architecture
 determinism remain separate steps.
+
+## DD-285: LZ77 plus Adaptive Huffman fuzzing covers frame and stream decode
+
+- Date: 2026-07-19
+- Status: accepted
+
+Bound fuzz input at 8 KiB, total raw output at 4 KiB, one raw frame at 1 KiB,
+canonical token staging at 16 KiB, and compressed payload at 8 KiB. Derive the
+maximum serialized-frame and aggregate workspace arithmetically before parsing
+and allocate every region at compile time. Do not allocate from serialized
+lengths or expose a partially validated frame outside private staging.
+
+Always exercise the incremental stream decoder with input-derived chunks and a
+fixed call ceiling. When the first 80 input bytes parse as this exact stream
+profile and its LZ77 parameters, also pass the remaining exact extent through
+the complete-frame private-staging decoder. Abort on an invalid process result,
+zero-progress `Progress`, impossible terminal starvation, or call-ceiling
+exhaustion. Retain only the reviewed `MARC\n` seed in the source corpus; keep
+generated mutations in ignored build storage.

@@ -1752,3 +1752,12 @@ frame from the generic descriptor and payload extents. Flip its sequence field,
 truncate its final byte, and append one zero as separate malformed cases. Each
 decode must report a sticky malformed-stream result after publishing exactly
 the first 192 bytes and must leave the sentinel final byte unchanged.
+
+For permanent LZ77 plus Adaptive fuzz regressions, encode the single-frame raw
+input `ABABX`. Require every proper prefix to fail without changing the
+five-byte `a5` output sentinel. Independently replace all generic frame extent
+fields with `ff`, then set the final reserved Adaptive descriptor byte to one;
+both complete mutations must fail atomically and retain the same sticky error
+category and byte position. Seed the sanitizer target only with the reviewed
+five-byte `MARC\n` truncated magic and keep generated mutations in build
+storage.

@@ -1174,6 +1174,11 @@ one-byte and mixed chunk schedules, repeats successful terminal calls, and
 proves that corruption, truncation, or trailing data in a fourth frame can
 publish only the first three complete frames.
 
+The bounded fuzz boundary fixes serialized input, token staging, raw staging,
+and final output before parsing. A valid profile prefix admits the remaining
+extent to complete-frame private-staging decode, while every input also reaches
+the incremental decoder under byte-derived chunking and a fixed call ceiling.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

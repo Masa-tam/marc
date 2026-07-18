@@ -5301,3 +5301,24 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion tests and all 1,203 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman bounded decoder fuzzing
+
+- Authoring method: applied marc's fixed-workspace fuzz policy independently
+  to the complete-frame private-staging decoder and incremental stream decoder.
+- References used: DD-285, core process invariants, the combined prefix and
+  frame formats, local decoder limits, and repository corpus policy.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, codec source, or sanitizer findings.
+- Independent decisions: cap input at 8 KiB; preallocate 16 KiB of token
+  staging, 1 KiB raw staging, and 4 KiB final output; derive chunks from input;
+  guard execution with a fixed call ceiling; retain only truncated magic.
+- Generated-code task description: compile a portable libFuzzer entry point,
+  exercise both combined decoder boundaries, add permanent truncation/extent/
+  descriptor regressions, and execute a bounded sanitizer smoke.
+- Similarity review: control flow follows marc's own fuzz invariants and named
+  decoder contracts; no external expression was used.
+- Local validation: all three focused regressions passed under MSVC and Clang;
+  a 1,000-input ASan/UBSan campaign completed at 37 MiB peak RSS without a
+  crash, hang, or sanitizer finding; all 1,206 Release tests passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows x64.

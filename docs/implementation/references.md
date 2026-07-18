@@ -687,3 +687,8 @@ The LZ77 plus Adaptive Huffman completion matrix uses only DD-284, marc's
 public combined C ABI, AGENTS.md completion data classes, and deterministic
 repository-local inputs. No external completion suite, corpus, malformed
 sample, codec implementation, or chunk schedule was consulted.
+
+The LZ77 plus Adaptive Huffman fuzz boundary uses only DD-285, marc's completed
+frame and streaming decoders, fixed local workspace bounds, core process-result
+invariants, and the repository fuzz policy. No external harness, corpus,
+malformed archive, combined decoder, or implementation source was consulted.
