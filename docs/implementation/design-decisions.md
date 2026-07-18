@@ -4843,3 +4843,23 @@ in the explicit Clang fuzz build and compile its entrypoint warning-clean in
 ordinary builds. Permanently test every truncation of a valid one-frame stream,
 extreme frame length fields, and a raw entropy block that reconstructs an
 unavailable LZMW reference, requiring zero raw publication and sticky failure.
+
+## DD-264: CLI dogfoods LZMW composition only through the public C ABI
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzmw-blocked-huffman` as an explicit selector while preserving LZ77 as
+the default. Configure one-MiB raw frames, 65,536-byte entropy blocks, the
+exact four-byte-per-raw-byte reference maximum, at most 64 entropy blocks,
+65,536 generated phrase entries, and the common 64-MiB aggregate policy. Query
+all three workspace extents and opaque alignment through
+`marc_lzmw_blocked_huffman_workspace_requirements`; create and process the
+transform only through the matching public C functions.
+
+Reuse the common bounded 64-KiB I/O loop and transactional `.tmp` output
+commit. The integration test must round-trip deterministic and empty files,
+refuse overwrite, reject malformed input, reject a valid stream with trailing
+data, and leave neither destination nor temporary output on either decode
+failure. CLI publication does not imply benchmark or interoperability
+admission.

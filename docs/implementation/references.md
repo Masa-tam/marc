@@ -628,3 +628,6 @@ The combined fuzz boundary uses only DD-263, marc's LZMW validator and streaming
 decoder contracts, fixed local workspace types, and repository fuzz invariants.
 No external fuzzer harness, corpus, malformed sample, or implementation source
 was consulted.
+The `lzmw-blocked-huffman` CLI adapter uses only DD-264, marc's public combined
+C ABI, common transactional file loop, and repository integration script. No
+external CLI, archive tool, adapter source, or test fixture was consulted.

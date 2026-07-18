@@ -1703,3 +1703,11 @@ atomically and repeat the same sticky error category.
 Seed the coverage-guided target with the hand-authored five bytes `MARC\n`.
 Copy that seed into an ignored build corpus before a bounded campaign so new
 mutations never modify the reviewed repository corpus.
+
+For CLI integration, generate the existing deterministic
+`ABRACADABRA-0123456789\n` fixture repeated 320 times. Encode and decode with
+explicit `--codec lzmw-blocked-huffman`, compare the restored bytes, and repeat
+the same lifecycle for an empty file. Require a second encode to refuse the
+existing output. Decode `not-a-marc-stream` and a valid archive with one
+trailing `x`; both must fail and leave neither the requested output nor its
+`.tmp` staging path.

@@ -401,6 +401,12 @@ phrase-record, expansion-stack, and total-output region before inspecting
 serialized bytes. Byte-derived partial I/O and a fixed call ceiling exercise
 the incremental state machine; permanent regressions retain complete canonical
 truncation, extreme frame lengths, and an unavailable reconstructed reference.
+The explicit `lzmw-blocked-huffman` CLI selector reaches the profile only
+through its public C ABI. It shares the common temporary-file transaction,
+bounded streaming loop, output-overwrite refusal, and cleanup on malformed or
+trailing input. Its fixed one-MiB raw frame, 64-KiB entropy block, four-MiB
+reference cap, 64-block limit, and 64-MiB aggregate policy are local admission
+choices rather than new serialized parameters.
 
 ### Combined dictionary and entropy pipelines
 

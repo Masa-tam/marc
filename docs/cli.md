@@ -44,6 +44,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |
 | `lzd-blocked-huffman` | Lempel-Ziv Double | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzmw` | LZMW | None | Variant 1 |
+| `lzmw-blocked-huffman` | LZMW | Blocked Huffman | Composed dictionary and entropy pipeline |
 
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
@@ -66,6 +67,13 @@ at most 64 entropy blocks per frame, and at most 65,536 phrase entries. The
 public requirements query supplies all three workspace extents and alignment;
 the CLI does not reproduce the private entropy-view, phrase, or expansion-stack
 layout. The aggregate internal-buffer limit remains 64 MiB.
+
+The `lzmw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
+entropy blocks, the exact four-byte-per-raw-byte fixed-reference bound, at most
+64 entropy blocks per frame, and at most 65,536 generated phrase entries. The
+public requirements query supplies all byte extents and the opaque views
+alignment; the CLI does not reproduce entropy-view, phrase-record, or iterative
+expansion-stack layouts. The aggregate internal-buffer limit remains 64 MiB.
 
 ## File and error behavior
 

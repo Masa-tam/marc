@@ -4805,3 +4805,24 @@ discarded and the reviewed seed retained.
   both MSVC/Visual Studio 2026 and Clang 22.1.3, and a 1,000-input Clang
   sanitizer campaign passed on Windows x64 with no crash, hang, ASan, or UBSan
   finding and 37 MiB peak RSS.
+
+## 2026-07-18 - LZMW plus Blocked Huffman transactional CLI selector
+
+- Authoring method: extended marc's common CLI dispatch with the independently
+  published combined C ABI and no private codec dependency.
+- References used: DD-264, public C API documentation, common file transaction,
+  workspace allocation helper, and repository CLI round-trip script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, archive tools, dispatch tables, transactional wrappers, source, or tests.
+- Independent decisions: explicit selector; one-MiB frames; 64-KiB entropy
+  blocks; four-MiB canonical-reference cap; 64 blocks; 65,536 phrases; 64-MiB
+  aggregate; public requirements and factory only; trailing-data cleanup test.
+- Generated-code task description: add enum, name parser, usage text, public-C-
+  ABI configuration/query/create dispatch, deterministic and empty round trips,
+  overwrite refusal, malformed cleanup, and trailing-data cleanup.
+- Similarity review: dispatch and file lifecycle are marc-owned; all LZMW
+  combined bounds are the local `4F` profile policy and no external CLI
+  expression was compared.
+- Local validation: the focused transactional CLI test and all 1,160 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64.

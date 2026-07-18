@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZMW | `lzmw` | C ABI | Candidate | Candidate | Candidate | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
@@ -44,8 +44,8 @@ bounded decoder fuzz target, a transactional CLI selector, a public-ABI
 benchmark adapter, and schema-6 interoperability coverage.
 
 The LZMW plus Blocked Huffman profile has public-ABI completion coverage and a
-bounded decoder fuzz target; CLI, benchmark, and interoperability admission
-remain pending.
+bounded decoder fuzz target and transactional CLI selector; benchmark and
+interoperability admission remain pending.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation
