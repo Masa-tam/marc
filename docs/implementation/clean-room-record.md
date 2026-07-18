@@ -4108,3 +4108,22 @@ discarded and the reviewed seed retained.
   established CLI structure; no external expression was compared.
 - Local validation: documentation topology and all 1057 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman benchmark profile
+
+- Authoring method: registered the fixed public profile in marc's common C-ABI
+  benchmark adapter and reused its verification and measurement contract.
+- References used: DD-223 through DD-232, the local CLI fixed policy, public C
+  API, and `docs/benchmarks.md` measurement definition.
+- Known implementations intentionally not consulted: external combined LZ78
+  benchmarks, codecs, corpora, published measurements, source, or tuning data.
+- Independent decisions: retain one-MiB frames, 65,536-symbol blocks, the
+  eight-byte token bound, 128 blocks, 65,536 phrases, and 64-MiB aggregate
+  limit; query and report all actual workspace regions through the public ABI.
+- Generated-code task description: add a benchmark selector, conservative
+  capacity calculation, verified round trip, smoke test, and documentation
+  without creating a private codec construction path.
+- Similarity review: dispatch, timing, capacity checks, and result fields follow
+  marc's existing benchmark structure; no external expression was compared.
+- Local validation: the benchmark smoke and all 1058 Release tests passed under
+  both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

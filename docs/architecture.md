@@ -1180,9 +1180,11 @@ its completion matrix proves required binary classes, chunk independence,
 determinism, stable terminal behavior, and transactional malformed-final-frame
 rejection through that ABI. Its bounded decoder fuzz target fixes every byte,
 typed-workspace, and call-count limit before processing arbitrary input. The
-CLI reaches the profile only through the C ABI and obtains all three
-workspace extents from its requirements query. Benchmark and interoperability
-admission remain separate later steps.
+CLI and benchmark reach the profile only through the C ABI and obtain all
+three workspace extents from its requirements query. The benchmark verifies a
+round trip before timing and reports complete-stream ratio, directional
+throughput, and the larger caller-owned workspace total. Interoperability
+admission remains a separate later step.
 
 ### Published composed-profile evidence
 

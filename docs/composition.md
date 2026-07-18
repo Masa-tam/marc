@@ -33,8 +33,8 @@ the newly admitted `lzss-blocked-huffman` profile, which remains pending a
 future additive schema.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
-bounded fuzz target, and a CLI selector. Its benchmark and interoperability
-gates remain open.
+bounded fuzz target, a CLI selector, and a benchmark adapter. Its
+interoperability gate remains open.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation

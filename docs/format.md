@@ -1353,9 +1353,9 @@ while treating the aligned views region as opaque storage. Encoding uses one
 LZ78 encoder-entry array. Decoding places Blocked Huffman block views first,
 aligns the next offset for LZ78 phrase entries, and places the phrase array
 there. The checked partition helper must accept this exact derived layout
-before exposing either typed span. The public C factory and CLI selector emit
-and accept this representation; remaining benchmark and interoperability
-admission do not alter its bytes.
+before exposing either typed span. The public C factory, CLI selector, and
+benchmark adapter emit and accept this representation; remaining
+interoperability admission does not alter its bytes.
 
 ## Adaptive Huffman FGK variant 1
 

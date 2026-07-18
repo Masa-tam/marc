@@ -4160,3 +4160,22 @@ temporary-output cleanup tests through the same CLI round-trip script used by
 the other public profiles. The adapter must call only the public C factory;
 private typed layout and codec objects remain inaccessible. CLI admission does
 not imply benchmark or interoperability completion.
+
+## DD-232: LZ78 composition benchmark uses the public fixed profile
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lz78-blocked-huffman` to the common benchmark adapter with the identical
+one-MiB frame, 65,536-symbol entropy block, eight-byte token bound, 65,536-entry
+dictionary limit, 128-block limit, and 64-MiB aggregate-buffer policy used by
+the CLI. Obtain primary, secondary, and aligned views requirements solely from
+the public C ABI.
+
+Before timing, require an exact full-stream round trip. Report the complete
+encoded-to-input ratio, encode and decode throughput over raw input bytes, each
+directional workspace region, and the larger combined caller-owned workspace.
+Keep allocation, construction, file I/O, and verification outside the timed
+region, consistently with the existing benchmark contract. A benchmark smoke
+test proves adapter availability but is not a stable performance assertion.
+Benchmark admission does not imply interoperability completion.

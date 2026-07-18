@@ -515,3 +515,7 @@ The `lz78-blocked-huffman` CLI adapter uses only marc's public combined C
 factory, existing file-transaction policy, and fixed documented workspace
 bounds. No external command-line codec, wrapper, or allocation policy was
 consulted.
+The `lz78-blocked-huffman` benchmark adapter uses only that same public C
+factory, fixed CLI profile, and marc's existing measurement contract. No
+external benchmark implementation, result, corpus, or combined-codec tuning
+was consulted.

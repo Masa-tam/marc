@@ -15,6 +15,7 @@ marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
+marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
@@ -83,6 +84,14 @@ planning substitutes LZSS's two-byte all-Literal token bound, includes one
 16-byte descriptor per worst-case token block, and permits raw entropy fallback
 for the complete token stream. Reported workspace includes token staging and
 decode-side aligned block views.
+
+`lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
+and at most 65,536 LZ78 phrase entries. Capacity planning uses the exact
+eight-byte token bound per raw byte, one 16-byte descriptor per possible token
+block, and raw entropy fallback. The benchmark obtains all caller-owned byte
+counts and alignment from the public C ABI; the reported views workspace
+therefore includes the encoder phrase table or the aligned decoder block views
+and phrase table.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when
