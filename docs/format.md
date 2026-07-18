@@ -1189,6 +1189,13 @@ symbols per frame. The exact canonical LZ77 token stream must be nonempty, a
 multiple of 16 bytes, no larger than 2^24 bytes, and within the decoder's local
 dictionary-serialized limit.
 
+The reference profile configuration defaults to 65,536 raw bytes per frame.
+This is smaller than the format maximum because the conservative combined
+worst case is 16 token bytes per raw byte followed by 33 payload bytes per token
+byte. The 65,536-byte default remains within marc's baseline payload and
+aggregate-memory limits; a larger configured frame remains valid only when its
+complete worst-case workspace also fits the caller's limits.
+
 Every nonempty outer frame is exactly one Adaptive Huffman block. The FGK tree
 starts from its single NYT root before the first byte of the frame's LZ77 token
 stream and is discarded after that frame. No tree state or LZ77 history crosses

@@ -5187,3 +5187,25 @@ discarded and the reviewed seed retained.
 - Local validation: all twenty combined frame tests and all 1,183 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman profile and workspace
+
+- Authoring method: derived every workspace extent from marc's documented raw,
+  token, FGK, descriptor, and frame-header bounds, then normalized the existing
+  algorithm IDs and parameters into one internal profile.
+- References used: DD-280, the combined format bound, `DecoderLimits`, checked
+  arithmetic helpers, and existing marc profile/result conventions.
+- Known implementations intentionally not consulted: external codec profile
+  defaults, foreign workspace calculators, or third-party configuration code.
+- Independent decisions: retain the 1 MiB format cap while selecting a 64 KiB
+  executable default; reject worst-case payload or aggregate extents before
+  construction; derive decoder capacities solely from local limits and profile
+  caps; preserve stable core error mapping.
+- Generated-code task description: implement combined profile normalization,
+  direction-specific workspace queries, format-cap enforcement, short/empty
+  sizing, invalid-parameter handling, and stable error tests.
+- Similarity review: formulas are direct checked evaluations of marc's own
+  specified bounds and contain no external structure or expression.
+- Local validation: all seven focused profile tests and all 1,190 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

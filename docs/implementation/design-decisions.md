@@ -5138,3 +5138,20 @@ to match the first payload extent before touching serialized output. It then
 writes the generic frame header, fixed Adaptive descriptor, and FGK payload.
 Insufficient token staging or serialized output and any planning discrepancy
 therefore leave the serialized destination unchanged.
+
+## DD-280: The combined reference profile defaults to 64 KiB frames
+
+- Date: 2026-07-19
+- Status: accepted
+
+Keep 2^20 raw bytes as the format-level maximum, but default the executable
+profile configuration to 65,536 raw bytes. At the maximum LZ77 expansion of
+sixteen token bytes per raw byte and the conservative Adaptive bound of 33
+payload bytes per token byte, a 1 MiB raw frame would require a 528 MiB payload
+reservation and cannot satisfy marc's baseline 64 MiB payload limit.
+
+For every nonempty configuration, calculate the largest raw frame, token
+staging, worst-case FGK payload, serialized frame, and active aggregate before
+constructing a transform. Decoder workspace depends only on local limits and
+the 1 MiB/2^24 profile caps, never on an untrusted stream header. Larger frames
+remain selectable when the caller deliberately supplies sufficient limits.
