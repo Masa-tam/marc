@@ -602,3 +602,7 @@ already documented LZMW variant 1 fixed-reference grammar, Blocked Huffman
 variant 1 block format, generic frame format, checked workspace policy, and the
 LZMW references recorded above. No external combined codec, format, source,
 profile, stream, test vector, or workspace layout was consulted.
+The complete-frame validator and decoder reuse marc's local Blocked Huffman
+controller/decoder, LZMW validator/decoder, generic frame parser, and checked
+arithmetic helpers. No external combined decoder, validation order, workspace
+formula, source, test, or malformed-stream corpus was consulted.

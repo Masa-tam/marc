@@ -4638,3 +4638,28 @@ discarded and the reviewed seed retained.
   its header, descriptor, and payload fields were extracted from the document
   and verified by offset; documentation consistency and repository whitespace
   checks passed.
+
+## 2026-07-18 - LZMW plus Blocked Huffman complete-frame decoder
+
+- Authoring method: connected marc's existing Blocked Huffman controller and
+  decoder to its independently specified LZMW validator and iterative decoder
+  behind the generic frame envelope.
+- References used: DD-256 and DD-257, the local 76-byte hand vector, core frame
+  validation and checked arithmetic, and the existing component contracts.
+- Known implementations intentionally not consulted: external combined LZMW
+  decoders, validation pipelines, formats, source, tests, malformed corpora,
+  or workspace formulas.
+- Independent decisions: validate descriptor and payload extents before
+  entropy decode; stage the entire token region; treat non-four-byte extents as
+  dictionary errors; derive phrase and expansion counts from the reconstructed
+  grammar; include all typed regions and raw staging in checked aggregates;
+  publish raw bytes only after complete validation and capacity checks.
+- Generated-code task description: add a decoder-only combined-frame API,
+  exact literal and adjacent-phrase positive vectors, all-prefix and trailing
+  rejection, layer-specific malformed data, caller-region shortages,
+  unsupported-pipeline checks, aggregate-limit checks, and atomic raw output.
+- Similarity review: control flow follows marc's established frame-transaction
+  vocabulary while all LZMW-specific counts and failures derive from its local
+  fixed-reference grammar; no external combined decoder was compared.
+- Local validation: eight focused validator/decoder tests and all 1132 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

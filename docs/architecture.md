@@ -363,9 +363,12 @@ records by the lesser of `max(F-1, 0)` and the configured maximum, and the
 iterative expansion stack by the admitted phrase count plus one for a nonempty
 frame. A future checked opaque workspace partition must accommodate encoder
 phrase spans, or decoder Blocked Huffman views, LZMW phrase records, and
-expansion-stack references without exposing their C++ layouts. This step fixes
-the format, bounds, reserved name, hand vector, and validation order only; it
-does not publish an implementation or public factory.
+expansion-stack references without exposing their C++ layouts. The
+complete-frame validator and decoder now implement the decode half of this
+boundary: header and descriptor extents are fixed first, entropy output is
+staged, the full LZMW grammar is validated, aggregate workspace and raw
+capacity are checked, and only then does iterative expansion publish bytes.
+Encoder, outer streaming, and public factory surfaces remain separate.
 
 ### Combined dictionary and entropy pipelines
 

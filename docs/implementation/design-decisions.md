@@ -4690,3 +4690,26 @@ LZMW phrase records, and explicit expansion-stack references in one checked
 opaque layout. This decision specifies bytes, bounds, validation order, a hand
 vector, and a reserved name only. Decoder, encoder, streaming, C ABI, CLI,
 fuzz, benchmark, completion, and interoperability remain separate steps.
+
+## DD-257: LZMW combined decode validates two bounded grammars
+
+- Date: 2026-07-18
+- Status: accepted
+
+Parse and contextually validate the complete generic frame header before
+deriving descriptor, payload, token-staging, block-view, and phrase-workspace
+extents. Reject truncation, trailing bytes, undersized caller regions, and the
+complete validation aggregate before entropy decode. Decode Blocked Huffman
+only into caller-owned staging, then run the ordinary LZMW validator across the
+entire reconstructed region. A non-multiple-of-four extent, unavailable
+reference, adjacent-phrase overflow, premature end, or trailing token is a
+dictionary validation failure and publishes no raw bytes.
+
+Derive the iterative stack requirement only from the validated LZMW dictionary
+entry count. Before expansion, require raw capacity, stack capacity, and the
+complete descriptor, payload, token, block-view, phrase-record, stack, and raw
+aggregate. Invoke the existing iterative LZMW decoder only after those checks.
+The hand vector and a two-literal adjacent-phrase frame are permanent tests;
+all truncations, trailing bytes, layer-specific malformed data, workspace
+shortages, unsupported pipelines, and aggregate failures are negative tests.
+Encoder and complete-stream behavior remain separate decisions.

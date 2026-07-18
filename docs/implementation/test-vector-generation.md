@@ -1612,3 +1612,17 @@ failure before staging publication, a non-multiple-of-four reconstructed token
 region, forward or unavailable references, phrase-length overflow, short block
 views, phrase or stack workspace, aggregate-limit overflow, and short raw
 output without publishing any byte from the frame.
+
+For the complete-frame decoder, require the documented 76-byte literal frame
+to reconstruct reference 65 and raw `A`. Independently construct raw `AB` as
+references 65 and 66 in one eight-byte entropy block; require one generated
+phrase record `{65, 66, 2}`, two stack entries, and exact raw output. Reject
+every strict prefix and one trailing byte. Check short block-view, token,
+phrase, stack, and raw regions separately.
+
+Keep an output sentinel unchanged when descriptor control fails, when token
+reference 256 appears before any entry exists, when a valid raw entropy block
+reconstructs three bytes rather than a multiple of four, and when aggregate
+workspace is one byte short. The malformed descriptor must fail before token
+staging changes; dictionary failures may change staging but must not publish
+raw bytes. Reject a mismatched pipeline before parsing its frame body.
