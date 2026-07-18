@@ -1332,3 +1332,10 @@ and checked opaque partitioning before publishing a handle, so entropy views,
 LZD phrase records, and expansion references never become ABI types. CLI,
 benchmark, decoder fuzzing, completion, and interoperability remain separate
 admissions.
+
+The public-ABI completion matrix now fixes required binary data classes,
+determinism across one-byte and mixed chunking, stable repeated termination,
+and transactional final-frame rejection. Its 64-byte frame profile derives a
+256-byte maximum LZD token region and 32 phrase entries from the fixed pair
+grammar rather than borrowing another dictionary codec's bounds. CLI,
+benchmark, bounded decoder fuzzing, and interoperability remain unadmitted.

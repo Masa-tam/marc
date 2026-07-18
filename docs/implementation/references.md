@@ -575,3 +575,7 @@ The public C factory uses only marc's established configuration, requirements,
 opaque workspace, transform-handle, and pure-C test conventions together with
 the local LZD composition profile. No external compression ABI, factory,
 allocator convention, source, or test was consulted.
+The public completion matrix uses only marc's C ABI, AGENTS.md data classes and
+chunking requirements, deterministic local generators, and the repository's
+transactional-frame contract. No external corpus, combined-codec test suite,
+malformed stream, source, or compatibility tool was consulted.

@@ -4499,3 +4499,25 @@ discarded and the reviewed seed retained.
   internal code.
 - Local validation: the focused pure-C ABI test and all 1119 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman public completion matrix
+
+- Authoring method: exercised the independently implemented composition only
+  through marc's public C ABI and deterministic repository-local inputs.
+- References used: DD-245 through DD-251, AGENTS.md completion criteria, the
+  C lifecycle contract, and the transactional complete-frame behavior.
+- Known implementations intentionally not consulted: external combined LZD
+  codecs, completion suites, corpora, malformed streams, source, or
+  compatibility tools.
+- Independent decisions: derive the 256-byte token and 32-entry bounds from
+  the LZD pair grammar; cover the required binary classes and frame boundary;
+  compare unlimited, one-byte, and mixed chunk schedules; target only the
+  fourth frame for corruption, truncation, and trailing-data cases.
+- Generated-code task description: add public-ABI deterministic round trips,
+  multi-frame chunk invariance, repeated terminal behavior, and proof that a
+  malformed final frame cannot publish its one raw byte or alter its sentinel.
+- Similarity review: the harness follows marc's existing completion vocabulary
+  while all bounds and expectations derive from the local LZD composition
+  format; no external test expression was compared.
+- Local validation: three new tests and all 1122 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

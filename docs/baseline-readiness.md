@@ -40,6 +40,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
 | `lz78-blocked-huffman` | Third composed dictionary/entropy pipeline | Ready | Included |
 | `lzw-blocked-huffman` | Fourth composed dictionary/entropy pipeline | Ready | Included |
+| `lzd-blocked-huffman` | Fifth composed dictionary/entropy pipeline | Admission in progress | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 5 contains sixteen archives: the frozen fifteen-entry schema-4 set
@@ -72,6 +73,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzd-blocked-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -84,7 +86,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, and public C factory | Public factory admitted; completion and remaining evidence pending |
+| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, public C factory, and completion matrix | Public factory and completion admitted; tooling and fuzz evidence pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence

@@ -4567,3 +4567,24 @@ handle is published. Fix the public boundary with a pure-C `ABABX` round trip:
 three 96-byte frames after the 80-byte prefix, for 368 bytes total. This admits
 only the factory; completion, fuzzing, CLI, benchmark, and interoperability are
 independent evidence.
+
+## DD-251: LZD composition completion is proved through the public C ABI
+
+- Date: 2026-07-18
+- Status: accepted
+
+Exercise the composition only through public configuration, requirements,
+creation, processing, and destruction calls. With 64-byte raw frames, bind the
+exact LZD worst case to 256 token bytes, 32 phrase entries, four 64-byte entropy
+blocks, and four descriptors. Cover empty input, all one-byte values, the full
+byte alphabet, repetition, binary patterns, deterministic generated data, and
+lengths immediately around the frame boundary. Repeated and differently
+chunked encodes must be byte-identical, and repeated ended calls must remain
+stable.
+
+For a 193-byte four-frame stream, corrupt the final frame sequence, truncate
+its final byte, and append one trailing byte in independent cases. Each failure
+must commit exactly the first 192 raw bytes, leave the final destination byte
+untouched, and retain the same positioned terminal error on a later call. This
+admits completion evidence only; CLI, benchmark, decoder fuzzing, and
+interoperability remain separate gates.

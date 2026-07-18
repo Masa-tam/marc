@@ -768,6 +768,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_frame_streaming_encoder_tests.cpp
         tests/lzd_blocked_huffman_frame_tests.cpp
         tests/lzd_blocked_huffman_frame_streaming_tests.cpp
+        tests/lzd_blocked_huffman_completion_tests.cpp
         tests/lzd_blocked_huffman_profile_tests.cpp
         tests/lzd_frame_tests.cpp
         tests/lzd_completion_tests.cpp
