@@ -1653,3 +1653,17 @@ phrase count from the maximum serialized token count minus one and the
 dictionary-entry limit, not from raw frame size. Verify every returned span and
 non-overlap, exact offsets and total bytes, short and misaligned storage,
 tampered requirements, invalid limits, and stable public error mapping.
+
+For combined frame streaming, split raw `ABABX` into contextual frames of two,
+two, and one byte. Build the oracle from the stream prefix and complete-frame
+encoder. Require a one-byte-input/one-byte-output streaming encoder to match it
+exactly and the corresponding decoder to reproduce the raw bytes. Repeated
+calls after completion must retain `EndOfStream`.
+
+Corrupt the first reference of the second frame to unavailable reference 256.
+Decode in one call and require only the first frame's `AB` to be published; the
+second frame contributes no byte and the malformed error remains sticky.
+Separately test the exact empty prefix, premature final input, every required
+workspace class, a one-byte truncation, unsupported `ResetBlock`, a partial
+frame `Flush` that preserves input, and encoder and decoder aggregate limits
+one byte below the actual active-frame requirement.

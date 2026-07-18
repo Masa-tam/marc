@@ -376,7 +376,14 @@ caller-owned phrase spans, serializes the exact four-byte references into
 staging, and plans Blocked Huffman only over those bytes. The encoder publishes
 the generic header, descriptors/models, and payload only after exact output
 capacity is known. Complete-frame encode and decode are now implemented; outer
-streaming and public factory surfaces remain separate.
+streaming adapters now reuse one frame input/output region, canonical-reference
+staging, and the profile's typed views. The encoder drains the canonical
+80-byte prefix, collects exactly one contextual raw frame, and drains its
+complete encoded form. The decoder collects and validates one complete encoded
+frame, decodes into raw staging, and only then drains it. One-byte boundaries,
+nonterminal flush, exact finish, sticky malformed errors, and preservation of
+already committed earlier frames are tested. The public factory remains
+separate.
 
 ### Combined dictionary and entropy pipelines
 

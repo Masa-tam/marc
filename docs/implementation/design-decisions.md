@@ -4757,3 +4757,26 @@ as trailing data rather than fail because the profile under-sized its workspace.
 Compute aligned block, phrase, and expansion offsets with checked arithmetic;
 partition only when counts, offsets, byte extent, and maximum alignment exactly
 match the recomputed layout. Reject short or misaligned storage.
+
+## DD-260: LZMW combined streaming commits complete frames
+
+- Date: 2026-07-18
+- Status: accepted
+
+Encode by draining the canonical 80-byte stream prefix, collecting exactly the
+next contextual raw frame, invoking the complete-frame planner and encoder in
+the profile-provided regions, and draining that immutable frame before reusing
+storage. A full frame may be emitted before later `EndInput`; a final short
+frame is valid only when it completes the known original size. Nonterminal
+`Flush` does not close a partial frame. Reject `ResetBlock`, excess input, and
+premature final input with sticky stable errors.
+
+Decode by collecting and validating the prefix, then each 56-byte frame header
+before accepting its bounded body. Check the actual encoded frame, token
+staging, raw staging, block-view, phrase-record, and expansion-stack aggregate
+before body collection. Decode a complete frame only into raw staging and drain
+it afterward. Thus malformed frame `N` publishes no byte from `N`, while bytes
+from earlier frames remain committed. Require one-byte input/output equivalence
+with the complete-frame oracle, empty-stream exactness, truncation and trailing
+rejection, workspace failures, sticky later-frame corruption, flush behavior,
+repeated terminal status, and aggregate limits.

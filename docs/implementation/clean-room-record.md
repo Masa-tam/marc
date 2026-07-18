@@ -4714,3 +4714,28 @@ discarded and the reviewed seed retained.
   LZMW grammar rather than copied as LZD formulas.
 - Local validation: seven focused profile tests and all 1144 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman frame streaming
+
+- Authoring method: mechanically specialized marc's established composed-
+  frame state machine, then independently replaced construction and validation
+  bounds with the local LZMW fixed-reference rules and DD-259 workspace spans.
+- References used: DD-256 through DD-260, the local complete-frame codec,
+  opaque workspace profile, process-result invariants, and canonical stream
+  prefix format.
+- Known implementations intentionally not consulted: external LZMW streaming
+  codecs, adapters, buffering policies, source, tests, error conventions, or
+  malformed corpora.
+- Independent decisions: compute encoder token capacity through the LZMW `4F`
+  helper; derive decoder phrase capacity from serialized tokens; stage and
+  publish only complete frames; preserve prior committed frames on later
+  failure; keep Flush nonterminal and reject ResetBlock at this boundary.
+- Generated-code task description: add encoder and decoder state machines,
+  profile-workspace integration, one-byte chunk equivalence, three-frame
+  corruption atomicity, sticky errors, workspace and aggregate failures,
+  empty/premature finish, truncation, reset rejection, and flush preservation.
+- Similarity review: state vocabulary and control skeleton are marc-owned; all
+  LZMW sizing substitutions and frame fixtures were re-derived and reviewed,
+  with no external streaming expression compared.
+- Local validation: eight focused streaming tests and all 1,152 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
