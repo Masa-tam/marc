@@ -4781,3 +4781,27 @@ discarded and the reviewed seed retained.
   fixtures were recomputed from `4F` and `F-1`, with no LZD sizing retained.
 - Local validation: three focused completion tests and all 1,156 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman bounded decoder fuzz boundary
+
+- Authoring method: specialized marc's established composed streaming fuzz
+  state machine and independently re-derived LZMW token-dependent capacities.
+- References used: DD-263, the local streaming decoder, LZMW fixed-reference
+  validator, Blocked Huffman views, process-result invariants, and fixed fuzz
+  workspace policy.
+- Known implementations intentionally not consulted: external LZMW fuzzers,
+  corpora, malformed samples, sanitizer harnesses, source, or test suites.
+- Independent decisions: derive 1,023 phrase slots from 4 KiB of four-byte
+  references rather than raw-frame size; reserve one extra expansion entry;
+  cap input at 8 KiB; include every typed and byte region in the fixed aggregate;
+  retain canonical truncation, extreme lengths, and unavailable-reference tests.
+- Generated-code task description: add a bounded libFuzzer entrypoint, ordinary
+  compile-smoke, reviewed truncated-magic seed, permanent atomic regressions,
+  and a 1,000-input ASan/UBSan campaign with timeout and RSS caps.
+- Similarity review: control vocabulary and chunk schedules are marc-owned;
+  LZMW counts were recalculated from token grammar and no LZD `F/2` bound was
+  retained.
+- Local validation: three focused regressions, all 1,159 Release tests under
+  both MSVC/Visual Studio 2026 and Clang 22.1.3, and a 1,000-input Clang
+  sanitizer campaign passed on Windows x64 with no crash, hang, ASan, or UBSan
+  finding and 37 MiB peak RSS.

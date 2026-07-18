@@ -396,6 +396,11 @@ The public completion matrix now exercises binary data classes, deterministic
 encoding, dictionary and frame-boundary neighbors, one-byte and mixed
 chunking, repeated terminal calls, and frame-atomic final corruption,
 truncation, and trailing-data rejection exclusively through that C factory.
+A dedicated decoder fuzz boundary fixes every frame, reference, entropy-view,
+phrase-record, expansion-stack, and total-output region before inspecting
+serialized bytes. Byte-derived partial I/O and a fixed call ceiling exercise
+the incremental state machine; permanent regressions retain complete canonical
+truncation, extreme frame lengths, and an unavailable reconstructed reference.
 
 ### Combined dictionary and entropy pipelines
 

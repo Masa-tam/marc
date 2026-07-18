@@ -624,3 +624,7 @@ allocator convention, object layout, wrapper source, or test was consulted.
 The completion matrix uses only DD-262, marc's public combined C ABI, and
 deterministic repository-local inputs. No external vector, completion suite,
 malformed corpus, or codec implementation was consulted.
+The combined fuzz boundary uses only DD-263, marc's LZMW validator and streaming
+decoder contracts, fixed local workspace types, and repository fuzz invariants.
+No external fuzzer harness, corpus, malformed sample, or implementation source
+was consulted.

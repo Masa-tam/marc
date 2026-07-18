@@ -1691,3 +1691,15 @@ field, truncate its last byte, and append one trailing zero as independent
 cases. Each decode must report malformed input after publishing exactly the
 first 192 bytes; the sentinel final output byte must remain unchanged and the
 same error and position must repeat on the next call.
+
+For permanent combined-fuzz regressions, encode the single-frame raw input
+`ABABX` with a four-byte entropy block and an explicit four-entry LZMW policy.
+Require every proper prefix of the resulting canonical stream to fail without
+changing a five-byte `a5` output sentinel. Independently overwrite all generic
+frame length fields with `ff`, and replace the second raw entropy reference by
+little-endian 256 before LZMW validation can admit it. Both mutations must fail
+atomically and repeat the same sticky error category.
+
+Seed the coverage-guided target with the hand-authored five bytes `MARC\n`.
+Copy that seed into an ignored build corpus before a bounded campaign so new
+mutations never modify the reviewed repository corpus.

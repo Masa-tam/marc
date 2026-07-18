@@ -4822,3 +4822,24 @@ commit exactly the earlier 192 raw bytes, leave the final output byte untouched,
 and repeat the same terminal error position without consuming or producing
 additional data. This admits completion evidence but does not imply CLI,
 benchmark, fuzz, or interoperability admission.
+
+## DD-263: LZMW combined fuzzing fixes token-derived phrase capacity
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add a streaming-decoder fuzz target with at most 8 KiB supplied input, 4 KiB
+total output, 1 KiB raw frames, 4 KiB canonical-reference and payload extents,
+and eight entropy blocks. Derive phrase capacity from malformed-admissible token
+storage as `4096/4-1 = 1023`, not from the declared raw frame size, and reserve
+1,024 iterative expansion references. Count the fixed encoded frame, reference
+staging, raw staging, block views, phrases, and expansion entries in the local
+aggregate limit before processing input.
+
+Use byte-derived input/output chunks and a fixed call ceiling; abort only on an
+invalid process result, forbidden zero-progress status, impossible exhausted-
+input request, or call-ceiling breach. Keep the libFuzzer/ASan/UBSan executable
+in the explicit Clang fuzz build and compile its entrypoint warning-clean in
+ordinary builds. Permanently test every truncation of a valid one-frame stream,
+extreme frame length fields, and a raw entropy block that reconstructs an
+unavailable LZMW reference, requiring zero raw publication and sticky failure.
