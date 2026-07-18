@@ -4930,3 +4930,25 @@ artifact publication from v4 to the current official
 `actions/upload-artifact@v7`, and leave later dependency proposals to
 Dependabot. This audit changes no stream byte, C ABI, codec behavior, or
 artifact name.
+
+## DD-268: README reports CI and notices carry the dependency license
+
+- Date: 2026-07-18
+- Status: accepted
+
+Place one GitHub Actions badge immediately below the README title. Derive it
+from `.github/workflows/ci.yml` and constrain it to `main`. Use GitHub's plain
+image form so it remains compatible with the repository's strict Markdown link
+validator. A badge reports CI state; it does not replace the readiness matrix
+or make a compatibility or security guarantee.
+
+Align GoogleTest attribution with the requested mffv1 notice structure: state
+that marc itself is MIT licensed, distinguish development/test dependencies
+from marc's license, identify the submodule path and upstream repository,
+include the exact BSD-3-Clause text from the initialized submodule, point to
+the authoritative local license, and state that GoogleTest is not linked into
+library artifacts. Do not duplicate the current submodule version or commit in
+the notice; the Git link is authoritative and Dependabot may update it without
+changing license terms. Add the root notice to mandatory documentation-layout
+verification and compare its fenced license text byte-for-byte after newline
+normalization with the initialized submodule's `LICENSE`.
