@@ -14,7 +14,7 @@ format versions, and C ABI versions are independent namespaces.
 
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
-  transactional CLI selector.
+  transactional CLI and benchmark selectors.
 
 ## 0.1.0 - 2026-07-19
 

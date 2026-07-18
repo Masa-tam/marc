@@ -1244,8 +1244,9 @@ allocation or mutation.
 
 This section fixes the decoder-visible representation. The bounded C ABI
 factory is published as `marc_lz77_adaptive_huffman_*`, and the explicit CLI
-selector uses the same name. Benchmarking and interoperability schema admission
-remain separate evidence steps. Bounded frame/stream decoder fuzzing and the
+selector and dependency-free benchmark use the same name. Interoperability
+schema admission remains a separate evidence step. Bounded frame/stream decoder
+fuzzing and the
 public-ABI completion
 matrix cover deterministic
 round-trips, arbitrary chunking, stable termination, and transactional final

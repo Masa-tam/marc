@@ -697,3 +697,9 @@ The `lz77-adaptive-huffman` CLI adapter uses only DD-286, marc's public
 combined C ABI, the local transactional file loop, and the established CLI
 integration script. No external command-line tool, adapter source, archive
 workflow, or test fixture was consulted.
+
+The `lz77-adaptive-huffman` benchmark adapter uses only DD-287, the same public
+C factory and CLI profile constants, checked complete-stream capacity
+arithmetic, and marc's repository-owned measurement contract. No external
+benchmark harness, implementation, result, corpus, capacity formula, or tuning
+guidance was consulted.

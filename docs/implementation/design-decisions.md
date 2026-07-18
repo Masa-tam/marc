@@ -5276,3 +5276,22 @@ malformed-input rejection, strict trailing-data rejection, and removal of both
 the requested output and `.tmp` staging path on failure. Keep the selector
 explicit; do not change the default `lz77` profile or infer a decoder from the
 serialized algorithm IDs.
+
+## DD-287: The LZ77 plus Adaptive Huffman benchmark uses checked profile bounds
+
+- Date: 2026-07-19
+- Status: accepted
+
+Add `lz77-adaptive-huffman` to the dependency-free benchmark through only the
+public C configuration, workspace-query, create, process, and destroy API. Use
+the same 65,536-byte raw frame, 1,048,576-byte canonical LZ77 token bound,
+33-byte-per-token Adaptive payload bound, LZ77 window and match limits, and
+64 MiB active aggregate policy as the CLI profile.
+
+Compute complete-stream output capacity with 80 prefix bytes, 56 header bytes
+and one 16-byte Adaptive descriptor per nonempty 64-KiB frame, plus 528 payload
+bytes per raw input byte. Perform checked arithmetic before allocation. Query
+encoder and decoder workspaces independently, verify an exact complete round
+trip before timing, measure the two directions separately, and report peak
+caller-reserved workspace as the larger direction-specific sum. Input and
+encoded/decoded buffers remain outside that workspace metric.

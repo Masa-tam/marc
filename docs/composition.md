@@ -54,8 +54,8 @@ compatibility promise.
 
 `lz77-adaptive-huffman` is the first Adaptive Huffman composition with a
 bounded public C factory and public-ABI completion matrix. Bounded frame and
-stream decoder fuzzing and a transactional CLI selector are available. Its
-benchmark adapter and interoperability archive remain pending.
+stream decoder fuzzing, a transactional CLI selector, and a public-C-ABI
+benchmark adapter are available. Its interoperability archive remains pending.
 
 ## Why publication is not automatic
 

@@ -1769,3 +1769,10 @@ repeat the lifecycle for empty input. Require a second encode to refuse the
 existing output. Decode `not-a-marc-stream` and a valid archive with one
 trailing `x`; both must fail and leave neither the requested destination nor
 its `.tmp` staging path.
+
+For benchmark smoke, run
+`marc_benchmark lz77-adaptive-huffman README.md 1`. Require a complete verified
+round trip before timing and the standard codec name, byte counts, ratio,
+encode/decode seconds and MiB/s, six direction-specific workspace extents, and
+peak caller-reserved workspace fields. Treat the values as local observations,
+not frozen performance thresholds.

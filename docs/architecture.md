@@ -1183,6 +1183,12 @@ The transactional CLI selector uses the 64-KiB reference frame through the
 public C ABI. It obtains both workspace extents from the requirements query and
 commits the temporary output path only after complete stream termination.
 
+The benchmark selects that identical fixed profile through the same public C
+lifecycle. Its checked capacity calculation uses the 64-KiB frame cadence and
+the conservative 528-byte Adaptive payload bound for every raw byte. A complete
+round trip precedes separate encode/decode timing; the reported peak workspace
+is the larger queried two-region sum and excludes corpus and result buffers.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

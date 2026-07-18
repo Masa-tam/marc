@@ -77,7 +77,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | No | Yes | Yes | No |
+| `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -172,7 +172,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-286, the complete Release suite contains 1,207 tests and passes under both
+At DD-287, the complete Release suite contains 1,208 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

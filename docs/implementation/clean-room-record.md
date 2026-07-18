@@ -5342,3 +5342,28 @@ discarded and the reviewed seed retained.
 - Local validation: the focused CLI integration test and all 1,207 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman benchmark adapter
+
+- Authoring method: extended marc's repository-owned benchmark registry after
+  fixing the profile-specific capacity and measurement policy in DD-287.
+- References used: DD-287, the public combined C ABI, the CLI's 64-KiB profile
+  constants, checked integer arithmetic, and the existing benchmark contract.
+- Known implementations intentionally not consulted: external compression
+  benchmarks, harnesses, combined-codec implementations, published results,
+  corpora, capacity formulas, source, or optimization guidance.
+- Independent decisions: count outer frames at the profile's 65,536-byte raw
+  cadence; reserve 528 Adaptive payload bytes per raw byte plus one descriptor
+  and generic header per frame; retain the parameterized 80-byte prefix; query
+  encoder and decoder workspace independently; exclude corpus and result
+  buffers from peak caller-reserved workspace.
+- Generated-code task description: add the public selector, configuration,
+  workspace and factory dispatch, checked capacity calculation, README smoke
+  registration, measurement documentation, and readiness evidence.
+- Similarity review: the adapter reuses only marc-owned benchmark and public-
+  ABI conventions; no external benchmark expression or result was compared.
+- Local validation: the focused benchmark smoke and all 1,208 Release tests,
+  including all nineteen labeled benchmark smokes, passed under both MSVC and
+  Clang. The README observation encoded 4,424 bytes to 5,880 bytes and reported
+  a 36,831,360-byte peak caller-reserved workspace on the local MSVC build;
+  throughput values remain non-normative and are not recorded as thresholds.

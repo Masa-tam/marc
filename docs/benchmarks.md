@@ -12,6 +12,7 @@ marc_benchmark rans corpus.bin 5
 marc_benchmark tans corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
+marc_benchmark lz77-adaptive-huffman corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
@@ -81,6 +82,14 @@ worst-case 16-byte LZ77 token per raw byte, one 16-byte Blocked Huffman
 descriptor per entropy block, and raw entropy fallback. Reported workspace
 therefore includes dictionary staging and decoder block views in addition to
 the ordinary primary and secondary frame regions.
+
+`lz77-adaptive-huffman` uses the CLI's 65,536-byte raw frame, at most
+1,048,576 canonical LZ77 token bytes, and one independently reset FGK tree per
+outer frame. Capacity planning reserves the conservative 33-byte Adaptive
+payload bound for each token byte, one 16-byte descriptor per nonempty frame,
+each 56-byte frame header, and the 80-byte parameterized stream prefix. The
+benchmark obtains both direction-specific workspace extents from the public C
+ABI and verifies a complete round trip before timing.
 
 `lzss-blocked-huffman` uses the same frame and entropy-block policy. Capacity
 planning substitutes LZSS's two-byte all-Literal token bound, includes one

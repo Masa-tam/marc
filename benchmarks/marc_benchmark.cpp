@@ -21,6 +21,9 @@ constexpr std::uint64_t frame_header_size = 56;
 constexpr std::uint64_t parameterized_stream_prefix_size = 80;
 constexpr std::uint64_t entropy_block_size = UINT64_C(1) << 16;
 constexpr std::uint64_t entropy_descriptor_size = 16;
+constexpr std::uint64_t lz77_adaptive_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lz77_token_size = 16;
+constexpr std::uint64_t adaptive_payload_bytes_per_symbol = 33;
 constexpr std::uint64_t rans_descriptor_size = 528;
 constexpr std::uint64_t rans_state_size = 8;
 constexpr std::uint64_t tans_descriptor_size = 528;
@@ -35,6 +38,7 @@ enum class Codec {
     tans,
     lz77,
     lz77_blocked_huffman,
+    lz77_adaptive_huffman,
     lzss,
     lzss_blocked_huffman,
     lz78,
@@ -65,6 +69,7 @@ struct CodecConfig {
     marc_tans_config tans{};
     marc_lz77_config lz77{};
     marc_lz77_blocked_huffman_config lz77_blocked_huffman{};
+    marc_lz77_adaptive_huffman_config lz77_adaptive_huffman{};
     marc_lzss_config lzss{};
     marc_lzss_blocked_huffman_config lzss_blocked_huffman{};
     marc_lz78_config lz78{};
@@ -100,6 +105,8 @@ struct Measurement {
     if (codec == Codec::lz77) return "lz77";
     if (codec == Codec::lz77_blocked_huffman)
         return "lz77-blocked-huffman";
+    if (codec == Codec::lz77_adaptive_huffman)
+        return "lz77-adaptive-huffman";
     if (codec == Codec::lzss) return "lzss";
     if (codec == Codec::lzss_blocked_huffman)
         return "lzss-blocked-huffman";
@@ -126,6 +133,8 @@ struct Measurement {
     if (codec == Codec::lz77
         || codec == Codec::lz77_blocked_huffman)
         return UINT64_C(16);
+    if (codec == Codec::lz77_adaptive_huffman)
+        return lz77_token_size * adaptive_payload_bytes_per_symbol;
     if (codec == Codec::lzss
         || codec == Codec::lzss_blocked_huffman)
         return UINT64_C(2);
@@ -168,6 +177,8 @@ struct Measurement {
         return frame_size * payload_factor(codec) / entropy_block_size
             * entropy_descriptor_size;
     }
+    if (codec == Codec::lz77_adaptive_huffman)
+        return entropy_descriptor_size;
     return codec == Codec::lzd ? UINT64_C(4) : UINT64_C(0);
 }
 
@@ -177,7 +188,9 @@ struct Measurement {
     result = {};
     result.codec = codec;
     const auto block_count = frame_size / entropy_block_size;
-    const auto maximum_payload = frame_size * payload_factor(codec)
+    const auto raw_frame_size = codec == Codec::lz77_adaptive_huffman
+        ? lz77_adaptive_frame_size : frame_size;
+    const auto maximum_payload = raw_frame_size * payload_factor(codec)
         + (codec == Codec::dynamic_range ? UINT64_C(5) : UINT64_C(0))
         + (codec == Codec::rans
             ? block_count * rans_state_size : UINT64_C(0))
@@ -208,6 +221,11 @@ struct Measurement {
                || codec == Codec::lzmw_blocked_huffman) {
         maximum_buffered = frame_size + maximum_payload + frame_header_size
             + payload_overhead_per_frame(codec) + maximum_payload;
+    } else if (codec == Codec::lz77_adaptive_huffman) {
+        const auto dictionary_bytes =
+            lz77_adaptive_frame_size * lz77_token_size;
+        maximum_buffered = lz77_adaptive_frame_size + dictionary_bytes
+            + frame_header_size + entropy_descriptor_size + maximum_payload;
     } else {
         maximum_buffered = frame_size + frame_header_size + maximum_payload;
     }
@@ -308,6 +326,21 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_blocks_per_frame = static_cast<std::uint32_t>(
             maximum_payload / entropy_block_size);
+        config.max_lz_distance = UINT64_C(1) << 16;
+        config.max_lz_match_length = 258;
+    } else if (codec == Codec::lz77_adaptive_huffman) {
+        auto& config = result.lz77_adaptive_huffman;
+        if (marc_lz77_adaptive_huffman_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size =
+            static_cast<std::uint32_t>(lz77_adaptive_frame_size);
+        config.max_frame_size = lz77_adaptive_frame_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_dictionary_serialized_size =
+            lz77_adaptive_frame_size * lz77_token_size;
+        config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = UINT64_C(1) << 16;
         config.max_lz_match_length = 258;
     } else if (codec == Codec::lzss) {
@@ -479,6 +512,9 @@ struct Measurement {
     if (config.codec == Codec::lz77_blocked_huffman)
         return marc_lz77_blocked_huffman_workspace_requirements(
             &config.lz77_blocked_huffman, &requirements);
+    if (config.codec == Codec::lz77_adaptive_huffman)
+        return marc_lz77_adaptive_huffman_workspace_requirements(
+            &config.lz77_adaptive_huffman, &requirements);
     if (config.codec == Codec::lzss)
         return marc_lzss_workspace_requirements(&config.lzss, &requirements);
     if (config.codec == Codec::lzss_blocked_huffman)
@@ -538,6 +574,9 @@ struct Measurement {
         return marc_lz77_blocked_huffman_create(
             &config.lz77_blocked_huffman, primary, secondary, views,
             transform);
+    if (config.codec == Codec::lz77_adaptive_huffman)
+        return marc_lz77_adaptive_huffman_create(
+            &config.lz77_adaptive_huffman, primary, secondary, transform);
     if (config.codec == Codec::lzss)
         return marc_lzss_create(&config.lzss, primary, secondary, transform);
     if (config.codec == Codec::lzss_blocked_huffman)
@@ -606,8 +645,11 @@ struct Measurement {
 [[nodiscard]] bool maximum_encoded_size(const Codec codec,
                                         const std::size_t input_size,
                                         std::size_t& result) noexcept {
+    const auto selected_frame_size = codec == Codec::lz77_adaptive_huffman
+        ? lz77_adaptive_frame_size : frame_size;
     const auto frames = input_size == 0 ? std::size_t{0}
-        : std::size_t{1} + (input_size - 1) / static_cast<std::size_t>(frame_size);
+        : std::size_t{1} + (input_size - 1)
+            / static_cast<std::size_t>(selected_frame_size);
     if (codec == Codec::tans) {
         constexpr auto prefix_size = std::size_t{64};
         const auto half = input_size / 2 + input_size % 2;
@@ -739,6 +781,7 @@ void print_usage() {
     std::cerr << "usage: marc_benchmark <codec> <input> [iterations]\n"
                  "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
                  "dynamic-range, rans, tans, lz77, lz77-blocked-huffman, "
+                 "lz77-adaptive-huffman, "
                  "lzss, lzss-blocked-huffman, lz78, "
                  "lz78-blocked-huffman, lzw, lzw-blocked-huffman, "
                  "lzd, lzd-blocked-huffman, lzmw, "
@@ -854,6 +897,8 @@ int main(const int argc, const char* const argv[]) {
     else if (name == "lz77") codec = Codec::lz77;
     else if (name == "lz77-blocked-huffman")
         codec = Codec::lz77_blocked_huffman;
+    else if (name == "lz77-adaptive-huffman")
+        codec = Codec::lz77_adaptive_huffman;
     else if (name == "lzss") codec = Codec::lzss;
     else if (name == "lzss-blocked-huffman")
         codec = Codec::lzss_blocked_huffman;
