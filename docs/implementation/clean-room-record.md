@@ -5162,3 +5162,28 @@ discarded and the reviewed seed retained.
 - Local validation: all fourteen combined validator/decoder tests and all 1,177
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman frame encoder
+
+- Authoring method: composed marc's independently implemented LZ77 encoder,
+  Adaptive FGK planner/encoder, and generic frame serializer in the exact order
+  already frozen by the combined format.
+- References used: DD-279, the documented 76-byte hand vector, LZ77 token
+  grammar, Adaptive descriptor rules, checked aggregate bounds, and local
+  plan-before-write contracts.
+- Known implementations intentionally not consulted: external combined codec
+  encoders, foreign LZ/Huffman frame formats, or third-party reference tests.
+- Independent decisions: expose separate plan and emit operations; retain the
+  canonical token staging boundary; repeat and compare the Adaptive plan before
+  serialization; reject capacity and aggregate-limit failures without changing
+  serialized output.
+- Generated-code task description: implement exact frame planning and emission,
+  require the independent hand vector byte-for-byte, prove deterministic
+  overlapping-match round trip, and test capacity, frame extent, and workspace
+  failures.
+- Similarity review: implementation follows marc's local composition format and
+  existing independently authored component contracts; no external expression
+  was used.
+- Local validation: all twenty combined frame tests and all 1,183 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

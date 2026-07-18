@@ -2,7 +2,9 @@
 #define MARC_FRAME_LZ77_ADAPTIVE_HUFFMAN_FRAME_HPP
 
 #include "dictionary/lz77_decoder.hpp"
+#include "dictionary/lz77_encoder.hpp"
 #include "entropy/adaptive_huffman_decoder.hpp"
+#include "entropy/adaptive_huffman_encoder.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -16,6 +18,8 @@ namespace marc::frame {
 enum class Lz77AdaptiveHuffmanFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
+    input_size_mismatch,
+    serialized_output_too_small,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
@@ -29,7 +33,10 @@ enum class Lz77AdaptiveHuffmanFrameValidationError : std::uint8_t {
     entropy_decode_error,
     dictionary_validation_error,
     dictionary_decode_error,
+    dictionary_encode_error,
+    entropy_encode_error,
     arithmetic_overflow,
+    internal_error,
 };
 
 struct Lz77AdaptiveHuffmanFrameValidationResult {
@@ -49,9 +56,38 @@ struct Lz77AdaptiveHuffmanFrameValidationResult {
         dictionary::internal::Lz77FormatError::none};
     dictionary::internal::Lz77DecodeError dictionary_decode_error{
         dictionary::internal::Lz77DecodeError::none};
+    dictionary::internal::Lz77EncodeError dictionary_encode_error{
+        dictionary::internal::Lz77EncodeError::none};
+    entropy::internal::AdaptiveHuffmanEncodeError entropy_encode_error{
+        entropy::internal::AdaptiveHuffmanEncodeError::none};
     Lz77AdaptiveHuffmanFrameValidationError error{
         Lz77AdaptiveHuffmanFrameValidationError::none};
 };
+
+// Produces canonical LZ77 staging and determines the complete frame extent.
+// Input and staging must not overlap.
+[[nodiscard]] Lz77AdaptiveHuffmanFrameValidationResult
+plan_lz77_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing serialized output. Input, staging, and
+// output must be mutually non-overlapping.
+[[nodiscard]] Lz77AdaptiveHuffmanFrameValidationResult
+encode_lz77_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Validates and entropy-decodes one complete frame into private canonical
 // LZ77-token staging. No raw byte is reconstructed or published here. Input

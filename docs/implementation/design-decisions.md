@@ -5122,3 +5122,19 @@ into private raw staging. Copy exactly the declared raw extent to caller output
 only when LZ77 reconstruction succeeds. Capacity, workspace, header,
 descriptor, entropy, token-validation, and reconstruction failures therefore
 publish no current-frame raw byte.
+
+## DD-279: Combined frame encoding plans both layers before serialization
+
+- Date: 2026-07-19
+- Status: accepted
+
+Plan the complete LZ77 token stream into caller-supplied private staging, then
+plan Adaptive FGK over those canonical bytes before writing a frame header,
+descriptor, or payload. Check the exact descriptor, payload, token-staging, and
+serialized extents with checked arithmetic and the configured aggregate limit.
+
+The emitting operation repeats the deterministic Adaptive plan and requires it
+to match the first payload extent before touching serialized output. It then
+writes the generic frame header, fixed Adaptive descriptor, and FGK payload.
+Insufficient token staging or serialized output and any planning discrepancy
+therefore leave the serialized destination unchanged.
