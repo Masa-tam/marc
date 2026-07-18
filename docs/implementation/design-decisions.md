@@ -4964,3 +4964,20 @@ links, rewrite each linked image into separate image-target and navigation-targe
 links. This preserves validation of relative image assets and relative badge
 destinations without allowing nested brackets to merge unrelated links into one
 false broken target. The README badge is the repository-owned regression case.
+
+## DD-270: GoogleTest tracks an explicit stable release branch
+
+- Date: 2026-07-18
+- Status: accepted
+
+Pin the GoogleTest submodule to the `v1.17.0` commit and declare `v1.17.x` as
+its update branch in `.gitmodules`. The first Dependabot submodule proposal
+after publication moved the gitlink from the 2025 `v1.17.0` commit to the 2023
+`v1.14.0` commit even though its pull-request title described the change as a
+bump and its tests passed. Treat commit ancestry, release tags, and dates as
+the dependency-version evidence rather than the proposal label alone.
+
+Allow Dependabot to propose patch-line advances through the explicit branch.
+Changing to a later GoogleTest release line remains a deliberate review that
+updates `.gitmodules`, the gitlink, and CI evidence together. GoogleTest remains
+development/test-only and this policy does not alter marc library artifacts.

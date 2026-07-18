@@ -4957,3 +4957,24 @@ discarded and the reviewed seed retained.
 - Local validation: the registered documentation-layout test passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja Release builds with the linked
   README badge present.
+
+## 2026-07-18 - GoogleTest update-line correction
+
+- Authoring method: compared the merged Dependabot gitlink with the previous
+  gitlink, local tags, commit dates, and the official GoogleTest remote refs.
+- References used: DD-270, Dependabot pull request 2 as merged by the repository
+  owner, GoogleTest's official Git refs, and marc's existing submodule policy.
+- Known implementations intentionally not consulted: GoogleTest source code,
+  external codec source, or third-party dependency-manager source.
+- Independent decisions: reject a passing but mislabeled dependency downgrade;
+  restore the reviewed `v1.17.0` commit; declare `v1.17.x` as the patch update
+  line; require deliberate review when changing release lines.
+- Generated-code task description: audit the post-Dependabot submodule state,
+  detect update-direction inconsistencies, restore the intended stable release,
+  make future update scope explicit, and rerun both complete local suites.
+- Similarity review: only Git metadata and build/test integration were examined;
+  no GoogleTest implementation expression was consulted.
+- Local validation: both build trees regenerated and rebuilt against GoogleTest
+  `v1.17.0`; all 1,162 Release tests passed under MSVC/Visual Studio 2026 and
+  Clang 22.1.3/Ninja on Windows x64, including the exact-license and linked-badge
+  documentation checks.
