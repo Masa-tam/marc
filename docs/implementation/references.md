@@ -559,3 +559,7 @@ The complete-frame validator and decoder reuse marc's local Blocked Huffman
 controller/decoder, LZD validator/decoder, generic frame parser, and checked
 arithmetic helpers. No external combined decoder, validation order, workspace
 formula, source, test, or malformed-stream corpus was consulted.
+The complete-frame planner and encoder reuse marc's local deterministic LZD
+encoder, Blocked Huffman planner/encoder, generic frame serializer, and checked
+arithmetic helpers. No external combined encoder, planning order, workspace
+formula, source, vector, or compression heuristic was consulted.

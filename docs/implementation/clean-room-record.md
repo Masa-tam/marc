@@ -4409,3 +4409,27 @@ discarded and the reviewed seed retained.
   compared.
 - Local validation: six new tests and all 1098 Release tests passed under
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman complete-frame encoder
+
+- Authoring method: connected marc's deterministic LZD planner/encoder,
+  Blocked Huffman planner/encoder, and generic frame serializer through a new
+  internal complete-frame boundary.
+- References used: DD-245 through DD-247, the repository-defined frame and
+  algorithm formats, and local checked-workspace contracts.
+- Known implementations intentionally not consulted: external LZD or combined
+  codecs, encoders, planners, source, pseudocode, test suites, corpora,
+  heuristics, or workspace layouts.
+- Independent decisions: finalize LZD token bytes before entropy planning;
+  require zero encoder records for a one-byte terminal token and one for `AB`;
+  aggregate actual staging with typed encoder records; preflight the complete
+  destination before frame publication.
+- Generated-code task description: reproduce the frozen 80-byte frame, prove
+  deterministic token-splitting entropy blocks and round trip, and isolate
+  encoder-record, staging, output, aggregate, empty-input, and frame-extent
+  failures without weakening their validation order.
+- Similarity review: the implementation composes only marc-owned encoders,
+  representations, and error contracts; no external combined expression was
+  compared.
+- Local validation: five new tests and all 1103 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

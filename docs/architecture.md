@@ -1301,3 +1301,11 @@ and decoding count their distinct caller-owned regions under checked aggregate
 limits. This is an internal decoder boundary only; encoder planning, streaming,
 the C ABI, CLI, benchmark, fuzz target, completion matrix, and interoperability
 admission remain future steps for this profile.
+
+The matching internal planner and encoder now complete the LZD parse and write
+the exact canonical token region before entropy planning. Blocked Huffman sees
+only that immutable byte span, so its blocks may split a token without changing
+dictionary parsing. The planner derives the generic header and final serialized
+extent from the chosen block representations; the encoder refuses a short final
+destination before publishing any frame byte. The profile still has no
+streaming transform or public factory.

@@ -4481,3 +4481,24 @@ dictionary staging, block views, phrase records, expansion references, and raw
 transactional output in checked aggregate limits appropriate to validation or
 decode. Report arithmetic overflow distinctly from an ordinary workspace-limit
 failure.
+
+## DD-247: LZD composition fixes tokens before entropy planning
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add the matching internal complete-frame planner and encoder without publishing
+a stream factory. Query the exact LZD encoder-entry count, complete the
+deterministic LZD parse, and serialize the resulting eight-byte reference pairs
+into caller-owned staging before asking Blocked Huffman to choose block models
+and raw fallbacks. Construct the generic frame header only from those fixed
+sizes. A short final serialized destination is rejected after complete planning
+and before writing any header, descriptor, or payload byte.
+
+For a one-byte terminal token, require zero encoder entries because the absent
+right reference creates no phrase. For a right-present two-byte pair, require
+one entry. Count encoder entries and the actual staged token extent together
+under checked aggregate limits. Tests that isolate later frame-extent rejection
+must first supply the full `8*ceil(F/2)` staging capacity; otherwise the earlier
+and more specific staging-capacity error is correct. This preserves validation
+order instead of weakening an earlier check to satisfy a later expectation.
