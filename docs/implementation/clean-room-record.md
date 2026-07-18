@@ -5278,3 +5278,26 @@ discarded and the reviewed seed retained.
 - Local validation: the focused pure-C factory test, all 38 combined-profile
   tests, and all 1,200 Release tests passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman local completion matrix
+
+- Authoring method: specialized marc's established public-profile completion
+  criteria for the already specified Adaptive composition and its exact
+  conservative workspace bounds.
+- References used: DD-284, AGENTS.md completion data classes, the public
+  combined C ABI, canonical frame extents, and sticky process results.
+- Known implementations intentionally not consulted: external completion
+  suites, corpora, malformed archives, codec implementations, or chunking
+  harnesses.
+- Independent decisions: use 64-byte raw frames; test every one-byte value and
+  deterministic binary classes; compare three partial-I/O schedules; isolate
+  final-frame corruption, truncation, and trailing input with an output
+  sentinel.
+- Generated-code task description: prove public deterministic round trips,
+  chunk independence, repeated terminal status, and transactional malformed
+  final-frame rejection for LZ77 plus Adaptive Huffman.
+- Similarity review: the matrix follows marc's own completion vocabulary and
+  local C ABI harness conventions; no external expression was used.
+- Local validation: all three focused completion tests and all 1,203 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

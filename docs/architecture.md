@@ -1168,6 +1168,12 @@ because its standalone symbol unit is a byte at the entropy boundary. This
 unit translation neither enlarges the untrusted outer frame allowance nor
 changes compressed-payload, dictionary, aggregate, or LZ limits.
 
+The public completion matrix fixes 64-byte raw frames and audits all required
+binary data classes through the C ABI. It compares unchunked output with
+one-byte and mixed chunk schedules, repeats successful terminal calls, and
+proves that corruption, truncation, or trailing data in a fourth frame can
+publish only the first three complete frames.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

@@ -682,3 +682,8 @@ The LZ77 plus Adaptive Huffman C ABI uses only DD-283, marc's size-tagged
 factory lifecycle, the completed combined profile/workspace calculators, and
 the two local streaming transforms. No external ABI, allocator convention,
 workspace layout, wrapper source, or combined factory test was consulted.
+
+The LZ77 plus Adaptive Huffman completion matrix uses only DD-284, marc's
+public combined C ABI, AGENTS.md completion data classes, and deterministic
+repository-local inputs. No external completion suite, corpus, malformed
+sample, codec implementation, or chunk schedule was consulted.

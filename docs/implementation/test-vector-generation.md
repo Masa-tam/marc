@@ -1735,5 +1735,20 @@ encoder, compare all sixteen token bytes with the hand token, then feed that
 fixed token through the existing Adaptive encoder and compare the descriptor
 and payload with the independent result. Serialize the generic frame header and
 descriptor independently and require the exact documented 76-byte frame. This
-test establishes the component boundary without calling a combined-profile
-encoder that does not yet exist.
+test establishes the component boundary without asking the combined-profile
+encoder to generate its own oracle.
+
+For LZ77 plus Adaptive Huffman public completion, use 64-byte raw frames,
+1,024-byte token staging, a 33,792-byte worst-case Adaptive payload, and a
+65,536-byte aggregate limit. Round-trip empty input, every one-byte value, the
+ordered byte alphabet, 257 zeroes, a 259-byte `00 ff 55 aa` pattern,
+deterministic 513-byte pseudo-random data seeded with `c001d00d`, and lengths
+63, 64, and 65. Re-encode every case and require exact bytes. For the
+193-byte `6d617263` fixture, compare unchunked processing with `(1,1)`, `(7,5)`,
+and `(13,17)` input/output chunks.
+
+Generate a separate 193-byte stream with seed `13579bdf`. Locate its fourth
+frame from the generic descriptor and payload extents. Flip its sequence field,
+truncate its final byte, and append one zero as separate malformed cases. Each
+decode must report a sticky malformed-stream result after publishing exactly
+the first 192 bytes and must leave the sentinel final byte unchanged.

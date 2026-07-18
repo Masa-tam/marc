@@ -5219,3 +5219,23 @@ extent admits the already validated token size. Keep the caller's compressed,
 dictionary, aggregate, and LZ limits unchanged. This prevents the standalone
 symbol-count meaning of `max_frame_size` from accidentally rejecting a valid
 token stream or weakening the outer frame parser's raw-byte bound.
+
+## DD-284: LZ77 plus Adaptive Huffman completion is audited through the C ABI
+
+- Date: 2026-07-19
+- Status: accepted
+
+Use 64-byte raw frames, at most 1,024 canonical LZ77 token bytes per frame, the
+33-byte-per-token Adaptive payload bound, and a 65,536-byte active workspace
+limit for the public completion matrix. Cover empty input, every one-byte
+value, the ordered byte alphabet, repeated bytes and patterns, deterministic
+pseudo-random input, long zero runs, and lengths 63, 64, and 65. Require exact
+re-encoding and byte-identical streams under one-byte and mixed input/output
+chunk schedules.
+
+For a 193-byte four-frame stream, independently corrupt, truncate, and extend
+the final frame. Each case must publish exactly the first 192 validated raw
+bytes, leave the final output sentinel unchanged, and retain the same stable
+error category and position on repetition. This admits local completion
+evidence only; fuzzing, CLI, benchmark, interoperability, and cross-architecture
+determinism remain separate steps.

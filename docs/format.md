@@ -1244,8 +1244,10 @@ allocation or mutation.
 
 This section fixes the decoder-visible representation. The bounded C ABI
 factory is published as `marc_lz77_adaptive_huffman_*`; CLI selection,
-benchmarking, fuzzing, completion, and interoperability schema admission remain
-separate evidence steps.
+benchmarking, fuzzing, and interoperability schema admission remain separate
+evidence steps. The public-ABI completion matrix covers deterministic
+round-trips, arbitrary chunking, stable termination, and transactional final
+frame rejection.
 
 ### Hand-checkable single-Literal frame
 

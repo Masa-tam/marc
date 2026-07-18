@@ -53,8 +53,8 @@ and admission evidence are complete. Candidate pairings have no public
 compatibility promise.
 
 `lz77-adaptive-huffman` is the first Adaptive Huffman composition with a
-bounded public C factory. Its CLI selector, completion matrix, benchmark
-adapter, fuzz target, and interoperability archive remain pending.
+bounded public C factory and public-ABI completion matrix. Its CLI selector,
+benchmark adapter, fuzz target, and interoperability archive remain pending.
 
 ## Why publication is not automatic
 
