@@ -339,6 +339,11 @@ if(MARC_BUILD_BENCHMARKS)
             COMMAND marc_benchmark lzd ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzd_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lzd_blocked_huffman_smoke
+            COMMAND marc_benchmark lzd-blocked-huffman
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzd_blocked_huffman_smoke
+            PROPERTIES LABELS benchmark-smoke)
         add_test(NAME marc_benchmark_lzmw_smoke
             COMMAND marc_benchmark lzmw ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzmw_smoke

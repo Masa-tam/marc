@@ -73,7 +73,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -86,7 +86,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, public C factory, completion matrix, bounded decoder fuzz target, and CLI adapter | Benchmark and interoperability pending |
+| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, public C factory, completion matrix, bounded decoder fuzz target, CLI adapter, and benchmark | Local profile complete; interoperability schema pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence

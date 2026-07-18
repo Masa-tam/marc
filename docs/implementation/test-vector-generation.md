@@ -1586,3 +1586,10 @@ require overwrite rejection. Decode a hand-authored non-marc input and an
 otherwise valid archive with one appended byte; both must fail without leaving
 the requested destination or its `.tmp` staging path. Separately round-trip an
 empty file.
+
+For benchmark smoke, run `marc_benchmark lzd-blocked-huffman README.md 1`.
+Require the adapter to encode once, decode and byte-compare before timing, then
+complete one encode and one decode measurement. Its output must identify the
+selected codec and report input and encoded sizes, ratio, both elapsed times
+and throughputs, encoder and decoder primary/secondary/views workspace bytes,
+and the larger three-region sum. Do not freeze machine-dependent measurements.

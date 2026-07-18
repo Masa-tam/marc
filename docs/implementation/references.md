@@ -587,3 +587,7 @@ The `lzd-blocked-huffman` CLI adapter uses only marc's public C ABI, fixed local
 profile bounds, existing atomic file protocol, and repository-owned CLI test
 harness. No external command-line codec, wrapper, allocation policy, source,
 or test was consulted.
+The `lzd-blocked-huffman` benchmark adapter uses only the same public C factory,
+fixed CLI profile, conservative complete-stream capacity rules, and marc's
+existing measurement contract. No external benchmark harness, corpus, result,
+implementation, or tuning data was consulted.

@@ -4626,3 +4626,21 @@ layout. Reuse the common atomic file harness for ordinary and empty round trips,
 existing-output rejection, malformed and trailing input, and temporary-file
 cleanup. This admits CLI support only; benchmark and interoperability remain
 separate gates.
+
+## DD-254: LZD composition benchmark preserves the fixed CLI profile
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzd-blocked-huffman` to the dependency-free benchmark with the CLI's
+one-MiB raw frames, 65,536-symbol entropy blocks, exact four-MiB LZD token
+bound, 64 possible entropy blocks, 65,536 entries, and 64-MiB local internal-
+buffer policy. Conservatively reserve raw fallback and one 16-byte descriptor
+for every possible token block when calculating complete-stream capacity.
+
+Use only the public configuration, requirements, factory, process, and destroy
+functions. Verify a full round trip before timing, exclude allocation and
+factory lifecycle from timed intervals, and report encode/decode throughput,
+complete-stream ratio, all six direction-specific workspace extents, and the
+larger three-region sum as codec peak workspace. This closes local profile
+admission; interoperability schema publication remains separate.

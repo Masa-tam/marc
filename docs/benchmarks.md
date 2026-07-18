@@ -19,6 +19,7 @@ marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
+marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 ```
 
@@ -100,6 +101,13 @@ and at most 65,280 additional LZW entries. Capacity includes one 16-byte
 descriptor per possible packed-code block and raw entropy fallback. The public
 C ABI query supplies all primary, secondary, and aligned views extents reported
 by the benchmark.
+
+`lzd-blocked-huffman` uses the CLI's one-MiB raw frames, 65,536-symbol entropy
+blocks, exact four-MiB token bound, at most 64 entropy blocks, and 65,536-entry
+LZD dictionary policy. Capacity includes one 16-byte descriptor per possible
+token block and raw entropy fallback. The public C ABI query supplies all
+reported encoder and decoder workspace bytes, including the decoder's private
+entropy-view, phrase, and iterative-expansion storage.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

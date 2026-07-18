@@ -1353,3 +1353,10 @@ one-MiB raw frames, 64-KiB entropy blocks, the exact four-MiB LZD token bound,
 policy. Workspace bytes and alignment come only from the public requirements
 query. The existing temporary-file protocol keeps malformed or trailing input
 from publishing a partial destination.
+
+The benchmark selects the identical fixed profile through the same public C
+ABI. It verifies a complete round trip before timing, measures encoding and
+decoding separately, and reports complete-stream ratio plus direction-specific
+primary, secondary, and aligned views extents. Peak workspace is the larger
+queried three-region sum; benchmark inputs and output buffers remain outside
+that metric.

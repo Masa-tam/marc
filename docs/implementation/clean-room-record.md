@@ -4563,3 +4563,24 @@ discarded and the reviewed seed retained.
   file-commit protocol; no external command structure was compared.
 - Local validation: the focused CLI test and all 1123 Release tests passed
   under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZD plus Blocked Huffman benchmark adapter
+
+- Authoring method: extended marc's dependency-free public-ABI measurement
+  harness with the same fixed profile already admitted by the CLI.
+- References used: DD-245 through DD-254, public workspace and transform
+  contracts, conservative complete-stream capacity rules, and local benchmark
+  reporting policy.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, combined LZD measurements, corpora, results, source, or tuning.
+- Independent decisions: reserve four token bytes per raw byte and one
+  descriptor per 64-KiB token block; verify a full round trip before timing;
+  report each queried region and their direction-specific larger sum.
+- Generated-code task description: add selector/config/query/create dispatch,
+  capacity accounting, smoke execution on README, benchmark documentation, and
+  readiness evidence without freezing machine-dependent results.
+- Similarity review: the adapter follows marc's existing neutral measurement
+  contract and independently derived local profile bounds; no external
+  benchmark expression was compared.
+- Local validation: the focused benchmark smoke and all 1124 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
