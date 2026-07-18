@@ -1351,6 +1351,38 @@ input is exactly this 80-byte prefix. Input/output chunking does not change the
 bytes. Nonterminal `Flush` does not close a partial frame, and `ResetBlock` is
 unsupported at this cross-layer boundary.
 
+### Hand-checkable single-Literal frame
+
+For raw input `A`, LZSS emits the canonical two-byte Literal token:
+
+```text
+00 41
+```
+
+Starting from a fresh NYT root, `00` contributes eight zero bits. The unseen
+`41` then contributes NYT path `0` followed by its eight literal bits
+LSB-first. The complete 17-bit payload is `00 82 00`, with one valid bit in the
+final byte. The Adaptive descriptor is:
+
+```text
+02 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00
+```
+
+The complete 75-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  03 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+02 00 00 00 03 00 00 00  01 00 00 00 00 00 00 00
+00 82 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Adaptive descriptor, and the final three bytes are the FGK payload. No LZSS
+token byte is stored separately.
+
 This section fixes only the decoder-visible representation and reserves the
 profile name. It does not publish a C factory, CLI selector, benchmark entry,
 or interoperability archive.

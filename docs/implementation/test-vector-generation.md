@@ -1779,3 +1779,11 @@ round trip before timing and the standard codec name, byte counts, ratio,
 encode/decode seconds and MiB/s, six direction-specific workspace extents, and
 peak caller-reserved workspace fields. Treat the values as local observations,
 not frozen performance thresholds.
+
+For the first LZSS plus Adaptive Huffman vector, begin with raw byte `41` and
+require the existing LZSS grammar to produce Literal token `00 41`. Independently
+simulate a fresh FGK tree: emit literal `00`, then NYT path `0` and literal `41`,
+all LSB-first. Require 17 payload bits, bytes `00 82 00`, and one valid final
+bit. Serialize a descriptor for two symbols and three payload bytes, then an
+exact 75-byte generic frame. Compare each component result separately before
+comparing the full frame; no combined-profile encoder participates.

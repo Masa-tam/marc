@@ -5338,3 +5338,20 @@ staging, and only then publish the frame. Encoding likewise completes the LZSS
 parse and Adaptive plan before emitting a frame byte. `Flush` does not shorten
 a frame, `ResetBlock` is unsupported at the composition boundary, and empty
 input remains the ordinary 80-byte parameterized prefix with no frame.
+
+## DD-290: The first LZSS Adaptive vector is independently hand-checkable
+
+- Date: 2026-07-19
+- Status: accepted
+
+Use raw byte `41`, whose canonical LZSS representation is the two-byte Literal
+`00 41`. Starting from a fresh FGK NYT root, emit the first unseen symbol `00`
+as eight zero literal bits. Emit the second unseen symbol `41` as NYT path `0`
+followed by `41` LSB-first. The resulting 17 physical bits are payload
+`00 82 00` with one valid bit in the final byte.
+
+Fix the descriptor at symbol count 2, payload size 3, and final-valid-bit count
+1. Combine it with a generic header declaring raw size 1, dictionary size 2,
+payload size 3, one entropy block, and 16 descriptor bytes for an exact 75-byte
+frame. Test the LZSS token and Adaptive payload independently before serializing
+the complete frame; do not use a combined-profile encoder as its own oracle.

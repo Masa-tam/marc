@@ -721,3 +721,8 @@ bitstream, generic frame representation, checked decoder limits, and existing
 repository-owned composition rules. No external combined codec, format,
 implementation, profile, stream, test vector, or workspace layout was
 consulted.
+
+The first LZSS plus Adaptive Huffman vector uses only DD-290, the published
+LZSS Literal grammar, the independently specified FGK NYT traversal, LSB-first
+packing, and explicit generic serializers. No external vector, encoder output,
+combined implementation, or test suite was consulted.

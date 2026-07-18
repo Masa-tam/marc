@@ -5447,3 +5447,23 @@ discarded and the reviewed seed retained.
   structure was compared.
 - Local validation: documentation consistency and whitespace checks passed;
   no compiled behavior changed in this specification-only step.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman hand vector
+
+- Authoring method: derived the two-symbol FGK payload by hand from the
+  published LZSS Literal and fresh-NYT rules, then used existing components only
+  as independent comparison targets.
+- References used: DD-290, the LZSS `00 41` vector, Adaptive Huffman bit order,
+  FGK NYT update rules, and explicit frame/descriptor serializers.
+- Known implementations intentionally not consulted: external Adaptive or LZSS
+  encoders, combined codecs, vectors, test suites, source, or serialized data.
+- Independent decisions: fix 17 physical bits as `00 82 00`, one valid final
+  bit, descriptor fields 2/3/1, and the complete 75-byte frame; compare the
+  dictionary token, entropy payload, descriptor, and generic frame separately.
+- Generated-code task description: add one permanent component-boundary
+  GoogleTest and document its independent derivation without implementing the
+  combined profile.
+- Similarity review: the expected arrays are a direct expression of marc's
+  published byte grammar and arithmetic; no external vector was compared.
+- Local validation: the focused vector test and all 1,209 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows x64.
