@@ -4065,3 +4065,25 @@ discarded and the reviewed seed retained.
   compared.
 - Local validation: documentation topology and all 1056 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZ78 plus Blocked Huffman bounded decoder fuzz target
+
+- Authoring method: wrapped marc's public incremental decoder with fixed local
+  arrays, limits, byte-derived chunking, and a deterministic call ceiling.
+- References used: DD-223 through DD-230, AGENTS.md malformed-input and fuzz
+  requirements, and the repository's existing sanitizer target convention.
+- Known implementations intentionally not consulted: external combined LZ78
+  codecs, fuzz harnesses, corpora, dictionaries, source, or crash collections.
+- Independent decisions: cap input at 8 KiB; cap raw, token, and compressed
+  bytes at 4 KiB; use 1 KiB frames, eight block views, 512 phrase records, and
+  an aggregate bound including both typed regions.
+- Generated-code task description: add and compile a bounded sanitizer target,
+  seed it with truncated magic, and execute a short local campaign without
+  permitting input-controlled allocation or unbounded calls.
+- Similarity review: the harness follows marc's own process invariants and
+  workspace contracts; no external expression was compared.
+- Local validation: the target compiled under MSVC and ClangCL compile-smoke
+  builds, linked in the Clang libFuzzer/ASan/UBSan build, and completed 1,000
+  local runs without a crash, hang, or sanitizer finding. All 1056 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64.

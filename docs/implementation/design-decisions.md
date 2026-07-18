@@ -4124,3 +4124,21 @@ may be published, the final output byte must remain untouched, and repeated
 calls must return the identical positioned terminal error. This admits the C
 ABI completion column only; it does not imply CLI, fuzz, benchmark, or
 interoperability completion.
+
+## DD-230: LZ78 composition fuzzing fixes both typed workspace bounds
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add a dedicated libFuzzer/ASan/UBSan target for the public incremental LZ78
+plus Blocked Huffman decoder. Truncate supplied cases to 8 KiB. Permit at most
+4 KiB of raw output and token staging, one 1 KiB frame, eight entropy blocks,
+and 512 LZ78 phrase records. Count the encoded frame, token staging, decoded
+frame, block views, and phrase entries in one fixed aggregate limit.
+
+Derive bounded input and output chunk sizes from the current bytes and stop
+after a fixed call ceiling. Abort on an invalid process result, zero-progress
+`Progress`, input exhaustion reported as `NeedInput`, or exhaustion of the
+call ceiling. Treat output-limit `NeedOutput` as a bounded terminal condition.
+Keep a compile-smoke target in ordinary builds and a minimal truncated-magic
+seed corpus. CLI, benchmark, and interoperability remain separate gates.

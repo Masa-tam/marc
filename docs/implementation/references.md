@@ -507,3 +507,7 @@ workspace layout, or language binding was consulted.
 The public completion matrix is derived only from AGENTS.md data classes and
 marc's existing public-profile evidence contract; no external corpus, test
 suite, or combined-codec vector was used.
+The bounded fuzz adapter derives only from marc's incremental transform
+contract, local decoder limits, private typed record sizes, and existing
+sanitizer target conventions. No external fuzz harness, corpus, or combined
+codec was consulted.

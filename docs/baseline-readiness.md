@@ -69,7 +69,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
-| `lz78-blocked-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lz78-blocked-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -82,7 +82,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| `lz78-blocked-huffman` | Public C ABI and completion matrix; CLI, benchmark, fuzz, and interoperability pending | Callable through C ABI |
+| `lz78-blocked-huffman` | Public C ABI, completion matrix, and bounded fuzz target; CLI, benchmark, and interoperability pending | Callable through C ABI |
 | LZW plus Blocked Huffman | Candidate components | Unspecified |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
@@ -145,7 +145,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-229, the complete Release suite contains 1056 tests and passes under both
+At DD-230, the complete Release suite contains 1056 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

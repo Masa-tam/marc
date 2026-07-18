@@ -1,13 +1,14 @@
 # Fuzzing
 
-The fourteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The fifteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
-the composed LZ77 plus Blocked Huffman, LZSS plus Blocked Huffman, and
-checksum-raw profiles. Each target exercises both the strict one-shot stream decoder and the matching
-frame-streaming decoder with chunk sizes derived from the input. They use small
-fixed local limits and caller-owned workspaces so arbitrary inputs cannot
-request unbounded allocation. A call-count guard turns a stalled state machine
-into a reproducible failure. The LZ78 target additionally bounds its phrase
+the composed LZ77 plus Blocked Huffman, LZSS plus Blocked Huffman, LZ78 plus
+Blocked Huffman, and checksum-raw profiles. Targets exercise their public
+frame-streaming decoder with chunk sizes derived from the input and also use a
+strict one-shot decoder where that internal helper exists. They use small fixed
+local limits and caller-owned workspaces so arbitrary inputs cannot request
+unbounded allocation. A call-count guard turns a stalled state machine into a
+reproducible failure. The standalone LZ78 target additionally bounds its phrase
 table to 512 records. The LZW target permits at most width 10 and bounds its
 phrase table to 768 records. The LZD target bounds its phrase table to 512
 records and its iterative expansion stack to 513 entries. The LZMW target
@@ -20,6 +21,13 @@ workspace extents in one fixed aggregate limit.
 The combined LZSS plus Blocked Huffman target uses the same fixed byte, block,
 view, and call-count bounds while exercising variable-length LZSS token
 validation after entropy decoding.
+The combined LZ78 plus Blocked Huffman target caps supplied input at 8 KiB,
+raw output at 4 KiB, a frame at 1 KiB, token and compressed payloads at 4 KiB,
+entropy views at eight records, and LZ78 phrases at 512 records. Its aggregate
+limit includes encoded-frame storage, token staging, raw staging, block views,
+and phrase records. Byte-derived input and output chunks plus a fixed call
+ceiling exercise the public incremental decoder without input-controlled
+allocation.
 The raw-checksum target exercises both its strict two-pass decoder and its
 incremental decoder with at most 8 KiB of serialized input, 4 KiB of output,
 1 KiB frames, and 4 KiB of internal-buffer allowance. The incremental path uses
@@ -77,6 +85,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_lzss_blocked_huffman_stream \
+  marc_fuzz_lz78_blocked_huffman_stream \
   marc_fuzz_checksum_raw_stream \
   marc_fuzz_adaptive_huffman_stream \
   marc_fuzz_dynamic_range_stream \
@@ -91,6 +100,8 @@ out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_blocked_huffman_stream \
   fuzz/corpus/lzss_blocked_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lz78_blocked_huffman_stream \
+  fuzz/corpus/lz78_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_checksum_raw_stream \
   fuzz/corpus/checksum_raw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_adaptive_huffman_stream \
@@ -108,6 +119,12 @@ out/build/fuzz/marc_fuzz_lzw_stream fuzz/corpus/lzw_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_stream fuzz/corpus/lzd_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzmw_stream fuzz/corpus/lzmw_stream -max_len=8192
 ```
+
+On Windows, the ASan runtime found by the dynamic loader must come from the
+same Clang toolchain that linked the fuzzer. If an environment setup script
+places a different compiler generation's runtime earlier in `PATH`, startup
+may fail before libFuzzer can print diagnostics; put the selected Clang
+runtime directory first for the campaign process.
 
 On Windows, this configuration selects the static C runtime required by the
 Clang libFuzzer runtime. Before executing a fuzzer, add Clang's sanitizer

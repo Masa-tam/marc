@@ -1178,8 +1178,9 @@ delegates the opaque-region partition back to the checked internal helpers.
 The `lz78-blocked-huffman` profile is therefore callable through the C ABI;
 its completion matrix proves required binary classes, chunk independence,
 determinism, stable terminal behavior, and transactional malformed-final-frame
-rejection through that ABI. CLI, fuzz, benchmark, and interoperability
-admission remain separate later steps.
+rejection through that ABI. Its bounded decoder fuzz target fixes every byte,
+typed-workspace, and call-count limit before processing arbitrary input. CLI,
+benchmark, and interoperability admission remain separate later steps.
 
 ### Published composed-profile evidence
 
