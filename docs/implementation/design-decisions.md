@@ -4644,3 +4644,22 @@ factory lifecycle from timed intervals, and report encode/decode throughput,
 complete-stream ratio, all six direction-specific workspace extents, and the
 larger three-region sum as codec peak workspace. This closes local profile
 admission; interoperability schema publication remains separate.
+
+## DD-255: Interoperability schema 6 appends LZD composition
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define schema 6 with codec set `marc-cli-v6`. Preserve the exact sixteen-entry
+schema-5 order and append `lzd-blocked-huffman` as the seventeenth archive. The
+generator emits schema 6 by default while retaining established artifact names,
+the deterministic 8,193-byte fixture, per-file size and SHA-256 fields, complete
+source revision, and producer metadata.
+
+The verifier accepts schemas 1 through 6 only through their exact versioned
+profile lists and codec-set rules, rejecting missing, extra, duplicate, or
+mismatched entries. Generate schema 6 in the local compatibility test, verify
+it, then filter successively to frozen schemas 5, 4, 3, 2, and 1 and verify each
+generation. Cross-platform execution remains release evidence produced after
+push; local admission proves deterministic generation and strict protocol
+compatibility without claiming foreign-platform results.

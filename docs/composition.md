@@ -23,12 +23,12 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZD | `lzd` | Specified | Candidate | Candidate | Candidate | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 5 includes every named cell while
+None/None factory. Interoperability schema 6 includes every named cell while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -38,6 +38,10 @@ interoperability coverage.
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
 benchmark adapter, and schema-5 interoperability coverage.
+
+The LZD plus Blocked Huffman profile has public-ABI completion coverage, a
+bounded decoder fuzz target, a transactional CLI selector, a public-ABI
+benchmark adapter, and schema-6 interoperability coverage.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation

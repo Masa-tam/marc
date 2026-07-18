@@ -4584,3 +4584,30 @@ discarded and the reviewed seed retained.
   benchmark expression was compared.
 - Local validation: the focused benchmark smoke and all 1124 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - Interoperability schema 6
+
+- Authoring method: extended marc's repository-owned interoperability bundle
+  protocol by appending the admitted LZD plus Blocked Huffman CLI profile.
+- References used: DD-245 through DD-255, the existing schemas 1 through 5,
+  public CLI selectors, and the local bundle generation and verification
+  contracts.
+- Known implementations intentionally not consulted: external compression
+  bundle formats, compatibility manifests, profile matrices, source, tests, or
+  generated archives.
+- Independent decisions: preserve the exact schema-5 profile order; append
+  `lzd-blocked-huffman` as the seventeenth archive; identify the exact set as
+  `marc-cli-v6`; require exact membership during verification; and prove legacy
+  acceptance by filtering the current bundle successively to schemas 5, 4, 3,
+  2, and 1.
+- Generated-code task description: publish schema 6, retain frozen legacy
+  schema rules, generate and verify all 17 current archives, exercise each
+  historical schema in one compatibility test, and update public readiness,
+  composition, format, architecture, provenance, and vector documentation.
+- Similarity review: the schema extension follows only marc's existing local
+  manifest vocabulary and append-only compatibility policy; no external format
+  expression was compared.
+- Local validation: schema 6 generated and verified 17 archives; schemas 1
+  through 6 were accepted under their exact frozen profile sets; all 1124
+  Release tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64.

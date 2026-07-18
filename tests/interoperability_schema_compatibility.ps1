@@ -40,6 +40,7 @@ function Convert-Bundle(
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema6 = Join-Path $root 'schema6'
 $schema5 = Join-Path $root 'schema5'
 $schema4 = Join-Path $root 'schema4'
 $schema3 = Join-Path $root 'schema3'
@@ -67,15 +68,22 @@ $schema4Profiles = $schema3Profiles + @(
     'lzss-blocked-huffman',
     'lz78-blocked-huffman'
 )
+$schema5Profiles = $schema4Profiles + @('lzw-blocked-huffman')
 
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema5 `
+        -OutputDirectory $schema6 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema6 `
+        -OutputDirectory (Join-Path $root 'verified6')
+
+    Convert-Bundle $schema6 $schema5 5 'marc-cli-v5' $schema5Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
         -BundleDirectory $schema5 `
@@ -105,7 +113,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1, 2, 3, 4, and 5'
+    Write-Host 'Verified interoperability schemas 1, 2, 3, 4, 5, and 6'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

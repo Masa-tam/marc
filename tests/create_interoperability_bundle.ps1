@@ -86,6 +86,7 @@ $profiles = @(
     'lzss-blocked-huffman',
     'lz78-blocked-huffman',
     'lzw-blocked-huffman'
+    'lzd-blocked-huffman'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -108,8 +109,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 5
-    codec_set = 'marc-cli-v5'
+    schema_version = 6
+    codec_set = 'marc-cli-v6'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

@@ -436,6 +436,11 @@ with the repository-defined LZW Blocked Huffman CLI profile. No external
 combined-codec archive, compatibility suite, manifest, corpus, or test vector
 was consulted.
 
+Interoperability schema 6 extends only marc's frozen schema-5 profile order
+with the repository-defined LZD Blocked Huffman CLI profile. No external
+combined-codec archive, compatibility suite, manifest, corpus, or test vector
+was consulted.
+
 The LZSS plus Blocked Huffman frame codec composes only marc's
 repository-defined transactional LZSS variant 1 codec, Blocked Huffman variant
 1 representation, generic frame header, checked arithmetic, and decoder

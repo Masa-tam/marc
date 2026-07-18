@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 5 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 6 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,19 +34,19 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 5 |
+| Profile | Purpose | Local status | Interoperability schema 6 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
 | `lz78-blocked-huffman` | Third composed dictionary/entropy pipeline | Ready | Included |
 | `lzw-blocked-huffman` | Fourth composed dictionary/entropy pipeline | Ready | Included |
-| `lzd-blocked-huffman` | Fifth composed dictionary/entropy pipeline | Admission in progress | Not included |
+| `lzd-blocked-huffman` | Fifth composed dictionary/entropy pipeline | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 5 contains sixteen archives: the frozen fifteen-entry schema-4 set
-followed by the LZW Blocked Huffman profile. Schemas 1 through 4 remain frozen
-at seven, eight, thirteen, and fifteen profiles; their meanings are fixed by
-their version and codec-set rules.
+Schema 6 contains seventeen archives: the frozen sixteen-entry schema-5 set
+followed by the LZD Blocked Huffman profile. Schemas 1 through 5 remain frozen
+at seven, eight, thirteen, fifteen, and sixteen profiles; their meanings are
+fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -56,7 +56,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 5 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 6 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -73,7 +73,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -86,7 +86,6 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZD plus Blocked Huffman | Exact format, complete-frame codec, checked profile layout, bounded streaming transforms, public C factory, completion matrix, bounded decoder fuzz target, CLI adapter, and benchmark | Local profile complete; interoperability schema pending |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
 ## Remaining release evidence

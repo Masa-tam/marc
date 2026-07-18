@@ -1457,8 +1457,7 @@ emits and accepts this exact profile as its sixteenth archive.
 This composition uses dictionary algorithm ID 5, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
 are the 16-byte LZD parameters followed by the empty Blocked Huffman parameter
-region. The reserved public name is `lzd-blocked-huffman`. Reserving the name
-and bytes does not yet publish a factory or tool selector.
+region. The public name is `lzd-blocked-huffman`.
 
 `entropy block size` counts bytes in the canonical fixed-width LZD reference-
 pair stream. Blocks reset at and cannot cross an outer frame; a block boundary
@@ -1528,6 +1527,12 @@ Huffman model reset at each outer frame. Strict decoding derives exactly
 must preserve these exact bytes under arbitrary chunking; a frame is exposed
 only after complete validation. Nonterminal `Flush` does not shorten a frame,
 and `ResetBlock` is unsupported at this profile boundary.
+
+The three-region C ABI exposes only byte extents and alignment while keeping
+encoder records, entropy views, phrase records, and expansion references
+private. The CLI and benchmark use that public factory without defining another
+format variant. Interoperability schema 6 emits and accepts this exact profile
+as its seventeenth archive.
 
 ## Adaptive Huffman FGK variant 1
 
