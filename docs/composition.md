@@ -19,7 +19,7 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` (Specified) | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
@@ -51,6 +51,10 @@ Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation
 and admission evidence are complete. Candidate pairings have no public
 compatibility promise.
+
+`lz77-adaptive-huffman` reserves the first Adaptive Huffman composition. Its
+stream and frame representation is specified, but no C factory, CLI selector,
+benchmark adapter, fuzz target, or interoperability archive is public yet.
 
 ## Why publication is not automatic
 

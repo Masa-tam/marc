@@ -5046,3 +5046,27 @@ Do not inject a caller-provided raw flag string, pass `/MP` to non-MSVC tools,
 or make it an unavoidable property of installed marc consumers. Permit
 memory-constrained Windows builders to disable the option. Treat this solely as
 a build-throughput policy with no format, ABI, runtime, or determinism effect.
+
+## DD-275: LZ77 plus Adaptive Huffman is the next specified composition
+
+- Date: 2026-07-19
+- Status: accepted
+
+Reserve `lz77-adaptive-huffman` for LZ77 algorithm/variant 1 followed by
+Adaptive Huffman algorithm/FGK variant 1 in format version 1.0. Preserve the
+canonical 16-byte LZ77 token serialization as the exact entropy-layer symbol
+stream. Use the existing 16-byte Adaptive descriptor, one freshly reset FGK
+tree per nonempty outer frame, entropy block size zero, block count one, and no
+entropy parameter or view-table region.
+
+Cap the profile's raw frame size at 2^20 bytes. The independently specified
+LZ77 worst case is sixteen token bytes per raw byte and Adaptive variant 1 caps
+its frame at 2^24 symbols, so this profile bound admits every possible frame
+without data-dependent configuration failure. Require complete Adaptive decode,
+complete LZ77 validation, and private raw reconstruction before current-frame
+publication. Treat the 264-bit-per-token-byte bound and all staged aggregate
+extents as checked workspace inputs.
+
+Specification reserves the name but does not publish it. Decoder, encoder,
+streaming, C ABI, completion, fuzz, CLI, benchmark, and schema evidence remain
+separate admission steps.

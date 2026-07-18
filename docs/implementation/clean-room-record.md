@@ -5067,3 +5067,27 @@ discarded and the reviewed seed retained.
   The Clang configuration retained the option as OFF. All 1,162 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman composition specification
+
+- Authoring method: composed marc's frozen LZ77 token representation with its
+  frozen Adaptive Huffman FGK frame representation at the canonical byte-stream
+  boundary, then derived the cross-layer frame bound and validation order.
+- References used: DD-275, marc's LZ77 variant 1, Adaptive Huffman FGK variant
+  1, generic frame header, decoder limits, and existing composition policy.
+- Known implementations intentionally not consulted: external combined codec,
+  LZ/Huffman implementation source, third-party format, external test vector,
+  or foreign workspace design.
+- Independent decisions: reserve `lz77-adaptive-huffman`; retain format 1.0 and
+  both existing variant IDs; use one reset FGK tree per outer frame; cap raw
+  frames at 2^20 bytes from the 16x token bound and 2^24 symbol cap; require
+  entropy decode, token validation, and private raw decode before publication.
+- Generated-code task description: specify the first dictionary composition
+  with a sequentially adaptive entropy layer before implementing any decoder or
+  public surface, including exact regions, limits, reset behavior, and atomic
+  validation order.
+- Similarity review: the representation is constructed solely from marc-owned
+  documented components and introduces no externally derived byte grammar.
+- Local validation: documentation-layout verification passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja. Independent hand-vector
+  construction remains the next required step before decoder implementation.

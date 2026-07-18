@@ -670,3 +670,10 @@ The `lzmw-blocked-huffman` benchmark adapter uses only DD-265, the public C
 factory, CLI profile constants, checked output-capacity formulas, and marc's
 existing measurement contract. No external benchmark implementation, result,
 corpus, or tuning guidance was consulted.
+
+The LZ77 plus Adaptive Huffman composition specification uses only marc's
+already documented LZ77 variant 1 token grammar, Adaptive Huffman FGK variant 1
+bitstream, generic frame format, checked decoder limits, and existing
+repository-owned composition rules. No external combined codec, format,
+implementation, profile, stream, test vector, or workspace layout was
+consulted.

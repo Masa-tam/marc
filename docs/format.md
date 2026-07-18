@@ -1174,6 +1174,72 @@ Blocked Huffman descriptor, and the final 16 bytes are the unchanged LZ77 token.
 The 16-byte LZ77 parameter region remains stream-level and is not repeated in
 this frame.
 
+## LZ77 variant 1 plus Adaptive Huffman FGK variant 1
+
+The reserved profile name is `lz77-adaptive-huffman`. This composition uses
+dictionary algorithm ID 1, dictionary variant 1, entropy algorithm ID 1, and
+entropy variant 1. It uses format version 1.0. The stream parameter regions are
+the 16-byte LZ77 parameters followed by the empty Adaptive Huffman parameter
+region. `entropy block size` is zero.
+
+The profile's maximum outer frame size is 2^20 raw bytes. This is a format-level
+profile bound, not merely a CLI default: LZ77 can emit one 16-byte Literal token
+for each raw byte, while Adaptive Huffman variant 1 accepts at most 2^24 input
+symbols per frame. The exact canonical LZ77 token stream must be nonempty, a
+multiple of 16 bytes, no larger than 2^24 bytes, and within the decoder's local
+dictionary-serialized limit.
+
+Every nonempty outer frame is exactly one Adaptive Huffman block. The FGK tree
+starts from its single NYT root before the first byte of the frame's LZ77 token
+stream and is discarded after that frame. No tree state or LZ77 history crosses
+an outer frame boundary. Empty input has no frame and therefore no descriptor
+or entropy state.
+
+The generic frame header records raw bytes as `uncompressed size`, canonical
+LZ77 token bytes as `dictionary serialized size`, Adaptive payload bytes as
+`compressed payload size`, entropy block count 1, descriptor size 16, and
+checksum trailer size zero. The body is:
+
+```text
+generic frame header
+one Adaptive Huffman descriptor
+Adaptive Huffman payload over the canonical LZ77 token bytes
+```
+
+The Adaptive descriptor's `symbol count` must equal `dictionary serialized
+size`; its `payload size` must equal `compressed payload size`. Its flags,
+reserved bytes, final-valid-bit rule, exact bit consumption, and zero-padding
+requirements are unchanged from standalone Adaptive Huffman variant 1. There
+is no separately stored dictionary-token region and no Blocked Huffman model or
+view table.
+
+Decoding is transactional at the outer frame boundary. Before publishing any
+raw byte, the decoder must:
+
+1. validate the exact stream pipeline, LZ77 parameters, sequence, frame size,
+   declared extents, one-block count, and 16-byte descriptor extent;
+2. parse and strictly validate the Adaptive descriptor and payload;
+3. decode exactly `dictionary serialized size` token bytes into bounded private
+   staging and require exact payload-bit exhaustion;
+4. validate the complete LZ77 token stream, including reserved bytes,
+   references, overlap semantics, terminal-token placement, and derivation of
+   exactly `uncompressed size` raw bytes;
+5. decode into bounded private raw staging; and only then
+6. make that frame's raw bytes available to the caller.
+
+Failure at any stage publishes no byte from the current frame. Earlier complete
+frames may remain committed by the incremental stream decoder. Encoder planning
+likewise completes the LZ77 token stream and Adaptive payload plan before
+writing any byte of the frame. The conservative Adaptive workspace bound is 264
+bits per token byte; configuration and decoder limits must reject any resulting
+payload, dictionary staging, raw staging, or active aggregate extent before
+allocation or mutation.
+
+This section fixes the decoder-visible representation but does not publish a C
+factory, CLI selector, benchmark profile, fuzz target, or interoperability
+schema entry. Those surfaces require their normal completion evidence before
+the reserved name becomes public.
+
 ## LZSS variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 2, dictionary variant 1,
