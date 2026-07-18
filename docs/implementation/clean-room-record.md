@@ -5233,3 +5233,27 @@ discarded and the reviewed seed retained.
 - Local validation: all four focused streaming-encoder tests and all 1,194
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman streaming decoder
+
+- Authoring method: connected bounded prefix/frame collection to the combined
+  frame validator and private-raw reconstruction boundary, preserving marc's
+  transactional frame publication rule.
+- References used: DD-282, generic stream/frame parsers, local limits,
+  combined-frame validation order, and core streaming status invariants.
+- Known implementations intentionally not consulted: external streaming
+  decompressors, foreign incremental parsers, or third-party malformed-stream
+  tests.
+- Independent decisions: keep one private decoded-frame buffer; share token
+  reconstruction between staging and direct-output APIs; drain only completed
+  frames; preserve earlier commits when a later frame is malformed; make all
+  terminal states sticky.
+- Generated-code task description: implement one-byte chunking, bounded prefix
+  and body collection, local capacity/aggregate preflight, later-frame
+  corruption isolation, truncation/trailing/reset rejection, empty stream, and
+  premature-end behavior.
+- Similarity review: the state machine follows marc's named process states and
+  format boundaries; no external structure or expression was used.
+- Local validation: all five focused streaming-decoder tests and all 1,199
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

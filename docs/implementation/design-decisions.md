@@ -5172,3 +5172,20 @@ partial frame. `ResetBlock` is unsupported because outer frame boundaries are
 fixed by the declared raw frame size. Enforce the active raw-input, token, and
 serialized-frame aggregate at every prepared frame, and retain sticky terminal
 error and ended states. Input/output chunking must not alter serialized bytes.
+
+## DD-282: Streaming decode commits only complete validated frames
+
+- Date: 2026-07-19
+- Status: accepted
+
+Collect and validate the fixed stream prefix before interpreting frame extents.
+For each frame, parse its generic header into local values, check encoded,
+dictionary, decoded, and aggregate capacities, collect exactly the declared
+body, then invoke the combined frame decoder's private-staging boundary. Drain
+that private raw frame only after every entropy and LZ77 check succeeds.
+
+Expose one shared internal LZ77 reconstruction path for both private-staging and
+direct-output complete-frame APIs; only the latter performs the final public
+copy. A malformed later frame may leave earlier fully drained frames committed,
+but contributes no byte itself. Truncation, trailing data, premature finish,
+unsupported reset, and terminal errors are strict and sticky.
