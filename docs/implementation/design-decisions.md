@@ -4735,3 +4735,25 @@ without modifying it, then serializes the header and entropy regions. Tests
 require the hand vector byte for byte, repeated deterministic encoding,
 reference-boundary splits, raw and canonical-Huffman representations, complete
 round trips, workspace and aggregate limits, and frame-size mismatch handling.
+
+## DD-259: LZMW composition exposes one checked opaque typed region
+
+- Date: 2026-07-18
+- Status: accepted
+
+Keep the public three-region ownership model: primary frame staging, secondary
+canonical-token staging, and one aligned opaque typed region. Encoder sizing
+uses the largest actual raw frame `F`, token capacity `4F`, at most
+`min(max(F-1, 0), maximum_entries)` phrase spans, raw-fallback entropy extent,
+and the complete four-region aggregate. Empty streams require no frame or typed
+storage and report alignment one.
+
+Decoder sizing is limits-only. Reserve the configured maximum block views,
+token staging, raw staging, and `min(max(T/4-1, 0), maximum_entries)` phrase
+records for maximum serialized extent `T`, plus one expansion reference. Do not
+reduce phrase capacity from the raw frame limit: a malformed frame may contain
+more tokens than its raw declaration, and the grammar validator must reject it
+as trailing data rather than fail because the profile under-sized its workspace.
+Compute aligned block, phrase, and expansion offsets with checked arithmetic;
+partition only when counts, offsets, byte extent, and maximum alignment exactly
+match the recomputed layout. Reject short or misaligned storage.

@@ -610,3 +610,7 @@ The complete-frame planner and encoder reuse marc's local deterministic LZMW
 encoder, Blocked Huffman planner/encoder, generic frame serializer, and checked
 arithmetic helpers. No external combined encoder, planning order, workspace
 formula, source, vector, or compression heuristic was consulted.
+The profile sizing and opaque typed partition derive only from marc's LZMW
+fixed-reference bounds, Blocked Huffman descriptor rules, checked arithmetic,
+and established three-region ABI convention. No external allocator, combined
+profile, object layout, source, or workspace implementation was consulted.

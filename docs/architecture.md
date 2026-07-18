@@ -361,9 +361,12 @@ whole frame passes both entropy and dictionary validation.
 For raw frame size `F`, reference staging is bounded by `4F`, generated phrase
 records by the lesser of `max(F-1, 0)` and the configured maximum, and the
 iterative expansion stack by the admitted phrase count plus one for a nonempty
-frame. A future checked opaque workspace partition must accommodate encoder
-phrase spans, or decoder Blocked Huffman views, LZMW phrase records, and
-expansion-stack references without exposing their C++ layouts. The
+frame. The checked opaque workspace profile now partitions encoder phrase
+spans, or decoder Blocked Huffman views, LZMW phrase records, and expansion-
+stack references without exposing their C++ layouts. Decoder phrase capacity
+is derived from the maximum admitted serialized-token extent rather than only
+the raw frame bound, so token-heavy malformed frames can reach the validator
+and be rejected without an allocation or premature workspace failure. The
 complete-frame validator and decoder now implement the decode half of this
 boundary: header and descriptor extents are fixed first, entropy output is
 staged, the full LZMW grammar is validated, aggregate workspace and raw

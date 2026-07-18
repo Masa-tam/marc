@@ -1640,3 +1640,16 @@ staging unchanged when phrase-span workspace is short. Keep serialized output
 unchanged when one byte short. Check a staging shortage, phrase-span-plus-token
 aggregate one byte short, empty frame rejection, and input longer than the
 contextual frame extent.
+
+For the combined workspace profile, use original size 17, frame size 10, and
+entropy block size 16. Require 10 raw bytes, 40 token bytes, three raw-fallback
+entropy blocks, nine encoder phrase spans, and the exact encoded-frame and
+aggregate extents. Check a configured dictionary freeze, a one-byte frame, an
+empty stream, a block-count limit, and an aggregate one byte short.
+
+For decoder layout, independently align maximum Blocked Huffman views, LZMW
+phrase records, and 32-bit expansion references in one opaque region. Derive
+phrase count from the maximum serialized token count minus one and the
+dictionary-entry limit, not from raw frame size. Verify every returned span and
+non-overlap, exact offsets and total bytes, short and misaligned storage,
+tampered requirements, invalid limits, and stable public error mapping.

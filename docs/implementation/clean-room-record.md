@@ -4688,3 +4688,29 @@ discarded and the reviewed seed retained.
   grammar; no external combined encoder expression was compared.
 - Local validation: thirteen focused complete-frame tests and all 1137 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman workspace profile
+
+- Authoring method: mechanically specialized marc's established combined-
+  profile ownership shape, then independently replaced every bound with the
+  local LZMW fixed-reference and adjacent-phrase rules.
+- References used: DD-256 through DD-259, the LZMW encoder and validator
+  workspace contracts, Blocked Huffman descriptor bound, checked alignment
+  helpers, and marc's three-region ABI convention.
+- Known implementations intentionally not consulted: external combined LZMW
+  profiles, allocators, workspace layouts, object representations, source, or
+  tests.
+- Independent decisions: size encoder token staging at four bytes per raw byte
+  and phrase spans at raw bytes minus one; keep malformed-token decoder phrase
+  capacity based on serialized extent rather than raw size; place block views,
+  phrase records, and expansion references in one recomputed aligned layout;
+  use alignment one for an empty encoder view.
+- Generated-code task description: add profile construction, encoder and
+  decoder requirements, opaque typed partitions, stable error mapping, exact
+  sizing/freeze/empty cases, block and aggregate limits, alignment and offset
+  validation, short and misaligned storage, and invalid-limit tests.
+- Similarity review: the ownership vocabulary and partition shape are marc's
+  own established convention; all counts and tests were re-derived from the
+  LZMW grammar rather than copied as LZD formulas.
+- Local validation: seven focused profile tests and all 1144 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
