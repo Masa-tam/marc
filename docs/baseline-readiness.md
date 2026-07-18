@@ -86,7 +86,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZMW plus Blocked Huffman | Exact format, complete-frame validator/decoder, checked aggregate bounds, and transactional raw publication | Decoder implemented; encoder pending |
+| LZMW plus Blocked Huffman | Exact format, complete-frame codec, deterministic staged references, checked aggregate bounds, and transactional publication | Frame codec complete; streaming pending |
 
 ## Remaining release evidence
 

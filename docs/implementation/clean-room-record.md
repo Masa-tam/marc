@@ -4663,3 +4663,28 @@ discarded and the reviewed seed retained.
   fixed-reference grammar; no external combined decoder was compared.
 - Local validation: eight focused validator/decoder tests and all 1132 Release
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman complete-frame encoder
+
+- Authoring method: connected marc's deterministic input-backed LZMW planner
+  and encoder to its Blocked Huffman planner and encoder through caller-owned
+  canonical-reference staging.
+- References used: DD-256 through DD-258, the local LZMW encoder contract,
+  Blocked Huffman stored-size rule, generic frame serializer, and the specified
+  76-byte vector.
+- Known implementations intentionally not consulted: external combined LZMW
+  encoders, formats, planning pipelines, source, vectors, tests, workspace
+  formulas, or compression heuristics.
+- Independent decisions: complete the LZMW parse before entropy planning;
+  include phrase spans and exact token staging in the checked planning
+  aggregate; permit entropy splits within references; repeat planning before
+  publication; require exact serialized capacity before writing the header.
+- Generated-code task description: add complete-frame planning and encoding,
+  exact-vector reproduction, deterministic split-block round trips, canonical-
+  Huffman selection, raw fallback, workspace and aggregate failures, frame
+  extent checks, and atomic short-output behavior.
+- Similarity review: the implementation composes marc-owned component APIs and
+  validation vocabulary while its bounds derive directly from the local LZMW
+  grammar; no external combined encoder expression was compared.
+- Local validation: thirteen focused complete-frame tests and all 1137 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

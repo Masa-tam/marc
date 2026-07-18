@@ -4713,3 +4713,25 @@ The hand vector and a two-literal adjacent-phrase frame are permanent tests;
 all truncations, trailing bytes, layer-specific malformed data, workspace
 shortages, unsupported pipelines, and aggregate failures are negative tests.
 Encoder and complete-stream behavior remain separate decisions.
+
+## DD-258: LZMW combined planning fixes references before entropy
+
+- Date: 2026-07-18
+- Status: accepted
+
+Require one complete deterministic LZMW planning pass before entropy planning.
+The caller supplies `min(max(F-1, 0), maximum_entries)` phrase-span records and
+up to `4F` token-staging bytes. Validate both extents and their checked aggregate
+before serializing the exact four-byte references into staging. Blocked Huffman
+then plans only over that immutable logical region, so entropy blocks may split
+references without changing the LZMW parse or encoded bytes.
+
+Reject empty frames, input inconsistent with the stream's next frame extent,
+invalid parameters, insufficient phrase-span or staging workspace, component
+limit failures, and arithmetic overflow before serialized output exists. After
+the generic header validates, return the exact header, descriptor/model, and
+payload extent. Encoding repeats complete planning, rejects short output
+without modifying it, then serializes the header and entropy regions. Tests
+require the hand vector byte for byte, repeated deterministic encoding,
+reference-boundary splits, raw and canonical-Huffman representations, complete
+round trips, workspace and aggregate limits, and frame-size mismatch handling.

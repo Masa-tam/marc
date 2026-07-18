@@ -1626,3 +1626,17 @@ reconstructs three bytes rather than a multiple of four, and when aggregate
 workspace is one byte short. The malformed descriptor must fail before token
 staging changes; dictionary failures may change staging but must not publish
 raw bytes. Reject a mismatched pipeline before parsing its frame body.
+
+For complete-frame encode, plan raw `A` with no phrase spans and four staging
+bytes; require one token, zero generated entries, one raw entropy block, and
+the exact documented 76-byte frame. Encode a multi-reference input twice with
+entropy block size three so boundaries split four-byte references; require
+identical frames and a complete decode round trip.
+
+Independently encode 1,024 deterministic pseudo-random bytes in one entropy
+block and require a 256-byte canonical model, a payload smaller than the token
+region, a Huffman rather than raw descriptor, and exact round trip. Keep token
+staging unchanged when phrase-span workspace is short. Keep serialized output
+unchanged when one byte short. Check a staging shortage, phrase-span-plus-token
+aggregate one byte short, empty frame rejection, and input longer than the
+contextual frame extent.

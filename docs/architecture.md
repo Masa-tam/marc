@@ -368,7 +368,12 @@ complete-frame validator and decoder now implement the decode half of this
 boundary: header and descriptor extents are fixed first, entropy output is
 staged, the full LZMW grammar is validated, aggregate workspace and raw
 capacity are checked, and only then does iterative expansion publish bytes.
-Encoder, outer streaming, and public factory surfaces remain separate.
+The matching planner first fixes the complete deterministic LZMW parse in
+caller-owned phrase spans, serializes the exact four-byte references into
+staging, and plans Blocked Huffman only over those bytes. The encoder publishes
+the generic header, descriptors/models, and payload only after exact output
+capacity is known. Complete-frame encode and decode are now implemented; outer
+streaming and public factory surfaces remain separate.
 
 ### Combined dictionary and entropy pipelines
 
