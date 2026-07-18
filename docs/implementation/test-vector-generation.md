@@ -1455,3 +1455,9 @@ entries, and the 64-MiB aggregate policy. Obtain all three workspace regions
 from the public C ABI query. Require ordinary and empty round trips, malformed
 and trailing-data rejection, overwrite refusal, and removal of the temporary
 destination after every failed decode.
+
+Run one `lzw-blocked-huffman` benchmark smoke iteration over `README.md` with
+the identical CLI profile bounds. Require a successful public-C-ABI round trip
+before timing, sufficient complete-stream capacity for raw entropy fallback,
+and output of ratio, encode/decode throughput, each direction's three workspace
+extents, and the larger aggregate workspace.

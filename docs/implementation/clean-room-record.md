@@ -4332,3 +4332,20 @@ discarded and the reviewed seed retained.
   external command structure or combined-codec behavior was compared.
 - Local validation: the focused CLI test and all 1091 Release tests passed
   under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman benchmark profile
+
+- Authoring method: extended marc's repository-owned public-ABI benchmark
+  registry and reused its verification and measurement contract.
+- References used: DD-243, the fixed CLI profile, public combined C API, and
+  `docs/benchmarks.md` measurement definitions.
+- Known implementations intentionally not consulted: external compression
+  benchmarks, combined LZW tools, harnesses, corpora, results, or source.
+- Independent decisions: use the two-byte packed bound, 32 descriptor limit,
+  raw entropy fallback, 65,280-entry bound, and queried three-region workspace.
+- Generated-code task description: add selector, conservative capacity,
+  public factory dispatch, output naming, and one verified smoke measurement.
+- Similarity review: registry and measurement flow reuse only marc's existing
+  benchmark structure; no external benchmark expression was compared.
+- Local validation: the benchmark smoke and all 1092 Release tests passed under
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

@@ -540,3 +540,7 @@ The `lzw-blocked-huffman` CLI adapter uses only marc's public combined C
 factory, existing transactional file policy, fixed profile bounds, and common
 CLI test harness. No external command-line codec, wrapper, allocation policy,
 source, or test was consulted.
+The `lzw-blocked-huffman` benchmark adapter uses only the same public C
+factory, fixed CLI profile, conservative encoded-capacity rules, and marc's
+existing measurement contract. No external benchmark harness, result, corpus,
+implementation, or tuning data was consulted.

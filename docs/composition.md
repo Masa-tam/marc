@@ -36,8 +36,9 @@ bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
 interoperability coverage.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
-bounded decoder fuzz target, and a transactional CLI selector. Its benchmark
-adapter and interoperability entry remain separate admission steps.
+bounded decoder fuzz target, a transactional CLI selector, and a public-ABI
+benchmark adapter. Its interoperability entry remains a separate admission
+step.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation

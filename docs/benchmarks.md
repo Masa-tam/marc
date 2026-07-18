@@ -17,6 +17,7 @@ marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lzw corpus.bin 5
+marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 ```
@@ -92,6 +93,13 @@ block, and raw entropy fallback. The benchmark obtains all caller-owned byte
 counts and alignment from the public C ABI; the reported views workspace
 therefore includes the encoder phrase table or the aligned decoder block views
 and phrase table.
+
+`lzw-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
+the exact two-byte-per-raw-byte packed-code bound, at most 32 entropy blocks,
+and at most 65,280 additional LZW entries. Capacity includes one 16-byte
+descriptor per possible packed-code block and raw entropy fallback. The public
+C ABI query supplies all primary, secondary, and aligned views extents reported
+by the benchmark.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

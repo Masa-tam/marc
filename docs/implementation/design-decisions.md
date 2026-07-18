@@ -4395,3 +4395,21 @@ regions from the queried requirements rather than duplicating their private
 partition. Reuse the transactional file harness for ordinary, empty,
 malformed, trailing-data, overwrite, and temporary-file-cleanup cases.
 Benchmark and interoperability admission remain separate evidence steps.
+
+## DD-243: LZW composition benchmark preserves the fixed CLI profile
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add `lzw-blocked-huffman` to the dependency-free benchmark with the CLI's one
+MiB raw frames, 65,536-symbol entropy blocks, two-byte packed-code bound, 32
+block limit, 65,280 additional dictionary entries, and 64-MiB aggregate policy.
+Use the public combined C configuration, requirements, factory, process, and
+destroy functions exclusively.
+
+Conservatively reserve a descriptor for every possible full-profile entropy
+block and permit raw fallback over all packed LZW bytes when sizing the encoded
+buffer. Verify a complete round trip before timing, keep allocation and factory
+construction outside the timed region, and report direction-specific primary,
+secondary, and views extents plus their larger aggregate. This closes local
+profile admission; interoperability schema publication remains separate.

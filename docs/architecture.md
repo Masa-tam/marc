@@ -1236,8 +1236,10 @@ frame, packed-code staging, entropy views, LZW phrases, aggregate memory, and
 process-call limits before accepting arbitrary bytes.
 The CLI reaches this composed profile only through the public C ABI. It fixes
 one-MiB raw frames and 65,536-symbol entropy blocks, then obtains all three
-workspace extents and alignment from the requirements query. Benchmark and
-interoperability admission remain later evidence steps.
+workspace extents and alignment from the requirements query. The benchmark
+uses that same public profile and reports the queried direction-specific
+regions after verifying a complete round trip. Interoperability admission
+remains a later evidence step.
 
 ### Published composed-profile evidence
 
