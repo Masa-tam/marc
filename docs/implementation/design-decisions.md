@@ -5295,3 +5295,20 @@ encoder and decoder workspaces independently, verify an exact complete round
 trip before timing, measure the two directions separately, and report peak
 caller-reserved workspace as the larger direction-specific sum. Input and
 encoded/decoded buffers remain outside that workspace metric.
+
+## DD-288: Interoperability schema 8 appends the Adaptive composition
+
+- Date: 2026-07-19
+- Status: accepted
+
+Define schema 8 with codec set `marc-cli-v8`. Preserve the exact eighteen-entry
+schema-7 order and append `lz77-adaptive-huffman` as the nineteenth archive.
+The generator emits schema 8 by default; schemas 1 through 7 retain their
+frozen profile sets, codec-set rules, and ordering.
+
+Require the verifier to match the exact schema-8 count and order before
+decoding, then decode every foreign archive, compare its raw bytes with the
+fixture, re-encode locally, and compare the complete canonical archive byte for
+byte. The compatibility regression must generate schema 8, reject a reordered
+schema-8 manifest, derive each frozen earlier schema by filtering only, and
+verify all eight generations.

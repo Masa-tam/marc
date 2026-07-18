@@ -703,3 +703,9 @@ C factory and CLI profile constants, checked complete-stream capacity
 arithmetic, and marc's repository-owned measurement contract. No external
 benchmark harness, implementation, result, corpus, capacity formula, or tuning
 guidance was consulted.
+
+Interoperability schema 8 uses only DD-288, marc's frozen schema-7 manifest
+order, the completed public CLI selector, and the repository-owned generator,
+verifier, and compatibility regression. No external archive format,
+interoperability suite, manifest, combined-codec archive, corpus, or test vector
+was consulted.

@@ -28,7 +28,7 @@ public format or API guarantee yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 7 includes every named cell while
+None/None factory. Interoperability schema 8 includes every named cell while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -55,7 +55,8 @@ compatibility promise.
 `lz77-adaptive-huffman` is the first Adaptive Huffman composition with a
 bounded public C factory and public-ABI completion matrix. Bounded frame and
 stream decoder fuzzing, a transactional CLI selector, and a public-C-ABI
-benchmark adapter are available. Its interoperability archive remains pending.
+benchmark adapter are available. Interoperability schema 8 includes it as the
+nineteenth archive.
 
 ## Why publication is not automatic
 

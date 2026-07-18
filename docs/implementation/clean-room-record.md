@@ -5367,3 +5367,32 @@ discarded and the reviewed seed retained.
   Clang. The README observation encoded 4,424 bytes to 5,880 bytes and reported
   a 36,831,360-byte peak caller-reserved workspace on the local MSVC build;
   throughput values remain non-normative and are not recorded as thresholds.
+
+## 2026-07-19 - Interoperability schema 8
+
+- Authoring method: extended marc's versioned manifest registry after fixing
+  the append-only schema rule in DD-288.
+- References used: DD-288, the frozen schema-7 profile order, the public
+  `lz77-adaptive-huffman` CLI selector, and repository-owned generation,
+  verification, compatibility, and hashing procedures.
+- Known implementations intentionally not consulted: external archive formats,
+  interoperability harnesses, manifests, combined-codec archives, corpora,
+  test vectors, source, or compatibility registries.
+- Independent decisions: identify the current set as schema 8 and
+  `marc-cli-v8`; append the Adaptive composition nineteenth; retain schemas 1
+  through 7 exactly; require exact manifest order before decode; preserve
+  foreign decode and byte-identical local re-encode checks.
+- Generated-code task description: update the bundle generator and verifier,
+  derive all seven frozen predecessors from a schema-8 bundle, reject reordered
+  current manifests, and synchronize format, architecture, readiness,
+  interoperability, composition, and release-change records.
+- Similarity review: the change extends only marc's append-only schema and
+  PowerShell conventions; no external archive or compatibility expression was
+  compared.
+- Local validation: schema 8 generated and verified all 19 archives, a
+  reordered schema-8 manifest was rejected before decoding, and schemas 1
+  through 7 verified their frozen 7, 8, 13, 15, 16, 17, and 18 archive sets.
+  Independently generated MSVC and Clang bundles had byte-identical `input.bin`
+  and all 19 archives. The focused compatibility regression and all 1,208
+  Release tests passed under both toolchains. Pushed Windows/Linux schema-8
+  artifacts and their external cross-check remain separate release evidence.
