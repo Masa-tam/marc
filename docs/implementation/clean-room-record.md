@@ -4905,3 +4905,34 @@ discarded and the reviewed seed retained.
   toolchains, including all 18 labeled benchmark smokes. Tracked-file scans
   found no local compiler path, private-key/token marker, generated build tree,
   or file larger than one MiB outside the pinned submodule.
+
+## 2026-07-18 - CI badge and GoogleTest notice alignment
+
+- Authoring method: applied GitHub's documented workflow-badge URL to the
+  repository's existing CI workflow and adapted the user-specified mffv1 notice
+  structure to marc's own submodule path and linkage policy.
+- References used: DD-268, GitHub's workflow status-badge documentation, the
+  mffv1 third-party notice supplied by the repository owner, and the exact
+  `third_party/googletest/LICENSE` text at marc's pinned submodule revision.
+- Known implementations intentionally not consulted: external codec source,
+  third-party notice generators, badge services, license classifiers, or
+  dependency-management source.
+- Independent decisions: show main-branch CI status using GitHub's plain image
+  form; reproduce the dependency license rather than a mutable pin summary;
+  preserve marc's underscore path; state test-only use and non-linkage; verify
+  the root notice as mandatory documentation and compare its license fence with
+  the initialized submodule.
+- Generated-code task description: add a main-branch CI badge, align GoogleTest
+  notice presentation with mffv1 without copying project-specific FFmpeg text,
+  remove update-sensitive version metadata, and extend documentation checks.
+- Similarity review: license text is reproduced verbatim from GoogleTest's
+  authoritative license as required; surrounding project-specific statements
+  were independently adapted to marc.
+- Local validation: the standalone documentation audit verified 48 relative
+  links across all 18 mandatory documents and matched the fenced GoogleTest
+  license to the initialized submodule. The registered documentation-layout
+  test passed in both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja Release
+  builds. The badge URL follows GitHub's documented workflow-file form. The
+  repository owner confirmed that unauthenticated access is intentionally
+  unavailable until documentation work and Dependabot merges are complete;
+  the same badge URL becomes externally visible after Public conversion.

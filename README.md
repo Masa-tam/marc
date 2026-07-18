@@ -1,4 +1,7 @@
 # marc
+
+![CI](https://github.com/Masa-tam/marc/actions/workflows/ci.yml/badge.svg?branch=main)
+
 ![marc logo](assets/images/marc.png)
 
 `marc` is a C++20 framework for independently designed, streaming lossless
