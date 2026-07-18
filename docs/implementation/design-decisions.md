@@ -5030,3 +5030,19 @@ Require the final tagged commit to match the changelog, CMake version, pushed CI
 revision, and reviewed evidence. Preserve outstanding architecture, benchmark,
 and fuzz evidence as explicit release decisions rather than allowing a green
 status badge to erase them.
+
+## DD-274: The Windows preset opts into MSVC translation-unit parallelism
+
+- Date: 2026-07-19
+- Status: accepted
+
+Expose `MARC_MSVC_MULTIPROCESS_COMPILE` as an opt-in CMake option with a default
+of OFF. When selected under MSVC, add `/MP` to C and C++ compile steps through
+language-scoped generator expressions. Enable the option in the canonical
+`windows-msvc` preset so large targets such as the core test executable can
+compile independent translation units concurrently.
+
+Do not inject a caller-provided raw flag string, pass `/MP` to non-MSVC tools,
+or make it an unavoidable property of installed marc consumers. Permit
+memory-constrained Windows builders to disable the option. Treat this solely as
+a build-throughput policy with no format, ABI, runtime, or determinism effect.

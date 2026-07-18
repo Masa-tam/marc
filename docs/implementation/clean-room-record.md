@@ -5042,3 +5042,28 @@ discarded and the reviewed seed retained.
   documentation-layout tests passed in both; separate temporary installs from
   both trees contained `CHANGELOG.md` and `docs/releasing.md` alongside the
   existing package documentation.
+
+## 2026-07-19 - MSVC translation-unit parallelism
+
+- Authoring method: compared the canonical Visual Studio preset, generated
+  compile configuration, and observed large-target build behavior, then added a
+  project-scoped switch for MSVC's documented translation-unit concurrency.
+- References used: DD-274, the repository's CMake presets and build targets,
+  and the MSVC `/MP` compiler option semantics.
+- Known implementations intentionally not consulted: external codec source,
+  third-party build wrappers, unrelated project presets, or copied CMake logic.
+- Independent decisions: use a boolean marc option rather than a raw flag cache
+  string; default it OFF; enable it only in the Windows preset; scope `/MP` to
+  MSVC C/C++ compilation; document the memory-constrained opt-out.
+- Generated-code task description: reduce canonical Visual Studio build time by
+  enabling safe within-target compilation concurrency without affecting other
+  compilers, consumers, ABI, stream bytes, or runtime behavior.
+- Similarity review: the change is a direct application of compiler and CMake
+  option semantics to marc's own targets and contains no codec expression.
+- Local validation: the Windows preset cached the option as ON and generated
+  `MultiProcessorCompilation=true` for `marc_core_tests` and the other C/C++
+  targets; the canonical Release build completed successfully in 78.9 seconds.
+  This elapsed time is observational, not a controlled before/after benchmark.
+  The Clang configuration retained the option as OFF. All 1,162 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

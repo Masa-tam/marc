@@ -441,6 +441,13 @@ This avoids depending on localized MSVC `/showIncludes` text for incremental
 dependency tracking while retaining Ninja's straightforward portable workflow
 on platforms where compiler dependency files are locale-independent.
 
+The Windows preset also enables `MARC_MSVC_MULTIPROCESS_COMPILE`. The option
+adds `/MP` only to MSVC C and C++ compile steps, allowing independent
+translation units inside a large target to compile concurrently. It is OFF for
+non-preset and non-MSVC configurations unless selected explicitly, and may be
+disabled on memory-constrained builders. This complements build-tool target
+parallelism; it does not alter source, ABI, or generated stream bytes.
+
 Canonical commands are:
 
 ```text

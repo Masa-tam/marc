@@ -40,6 +40,10 @@ enabled; initialize the pinned submodule with:
 git submodule update --init --recursive
 ```
 
+The canonical Windows preset enables MSVC `/MP` within each C/C++ target.
+Set `MARC_MSVC_MULTIPROCESS_COMPILE=OFF` when a constrained machine requires
+serial translation-unit compilation.
+
 ## Command-line tool
 
 Top-level builds produce a small `marc` executable that exercises the public C

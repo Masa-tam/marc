@@ -17,6 +17,15 @@ option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
+option(MARC_MSVC_MULTIPROCESS_COMPILE
+    "Compile independent C/C++ translation units concurrently with MSVC /MP"
+    OFF)
+
+if(MARC_MSVC_MULTIPROCESS_COMPILE AND MSVC)
+    add_compile_options(
+        $<$<COMPILE_LANGUAGE:C>:/MP>
+        $<$<COMPILE_LANGUAGE:CXX>:/MP>)
+endif()
 
 if(MARC_BUILD_FUZZERS AND WIN32
         AND CMAKE_CXX_COMPILER_ID MATCHES "Clang"

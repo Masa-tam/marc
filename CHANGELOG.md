@@ -3,6 +3,13 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## Unreleased
+
+### Changed
+
+- The canonical Visual Studio preset enables MSVC `/MP` translation-unit
+  parallelism through an explicit opt-out CMake option.
+
 ## 0.1.0 - 2026-07-19
 
 Initial public source release candidate.

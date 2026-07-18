@@ -21,7 +21,8 @@
       "cacheVariables": {
         "MARC_BUILD_SHARED": "ON",
         "MARC_BUILD_STATIC": "ON",
-        "MARC_BUILD_TESTS": "ON"
+        "MARC_BUILD_TESTS": "ON",
+        "MARC_MSVC_MULTIPROCESS_COMPILE": "ON"
       }
     },
     {
