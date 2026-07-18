@@ -89,8 +89,8 @@ exact decoder-visible representation and reserved public name are specified.
 The following items remain open even though local codec implementation is
 ready:
 
-- externally cross-decode and byte-compare foreign artifacts on additional
-  operating systems and architectures;
+- repeat interoperability generation and cross-decoding on at least one
+  non-x86-64 architecture;
 - record representative encode throughput, decode throughput, compression
   ratio, and peak workspace results rather than relying on benchmark smoke;
 - run longer sanitizer fuzz campaigns and convert every finding into a
@@ -118,6 +118,14 @@ The run retained the self-describing
 closes pushed-revision CI generation evidence. It does not by itself claim
 cross-decoding between the artifacts or evidence for a second architecture;
 those remain explicitly open above.
+
+An external Ubuntu 26.04/Clang 21 environment under WSL2 subsequently verified
+all eighteen Windows/MSVC and Ubuntu 24.04/Ninja archives, then generated an
+Ubuntu 26.04 bundle that the local Windows/MSVC executable verified in the
+reverse direction. All nineteen binary files in each bundle (`input.bin` plus
+eighteen archives) were byte-identical across the three producers. This closes
+the current x86-64 operating-system/compiler cross-check; a second architecture
+remains open.
 
 ## Pre-publication CI and package audit
 
@@ -159,7 +167,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-271, the complete Release suite contains 1,162 tests and passes under both
+At DD-272, the complete Release suite contains 1,162 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

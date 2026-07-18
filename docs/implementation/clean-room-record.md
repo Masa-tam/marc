@@ -4998,3 +4998,25 @@ discarded and the reviewed seed retained.
 - Validation result: run 29647453799 completed successfully for
   `c4f831917a43f75ca5c698d19d3674f12803f40b`; all six jobs succeeded and both
   platform artifacts were present, unexpired, with retention through 2026-10-16.
+
+## 2026-07-18 - First external bidirectional interoperability result
+
+- Authoring method: reviewed the repository owner's Ubuntu 26.04 environment
+  report and copied schema-7 bundles, then ran marc's Windows verifier against
+  the Ubuntu-generated bundle and compared all common binary files by SHA-256.
+- References used: DD-272, the reported Ubuntu verifier output, the supplied
+  Ubuntu 26.04 manifest, and marc's repository-owned schema-7 verifier.
+- Known implementations intentionally not consulted: external codec source,
+  external archive tools, foreign decoder internals, or third-party test suites.
+- Independent decisions: preserve the WSL2 and x86-64 qualifications; require
+  bidirectional decode/re-encode success; compare all nineteen binary files;
+  keep non-x86-64 evidence open.
+- Generated-code task description: validate the supplied external results and
+  artifacts, perform the reverse Windows check, establish the narrow supported
+  interoperability claim, and exclude generated bundles from Git tracking.
+- Similarity review: supplied files were treated solely as black-box test data;
+  no implementation expression was inspected or reproduced.
+- Validation result: Ubuntu 26.04/Clang 21.1.8 verified all eighteen Windows and
+  Ubuntu 24.04 archives; Windows/MSVC verified all eighteen Ubuntu 26.04
+  archives; SHA-256 comparison of `input.bin` and all eighteen archives across
+  the three bundles reported 19 files and zero mismatches.

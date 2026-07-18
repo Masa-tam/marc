@@ -1,5 +1,6 @@
 /build*/
 /out/
+/marc-interop/
 /.vs/
 /CMakeUserPresets.json
 *.user

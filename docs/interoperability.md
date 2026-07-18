@@ -62,3 +62,21 @@ The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
+
+## Recorded external cross-checks
+
+Revision `c4f831917a43f75ca5c698d19d3674f12803f40b` received its first external
+schema-7 cross-check on 2026-07-18. The external environment was Ubuntu 26.04
+LTS under WSL2 on x86-64, using Ubuntu Clang 21.1.8, CMake 4.2.3, and PowerShell
+7.6.3.
+
+The Ubuntu 26.04 executable verified all eighteen archives from both the
+Windows/MSVC and Ubuntu 24.04/Ninja CI artifacts, including byte-identical local
+re-encoding. It then generated an `ubuntu-26.04-ninja-x64` bundle. The local
+Windows/MSVC executable independently verified all eighteen archives in that
+bundle. Direct SHA-256 comparison across the three bundles found identical
+`input.bin` bytes and identical bytes for every one of the eighteen archives.
+
+This establishes deterministic x86-64 stream generation across MSVC and Clang
+and bidirectional decoding between Windows and the stated WSL2 Linux userland.
+It is not evidence for a non-x86-64 architecture or a non-WSL Linux kernel.

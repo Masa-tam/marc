@@ -531,6 +531,14 @@ and its official Actions API metadata on 2026-07-18. This reference establishes
 job conclusions, source revision, artifact names, and retention dates only; it
 is not an external codec implementation or interoperability result.
 
+The repository owner supplied the first external interoperability report and
+its generated Ubuntu 26.04 schema-7 bundle on 2026-07-18. The report records
+Ubuntu 26.04 under WSL2 x86-64, Clang 21.1.8, CMake 4.2.3, PowerShell 7.6.3,
+revision `c4f831917a43f75ca5c698d19d3674f12803f40b`, and successful verification
+of both public CI bundles. The copied bundle was used only as test data for
+marc's repository-owned verifier and byte comparison; no external codec source
+or implementation was consulted.
+
 The LZ78 plus Blocked Huffman composition specification uses only marc's
 already documented LZ78 variant 1 token grammar, Blocked Huffman variant 1
 block format, generic frame format, checked workspace policy, and the original

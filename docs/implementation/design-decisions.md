@@ -4997,3 +4997,19 @@ Do not infer foreign cross-decoding, additional-architecture coverage,
 representative performance, or long-running sanitizer-fuzz evidence from green
 CI or artifact creation. Preserve those as separate release-evidence items so a
 status badge cannot broaden the claim.
+
+## DD-272: Cross-platform evidence records environment boundaries
+
+- Date: 2026-07-18
+- Status: accepted
+
+Accept an interoperability result only when the producing artifact, local
+platform, compiler, exact source revision, and verifier result are reported.
+For the first external run, record Ubuntu 26.04 as a WSL2 x86-64 environment
+rather than generalizing it to bare-metal Linux or another architecture.
+
+Require both directions for the platform claim: the Ubuntu executable must
+verify the Windows and Ubuntu CI bundles, and the Windows executable must verify
+the Ubuntu 26.04 bundle. Supplement the verifier results with a direct equality
+check over the common input and all eighteen archives. Keep non-x86-64 testing
+open even when every x86-64 producer is byte-identical.
