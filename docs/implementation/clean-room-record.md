@@ -4936,3 +4936,24 @@ discarded and the reviewed seed retained.
   repository owner confirmed that unauthenticated access is intentionally
   unavailable until documentation work and Dependabot merges are complete;
   the same badge URL becomes externally visible after Public conversion.
+
+## 2026-07-18 - Linked CI badge validation
+
+- Authoring method: diagnosed the documentation-layout failure produced by the
+  repository owner's valid linked-image Markdown and corrected marc's local
+  link scanner at the nested-image boundary.
+- References used: DD-269, the repository README regression case, and GitHub's
+  workflow status-badge documentation already recorded in `references.md`.
+- Known implementations intentionally not consulted: external Markdown parser
+  source, codec source, third-party test suites, or link-checker source.
+- Independent decisions: retain a dependency-free CMake validator; lower linked
+  images into two ordinary links before the existing scan; continue checking
+  both relative image assets and relative navigation targets.
+- Generated-code task description: reproduce the README validation failure,
+  distinguish valid Markdown from a scanner defect, minimally extend the
+  scanner, and verify the registered test under both local toolchains.
+- Similarity review: the change is a repository-local regular-expression
+  normalization derived from the failing input and existing validator contract.
+- Local validation: the registered documentation-layout test passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja Release builds with the linked
+  README badge present.

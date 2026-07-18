@@ -4952,3 +4952,15 @@ the notice; the Git link is authoritative and Dependabot may update it without
 changing license terms. Add the root notice to mandatory documentation-layout
 verification and compare its fenced license text byte-for-byte after newline
 normalization with the initialized submodule's `LICENSE`.
+
+## DD-269: Documentation validation recognizes linked images
+
+- Date: 2026-07-18
+- Status: accepted
+
+Make the CI badge both status-bearing and navigable by using GitHub's documented
+linked-image Markdown form. Before the documentation validator scans ordinary
+links, rewrite each linked image into separate image-target and navigation-target
+links. This preserves validation of relative image assets and relative badge
+destinations without allowing nested brackets to merge unrelated links into one
+false broken target. The README badge is the repository-owned regression case.
