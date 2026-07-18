@@ -5155,3 +5155,20 @@ staging, worst-case FGK payload, serialized frame, and active aggregate before
 constructing a transform. Decoder workspace depends only on local limits and
 the 1 MiB/2^24 profile caps, never on an untrusted stream header. Larger frames
 remain selectable when the caller deliberately supplies sufficient limits.
+
+## DD-281: Combined streaming encode owns framing but not caller chunking
+
+- Date: 2026-07-19
+- Status: accepted
+
+Emit the canonical stream header and LZ77 parameter region first, then collect
+exactly one configured raw frame, plan and encode it through the combined frame
+codec, and drain its serialized bytes before reusing any storage. Full frames
+may be emitted before `EndInput`; the final short frame is determined solely by
+the stream's declared original size.
+
+`Flush` drains already representable prefix or frame bytes but does not close a
+partial frame. `ResetBlock` is unsupported because outer frame boundaries are
+fixed by the declared raw frame size. Enforce the active raw-input, token, and
+serialized-frame aggregate at every prepared frame, and retain sticky terminal
+error and ended states. Input/output chunking must not alter serialized bytes.

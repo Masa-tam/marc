@@ -5209,3 +5209,27 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused profile tests and all 1,190 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman streaming encoder
+
+- Authoring method: connected marc's canonical stream prefix and combined
+  complete-frame encoder using the repository's documented immutable-direction
+  process state machine.
+- References used: DD-281, core `ProcessResult` invariants, combined profile
+  aggregate bounds, local stream-header/LZ77-parameter serializers, and the
+  completed frame encoder.
+- Known implementations intentionally not consulted: external streaming
+  compressors, foreign buffering state machines, or third-party streaming
+  tests.
+- Independent decisions: drain prefix and frames from bounded reusable storage;
+  keep partial frames open on `Flush`; reject `ResetBlock`; permit full-frame
+  emission before finish; make error and ended states sticky.
+- Generated-code task description: implement arbitrary chunking, one-byte
+  input/output, final-short-frame, empty-stream, workspace, aggregate, flush,
+  and protocol behavior for the combined encoder.
+- Similarity review: state transitions follow marc's own process contract and
+  named combined frame boundaries; no external structure or expression was
+  used.
+- Local validation: all four focused streaming-encoder tests and all 1,194
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.
