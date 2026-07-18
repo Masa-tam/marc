@@ -4274,3 +4274,22 @@ discarded and the reviewed seed retained.
   profile-specific arithmetic remains in the internal profile implementation.
 - Local validation: the focused pure-C ABI test and all 1086 Release tests
   passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman public completion matrix
+
+- Authoring method: exercised the independently implemented composition only
+  through marc's public C ABI and deterministic local inputs.
+- References used: DD-234 through DD-240, AGENTS.md completion criteria, and
+  marc's existing public-profile evidence contract.
+- Known implementations intentionally not consulted: external combined LZW
+  codecs, test suites, corpora, vectors, source, or compatibility tools.
+- Independent decisions: use 64-byte frames and blocks with 9-bit LZW; cover
+  every byte and deterministic binary classes; compare four I/O schedules;
+  corrupt only the fourth frame; make zero-entry view alignment neutral.
+- Generated-code task description: prove deterministic round trips, chunk
+  independence, stable completion, transactional final-frame rejection, and
+  empty/one-byte workspace construction through the public ABI.
+- Similarity review: generators, schedules, and assertions follow marc's own
+  documented contracts; no external combined expression was compared.
+- Local validation: four focused completion/profile tests and all 1090 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

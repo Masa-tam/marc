@@ -530,3 +530,6 @@ already documented LZW variant 1 packed-code grammar, Blocked Huffman variant 1
 block format, generic frame format, checked workspace policy, and the original
 LZW reference recorded above. No external combined codec, format, source,
 profile, stream, test vector, or workspace layout was consulted.
+The public completion matrix derives only from AGENTS.md data classes, marc's
+existing evidence contract, and the profile's independently implemented C ABI.
+No external corpus, test suite, vector, or combined-codec behavior was used.

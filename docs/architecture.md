@@ -1227,7 +1227,11 @@ draining raw output. Consequently a malformed later frame cannot publish a
 partial raw frame or alter an earlier committed one. The small C ABI now admits
 that exact implementation through a direction-specific requirements query and
 factory; no second codec construction path or private C++ record layout crosses
-the ABI.
+the ABI. Its public completion matrix now covers required binary classes,
+deterministic and chunk-independent streams, stable terminal behavior, and
+transactional malformed-final-frame rejection. Empty and one-byte inputs also
+fix the zero-entry encoder view contract at zero bytes with neutral alignment
+one.
 
 ### Published composed-profile evidence
 

@@ -117,8 +117,10 @@ LzwBlockedHuffmanProfileError make_lzw_blocked_huffman_profile(
 
   const auto largest_frame =
       std::min<std::uint64_t>(config.original_size, config.frame_size);
-  if (largest_frame == 0)
+  if (largest_frame == 0) {
+    workspace.views_alignment = 1;
     return LzwBlockedHuffmanProfileError::none;
+  }
   const auto entry_capacity = static_cast<std::uint64_t>(
       dictionary::internal::lzw_code_limit(config.parameters) -
       dictionary::internal::lzw_first_free_code);
@@ -175,7 +177,10 @@ LzwBlockedHuffmanProfileError make_lzw_blocked_huffman_profile(
     workspace = {};
     return LzwBlockedHuffmanProfileError::arithmetic_overflow;
   }
-  workspace.views_alignment = alignof(dictionary::internal::LzwEncoderEntry);
+  workspace.views_alignment = encoder_entries == 0
+                                  ? 1
+                                  : alignof(
+                                        dictionary::internal::LzwEncoderEntry);
   return LzwBlockedHuffmanProfileError::none;
 }
 

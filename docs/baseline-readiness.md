@@ -39,7 +39,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
 | `lz78-blocked-huffman` | Third composed dictionary/entropy pipeline | Ready | Included |
-| `lzw-blocked-huffman` | Fourth composed dictionary/entropy pipeline | C ABI admitted; remaining evidence pending | Not included |
+| `lzw-blocked-huffman` | Fourth composed dictionary/entropy pipeline | C ABI and completion admitted; tooling pending | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 4 contains fifteen archives: the frozen thirteen-entry schema-3 set
@@ -71,7 +71,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-blocked-huffman` | Yes | Yes | Yes | No | No | No | No | Not included |
+| `lzw-blocked-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -84,7 +84,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZW plus Blocked Huffman | Public C factory and workspace query over the complete internal streaming profile | Admitted; completion and tooling pending |
+| LZW plus Blocked Huffman | Public C factory and completion matrix over the complete internal streaming profile | Admitted; tooling pending |
 | LZD plus Blocked Huffman | Candidate components | Unspecified |
 | LZMW plus Blocked Huffman | Candidate components | Unspecified |
 
@@ -146,7 +146,7 @@ claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-239, the complete Release suite contains 1086 tests and passes under both
+At DD-240, the complete Release suite contains 1090 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture; it is not a substitute for
 the external release evidence above.

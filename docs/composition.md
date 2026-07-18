@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
-| LZW | `lzw` | Specified | Candidate | Candidate | Candidate | Candidate |
+| LZW | `lzw` | C ABI | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | Candidate | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | Candidate | Candidate | Candidate | Candidate | Candidate |
 
@@ -34,6 +34,10 @@ preserving the exact earlier schema profile sets.
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
 interoperability coverage.
+
+The LZW plus Blocked Huffman profile has public-ABI completion coverage. Its
+bounded fuzz target, CLI selector, benchmark adapter, and interoperability
+entry remain separate admission steps.
 
 Specified and Candidate cells must not be encoded or decoded by substituting
 standalone factories. A specified name is not public until its implementation

@@ -4338,3 +4338,22 @@ short regions, and misalignment before publishing a handle. Require a pure-C
 five-byte, three-frame round trip whose 304-byte output is fixed by the existing
 frame oracle. This admits the public factory only; completion matrix, fuzzing,
 CLI, benchmark, and interoperability remain separate evidence steps.
+
+## DD-240: LZW composition completion is proved through the public C ABI
+
+- Date: 2026-07-18
+- Status: accepted
+
+Drive the composed profile only through its public configuration, requirements,
+creation, processing, and destruction functions. Cover empty input, every
+one-byte value, all byte values, repetition, binary patterns, deterministic
+generated data, frame boundaries, and multiple frames. Require byte-identical
+encoding across repeated, one-byte, and mixed-chunk schedules.
+
+Corrupt, truncate, or append data only at the fourth frame and require exactly
+the first three frames to remain committed, the final destination byte to stay
+untouched, and the positioned terminal error to be sticky. Define an encoder
+with zero dictionary entries to require zero view bytes and neutral alignment
+one; this makes empty and one-byte construction agree with the checked
+partition contract. This admits only completion evidence. Fuzzing, CLI,
+benchmark, and interoperability remain independent gates.

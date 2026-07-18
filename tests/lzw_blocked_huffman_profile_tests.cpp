@@ -109,6 +109,25 @@ TEST(LzwBlockedHuffmanProfile, CalculatesDecoderLayoutFromLocalLimits) {
                     sizeof(marc::dictionary::internal::LzwPhraseEntry));
 }
 
+TEST(LzwBlockedHuffmanProfile, EmptyEncoderViewsUseNeutralAlignment) {
+  marc::core::DecoderLimits limits{};
+  marc::frame::StreamHeader stream{};
+  marc::frame::LzwBlockedHuffmanEncoderWorkspaceRequirements workspace{};
+
+  ASSERT_EQ(marc::frame::make_lzw_blocked_huffman_profile(
+                {0, 64, 64, {9, 0, 0}}, limits, stream, workspace),
+            LzwBlockedHuffmanProfileError::none);
+  EXPECT_EQ(workspace.views_bytes, 0U);
+  EXPECT_EQ(workspace.views_alignment, 1U);
+
+  ASSERT_EQ(marc::frame::make_lzw_blocked_huffman_profile(
+                {1, 64, 64, {9, 0, 0}}, limits, stream, workspace),
+            LzwBlockedHuffmanProfileError::none);
+  EXPECT_EQ(workspace.encoder_entry_count, 0U);
+  EXPECT_EQ(workspace.views_bytes, 0U);
+  EXPECT_EQ(workspace.views_alignment, 1U);
+}
+
 TEST(LzwBlockedHuffmanProfile, PartitionsEncoderOpaqueStorage) {
   marc::frame::StreamHeader stream{};
   marc::frame::LzwBlockedHuffmanEncoderWorkspaceRequirements workspace{};
