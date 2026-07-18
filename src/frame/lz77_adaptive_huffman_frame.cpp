@@ -24,6 +24,17 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
         && stream.entropy_parameters_size == 0;
 }
 
+[[nodiscard]] core::DecoderLimits entropy_limits_for(
+    const core::DecoderLimits& limits,
+    const std::uint64_t dictionary_size) noexcept {
+    auto entropy_limits = limits;
+    entropy_limits.max_frame_size = std::max(
+        entropy_limits.max_frame_size, dictionary_size);
+    entropy_limits.max_total_output_size = std::max(
+        entropy_limits.max_total_output_size, dictionary_size);
+    return entropy_limits;
+}
+
 [[nodiscard]] Lz77AdaptiveHuffmanFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::Lz77Parameters& parameters,
@@ -159,10 +170,12 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
         descriptor_input{input.data() + frame_header_size,
                          entropy::internal::adaptive_huffman_descriptor_size};
     entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
+    const auto entropy_limits = entropy_limits_for(
+        limits, result.dictionary_size);
     result.descriptor_error =
         entropy::internal::parse_adaptive_huffman_descriptor(
             descriptor_input, header.dictionary_serialized_size,
-            header.compressed_payload_size, limits, descriptor);
+            header.compressed_payload_size, entropy_limits, descriptor);
     if (result.descriptor_error
         != entropy::internal::AdaptiveHuffmanFormatError::none) {
         result.error =
@@ -175,7 +188,7 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
         header.compressed_payload_size);
     const auto entropy_decoded =
         entropy::internal::decode_adaptive_huffman_frame(
-            descriptor, payload, limits,
+            descriptor, payload, entropy_limits,
             dictionary_staging.first(result.dictionary_size));
     result.entropy_error = entropy_decoded.error;
     if (entropy_decoded.error
@@ -285,9 +298,11 @@ plan_lz77_adaptive_huffman_frame(
     }
 
     entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
+    const auto entropy_limits = entropy_limits_for(
+        limits, result.dictionary_size);
     const auto entropy_plan =
         entropy::internal::plan_adaptive_huffman_frame(
-            dictionary_staging.first(result.dictionary_size), limits,
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
             descriptor);
     result.entropy_encode_error = entropy_plan.error;
     result.payload_size = entropy_plan.payload_size;
@@ -377,9 +392,11 @@ encode_lz77_adaptive_huffman_frame(
     }
 
     entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
+    const auto entropy_limits = entropy_limits_for(
+        limits, result.dictionary_size);
     const auto entropy_plan =
         entropy::internal::plan_adaptive_huffman_frame(
-            dictionary_staging.first(result.dictionary_size), limits,
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
             descriptor);
     if (entropy_plan.error
             != entropy::internal::AdaptiveHuffmanEncodeError::none
@@ -411,7 +428,7 @@ encode_lz77_adaptive_huffman_frame(
     result.descriptor_error =
         entropy::internal::serialize_adaptive_huffman_descriptor(
             descriptor, header.dictionary_serialized_size,
-            header.compressed_payload_size, limits,
+            header.compressed_payload_size, entropy_limits,
             std::span<std::byte,
                       entropy::internal::adaptive_huffman_descriptor_size>{
                 output.data() + frame_header_size,
@@ -423,7 +440,7 @@ encode_lz77_adaptive_huffman_frame(
     }
     const auto entropy_encoded =
         entropy::internal::encode_adaptive_huffman_frame(
-            dictionary_staging.first(result.dictionary_size), limits,
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
             output.subspan(frame_header_size + result.descriptor_size,
                            result.payload_size),
             descriptor);

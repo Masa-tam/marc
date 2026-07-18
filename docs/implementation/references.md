@@ -677,3 +677,8 @@ bitstream, generic frame format, checked decoder limits, and existing
 repository-owned composition rules. No external combined codec, format,
 implementation, profile, stream, test vector, or workspace layout was
 consulted.
+
+The LZ77 plus Adaptive Huffman C ABI uses only DD-283, marc's size-tagged
+factory lifecycle, the completed combined profile/workspace calculators, and
+the two local streaming transforms. No external ABI, allocator convention,
+workspace layout, wrapper source, or combined factory test was consulted.

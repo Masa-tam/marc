@@ -1148,6 +1148,26 @@ known-size stream and frame/block configuration. Decoder requirements are
 conservative bounds derived solely from local limits; untrusted serialized
 headers never influence allocation requests before parsing.
 
+### LZ77 plus Adaptive Huffman validation boundary
+
+The Adaptive composition preserves the same canonical 16-byte LZ77 token
+boundary but resets one FGK tree for every nonempty outer frame. Complete
+entropy decode and LZ77 token validation occur in caller-owned token staging;
+raw reconstruction then completes in a separate private frame region before
+the incremental decoder may drain any current-frame byte.
+
+The public C factory exposes no entropy-block parameter or aligned views
+workspace. Encoding partitions its secondary byte region into token staging
+and serialized-frame storage; decoding partitions it into token staging and
+private raw storage. The requirements query derives both partitions from the
+known-size encoder profile or trusted local decoder limits before construction.
+
+Outer `max_frame_size` remains a raw-byte limit. The Adaptive primitive receives
+a private limits view sized to the already validated canonical token extent,
+because its standalone symbol unit is a byte at the entropy boundary. This
+unit translation neither enlarges the untrusted outer frame allowance nor
+changes compressed-payload, dictionary, aggregate, or LZ limits.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

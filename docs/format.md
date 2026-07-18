@@ -1176,7 +1176,7 @@ this frame.
 
 ## LZ77 variant 1 plus Adaptive Huffman FGK variant 1
 
-The reserved profile name is `lz77-adaptive-huffman`. This composition uses
+The profile name is `lz77-adaptive-huffman`. This composition uses
 dictionary algorithm ID 1, dictionary variant 1, entropy algorithm ID 1, and
 entropy variant 1. It uses format version 1.0. The stream parameter regions are
 the 16-byte LZ77 parameters followed by the empty Adaptive Huffman parameter
@@ -1242,10 +1242,10 @@ bits per token byte; configuration and decoder limits must reject any resulting
 payload, dictionary staging, raw staging, or active aggregate extent before
 allocation or mutation.
 
-This section fixes the decoder-visible representation but does not publish a C
-factory, CLI selector, benchmark profile, fuzz target, or interoperability
-schema entry. Those surfaces require their normal completion evidence before
-the reserved name becomes public.
+This section fixes the decoder-visible representation. The bounded C ABI
+factory is published as `marc_lz77_adaptive_huffman_*`; CLI selection,
+benchmarking, fuzzing, completion, and interoperability schema admission remain
+separate evidence steps.
 
 ### Hand-checkable single-Literal frame
 

@@ -5189,3 +5189,33 @@ direct-output complete-frame APIs; only the latter performs the final public
 copy. A malformed later frame may leave earlier fully drained frames committed,
 but contributes no byte itself. Truncation, trailing data, premature finish,
 unsupported reset, and terminal errors are strict and sticky.
+
+## DD-283: LZ77 plus Adaptive Huffman enters the C ABI as a bounded profile
+
+- Date: 2026-07-19
+- Status: accepted
+
+Expose `marc_lz77_adaptive_huffman_config` and matching init, workspace-query,
+and create functions without exposing either component as a caller-wired
+object. Keep known-size input, fixed outer frames, LZ77 variant 1, and Adaptive
+Huffman FGK variant 1 as one immutable profile. The configuration carries the
+raw frame and LZ77 parameters plus all local decoder limits needed to validate
+the composed stream; it has no entropy-block parameter because every outer
+frame resets exactly one Adaptive tree.
+
+Retain the common caller-owned workspace convention without an aligned views
+region. Encoding uses primary storage for one raw frame and partitions
+secondary storage into canonical LZ77-token staging followed by the complete
+serialized frame. Decoding uses primary storage for the serialized frame and
+partitions secondary storage into token staging followed by private raw-frame
+staging. Query requirements again after every configuration change, reject
+nonzero reserved fields and undersized regions before construction, and keep
+the opaque transform lifecycle and stable status mapping unchanged.
+
+Treat `max_frame_size` in this public profile as the raw outer-frame limit.
+When invoking the already specified standalone Adaptive primitive over the
+canonical token byte stream, derive a private limits view whose frame/output
+extent admits the already validated token size. Keep the caller's compressed,
+dictionary, aggregate, and LZ limits unchanged. This prevents the standalone
+symbol-count meaning of `max_frame_size` from accidentally rejecting a valid
+token stream or weakening the outer frame parser's raw-byte bound.

@@ -5257,3 +5257,24 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-decoder tests and all 1,199
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman public C ABI
+
+- Authoring method: connected marc's completed combined workspace calculators
+  and streaming transforms to the existing size-tagged opaque C lifecycle.
+- References used: DD-283, the local profile bounds, caller-owned workspace
+  convention, stable status mapping, and existing C compilation boundary.
+- Known implementations intentionally not consulted: external combined-codec
+  ABIs, allocator conventions, wrapper libraries, or third-party C tests.
+- Independent decisions: expose one immutable composed profile; omit entropy
+  block and views configuration; partition secondary storage only after a
+  successful query; reject reserved fields and short workspaces before object
+  construction.
+- Generated-code task description: add configuration initialization, checked
+  direction-specific workspace query, factory construction, pure-C compile and
+  round-trip coverage, and concise public documentation.
+- Similarity review: names and lifecycle follow marc's own public ABI and the
+  independently specified profile; no external expression was used.
+- Local validation: the focused pure-C factory test, all 38 combined-profile
+  tests, and all 1,200 Release tests passed under both MSVC/Visual Studio 2026
+  and Clang 22.1.3/Ninja on Windows x64.

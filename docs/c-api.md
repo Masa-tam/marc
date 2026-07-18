@@ -2,7 +2,8 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
-Blocked Huffman profile, LZSS variant 1, the LZSS plus Blocked Huffman profile,
+Blocked Huffman and LZ77 plus Adaptive Huffman profiles, LZSS variant 1, the
+LZSS plus Blocked Huffman profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, the LZW
 plus Blocked Huffman profile, LZD variant 1, the LZD plus Blocked Huffman
 profile, and LZMW variant 1 and the LZMW plus Blocked Huffman profile with
@@ -16,6 +17,7 @@ The C ABI exposes complete, validated stream profiles rather than separate
 dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
+`marc_lz77_adaptive_huffman_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lz78_blocked_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzd_blocked_huffman_*`, and
 `marc_lzmw_blocked_huffman_*` are the currently public
@@ -41,7 +43,8 @@ cross-product pairings as callable C ABI features.
    `marc_adaptive_huffman_config_init()` or
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`,
-   `marc_lz77_blocked_huffman_config_init()`, or
+   `marc_lz77_blocked_huffman_config_init()`,
+   `marc_lz77_adaptive_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
@@ -84,6 +87,13 @@ partitioned into dictionary staging followed by encoded-frame staging for the
 encoder, or dictionary staging followed by raw-frame staging for the decoder.
 Only decoding uses the aligned views region, for validated entropy block
 descriptors. Query requirements again whenever any size or limit changes.
+The LZ77 plus Adaptive Huffman profile needs no views workspace. Its primary
+region holds raw-frame input while encoding and serialized-frame input while
+decoding. Its secondary region contains canonical LZ77-token staging followed
+by serialized-frame staging for encode, or token staging followed by private
+raw-frame staging for decode. Every outer frame owns one reset FGK tree, so the
+configuration has no entropy-block size. Query requirements again after
+changing any frame, LZ77 parameter, original size, or local limit.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.
