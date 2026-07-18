@@ -1179,6 +1179,10 @@ and final output before parsing. A valid profile prefix admits the remaining
 extent to complete-frame private-staging decode, while every input also reaches
 the incremental decoder under byte-derived chunking and a fixed call ceiling.
 
+The transactional CLI selector uses the 64-KiB reference frame through the
+public C ABI. It obtains both workspace extents from the requirements query and
+commits the temporary output path only after complete stream termination.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

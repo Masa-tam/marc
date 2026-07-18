@@ -5258,3 +5258,21 @@ the complete-frame private-staging decoder. Abort on an invalid process result,
 zero-progress `Progress`, impossible terminal starvation, or call-ceiling
 exhaustion. Retain only the reviewed `MARC\n` seed in the source corpus; keep
 generated mutations in ignored build storage.
+
+## DD-286: The LZ77 plus Adaptive Huffman CLI uses the bounded reference profile
+
+- Date: 2026-07-19
+- Status: accepted
+
+Add the explicit selector `lz77-adaptive-huffman` through the public C ABI and
+the existing transactional temporary-file loop. Use 65,536-byte raw frames,
+the 1,048,576-byte canonical LZ77 token bound, the conservative 33-byte-per-
+token Adaptive payload bound, and the common 64 MiB aggregate policy. Obtain
+the exact direction-specific workspace extents from the public requirements
+query; the CLI must not reproduce a private partition.
+
+Require binary and empty round trips, refusal to overwrite an existing output,
+malformed-input rejection, strict trailing-data rejection, and removal of both
+the requested output and `.tmp` staging path on failure. Keep the selector
+explicit; do not change the default `lz77` profile or infer a decoder from the
+serialized algorithm IDs.

@@ -5322,3 +5322,23 @@ discarded and the reviewed seed retained.
   a 1,000-input ASan/UBSan campaign completed at 37 MiB peak RSS without a
   crash, hang, or sanitizer finding; all 1,206 Release tests passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZ77 plus Adaptive Huffman CLI selector
+
+- Authoring method: routed the completed public profile through marc's existing
+  transactional file driver without accessing internal frame objects.
+- References used: DD-286, the public C configuration/query/create lifecycle,
+  64-KiB reference profile, and repository CLI integration script.
+- Known implementations intentionally not consulted: external compression
+  tools, archive workflows, command-line adapters, or integration fixtures.
+- Independent decisions: retain explicit profile selection and default LZ77;
+  derive the 1-MiB token and 33-MiB payload limits from the specified 64-KiB
+  raw frame; query both workspace extents; require strict trailing rejection.
+- Generated-code task description: add selector parsing, help text, public-ABI
+  configuration and dispatch, bounded workspace arithmetic, transactional
+  binary/empty round trips, overwrite refusal, and malformed-input cleanup.
+- Similarity review: the adapter follows marc's own public lifecycle and file
+  transaction; no external expression was used.
+- Local validation: the focused CLI integration test and all 1,207 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

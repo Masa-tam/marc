@@ -692,3 +692,8 @@ The LZ77 plus Adaptive Huffman fuzz boundary uses only DD-285, marc's completed
 frame and streaming decoders, fixed local workspace bounds, core process-result
 invariants, and the repository fuzz policy. No external harness, corpus,
 malformed archive, combined decoder, or implementation source was consulted.
+
+The `lz77-adaptive-huffman` CLI adapter uses only DD-286, marc's public
+combined C ABI, the local transactional file loop, and the established CLI
+integration script. No external command-line tool, adapter source, archive
+workflow, or test fixture was consulted.

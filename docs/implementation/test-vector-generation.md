@@ -1761,3 +1761,11 @@ both complete mutations must fail atomically and retain the same sticky error
 category and byte position. Seed the sanitizer target only with the reviewed
 five-byte `MARC\n` truncated magic and keep generated mutations in build
 storage.
+
+For CLI integration, generate the existing deterministic
+`ABRACADABRA-0123456789\n` fixture repeated 3,200 times. Encode and decode with
+the exact selector `lz77-adaptive-huffman`, compare the restored bytes, and
+repeat the lifecycle for empty input. Require a second encode to refuse the
+existing output. Decode `not-a-marc-stream` and a valid archive with one
+trailing `x`; both must fail and leave neither the requested destination nor
+its `.tmp` staging path.

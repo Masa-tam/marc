@@ -35,6 +35,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `tans` | None | tANS | Table-based, block-buffered variant |
 | `lz77` | LZ77 | None | Default profile |
 | `lz77-blocked-huffman` | LZ77 | Blocked Huffman | Composed dictionary and entropy pipeline |
+| `lz77-adaptive-huffman` | LZ77 | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzss` | LZSS | None | Variant 1 |
 | `lzss-blocked-huffman` | LZSS | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lz78` | LZ78 | None | Variant 1 |
@@ -48,6 +49,11 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
+
+The `lz77-adaptive-huffman` adapter uses 65,536-byte raw frames, at most
+1,048,576 canonical LZ77 token bytes, and the conservative 33-byte-per-token
+Adaptive payload bound. Its aggregate policy remains below 64 MiB and all
+actual workspace extents come from the public C ABI requirements query.
 
 The `lz78-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the eight-byte-per-raw-byte LZ78 token bound, at most 128

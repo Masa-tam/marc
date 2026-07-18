@@ -9,8 +9,12 @@ format versions, and C ABI versions are independent namespaces.
 
 - The canonical Visual Studio preset enables MSVC `/MP` translation-unit
   parallelism through an explicit opt-out CMake option.
-- Reserved and fully specified the `lz77-adaptive-huffman` stream composition;
-  it is not yet a public factory or CLI profile.
+
+### Added
+
+- The fully specified `lz77-adaptive-huffman` stream composition now has a
+  bounded public C factory, completion matrix, decoder fuzz target, and
+  transactional CLI selector.
 
 ## 0.1.0 - 2026-07-19
 
