@@ -86,7 +86,7 @@ tested.
 
 | Planned profile | Current boundary | Public status |
 |---|---|---|
-| LZMW plus Blocked Huffman | Exact format, complete-frame codec, opaque workspace profile, and bounded frame-transactional streaming | Streaming complete; C ABI pending |
+| LZMW plus Blocked Huffman | Exact format, complete-frame codec, opaque workspace profile, bounded frame-transactional streaming, and public C ABI | C ABI complete; completion and tooling pending |
 
 ## Remaining release evidence
 

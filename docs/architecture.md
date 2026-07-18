@@ -382,8 +382,16 @@ staging, and the profile's typed views. The encoder drains the canonical
 complete encoded form. The decoder collects and validates one complete encoded
 frame, decodes into raw staging, and only then drains it. One-byte boundaries,
 nonterminal flush, exact finish, sticky malformed errors, and preservation of
-already committed earlier frames are tested. The public factory remains
-separate.
+already committed earlier frames are tested.
+
+The public C factory now binds that profile to the common transform lifecycle.
+Its size-tagged configuration fixes the known original size, raw-frame size,
+entropy-block size, LZMW entry limit, and every decoder hard limit. The query
+reports raw or serialized primary storage, a secondary region internally split
+between canonical references and serialized or raw frame storage, and one
+aligned opaque views region. Construction repeats profile validation and the
+complete checked typed partition before publishing a handle; no entropy view,
+phrase record, or expansion-stack representation crosses the ABI.
 
 ### Combined dictionary and entropy pipelines
 

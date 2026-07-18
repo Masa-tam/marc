@@ -5,8 +5,9 @@ Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman profile, LZSS variant 1, the LZSS plus Blocked Huffman profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, the LZW
 plus Blocked Huffman profile, LZD variant 1, the LZD plus Blocked Huffman
-profile, and LZMW variant 1 with known-size encoding and bounded caller-owned
-workspace. All functions are `noexcept` in C++ translation units,
+profile, and LZMW variant 1 and the LZMW plus Blocked Huffman profile with
+known-size encoding and bounded caller-owned workspace. All functions are
+`noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
 
 ## Profiles and composition
@@ -15,9 +16,10 @@ The C ABI exposes complete, validated stream profiles rather than separate
 dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
-`marc_lzss_blocked_huffman_*`, `marc_lz78_blocked_huffman_*`, and
-`marc_lzw_blocked_huffman_*`, and `marc_lzd_blocked_huffman_*` are the currently
-public dictionary-plus-entropy factories.
+`marc_lzss_blocked_huffman_*`, `marc_lz78_blocked_huffman_*`,
+`marc_lzw_blocked_huffman_*`, `marc_lzd_blocked_huffman_*`, and
+`marc_lzmw_blocked_huffman_*` are the currently public
+dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
 other algorithms. The byte-stream architecture can feed any canonical
@@ -44,7 +46,8 @@ cross-product pairings as callable C ABI features.
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`, or
-   `marc_lzmw_config_init()` for encode or decode
+   `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()` for
+   encode or decode
    direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
@@ -133,6 +136,13 @@ LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are
 queried through `marc_lzmw_workspace_requirements()` before factory creation.
+The LZMW plus Blocked Huffman factory adds entropy block views to the decoder's
+opaque layout while retaining phrase records and the iterative expansion
+stack. Its secondary encoder region contains canonical four-byte reference
+staging followed by serialized-frame storage; the decoder region contains
+reference staging followed by transactional raw output. Query
+`marc_lzmw_blocked_huffman_workspace_requirements()` whenever an entry, frame,
+entropy-block, or hard limit changes.
 
 ## Processing contract
 

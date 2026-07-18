@@ -1273,6 +1273,20 @@ if(MARC_BUILD_TESTS)
     endif()
     add_test(NAME marc_lzmw_c_api_tests COMMAND marc_lzmw_c_api_tests)
 
+    add_executable(marc_lzmw_blocked_huffman_c_api_tests
+        tests/lzmw_blocked_huffman_c_api_tests.c)
+    target_compile_features(marc_lzmw_blocked_huffman_c_api_tests
+        PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_lzmw_blocked_huffman_c_api_tests
+            PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_lzmw_blocked_huffman_c_api_tests
+            PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_lzmw_blocked_huffman_c_api_tests
+        COMMAND marc_lzmw_blocked_huffman_c_api_tests)
+
     set(MARC_C_API_TEST_TARGETS
         marc_c_api_tests
         marc_checksum_raw_c_api_tests
@@ -1291,6 +1305,7 @@ if(MARC_BUILD_TESTS)
         marc_lzd_c_api_tests
         marc_lzd_blocked_huffman_c_api_tests
         marc_lzmw_c_api_tests
+        marc_lzmw_blocked_huffman_c_api_tests
     )
     foreach(target IN LISTS MARC_C_API_TEST_TARGETS)
         set_tests_properties(${target} PROPERTIES TIMEOUT 30)

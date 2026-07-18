@@ -4739,3 +4739,25 @@ discarded and the reviewed seed retained.
   with no external streaming expression compared.
 - Local validation: eight focused streaming tests and all 1,152 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-18 - LZMW plus Blocked Huffman public C factory
+
+- Authoring method: connected the independently specified combined profile and
+  streaming transforms to marc's existing size-tagged, caller-owned C ABI.
+- References used: DD-256 through DD-261, the local combined workspace profile,
+  opaque partition helpers, common transform lifecycle, and stable status map.
+- Known implementations intentionally not consulted: external combined LZMW
+  APIs, allocators, ABI layouts, wrappers, source, tests, or error conventions.
+- Independent decisions: add an independent configuration rather than alter
+  `marc_lzmw_config`; keep the fixed-reference staging private in secondary;
+  expose only the byte extent and maximum alignment of block views, phrase
+  records, and expansion references; repeat all admission checks at creation.
+- Generated-code task description: publish initialize, requirements, and create
+  functions; bind both directions to the checked profile workspaces; test a
+  pure-C shared-library round trip, exact small bounds, short secondary storage,
+  opaque-view misalignment, and reserved-field rejection.
+- Similarity review: names and lifecycle follow marc's own public ABI; all LZMW
+  combined workspace roles and expected extents derive from the local profile,
+  with no external wrapper expression compared.
+- Local validation: the focused pure-C ABI test and all 1,153 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

@@ -4780,3 +4780,24 @@ from earlier frames remain committed. Require one-byte input/output equivalence
 with the complete-frame oracle, empty-stream exactness, truncation and trailing
 rejection, workspace failures, sticky later-frame corruption, flush behavior,
 repeated terminal status, and aggregate limits.
+
+## DD-261: LZMW composition enters the public C ABI through opaque regions
+
+- Date: 2026-07-18
+- Status: accepted
+
+Add one size-tagged `marc_lzmw_blocked_huffman_config` and matching initialize,
+workspace-query, and create functions without changing an existing ABI object.
+Require known-size encoding and expose frame size, entropy-block size, LZMW
+entry limit, and all relevant trusted decoder limits. Preserve the common
+primary, secondary, and aligned views ownership contract for both static and
+dynamic libraries.
+
+For encode, report raw-frame primary storage, then canonical-reference staging
+and serialized-frame storage in secondary, plus opaque LZMW encoder entries.
+For decode, report serialized-frame primary storage, reference staging and
+transactional raw storage in secondary, plus the checked Blocked Huffman view,
+LZMW phrase-record, and expansion-reference layout. Factory construction must
+repeat the profile calculation and opaque partition, reject short or misaligned
+regions and nonzero reserved fields, and publish no handle on failure. Prove
+the lifecycle from a pure C11 translation unit linked to the shared library.

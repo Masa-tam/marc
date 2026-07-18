@@ -618,3 +618,6 @@ The incremental transforms reuse marc's established composed-frame state
 machine, the local LZMW complete-frame codec, and the DD-259 three-view
 partition contract. No external streaming adapter, buffering policy, combined
 codec, error behavior, source, or test suite was consulted.
+The public factory reuses marc's size-tagged C ABI lifecycle, the local LZMW
+combined profile query, and its checked opaque partitions. No external C ABI,
+allocator convention, object layout, wrapper source, or test was consulted.

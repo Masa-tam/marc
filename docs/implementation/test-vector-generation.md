@@ -1667,3 +1667,12 @@ Separately test the exact empty prefix, premature final input, every required
 workspace class, a one-byte truncation, unsupported `ResetBlock`, a partial
 frame `Flush` that preserves input, and encoder and decoder aggregate limits
 one byte below the actual active-frame requirement.
+
+For the pure-C combined factory test, encode `ABABX` as frames of two, two, and
+one raw byte with four-byte entropy blocks. Require the 80-byte prefix and
+three complete frames to total 348 bytes, then decode that exact stream through
+a separately constructed transform and compare all five bytes. The encoder
+query must report 2 primary bytes and 104 secondary bytes; the bounded decoder
+query must report 568 and 10 respectively. Reject a secondary region one byte
+short, a deliberately misaligned opaque region when alignment exceeds one, and
+a nonzero reserved field.
