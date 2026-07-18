@@ -1209,19 +1209,19 @@ then consume that immutable span. The frame records the actual packed extent,
 while the conservative format bound remains an allocation admission rule.
 
 Decoding uses separate caller-owned Blocked Huffman views, packed-byte staging,
-and LZW phrase entries.
-It checks all three capacities and their aggregate bytes before entropy output,
+and LZW phrase entries. It checks all three capacities and their aggregate
+bytes before entropy output,
 then validates LZW completely before checking raw output capacity. The
 9-to-10-bit width-transition test crosses thirty independent entropy blocks,
 demonstrating that block boundaries do not become code boundaries.
 
-The future public profile retains the same typed-workspace issue as the LZ78
-composition. The implemented encoder requires an aligned LZW encoder-entry
-table. A public decoder must combine the implemented Blocked Huffman views and
-aligned LZW phrase table in one opaque region. A checked profile partition must
-derive offsets, padding, and aggregate limits before either streaming transform
-is constructed. The format and complete internal frame boundary are fixed;
-public admission remains a later step.
+The internal profile now resolves the typed-workspace boundary. Its encoder
+requirements expose an aligned LZW encoder-entry region. Decoder requirements
+combine Blocked Huffman views and a separately aligned LZW phrase table in one
+opaque region, recording the phrase offset, total bytes, and maximum alignment.
+Partition helpers recompute that layout before exposing either span. The format,
+complete frame boundary, sizing, and safe partition are fixed; streaming and
+public admission remain later steps.
 
 ### Published composed-profile evidence
 

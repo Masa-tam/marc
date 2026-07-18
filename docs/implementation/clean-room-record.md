@@ -4213,3 +4213,24 @@ discarded and the reviewed seed retained.
 - Local validation: all fourteen focused tests and the complete 1072-test
   Release suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64.
+
+## 2026-07-18 - LZW plus Blocked Huffman profile sizing
+
+- Authoring method: derived conservative storage bounds from marc's frozen LZW
+  code-width grammar, Blocked Huffman descriptors, and generic frame layout.
+- References used: DD-234 through DD-237, the local LZW sizing helpers,
+  Blocked Huffman format constants, decoder limits, and typed frame APIs.
+- Known implementations intentionally not consulted: external combined-codec
+  profiles, allocator layouts, workspace formulas, source, tests, or ABIs.
+- Independent decisions: bound packed bytes by maximum width; cap entries by
+  the LZW code space; place block views before an independently aligned phrase
+  array; recompute all layout metadata during partition.
+- Generated-code task description: add internal profile sizing and safe opaque
+  workspace partition helpers with arithmetic, alignment, tampering, empty,
+  and local-limit tests, without publishing a factory.
+- Similarity review: formulas are direct consequences of marc's own format and
+  types and follow its established checked-workspace vocabulary; no external
+  implementation expression was compared.
+- Local validation: all seven focused tests and the complete 1079-test Release
+  suite passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64.

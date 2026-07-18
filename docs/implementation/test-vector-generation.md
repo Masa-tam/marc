@@ -1399,3 +1399,13 @@ one byte of final serialized capacity; each rejection occurs before modifying
 the affected destination. Set the aggregate limit to one byte below the
 encoder-entry-plus-staging total and require the combined planner to reject it
 even though each standalone region fits.
+
+For profile sizing with original size 17, ten-byte frames, maximum LZW width
+16, and 16-byte entropy blocks, the largest frame reserves 20 packed bytes,
+two descriptors, nine encoder entries, and `56 + 32 + 20` serialized bytes.
+For decoder layout with 128 packed bytes and the minimum nine-bit code width,
+at most 113 whole codes fit and therefore at most 112 phrase entries are
+required. Place four Blocked Huffman views first, align the phrase table, and
+require a partition round trip to reproduce both exact spans. Increment the
+recorded phrase offset or shift the base address by one byte and require
+rejection without exposing either typed view.

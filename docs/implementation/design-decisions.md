@@ -4269,3 +4269,27 @@ multi-block encoding and round trip, independent workspace failures, aggregate
 limit enforcement, empty-frame rejection, and frame-extent enforcement. This
 admits the internal frame encoder only; profile sizing, streaming, C ABI, CLI,
 benchmark, fuzzing, and interoperability remain separate steps.
+
+## DD-237: LZW composition sizes and partitions typed workspace
+
+- Date: 2026-07-18
+- Status: accepted
+
+Define an internal fixed-profile constructor for LZW variant 1 plus Blocked
+Huffman variant 1. For the largest raw frame `F`, maximum LZW width `W`, and
+entropy block size `E`, reserve `ceil(F*W/8)` packed staging bytes,
+`ceil(staging/E)` descriptors, staging-sized raw entropy payload capacity, and
+at most `min(F-1, 2^W-258)` LZW encoder entries. Count frame input, staging, worst-case
+serialized frame, and typed entries together against the aggregate buffer
+limit before admitting the profile.
+
+Derive decoder storage conservatively from local limits. The opaque typed
+region starts with Blocked Huffman block views, aligns the following LZW phrase
+table independently, and records the exact phrase offset, total extent, and
+maximum alignment. Partition helpers must recompute and compare this layout,
+reject short or misaligned storage, and publish no typed span on failure.
+Require exact worst-case arithmetic, short-final-frame and empty-stream cases,
+block and aggregate limits, both partitions, tampered layout metadata, stable
+error mapping, and the minimum 9-bit LZW dictionary capacity. This establishes
+internal sizing and layout only; streaming, C ABI, CLI, benchmarks, fuzzing,
+completion evidence, and interoperability remain separate admissions.
