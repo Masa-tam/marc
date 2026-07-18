@@ -74,7 +74,16 @@ list(SORT documentation_files)
 set(relative_link_count 0)
 foreach(document IN LISTS documentation_files)
     file(READ "${document}" content)
-    string(REGEX MATCHALL "!?\\[[^]]*\\]\\([^)]+\\)" links "${content}")
+    # Rewrite linked images into two ordinary links before scanning.  A direct
+    # MATCHALL over Markdown links otherwise starts at the outer '[' and joins
+    # the badge image target to later links because the image contributes a
+    # nested ']'.
+    string(REGEX REPLACE
+        "\\[!\\[([^]]*)\\]\\(([^)]+)\\)\\]\\(([^)]+)\\)"
+        "[\\1 image](\\2)[\\1 target](\\3)"
+        link_scan_content "${content}")
+    string(REGEX MATCHALL "!?\\[[^]]*\\]\\([^)]+\\)" links
+        "${link_scan_content}")
     get_filename_component(document_directory "${document}" DIRECTORY)
 
     foreach(link IN LISTS links)
