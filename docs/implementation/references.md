@@ -737,3 +737,8 @@ The LZSS plus Adaptive Huffman raw-frame decoder uses only DD-292, the strict
 DD-291 validator, and marc's standalone transactional LZSS decoder. No external
 combined decoder, buffering strategy, overlap-copy implementation, source,
 vector, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman exact frame planner and encoder use only DD-293,
+marc's deterministic LZSS encoder, Adaptive Huffman planner and encoder,
+generic serializers, and DD-290 hand vector. No external combined encoder,
+planning strategy, output layout, source, vector, or test suite was consulted.

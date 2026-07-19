@@ -1352,6 +1352,12 @@ steps four and five through a distinct private raw-staging extent and an exact
 post-success copy to caller output. These are implementation boundaries only;
 they do not publish the profile through the C ABI or CLI.
 
+The internal exact planner implements the encoding order above: determine and
+serialize canonical LZSS tokens, plan Adaptive Huffman over those fixed bytes,
+then validate all extents and the generic header. The frame encoder requires
+complete output capacity before serializing and reproduces the hand-checkable
+single-Literal frame exactly.
+
 The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZSS parameter region and zero or more consecutive frames. Empty
 input is exactly this 80-byte prefix. Input/output chunking does not change the

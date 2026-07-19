@@ -5514,3 +5514,27 @@ discarded and the reviewed seed retained.
 - Local validation: all eleven focused LZSS Adaptive frame tests and all 1,220
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman exact frame encoder
+
+- Authoring method: composed marc's deterministic LZSS and Adaptive Huffman
+  planners around immutable caller-owned token staging under DD-293.
+- References used: DD-293, DD-290 hand frame, standalone LZSS encoder,
+  Adaptive Huffman planner and encoder, generic frame and descriptor
+  serializers, and checked limit helpers.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning strategies, output layouts, source, vectors, corpora, or
+  test suites.
+- Independent decisions: freeze exact LZSS staging before entropy planning;
+  check `2F`, 33-byte-per-token, aggregate, generic-header, and complete output
+  extents; reject empty input at the frame boundary; reproduce the independent
+  frame exactly.
+- Generated-code task description: add an exact frame planner and deterministic
+  encoder with hand-vector, repeated encode, overlap-match round-trip, capacity,
+  extent, and aggregate-workspace tests without adding streaming or public API.
+- Similarity review: the implementation composes only repository-owned typed
+  planners, encoders, serializers, and bounds; no external control flow,
+  naming, or storage layout was compared.
+- Local validation: all sixteen focused LZSS Adaptive frame tests and all 1,225
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

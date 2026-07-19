@@ -1807,3 +1807,12 @@ short output region, and aggregate workspace one byte below
 descriptor-plus-payload-plus-token-plus-raw must fail before either staging
 region changes. Descriptor corruption and entropy-valid invalid LZSS bytes must
 leave both private raw staging and caller output unchanged.
+
+For exact frame encoding, plan raw `41` into two token bytes, a 16-byte
+descriptor, three payload bytes, and 75 serialized bytes, then require the
+encoder to reproduce the independent DD-290 frame byte for byte. Encode six
+`A` bytes twice; require the canonical eleven-byte Literal-plus-Match staging,
+identical frames, and a complete combined round trip. A one-byte token staging
+extent and a 74-byte serialized destination must preserve their sentinels.
+Reject empty frame input and an input extent contradicting the stream header,
+and reject aggregate workspace one byte below descriptor-plus-payload-plus-token.

@@ -1218,7 +1218,12 @@ The following commit boundary requires a second caller-owned staging region,
 reconstructs the validated LZSS sequence there, and copies to caller output
 only after the full raw frame succeeds. The raw extent participates in the
 aggregate workspace check, and capacity failures precede entropy mutation.
-Streaming and public adapters remain separate steps.
+
+The corresponding encoder boundary fixes the variable LZSS extent and writes
+the canonical tokens once before planning Adaptive Huffman over that immutable
+staging. It checks the `2F`, 33-byte-per-token, aggregate-workspace, header, and
+complete serialized-output extents before emitting a frame byte. Streaming and
+public adapters remain separate steps.
 
 ### LZSS plus Blocked Huffman validation boundary
 

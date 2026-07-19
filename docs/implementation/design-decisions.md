@@ -5396,3 +5396,23 @@ mutated. Malformed headers, descriptors, Adaptive payloads, or LZSS token
 streams publish no raw byte; a failure after entropy decoding may alter only the
 explicitly private token staging. Streaming and public adapters remain later
 steps.
+
+## DD-293: LZSS Adaptive encoding freezes tokens before entropy planning
+
+- Date: 2026-07-19
+- Status: accepted
+
+Plan each nonempty raw frame by first determining the exact variable-length
+LZSS token extent, checking the `2F` bound, and serializing that canonical token
+sequence once into caller-owned staging. Treat this staging as immutable entropy
+input. Plan a fresh Adaptive Huffman tree over the exact bytes, enforce the
+33-byte-per-token payload and descriptor-plus-payload-plus-token aggregate
+limits, and validate the complete generic header before reporting the serialized
+extent.
+
+The frame encoder repeats only the deterministic Adaptive plan needed to recover
+its descriptor, verifies the planned payload extent, and checks the complete
+serialized destination before writing the header, descriptor, or payload. The
+one-byte hand vector must reproduce DD-290 exactly. Short token staging may not
+be mutated; a short serialized destination must remain unchanged. Empty input is
+owned by the future stream controller and is not a frame-planner input.
