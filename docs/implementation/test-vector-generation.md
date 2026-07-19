@@ -1915,3 +1915,13 @@ sequence, and wrong pipeline. Independently Adaptive-encode a token with
 forward phrase index 1 and require LZ78 phrase validation to reject it after
 successful entropy decode. No test may treat failure as raw-output behavior;
 this boundary has no raw output.
+
+For transactional reconstruction, decode the frozen single-Pair frame into
+three-byte sentinel-filled raw and public spans and require only byte zero to
+become `A`. Independently assemble an Adaptive frame from standalone LZ78
+tokens for `AABABCABC` and require iterative nested-phrase reconstruction to
+match every raw byte. Reject empty raw staging and empty public output before
+token staging changes. Set the aggregate limit one byte below descriptor,
+payload, token, phrase, and raw staging combined. Corrupt the descriptor and
+encode a forward phrase reference; both must leave raw and public sentinel
+bytes unchanged.

@@ -36,7 +36,8 @@ format versions, and C ABI versions are independent namespaces.
   transactional phrase-validation order, and an independently assembled
   single-Pair frame vector. Its first complete-frame boundary strictly
   entropy-decodes and validates canonical tokens and the LZ78 phrase graph
-  without reconstructing or publishing raw bytes.
+  before an iterative decoder reconstructs into private raw staging and
+  publishes only a completely successful frame.
 
 ## 0.1.0 - 2026-07-19
 

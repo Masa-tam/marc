@@ -5827,3 +5827,27 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused validator tests and all 1,260 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman transactional frame decoder
+
+- Authoring method: extended the DD-304 validator with the separately staged
+  raw-reconstruction and publication steps admitted by DD-305.
+- References used: DD-305, marc's iterative LZ78 decoder, validated token and
+  phrase workspaces, raw-staging aggregate accounting, and existing exact-copy
+  transaction policy.
+- Known implementations intentionally not consulted: external combined
+  decoders, phrase-expansion structures, transactional adapters, source, or
+  tests.
+- Independent decisions: capacity-check raw and public spans before entropy
+  decode; count raw staging in the aggregate; revalidate and expand without
+  recursion; publish once only after exact reconstruction; retain all staging
+  as discardable on failure.
+- Generated-code task description: add private-staging and publishing decoder
+  entry points, stable error mapping, nested phrase tests, capacity and
+  aggregate regressions, malformed-output atomicity, and update documentation.
+- Similarity review: the implementation composes marc's first-party validator,
+  standalone iterative decoder, and existing transaction convention; no
+  external combined-codec expression was compared.
+- Local validation: all five focused decoder tests and all 1,265 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

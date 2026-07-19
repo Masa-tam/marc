@@ -1,5 +1,6 @@
 #include "frame/lz78_adaptive_huffman_frame.hpp"
 
+#include "dictionary/lz78_encoder.hpp"
 #include "entropy/adaptive_huffman_encoder.hpp"
 
 #include <gtest/gtest.h>
@@ -39,22 +40,28 @@ constexpr std::array<std::byte, 75> single_pair_frame{
     std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
     std::byte{0x00}, std::byte{0x82}, std::byte{0x7e}};
 
-[[nodiscard]] marc::frame::StreamHeader stream_for_a() {
+[[nodiscard]] marc::frame::StreamHeader stream_for_size(
+    const std::uint32_t size) {
     marc::frame::StreamHeader stream{};
     stream.dictionary_algorithm = marc::frame::DictionaryAlgorithm::lz78;
     stream.dictionary_variant = 1;
     stream.entropy_algorithm =
         marc::frame::EntropyAlgorithm::adaptive_huffman;
     stream.entropy_variant = 1;
-    stream.frame_size = 1;
+    stream.frame_size = size;
     stream.dictionary_parameters_size =
         marc::dictionary::internal::lz78_parameter_size;
-    stream.original_size = 1;
+    stream.original_size = size;
     return stream;
 }
 
+[[nodiscard]] marc::frame::StreamHeader stream_for_a() {
+    return stream_for_size(1);
+}
+
 [[nodiscard]] std::vector<std::byte> frame_for_tokens(
-    const std::span<const std::byte> tokens) {
+    const std::span<const std::byte> tokens,
+    const std::uint32_t raw_size = 1) {
     marc::entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
     const auto plan = marc::entropy::internal::plan_adaptive_huffman_frame(
         tokens, {}, descriptor);
@@ -66,7 +73,7 @@ constexpr std::array<std::byte, 75> single_pair_frame{
         + plan.payload_size);
 
     marc::frame::FrameHeader header{};
-    header.uncompressed_size = 1;
+    header.uncompressed_size = raw_size;
     header.dictionary_serialized_size =
         static_cast<std::uint32_t>(tokens.size());
     header.compressed_payload_size =
@@ -76,7 +83,7 @@ constexpr std::array<std::byte, 75> single_pair_frame{
         marc::entropy::internal::adaptive_huffman_descriptor_size;
     const marc::core::DecoderLimits limits{};
     EXPECT_EQ(marc::frame::serialize_frame_header(
-                  header, {stream_for_a(), limits, 0, 0},
+                  header, {stream_for_size(raw_size), limits, 0, 0},
                   std::span<std::byte, marc::frame::frame_header_size>{
                       frame.data(), marc::frame::frame_header_size}),
               marc::frame::FrameHeaderError::none);
@@ -98,6 +105,22 @@ constexpr std::array<std::byte, 75> single_pair_frame{
                   descriptor).error,
               marc::entropy::internal::AdaptiveHuffmanEncodeError::none);
     return frame;
+}
+
+[[nodiscard]] std::vector<std::byte> frame_for_raw(
+    const std::span<const std::byte> raw) {
+    std::vector<marc::dictionary::internal::Lz78EncoderEntry> workspace(
+        marc::dictionary::internal::lz78_encoder_workspace_entries(
+            raw.size(), {}));
+    const auto plan = marc::dictionary::internal::plan_lz78_token_stream(
+        raw, {}, {}, workspace);
+    EXPECT_EQ(plan.error, marc::dictionary::internal::Lz78EncodeError::none);
+    std::vector<std::byte> tokens(plan.output_size);
+    EXPECT_EQ(marc::dictionary::internal::encode_lz78_token_stream(
+                  raw, {}, {}, workspace, tokens).error,
+              marc::dictionary::internal::Lz78EncodeError::none);
+    return frame_for_tokens(
+        tokens, static_cast<std::uint32_t>(raw.size()));
 }
 
 TEST(Lz78AdaptiveHuffmanFrameValidator, AcceptsSpecifiedHandVector) {
@@ -239,6 +262,115 @@ TEST(Lz78AdaptiveHuffmanFrameValidator,
                   stream, {}, {}, 0, 0, single_pair_frame, staging, phrases)
                   .error,
               Lz78AdaptiveHuffmanFrameValidationError::unsupported_pipeline);
+}
+
+TEST(Lz78AdaptiveHuffmanFrameDecoder,
+     PublishesHandVectorOnlyAfterPrivateReconstruction) {
+    std::array<std::byte, 8> staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array<std::byte, 3> raw_staging{};
+    raw_staging.fill(std::byte{0x5a});
+    std::array<std::byte, 3> output{};
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz78_adaptive_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, single_pair_frame, staging, phrases,
+        raw_staging, output);
+    ASSERT_EQ(result.error,
+              Lz78AdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(Lz78AdaptiveHuffmanFrameDecoder, ReconstructsNestedPhraseGraph) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+    const auto frame = frame_for_raw(raw);
+    std::vector<std::byte> staging(raw.size() * 8);
+    std::vector<marc::dictionary::internal::Lz78PhraseEntry> phrases(
+        raw.size());
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> output{};
+    const auto result = marc::frame::decode_lz78_adaptive_huffman_frame(
+        stream_for_size(static_cast<std::uint32_t>(raw.size())), {}, {}, 0, 0,
+        frame, staging, phrases, raw_staging, output);
+    ASSERT_EQ(result.error,
+              Lz78AdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(output, raw);
+    EXPECT_EQ(raw_staging, raw);
+}
+
+TEST(Lz78AdaptiveHuffmanFrameDecoder,
+     CapacityFailuresPrecedePrivateMutation) {
+    std::array<std::byte, 8> staging{};
+    staging.fill(std::byte{0x5a});
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lz78_adaptive_huffman_frame_to_staging(
+                  stream_for_a(), {}, {}, 0, 0, single_pair_frame, staging,
+                  phrases, std::span<std::byte>{}).error,
+              Lz78AdaptiveHuffmanFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    EXPECT_EQ(marc::frame::decode_lz78_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, single_pair_frame, staging,
+                  phrases, raw_staging, std::span<std::byte>{}).error,
+              Lz78AdaptiveHuffmanFrameValidationError::raw_output_too_small);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(Lz78AdaptiveHuffmanFrameDecoder, CountsRawStagingInWorkspace) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    const std::uint64_t required = 16 + 3 + 8 + 1
+        + sizeof(marc::dictionary::internal::Lz78PhraseEntry);
+    limits.max_internal_buffered_bytes = required - 1;
+    std::array<std::byte, 8> staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array<std::byte, 1> raw_staging{};
+    EXPECT_EQ(marc::frame::decode_lz78_adaptive_huffman_frame_to_staging(
+                  stream_for_a(), {}, limits, 0, 0, single_pair_frame,
+                  staging, phrases, raw_staging).error,
+              Lz78AdaptiveHuffmanFrameValidationError::workspace_limit);
+}
+
+TEST(Lz78AdaptiveHuffmanFrameDecoder,
+     MalformedLayersNeverPublishRawBytes) {
+    std::array<std::byte, 8> staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    std::array<std::byte, 1> output{std::byte{0x5a}};
+
+    auto descriptor = single_pair_frame;
+    descriptor[64] = std::byte{};
+    EXPECT_EQ(marc::frame::decode_lz78_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, descriptor, staging, phrases,
+                  raw_staging, output).error,
+              Lz78AdaptiveHuffmanFrameValidationError::descriptor_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{0x5a});
+
+    auto invalid_tokens = pair_a;
+    invalid_tokens[4] = std::byte{1};
+    const auto invalid_phrase = frame_for_tokens(invalid_tokens);
+    EXPECT_EQ(marc::frame::decode_lz78_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_phrase, staging,
+                  phrases, raw_staging, output).error,
+              Lz78AdaptiveHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{0x5a});
 }
 
 } // namespace

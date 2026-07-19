@@ -1406,6 +1406,10 @@ independent vector are specified. The first internal validator now accepts one
 exact frame, checks all extents and caller capacities, strict-decodes Adaptive
 bytes into token staging, and validates the full LZ78 phrase graph in aligned
 workspace. It exposes neither raw bytes nor a callable public profile.
+The matching private decoder revalidates that token graph, expands each prefix
+chain iteratively into raw staging, and commits the exact frame only after
+reconstruction. Raw staging is counted in the aggregate bound; output and raw
+capacity failures occur before entropy staging is touched.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

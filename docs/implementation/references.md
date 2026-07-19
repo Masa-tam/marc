@@ -811,3 +811,9 @@ combined frame, marc's strict Adaptive frame decoder, LZ78 token validator,
 checked arithmetic, generic frame validation, and caller-owned aligned phrase
 records. No external combined decoder, parser, validation order, malformed
 corpus, implementation, or test suite was consulted.
+
+The LZ78 plus Adaptive Huffman transactional frame decoder uses only DD-305,
+the DD-304 validator, marc's iterative standalone LZ78 decoder, private raw
+staging, checked aggregate limits, and exact post-success copy. No external
+combined decoder, phrase-expansion structure, transactional adapter, source,
+or test suite was consulted.

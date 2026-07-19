@@ -5651,3 +5651,23 @@ and expose no public factory. Require separate regressions for every truncation,
 trailing data, descriptor failure, nonzero padding, invalid phrase reference,
 impossible token extent, workspace shortage, aggregate limit, sequence, and
 pipeline mismatch.
+
+## DD-305: LZ78 Adaptive reconstructs privately before publication
+
+- Date: 2026-07-20
+- Status: accepted
+
+Extend the exact-frame decoder only after the DD-304 entropy and phrase-graph
+validator succeeds. Require complete raw-staging capacity and, for the
+publishing entry point, complete caller-output capacity before entropy decode.
+Add raw extent to the aggregate workspace bound. Reuse the iterative LZ78
+decoder over validated token staging and aligned phrase records; input-driven
+recursion remains forbidden.
+
+Treat token, phrase, and raw staging as private discardable state until exact
+reconstruction succeeds. The staging entry point stops with the complete raw
+frame in private storage. The publishing entry point then copies exactly that
+frame to caller output once. Require a nested `AABABCABC` phrase-chain case,
+short raw and output capacities before mutation, aggregate failure including
+raw staging, and malformed descriptor and phrase cases that leave caller output
+unchanged. Do not add encoding, streaming, or public construction in this step.
