@@ -1244,6 +1244,13 @@ requirements through the common caller-owned workspace lifecycle, while full
 profile admission remains gated on completion, fuzz, tooling, benchmark, and
 interoperability evidence.
 
+The public-ABI completion matrix now exercises the required binary data classes,
+frame-boundary lengths, deterministic re-encoding, one-byte and mixed chunking,
+repeatable terminal states, and malformed final-frame commit behavior. A
+corrupt fourth frame preserves exactly the first three committed frames and no
+byte from the fourth. Tooling and broader malformed-input admission remain
+separate boundaries.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

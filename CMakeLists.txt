@@ -823,6 +823,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_adaptive_huffman_frame_tests.cpp
         tests/lzss_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzss_adaptive_huffman_frame_streaming_encoder_tests.cpp
+        tests/lzss_adaptive_huffman_completion_tests.cpp
         tests/lzss_adaptive_huffman_profile_tests.cpp
         tests/lzss_adaptive_huffman_vector_tests.cpp
         tests/lzss_blocked_huffman_frame_tests.cpp

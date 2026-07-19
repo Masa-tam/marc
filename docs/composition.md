@@ -63,8 +63,9 @@ reference policy. It remains specified rather than public until its independent
 vector, complete-frame token validator, transactional raw-frame decoder, and
 exact frame encoder include incremental decoding and encoding. Its checked
 profile constructor now exposes conservative caller-owned workspace extents.
-The bounded C ABI factory is implemented. The profile remains specified until
-completion coverage, malformed-input fuzzing, tooling, benchmark, and
+The bounded C ABI factory and public-boundary completion coverage are
+implemented. The profile remains specified until malformed-input fuzzing,
+tooling, benchmark, and
 interoperability evidence are complete.
 
 ## Why publication is not automatic

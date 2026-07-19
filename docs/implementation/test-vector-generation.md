@@ -1855,3 +1855,17 @@ of 7 primary and 548 secondary bytes with no views region, complete encode, and
 then decode with local limits that produce 4,152 primary and 21 secondary
 bytes. Compare all seven restored bytes. Require a one-byte-short secondary
 decoder workspace and a nonzero reserved field to fail before construction.
+
+For LZSS plus Adaptive public completion, use 64-byte raw frames, 128-byte
+token staging, a 4,224-byte maximum Adaptive payload, and a 65,536-byte
+aggregate limit. Round-trip empty input, all one-byte values, the ordered byte
+alphabet, 257 zeroes, a 259-byte `00 ff 55 aa` pattern, deterministic 513-byte
+pseudo-random input seeded with `c001d00d`, and lengths 63, 64, and 65. Re-encode
+every case exactly. For 193 bytes seeded with `6d617263`, compare unchunked,
+`(1,1)`, `(7,5)`, and `(13,17)` input/output schedules.
+
+Generate a separate 193-byte stream seeded with `13579bdf`, locate its fourth
+frame from the generic descriptor and payload extents, and separately alter its
+sequence, remove the final byte, and append one zero byte. Each decode must
+return a sticky malformed-stream result after exactly 192 committed bytes,
+preserve the final destination sentinel, and repeat the same byte/bit position.

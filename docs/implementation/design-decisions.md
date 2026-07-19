@@ -5501,3 +5501,24 @@ workspace. Obtain every extent from DD-296, reject null or undersized regions
 and nonzero reserved fields before construction, and preserve the existing
 stable C status mapping. The library allocates only the small opaque transform
 handle with nonthrowing construction and never owns caller workspaces.
+
+## DD-298: LZSS Adaptive completion is proven at the public boundary
+
+- Date: 2026-07-19
+- Status: accepted
+
+Audit the composed profile only through its public C configuration, workspace
+query, factory, process, and destroy functions. Use 64-byte raw frames,
+128-byte worst-case LZSS token staging, the 33-byte-per-token Adaptive payload
+bound, and a 65,536-byte aggregate limit. Cover empty input, every one-byte
+value, the ordered byte alphabet, repeated zeroes, a repeated binary pattern,
+deterministic pseudo-random bytes, and lengths 63, 64, and 65. Require repeated
+encoding to be byte-identical and successful end state to be repeatable.
+
+For a 193-byte four-frame stream, require identical bytes and round trips under
+unchunked, one-byte, and mixed chunk schedules. Independently corrupt the final
+frame sequence, truncate its last byte, and append trailing data. Every case
+must return a sticky malformed-stream result after publishing exactly the first
+192 bytes, leave the final output sentinel unchanged, and retain the same byte
+and bit error positions on repetition. This completes the public-ABI evidence
+column but does not admit CLI, fuzz, benchmark, or interoperability claims.

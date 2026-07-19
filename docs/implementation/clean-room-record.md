@@ -5634,3 +5634,27 @@ discarded and the reviewed seed retained.
 - Local validation: the focused pure-C lifecycle test and all 1,244 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman completion matrix
+
+- Authoring method: applied marc's repository-owned public-profile completion
+  criteria to the DD-297 factory under DD-298.
+- References used: DD-298, public C transform lifecycle, DD-289 bounds, generic
+  frame extents, deterministic byte generator, and the existing transactional
+  current-frame commit contract.
+- Known implementations intentionally not consulted: external combined
+  codecs, completion suites, corpora, vectors, malformed streams, source, or
+  tests.
+- Independent decisions: use 64-byte frames and exact `2F` staging; cover every
+  one-byte symbol and representative binary classes; compare four chunk
+  schedules; corrupt only the fourth frame; require a 192-byte commit frontier,
+  untouched sentinel, and sticky error positions.
+- Generated-code task description: add public-C-only determinism, round-trip,
+  chunking, repeated-terminal, corrupt-final-frame, truncation, and trailing
+  data coverage without adding fuzzing, CLI, benchmark, or interoperability.
+- Similarity review: the test follows only marc's internal completion criteria
+  and public ABI; no external test structure, control flow, naming, data, or
+  expected byte stream was compared.
+- Local validation: all three focused completion tests and all 1,247 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

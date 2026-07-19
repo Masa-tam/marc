@@ -764,3 +764,9 @@ workspace contract, marc's existing size-tagged C configurations, opaque
 transform lifecycle, nonthrowing handle construction, and stable status
 mapping. No external API, combined factory, allocator design, binding, source,
 or test suite was consulted.
+
+The LZSS plus Adaptive Huffman completion matrix uses only DD-298, marc's
+public C lifecycle, deterministic generator convention, generic frame extents,
+and established transactional final-frame admission criteria. No external
+combined implementation, conformance suite, corpus, vector, or malformed test
+set was consulted.

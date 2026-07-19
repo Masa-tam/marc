@@ -83,9 +83,10 @@ kept separate because it requires artifacts produced outside the local build.
 ## Composed-profile admission queue
 
 `lzss-adaptive-huffman` is specified and has entered the local admission queue;
-its format, streaming implementation, and bounded C ABI factory are present,
+its format, streaming implementation, bounded C ABI factory, and public-ABI
+completion matrix are present,
 but its evidence columns remain intentionally absent from the public-profile
-matrix until completion coverage and the remaining adapters are completed.
+matrix until the remaining adapters are completed.
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
 decoder-visible representation and reserved public name are specified.
@@ -182,7 +183,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-297, the complete Release suite contains 1,244 tests and passes under both
+At DD-298, the complete Release suite contains 1,247 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
