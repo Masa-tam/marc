@@ -8,9 +8,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-8 bundle contains the same generated `input.bin`, one
+Each current schema-9 bundle contains the same generated `input.bin`, one
 archive for every public CLI profile, and `manifest.json`. The manifest declares
-codec set `marc-cli-v8` and records
+codec set `marc-cli-v9` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -31,7 +31,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all nineteen foreign archives and compares their output byte for byte
+2. decodes all twenty foreign archives and compares their output byte for byte
    with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -44,7 +44,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 19 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 20 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 The verifier remains able to validate legacy schema-1 bundles with their exact
@@ -57,7 +57,9 @@ requires `marc-cli-v5` and all sixteen archives, appending
 the frozen schema-5 order. Schema 7 requires `marc-cli-v7` and all eighteen
 archives, appending `lzmw-blocked-huffman` to the frozen schema-6 order. Schema
 8 requires `marc-cli-v8` and all nineteen archives, appending
-`lz77-adaptive-huffman` to the frozen schema-7 order. No
+`lz77-adaptive-huffman` to the frozen schema-7 order. Schema 9 requires
+`marc-cli-v9` and all twenty archives, appending `lzss-adaptive-huffman` to the
+frozen schema-8 order. No
 schema silently inherits profiles added by a later schema.
 
 The SHA-256 values detect accidental artifact changes but are not signatures

@@ -1422,9 +1422,9 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final three bytes are the FGK payload. No LZSS
 token byte is stored separately.
 
-This section fixes only the decoder-visible representation and reserves the
-profile name. It does not publish a C factory, CLI selector, benchmark entry,
-or interoperability archive.
+This representation is published through the bounded C factory, CLI, and
+benchmark profile. Interoperability schema 9 appends it as the twentieth
+archive without changing any earlier schema or stream byte.
 
 ## LZSS variant 1 plus Blocked Huffman variant 1
 

@@ -5586,3 +5586,21 @@ all six public workspace extents, and the larger direction-specific caller
 workspace sum. Keep the smoke test free of performance thresholds; observations
 depend on build, compiler, CPU, corpus, and system load. This admits benchmark
 instrumentation but not interoperability evidence.
+
+## DD-302: Interoperability schema 9 appends LZSS Adaptive Huffman
+
+- Date: 2026-07-19
+- Status: accepted
+
+Define schema 9 with codec set `marc-cli-v9`. Preserve the exact nineteen-entry
+schema-8 order and append `lzss-adaptive-huffman` as the twentieth archive. The
+generator emits schema 9 by default; schemas 1 through 8 retain their immutable
+profile sets, identifiers, and order.
+
+Require the verifier to validate the exact schema-9 count and order before
+decoding, decode every archive to the common fixture, and reproduce every
+complete archive byte for byte through the local CLI. The compatibility
+regression must generate schema 9, reject a reordered schema-9 manifest, derive
+each frozen predecessor by filtering only, and verify all nine generations.
+This admits the local interoperability adapter; pushed cross-platform artifacts
+and an external bidirectional report remain separate evidence.

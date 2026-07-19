@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 8 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 9 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 8 |
+| Profile | Purpose | Local status | Interoperability schema 9 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -43,12 +43,13 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-blocked-huffman` | Fifth composed dictionary/entropy pipeline | Ready | Included |
 | `lzmw-blocked-huffman` | Sixth composed dictionary/entropy pipeline | Ready | Included |
 | `lz77-adaptive-huffman` | First Adaptive Huffman composition | Ready | Included |
+| `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 8 contains nineteen archives: the frozen eighteen-entry schema-7 set
-followed by the LZ77 Adaptive Huffman profile. Schemas 1 through 7 remain frozen
-at seven, eight, thirteen, fifteen, sixteen, seventeen, and eighteen profiles;
-their meanings are fixed by their version and codec-set rules.
+Schema 9 contains twenty archives: the frozen nineteen-entry schema-8 set
+followed by the LZSS Adaptive Huffman profile. Schemas 1 through 8 remain frozen
+at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen, and nineteen
+profiles; their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -58,7 +59,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 8 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 9 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -78,16 +79,11 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
-`lzss-adaptive-huffman` is specified and has entered the local admission queue;
-its format, streaming implementation, bounded C ABI factory, public-ABI
-completion matrix, bounded dual-boundary decoder fuzz target, permanent
-malformed regressions, transactional CLI selector, and public-C-ABI benchmark
-adapter are present, but its evidence columns remain intentionally absent from
-the public-profile matrix until the remaining adapters are completed.
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
 decoder-visible representation and reserved public name are specified.
@@ -99,6 +95,8 @@ ready:
 
 - repeat interoperability generation and cross-decoding on at least one
   non-x86-64 architecture;
+- publish schema-9 Windows/MSVC and Ubuntu/Ninja artifacts and cross-decode
+  them with an independent environment at the same revision;
 - record representative encode throughput, decode throughput, compression
   ratio, and peak workspace results rather than relying on benchmark smoke;
 - run longer sanitizer fuzz campaigns and convert every finding into a
@@ -184,7 +182,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-301, the complete Release suite contains 1,252 tests and passes under both
+At DD-302, the complete Release suite contains 1,252 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

@@ -5731,3 +5731,28 @@ discarded and the reviewed seed retained.
   x64. A local MSVC observation for README.md was 4,424 input bytes, 3,493
   encoded bytes, ratio 0.790, and 4,718,720 peak caller-workspace bytes; these
   values are descriptive and not frozen thresholds.
+
+## 2026-07-19 - Interoperability schema 9
+
+- Authoring method: extended marc's repository-owned versioned bundle protocol
+  under DD-302 after all local LZSS plus Adaptive Huffman admission boundaries
+  were present.
+- References used: DD-302, frozen schema-8 order, the public transactional CLI,
+  deterministic 8,193-byte fixture, SHA-256 manifest checks, and exact local
+  re-encoding contract.
+- Known implementations intentionally not consulted: external interoperability
+  harnesses, bundle schemas, combined-codec archives, corpora, source, or test
+  suites.
+- Independent decisions: identify the current set as schema 9 and
+  `marc-cli-v9`; append the new profile twentieth; freeze schemas 1 through 8;
+  reject order changes before decoding; keep external evidence separate.
+- Generated-code task description: update generator and verifier profile sets,
+  derive and verify all frozen predecessors, retain the reordered-manifest
+  negative test, and update status and provenance documents.
+- Similarity review: the change extends only marc's existing manifest fields,
+  fixture, ordered-profile policy, and PowerShell lifecycle; no external
+  representation or control flow was compared.
+- Local validation: schema 9 generated and verified all twenty archives, a
+  reordered schema-9 manifest was rejected, and schemas 1 through 8 were
+  derived and verified by the focused compatibility regression under
+  MSVC/Visual Studio 2026 on Windows x64.

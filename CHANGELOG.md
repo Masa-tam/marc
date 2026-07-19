@@ -28,7 +28,9 @@ format versions, and C ABI versions are independent namespaces.
   The `lzss-adaptive-huffman` CLI selector uses the public factory and the
   common transactional output policy.
   Its benchmark adapter verifies a complete public-ABI round trip before
-  reporting ratio, throughput, and caller-owned workspace.
+  reporting ratio, throughput, and caller-owned workspace. Interoperability
+  schema 9 appends it as the twentieth archive while preserving schemas 1
+  through 8.
 
 ## 0.1.0 - 2026-07-19
 

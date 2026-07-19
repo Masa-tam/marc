@@ -787,3 +787,9 @@ public C factory and workspace query, DD-296 bounds, checked capacity planning,
 and marc's repository-owned measurement contract. No external benchmark
 harness, implementation, corpus, result, capacity formula, or tuning guidance
 was consulted.
+
+Interoperability schema 9 uses only DD-302, the frozen schema-8 manifest order,
+the published `lzss-adaptive-huffman` CLI selector, and marc's repository-owned
+bundle generator, verifier, fixture, and compatibility regression. No external
+interoperability harness, archive set, manifest, corpus, combined-codec
+implementation, or test suite was consulted.

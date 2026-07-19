@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | Specified `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
@@ -28,7 +28,7 @@ public format or API guarantee yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 8 includes every named cell while
+None/None factory. Interoperability schema 9 includes every named cell while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -58,16 +58,11 @@ stream decoder fuzzing, a transactional CLI selector, and a public-C-ABI
 benchmark adapter are available. Interoperability schema 8 includes it as the
 nineteenth archive.
 
-`lzss-adaptive-huffman` has a fixed decoder-visible format and bounded
-reference policy. It remains specified rather than public until its independent
-vector, complete-frame token validator, transactional raw-frame decoder, and
-exact frame encoder include incremental decoding and encoding. Its checked
-profile constructor now exposes conservative caller-owned workspace extents.
-The bounded C ABI factory and public-boundary completion coverage are
-implemented, together with bounded frame/stream decoder fuzzing and permanent
-malformed regressions and a transactional CLI selector. The profile remains
-specified with a public-C benchmark adapter until interoperability evidence is
-complete.
+`lzss-adaptive-huffman` is the second Adaptive Huffman composition. Its fixed
+format, bounded public C factory, completion matrix, decoder fuzzing, permanent
+malformed regressions, transactional CLI selector, and public-C benchmark are
+available. Interoperability schema 9 includes it as the twentieth archive;
+external cross-platform evidence remains a separate release record.
 
 ## Why publication is not automatic
 

@@ -890,12 +890,13 @@ Schema 7 / codec set `marc-cli-v7` preserves the complete schema-6 order, then
 appends LZMW plus Blocked Huffman. Generate and locally round-trip all eighteen
 archives. Schema 8 / codec set `marc-cli-v8` preserves the complete schema-7
 order, then appends LZ77 plus Adaptive Huffman. Generate and locally round-trip
-all nineteen archives. For compatibility testing, filter that bundle
-successively to the exact schema-7, schema-6, schema-5, schema-4, schema-3,
-schema-2, and schema-1 profile
-lists, rewrite only the versioned manifest fields, and require the same
-verifier to accept all eight generations. Swap the first two schema-8 manifest
-entries without changing any archive and require rejection before decoding.
+all nineteen archives. Schema 9 / codec set `marc-cli-v9` preserves the
+complete schema-8 order, then appends LZSS plus Adaptive Huffman. Generate and
+locally round-trip all twenty archives. For compatibility testing, filter that
+bundle successively to the exact schema-8 through schema-1 profile lists,
+rewrite only the versioned manifest fields, and require the same verifier to
+accept all nine generations. Swap the first two schema-9 manifest entries
+without changing any archive and require rejection before decoding.
 
 The raw-checksum completion matrix uses 64-byte frames. Require empty input,
 every individual byte, byte values `0..255`, 257 zeros, a 259-byte
