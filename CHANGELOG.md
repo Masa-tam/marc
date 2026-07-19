@@ -22,7 +22,7 @@ format versions, and C ABI versions are independent namespaces.
   tokens before transactional reconstruction into separate private raw
   staging, plus an exact frame planner, deterministic encoder, and bounded
   incremental encoder and decoder, with checked caller-owned profile workspace
-  calculations as the next public-factory prerequisite.
+  calculations and a bounded public C factory.
 
 ## 0.1.0 - 2026-07-19
 

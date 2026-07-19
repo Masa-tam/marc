@@ -1239,8 +1239,10 @@ extents, 64-KiB reference cadence, and caller-owned workspace contract. For
 largest raw frame `F`, encoder regions are `F` raw, `2F` token, and
 `56 + 16 + 66F` serialized bytes, with their complete aggregate checked.
 Decoder regions are conservatively capped from validated local limits rather
-than input-controlled extents. This supplies the allocation boundary required
-by the future public C factory without making the profile public prematurely.
+than input-controlled extents. The public C factory now exposes those exact
+requirements through the common caller-owned workspace lifecycle, while full
+profile admission remains gated on completion, fuzz, tooling, benchmark, and
+interoperability evidence.
 
 ### LZSS plus Blocked Huffman validation boundary
 

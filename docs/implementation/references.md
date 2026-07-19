@@ -758,3 +758,9 @@ DD-296, the already specified `2F` LZSS token bound, the 264-bit Adaptive
 worst-case bound, generic header and descriptor extents, checked arithmetic,
 and marc's existing local decoder-limit contract. No external combined
 profile, allocation policy, factory, source, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman C ABI uses only DD-297, DD-296's checked
+workspace contract, marc's existing size-tagged C configurations, opaque
+transform lifecycle, nonthrowing handle construction, and stable status
+mapping. No external API, combined factory, allocator design, binding, source,
+or test suite was consulted.

@@ -5609,3 +5609,28 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused profile tests and all 1,243 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman public C factory
+
+- Authoring method: connected DD-296's fixed profile and workspace extents to
+  marc's existing small C transform lifecycle under DD-297.
+- References used: DD-297, DD-296, the public C ABI conventions, LZSS Adaptive
+  streaming controllers, checked secondary-region partitioning, and stable
+  status conversion.
+- Known implementations intentionally not consulted: external codec APIs,
+  combined factories, allocator schemes, language bindings, source, vectors,
+  corpora, or test suites.
+- Independent decisions: add a size-tagged LZSS-specific configuration; omit
+  entropy-block and views parameters; preserve the common two-workspace API;
+  reject reserved fields and short storage before object construction; cover
+  the lifecycle from a translation unit compiled as C11.
+- Generated-code task description: expose init/query/create, partition DD-296
+  workspaces into the streaming controllers, and add a portable-C exact-size,
+  round-trip, short-workspace, and reserved-field test without adding CLI,
+  fuzzing, benchmark, interoperability, or completion claims.
+- Similarity review: the adapter follows only marc's established public ABI and
+  repository-owned profile contracts; no external API shape, naming, control
+  flow, or storage layout was compared.
+- Local validation: the focused pure-C lifecycle test and all 1,244 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

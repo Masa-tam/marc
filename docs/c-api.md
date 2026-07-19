@@ -3,7 +3,7 @@
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman and LZ77 plus Adaptive Huffman profiles, LZSS variant 1, the
-LZSS plus Blocked Huffman profile,
+LZSS plus Blocked Huffman and LZSS plus Adaptive Huffman profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, the LZW
 plus Blocked Huffman profile, LZD variant 1, the LZD plus Blocked Huffman
 profile, and LZMW variant 1 and the LZMW plus Blocked Huffman profile with
@@ -18,7 +18,8 @@ dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
-`marc_lzss_blocked_huffman_*`, `marc_lz78_blocked_huffman_*`,
+`marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
+`marc_lz78_blocked_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzd_blocked_huffman_*`, and
 `marc_lzmw_blocked_huffman_*` are the currently public
 dictionary-plus-entropy factories.
@@ -46,6 +47,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_blocked_huffman_config_init()`,
    `marc_lz77_adaptive_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
+   `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`, or
@@ -103,6 +105,13 @@ serialized-frame staging while encoding, or token staging followed by raw
 staging while decoding. Only decode requires aligned entropy-block views.
 Call `marc_lzss_blocked_huffman_workspace_requirements()` again after changing
 any size, LZSS parameter, or local limit.
+The LZSS plus Adaptive Huffman factory uses the same primary and secondary
+roles without a views region. Encoding partitions secondary storage into
+canonical LZSS token staging followed by the complete serialized frame;
+decoding partitions it into token staging followed by private raw staging.
+Each outer frame resets both LZSS history and its one FGK tree. Call
+`marc_lzss_adaptive_huffman_workspace_requirements()` again after changing the
+direction, known original size, frame size, LZSS parameters, or any hard limit.
 LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
 reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local

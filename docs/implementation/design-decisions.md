@@ -5480,3 +5480,24 @@ bounded by `min(max_frame_size, 1 MiB)`. Empty known-size input requires no
 per-frame encoder workspace. Reject invalid parameters, format/profile limits,
 or unsupported headers with stable core error categories. This boundary fixes
 the allocation contract needed by a later C factory without publishing one.
+
+## DD-297: LZSS Adaptive enters the C ABI without allocator policy
+
+- Date: 2026-07-19
+- Status: accepted
+
+Expose `marc_lzss_adaptive_huffman_config` and matching initialization,
+workspace-query, and creation functions as one immutable LZSS variant 1 plus
+Adaptive Huffman FGK variant 1 profile. Retain known-size input and the common
+opaque-transform lifecycle. Carry the raw frame size, LZSS parameters, and all
+relevant hard limits in a size-tagged configuration; do not expose an entropy
+block size because each outer frame owns exactly one reset FGK tree.
+
+Use primary workspace for raw-frame input during encoding and serialized-frame
+input during decoding. Internally partition secondary workspace into token
+staging followed by serialized-frame staging for encode, or token staging
+followed by private raw-frame staging for decode. Require no aligned views
+workspace. Obtain every extent from DD-296, reject null or undersized regions
+and nonzero reserved fields before construction, and preserve the existing
+stable C status mapping. The library allocates only the small opaque transform
+handle with nonthrowing construction and never owns caller workspaces.

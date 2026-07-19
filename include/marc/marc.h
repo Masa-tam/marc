@@ -261,6 +261,26 @@ typedef struct marc_lzss_blocked_huffman_config {
     uint64_t reserved2;
 } marc_lzss_blocked_huffman_config;
 
+typedef struct marc_lzss_adaptive_huffman_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t window_size;
+    uint32_t min_match_length;
+    uint32_t max_match_length;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_dictionary_serialized_size;
+    uint64_t max_internal_buffered_bytes;
+    uint64_t max_lz_distance;
+    uint64_t max_lz_match_length;
+    uint64_t reserved2;
+} marc_lzss_adaptive_huffman_config;
+
 typedef struct marc_lz78_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -568,6 +588,18 @@ MARC_API marc_status marc_lzss_blocked_huffman_create(
     marc_buffer primary_workspace,
     marc_buffer secondary_workspace,
     marc_buffer views_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_adaptive_huffman_config_init(
+    marc_direction direction, marc_lzss_adaptive_huffman_config* config)
+    MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_adaptive_huffman_workspace_requirements(
+    const marc_lzss_adaptive_huffman_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+/* LZSS plus Adaptive Huffman does not use views_workspace. */
+MARC_API marc_status marc_lzss_adaptive_huffman_create(
+    const marc_lzss_adaptive_huffman_config* config,
+    marc_buffer primary_workspace,
+    marc_buffer secondary_workspace,
     marc_transform** transform) MARC_NOEXCEPT;
 MARC_API marc_status marc_lz78_config_init(
     marc_direction direction, marc_lz78_config* config) MARC_NOEXCEPT;

@@ -1848,3 +1848,10 @@ serialized bytes. Repeat with a 17-byte known input and require 17, 34, and
 cap, a frame beyond the format cap, and invalid LZSS parameters. With decoder
 limits 4,096 raw, 6,000 dictionary, and 8,192 internal bytes, require regions
 8,248 encoded, 6,000 token, and 4,096 raw, plus stable core error mappings.
+
+Exercise the LZSS plus Adaptive public C lifecycle with seven raw bytes
+`41 42 41 42 41 42 58` and a seven-byte frame. Require exact encoder workspace
+of 7 primary and 548 secondary bytes with no views region, complete encode, and
+then decode with local limits that produce 4,152 primary and 21 secondary
+bytes. Compare all seven restored bytes. Require a one-byte-short secondary
+decoder workspace and a nonzero reserved field to fail before construction.

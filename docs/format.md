@@ -1345,12 +1345,13 @@ may already be committed by the incremental decoder. Encoding completes the
 deterministic LZSS parse, immutable token staging, Adaptive plan, generic header,
 and complete destination-capacity check before writing the frame.
 
-The internal complete-frame validator implements the first three decoding
+The complete-frame validator implements the first three decoding
 checks above through validated canonical token staging. It accepts exactly one
 frame and rejects trailing bytes. The internal frame decoder then implements
 steps four and five through a distinct private raw-staging extent and an exact
-post-success copy to caller output. These are implementation boundaries only;
-they do not publish the profile through the C ABI or CLI.
+post-success copy to caller output. The public C factory connects these
+boundaries through the incremental controllers; no CLI selector is admitted
+yet.
 
 The internal exact planner implements the encoding order above: determine and
 serialize canonical LZSS tokens, plan Adaptive Huffman over those fixed bytes,
@@ -1382,6 +1383,11 @@ must also fit as one checked aggregate. Decoder workspace is derived from local
 limits and the profile's 1-MiB raw-frame and Adaptive decoded-symbol caps; it
 does not infer an allocation from an untrusted frame header. These workspace
 rules constrain implementations but add no bytes to the stream representation.
+The public C entry points are
+`marc_lzss_adaptive_huffman_config_init()`,
+`marc_lzss_adaptive_huffman_workspace_requirements()`, and
+`marc_lzss_adaptive_huffman_create()`; they select exactly this representation
+and introduce no runtime algorithm substitution.
 
 ### Hand-checkable single-Literal frame
 
