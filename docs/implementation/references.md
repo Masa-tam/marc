@@ -817,3 +817,8 @@ the DD-304 validator, marc's iterative standalone LZ78 decoder, private raw
 staging, checked aggregate limits, and exact post-success copy. No external
 combined decoder, phrase-expansion structure, transactional adapter, source,
 or test suite was consulted.
+
+The LZ78 plus Adaptive Huffman exact-frame planner and encoder use only DD-306,
+marc's standalone deterministic LZ78 encoder, Adaptive Huffman frame encoder,
+generic frame serializers, and the independently frozen single-`A` vector. No
+external implementation was consulted.

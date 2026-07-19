@@ -1925,3 +1925,14 @@ token staging changes. Set the aggregate limit one byte below descriptor,
 payload, token, phrase, and raw staging combined. Corrupt the descriptor and
 encode a forward phrase reference; both must leave raw and public sentinel
 bytes unchanged.
+
+For exact-frame encoding, plan raw `A` with one aligned encoder entry and eight
+token-staging bytes. Require the planner to reproduce the fixed Pair token and
+the descriptor, payload, and complete-frame extents from the independent
+vector, then require the encoder to reproduce all 75 bytes exactly. Encode
+`AABABCABC` twice and compare every serialized byte before decoding through the
+transactional combined decoder. Independently shorten the encoder table, token
+staging, and serialized output; the last failure must preserve every output
+sentinel. Set the aggregate limit one byte below encoder entries plus token,
+descriptor, and payload storage, and reject empty input and a raw extent that
+does not match the stream header.

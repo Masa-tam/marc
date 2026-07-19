@@ -5671,3 +5671,24 @@ frame to caller output once. Require a nested `AABABCABC` phrase-chain case,
 short raw and output capacities before mutation, aggregate failure including
 raw staging, and malformed descriptor and phrase cases that leave caller output
 unchanged. Do not add encoding, streaming, or public construction in this step.
+
+## DD-306: LZ78 Adaptive encoding freezes canonical tokens before publication
+
+- Date: 2026-07-20
+- Status: accepted
+
+Add an exact-frame planner that validates the fixed composition and raw-frame
+extent, admits the complete aligned LZ78 encoder table and token-staging
+capacities, plans and emits the deterministic LZ78 token stream into private
+staging, and only then plans Adaptive Huffman over those immutable bytes. Count
+the encoder table, token staging, Adaptive descriptor, and Adaptive payload in
+the aggregate bound with checked arithmetic.
+
+The matching encoder must finish that complete plan and validate serialized
+destination capacity before writing any frame byte. It then serializes the
+ordinary frame header and descriptor and encodes the exact staged tokens. Any
+recomputed extent mismatch or lower-layer failure is an internal error. Require
+the frozen single-`A` frame, deterministic nested-phrase round trip, short
+encoder, token, and serialized capacities, aggregate shortage, empty and wrong
+raw extents, and exact re-encoding of the frozen vector. This step admits no
+streaming state machine or public factory.

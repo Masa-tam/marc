@@ -2,7 +2,9 @@
 #define MARC_FRAME_LZ78_ADAPTIVE_HUFFMAN_FRAME_HPP
 
 #include "dictionary/lz78_decoder.hpp"
+#include "dictionary/lz78_encoder.hpp"
 #include "entropy/adaptive_huffman_decoder.hpp"
+#include "entropy/adaptive_huffman_encoder.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -16,12 +18,15 @@ namespace marc::frame {
 enum class Lz78AdaptiveHuffmanFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
+    input_size_mismatch,
+    serialized_output_too_small,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
     invalid_dictionary_extent,
     invalid_entropy_extent,
     dictionary_staging_too_small,
+    encoder_workspace_too_small,
     phrase_workspace_too_small,
     raw_staging_too_small,
     raw_output_too_small,
@@ -30,7 +35,10 @@ enum class Lz78AdaptiveHuffmanFrameValidationError : std::uint8_t {
     entropy_decode_error,
     dictionary_validation_error,
     dictionary_decode_error,
+    dictionary_encode_error,
+    entropy_encode_error,
     arithmetic_overflow,
+    internal_error,
 };
 
 struct Lz78AdaptiveHuffmanFrameValidationResult {
@@ -40,6 +48,7 @@ struct Lz78AdaptiveHuffmanFrameValidationResult {
     std::size_t descriptor_size{};
     std::size_t payload_size{};
     std::size_t phrase_entries{};
+    std::size_t encoder_entries{};
     FrameHeaderError header_error{FrameHeaderError::none};
     entropy::internal::AdaptiveHuffmanFormatError descriptor_error{
         entropy::internal::AdaptiveHuffmanFormatError::none};
@@ -51,9 +60,40 @@ struct Lz78AdaptiveHuffmanFrameValidationResult {
         dictionary::internal::Lz78FormatError::none};
     dictionary::internal::Lz78DecodeError dictionary_decode_error{
         dictionary::internal::Lz78DecodeError::none};
+    dictionary::internal::Lz78EncodeError dictionary_encode_error{
+        dictionary::internal::Lz78EncodeError::none};
+    entropy::internal::AdaptiveHuffmanEncodeError entropy_encode_error{
+        entropy::internal::AdaptiveHuffmanEncodeError::none};
     Lz78AdaptiveHuffmanFrameValidationError error{
         Lz78AdaptiveHuffmanFrameValidationError::none};
 };
+
+// Fixes the complete LZ78 parse in private token staging, then plans Adaptive
+// Huffman over those exact bytes. Raw input and staging must not overlap.
+[[nodiscard]] Lz78AdaptiveHuffmanFrameValidationResult
+plan_lz78_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::Lz78EncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing serialized output. Input, token staging,
+// and serialized output must be mutually non-overlapping.
+[[nodiscard]] Lz78AdaptiveHuffmanFrameValidationResult
+encode_lz78_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::Lz78EncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Entropy-decodes and validates exactly one frame into private canonical LZ78
 // token staging and a caller-owned phrase table. No raw byte is reconstructed

@@ -37,7 +37,10 @@ format versions, and C ABI versions are independent namespaces.
   single-Pair frame vector. Its first complete-frame boundary strictly
   entropy-decodes and validates canonical tokens and the LZ78 phrase graph
   before an iterative decoder reconstructs into private raw staging and
-  publishes only a completely successful frame.
+  publishes only a completely successful frame. Its exact-frame planner fixes
+  canonical LZ78 tokens before Adaptive planning, and its deterministic encoder
+  reproduces the independent frame vector without partial destination writes
+  on capacity failure.
 
 ## 0.1.0 - 2026-07-19
 

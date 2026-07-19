@@ -5851,3 +5851,27 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused decoder tests and all 1,265 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman exact-frame encoder
+
+- Authoring method: composed only the independently implemented first-party
+  LZ78 and Adaptive Huffman encoders under the DD-306 transaction boundary.
+- References used: DD-306, marc's deterministic LZ78 encoder and typed
+  workspace sizing, Adaptive frame planner and encoder, generic frame
+  serializers, checked arithmetic, and the frozen single-Pair vector.
+- Known implementations intentionally not consulted: external combined
+  encoders, workspace layouts, publication orders, source, vectors, or tests.
+- Independent decisions: capacity-check the typed encoder table and token
+  staging before token output; freeze tokens before entropy planning; count
+  encoder, token, descriptor, and payload storage in aggregate; validate the
+  complete serialized destination before its first write; treat recomputation
+  mismatch as an internal error.
+- Generated-code task description: add exact-frame plan and encode entry
+  points, stable error and extent reporting, independent-vector reproduction,
+  deterministic nested-phrase round trip, capacity and aggregate regressions,
+  and synchronize specification and status documents.
+- Similarity review: control flow is the documented marc composition of two
+  existing first-party stages and its generic frame transaction; no external
+  combined-codec expression was compared.
+- Local validation: all six focused encoder tests and all 1,271 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

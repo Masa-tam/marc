@@ -1572,7 +1572,9 @@ its bytes, although earlier frames may already be committed.
 Encoding first fixes the deterministic LZ78 parse using its bounded aligned
 phrase table, serializes the canonical tokens once into immutable staging,
 plans Adaptive Huffman over those bytes, and validates the complete header and
-destination extent before publishing a frame byte. The known-size stream is
+destination extent before publishing a frame byte. Encoder-table, token,
+descriptor, and payload extents are combined with checked arithmetic and must
+fit the configured aggregate workspace bound. The known-size stream is
 the ordinary 64-byte version-1.0 header followed by the 16-byte LZ78 parameter
 region and zero or more frames. Empty input is exactly this 80-byte prefix.
 Nonterminal `Flush` does not shorten a frame, and `ResetBlock` is unsupported

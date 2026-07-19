@@ -1410,6 +1410,12 @@ The matching private decoder revalidates that token graph, expands each prefix
 chain iteratively into raw staging, and commits the exact frame only after
 reconstruction. Raw staging is counted in the aggregate bound; output and raw
 capacity failures occur before entropy staging is touched.
+The matching exact-frame planner sizes and populates the aligned LZ78 encoder
+table, freezes canonical tokens in private staging, and plans Adaptive Huffman
+over that fixed byte sequence. The encoder validates the complete serialized
+destination before writing its header, descriptor, or payload. Encoder-table,
+token, descriptor, and payload extents participate in the checked aggregate
+workspace bound; streaming and public construction remain separate steps.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
