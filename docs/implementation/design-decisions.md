@@ -5842,3 +5842,24 @@ Retain the common transactional file contract: write only to the exclusive
 configuration, allocation, processing, malformed-stream, or commit failure.
 Exercise the selector with the common encode/decode round trip and require
 strict rejection of appended trailing bytes before claiming CLI publication.
+
+## DD-314: LZ78 Adaptive benchmark measures only a verified public round trip
+
+- Date: 2026-07-20
+- Status: accepted
+
+Add `lz78-adaptive-huffman` to the dependency-free benchmark through the same
+public C ABI and 65,536-byte, 65,536-entry, 32-MiB policy as the CLI. Reserve
+complete-stream encoded capacity with checked arithmetic from the 80-byte
+parameterized prefix, one 56-byte frame header and 16-byte Adaptive descriptor
+per nonempty frame, and the conservative `264` payload bytes per raw byte.
+Do not derive or reproduce either opaque LZ78 record layout in the benchmark;
+query both direction-specific workspace sizes and alignments from the ABI.
+
+Before timing, encode once, decode once, and require byte-exact equality with
+the source. Time fresh transform instances for each iteration and report
+encoded size, ratio, directional elapsed time and throughput, all six queried
+workspace extents, and the larger caller-reserved workspace total. Treat only
+correctness, bounds, allocation, and API failures as benchmark failures;
+throughput and compression ratio are observations, not pass thresholds. Add a
+single-iteration smoke test over repository-owned input.

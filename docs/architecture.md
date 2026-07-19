@@ -1449,6 +1449,11 @@ The transactional CLI binds this profile only through its public C factory
 and requirements query. Its 64-KiB raw cadence configures the `8F` canonical
 token and `264F` Adaptive payload ceilings while leaving the opaque phrase
 record sizing, alignment, and partitioning inside the checked profile helpers.
+The dependency-free benchmark uses the identical public configuration and
+queries both directional workspace layouts. It verifies a complete byte-exact
+round trip before timing fresh transform instances, then reports ratio,
+throughput, all queried extents, and peak caller-reserved workspace without a
+performance threshold.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

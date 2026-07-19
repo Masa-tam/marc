@@ -366,6 +366,11 @@ if(MARC_BUILD_BENCHMARKS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lz78_blocked_huffman_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lz78_adaptive_huffman_smoke
+            COMMAND marc_benchmark lz78-adaptive-huffman
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lz78_adaptive_huffman_smoke
+            PROPERTIES LABELS benchmark-smoke)
         add_test(NAME marc_benchmark_lzw_smoke
             COMMAND marc_benchmark lzw ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzw_smoke

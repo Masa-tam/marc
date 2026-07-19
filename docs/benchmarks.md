@@ -18,6 +18,7 @@ marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lzss-adaptive-huffman corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
+marc_benchmark lz78-adaptive-huffman corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
@@ -113,6 +114,17 @@ block, and raw entropy fallback. The benchmark obtains all caller-owned byte
 counts and alignment from the public C ABI; the reported views workspace
 therefore includes the encoder phrase table or the aligned decoder block views
 and phrase table.
+
+`lz78-adaptive-huffman` uses the CLI's 65,536-byte raw frame, at most 524,288
+canonical LZ78 token bytes, one freshly reset FGK tree per outer frame, and a
+32-MiB aggregate policy. Capacity planning reserves 33 Adaptive payload bytes
+per token byte, one 16-byte descriptor and 56-byte header per nonempty frame,
+and the 80-byte parameterized stream prefix. Both direction-specific workspace
+extents and opaque phrase-table alignment come from the public C ABI. A
+complete byte-exact round trip succeeds before either direction is timed. The
+reported caller-reserved peak may exceed the 32-MiB active aggregate policy
+because the conservative serialized-frame reservation coexists with token,
+raw-frame, and typed-view regions.
 
 `lzw-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 the exact two-byte-per-raw-byte packed-code bound, at most 32 entropy blocks,

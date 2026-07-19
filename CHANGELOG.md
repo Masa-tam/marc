@@ -56,6 +56,8 @@ format versions, and C ABI versions are independent namespaces.
   extreme-extent, and descriptor regressions cover its untrusted-input path.
   Its transactional CLI selector uses the bounded 64-KiB reference profile
   exclusively through the public C ABI and strictly rejects trailing data.
+  Its public-C benchmark verifies a byte-exact round trip before reporting
+  ratio, directional throughput, and queried caller-owned workspace.
 
 ## 0.1.0 - 2026-07-19
 

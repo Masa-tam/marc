@@ -71,8 +71,8 @@ the bidirectional x86-64 cross-platform result is recorded separately in
 format, independent vector, bounded frame and streaming transforms, checked
 typed workspaces, public C factory, and public-ABI completion matrix are
 available. Its bounded dual-decoder fuzz target, permanent malformed
-regressions, and transactional CLI selector are also present. The benchmark
-adapter and interoperability admission remain pending.
+regressions, transactional CLI selector, and verified public-C benchmark are
+also present. Interoperability admission remains pending.
 
 ## Why publication is not automatic
 
