@@ -5458,3 +5458,25 @@ is accompanied by exactly all remaining declared input, then latch it
 immediately even if prefix or frame output must drain before any supplied input
 can be consumed. Re-presented unconsumed input need not repeat the flag. Return
 repeatable `EndOfStream` only after all serialized bytes have been emitted.
+
+## DD-296: LZSS Adaptive profile exposes checked workspace extents
+
+- Date: 2026-07-19
+- Status: accepted
+
+Define an internal profile constructor that fixes LZSS variant 1, Adaptive
+Huffman FGK variant 1, the canonical 16-byte LZSS parameter extent, zero
+entropy parameters, zero entropy block size, and the 65,536-byte reference
+frame size. For the largest raw frame `F`, report encoder regions of `F` raw
+bytes, `2F` canonical token bytes, and `56 + 16 + 66F` serialized-frame bytes.
+Compute every product, sum, conversion, and the complete `F + 2F + serialized`
+aggregate with checked arithmetic before returning any nonzero workspace.
+
+For decoding, derive conservative caller-owned regions only from validated
+local limits: `56 + max_internal_buffered_bytes` serialized bytes, token bytes
+bounded by the minimum of `2 * min(max_frame_size, 1 MiB)`, the dictionary
+limit, and Adaptive Huffman's 1-MiB decoded-symbol limit, and one raw region
+bounded by `min(max_frame_size, 1 MiB)`. Empty known-size input requires no
+per-frame encoder workspace. Reject invalid parameters, format/profile limits,
+or unsupported headers with stable core error categories. This boundary fixes
+the allocation contract needed by a later C factory without publishing one.

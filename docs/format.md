@@ -1375,6 +1375,14 @@ token region, and one complete serialized frame. It emits the prefix first,
 never closes a partial frame for `Flush`, and retains a valid `EndInput` request
 until the final short frame and all pending bytes have drained.
 
+The internal reference-profile constructor reports the exact conservative
+encoder regions for the largest known frame `F`: `F` raw bytes, `2F` token
+bytes, and `56 + 16 + 66F` complete serialized-frame bytes. The three regions
+must also fit as one checked aggregate. Decoder workspace is derived from local
+limits and the profile's 1-MiB raw-frame and Adaptive decoded-symbol caps; it
+does not infer an allocation from an untrusted frame header. These workspace
+rules constrain implementations but add no bytes to the stream representation.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token:

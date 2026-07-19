@@ -1839,3 +1839,12 @@ finish to remain latched. Make raw-frame storage and `2F` token staging one byte
 short at construction, encoded-frame storage one byte short at preparation,
 and the aggregate one byte short. Require empty-prefix success and rejection of
 premature finish and `ResetBlock`.
+
+For the LZSS plus Adaptive profile workspace, use a 65,536-byte largest frame
+and require exact encoder extents 65,536 raw, 131,072 token, and 4,325,448
+serialized bytes. Repeat with a 17-byte known input and require 17, 34, and
+1,194 bytes, then require zero per-frame workspace for empty input. Reject a
+1-MiB raw frame whose `2F` token worst case exceeds Adaptive's decoded-symbol
+cap, a frame beyond the format cap, and invalid LZSS parameters. With decoder
+limits 4,096 raw, 6,000 dictionary, and 8,192 internal bytes, require regions
+8,248 encoded, 6,000 token, and 4,096 raw, plus stable core error mappings.

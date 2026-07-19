@@ -5585,3 +5585,27 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-encoder tests and all 1,236
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman profile workspace
+
+- Authoring method: derived the profile and caller-owned regions directly from
+  DD-296 and the already reviewed LZSS and Adaptive bounds.
+- References used: DD-296, DD-289's exact `2F` token bound, Adaptive Huffman's
+  264-bit worst case, generic frame/descriptor extents, checked arithmetic,
+  and local decoder-limit validation.
+- Known implementations intentionally not consulted: external combined
+  factories, workspace formulas, allocation policies, source, vectors,
+  corpora, or test suites.
+- Independent decisions: fix the 64-KiB default; report separate raw, token,
+  and serialized encoder regions; count their aggregate; derive decoder
+  regions only from validated local caps; return zero per-frame workspace for
+  known empty input; preserve stable error categories.
+- Generated-code task description: add the internal profile/workspace
+  calculation and focused exact-extent, empty, invalid-parameter, cap, local
+  decoder-limit, and error-mapping tests without adding a public factory.
+- Similarity review: the implementation mirrors only marc's repository-owned
+  profile contracts and arithmetic vocabulary; no external control flow,
+  naming, or storage layout was compared.
+- Local validation: all seven focused profile tests and all 1,243 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

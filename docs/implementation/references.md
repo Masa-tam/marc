@@ -752,3 +752,9 @@ The LZSS plus Adaptive Huffman streaming encoder uses only DD-295, the DD-293
 exact frame encoder, marc's explicit serializers, checked limits, and core
 process contract. No external streaming encoder, state machine, finish policy,
 source, corpus, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman profile and workspace calculation use only
+DD-296, the already specified `2F` LZSS token bound, the 264-bit Adaptive
+worst-case bound, generic header and descriptor extents, checked arithmetic,
+and marc's existing local decoder-limit contract. No external combined
+profile, allocation policy, factory, source, or test suite was consulted.

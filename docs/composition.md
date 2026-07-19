@@ -61,8 +61,9 @@ nineteenth archive.
 `lzss-adaptive-huffman` has a fixed decoder-visible format and bounded
 reference policy. It remains specified rather than public until its independent
 vector, complete-frame token validator, transactional raw-frame decoder, and
-exact frame encoder now include incremental decoding. The profile remains
-specified with both streaming directions implemented until the C ABI,
+exact frame encoder include incremental decoding and encoding. Its checked
+profile constructor now exposes conservative caller-owned workspace extents.
+The profile remains specified until the C ABI,
 malformed-input fuzzing, tooling, benchmark, and interoperability evidence are
 complete.
 

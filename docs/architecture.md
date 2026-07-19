@@ -1234,6 +1234,14 @@ incremental encoder likewise completes each exact frame privately before
 draining it, keeps `Flush` nonterminal, and latches finish even across prefix or
 frame output starvation. Public adapters remain separate steps.
 
+The internal profile constructor now fixes the canonical IDs, parameter
+extents, 64-KiB reference cadence, and caller-owned workspace contract. For
+largest raw frame `F`, encoder regions are `F` raw, `2F` token, and
+`56 + 16 + 66F` serialized bytes, with their complete aggregate checked.
+Decoder regions are conservatively capped from validated local limits rather
+than input-controlled extents. This supplies the allocation boundary required
+by the future public C factory without making the profile public prematurely.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow
