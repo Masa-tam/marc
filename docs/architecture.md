@@ -1251,6 +1251,13 @@ corrupt fourth frame preserves exactly the first three committed frames and no
 byte from the fourth. Tooling and broader malformed-input admission remain
 separate boundaries.
 
+The bounded fuzz boundary now drives both the exact frame decoder and the
+incremental controller using only fixed arrays. It caps input at 8 KiB, output
+at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB, and payload at
+8 KiB, with byte-derived chunking and a fixed call ceiling. Permanent tests
+retain atomic rejection of every canonical truncation, extreme frame extents,
+and a reserved Adaptive descriptor mutation.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

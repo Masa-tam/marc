@@ -64,8 +64,9 @@ vector, complete-frame token validator, transactional raw-frame decoder, and
 exact frame encoder include incremental decoding and encoding. Its checked
 profile constructor now exposes conservative caller-owned workspace extents.
 The bounded C ABI factory and public-boundary completion coverage are
-implemented. The profile remains specified until malformed-input fuzzing,
-tooling, benchmark, and
+implemented, together with bounded frame/stream decoder fuzzing and permanent
+malformed regressions. The profile remains specified until tooling, benchmark,
+and
 interoperability evidence are complete.
 
 ## Why publication is not automatic

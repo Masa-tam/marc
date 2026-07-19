@@ -1869,3 +1869,11 @@ frame from the generic descriptor and payload extents, and separately alter its
 sequence, remove the final byte, and append one zero byte. Each decode must
 return a sticky malformed-stream result after exactly 192 committed bytes,
 preserve the final destination sentinel, and repeat the same byte/bit position.
+
+For permanent LZSS plus Adaptive fuzz regressions, encode the five-byte raw
+input `ABABX`. Require every proper stream prefix to fail without changing the
+five-byte `a5` output sentinel. Independently overwrite all generic frame
+extent fields with `ff`, then set the final reserved Adaptive descriptor byte
+to one; both complete mutations must fail atomically with sticky error category
+and byte position. Seed the sanitizer target only with the reviewed five-byte
+`MARC\n` truncated magic and retain generated cases in build storage.

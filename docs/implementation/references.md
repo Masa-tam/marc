@@ -770,3 +770,9 @@ public C lifecycle, deterministic generator convention, generic frame extents,
 and established transactional final-frame admission criteria. No external
 combined implementation, conformance suite, corpus, vector, or malformed test
 set was consulted.
+
+The LZSS plus Adaptive Huffman fuzz boundary uses only DD-299, marc's exact and
+incremental decoders, fixed local limits, core process-result invariants, and
+repository-owned canonical stream generation. No external fuzz harness,
+corpus, dictionary, malformed stream, combined decoder, source, or test suite
+was consulted.

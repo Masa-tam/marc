@@ -23,6 +23,8 @@ format versions, and C ABI versions are independent namespaces.
   staging, plus an exact frame planner, deterministic encoder, and bounded
   incremental encoder and decoder, with checked caller-owned profile workspace
   calculations, a bounded public C factory, and public-ABI completion coverage.
+  A fixed-memory dual-boundary decoder fuzz target and permanent malformed
+  regressions cover truncation, extreme extents, and descriptor corruption.
 
 ## 0.1.0 - 2026-07-19
 

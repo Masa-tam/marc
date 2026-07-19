@@ -1,9 +1,9 @@
 # Fuzzing
 
-The nineteen bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZSS plus
-Blocked Huffman, LZ78 plus
+Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
 Blocked Huffman, LZW plus Blocked Huffman, LZD plus Blocked Huffman, LZMW plus
 Blocked Huffman, and checksum-raw profiles. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
@@ -27,6 +27,11 @@ and compressed payload at 8 KiB. It always exercises incremental decoding and,
 after a valid exact profile prefix, also invokes complete-frame private-staging
 decode over the remaining extent. Both paths use fixed arrays and the common
 input-derived chunk and call-ceiling policy.
+The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
+call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
+input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,
+and 8 KiB compressed payload. No workspace is derived from input-controlled
+metadata.
 The combined LZSS plus Blocked Huffman target uses the same fixed byte, block,
 view, and call-count bounds while exercising variable-length LZSS token
 validation after entropy decoding.
@@ -112,6 +117,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_lz77_adaptive_huffman_stream \
+  marc_fuzz_lzss_adaptive_huffman_stream \
   marc_fuzz_lzss_blocked_huffman_stream \
   marc_fuzz_lz78_blocked_huffman_stream \
   marc_fuzz_lzw_blocked_huffman_stream \
@@ -131,6 +137,8 @@ out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_adaptive_huffman_stream \
   fuzz/corpus/lz77_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \
+  fuzz/corpus/lzss_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_blocked_huffman_stream \
   fuzz/corpus/lzss_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_blocked_huffman_stream \
@@ -254,6 +262,13 @@ and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
 
 The composed LZ77 plus Adaptive Huffman frame/stream decoder target received a
+bounded 1,000-input sanitizer smoke on 2026-07-19 with 8 KiB maximum input, a
+five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
+crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
+and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
+workspace; the repository retains the reviewed five-byte truncated-magic seed.
+
+The composed LZSS plus Adaptive Huffman frame/stream decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-19 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding

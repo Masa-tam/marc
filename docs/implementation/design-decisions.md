@@ -5522,3 +5522,25 @@ must return a sticky malformed-stream result after publishing exactly the first
 192 bytes, leave the final output sentinel unchanged, and retain the same byte
 and bit error positions on repetition. This completes the public-ABI evidence
 column but does not admit CLI, fuzz, benchmark, or interoperability claims.
+
+## DD-299: LZSS Adaptive fuzzing is fixed-memory and dual-boundary
+
+- Date: 2026-07-19
+- Status: accepted
+
+Add one bounded decoder fuzz entry point that truncates every supplied case to
+8,192 bytes and exercises both the exact complete-frame private-staging decoder
+after a valid 80-byte prefix and the incremental stream decoder for every case.
+Fix raw output at 4,096 bytes, one raw frame at 1,024 bytes, canonical LZSS
+staging at 2,048 bytes, compressed payload at 8,192 bytes, and all controller
+storage in stack-owned arrays. Derive input and output chunks from current
+bytes, cap process calls, and abort on an invalid result or impossible stall.
+
+Retain only the reviewed five-byte `MARC\n` truncated-magic seed in source.
+Keep generated mutations in ignored build storage. Add permanent regressions
+requiring every truncation of a canonical `ABABX` stream, all-ones generic
+extent fields, and a nonzero reserved Adaptive descriptor byte to fail without
+publishing a raw byte, while preserving sticky error category and position.
+Compile the harness under ordinary MSVC and Clang builds; execute it only in a
+separate sanitizer-enabled Clang build with explicit run, input, timeout, and
+RSS bounds.

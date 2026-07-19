@@ -5658,3 +5658,28 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion tests and all 1,247 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
   Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman bounded decoder fuzzing
+
+- Authoring method: applied DD-299's fixed-memory dual-boundary policy to
+  marc's exact frame and incremental stream decoders.
+- References used: DD-299, the LZSS Adaptive validators and streaming decoder,
+  core process invariants, caller-owned arrays, DD-289 bounds, and the
+  repository-owned canonical `ABABX` stream.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, dictionaries, malformed samples, combined decoders, source, or test
+  suites.
+- Independent decisions: truncate supplied input to 8 KiB; fix 4-KiB output,
+  1-KiB raw frames, 2-KiB token staging, and 8-KiB payload; derive chunks from
+  input bytes; enforce a call ceiling; retain only truncated magic in source;
+  make truncation, extreme extents, and descriptor corruption permanent tests.
+- Generated-code task description: add a sanitizer-ready dual-decoder entry
+  point, normal-build compile smoke, one reviewed seed, and three atomic
+  malformed regressions without adding CLI, benchmark, or interoperability.
+- Similarity review: the harness follows only marc's repository-owned fuzz
+  policy and decoder contracts; no external control flow, naming, corpus, or
+  mutation strategy was compared.
+- Local validation: all three focused fuzz regressions and all 1,250 Release
+  tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64. The Clang 22.1.3 ASan/UBSan/libFuzzer target completed 1,000 bounded
+  executions with no crash, hang, or sanitizer finding and 37 MiB peak RSS.
