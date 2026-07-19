@@ -1885,3 +1885,10 @@ repeat the lifecycle for empty input. Require a second encode to refuse the
 existing output. Decode `not-a-marc-stream` and a valid archive with one
 trailing `x`; both must fail and leave neither the destination nor its `.tmp`
 staging path.
+
+For benchmark smoke, run
+`marc_benchmark lzss-adaptive-huffman README.md 1`. Require the standard codec
+name, input and encoded byte counts, complete-stream ratio, encode/decode
+seconds and MiB/s, all six public direction-specific workspace extents, and
+peak caller-reserved workspace. A complete public-ABI round trip must succeed
+before measurement. Do not freeze local ratio or throughput as test thresholds.

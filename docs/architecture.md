@@ -1265,6 +1265,13 @@ workspace partitioning. The common temporary-file transaction prevents an
 existing destination from being replaced and removes both destination and
 staging output after malformed or trailing input.
 
+The dependency-free benchmark selects the identical profile through the public
+C lifecycle. It reserves complete-stream capacity from the 64-KiB cadence and
+conservative `66F` payload bound, verifies a byte-exact round trip before
+timing, then reports encode/decode throughput, ratio, six queried workspace
+extents, and peak caller-reserved workspace without pass/fail performance
+thresholds.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

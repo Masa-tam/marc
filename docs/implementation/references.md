@@ -781,3 +781,9 @@ The LZSS plus Adaptive Huffman CLI selector uses only DD-300, the DD-297 public
 C factory, DD-296 bounds, and marc's existing transactional file-processing
 adapter and integration script. No external CLI, archive tool, workspace
 policy, file-commit strategy, source, corpus, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman benchmark adapter uses only DD-301, the DD-297
+public C factory and workspace query, DD-296 bounds, checked capacity planning,
+and marc's repository-owned measurement contract. No external benchmark
+harness, implementation, corpus, result, capacity formula, or tuning guidance
+was consulted.

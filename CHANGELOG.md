@@ -27,6 +27,8 @@ format versions, and C ABI versions are independent namespaces.
   regressions cover truncation, extreme extents, and descriptor corruption.
   The `lzss-adaptive-huffman` CLI selector uses the public factory and the
   common transactional output policy.
+  Its benchmark adapter verifies a complete public-ABI round trip before
+  reporting ratio, throughput, and caller-owned workspace.
 
 ## 0.1.0 - 2026-07-19
 

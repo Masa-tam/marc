@@ -5706,3 +5706,28 @@ discarded and the reviewed seed retained.
 - Local validation: the focused transactional CLI integration and all 1,251
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman benchmark adapter
+
+- Authoring method: registered the DD-297 public profile in marc's existing
+  dependency-free public-ABI measurement harness under DD-301.
+- References used: DD-301, DD-296 bounds, public C workspace/factory/process
+  lifecycle, checked encoded-capacity arithmetic, and the repository-owned
+  pre-measurement round-trip contract.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, combined codecs, capacity formulas, corpora, results, tuning
+  guidance, source, or tests.
+- Independent decisions: reuse the CLI's 64-KiB policy; reserve `66F` payload;
+  query both workspaces; verify every decoded byte before timing; report all
+  standard fields; define no ratio or speed threshold.
+- Generated-code task description: add benchmark selection, configuration,
+  capacity, workspace query, factory dispatch, help, documentation, and a
+  one-iteration README smoke without adding interoperability.
+- Similarity review: the adapter extends only marc's repository-owned
+  measurement structure and public profile; no external control flow, naming,
+  output schema, or metric computation was compared.
+- Local validation: the focused benchmark smoke and all 1,252 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64. A local MSVC observation for README.md was 4,424 input bytes, 3,493
+  encoded bytes, ratio 0.790, and 4,718,720 peak caller-workspace bytes; these
+  values are descriptive and not frozen thresholds.

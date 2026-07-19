@@ -5565,3 +5565,24 @@ destination. Require ordinary and empty round trips, second-encode refusal,
 malformed-prefix rejection, and valid-stream-plus-trailing-byte rejection in
 the same integration script used by established selectors. This admits CLI
 behavior but not benchmark or interoperability evidence.
+
+## DD-301: LZSS Adaptive benchmark verifies before timing
+
+- Date: 2026-07-19
+- Status: accepted
+
+Add the selector `lzss-adaptive-huffman` to the dependency-free benchmark
+through only the DD-297 public C lifecycle and the same 65,536-byte frame,
+`2F` token, and 33-byte-per-token payload policy as the CLI. Calculate complete
+encoded capacity with checked prefix, per-frame header/descriptor, and payload
+terms. Query encoder and decoder workspaces independently; expose no private
+partition or inferred typed layout.
+
+Before starting any timer, encode once, decode once, require the decoded extent
+to equal the input extent, and compare every byte. Time encode and decode
+separately only after that proof. Report codec name, iterations, input and
+encoded bytes, complete-stream ratio, direction-specific seconds and MiB/s,
+all six public workspace extents, and the larger direction-specific caller
+workspace sum. Keep the smoke test free of performance thresholds; observations
+depend on build, compiler, CPU, corpus, and system load. This admits benchmark
+instrumentation but not interoperability evidence.
