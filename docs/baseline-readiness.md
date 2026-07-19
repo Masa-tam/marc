@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 9 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 10 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 9 |
+| Profile | Purpose | Local status | Interoperability schema 10 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -44,13 +44,14 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-blocked-huffman` | Sixth composed dictionary/entropy pipeline | Ready | Included |
 | `lz77-adaptive-huffman` | First Adaptive Huffman composition | Ready | Included |
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
-| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Tooling complete | Not yet included |
+| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Schema candidate | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 9 contains twenty archives: the frozen nineteen-entry schema-8 set
-followed by the LZSS Adaptive Huffman profile. Schemas 1 through 8 remain frozen
-at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen, and nineteen
-profiles; their meanings are fixed by their version and codec-set rules.
+Schema 10 contains twenty-one archives: the frozen twenty-entry schema-9 set
+followed by the LZ78 Adaptive Huffman profile. Schemas 1 through 9 remain
+frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
+nineteen, and twenty profiles; their meanings are fixed by their version and
+codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -60,7 +61,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 9 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 10 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -81,7 +82,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -89,9 +90,9 @@ kept separate because it requires artifacts produced outside the local build.
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
 now also has a public-ABI completion matrix, bounded fuzz evidence, a
-transactional CLI selector, and a verified public-ABI benchmark adapter. It
-remains below `Ready` until the interoperability schema entry is implemented
-and verified.
+transactional CLI selector, a verified public-ABI benchmark adapter, and local
+schema-10 generation/verification coverage. It remains below `Ready` until
+schema-10 artifacts are cross-verified outside the local build.
 
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
@@ -198,7 +199,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-314, the complete Release suite contains 1,296 tests and passes under both
+At DD-315, the complete Release suite contains 1,296 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

@@ -856,3 +856,19 @@ frame and incremental decoders, fixed local limits, typed LZ78 phrase records,
 and the repository's first-party call-ceiling policy. No external fuzz harness,
 corpus, malformed vector, combined implementation, or test suite was
 consulted.
+
+The LZ78 plus Adaptive Huffman CLI selector uses only DD-313, the published C
+factory and requirements query, fixed profile bounds, and marc's existing
+transactional file adapter. No external command-line tool, archive workflow,
+workspace convention, source, or test suite was consulted.
+
+The LZ78 plus Adaptive Huffman benchmark adapter uses only DD-314, the same
+public C factory and bounded policy, checked whole-stream capacity arithmetic,
+and marc's repository-owned measurement contract. No external benchmark,
+result, tuning guidance, implementation, or corpus was consulted.
+
+Interoperability schema 10 uses only DD-315, the frozen schema-9 manifest order,
+the published `lz78-adaptive-huffman` CLI selector, and marc's repository-owned
+bundle generator, verifier, fixture, and compatibility regression. No external
+interoperability harness, archive set, manifest, corpus, combined-codec source,
+or test suite was consulted.

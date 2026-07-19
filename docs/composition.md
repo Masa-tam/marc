@@ -29,9 +29,8 @@ public format or API guarantee yet.
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 9 includes published profiles through
-`lzss-adaptive-huffman` while preserving the exact earlier schema profile
-sets; the newly CLI-published `lz78-adaptive-huffman` remains pending.
+publication: schema 10 includes all current published profiles while
+preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
@@ -72,7 +71,8 @@ format, independent vector, bounded frame and streaming transforms, checked
 typed workspaces, public C factory, and public-ABI completion matrix are
 available. Its bounded dual-decoder fuzz target, permanent malformed
 regressions, transactional CLI selector, and verified public-C benchmark are
-also present. Interoperability admission remains pending.
+also present. Interoperability schema 10 appends it as the twenty-first archive;
+external cross-platform verification remains pending.
 
 ## Why publication is not automatic
 

@@ -58,6 +58,8 @@ format versions, and C ABI versions are independent namespaces.
   exclusively through the public C ABI and strictly rejects trailing data.
   Its public-C benchmark verifies a byte-exact round trip before reporting
   ratio, directional throughput, and queried caller-owned workspace.
+  Interoperability schema 10 appends it as the twenty-first archive while
+  preserving schemas 1 through 9 and their exact codec orders.
 
 ## 0.1.0 - 2026-07-19
 

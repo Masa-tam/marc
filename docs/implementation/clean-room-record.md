@@ -6073,3 +6073,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused benchmark smoke test, direct report inspection,
   and all 1,296 Release tests passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-20 - Interoperability schema 10
+
+- Authoring method: extended marc's repository-owned manifest protocol by one
+  append-only generation while retaining every earlier schema definition.
+- References used: DD-315, the frozen schema-9 profile order, the public
+  `lz78-adaptive-huffman` CLI selector, and the existing local generator,
+  verifier, deterministic fixture, and compatibility regression.
+- Known implementations intentionally not consulted: external archive tools,
+  interoperability suites, manifests, corpora, combined-codec source, or
+  third-party compatibility results.
+- Independent decisions: name codec set `marc-cli-v10`; append LZ78 Adaptive as
+  archive 21; retain the 8,193-byte fixture; require exact manifest order,
+  hashes, foreign decode, and local byte-identical re-encode; derive schema 9
+  by removing only the final profile; reject reordered schema-10 manifests.
+- Tests updated: the compatibility regression generates and verifies schema 10,
+  checks its order rejection, then verifies the frozen schema 9 through 1
+  conversion chain.
+- Similarity review: all changes are versioned data lists and control flow in
+  marc's own PowerShell protocol; no external format or implementation
+  expression was used.
+- Local validation: the focused compatibility regression and all 1,296 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4. Independently generated 21-archive local
+  bundles were cross-verified in both compiler directions with exact decode and
+  re-encode equality. External Linux artifact verification remains pending.

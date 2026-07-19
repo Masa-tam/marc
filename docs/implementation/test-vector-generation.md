@@ -1998,3 +1998,24 @@ the generic frame extent region with `FF` bytes and set the final Adaptive
 descriptor reserved byte to one independently. Both malformed cases must
 remain atomic and sticky. The fuzz entry point caps input, all byte buffers,
 the 1,024-record phrase table, and calls before inspecting input metadata.
+
+For the CLI boundary, use the public C factory with the 65,536-byte raw frame,
+524,288-byte token ceiling, 17,301,504-byte Adaptive payload ceiling,
+65,536-entry phrase limit, and 32-MiB aggregate policy. Run the common file
+round trip and append one trailing byte to a valid archive; the latter must
+fail without committing destination output.
+
+For the benchmark boundary, reserve the complete encoded vector as the 80-byte
+prefix plus `ceil(N / 65,536)` copies of the 56-byte header and 16-byte
+descriptor plus `264N` payload bytes, using checked arithmetic. Query both
+workspace layouts through the public ABI, require a byte-exact untimed round
+trip, then execute one repository-input smoke iteration with no performance
+threshold.
+
+For interoperability schema 10, reuse the deterministic 8,193-byte fixture and
+the exact twenty-entry schema-9 order, then append `lz78-adaptive-huffman`.
+Generate and locally round-trip all twenty-one archives before writing codec
+set `marc-cli-v10`. The verifier must enforce exact order, size, SHA-256,
+foreign decode equality, and byte-identical local re-encoding. Derive schema 9
+by removing only the last profile and continue the frozen conversion chain to
+schema 1; swap the first two schema-10 entries and require order rejection.

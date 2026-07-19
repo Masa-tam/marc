@@ -641,9 +641,11 @@ schema-5 order. Schema 7 names `marc-cli-v7` and appends LZMW plus Blocked
 Huffman to the frozen seventeen-profile schema-6 order. Schema 8 names
 `marc-cli-v8` and appends LZ77 plus Adaptive Huffman to the frozen eighteen-
 profile schema-7 order. Schema 9 names `marc-cli-v9` and appends LZSS plus
-Adaptive Huffman to the frozen nineteen-profile schema-8 order. Schemas 1
-through 8 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen,
-eighteen, and nineteen profiles respectively.
+Adaptive Huffman to the frozen nineteen-profile schema-8 order. Schema 10 names
+`marc-cli-v10` and appends LZ78 plus Adaptive Huffman to the frozen twenty-
+profile schema-9 order. Schemas 1 through 9 remain frozen at seven, eight,
+thirteen, fifteen, sixteen, seventeen, eighteen, nineteen, and twenty profiles
+respectively.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1454,6 +1456,10 @@ queries both directional workspace layouts. It verifies a complete byte-exact
 round trip before timing fresh transform instances, then reports ratio,
 throughput, all queried extents, and peak caller-reserved workspace without a
 performance threshold.
+Interoperability schema 10 preserves the exact twenty-entry schema-9 order and
+appends `lz78-adaptive-huffman`. Generation round-trips all twenty-one profiles;
+verification requires the exact manifest order, foreign decode equality, and
+byte-identical local re-encoding while retaining schema 1 through 9 support.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
@@ -1544,13 +1550,13 @@ The first independent-toolchain check builds the complete project with Clang's
 GNU-style driver and Ninja on Windows, then runs the same optimized suite used
 by the MSVC build. As a separate representation check, the MSVC and Clang
 command-line tools encode one common input through every public CLI profile;
-all twenty schema-9 archives must compare byte for byte. This establishes
+all twenty-one schema-10 archives must compare byte for byte. This establishes
 compiler independence on one architecture, while cross-architecture evidence
 remains a separate gate.
 
 CI turns this check into an externally consumable protocol. Each reference job
 generates the same 8,193-byte binary fixture, validates a local round trip for
-all twenty schema-9 profiles, and uploads the fixture, complete archives, and
+all twenty-one schema-10 profiles, and uploads the fixture, complete archives, and
 a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect

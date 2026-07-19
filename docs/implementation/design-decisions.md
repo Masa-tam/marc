@@ -5863,3 +5863,23 @@ workspace extents, and the larger caller-reserved workspace total. Treat only
 correctness, bounds, allocation, and API failures as benchmark failures;
 throughput and compression ratio are observations, not pass thresholds. Add a
 single-iteration smoke test over repository-owned input.
+
+## DD-315: Interoperability schema 10 appends LZ78 Adaptive exactly once
+
+- Date: 2026-07-20
+- Status: accepted
+
+Define interoperability schema 10 and codec set `marc-cli-v10` as the exact
+twenty-entry schema-9 order followed by `lz78-adaptive-huffman`. Reuse the
+unchanged deterministic 8,193-byte binary fixture. Generation must round-trip
+all twenty-one profiles before writing the manifest; verification must check
+the exact count and order, every declared size and SHA-256 value, foreign
+decode equality, and byte-identical local re-encoding.
+
+Keep schemas 1 through 9 frozen. The compatibility test starts from a complete
+schema-10 bundle, rejects a reordered schema-10 manifest, removes only the
+newest profile while converting to schema 9, and continues the existing
+one-generation-at-a-time chain through schema 1. Local schema admission proves
+the generator, verifier, and compatibility rules only. Cross-platform evidence
+still requires CI artifacts from the same full Git revision and the established
+bidirectional external verification procedure.
