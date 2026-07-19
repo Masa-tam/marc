@@ -42,7 +42,10 @@ format versions, and C ABI versions are independent namespaces.
   reproduces the independent frame vector without partial destination writes
   on capacity failure. Its first bounded streaming encoder preserves exact
   frame boundaries and deterministic bytes under one-byte input and output,
-  output starvation, `Flush`, and retained `EndInput`.
+  output starvation, `Flush`, and retained `EndInput`. The matching bounded
+  streaming decoder buffers, validates, and reconstructs a complete frame
+  before exposing any of its raw bytes, with sticky atomic failure for a
+  malformed later frame.
 
 ## 0.1.0 - 2026-07-19
 

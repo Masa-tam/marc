@@ -5901,3 +5901,30 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-encoder tests and all 1,276
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman streaming frame decoder
+
+- Authoring method: implemented only the bounded known-size decoder admitted
+  by DD-308 over marc's DD-305 transactional exact-frame decoder.
+- References used: DD-308, strict stream and generic frame parsing, LZ78 token
+  and phrase bounds, Adaptive descriptor and payload bounds, checked aggregate
+  arithmetic, and the existing private-staging decoder.
+- Known implementations intentionally not consulted: external combined
+  streaming decoders, state machines, malformed corpora, source, tests, or
+  workspace layouts.
+- Independent decisions: parse headers before body collection; classify
+  impossible encoded extents as malformed and caller-capacity shortage as out
+  of memory; include phrase records in aggregate admission; decode only a
+  complete private frame; drain raw bytes only after exact success; retain
+  finish while draining and keep terminal failures stable.
+- Generated-code task description: add the internal streaming decoder and
+  build integration, one-byte input/output and retained-finish tests, every
+  proper truncation, trailing input, later-frame atomic corruption, all four
+  workspace shortages, aggregate and protocol errors, empty input, and update
+  documentation.
+- Similarity review: the state machine composes marc's first-party parsers and
+  transactional frame decoder under its documented transform contract; no
+  external combined-codec expression was compared.
+- Local validation: all five focused streaming-decoder tests and all 1,281
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64.

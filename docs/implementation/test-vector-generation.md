@@ -1946,3 +1946,15 @@ raw byte emits no short frame, and cover empty input. Reject short raw, token,
 encoded-frame, and aligned-entry workspaces, an aggregate limit one byte below
 raw plus tokens plus frame plus entries, premature EndInput, excess input,
 unknown flags, and `ResetBlock`.
+
+For the first streaming decoder, consume the independently concatenated
+`ABABX` stream one encoded byte at a time and expose at most one raw byte per
+call; require exact raw identity and stable End Of Stream. Repeat with the
+complete encoded input but a one-byte output so EndInput must remain latched
+while validated raw frames drain. Require every proper prefix to fail when
+finished, append one trailing zero byte, and corrupt the second frame after the
+first has committed; the latter may expose exactly the first two raw bytes and
+must preserve the next output sentinel. Independently shorten encoded-frame,
+token, raw, and phrase workspaces, set the aggregate limit one byte below the
+exact frame-plus-token-plus-raw-plus-phrase sum, and reject ResetBlock and an
+unknown flag. Empty input must accept exactly the 80-byte prefix.

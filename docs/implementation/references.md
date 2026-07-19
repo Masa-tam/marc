@@ -827,3 +827,9 @@ The LZ78 plus Adaptive Huffman streaming frame encoder uses only DD-307, the
 DD-306 exact-frame API, marc's generic bounded transform contract, stream and
 LZ78 parameter serializers, and existing first-party known-size state-machine
 rules. No external streaming implementation was consulted.
+
+The LZ78 plus Adaptive Huffman streaming frame decoder uses only DD-308, the
+DD-305 transactional exact-frame decoder, generic stream and frame parsers,
+checked bounds, and marc's first-party transform state rules. No external
+streaming decoder, buffering order, malformed corpus, or test suite was
+consulted.

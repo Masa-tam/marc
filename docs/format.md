@@ -1581,6 +1581,10 @@ Nonterminal `Flush` does not shorten a frame, and `ResetBlock` is unsupported
 at this composition boundary. A streaming encoder must finish and drain each
 exact frame before collecting its successor; input and output chunking alone
 must not alter any serialized byte.
+The matching streaming decoder buffers one complete serialized frame, validates
+and reconstructs it privately, and only then drains raw bytes. No byte from a
+malformed frame is observable, although preceding frames may already have been
+committed.
 
 ### Hand-checkable single-Pair frame
 

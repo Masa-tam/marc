@@ -5714,3 +5714,25 @@ must produce the same bytes as independently repeated exact-frame calls. `Flush`
 does not shorten a frame, `ResetBlock` is unsupported, premature or excess
 known-size input is invalid, and empty input emits only the prefix. This step
 does not admit a streaming decoder, public workspace calculator, or C factory.
+
+## DD-308: LZ78 Adaptive streaming decoding commits complete frames only
+
+- Date: 2026-07-20
+- Status: accepted
+
+Add the bounded known-size decoder over the DD-305 transactional exact-frame
+decoder. Collect and parse the complete 80-byte prefix, then collect each
+generic frame header separately. Before accepting its body, reject impossible
+token alignment or `8F` extent, non-single Adaptive descriptor layout, `33D`
+payload overflow, short encoded, token, raw, or aligned phrase storage, and an
+aggregate bound covering the exact frame, tokens, raw frame, and phrase table.
+
+Decode only after the complete serialized frame is privately buffered. Keep
+the reconstructed raw frame private and drain it incrementally only after all
+entropy and phrase validation succeeds. A malformed later frame may leave
+earlier frames committed but must publish none of its own bytes. Require
+one-byte encoded input and raw output, output starvation with retained
+EndInput, empty input, truncation at every byte, trailing data, later-frame
+corruption, all workspace shortages, aggregate rejection, unknown flags,
+`ResetBlock`, and stable error and End Of Stream results. This step adds no
+public workspace calculator or C factory.

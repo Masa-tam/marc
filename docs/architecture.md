@@ -1422,6 +1422,12 @@ table. It emits the common 80-byte prefix, collects only complete configured
 frames, delegates each frame to the exact planner and encoder, then drains it
 before accepting another frame. Output starvation retains all pending state;
 `EndInput` remains latched even when prefix drainage consumes no input.
+The matching streaming decoder parses the prefix and each frame header in
+bounded fixed storage, rejects impossible LZ78 and Adaptive extents before body
+collection, and admits the exact frame, token, raw, and phrase-table aggregate
+before decoding. A complete frame is reconstructed into private raw storage;
+only that validated storage enters the drain state. Consequently a malformed
+later frame cannot expose one of its bytes after an earlier frame has drained.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
