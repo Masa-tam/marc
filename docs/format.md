@@ -1370,6 +1370,11 @@ frame. It validates and reconstructs the entire current frame before exposing
 that raw staging for partial draining. A malformed later frame cannot publish a
 prefix from that frame.
 
+The internal incremental encoder buffers at most one raw frame, one canonical
+token region, and one complete serialized frame. It emits the prefix first,
+never closes a partial frame for `Flush`, and retains a valid `EndInput` request
+until the final short frame and all pending bytes have drained.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token:

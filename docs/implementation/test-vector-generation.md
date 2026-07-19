@@ -1828,3 +1828,14 @@ otherwise parseable frame headers; require rejection before body collection.
 Reject one-byte truncation, one trailing byte, and `ResetBlock`; accept the
 empty 80-byte prefix, treat `Flush` during starvation as `NeedInput`, and retain
 premature `EndInput` while draining the first frame before reporting truncation.
+
+For incremental encode, construct the same five-byte, two-byte-frame stream
+independently from explicit prefix and exact frame calls. Feed raw input and
+drain output one byte at a time; require byte identity and repeatable
+`EndOfStream`. Verify that `Flush` after one raw byte emits only the prefix and
+does not close the partial frame. Supply all input with `EndInput` and one byte
+of output, then re-present the unconsumed input without the flag and require
+finish to remain latched. Make raw-frame storage and `2F` token staging one byte
+short at construction, encoded-frame storage one byte short at preparation,
+and the aggregate one byte short. Require empty-prefix success and rejection of
+premature finish and `ResetBlock`.

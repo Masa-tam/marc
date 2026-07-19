@@ -747,3 +747,8 @@ The LZSS plus Adaptive Huffman streaming decoder uses only DD-294, marc's
 generic stream/frame parsers, DD-292 private frame decoder, and existing core
 process contract. No external streaming decoder, state machine, buffering
 policy, source, corpus, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman streaming encoder uses only DD-295, the DD-293
+exact frame encoder, marc's explicit serializers, checked limits, and core
+process contract. No external streaming encoder, state machine, finish policy,
+source, corpus, or test suite was consulted.

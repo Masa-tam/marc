@@ -5438,3 +5438,23 @@ unsupported `ResetBlock`, and later-frame corruption without publishing that
 frame. Earlier fully decoded frames may already have been returned. Empty input
 is the valid 80-byte prefix and repeated calls after completion return
 `EndOfStream`.
+
+## DD-295: LZSS Adaptive streaming encode latches finish before draining
+
+- Date: 2026-07-19
+- Status: accepted
+
+Encode the known-size stream with a state machine that first drains the fixed
+80-byte prefix, collects exactly one raw frame, completes DD-293 planning and
+encoding into private frame storage, and only then drains serialized bytes.
+Require caller-owned raw input storage for the largest frame, token staging for
+the `2F` worst case, exact encoded-frame storage, and the complete
+raw-plus-token-plus-serialized aggregate before preparing a frame.
+
+Full frames become drainable as soon as collected; the final short frame is
+prepared only when its known remaining extent is complete. `Flush` does not
+close a partial frame and `ResetBlock` is unsupported. Validate that `EndInput`
+is accompanied by exactly all remaining declared input, then latch it
+immediately even if prefix or frame output must drain before any supplied input
+can be consumed. Re-presented unconsumed input need not repeat the flag. Return
+repeatable `EndOfStream` only after all serialized bytes have been emitted.

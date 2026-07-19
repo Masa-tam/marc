@@ -5562,3 +5562,26 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused streaming-decoder tests and all 1,231
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman streaming encoder
+
+- Authoring method: wrapped DD-293 exact frames in marc's known-size prefix and
+  core process state model under DD-295.
+- References used: DD-295, DD-293 planner and encoder, explicit stream and LZSS
+  parameter serializers, checked arithmetic, and core process contract.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, finish policies, source, corpora, or test suites.
+- Independent decisions: require largest-frame raw storage and `2F` token
+  staging; prepare complete frames before draining; count raw, token, and
+  serialized regions as one aggregate; retain partial frames across `Flush`;
+  latch valid finish before any pending-output drain.
+- Generated-code task description: add the bounded streaming encoder and
+  focused reference identity, one-byte chunking, flush, latched-finish, storage,
+  aggregate, empty, premature-finish, reset, and repeated-end tests without
+  adding a public factory.
+- Similarity review: the implementation follows marc's own typed planner,
+  serializers, and process vocabulary; no external control flow, naming, or
+  storage layout was compared.
+- Local validation: all five focused streaming-encoder tests and all 1,236
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

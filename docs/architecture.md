@@ -1230,7 +1230,9 @@ committed raw staging. It supports one-byte input and output, latches finish
 while draining, and reports later-frame corruption after preserving only output
 from earlier complete frames. Profile-specific token and payload bounds are
 checked from the header before an input-controlled body is collected. The
-streaming encoder and public adapters remain separate steps.
+incremental encoder likewise completes each exact frame privately before
+draining it, keeps `Flush` nonterminal, and latches finish even across prefix or
+frame output starvation. Public adapters remain separate steps.
 
 ### LZSS plus Blocked Huffman validation boundary
 

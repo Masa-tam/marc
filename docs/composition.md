@@ -62,8 +62,9 @@ nineteenth archive.
 reference policy. It remains specified rather than public until its independent
 vector, complete-frame token validator, transactional raw-frame decoder, and
 exact frame encoder now include incremental decoding. The profile remains
-specified until the streaming encoder, C ABI, malformed-input fuzzing, tooling,
-benchmark, and interoperability evidence are complete.
+specified with both streaming directions implemented until the C ABI,
+malformed-input fuzzing, tooling, benchmark, and interoperability evidence are
+complete.
 
 ## Why publication is not automatic
 
