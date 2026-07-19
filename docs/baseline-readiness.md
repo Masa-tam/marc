@@ -86,8 +86,10 @@ kept separate because it requires artifacts produced outside the local build.
 
 `lz78-adaptive-huffman` has a reserved name, exact decoder-visible
 representation, checked worst-case formulas, transactional validation order,
-and independent hand-checkable vector. It remains specified rather than public
-until the complete-frame validator and encoder are implemented and tested.
+independent hand-checkable vector, and a bounded complete-frame validator
+through phrase-graph construction. It remains specified rather than public
+until transactional raw reconstruction and the frame encoder are implemented
+and tested.
 
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
@@ -194,7 +196,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-303, the complete Release suite contains 1,253 tests and passes under both
+At DD-304, the complete Release suite contains 1,260 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

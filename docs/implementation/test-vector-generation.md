@@ -1904,3 +1904,14 @@ size 3, final-valid-bit count 7, and the exact 75-byte frame in `docs/format.md`
 Build the test by invoking the standalone LZ78 and Adaptive encoders separately
 and explicit generic serializers; do not use a combined-profile encoder as its
 own oracle.
+
+For the first complete-frame validator, accept the frozen 75-byte single-Pair
+frame into eight token-staging bytes and one aligned phrase entry. Reject every
+proper prefix and one trailing byte. Before entropy output, reject independently
+short token and phrase workspaces and an aggregate limit one byte below the
+exact descriptor-plus-payload-plus-token-plus-phrase sum. Reject zero final-bit
+metadata, nonzero high padding, a non-multiple-of-eight token extent, wrong
+sequence, and wrong pipeline. Independently Adaptive-encode a token with
+forward phrase index 1 and require LZ78 phrase validation to reject it after
+successful entropy decode. No test may treat failure as raw-output behavior;
+this boundary has no raw output.

@@ -805,3 +805,9 @@ marc's already documented LZ78 variant 1 token grammar and phrase bounds,
 Adaptive Huffman FGK variant 1 tree and descriptor rules, generic framing, and
 the repository-owned composition policy. No external combined codec, format,
 implementation, vector, workspace layout, corpus, or test suite was consulted.
+
+The first LZ78 plus Adaptive Huffman validator uses only DD-304, the specified
+combined frame, marc's strict Adaptive frame decoder, LZ78 token validator,
+checked arithmetic, generic frame validation, and caller-owned aligned phrase
+records. No external combined decoder, parser, validation order, malformed
+corpus, implementation, or test suite was consulted.

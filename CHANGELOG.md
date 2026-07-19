@@ -34,7 +34,9 @@ format versions, and C ABI versions are independent namespaces.
 - The reserved `lz78-adaptive-huffman` composition now has an exact
   decoder-visible representation, bounded token/payload formulas,
   transactional phrase-validation order, and an independently assembled
-  single-Pair frame vector.
+  single-Pair frame vector. Its first complete-frame boundary strictly
+  entropy-decodes and validates canonical tokens and the LZ78 phrase graph
+  without reconstructing or publishing raw bytes.
 
 ## 0.1.0 - 2026-07-19
 

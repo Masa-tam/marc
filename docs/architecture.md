@@ -1402,7 +1402,10 @@ bytes and the conservative Adaptive payload ceiling is therefore `264F`.
 Decoding must entropy-decode into token staging, validate the complete phrase
 graph, reconstruct into private raw staging, and only then publish. Encoding
 must freeze the LZ78 parse before Adaptive planning. The representation and
-independent vector are specified; callable profile layers are not yet present.
+independent vector are specified. The first internal validator now accepts one
+exact frame, checks all extents and caller capacities, strict-decodes Adaptive
+bytes into token staging, and validates the full LZ78 phrase graph in aligned
+workspace. It exposes neither raw bytes nor a callable public profile.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

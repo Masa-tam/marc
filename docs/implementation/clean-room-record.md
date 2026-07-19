@@ -5803,3 +5803,27 @@ discarded and the reviewed seed retained.
 - Local validation: the independent vector passed under both MSVC/Visual Studio
   2026 and Clang 22.1.3/Ninja on Windows x64, and all 1,253 Release tests passed
   under both toolchains.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman frame validator
+
+- Authoring method: implemented only the decoder stages admitted by DD-304,
+  using marc's existing independently specified component boundaries.
+- References used: DD-304, generic frame validation, strict Adaptive descriptor
+  and payload decoding, LZ78 validation-workspace sizing, fixed token parsing,
+  checked arithmetic, and the frozen single-Pair vector.
+- Known implementations intentionally not consulted: external combined
+  decoders, parsers, validation orders, malformed corpora, source, or tests.
+- Independent decisions: validate all extents and capacities before entropy
+  output; count aligned phrase bytes in aggregate workspace; decode into
+  private token staging; validate the complete phrase graph; publish no raw
+  bytes and add no encoder or public adapter.
+- Generated-code task description: add one internal result/error contract,
+  exact-frame validator, capacity and aggregate checks, strict entropy decode,
+  phrase validation, focused positive and independent negative tests, and
+  update status/provenance documents.
+- Similarity review: control flow follows marc's documented transactional
+  stages and existing first-party component APIs; no external combined-codec
+  expression was compared.
+- Local validation: all seven focused validator tests and all 1,260 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on
+  Windows x64.

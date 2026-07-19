@@ -1610,7 +1610,10 @@ The complete 75-byte frame is:
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final three bytes are the FGK payload. This
 section reserves the representation and profile name; it does not publish a C
-factory, CLI selector, benchmark entry, or interoperability archive.
+factory, CLI selector, benchmark entry, or interoperability archive. The
+internal complete-frame validator implements the header-through-phrase-graph
+portion of the required decode order, but deliberately performs no raw
+reconstruction.
 
 ## LZ78 variant 1 plus Blocked Huffman variant 1
 

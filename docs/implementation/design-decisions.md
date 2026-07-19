@@ -5630,3 +5630,24 @@ single-byte `A` vector independently as token `00 41 00 00 00 00 00 00`,
 23-bit payload `00 82 7E`, and a 75-byte frame. Specification and vector
 admission do not publish implementation, C ABI, CLI, benchmark, fuzz, or
 interoperability support.
+
+## DD-304: LZ78 Adaptive validation stops before raw reconstruction
+
+- Date: 2026-07-20
+- Status: accepted
+
+Implement the first decoder boundary over one exact serialized frame. Validate
+the fixed pipeline and parameters, generic header, complete serialized extent,
+`8F` token bound, one Adaptive descriptor, `33D` payload bound for token extent
+`D`, token-staging capacity, aligned phrase-entry capacity, and aggregate
+workspace before invoking entropy decode.
+
+Strict-decode exactly `D` canonical bytes into private staging, including exact
+bit exhaustion and zero padding, then validate the complete fixed-width LZ78
+grammar and phrase graph against the declared raw size. Treat the populated
+private staging and phrase table as committed only on success; discard both
+after any error. Perform no raw reconstruction
+and expose no public factory. Require separate regressions for every truncation,
+trailing data, descriptor failure, nonzero padding, invalid phrase reference,
+impossible token extent, workspace shortage, aggregate limit, sequence, and
+pipeline mismatch.

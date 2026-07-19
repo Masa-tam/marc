@@ -68,8 +68,9 @@ the bidirectional x86-64 cross-platform result is recorded separately in
 `lz78-adaptive-huffman` now reserves the third Adaptive Huffman composition.
 Its decoder-visible frame, `8F` token bound, `264F` payload bound, aligned LZ78
 phrase-workspace requirement, transactional validation order, and independent
-single-Pair vector are fixed. Implementation and every admission adapter remain
-pending.
+single-Pair vector are fixed. The internal complete-frame token/phrase
+validator is implemented; raw reconstruction, encoding, streaming, and every
+admission adapter remain pending.
 
 ## Why publication is not automatic
 
