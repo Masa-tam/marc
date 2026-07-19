@@ -1350,8 +1350,9 @@ checks above through validated canonical token staging. It accepts exactly one
 frame and rejects trailing bytes. The internal frame decoder then implements
 steps four and five through a distinct private raw-staging extent and an exact
 post-success copy to caller output. The public C factory connects these
-boundaries through the incremental controllers; no CLI selector is admitted
-yet.
+boundaries through the incremental controllers. The CLI selector
+`lzss-adaptive-huffman` selects that same fixed representation through the
+public factory.
 
 The internal exact planner implements the encoding order above: determine and
 serialize canonical LZSS tokens, plan Adaptive Huffman over those fixed bytes,

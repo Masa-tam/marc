@@ -65,8 +65,8 @@ exact frame encoder include incremental decoding and encoding. Its checked
 profile constructor now exposes conservative caller-owned workspace extents.
 The bounded C ABI factory and public-boundary completion coverage are
 implemented, together with bounded frame/stream decoder fuzzing and permanent
-malformed regressions. The profile remains specified until tooling, benchmark,
-and
+malformed regressions and a transactional CLI selector. The profile remains
+specified until benchmark and
 interoperability evidence are complete.
 
 ## Why publication is not automatic

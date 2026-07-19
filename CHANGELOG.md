@@ -25,6 +25,8 @@ format versions, and C ABI versions are independent namespaces.
   calculations, a bounded public C factory, and public-ABI completion coverage.
   A fixed-memory dual-boundary decoder fuzz target and permanent malformed
   regressions cover truncation, extreme extents, and descriptor corruption.
+  The `lzss-adaptive-huffman` CLI selector uses the public factory and the
+  common transactional output policy.
 
 ## 0.1.0 - 2026-07-19
 

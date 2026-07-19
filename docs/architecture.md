@@ -1258,6 +1258,13 @@ at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB, and payload at
 retain atomic rejection of every canonical truncation, extreme frame extents,
 and a reserved Adaptive descriptor mutation.
 
+The CLI now selects `lzss-adaptive-huffman` solely through its public C
+factory and requirements query. Its 64-KiB frame policy configures the `2F`
+token and 33-byte-per-token payload bounds without duplicating internal
+workspace partitioning. The common temporary-file transaction prevents an
+existing destination from being replaced and removes both destination and
+staging output after malformed or trailing input.
+
 ### LZSS plus Blocked Huffman validation boundary
 
 The second selected composition begins with the same deliberately narrow

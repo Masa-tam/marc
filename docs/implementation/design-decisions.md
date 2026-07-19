@@ -5544,3 +5544,24 @@ publishing a raw byte, while preserving sticky error category and position.
 Compile the harness under ordinary MSVC and Clang builds; execute it only in a
 separate sanitizer-enabled Clang build with explicit run, input, timeout, and
 RSS bounds.
+
+## DD-300: LZSS Adaptive CLI preserves file transactions
+
+- Date: 2026-07-19
+- Status: accepted
+
+Admit the exact selector `lzss-adaptive-huffman` through only the DD-297 public
+C lifecycle. Fix its tool policy at 65,536 raw bytes per frame, at most 131,072
+canonical LZSS token bytes, a conservative 4,325,376-byte Adaptive payload,
+and the checked raw-plus-token-plus-header-plus-descriptor-plus-payload
+aggregate. Treat these as configuration limits only; obtain all actual
+workspace extents from the public query and expose no private storage layout.
+
+Retain the common destination transaction: refuse an existing output or
+existing `.tmp`, stream into `.tmp`, close successfully, then rename exactly
+once. On configuration, allocation, processing, malformed input, trailing
+data, close, or rename failure, remove the temporary path and publish no
+destination. Require ordinary and empty round trips, second-encode refusal,
+malformed-prefix rejection, and valid-stream-plus-trailing-byte rejection in
+the same integration script used by established selectors. This admits CLI
+behavior but not benchmark or interoperability evidence.

@@ -776,3 +776,8 @@ incremental decoders, fixed local limits, core process-result invariants, and
 repository-owned canonical stream generation. No external fuzz harness,
 corpus, dictionary, malformed stream, combined decoder, source, or test suite
 was consulted.
+
+The LZSS plus Adaptive Huffman CLI selector uses only DD-300, the DD-297 public
+C factory, DD-296 bounds, and marc's existing transactional file-processing
+adapter and integration script. No external CLI, archive tool, workspace
+policy, file-commit strategy, source, corpus, or test suite was consulted.

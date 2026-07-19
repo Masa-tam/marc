@@ -5683,3 +5683,26 @@ discarded and the reviewed seed retained.
   tests passed under MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64. The Clang 22.1.3 ASan/UBSan/libFuzzer target completed 1,000 bounded
   executions with no crash, hang, or sanitizer finding and 37 MiB peak RSS.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman CLI selector
+
+- Authoring method: registered the DD-297 public factory in marc's existing
+  bounded file adapter under DD-300.
+- References used: DD-300, public C config/query/create/process/destroy calls,
+  DD-296 workspace bounds, and the repository-owned temporary-file transaction
+  and CLI integration script.
+- Known implementations intentionally not consulted: external archive tools,
+  CLIs, file-commit strategies, workspace policies, source, corpora, or tests.
+- Independent decisions: use the exact public profile name; fix 64-KiB raw
+  frames and conservative `2F`/33-byte limits; query actual workspace; preserve
+  existing-output refusal and `.tmp` cleanup; enable trailing-data coverage.
+- Generated-code task description: add selector parsing, help text, public-C
+  configuration/query/factory dispatch, and ordinary, empty, overwrite,
+  malformed, trailing, and staging-cleanup integration checks without adding a
+  benchmark or interoperability entry.
+- Similarity review: the adapter extends only marc's repository-owned CLI
+  dispatch and transaction; no external control flow, naming, or behavior was
+  compared.
+- Local validation: the focused transactional CLI integration and all 1,251
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.
