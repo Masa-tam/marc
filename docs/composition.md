@@ -72,7 +72,8 @@ typed workspaces, public C factory, and public-ABI completion matrix are
 available. Its bounded dual-decoder fuzz target, permanent malformed
 regressions, transactional CLI selector, and verified public-C benchmark are
 also present. Interoperability schema 10 appends it as the twenty-first archive;
-external cross-platform verification remains pending.
+the bidirectional x86-64 cross-platform result is recorded separately in
+`docs/interoperability.md`.
 
 ## Why publication is not automatic
 

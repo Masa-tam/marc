@@ -59,7 +59,9 @@ format versions, and C ABI versions are independent namespaces.
   Its public-C benchmark verifies a byte-exact round trip before reporting
   ratio, directional throughput, and queried caller-owned workspace.
   Interoperability schema 10 appends it as the twenty-first archive while
-  preserving schemas 1 through 9 and their exact codec orders.
+  preserving schemas 1 through 9 and their exact codec orders. Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang bundles passed the bidirectional
+  external decode and byte-identical re-encode contract.
 
 ## 0.1.0 - 2026-07-19
 

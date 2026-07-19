@@ -6098,4 +6098,24 @@ discarded and the reviewed seed retained.
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4. Independently generated 21-archive local
   bundles were cross-verified in both compiler directions with exact decode and
-  re-encode equality. External Linux artifact verification remains pending.
+  re-encode equality.
+
+## 2026-07-20 - Interoperability schema 10 external validation record
+
+- Evidence source: user-supplied output from four executions of marc's schema-10
+  verifier at full revision
+  `bc8faba3043db78a953f18876f153abc847f814d`.
+- Producing environments: GitHub Actions Windows/MSVC via Visual Studio 2026
+  x64, GitHub Actions Ubuntu 24.04/Ninja x64, and Ubuntu 26.04/Clang 21.1.8 via
+  Ninja x64.
+- Verification results: Ubuntu 26.04 verified all 21 Windows/MSVC archives and
+  all 21 Ubuntu 24.04 archives; it generated and verified its own 21-archive
+  bundle; Windows/MSVC verified that Ubuntu 26.04 bundle in reverse.
+- Contract satisfied: every pass checked manifest identity and order, complete
+  foreign decode equality, and byte-identical local re-encoding for every
+  profile.
+- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
+  this is not evidence for a second architecture or a non-WSL Linux kernel.
+- Similarity review: only verifier result lines and already documented
+  environment metadata were recorded; no external source code, format, corpus,
+  or implementation was consulted.

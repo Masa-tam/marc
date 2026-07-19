@@ -1460,6 +1460,9 @@ Interoperability schema 10 preserves the exact twenty-entry schema-9 order and
 appends `lz78-adaptive-huffman`. Generation round-trips all twenty-one profiles;
 verification requires the exact manifest order, foreign decode equality, and
 byte-identical local re-encoding while retaining schema 1 through 9 support.
+The pushed Windows/MSVC and Ubuntu 24.04 artifacts and an Ubuntu 26.04/Clang
+bundle subsequently passed that contract in both operating-system directions
+for all twenty-one archives at one full revision.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

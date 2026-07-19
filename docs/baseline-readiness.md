@@ -44,7 +44,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-blocked-huffman` | Sixth composed dictionary/entropy pipeline | Ready | Included |
 | `lz77-adaptive-huffman` | First Adaptive Huffman composition | Ready | Included |
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
-| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Schema candidate | Included |
+| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 10 contains twenty-one archives: the frozen twenty-entry schema-9 set
@@ -91,8 +91,10 @@ kept separate because it requires artifacts produced outside the local build.
 streaming transforms, typed workspace profile, and public C ABI factory. It
 now also has a public-ABI completion matrix, bounded fuzz evidence, a
 transactional CLI selector, a verified public-ABI benchmark adapter, and local
-schema-10 generation/verification coverage. It remains below `Ready` until
-schema-10 artifacts are cross-verified outside the local build.
+schema-10 generation/verification coverage. The pushed Windows/MSVC and Ubuntu
+24.04 artifacts plus an independently generated Ubuntu 26.04/Clang bundle have
+now passed the complete bidirectional external verification contract, so this
+profile is `Ready`.
 
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
@@ -158,6 +160,15 @@ twenty-archive bundle, and supplied that bundle to the Windows/MSVC executable
 for reverse verification. Every pass required byte-identical local
 re-encoding. This closes the schema-9 x86-64 Windows/Linux/compiler cross-check;
 a second architecture and non-WSL Linux kernel remain open.
+
+Revision `bc8faba3043db78a953f18876f153abc847f814d` subsequently completed
+pushed CI and produced the Windows/MSVC and Ubuntu 24.04/Ninja schema-10
+artifacts. Ubuntu 26.04/Clang 21.1.8 verified all twenty-one archives from both
+artifacts, generated and verified its own schema-10 bundle, and supplied that
+bundle to the Windows/MSVC executable for reverse verification. Every pass
+required byte-identical local re-encoding. This closes the schema-10 x86-64
+Windows/Linux/compiler cross-check; a second architecture and non-WSL Linux
+kernel remain open.
 
 ## Pre-publication CI and package audit
 

@@ -872,3 +872,9 @@ the published `lz78-adaptive-huffman` CLI selector, and marc's repository-owned
 bundle generator, verifier, fixture, and compatibility regression. No external
 interoperability harness, archive set, manifest, corpus, combined-codec source,
 or test suite was consulted.
+
+The schema-10 external validation record uses the user-supplied four verifier
+results for revision `bc8faba3043db78a953f18876f153abc847f814d`, the previously
+documented Ubuntu 26.04/Clang 21.1.8 environment boundary, and marc's own
+verifier contract. No external archive tool, decoder implementation,
+compatibility suite, or third-party result claim was used.
