@@ -1445,6 +1445,10 @@ The bounded dual-decoder fuzz boundary adds no allocation surface: exact-frame
 and incremental parsing share fixed local limits, byte arrays, a 1,024-record
 phrase table, and a call ceiling. Ordinary builds compile this boundary while
 permanent malformed regressions exercise its reviewed failure classes.
+The transactional CLI binds this profile only through its public C factory
+and requirements query. Its 64-KiB raw cadence configures the `8F` canonical
+token and `264F` Adaptive payload ceilings while leaving the opaque phrase
+record sizing, alignment, and partitioning inside the checked profile helpers.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

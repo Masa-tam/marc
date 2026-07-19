@@ -6025,3 +6025,27 @@ discarded and the reviewed seed retained.
   focused malformed regressions plus all 1,294 Release tests passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. No unbounded fuzz
   campaign was run in this step.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman CLI profile
+
+- Authoring method: connected the independently implemented public C factory
+  to marc's existing bounded streaming command-line driver and transactional
+  file commit path.
+- References used: DD-309 through DD-313, the public
+  `marc_lz78_adaptive_huffman_*` declarations, and marc's first-party LZ78
+  Blocked Huffman and LZSS Adaptive Huffman CLI adapters.
+- Known implementations intentionally not consulted: third-party LZ78,
+  Adaptive Huffman, compression-tool, and archive-manager source code.
+- Independent decisions: select the 65,536-byte reference frame; bound
+  canonical tokens by `8F` and Adaptive payload by `33 * 8F`; preserve the
+  65,536-entry phrase limit and 32-MiB aggregate policy; obtain all actual
+  workspace extents and opaque alignment from the C requirements query; retain
+  exclusive temporary-file creation and rename-on-success behavior.
+- Tests added: common CLI round trip plus strict appended-trailing-data
+  rejection for the new selector.
+- Similarity review: the adapter contains only marc C ABI calls, checked bound
+  formulas already specified in this repository, and existing local CLI
+  dispatch conventions; no external implementation expression was used.
+- Local validation: the focused transactional CLI test and all 1,295 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

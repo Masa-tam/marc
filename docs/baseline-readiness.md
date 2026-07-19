@@ -44,7 +44,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-blocked-huffman` | Sixth composed dictionary/entropy pipeline | Ready | Included |
 | `lz77-adaptive-huffman` | First Adaptive Huffman composition | Ready | Included |
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
-| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | C ABI + completion | Not yet included |
+| `lz78-adaptive-huffman` | Third Adaptive Huffman composition | CLI published | Not yet included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 9 contains twenty archives: the frozen nineteen-entry schema-8 set
@@ -81,16 +81,16 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-adaptive-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
-now also has a public-ABI completion matrix. It remains below `Ready` until the
-CLI, benchmark, and interoperability schema entry are
-implemented and verified.
+now also has a public-ABI completion matrix, bounded fuzz evidence, and a
+transactional CLI selector. It remains below `Ready` until the benchmark and
+interoperability schema entry are implemented and verified.
 
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
@@ -197,7 +197,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-312, the complete Release suite contains 1,294 tests and passes under both
+At DD-313, the complete Release suite contains 1,295 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

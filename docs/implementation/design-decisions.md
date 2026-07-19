@@ -5823,3 +5823,22 @@ reserved Adaptive descriptor byte to fail without publishing raw bytes and to
 retain sticky error category and position. Ordinary MSVC and Clang builds only
 compile the harness; sanitizer execution remains a separate explicitly
 bounded Clang workflow.
+
+## DD-313: LZ78 Adaptive CLI uses the bounded reference profile
+
+- Date: 2026-07-20
+- Status: accepted
+
+Publish `lz78-adaptive-huffman` as a command-line selector backed only by the
+public C ABI. Use the fixed 65,536-byte raw frame cadence, at most 524,288
+canonical LZ78 token bytes, at most 17,301,504 Adaptive payload bytes, and
+65,536 dictionary entries. Use a conservative 32-MiB aggregate buffered-byte
+limit, but obtain every direction-specific workspace extent and the opaque
+typed-view alignment from `marc_lz78_adaptive_huffman_workspace_requirements`.
+The CLI must not duplicate the private workspace partition or typed layouts.
+
+Retain the common transactional file contract: write only to the exclusive
+`.tmp` staging path, rename it after terminal success, and remove it after any
+configuration, allocation, processing, malformed-stream, or commit failure.
+Exercise the selector with the common encode/decode round trip and require
+strict rejection of appended trailing bytes before claiming CLI publication.

@@ -21,16 +21,17 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | C ABI `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 9 includes every backtick-only
-published cell while preserving the exact earlier schema profile sets; a
-cell marked `C ABI` is not yet in that schema.
+None/None factory. Interoperability admission is tracked separately from CLI
+publication: schema 9 includes published profiles through
+`lzss-adaptive-huffman` while preserving the exact earlier schema profile
+sets; the newly CLI-published `lz78-adaptive-huffman` remains pending.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
@@ -69,9 +70,9 @@ the bidirectional x86-64 cross-platform result is recorded separately in
 `lz78-adaptive-huffman` is the third Adaptive Huffman composition. Its fixed
 format, independent vector, bounded frame and streaming transforms, checked
 typed workspaces, public C factory, and public-ABI completion matrix are
-available. Its bounded dual-decoder fuzz target and permanent malformed
-regressions are also present. CLI and benchmark adapters and interoperability
-admission remain pending.
+available. Its bounded dual-decoder fuzz target, permanent malformed
+regressions, and transactional CLI selector are also present. The benchmark
+adapter and interoperability admission remain pending.
 
 ## Why publication is not automatic
 
