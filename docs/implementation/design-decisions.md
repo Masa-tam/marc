@@ -5800,3 +5800,26 @@ Every failure must be sticky, preserve its error position, publish exactly the
 first 192 validated bytes, and leave the final output sentinel unchanged. This
 completes public-ABI evidence only; it admits no CLI, benchmark, fuzz, or
 interoperability claim.
+
+## DD-312: LZ78 Adaptive fuzzing fixes byte and phrase storage up front
+
+- Date: 2026-07-20
+- Status: accepted
+
+Add one bounded decoder fuzz entry point that truncates supplied input to
+8,192 bytes and exercises both the exact complete-frame private-staging
+decoder after a valid 80-byte prefix and the incremental stream decoder for
+every case. Fix total output at 4,096 bytes, one raw frame at 1,024 bytes,
+canonical LZ78 token staging at 8,192 bytes, compressed payload at 8,192
+bytes, and the phrase table at 1,024 records. Include every byte and record
+region in one fixed aggregate limit before processing.
+
+Derive partial input and output chunks from current bytes, cap process calls,
+and abort only on an invalid process result or impossible stall. Retain a
+repository-authored truncated-magic seed and keep generated mutations in
+ignored build storage. Add permanent regressions requiring every truncation of
+a canonical `ABABX` stream, all-ones generic extent fields, and a nonzero
+reserved Adaptive descriptor byte to fail without publishing raw bytes and to
+retain sticky error category and position. Ordinary MSVC and Clang builds only
+compile the harness; sanitizer execution remains a separate explicitly
+bounded Clang workflow.

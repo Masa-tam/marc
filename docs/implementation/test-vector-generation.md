@@ -1988,3 +1988,13 @@ by walking three generic frame extents from the 80-byte prefix; mutate its
 sequence byte, remove its final byte, and append one zero separately. Each
 decoder must publish exactly 192 bytes, preserve the last sentinel, and return
 the same terminal status and error positions on repetition.
+
+For bounded decoder fuzzing, retain only the five-byte repository-authored
+truncated magic `MARC\n` as a seed. Build the canonical regression stream from
+raw `ABABX` through the internal bounded encoder with five aligned entries,
+40 token bytes, and fixed serialized-frame storage. Feed every proper prefix
+to a fresh incremental decoder and require zero raw publication, then replace
+the generic frame extent region with `FF` bytes and set the final Adaptive
+descriptor reserved byte to one independently. Both malformed cases must
+remain atomic and sticky. The fuzz entry point caps input, all byte buffers,
+the 1,024-record phrase table, and calls before inspecting input metadata.

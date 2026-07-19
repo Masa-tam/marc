@@ -850,3 +850,9 @@ AGENTS.md completion data classes, marc's fixed C ABI, deterministic generator,
 generic frame extents, and existing first-party terminal-state contract. No
 external corpus, compatibility suite, combined implementation, or tests were
 consulted.
+
+The LZ78 plus Adaptive Huffman fuzz boundary uses only DD-312, marc's exact
+frame and incremental decoders, fixed local limits, typed LZ78 phrase records,
+and the repository's first-party call-ceiling policy. No external fuzz harness,
+corpus, malformed vector, combined implementation, or test suite was
+consulted.

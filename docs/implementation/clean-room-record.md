@@ -6000,3 +6000,28 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion tests and all 1,291 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman bounded decoder fuzz boundary
+
+- Authoring method: composed marc's existing exact-frame and incremental
+  decoders under the fixed DD-312 storage and call ceilings.
+- References used: DD-312, the repository-owned LZ78 Adaptive frame format,
+  phrase records, streaming contract, fuzz call policy, and canonical encoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed vectors, combined-codec source, or test suites.
+- Independent decisions: cap supplied bytes before parsing; allocate all byte
+  and 1,024 phrase records statically; exercise exact-frame decode only after a
+  valid prefix while always exercising streaming; derive chunks from bounded
+  input; retain only a truncated-magic seed; execute sanitizer campaigns only
+  in a separate explicitly bounded build.
+- Generated-code task description: add the dual-boundary harness, sanitizer
+  target, normal-build compile smoke, five-byte seed, and permanent atomic
+  regressions for every canonical truncation, all-ones extents, and a nonzero
+  Adaptive reserved descriptor byte; then synchronize fuzz and readiness docs.
+- Similarity review: the harness applies marc's existing first-party fuzz
+  policy to its own typed LZ78 workspace; no external control flow or corpus
+  was compared.
+- Local validation: the harness compiled with strict warnings and all three
+  focused malformed regressions plus all 1,294 Release tests passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. No unbounded fuzz
+  campaign was run in this step.

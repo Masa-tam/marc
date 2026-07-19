@@ -81,7 +81,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-blocked-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-adaptive-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lz78-adaptive-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -89,7 +89,7 @@ kept separate because it requires artifacts produced outside the local build.
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
 now also has a public-ABI completion matrix. It remains below `Ready` until the
-CLI, benchmark, decoder fuzz boundary, and interoperability schema entry are
+CLI, benchmark, and interoperability schema entry are
 implemented and verified.
 
 Candidate pairings remain
@@ -197,7 +197,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-311, the complete Release suite contains 1,291 tests and passes under both
+At DD-312, the complete Release suite contains 1,294 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

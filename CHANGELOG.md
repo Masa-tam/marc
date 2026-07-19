@@ -52,6 +52,8 @@ format versions, and C ABI versions are independent namespaces.
   record layouts into the ABI. Its public-ABI completion matrix covers required
   binary data classes, deterministic and chunk-independent streams, stable
   terminal results, and transactional malformed-final-frame rejection.
+  A fixed-memory dual-boundary decoder fuzz target and permanent truncation,
+  extreme-extent, and descriptor regressions cover its untrusted-input path.
 
 ## 0.1.0 - 2026-07-19
 

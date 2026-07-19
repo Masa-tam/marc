@@ -1,10 +1,11 @@
 # Fuzzing
 
-The twenty bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-one bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZSS plus
 Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
-Blocked Huffman, LZW plus Blocked Huffman, LZD plus Blocked Huffman, LZMW plus
+Blocked Huffman, LZ78 plus Adaptive Huffman, LZW plus Blocked Huffman, LZD plus
+Blocked Huffman, LZMW plus
 Blocked Huffman, and checksum-raw profiles. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
 input and also use a strict one-shot decoder where that internal helper exists.
@@ -42,6 +43,12 @@ limit includes encoded-frame storage, token staging, raw staging, block views,
 and phrase records. Byte-derived input and output chunks plus a fixed call
 ceiling exercise the public incremental decoder without input-controlled
 allocation.
+The combined LZ78 plus Adaptive Huffman target uses the dual exact-frame and
+incremental-decoder structure. It fixes supplied input at 8 KiB, total raw
+output at 4 KiB, one raw frame at 1 KiB, canonical token staging and compressed
+payload at 8 KiB each, and the LZ78 phrase table at 1,024 records. The aggregate
+limit includes all byte regions and phrase records before input metadata is
+accepted.
 The combined LZW plus Blocked Huffman target uses the same byte, block, and
 call-count bounds. Its 4 KiB packed-code cap permits at most 3,639 phrase
 records, while a 4,096-entry local dictionary limit admits serialized widths
@@ -118,6 +125,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_lz77_adaptive_huffman_stream \
   marc_fuzz_lzss_adaptive_huffman_stream \
+  marc_fuzz_lz78_adaptive_huffman_stream \
   marc_fuzz_lzss_blocked_huffman_stream \
   marc_fuzz_lz78_blocked_huffman_stream \
   marc_fuzz_lzw_blocked_huffman_stream \
@@ -139,6 +147,8 @@ out/build/fuzz/marc_fuzz_lz77_adaptive_huffman_stream \
   fuzz/corpus/lz77_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \
   fuzz/corpus/lzss_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lz78_adaptive_huffman_stream \
+  fuzz/corpus/lz78_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_blocked_huffman_stream \
   fuzz/corpus/lzss_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_blocked_huffman_stream \

@@ -1441,6 +1441,10 @@ The public completion matrix then treats that factory as the only construction
 boundary and verifies required binary data classes, deterministic bytes,
 arbitrary chunking, stable terminal states, and transactional rejection of a
 malformed final frame.
+The bounded dual-decoder fuzz boundary adds no allocation surface: exact-frame
+and incremental parsing share fixed local limits, byte arrays, a 1,024-record
+phrase table, and a call ceiling. Ordinary builds compile this boundary while
+permanent malformed regressions exercise its reviewed failure classes.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
