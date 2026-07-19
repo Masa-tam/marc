@@ -5416,3 +5416,25 @@ serialized destination before writing the header, descriptor, or payload. The
 one-byte hand vector must reproduce DD-290 exactly. Short token staging may not
 be mutated; a short serialized destination must remain unchanged. Empty input is
 owned by the future stream controller and is not a frame-planner input.
+
+## DD-294: LZSS Adaptive streaming decode commits complete frames
+
+- Date: 2026-07-19
+- Status: accepted
+
+Decode the known-size stream through an explicit state machine that collects
+the fixed 80-byte prefix, then each 56-byte frame header and its exact remaining
+body. Validate the LZSS/Adaptive profile and parameters before accepting a
+frame. Check encoded-frame storage, token staging, private raw staging, and
+their complete aggregate before collecting an input-controlled body. Reject
+token extents beyond `2F` and payload extents beyond 33 bytes per token directly
+from the frame header before waiting for that body.
+
+Pass each complete frame to the DD-292 private reconstruction boundary and make
+its raw staging drainable only after success. Arbitrarily small caller output
+may drain a committed frame without retaining caller spans. Latch `EndInput`
+while draining; reject premature end, trailing bytes, bad sequence or extent,
+unsupported `ResetBlock`, and later-frame corruption without publishing that
+frame. Earlier fully decoded frames may already have been returned. Empty input
+is the valid 80-byte prefix and repeated calls after completion return
+`EndOfStream`.

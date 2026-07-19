@@ -742,3 +742,8 @@ The LZSS plus Adaptive Huffman exact frame planner and encoder use only DD-293,
 marc's deterministic LZSS encoder, Adaptive Huffman planner and encoder,
 generic serializers, and DD-290 hand vector. No external combined encoder,
 planning strategy, output layout, source, vector, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman streaming decoder uses only DD-294, marc's
+generic stream/frame parsers, DD-292 private frame decoder, and existing core
+process contract. No external streaming decoder, state machine, buffering
+policy, source, corpus, or test suite was consulted.

@@ -20,7 +20,8 @@ format versions, and C ABI versions are independent namespaces.
   reference profile are specified with an independent hand-checkable frame and
   a bounded complete-frame validator that stages and validates canonical LZSS
   tokens before transactional reconstruction into separate private raw
-  staging, plus an exact frame planner and deterministic encoder.
+  staging, plus an exact frame planner, deterministic encoder, and bounded
+  incremental decoder.
 
 ## 0.1.0 - 2026-07-19
 

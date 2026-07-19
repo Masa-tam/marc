@@ -1816,3 +1816,15 @@ identical frames, and a complete combined round trip. A one-byte token staging
 extent and a 74-byte serialized destination must preserve their sentinels.
 Reject empty frame input and an input extent contradicting the stream header,
 and reject aggregate workspace one byte below descriptor-plus-payload-plus-token.
+
+For incremental decode, build a repository-owned known-size stream with
+two-byte raw frames using the exact frame encoder. Feed and drain one byte at a
+time and require identical raw output plus repeatable `EndOfStream`. Corrupt the
+second frame's Adaptive descriptor and require only the first frame to be
+published. Independently make encoded-frame, token, and raw staging one byte
+short, then make their aggregate one byte short. Require bounded failures.
+Declare token extent above `2F` and payload extent above 33 bytes per token in
+otherwise parseable frame headers; require rejection before body collection.
+Reject one-byte truncation, one trailing byte, and `ResetBlock`; accept the
+empty 80-byte prefix, treat `Flush` during starvation as `NeedInput`, and retain
+premature `EndInput` while draining the first frame before reporting truncation.

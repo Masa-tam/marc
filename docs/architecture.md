@@ -1222,8 +1222,15 @@ aggregate workspace check, and capacity failures precede entropy mutation.
 The corresponding encoder boundary fixes the variable LZSS extent and writes
 the canonical tokens once before planning Adaptive Huffman over that immutable
 staging. It checks the `2F`, 33-byte-per-token, aggregate-workspace, header, and
-complete serialized-output extents before emitting a frame byte. Streaming and
-public adapters remain separate steps.
+complete serialized-output extents before emitting a frame byte.
+
+The incremental decoder now collects the fixed stream prefix and one exact
+frame at a time, invokes private transactional reconstruction, and drains only
+committed raw staging. It supports one-byte input and output, latches finish
+while draining, and reports later-frame corruption after preserving only output
+from earlier complete frames. Profile-specific token and payload bounds are
+checked from the header before an input-controlled body is collected. The
+streaming encoder and public adapters remain separate steps.
 
 ### LZSS plus Blocked Huffman validation boundary
 

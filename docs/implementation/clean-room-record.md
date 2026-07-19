@@ -5538,3 +5538,27 @@ discarded and the reviewed seed retained.
 - Local validation: all sixteen focused LZSS Adaptive frame tests and all 1,225
   Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman streaming decoder
+
+- Authoring method: connected marc's generic known-size framing to the DD-292
+  private frame decoder with an explicit bounded state machine under DD-294.
+- References used: DD-294, generic stream and frame parsers, LZSS parameter
+  parser, DD-292 decoder, core process contract, and checked arithmetic helpers.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering policies, source, corpora, or test suites.
+- Independent decisions: collect the 80-byte prefix and exact frames; precheck
+  `2F` and 33-byte-per-token header extents, all caller storage, and aggregate
+  workspace before body collection; decode privately before draining; latch end
+  while draining; preserve earlier complete frames only; reject reset,
+  truncation, and trailing data.
+- Generated-code task description: add the bounded streaming decoder and
+  focused one-byte chunking, later corruption, storage, aggregate, malformed,
+  empty, flush, repeated-end, and premature-end tests without adding an encoder
+  controller or public factory.
+- Similarity review: the implementation follows marc's own process vocabulary,
+  typed parsers, and frame commit boundary; no external control flow, naming,
+  or storage layout was compared.
+- Local validation: all six focused streaming-decoder tests and all 1,231
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

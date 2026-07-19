@@ -1364,6 +1364,12 @@ input is exactly this 80-byte prefix. Input/output chunking does not change the
 bytes. Nonterminal `Flush` does not close a partial frame, and `ResetBlock` is
 unsupported at this cross-layer boundary.
 
+The internal incremental decoder implements this known-size representation by
+buffering at most one serialized frame, one canonical token region, and one raw
+frame. It validates and reconstructs the entire current frame before exposing
+that raw staging for partial draining. A malformed later frame cannot publish a
+prefix from that frame.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token:

@@ -16,6 +16,9 @@
 
 namespace marc::frame {
 
+inline constexpr std::size_t lzss_adaptive_huffman_stream_prefix_size =
+    stream_header_size + dictionary::internal::lzss_parameter_size;
+
 enum class LzssAdaptiveHuffmanFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
