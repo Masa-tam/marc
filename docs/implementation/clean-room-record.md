@@ -5756,3 +5756,27 @@ discarded and the reviewed seed retained.
   reordered schema-9 manifest was rejected, and schemas 1 through 8 were
   derived and verified by the focused compatibility regression under
   MSVC/Visual Studio 2026 on Windows x64.
+
+## 2026-07-19 - External schema-9 x86-64 cross-check
+
+- Authoring method: recorded the user-executed repository verifier results for
+  the exact pushed revision without importing bundles or verification outputs
+  into the source tree.
+- References used: the Windows/MSVC and Ubuntu 24.04/Ninja CI schema-9
+  artifacts, the Ubuntu 26.04/Clang-generated schema-9 bundle, and four final
+  lines emitted by marc's repository-owned verifier.
+- Known implementations intentionally not consulted: external archive tools,
+  codec implementations, compatibility suites, or third-party result claims.
+- Environment: the previously recorded Ubuntu 26.04 WSL2 x86-64 environment
+  with Ubuntu Clang 21.1.8, plus the repository's Visual Studio 2026 MSVC build
+  on Windows x64, at revision
+  `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2`.
+- Validation result: Ubuntu verified all twenty archives from both pushed CI
+  artifacts, generated and verified its own twenty-archive bundle, and Windows
+  verified that Ubuntu bundle in reverse. Every pass required exact local
+  re-encoding, establishing canonical schema-9 byte identity across the three
+  producers.
+- Workspace policy: generated interoperability files remained outside the
+  `marc` source repository.
+- Scope limit: this is Windows/WSL2 x86-64 compiler and operating-system
+  userland evidence, not a second architecture or non-WSL Linux-kernel result.

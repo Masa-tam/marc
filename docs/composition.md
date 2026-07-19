@@ -62,7 +62,8 @@ nineteenth archive.
 format, bounded public C factory, completion matrix, decoder fuzzing, permanent
 malformed regressions, transactional CLI selector, and public-C benchmark are
 available. Interoperability schema 9 includes it as the twentieth archive;
-external cross-platform evidence remains a separate release record.
+the bidirectional x86-64 cross-platform result is recorded separately in
+`docs/interoperability.md`.
 
 ## Why publication is not automatic
 

@@ -95,8 +95,6 @@ ready:
 
 - repeat interoperability generation and cross-decoding on at least one
   non-x86-64 architecture;
-- publish schema-9 Windows/MSVC and Ubuntu/Ninja artifacts and cross-decode
-  them with an independent environment at the same revision;
 - record representative encode throughput, decode throughput, compression
   ratio, and peak workspace results rather than relying on benchmark smoke;
 - run longer sanitizer fuzz campaigns and convert every finding into a
@@ -141,6 +139,15 @@ The Windows/MSVC executable then verified all nineteen Ubuntu 26.04 archives in
 the reverse direction. Because each verifier also requires byte-identical local
 re-encoding, this closes the current schema-8 x86-64 Windows/Linux/compiler
 cross-check. A second architecture remains open.
+
+Revision `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2` subsequently completed pushed
+CI and produced the Windows/MSVC and Ubuntu 24.04/Ninja schema-9 artifacts.
+The previously recorded Ubuntu 26.04/Clang 21.1.8 environment verified all
+twenty archives from both artifacts, generated and verified its own
+twenty-archive bundle, and supplied that bundle to the Windows/MSVC executable
+for reverse verification. Every pass required byte-identical local
+re-encoding. This closes the schema-9 x86-64 Windows/Linux/compiler cross-check;
+a second architecture and non-WSL Linux kernel remain open.
 
 ## Pre-publication CI and package audit
 

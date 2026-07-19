@@ -793,3 +793,9 @@ the published `lzss-adaptive-huffman` CLI selector, and marc's repository-owned
 bundle generator, verifier, fixture, and compatibility regression. No external
 interoperability harness, archive set, manifest, corpus, combined-codec
 implementation, or test suite was consulted.
+
+The schema-9 external validation record uses the user-supplied four verifier
+results for revision `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2`, the previously recorded
+Ubuntu 26.04/Clang 21.1.8 environment boundary, and marc's own verifier
+contract. No external archive tool, decoder implementation, compatibility
+suite, or third-party result claim was used.

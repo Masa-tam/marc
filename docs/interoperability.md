@@ -97,6 +97,18 @@ executable then verified that Ubuntu 26.04 bundle in the reverse direction.
 Every verification included exact local re-encoding, so the three producers
 generated the same canonical archive bytes for every schema-8 profile.
 
+Revision `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2` received the schema-9
+cross-check after its pushed CI completed successfully. The same Ubuntu 26.04
+WSL2 x86-64 environment, using Ubuntu Clang 21.1.8, verified all twenty archives
+from both the Windows/MSVC and Ubuntu 24.04/Ninja CI artifacts. It then
+generated and verified an `ubuntu-26.04-ninja-x64` twenty-archive bundle. The
+Windows/MSVC executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes required complete decode equality and
+byte-identical local re-encoding for every archive. This establishes canonical
+schema-9 bytes across the three producers and bidirectional decoding between
+the recorded Windows and WSL2 Linux x86-64 environments.
+
 Interoperability work products are kept outside the source repository; only
 the resulting environment and verifier evidence are recorded here. These
 checks remain x86-64 evidence and do not cover a non-WSL Linux kernel.
