@@ -1967,3 +1967,13 @@ derive phrases from complete eight-byte tokens, and retain the conservative
 encoded-frame span. Partition aligned encoder and decoder storage, mutate each
 record through the returned view, and reject changed counts, short spans, and
 one-byte-misaligned subspans. Verify stable core error mapping.
+
+For the first public C ABI round trip, encode `41 42 41 42 58` with two-byte
+raw frames and two LZ78 entries, then decode the exact produced stream under
+local two-byte raw, sixteen-byte token, and bounded serialized-frame limits.
+Require the queried primary, secondary, views byte, and views alignment values
+to match the internal profile formulas in both directions. Allocate only those
+reported extents, retain every workspace through destruction, and compare all
+five decoded bytes. Independently shorten secondary and views storage,
+misalign a nonempty views region by one byte, set a reserved field, pass a null
+output-handle pointer, and require deterministic invalid-argument results.

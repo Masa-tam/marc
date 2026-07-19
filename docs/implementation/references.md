@@ -838,3 +838,9 @@ DD-305 transactional exact-frame decoder, generic stream and frame parsers,
 checked bounds, and marc's first-party transform state rules. No external
 streaming decoder, buffering order, malformed corpus, or test suite was
 consulted.
+
+The LZ78 plus Adaptive Huffman public C ABI uses only DD-310, the DD-309
+profile and typed partition helpers, marc's existing size-tagged ABI contract,
+and the repository-owned streaming transforms. No external combined-codec API,
+workspace convention, allocator design, implementation, or test suite was
+consulted.

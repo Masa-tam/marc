@@ -1586,6 +1586,14 @@ and reconstructs it privately, and only then drains raw bytes. No byte from a
 malformed frame is observable, although preceding frames may already have been
 committed.
 
+The C ABI functions `marc_lz78_adaptive_huffman_config_init()`,
+`marc_lz78_adaptive_huffman_workspace_requirements()`, and
+`marc_lz78_adaptive_huffman_create()` select exactly this representation. The
+aligned views workspace is opaque: it holds encoder records while encoding and
+phrase records while decoding. Its required byte count and alignment must be
+queried again after changing direction, frame size, entry limit, original
+size, or any decoder limit.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical Pair token:

@@ -47,7 +47,9 @@ format versions, and C ABI versions are independent namespaces.
   before exposing any of its raw bytes, with sticky atomic failure for a
   malformed later frame. Its internal bounded profile now calculates all byte
   workspaces and safely partitions the aligned LZ78 encoder and decoder record
-  regions.
+  regions. A bounded public C factory now exposes that fixed profile through
+  direction-specific caller-owned workspaces without leaking private C++
+  record layouts into the ABI.
 
 ## 0.1.0 - 2026-07-19
 

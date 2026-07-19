@@ -5951,3 +5951,27 @@ discarded and the reviewed seed retained.
   combined-codec expression was compared.
 - Local validation: all six focused profile tests and all 1,287 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman public C ABI
+
+- Authoring method: exposed only the fixed DD-310 profile by composing marc's
+  existing profile, typed partition helpers, and streaming transforms behind
+  the established size-tagged C ABI.
+- References used: DD-310, the DD-309 workspace contract, marc's public
+  transform lifecycle, checked secondary-region arithmetic, and the existing
+  first-party LZ78 and Adaptive Huffman C factory conventions.
+- Known implementations intentionally not consulted: external combined-codec
+  APIs, allocator systems, workspace layouts, source, test suites, or bindings.
+- Independent decisions: retain known-size encoding; use three caller-owned
+  regions; keep direction-specific C++ records opaque; rederive their exact
+  alignment and size at creation; clear the output handle before validation;
+  introduce no allocator callback or unknown-size marker.
+- Generated-code task description: add the size-tagged configuration,
+  requirements query, factory, public declarations, checked typed workspace
+  partitioning, a strict C11 small-frame round trip and invalid-workspace
+  tests, CMake integration, and synchronized API and readiness documentation.
+- Similarity review: the adapter delegates to marc's first-party profile and
+  state machines and follows its already documented C ABI lifecycle; no
+  external combined-codec expression was compared.
+- Local validation: the focused C11 ABI test and all 1,288 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

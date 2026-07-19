@@ -1433,6 +1433,10 @@ token, conservative encoded-frame, and typed-record extents with checked
 arithmetic. Encoder and decoder opaque regions each contain one record type;
 partitioning rederives their exact size and alignment before producing a span,
 so public adapters need not reproduce C++ layout arithmetic later.
+The public C adapter now binds those pieces without allocation. It exposes the
+usual primary, secondary, and opaque aligned views regions, rederives the
+direction-specific profile at construction, and delegates typed layout
+creation to the profile partition helpers before publishing a transform.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

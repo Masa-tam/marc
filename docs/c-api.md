@@ -4,7 +4,8 @@ The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman and LZ77 plus Adaptive Huffman profiles, LZSS variant 1, the
 LZSS plus Blocked Huffman and LZSS plus Adaptive Huffman profiles,
-LZ78 variant 1, the LZ78 plus Blocked Huffman profile, LZW variant 1, the LZW
+LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
+profiles, LZW variant 1, the LZW
 plus Blocked Huffman profile, LZD variant 1, the LZD plus Blocked Huffman
 profile, and LZMW variant 1 and the LZMW plus Blocked Huffman profile with
 known-size encoding and bounded caller-owned workspace. All functions are
@@ -19,7 +20,7 @@ dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
-`marc_lz78_blocked_huffman_*`,
+`marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzd_blocked_huffman_*`, and
 `marc_lzmw_blocked_huffman_*` are the currently public
 dictionary-plus-entropy factories.
@@ -48,7 +49,8 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_adaptive_huffman_config_init()`, or
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
-   `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`, or
+   `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
+   `marc_lz78_adaptive_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`, or
    `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()` for
@@ -126,6 +128,14 @@ layout in the second. Only the internal partition helpers know these C++
 layouts; callers must allocate exactly from
 `marc_lz78_blocked_huffman_workspace_requirements()` and keep the region
 unchanged for the transform lifetime.
+The LZ78 plus Adaptive Huffman factory uses the same three-region ownership
+model without entropy block views. Secondary storage contains canonical LZ78
+token staging followed by the complete serialized frame while encoding, or
+token staging followed by private raw staging while decoding. The opaque
+aligned views region contains only encoder entries in the first direction and
+only phrase entries in the second. Call
+`marc_lz78_adaptive_huffman_workspace_requirements()` again after changing the
+direction, known original size, frame or entry bounds, or any local limit.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized

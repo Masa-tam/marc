@@ -21,15 +21,16 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | Specified `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | C ABI `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
-None/None factory. Interoperability schema 9 includes every named cell while
-preserving the exact earlier schema profile sets.
+None/None factory. Interoperability schema 9 includes every backtick-only
+published cell while preserving the exact earlier schema profile sets; a
+cell marked `C ABI` is not yet in that schema.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
@@ -65,12 +66,11 @@ available. Interoperability schema 9 includes it as the twentieth archive;
 the bidirectional x86-64 cross-platform result is recorded separately in
 `docs/interoperability.md`.
 
-`lz78-adaptive-huffman` now reserves the third Adaptive Huffman composition.
-Its decoder-visible frame, `8F` token bound, `264F` payload bound, aligned LZ78
-phrase-workspace requirement, transactional validation order, and independent
-single-Pair vector are fixed. The internal complete-frame token/phrase
-validator and transactional private raw reconstruction are implemented;
-encoding, streaming, and every admission adapter remain pending.
+`lz78-adaptive-huffman` is the third Adaptive Huffman composition. Its fixed
+format, independent vector, bounded frame and streaming transforms, checked
+typed workspaces, and public C factory are available. Public-ABI completion,
+decoder fuzzing, CLI and benchmark adapters, and interoperability admission
+remain pending.
 
 ## Why publication is not automatic
 

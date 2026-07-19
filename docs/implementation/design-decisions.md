@@ -5755,3 +5755,25 @@ containing only `Lz78PhraseEntry` records. Partition helpers must recompute the
 entire byte count and alignment, reject altered requirements, shortage, and
 misalignment, and return empty views only for the canonical zero-byte layout.
 This step admits internal construction and sizing only, not a C factory.
+
+## DD-310: LZ78 Adaptive enters the C ABI with opaque typed views
+
+- Date: 2026-07-20
+- Status: accepted
+
+Expose the fixed LZ78 variant 1 plus Adaptive Huffman variant 1 profile through
+`marc_lz78_adaptive_huffman_config`, a requirements query, and a direction-
+immutable factory. Retain known-size encoding and the common three-workspace
+ABI. Primary storage holds raw input while encoding and complete serialized
+frames while decoding. Secondary storage is partitioned into canonical LZ78
+token staging followed by the complete encoded frame for encode, or token
+staging followed by private raw output for decode.
+
+The aligned views region is opaque to C callers. It contains only encoder
+entries in the encode direction and only phrase entries in the decode
+direction; creation must rederive and partition the exact typed layout instead
+of casting caller-reported sizes directly. Require a strict C11 round trip,
+default initialization checks, exact small-limit workspace checks, short and
+misaligned workspace rejection, reserved-field rejection, and an unchanged
+null output handle on failure. No allocator callback or unknown-size input is
+introduced.
