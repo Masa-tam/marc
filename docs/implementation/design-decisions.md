@@ -5736,3 +5736,22 @@ EndInput, empty input, truncation at every byte, trailing data, later-frame
 corruption, all workspace shortages, aggregate rejection, unknown flags,
 `ResetBlock`, and stable error and End Of Stream results. This step adds no
 public workspace calculator or C factory.
+
+## DD-309: LZ78 Adaptive profile exposes checked typed workspace layouts
+
+- Date: 2026-07-20
+- Status: accepted
+
+Define the bounded reference profile with a 65,536-byte raw frame cadence,
+LZ78 variant 1, Adaptive Huffman variant 1, and the existing one-MiB format
+cap. Encoder sizing uses at most `F` aligned entries, `8F` token bytes, and
+`33D` payload bytes for token extent `D`; count raw, token, serialized frame,
+and entries before admitting the configuration. Decoder sizing derives raw,
+token, complete encoded-frame, and phrase-entry maxima from local limits.
+
+Keep byte spans and typed records separate. Expose one opaque aligned encoder
+region containing only `Lz78EncoderEntry` records and one decoder region
+containing only `Lz78PhraseEntry` records. Partition helpers must recompute the
+entire byte count and alignment, reject altered requirements, shortage, and
+misalignment, and return empty views only for the canonical zero-byte layout.
+This step admits internal construction and sizing only, not a C factory.

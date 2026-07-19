@@ -1958,3 +1958,12 @@ must preserve the next output sentinel. Independently shorten encoded-frame,
 token, raw, and phrase workspaces, set the aggregate limit one byte below the
 exact frame-plus-token-plus-raw-plus-phrase sum, and reject ResetBlock and an
 unknown flag. Empty input must accept exactly the 80-byte prefix.
+
+For profile sizing, require the default 65,536-byte frame to report 524,288
+token bytes, the `33D` worst payload plus fixed frame metadata, and the exact
+bounded entry-table extent. Repeat with a short final frame and empty input.
+For decoder sizing, cap raw and token storage by the profile and local limits,
+derive phrases from complete eight-byte tokens, and retain the conservative
+encoded-frame span. Partition aligned encoder and decoder storage, mutate each
+record through the returned view, and reject changed counts, short spans, and
+one-byte-misaligned subspans. Verify stable core error mapping.

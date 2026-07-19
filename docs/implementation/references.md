@@ -140,6 +140,11 @@ vectors are independently specified. No LZW implementation source,
 source-derived pseudocode, external container format, or test suite was
 consulted.
 
+The LZ78 plus Adaptive Huffman profile and typed workspace partition use only
+DD-309, marc's LZ78 entry types and sizing rules, Adaptive worst-case bound,
+checked arithmetic, and existing first-party profile conventions. No external
+profile or workspace layout was consulted.
+
 LZD design references:
 
 - Keisuke Goto, Hideo Bannai, Shunsuke Inenaga, and Masayuki Takeda,

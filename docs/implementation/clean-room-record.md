@@ -5928,3 +5928,26 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-decoder tests and all 1,281
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman internal profile
+
+- Authoring method: implemented only the internal sizing and typed partition
+  boundary admitted by DD-309 from marc's already specified limits.
+- References used: DD-309, the LZ78 encoder and phrase record types, fixed
+  token size, Adaptive worst-case bound, checked arithmetic, and existing
+  first-party profile error conventions.
+- Known implementations intentionally not consulted: external workspace
+  calculators, ABI layouts, combined profiles, source, or tests.
+- Independent decisions: use the 65,536-byte reference cadence; keep encoder
+  and decoder records in separate single-type aligned regions; rederive exact
+  byte counts and alignment during partition; reserve alignment one only for
+  the canonical empty layout; expose no public factory in this step.
+- Generated-code task description: add profile configuration, encoder and
+  decoder requirements, checked typed partition helpers, stable error mapping,
+  default, short, empty, limit, local-decoder, altered-requirement, shortage,
+  and misalignment tests, then synchronize documentation.
+- Similarity review: formulas follow marc's documented `8F` and `33D` bounds
+  and use its own record types and profile conventions; no external layout or
+  combined-codec expression was compared.
+- Local validation: all six focused profile tests and all 1,287 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.

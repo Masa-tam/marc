@@ -45,7 +45,9 @@ format versions, and C ABI versions are independent namespaces.
   output starvation, `Flush`, and retained `EndInput`. The matching bounded
   streaming decoder buffers, validates, and reconstructs a complete frame
   before exposing any of its raw bytes, with sticky atomic failure for a
-  malformed later frame.
+  malformed later frame. Its internal bounded profile now calculates all byte
+  workspaces and safely partitions the aligned LZ78 encoder and decoder record
+  regions.
 
 ## 0.1.0 - 2026-07-19
 

@@ -1428,6 +1428,11 @@ collection, and admits the exact frame, token, raw, and phrase-table aggregate
 before decoding. A complete frame is reconstructed into private raw storage;
 only that validated storage enters the drain state. Consequently a malformed
 later frame cannot expose one of its bytes after an earlier frame has drained.
+The internal profile fixes the 65,536-byte reference cadence and derives raw,
+token, conservative encoded-frame, and typed-record extents with checked
+arithmetic. Encoder and decoder opaque regions each contain one record type;
+partitioning rederives their exact size and alignment before producing a span,
+so public adapters need not reproduce C++ layout arithmetic later.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked
