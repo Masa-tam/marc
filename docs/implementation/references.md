@@ -844,3 +844,9 @@ profile and typed partition helpers, marc's existing size-tagged ABI contract,
 and the repository-owned streaming transforms. No external combined-codec API,
 workspace convention, allocator design, implementation, or test suite was
 consulted.
+
+The LZ78 plus Adaptive Huffman public completion audit uses only DD-311,
+AGENTS.md completion data classes, marc's fixed C ABI, deterministic generator,
+generic frame extents, and existing first-party terminal-state contract. No
+external corpus, compatibility suite, combined implementation, or tests were
+consulted.

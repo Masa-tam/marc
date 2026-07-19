@@ -49,7 +49,9 @@ format versions, and C ABI versions are independent namespaces.
   workspaces and safely partitions the aligned LZ78 encoder and decoder record
   regions. A bounded public C factory now exposes that fixed profile through
   direction-specific caller-owned workspaces without leaking private C++
-  record layouts into the ABI.
+  record layouts into the ABI. Its public-ABI completion matrix covers required
+  binary data classes, deterministic and chunk-independent streams, stable
+  terminal results, and transactional malformed-final-frame rejection.
 
 ## 0.1.0 - 2026-07-19
 

@@ -5777,3 +5777,26 @@ default initialization checks, exact small-limit workspace checks, short and
 misaligned workspace rejection, reserved-field rejection, and an unchanged
 null output handle on failure. No allocator callback or unknown-size input is
 introduced.
+
+## DD-311: LZ78 Adaptive completion is audited through the public C ABI
+
+- Date: 2026-07-20
+- Status: accepted
+
+Audit only the published C configuration, requirements query, factory,
+process, and destroy functions. Use 64-byte raw frames, at most 512 canonical
+LZ78 token bytes, the 33-byte-per-token Adaptive payload bound, 64 dictionary
+entries, and a 65,536-byte aggregate limit. Allocate the opaque views region
+from its queried byte count and alignment in both directions. Cover empty
+input, all one-byte values, the ordered byte alphabet, repeated data, binary
+patterns, deterministic pseudo-random bytes, and lengths 63, 64, and 65.
+Require repeated encoding to be byte-identical and terminal success to be
+stable.
+
+For a 193-byte four-frame stream, require exact bytes and round trips under
+unchunked, one-byte, and mixed chunk schedules. Corrupt the final frame
+sequence, truncate its final byte, and append trailing data independently.
+Every failure must be sticky, preserve its error position, publish exactly the
+first 192 validated bytes, and leave the final output sentinel unchanged. This
+completes public-ABI evidence only; it admits no CLI, benchmark, fuzz, or
+interoperability claim.

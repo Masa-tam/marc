@@ -68,9 +68,9 @@ the bidirectional x86-64 cross-platform result is recorded separately in
 
 `lz78-adaptive-huffman` is the third Adaptive Huffman composition. Its fixed
 format, independent vector, bounded frame and streaming transforms, checked
-typed workspaces, and public C factory are available. Public-ABI completion,
-decoder fuzzing, CLI and benchmark adapters, and interoperability admission
-remain pending.
+typed workspaces, public C factory, and public-ABI completion matrix are
+available. Decoder fuzzing, CLI and benchmark adapters, and interoperability
+admission remain pending.
 
 ## Why publication is not automatic
 

@@ -1437,6 +1437,10 @@ The public C adapter now binds those pieces without allocation. It exposes the
 usual primary, secondary, and opaque aligned views regions, rederives the
 direction-specific profile at construction, and delegates typed layout
 creation to the profile partition helpers before publishing a transform.
+The public completion matrix then treats that factory as the only construction
+boundary and verifies required binary data classes, deterministic bytes,
+arbitrary chunking, stable terminal states, and transactional rejection of a
+malformed final frame.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

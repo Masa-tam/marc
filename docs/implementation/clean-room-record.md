@@ -5975,3 +5975,28 @@ discarded and the reviewed seed retained.
   external combined-codec expression was compared.
 - Local validation: the focused C11 ABI test and all 1,288 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman public completion matrix
+
+- Authoring method: audited the completed profile only through marc's public C
+  ABI under the DD-311 data, chunking, and malformed-stream requirements.
+- References used: DD-311, AGENTS.md completion criteria, the public factory,
+  generic frame extents, marc's deterministic generator, and stable transform
+  terminal contract.
+- Known implementations intentionally not consulted: external compression
+  corpora, combined-codec implementations, compatibility suites, source, or
+  test suites.
+- Independent decisions: use 64-byte frames and aligned queried views; cover
+  every one-byte value and all required binary classes; compare repeated and
+  variably chunked encoded bytes; corrupt only the fourth frame of a 193-byte
+  stream and require exactly 192 earlier bytes to remain committed.
+- Generated-code task description: add three public-ABI completion tests for
+  required deterministic round trips, multi-frame chunk independence, and
+  sticky transactional corruption, truncation, and trailing-data rejection;
+  then synchronize readiness and provenance records.
+- Similarity review: the matrix applies marc's pre-existing completion policy
+  to its own fixed profile and C ABI; no external test expression or vector was
+  compared.
+- Local validation: all three focused completion tests and all 1,291 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64.
