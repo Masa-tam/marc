@@ -1347,9 +1347,10 @@ and complete destination-capacity check before writing the frame.
 
 The internal complete-frame validator implements the first three decoding
 checks above through validated canonical token staging. It accepts exactly one
-frame, rejects trailing bytes, and does not reconstruct raw output. This is an
-implementation boundary only; it does not publish the profile through the C
-ABI or CLI.
+frame and rejects trailing bytes. The internal frame decoder then implements
+steps four and five through a distinct private raw-staging extent and an exact
+post-success copy to caller output. These are implementation boundaries only;
+they do not publish the profile through the C ABI or CLI.
 
 The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZSS parameter region and zero or more consecutive frames. Empty

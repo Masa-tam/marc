@@ -5376,3 +5376,23 @@ reconstructs nor publishes raw bytes. Short staging and pre-decode limit or
 descriptor failures leave staging unchanged; entropy-valid but invalid LZSS
 bytes may remain only in the explicitly private token staging. Raw commit,
 streaming controllers, and the public factory remain later admission steps.
+
+## DD-292: LZSS Adaptive raw publication uses a second staging region
+
+- Date: 2026-07-19
+- Status: accepted
+
+Extend the strict complete-frame validator with a raw reconstruction boundary.
+Require caller-owned raw staging large enough for the declared frame before
+entropy decoding, and count that complete extent together with descriptor,
+payload, and token staging against `max_internal_buffered_bytes`. Decode the
+already validated LZSS token sequence into raw staging, retaining overlap-copy
+semantics and the standalone decoder's checked limits.
+
+Provide one internal operation that stops after private raw reconstruction and
+another that copies exactly the reconstructed frame to caller output only after
+all layers succeed. Check output capacity before either staging region is
+mutated. Malformed headers, descriptors, Adaptive payloads, or LZSS token
+streams publish no raw byte; a failure after entropy decoding may alter only the
+explicitly private token staging. Streaming and public adapters remain later
+steps.

@@ -37,22 +37,24 @@ constexpr std::array<std::byte, 75> single_literal_frame{
     std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
     std::byte{0x00}, std::byte{0x82}, std::byte{0x00}};
 
-[[nodiscard]] marc::frame::StreamHeader stream_for_a() {
+[[nodiscard]] marc::frame::StreamHeader stream_for_a(
+    const std::uint32_t raw_size = 1) {
     marc::frame::StreamHeader stream{};
     stream.dictionary_algorithm = marc::frame::DictionaryAlgorithm::lzss;
     stream.dictionary_variant = 1;
     stream.entropy_algorithm =
         marc::frame::EntropyAlgorithm::adaptive_huffman;
     stream.entropy_variant = 1;
-    stream.frame_size = 1;
+    stream.frame_size = raw_size;
     stream.dictionary_parameters_size =
         marc::dictionary::internal::lzss_parameter_size;
-    stream.original_size = 1;
+    stream.original_size = raw_size;
     return stream;
 }
 
 [[nodiscard]] std::vector<std::byte> frame_for_tokens(
-    const std::span<const std::byte> tokens) {
+    const std::span<const std::byte> tokens,
+    const std::uint32_t raw_size = 1) {
     marc::entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
     const auto plan = marc::entropy::internal::plan_adaptive_huffman_frame(
         tokens, {}, descriptor);
@@ -64,7 +66,7 @@ constexpr std::array<std::byte, 75> single_literal_frame{
         + plan.payload_size);
 
     marc::frame::FrameHeader header{};
-    header.uncompressed_size = 1;
+    header.uncompressed_size = raw_size;
     header.dictionary_serialized_size =
         static_cast<std::uint32_t>(tokens.size());
     header.compressed_payload_size =
@@ -72,7 +74,7 @@ constexpr std::array<std::byte, 75> single_literal_frame{
     header.entropy_block_count = 1;
     header.block_descriptors_size =
         marc::entropy::internal::adaptive_huffman_descriptor_size;
-    const auto stream = stream_for_a();
+    const auto stream = stream_for_a(raw_size);
     const marc::core::DecoderLimits limits{};
     EXPECT_EQ(marc::frame::serialize_frame_header(
                   header, {stream, limits, 0, 0},
@@ -227,4 +229,123 @@ TEST(LzssAdaptiveHuffmanFrameValidator, RejectsPipelineAndSequenceMismatch) {
               LzssAdaptiveHuffmanFrameValidationError::header_error);
     EXPECT_EQ(sequence.header_error,
               marc::frame::FrameHeaderError::unexpected_sequence);
+}
+
+TEST(LzssAdaptiveHuffmanFrameDecoder, PublishesHandVectorAfterPrivateDecode) {
+    std::array<std::byte, 2> dictionary_staging{};
+    std::array raw_staging{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    std::array output{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    auto result =
+        marc::frame::decode_lzss_adaptive_huffman_frame_to_staging(
+            stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+            dictionary_staging, raw_staging);
+    ASSERT_EQ(result.error,
+              LzssAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{0xa5});
+
+    raw_staging[0] = std::byte{0xa5};
+    result = marc::frame::decode_lzss_adaptive_huffman_frame(
+        stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+        dictionary_staging, raw_staging, output);
+    ASSERT_EQ(result.error,
+              LzssAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+}
+
+TEST(LzssAdaptiveHuffmanFrameDecoder, ReconstructsOverlappingMatch) {
+    std::array<std::byte, 11> tokens{};
+    std::size_t written{};
+    ASSERT_EQ(marc::dictionary::internal::serialize_lzss_token(
+                  {marc::dictionary::internal::LzssTokenTag::literal,
+                   0, 0, 'A'},
+                  tokens, written),
+              marc::dictionary::internal::LzssFormatError::none);
+    ASSERT_EQ(written, 2U);
+    ASSERT_EQ(marc::dictionary::internal::serialize_lzss_token(
+                  {marc::dictionary::internal::LzssTokenTag::match,
+                   1, 5, 0},
+                  std::span<std::byte>{tokens}.subspan(written), written),
+              marc::dictionary::internal::LzssFormatError::none);
+    ASSERT_EQ(written, 9U);
+    const auto frame = frame_for_tokens(tokens, 6);
+    std::array<std::byte, 11> dictionary_staging{};
+    std::array<std::byte, 6> raw_staging{};
+    std::array<std::byte, 6> output{};
+    const auto result = marc::frame::decode_lzss_adaptive_huffman_frame(
+        stream_for_a(6), {}, {}, 0, 0, frame, dictionary_staging,
+        raw_staging, output);
+    ASSERT_EQ(result.error,
+              LzssAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(LzssAdaptiveHuffmanFrameDecoder, CapacityFailuresPrecedeMutation) {
+    std::array dictionary_staging{std::byte{0xa5}, std::byte{0xa5}};
+    std::array raw_staging{std::byte{0xa5}};
+    std::array output{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::decode_lzss_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+                  dictionary_staging, std::span<std::byte>{}, output).error,
+              LzssAdaptiveHuffmanFrameValidationError::
+                  raw_staging_too_small);
+    EXPECT_EQ(dictionary_staging[0], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{0xa5});
+
+    EXPECT_EQ(marc::frame::decode_lzss_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+                  dictionary_staging, raw_staging,
+                  std::span<std::byte>{}).error,
+              LzssAdaptiveHuffmanFrameValidationError::raw_output_too_small);
+    EXPECT_EQ(dictionary_staging[0], std::byte{0xa5});
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(LzssAdaptiveHuffmanFrameDecoder, IncludesRawStagingInWorkspace) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 21;
+    limits.max_internal_buffered_bytes = 21;
+    std::array dictionary_staging{std::byte{0xa5}, std::byte{0xa5}};
+    std::array raw_staging{std::byte{0xa5}};
+    std::array output{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::decode_lzss_adaptive_huffman_frame(
+                  stream_for_a(), {}, limits, 0, 0, single_literal_frame,
+                  dictionary_staging, raw_staging, output).error,
+              LzssAdaptiveHuffmanFrameValidationError::workspace_limit);
+    EXPECT_EQ(dictionary_staging[0], std::byte{0xa5});
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{0xa5});
+}
+
+TEST(LzssAdaptiveHuffmanFrameDecoder, MalformedLayersNeverPublishRawBytes) {
+    std::array<std::byte, 2> dictionary_staging{};
+    std::array raw_staging{std::byte{0xa5}};
+    std::array output{std::byte{0xa5}};
+    auto malformed_descriptor = single_literal_frame;
+    malformed_descriptor[71] = std::byte{1};
+    EXPECT_EQ(marc::frame::decode_lzss_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, malformed_descriptor,
+                  dictionary_staging, raw_staging, output).error,
+              LzssAdaptiveHuffmanFrameValidationError::descriptor_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{0xa5});
+
+    constexpr std::array invalid_tokens{
+        std::byte{0x02}, std::byte{0x41}};
+    const auto invalid_dictionary = frame_for_tokens(invalid_tokens);
+    EXPECT_EQ(marc::frame::decode_lzss_adaptive_huffman_frame(
+                  stream_for_a(), {}, {}, 0, 0, invalid_dictionary,
+                  dictionary_staging, raw_staging, output).error,
+              LzssAdaptiveHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+    EXPECT_EQ(output[0], std::byte{0xa5});
 }

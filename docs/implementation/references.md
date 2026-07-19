@@ -732,3 +732,8 @@ marc's generic frame parser, Adaptive Huffman descriptor and decoder, LZSS
 token validator, and checked limit helpers. No external combined decoder,
 format validator, workspace policy, malformed corpus, source, or test suite was
 consulted.
+
+The LZSS plus Adaptive Huffman raw-frame decoder uses only DD-292, the strict
+DD-291 validator, and marc's standalone transactional LZSS decoder. No external
+combined decoder, buffering strategy, overlap-copy implementation, source,
+vector, or test suite was consulted.

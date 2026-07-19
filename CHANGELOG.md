@@ -19,7 +19,8 @@ format versions, and C ABI versions are independent namespaces.
 - The decoder-visible `lzss-adaptive-huffman` composition and its bounded
   reference profile are specified with an independent hand-checkable frame and
   a bounded complete-frame validator that stages and validates canonical LZSS
-  tokens before any raw reconstruction.
+  tokens before transactional reconstruction into separate private raw
+  staging.
 
 ## 0.1.0 - 2026-07-19
 

@@ -1797,3 +1797,13 @@ For the cross-layer negative case, independently Adaptive-encode the invalid
 LZSS bytes `02 41`; require entropy decoding to succeed but complete LZSS token
 validation to reject the unknown tag. Also reject a nonzero entropy block size
 and an unexpected frame sequence.
+
+For raw reconstruction, first decode the 75-byte hand vector into private raw
+staging and prove that caller output remains untouched. Then use the publishing
+entry point and require only byte `41` to be copied. Independently serialize a
+Literal `A` followed by Match `(distance 1, length 5)`, Adaptive-encode the
+eleven token bytes, and require output `AAAAAA`. A short raw staging region,
+short output region, and aggregate workspace one byte below
+descriptor-plus-payload-plus-token-plus-raw must fail before either staging
+region changes. Descriptor corruption and entropy-valid invalid LZSS bytes must
+leave both private raw staging and caller output unchanged.

@@ -1212,8 +1212,13 @@ The first implemented boundary accepts one exact frame, checks the `2F` and
 33-byte-per-token extents plus aggregate workspace before entropy decoding,
 decodes into caller-owned private token staging, and validates the complete
 LZSS grammar against the declared raw size. It intentionally stops before raw
-reconstruction; frame commit, streaming, and public adapters remain separate
-steps.
+reconstruction.
+
+The following commit boundary requires a second caller-owned staging region,
+reconstructs the validated LZSS sequence there, and copies to caller output
+only after the full raw frame succeeds. The raw extent participates in the
+aggregate workspace check, and capacity failures precede entropy mutation.
+Streaming and public adapters remain separate steps.
 
 ### LZSS plus Blocked Huffman validation boundary
 

@@ -5491,3 +5491,26 @@ discarded and the reviewed seed retained.
 - Local validation: the six focused validator tests and all 1,215 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
   x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman transactional raw frame
+
+- Authoring method: extended the DD-291 validator with marc's existing
+  transactional LZSS reconstruction contract under DD-292.
+- References used: DD-292, the DD-290 hand frame, DD-291 validator, standalone
+  LZSS token decoder, and existing caller-owned staging conventions.
+- Known implementations intentionally not consulted: external combined
+  decoders, buffering strategies, overlap-copy implementations, source,
+  vectors, corpora, or test suites.
+- Independent decisions: precheck private raw staging and caller output before
+  entropy mutation; include raw staging in aggregate workspace; expose a
+  private-reconstruction operation; publish by an exact copy only after full
+  LZSS reconstruction succeeds.
+- Generated-code task description: add transactional raw reconstruction and
+  focused hand-frame, overlapping-match, capacity, aggregate-workspace, and
+  malformed-layer tests without adding streaming or a public factory.
+- Similarity review: the implementation composes only repository-owned typed
+  contracts and bounded spans; no external control flow, naming, or storage
+  layout was compared.
+- Local validation: all eleven focused LZSS Adaptive frame tests and all 1,220
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3/Ninja on Windows x64.

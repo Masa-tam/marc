@@ -34,17 +34,18 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
     return entropy_limits;
 }
 
-} // namespace
-
-LzssAdaptiveHuffmanFrameValidationResult
-validate_lzss_adaptive_huffman_frame(
+[[nodiscard]] LzssAdaptiveHuffmanFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint64_t expected_sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
-    const std::span<std::byte> dictionary_staging) noexcept {
+    const std::span<std::byte> dictionary_staging,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzssAdaptiveHuffmanFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -129,6 +130,16 @@ validate_lzss_adaptive_huffman_frame(
             dictionary_staging_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error = LzssAdaptiveHuffmanFrameValidationError::
+            raw_staging_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error =
+            LzssAdaptiveHuffmanFrameValidationError::raw_output_too_small;
+        return result;
+    }
 
     std::uint64_t workspace_bytes{};
     if (!core::checked_add(
@@ -137,7 +148,11 @@ validate_lzss_adaptive_huffman_frame(
         || !core::checked_add(
             workspace_bytes,
             static_cast<std::uint64_t>(result.dictionary_size),
-            workspace_bytes)) {
+            workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             LzssAdaptiveHuffmanFrameValidationError::arithmetic_overflow;
         return result;
@@ -191,6 +206,93 @@ validate_lzss_adaptive_huffman_frame(
         result.error = LzssAdaptiveHuffmanFrameValidationError::
             dictionary_validation_error;
     }
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_tokens(
+    LzssAdaptiveHuffmanFrameValidationResult& result,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lzss_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::LzssDecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error =
+        LzssAdaptiveHuffmanFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+LzssAdaptiveHuffmanFrameValidationResult
+validate_lzss_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, false, {}, false,
+        {});
+}
+
+LzssAdaptiveHuffmanFrameValidationResult
+decode_lzss_adaptive_huffman_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, true,
+        raw_staging, false, {});
+    if (result.error
+        != LzssAdaptiveHuffmanFrameValidationError::none) {
+        return result;
+    }
+    (void)reconstruct_validated_tokens(
+        result, parameters, limits, dictionary_staging, raw_staging);
+    return result;
+}
+
+LzssAdaptiveHuffmanFrameValidationResult
+decode_lzss_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, true,
+        raw_staging, true, output);
+    if (result.error
+        != LzssAdaptiveHuffmanFrameValidationError::none) {
+        return result;
+    }
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 
