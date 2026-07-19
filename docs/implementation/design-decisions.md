@@ -5604,3 +5604,29 @@ regression must generate schema 9, reject a reordered schema-9 manifest, derive
 each frozen predecessor by filtering only, and verify all nine generations.
 This admits the local interoperability adapter; pushed cross-platform artifacts
 and an external bidirectional report remain separate evidence.
+
+## DD-303: LZ78 Adaptive preserves fixed tokens and typed phrases
+
+- Date: 2026-07-20
+- Status: accepted
+
+Reserve `lz78-adaptive-huffman` for LZ78 variant 1 followed by Adaptive Huffman
+FGK variant 1. Preserve the 16-byte LZ78 parameter region, empty entropy
+parameters, fixed eight-byte token grammar, ordinary version-1.0 frame header,
+and zero entropy block size. Reset both the LZ78 dictionary and FGK tree at
+every nonempty outer frame; empty input remains the 80-byte prefix.
+
+Fix the format-level raw-frame maximum at 2^20 bytes and the bounded reference
+cadence at 65,536 bytes. For raw extent `F`, admit at most `F` tokens, `8F`
+canonical token bytes, and `264F` Adaptive payload bytes. Count the aligned
+LZ78 phrase table, token staging, raw staging, serialized frame, and complete
+aggregate before allocation or mutation.
+
+Decode Adaptive bytes only into private token staging, validate the entire
+fixed-width token stream and phrase graph in aligned bounded workspace, derive
+the exact declared raw extent, reconstruct privately, and then commit. Encode
+by fixing the LZ78 parse and token bytes before Adaptive planning. Freeze the
+single-byte `A` vector independently as token `00 41 00 00 00 00 00 00`,
+23-bit payload `00 82 7E`, and a 75-byte frame. Specification and vector
+admission do not publish implementation, C ABI, CLI, benchmark, fuzz, or
+interoperability support.

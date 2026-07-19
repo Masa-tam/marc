@@ -1392,6 +1392,17 @@ primary/secondary/views C ABI shape, and its opaque views region is partitioned
 with checked alignment and size arithmetic for both private record types. The
 internal frame API accepts separate typed spans so capacity and aggregate-
 memory failures occur before entropy output or serialized output.
+
+### Specified LZ78 plus Adaptive Huffman boundary
+
+The next composition preserves LZ78's fixed eight-byte canonical tokens and
+aligned phrase table while replacing bounded static entropy blocks with one
+fresh FGK tree per outer frame. A raw frame of `F` bytes has at most `8F` token
+bytes and the conservative Adaptive payload ceiling is therefore `264F`.
+Decoding must entropy-decode into token staging, validate the complete phrase
+graph, reconstruct into private raw staging, and only then publish. Encoding
+must freeze the LZ78 parse before Adaptive planning. The representation and
+independent vector are specified; callable profile layers are not yet present.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

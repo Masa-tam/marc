@@ -5780,3 +5780,26 @@ discarded and the reviewed seed retained.
   `marc` source repository.
 - Scope limit: this is Windows/WSL2 x86-64 compiler and operating-system
   userland evidence, not a second architecture or non-WSL Linux-kernel result.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman specification and vector
+
+- Authoring method: composed two already specified marc byte transforms at the
+  canonical token boundary before adding a combined implementation.
+- References used: DD-303, marc's LZ78 variant 1 grammar and phrase bounds,
+  Adaptive Huffman FGK variant 1 tree rules, LSB-first packing, generic frame
+  validation, and earlier repository-owned composition decisions.
+- Known implementations intentionally not consulted: external combined codecs,
+  formats, implementations, vectors, workspace layouts, corpora, or tests.
+- Independent decisions: reserve `lz78-adaptive-huffman`; retain format 1.0;
+  reset both layers per frame; set 2^20 format and 65,536-byte reference frame
+  policies; bound tokens by `8F` and payload by `264F`; retain aligned phrase
+  workspace; commit only after complete phrase-graph validation.
+- Generated-code task description: document the exact frame and limits, derive
+  a single-Pair payload by explicit FGK traversal, assemble it with standalone
+  components and serializers, register one test, and update the roadmap.
+- Similarity review: all representation, arithmetic, validation order, naming,
+  and vector expression derive from marc's first-party specifications; no
+  external combined implementation or test structure was compared.
+- Local validation: the independent vector passed under both MSVC/Visual Studio
+  2026 and Clang 22.1.3/Ninja on Windows x64, and all 1,253 Release tests passed
+  under both toolchains.

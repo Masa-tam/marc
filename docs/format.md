@@ -1519,6 +1519,99 @@ The CLI name `lzss-blocked-huffman` selects this exact representation with
 one-MiB raw frames and 65,536-symbol entropy blocks. The name and fixed local
 policy do not add format fields.
 
+## LZ78 variant 1 plus Adaptive Huffman FGK variant 1
+
+The reserved profile name is `lz78-adaptive-huffman`. This composition uses
+dictionary algorithm ID 3, dictionary variant 1, entropy algorithm ID 1, and
+entropy variant 1 under format version 1.0. Its stream parameter regions are
+the 16-byte LZ78 parameters followed by the empty Adaptive Huffman parameter
+region. `entropy block size` is zero.
+
+The format-level maximum outer frame size is 2^20 raw bytes, and the bounded
+reference profile uses 65,536 raw bytes. For an `F`-byte raw frame, LZ78 emits
+at most `F` fixed eight-byte tokens, so dictionary staging is bounded by `8F`.
+The token extent must be nonzero, a multiple of eight, no larger than 2^24
+bytes, and within the decoder's local dictionary-serialized limit.
+
+Each nonempty outer frame owns exactly one freshly reset FGK tree and one
+freshly reset LZ78 phrase dictionary. The generic frame header records raw
+bytes as `uncompressed size`, canonical LZ78 token bytes as `dictionary
+serialized size`, Adaptive payload bytes as `compressed payload size`, entropy
+block count one, descriptor size 16, and checksum trailer size zero. The body
+is:
+
+```text
+generic frame header
+one Adaptive Huffman descriptor
+Adaptive Huffman payload over the canonical LZ78 token bytes
+```
+
+The descriptor's `symbol count` equals `dictionary serialized size`, and its
+`payload size` equals `compressed payload size`. All FGK tree, descriptor,
+bit-consumption, final-valid-bit, padding, and reset rules are unchanged from
+Adaptive Huffman variant 1. No separate LZ78 token region is stored.
+
+The conservative Adaptive bound is 33 payload bytes per token byte. A raw frame
+of `F` bytes therefore reserves at most `264F` compressed payload bytes. The
+reference 65,536-byte frame bounds token staging at 524,288 bytes and payload
+at 17,301,504 bytes. The selected raw, token, payload, phrase-table, complete
+frame, and aggregate-workspace limits must admit every extent before allocation
+or mutation. The aligned phrase workspace contains at most the lesser of token
+count and the configured LZ78 maximum entries; index zero remains the implicit
+root and occupies no phrase entry.
+
+Decoding is transactional at the outer frame boundary. Before publishing raw
+bytes, a decoder must validate the exact pipeline, LZ78 parameters, sequence,
+generic extents, one-block count, and descriptor extent; decode exactly the
+declared token bytes with exact payload-bit exhaustion; validate the complete
+fixed-width LZ78 token grammar and phrase graph in bounded aligned workspace;
+derive exactly the declared raw size; reconstruct into private raw staging;
+and only then expose that frame. A malformed later frame may not publish any of
+its bytes, although earlier frames may already be committed.
+
+Encoding first fixes the deterministic LZ78 parse using its bounded aligned
+phrase table, serializes the canonical tokens once into immutable staging,
+plans Adaptive Huffman over those bytes, and validates the complete header and
+destination extent before publishing a frame byte. The known-size stream is
+the ordinary 64-byte version-1.0 header followed by the 16-byte LZ78 parameter
+region and zero or more frames. Empty input is exactly this 80-byte prefix.
+Nonterminal `Flush` does not shorten a frame, and `ResetBlock` is unsupported
+at this composition boundary.
+
+### Hand-checkable single-Pair frame
+
+For raw input `A`, LZ78 emits the canonical Pair token:
+
+```text
+00 41 00 00 00 00 00 00
+```
+
+The first `00` contributes the eight-bit unseen literal `00`. The unseen `41`
+then contributes NYT path `0` followed by literal `41` LSB-first. Each of the
+remaining six known `00` symbols contributes root-right path `1`. The complete
+23-bit payload is `00 82 7E`, with seven valid bits in the final byte. The
+Adaptive descriptor is:
+
+```text
+08 00 00 00 03 00 00 00 07 00 00 00 00 00 00 00
+```
+
+The complete 75-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  03 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+08 00 00 00 03 00 00 00  07 00 00 00 00 00 00 00
+00 82 7E
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Adaptive descriptor, and the final three bytes are the FGK payload. This
+section reserves the representation and profile name; it does not publish a C
+factory, CLI selector, benchmark entry, or interoperability archive.
+
 ## LZ78 variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 3, dictionary variant 1,

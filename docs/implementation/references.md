@@ -799,3 +799,9 @@ results for revision `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2`, the previously 
 Ubuntu 26.04/Clang 21.1.8 environment boundary, and marc's own verifier
 contract. No external archive tool, decoder implementation, compatibility
 suite, or third-party result claim was used.
+
+The LZ78 plus Adaptive Huffman composition specification uses only DD-303,
+marc's already documented LZ78 variant 1 token grammar and phrase bounds,
+Adaptive Huffman FGK variant 1 tree and descriptor rules, generic framing, and
+the repository-owned composition policy. No external combined codec, format,
+implementation, vector, workspace layout, corpus, or test suite was consulted.

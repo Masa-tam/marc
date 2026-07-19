@@ -31,6 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   reporting ratio, throughput, and caller-owned workspace. Interoperability
   schema 9 appends it as the twentieth archive while preserving schemas 1
   through 8.
+- The reserved `lz78-adaptive-huffman` composition now has an exact
+  decoder-visible representation, bounded token/payload formulas,
+  transactional phrase-validation order, and an independently assembled
+  single-Pair frame vector.
 
 ## 0.1.0 - 2026-07-19
 

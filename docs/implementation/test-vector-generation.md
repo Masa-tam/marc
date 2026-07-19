@@ -1893,3 +1893,14 @@ name, input and encoded byte counts, complete-stream ratio, encode/decode
 seconds and MiB/s, all six public direction-specific workspace extents, and
 peak caller-reserved workspace. A complete public-ABI round trip must succeed
 before measurement. Do not freeze local ratio or throughput as test thresholds.
+
+For the first LZ78 plus Adaptive Huffman vector, encode raw `A` independently
+through the frozen LZ78 grammar to obtain Pair token
+`00 41 00 00 00 00 00 00`. Starting from a fresh FGK root, the first `00` is
+an eight-bit unseen literal; unseen `41` contributes NYT path `0` and literal
+`41` LSB-first; the remaining six known zero symbols each contribute path `1`.
+Require 23 payload bits, bytes `00 82 7E`, descriptor symbol count 8, payload
+size 3, final-valid-bit count 7, and the exact 75-byte frame in `docs/format.md`.
+Build the test by invoking the standalone LZ78 and Adaptive encoders separately
+and explicit generic serializers; do not use a combined-profile encoder as its
+own oracle.
