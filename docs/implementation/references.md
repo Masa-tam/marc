@@ -822,3 +822,8 @@ The LZ78 plus Adaptive Huffman exact-frame planner and encoder use only DD-306,
 marc's standalone deterministic LZ78 encoder, Adaptive Huffman frame encoder,
 generic frame serializers, and the independently frozen single-`A` vector. No
 external implementation was consulted.
+
+The LZ78 plus Adaptive Huffman streaming frame encoder uses only DD-307, the
+DD-306 exact-frame API, marc's generic bounded transform contract, stream and
+LZ78 parameter serializers, and existing first-party known-size state-machine
+rules. No external streaming implementation was consulted.

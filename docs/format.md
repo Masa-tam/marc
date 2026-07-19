@@ -1578,7 +1578,9 @@ fit the configured aggregate workspace bound. The known-size stream is
 the ordinary 64-byte version-1.0 header followed by the 16-byte LZ78 parameter
 region and zero or more frames. Empty input is exactly this 80-byte prefix.
 Nonterminal `Flush` does not shorten a frame, and `ResetBlock` is unsupported
-at this composition boundary.
+at this composition boundary. A streaming encoder must finish and drain each
+exact frame before collecting its successor; input and output chunking alone
+must not alter any serialized byte.
 
 ### Hand-checkable single-Pair frame
 

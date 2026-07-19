@@ -5692,3 +5692,25 @@ the frozen single-`A` frame, deterministic nested-phrase round trip, short
 encoder, token, and serialized capacities, aggregate shortage, empty and wrong
 raw extents, and exact re-encoding of the frozen vector. This step admits no
 streaming state machine or public factory.
+
+## DD-307: LZ78 Adaptive streaming encoding preserves exact frame boundaries
+
+- Date: 2026-07-20
+- Status: accepted
+
+Build the bounded known-size streaming encoder only over the DD-306 exact-frame
+planner and encoder. Serialize the ordinary 80-byte stream prefix once, collect
+exactly the configured raw frame extent, freeze and encode that complete frame
+privately, and drain its serialized bytes before accepting the next frame.
+Retain `EndInput` while prefix or frame bytes are draining and return a stable
+terminal result after completion.
+
+Require caller-owned raw-frame, token-staging, serialized-frame, and aligned
+LZ78 encoder-entry spans. Validate maximum raw, token, and entry extents at
+construction, validate the exact serialized-frame extent after planning, and
+for each prepared frame count raw input, exact tokens, exact serialized frame,
+and used encoder entries in the aggregate bound. One-byte input and output
+must produce the same bytes as independently repeated exact-frame calls. `Flush`
+does not shorten a frame, `ResetBlock` is unsupported, premature or excess
+known-size input is invalid, and empty input emits only the prefix. This step
+does not admit a streaming decoder, public workspace calculator, or C factory.

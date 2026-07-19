@@ -40,7 +40,9 @@ format versions, and C ABI versions are independent namespaces.
   publishes only a completely successful frame. Its exact-frame planner fixes
   canonical LZ78 tokens before Adaptive planning, and its deterministic encoder
   reproduces the independent frame vector without partial destination writes
-  on capacity failure.
+  on capacity failure. Its first bounded streaming encoder preserves exact
+  frame boundaries and deterministic bytes under one-byte input and output,
+  output starvation, `Flush`, and retained `EndInput`.
 
 ## 0.1.0 - 2026-07-19
 

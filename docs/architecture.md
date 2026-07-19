@@ -1416,6 +1416,12 @@ over that fixed byte sequence. The encoder validates the complete serialized
 destination before writing its header, descriptor, or payload. Encoder-table,
 token, descriptor, and payload extents participate in the checked aggregate
 workspace bound; streaming and public construction remain separate steps.
+The first bounded streaming encoder owns no allocation: callers provide one
+raw-frame span, token staging, serialized-frame staging, and an aligned encoder
+table. It emits the common 80-byte prefix, collects only complete configured
+frames, delegates each frame to the exact planner and encoder, then drains it
+before accepting another frame. Output starvation retains all pending state;
+`EndInput` remains latched even when prefix drainage consumes no input.
 Profile sizing fixes the three-region ABI: frame bytes occupy the
 primary and secondary regions, while the aligned opaque views region contains
 an encoder phrase table or a decoder block-view array followed by checked

@@ -5875,3 +5875,29 @@ discarded and the reviewed seed retained.
   combined-codec expression was compared.
 - Local validation: all six focused encoder tests and all 1,271 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64.
+
+## 2026-07-20 - LZ78 plus Adaptive Huffman streaming frame encoder
+
+- Authoring method: implemented only the bounded known-size encoder admitted
+  by DD-307 over marc's DD-306 exact-frame boundary.
+- References used: DD-307, exact-frame planning and encoding, generic transform
+  status rules, stream and LZ78 parameter serializers, checked arithmetic, and
+  existing repository-owned frame-drain conventions.
+- Known implementations intentionally not consulted: external combined
+  streaming encoders, buffering state machines, source, tests, or workspace
+  layouts.
+- Independent decisions: require all four caller-owned workspace regions;
+  collect one exact raw frame before preparation; include raw, token, complete
+  frame, and entry-table bytes in aggregate accounting; retain EndInput while
+  draining; leave Flush nonterminal and reject ResetBlock.
+- Generated-code task description: add the internal streaming encoder and
+  build integration, compare one-byte processing against independently
+  concatenated exact frames, cover flush and retained finish, storage and
+  aggregate errors, empty input, sticky terminal status, and protocol errors,
+  then synchronize documentation.
+- Similarity review: the state machine follows marc's documented transform
+  contract and composes existing first-party exact-frame calls; no external
+  combined-codec expression was compared.
+- Local validation: all five focused streaming-encoder tests and all 1,276
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64.

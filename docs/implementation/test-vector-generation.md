@@ -1936,3 +1936,13 @@ staging, and serialized output; the last failure must preserve every output
 sentinel. Set the aggregate limit one byte below encoder entries plus token,
 descriptor, and payload storage, and reject empty input and a raw extent that
 does not match the stream header.
+
+For the first streaming encoder, independently concatenate the serialized
+80-byte prefix and exact-frame output for each two-byte frame of `ABABX`.
+Feed the same raw bytes and drain output one byte at a time; require exact
+identity with that oracle and stable repeated End Of Stream. Separately retain
+`EndInput` while only one prefix byte can drain, verify that `Flush` after one
+raw byte emits no short frame, and cover empty input. Reject short raw, token,
+encoded-frame, and aligned-entry workspaces, an aggregate limit one byte below
+raw plus tokens plus frame plus entries, premature EndInput, excess input,
+unknown flags, and `ResetBlock`.
