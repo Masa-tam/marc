@@ -5467,3 +5467,27 @@ discarded and the reviewed seed retained.
   published byte grammar and arithmetic; no external vector was compared.
 - Local validation: the focused vector test and all 1,209 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows x64.
+
+## 2026-07-19 - LZSS plus Adaptive Huffman complete-frame validator
+
+- Authoring method: composed existing repository-owned generic frame,
+  Adaptive Huffman decode, and LZSS validation boundaries under DD-291.
+- References used: DD-291, the DD-290 hand vector, marc's frame parser,
+  Adaptive descriptor and exact decoder, LZSS token validator, and checked
+  decoder-limit helpers.
+- Known implementations intentionally not consulted: external combined
+  decoders, format validators, workspace layouts, malformed corpora, source,
+  vectors, or test suites.
+- Independent decisions: accept one exact frame; precheck `2F`, 33-byte token
+  payload, staging, and aggregate bounds; decode only into caller-owned private
+  token staging; validate the entire LZSS grammar and declared raw extent; stop
+  before raw reconstruction or publication.
+- Generated-code task description: add the narrow complete-frame validator and
+  focused positive, truncation, trailing-data, bounds, descriptor, sequence,
+  and entropy-valid invalid-LZSS tests without exposing a public profile.
+- Similarity review: the implementation is direct composition of marc's own
+  typed results and checked extent rules; no external control flow, naming, or
+  serialized representation was compared.
+- Local validation: the six focused validator tests and all 1,215 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3/Ninja on Windows
+  x64.

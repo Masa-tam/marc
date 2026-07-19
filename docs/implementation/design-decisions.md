@@ -5355,3 +5355,24 @@ Fix the descriptor at symbol count 2, payload size 3, and final-valid-bit count
 payload size 3, one entropy block, and 16 descriptor bytes for an exact 75-byte
 frame. Test the LZSS token and Adaptive payload independently before serializing
 the complete frame; do not use a combined-profile encoder as its own oracle.
+
+## DD-291: LZSS Adaptive validation commits only canonical token staging
+
+- Date: 2026-07-19
+- Status: accepted
+
+Introduce a decoder-side boundary that accepts exactly one serialized frame,
+checks the selected LZSS and Adaptive variants and all generic extents, and
+rejects both truncation and trailing bytes. Before entropy decoding, require a
+nonzero token extent no greater than `2F`, a payload extent no greater than
+33 bytes per token byte, sufficient caller-owned token staging, and the exact
+descriptor-plus-payload-plus-token aggregate workspace under the configured
+limit. All extent arithmetic is checked.
+
+Decode the single Adaptive block with exact bit exhaustion into caller-owned
+private staging, then validate the complete variable-length LZSS token grammar
+and require it to derive exactly the declared raw size. This boundary neither
+reconstructs nor publishes raw bytes. Short staging and pre-decode limit or
+descriptor failures leave staging unchanged; entropy-valid but invalid LZSS
+bytes may remain only in the explicitly private token staging. Raw commit,
+streaming controllers, and the public factory remain later admission steps.

@@ -726,3 +726,9 @@ The first LZSS plus Adaptive Huffman vector uses only DD-290, the published
 LZSS Literal grammar, the independently specified FGK NYT traversal, LSB-first
 packing, and explicit generic serializers. No external vector, encoder output,
 combined implementation, or test suite was consulted.
+
+The LZSS plus Adaptive Huffman complete-frame validator uses only DD-291,
+marc's generic frame parser, Adaptive Huffman descriptor and decoder, LZSS
+token validator, and checked limit helpers. No external combined decoder,
+format validator, workspace policy, malformed corpus, source, or test suite was
+consulted.

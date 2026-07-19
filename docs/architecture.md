@@ -1207,7 +1207,13 @@ The exact all-Literal bound is two token bytes per raw byte; the conservative
 FGK bound is therefore 66 payload bytes per raw byte. The reference 64-KiB raw
 frame keeps token, payload, serialized-frame, and private raw regions within the
 common bounded policy. No aligned views region is required by either component.
-This is a specified architecture boundary, not yet a public implementation.
+
+The first implemented boundary accepts one exact frame, checks the `2F` and
+33-byte-per-token extents plus aggregate workspace before entropy decoding,
+decodes into caller-owned private token staging, and validates the complete
+LZSS grammar against the declared raw size. It intentionally stops before raw
+reconstruction; frame commit, streaming, and public adapters remain separate
+steps.
 
 ### LZSS plus Blocked Huffman validation boundary
 

@@ -1345,6 +1345,12 @@ may already be committed by the incremental decoder. Encoding completes the
 deterministic LZSS parse, immutable token staging, Adaptive plan, generic header,
 and complete destination-capacity check before writing the frame.
 
+The internal complete-frame validator implements the first three decoding
+checks above through validated canonical token staging. It accepts exactly one
+frame, rejects trailing bytes, and does not reconstruct raw output. This is an
+implementation boundary only; it does not publish the profile through the C
+ABI or CLI.
+
 The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZSS parameter region and zero or more consecutive frames. Empty
 input is exactly this 80-byte prefix. Input/output chunking does not change the

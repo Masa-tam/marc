@@ -60,8 +60,9 @@ nineteenth archive.
 
 `lzss-adaptive-huffman` has a fixed decoder-visible format and bounded
 reference policy. It remains specified rather than public until its independent
-vector, validator, encoder/decoder, streaming, C ABI, malformed-input, fuzz,
-tooling, benchmark, and interoperability evidence are complete.
+vector and complete-frame token validator are extended with raw reconstruction,
+encoder/decoder streaming, C ABI, malformed-input fuzzing, tooling, benchmark,
+and interoperability evidence.
 
 ## Why publication is not automatic
 

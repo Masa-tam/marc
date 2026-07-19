@@ -1787,3 +1787,13 @@ all LSB-first. Require 17 payload bits, bytes `00 82 00`, and one valid final
 bit. Serialize a descriptor for two symbols and three payload bytes, then an
 exact 75-byte generic frame. Compare each component result separately before
 comparing the full frame; no combined-profile encoder participates.
+
+Exercise the first LZSS plus Adaptive Huffman decoder boundary with that exact
+75-byte frame. Require every strict prefix and one trailing byte to fail, short
+token staging and a one-byte-short aggregate workspace to fail before staging
+mutation, and impossible `2F` token or 33-byte-per-token payload declarations
+to fail before entropy decoding. Corrupt a reserved descriptor byte separately.
+For the cross-layer negative case, independently Adaptive-encode the invalid
+LZSS bytes `02 41`; require entropy decoding to succeed but complete LZSS token
+validation to reject the unknown tag. Also reject a nonzero entropy block size
+and an unexpected frame sequence.
