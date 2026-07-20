@@ -30,6 +30,7 @@ enum class LzwAdaptiveHuffmanFrameValidationError : std::uint8_t {
     arithmetic_overflow,
     raw_staging_too_small,
     dictionary_decode_error,
+    raw_output_too_small,
 };
 
 struct LzwAdaptiveHuffmanFrameValidationResult {
@@ -85,6 +86,22 @@ decode_lzw_adaptive_huffman_frame_to_staging(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates and reconstructs privately, then copies the complete raw frame to
+// caller-visible output only after every operation succeeds. Input, dictionary
+// staging, raw staging, and output must be mutually non-overlapping.
+[[nodiscard]] LzwAdaptiveHuffmanFrameValidationResult
+decode_lzw_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

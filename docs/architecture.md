@@ -1513,8 +1513,11 @@ private packed staging, and invokes the existing LZW validator before success.
 The next boundary adds iterative LZW reconstruction into a separate private raw
 span only after that validation succeeds. Raw capacity and aggregate bytes are
 checked before entropy output, and malformed input cannot publish raw bytes.
-There is still no caller-visible output copy or public adapter; those later
-layers must consume this private reconstruction boundary rather than bypass it.
+The internal transactional frame decoder now also checks complete destination
+capacity before entropy output and copies private raw staging only after all
+validation and reconstruction succeeds. No failure publishes a destination
+byte. There is still no streaming or public adapter; those later layers must
+consume this transaction rather than bypass it.
 
 ### Published LZW plus Blocked Huffman boundary
 

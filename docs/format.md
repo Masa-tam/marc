@@ -1823,9 +1823,11 @@ combined implementation validates one exact complete frame through both
 encoded layers into caller-owned packed-byte and phrase staging. The next
 bounded boundary reconstructs that validated stream into separate caller-owned
 private raw staging, counting its complete extent in pre-decode capacity and
-aggregate-workspace checks. It still publishes no caller-visible output and
-therefore is not yet a public decoder, encoder, C factory, CLI selector,
-benchmark entry, fuzz target, completion claim, or interoperability archive.
+aggregate-workspace checks. The transactional complete-frame decoder then
+copies that entire private span to caller-visible output only after every
+operation succeeds. This is still an internal frame API rather than a public C
+decoder, encoder, CLI selector, benchmark entry, fuzz target, completion claim,
+or interoperability archive.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

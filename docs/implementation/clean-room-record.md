@@ -6192,3 +6192,26 @@ discarded and the reviewed seed retained.
   structure was compared.
 - Local validation: all 1,308 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman transactional frame decoder
+
+- Authoring method: placed a complete destination-capacity check and final
+  whole-span copy around the DD-318 private reconstruction transaction.
+- References used: DD-319, DD-318, marc's existing complete-frame publication
+  convention, checked limits, and layer-specific diagnostics.
+- Known implementations intentionally not consulted: external combined
+  decoders, transactional adapters, source code, APIs, malformed corpora, and
+  test suites.
+- Independent decisions: preserve existing error values; append a distinct
+  output-capacity category; check destination before entropy output; publish
+  exactly once only after successful private reconstruction; keep destination
+  outside scratch-workspace accounting.
+- Generated-code task description: add the transactional complete-frame API,
+  success vectors, output-capacity atomicity, malformed entropy atomicity,
+  multi-code publication, and scope documentation without adding streaming or
+  a public C factory.
+- Similarity review: the implementation reuses marc's existing transaction
+  boundary and first-party vectors. No external combined structure or
+  distinctive tests were compared.
+- Local validation: all 1,312 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

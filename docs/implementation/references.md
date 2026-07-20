@@ -896,3 +896,9 @@ DD-317 validator, marc's existing bounded LZW decoder, typed phrase records,
 and checked aggregate-workspace policy. No external combined decoder,
 transactional publication design, source code, malformed corpus, workspace
 layout, or test suite was consulted.
+
+The LZW plus Adaptive Huffman transactional frame decoder uses only DD-319, the
+DD-318 private reconstruction boundary, checked destination capacity, and
+marc's existing all-or-nothing frame publication convention. No external
+combined decoder, output transaction, source code, malformed corpus, API, or
+test suite was consulted.
