@@ -5995,3 +5995,25 @@ short output without changing it, then serialize the header, descriptor, and
 payload. Append new diagnostics without changing earlier values. This step
 adds no incremental transform, public C factory, CLI, benchmark, fuzz,
 completion, or interoperability claim.
+
+## DD-321: LZW Adaptive streaming encoding buffers one bounded raw frame
+
+- Date: 2026-07-21
+- Status: accepted
+
+Add the first bounded streaming encoder for `lzw-adaptive-huffman`. Serialize
+the 64-byte stream header and 16-byte LZW parameters into a fixed prefix at
+construction. Buffer at most one configured raw frame in caller-owned storage,
+then invoke the DD-320 planner and encoder into separate caller-owned packed and
+serialized-frame storage. Drain only already completed bytes; never expose a
+partially constructed frame.
+
+Derive the packed staging ceiling as checked `ceil(FW/8)` for the largest local
+frame and validate raw, packed, LZW-entry, and encoded-frame capacities before
+use. At frame preparation, account simultaneously for raw storage, actual
+packed extent, exact serialized frame, and the used aligned encoder records.
+Preserve `EndInput` while prefix or frame bytes drain, emit full frames as soon
+as filled, leave a partial frame open on `Flush`, reject `ResetBlock`, and keep
+terminal success and error sticky. Input/output chunking must reproduce the
+DD-320 one-shot bytes exactly. This step adds no streaming decoder, public C
+factory, CLI, benchmark, fuzz, completion, or interoperability claim.

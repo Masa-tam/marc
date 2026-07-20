@@ -1526,6 +1526,14 @@ the typed encoder table, packed span, descriptor, and exact entropy payload;
 the encoder rejects short serialized output before writing and reproduces the
 independent 75-byte frame. Streaming and public adapters remain later layers.
 
+The bounded streaming encoder now owns four caller-supplied regions: one raw
+frame, the conservative packed-code ceiling, one complete encoded frame, and
+the LZW encoder table. It emits a prebuilt stream prefix, fills and encodes only
+complete outer frames, then drains immutable serialized bytes. This keeps
+one-shot framing authoritative while satisfying one-byte I/O, output
+starvation, nonterminal `Flush`, retained `EndInput`, and sticky terminal-state
+requirements. A matching streaming decoder remains a separate next boundary.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

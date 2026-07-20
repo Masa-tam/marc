@@ -2066,3 +2066,13 @@ round-trip it through the combined decoder. Independently reject empty input,
 an unexpected raw frame extent, an undersized LZW entry table, packed staging,
 aggregate workspace limit, and serialized destination; pre-write failures must
 leave their sentinel storage unchanged.
+
+For streaming encoding, build a reference stream by serializing the ordinary
+80-byte prefix and invoking the exact frame encoder over raw `AB`, `AB`, and
+final `X` frames. Feed the same `ABABX` input and drain output one byte at a
+time, requiring valid process results, exact reference equality, and sticky
+`EndOfStream`. Separately require `Flush` after one raw byte to emit only the
+prefix, preserve `EndInput` while one prefix byte drains, reject each
+undersized raw/packed/encoded/entry region and the aggregate policy threshold,
+emit the empty stream prefix, and reject premature finish, excess input,
+`ResetBlock`, and an unknown flag.

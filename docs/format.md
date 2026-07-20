@@ -1833,6 +1833,13 @@ after complete capacity and workspace admission. There is still no streaming
 transform, public C factory, CLI selector, benchmark entry, fuzz target,
 completion claim, or interoperability archive.
 
+The first streaming encoder emits the ordinary 80-byte prefix, buffers no more
+than one raw frame, produces that frame solely through the exact planner and
+encoder above, and drains the completed bytes under the core partial-buffer
+contract. Filling a frame closes it; `Flush` alone does not close a partial
+frame, and retained `EndInput` completes only after all prefix and frame bytes
+drain. Input and output chunk sizes do not alter the representation.
+
 ## LZW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 4, dictionary variant 1,

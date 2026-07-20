@@ -109,8 +109,10 @@ and aggregate bytes before entropy output. An internal transactional decoder now
 copies a complete successful frame to caller-visible output while leaving it
 unchanged on every failure. Its exact-frame planner and internal encoder
 now freeze canonical packed LZW bytes before Adaptive planning, reproduce the
-independent hand vector, and round-trip deterministic multi-code frames. It
-still has no streaming transform, public factory, or readiness claim.
+independent hand vector, and round-trip deterministic multi-code frames. Its
+first bounded streaming encoder now reproduces those exact bytes under
+one-byte I/O, output starvation, nonterminal `Flush`, and retained `EndInput`.
+It still has no streaming decoder, public factory, or readiness claim.
 
 ## Remaining release evidence
 
@@ -222,7 +224,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-320, the complete Release suite contains 1,318 tests and passes under both
+At DD-321, the complete Release suite contains 1,323 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

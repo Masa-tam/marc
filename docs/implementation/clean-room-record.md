@@ -6238,3 +6238,26 @@ discarded and the reviewed seed retained.
   distinctive tests were compared.
 - Local validation: all 1,318 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman streaming encoder
+
+- Authoring method: wrapped the DD-320 exact frame encoder in marc's existing
+  caller-owned bounded transform and generic prefix contract.
+- References used: DD-321, DD-320, core process invariants, LZW packed bounds,
+  stream serialization, and first-party terminal-state conventions.
+- Known implementations intentionally not consulted: external combined
+  streaming encoders, buffering designs, source code, APIs, chunk schedules,
+  and test suites.
+- Independent decisions: buffer exactly one raw frame; prebuild the 80-byte
+  prefix; retain `EndInput` during draining; leave partial frames open on
+  `Flush`; reject `ResetBlock`; account for raw, packed, serialized, and typed
+  encoder storage together at frame preparation.
+- Generated-code task description: implement the bounded streaming encoder and
+  cover one-byte I/O, exact one-shot equality, output starvation, flush,
+  retained finish, all storage and aggregate limits, empty input, sticky end,
+  and protocol failures without adding a decoder or public factory.
+- Similarity review: the transform composes only existing marc state-machine
+  conventions and first-party exact encoder output. No external combined
+  control flow or distinctive tests were compared.
+- Local validation: all 1,323 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

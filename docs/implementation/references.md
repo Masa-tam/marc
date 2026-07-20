@@ -908,3 +908,9 @@ the DD-316 representation, marc's existing LZW and Adaptive Huffman planners
 and encoders, generic serializers, checked arithmetic, and caller-owned
 workspace policy. No external combined encoder, parser, source code, output
 transaction, vector, workspace design, or test suite was consulted.
+
+The LZW plus Adaptive Huffman streaming encoder uses only DD-321, the DD-320
+exact frame encoder, marc's core transform contract, generic stream serializers,
+checked packed-code bounds, and caller-owned workspace policy. No external
+combined streaming encoder, buffering strategy, source code, API, chunk
+schedule, or test suite was consulted.
