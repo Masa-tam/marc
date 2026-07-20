@@ -890,3 +890,9 @@ DD-316 representation and bounds, marc's existing generic frame parser,
 Adaptive Huffman decoder, LZW validator, and checked caller-owned workspace
 policy. No external combined decoder, validation order, malformed vector,
 workspace layout, source code, or test suite was consulted.
+
+The LZW plus Adaptive Huffman private-staging decoder uses only DD-318, the
+DD-317 validator, marc's existing bounded LZW decoder, typed phrase records,
+and checked aggregate-workspace policy. No external combined decoder,
+transactional publication design, source code, malformed corpus, workspace
+layout, or test suite was consulted.

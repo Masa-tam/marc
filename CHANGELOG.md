@@ -19,7 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   Its first bounded complete-frame validator entropy-decodes into private
   packed staging and validates the full LZW code stream, including width
   transitions, references, `KwKwK`, final padding, and declared raw size,
-  without reconstructing or publishing raw bytes.
+  then reconstructs a completely validated frame into separately bounded
+  private raw staging. Capacity and aggregate workspace failures occur before
+  entropy output, and no caller-visible raw bytes are published yet.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

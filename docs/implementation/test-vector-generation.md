@@ -2038,3 +2038,12 @@ impossible packed extent, and an unsupported entropy variant. Require
 pre-decode failures to leave sentinel packed staging unchanged, and require the
 valid vector to expose exactly `41 00` and one validated code without producing
 raw output.
+
+For private reconstruction, decode the same independent single-code frame and
+require raw `41` only after packed validation. Independently encode the
+repository-owned raw sequence `ABABABA` through standalone LZW and Adaptive
+helpers, then require the combined private-staging decoder to reproduce it.
+Pass zero raw capacity and an aggregate limit admitting validation bytes but
+not the one-byte raw span; both must fail before changing sentinel packed or
+raw storage. Corrupt the Adaptive descriptor and require private raw staging to
+remain unchanged.

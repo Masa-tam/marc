@@ -6169,3 +6169,26 @@ discarded and the reviewed seed retained.
   distinctive tests were compared.
 - Local validation: all 1,304 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman private-staging decoder
+
+- Authoring method: extended the DD-317 validation transaction with marc's
+  existing bounded LZW decoder and a distinct caller-owned raw staging span.
+- References used: DD-318, DD-317, the repository's LZW decoder, phrase-table
+  contract, checked arithmetic, and complete-frame workspace policy.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction layouts, source code, malformed corpora, workspace
+  designs, and test suites.
+- Independent decisions: check raw capacity and aggregate bytes before entropy
+  output; reconstruct only after complete packed validation; retain all staging
+  as discardable scratch on error; expose layer-specific decoder diagnostics;
+  publish no caller-visible output.
+- Generated-code task description: add private-staging reconstruction, hand
+  vector and multi-code round trips, pre-decode capacity and aggregate-limit
+  tests, malformed atomicity coverage, and scope documentation without adding
+  a public decoder or encoder.
+- Similarity review: the change composes only existing marc interfaces and
+  transaction rules. No external combined control flow or distinctive test
+  structure was compared.
+- Local validation: all 1,308 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

@@ -103,8 +103,10 @@ decoder-visible representation and reserved public name are specified.
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
 region through Adaptive Huffman and validates code widths, references, `KwKwK`,
-final padding, and exact raw extent without publishing raw bytes. It has no
-combined decoder, encoder, public factory, or readiness claim yet.
+final padding, and exact raw extent. A bounded decoder now reconstructs a
+validated frame into separate private raw staging while checking its capacity
+and aggregate bytes before entropy output. It publishes no caller-visible raw
+bytes and has no encoder, public factory, or readiness claim yet.
 
 ## Remaining release evidence
 
@@ -216,7 +218,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-317, the complete Release suite contains 1,304 tests and passes under both
+At DD-318, the complete Release suite contains 1,308 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

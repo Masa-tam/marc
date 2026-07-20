@@ -1820,10 +1820,12 @@ Adaptive descriptor, and the final three bytes are the FGK payload. The high
 seven zero bits in the second packed LZW byte are dictionary-layer padding but
 belong to an ordinary zero-valued symbol at the entropy layer. The first
 combined implementation validates one exact complete frame through both
-encoded layers into caller-owned packed-byte and phrase staging. It publishes
-no raw byte and therefore is not yet a decoder, encoder, C factory, CLI
-selector, benchmark entry, fuzz target, completion claim, or interoperability
-archive.
+encoded layers into caller-owned packed-byte and phrase staging. The next
+bounded boundary reconstructs that validated stream into separate caller-owned
+private raw staging, counting its complete extent in pre-decode capacity and
+aggregate-workspace checks. It still publishes no caller-visible output and
+therefore is not yet a public decoder, encoder, C factory, CLI selector,
+benchmark entry, fuzz target, completion claim, or interoperability archive.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

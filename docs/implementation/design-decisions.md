@@ -5934,3 +5934,23 @@ but reconstruct and publish no raw bytes at this boundary. Staging and phrase
 records remain disposable scratch on every error. Later reconstruction,
 encoding, streaming, public API, and completion steps must build on this same
 validator rather than weakening or duplicating it.
+
+## DD-318: LZW Adaptive reconstructs only into private raw staging
+
+- Date: 2026-07-21
+- Status: accepted
+
+Extend the complete-frame boundary with a decoder that reconstructs the
+already validated packed LZW stream into caller-owned private raw staging. Add
+the raw extent to both the pre-decode capacity checks and aggregate workspace
+accounting, so insufficient staging or policy limits fail before Adaptive
+Huffman writes packed bytes. Require input, packed staging, and raw staging not
+to overlap.
+
+After the DD-317 validation succeeds, invoke the ordinary bounded LZW decoder
+over exactly the validated packed extent, phrase-record prefix, and declared
+raw extent. Preserve its stable validation, format, and decode diagnostics and
+map an unexpected reconstruction failure to a distinct combined-layer error.
+On every error the caller discards all staging. Successful raw bytes remain
+private: this step adds no caller-visible output copy, streaming transform,
+factory, CLI, benchmark, fuzz, completion, or interoperability claim.

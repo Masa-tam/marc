@@ -1510,8 +1510,11 @@ The first combined boundary now implements the validation half of that order.
 It admits one exact complete frame, checks all generic and profile extents plus
 caller-owned packed and phrase capacities before mutation, entropy-decodes into
 private packed staging, and invokes the existing LZW validator before success.
-It deliberately has no raw reconstruction or public adapter yet; those later
-layers must consume this validated boundary rather than bypass it.
+The next boundary adds iterative LZW reconstruction into a separate private raw
+span only after that validation succeeds. Raw capacity and aggregate bytes are
+checked before entropy output, and malformed input cannot publish raw bytes.
+There is still no caller-visible output copy or public adapter; those later
+layers must consume this private reconstruction boundary rather than bypass it.
 
 ### Published LZW plus Blocked Huffman boundary
 
