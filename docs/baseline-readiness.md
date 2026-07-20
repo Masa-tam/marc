@@ -45,6 +45,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-adaptive-huffman` | First Adaptive Huffman composition | Ready | Included |
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
+| `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | C ABI foundation | Not yet included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 10 contains twenty-one archives: the frozen twenty-entry schema-9 set
@@ -83,6 +84,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzw-adaptive-huffman` | Yes | Yes | Yes | No | No | No | No | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -116,8 +118,10 @@ The matching bounded streaming decoder validates complete frames before raw
 draining and covers all truncations, trailing data, later-frame atomicity, and
 sticky errors. Its bounded profile now derives all byte and typed-record
 workspaces from public-style configuration and validated local limits, with
-checked opaque-region partitioning. It still has no public factory or readiness
-claim.
+checked opaque-region partitioning. A public C ABI factory now binds those
+regions to the streaming transforms without exposing private record layouts.
+It remains below `Ready` until completion, fuzz, CLI, benchmark, and
+interoperability coverage are added.
 
 ## Remaining release evidence
 
@@ -229,7 +233,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-323, the complete Release suite contains 1,335 tests and passes under both
+At DD-324, the complete Release suite contains 1,336 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

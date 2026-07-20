@@ -1787,6 +1787,14 @@ this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and input/output
 chunking alone must not change serialized bytes.
 
+The C ABI functions `marc_lzw_adaptive_huffman_config_init()`,
+`marc_lzw_adaptive_huffman_workspace_requirements()`, and
+`marc_lzw_adaptive_huffman_create()` select exactly this representation. The
+aligned views workspace is opaque: it contains encoder dictionary entries in
+the encode direction and decoder phrase entries in the decode direction.
+Requirements must be queried again after changing direction, known original
+size, frame size, maximum code width, or any local limit.
+
 ### Hand-checkable single-code frame
 
 For raw input `A`, LZW emits code 65 at width nine, producing packed bytes:

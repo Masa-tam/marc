@@ -6,7 +6,8 @@ Blocked Huffman and LZ77 plus Adaptive Huffman profiles, LZSS variant 1, the
 LZSS plus Blocked Huffman and LZSS plus Adaptive Huffman profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
 profiles, LZW variant 1, the LZW
-plus Blocked Huffman profile, LZD variant 1, the LZD plus Blocked Huffman
+plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
+the LZD plus Blocked Huffman
 profile, and LZMW variant 1 and the LZMW plus Blocked Huffman profile with
 known-size encoding and bounded caller-owned workspace. All functions are
 `noexcept` in C++ translation units,
@@ -21,7 +22,8 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
-`marc_lzw_blocked_huffman_*`, `marc_lzd_blocked_huffman_*`, and
+`marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
+`marc_lzd_blocked_huffman_*`, and
 `marc_lzmw_blocked_huffman_*` are the currently public
 dictionary-plus-entropy factories.
 
@@ -52,6 +54,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
    `marc_lz78_adaptive_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
+   `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`, or
    `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()` for
    encode or decode
@@ -148,6 +151,13 @@ output for decode. The aligned views region contains encoder dictionary entries
 in the first direction and a checked entropy-view/padding/phrase-entry layout
 in the second. Query `marc_lzw_blocked_huffman_workspace_requirements()` after
 changing any code width, block size, frame size, or hard limit.
+The LZW plus Adaptive Huffman factory uses the same packed-byte secondary
+layout without entropy block views. The aligned opaque region contains only
+encoder dictionary entries while encoding and only phrase entries while
+decoding. Query `marc_lzw_adaptive_huffman_workspace_requirements()` again
+after changing direction, original size, frame size, maximum code width, or a
+local limit; decode sizing is derived solely from trusted local limits and the
+stream parameters are validated later.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

@@ -6063,3 +6063,25 @@ Partition helpers must rederive exact byte count and alignment, reject altered
 requirements, shortage, and misalignment, and accept only the canonical
 zero-byte/one-alignment empty layout. This step adds no public C factory, CLI,
 benchmark, fuzz, completion, or interoperability claim.
+
+## DD-324: LZW Adaptive enters the C ABI with opaque typed views
+
+- Date: 2026-07-21
+- Status: accepted
+
+Expose the fixed LZW variant 1 plus Adaptive Huffman variant 1 profile through
+`marc_lzw_adaptive_huffman_config`, a direction-specific requirements query,
+and an immutable-direction factory. Preserve known-size encoding and the common
+three-workspace ABI. Primary storage holds raw frame input while encoding and a
+complete serialized frame while decoding. Secondary storage contains packed
+LZW staging followed by serialized-frame storage for encode, or packed staging
+followed by private raw storage for decode.
+
+The aligned views region remains opaque to C. It contains only LZW encoder
+entries for encode and only LZW phrase entries for decode. Creation must rerun
+the profile calculation and checked typed partition rather than trusting
+caller-reported sizes. Require a strict C11 round trip, default initialization
+and exact small-limit workspace checks, short and misaligned workspace
+rejection, reserved-field rejection, and a null output handle on every factory
+failure. This adds no allocator callback, unknown-size input, CLI, benchmark,
+fuzz, completion, or interoperability claim.

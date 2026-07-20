@@ -6307,3 +6307,25 @@ discarded and the reviewed seed retained.
   layout or distinctive test structure was compared.
 - Local validation: all 1,335 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman public C ABI
+
+- Authoring method: bound the DD-323 workspace profile and existing streaming
+  transforms to marc's established allocation-free three-region C ABI.
+- References used: DD-324, public transform lifecycle, checked workspace query,
+  opaque aligned views convention, and first-party C11 assertion harness.
+- Known implementations intentionally not consulted: external combined APIs,
+  allocator interfaces, factory implementations, ABI layouts, source code, or
+  C test suites.
+- Independent decisions: add a fixed-profile config/query/factory trio; retain
+  known-size encoding; place packed plus frame/raw bytes in secondary storage;
+  recalculate and partition typed views at creation; keep output handles null
+  on failure.
+- Generated-code task description: expose the LZW/Adaptive profile through C,
+  prove an exact small-limit C11 round trip, and reject short or misaligned
+  workspaces, reserved fields, and null output-handle pointers without adding
+  tooling or readiness claims.
+- Similarity review: the adapter follows only marc's own C lifecycle and the
+  DD-323 typed boundaries. No external ABI or distinctive C test was compared.
+- Local validation: all 1,336 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

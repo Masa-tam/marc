@@ -1548,6 +1548,10 @@ packed-code and Adaptive payload ceilings; its decoder calculation derives the
 largest packed input and phrase table from local limits. Opaque typed regions
 contain only LZW encoder entries or only decoder phrase entries, and checked
 partition helpers reject forged sizes, alignments, shortages, and misalignment.
+The public C adapter now binds this profile to the common allocation-free
+three-region transform ABI. It recalculates the chosen direction at factory
+creation and delegates opaque record construction to the checked partition
+helpers, so no private C++ entry layout becomes part of the C ABI.
 
 ### Published LZW plus Blocked Huffman boundary
 

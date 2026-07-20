@@ -2097,3 +2097,14 @@ and aggregate limits. For decoder limits of 64 raw bytes, 128 packed bytes,
 bytes, 64 private raw bytes, 128 packed bytes, and 112 phrase entries. Partition
 both typed regions, reject shortage, changed requirements, and misalignment,
 and verify stable profile-error mapping plus invalid-limit rejection.
+
+For the public LZW plus Adaptive C ABI, initialize encode defaults and require
+a 65,536-byte frame plus maximum code width 16. Under two-byte frames, width
+nine, a 16-byte packed limit, 528 payload bytes, 1,024 aggregate bytes, and 256
+dictionary entries, require encode workspace extents of 2 primary and 174
+secondary bytes. Encode `41 42 41 42 58`, then query decode requirements of
+1,080 primary and 18 secondary bytes and reproduce the input through the C11
+transform API. In both directions require a nonempty aligned opaque region.
+Reject each one-byte-short workspace, a deliberately misaligned views region,
+a null output-handle pointer, and a nonzero reserved field while preserving a
+null transform on every factory failure.
