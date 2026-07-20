@@ -79,9 +79,9 @@ the bidirectional x86-64 cross-platform result is recorded separately in
 admission. It fixes LZW's complete LSB-first packed-code bytes, including final
 dictionary padding, before a fresh per-frame FGK tree consumes them. Its exact
 bounds, transactional frame and streaming transforms, checked typed workspace
-profile, independent single-code vector, and public C factory are present.
-Completion, fuzz, CLI, benchmark, and interoperability admission remain
-pending.
+profile, independent single-code vector, public C factory, and public-ABI
+completion matrix are present. Fuzz, CLI, benchmark, and interoperability
+admission remain pending.
 
 ## Why publication is not automatic
 

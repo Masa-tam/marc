@@ -34,7 +34,10 @@ format versions, and C ABI versions are independent namespaces.
   calculates all direction-specific byte workspaces and safely partitions the
   aligned LZW encoder and decoder record regions. A bounded public C factory
   now exposes the fixed profile through direction-specific caller-owned
-  workspaces without leaking private C++ record layouts into the ABI.
+  workspaces without leaking private C++ record layouts into the ABI. Its
+  public-ABI completion matrix covers required binary data classes,
+  deterministic and chunk-independent streams, sticky terminal results, and
+  transactional malformed-final-frame rejection.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

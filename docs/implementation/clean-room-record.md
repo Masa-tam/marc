@@ -6329,3 +6329,24 @@ discarded and the reviewed seed retained.
   DD-323 typed boundaries. No external ABI or distinctive C test was compared.
 - Local validation: all 1,336 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman public completion matrix
+
+- Authoring method: exercised only the public C ABI admitted by DD-324 against
+  the repository completion criteria fixed by DD-325.
+- References used: DD-325, public lifecycle and status contracts, generic frame
+  fields, deterministic local byte generator, and existing data-class list.
+- Known implementations intentionally not consulted: external combined
+  codecs, conformance vectors, malformed archives, chunk schedules, source
+  code, or test suites.
+- Independent decisions: use 64-byte frames; recognize zero typed encoder
+  views for raw sizes zero and one; compare repeat encodes; test three chunk
+  schedules; isolate corrupt, truncated, and trailing final-frame failures.
+- Generated-code task description: prove required binary round trips,
+  deterministic bytes, chunk independence, sticky success and failure, exact
+  prior-frame publication, and a preserved final sentinel solely through C.
+- Similarity review: the matrix adapts marc's own completion categories and
+  generic frame walking to this public factory. No external test organization
+  or distinctive malformed corpus was compared.
+- Local validation: all 1,339 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

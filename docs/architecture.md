@@ -1552,6 +1552,10 @@ The public C adapter now binds this profile to the common allocation-free
 three-region transform ABI. It recalculates the chosen direction at factory
 creation and delegates opaque record construction to the checked partition
 helpers, so no private C++ entry layout becomes part of the C ABI.
+The public completion matrix constructs both directions exclusively through
+that ABI and verifies binary data classes, deterministic encoding, arbitrary
+chunk schedules, sticky terminal results, and frame-transactional rejection
+of corrupted, truncated, or trailing final input.
 
 ### Published LZW plus Blocked Huffman boundary
 

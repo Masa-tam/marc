@@ -932,3 +932,9 @@ The LZW plus Adaptive Huffman public C ABI uses only DD-324, the DD-323
 workspace profile, marc's common three-region transform ABI, and the existing
 combined streaming encoder and decoder. No external combined API, allocator,
 factory, ABI layout, source code, or C test suite was consulted.
+
+The LZW plus Adaptive Huffman public completion matrix uses only DD-325, the
+published C ABI, marc's required data-class inventory, generic frame fields,
+and deterministic first-party byte generation. No external combined codec,
+conformance corpus, malformed archive, chunk schedule, source code, or test
+suite was consulted.
