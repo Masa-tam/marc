@@ -2056,3 +2056,13 @@ unchanged. Corrupt the
 Adaptive payload padding and require both raw staging and destination to remain
 unchanged. Finally publish the independently composed `ABABABA` multi-code
 frame and require byte equality across raw staging and caller-visible output.
+
+For encoding, plan raw `A` through the combined boundary and require zero LZW
+encoder entries, one code, packed extent two, descriptor extent 16, payload
+extent three, serialized extent 75, and staged bytes `41 00`. Encode it and
+require exact equality with the independently assembled frame. Encode
+repository-owned `ABABABA` twice from fresh calls, require byte equality, and
+round-trip it through the combined decoder. Independently reject empty input,
+an unexpected raw frame extent, an undersized LZW entry table, packed staging,
+aggregate workspace limit, and serialized destination; pre-write failures must
+leave their sentinel storage unchanged.

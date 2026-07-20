@@ -1826,8 +1826,12 @@ private raw staging, counting its complete extent in pre-decode capacity and
 aggregate-workspace checks. The transactional complete-frame decoder then
 copies that entire private span to caller-visible output only after every
 operation succeeds. This is still an internal frame API rather than a public C
-decoder, encoder, CLI selector, benchmark entry, fuzz target, completion claim,
-or interoperability archive.
+decoder. The matching internal planner first freezes the complete canonical LZW
+packed region, then plans Adaptive Huffman over exactly those bytes; the
+deterministic encoder emits the generic header, descriptor, and payload only
+after complete capacity and workspace admission. There is still no streaming
+transform, public C factory, CLI selector, benchmark entry, fuzz target,
+completion claim, or interoperability archive.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

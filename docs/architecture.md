@@ -1519,6 +1519,13 @@ validation and reconstruction succeeds. No failure publishes a destination
 byte. There is still no streaming or public adapter; those later layers must
 consume this transaction rather than bypass it.
 
+Encoding now follows the exact inverse ownership order. The LZW planner fixes
+the complete code schedule and final padded packed byte in caller-owned staging
+before Adaptive planning observes any symbol. The frame planner accounts for
+the typed encoder table, packed span, descriptor, and exact entropy payload;
+the encoder rejects short serialized output before writing and reproduces the
+independent 75-byte frame. Streaming and public adapters remain later layers.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

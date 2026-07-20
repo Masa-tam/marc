@@ -5974,3 +5974,24 @@ reconstruction, capacity, or policy failure, publish no destination byte. This
 admits an internal transactional frame decoder only; it does not yet add an
 encoder, incremental stream transform, public C factory, CLI, benchmark, fuzz,
 completion, or interoperability claim.
+
+## DD-320: LZW Adaptive planning freezes packed bytes before entropy output
+
+- Date: 2026-07-21
+- Status: accepted
+
+Add the exact-frame planner and deterministic encoder for
+`lzw-adaptive-huffman`. Require a nonempty raw frame matching the generic frame
+contract. Compute and validate the caller-owned LZW encoder-entry prefix, plan
+the complete variable-width code stream, check packed staging capacity, and
+write those canonical bytes including final zero padding before Adaptive
+Huffman planning. Record and cross-check the planned code count.
+
+Count encoder entries, packed staging, the 16-byte Adaptive descriptor, and the
+exact payload in the aggregate workspace limit. Validate the synthesized
+generic header and complete serialized extent before returning a plan. Encoding
+must repeat the deterministic Adaptive plan over the frozen packed span, reject
+short output without changing it, then serialize the header, descriptor, and
+payload. Append new diagnostics without changing earlier values. This step
+adds no incremental transform, public C factory, CLI, benchmark, fuzz,
+completion, or interoperability claim.

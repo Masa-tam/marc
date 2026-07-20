@@ -902,3 +902,9 @@ DD-318 private reconstruction boundary, checked destination capacity, and
 marc's existing all-or-nothing frame publication convention. No external
 combined decoder, output transaction, source code, malformed corpus, API, or
 test suite was consulted.
+
+The LZW plus Adaptive Huffman exact-frame planner and encoder use only DD-320,
+the DD-316 representation, marc's existing LZW and Adaptive Huffman planners
+and encoders, generic serializers, checked arithmetic, and caller-owned
+workspace policy. No external combined encoder, parser, source code, output
+transaction, vector, workspace design, or test suite was consulted.

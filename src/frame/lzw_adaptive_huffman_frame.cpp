@@ -3,6 +3,7 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <limits>
 
 namespace marc::frame {
 namespace {
@@ -260,6 +261,257 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
 }
 
 } // namespace
+
+LzwAdaptiveHuffmanFrameValidationResult
+plan_lzw_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzwEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    LzwAdaptiveHuffmanFrameValidationResult result{};
+    result.raw_size = input.size();
+    if (validate_stream_header(stream, limits) != StreamHeaderError::none
+        || !supported_pipeline(stream)
+        || dictionary::internal::validate_lzw_parameters(parameters, limits)
+               != dictionary::internal::LzwFormatError::none) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::unsupported_pipeline;
+        return result;
+    }
+    if (input.empty()
+        || input.size() > std::numeric_limits<std::uint32_t>::max()) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::input_size_mismatch;
+        return result;
+    }
+
+    result.encoder_entries =
+        dictionary::internal::lzw_encoder_workspace_entries(
+            input.size(), parameters);
+    if (encoder_workspace.size() < result.encoder_entries) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            encoder_workspace_too_small;
+        return result;
+    }
+    const auto used_encoder_workspace =
+        encoder_workspace.first(result.encoder_entries);
+    const auto dictionary_plan =
+        dictionary::internal::plan_lzw_code_stream(
+            input, parameters, limits, used_encoder_workspace);
+    result.dictionary_size = dictionary_plan.output_size;
+    result.code_count = dictionary_plan.code_count;
+    result.dictionary_encode_error = dictionary_plan.error;
+    result.dictionary_format_error = dictionary_plan.format_error;
+    if (dictionary_plan.error
+        != dictionary::internal::LzwEncodeError::none) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            dictionary_encode_error;
+        return result;
+    }
+    if (result.dictionary_size
+            > entropy::internal::adaptive_huffman_max_frame_size
+        || result.dictionary_size
+               > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            invalid_dictionary_extent;
+        return result;
+    }
+    if (dictionary_staging.size() < result.dictionary_size) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            dictionary_staging_too_small;
+        return result;
+    }
+
+    std::uint64_t encoder_bytes{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(result.encoder_entries),
+            static_cast<std::uint64_t>(
+                sizeof(dictionary::internal::LzwEncoderEntry)),
+            encoder_bytes)) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+
+    const auto dictionary_encoded =
+        dictionary::internal::encode_lzw_code_stream(
+            input, parameters, limits, used_encoder_workspace,
+            dictionary_staging.first(result.dictionary_size));
+    result.dictionary_encode_error = dictionary_encoded.error;
+    result.dictionary_format_error = dictionary_encoded.format_error;
+    if (dictionary_encoded.error
+            != dictionary::internal::LzwEncodeError::none
+        || dictionary_encoded.code_count != result.code_count) {
+        result.error = dictionary_encoded.error
+                == dictionary::internal::LzwEncodeError::none
+            ? LzwAdaptiveHuffmanFrameValidationError::internal_error
+            : LzwAdaptiveHuffmanFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+
+    entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
+    const auto entropy_limits =
+        entropy_limits_for(limits, result.dictionary_size);
+    const auto entropy_plan =
+        entropy::internal::plan_adaptive_huffman_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            descriptor);
+    result.entropy_encode_error = entropy_plan.error;
+    result.payload_size = entropy_plan.payload_size;
+    result.descriptor_size =
+        entropy::internal::adaptive_huffman_descriptor_size;
+    if (entropy_plan.error
+        != entropy::internal::AdaptiveHuffmanEncodeError::none) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::entropy_encode_error;
+        return result;
+    }
+
+    std::uint64_t workspace_bytes{};
+    if (!core::checked_add(
+            encoder_bytes,
+            static_cast<std::uint64_t>(result.dictionary_size),
+            workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes,
+            static_cast<std::uint64_t>(result.descriptor_size),
+            workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes,
+            static_cast<std::uint64_t>(result.payload_size),
+            workspace_bytes)) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (workspace_bytes > limits.max_internal_buffered_bytes) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::workspace_limit;
+        return result;
+    }
+    if (result.payload_size > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            invalid_entropy_extent;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(input.size());
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count = 1;
+    header.block_descriptors_size =
+        entropy::internal::adaptive_huffman_descriptor_size;
+    const FrameValidationContext context{
+        stream, limits, sequence, output_already_committed};
+    result.header_error = validate_frame_header(header, context);
+    if (result.header_error != FrameHeaderError::none) {
+        result.error = result.header_error
+                == FrameHeaderError::unexpected_frame_size
+            ? LzwAdaptiveHuffmanFrameValidationError::input_size_mismatch
+            : LzwAdaptiveHuffmanFrameValidationError::header_error;
+        return result;
+    }
+    if (!core::checked_add(frame_header_size, result.descriptor_size,
+                           result.serialized_size)
+        || !core::checked_add(result.serialized_size, result.payload_size,
+                              result.serialized_size)) {
+        result.error =
+            LzwAdaptiveHuffmanFrameValidationError::arithmetic_overflow;
+    }
+    return result;
+}
+
+LzwAdaptiveHuffmanFrameValidationResult
+encode_lzw_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzwEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = plan_lzw_adaptive_huffman_frame(
+        stream, parameters, limits, sequence, output_already_committed, input,
+        encoder_workspace, dictionary_staging);
+    if (result.error != LzwAdaptiveHuffmanFrameValidationError::none) {
+        return result;
+    }
+    if (output.size() < result.serialized_size) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::
+            serialized_output_too_small;
+        return result;
+    }
+
+    entropy::internal::AdaptiveHuffmanDescriptor descriptor{};
+    const auto entropy_limits =
+        entropy_limits_for(limits, result.dictionary_size);
+    const auto entropy_plan =
+        entropy::internal::plan_adaptive_huffman_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            descriptor);
+    if (entropy_plan.error
+            != entropy::internal::AdaptiveHuffmanEncodeError::none
+        || entropy_plan.payload_size != result.payload_size) {
+        result.entropy_encode_error = entropy_plan.error;
+        result.error = LzwAdaptiveHuffmanFrameValidationError::internal_error;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(result.raw_size);
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count = 1;
+    header.block_descriptors_size =
+        entropy::internal::adaptive_huffman_descriptor_size;
+    const FrameValidationContext context{
+        stream, limits, sequence, output_already_committed};
+    if (serialize_frame_header(
+            header, context,
+            std::span<std::byte, frame_header_size>{
+                output.data(), frame_header_size})
+        != FrameHeaderError::none) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::internal_error;
+        return result;
+    }
+    result.descriptor_error =
+        entropy::internal::serialize_adaptive_huffman_descriptor(
+            descriptor, header.dictionary_serialized_size,
+            header.compressed_payload_size, entropy_limits,
+            std::span<std::byte,
+                      entropy::internal::adaptive_huffman_descriptor_size>{
+                output.data() + frame_header_size,
+                entropy::internal::adaptive_huffman_descriptor_size});
+    if (result.descriptor_error
+        != entropy::internal::AdaptiveHuffmanFormatError::none) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::internal_error;
+        return result;
+    }
+    const auto entropy_encoded =
+        entropy::internal::encode_adaptive_huffman_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            output.subspan(frame_header_size + result.descriptor_size,
+                           result.payload_size),
+            descriptor);
+    result.entropy_encode_error = entropy_encoded.error;
+    if (entropy_encoded.error
+        != entropy::internal::AdaptiveHuffmanEncodeError::none) {
+        result.error = LzwAdaptiveHuffmanFrameValidationError::internal_error;
+    }
+    return result;
+}
 
 LzwAdaptiveHuffmanFrameValidationResult
 validate_lzw_adaptive_huffman_frame(

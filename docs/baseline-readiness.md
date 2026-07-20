@@ -107,8 +107,10 @@ final padding, and exact raw extent. A bounded decoder now reconstructs a
 validated frame into separate private raw staging while checking its capacity
 and aggregate bytes before entropy output. An internal transactional decoder now
 copies a complete successful frame to caller-visible output while leaving it
-unchanged on every failure. It has no encoder, streaming transform, public
-factory, or readiness claim yet.
+unchanged on every failure. Its exact-frame planner and internal encoder
+now freeze canonical packed LZW bytes before Adaptive planning, reproduce the
+independent hand vector, and round-trip deterministic multi-code frames. It
+still has no streaming transform, public factory, or readiness claim.
 
 ## Remaining release evidence
 
@@ -220,7 +222,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-319, the complete Release suite contains 1,312 tests and passes under both
+At DD-320, the complete Release suite contains 1,318 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

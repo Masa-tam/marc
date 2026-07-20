@@ -6215,3 +6215,26 @@ discarded and the reviewed seed retained.
   distinctive tests were compared.
 - Local validation: all 1,312 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman frame planner and encoder
+
+- Authoring method: composed marc's existing LZW planner/encoder, Adaptive
+  planner/encoder, and generic serializers around the DD-316 byte boundary.
+- References used: DD-320, DD-316, DD-319, repository-owned standalone coder
+  contracts, checked arithmetic, and complete-frame workspace policy.
+- Known implementations intentionally not consulted: external combined
+  encoders, source code, container writers, workspace layouts, vectors, and
+  test suites.
+- Independent decisions: freeze packed bytes before entropy planning; retain
+  and cross-check the LZW code count; account for encoder records and exact
+  entropy extents; reject short serialized output before writing; append error
+  values without renumbering earlier diagnostics.
+- Generated-code task description: implement exact planning and deterministic
+  encoding, reproduce the independent frame, prove multi-code determinism and
+  round trip, cover all capacity and frame-extent boundaries, and update scope
+  documentation without adding streaming or a public factory.
+- Similarity review: the implementation composes only first-party marc APIs and
+  the already recorded independent vector. No external combined structure or
+  distinctive tests were compared.
+- Local validation: all 1,318 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
