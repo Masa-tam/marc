@@ -2086,3 +2086,14 @@ error at a stable byte position. Reject every proper stream prefix and one
 trailing byte, accept the exact empty prefix, reject each undersized encoded,
 packed, raw, and phrase region plus the aggregate threshold, and reject
 `ResetBlock` and an unknown flag.
+
+For the LZW plus Adaptive bounded profile, use original size 17, a ten-byte
+frame, and default maximum code width 16. Require a ten-byte raw region,
+20 packed bytes, a 732-byte conservative serialized-frame region, and nine
+typed encoder entries. Check the shorter seven-byte final frame and the
+canonical empty layout. Reject independently short packed, Adaptive payload,
+and aggregate limits. For decoder limits of 64 raw bytes, 128 packed bytes,
+1,024 internal bytes, and 300 dictionary entries, require 1,080 serialized
+bytes, 64 private raw bytes, 128 packed bytes, and 112 phrase entries. Partition
+both typed regions, reject shortage, changed requirements, and misalignment,
+and verify stable profile-error mapping plus invalid-limit rejection.

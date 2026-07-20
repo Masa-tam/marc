@@ -920,3 +920,10 @@ private-staging decoder, marc's generic prefix and frame parsers, checked LZW
 packed bounds, core transform contract, and caller-owned workspace policy. No
 external combined streaming decoder, buffering strategy, source code,
 malformed corpus, chunk schedule, or test suite was consulted.
+
+The LZW plus Adaptive Huffman bounded profile uses only DD-323, the DD-316
+representation, marc's existing LZW code-width and dictionary-capacity rules,
+Adaptive Huffman's documented payload ceiling, checked arithmetic, and the
+already implemented streaming constructor shapes. No external combined
+profile, allocator, ABI layout, workspace calculator, source code, or test
+suite was consulted.

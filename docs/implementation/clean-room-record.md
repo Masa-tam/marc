@@ -6284,3 +6284,26 @@ discarded and the reviewed seed retained.
   flow or distinctive tests were compared.
 - Local validation: all 1,328 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman bounded profile
+
+- Authoring method: derived direction-specific byte and typed-record extents
+  from DD-323 and marc's already implemented LZW/Adaptive stream boundaries.
+- References used: DD-323, checked arithmetic, LZW code-capacity and minimum
+  width rules, Adaptive symbol and payload bounds, and local decoder limits.
+- Known implementations intentionally not consulted: external combined
+  profiles, workspace calculators, allocator layouts, source code, APIs, or
+  test suites.
+- Independent decisions: retain the 65,536-byte reference cadence; cap packed
+  decoder staging by both local and Adaptive limits; derive phrase count from
+  nine-bit code density; expose one typed record kind per opaque region; use a
+  canonical neutral alignment for empty regions.
+- Generated-code task description: implement checked encoder/decoder profile
+  sizing, typed partition helpers, stable error mapping, and tests for exact
+  extents, short frames, empty input, independent limits, altered requirements,
+  shortage, and misalignment without adding a public factory.
+- Similarity review: the implementation recombines only existing marc bounds,
+  record types, and first-party workspace conventions. No external combined
+  layout or distinctive test structure was compared.
+- Local validation: all 1,335 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

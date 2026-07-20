@@ -114,7 +114,10 @@ first bounded streaming encoder now reproduces those exact bytes under
 one-byte I/O, output starvation, nonterminal `Flush`, and retained `EndInput`.
 The matching bounded streaming decoder validates complete frames before raw
 draining and covers all truncations, trailing data, later-frame atomicity, and
-sticky errors. It still has no public factory or readiness claim.
+sticky errors. Its bounded profile now derives all byte and typed-record
+workspaces from public-style configuration and validated local limits, with
+checked opaque-region partitioning. It still has no public factory or readiness
+claim.
 
 ## Remaining release evidence
 
@@ -226,7 +229,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-322, the complete Release suite contains 1,328 tests and passes under both
+At DD-323, the complete Release suite contains 1,335 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

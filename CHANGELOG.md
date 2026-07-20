@@ -30,7 +30,9 @@ format versions, and C ABI versions are independent namespaces.
   output, output starvation, `Flush`, and retained `EndInput`. The matching
   bounded streaming decoder validates complete frames before raw draining and
   rejects every truncation, trailing data, and later-frame corruption without
-  partially publishing the failing frame.
+  partially publishing the failing frame. Its internal bounded profile now
+  calculates all direction-specific byte workspaces and safely partitions the
+  aligned LZW encoder and decoder record regions.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

@@ -1541,6 +1541,14 @@ private-staging decoder only on a complete frame. Consequently a later corrupt
 frame cannot leak a prefix of its raw bytes, while previously drained frames
 remain committed and terminal error position remains reproducible.
 
+The internal bounded profile now converts a public-style original size,
+frame cadence, LZW parameters, and decoder limits into the exact byte regions
+needed by those two transforms. Its encoder calculation uses the conservative
+packed-code and Adaptive payload ceilings; its decoder calculation derives the
+largest packed input and phrase table from local limits. Opaque typed regions
+contain only LZW encoder entries or only decoder phrase entries, and checked
+partition helpers reject forged sizes, alignments, shortages, and misalignment.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

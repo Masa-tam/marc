@@ -6039,3 +6039,27 @@ truncation and trailing byte, accept the exact empty prefix, reject
 `ResetBlock` and unknown flags, and keep terminal errors and byte positions
 sticky. This step adds no public C factory, CLI, benchmark, fuzz, completion,
 or interoperability claim.
+
+## DD-323: LZW Adaptive profile exposes checked typed workspace layouts
+
+- Date: 2026-07-21
+- Status: accepted
+
+Define the bounded reference profile with a 65,536-byte default raw-frame
+cadence, LZW variant 1, Adaptive Huffman variant 1, and the existing one-MiB
+profile cap. For largest raw frame `F` and configured maximum code width `W`,
+encoder sizing reserves checked `ceil(FW/8)` packed bytes, `33` payload bytes
+per packed symbol, at most `min(F-1, code_capacity)` typed encoder entries, and
+the complete serialized frame. Admit the configuration only when raw, packed,
+serialized, typed, and aggregate extents satisfy all local limits.
+
+Decoder sizing derives its complete-frame, packed, private-raw, and phrase
+record ceilings only from validated local limits. Bound the packed region by
+both the dictionary-serialization limit and Adaptive Huffman's one-MiB symbol
+limit; derive the maximum phrase count from the minimum nine-bit LZW code width
+and the greatest code capacity admitted by the local dictionary-entry limit.
+Keep encoder and decoder records in separate single-type opaque regions.
+Partition helpers must rederive exact byte count and alignment, reject altered
+requirements, shortage, and misalignment, and accept only the canonical
+zero-byte/one-alignment empty layout. This step adds no public C factory, CLI,
+benchmark, fuzz, completion, or interoperability claim.
