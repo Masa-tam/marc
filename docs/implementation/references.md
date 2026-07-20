@@ -884,3 +884,9 @@ marc's already documented LZW variant 1 packed-code grammar, Adaptive Huffman
 FGK variant 1 rules, generic frame format, checked workspace policy, and the
 original Welch reference recorded above. No external combined codec, format,
 implementation, vector, workspace layout, corpus, or test suite was consulted.
+
+The LZW plus Adaptive Huffman complete-frame validator uses only DD-317, the
+DD-316 representation and bounds, marc's existing generic frame parser,
+Adaptive Huffman decoder, LZW validator, and checked caller-owned workspace
+policy. No external combined decoder, validation order, malformed vector,
+workspace layout, source code, or test suite was consulted.

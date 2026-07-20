@@ -1818,10 +1818,12 @@ The complete 75-byte frame is:
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final three bytes are the FGK payload. The high
 seven zero bits in the second packed LZW byte are dictionary-layer padding but
-belong to an ordinary zero-valued symbol at the entropy layer. This section
-reserves the representation and profile name; it does not publish a combined
-frame codec, C factory, CLI selector, benchmark entry, fuzz target, completion
-claim, or interoperability archive.
+belong to an ordinary zero-valued symbol at the entropy layer. The first
+combined implementation validates one exact complete frame through both
+encoded layers into caller-owned packed-byte and phrase staging. It publishes
+no raw byte and therefore is not yet a decoder, encoder, C factory, CLI
+selector, benchmark entry, fuzz target, completion claim, or interoperability
+archive.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

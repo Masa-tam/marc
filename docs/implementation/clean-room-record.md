@@ -6145,3 +6145,27 @@ discarded and the reviewed seed retained.
 - Local validation: the independent vector test and all 1,297 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, Adaptive Huffman
+  decoder, and LZW packed-stream validator at their documented byte boundary.
+- References used: DD-317, DD-316, the repository's existing frame, Adaptive
+  descriptor/payload, LZW width/reference/padding, and limits contracts.
+- Known implementations intentionally not consulted: external combined
+  decoders, source code, validation order, malformed corpora, workspace
+  layouts, and test suites.
+- Independent decisions: admit a complete-frame validator before raw
+  reconstruction; validate all extents and capacities before entropy output;
+  preserve stable layer-ordered errors; retain packed and phrase workspaces as
+  discardable scratch; expose validated code count but no raw bytes.
+- Generated-code task description: implement the bounded validation boundary,
+  cover the independent vector, truncation, trailing data, capacity and
+  aggregate limits, descriptor and entropy padding, LZW padding, sequence,
+  extent, and pipeline failures; update scope documentation without claiming a
+  decoder or public codec.
+- Similarity review: the implementation follows only existing marc validators
+  and naming conventions. No external combined implementation structure or
+  distinctive tests were compared.
+- Local validation: all 1,304 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

@@ -5912,3 +5912,25 @@ format document. Exercise that vector by composing only the existing standalone
 LZW encoder, Adaptive encoder, and generic serializers. This decision specifies
 bytes and a reserved name only; it does not publish a combined frame codec,
 factory, CLI, benchmark, fuzz, completion, or interoperability claim.
+
+## DD-317: LZW Adaptive validation stops at the packed-byte boundary first
+
+- Date: 2026-07-21
+- Status: accepted
+
+Admit the first combined `lzw-adaptive-huffman` implementation as a strict
+complete-frame validator only. Validate the stream profile, LZW parameters,
+sequence, generic frame header, exact complete-frame extent, packed-code bound,
+single 16-byte Adaptive descriptor, payload bound, every caller-owned capacity,
+and the aggregate workspace limit before entropy output. Parse the Adaptive
+descriptor before mutating packed-byte staging, then decode exactly the declared
+packed extent and apply the existing LZW validator to that complete span.
+
+Preserve deterministic error precedence as header and extent errors, workspace
+errors, descriptor errors, Adaptive payload errors, then LZW code-stream errors.
+The LZW pass owns width growth, references, `KwKwK`, final high-bit padding, and
+exact declared raw size. Return the validated code count and diagnostic enums,
+but reconstruct and publish no raw bytes at this boundary. Staging and phrase
+records remain disposable scratch on every error. Later reconstruction,
+encoding, streaming, public API, and completion steps must build on this same
+validator rather than weakening or duplicating it.

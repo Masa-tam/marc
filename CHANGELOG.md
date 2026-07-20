@@ -16,6 +16,10 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame
   vector assembled from the standalone LZW and Adaptive Huffman primitives.
+  Its first bounded complete-frame validator entropy-decodes into private
+  packed staging and validates the full LZW code stream, including width
+  transitions, references, `KwKwK`, final padding, and declared raw size,
+  without reconstructing or publishing raw bytes.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

@@ -1504,8 +1504,14 @@ Decoding must reconstruct the exact packed bytes through a fresh FGK tree,
 then apply the ordinary LZW width, reference, `KwKwK`, padding, and raw-extent
 validator before private reconstruction and frame publication. The independent
 raw-`A` vector fixes packed bytes `41 00`, Adaptive payload `41 00 00`, and the
-complete 75-byte frame. No combined implementation or public adapter is
-admitted by this specification step.
+complete 75-byte frame.
+
+The first combined boundary now implements the validation half of that order.
+It admits one exact complete frame, checks all generic and profile extents plus
+caller-owned packed and phrase capacities before mutation, entropy-decodes into
+private packed staging, and invokes the existing LZW validator before success.
+It deliberately has no raw reconstruction or public adapter yet; those later
+layers must consume this validated boundary rather than bypass it.
 
 ### Published LZW plus Blocked Huffman boundary
 

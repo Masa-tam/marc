@@ -2028,3 +2028,13 @@ unseen zero byte contributes NYT path `0` and eight zero literal bits. Require
 the 17-bit payload `41 00 00`, descriptor `(2, 3, 1, 0)`, and the exact 75-byte
 frame recorded in `docs/format.md`. Assemble the test only from standalone LZW
 and Adaptive encoders plus generic serializers; do not use a combined encoder.
+
+For the first combined validator, reuse that independently assembled 75-byte
+frame as the positive anchor. Exercise every proper prefix and one trailing
+byte, undersized packed and phrase staging, the exact aggregate-workspace
+threshold, a descriptor-count mismatch, nonzero Adaptive padding, a separately
+Adaptive-encoded packed stream with nonzero LZW padding, sequence mismatch,
+impossible packed extent, and an unsupported entropy variant. Require
+pre-decode failures to leave sentinel packed staging unchanged, and require the
+valid vector to expose exactly `41 00` and one validated code without producing
+raw output.
