@@ -2076,3 +2076,13 @@ prefix, preserve `EndInput` while one prefix byte drains, reject each
 undersized raw/packed/encoded/entry region and the aggregate policy threshold,
 emit the empty stream prefix, and reject premature finish, excess input,
 `ResetBlock`, and an unknown flag.
+
+For streaming decoding, generate `ABABX` through the exact frame encoder using
+two-byte outer frames. Feed the complete stream with one-byte input and output,
+and separately retain `EndInput` while validated raw frames drain; both must
+reproduce the source and end stickily. Corrupt the second frame's Adaptive
+descriptor and require only the first two raw bytes to publish before a sticky
+error at a stable byte position. Reject every proper stream prefix and one
+trailing byte, accept the exact empty prefix, reject each undersized encoded,
+packed, raw, and phrase region plus the aggregate threshold, and reject
+`ResetBlock` and an unknown flag.

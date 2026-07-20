@@ -1534,6 +1534,13 @@ one-shot framing authoritative while satisfying one-byte I/O, output
 starvation, nonterminal `Flush`, retained `EndInput`, and sticky terminal-state
 requirements. A matching streaming decoder remains a separate next boundary.
 
+The streaming decoder now provides that inverse boundary. It separates prefix,
+frame-header, frame-body, private reconstruction, and raw-drain states; admits
+all byte and typed storage before collecting a body; and calls the exact
+private-staging decoder only on a complete frame. Consequently a later corrupt
+frame cannot leak a prefix of its raw bytes, while previously drained frames
+remain committed and terminal error position remains reproducible.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

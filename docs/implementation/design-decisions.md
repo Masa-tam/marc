@@ -6017,3 +6017,25 @@ as filled, leave a partial frame open on `Flush`, reject `ResetBlock`, and keep
 terminal success and error sticky. Input/output chunking must reproduce the
 DD-320 one-shot bytes exactly. This step adds no streaming decoder, public C
 factory, CLI, benchmark, fuzz, completion, or interoperability claim.
+
+## DD-322: LZW Adaptive streaming decoding validates before raw draining
+
+- Date: 2026-07-21
+- Status: accepted
+
+Add the matching bounded streaming decoder. Collect the exact 80-byte prefix,
+parse and validate the LZW/Adaptive profile and parameters, then collect each
+56-byte frame header separately. Before body collection, validate sequence and
+raw extents, checked `ceil(FW/8)` packed and `33S` payload bounds, descriptor
+shape, every caller-owned capacity, complete serialized-frame extent, and the
+aggregate bytes for encoded frame, packed staging, private raw staging, and
+the used LZW phrase records.
+
+Collect only the admitted body, invoke the DD-318 private-staging decoder on the
+complete frame, and drain raw bytes only after that transaction succeeds. A
+later malformed frame may not publish any of its bytes; earlier completed
+frames remain committed. Preserve `EndInput` during raw draining, reject every
+truncation and trailing byte, accept the exact empty prefix, reject
+`ResetBlock` and unknown flags, and keep terminal errors and byte positions
+sticky. This step adds no public C factory, CLI, benchmark, fuzz, completion,
+or interoperability claim.

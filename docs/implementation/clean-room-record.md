@@ -6261,3 +6261,26 @@ discarded and the reviewed seed retained.
   control flow or distinctive tests were compared.
 - Local validation: all 1,323 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman streaming decoder
+
+- Authoring method: wrapped the DD-318 private reconstruction transaction in
+  marc's bounded prefix/header/body/drain transform states.
+- References used: DD-322, DD-318, generic stream and frame parsers, checked
+  LZW staging bounds, core process invariants, and first-party error policy.
+- Known implementations intentionally not consulted: external combined
+  streaming decoders, buffering designs, source code, malformed corpora, chunk
+  schedules, and test suites.
+- Independent decisions: validate conservative extents and all storage before
+  body collection; reconstruct only complete frames; drain only validated raw
+  staging; preserve prior frames on later corruption; retain finish and sticky
+  byte-positioned errors.
+- Generated-code task description: implement bounded streaming decode and
+  cover one-byte I/O, retained finish, complete truncation enumeration,
+  trailing data, empty input, later-frame atomicity, all workspace and aggregate
+  limits, protocol errors, and sticky terminal behavior.
+- Similarity review: the transform composes only existing marc state-machine
+  conventions and independently generated frames. No external combined control
+  flow or distinctive tests were compared.
+- Local validation: all 1,328 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

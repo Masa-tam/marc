@@ -1840,6 +1840,14 @@ contract. Filling a frame closes it; `Flush` alone does not close a partial
 frame, and retained `EndInput` completes only after all prefix and frame bytes
 drain. Input and output chunk sizes do not alter the representation.
 
+The matching streaming decoder collects the prefix and one admitted serialized
+frame in bounded caller-owned storage. It validates the header and conservative
+packed/payload bounds before body collection, invokes the complete private
+reconstruction transaction only after the frame is present, and drains only
+validated raw bytes. Every truncation and trailing byte is invalid; a malformed
+later frame cannot publish any of that frame, while earlier frames remain
+committed.
+
 ## LZW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 4, dictionary variant 1,

@@ -112,7 +112,9 @@ now freeze canonical packed LZW bytes before Adaptive planning, reproduce the
 independent hand vector, and round-trip deterministic multi-code frames. Its
 first bounded streaming encoder now reproduces those exact bytes under
 one-byte I/O, output starvation, nonterminal `Flush`, and retained `EndInput`.
-It still has no streaming decoder, public factory, or readiness claim.
+The matching bounded streaming decoder validates complete frames before raw
+draining and covers all truncations, trailing data, later-frame atomicity, and
+sticky errors. It still has no public factory or readiness claim.
 
 ## Remaining release evidence
 
@@ -224,7 +226,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-321, the complete Release suite contains 1,323 tests and passes under both
+At DD-322, the complete Release suite contains 1,328 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
