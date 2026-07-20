@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | Specified `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
@@ -74,6 +74,12 @@ regressions, transactional CLI selector, and verified public-C benchmark are
 also present. Interoperability schema 10 appends it as the twenty-first archive;
 the bidirectional x86-64 cross-platform result is recorded separately in
 `docs/interoperability.md`.
+
+`lzw-adaptive-huffman` is the next specified Adaptive Huffman composition. It
+fixes LZW's complete LSB-first packed-code bytes, including final dictionary
+padding, before a fresh per-frame FGK tree consumes them. Its exact bounds,
+transactional validation order, and independent single-code frame are frozen;
+implementation and public admission remain pending.
 
 ## Why publication is not automatic
 

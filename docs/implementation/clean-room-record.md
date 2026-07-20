@@ -6119,3 +6119,29 @@ discarded and the reviewed seed retained.
 - Similarity review: only verifier result lines and already documented
   environment metadata were recorded; no external source code, format, corpus,
   or implementation was consulted.
+
+## 2026-07-21 - LZW plus Adaptive Huffman specification and vector
+
+- Authoring method: composed marc's independently specified standalone LZW
+  packed-code representation with its independently specified Adaptive Huffman
+  FGK byte transform at their canonical byte-stream boundary.
+- References used: DD-316, the repository's LZW variant 1 and Adaptive Huffman
+  variant 1 format sections, generic framing rules, and the Welch paper already
+  recorded in `references.md` for the underlying dictionary algorithm.
+- Known implementations intentionally not consulted: external LZW/Adaptive
+  combinations, source code, container formats, workspace layouts, vectors,
+  corpora, and test suites.
+- Independent decisions: reserve `lzw-adaptive-huffman`; retain format 1.0;
+  entropy-code the complete zero-padded packed stream; reset both states per
+  frame; use a 65,536-byte, 16-bit bounded reference profile; validate entropy,
+  LZW codes and padding, and private reconstruction before publication.
+- Generated-code task description: specify exact fields, bounds, state resets,
+  validation order, and the raw-`A` frame; add a test that independently
+  assembles it from standalone primitives; update status documentation without
+  claiming a combined implementation or public API.
+- Similarity review: the resulting frame follows only marc's existing byte
+  formats and serializers. No external combined representation or distinctive
+  implementation structure was compared.
+- Local validation: the independent vector test and all 1,297 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

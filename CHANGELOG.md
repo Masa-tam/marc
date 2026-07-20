@@ -12,6 +12,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lzw-adaptive-huffman` composition now has an exact
+  decoder-visible representation, checked packed-code and Adaptive payload
+  bounds, transactional validation order, and an independent single-code frame
+  vector assembled from the standalone LZW and Adaptive Huffman primitives.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

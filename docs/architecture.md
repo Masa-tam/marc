@@ -1485,6 +1485,28 @@ throughput, and the larger caller-owned workspace total. Interoperability
 schema 4 covers the same public profile through deterministic foreign decode
 and local re-encode checks.
 
+### Specified LZW plus Adaptive Huffman boundary
+
+LZW first completes its variable-width LSB-first code stream and zero-pads the
+last partial byte. Adaptive Huffman consumes that finalized byte sequence as
+ordinary symbols, so the dictionary padding byte remains visible to the entropy
+model while LZW code boundaries remain invisible. Both states reset at every
+outer frame.
+
+For raw frame size `F` and maximum code width `W`, packed staging is bounded by
+`ceil(F*W/8)` and the conservative Adaptive payload by 33 times that extent.
+The reference 65,536-byte, 16-bit profile therefore admits 131,072 packed bytes,
+4,325,376 payload bytes, and at most 65,280 generated LZW entries. All raw,
+packed, serialized-frame, aligned-record, and aggregate extents must be checked
+before mutation.
+
+Decoding must reconstruct the exact packed bytes through a fresh FGK tree,
+then apply the ordinary LZW width, reference, `KwKwK`, padding, and raw-extent
+validator before private reconstruction and frame publication. The independent
+raw-`A` vector fixes packed bytes `41 00`, Adaptive payload `41 00 00`, and the
+complete 75-byte frame. No combined implementation or public adapter is
+admitted by this specification step.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

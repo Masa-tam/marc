@@ -2019,3 +2019,12 @@ set `marc-cli-v10`. The verifier must enforce exact order, size, SHA-256,
 foreign decode equality, and byte-identical local re-encoding. Derive schema 9
 by removing only the last profile and continue the frozen conversion chain to
 schema 1; swap the first two schema-10 entries and require order rejection.
+
+For the specified LZW plus Adaptive Huffman vector, encode raw `A` through the
+already frozen standalone LZW grammar. Code 65 at width nine produces packed
+bytes `41 00`, whose final seven high bits are zero LZW padding. Feed both bytes
+in order to a fresh FGK tree: `41` contributes its eight literal bits, then the
+unseen zero byte contributes NYT path `0` and eight zero literal bits. Require
+the 17-bit payload `41 00 00`, descriptor `(2, 3, 1, 0)`, and the exact 75-byte
+frame recorded in `docs/format.md`. Assemble the test only from standalone LZW
+and Adaptive encoders plus generic serializers; do not use a combined encoder.

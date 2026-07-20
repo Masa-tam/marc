@@ -5883,3 +5883,32 @@ one-generation-at-a-time chain through schema 1. Local schema admission proves
 the generator, verifier, and compatibility rules only. Cross-platform evidence
 still requires CI artifacts from the same full Git revision and the established
 bidirectional external verification procedure.
+
+## DD-316: LZW Adaptive entropizes finalized packed-code bytes
+
+- Date: 2026-07-21
+- Status: accepted
+
+Reserve `lzw-adaptive-huffman` for LZW variant 1 followed by Adaptive Huffman
+FGK variant 1 under format version 1.0. Preserve the standalone 16-byte LZW
+parameters, empty entropy parameters, LSB-first variable-width code schedule,
+and final LZW zero padding. Complete the packed-code byte stream before entropy
+processing; Adaptive Huffman consumes every resulting byte, including the
+final padded byte, without interpreting LZW code or padding boundaries. Reset
+both dictionaries at every outer frame.
+
+For raw frame size `F` and maximum code width `W`, use the checked staging bound
+`S = ceil(F * W / 8)` and Adaptive payload bound `33S`. Bound generated entries
+by `min(F - 1, 2^W - 256, local_limit)` for nonempty frames. The reference
+profile uses `F = 65,536` and `W = 16`, so `S = 131,072`, payload is at most
+4,325,376 bytes, and generated entries are at most 65,280. Encoding freezes
+canonical packed bytes before Adaptive planning. Decoding entropy-decodes into
+packed-byte staging, validates width changes, references, `KwKwK`, LZW padding,
+and exact raw size, reconstructs privately, and only then publishes.
+
+Freeze the raw-`A` vector independently: LZW bytes `41 00`, Adaptive payload
+`41 00 00`, descriptor `(2, 3, 1, 0)`, and the complete 75-byte frame in the
+format document. Exercise that vector by composing only the existing standalone
+LZW encoder, Adaptive encoder, and generic serializers. This decision specifies
+bytes and a reserved name only; it does not publish a combined frame codec,
+factory, CLI, benchmark, fuzz, completion, or interoperability claim.

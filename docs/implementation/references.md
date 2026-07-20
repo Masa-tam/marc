@@ -878,3 +878,9 @@ results for revision `bc8faba3043db78a953f18876f153abc847f814d`, the previously
 documented Ubuntu 26.04/Clang 21.1.8 environment boundary, and marc's own
 verifier contract. No external archive tool, decoder implementation,
 compatibility suite, or third-party result claim was used.
+
+The LZW plus Adaptive Huffman composition specification uses only DD-316,
+marc's already documented LZW variant 1 packed-code grammar, Adaptive Huffman
+FGK variant 1 rules, generic frame format, checked workspace policy, and the
+original Welch reference recorded above. No external combined codec, format,
+implementation, vector, workspace layout, corpus, or test suite was consulted.

@@ -1723,6 +1723,106 @@ before exposing either typed span. The public C factory, CLI selector,
 benchmark adapter, and interoperability schema-4 tools emit and accept this
 representation.
 
+## LZW variant 1 plus Adaptive Huffman FGK variant 1
+
+The reserved profile name is `lzw-adaptive-huffman`. This composition uses
+dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 1, and
+entropy variant 1 under format version 1.0. Its stream parameter regions are
+the 16-byte LZW parameters followed by the empty Adaptive Huffman parameter
+region. `entropy block size` is zero.
+
+Each nonempty outer frame owns one freshly reset LZW dictionary and one freshly
+reset FGK tree. The LZW encoder first produces its complete canonical LSB-first
+packed-code byte stream, including the required zero padding in the high bits
+of its final byte. Adaptive Huffman then treats every byte of that finalized
+region as an ordinary symbol; it does not see LZW code boundaries and does not
+remove or reinterpret LZW padding.
+
+The generic frame header records raw bytes as `uncompressed size`, packed LZW
+code bytes as `dictionary serialized size`, Adaptive payload bytes as
+`compressed payload size`, entropy block count one, descriptor size 16, and
+checksum trailer size zero. The body is:
+
+```text
+generic frame header
+one Adaptive Huffman descriptor
+Adaptive Huffman payload over the packed LZW bytes
+```
+
+The descriptor's `symbol count` equals `dictionary serialized size`, and its
+`payload size` equals `compressed payload size`. All FGK descriptor,
+bit-consumption, final-valid-bit, padding, update, rescaling, and reset rules
+are unchanged from Adaptive Huffman variant 1. No separate packed-code region
+is stored.
+
+For raw frame size `F` and configured maximum LZW code width `W`, the checked
+packed-code ceiling is `S = ceil(F * W / 8)` bytes. The conservative Adaptive
+payload ceiling is `33S` bytes. The generated LZW entry count is zero when `F`
+is zero; otherwise it is at most the lesser of `F - 1`, `2^W - 256`, and the
+local dictionary-entry limit. The format-level raw-frame cap remains 2^20
+bytes. The bounded reference profile uses `F = 65,536` and `W = 16`, giving
+`S = 131,072` packed bytes, a 4,325,376-byte Adaptive payload ceiling, and at
+most 65,280 generated entries.
+
+Every product, ceiling division, complete-frame extent, aligned entry-table
+extent, and aggregate sum must be checked before allocation or mutation.
+Encoding fixes the deterministic LZW parse and packed bytes in caller-owned
+staging before Adaptive planning. It validates the complete header, descriptor,
+payload, and destination extent before publishing a frame byte.
+
+Decoding is transactional at the outer frame boundary. It first validates the
+pipeline, LZW parameters, sequence, generic extents, one-block count, and
+descriptor extent. Adaptive Huffman must then reconstruct exactly the declared
+packed-byte count with exact payload-bit exhaustion. The ordinary LZW validator
+must consume that complete staged region, reproduce the specified width-growth
+schedule, validate dictionary references and `KwKwK`, require zero high padding
+bits in the final packed byte, and derive exactly the declared raw extent into
+bounded phrase records. Reconstruction occurs in private raw staging, and only
+a completely successful frame may be published. A malformed later frame may
+not publish any of its bytes, although earlier frames may already be committed.
+
+The known-size stream is the ordinary 64-byte version-1.0 header followed by
+the 16-byte LZW parameter region and zero or more frames. Empty input is exactly
+this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
+`ResetBlock` is unsupported at this composition boundary, and input/output
+chunking alone must not change serialized bytes.
+
+### Hand-checkable single-code frame
+
+For raw input `A`, LZW emits code 65 at width nine, producing packed bytes:
+
+```text
+41 00
+```
+
+The first Adaptive symbol `41` is emitted as its eight literal bits. The unseen
+`00` then contributes NYT path `0` followed by eight zero literal bits. The
+complete 17-bit payload is `41 00 00`, with one valid bit in the final byte.
+The Adaptive descriptor is:
+
+```text
+02 00 00 00 03 00 00 00 01 00 00 00 00 00 00 00
+```
+
+The complete 75-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  03 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+02 00 00 00 03 00 00 00  01 00 00 00 00 00 00 00
+41 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Adaptive descriptor, and the final three bytes are the FGK payload. The high
+seven zero bits in the second packed LZW byte are dictionary-layer padding but
+belong to an ordinary zero-valued symbol at the entropy layer. This section
+reserves the representation and profile name; it does not publish a combined
+frame codec, C factory, CLI selector, benchmark entry, fuzz target, completion
+claim, or interoperability archive.
+
 ## LZW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 4, dictionary variant 1,
