@@ -98,8 +98,10 @@ visible codec is published, although internal transactional frame APIs now
 copy only complete successful decoded frames and encode from a fully frozen
 token span. A bounded streaming encoder now buffers one raw frame, builds it
 through that exact-frame transaction, and drains immutable serialized bytes.
-No C factory, CLI selector, benchmark, fuzz boundary, or interoperability
-entry is claimed yet.
+A matching bounded streaming decoder collects and validates one complete frame
+before draining raw bytes, so a malformed later frame cannot partially publish
+itself. No C factory, CLI selector, benchmark, fuzz boundary, or
+interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

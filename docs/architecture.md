@@ -1627,6 +1627,16 @@ starvation retains all offsets and an already observed `EndInput`; `Flush`
 does not close a partial frame. The aggregate policy counts raw, token,
 serialized, and typed-record bytes before frame construction.
 
+The bounded streaming decoder first collects and parses the 80-byte prefix,
+then admits only a complete generic frame header whose token, entropy, phrase,
+expansion, serialized, and raw extents fit all caller capacities and the
+aggregate policy. It buffers the full encoded frame, invokes private-staging
+validation and reconstruction, and only then enters raw draining. Therefore a
+later malformed frame may follow already committed earlier output, but no byte
+from the malformed frame is published. End-of-input remains retained while a
+validated raw frame drains; truncation, trailing input, and repeated terminal
+errors are deterministic.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

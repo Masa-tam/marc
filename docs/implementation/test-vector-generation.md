@@ -2216,3 +2216,14 @@ drain, and require the same reference stream. Exercise undersized raw, token,
 typed-entry, and complete-frame storage plus an aggregate limit one byte below
 the exact used total. Cover empty input, premature end, excess input,
 `ResetBlock`, and an unknown flag with stable errors.
+
+For streaming decoding, consume the same three-frame `ABABX` stream with one
+input byte and one output byte per call and require exact raw equality and
+sticky `EndOfStream`. Repeatedly pass `EndInput` while permitting only one raw
+output byte and require it to remain retained through every validated-frame
+drain. Corrupt the second frame's Adaptive descriptor and require only the
+first frame's `AB` to be published, with the next output sentinel unchanged and
+the same error position returned thereafter. Exercise every proper stream
+prefix, one trailing byte, the empty prefix-only stream, undersized encoded,
+token, raw, phrase, and expansion regions, an aggregate limit one byte below
+the exact frame requirement, `ResetBlock`, and an unknown flag.

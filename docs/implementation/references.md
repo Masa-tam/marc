@@ -1004,3 +1004,9 @@ exact-frame transaction, marc's core transform contract, generic stream and
 LZD parameter serializers, checked token bounds, and caller-owned workspace
 policy. No external combined streaming encoder, buffering strategy, source
 code, API, chunk schedule, corpus, or test suite was consulted.
+
+The LZD plus Adaptive Huffman streaming decoder uses only DD-336, the DD-332
+private-staging transaction, marc's generic prefix and frame parsers, checked
+LZD token/phrase/expansion bounds, and core transform contract. No external
+combined streaming decoder, buffering strategy, source code, API, malformed
+corpus, chunk schedule, or test suite was consulted.

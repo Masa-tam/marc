@@ -2079,7 +2079,12 @@ emits the ordinary
 complete frame to that exact encoder, and drains the resulting bytes without
 changing their representation. `Flush` leaves a partial frame open, while
 `EndInput` is retained until all prefix and frame bytes have drained. No public
-profile exists at this step.
+profile exists at this step. The matching internal streaming decoder collects
+the complete prefix, header, descriptor, and payload; checks token, phrase,
+expansion, raw, and aggregate extents before entropy output; reconstructs into
+private raw staging; and only then drains that successful frame. A malformed
+frame publishes none of its raw bytes, even when earlier frames were already
+committed.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

@@ -6607,3 +6607,26 @@ discarded and the reviewed seed retained.
   implementation or distinctive tests were compared.
 - Local validation: all 1,370 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman streaming decoder
+
+- Authoring method: wrapped DD-332's private complete-frame decoder in marc's
+  prefix, frame-collection, and validated-raw-drain transform states.
+- References used: DD-336, DD-332, DD-330 bounds, the repository's generic
+  parsers, core process contract, and checked aggregate-workspace policy.
+- Known implementations intentionally not consulted: external combined
+  streaming decoders, source code, buffering layouts, APIs, malformed corpora,
+  chunk schedules, and test suites.
+- Independent decisions: validate all header-derived storage before body
+  collection; include expansion references in aggregate bytes; reconstruct a
+  whole frame privately; publish only from a successful drain state; retain
+  end while draining; keep terminal errors sticky with stable input position.
+- Generated-code task description: add the bounded decoder and build wiring;
+  cover one-byte boundaries, retained end, later-frame atomic corruption, all
+  truncations, trailing data, empty stream, workspace and aggregate limits,
+  protocol errors, and update internal-only scope documentation.
+- Similarity review: the state machine composes only existing marc parsing,
+  validation, decoding, and transform conventions. No external combined
+  implementation or distinctive tests were compared.
+- Local validation: all 1,375 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

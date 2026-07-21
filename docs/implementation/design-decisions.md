@@ -6339,3 +6339,26 @@ stable terminal errors. Require byte identity with concatenated one-shot frames
 under one-byte buffers and sticky `EndOfStream`. This remains internal;
 streaming decode, public factory, completion, fuzz, CLI, benchmark, and
 interoperability are separate admissions.
+
+## DD-336: LZD Adaptive streaming decode publishes only validated frames
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the matching incremental decoder as a bounded adapter over DD-332. Collect
+and validate the exact 80-byte stream prefix before accepting frame headers.
+For each header, check the `8*ceil(F/2)` token ceiling, eight-byte token shape,
+`33S` payload ceiling, phrase records, phrase-count-plus-one expansion stack,
+complete encoded-frame storage, private raw storage, and their aggregate bytes
+before collecting the body or starting entropy output.
+
+Buffer one complete encoded frame, invoke the private-staging complete-frame
+decoder, and enter raw draining only after Adaptive, LZD grammar, and iterative
+reconstruction all succeed. Retain `EndInput` while validated raw bytes drain.
+Reject every prefix or frame truncation, data after the declared final frame,
+`ResetBlock`, and unknown flags with sticky stable errors. Earlier successful
+frames may already be committed, but a failing frame must publish no byte.
+Require one-byte input/output equivalence, all truncation positions, empty
+stream handling, later-frame atomic corruption, and every caller-workspace and
+aggregate limit. This remains internal; public factory, completion, fuzz, CLI,
+benchmark, and interoperability are separate admissions.
