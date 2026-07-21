@@ -23,8 +23,11 @@ format versions, and C ABI versions are independent namespaces.
   frame iteratively into separately bounded private raw staging, counting both
   the expansion stack and raw extent before entropy output. Its internal
   transactional frame decoder publishes the whole raw frame only after success
-  and leaves destination output unchanged on every failure. No public API is
-  published yet.
+  and leaves destination output unchanged on every failure. Its exact-frame
+  planner now freezes the canonical LZD token stream before Adaptive planning,
+  and its deterministic encoder reproduces the independent terminal-token
+  frame without partial destination writes on capacity failure. No public API
+  is published yet.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

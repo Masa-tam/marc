@@ -2196,3 +2196,13 @@ to remain unchanged. Corrupt Adaptive payload padding and require both raw
 staging and destination to remain unchanged. Finally publish the independently
 composed `ABABAB` phrase-reference frame and require byte equality across raw
 staging and caller-visible output.
+
+For exact-frame encoding, pass raw `A` to the combined planner and require the
+frozen eight-byte terminal token, zero generated phrases, one token, the
+16-byte descriptor, five-byte payload, and total 77-byte extent fixed by the
+independent vector. Require the encoder to reproduce all 77 bytes exactly.
+Encode a phrase-reference input twice from the same canonical staging and
+require byte identity plus complete-frame round trip. Exercise insufficient
+typed encoder workspace, token staging, serialized destination, aggregate
+workspace, empty input, and unexpected frame extent; capacity failures must
+leave their caller-visible sentinel regions unchanged.

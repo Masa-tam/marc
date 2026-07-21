@@ -6293,3 +6293,26 @@ reconstruction, capacity, or policy failure, publish no destination byte. This
 admits an internal transactional frame decoder only; it does not yet add an
 encoder, incremental stream transform, public C factory, CLI, benchmark, fuzz,
 completion, or interoperability claim.
+
+## DD-334: LZD Adaptive encoding freezes canonical tokens first
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the internal exact-frame planner and encoder as the inverse of DD-333.
+Run the ordinary deterministic LZD planner, require its complete typed encoder
+workspace and canonical token capacity, serialize the entire token sequence
+into private staging, and only then let a fresh Adaptive Huffman FGK model plan
+those exact bytes. Count typed encoder records, token staging, the fixed
+descriptor, and exact entropy payload against the aggregate workspace limit.
+
+Return the complete serialized extent without touching caller-visible output.
+The encoder repeats Adaptive planning over the frozen token span, requires an
+identical payload extent, and rejects insufficient serialized destination
+capacity before writing the generic header, descriptor, or payload. Preserve
+all previously assigned combined error values and append encoding-specific
+categories. Require byte identity with DD-330's independent raw-`A` vector,
+determinism and round trip for phrase references, and sentinel preservation on
+capacity failures. This remains an internal complete-frame API; streaming,
+public factory, CLI, benchmark, fuzz, completion, and interoperability work
+remain separate admissions.

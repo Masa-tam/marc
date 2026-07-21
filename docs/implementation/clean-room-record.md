@@ -6213,8 +6213,6 @@ discarded and the reviewed seed retained.
 - Similarity review: the implementation reuses marc's existing transaction
   boundary and first-party vectors. No external combined structure or
   distinctive tests were compared.
-- Local validation: all 1,360 Release tests passed under both MSVC/Visual
-  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
 - Local validation: all 1,312 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
 
@@ -6561,3 +6559,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the implementation reuses marc's existing transaction
   boundary and first-party vectors. No external combined structure or
   distinctive tests were compared.
+- Local validation: all 1,360 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman exact-frame encoder
+
+- Authoring method: composed marc's existing deterministic LZD planner and
+  encoder with its Adaptive Huffman planner, encoder, and generic frame
+  serializer at the DD-334 byte boundary.
+- References used: DD-334, DD-330, the repository's canonical LZD token,
+  Adaptive descriptor/payload, checked arithmetic, and frame-header contracts.
+- Known implementations intentionally not consulted: external combined
+  encoders, source code, control flow, vectors, corpora, APIs, and test suites.
+- Independent decisions: freeze all token bytes before entropy planning;
+  account for typed records, staging, descriptor, and exact payload; repeat
+  entropy planning only over immutable staging; reject short destination
+  capacity before serialized output mutation.
+- Generated-code task description: add the exact-frame planner and encoder,
+  independent-vector identity, phrase-reference determinism and round trip,
+  capacity atomicity, aggregate-limit and frame-extent coverage, and update
+  internal-only scope documentation.
+- Similarity review: the change composes only pre-existing marc layer APIs and
+  first-party vectors. No external combined implementation or distinctive
+  test structure was compared.
+- Local validation: all 1,365 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

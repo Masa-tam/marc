@@ -992,3 +992,9 @@ the DD-332 private reconstruction boundary, checked destination capacity, and
 marc's existing all-or-nothing frame publication convention. No external
 combined decoder, output transaction, source code, malformed corpus, API, or
 test suite was consulted.
+
+The LZD plus Adaptive Huffman exact-frame encoder uses only DD-334, DD-330's
+frozen representation and independent vector, marc's existing deterministic
+LZD planner/encoder, Adaptive Huffman planner/encoder, generic frame
+serializer, and checked workspace policy. No external combined encoder,
+source code, control flow, vector, corpus, API, or test suite was consulted.

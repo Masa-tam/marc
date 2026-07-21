@@ -2,7 +2,9 @@
 #define MARC_FRAME_LZD_ADAPTIVE_HUFFMAN_FRAME_HPP
 
 #include "dictionary/lzd_decoder.hpp"
+#include "dictionary/lzd_encoder.hpp"
 #include "entropy/adaptive_huffman_decoder.hpp"
+#include "entropy/adaptive_huffman_encoder.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -32,6 +34,12 @@ enum class LzdAdaptiveHuffmanFrameValidationError : std::uint8_t {
     expansion_workspace_too_small,
     dictionary_decode_error,
     raw_output_too_small,
+    input_size_mismatch,
+    serialized_output_too_small,
+    encoder_workspace_too_small,
+    dictionary_encode_error,
+    entropy_encode_error,
+    internal_error,
 };
 
 struct LzdAdaptiveHuffmanFrameValidationResult {
@@ -43,6 +51,8 @@ struct LzdAdaptiveHuffmanFrameValidationResult {
     std::size_t phrase_entries{};
     std::size_t expansion_entries{};
     std::size_t token_count{};
+    std::size_t encoder_entries{};
+    std::size_t dictionary_entries{};
     FrameHeaderError header_error{FrameHeaderError::none};
     entropy::internal::AdaptiveHuffmanFormatError descriptor_error{
         entropy::internal::AdaptiveHuffmanFormatError::none};
@@ -54,9 +64,41 @@ struct LzdAdaptiveHuffmanFrameValidationResult {
         dictionary::internal::LzdFormatError::none};
     dictionary::internal::LzdDecodeError dictionary_decode_error{
         dictionary::internal::LzdDecodeError::none};
+    dictionary::internal::LzdEncodeError dictionary_encode_error{
+        dictionary::internal::LzdEncodeError::none};
+    entropy::internal::AdaptiveHuffmanEncodeError entropy_encode_error{
+        entropy::internal::AdaptiveHuffmanEncodeError::none};
     LzdAdaptiveHuffmanFrameValidationError error{
         LzdAdaptiveHuffmanFrameValidationError::none};
 };
+
+// Fixes the complete canonical LZD token stream in private dictionary staging
+// before planning Adaptive Huffman over those exact bytes. Raw input and
+// staging must not overlap.
+[[nodiscard]] LzdAdaptiveHuffmanFrameValidationResult
+plan_lzd_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing serialized output. Input, dictionary
+// staging, and serialized output must be mutually non-overlapping.
+[[nodiscard]] LzdAdaptiveHuffmanFrameValidationResult
+encode_lzd_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Entropy-decodes and validates exactly one complete frame into private LZD
 // token staging and a caller-owned phrase table. No raw byte is reconstructed

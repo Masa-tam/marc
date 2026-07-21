@@ -2069,7 +2069,12 @@ stack in pre-decode capacity and aggregate-workspace checks. It still publishes
 no partial output: the transactional complete-frame decoder checks destination
 capacity before entropy output, then copies the entire private raw span only
 after every operation succeeds. This remains an internal frame API, and no
-combined encoder or public profile exists at this step.
+partial output is exposed on failure. The exact-frame encoder fixes the entire
+canonical LZD token stream in private staging before Adaptive planning, counts
+typed encoder records, token bytes, descriptor, and exact payload against the
+workspace limit, and rejects a short serialized destination before writing.
+It reproduces the 77-byte vector above. No streaming or public profile exists
+at this step.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

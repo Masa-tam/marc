@@ -1605,11 +1605,18 @@ reconstructs the exact token region and invokes the ordinary LZD validator.
 The next boundary invokes the ordinary iterative LZD decoder only after that
 validation succeeds, writing into a distinct private raw span. Raw capacity,
 the conservative phrase-count-plus-one expansion stack, and their aggregate
-bytes are checked before entropy output. No caller-visible output is copied;
-the internal transactional decoder additionally checks destination capacity
-before entropy output and copies private raw staging only after every layer
-succeeds. No failure publishes a destination byte. Encoding, streaming, and
-public adapters must build on this transaction rather than bypass it.
+bytes are checked before entropy output. The internal transactional decoder
+additionally checks destination capacity before entropy output and copies
+private raw staging only after every layer succeeds. No failure publishes a
+destination byte.
+
+Encoding applies the inverse ownership order. The exact-frame planner first
+fixes the complete deterministic LZD token stream in private staging, then
+plans Adaptive Huffman over only those bytes. It accounts for the typed LZD
+encoder records, token staging, descriptor, and exact payload before returning
+the serialized extent. The encoder rejects insufficient destination capacity
+before writing and reproduces the independent 77-byte frame. Streaming and
+public adapters must build on these frame transactions rather than bypass them.
 
 ### Published LZW plus Blocked Huffman boundary
 

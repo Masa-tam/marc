@@ -141,7 +141,9 @@ publishing raw bytes. A bounded decoder now reconstructs a validated frame into
 separate private raw staging, with raw capacity, expansion-stack capacity, and
 aggregate bytes checked before entropy output. An internal transactional
 decoder now copies the complete successful frame to caller-visible output while
-leaving it unchanged on every failure. Encoding, streaming, public ABI,
+leaving it unchanged on every failure. An exact-frame planner and deterministic
+encoder now freeze the complete LZD token bytes before Adaptive planning and
+reject short serialized output before mutation. Streaming, public ABI,
 completion, fuzz, CLI, benchmark, and interoperability boundaries remain.
 
 ## Remaining release evidence
@@ -263,7 +265,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-333, the complete Release suite contains 1,360 tests and passes under both
+At DD-334, the complete Release suite contains 1,365 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
