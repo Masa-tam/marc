@@ -1861,7 +1861,9 @@ a 131,072-byte packed ceiling, a 4,325,376-byte Adaptive payload ceiling,
 all concrete workspace extents and opaque alignment from the public
 requirements query. The public benchmark uses the same configuration and
 verifies a byte-exact round trip before timing. Interoperability admission
-remains a separate evidence step and does not alter these bytes.
+schema 11 appends this profile as the twenty-second archive without changing
+any earlier schema or stream byte. External artifact verification remains a
+separate evidence step.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

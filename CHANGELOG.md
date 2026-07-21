@@ -43,7 +43,9 @@ format versions, and C ABI versions are independent namespaces.
   uses the bounded 64-KiB reference profile exclusively through the public C
   ABI and strictly rejects trailing data. Its public-C benchmark verifies a
   byte-exact round trip before reporting ratio, directional throughput, and
-  queried caller-owned workspace.
+  queried caller-owned workspace. Interoperability schema 11 appends it as the
+  twenty-second archive while preserving schemas 1 through 10 and their exact
+  codec orders.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

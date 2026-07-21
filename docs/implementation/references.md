@@ -955,3 +955,9 @@ C factory and requirements query, DD-327's fixed CLI policy, and marc's
 dependency-free measurement driver. No external benchmark harness, LZW or
 Adaptive Huffman implementation, performance-tuning source, or result corpus
 was consulted.
+
+Interoperability schema 11 uses only DD-329, the frozen schema-10 manifest
+order, the published `lzw-adaptive-huffman` CLI selector, and marc's
+repository-owned bundle generator, verifier, fixture, and compatibility
+regression. No external interoperability harness, archive set, manifest,
+corpus, combined-codec source, or test suite was consulted.

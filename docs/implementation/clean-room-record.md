@@ -6417,3 +6417,30 @@ discarded and the reviewed seed retained.
   3,150-byte round trip, and all 1,344 Release tests passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
   CMake 4.3.4.
+
+## 2026-07-21 - Interoperability schema 11
+
+- Authoring method: extended marc's repository-owned manifest protocol by one
+  append-only generation while retaining every earlier schema definition.
+- References used: DD-329, the frozen schema-10 profile order, the public
+  `lzw-adaptive-huffman` CLI selector, and the local generator, verifier,
+  deterministic fixture, and compatibility regression.
+- Known implementations intentionally not consulted: external archive tools,
+  interoperability suites, manifests, corpora, combined-codec source, or
+  third-party compatibility results.
+- Independent decisions: name codec set `marc-cli-v11`; append LZW Adaptive as
+  archive 22; retain the 8,193-byte fixture; require exact manifest order,
+  hashes, foreign decode, and local byte-identical re-encode; derive schema 10
+  by removing only the final profile; reject reordered schema-11 manifests.
+- Tests updated: the compatibility regression generates and verifies schema 11,
+  checks order rejection, then verifies the frozen schema 10 through 1
+  conversion chain.
+- Similarity review: all changes are versioned data lists and control flow in
+  marc's own PowerShell protocol; no external format or implementation
+  expression was used.
+- Local validation: the focused compatibility regression passed. Independently
+  generated 22-archive MSVC and ClangCL bundles were cross-verified in both
+  compiler directions with exact decode and re-encode equality. External Linux
+  artifact verification remains pending. All 1,344 Release tests passed under
+  both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
+  CMake 4.3.4.

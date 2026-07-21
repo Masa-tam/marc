@@ -2145,3 +2145,13 @@ pre-timing byte-exact round trip and a report naming the selected codec,
 encoded size, ratio, directional elapsed time and throughput, all six queried
 workspace extents, and the greater caller-owned workspace total. Apply no
 ratio or throughput pass threshold.
+
+For interoperability schema 11, reuse the deterministic 8,193-byte fixture and
+the exact twenty-one-entry schema-10 order, then append
+`lzw-adaptive-huffman`. Generate and locally round-trip all twenty-two archives
+before writing codec set `marc-cli-v11`. The verifier must enforce exact order,
+size, SHA-256, foreign decode equality, and byte-identical local re-encoding.
+Derive schema 10 by removing only the last profile and continue the frozen
+conversion chain to schema 1; swap the first two schema-11 entries and require
+order rejection. As a local determinism check, cross-verify an MSVC-generated
+bundle with ClangCL and a ClangCL-generated bundle with MSVC.
