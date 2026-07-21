@@ -6251,3 +6251,25 @@ publish no raw bytes. Staging and phrase records remain disposable scratch on
 every error. Later reconstruction, encoding, streaming, public API, and
 completion steps must consume this validator rather than weaken or duplicate
 it.
+
+## DD-332: LZD Adaptive reconstructs only into private raw staging
+
+- Date: 2026-07-22
+- Status: accepted
+
+Extend the complete-frame boundary with a decoder that reconstructs the
+already validated LZD token stream into caller-owned private raw staging. Add
+the raw extent and a conservative expansion workspace of
+`phrase_workspace_entries + 1` references to both pre-decode capacity checks
+and aggregate workspace accounting, so insufficient staging or policy limits
+fail before Adaptive Huffman writes token bytes. Require input, token staging,
+and raw staging not to overlap.
+
+After DD-331 validation succeeds, invoke the ordinary bounded iterative LZD
+decoder over exactly the validated token extent, phrase-record prefix,
+expansion-reference prefix, and declared raw extent. Preserve its stable
+validation, format, and decode diagnostics and map an unexpected reconstruction
+failure to a distinct combined-layer error. On every error the caller discards
+all staging. Successful raw bytes remain private: this step adds no caller-
+visible output copy, streaming transform, factory, CLI, benchmark, fuzz,
+completion, or interoperability claim.

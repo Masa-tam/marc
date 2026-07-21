@@ -980,3 +980,9 @@ DD-330 representation and bounds, marc's existing generic frame parser,
 Adaptive Huffman decoder, LZD validator, and checked caller-owned workspace
 policy. No external combined decoder, validation order, malformed vector,
 workspace layout, source code, or test suite was consulted.
+
+The LZD plus Adaptive Huffman private-staging decoder uses only DD-332, the
+DD-331 validator, marc's existing bounded iterative LZD decoder, typed phrase
+records, explicit expansion stack, and checked aggregate-workspace policy. No
+external combined decoder, transactional publication design, source code,
+malformed corpus, workspace layout, or test suite was consulted.

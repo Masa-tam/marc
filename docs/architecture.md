@@ -1602,9 +1602,12 @@ The first combined boundary implements the validation half of that order. It
 checks the complete generic frame, LZD and Adaptive extents, caller-owned token
 and phrase capacities, and aggregate workspace before entropy output. It then
 reconstructs the exact token region and invokes the ordinary LZD validator.
-No raw byte is reconstructed or published; later layers must build on this
-validated boundary. Encoding, private reconstruction, streaming, and public
-adapters remain later steps.
+The next boundary invokes the ordinary iterative LZD decoder only after that
+validation succeeds, writing into a distinct private raw span. Raw capacity,
+the conservative phrase-count-plus-one expansion stack, and their aggregate
+bytes are checked before entropy output. No caller-visible output is copied;
+later publication, encoding, streaming, and public adapters must build on this
+private reconstruction boundary.
 
 ### Published LZW plus Blocked Huffman boundary
 

@@ -2062,8 +2062,12 @@ is assembled from the standalone LZD and Adaptive Huffman encoders plus generic
 serializers. The first combined validator accepts exactly one complete frame,
 checks all extents and caller capacities before entropy output, reconstructs
 the token region into private staging, and validates the complete LZD phrase
-graph and declared raw extent. It reconstructs and publishes no raw bytes, and
-no combined encoder or public profile exists at this step.
+graph and declared raw extent. The next bounded boundary reconstructs that
+validated graph iteratively into separate caller-owned private raw staging.
+It counts raw capacity and the conservative phrase-count-plus-one expansion
+stack in pre-decode capacity and aggregate-workspace checks. It still publishes
+no caller-visible output, and no combined encoder or public profile exists at
+this step.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

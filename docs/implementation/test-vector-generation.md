@@ -2177,3 +2177,13 @@ must reach LZD validation and fail with their stable grammar categories.
 Require every pre-decode capacity or descriptor failure to preserve sentinel
 token staging. The valid vector must expose exactly the eight canonical token
 bytes and one validated token without producing raw output.
+
+For private reconstruction, decode the same independent terminal-token frame
+and require raw `41` only after token validation. Independently encode the
+repository-owned raw sequence `ABABAB` through standalone LZD and Adaptive
+helpers, then require the combined private-staging decoder to reproduce it
+through two phrases and a three-reference expansion ceiling. Pass zero raw
+capacity, zero expansion capacity, and an aggregate limit admitting validation
+bytes but neither private extent; all must fail before changing sentinel token
+or raw storage. Corrupt the Adaptive descriptor and require private raw staging
+to remain unchanged.

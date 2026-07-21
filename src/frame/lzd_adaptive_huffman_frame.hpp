@@ -1,7 +1,7 @@
 #ifndef MARC_FRAME_LZD_ADAPTIVE_HUFFMAN_FRAME_HPP
 #define MARC_FRAME_LZD_ADAPTIVE_HUFFMAN_FRAME_HPP
 
-#include "dictionary/lzd_validator.hpp"
+#include "dictionary/lzd_decoder.hpp"
 #include "entropy/adaptive_huffman_decoder.hpp"
 #include "entropy/adaptive_huffman_format.hpp"
 #include "frame/frame_header.hpp"
@@ -28,6 +28,9 @@ enum class LzdAdaptiveHuffmanFrameValidationError : std::uint8_t {
     entropy_decode_error,
     dictionary_validation_error,
     arithmetic_overflow,
+    raw_staging_too_small,
+    expansion_workspace_too_small,
+    dictionary_decode_error,
 };
 
 struct LzdAdaptiveHuffmanFrameValidationResult {
@@ -37,6 +40,7 @@ struct LzdAdaptiveHuffmanFrameValidationResult {
     std::size_t descriptor_size{};
     std::size_t payload_size{};
     std::size_t phrase_entries{};
+    std::size_t expansion_entries{};
     std::size_t token_count{};
     FrameHeaderError header_error{FrameHeaderError::none};
     entropy::internal::AdaptiveHuffmanFormatError descriptor_error{
@@ -47,6 +51,8 @@ struct LzdAdaptiveHuffmanFrameValidationResult {
         dictionary::internal::LzdValidationError::none};
     dictionary::internal::LzdFormatError dictionary_format_error{
         dictionary::internal::LzdFormatError::none};
+    dictionary::internal::LzdDecodeError dictionary_decode_error{
+        dictionary::internal::LzdDecodeError::none};
     LzdAdaptiveHuffmanFrameValidationError error{
         LzdAdaptiveHuffmanFrameValidationError::none};
 };
@@ -66,6 +72,22 @@ validate_lzd_adaptive_huffman_frame(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::LzdPhraseEntry>
         phrase_workspace) noexcept;
+
+// Validates every encoded layer and reconstructs exactly one frame into
+// caller-owned private raw staging. On error, all workspace contents must be
+// discarded. Input, dictionary staging, and raw staging must not overlap.
+[[nodiscard]] LzdAdaptiveHuffmanFrameValidationResult
+decode_lzd_adaptive_huffman_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    std::span<std::uint32_t> expansion_workspace,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

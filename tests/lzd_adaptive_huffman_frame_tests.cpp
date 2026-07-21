@@ -285,4 +285,114 @@ TEST(LzdAdaptiveHuffmanFrameValidator,
               LzdAdaptiveHuffmanFrameValidationError::unsupported_pipeline);
 }
 
+TEST(LzdAdaptiveHuffmanFrameDecoder, ReconstructsHandVectorPrivately) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array<std::byte, 1> raw_staging{};
+    const auto result =
+        marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+            stream_for_size(1), {}, {}, 0, 0, terminal_token_frame, staging,
+            {}, expansion, raw_staging);
+    ASSERT_EQ(result.error,
+              LzdAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::LzdDecodeError::none);
+    EXPECT_EQ(result.expansion_entries, 1U);
+    EXPECT_EQ(staging, terminal_token_a);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+}
+
+TEST(LzdAdaptiveHuffmanFrameDecoder,
+     RejectsSmallPrivateStagingBeforeEntropyOutput) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    staging.fill(std::byte{0x5a});
+    std::array<std::uint32_t, 1> expansion{UINT32_C(0x6b6b6b6b)};
+    std::array<std::byte, 1> raw_staging{std::byte{0x6b}};
+    EXPECT_EQ(marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, terminal_token_frame,
+                  staging, {}, expansion, {}).error,
+              LzdAdaptiveHuffmanFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(expansion[0], UINT32_C(0x6b6b6b6b));
+    EXPECT_EQ(raw_staging[0], std::byte{0x6b});
+
+    EXPECT_EQ(marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, terminal_token_frame,
+                  staging, {}, {}, raw_staging).error,
+              LzdAdaptiveHuffmanFrameValidationError::
+                  expansion_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0x6b});
+}
+
+TEST(LzdAdaptiveHuffmanFrameDecoder,
+     CountsExpansionAndRawStagingInWorkspace) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    const std::uint64_t validation_bytes = 16 + 5 + 8;
+    limits.max_internal_buffered_bytes = validation_bytes;
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array<std::byte, 1> raw_staging{};
+    EXPECT_EQ(marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+                  stream_for_size(1), {}, limits, 0, 0,
+                  terminal_token_frame, staging, {}, expansion, raw_staging)
+                  .error,
+              LzdAdaptiveHuffmanFrameValidationError::workspace_limit);
+}
+
+TEST(LzdAdaptiveHuffmanFrameDecoder,
+     ExpandsPhraseReferencesAndPreservesMalformedRawStaging) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    const auto frame = frame_for_raw(raw);
+    std::array<std::byte, raw.size() * 4> staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, raw.size() / 2>
+        phrases{};
+    std::array<std::uint32_t, raw.size() / 2 + 1> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    const auto decoded =
+        marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+            stream_for_size(raw.size()), {}, {}, 0, 0, frame, staging,
+            phrases, expansion, raw_staging);
+    ASSERT_EQ(decoded.error,
+              LzdAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(decoded.token_count, 2U);
+    EXPECT_EQ(decoded.phrase_entries, 2U);
+    EXPECT_EQ(decoded.expansion_entries, 3U);
+    EXPECT_EQ(raw_staging, raw);
+
+    auto malformed = terminal_token_frame;
+    malformed[64] = std::byte{};
+    std::array<std::byte, 1> guarded_raw{std::byte{0x6b}};
+    EXPECT_EQ(marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, malformed, staging, {},
+                  expansion, guarded_raw).error,
+              LzdAdaptiveHuffmanFrameValidationError::descriptor_error);
+    EXPECT_EQ(guarded_raw[0], std::byte{0x6b});
+
+    const auto invalid_terminal = frame_for_tokens(terminal_token_a, 2);
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 1> guarded_phrase{};
+    std::array<std::uint32_t, 2> guarded_expansion{};
+    std::array<std::byte, 2> guarded_pair{
+        std::byte{0x6b}, std::byte{0x6b}};
+    EXPECT_EQ(marc::frame::decode_lzd_adaptive_huffman_frame_to_staging(
+                  stream_for_size(2), {}, {}, 0, 0, invalid_terminal,
+                  staging, guarded_phrase, guarded_expansion, guarded_pair)
+                  .error,
+              LzdAdaptiveHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_TRUE(std::ranges::all_of(
+        guarded_pair, [](const std::byte value) {
+            return value == std::byte{0x6b};
+        }));
+}
+
 } // namespace

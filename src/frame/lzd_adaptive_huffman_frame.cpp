@@ -33,10 +33,7 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
     return entropy_limits;
 }
 
-} // namespace
-
-LzdAdaptiveHuffmanFrameValidationResult
-validate_lzd_adaptive_huffman_frame(
+[[nodiscard]] LzdAdaptiveHuffmanFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzdParameters& parameters,
     const core::DecoderLimits& limits,
@@ -45,7 +42,10 @@ validate_lzd_adaptive_huffman_frame(
     const std::span<const std::byte> input,
     const std::span<std::byte> dictionary_staging,
     const std::span<dictionary::internal::LzdPhraseEntry>
-        phrase_workspace) noexcept {
+        phrase_workspace,
+    const bool require_raw_staging,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
     LzdAdaptiveHuffmanFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -135,6 +135,9 @@ validate_lzd_adaptive_huffman_frame(
     result.phrase_entries =
         dictionary::internal::lzd_validation_workspace_entries(
             result.dictionary_size, result.raw_size, parameters);
+    result.expansion_entries =
+        dictionary::internal::lzd_expansion_workspace_entries(
+            result.phrase_entries, result.raw_size != 0);
     if (dictionary_staging.size() < result.dictionary_size) {
         result.error = LzdAdaptiveHuffmanFrameValidationError::
             dictionary_staging_too_small;
@@ -145,14 +148,30 @@ validate_lzd_adaptive_huffman_frame(
             phrase_workspace_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error = LzdAdaptiveHuffmanFrameValidationError::
+            raw_staging_too_small;
+        return result;
+    }
+    if (require_raw_staging
+        && expansion_workspace.size() < result.expansion_entries) {
+        result.error = LzdAdaptiveHuffmanFrameValidationError::
+            expansion_workspace_too_small;
+        return result;
+    }
 
     std::uint64_t phrase_bytes{};
+    std::uint64_t expansion_bytes{};
     std::uint64_t workspace_bytes{};
     if (!core::checked_multiply(
             static_cast<std::uint64_t>(result.phrase_entries),
             static_cast<std::uint64_t>(
                 sizeof(dictionary::internal::LzdPhraseEntry)),
             phrase_bytes)
+        || !core::checked_multiply(
+            static_cast<std::uint64_t>(result.expansion_entries),
+            static_cast<std::uint64_t>(sizeof(std::uint32_t)),
+            expansion_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(result.descriptor_size),
             static_cast<std::uint64_t>(result.payload_size), workspace_bytes)
@@ -160,7 +179,14 @@ validate_lzd_adaptive_huffman_frame(
             workspace_bytes, static_cast<std::uint64_t>(result.dictionary_size),
             workspace_bytes)
         || !core::checked_add(workspace_bytes, phrase_bytes,
-                              workspace_bytes)) {
+                              workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(workspace_bytes, expansion_bytes,
+                                  workspace_bytes))
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             LzdAdaptiveHuffmanFrameValidationError::arithmetic_overflow;
         return result;
@@ -214,6 +240,60 @@ validate_lzd_adaptive_huffman_frame(
         != dictionary::internal::LzdValidationError::none) {
         result.error = LzdAdaptiveHuffmanFrameValidationError::
             dictionary_validation_error;
+    }
+    return result;
+}
+
+} // namespace
+
+LzdAdaptiveHuffmanFrameValidationResult
+validate_lzd_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry>
+        phrase_workspace) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        false, {}, {});
+}
+
+LzdAdaptiveHuffmanFrameValidationResult
+decode_lzd_adaptive_huffman_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        true, expansion_workspace, raw_staging);
+    if (result.error != LzdAdaptiveHuffmanFrameValidationError::none) {
+        return result;
+    }
+
+    const auto decoded = dictionary::internal::decode_lzd_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        expansion_workspace.first(result.expansion_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error != dictionary::internal::LzdDecodeError::none) {
+        result.dictionary_error = decoded.validation_error;
+        result.dictionary_format_error = decoded.format_error;
+        result.error = LzdAdaptiveHuffmanFrameValidationError::
+            dictionary_decode_error;
     }
     return result;
 }
