@@ -2073,8 +2073,13 @@ partial output is exposed on failure. The exact-frame encoder fixes the entire
 canonical LZD token stream in private staging before Adaptive planning, counts
 typed encoder records, token bytes, descriptor, and exact payload against the
 workspace limit, and rejects a short serialized destination before writing.
-It reproduces the 77-byte vector above. No streaming or public profile exists
-at this step.
+It reproduces the 77-byte vector above. The internal bounded streaming encoder
+emits the ordinary
+80-byte stream prefix, buffers at most one configured raw frame, delegates each
+complete frame to that exact encoder, and drains the resulting bytes without
+changing their representation. `Flush` leaves a partial frame open, while
+`EndInput` is retained until all prefix and frame bytes have drained. No public
+profile exists at this step.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

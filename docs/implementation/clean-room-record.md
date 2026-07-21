@@ -6584,3 +6584,26 @@ discarded and the reviewed seed retained.
   test structure was compared.
 - Local validation: all 1,365 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman streaming encoder
+
+- Authoring method: wrapped DD-334's exact-frame transaction in marc's bounded
+  transform state model and generic prefix serializers.
+- References used: DD-335, DD-334, the repository's core process contract,
+  checked LZD token ceiling, stream header, and LZD parameter format.
+- Known implementations intentionally not consulted: external combined
+  streaming encoders, source code, buffering layouts, APIs, chunk schedules,
+  corpora, and test suites.
+- Independent decisions: own four explicit caller regions; drain prefix before
+  input collection; encode only a complete outer frame; retain `EndInput`
+  across starvation; keep `Flush` non-terminal; map construction, capacity,
+  policy, and protocol failures to stable core errors.
+- Generated-code task description: add the bounded encoder and build wiring;
+  compare one-byte I/O with concatenated one-shot frames; cover flush, retained
+  end, empty input, storage and aggregate limits, protocol errors, and update
+  internal-only scope documentation.
+- Similarity review: the state machine follows marc's existing transform
+  conventions and composes only first-party layer APIs. No external combined
+  implementation or distinctive tests were compared.
+- Local validation: all 1,370 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

@@ -2206,3 +2206,13 @@ require byte identity plus complete-frame round trip. Exercise insufficient
 typed encoder workspace, token staging, serialized destination, aggregate
 workspace, empty input, and unexpected frame extent; capacity failures must
 leave their caller-visible sentinel regions unchanged.
+
+For streaming encoding, use the five-byte input `ABABX` with two-byte outer
+frames. Build the reference stream from the generic 80-byte prefix followed by
+three independently planned and encoded complete frames. Feed and drain one
+byte at a time and require byte identity plus sticky `EndOfStream`. Separately
+flush after one partial raw byte, pass `EndInput` while only one prefix byte can
+drain, and require the same reference stream. Exercise undersized raw, token,
+typed-entry, and complete-frame storage plus an aggregate limit one byte below
+the exact used total. Cover empty input, premature end, excess input,
+`ResetBlock`, and an unknown flag with stable errors.

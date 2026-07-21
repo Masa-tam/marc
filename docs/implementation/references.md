@@ -998,3 +998,9 @@ frozen representation and independent vector, marc's existing deterministic
 LZD planner/encoder, Adaptive Huffman planner/encoder, generic frame
 serializer, and checked workspace policy. No external combined encoder,
 source code, control flow, vector, corpus, API, or test suite was consulted.
+
+The LZD plus Adaptive Huffman streaming encoder uses only DD-335, the DD-334
+exact-frame transaction, marc's core transform contract, generic stream and
+LZD parameter serializers, checked token bounds, and caller-owned workspace
+policy. No external combined streaming encoder, buffering strategy, source
+code, API, chunk schedule, corpus, or test suite was consulted.

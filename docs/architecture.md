@@ -1618,6 +1618,15 @@ the serialized extent. The encoder rejects insufficient destination capacity
 before writing and reproduces the independent 77-byte frame. Streaming and
 public adapters must build on these frame transactions rather than bypass them.
 
+The bounded streaming encoder owns four caller-supplied regions: one raw frame,
+the `8*ceil(F/2)` token ceiling, one complete encoded frame, and the typed LZD
+encoder records. It emits the 80-byte stream prefix, collects exactly one
+outer frame, invokes the exact-frame planner and encoder, then drains immutable
+serialized bytes before accepting the next frame. Prefix or frame output
+starvation retains all offsets and an already observed `EndInput`; `Flush`
+does not close a partial frame. The aggregate policy counts raw, token,
+serialized, and typed-record bytes before frame construction.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

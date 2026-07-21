@@ -6316,3 +6316,26 @@ determinism and round trip for phrase references, and sentinel preservation on
 capacity failures. This remains an internal complete-frame API; streaming,
 public factory, CLI, benchmark, fuzz, completion, and interoperability work
 remain separate admissions.
+
+## DD-335: LZD Adaptive streaming encoding buffers one bounded raw frame
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the first incremental encoder for `lzd-adaptive-huffman` as a bounded
+adapter over DD-334. Serialize the 64-byte stream header and 16-byte LZD
+parameters at construction. Require caller-owned storage for the largest raw
+frame, its checked `8*ceil(F/2)` canonical token ceiling, a complete serialized
+frame, and the exact typed LZD encoder-entry prefix. Count all four used regions
+against the aggregate internal-buffer limit before encoding each frame.
+
+Drain the immutable 80-byte prefix before collecting input, buffer exactly one
+outer frame, invoke the exact-frame planner and encoder, and drain that complete
+frame before accepting the next one. Preserve a valid `EndInput` observed
+during prefix or frame output starvation. `Flush` may expose already prepared
+bytes but must not close or alter a partial frame; reject `ResetBlock`, unknown
+flags, premature `EndInput`, and input beyond declared original size with
+stable terminal errors. Require byte identity with concatenated one-shot frames
+under one-byte buffers and sticky `EndOfStream`. This remains internal;
+streaming decode, public factory, completion, fuzz, CLI, benchmark, and
+interoperability are separate admissions.
