@@ -6152,3 +6152,25 @@ configuration, allocation, processing, malformed-stream, or commit failure.
 Exercise the selector with the common multi-frame encode/decode round trip and
 require strict rejection of appended trailing data before claiming CLI
 publication. This step adds no benchmark or interoperability claim.
+
+## DD-328: LZW Adaptive benchmark measures a verified public round trip
+
+- Date: 2026-07-21
+- Status: accepted
+
+Add `lzw-adaptive-huffman` to the dependency-free benchmark through the same
+public C ABI and 65,536-byte, width-16, 65,280-entry, 8-MiB policy as the CLI.
+Reserve complete-stream encoded capacity with checked arithmetic from the
+80-byte parameterized prefix, one 56-byte frame header and 16-byte Adaptive
+descriptor per nonempty frame, and the conservative 66 payload bytes per raw
+byte. Do not derive or reproduce either opaque LZW record layout; query both
+direction-specific workspace sizes and alignments from the ABI.
+
+Before timing, encode once, decode once, and require byte-exact equality with
+the source. Time fresh transform instances for each iteration and report
+encoded size, ratio, directional elapsed time and throughput, all six queried
+workspace extents, and the larger caller-reserved workspace total. Treat only
+correctness, bounds, allocation, and API failures as benchmark failures;
+throughput and compression ratio are observations, not pass thresholds. Add a
+single-iteration smoke test over repository-owned input. This step adds no
+interoperability claim.

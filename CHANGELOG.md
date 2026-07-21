@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   fuzz harness and permanent atomic regressions now cover truncation, extreme
   extents, and invalid Adaptive descriptors. Its transactional CLI selector
   uses the bounded 64-KiB reference profile exclusively through the public C
-  ABI and strictly rejects trailing data.
+  ABI and strictly rejects trailing data. Its public-C benchmark verifies a
+  byte-exact round trip before reporting ratio, directional throughput, and
+  queried caller-owned workspace.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

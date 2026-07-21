@@ -21,6 +21,7 @@ marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lz78-adaptive-huffman corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzw-blocked-huffman corpus.bin 5
+marc_benchmark lzw-adaptive-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
@@ -132,6 +133,17 @@ and at most 65,280 additional LZW entries. Capacity includes one 16-byte
 descriptor per possible packed-code block and raw entropy fallback. The public
 C ABI query supplies all primary, secondary, and aligned views extents reported
 by the benchmark.
+
+`lzw-adaptive-huffman` uses the CLI's 65,536-byte raw frame and maximum code
+width 16. Capacity planning reserves at most 131,072 packed LZW bytes,
+4,325,376 Adaptive payload bytes, one 16-byte descriptor and 56-byte header per
+nonempty frame, and the 80-byte parameterized stream prefix. Its aggregate
+active-byte policy is 8 MiB and it admits at most 65,280 generated entries.
+Both direction-specific workspace extents and opaque record alignment come
+from the public C ABI. A complete byte-exact round trip succeeds before either
+direction is timed. The reported caller-reserved peak may exceed 8 MiB because
+the conservative complete-frame reservation coexists with packed, raw, and
+typed-record workspaces.
 
 `lzd-blocked-huffman` uses the CLI's one-MiB raw frames, 65,536-symbol entropy
 blocks, exact four-MiB token bound, at most 64 entropy blocks, and 65,536-entry

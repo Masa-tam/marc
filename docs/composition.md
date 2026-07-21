@@ -82,7 +82,8 @@ bounds, transactional frame and streaming transforms, checked typed workspace
 profile, independent single-code vector, public C factory, and public-ABI
 completion matrix are present. Its bounded dual-path decoder fuzz target and
 permanent malformed regressions and transactional CLI selector are also
-present. Benchmark and interoperability admission remain pending.
+present, together with a verified public-C benchmark adapter. Interoperability
+admission remains pending.
 
 ## Why publication is not automatic
 

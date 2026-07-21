@@ -949,3 +949,9 @@ The LZW plus Adaptive Huffman CLI selector uses only DD-327, the published C
 factory and requirements query, and marc's existing transactional file driver.
 No external LZW, Adaptive Huffman, compression-tool, archive-manager, source
 code, CLI layout, or test suite was consulted.
+
+The LZW plus Adaptive Huffman benchmark adapter uses only DD-328, the published
+C factory and requirements query, DD-327's fixed CLI policy, and marc's
+dependency-free measurement driver. No external benchmark harness, LZW or
+Adaptive Huffman implementation, performance-tuning source, or result corpus
+was consulted.

@@ -1859,8 +1859,9 @@ representation. The CLI selects 65,536-byte raw frames, maximum code width 16,
 a 131,072-byte packed ceiling, a 4,325,376-byte Adaptive payload ceiling,
 65,280 generated entries, and an 8-MiB aggregate internal limit. It obtains
 all concrete workspace extents and opaque alignment from the public
-requirements query. Benchmark and interoperability admission remain separate
-evidence steps and do not alter these bytes.
+requirements query. The public benchmark uses the same configuration and
+verifies a byte-exact round trip before timing. Interoperability admission
+remains a separate evidence step and does not alter these bytes.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

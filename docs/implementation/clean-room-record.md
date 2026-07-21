@@ -6392,3 +6392,28 @@ discarded and the reviewed seed retained.
 - Local validation: the focused transactional CLI test and all 1,343 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman benchmark profile
+
+- Authoring method: extended marc's dependency-free public-C benchmark driver
+  with the published LZW Adaptive factory and DD-328 capacity policy.
+- References used: DD-323 through DD-328, the public
+  `marc_lzw_adaptive_huffman_*` API, and marc's first-party LZ78 Adaptive and
+  LZW Blocked Huffman benchmark adapters.
+- Known implementations intentionally not consulted: third-party benchmark
+  harnesses, LZW or Adaptive Huffman implementations, and performance-tuning
+  source code.
+- Independent decisions: reuse the CLI's 65,536-byte frame, width-16,
+  65,280-entry, and 8-MiB limits; reserve whole-stream output from checked
+  66-byte-per-raw-byte payload and fixed per-frame overhead bounds; query all
+  workspace extents and opaque alignment; verify before timing; set no result
+  threshold.
+- Tests added: one single-iteration benchmark smoke run over the repository's
+  README input.
+- Similarity review: the adapter is dispatch, bounded capacity arithmetic, and
+  calls to marc's own public ABI; no external benchmark or codec expression was
+  used.
+- Local validation: the focused smoke reported a verified 4,453-byte to
+  3,150-byte round trip, and all 1,344 Release tests passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
+  CMake 4.3.4.

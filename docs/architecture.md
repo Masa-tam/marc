@@ -1567,6 +1567,11 @@ byte packed ceiling, the 33-byte-per-packed-symbol Adaptive payload ceiling,
 65,280 generated entries, and an 8-MiB aggregate limit while leaving every
 actual workspace extent, typed-record size, and alignment inside the checked
 profile helpers.
+The dependency-free benchmark uses that identical public configuration and
+queries both directional workspace layouts. It verifies a complete byte-exact
+round trip before timing fresh transform instances, then reports ratio,
+directional throughput, all queried extents, and peak caller-reserved
+workspace without imposing a performance threshold.
 
 ### Published LZW plus Blocked Huffman boundary
 

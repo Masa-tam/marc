@@ -2138,3 +2138,10 @@ raw-frame boundary, decode it through a fresh public transform, and compare the
 restored file byte for byte. Append one trailing zero byte to the encoded file,
 require decode failure, and require that neither the requested destination nor
 its temporary staging path remains.
+
+For benchmark integration, run
+`marc_benchmark lzw-adaptive-huffman README.md 1`. Require a successful
+pre-timing byte-exact round trip and a report naming the selected codec,
+encoded size, ratio, directional elapsed time and throughput, all six queried
+workspace extents, and the greater caller-owned workspace total. Apply no
+ratio or throughput pass threshold.
