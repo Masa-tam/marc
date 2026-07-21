@@ -2155,3 +2155,13 @@ Derive schema 10 by removing only the last profile and continue the frozen
 conversion chain to schema 1; swap the first two schema-11 entries and require
 order rejection. As a local determinism check, cross-verify an MSVC-generated
 bundle with ClangCL and a ClangCL-generated bundle with MSVC.
+
+For the specified LZD plus Adaptive Huffman vector, encode raw `A` through the
+already frozen standalone LZD grammar. The only token is the little-endian
+reference pair `41 00 00 00 FF FF FF FF`, where the absent right reference is
+legal because it is terminal and the left literal reaches the declared raw
+extent. Feed all eight token bytes in order to a fresh FGK tree. Require the
+37-bit payload `41 00 CC 3F 1D`, descriptor `(8, 5, 5, 0)`, and the exact
+77-byte frame recorded in `docs/format.md`. Assemble the test only from the
+standalone LZD and Adaptive encoders plus generic serializers; do not use a
+combined encoder.

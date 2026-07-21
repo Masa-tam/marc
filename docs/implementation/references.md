@@ -967,3 +967,10 @@ results for revision `163948c61dd8b90359882bee122f16ab3794787c` and the
 environment already documented for Ubuntu 26.04/Clang 21.1.8. No external
 codec source, archive format, interoperability harness, or third-party claim
 was consulted.
+
+The LZD plus Adaptive Huffman composition specification uses only DD-330,
+marc's already documented Lempel-Ziv Double variant 1 reference-pair grammar,
+Adaptive Huffman FGK variant 1 rules, generic frame format, checked workspace
+policy, and the LZD references already recorded above. No external combined
+codec, format, implementation, vector, workspace layout, corpus, or test suite
+was consulted.

@@ -1582,6 +1582,23 @@ the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
 generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
 system directions for all twenty-two archives at one full revision.
 
+### Specified LZD plus Adaptive Huffman boundary
+
+LZD first freezes its complete canonical eight-byte reference-pair stream.
+Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
+frame, without interpreting reference fields or the terminal absent-right
+marker. For raw frame size `F`, token staging is bounded by
+`S = 8*ceil(F/2)` and the conservative entropy payload by `33S`.
+
+Decoding must reconstruct exactly the declared token extent, validate its
+multiple-of-eight shape, backward phrase graph, checked expansion lengths, and
+unique terminal absent-right rule, then reconstruct into private raw staging
+before publication. Encoding must fix the deterministic LZD parse before
+Adaptive planning. The independent raw-`A` vector fixes terminal token
+`41 00 00 00 FF FF FF FF`, Adaptive payload `41 00 CC 3F 1D`, and a complete
+77-byte frame. This boundary currently specifies representation, bounds, and
+validation order only; frame codecs and public adapters remain later steps.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

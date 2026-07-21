@@ -6195,3 +6195,35 @@ the generator, verifier, compatibility rules, and same-architecture compiler
 determinism only. Cross-platform evidence still requires CI artifacts from the
 same full Git revision and the established bidirectional external verification
 procedure.
+
+## DD-330: LZD Adaptive entropizes finalized reference pairs
+
+- Date: 2026-07-22
+- Status: accepted
+
+Reserve `lzd-adaptive-huffman` for LZD variant 1 followed by Adaptive Huffman
+FGK variant 1 under format version 1.0. Preserve the standalone 16-byte LZD
+parameters, empty entropy parameters, fixed eight-byte little-endian reference
+pairs, and terminal absent-right value. Complete the token stream before
+entropy processing; Adaptive Huffman consumes every byte without interpreting
+token or reference-field boundaries. Reset both dictionaries at every outer
+frame.
+
+For raw frame size `F`, use the checked token bound
+`S = 8 * ceil(F / 2)` and Adaptive payload bound `33S`. Bound generated phrase
+records by `min(floor(F/2), configured_maximum, local_limit)` and the iterative
+expansion stack by that count plus one. The reference profile uses
+`F = 65,536`, so `S = 262,144`, payload is at most 8,650,752 bytes, generated
+phrases are at most 32,768, and expansion references are at most 32,769.
+Encoding freezes canonical tokens before Adaptive planning. Decoding
+entropy-decodes into token staging, validates the complete backward phrase
+graph and terminal rule, derives the exact raw extent, reconstructs privately,
+and only then publishes.
+
+Freeze the raw-`A` vector independently: LZD token
+`41 00 00 00 FF FF FF FF`, Adaptive payload `41 00 CC 3F 1D`, descriptor
+`(8, 5, 5, 0)`, and the complete 77-byte frame in the format document.
+Exercise that vector by composing only the existing standalone LZD encoder,
+Adaptive encoder, and generic serializers. This decision specifies bytes and
+a reserved name only; it does not publish a combined frame codec, factory,
+CLI, benchmark, fuzz, completion, or interoperability claim.

@@ -130,6 +130,14 @@ Ubuntu 24.04 artifacts plus the independently generated Ubuntu 26.04/Clang
 bundle passed the complete bidirectional external verification contract, so
 this profile is `Ready`.
 
+`lzd-adaptive-huffman` is the next admitted specification. DD-330 fixes its
+decoder-visible representation, checked `8*ceil(F/2)` token bound, `33S`
+Adaptive payload bound, phrase and expansion-workspace ceilings, validation
+order, and independent 77-byte terminal-token frame. It remains outside the
+local implementation and interoperability matrices until the bounded frame,
+stream, public ABI, completion, fuzz, CLI, benchmark, and interoperability
+boundaries are implemented and verified.
+
 ## Remaining release evidence
 
 The following items remain open even though local codec implementation is

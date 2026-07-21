@@ -6142,6 +6142,11 @@ discarded and the reviewed seed retained.
 - Similarity review: the resulting frame follows only marc's existing byte
   formats and serializers. No external combined representation or distinctive
   implementation structure was compared.
+- Local validation: the independent vector and all 1,345 configured Release
+  tests passed under MSVC/Visual Studio 2026. The ClangCL binary ran all 1,275
+  GoogleTest cases successfully, and its configured 1,110-test CTest suite,
+  including the non-GoogleTest C ABI, CLI, documentation, benchmark-smoke, and
+  interoperability checks, also passed using official CMake 4.3.4.
 - Local validation: the independent vector test and all 1,297 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
@@ -6461,3 +6466,26 @@ discarded and the reviewed seed retained.
 - Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
   system interoperability on x86-64. It does not claim a second architecture,
   a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.
+
+## 2026-07-22 - LZD plus Adaptive Huffman specification and vector
+
+- Authoring method: composed marc's independently specified standalone LZD
+  reference-pair representation with its independently specified Adaptive
+  Huffman FGK byte transform at their canonical byte-stream boundary.
+- References used: DD-330, the repository's Lempel-Ziv Double variant 1 and
+  Adaptive Huffman variant 1 format sections, generic framing rules, and the
+  LZD references already recorded in `references.md`.
+- Known implementations intentionally not consulted: external LZD/Adaptive
+  combinations, source code, container formats, workspace layouts, vectors,
+  corpora, and test suites.
+- Independent decisions: reserve `lzd-adaptive-huffman`; retain format 1.0;
+  entropy-code complete eight-byte tokens; reset both states per frame; use a
+  65,536-byte bounded reference profile; validate entropy, the phrase graph,
+  terminal form, and private reconstruction before publication.
+- Generated-code task description: specify exact fields, bounds, state resets,
+  validation order, and the raw-`A` frame; add a test that independently
+  assembles it from standalone primitives; update status documentation without
+  claiming a combined implementation or public API.
+- Similarity review: the resulting frame follows only marc's existing byte
+  formats and serializers. No external combined representation or distinctive
+  implementation structure was compared.

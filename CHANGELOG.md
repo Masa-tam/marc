@@ -12,6 +12,12 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lzd-adaptive-huffman` composition now has an exact
+  decoder-visible representation, checked token, phrase, expansion-stack, and
+  Adaptive payload bounds, transactional validation order, and an independent
+  terminal-token frame vector assembled from standalone LZD and Adaptive
+  Huffman primitives. This specification step does not yet publish a combined
+  frame codec or public API.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame
