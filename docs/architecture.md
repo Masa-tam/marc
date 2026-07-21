@@ -1556,6 +1556,10 @@ The public completion matrix constructs both directions exclusively through
 that ABI and verifies binary data classes, deterministic encoding, arbitrary
 chunk schedules, sticky terminal results, and frame-transactional rejection
 of corrupted, truncated, or trailing final input.
+The decoder fuzz boundary reuses the same exact-frame and incremental paths
+with compile-time byte arrays, a phrase-table ceiling derived from nine-bit
+code density, byte-derived chunk schedules, and a finite call budget. No input
+controls allocation or expands the admitted storage limits.
 
 ### Published LZW plus Blocked Huffman boundary
 

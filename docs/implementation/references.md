@@ -938,3 +938,9 @@ published C ABI, marc's required data-class inventory, generic frame fields,
 and deterministic first-party byte generation. No external combined codec,
 conformance corpus, malformed archive, chunk schedule, source code, or test
 suite was consulted.
+
+The LZW plus Adaptive Huffman bounded fuzz boundary uses only DD-326, the
+existing exact-frame private decoder, streaming decoder, local limit contract,
+and repository-authored canonical stream generator. No external fuzz harness,
+corpus, malformed archive, combined decoder, source code, or regression suite
+was consulted.

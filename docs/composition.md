@@ -80,8 +80,9 @@ admission. It fixes LZW's complete LSB-first packed-code bytes, including final
 dictionary padding, before a fresh per-frame FGK tree consumes them. Its exact
 bounds, transactional frame and streaming transforms, checked typed workspace
 profile, independent single-code vector, public C factory, and public-ABI
-completion matrix are present. Fuzz, CLI, benchmark, and interoperability
-admission remain pending.
+completion matrix are present. Its bounded dual-path decoder fuzz target and
+permanent malformed regressions are also present. CLI, benchmark, and
+interoperability admission remain pending.
 
 ## Why publication is not automatic
 

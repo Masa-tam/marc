@@ -494,6 +494,20 @@ if(MARC_BUILD_FUZZERS)
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lz78_adaptive_huffman_stream
         PRIVATE marc::static)
+    add_executable(marc_fuzz_lzw_adaptive_huffman_stream
+        fuzz/lzw_adaptive_huffman_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzw_adaptive_huffman_stream
+        PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzw_adaptive_huffman_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzw_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzw_adaptive_huffman_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzw_adaptive_huffman_stream
+        PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_blocked_huffman_stream
         fuzz/lzss_blocked_huffman_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_blocked_huffman_stream
@@ -910,6 +924,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzw_adaptive_huffman_frame_streaming_encoder_tests.cpp
         tests/lzw_adaptive_huffman_completion_tests.cpp
+        tests/lzw_adaptive_huffman_fuzz_regression_tests.cpp
         tests/lzw_adaptive_huffman_profile_tests.cpp
         tests/lzw_blocked_huffman_frame_tests.cpp
         tests/lzw_blocked_huffman_frame_streaming_tests.cpp
@@ -1073,6 +1088,23 @@ if(MARC_BUILD_TESTS)
     else()
         target_compile_options(
             marc_lz78_adaptive_huffman_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_lzw_adaptive_huffman_fuzz_compile_smoke OBJECT
+        fuzz/lzw_adaptive_huffman_stream_fuzz.cpp)
+    target_compile_features(marc_lzw_adaptive_huffman_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_include_directories(
+        marc_lzw_adaptive_huffman_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(
+            marc_lzw_adaptive_huffman_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(
+            marc_lzw_adaptive_huffman_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

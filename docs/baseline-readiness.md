@@ -84,7 +84,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-adaptive-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzw-adaptive-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -122,8 +122,9 @@ checked opaque-region partitioning. A public C ABI factory now binds those
 regions to the streaming transforms without exposing private record layouts.
 Its public-ABI completion matrix now covers required binary classes,
 determinism, chunking, sticky terminal behavior, and transactional malformed
-final-frame rejection. It remains below `Ready` until fuzz, CLI, benchmark,
-and interoperability coverage are added.
+final-frame rejection. A bounded dual-path decoder fuzz harness and permanent
+atomic malformed regressions are now present. It remains below `Ready` until
+CLI, benchmark, and interoperability coverage are added.
 
 ## Remaining release evidence
 
@@ -235,7 +236,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-325, the complete Release suite contains 1,339 tests and passes under both
+At DD-326, the complete Release suite contains 1,342 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
