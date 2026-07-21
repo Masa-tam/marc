@@ -1010,3 +1010,9 @@ private-staging transaction, marc's generic prefix and frame parsers, checked
 LZD token/phrase/expansion bounds, and core transform contract. No external
 combined streaming decoder, buffering strategy, source code, API, malformed
 corpus, chunk schedule, or test suite was consulted.
+
+The LZD plus Adaptive Huffman bounded profile uses only DD-337, DD-330's
+checked token and payload ceilings, marc's existing LZD parameter validation,
+stream-header validation, typed record definitions, checked arithmetic, and
+caller-owned workspace policy. No external profile calculator, ABI layout,
+allocator, source code, API, corpus, or test suite was consulted.

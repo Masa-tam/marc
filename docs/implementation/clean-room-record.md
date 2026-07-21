@@ -6630,3 +6630,25 @@ discarded and the reviewed seed retained.
   implementation or distinctive tests were compared.
 - Local validation: all 1,375 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman bounded profile
+
+- Authoring method: derived byte requirements from DD-330 bounds and composed
+  marc's typed LZD records with checked alignment and arithmetic helpers.
+- References used: DD-337, DD-330, the repository's LZD parameters, stream
+  header validator, decoder limits, and caller-owned workspace conventions.
+- Known implementations intentionally not consulted: external profile or ABI
+  calculators, allocators, layout code, source code, APIs, corpora, and tests.
+- Independent decisions: report bytes and alignment separately; use the actual
+  largest frame for encoding; derive decoder ceilings from local hard limits;
+  place phrase records before an aligned expansion stack; recompute the entire
+  layout before partitioning; use neutral alignment for empty encoder views.
+- Generated-code task description: add encoder/decoder requirement calculators,
+  opaque partition helpers, stable error mapping, build wiring, exact ceiling,
+  limit, empty, freeze, alignment, tampered-requirement, and invalid-limit
+  tests, plus internal-only scope documentation.
+- Similarity review: the implementation follows only existing marc checked
+  workspace conventions and first-party record definitions. No external
+  layout or distinctive test structure was compared.
+- Local validation: all 1,382 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

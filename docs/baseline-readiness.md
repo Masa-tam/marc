@@ -147,8 +147,10 @@ reject short serialized output before mutation. A bounded streaming encoder
 now reproduces that representation across arbitrary input/output chunking and
 retains end-of-input across output starvation. Its matching bounded streaming
 decoder validates complete frames before raw draining and rejects truncation,
-trailing data, and later-frame corruption transactionally. Public ABI,
-completion, fuzz, CLI, benchmark, and interoperability boundaries remain.
+trailing data, and later-frame corruption transactionally. A bounded profile
+now calculates direction-specific byte workspaces and partitions aligned typed
+encoder, phrase, and expansion views. Public ABI, completion, fuzz, CLI,
+benchmark, and interoperability boundaries remain.
 
 ## Remaining release evidence
 
@@ -269,7 +271,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-336, the complete Release suite contains 1,375 tests and passes under both
+At DD-337, the complete Release suite contains 1,382 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

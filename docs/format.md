@@ -2086,6 +2086,13 @@ private raw staging; and only then drains that successful frame. A malformed
 frame publishes none of its raw bytes, even when earlier frames were already
 committed.
 
+The internal bounded profile does not alter these bytes. It calculates the
+largest raw, token, payload, complete-frame, typed encoder, phrase, and
+expansion regions from the fixed profile and local hard limits. Phrase records
+and the iterative `uint32_t` expansion stack share one opaque caller allocation
+with explicit alignment and offset validation; caller-visible output remains
+outside scratch-workspace accounting.
+
 ## LZD variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 5, dictionary variant 1,

@@ -2227,3 +2227,13 @@ the same error position returned thereafter. Exercise every proper stream
 prefix, one trailing byte, the empty prefix-only stream, undersized encoded,
 token, raw, phrase, and expansion regions, an aggregate limit one byte below
 the exact frame requirement, `ResetBlock`, and an unknown flag.
+
+For the bounded profile, use original size 17 and frame size 10 to require a
+10-byte raw frame, forty token bytes, `56+16+40*33` complete-frame bytes, and
+five typed encoder entries. Exercise a short final frame, a frozen two-entry
+dictionary, one-byte input with neutral entry alignment, and empty input.
+Reject token, payload, and aggregate limits one below their required values.
+For decoder limits of 64 raw bytes, 128 token bytes, and ten dictionary entries,
+require ten phrase records and eleven expansion references. Partition aligned
+opaque storage and verify the phrase base, expansion offset, non-overlap,
+short-storage rejection, misalignment rejection, and altered-offset rejection.

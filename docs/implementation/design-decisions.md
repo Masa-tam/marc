@@ -6362,3 +6362,25 @@ Require one-byte input/output equivalence, all truncation positions, empty
 stream handling, later-frame atomic corruption, and every caller-workspace and
 aggregate limit. This remains internal; public factory, completion, fuzz, CLI,
 benchmark, and interoperability are separate admissions.
+
+## DD-337: LZD Adaptive profile exposes bytes, not C++ layouts
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add a bounded internal profile for the fixed LZD variant 1 plus Adaptive
+Huffman FGK variant 1 composition. For encoding, derive the largest actual raw
+frame, checked `8*ceil(F/2)` token ceiling, `33S` payload ceiling, complete
+serialized-frame ceiling, and LZD encoder-entry count. Reject any individual or
+aggregate extent beyond the configured limits before publishing requirements;
+empty input uses zero bytes and neutral alignment.
+
+For decoding, derive conservative encoded-frame, token, private raw, phrase,
+and phrase-count-plus-one expansion capacities from local hard limits. Pack
+phrase records followed by an explicitly aligned `uint32_t` expansion region
+inside one opaque allocation. Partition functions must recompute and compare
+every count-derived byte extent, offset, total, and alignment before producing
+typed spans; reject altered requirements, short storage, and misaligned bases.
+Map profile failures to stable core errors. This step exposes no C ABI or
+factory; public admission, completion, fuzz, CLI, benchmark, and
+interoperability remain separate.

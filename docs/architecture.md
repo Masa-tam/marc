@@ -1637,6 +1637,16 @@ from the malformed frame is published. End-of-input remains retained while a
 validated raw frame drains; truncation, trailing input, and repeated terminal
 errors are deterministic.
 
+The bounded profile converts a fixed original size, frame size, LZD parameters,
+and decoder limits into direction-specific byte requirements. Encoder storage
+reports raw-frame, token, complete-frame, and opaque typed-entry extents.
+Decoder storage reports complete encoded-frame, token, private raw, phrase,
+and expansion extents. The opaque decoder region places phrase records first,
+aligns the following `uint32_t` expansion stack explicitly, and revalidates all
+counts, offsets, total bytes, and base alignment during partitioning. Public
+adapters can therefore reserve byte buffers without exposing C++ record layouts
+or performing unchecked casts themselves.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

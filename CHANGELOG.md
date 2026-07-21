@@ -31,7 +31,9 @@ format versions, and C ABI versions are independent namespaces.
   output, output starvation, `Flush`, and retained `EndInput`. The matching
   bounded streaming decoder validates and reconstructs a complete frame before
   raw draining, rejects every truncation and trailing byte, and never partially
-  publishes a malformed frame. No public API is published yet.
+  publishes a malformed frame. Its internal bounded profile now calculates all
+  direction-specific byte workspaces and safely partitions aligned LZD encoder,
+  phrase, and expansion-record regions. No public API is published yet.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

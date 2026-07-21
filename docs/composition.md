@@ -100,8 +100,10 @@ token span. A bounded streaming encoder now buffers one raw frame, builds it
 through that exact-frame transaction, and drains immutable serialized bytes.
 A matching bounded streaming decoder collects and validates one complete frame
 before draining raw bytes, so a malformed later frame cannot partially publish
-itself. No C factory, CLI selector, benchmark, fuzz boundary, or
-interoperability entry is claimed yet.
+itself. A bounded profile now exposes direction-specific byte requirements and
+partitions typed encoder records plus coupled phrase/expansion decoder views
+inside aligned opaque storage. No C factory, CLI selector, benchmark, fuzz
+boundary, or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 
