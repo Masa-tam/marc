@@ -961,3 +961,9 @@ order, the published `lzw-adaptive-huffman` CLI selector, and marc's
 repository-owned bundle generator, verifier, fixture, and compatibility
 regression. No external interoperability harness, archive set, manifest,
 corpus, combined-codec source, or test suite was consulted.
+
+The schema-11 external validation record uses the user-supplied four verifier
+results for revision `163948c61dd8b90359882bee122f16ab3794787c` and the
+environment already documented for Ubuntu 26.04/Clang 21.1.8. No external
+codec source, archive format, interoperability harness, or third-party claim
+was consulted.

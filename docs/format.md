@@ -1862,8 +1862,9 @@ all concrete workspace extents and opaque alignment from the public
 requirements query. The public benchmark uses the same configuration and
 verifies a byte-exact round trip before timing. Interoperability admission
 schema 11 appends this profile as the twenty-second archive without changing
-any earlier schema or stream byte. External artifact verification remains a
-separate evidence step.
+any earlier schema or stream byte. The recorded schema-11 artifacts passed the
+complete bidirectional x86-64 verification contract; that evidence does not
+change the representation.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

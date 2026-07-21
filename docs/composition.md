@@ -83,8 +83,9 @@ profile, independent single-code vector, public C factory, and public-ABI
 completion matrix are present. Its bounded dual-path decoder fuzz target and
 permanent malformed regressions and transactional CLI selector are also
 present, together with a verified public-C benchmark adapter. Interoperability
-schema 11 appends it as the twenty-second archive; external cross-platform
-verification remains pending.
+schema 11 appends it as the twenty-second archive, and its bidirectional
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is
+recorded in `docs/interoperability.md`.
 
 ## Why publication is not automatic
 

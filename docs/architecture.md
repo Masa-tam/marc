@@ -1578,7 +1578,9 @@ order and appends `lzw-adaptive-huffman`. Generation round-trips all twenty-two
 profiles; verification requires exact manifest order, foreign decode equality,
 and byte-identical local re-encoding while retaining schema 1 through 10
 support. MSVC and ClangCL locally passed that contract in both directions;
-external Linux artifact evidence remains separate.
+the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
+generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
+system directions for all twenty-two archives at one full revision.
 
 ### Published LZW plus Blocked Huffman boundary
 

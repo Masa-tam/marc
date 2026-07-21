@@ -6444,3 +6444,20 @@ discarded and the reviewed seed retained.
   artifact verification remains pending. All 1,344 Release tests passed under
   both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
   CMake 4.3.4.
+
+## 2026-07-21 - Interoperability schema 11 external validation record
+
+- Evidence source: user-supplied output from four executions of marc's
+  schema-11 verifier at full revision
+  `163948c61dd8b90359882bee122f16ab3794787c`.
+- Producing environments: GitHub CI Windows/MSVC via Visual Studio 2026 x64,
+  GitHub CI Ubuntu 24.04 default C++ compiler via Ninja x64, and an external
+  Ubuntu 26.04/Clang 21.1.8 via Ninja x64 bundle.
+- Consuming environments: Ubuntu 26.04/Clang verified both CI bundles and its
+  own bundle; Windows/MSVC verified the Ubuntu 26.04 bundle.
+- Result: all four invocations reported `Verified 22 archives` at the exact
+  revision. Each verifier invocation checked manifest order, size and SHA-256,
+  decoded fixture equality, and byte-identical local re-encoding.
+- Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
+  system interoperability on x86-64. It does not claim a second architecture,
+  a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.
