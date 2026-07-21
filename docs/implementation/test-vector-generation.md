@@ -2165,3 +2165,15 @@ extent. Feed all eight token bytes in order to a fresh FGK tree. Require the
 77-byte frame recorded in `docs/format.md`. Assemble the test only from the
 standalone LZD and Adaptive encoders plus generic serializers; do not use a
 combined encoder.
+
+For the first combined LZD validator, reuse that independently assembled
+77-byte frame as the positive anchor. Exercise every proper prefix and one
+trailing byte, undersized token and phrase staging, the exact aggregate-
+workspace threshold, an invalid Adaptive descriptor, nonzero entropy padding,
+sequence mismatch, impossible and non-token-aligned dictionary extents, and an
+unsupported entropy variant. Separately Adaptive-encode an absent-right token
+that ends before the declared raw extent and a forward phrase reference; both
+must reach LZD validation and fail with their stable grammar categories.
+Require every pre-decode capacity or descriptor failure to preserve sentinel
+token staging. The valid vector must expose exactly the eight canonical token
+bytes and one validated token without producing raw output.

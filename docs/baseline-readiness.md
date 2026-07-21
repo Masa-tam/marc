@@ -134,9 +134,11 @@ this profile is `Ready`.
 decoder-visible representation, checked `8*ceil(F/2)` token bound, `33S`
 Adaptive payload bound, phrase and expansion-workspace ceilings, validation
 order, and independent 77-byte terminal-token frame. It remains outside the
-local implementation and interoperability matrices until the bounded frame,
-stream, public ABI, completion, fuzz, CLI, benchmark, and interoperability
-boundaries are implemented and verified.
+local implementation and interoperability matrices. Its first complete-frame
+validator now entropy-decodes into private token staging and validates the
+whole backward phrase graph, terminal form, and exact raw extent without
+publishing raw bytes. Private reconstruction, encoding, streaming, public ABI,
+completion, fuzz, CLI, benchmark, and interoperability boundaries remain.
 
 ## Remaining release evidence
 
@@ -257,7 +259,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-329, the complete Release suite contains 1,344 tests and passes under both
+At DD-331, the complete Release suite contains 1,352 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

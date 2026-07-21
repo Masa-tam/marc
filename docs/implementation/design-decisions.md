@@ -6227,3 +6227,27 @@ Exercise that vector by composing only the existing standalone LZD encoder,
 Adaptive encoder, and generic serializers. This decision specifies bytes and
 a reserved name only; it does not publish a combined frame codec, factory,
 CLI, benchmark, fuzz, completion, or interoperability claim.
+
+## DD-331: LZD Adaptive validation stops at canonical tokens first
+
+- Date: 2026-07-22
+- Status: accepted
+
+Admit the first combined `lzd-adaptive-huffman` implementation as a strict
+complete-frame validator only. Validate the stream profile, LZD parameters,
+sequence, generic frame header, exact complete-frame extent, checked
+`8*ceil(F/2)` token bound, multiple-of-eight token shape, single 16-byte
+Adaptive descriptor, `33S` payload bound, every caller-owned capacity, and the
+aggregate workspace limit before entropy output. Parse the descriptor before
+mutating token staging, decode exactly the declared token extent, then apply
+the existing LZD validator to that complete span.
+
+Preserve deterministic error precedence as header and extent errors, workspace
+errors, descriptor errors, Adaptive payload errors, then LZD grammar errors.
+The LZD pass owns backward-reference ordering, checked phrase lengths,
+dictionary freeze, the final absent-right rule, and exact declared raw size.
+Return token and phrase counts plus layer diagnostics, but reconstruct and
+publish no raw bytes. Staging and phrase records remain disposable scratch on
+every error. Later reconstruction, encoding, streaming, public API, and
+completion steps must consume this validator rather than weaken or duplicate
+it.

@@ -2059,7 +2059,11 @@ The complete 77-byte frame is:
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final five bytes are the FGK payload. This vector
 is assembled from the standalone LZD and Adaptive Huffman encoders plus generic
-serializers; no combined encoder or public profile exists at this step.
+serializers. The first combined validator accepts exactly one complete frame,
+checks all extents and caller capacities before entropy output, reconstructs
+the token region into private staging, and validates the complete LZD phrase
+graph and declared raw extent. It reconstructs and publishes no raw bytes, and
+no combined encoder or public profile exists at this step.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

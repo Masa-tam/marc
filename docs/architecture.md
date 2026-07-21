@@ -1596,8 +1596,15 @@ unique terminal absent-right rule, then reconstruct into private raw staging
 before publication. Encoding must fix the deterministic LZD parse before
 Adaptive planning. The independent raw-`A` vector fixes terminal token
 `41 00 00 00 FF FF FF FF`, Adaptive payload `41 00 CC 3F 1D`, and a complete
-77-byte frame. This boundary currently specifies representation, bounds, and
-validation order only; frame codecs and public adapters remain later steps.
+77-byte frame.
+
+The first combined boundary implements the validation half of that order. It
+checks the complete generic frame, LZD and Adaptive extents, caller-owned token
+and phrase capacities, and aggregate workspace before entropy output. It then
+reconstructs the exact token region and invokes the ordinary LZD validator.
+No raw byte is reconstructed or published; later layers must build on this
+validated boundary. Encoding, private reconstruction, streaming, and public
+adapters remain later steps.
 
 ### Published LZW plus Blocked Huffman boundary
 

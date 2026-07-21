@@ -16,8 +16,10 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent
   terminal-token frame vector assembled from standalone LZD and Adaptive
-  Huffman primitives. This specification step does not yet publish a combined
-  frame codec or public API.
+  Huffman primitives. Its first bounded complete-frame validator entropy-
+  decodes into private token staging, validates every backward reference,
+  phrase length, terminal form, and exact raw extent, and publishes no raw
+  bytes. This step does not yet publish a combined decoder or public API.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

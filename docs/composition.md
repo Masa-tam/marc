@@ -91,9 +91,10 @@ recorded in `docs/interoperability.md`.
 specified but not published. It fixes the complete canonical eight-byte LZD
 reference-pair stream before a fresh per-frame FGK tree consumes it. Its exact
 token and payload bounds, transactional validation order, reserved public name,
-and independent terminal-token frame vector are fixed. No combined frame
-codec, C factory, CLI selector, benchmark, fuzz boundary, or interoperability
-entry is claimed yet.
+and independent terminal-token frame vector are fixed. Its first internal
+complete-frame validator reconstructs and validates the canonical token region
+without producing raw output. No combined decoder or encoder, C factory, CLI
+selector, benchmark, fuzz boundary, or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

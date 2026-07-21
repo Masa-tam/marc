@@ -974,3 +974,9 @@ Adaptive Huffman FGK variant 1 rules, generic frame format, checked workspace
 policy, and the LZD references already recorded above. No external combined
 codec, format, implementation, vector, workspace layout, corpus, or test suite
 was consulted.
+
+The LZD plus Adaptive Huffman complete-frame validator uses only DD-331, the
+DD-330 representation and bounds, marc's existing generic frame parser,
+Adaptive Huffman decoder, LZD validator, and checked caller-owned workspace
+policy. No external combined decoder, validation order, malformed vector,
+workspace layout, source code, or test suite was consulted.

@@ -6142,11 +6142,6 @@ discarded and the reviewed seed retained.
 - Similarity review: the resulting frame follows only marc's existing byte
   formats and serializers. No external combined representation or distinctive
   implementation structure was compared.
-- Local validation: the independent vector and all 1,345 configured Release
-  tests passed under MSVC/Visual Studio 2026. The ClangCL binary ran all 1,275
-  GoogleTest cases successfully, and its configured 1,110-test CTest suite,
-  including the non-GoogleTest C ABI, CLI, documentation, benchmark-smoke, and
-  interoperability checks, also passed using official CMake 4.3.4.
 - Local validation: the independent vector test and all 1,297 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
@@ -6489,3 +6484,32 @@ discarded and the reviewed seed retained.
 - Similarity review: the resulting frame follows only marc's existing byte
   formats and serializers. No external combined representation or distinctive
   implementation structure was compared.
+- Local validation: the independent vector and all 1,345 configured Release
+  tests passed under MSVC/Visual Studio 2026. The ClangCL binary ran all 1,275
+  GoogleTest cases successfully, and its configured CTest suite, including the
+  non-GoogleTest C ABI, CLI, documentation, benchmark-smoke, and
+  interoperability checks, also passed using official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, Adaptive Huffman
+  decoder, and LZD token-stream validator at their documented byte boundary.
+- References used: DD-331, DD-330, the repository's existing frame, Adaptive
+  descriptor/payload, LZD reference/terminal, and limits contracts.
+- Known implementations intentionally not consulted: external combined
+  decoders, source code, validation order, malformed corpora, workspace
+  layouts, and test suites.
+- Independent decisions: admit a complete-frame validator before raw
+  reconstruction; validate all extents and capacities before entropy output;
+  preserve stable layer-ordered errors; retain token and phrase workspaces as
+  discardable scratch; expose the validated token count but no raw bytes.
+- Generated-code task description: implement the bounded validation boundary;
+  cover the independent vector, all truncations, trailing data, capacity and
+  aggregate limits, descriptor and entropy padding, terminal and forward-
+  reference grammar, sequence, extent, and pipeline failures; update scope
+  documentation without claiming a decoder or public codec.
+- Similarity review: the implementation follows only existing marc validators
+  and naming conventions. No external combined implementation structure or
+  distinctive tests were compared.
+- Local validation: all 1,352 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
