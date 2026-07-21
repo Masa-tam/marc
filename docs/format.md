@@ -2066,8 +2066,10 @@ graph and declared raw extent. The next bounded boundary reconstructs that
 validated graph iteratively into separate caller-owned private raw staging.
 It counts raw capacity and the conservative phrase-count-plus-one expansion
 stack in pre-decode capacity and aggregate-workspace checks. It still publishes
-no caller-visible output, and no combined encoder or public profile exists at
-this step.
+no partial output: the transactional complete-frame decoder checks destination
+capacity before entropy output, then copies the entire private raw span only
+after every operation succeeds. This remains an internal frame API, and no
+combined encoder or public profile exists at this step.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

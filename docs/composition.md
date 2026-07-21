@@ -94,8 +94,9 @@ token and payload bounds, transactional validation order, reserved public name,
 and independent terminal-token frame vector are fixed. Its first internal
 complete-frame validator reconstructs and validates the canonical token region
 before a bounded private-staging decoder expands it iteratively. No caller-
-visible decoder or encoder, C factory, CLI selector, benchmark, fuzz boundary,
-or interoperability entry is claimed yet.
+visible decoder or encoder is published, although an internal transactional
+frame API now copies only complete successful frames. No C factory, CLI
+selector, benchmark, fuzz boundary, or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

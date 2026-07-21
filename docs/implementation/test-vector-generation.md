@@ -2187,3 +2187,12 @@ capacity, zero expansion capacity, and an aggregate limit admitting validation
 bytes but neither private extent; all must fail before changing sentinel token
 or raw storage. Corrupt the Adaptive descriptor and require private raw staging
 to remain unchanged.
+
+For transactional publication, decode the independent raw-`A` frame through
+the combined API and require both private staging and output to become `41`
+only on success. Supply one output byte for the two-byte raw `AB` frame and
+require token staging, expansion storage, raw staging, and destination sentinel
+to remain unchanged. Corrupt Adaptive payload padding and require both raw
+staging and destination to remain unchanged. Finally publish the independently
+composed `ABABAB` phrase-reference frame and require byte equality across raw
+staging and caller-visible output.

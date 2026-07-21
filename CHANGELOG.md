@@ -21,8 +21,10 @@ format versions, and C ABI versions are independent namespaces.
   phrase length, terminal form, and exact raw extent, and publishes no raw
   bytes until validation completes. It now reconstructs a completely validated
   frame iteratively into separately bounded private raw staging, counting both
-  the expansion stack and raw extent before entropy output. No caller-visible
-  raw bytes or public API are published yet.
+  the expansion stack and raw extent before entropy output. Its internal
+  transactional frame decoder publishes the whole raw frame only after success
+  and leaves destination output unchanged on every failure. No public API is
+  published yet.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

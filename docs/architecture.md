@@ -1606,8 +1606,10 @@ The next boundary invokes the ordinary iterative LZD decoder only after that
 validation succeeds, writing into a distinct private raw span. Raw capacity,
 the conservative phrase-count-plus-one expansion stack, and their aggregate
 bytes are checked before entropy output. No caller-visible output is copied;
-later publication, encoding, streaming, and public adapters must build on this
-private reconstruction boundary.
+the internal transactional decoder additionally checks destination capacity
+before entropy output and copies private raw staging only after every layer
+succeeds. No failure publishes a destination byte. Encoding, streaming, and
+public adapters must build on this transaction rather than bypass it.
 
 ### Published LZW plus Blocked Huffman boundary
 

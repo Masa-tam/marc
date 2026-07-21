@@ -45,7 +45,9 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
         phrase_workspace,
     const bool require_raw_staging,
     const std::span<std::uint32_t> expansion_workspace,
-    const std::span<std::byte> raw_staging) noexcept {
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzdAdaptiveHuffmanFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -159,6 +161,11 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
             expansion_workspace_too_small;
         return result;
     }
+    if (require_output && output.size() < result.raw_size) {
+        result.error = LzdAdaptiveHuffmanFrameValidationError::
+            raw_output_too_small;
+        return result;
+    }
 
     std::uint64_t phrase_bytes{};
     std::uint64_t expansion_bytes{};
@@ -244,6 +251,30 @@ inline constexpr std::uint64_t adaptive_max_bytes_per_symbol = 33;
     return result;
 }
 
+[[nodiscard]] bool reconstruct_validated_tokens(
+    LzdAdaptiveHuffmanFrameValidationResult& result,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lzd_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        expansion_workspace.first(result.expansion_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::LzdDecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error = LzdAdaptiveHuffmanFrameValidationError::
+        dictionary_decode_error;
+    return false;
+}
+
 } // namespace
 
 LzdAdaptiveHuffmanFrameValidationResult
@@ -260,7 +291,7 @@ validate_lzd_adaptive_huffman_frame(
     return validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, dictionary_staging, phrase_workspace,
-        false, {}, {});
+        false, {}, {}, false, {});
 }
 
 LzdAdaptiveHuffmanFrameValidationResult
@@ -278,23 +309,44 @@ decode_lzd_adaptive_huffman_frame_to_staging(
     auto result = validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, dictionary_staging, phrase_workspace,
-        true, expansion_workspace, raw_staging);
+        true, expansion_workspace, raw_staging, false, {});
     if (result.error != LzdAdaptiveHuffmanFrameValidationError::none) {
         return result;
     }
 
-    const auto decoded = dictionary::internal::decode_lzd_token_stream(
-        dictionary_staging.first(result.dictionary_size), parameters,
-        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
-        expansion_workspace.first(result.expansion_entries),
-        raw_staging.first(result.raw_size));
-    result.dictionary_decode_error = decoded.error;
-    if (decoded.error != dictionary::internal::LzdDecodeError::none) {
-        result.dictionary_error = decoded.validation_error;
-        result.dictionary_format_error = decoded.format_error;
-        result.error = LzdAdaptiveHuffmanFrameValidationError::
-            dictionary_decode_error;
+    (void)reconstruct_validated_tokens(
+        result, parameters, limits, dictionary_staging, phrase_workspace,
+        expansion_workspace, raw_staging);
+    return result;
+}
+
+LzdAdaptiveHuffmanFrameValidationResult
+decode_lzd_adaptive_huffman_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        true, expansion_workspace, raw_staging, true, output);
+    if (result.error != LzdAdaptiveHuffmanFrameValidationError::none) {
+        return result;
     }
+
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, phrase_workspace,
+            expansion_workspace, raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 
