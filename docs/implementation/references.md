@@ -1016,3 +1016,9 @@ checked token and payload ceilings, marc's existing LZD parameter validation,
 stream-header validation, typed record definitions, checked arithmetic, and
 caller-owned workspace policy. No external profile calculator, ABI layout,
 allocator, source code, API, corpus, or test suite was consulted.
+
+The LZD plus Adaptive Huffman public C ABI uses only DD-338, the DD-337 bounded
+profile and partition helpers, marc's existing transform lifecycle, checked
+workspace query, opaque aligned-view convention, and first-party C11 assertion
+harness. No external combined API, allocator interface, ABI layout, factory
+source, corpus, or test suite was consulted.

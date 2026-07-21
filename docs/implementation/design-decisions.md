@@ -6384,3 +6384,25 @@ typed spans; reject altered requirements, short storage, and misaligned bases.
 Map profile failures to stable core errors. This step exposes no C ABI or
 factory; public admission, completion, fuzz, CLI, benchmark, and
 interoperability remain separate.
+
+## DD-338: LZD Adaptive enters the C ABI with coupled opaque views
+
+- Date: 2026-07-22
+- Status: accepted
+
+Expose the fixed LZD variant 1 plus Adaptive Huffman variant 1 profile through
+`marc_lzd_adaptive_huffman_config`, a direction-specific requirements query,
+and an immutable-direction factory. Preserve known-size encoding and the common
+three-workspace ABI. Primary storage holds raw frame input while encoding and a
+complete serialized frame while decoding. Secondary storage contains canonical
+LZD token staging followed by serialized-frame storage for encode, or token
+staging followed by private raw storage for decode.
+
+Keep the aligned views region opaque to C. It contains LZD encoder entries for
+encode; for decode it contains phrase entries followed by an explicitly aligned
+bounded `uint32_t` expansion stack. Creation must rerun the profile calculation
+and checked partition rather than trusting caller-reported extents. Require a
+strict C11 round trip, exact small-limit workspace checks, short and misaligned
+workspace rejection, reserved-field rejection, and a null output handle on
+every factory failure. This adds no allocator callback, unknown-size input,
+CLI, benchmark, fuzz, completion, or interoperability claim.

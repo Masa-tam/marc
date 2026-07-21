@@ -33,7 +33,9 @@ format versions, and C ABI versions are independent namespaces.
   raw draining, rejects every truncation and trailing byte, and never partially
   publishes a malformed frame. Its internal bounded profile now calculates all
   direction-specific byte workspaces and safely partitions aligned LZD encoder,
-  phrase, and expansion-record regions. No public API is published yet.
+  phrase, and expansion-record regions. A bounded public C factory now binds
+  those regions to the streaming transforms without exposing private C++
+  record layouts in the ABI.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

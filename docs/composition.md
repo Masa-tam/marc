@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | Specified `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` C ABI published | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
@@ -87,8 +87,8 @@ schema 11 appends it as the twenty-second archive, and its bidirectional
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is
 recorded in `docs/interoperability.md`.
 
-`lzd-adaptive-huffman` is the fifth Adaptive Huffman composition and is now
-specified but not published. It fixes the complete canonical eight-byte LZD
+`lzd-adaptive-huffman` is the fifth Adaptive Huffman composition and now has a
+bounded public C factory. It fixes the complete canonical eight-byte LZD
 reference-pair stream before a fresh per-frame FGK tree consumes it. Its exact
 token and payload bounds, transactional validation order, reserved public name,
 and independent terminal-token frame vector are fixed. Its first internal
@@ -102,8 +102,10 @@ A matching bounded streaming decoder collects and validates one complete frame
 before draining raw bytes, so a malformed later frame cannot partially publish
 itself. A bounded profile now exposes direction-specific byte requirements and
 partitions typed encoder records plus coupled phrase/expansion decoder views
-inside aligned opaque storage. No C factory, CLI selector, benchmark, fuzz
-boundary, or interoperability entry is claimed yet.
+inside aligned opaque storage. The C requirements query and factory preserve
+that opacity and bind the existing streaming transforms. No completion matrix,
+CLI selector, benchmark, fuzz boundary, or interoperability entry is claimed
+yet.
 
 ## Why publication is not automatic
 

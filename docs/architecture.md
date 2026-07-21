@@ -1647,6 +1647,12 @@ counts, offsets, total bytes, and base alignment during partitioning. Public
 adapters can therefore reserve byte buffers without exposing C++ record layouts
 or performing unchecked casts themselves.
 
+The public C adapter preserves that exact ownership model. Its requirements
+query returns direction-specific primary, secondary, and opaque aligned-view
+extents; creation recalculates and repartitions those regions before binding
+the existing streaming encoder or decoder. C callers never name or size an LZD
+entry, phrase record, or expansion-stack element directly.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

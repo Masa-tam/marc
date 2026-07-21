@@ -2237,3 +2237,14 @@ For decoder limits of 64 raw bytes, 128 token bytes, and ten dictionary entries,
 require ten phrase records and eleven expansion references. Partition aligned
 opaque storage and verify the phrase base, expansion offset, non-overlap,
 short-storage rejection, misalignment rejection, and altered-offset rejection.
+
+For the public LZD plus Adaptive C ABI, initialize encode defaults and require
+a 65,536-byte frame and 65,536 maximum entries. Under two-byte frames, eight
+token bytes, a 264-byte payload ceiling, 512 aggregate bytes, and 65,536 entry
+limits, require encode workspace extents of 2 primary and 344 secondary bytes.
+Encode `41 42 41 42 58`, then query decode requirements of 568 primary and 10
+secondary bytes and reproduce the input through the C11 transform API. Require
+a nonempty aligned opaque region in both directions. Reject each one-byte-short
+workspace, a deliberately misaligned views region, a null output-handle
+pointer, and a nonzero reserved field while preserving a null transform on
+every factory failure.

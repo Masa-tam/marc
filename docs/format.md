@@ -2093,6 +2093,10 @@ and the iterative `uint32_t` expansion stack share one opaque caller allocation
 with explicit alignment and offset validation; caller-visible output remains
 outside scratch-workspace accounting.
 
+The public C factory selects this same fixed profile and adds no format
+variant. Encoding remains known-size; decoder workspace sizing uses only local
+limits, and stream parameters are validated after collection against them.
+
 ## LZD variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 5, dictionary variant 1,
