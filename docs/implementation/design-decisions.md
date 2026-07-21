@@ -6132,3 +6132,23 @@ canonical `ABABX` stream, all-ones generic extent fields, and a nonzero
 reserved Adaptive descriptor byte to fail atomically with sticky category and
 position. Ordinary MSVC and Clang builds compile the harness; sanitizer fuzz
 execution remains a separate explicitly bounded Clang workflow.
+
+## DD-327: LZW Adaptive CLI uses the bounded reference profile
+
+- Date: 2026-07-21
+- Status: accepted
+
+Publish `lzw-adaptive-huffman` as a command-line selector backed only by the
+public C ABI. Use 65,536-byte raw frames and maximum LZW code width 16. Bound
+the finalized packed-code region by 131,072 bytes, the Adaptive payload by
+4,325,376 bytes, generated entries by 65,280, and aggregate internal bytes by
+8 MiB. Obtain every direction-specific workspace extent and the opaque record
+alignment from `marc_lzw_adaptive_huffman_workspace_requirements`; the CLI
+must not reproduce either private record layout or workspace partition.
+
+Retain the common transactional file contract: create only the exclusive
+`.tmp` staging path, rename it after terminal success, and remove it after any
+configuration, allocation, processing, malformed-stream, or commit failure.
+Exercise the selector with the common multi-frame encode/decode round trip and
+require strict rejection of appended trailing data before claiming CLI
+publication. This step adds no benchmark or interoperability claim.

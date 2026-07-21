@@ -944,3 +944,8 @@ existing exact-frame private decoder, streaming decoder, local limit contract,
 and repository-authored canonical stream generator. No external fuzz harness,
 corpus, malformed archive, combined decoder, source code, or regression suite
 was consulted.
+
+The LZW plus Adaptive Huffman CLI selector uses only DD-327, the published C
+factory and requirements query, and marc's existing transactional file driver.
+No external LZW, Adaptive Huffman, compression-tool, archive-manager, source
+code, CLI layout, or test suite was consulted.

@@ -1485,7 +1485,7 @@ throughput, and the larger caller-owned workspace total. Interoperability
 schema 4 covers the same public profile through deterministic foreign decode
 and local re-encode checks.
 
-### Specified LZW plus Adaptive Huffman boundary
+### Published LZW plus Adaptive Huffman boundary
 
 LZW first completes its variable-width LSB-first code stream and zero-pads the
 last partial byte. Adaptive Huffman consumes that finalized byte sequence as
@@ -1513,18 +1513,19 @@ private packed staging, and invokes the existing LZW validator before success.
 The next boundary adds iterative LZW reconstruction into a separate private raw
 span only after that validation succeeds. Raw capacity and aggregate bytes are
 checked before entropy output, and malformed input cannot publish raw bytes.
-The internal transactional frame decoder now also checks complete destination
+The internal transactional frame decoder also checks complete destination
 capacity before entropy output and copies private raw staging only after all
 validation and reconstruction succeeds. No failure publishes a destination
-byte. There is still no streaming or public adapter; those later layers must
-consume this transaction rather than bypass it.
+byte. The later streaming and public adapters consume this transaction rather
+than bypass it.
 
 Encoding now follows the exact inverse ownership order. The LZW planner fixes
 the complete code schedule and final padded packed byte in caller-owned staging
 before Adaptive planning observes any symbol. The frame planner accounts for
 the typed encoder table, packed span, descriptor, and exact entropy payload;
 the encoder rejects short serialized output before writing and reproduces the
-independent 75-byte frame. Streaming and public adapters remain later layers.
+independent 75-byte frame. The subsequent streaming and public adapters retain
+that exact representation.
 
 The bounded streaming encoder now owns four caller-supplied regions: one raw
 frame, the conservative packed-code ceiling, one complete encoded frame, and
@@ -1560,6 +1561,12 @@ The decoder fuzz boundary reuses the same exact-frame and incremental paths
 with compile-time byte arrays, a phrase-table ceiling derived from nine-bit
 code density, byte-derived chunk schedules, and a finite call budget. No input
 controls allocation or expands the admitted storage limits.
+The transactional CLI binds this profile only through its public C factory
+and requirements query. Its 64-KiB raw cadence configures the two-byte-per-raw-
+byte packed ceiling, the 33-byte-per-packed-symbol Adaptive payload ceiling,
+65,280 generated entries, and an 8-MiB aggregate limit while leaving every
+actual workspace extent, typed-record size, and alignment inside the checked
+profile helpers.
 
 ### Published LZW plus Blocked Huffman boundary
 

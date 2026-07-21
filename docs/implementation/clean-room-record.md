@@ -6371,3 +6371,24 @@ discarded and the reviewed seed retained.
   distinctive corpus was compared.
 - Local validation: all 1,342 Release tests passed under both MSVC/Visual
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-21 - LZW plus Adaptive Huffman CLI profile
+
+- Authoring method: connected the independently implemented public C factory
+  to marc's bounded streaming command-line driver and transactional file path.
+- References used: DD-323 through DD-327, the public
+  `marc_lzw_adaptive_huffman_*` declarations, and marc's first-party LZW
+  Blocked Huffman and LZ78 Adaptive Huffman CLI adapters.
+- Known implementations intentionally not consulted: third-party LZW,
+  Adaptive Huffman, compression-tool, and archive-manager source code.
+- Independent decisions: use 65,536-byte frames, a 131,072-byte packed limit,
+  a 4,325,376-byte payload limit, 65,280 generated entries, and an 8-MiB
+  aggregate policy; obtain concrete workspace sizes and alignment from C.
+- Tests added: common multi-frame CLI round trip plus strict appended-trailing-
+  data rejection and transactional output cleanup.
+- Similarity review: the adapter contains only marc C ABI calls, checked bound
+  formulas specified in this repository, and existing local dispatch
+  conventions; no external implementation expression was used.
+- Local validation: the focused transactional CLI test and all 1,343 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

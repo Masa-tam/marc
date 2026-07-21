@@ -44,6 +44,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lz78-adaptive-huffman` | LZ78 | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzw` | LZW | None | Variant 1 |
 | `lzw-blocked-huffman` | LZW | Blocked Huffman | Composed dictionary and entropy pipeline |
+| `lzw-adaptive-huffman` | LZW | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |
 | `lzd-blocked-huffman` | Lempel-Ziv Double | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzmw` | LZMW | None | Variant 1 |
@@ -80,6 +81,13 @@ entropy blocks, the two-byte-per-raw-byte packed LZW bound, at most 32 entropy
 blocks per frame, and at most 65,280 additional LZW dictionary entries. Its
 actual three workspace extents and alignment likewise come from the public C
 ABI requirements query.
+
+The `lzw-adaptive-huffman` adapter uses 65,536-byte raw frames and maximum
+code width 16. Its packed LZW ceiling is 131,072 bytes, its conservative
+Adaptive payload ceiling is 4,325,376 bytes, and its aggregate internal limit
+is 8 MiB. At most 65,280 generated entries are admitted. The public C ABI
+requirements query remains authoritative for all three workspace extents and
+the opaque typed-record alignment.
 
 The `lzd-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the exact four-byte-per-raw-byte worst-case LZD token bound,

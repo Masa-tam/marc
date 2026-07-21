@@ -2131,3 +2131,10 @@ the generic frame extent region with `FF` bytes and set the final Adaptive
 descriptor reserved byte to one independently. Both malformed cases must stay
 atomic and sticky. The fuzz entry point caps input, all byte buffers, the
 3,639-record phrase table, and total calls before inspecting input metadata.
+
+For CLI integration, run the common file harness with the exact selector
+`lzw-adaptive-huffman`. Encode enough repeated text to cross the 65,536-byte
+raw-frame boundary, decode it through a fresh public transform, and compare the
+restored file byte for byte. Append one trailing zero byte to the encoded file,
+require decode failure, and require that neither the requested destination nor
+its temporary staging path remains.

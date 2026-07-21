@@ -1725,7 +1725,7 @@ representation.
 
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 
-The reserved profile name is `lzw-adaptive-huffman`. This composition uses
+The profile name is `lzw-adaptive-huffman`. This composition uses
 dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 1, and
 entropy variant 1 under format version 1.0. Its stream parameter regions are
 the 16-byte LZW parameters followed by the empty Adaptive Huffman parameter
@@ -1837,9 +1837,7 @@ operation succeeds. This is still an internal frame API rather than a public C
 decoder. The matching internal planner first freezes the complete canonical LZW
 packed region, then plans Adaptive Huffman over exactly those bytes; the
 deterministic encoder emits the generic header, descriptor, and payload only
-after complete capacity and workspace admission. There is still no streaming
-transform, public C factory, CLI selector, benchmark entry, fuzz target,
-completion claim, or interoperability archive.
+after complete capacity and workspace admission.
 
 The first streaming encoder emits the ordinary 80-byte prefix, buffers no more
 than one raw frame, produces that frame solely through the exact planner and
@@ -1855,6 +1853,14 @@ reconstruction transaction only after the frame is present, and drains only
 validated raw bytes. Every truncation and trailing byte is invalid; a malformed
 later frame cannot publish any of that frame, while earlier frames remain
 committed.
+
+The public C factory and `lzw-adaptive-huffman` CLI selector use this exact
+representation. The CLI selects 65,536-byte raw frames, maximum code width 16,
+a 131,072-byte packed ceiling, a 4,325,376-byte Adaptive payload ceiling,
+65,280 generated entries, and an 8-MiB aggregate internal limit. It obtains
+all concrete workspace extents and opaque alignment from the public
+requirements query. Benchmark and interoperability admission remain separate
+evidence steps and do not alter these bytes.
 
 ## LZW variant 1 plus Blocked Huffman variant 1
 

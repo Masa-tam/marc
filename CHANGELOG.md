@@ -12,7 +12,7 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
-- The reserved `lzw-adaptive-huffman` composition now has an exact
+- The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame
   vector assembled from the standalone LZW and Adaptive Huffman primitives.
@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   deterministic and chunk-independent streams, sticky terminal results, and
   transactional malformed-final-frame rejection. A bounded dual-path decoder
   fuzz harness and permanent atomic regressions now cover truncation, extreme
-  extents, and invalid Adaptive descriptors.
+  extents, and invalid Adaptive descriptors. Its transactional CLI selector
+  uses the bounded 64-KiB reference profile exclusively through the public C
+  ABI and strictly rejects trailing data.
 - The fully specified `lz77-adaptive-huffman` stream composition now has a
   bounded public C factory, completion matrix, decoder fuzz target, and
   transactional CLI and benchmark selectors, plus schema-8 interoperability

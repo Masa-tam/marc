@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | C ABI `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
@@ -81,8 +81,8 @@ dictionary padding, before a fresh per-frame FGK tree consumes them. Its exact
 bounds, transactional frame and streaming transforms, checked typed workspace
 profile, independent single-code vector, public C factory, and public-ABI
 completion matrix are present. Its bounded dual-path decoder fuzz target and
-permanent malformed regressions are also present. CLI, benchmark, and
-interoperability admission remain pending.
+permanent malformed regressions and transactional CLI selector are also
+present. Benchmark and interoperability admission remain pending.
 
 ## Why publication is not automatic
 
