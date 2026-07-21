@@ -178,6 +178,9 @@ entries while encoding and a checked phrase-entry/expansion-stack layout while
 decoding. Call `marc_lzd_adaptive_huffman_workspace_requirements()` again
 after changing direction, original size, frame size, maximum entries, or any
 hard limit; decode sizing is derived only from trusted local limits.
+The public completion matrix exercises this factory exclusively, including
+zero encoder views for empty and one-byte input, byte-identical repeated and
+arbitrarily chunked encoding, and atomic rejection of a malformed final frame.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

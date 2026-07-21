@@ -35,7 +35,9 @@ format versions, and C ABI versions are independent namespaces.
   direction-specific byte workspaces and safely partitions aligned LZD encoder,
   phrase, and expansion-record regions. A bounded public C factory now binds
   those regions to the streaming transforms without exposing private C++
-  record layouts in the ABI.
+  record layouts in the ABI. Its public-ABI completion matrix now covers the
+  required binary input classes, deterministic and chunk-independent output,
+  sticky terminal states, and transactional malformed-final-frame rejection.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

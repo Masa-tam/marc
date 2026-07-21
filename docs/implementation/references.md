@@ -1022,3 +1022,9 @@ profile and partition helpers, marc's existing transform lifecycle, checked
 workspace query, opaque aligned-view convention, and first-party C11 assertion
 harness. No external combined API, allocator interface, ABI layout, factory
 source, corpus, or test suite was consulted.
+
+The LZD plus Adaptive Huffman public completion matrix uses only DD-339, the
+published C ABI, marc's required data-class inventory, generic frame fields,
+and deterministic first-party byte generation. No external combined codec,
+conformance corpus, malformed archive, chunk schedule, source code, or test
+suite was consulted.

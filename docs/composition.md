@@ -103,9 +103,10 @@ before draining raw bytes, so a malformed later frame cannot partially publish
 itself. A bounded profile now exposes direction-specific byte requirements and
 partitions typed encoder records plus coupled phrase/expansion decoder views
 inside aligned opaque storage. The C requirements query and factory preserve
-that opacity and bind the existing streaming transforms. No completion matrix,
-CLI selector, benchmark, fuzz boundary, or interoperability entry is claimed
-yet.
+that opacity and bind the existing streaming transforms. Its public-ABI
+completion matrix covers required data classes, determinism, arbitrary
+chunking, sticky terminal states, and malformed-final-frame atomicity. No CLI
+selector, benchmark, fuzz boundary, or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

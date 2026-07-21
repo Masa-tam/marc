@@ -1652,6 +1652,10 @@ query returns direction-specific primary, secondary, and opaque aligned-view
 extents; creation recalculates and repartitions those regions before binding
 the existing streaming encoder or decoder. C callers never name or size an LZD
 entry, phrase record, or expansion-stack element directly.
+The completion boundary drives only this public adapter and verifies required
+binary classes, byte-identical repeated encoding, arbitrary input/output
+chunking, sticky success and failure, and whole-frame publication under final-
+frame corruption, truncation, or trailing input.
 
 ### Published LZW plus Blocked Huffman boundary
 

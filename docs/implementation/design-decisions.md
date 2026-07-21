@@ -6406,3 +6406,27 @@ strict C11 round trip, exact small-limit workspace checks, short and misaligned
 workspace rejection, reserved-field rejection, and a null output handle on
 every factory failure. This adds no allocator callback, unknown-size input,
 CLI, benchmark, fuzz, completion, or interoperability claim.
+
+## DD-339: LZD Adaptive completion is audited through the public C ABI
+
+- Date: 2026-07-22
+- Status: accepted
+
+Audit only the published C configuration, requirements query, factory,
+process, and destroy functions. Use 64-byte raw frames, the checked 256-byte
+maximum canonical-token region, the 33-byte-per-token-byte Adaptive payload
+bound, 32 dictionary entries, and a 65,536-byte aggregate limit. Allocate both
+direction-specific opaque views from queried byte counts and alignment;
+encoding zero or one raw byte requires no generated LZD phrase entry and
+therefore no views bytes. Cover empty input, every one-byte value, the ordered
+byte alphabet, repeated data, binary patterns, deterministic pseudo-random
+bytes, and lengths 63, 64, and 65. Require repeated encoding to be byte-
+identical and terminal success to be sticky.
+
+For a 193-byte four-frame stream, require exact bytes and round trips under
+unchunked, one-byte, and mixed chunk schedules. Independently corrupt the final
+frame sequence, truncate its final byte, and append trailing data. Every error
+must be sticky, preserve byte and bit positions, publish exactly the first 192
+validated bytes, and leave the last output sentinel unchanged. This completes
+public-ABI evidence only; it adds no fuzz, CLI, benchmark, or interoperability
+claim.
