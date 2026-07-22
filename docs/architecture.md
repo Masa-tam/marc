@@ -1750,6 +1750,12 @@ extents and alignment. Factory construction repeats profile calculation and
 opaque partitioning before publishing a handle, so encoder entries, phrase
 records, and expansion references remain private implementation types.
 
+The public-ABI completion matrix constructs both directions only through that
+factory. It covers required binary input classes, exact deterministic encoding,
+one-byte and mixed chunk schedules, repeated terminal results, and a four-frame
+transaction test. Corruption, truncation, or trailing data at the last frame
+commits exactly the first three frames and no byte from the fourth.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

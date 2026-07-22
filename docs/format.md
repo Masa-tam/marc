@@ -2306,6 +2306,8 @@ The public C requirements query and factory select this identical fixed profile
 and add no format or parameter variant. Encoding remains known-size; decoder
 workspace sizing depends only on caller-supplied local limits, and collected
 stream parameters are validated against them before any frame publication.
+The public completion matrix exercises this representation without defining a
+new stream variant or relaxing strict trailing-data rejection.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 

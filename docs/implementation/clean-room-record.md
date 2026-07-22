@@ -7023,3 +7023,29 @@ discarded and the reviewed seed retained.
 - Local validation: the strict C11 shared-library test and all 1,430 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman public completion matrix
+
+- Authoring method: audited only the published C ABI against the repository's
+  completion requirements, using deterministic first-party inputs and bounded
+  caller-owned storage.
+- References used: DD-353, DD-352, the required data classes, deterministic
+  generator, public transform contract, fixed LZMW/Adaptive profile, frame
+  atomicity, and strict trailing-data rules.
+- Known implementations intentionally not consulted: external completion
+  suites, compression corpora, combined-codec APIs, source code, and tests.
+- Independent decisions: exercise 64-byte raw frames, the derived 256-byte
+  dictionary-reference ceiling, 8,448-byte Adaptive payload ceiling, 63-entry
+  dictionary limit, and 65,536-byte aggregate limit; represent empty and
+  one-byte calls with zero-length views; use four frames to observe final-frame
+  atomicity after three committed frames.
+- Generated-code task description: prove required binary data classes,
+  byte-identical output across repeated runs and chunkings, public-C-ABI round
+  trips, and sticky positional errors for a mutated, truncated, or extended
+  final frame without publishing its raw bytes.
+- Similarity review: the vectors, limits, chunk schedules, and corruption cases
+  are direct applications of marc's own format and completion rules. No
+  external combined-codec test expression was viewed or compared.
+- Local validation: three focused public completion tests and all 1,433 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

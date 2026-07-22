@@ -36,7 +36,10 @@ format versions, and C ABI versions are independent namespaces.
   profile now derives direction-specific byte workspaces and safely partitions
   opaque aligned encoder, phrase, and expansion-record regions. A bounded C
   requirements query and immutable-direction factory now expose those regions
-  without placing C++ record layouts in the ABI. No CLI profile is exposed yet.
+  without placing C++ record layouts in the ABI. Its public completion matrix
+  now covers required binary data classes, deterministic arbitrary chunking,
+  sticky terminal states, and malformed-final-frame atomicity. No CLI profile
+  is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

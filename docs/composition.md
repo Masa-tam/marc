@@ -119,7 +119,9 @@ frames atomic. Its internal profile now derives direction-specific byte regions
 and safely partitions opaque aligned LZMW records without exposing their C++
 layouts. Its bounded C requirements query and factory now expose this fixed
 profile through the common three caller-owned regions. It is not yet a CLI
-profile.
+profile. Its public-ABI completion matrix now proves required binary classes,
+deterministic arbitrary chunking, sticky terminal states, and transactional
+malformed-final-frame rejection through that factory.
 
 ## Why publication is not automatic
 

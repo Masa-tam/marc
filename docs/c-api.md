@@ -200,6 +200,10 @@ encoder entries or the decoder's checked phrase-entry/expansion-stack layout.
 Query `marc_lzmw_adaptive_huffman_workspace_requirements()` again whenever the
 direction, known original size, frame size, maximum entries, or a hard limit
 changes.
+The public completion matrix exercises this factory exclusively, including zero
+encoder views for empty and one-byte input, byte-identical repeated and
+arbitrarily chunked encoding, sticky success and error results, and atomic
+rejection of a malformed final frame.
 
 ## Processing contract
 

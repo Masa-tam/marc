@@ -47,6 +47,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | Ready | Included |
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
+| `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | In progress | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 12 contains twenty-three archives: the frozen twenty-two-entry schema-11
@@ -87,6 +88,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzmw-adaptive-huffman` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -125,7 +127,10 @@ an internal bounded profile that derives all direction-specific byte extents
 and partitions aligned encoder, phrase, and expansion records from one opaque
 region. A bounded C requirements query and immutable-direction factory now bind
 those regions without exposing the private record layouts. It has no tool
-adapter, completion, fuzz, benchmark, or interoperability claim yet.
+adapter, fuzz, benchmark, or interoperability claim yet. Its public-ABI
+completion matrix now covers required data classes, deterministic one-byte and
+mixed chunking, sticky terminal states, and transactional malformed-final-frame
+rejection.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -317,7 +322,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-352, the complete Release suite contains 1,430 tests and passes under both
+At DD-353, the complete Release suite contains 1,433 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

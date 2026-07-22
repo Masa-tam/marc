@@ -1113,3 +1113,9 @@ the established marc transform lifecycle and three-region ABI, checked opaque
 view partitioning, and the first-party C11 assertion harness. No external
 combined API, factory, allocator interface, ABI layout, source code, or test
 suite was consulted.
+
+The LZMW plus Adaptive Huffman completion matrix uses only DD-353, the published
+marc C configuration/query/factory/process/destroy lifecycle, DD-344 bounds, and
+repository-authored deterministic fixtures and malformed mutations. No external
+completion suite, corpus, combined codec API, source code, or test vectors were
+consulted.
