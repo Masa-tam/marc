@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(marc VERSION 0.1.0 LANGUAGES C CXX)
+project(marc VERSION 0.1.1 LANGUAGES C CXX)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -782,7 +782,7 @@ configure_package_config_file(
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/marcConfigVersion.cmake
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
+    COMPATIBILITY SameMinorVersion
 )
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/marcConfig.cmake

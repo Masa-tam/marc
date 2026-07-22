@@ -18,6 +18,17 @@ Changing one namespace does not implicitly change another. A decoder-visible
 byte change requires a new documented format variant even when the project
 version changes.
 
+Before project version 1.0, the `0.1.x` line is reserved for additions and
+fixes that retain the published C ABI and preserve decoder compatibility and
+deterministic bytes for every existing stream variant. New explicitly named
+profiles and new format variant IDs may be added without changing those
+existing contracts. A `0.2.0` release may introduce intentionally incompatible
+API changes, new defaults, or separately identified representation variants
+for compression-ratio or performance work. A project-version change never
+permits an existing algorithm or variant ID to change representation silently.
+The installed CMake package therefore advertises `SameMinorVersion`
+compatibility while the project remains below version 1.0.
+
 ## Release scope
 
 The initial `0.1.0` release is source-oriented. GitHub's tag archives and the
@@ -65,8 +76,8 @@ After every gate is satisfied, create an annotated tag whose version exactly
 matches CMake and the changelog:
 
 ```console
-git tag -a v0.1.0 -m "marc 0.1.0"
-git push origin v0.1.0
+git tag -a v0.1.1 -m "marc 0.1.1"
+git push origin v0.1.1
 ```
 
 Create the GitHub Release from that tag. Use the matching changelog section as

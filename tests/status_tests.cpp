@@ -7,7 +7,7 @@
 
 TEST(LibraryMetadataTest, ReportsAbiAndVersion) {
     EXPECT_EQ(marc_abi_version(), MARC_ABI_VERSION);
-    EXPECT_EQ(std::string_view{marc_version_string()}, "0.1.0");
+    EXPECT_EQ(std::string_view{marc_version_string()}, "0.1.1");
     EXPECT_EQ(std::string_view{marc_status_name(MARC_STATUS_NEED_INPUT)},
               "need_input");
 }

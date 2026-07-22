@@ -7163,3 +7163,30 @@ discarded and the reviewed seed retained.
 - Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
   system interoperability on x86-64. It does not claim a second architecture,
   a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.
+
+## 2026-07-23 - Project version 0.1.1 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  the Adaptive Huffman composition column and its schema-13 external evidence.
+- References used: DD-358, the repository release procedure, the `0.1.0`
+  changelog, the public C version query, and CMake package-version generation.
+- Known implementations intentionally not consulted: external release scripts,
+  package version policies, changelog generators, or binary release workflows.
+- Independent decisions: use `0.1.1` for compatibility-preserving additions;
+  retain stream versions 1.0 and 1.1, C ABI version 1, and schema 13 as separate
+  namespaces; reserve `0.2.0` for potentially incompatible API/default changes
+  or separately identified representation variants; advertise only same-minor
+  CMake package compatibility; never silently change an existing stream
+  variant.
+- Generated-code task description: synchronize the CMake project version,
+  runtime C version string, metadata test, dated changelog, release commands,
+  compatibility policy, and validation baseline without changing codec bytes.
+- Similarity review: the changes are repository metadata and first-party
+  policy prose. No external versioning implementation or release automation
+  was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 generated package version `0.1.1` and
+  same-minor compatibility checks for both builds. All 1,438 Release tests
+  passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64,
+  including the runtime version assertion, all 24 benchmark smoke tests, and
+  the schema 1-through-13 compatibility chain. The final metadata and
+  documentation-layout tests also passed after the release prose update.

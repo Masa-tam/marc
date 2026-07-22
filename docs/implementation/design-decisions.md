@@ -6830,3 +6830,23 @@ generator, verifier, compatibility rules, and same-machine CLI determinism
 only. Cross-platform evidence still requires CI artifacts from the same full
 Git revision and the established four-direction external verification
 procedure.
+
+## DD-358: Project version 0.1.1 preserves existing contracts
+
+- Date: 2026-07-23
+- Status: accepted
+
+Release the completed Adaptive Huffman composition column as project version
+`0.1.1`. Treat project, stream-format, C ABI, and interoperability schema
+versions as independent namespaces. This release adds named public profiles,
+but retains C ABI version 1 and does not change the representation or
+deterministic encoded bytes of any previously published stream variant.
+
+Define the pre-1.0 `0.1.x` project line as compatibility-preserving additions
+and fixes. Reserve `0.2.0` for work that may introduce incompatible API or
+default changes, or separately identified format variants motivated by speed
+or compression-ratio improvements. A later project version must still never
+silently reuse an existing algorithm or variant ID for different bytes. Make
+the installed CMake package enforce this boundary with `SameMinorVersion`
+rather than treating every project version whose major component is zero as
+compatible.

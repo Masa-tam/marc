@@ -3,7 +3,7 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
-## Unreleased
+## 0.1.1 - 2026-07-23
 
 ### Changed
 
