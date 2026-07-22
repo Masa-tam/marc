@@ -7249,3 +7249,28 @@ discarded and the reviewed seed retained.
 - Local validation: all nine focused validator tests and all 1,448 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range private raw decoder
+
+- Authoring method: extended the completed combined validator with marc's
+  existing validated LZ77 reconstruction function and a separately bounded
+  private raw region.
+- References used: DD-361, the combined format's transactional order, LZ77
+  overlap-copy semantics, the completed private-token validator, checked
+  aggregate workspace policy, and local frame-decoder contracts.
+- Known implementations intentionally not consulted: external LZ/range
+  decoders, foreign transactional decompression designs, buffer layouts,
+  malformed corpora, source code, or tests.
+- Independent decisions: reject raw capacity and aggregate failures before
+  entropy output; reconstruct only after the complete LZ77 graph and extent are
+  validated; preserve nested decode errors; expose no caller-visible output in
+  this step.
+- Generated-code task description: add a private raw-staging boundary that
+  reconstructs the hand vector and overlapping matches, while proving that
+  capacity, aggregate, and malformed-token failures cannot mutate raw staging.
+- Similarity review: reconstruction reuses marc's independently implemented
+  LZ77 decoder under the documented combined validation order. No external
+  pipeline or control-flow expression was used.
+- Local validation: all fourteen combined validator/private-decoder tests and
+  all 1,453 Release tests passed under both MSVC/Visual Studio 2026 and Clang
+  22.1.3 on Windows x64 using official CMake 4.3.4.

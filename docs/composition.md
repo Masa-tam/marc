@@ -138,8 +138,10 @@ validation, and private raw reconstruction before publication. An independent
 88-byte single-Literal frame fixes the component boundary. Its first bounded
 complete-frame validator now enforces those extents, decodes only into private
 token staging, and validates the entire token stream without reconstructing or
-publishing raw bytes. No public factory, CLI selector, benchmark, fuzz target,
-or interoperability entry exists yet.
+publishing raw bytes. Its bounded private decoder now includes raw staging in
+the aggregate policy and reconstructs validated overlap copies without a
+caller-visible output boundary. No public factory, CLI selector, benchmark,
+fuzz target, or interoperability entry exists yet.
 
 ## Why publication is not automatic
 

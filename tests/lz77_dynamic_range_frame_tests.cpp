@@ -244,3 +244,102 @@ TEST(Lz77DynamicRangeFrameValidator, RejectsWrongSequenceAndPipeline) {
                   stream, {}, {}, 0, 0, single_literal_frame, staging).error,
               Lz77DynamicRangeFrameValidationError::unsupported_pipeline);
 }
+
+TEST(Lz77DynamicRangeFrameDecoder, ReconstructsHandVectorIntoPrivateStaging) {
+    std::array<std::byte, 16> dictionary_staging{};
+    std::array<std::byte, 3> raw_staging{};
+    raw_staging.fill(std::byte{0x5a});
+    const auto result =
+        marc::frame::decode_lz77_dynamic_range_frame_to_staging(
+            stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+            dictionary_staging, raw_staging);
+    ASSERT_EQ(result.error, Lz77DynamicRangeFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0x5a});
+    EXPECT_EQ(raw_staging[2], std::byte{0x5a});
+}
+
+TEST(Lz77DynamicRangeFrameDecoder, ReconstructsOverlappingMatch) {
+    std::array<std::byte, 32> tokens{};
+    const marc::dictionary::internal::Lz77Token literal{
+        marc::dictionary::internal::Lz77TokenTag::literal, 0, 0, 'A'};
+    const marc::dictionary::internal::Lz77Token match{
+        marc::dictionary::internal::Lz77TokenTag::terminal_match, 1, 4, 0};
+    ASSERT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  literal,
+                  std::span<std::byte,
+                            marc::dictionary::internal::lz77_token_size>{
+                      tokens.data(),
+                      marc::dictionary::internal::lz77_token_size}),
+              marc::dictionary::internal::Lz77FormatError::none);
+    ASSERT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  match,
+                  std::span<std::byte,
+                            marc::dictionary::internal::lz77_token_size>{
+                      tokens.data()
+                          + marc::dictionary::internal::lz77_token_size,
+                      marc::dictionary::internal::lz77_token_size}),
+              marc::dictionary::internal::Lz77FormatError::none);
+    const auto encoded = frame_for_tokens(tokens, 5);
+    std::array<std::byte, 32> dictionary_staging{};
+    std::array<std::byte, 5> raw_staging{};
+    const auto result =
+        marc::frame::decode_lz77_dynamic_range_frame_to_staging(
+            stream_for(5), {}, {}, 0, 0, encoded, dictionary_staging,
+            raw_staging);
+    ASSERT_EQ(result.error, Lz77DynamicRangeFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::all_of(raw_staging, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(Lz77DynamicRangeFrameDecoder,
+     RejectsShortRawStagingBeforeTokenMutation) {
+    std::array<std::byte, 16> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0x5a});
+    const auto result =
+        marc::frame::decode_lz77_dynamic_range_frame_to_staging(
+            stream_for_a(), {}, {}, 0, 0, single_literal_frame,
+            dictionary_staging, {});
+    EXPECT_EQ(result.error,
+              Lz77DynamicRangeFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(Lz77DynamicRangeFrameDecoder, IncludesRawStagingInAggregateLimit) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 16;
+    limits.max_internal_buffered_bytes = 16 + 16 + 16 + 1 - 1;
+    std::array<std::byte, 16> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0x5a});
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    const auto result =
+        marc::frame::decode_lz77_dynamic_range_frame_to_staging(
+            stream_for_a(), {}, limits, 0, 0, single_literal_frame,
+            dictionary_staging, raw_staging);
+    EXPECT_EQ(result.error,
+              Lz77DynamicRangeFrameValidationError::workspace_limit);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+}
+
+TEST(Lz77DynamicRangeFrameDecoder, MalformedTokensNeverMutateRawStaging) {
+    std::array<std::byte, 16> invalid_tokens{};
+    invalid_tokens[0] = std::byte{0xff};
+    const auto malformed = frame_for_tokens(invalid_tokens);
+    std::array<std::byte, 16> dictionary_staging{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    const auto result =
+        marc::frame::decode_lz77_dynamic_range_frame_to_staging(
+            stream_for_a(), {}, {}, 0, 0, malformed, dictionary_staging,
+            raw_staging);
+    EXPECT_EQ(result.error, Lz77DynamicRangeFrameValidationError::
+                                dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+}

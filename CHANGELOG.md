@@ -13,8 +13,10 @@ format versions, and C ABI versions are independent namespaces.
   vector assembled from the standalone LZ77 and Dynamic Range primitives. It
   now has a bounded complete-frame validator that range-decodes into private
   token staging, validates the complete LZ77 token stream and exact raw extent,
-  and publishes no raw bytes. It is not yet exposed through the public C ABI or
-  CLI.
+  and publishes no raw bytes. A bounded private decoder now reconstructs only
+  validated tokens into separately checked raw staging, including overlap-copy
+  semantics, without exposing caller-visible output. It is not yet exposed
+  through the public C ABI or CLI.
 
 ## 0.1.1 - 2026-07-23
 

@@ -100,8 +100,9 @@ transactional validation order, and independent 88-byte single-Literal frame.
 Its first bounded complete-frame validator now enforces all declared and
 aggregate extents, range-decodes into private token staging, and validates the
 complete LZ77 stream and exact raw extent without publishing raw bytes. It
-remains `Specified` until private raw reconstruction and transactional frame
-decoding exist.
+now reconstructs validated tokens, including overlapping matches, into a
+separately bounded private raw staging region. It remains `Specified` until a
+transactional caller-visible frame publication boundary exists.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
@@ -337,7 +338,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-360, the complete Release suite contains 1,448 tests and passes under both
+At DD-361, the complete Release suite contains 1,453 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

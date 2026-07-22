@@ -6896,3 +6896,20 @@ before entropy output. Then strictly parse the range descriptor, decode exactly
 private staging, and validate the complete LZ77 token graph and derived raw
 extent. Preserve the component error categories in the result. Do not
 reconstruct or publish raw bytes in this step.
+
+## DD-361: LZ77 Dynamic Range reconstructs only validated tokens
+
+- Date: 2026-07-23
+- Status: accepted
+
+Extend the complete-frame boundary with a private raw-staging decoder. Check
+raw capacity and include raw bytes in the descriptor, payload, token-staging,
+and raw-staging aggregate before entropy output. Reuse the complete combined
+validator so Dynamic Range decoding and the entire LZ77 graph and derived raw
+extent succeed before reconstruction begins.
+
+Apply marc's existing iterative LZ77 decoder to the validated private token
+region, including bytewise overlapping-copy semantics, and require exactly the
+declared raw extent. Preserve nested validation, format, and decode errors in
+the result. This function may mutate only its private raw staging on success;
+it has no caller-visible output and adds no stream, C ABI, or CLI surface.

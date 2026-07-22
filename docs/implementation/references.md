@@ -1157,3 +1157,9 @@ reserved combined format, marc's generic frame parser, Dynamic Range descriptor
 and strict decoder, LZ77 token validator, checked arithmetic, and decoder-limit
 contracts. No external LZ/range pipeline, combined validator, source code,
 malformed corpus, test suite, or error taxonomy was consulted.
+
+The LZ77 plus Dynamic Range private raw decoder uses only DD-361, the completed
+combined validator, marc's validated LZ77 overlap-copy decoder, checked raw and
+aggregate workspace policy, and local complete-frame contracts. No external
+combined decoder, decompression pipeline, transactional buffer design, source
+code, malformed corpus, or test suite was consulted.

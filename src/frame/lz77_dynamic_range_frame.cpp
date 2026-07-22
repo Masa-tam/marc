@@ -35,16 +35,16 @@ inline constexpr std::uint64_t termination_bytes = 5;
     return entropy_limits;
 }
 
-} // namespace
-
-Lz77DynamicRangeFrameValidationResult validate_lz77_dynamic_range_frame(
+[[nodiscard]] Lz77DynamicRangeFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::Lz77Parameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint64_t expected_sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
-    const std::span<std::byte> dictionary_staging) noexcept {
+    const std::span<std::byte> dictionary_staging,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging) noexcept {
     Lz77DynamicRangeFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -131,6 +131,11 @@ Lz77DynamicRangeFrameValidationResult validate_lz77_dynamic_range_frame(
             dictionary_staging_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error =
+            Lz77DynamicRangeFrameValidationError::raw_staging_too_small;
+        return result;
+    }
 
     std::uint64_t workspace_bytes{};
     if (!core::checked_add(
@@ -139,7 +144,11 @@ Lz77DynamicRangeFrameValidationResult validate_lz77_dynamic_range_frame(
         || !core::checked_add(
             workspace_bytes,
             static_cast<std::uint64_t>(result.dictionary_size),
-            workspace_bytes)) {
+            workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             Lz77DynamicRangeFrameValidationError::arithmetic_overflow;
         return result;
@@ -192,6 +201,64 @@ Lz77DynamicRangeFrameValidationResult validate_lz77_dynamic_range_frame(
         != dictionary::internal::Lz77ValidationError::none) {
         result.error = Lz77DynamicRangeFrameValidationError::
             dictionary_validation_error;
+    }
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_tokens(
+    Lz77DynamicRangeFrameValidationResult& result,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lz77_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::Lz77DecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error =
+        Lz77DynamicRangeFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+Lz77DynamicRangeFrameValidationResult validate_lz77_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    return validate_frame(stream, parameters, limits, expected_sequence,
+                          output_already_committed, input, dictionary_staging,
+                          false, {});
+}
+
+Lz77DynamicRangeFrameValidationResult
+decode_lz77_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, true, raw_staging);
+    if (result.error != Lz77DynamicRangeFrameValidationError::none) {
+        return result;
+    }
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, raw_staging)) {
+        return result;
     }
     return result;
 }

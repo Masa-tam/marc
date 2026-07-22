@@ -1915,6 +1915,15 @@ byte; all must leave a `5a` staging sentinel unchanged. Separately replace the
 canonical range initialization byte with one, and range-code an invalid LZ77
 tag `ff`; require stable entropy and dictionary validation errors respectively.
 
+For private LZ77 plus Dynamic Range reconstruction, decode the 88-byte hand
+frame into a three-byte `5a` raw sentinel and require only byte zero to become
+`41`. Build a separate canonical Literal `A` plus terminal distance-1 length-4
+token stream, range-code it through the standalone entropy encoder, and require
+five reconstructed `41` bytes. Supply no raw capacity and then an aggregate
+limit one byte below descriptor plus payload plus token plus raw staging;
+require both failures before token or raw mutation. Range-code tag `ff` and
+require dictionary validation failure with the raw sentinel unchanged.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently
