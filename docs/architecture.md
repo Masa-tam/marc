@@ -1686,7 +1686,7 @@ generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
 system directions for all twenty-three archives at revision
 `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
 
-### Specified LZMW plus Adaptive Huffman boundary
+### Published LZMW plus Adaptive Huffman boundary
 
 LZMW first freezes its complete canonical four-byte reference stream.
 Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
@@ -1760,6 +1760,13 @@ The decoder fuzz boundary fixes exact-frame and incremental workspaces before
 reading metadata: 1,023 phrase records, 1,024 expansion references, bounded
 byte arrays, byte-derived chunk schedules, and a finite call budget. Serialized
 input cannot enlarge any allocation or admitted workspace ceiling.
+
+The transactional CLI adapter selects the same public C factory with 65,536-
+byte raw frames, a checked 262,144-byte reference ceiling, an 8,650,752-byte
+Adaptive payload ceiling, and a 16-MiB aggregate limit. It obtains every
+direction-specific workspace extent and opaque-view alignment from the public
+requirements query, leaving the command-line layer responsible only for file
+transaction policy.
 
 ### Published LZW plus Blocked Huffman boundary
 

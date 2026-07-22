@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   sticky terminal states, and malformed-final-frame atomicity. No CLI profile
   is exposed yet. A bounded dual-path decoder fuzz harness and permanent
   atomic regressions now cover truncation, extreme frame extents, and invalid
-  Adaptive descriptors.
+  Adaptive descriptors. A transactional `lzmw-adaptive-huffman` CLI selector
+  now exposes the public C factory with fixed 64-KiB frames and checked local
+  limits.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

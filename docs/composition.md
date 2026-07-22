@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | Specified | Candidate | Candidate | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
@@ -118,11 +118,13 @@ validates each complete frame before raw publication, making malformed later
 frames atomic. Its internal profile now derives direction-specific byte regions
 and safely partitions opaque aligned LZMW records without exposing their C++
 layouts. Its bounded C requirements query and factory now expose this fixed
-profile through the common three caller-owned regions. It is not yet a CLI
-profile. Its public-ABI completion matrix now proves required binary classes,
+profile through the common three caller-owned regions. Its public-ABI
+completion matrix now proves required binary classes,
 deterministic arbitrary chunking, sticky terminal states, and transactional
 malformed-final-frame rejection through that factory. Its bounded dual-path
-decoder fuzz target and permanent malformed regressions are now present.
+decoder fuzz target and permanent malformed regressions are now present. A
+transactional CLI selector uses that factory with the fixed 64-KiB reference
+profile. No benchmark or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

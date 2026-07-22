@@ -88,7 +88,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-adaptive-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -126,12 +126,13 @@ trailing byte and publishes no raw bytes from a malformed later frame. It has
 an internal bounded profile that derives all direction-specific byte extents
 and partitions aligned encoder, phrase, and expansion records from one opaque
 region. A bounded C requirements query and immutable-direction factory now bind
-those regions without exposing the private record layouts. It has no tool
-adapter, benchmark, or interoperability claim yet. Its public-ABI
+those regions without exposing the private record layouts. Its public-ABI
 completion matrix now covers required data classes, deterministic one-byte and
 mixed chunking, sticky terminal states, and transactional malformed-final-frame
 rejection. A bounded dual-path decoder fuzz harness and permanent atomic
-malformed regressions are now present.
+malformed regressions are now present. A transactional CLI selector now binds
+the same public factory under the fixed 64-KiB reference profile. Benchmark and
+interoperability boundaries remain.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -323,7 +324,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-354, the complete Release suite contains 1,436 tests and passes under both
+At DD-355, the complete Release suite contains 1,437 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

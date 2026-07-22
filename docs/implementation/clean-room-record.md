@@ -7074,3 +7074,26 @@ discarded and the reviewed seed retained.
   Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4. The
   dedicated Clang/libFuzzer build then completed 1,000 seed-derived runs under
   AddressSanitizer and UndefinedBehaviorSanitizer without a finding.
+
+## 2026-07-23 - LZMW plus Adaptive Huffman CLI selector
+
+- Authoring method: extended marc's transactional CLI dispatch with the public
+  LZMW plus Adaptive Huffman requirements query and factory admitted by DD-352.
+- References used: DD-355, the published C lifecycle, the fixed 64-KiB
+  reference profile, checked DD-344 bounds, and the repository CLI round-trip
+  script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, dispatch tables, workspace allocators, source code, or test suites.
+- Independent decisions: cap canonical references at 262,144 bytes and
+  Adaptive payload at 8,650,752 bytes; retain 65,536 dictionary entries; use a
+  16-MiB aggregate policy; obtain every exact byte extent and alignment from C.
+- Generated-code task description: publish `lzmw-adaptive-huffman` through the
+  existing file transaction, add multi-frame round-trip and trailing-data
+  rejection coverage, and update public inventory without adding benchmark or
+  interoperability claims.
+- Similarity review: dispatch, allocation, and destination commit behavior
+  extend only marc's existing adapters. No external CLI structure or
+  distinctive integration test was compared.
+- Local validation: the focused selector test and all 1,437 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

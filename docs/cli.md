@@ -50,6 +50,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzd-adaptive-huffman` | Lempel-Ziv Double | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzmw` | LZMW | None | Variant 1 |
 | `lzmw-blocked-huffman` | LZMW | Blocked Huffman | Composed dictionary and entropy pipeline |
+| `lzmw-adaptive-huffman` | LZMW | Adaptive Huffman | FGK tree reset per outer frame |
 
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
@@ -110,6 +111,14 @@ entropy blocks, the exact four-byte-per-raw-byte fixed-reference bound, at most
 public requirements query supplies all byte extents and the opaque views
 alignment; the CLI does not reproduce entropy-view, phrase-record, or iterative
 expansion-stack layouts. The aggregate internal-buffer limit remains 64 MiB.
+
+The `lzmw-adaptive-huffman` adapter uses 65,536-byte raw frames, at most
+262,144 canonical LZMW reference bytes, and the conservative 8,650,752-byte
+Adaptive payload ceiling. It admits at most 65,536 generated entries and uses
+a 16-MiB aggregate internal limit. The public C ABI requirements query supplies
+the exact primary, secondary, and opaque aligned-view extents for each
+direction; the CLI does not reproduce private encoder-entry, phrase, or
+expansion-stack layouts.
 
 ## File and error behavior
 
