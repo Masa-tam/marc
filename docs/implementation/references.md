@@ -1169,3 +1169,9 @@ DD-362, the completed private raw decoder, caller-supplied spans, and marc's
 existing complete-frame commit policy. No external decompression API,
 publication strategy, buffer design, source code, malformed corpus, or test
 suite was consulted.
+
+The LZ77 plus Dynamic Range exact planner and encoder use only DD-363, marc's
+existing deterministic LZ77 encoder, Dynamic Range planner and encoder,
+generic frame serializer, checked arithmetic, and local caller-owned staging
+contract. No external combined encoder, planning algorithm, source code,
+format, vector generator, or test suite was consulted.

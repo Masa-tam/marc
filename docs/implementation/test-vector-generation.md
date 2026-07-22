@@ -1933,6 +1933,16 @@ range-code invalid LZ77 tag `ff`; require both failures to preserve every
 caller-output sentinel, and require the invalid-token case to preserve private
 raw staging as well.
 
+For exact LZ77 plus Dynamic Range encoding, plan raw `41` into a 16-byte
+private token region and require raw, token, descriptor, payload, and serialized
+extents `1`, `16`, `16`, `16`, and `88`. Encode through the combined boundary
+and compare every byte with the independently assembled frame. Encode five
+`41` bytes twice, require identical streams, and decode one through the
+transactional boundary. Reject 15-byte token staging without changing its
+`5a` sentinels, reject 87-byte serialized output without changing its
+sentinels, reject empty and unexpected raw frame extents, and reject an
+aggregate ceiling one byte below descriptor plus payload plus token staging.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

@@ -7301,3 +7301,29 @@ discarded and the reviewed seed retained.
 - Local validation: all eighteen combined validator/private/publication tests
   and all 1,457 Release tests passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range exact planner and encoder
+
+- Authoring method: composed marc's existing deterministic LZ77 encoder,
+  Dynamic Range planner and encoder, and generic frame serializer at the
+  already specified canonical token boundary.
+- References used: DD-363, the LZ77 plus Dynamic Range format section,
+  canonical LZ77 token encoder, Dynamic Range descriptor and payload encoder,
+  checked arithmetic, and complete-frame planning contracts.
+- Known implementations intentionally not consulted: external LZ/range
+  encoders, foreign planning strategies, combined formats, source code, vector
+  generators, workspace layouts, and test suites.
+- Independent decisions: freeze the complete token bytes before entropy
+  planning; include descriptor, payload, and token staging in the encode-side
+  aggregate; reject short serialized output before destination mutation;
+  replan unchanged tokens and treat extent disagreement as an internal error.
+- Generated-code task description: add the exact planner and deterministic
+  encoder, reproduce the independent 88-byte frame, prove repeated overlapping
+  streams identical and decodable, and cover staging, output, frame-size, and
+  aggregate failures.
+- Similarity review: orchestration follows only marc's documented component
+  boundary and local APIs. No external combined encoder or distinctive control
+  flow was compared.
+- Local validation: all twenty-four combined frame tests and all 1,463 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

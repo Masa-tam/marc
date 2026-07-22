@@ -1335,9 +1335,9 @@ raw byte, the decoder must:
 5. reconstruct into separate bounded private raw staging; and only then
 6. make the completed frame's raw bytes available to the caller.
 
-Failure at any stage publishes no byte from the current frame. A future encoder
-must likewise finalize the LZ77 token stream and complete range-payload planning
-before writing any frame byte. The internal bounded validator implements steps
+Failure at any stage publishes no byte from the current frame. The encoder
+finalizes the LZ77 token stream and completes range-payload planning before
+writing any frame byte. The internal bounded validator implements steps
 1 through 4 and stops at private canonical token staging. The first private
 decoder extends that boundary through step 5, checking raw capacity and the
 descriptor-plus-payload-plus-token-plus-raw aggregate before entropy output,
@@ -1348,6 +1348,14 @@ staging, and copies exactly the declared raw extent only after every preceding
 stage succeeds. Every failure leaves caller output unchanged. This section
 reserves the decoder-visible representation only; no public C ABI factory, CLI
 selector, benchmark, fuzz target, or interoperability profile is implied.
+
+The exact-frame planner encodes canonical LZ77 tokens into bounded private
+staging, plans Dynamic Range variant 1 over those fixed bytes, validates the
+resulting generic frame header and aggregate workspace, and reports the exact
+serialized extent. The deterministic encoder repeats that plan, rejects short
+serialized output before writing it, then emits the header, descriptor, and
+payload in order. Replanning the unchanged private token bytes must reproduce
+the exact payload extent and descriptor; disagreement is an internal error.
 
 ### Hand-checkable single-Literal frame
 

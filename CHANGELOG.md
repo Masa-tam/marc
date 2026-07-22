@@ -18,7 +18,10 @@ format versions, and C ABI versions are independent namespaces.
   semantics. Its transactional complete-frame boundary now checks caller
   capacity before private mutation and copies a frame to caller-visible output
   only after entropy decoding, token validation, and raw reconstruction all
-  succeed. It is not yet exposed through the public C ABI or CLI.
+  succeed. Its exact-frame planner freezes canonical LZ77 tokens before range
+  planning, and its deterministic encoder reproduces the independent 88-byte
+  vector without partial destination writes on capacity failure. It is not yet
+  exposed through the public C ABI or CLI.
 
 ## 0.1.1 - 2026-07-23
 

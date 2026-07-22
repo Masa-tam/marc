@@ -143,8 +143,11 @@ the aggregate policy and reconstructs validated overlap copies without a
 caller-visible output boundary. Its transactional complete-frame decoder now
 checks caller output capacity before entropy output and publishes the completed
 private raw frame only after every layer succeeds, leaving caller output
-unchanged on failure. No public factory, CLI selector, benchmark, fuzz target,
-or interoperability entry exists yet.
+unchanged on failure. Its exact-frame planner now freezes canonical LZ77 token
+bytes before Dynamic Range planning, and its deterministic encoder reproduces
+the independent frame without partial destination writes on capacity failure.
+No public factory, CLI selector, benchmark, fuzz target, or interoperability
+entry exists yet.
 
 ## Why publication is not automatic
 

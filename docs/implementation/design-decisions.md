@@ -6930,3 +6930,22 @@ failure leaves caller output unchanged. Caller output is destination storage,
 not internal buffered workspace, so it is capacity-checked but is not added to
 the aggregate internal-buffer limit. This step adds no streaming transform,
 public C ABI factory, CLI selector, or encoder.
+
+## DD-363: LZ77 Dynamic Range plans from frozen token bytes
+
+- Date: 2026-07-23
+- Status: accepted
+
+Implement exact-frame planning by first planning and encoding the complete
+canonical LZ77 token stream into caller-owned private staging. Only after those
+bytes are fixed may Dynamic Range variant 1 plan its descriptor and exact
+payload extent. Validate the generic frame header and the checked descriptor,
+payload, and token-staging aggregate before reporting the serialized extent.
+
+The deterministic frame encoder must complete that plan and reject a short
+serialized destination before writing any destination byte. It then replans the
+unchanged staged token bytes, requires the same payload extent, and serializes
+the generic header, Dynamic Range descriptor, and payload in their specified
+order. Preserve component encode errors for diagnosis and treat disagreement
+after a successful plan as an internal error. This step adds no streaming or
+public C ABI surface.
