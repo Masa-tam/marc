@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   required binary input classes, deterministic and chunk-independent output,
   sticky terminal states, and transactional malformed-final-frame rejection.
   A bounded dual-path decoder fuzz harness and permanent atomic regressions now
-  cover truncation, extreme frame extents, and invalid Adaptive descriptors.
+  cover truncation, extreme frame extents, and invalid Adaptive descriptors. A
+  transactional `lzd-adaptive-huffman` CLI selector now exposes the public C
+  factory with fixed 64-KiB frames and checked local limits.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

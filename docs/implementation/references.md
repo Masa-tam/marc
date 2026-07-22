@@ -1034,3 +1034,9 @@ existing exact-frame private decoder, streaming decoder, local limit contract,
 LZD token/phrase/expansion ceilings, and repository-authored canonical stream
 generator. No external fuzz harness, corpus, malformed archive, combined
 decoder, source code, or regression suite was consulted.
+
+The `lzd-adaptive-huffman` CLI adapter uses only DD-341, the published marc C
+requirements query and factory, the fixed local reference-profile bounds, and
+the repository's existing transactional file adapter and round-trip script. No
+external compression CLI, dispatch table, allocation wrapper, source code, or
+test suite was consulted.

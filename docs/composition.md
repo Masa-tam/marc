@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` C ABI published | Candidate | Candidate | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
@@ -87,27 +87,16 @@ schema 11 appends it as the twenty-second archive, and its bidirectional
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is
 recorded in `docs/interoperability.md`.
 
-`lzd-adaptive-huffman` is the fifth Adaptive Huffman composition and now has a
-bounded public C factory. It fixes the complete canonical eight-byte LZD
-reference-pair stream before a fresh per-frame FGK tree consumes it. Its exact
-token and payload bounds, transactional validation order, reserved public name,
-and independent terminal-token frame vector are fixed. Its first internal
-complete-frame validator reconstructs and validates the canonical token region
-before a bounded private-staging decoder expands it iteratively. No caller-
-visible codec is published, although internal transactional frame APIs now
-copy only complete successful decoded frames and encode from a fully frozen
-token span. A bounded streaming encoder now buffers one raw frame, builds it
-through that exact-frame transaction, and drains immutable serialized bytes.
-A matching bounded streaming decoder collects and validates one complete frame
-before draining raw bytes, so a malformed later frame cannot partially publish
-itself. A bounded profile now exposes direction-specific byte requirements and
-partitions typed encoder records plus coupled phrase/expansion decoder views
-inside aligned opaque storage. The C requirements query and factory preserve
-that opacity and bind the existing streaming transforms. Its public-ABI
-completion matrix covers required data classes, determinism, arbitrary
-chunking, sticky terminal states, and malformed-final-frame atomicity. No CLI
-selector, benchmark, or interoperability entry is claimed yet. Its bounded
-dual-path decoder fuzz target and permanent malformed regressions are present.
+`lzd-adaptive-huffman` is the fifth Adaptive Huffman composition. It fixes the
+complete canonical eight-byte LZD reference-pair stream before a fresh per-frame
+FGK tree consumes it. Exact token and payload bounds, transactional frame and
+stream transforms, a typed workspace profile, and an independent terminal-token
+vector are present. Its bounded public C requirements query and factory preserve
+opaque encoder-entry, phrase, and expansion-stack layouts. The public completion
+matrix covers required data classes, deterministic arbitrary chunking, sticky
+terminal states, and malformed-final-frame atomicity; bounded fuzzing exercises
+both decoder paths. A transactional CLI selector uses that factory with the fixed
+64-KiB reference profile. No benchmark or interoperability entry is claimed yet.
 
 ## Why publication is not automatic
 

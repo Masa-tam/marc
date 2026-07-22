@@ -6453,3 +6453,22 @@ canonical `ABABX` stream, all-ones generic extent fields, and a nonzero
 reserved Adaptive descriptor byte to fail atomically with sticky category and
 position. Ordinary MSVC and Clang builds compile the harness; sanitizer fuzz
 execution remains a separate explicitly bounded Clang workflow.
+
+## DD-341: LZD Adaptive CLI delegates all codec storage to the public ABI
+
+- Date: 2026-07-22
+- Status: accepted
+
+Publish `lzd-adaptive-huffman` as a transactional command-line selector over
+the DD-338 C requirements query and factory. Fix the CLI profile to 65,536 raw
+bytes per frame, 262,144 canonical token bytes, an 8,650,752-byte Adaptive
+payload ceiling, 65,536 dictionary entries, and a 16-MiB aggregate internal
+limit. Query the exact primary, secondary, and opaque aligned-view extents for
+the selected direction; do not reproduce a private C++ record layout in the
+tool.
+
+Retain the common temporary-output transaction so malformed input, including
+an appended trailing byte, cannot commit a destination file. Require a multi-
+frame round trip and strict trailing-data rejection through the public factory.
+This admission adds no format variant, benchmark registry entry, or
+interoperability schema entry.

@@ -2272,3 +2272,10 @@ descriptor reserved byte to one independently. Both malformed cases must stay
 atomic and sticky. The fuzz entry point caps input, all byte buffers, 512
 phrase records, 513 expansion references, and total calls before inspecting
 input metadata.
+
+For the `lzd-adaptive-huffman` CLI boundary, generate the common deterministic
+multi-frame fixture by repeating the repository byte pattern 320 times. Encode
+and decode it with explicit `--codec lzd-adaptive-huffman` and compare the
+restored bytes exactly. Separately append one zero byte to the valid archive,
+require decode failure, and require that neither the destination nor temporary
+transaction file remains.

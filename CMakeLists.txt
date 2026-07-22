@@ -1817,6 +1817,14 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzd-bh-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzd_adaptive_huffman_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzd-adaptive-huffman"
+                "-DCLI_REPEAT=320"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzd-ah-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_lzmw_round_trip
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"

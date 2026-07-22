@@ -86,7 +86,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-adaptive-huffman` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -132,11 +132,12 @@ Ubuntu 24.04 artifacts plus the independently generated Ubuntu 26.04/Clang
 bundle passed the complete bidirectional external verification contract, so
 this profile is `Ready`.
 
-`lzd-adaptive-huffman` is the next admitted specification. DD-330 fixes its
+`lzd-adaptive-huffman` is the fifth Adaptive composition under active
+admission. DD-330 fixes its
 decoder-visible representation, checked `8*ceil(F/2)` token bound, `33S`
 Adaptive payload bound, phrase and expansion-workspace ceilings, validation
 order, and independent 77-byte terminal-token frame. It remains outside the
-local implementation and interoperability matrices. Its first complete-frame
+interoperability schema only. Its first complete-frame
 validator now entropy-decodes into private token staging and validates the
 whole backward phrase graph, terminal form, and exact raw extent without
 publishing raw bytes. A bounded decoder now reconstructs a validated frame into
@@ -156,8 +157,9 @@ now bind those regions to the streaming transforms while keeping every typed
 layout opaque. Its public-ABI completion matrix now covers required binary
 classes, determinism, chunking, sticky terminal behavior, and transactional
 malformed-final-frame rejection. A bounded dual-path decoder fuzz harness and
-permanent atomic malformed regressions are now present. CLI, benchmark, and
-interoperability boundaries remain.
+permanent atomic malformed regressions are now present. A transactional CLI
+selector now binds the same public factory under the fixed 64-KiB reference
+profile. Benchmark and interoperability boundaries remain.
 
 ## Remaining release evidence
 
@@ -278,7 +280,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-340, the complete Release suite contains 1,389 tests and passes under both
+At DD-341, the complete Release suite contains 1,390 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

@@ -2078,8 +2078,8 @@ emits the ordinary
 80-byte stream prefix, buffers at most one configured raw frame, delegates each
 complete frame to that exact encoder, and drains the resulting bytes without
 changing their representation. `Flush` leaves a partial frame open, while
-`EndInput` is retained until all prefix and frame bytes have drained. No public
-profile exists at this step. The matching internal streaming decoder collects
+`EndInput` is retained until all prefix and frame bytes have drained. The
+matching internal streaming decoder collects
 the complete prefix, header, descriptor, and payload; checks token, phrase,
 expansion, raw, and aggregate extents before entropy output; reconstructs into
 private raw staging; and only then drains that successful frame. A malformed
@@ -2096,6 +2096,8 @@ outside scratch-workspace accounting.
 The public C factory selects this same fixed profile and adds no format
 variant. Encoding remains known-size; decoder workspace sizing uses only local
 limits, and stream parameters are validated after collection against them.
+The `lzd-adaptive-huffman` CLI selector uses that factory with the 65,536-byte
+reference frame and adds no representation or parameter variant.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

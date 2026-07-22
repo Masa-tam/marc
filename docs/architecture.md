@@ -1582,7 +1582,7 @@ the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
 generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
 system directions for all twenty-two archives at one full revision.
 
-### Specified LZD plus Adaptive Huffman boundary
+### Published LZD plus Adaptive Huffman boundary
 
 LZD first freezes its complete canonical eight-byte reference-pair stream.
 Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
@@ -1660,6 +1660,13 @@ The decoder fuzz boundary uses the same exact-frame and incremental paths with
 compile-time byte arrays, 512 phrase records, 513 expansion references, byte-
 derived chunk schedules, and a finite call budget. Serialized metadata cannot
 increase an allocation or any admitted workspace ceiling.
+
+The transactional CLI adapter selects this public C factory with 65,536-byte
+raw frames, the checked 262,144-byte token ceiling, an 8,650,752-byte Adaptive
+payload ceiling, and a 16-MiB aggregate limit. It obtains all direction-specific
+workspace extents and opaque-view alignment from the public requirements query.
+The command-line layer therefore owns file transaction policy but no private
+LZD record layout or alternate stream representation.
 
 ### Published LZW plus Blocked Huffman boundary
 
