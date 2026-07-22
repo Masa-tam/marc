@@ -1656,6 +1656,10 @@ The completion boundary drives only this public adapter and verifies required
 binary classes, byte-identical repeated encoding, arbitrary input/output
 chunking, sticky success and failure, and whole-frame publication under final-
 frame corruption, truncation, or trailing input.
+The decoder fuzz boundary uses the same exact-frame and incremental paths with
+compile-time byte arrays, 512 phrase records, 513 expansion references, byte-
+derived chunk schedules, and a finite call budget. Serialized metadata cannot
+increase an allocation or any admitted workspace ceiling.
 
 ### Published LZW plus Blocked Huffman boundary
 

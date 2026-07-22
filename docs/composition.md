@@ -106,7 +106,8 @@ inside aligned opaque storage. The C requirements query and factory preserve
 that opacity and bind the existing streaming transforms. Its public-ABI
 completion matrix covers required data classes, determinism, arbitrary
 chunking, sticky terminal states, and malformed-final-frame atomicity. No CLI
-selector, benchmark, fuzz boundary, or interoperability entry is claimed yet.
+selector, benchmark, or interoperability entry is claimed yet. Its bounded
+dual-path decoder fuzz target and permanent malformed regressions are present.
 
 ## Why publication is not automatic
 

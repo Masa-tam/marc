@@ -38,6 +38,8 @@ format versions, and C ABI versions are independent namespaces.
   record layouts in the ABI. Its public-ABI completion matrix now covers the
   required binary input classes, deterministic and chunk-independent output,
   sticky terminal states, and transactional malformed-final-frame rejection.
+  A bounded dual-path decoder fuzz harness and permanent atomic regressions now
+  cover truncation, extreme frame extents, and invalid Adaptive descriptors.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame
