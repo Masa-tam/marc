@@ -1701,7 +1701,13 @@ adjacent-phrase graph, and exact declared raw extent before private iterative
 reconstruction and publication. Encoding must fix the deterministic LZMW
 parse before Adaptive planning. The independent raw-`A` vector fixes reference
 `41 00 00 00`, Adaptive payload `41 00 0C`, and a complete 75-byte frame.
-This boundary is specified but not yet implemented as a combined codec.
+
+The first combined boundary implements the validation half of that order. It
+checks the complete generic frame, reference and Adaptive extents, caller-owned
+reference and phrase capacities, and aggregate workspace before entropy output.
+It then reconstructs the exact reference region and invokes the ordinary LZMW
+validator. The returned actual generated-phrase count determines the later
+iterative expansion-stack ceiling. No raw byte is reconstructed or published.
 
 ### Published LZW plus Blocked Huffman boundary
 

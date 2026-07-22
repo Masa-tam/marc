@@ -16,7 +16,11 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked reference, phrase, expansion-stack,
   and Adaptive payload bounds, transactional validation order, and an
   independent 75-byte single-reference frame vector assembled from standalone
-  LZMW and Adaptive Huffman primitives. No combined public codec is exposed yet.
+  LZMW and Adaptive Huffman primitives. Its first bounded complete-frame
+  validator now entropy-decodes into private reference staging, validates every
+  literal or generated reference, adjacent phrase, checked expansion length,
+  and exact raw extent, and publishes no raw bytes. No combined public codec is
+  exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

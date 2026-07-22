@@ -1065,3 +1065,10 @@ generic frame serialization, and their already recorded primary references.
 The combined byte boundary, checked bounds, validation order, reserved name,
 and raw-`A` vector were derived locally. No external combined implementation,
 format, source code, vector, corpus, or test suite was consulted.
+
+The LZMW plus Adaptive Huffman complete-frame validator uses only DD-345,
+DD-344, marc's generic frame parser, Adaptive Huffman decoder, LZMW token
+validator,
+checked arithmetic, and caller-owned staging policy. No external combined
+decoder, validation order, malformed vector, workspace layout, source code, or
+test suite was consulted.

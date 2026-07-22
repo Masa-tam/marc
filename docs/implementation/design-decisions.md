@@ -6544,3 +6544,27 @@ composing only the existing standalone LZMW encoder, Adaptive encoder, and
 generic serializers. This decision specifies bytes and a reserved name only;
 it does not publish a combined frame codec, factory, CLI, benchmark, fuzz,
 completion, or interoperability claim.
+
+## DD-345: LZMW Adaptive validation stops at canonical references first
+
+- Date: 2026-07-22
+- Status: accepted
+
+Admit the first combined `lzmw-adaptive-huffman` implementation as a strict
+complete-frame validator only. Validate the stream profile, LZMW parameters,
+sequence, generic frame header, exact complete-frame extent, checked `4F`
+reference bound, multiple-of-four reference shape, single 16-byte Adaptive
+descriptor, `33S` payload bound, every caller-owned capacity, and aggregate
+workspace before entropy output. Parse the descriptor before mutating reference
+staging, decode exactly the declared reference extent, then apply the existing
+LZMW validator to that complete span.
+
+Preserve deterministic error precedence as header and extent errors, workspace
+errors, descriptor errors, Adaptive payload errors, then LZMW grammar errors.
+The LZMW pass owns literal and generated-reference validity, adjacent-phrase
+construction, checked phrase lengths, dictionary freeze, and exact declared raw
+size. Return maximum phrase capacity, actual token and generated-phrase counts,
+and the resulting expansion-stack ceiling plus layer diagnostics, but
+reconstruct and publish no raw bytes. Later reconstruction, encoding, streaming,
+public API, and completion steps must consume this validator rather than weaken
+or duplicate it.

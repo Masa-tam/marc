@@ -2301,3 +2301,13 @@ payload bits, bytes `41 00 0C`, and descriptor `(4, 3, 4, 0)`. Serialize a
 generic frame header for dictionary ID 6 variant 1 and entropy ID 1 variant 1,
 append the descriptor and payload, and compare all 75 bytes with the format
 document. Do not call a future combined codec while establishing this vector.
+
+For the first complete-frame validator, accept that exact 75-byte frame and
+require the private reference bytes, one token, zero generated phrases, and one
+future expansion reference. Reject every proper truncation and one trailing
+byte. Require short reference and phrase workspaces plus one-byte-short aggregate
+workspace to fail before entropy output. Corrupt the descriptor and final
+padding independently, then entropy-code a forward reference and a raw-size
+mismatch to prove deterministic descriptor, entropy, and LZMW error precedence.
+For raw `AB`, require the adjacent phrase record `(A, B, 2)`, one generated
+entry, and a two-reference future expansion ceiling.

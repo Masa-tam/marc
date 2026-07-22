@@ -105,7 +105,9 @@ recorded in `docs/interoperability.md`.
 reserved representation. It fixes the complete four-byte LZMW reference stream
 before a fresh per-frame FGK tree consumes it, together with checked reference,
 payload, phrase-record, and expansion-stack ceilings and an independent
-75-byte single-reference vector. It is not yet a public factory or CLI profile.
+75-byte single-reference vector. Its first complete-frame validator stages the
+Adaptive output and checks the entire LZMW phrase graph without publishing raw
+bytes. It is not yet a public factory or CLI profile.
 
 ## Why publication is not automatic
 

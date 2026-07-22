@@ -2262,8 +2262,18 @@ The complete 75-byte frame is:
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final three bytes are the FGK payload. The vector
 is assembled from the standalone LZMW and Adaptive Huffman encoders plus
-generic serializers. No combined implementation or public profile is admitted
-by this specification alone.
+generic serializers.
+
+The first combined validator accepts exactly one complete frame and checks all
+generic extents, the `4F` reference ceiling, four-byte reference alignment,
+single-descriptor shape, `33S` payload ceiling, caller capacities, and aggregate
+workspace before entropy output. It parses the descriptor and reconstructs the
+complete reference region in private staging, then invokes the ordinary LZMW
+validator to check every literal or prior generated reference, construct the
+bounded adjacent-phrase graph, and derive exactly the declared raw size. It
+reports the actual generated-phrase count and corresponding nonempty expansion-
+stack ceiling but reconstructs and publishes no raw byte. This remains an
+internal frame API; no public profile is admitted by this validation step.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
