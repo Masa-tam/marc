@@ -125,8 +125,9 @@ malformed-final-frame rejection through that factory. Its bounded dual-path
 decoder fuzz target and permanent malformed regressions are now present. A
 transactional CLI selector and verified public-C benchmark use that factory
 with the fixed 64-KiB reference profile. Interoperability schema 13 appends it
-as the twenty-fourth archive; external cross-platform verification remains
-pending.
+as the twenty-fourth archive, and its bidirectional Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is recorded in
+`docs/interoperability.md`.
 
 ## Why publication is not automatic
 

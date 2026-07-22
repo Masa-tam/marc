@@ -47,7 +47,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | Ready | Included |
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
-| `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Schema candidate | Included |
+| `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 13 contains twenty-four archives: the frozen twenty-three-entry schema-12
@@ -134,8 +134,10 @@ malformed regressions are now present. A transactional CLI selector now binds
 the same public factory under the fixed 64-KiB reference profile. A verified
 public-ABI benchmark now measures that profile after a byte-exact round trip.
 Local schema-13 generation, verification, exact-order rejection, and schemas 1
-through 12 compatibility are now present. It remains below `Ready` until
-schema-13 artifacts are cross-verified outside the local build.
+through 12 compatibility are now present. The pushed Windows/MSVC and Ubuntu
+24.04 artifacts plus an independently generated Ubuntu 26.04/Clang bundle have
+passed the complete bidirectional external verification contract, so this
+profile is `Ready`.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte

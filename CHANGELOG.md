@@ -47,6 +47,8 @@ format versions, and C ABI versions are independent namespaces.
   before reporting compression ratio, directional throughput, and caller-owned
   peak workspace. Interoperability schema 13 appends it as the twenty-fourth
   archive while preserving schemas 1 through 12 and their exact codec orders.
+  Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang bundles passed the
+  complete bidirectional x86-64 verification contract.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent
