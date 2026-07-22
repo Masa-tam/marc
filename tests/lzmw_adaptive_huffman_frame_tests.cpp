@@ -302,6 +302,144 @@ TEST(LzmwAdaptiveHuffmanFrameValidator,
               LzmwAdaptiveHuffmanFrameValidationError::unsupported_pipeline);
 }
 
+TEST(LzmwAdaptiveHuffmanFrameEncoder, PlansExactHandVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    const auto result = marc::frame::plan_lzmw_adaptive_huffman_frame(
+        stream_for_size(1), {}, {}, 0, 0, raw, {}, staging);
+    ASSERT_EQ(result.error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.dictionary_size, reference_a.size());
+    EXPECT_EQ(result.encoder_entries, 0U);
+    EXPECT_EQ(result.dictionary_entries, 0U);
+    EXPECT_EQ(result.token_count, 1U);
+    EXPECT_EQ(result.descriptor_size, 16U);
+    EXPECT_EQ(result.payload_size, 3U);
+    EXPECT_EQ(result.serialized_size, single_reference_frame.size());
+    EXPECT_EQ(staging, reference_a);
+}
+
+TEST(LzmwAdaptiveHuffmanFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::byte, single_reference_frame.size()> output{};
+    const auto result = marc::frame::encode_lzmw_adaptive_huffman_frame(
+        stream_for_size(1), {}, {}, 0, 0, raw, {}, staging, output);
+    ASSERT_EQ(result.error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(output, single_reference_frame);
+}
+
+TEST(LzmwAdaptiveHuffmanFrameEncoder,
+     RoundTripsPhraseReferencesDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    std::vector<marc::dictionary::internal::LzmwEncoderEntry> workspace(
+        marc::dictionary::internal::lzmw_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> encode_staging{};
+    const auto stream = stream_for_size(raw.size());
+    const auto plan = marc::frame::plan_lzmw_adaptive_huffman_frame(
+        stream, {}, {}, 0, 0, raw, workspace, encode_staging);
+    ASSERT_EQ(plan.error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzmw_adaptive_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  first).error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzmw_adaptive_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  second).error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::vector<std::byte> decode_staging(plan.dictionary_size);
+    std::vector<marc::dictionary::internal::LzmwPhraseEntry> phrases(
+        plan.dictionary_entries);
+    std::vector<std::uint32_t> expansion(plan.dictionary_entries + 1U);
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzmw_adaptive_huffman_frame(
+                  stream, {}, {}, 0, 0, first, decode_staging, phrases,
+                  expansion, raw_staging, decoded).error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzmwAdaptiveHuffmanFrameEncoder,
+     CapacityFailuresAreSerializedOutputAtomic) {
+    constexpr std::array raw_ab{std::byte{'A'}, std::byte{'B'}};
+    std::array<std::byte, 8> pair_staging{};
+    pair_staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::plan_lzmw_adaptive_huffman_frame(
+                  stream_for_size(2), {}, {}, 0, 0, raw_ab, {}, pair_staging)
+                  .error,
+              LzmwAdaptiveHuffmanFrameValidationError::
+                  encoder_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        pair_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    constexpr std::array raw_a{std::byte{'A'}};
+    std::array<std::byte, reference_a.size() - 1> short_staging{};
+    short_staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::plan_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, {}, 0, 0, raw_a, {}, short_staging)
+                  .error,
+              LzmwAdaptiveHuffmanFrameValidationError::
+                  dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        short_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    std::array<std::byte, reference_a.size()> full_staging{};
+    std::array<std::byte, single_reference_frame.size() - 1> short_output{};
+    short_output.fill(std::byte{0x5a});
+    const auto result = marc::frame::encode_lzmw_adaptive_huffman_frame(
+        stream_for_size(1), {}, {}, 0, 0, raw_a, {}, full_staging,
+        short_output);
+    EXPECT_EQ(result.error, LzmwAdaptiveHuffmanFrameValidationError::
+                                serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, single_reference_frame.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(LzmwAdaptiveHuffmanFrameEncoder,
+     EnforcesAggregateWorkspaceAndFrameExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    const std::uint64_t required = staging.size()
+        + marc::entropy::internal::adaptive_huffman_descriptor_size + 3;
+    limits.max_internal_buffered_bytes = required - 1;
+    EXPECT_EQ(marc::frame::plan_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, limits, 0, 0, raw, {}, staging)
+                  .error,
+              LzmwAdaptiveHuffmanFrameValidationError::workspace_limit);
+
+    EXPECT_EQ(marc::frame::plan_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, {}, 0, 0,
+                  std::span<const std::byte>{}, {}, staging).error,
+              LzmwAdaptiveHuffmanFrameValidationError::input_size_mismatch);
+    constexpr std::array too_long{std::byte{'A'}, std::byte{'B'}};
+    std::array<marc::dictionary::internal::LzmwEncoderEntry, 1> workspace{};
+    std::array<std::byte, 8> long_staging{};
+    EXPECT_EQ(marc::frame::plan_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, {}, 0, 0, too_long, workspace,
+                  long_staging).error,
+              LzmwAdaptiveHuffmanFrameValidationError::input_size_mismatch);
+}
+
 TEST(LzmwAdaptiveHuffmanFrameDecoder, ReconstructsHandVectorPrivately) {
     std::array<std::byte, reference_a.size()> staging{};
     std::array<std::uint32_t, 1> expansion{};

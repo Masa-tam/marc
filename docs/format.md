@@ -2280,8 +2280,12 @@ and invokes the ordinary iterative LZMW decoder. Successful raw bytes remain
 private, and every error requires all staging to be discarded. The internal
 transactional decoder also checks complete caller-visible destination capacity
 before entropy output, reconstructs privately, and copies the raw frame only
-after all layers succeed. No failure publishes any destination byte. No public
-profile is admitted by these validation and reconstruction steps.
+after all layers succeed. No failure publishes any destination byte. The exact-
+frame encoder performs the inverse transaction: it completes the deterministic
+LZMW parse and freezes all canonical references before Adaptive planning,
+counts typed encoder records, staging, descriptor, and exact payload, then
+checks the complete destination before serializing. It reproduces the 75-byte
+vector above. No public profile is admitted by these frame-level steps.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 

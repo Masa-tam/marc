@@ -24,7 +24,11 @@ format versions, and C ABI versions are independent namespaces.
   counting both the conservative expansion stack and raw extent before entropy
   output. Its internal transactional frame decoder now copies a complete raw
   frame to caller-visible output only after every layer succeeds and leaves
-  output unchanged on every failure. No combined public codec is exposed yet.
+  output unchanged on every failure. Its exact-frame planner now freezes the
+  canonical LZMW reference stream before Adaptive planning, and its
+  deterministic encoder reproduces the independent single-reference frame
+  without partial destination writes on capacity failure. No combined public
+  codec is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

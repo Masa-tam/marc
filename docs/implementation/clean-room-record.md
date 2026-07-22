@@ -6900,3 +6900,25 @@ discarded and the reviewed seed retained.
 - Local validation: four focused transactional-publication tests and all 1,407
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman exact-frame encoder
+
+- Authoring method: composed marc's deterministic LZMW planner and encoder with
+  its Adaptive Huffman planner, encoder, and generic frame serializer at the
+  DD-348 byte boundary.
+- References used: DD-348, DD-344, canonical LZMW references, the Adaptive
+  descriptor/payload contract, checked arithmetic, and generic frame rules.
+- Known implementations intentionally not consulted: external combined
+  encoders, source code, control flow, vectors, corpora, APIs, and test suites.
+- Independent decisions: freeze all reference bytes before entropy planning;
+  count typed entries and exact payload; repeat Adaptive planning before output;
+  reject every capacity failure before serializing; retain format version 1.0.
+- Generated-code task description: add exact planner and encoder entry points,
+  reproduce the independent 75-byte vector, round-trip generated references
+  deterministically, and preserve serialized-output sentinels on failure.
+- Similarity review: composition order and transaction extend marc's local
+  standalone primitives and established frame ownership. No external combined
+  encoder expression was viewed or compared.
+- Local validation: five focused encoder tests and all 1,412 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

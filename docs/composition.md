@@ -109,8 +109,10 @@ payload, phrase-record, and expansion-stack ceilings and an independent
 Adaptive output and checks the entire LZMW phrase graph without publishing raw
 bytes. Its bounded private decoder then reconstructs only into disposable raw
 staging with a checked iterative expansion stack. The internal transactional
-decoder publishes a complete frame only after success. It is not yet a public
-factory or CLI profile.
+decoder publishes a complete frame only after success. Its internal exact-frame
+encoder freezes the complete LZMW reference stream before Adaptive planning and
+reproduces the independent 75-byte vector. It is not yet a public factory or
+CLI profile.
 
 ## Why publication is not automatic
 

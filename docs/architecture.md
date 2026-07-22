@@ -1715,6 +1715,13 @@ additionally checks destination capacity before entropy output and copies the
 private raw span only after every layer succeeds. No failure publishes a
 caller-visible byte.
 
+Encoding applies the inverse ownership order. The exact-frame planner first
+fixes the complete deterministic LZMW reference stream in private staging, then
+plans Adaptive Huffman over only those bytes. It accounts for typed LZMW encoder
+records, reference staging, descriptor, and exact payload before returning the
+serialized extent. The encoder rejects insufficient destination capacity before
+writing and reproduces the independent 75-byte frame.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

@@ -2329,3 +2329,13 @@ unchanged. Corrupt final Adaptive padding and entropy-code a forward LZMW
 reference independently; both must preserve caller output. Finally publish the
 complete `ABABAB` generated-phrase frame and require private and caller-visible
 raw spans to match exactly.
+
+For exact-frame encoding, pass raw `A` to the combined planner and require one
+four-byte reference, zero generated phrases and typed encoder entries, the
+16-byte descriptor, three-byte payload, and total 75-byte extent fixed by the
+independent vector. Require the encoder to reproduce all 75 bytes exactly.
+Encode raw `ABABAB` twice from the same canonical staging and require byte
+identity plus complete-frame round trip. Exercise insufficient typed encoder
+workspace, reference staging, serialized destination, aggregate workspace,
+empty input, and unexpected frame extent; capacity failures must leave their
+caller-visible sentinel regions unchanged.
