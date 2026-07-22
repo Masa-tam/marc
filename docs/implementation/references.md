@@ -1058,3 +1058,10 @@ results for revision `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa` and the
 previously documented Ubuntu 26.04/Clang 21.1.8 environment. No external codec
 source, archive format, interoperability harness, or third-party claim was
 consulted.
+
+The LZMW plus Adaptive Huffman specification uses only marc's independently
+specified LZMW variant 1 reference stream, Adaptive Huffman FGK variant 1,
+generic frame serialization, and their already recorded primary references.
+The combined byte boundary, checked bounds, validation order, reserved name,
+and raw-`A` vector were derived locally. No external combined implementation,
+format, source code, vector, corpus, or test suite was consulted.

@@ -12,6 +12,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lzmw-adaptive-huffman` composition now has an exact
+  decoder-visible representation, checked reference, phrase, expansion-stack,
+  and Adaptive payload bounds, transactional validation order, and an
+  independent 75-byte single-reference frame vector assembled from standalone
+  LZMW and Adaptive Huffman primitives. No combined public codec is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

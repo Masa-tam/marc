@@ -6514,3 +6514,33 @@ one-generation-at-a-time chain through schema 1. Local schema admission proves
 the generator, verifier, compatibility rules, and same-machine CLI determinism
 only. Cross-platform evidence still requires CI artifacts from the same full
 Git revision and the established four-direction external verification procedure.
+
+## DD-344: LZMW Adaptive entropizes finalized references
+
+- Date: 2026-07-22
+- Status: accepted
+
+Reserve `lzmw-adaptive-huffman` for LZMW variant 1 followed by Adaptive
+Huffman FGK variant 1 under format version 1.0. Preserve the standalone
+16-byte LZMW parameters, empty entropy parameters, and fixed four-byte
+little-endian references. Complete the deterministic LZMW parse before
+entropy processing; Adaptive Huffman consumes every byte without interpreting
+reference boundaries. Reset both dictionaries at every outer frame.
+
+For raw frame size `F`, use checked token bound `S = 4F` and Adaptive payload
+bound `33S = 132F`. Bound generated phrase records by
+`min(max(F-1, 0), configured_maximum, local_limit)` and the iterative expansion
+stack by that count plus one for a nonempty frame. The reference profile uses
+`F = 65,536`, so `S = 262,144`, payload is at most 8,650,752 bytes, generated
+phrases are at most 65,535, and expansion references are at most 65,536.
+Encoding freezes canonical references before Adaptive planning. Decoding
+entropy-decodes into token staging, validates the complete adjacent-phrase
+graph and exact raw extent, reconstructs privately, and only then publishes.
+
+Freeze the raw-`A` vector independently: LZMW reference
+`41 00 00 00`, Adaptive payload `41 00 0C`, descriptor `(4, 3, 4, 0)`, and
+the complete 75-byte frame in the format document. Exercise that vector by
+composing only the existing standalone LZMW encoder, Adaptive encoder, and
+generic serializers. This decision specifies bytes and a reserved name only;
+it does not publish a combined frame codec, factory, CLI, benchmark, fuzz,
+completion, or interoperability claim.

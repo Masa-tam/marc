@@ -2293,3 +2293,11 @@ archive 23. Generate and locally decode all archives before writing
 foreign decode equality, and byte-identical local re-encoding. Reorder two
 entries and require rejection, then remove only archive 23 while converting to
 schema 11 and verify every frozen schema down through schema 1.
+
+For the specified LZMW plus Adaptive Huffman vector, encode raw `A` with the
+standalone LZMW encoder and require canonical reference `41 00 00 00`. Feed
+that exact four-byte span to a fresh standalone FGK encoder and require 20
+payload bits, bytes `41 00 0C`, and descriptor `(4, 3, 4, 0)`. Serialize a
+generic frame header for dictionary ID 6 variant 1 and entropy ID 1 variant 1,
+append the descriptor and payload, and compare all 75 bytes with the format
+document. Do not call a future combined codec while establishing this vector.

@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | Candidate | Candidate | Candidate | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | Specified | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
@@ -100,6 +100,12 @@ use that factory with the fixed 64-KiB reference profile. Interoperability
 schema 12 appends it as the twenty-third archive, and its bidirectional
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is
 recorded in `docs/interoperability.md`.
+
+`lzmw-adaptive-huffman` is the sixth Adaptive Huffman composition to receive a
+reserved representation. It fixes the complete four-byte LZMW reference stream
+before a fresh per-frame FGK tree consumes it, together with checked reference,
+payload, phrase-record, and expansion-stack ceilings and an independent
+75-byte single-reference vector. It is not yet a public factory or CLI profile.
 
 ## Why publication is not automatic
 

@@ -6806,3 +6806,28 @@ discarded and the reviewed seed retained.
 - Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
   system interoperability on x86-64. It does not claim a second architecture,
   a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman specification
+
+- Authoring method: composed marc's independently specified standalone LZMW
+  reference representation with its independently specified Adaptive Huffman
+  FGK byte transform at their canonical byte-stream boundary.
+- References used: DD-344, the repository's LZMW variant 1 and Adaptive
+  Huffman variant 1 format sections, generic framing rules, and the LZMW
+  references already recorded in `references.md`.
+- Known implementations intentionally not consulted: external LZMW/Adaptive
+  combinations, source code, container formats, workspace layouts, vectors,
+  corpora, and test suites.
+- Independent decisions: reserve `lzmw-adaptive-huffman`; retain format 1.0;
+  entropy-code complete four-byte references; reset both states per frame; use
+  a 65,536-byte bounded reference profile; validate entropy, the adjacent-
+  phrase graph, exact raw extent, and private reconstruction before publication.
+- Generated-code task description: specify exact fields, bounds, reset and
+  validation order; compose a single-reference vector only from existing local
+  standalone encoders and generic serializers; publish no combined API claim.
+- Similarity review: names and formulas follow marc's own LZMW grammar and
+  common Adaptive composition policy. No external combined expression was
+  viewed or compared.
+- Local validation: the independent vector test and all 1,392 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

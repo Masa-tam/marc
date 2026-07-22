@@ -2186,6 +2186,85 @@ private. The CLI and benchmark use that public factory without defining another
 format variant. Interoperability schema 6 emits and accepts this exact profile
 as its seventeenth archive.
 
+## LZMW variant 1 plus Adaptive Huffman FGK variant 1
+
+The reserved profile name is `lzmw-adaptive-huffman`. This composition uses
+dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 1, and
+entropy variant 1 under format version 1.0. Its stream parameter regions are
+the 16-byte LZMW parameters followed by the empty Adaptive Huffman parameter
+region. `entropy block size` is zero.
+
+Each nonempty outer frame owns one freshly reset LZMW phrase dictionary and
+one freshly reset FGK tree. The LZMW encoder first completes its canonical
+sequence of four-byte little-endian references. Adaptive Huffman then treats
+every byte in that finalized sequence as an ordinary symbol and does not see
+reference boundaries.
+
+The generic frame header records raw bytes as `uncompressed size`, LZMW
+reference bytes as `dictionary serialized size`, Adaptive payload bytes as
+`compressed payload size`, entropy block count one, descriptor size 16, and
+checksum trailer size zero. The body is one Adaptive Huffman descriptor
+followed by its payload; no separate reference region is stored. Descriptor,
+bit exhaustion, final-valid-bit, padding, update, rescaling, and reset rules
+are exactly Adaptive Huffman variant 1.
+
+For raw frame size `F`, the checked reference ceiling is `S = 4F` bytes.
+At most `max(F-1, 0)` adjacent phrase pairs can create generated entries; the
+phrase-record count is the lesser of that value, the configured LZMW maximum,
+and the local decoder limit. A nonempty frame's iterative expansion stack
+requires at most that phrase count plus one reference. The conservative
+Adaptive payload ceiling is `33S = 132F` bytes. The format-level raw-frame cap
+remains 2^20 bytes. The bounded reference profile uses `F = 65,536`, giving
+`S = 262,144`, an 8,650,752-byte Adaptive payload ceiling, at most 65,535
+generated phrases, and at most 65,536 expansion references.
+
+All products, frame extents, typed-record extents, and aggregate sums must be
+checked before allocation or mutation. Encoding fixes the deterministic LZMW
+parse and complete reference bytes in caller-owned staging before Adaptive
+planning. Decoding first validates the pipeline, parameters, sequence, generic
+extents, one-block count, descriptor extent, and all caller capacities.
+Adaptive Huffman must reconstruct exactly the declared reference-byte count
+with exact payload-bit exhaustion. The ordinary LZMW validator then requires a
+multiple of four bytes, validates every literal or prior generated reference,
+builds the bounded adjacent-phrase graph, and derives exactly the declared raw
+extent. Reconstruction occurs in private raw staging; only a completely
+successful frame may be published.
+
+The known-size stream is the ordinary 64-byte version-1.0 header followed by
+the 16-byte LZMW parameter region and zero or more frames. Empty input is
+exactly this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
+`ResetBlock` is unsupported at this composition boundary, and ordinary input
+or output chunking cannot change serialized bytes.
+
+### Hand-checkable single-reference frame
+
+For raw input `A`, LZMW emits reference `41 00 00 00`. Feeding those four
+bytes to one fresh FGK tree yields an empty path for `41`, path `0` plus an
+eight-bit literal for the first `00`, then paths `01` and `1` for the two
+known zero symbols. The complete 20-bit Adaptive payload is `41 00 0C`, with
+four valid bits in the final byte. The descriptor is:
+
+```text
+04 00 00 00 03 00 00 00 04 00 00 00 00 00 00 00
+```
+
+The complete 75-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 04 00 00 00  03 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+04 00 00 00 03 00 00 00  04 00 00 00 00 00 00 00
+41 00 0C
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Adaptive descriptor, and the final three bytes are the FGK payload. The vector
+is assembled from the standalone LZMW and Adaptive Huffman encoders plus
+generic serializers. No combined implementation or public profile is admitted
+by this specification alone.
+
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 6, dictionary variant 1,

@@ -1686,6 +1686,23 @@ generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
 system directions for all twenty-three archives at revision
 `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
 
+### Specified LZMW plus Adaptive Huffman boundary
+
+LZMW first freezes its complete canonical four-byte reference stream.
+Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
+frame without interpreting reference boundaries. For raw frame size `F`,
+reference staging is bounded by `S = 4F`, the conservative entropy payload by
+`33S`, generated phrases by `min(max(F-1,0), configured maximum, local limit)`,
+and the nonempty expansion stack by that phrase count plus one.
+
+Decoding must reconstruct exactly the declared reference extent, validate its
+multiple-of-four shape, every literal or prior generated reference, the
+adjacent-phrase graph, and exact declared raw extent before private iterative
+reconstruction and publication. Encoding must fix the deterministic LZMW
+parse before Adaptive planning. The independent raw-`A` vector fixes reference
+`41 00 00 00`, Adaptive payload `41 00 0C`, and a complete 75-byte frame.
+This boundary is specified but not yet implemented as a combined codec.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather
