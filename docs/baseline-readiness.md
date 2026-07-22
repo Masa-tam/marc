@@ -109,9 +109,12 @@ composition. DD-344 fixes its four-byte canonical reference boundary, checked
 limits, validation order, and independent 75-byte single-reference frame. Its
 first complete-frame validator now entropy-decodes into private reference
 staging and validates the entire adjacent-phrase graph and exact raw extent
-without publishing raw bytes. It has no reconstruction boundary, streaming
-transform, public API, tool adapter, completion, fuzz, benchmark, or
-interoperability claim yet.
+without publishing raw bytes. A bounded decoder now reconstructs that validated
+graph iteratively into separate private raw staging, with raw capacity,
+conservative expansion-stack capacity, and aggregate bytes checked before
+entropy output. It has no caller-visible frame transaction, streaming transform,
+public API, tool adapter, completion, fuzz, benchmark, or interoperability claim
+yet.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -303,7 +306,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-345, the complete Release suite contains 1,399 tests and passes under both
+At DD-346, the complete Release suite contains 1,403 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

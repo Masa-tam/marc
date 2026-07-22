@@ -1707,7 +1707,11 @@ checks the complete generic frame, reference and Adaptive extents, caller-owned
 reference and phrase capacities, and aggregate workspace before entropy output.
 It then reconstructs the exact reference region and invokes the ordinary LZMW
 validator. The returned actual generated-phrase count determines the later
-iterative expansion-stack ceiling. No raw byte is reconstructed or published.
+iterative expansion-stack ceiling. The private reconstruction boundary
+conservatively checks raw and maximum expansion capacities plus aggregate bytes
+before entropy output, then invokes the ordinary iterative LZMW decoder over
+only the validated prefixes. The resulting raw frame remains private and no
+caller-visible byte is published.
 
 ### Published LZW plus Blocked Huffman boundary
 

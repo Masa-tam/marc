@@ -2311,3 +2311,12 @@ padding independently, then entropy-code a forward reference and a raw-size
 mismatch to prove deterministic descriptor, entropy, and LZMW error precedence.
 For raw `AB`, require the adjacent phrase record `(A, B, 2)`, one generated
 entry, and a two-reference future expansion ceiling.
+
+For private reconstruction, decode the 75-byte raw-`A` frame into separate
+reference, expansion, and raw regions and require only private raw `41`.
+Reject a missing raw byte, missing expansion reference, and aggregate workspace
+that admits validation but not reconstruction before entropy output; preserve
+all guarded regions. Encode raw `ABABAB`, require four references, three
+adjacent generated phrases, four expansion references, and exact private raw
+equality. Corrupt the descriptor and encode a forward reference independently;
+both must leave private raw staging unchanged.

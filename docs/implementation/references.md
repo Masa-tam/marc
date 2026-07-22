@@ -1068,7 +1068,12 @@ format, source code, vector, corpus, or test suite was consulted.
 
 The LZMW plus Adaptive Huffman complete-frame validator uses only DD-345,
 DD-344, marc's generic frame parser, Adaptive Huffman decoder, LZMW token
-validator,
-checked arithmetic, and caller-owned staging policy. No external combined
-decoder, validation order, malformed vector, workspace layout, source code, or
-test suite was consulted.
+validator, checked arithmetic, and caller-owned staging policy. No external
+combined decoder, validation order, malformed vector, workspace layout, source
+code, or test suite was consulted.
+
+The LZMW plus Adaptive Huffman private-staging decoder uses only DD-346, the
+DD-345 validator, marc's existing bounded iterative LZMW decoder, typed phrase
+records, explicit expansion stack, and checked aggregate-workspace policy. No
+external combined decoder, transactional publication design, source code,
+malformed corpus, workspace layout, or test suite was consulted.

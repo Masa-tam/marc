@@ -6568,3 +6568,25 @@ and the resulting expansion-stack ceiling plus layer diagnostics, but
 reconstruct and publish no raw bytes. Later reconstruction, encoding, streaming,
 public API, and completion steps must consume this validator rather than weaken
 or duplicate it.
+
+## DD-346: LZMW Adaptive reconstructs only into private raw staging
+
+- Date: 2026-07-22
+- Status: accepted
+
+Extend the complete-frame boundary with a decoder that reconstructs the already
+validated LZMW reference stream into caller-owned private raw staging. Before
+Adaptive decoding begins, require the complete raw extent and a conservative
+expansion workspace derived from the maximum admitted phrase-record count plus
+one for a nonempty frame. Count both regions in aggregate workspace and require
+input, reference staging, and raw staging not to overlap.
+
+After DD-345 validation succeeds, reduce the reported expansion extent to the
+actual generated-phrase count plus one and invoke the ordinary bounded iterative
+LZMW decoder over exactly the validated reference extent, phrase-record prefix,
+expansion-reference prefix, and declared raw extent. Preserve its stable
+validation, format, and decode diagnostics and map an unexpected reconstruction
+failure to a distinct combined-layer error. On every error the caller discards
+all staging. Successful raw bytes remain private: this step adds no caller-
+visible output copy, streaming transform, factory, CLI, benchmark, fuzz,
+completion, or interoperability claim.

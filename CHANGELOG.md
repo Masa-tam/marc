@@ -19,8 +19,10 @@ format versions, and C ABI versions are independent namespaces.
   LZMW and Adaptive Huffman primitives. Its first bounded complete-frame
   validator now entropy-decodes into private reference staging, validates every
   literal or generated reference, adjacent phrase, checked expansion length,
-  and exact raw extent, and publishes no raw bytes. No combined public codec is
-  exposed yet.
+  and exact raw extent, and publishes no raw bytes. It now reconstructs a fully
+  validated frame iteratively into separately bounded private raw staging,
+  counting both the conservative expansion stack and raw extent before entropy
+  output. No combined public codec is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

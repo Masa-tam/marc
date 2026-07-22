@@ -107,7 +107,9 @@ before a fresh per-frame FGK tree consumes it, together with checked reference,
 payload, phrase-record, and expansion-stack ceilings and an independent
 75-byte single-reference vector. Its first complete-frame validator stages the
 Adaptive output and checks the entire LZMW phrase graph without publishing raw
-bytes. It is not yet a public factory or CLI profile.
+bytes. Its bounded private decoder then reconstructs only into disposable raw
+staging with a checked iterative expansion stack. It is not yet a public factory
+or CLI profile.
 
 ## Why publication is not automatic
 

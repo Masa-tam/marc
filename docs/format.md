@@ -2273,7 +2273,12 @@ validator to check every literal or prior generated reference, construct the
 bounded adjacent-phrase graph, and derive exactly the declared raw size. It
 reports the actual generated-phrase count and corresponding nonempty expansion-
 stack ceiling but reconstructs and publishes no raw byte. This remains an
-internal frame API; no public profile is admitted by this validation step.
+internal frame API. The next bounded boundary requires private raw staging and
+the conservative maximum expansion stack before entropy output, then reduces
+the stack span to the actual generated-phrase count plus one after validation
+and invokes the ordinary iterative LZMW decoder. Successful raw bytes remain
+private, and every error requires all staging to be discarded. No public
+profile is admitted by these validation and reconstruction steps.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 

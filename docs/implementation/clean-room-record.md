@@ -6855,3 +6855,26 @@ discarded and the reviewed seed retained.
 - Local validation: seven focused validator tests and all 1,399 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman private-staging decoder
+
+- Authoring method: extended DD-345's validated reference boundary with marc's
+  existing bounded iterative LZMW decoder and a distinct caller-owned raw span.
+- References used: DD-346, DD-345, the LZMW phrase-table and expansion-stack
+  contracts, checked aggregate arithmetic, and private staging convention.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction pipelines, source code, workspace layouts, malformed
+  corpora, APIs, and test suites.
+- Independent decisions: precheck the conservative maximum expansion stack and
+  raw extent before Adaptive output; reduce to actual generated phrases after
+  validation; retain all reconstructed bytes privately; require every workspace
+  to be discarded on failure; expose no caller-visible output.
+- Generated-code task description: add a private raw reconstruction entry point,
+  preserve guarded storage on pre-validation errors, expand a generated-phrase
+  frame iteratively, and update status without public or streaming claims.
+- Similarity review: the ownership and error order extend marc's DD-345
+  transaction; LZMW counts and reconstruction use only local grammar. No
+  external decoder expression was viewed or compared.
+- Local validation: four focused private-reconstruction tests and all 1,403
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
