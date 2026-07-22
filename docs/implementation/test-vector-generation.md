@@ -2391,3 +2391,14 @@ and one. Encode every case twice and compare exact bytes before decoding. For
 final byte, and append one zero separately. Each decoder must publish exactly
 192 bytes, preserve the last sentinel, and return identical terminal status and
 error positions when called again.
+
+For bounded decoder fuzzing, retain only the five-byte repository-authored
+truncated magic `MARC\n` as a seed. Build the canonical regression stream from
+raw `ABABX` through the internal bounded encoder with four LZMW entry slots,
+20 reference bytes, and fixed serialized-frame storage. Feed every proper
+prefix to a fresh incremental decoder and require zero raw publication, then
+replace the generic frame extent region with `FF` bytes and set the final
+Adaptive descriptor reserved byte to one independently. Both malformed cases
+must stay atomic and sticky. The fuzz entry point caps input, all byte buffers,
+1,023 phrase records, 1,024 expansion references, and total calls before
+inspecting input metadata.

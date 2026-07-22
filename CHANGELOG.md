@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   without placing C++ record layouts in the ABI. Its public completion matrix
   now covers required binary data classes, deterministic arbitrary chunking,
   sticky terminal states, and malformed-final-frame atomicity. No CLI profile
-  is exposed yet.
+  is exposed yet. A bounded dual-path decoder fuzz harness and permanent
+  atomic regressions now cover truncation, extreme frame extents, and invalid
+  Adaptive descriptors.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

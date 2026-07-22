@@ -121,7 +121,8 @@ layouts. Its bounded C requirements query and factory now expose this fixed
 profile through the common three caller-owned regions. It is not yet a CLI
 profile. Its public-ABI completion matrix now proves required binary classes,
 deterministic arbitrary chunking, sticky terminal states, and transactional
-malformed-final-frame rejection through that factory.
+malformed-final-frame rejection through that factory. Its bounded dual-path
+decoder fuzz target and permanent malformed regressions are now present.
 
 ## Why publication is not automatic
 

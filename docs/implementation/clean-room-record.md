@@ -7049,3 +7049,28 @@ discarded and the reviewed seed retained.
 - Local validation: three focused public completion tests and all 1,433 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman bounded fuzz boundary
+
+- Authoring method: bounded marc's existing exact-frame and incremental
+  decoders with compile-time storage and byte-derived finite schedules.
+- References used: DD-354, local decoder limits, LZMW reference, phrase, and
+  expansion ceilings, core process invariants, and the repository canonical
+  encoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, combined decoders, source code, or regression
+  suites.
+- Independent decisions: cap input and payload at 8 KiB; reference staging and
+  total output at 4 KiB; raw frames at 1 KiB; fix 1,023 phrase records and
+  1,024 expansion references; exercise exact and streaming paths; retain only
+  truncated magic as corpus.
+- Generated-code task description: add bounded fuzz and compile-smoke targets,
+  a minimal seed, and permanent atomic regressions for every truncation,
+  extreme extents, and a reserved Adaptive descriptor byte.
+- Similarity review: the harness recombines only marc's own fuzz invariants,
+  LZMW bounds, and exact profile decoder. No external harness structure or
+  distinctive corpus was compared.
+- Local validation: all 1,436 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4. The
+  dedicated Clang/libFuzzer build then completed 1,000 seed-derived runs under
+  AddressSanitizer and UndefinedBehaviorSanitizer without a finding.

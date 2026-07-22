@@ -1,12 +1,12 @@
 # Fuzzing
 
-The twenty-three bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-four bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZSS plus
 Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
 Blocked Huffman, LZ78 plus Adaptive Huffman, LZW plus Blocked Huffman, LZW plus
 Adaptive Huffman, LZD plus Adaptive Huffman, LZD plus Blocked Huffman, LZMW plus
-Blocked Huffman, and checksum-raw profiles. Targets
+Blocked Huffman, LZMW plus Adaptive Huffman, and checksum-raw profiles. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
 input and also use a strict one-shot decoder where that internal helper exists.
 They use small fixed
@@ -61,6 +61,12 @@ output and token staging, and one 1 KiB raw frame. The frame limit derives
 fixed ceilings of 512 LZD phrase records and 513 iterative expansion
 references; encoded-frame, token, raw, phrase, and expansion storage are all
 included in the aggregate policy before serialized metadata is read.
+The combined LZMW plus Adaptive Huffman target also exercises exact-frame and
+incremental decode. It caps supplied input and Adaptive payload at 8 KiB,
+total raw output and canonical reference staging at 4 KiB, and one raw frame
+at 1 KiB. The four-byte reference bound admits 1,023 phrase records and 1,024
+iterative expansion references; all encoded-frame, reference, raw, and typed
+storage is fixed and included in the aggregate policy before metadata is read.
 The combined LZW plus Blocked Huffman target uses the same byte, block, and
 call-count bounds. Its 4 KiB packed-code cap permits at most 3,639 phrase
 records, while a 4,096-entry local dictionary limit admits serialized widths
@@ -140,6 +146,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz78_adaptive_huffman_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
+  marc_fuzz_lzmw_adaptive_huffman_stream \
   marc_fuzz_lzss_blocked_huffman_stream \
   marc_fuzz_lz78_blocked_huffman_stream \
   marc_fuzz_lzw_blocked_huffman_stream \
@@ -167,6 +174,8 @@ out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \
   fuzz/corpus/lzw_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_adaptive_huffman_stream \
   fuzz/corpus/lzd_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzmw_adaptive_huffman_stream \
+  fuzz/corpus/lzmw_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_blocked_huffman_stream \
   fuzz/corpus/lzss_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_blocked_huffman_stream \
@@ -298,6 +307,13 @@ workspace; the repository retains the reviewed five-byte truncated-magic seed.
 
 The composed LZSS plus Adaptive Huffman frame/stream decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-19 with 8 KiB maximum input, a
+five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
+crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
+and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
+workspace; the repository retains the reviewed five-byte truncated-magic seed.
+
+The composed LZMW plus Adaptive Huffman frame/stream decoder target received a
+bounded 1,000-input sanitizer smoke on 2026-07-22 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build

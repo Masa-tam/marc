@@ -1119,3 +1119,9 @@ marc C configuration/query/factory/process/destroy lifecycle, DD-344 bounds, and
 repository-authored deterministic fixtures and malformed mutations. No external
 completion suite, corpus, combined codec API, source code, or test vectors were
 consulted.
+
+The LZMW plus Adaptive Huffman bounded fuzz boundary uses only DD-354, the
+existing exact-frame private decoder, streaming decoder, local limit contract,
+LZMW reference/phrase/expansion ceilings, and repository-authored canonical
+stream generator. No external fuzz harness, corpus, malformed archive,
+combined decoder, source code, API, or regression suite was consulted.

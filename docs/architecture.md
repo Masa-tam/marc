@@ -1756,6 +1756,11 @@ one-byte and mixed chunk schedules, repeated terminal results, and a four-frame
 transaction test. Corruption, truncation, or trailing data at the last frame
 commits exactly the first three frames and no byte from the fourth.
 
+The decoder fuzz boundary fixes exact-frame and incremental workspaces before
+reading metadata: 1,023 phrase records, 1,024 expansion references, bounded
+byte arrays, byte-derived chunk schedules, and a finite call budget. Serialized
+input cannot enlarge any allocation or admitted workspace ceiling.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

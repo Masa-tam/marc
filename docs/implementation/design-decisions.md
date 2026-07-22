@@ -6746,3 +6746,26 @@ must be sticky, preserve byte and bit positions, publish exactly the first 192
 validated bytes, and leave the last output sentinel unchanged. This completes
 public-ABI evidence only; it adds no fuzz, CLI, benchmark, or interoperability
 claim.
+
+## DD-354: LZMW Adaptive fuzzing fixes reference-derived typed storage
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add one bounded decoder fuzz entry point that truncates supplied input to
+8,192 bytes and exercises both the exact complete-frame private-staging
+decoder after a valid 80-byte prefix and the incremental stream decoder for
+every case. Fix total raw output at 4,096 bytes, one raw frame at 1,024 bytes,
+canonical LZMW reference staging at 4,096 bytes, compressed payload at 8,192
+bytes, the phrase table at 1,023 records, and the iterative expansion stack at
+1,024 references. Include every byte and typed region in one fixed aggregate
+limit before processing metadata.
+
+Derive partial input and output chunks from current bytes, cap process calls,
+and abort only for an invalid process result or impossible stall. Retain a
+repository-authored truncated-magic seed; generated mutations remain ignored
+build artifacts. Add permanent regressions requiring every truncation of a
+canonical `ABABX` stream, all-ones generic extent fields, and a nonzero
+reserved Adaptive descriptor byte to fail atomically with sticky category and
+position. Ordinary MSVC and Clang builds compile the harness; sanitizer fuzz
+execution remains a separate explicitly bounded Clang workflow.
