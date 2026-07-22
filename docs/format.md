@@ -2310,6 +2310,8 @@ The public completion matrix exercises this representation without defining a
 new stream variant or relaxing strict trailing-data rejection.
 The CLI and benchmark adapters select the same fixed representation and add no
 format variant.
+Interoperability schema 13 emits and accepts this exact profile as its twenty-
+fourth archive without changing the version-1.0 stream representation.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 

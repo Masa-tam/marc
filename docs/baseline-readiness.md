@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 12 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 13 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 12 |
+| Profile | Purpose | Local status | Interoperability schema 13 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -47,14 +47,14 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | Ready | Included |
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
-| `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | In progress | Not included |
+| `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Schema candidate | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 12 contains twenty-three archives: the frozen twenty-two-entry schema-11
-set followed by the LZD Adaptive Huffman profile. Schemas 1 through 11 remain
+Schema 13 contains twenty-four archives: the frozen twenty-three-entry schema-12
+set followed by the LZMW Adaptive Huffman profile. Schemas 1 through 12 remain
 frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
-nineteen, twenty, twenty-one, and twenty-two profiles; their meanings are fixed
-by their version and codec-set rules.
+nineteen, twenty, twenty-one, twenty-two, and twenty-three profiles; their
+meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -64,7 +64,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 12 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 13 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -88,7 +88,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -133,7 +133,9 @@ rejection. A bounded dual-path decoder fuzz harness and permanent atomic
 malformed regressions are now present. A transactional CLI selector now binds
 the same public factory under the fixed 64-KiB reference profile. A verified
 public-ABI benchmark now measures that profile after a byte-exact round trip.
-The interoperability boundary remains.
+Local schema-13 generation, verification, exact-order rejection, and schemas 1
+through 12 compatibility are now present. It remains below `Ready` until
+schema-13 artifacts are cross-verified outside the local build.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -163,12 +165,10 @@ Ubuntu 24.04 artifacts plus the independently generated Ubuntu 26.04/Clang
 bundle passed the complete bidirectional external verification contract, so
 this profile is `Ready`.
 
-`lzd-adaptive-huffman` is the fifth Adaptive composition under active
-admission. DD-330 fixes its
+`lzd-adaptive-huffman` is the fifth Adaptive composition. DD-330 fixes its
 decoder-visible representation, checked `8*ceil(F/2)` token bound, `33S`
 Adaptive payload bound, phrase and expansion-workspace ceilings, validation
-order, and independent 77-byte terminal-token frame. It remains outside the
-interoperability schema only. Its first complete-frame
+order, and independent 77-byte terminal-token frame. Its first complete-frame
 validator now entropy-decodes into private token staging and validates the
 whole backward phrase graph, terminal form, and exact raw extent without
 publishing raw bytes. A bounded decoder now reconstructs a validated frame into
@@ -325,7 +325,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-356, the complete Release suite contains 1,438 tests and passes under both
+At DD-357, the complete Release suite contains 1,438 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

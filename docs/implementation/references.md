@@ -1137,3 +1137,10 @@ marc C requirements query and factory, the CLI's fixed limits, and the existing
 repository measurement and verification contract. No external benchmark,
 combined-codec tool, record layout, source code, corpus, or test suite was
 consulted.
+
+Interoperability schema 13 uses only DD-357, the frozen schema-12 manifest
+order, the public `lzmw-adaptive-huffman` CLI selector, and marc's existing
+local generator, verifier, SHA-256, exact re-encoding, and one-generation
+compatibility contracts. No external archive protocol, codec registry,
+manifest schema, test fixture, source code, or verification suite was
+consulted.

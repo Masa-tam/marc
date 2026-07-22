@@ -6809,3 +6809,24 @@ extents, and the larger caller-reserved total. Treat correctness, checked-bound,
 allocation, and API failures as benchmark failures, but impose no performance
 threshold. Add a one-iteration smoke test over repository-owned input. This
 step adds no interoperability claim.
+
+## DD-357: Interoperability schema 13 appends LZMW Adaptive exactly once
+
+- Date: 2026-07-23
+- Status: accepted
+
+Define interoperability schema 13 and codec set `marc-cli-v13` as the exact
+twenty-three-entry schema-12 order followed by `lzmw-adaptive-huffman`. Reuse
+the unchanged deterministic 8,193-byte binary fixture. Generation must round-
+trip all twenty-four profiles before writing the manifest; verification must
+check the exact count and order, every declared size and SHA-256 value, foreign
+decode equality, and byte-identical local re-encoding.
+
+Keep schemas 1 through 12 frozen. The compatibility test starts from a complete
+schema-13 bundle, rejects a reordered schema-13 manifest, removes only the
+newest profile while converting to schema 12, and continues the existing one-
+generation-at-a-time chain through schema 1. Local schema admission proves the
+generator, verifier, compatibility rules, and same-machine CLI determinism
+only. Cross-platform evidence still requires CI artifacts from the same full
+Git revision and the established four-direction external verification
+procedure.

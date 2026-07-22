@@ -7121,3 +7121,28 @@ discarded and the reviewed seed retained.
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
   official CMake 4.3.4. The smoke run reported every required metric only after
   a successful exact round trip.
+
+## 2026-07-23 - Interoperability schema 13
+
+- Authoring method: extended marc's frozen append-only interoperability
+  registry by one already published and locally complete CLI profile.
+- References used: DD-357, schema-12 order, the `lzmw-adaptive-huffman`
+  selector, deterministic fixture generator, manifest verifier, and
+  compatibility chain.
+- Known implementations intentionally not consulted: external archive
+  protocols, codec registries, manifest schemas, source code, fixtures, or test
+  suites.
+- Independent decisions: retain the 8,193-byte fixture; append LZMW Adaptive as
+  archive 24; name codec set `marc-cli-v13`; preserve schemas 1 through 12;
+  reject reordered current manifests before any cross-platform claim.
+- Generated-code task description: update generation and verification to 24
+  exact archives, convert schema 13 down one frozen generation at a time, and
+  document local admission separately from future four-direction artifact
+  evidence.
+- Similarity review: schema evolution follows only marc's append-only registry,
+  first-party PowerShell tooling, and exact re-encoding protocol. No external
+  interoperability design or distinctive manifest structure was compared.
+- Local validation: all 1,438 Release tests passed under both MSVC/Visual
+  Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4. Both
+  runs generated and verified schema 13, rejected its reordered manifest, and
+  then verified every frozen schema through schema 1.

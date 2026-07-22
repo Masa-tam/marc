@@ -8,8 +8,8 @@
 compression components. Its public version 1 profiles include five standalone
 entropy codecs, all six required dictionary codecs, and every required
 dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
-profile with mandatory per-frame CRC-32C and the first five dictionary codecs
-composed with Adaptive Huffman are also available. All twenty-three profiles are
+profile with mandatory per-frame CRC-32C and all six dictionary codecs composed
+with Adaptive Huffman are also available. All twenty-four profiles are
 exposed through a small C ABI and the command-line tool. The format and API are
 still under development and version 0.x streams are not yet promised long-term
 compatibility.
@@ -81,7 +81,7 @@ See
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-bounded stream-decoder fuzz targets for all twenty-three public profiles. Build
+bounded stream-decoder fuzz targets for all twenty-four public profiles. Build
 and corpus instructions are in
 [`docs/fuzzing.md`](docs/fuzzing.md).
 

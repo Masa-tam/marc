@@ -2415,3 +2415,11 @@ Require the tool's untimed public-C encode/decode verification to reproduce the
 input exactly before it reports any measurement. Treat successful completion
 and well-formed metric fields as coverage; record ratio and throughput as
 observations rather than fixed expected values.
+
+For interoperability schema 13, retain the deterministic 8,193-byte fixture
+and the exact schema-12 archive order, then append `lzmw-adaptive-huffman` once
+as archive 24. Generate and locally decode all archives before writing
+`manifest.json`; require codec set `marc-cli-v13`, exact order, sizes, SHA-256,
+foreign decode equality, and byte-identical local re-encoding. Reorder two
+entries and require rejection, then remove only archive 24 while converting to
+schema 12 and verify every frozen schema down through schema 1.

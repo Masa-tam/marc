@@ -45,7 +45,8 @@ format versions, and C ABI versions are independent namespaces.
   now exposes the public C factory with fixed 64-KiB frames and checked local
   limits. A matching public-ABI benchmark now verifies a byte-exact round trip
   before reporting compression ratio, directional throughput, and caller-owned
-  peak workspace.
+  peak workspace. Interoperability schema 13 appends it as the twenty-fourth
+  archive while preserving schemas 1 through 12 and their exact codec orders.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

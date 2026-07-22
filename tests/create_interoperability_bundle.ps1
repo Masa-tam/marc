@@ -92,7 +92,8 @@ $profiles = @(
     'lzss-adaptive-huffman',
     'lz78-adaptive-huffman',
     'lzw-adaptive-huffman',
-    'lzd-adaptive-huffman'
+    'lzd-adaptive-huffman',
+    'lzmw-adaptive-huffman'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -115,8 +116,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 12
-    codec_set = 'marc-cli-v12'
+    schema_version = 13
+    codec_set = 'marc-cli-v13'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler
