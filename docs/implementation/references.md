@@ -1163,3 +1163,9 @@ combined validator, marc's validated LZ77 overlap-copy decoder, checked raw and
 aggregate workspace policy, and local complete-frame contracts. No external
 combined decoder, decompression pipeline, transactional buffer design, source
 code, malformed corpus, or test suite was consulted.
+
+The LZ77 plus Dynamic Range transactional publication boundary uses only
+DD-362, the completed private raw decoder, caller-supplied spans, and marc's
+existing complete-frame commit policy. No external decompression API,
+publication strategy, buffer design, source code, malformed corpus, or test
+suite was consulted.

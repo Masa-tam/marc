@@ -25,6 +25,7 @@ enum class Lz77DynamicRangeFrameValidationError : std::uint8_t {
     invalid_entropy_extent,
     dictionary_staging_too_small,
     raw_staging_too_small,
+    raw_output_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
@@ -79,6 +80,21 @@ decode_lz77_dynamic_range_frame_to_staging(
     std::span<const std::byte> input,
     std::span<std::byte> dictionary_staging,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates every layer, reconstructs into private raw staging, and publishes
+// to output only after reconstruction succeeds. Input, both staging extents,
+// and output must be mutually non-overlapping.
+[[nodiscard]] Lz77DynamicRangeFrameValidationResult
+decode_lz77_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

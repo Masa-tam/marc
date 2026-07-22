@@ -6913,3 +6913,20 @@ region, including bytewise overlapping-copy semantics, and require exactly the
 declared raw extent. Preserve nested validation, format, and decode errors in
 the result. This function may mutate only its private raw staging on success;
 it has no caller-visible output and adds no stream, C ABI, or CLI surface.
+
+## DD-362: LZ77 Dynamic Range publishes only complete frames
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add a transactional caller-visible complete-frame boundary above the private
+raw decoder. Check caller output capacity before entropy output or mutation of
+either private staging region. Decode and validate the complete Dynamic Range
+and LZ77 layers, reconstruct exactly the declared raw extent into private raw
+staging, and only then copy that extent once to caller output.
+
+Every capacity, descriptor, entropy, token-validation, or reconstruction
+failure leaves caller output unchanged. Caller output is destination storage,
+not internal buffered workspace, so it is capacity-checked but is not added to
+the aggregate internal-buffer limit. This step adds no streaming transform,
+public C ABI factory, CLI selector, or encoder.

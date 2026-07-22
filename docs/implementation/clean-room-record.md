@@ -7274,3 +7274,30 @@ discarded and the reviewed seed retained.
 - Local validation: all fourteen combined validator/private-decoder tests and
   all 1,453 Release tests passed under both MSVC/Visual Studio 2026 and Clang
   22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range transactional frame decoder
+
+- Authoring method: placed a caller-visible commit boundary above the completed
+  private raw decoder, following the composition's already documented
+  decode-validate-reconstruct-publish order.
+- References used: DD-362, the completed private-token and private-raw
+  boundaries, caller-owned span contracts, and marc's existing complete-frame
+  transactional publication policy.
+- Known implementations intentionally not consulted: external LZ/range
+  decoders, decompression APIs, transaction or buffer designs, malformed
+  corpora, source code, and test suites.
+- Independent decisions: check caller capacity before entropy output; retain
+  caller output outside the internal-buffer aggregate because it is destination
+  storage; reconstruct only into private raw staging; copy exactly the declared
+  extent once and only after every layer succeeds; add no public ABI or
+  streaming surface in this step.
+- Generated-code task description: add a bounded complete-frame publication
+  function and prove successful hand-vector and overlapping-match output,
+  pre-mutation capacity rejection, and unchanged caller output after malformed
+  entropy or dictionary layers.
+- Similarity review: the control flow is a direct expression of marc's
+  independently documented transaction order and existing local component
+  APIs. No external combined-codec structure or implementation was compared.
+- Local validation: all eighteen combined validator/private/publication tests
+  and all 1,457 Release tests passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

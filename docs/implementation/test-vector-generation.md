@@ -1924,6 +1924,15 @@ limit one byte below descriptor plus payload plus token plus raw staging;
 require both failures before token or raw mutation. Range-code tag `ff` and
 require dictionary validation failure with the raw sentinel unchanged.
 
+For transactional LZ77 plus Dynamic Range publication, decode the same hand
+frame into private raw and caller output spans filled with `5a`; require only
+the declared first byte to become `41`. Publish all five `41` bytes from the
+overlapping-match frame. Supply no caller output capacity and require token and
+raw staging to remain unchanged. Corrupt the range descriptor and separately
+range-code invalid LZ77 tag `ff`; require both failures to preserve every
+caller-output sentinel, and require the invalid-token case to preserve private
+raw staging as well.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

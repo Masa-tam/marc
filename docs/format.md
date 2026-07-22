@@ -1342,9 +1342,12 @@ before writing any frame byte. The internal bounded validator implements steps
 decoder extends that boundary through step 5, checking raw capacity and the
 descriptor-plus-payload-plus-token-plus-raw aggregate before entropy output,
 then applying the specified overlap-copy semantics only to fully validated
-tokens. It has no caller-visible publication extent. This section reserves the
-decoder-visible representation only; no public C ABI factory, CLI selector,
-benchmark, fuzz target, or interoperability profile is implied.
+tokens. The transactional complete-frame decoder implements step 6: it checks
+caller output capacity before entropy output, reconstructs into private raw
+staging, and copies exactly the declared raw extent only after every preceding
+stage succeeds. Every failure leaves caller output unchanged. This section
+reserves the decoder-visible representation only; no public C ABI factory, CLI
+selector, benchmark, fuzz target, or interoperability profile is implied.
 
 ### Hand-checkable single-Literal frame
 

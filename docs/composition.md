@@ -140,8 +140,11 @@ complete-frame validator now enforces those extents, decodes only into private
 token staging, and validates the entire token stream without reconstructing or
 publishing raw bytes. Its bounded private decoder now includes raw staging in
 the aggregate policy and reconstructs validated overlap copies without a
-caller-visible output boundary. No public factory, CLI selector, benchmark,
-fuzz target, or interoperability entry exists yet.
+caller-visible output boundary. Its transactional complete-frame decoder now
+checks caller output capacity before entropy output and publishes the completed
+private raw frame only after every layer succeeds, leaving caller output
+unchanged on failure. No public factory, CLI selector, benchmark, fuzz target,
+or interoperability entry exists yet.
 
 ## Why publication is not automatic
 
