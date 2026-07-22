@@ -1337,9 +1337,11 @@ raw byte, the decoder must:
 
 Failure at any stage publishes no byte from the current frame. A future encoder
 must likewise finalize the LZ77 token stream and complete range-payload planning
-before writing any frame byte. This section reserves the decoder-visible
-representation only; no public C ABI factory, CLI selector, benchmark, fuzz
-target, or interoperability profile is implied.
+before writing any frame byte. The first internal bounded validator implements
+steps 1 through 4 and stops at private canonical token staging; it performs no
+raw reconstruction. This section reserves the decoder-visible representation
+only; no public C ABI factory, CLI selector, benchmark, fuzz target, or
+interoperability profile is implied.
 
 ### Hand-checkable single-Literal frame
 

@@ -1151,3 +1151,9 @@ integer model and delayed-carry rules, generic frame format, checked decoder
 limits, and repository-owned composition policy. No external combined codec,
 range-coder implementation, format, profile, stream, test vector, or workspace
 layout was consulted.
+
+The LZ77 plus Dynamic Range complete-frame validator uses only DD-360, the
+reserved combined format, marc's generic frame parser, Dynamic Range descriptor
+and strict decoder, LZ77 token validator, checked arithmetic, and decoder-limit
+contracts. No external LZ/range pipeline, combined validator, source code,
+malformed corpus, test suite, or error taxonomy was consulted.

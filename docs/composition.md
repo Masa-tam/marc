@@ -135,8 +135,11 @@ stream before a fresh per-frame adaptive order-0 range model consumes it. The
 format caps raw frames at 2^20 bytes, bounds token bytes by `16F` and range
 payload bytes by `2S + 5`, and requires entropy decoding, complete LZ77 token
 validation, and private raw reconstruction before publication. An independent
-88-byte single-Literal frame fixes the component boundary. No public factory,
-CLI selector, benchmark, fuzz target, or interoperability entry exists yet.
+88-byte single-Literal frame fixes the component boundary. Its first bounded
+complete-frame validator now enforces those extents, decodes only into private
+token staging, and validates the entire token stream without reconstructing or
+publishing raw bytes. No public factory, CLI selector, benchmark, fuzz target,
+or interoperability entry exists yet.
 
 ## Why publication is not automatic
 

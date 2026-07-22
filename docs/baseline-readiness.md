@@ -97,7 +97,11 @@ kept separate because it requires artifacts produced outside the local build.
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw
 frame ceiling, checked `16F` token and `2S + 5` range-payload bounds,
 transactional validation order, and independent 88-byte single-Literal frame.
-It remains `Specified` until the bounded validator and decoding path exist.
+Its first bounded complete-frame validator now enforces all declared and
+aggregate extents, range-decodes into private token staging, and validates the
+complete LZ77 stream and exact raw extent without publishing raw bytes. It
+remains `Specified` until private raw reconstruction and transactional frame
+decoding exist.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
@@ -333,7 +337,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-359, the complete Release suite contains 1,439 tests and passes under both
+At DD-360, the complete Release suite contains 1,448 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

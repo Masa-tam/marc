@@ -6877,3 +6877,22 @@ range payload into bounded private token staging, strictly validate all LZ77
 tokens and exact raw extent, reconstruct into separate bounded private raw
 staging, and publish only after every stage succeeds. This step reserves the
 format and independent vector only; it publishes no factory or CLI selector.
+
+## DD-360: LZ77 Dynamic Range validation stops at private tokens
+
+- Date: 2026-07-23
+- Status: accepted
+
+Implement the first executable combined boundary as a bounded complete-frame
+validator. Accept only the exact LZ77 variant 1 and Dynamic Range variant 1
+pipeline, a raw frame no larger than 2^20 bytes, one 16-byte descriptor, one
+entropy block, token extent `S` that is nonzero, divisible by 16 and no larger
+than both `16F` and 2^24, and payload extent no larger than `2S + 5`.
+
+Reject truncation, trailing frame bytes, impossible extents, insufficient token
+staging, and descriptor-plus-payload-plus-staging aggregate policy failures
+before entropy output. Then strictly parse the range descriptor, decode exactly
+`S` bytes with canonical initialization and exact payload exhaustion into
+private staging, and validate the complete LZ77 token graph and derived raw
+extent. Preserve the component error categories in the result. Do not
+reconstruct or publish raw bytes in this step.

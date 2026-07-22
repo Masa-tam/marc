@@ -1905,6 +1905,16 @@ Build the test by invoking the standalone LZ78 and Adaptive encoders separately
 and explicit generic serializers; do not use a combined-profile encoder as its
 own oracle.
 
+For the first LZ77 plus Dynamic Range validator tests, require the 88-byte hand
+frame to decode into exactly the fixed 16-byte Literal token staging. Feed every
+proper frame prefix and one trailing byte as separate strict failures. Before
+allowing entropy output, test a 15-byte staging region, an aggregate limit one
+byte below descriptor plus payload plus token staging, a payload extent of 38
+bytes against the `2*16 + 5` ceiling, and a nonzero final descriptor reserved
+byte; all must leave a `5a` staging sentinel unchanged. Separately replace the
+canonical range initialization byte with one, and range-code an invalid LZ77
+tag `ff`; require stable entropy and dictionary validation errors respectively.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

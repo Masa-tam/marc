@@ -7223,3 +7223,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused vector and documentation tests and all 1,439
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range frame validator
+
+- Authoring method: composed marc's existing generic frame, strict Dynamic
+  Range, and LZ77 token-validation contracts at the already specified private
+  token boundary.
+- References used: DD-360, the `lz77-dynamic-range` format section, checked
+  arithmetic, generic frame validation, Dynamic Range descriptor and decoder,
+  LZ77 parameter and token validators, and `DecoderLimits`.
+- Known implementations intentionally not consulted: external LZ/range
+  pipelines, foreign frame validators, range-coder source, malformed corpora,
+  error mappings, or third-party tests.
+- Independent decisions: stop before raw reconstruction; reject complete-frame
+  size, `16F`, 2^24-symbol, `2S + 5`, staging, and aggregate violations before
+  entropy output; retain component error categories and staged invalid tokens
+  for deterministic diagnosis.
+- Generated-code task description: implement one bounded validator that checks
+  the exact combined pipeline and frame, range-decodes canonical token bytes
+  into private staging, validates their complete LZ77 graph and raw extent, and
+  never publishes raw bytes.
+- Similarity review: control flow follows only marc's documented validation
+  order and local component APIs. No external combined-codec structure or
+  distinctive error taxonomy was compared.
+- Local validation: all nine focused validator tests and all 1,448 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.
