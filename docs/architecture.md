@@ -1681,7 +1681,10 @@ and appends `lzd-adaptive-huffman`. Generation round-trips all twenty-three
 profiles; verification requires exact manifest order, foreign decode equality,
 and byte-identical local re-encoding while retaining schemas 1 through 11.
 Local MSVC admission proves the generator, verifier, and compatibility chain;
-external artifacts remain a separate evidence step.
+the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
+generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
+system directions for all twenty-three archives at revision
+`7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
 
 ### Published LZW plus Blocked Huffman boundary
 

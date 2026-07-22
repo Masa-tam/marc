@@ -1052,3 +1052,9 @@ order, the public `lzd-adaptive-huffman` CLI selector, and marc's existing local
 generator, verifier, SHA-256, exact re-encoding, and one-generation compatibility
 contracts. No external archive protocol, codec registry, manifest schema, test
 fixture, source code, or verification suite was consulted.
+
+The schema-12 external validation record uses the user-supplied four verifier
+results for revision `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa` and the
+previously documented Ubuntu 26.04/Clang 21.1.8 environment. No external codec
+source, archive format, interoperability harness, or third-party claim was
+consulted.

@@ -46,7 +46,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | Ready | Included |
-| `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Schema candidate | Included |
+| `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 12 contains twenty-three archives: the frozen twenty-two-entry schema-11
@@ -161,9 +161,10 @@ permanent atomic malformed regressions are now present. A transactional CLI
 selector now binds the same public factory under the fixed 64-KiB reference
 profile. A verified public-ABI benchmark now measures the same profile after a
 byte-exact round trip. Local schema-12 generation, verification, exact-order
-rejection, and schemas 1 through 11 compatibility are now present. It remains
-below `Ready` until schema-12 artifacts are cross-verified outside the local
-build.
+rejection, and schemas 1 through 11 compatibility are now present. The pushed
+Windows/MSVC and Ubuntu 24.04 artifacts plus the independently
+generated Ubuntu 26.04/Clang bundle passed the complete bidirectional external
+verification contract, so this profile is `Ready`.
 
 ## Remaining release evidence
 
@@ -241,6 +242,15 @@ artifacts. Ubuntu 26.04/Clang 21.1.8 verified all twenty-two archives from both
 artifacts, generated and verified its own schema-11 bundle, and supplied that
 bundle to the Windows/MSVC executable for reverse verification. Every pass
 required byte-identical local re-encoding. This closes the schema-11 x86-64
+Windows/Linux/compiler cross-check; a second architecture and non-WSL Linux
+kernel remain open.
+
+Revision `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa` subsequently completed
+pushed CI and produced the Windows/MSVC and Ubuntu 24.04/Ninja schema-12
+artifacts. Ubuntu 26.04/Clang 21.1.8 verified all twenty-three archives from
+both artifacts, generated and verified its own schema-12 bundle, and supplied
+that bundle to the Windows/MSVC executable for reverse verification. Every pass
+required byte-identical local re-encoding. This closes the schema-12 x86-64
 Windows/Linux/compiler cross-check; a second architecture and non-WSL Linux
 kernel remain open.
 

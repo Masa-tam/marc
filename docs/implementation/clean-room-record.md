@@ -6789,3 +6789,20 @@ discarded and the reviewed seed retained.
   2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4. Both runs
   generated and verified schema 12, rejected its reordered manifest, and then
   verified every frozen schema through schema 1.
+
+## 2026-07-22 - Interoperability schema 12 external validation record
+
+- Evidence source: user-supplied output from four executions of marc's
+  schema-12 verifier at full revision
+  `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
+- Producing environments: GitHub CI Windows/MSVC via Visual Studio 2026 x64,
+  GitHub CI Ubuntu 24.04 default C++ compiler via Ninja x64, and an external
+  Ubuntu 26.04/Clang 21.1.8 via Ninja x64 bundle.
+- Consuming environments: Ubuntu 26.04/Clang verified both CI bundles and its
+  own bundle; Windows/MSVC verified the Ubuntu 26.04 bundle.
+- Result: all four invocations reported `Verified 23 archives` at the exact
+  revision. Each invocation checked manifest order, size and SHA-256, decoded
+  fixture equality, and byte-identical local re-encoding.
+- Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
+  system interoperability on x86-64. It does not claim a second architecture,
+  a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.

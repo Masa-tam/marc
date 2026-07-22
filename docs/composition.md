@@ -97,8 +97,9 @@ matrix covers required data classes, deterministic arbitrary chunking, sticky
 terminal states, and malformed-final-frame atomicity; bounded fuzzing exercises
 both decoder paths. A transactional CLI selector and verified public-C benchmark
 use that factory with the fixed 64-KiB reference profile. Interoperability
-schema 12 appends it as the twenty-third archive; external cross-platform
-verification remains pending.
+schema 12 appends it as the twenty-third archive, and its bidirectional
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is
+recorded in `docs/interoperability.md`.
 
 ## Why publication is not automatic
 
