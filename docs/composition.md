@@ -148,8 +148,11 @@ bytes before Dynamic Range planning, and its deterministic encoder reproduces
 the independent frame without partial destination writes on capacity failure.
 Its first bounded streaming encoder retains completed frames while draining
 arbitrarily small output and preserves exact one-shot bytes across one-byte
-input, nonterminal `Flush`, and retained `EndInput`. No public factory, CLI
-selector, benchmark, fuzz target, or interoperability entry exists yet.
+input, nonterminal `Flush`, and retained `EndInput`. Its matching bounded
+decoder collects, validates, and reconstructs each complete frame before raw
+publication, so a malformed later frame cannot expose any of that frame's
+bytes. No public factory, CLI selector, benchmark, fuzz target, or
+interoperability entry exists yet.
 
 ## Why publication is not automatic
 

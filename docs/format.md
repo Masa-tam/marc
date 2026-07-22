@@ -1366,6 +1366,15 @@ input is accepted and becomes `EndOfStream` only after the final frame is fully
 drained. `ResetBlock` is unsupported because the outer frame size already owns
 the synchronized dictionary and entropy reset boundary.
 
+The bounded streaming decoder collects and validates the complete stream prefix
+before accepting frames. For each frame it collects the complete declared
+serialized extent into bounded storage, entropy-decodes and validates all LZ77
+tokens, reconstructs the declared raw extent into separate private storage,
+and only then drains raw bytes. A malformed later frame therefore cannot
+publish any raw byte from that frame or retract earlier completed frames.
+Truncation under `EndInput`, trailing bytes, unsupported reset, impossible
+workspace extents, and nested layer failures enter a sticky error state.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently

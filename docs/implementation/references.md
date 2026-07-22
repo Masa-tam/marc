@@ -1181,3 +1181,9 @@ exact-frame planner and encoder, marc's transform status contract, stream
 header and parameter serializers, checked aggregate accounting, and existing
 frame-boundary semantics. No external streaming codec, buffering design,
 state machine, source code, test vector, or test suite was consulted.
+
+The LZ77 plus Dynamic Range bounded streaming decoder uses only DD-365, the
+complete-frame private decoder, marc's generic stream and frame parsers,
+transform status contract, checked workspace accounting, and transactional
+frame-publication rule. No external streaming decoder, buffering state machine,
+source code, malformed corpus, error taxonomy, or test suite was consulted.

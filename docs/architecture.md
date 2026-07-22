@@ -1218,8 +1218,10 @@ configured raw frame, plans and encodes through the complete-frame boundary,
 and drains the retained result before reusing storage. One-byte I/O and output
 starvation therefore cannot alter encoded bytes. `Flush` leaves an incomplete
 frame open, while `EndInput` is retained until the last complete frame has been
-fully emitted. The streaming decoder and public factory remain separate later
-admission steps.
+fully emitted. The matching bounded decoder owns serialized-frame, canonical
+token, and private raw regions. It admits a frame to output only after complete
+collection, nested validation, and reconstruction, so malformed later frames
+are atomic. The public factory remains a separate later admission step.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

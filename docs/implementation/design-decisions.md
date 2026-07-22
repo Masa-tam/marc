@@ -6968,3 +6968,22 @@ Retain `EndInput` once the declared original size has been accepted, but return
 premature finish, excess input, unknown flags, and `ResetBlock`; keep terminal
 success and failure stable on repeated calls. This step adds no streaming
 decoder or public C ABI factory.
+
+## DD-365: LZ77 Dynamic Range streaming publishes validated frames atomically
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add a bounded streaming decoder with caller-supplied serialized-frame,
+canonical-token, and private-raw regions. Collect and parse the complete stream
+prefix first. For every outer frame, validate the generic header and all three
+workspace extents before collecting its body, then invoke the DD-361 private
+decoder only after the complete declared frame is present. Drain raw bytes only
+after entropy decode, token validation, and reconstruction all succeed.
+
+Previously completed frames remain committed, but no byte from a malformed
+current frame becomes visible. Retain `EndInput` while a validated final frame
+drains; reject truncation once that drain completes, trailing bytes after the
+declared original size, impossible workspace, unknown flags, and `ResetBlock`.
+Make both terminal success and failure stable. This step adds no typed profile
+or public C ABI factory.

@@ -7352,3 +7352,29 @@ discarded and the reviewed seed retained.
 - Local validation: all four focused streaming-encoder tests and all 1,467
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range bounded streaming decoder
+
+- Authoring method: wrapped the completed complete-frame private decoder in a
+  bounded transform that collects untrusted prefix and frame bytes before any
+  current-frame raw publication.
+- References used: DD-365, marc's stream and frame parsers, private token and
+  raw staging decoder, process/status invariants, checked aggregate accounting,
+  and sticky terminal-state policy.
+- Known implementations intentionally not consulted: external streaming LZ or
+  range decoders, buffering state machines, source code, malformed corpora,
+  error taxonomies, APIs, and test suites.
+- Independent decisions: allocate no storage internally; require complete frame
+  collection before nested decode; retain reconstructed raw bytes privately
+  while draining; commit earlier frames but make the current frame atomic;
+  retain finish and make errors sticky.
+- Generated-code task description: add the matching bounded decoder and prove
+  one-byte I/O, malformed-second-frame atomicity, workspace rejection,
+  truncation, trailing data, empty input, flush starvation, premature finish,
+  reset rejection, and stable terminal behavior.
+- Similarity review: state transitions follow only marc's documented transform
+  and complete-frame commit contracts. No external streaming decoder or
+  distinctive control-flow expression was compared.
+- Local validation: all five focused streaming-decoder tests and all 1,472
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

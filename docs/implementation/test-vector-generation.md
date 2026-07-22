@@ -1953,6 +1953,16 @@ and an aggregate ceiling one byte below raw plus canonical tokens plus the
 serialized frame. Verify empty input, premature `EndInput`, unsupported
 `ResetBlock`, and stable repeated `EndOfStream`.
 
+For bounded streaming LZ77 plus Dynamic Range decoding, produce the `ABABX`
+three-frame stream through the bounded encoder and recover it with one-byte
+input and output. Corrupt the second frame's final descriptor byte and require
+only raw `AB` from the first frame to be published, all later output sentinels
+to remain `5a`, and the error to stay sticky. Reject each one-byte-short
+serialized-frame, token, and raw region, plus an aggregate ceiling one byte
+below their sum. Reject final-byte truncation, trailing data, and `ResetBlock`;
+accept the empty stream, treat empty `Flush` as input starvation, and prove
+that premature `EndInput` fails only after already validated raw bytes drain.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently
