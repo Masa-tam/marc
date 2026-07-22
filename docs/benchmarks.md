@@ -27,6 +27,7 @@ marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzd-adaptive-huffman corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 marc_benchmark lzmw-blocked-huffman corpus.bin 5
+marc_benchmark lzmw-adaptive-huffman corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -173,6 +174,18 @@ a complete round trip before timing. `codec_peak_workspace_bytes` reports the
 sum of caller-reserved regions, which can exceed the active aggregate policy
 because the conservative maximum serialized-frame reservation coexists with
 reference, raw-frame, and typed-view reservations.
+
+`lzmw-adaptive-huffman` uses the CLI's 65,536-byte raw frame, 262,144-byte
+canonical-reference ceiling, 8,650,752-byte Adaptive payload ceiling,
+65,536-entry dictionary policy, and 16-MiB active aggregate limit. Capacity
+planning adds one 16-byte descriptor and 56-byte frame header per nonempty
+frame to the 80-byte parameterized prefix and reserves the checked
+`132*raw_bytes` payload ceiling. Both direction-specific workspace extents and
+opaque-view alignment come from the public C ABI, and a complete byte-exact
+round trip succeeds before timing. The reported caller-reserved peak may exceed
+16 MiB because conservative encoded-frame, reference, raw, phrase, and
+expansion regions coexist even though active codec operations obey the
+aggregate limit.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

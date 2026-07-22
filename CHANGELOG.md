@@ -43,7 +43,9 @@ format versions, and C ABI versions are independent namespaces.
   atomic regressions now cover truncation, extreme frame extents, and invalid
   Adaptive descriptors. A transactional `lzmw-adaptive-huffman` CLI selector
   now exposes the public C factory with fixed 64-KiB frames and checked local
-  limits.
+  limits. A matching public-ABI benchmark now verifies a byte-exact round trip
+  before reporting compression ratio, directional throughput, and caller-owned
+  peak workspace.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

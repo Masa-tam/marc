@@ -123,8 +123,9 @@ completion matrix now proves required binary classes,
 deterministic arbitrary chunking, sticky terminal states, and transactional
 malformed-final-frame rejection through that factory. Its bounded dual-path
 decoder fuzz target and permanent malformed regressions are now present. A
-transactional CLI selector uses that factory with the fixed 64-KiB reference
-profile. No benchmark or interoperability entry is claimed yet.
+transactional CLI selector and verified public-C benchmark use that factory
+with the fixed 64-KiB reference profile. No interoperability entry is claimed
+yet.
 
 ## Why publication is not automatic
 

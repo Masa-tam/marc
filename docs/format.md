@@ -2308,6 +2308,8 @@ workspace sizing depends only on caller-supplied local limits, and collected
 stream parameters are validated against them before any frame publication.
 The public completion matrix exercises this representation without defining a
 new stream variant or relaxing strict trailing-data rejection.
+The CLI and benchmark adapters select the same fixed representation and add no
+format variant.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
