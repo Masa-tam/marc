@@ -2320,3 +2320,12 @@ all guarded regions. Encode raw `ABABAB`, require four references, three
 adjacent generated phrases, four expansion references, and exact private raw
 equality. Corrupt the descriptor and encode a forward reference independently;
 both must leave private raw staging unchanged.
+
+For transactional frame publication, decode the independent raw-`A` frame and
+require both private staging and caller output to become `41` only on success.
+For raw `AB`, provide an output one byte short and require reference staging,
+expansion storage, private raw storage, and output sentinels all to remain
+unchanged. Corrupt final Adaptive padding and entropy-code a forward LZMW
+reference independently; both must preserve caller output. Finally publish the
+complete `ABABAB` generated-phrase frame and require private and caller-visible
+raw spans to match exactly.

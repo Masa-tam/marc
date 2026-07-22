@@ -22,7 +22,9 @@ format versions, and C ABI versions are independent namespaces.
   and exact raw extent, and publishes no raw bytes. It now reconstructs a fully
   validated frame iteratively into separately bounded private raw staging,
   counting both the conservative expansion stack and raw extent before entropy
-  output. No combined public codec is exposed yet.
+  output. Its internal transactional frame decoder now copies a complete raw
+  frame to caller-visible output only after every layer succeeds and leaves
+  output unchanged on every failure. No combined public codec is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

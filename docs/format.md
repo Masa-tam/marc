@@ -2277,7 +2277,10 @@ internal frame API. The next bounded boundary requires private raw staging and
 the conservative maximum expansion stack before entropy output, then reduces
 the stack span to the actual generated-phrase count plus one after validation
 and invokes the ordinary iterative LZMW decoder. Successful raw bytes remain
-private, and every error requires all staging to be discarded. No public
+private, and every error requires all staging to be discarded. The internal
+transactional decoder also checks complete caller-visible destination capacity
+before entropy output, reconstructs privately, and copies the raw frame only
+after all layers succeed. No failure publishes any destination byte. No public
 profile is admitted by these validation and reconstruction steps.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1

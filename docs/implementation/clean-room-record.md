@@ -6878,3 +6878,25 @@ discarded and the reviewed seed retained.
 - Local validation: four focused private-reconstruction tests and all 1,403
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman transactional frame decoder
+
+- Authoring method: placed marc's established complete-frame publication
+  transaction over DD-346's private raw reconstruction boundary.
+- References used: DD-347, DD-346, checked destination capacity, the common
+  non-overlap contract, and the repository's final-copy convention.
+- Known implementations intentionally not consulted: external combined
+  decoders, output transactions, source code, buffer layouts, malformed corpora,
+  APIs, and test suites.
+- Independent decisions: reject a short destination before Adaptive output;
+  exclude caller destination from scratch accounting; reconstruct privately;
+  perform exactly one final complete-span copy; preserve output on every failure.
+- Generated-code task description: add the internal caller-visible frame entry
+  point, prove raw-`A` and generated-phrase publication, and preserve every
+  sentinel for capacity and malformed-frame failures without public API claims.
+- Similarity review: the final-copy transaction is marc's existing ownership
+  policy applied to local LZMW bounds. No external combined decoder expression
+  was viewed or compared.
+- Local validation: four focused transactional-publication tests and all 1,407
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

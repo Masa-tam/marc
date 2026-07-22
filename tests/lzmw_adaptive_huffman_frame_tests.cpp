@@ -406,4 +406,95 @@ TEST(LzmwAdaptiveHuffmanFrameDecoder,
     EXPECT_EQ(guarded_raw[0], std::byte{0x6b});
 }
 
+TEST(LzmwAdaptiveHuffmanFrameDecoder, PublishesHandVectorAfterSuccess) {
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array<std::byte, 1> raw_staging{};
+    std::array<std::byte, 1> output{std::byte{0x7c}};
+    const auto result = marc::frame::decode_lzmw_adaptive_huffman_frame(
+        stream_for_size(1), {}, {}, 0, 0, single_reference_frame, staging, {},
+        expansion, raw_staging, output);
+    ASSERT_EQ(result.error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+}
+
+TEST(LzmwAdaptiveHuffmanFrameDecoder,
+     RejectsSmallOutputBeforeMutatingAnyStaging) {
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    const auto frame = frame_for_raw(raw);
+    std::array<std::byte, 8> staging{};
+    staging.fill(std::byte{0x5a});
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 1> phrases{};
+    std::array<std::uint32_t, 2> expansion{
+        UINT32_C(0x6b6b6b6b), UINT32_C(0x6b6b6b6b)};
+    std::array<std::byte, 2> raw_staging{
+        std::byte{0x6b}, std::byte{0x6b}};
+    std::array<std::byte, 1> output{std::byte{0x7c}};
+    EXPECT_EQ(marc::frame::decode_lzmw_adaptive_huffman_frame(
+                  stream_for_size(2), {}, {}, 0, 0, frame, staging, phrases,
+                  expansion, raw_staging, output).error,
+              LzmwAdaptiveHuffmanFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+    EXPECT_TRUE(std::ranges::all_of(
+        expansion, [](const std::uint32_t value) {
+            return value == UINT32_C(0x6b6b6b6b);
+        }));
+    EXPECT_TRUE(std::ranges::all_of(
+        raw_staging, [](const std::byte value) {
+            return value == std::byte{0x6b};
+        }));
+    EXPECT_EQ(output[0], std::byte{0x7c});
+}
+
+TEST(LzmwAdaptiveHuffmanFrameDecoder, MalformedFrameLeavesOutputUnchanged) {
+    auto malformed = single_reference_frame;
+    malformed.back() |= std::byte{0x80};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x6b}};
+    std::array<std::byte, 1> output{std::byte{0x7c}};
+    EXPECT_EQ(marc::frame::decode_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, {}, 0, 0, malformed, staging, {},
+                  expansion, raw_staging, output).error,
+              LzmwAdaptiveHuffmanFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x6b});
+    EXPECT_EQ(output[0], std::byte{0x7c});
+
+    constexpr std::array forward_reference{
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    const auto invalid = frame_for_references(forward_reference, 1);
+    raw_staging[0] = std::byte{0x6b};
+    output[0] = std::byte{0x7c};
+    EXPECT_EQ(marc::frame::decode_lzmw_adaptive_huffman_frame(
+                  stream_for_size(1), {}, {}, 0, 0, invalid, staging, {},
+                  expansion, raw_staging, output).error,
+              LzmwAdaptiveHuffmanFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x6b});
+    EXPECT_EQ(output[0], std::byte{0x7c});
+}
+
+TEST(LzmwAdaptiveHuffmanFrameDecoder, PublishesCompletePhraseFrame) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    const auto frame = frame_for_raw(raw);
+    std::array<std::byte, raw.size() * 4> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, raw.size() - 1>
+        phrases{};
+    std::array<std::uint32_t, raw.size()> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> output{};
+    ASSERT_EQ(marc::frame::decode_lzmw_adaptive_huffman_frame(
+                  stream_for_size(raw.size()), {}, {}, 0, 0, frame, staging,
+                  phrases, expansion, raw_staging, output).error,
+              LzmwAdaptiveHuffmanFrameValidationError::none);
+    EXPECT_EQ(raw_staging, raw);
+    EXPECT_EQ(output, raw);
+}
+
 } // namespace

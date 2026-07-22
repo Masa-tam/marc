@@ -1710,8 +1710,10 @@ validator. The returned actual generated-phrase count determines the later
 iterative expansion-stack ceiling. The private reconstruction boundary
 conservatively checks raw and maximum expansion capacities plus aggregate bytes
 before entropy output, then invokes the ordinary iterative LZMW decoder over
-only the validated prefixes. The resulting raw frame remains private and no
-caller-visible byte is published.
+only the validated prefixes. The transactional complete-frame decoder
+additionally checks destination capacity before entropy output and copies the
+private raw span only after every layer succeeds. No failure publishes a
+caller-visible byte.
 
 ### Published LZW plus Blocked Huffman boundary
 

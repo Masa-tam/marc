@@ -6590,3 +6590,23 @@ failure to a distinct combined-layer error. On every error the caller discards
 all staging. Successful raw bytes remain private: this step adds no caller-
 visible output copy, streaming transform, factory, CLI, benchmark, fuzz,
 completion, or interoperability claim.
+
+## DD-347: LZMW Adaptive publishes only a complete successful frame
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the internal caller-visible complete-frame decoder on top of DD-346.
+Require full destination capacity together with reference staging, phrase
+records, expansion references, and private raw staging before Adaptive decoding
+begins. Validate both encoded layers, reconstruct the exact declared raw extent
+privately, and copy that complete span to output only after every operation
+succeeds. Output is not part of internal workspace accounting because it is
+caller-visible destination storage rather than scratch.
+
+Preserve all previously assigned combined error values and append a distinct
+output-capacity error. On header, descriptor, entropy, LZMW validation,
+reconstruction, capacity, or policy failure, publish no destination byte. This
+admits an internal transactional frame decoder only; it does not yet add an
+encoder, incremental stream transform, public C factory, CLI, benchmark, fuzz,
+completion, or interoperability claim.
