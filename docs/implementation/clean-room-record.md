@@ -7429,3 +7429,28 @@ discarded and the reviewed seed retained.
 - Local validation: the focused C11 shared-library test and all 1,480 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range public completion matrix
+
+- Authoring method: exercised the completed profile exclusively through its
+  public C config, workspace, factory, process, and destroy functions using
+  repository-authored deterministic inputs and mutations.
+- References used: DD-368, the public ABI lifecycle, required AGENTS.md data
+  classes and chunk schedules, generic frame extents, and sticky terminal-state
+  contract.
+- Known implementations intentionally not consulted: external completion or
+  conformance suites, corpora, combined-codec APIs, malformed archives, source
+  code, and test vectors.
+- Independent decisions: use 64-byte frames; encode each required class twice;
+  compare one-byte and mixed schedules with unchunked bytes; mutate, truncate,
+  and extend the fourth frame; require exactly three committed frames and an
+  unchanged final sentinel; compare repeated terminal error positions.
+- Generated-code task description: add the public completion matrix for binary
+  classes, determinism, arbitrary chunking, terminal stability, and atomic
+  malformed-final-frame rejection.
+- Similarity review: fixtures, schedules, frame walking, and mutations were
+  derived only from marc's documented format and local completion criteria. No
+  external test structure was compared.
+- Local validation: all three focused completion groups and all 1,483 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

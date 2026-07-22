@@ -1240,6 +1240,12 @@ matching streaming transform, and publishes no handle on failure. ABI version
 1 gains only named config, query, and factory symbols; no existing layout or
 symbol changes.
 
+The public-ABI completion matrix fixes 64-byte frames and exercises required
+binary classes through only the C lifecycle. It compares unchunked output with
+one-byte and mixed schedules, repeats successful and failing terminal calls,
+and proves that a corrupted, truncated, or trailing fourth frame can commit
+only the first three complete frames.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

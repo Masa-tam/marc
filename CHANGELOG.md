@@ -29,7 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   workspaces from trusted configuration and local limits. A bounded public C
   requirements query and factory now expose the fixed profile through two
   caller-owned byte regions without leaking private C++ layouts into ABI
-  version 1. It is not yet exposed through the CLI.
+  version 1. Its public-ABI completion matrix now covers required binary data,
+  deterministic arbitrary chunking, stable terminal states, and transactional
+  malformed-final-frame rejection. It is not yet exposed through the CLI.
 
 ## 0.1.1 - 2026-07-23
 

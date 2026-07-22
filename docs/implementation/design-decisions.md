@@ -7024,3 +7024,22 @@ short or invalid region before construction, partition secondary storage only
 at the checked token extent, construct the matching bounded streaming transform
 with `nothrow`, and leave the caller's handle null on every failure. This step
 adds no CLI, benchmark, fuzz, completion matrix, or interoperability entry.
+
+## DD-368: LZ77 Dynamic Range completion is proven through the C ABI
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add a public-ABI completion matrix using a fixed 64-byte raw frame and only the
+published config, requirements, factory, process, and destroy lifecycle. Cover
+empty input, every one-byte symbol, all byte values, repetitive and patterned
+binary input, deterministic generated input, and lengths immediately around
+the frame boundary. Encode each required class twice before round-trip decode.
+
+Require identical multi-frame bytes under unchunked, one-byte, and mixed input
+and output schedules. Repeated successful terminal calls must remain
+`EndOfStream`. Corrupt, truncate, and append data to a fourth frame separately;
+each decoder may publish exactly the first three validated frames, must preserve
+the final output sentinel, and must repeat the same sticky error category and
+position. This step adds no fuzz target, CLI, benchmark, or interoperability
+entry.

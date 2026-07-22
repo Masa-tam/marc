@@ -1199,3 +1199,9 @@ DD-367, DD-366's byte-only bounded profile, the completed streaming encoder and
 decoder, ABI version 1's existing two-region transform lifecycle, checked
 offsets, and `nothrow` handle publication. No external C API, allocation model,
 combined factory, source code, ABI layout, or test suite was consulted.
+
+The LZ77 plus Dynamic Range public-ABI completion matrix uses only DD-368, the
+published marc C lifecycle, DD-359 bounds, repository-authored deterministic
+generators, and local frame-extent parsing. No external conformance suite,
+corpus, combined codec API, malformed archive, source code, or test vectors
+were consulted.

@@ -113,6 +113,10 @@ followed by the complete range-coded frame; decoding partitions it into token
 staging followed by private raw staging. Query requirements again after
 changing direction, original size, frame size, LZ77 parameters, or any local
 limit. Factory failure leaves the transform pointer null.
+The public completion matrix fixes 64-byte frames and verifies every one-byte
+value, representative binary and generated data, exact determinism, one-byte
+and mixed chunking, repeated terminal calls, and atomic rejection of a
+malformed fourth frame entirely through these C functions.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

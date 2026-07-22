@@ -154,8 +154,10 @@ publication, so a malformed later frame cannot expose any of that frame's
 bytes. Its bounded profile now derives direction-specific raw, canonical-token,
 serialized-frame, and private-raw byte extents without exposing a private C++
 layout. A bounded public C requirements query and factory now expose the fixed
-profile through the common primary and secondary byte regions. No CLI selector,
-benchmark, fuzz target, completion matrix, or interoperability entry exists yet.
+profile through the common primary and secondary byte regions. Its public-ABI
+completion matrix now proves required binary classes, byte determinism across
+chunking, stable terminal calls, and atomic malformed-final-frame rejection.
+No CLI selector, benchmark, fuzz target, or interoperability entry exists yet.
 
 ## Why publication is not automatic
 
