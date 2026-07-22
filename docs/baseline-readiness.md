@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 11 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 12 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 11 |
+| Profile | Purpose | Local status | Interoperability schema 12 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -46,14 +46,14 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-adaptive-huffman` | Second Adaptive Huffman composition | Ready | Included |
 | `lz78-adaptive-huffman` | Third Adaptive Huffman composition | Ready | Included |
 | `lzw-adaptive-huffman` | Fourth Adaptive Huffman composition | Ready | Included |
-| `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | In progress | Not included |
+| `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Schema candidate | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 11 contains twenty-two archives: the frozen twenty-one-entry schema-10
-set followed by the LZW Adaptive Huffman profile. Schemas 1 through 10 remain
+Schema 12 contains twenty-three archives: the frozen twenty-two-entry schema-11
+set followed by the LZD Adaptive Huffman profile. Schemas 1 through 11 remain
 frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
-nineteen, twenty, and twenty-one profiles; their meanings are fixed by their
-version and codec-set rules.
+nineteen, twenty, twenty-one, and twenty-two profiles; their meanings are fixed
+by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -63,7 +63,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 11 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 12 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -86,7 +86,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -160,7 +160,10 @@ malformed-final-frame rejection. A bounded dual-path decoder fuzz harness and
 permanent atomic malformed regressions are now present. A transactional CLI
 selector now binds the same public factory under the fixed 64-KiB reference
 profile. A verified public-ABI benchmark now measures the same profile after a
-byte-exact round trip. The interoperability boundary remains.
+byte-exact round trip. Local schema-12 generation, verification, exact-order
+rejection, and schemas 1 through 11 compatibility are now present. It remains
+below `Ready` until schema-12 artifacts are cross-verified outside the local
+build.
 
 ## Remaining release evidence
 
@@ -281,7 +284,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-342, the complete Release suite contains 1,391 tests and passes under both
+At DD-343, the complete Release suite contains 1,391 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

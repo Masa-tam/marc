@@ -2099,6 +2099,8 @@ limits, and stream parameters are validated after collection against them.
 The `lzd-adaptive-huffman` CLI selector uses that factory with the 65,536-byte
 reference frame and adds no representation or parameter variant.
 The benchmark adapter uses the same profile and likewise adds no format variant.
+Interoperability schema 12 emits and accepts this exact profile as its twenty-
+third archive without changing the version-1.0 stream representation.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

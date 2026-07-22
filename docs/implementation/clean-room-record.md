@@ -6765,3 +6765,27 @@ discarded and the reviewed seed retained.
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
   official CMake 4.3.4. The smoke run reported every required metric only after
   a successful exact round trip.
+
+## 2026-07-22 - Interoperability schema 12
+
+- Authoring method: extended marc's frozen append-only interoperability
+  registry by one already published and locally complete CLI profile.
+- References used: DD-343, schema-11 order, the `lzd-adaptive-huffman` selector,
+  deterministic fixture generator, manifest verifier, and compatibility chain.
+- Known implementations intentionally not consulted: external archive
+  protocols, codec registries, manifest schemas, source code, fixtures, or test
+  suites.
+- Independent decisions: retain the 8,193-byte fixture; append LZD Adaptive as
+  archive 23; name codec set `marc-cli-v12`; preserve schemas 1 through 11;
+  reject reordered current manifests before any cross-platform claim.
+- Generated-code task description: update generation and verification to 23
+  exact archives, convert schema 12 down one frozen generation at a time, and
+  document local admission separately from future four-direction artifact
+  evidence.
+- Similarity review: schema evolution follows only marc's append-only registry,
+  first-party PowerShell tooling, and exact re-encoding protocol. No external
+  interoperability design or distinctive manifest structure was compared.
+- Local validation: all 1,391 Release tests passed under both MSVC/Visual Studio
+  2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4. Both runs
+  generated and verified schema 12, rejected its reordered manifest, and then
+  verified every frozen schema through schema 1.

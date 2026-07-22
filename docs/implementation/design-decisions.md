@@ -6494,3 +6494,23 @@ extents, and the larger caller-reserved total. Treat correctness, checked-bound,
 allocation, and API failures as benchmark failures, but impose no performance
 threshold. Add a one-iteration smoke test over repository-owned input. This step
 adds no interoperability claim.
+
+## DD-343: Interoperability schema 12 appends LZD Adaptive exactly once
+
+- Date: 2026-07-22
+- Status: accepted
+
+Define interoperability schema 12 and codec set `marc-cli-v12` as the exact
+twenty-two-entry schema-11 order followed by `lzd-adaptive-huffman`. Reuse the
+unchanged deterministic 8,193-byte binary fixture. Generation must round-trip
+all twenty-three profiles before writing the manifest; verification must check
+the exact count and order, every declared size and SHA-256 value, foreign decode
+equality, and byte-identical local re-encoding.
+
+Keep schemas 1 through 11 frozen. The compatibility test starts from a complete
+schema-12 bundle, rejects a reordered schema-12 manifest, removes only the
+newest profile while converting to schema 11, and continues the existing
+one-generation-at-a-time chain through schema 1. Local schema admission proves
+the generator, verifier, compatibility rules, and same-machine CLI determinism
+only. Cross-platform evidence still requires CI artifacts from the same full
+Git revision and the established four-direction external verification procedure.
