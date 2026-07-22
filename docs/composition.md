@@ -115,7 +115,9 @@ reproduces the independent 75-byte vector. Its first bounded streaming encoder
 retains those bytes across one-byte I/O, output starvation, nonterminal
 `Flush`, and retained `EndInput`. Its matching bounded decoder collects and
 validates each complete frame before raw publication, making malformed later
-frames atomic. It is not yet a public factory or CLI profile.
+frames atomic. Its internal profile now derives direction-specific byte regions
+and safely partitions opaque aligned LZMW records without exposing their C++
+layouts. It is not yet a public factory or CLI profile.
 
 ## Why publication is not automatic
 

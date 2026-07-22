@@ -2358,3 +2358,14 @@ require only the first two raw bytes to be published, preserve the next output
 sentinel, and require the identical sticky byte position on another call.
 Separately reject each short encoded-frame, reference, private-raw, phrase, and
 expansion region, a one-byte-short aggregate limit, and unsupported flags.
+
+For the bounded profile, use original size 17 and frame size 10. Require encode
+regions of 10 raw bytes, 40 reference bytes, `56+16+40*33` serialized bytes,
+and nine LZMW encoder entries. Freeze the dictionary at two entries for a
+seven-byte short frame, then require a one-byte frame and empty stream to expose
+zero typed entries. Reject reference, payload, and aggregate ceilings one byte
+below their requirements. For decode limits of 64 raw bytes, 128 reference
+bytes, ten dictionary entries, and 1,024 aggregate bytes, require ten phrase
+records, eleven expansion references, aligned nonoverlapping views, and an
+encoded capacity of `56+1024`. Reject altered offsets, short and misaligned
+opaque regions, inconsistent empty requirements, and invalid limits.

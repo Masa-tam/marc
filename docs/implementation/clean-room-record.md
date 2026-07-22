@@ -6972,3 +6972,29 @@ discarded and the reviewed seed retained.
 - Local validation: five focused streaming-decoder tests and all 1,422 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman bounded profile
+
+- Authoring method: derived each direction's maximum byte regions from DD-344
+  bounds and DD-349/DD-350 constructor shapes, then isolated typed records in
+  one caller-owned opaque region.
+- References used: DD-351, the local LZMW parameter and entry limits, Adaptive
+  descriptor/payload ceiling, checked arithmetic, alignment rules, and existing
+  marc workspace-partition convention.
+- Known implementations intentionally not consulted: external combined
+  profiles, ABI layouts, allocators, record definitions, source code, APIs, and
+  test suites.
+- Independent decisions: expose only bytes, counts, and maximum alignment;
+  rederive aligned offsets before every cast; give empty encode views alignment
+  one; keep phrase and expansion spans nonoverlapping; retain no public claim.
+- Generated-code task description: calculate bounded encode/decode workspaces,
+  partition opaque typed storage, exercise freeze and empty cases, reject every
+  one-byte-short policy and storage boundary, misalignment, altered offsets,
+  inconsistent empty requirements, invalid limits, and overflow.
+- Similarity review: formulas are direct consequences of marc's own `4F`,
+  `33S`, adjacent-phrase, and expansion-stack specifications. Layout logic uses
+  the repository's established checked opaque-view pattern. No external profile
+  expression was viewed or compared.
+- Local validation: seven focused profile tests and all 1,429 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

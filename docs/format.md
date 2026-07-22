@@ -2295,6 +2295,13 @@ one complete serialized frame, validates and reconstructs it privately, and
 only then drains raw bytes. Every proper truncation and trailing byte is
 rejected, and a malformed later frame publishes none of that frame.
 
+The internal bounded profile derives all byte capacities from these same format
+ceilings. Its opaque typed region records only total bytes and maximum
+alignment; LZMW encoder entries, phrase records, and expansion references are
+reconstructed as internal views after their offsets and extent are revalidated.
+This storage description does not change the stream representation or admit a
+public ABI.
+
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 6, dictionary variant 1,

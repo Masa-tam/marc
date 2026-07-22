@@ -1101,3 +1101,9 @@ private reconstruction boundary, DD-344 bounds, marc's generic stream/frame
 parsers, core transform contract, and checked caller-owned workspace policy. No
 external combined streaming decoder, buffering design, source code, API,
 malformed corpus, chunk schedule, or test suite was consulted.
+
+The LZMW plus Adaptive Huffman workspace profile uses only DD-351, DD-349 and
+DD-350 streaming requirements, the local LZMW entry/phrase layouts, checked
+alignment arithmetic, and marc's opaque byte-view convention. No external ABI,
+combined profile, record layout, allocator, source code, API, or test suite was
+consulted.

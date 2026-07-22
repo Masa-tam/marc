@@ -1737,6 +1737,13 @@ body is complete, then drains that validated raw span. Consequently a malformed
 later frame cannot publish any part of itself, while raw bytes from already
 completed frames remain committed. Truncation and trailing data are terminal.
 
+The internal profile now couples those transforms to caller-owned storage
+without making private C++ records part of an ABI. Encode requirements expose
+raw, reference, complete-frame, and one opaque typed-region byte extent plus
+alignment. Decode requirements expose complete-frame, reference, private-raw,
+and one opaque region containing separately aligned phrase and expansion spans.
+Partitioning rederives offsets and totals before returning typed internal views.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

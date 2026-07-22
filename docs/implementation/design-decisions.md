@@ -6678,3 +6678,25 @@ unknown flag, and `ResetBlock` with a sticky position-stable terminal error.
 Require one-byte input/output round trip and all proper-prefix rejection. This
 remains internal; profile, public factory, completion, fuzz, CLI, benchmark,
 and interoperability are separate admissions.
+
+## DD-351: LZMW Adaptive profile exposes bytes, not C++ layouts
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the internal bounded profile for the completed streaming pair. For encode,
+derive the largest raw frame, `4F` canonical reference staging, the 56-byte
+header plus 16-byte descriptor plus conservative `33S` payload, and
+`min(max(F-1,0), configured maximum)` LZMW encoder records. For decode, derive
+the admitted encoded-frame and private raw byte regions, reference staging,
+`min(max(S/4-1,0), decoder maximum)` phrase records, and one additional
+nonempty expansion reference.
+
+Expose the typed region requirement only as total bytes and maximum alignment.
+Internally rederive every count, aligned offset, and total extent before casting
+caller-owned bytes to encoder entries, phrase records, or expansion references.
+Reject inconsistent requirements, short storage, misalignment, and arithmetic
+overflow before publishing any span. Empty encode views require zero bytes and
+alignment one. This admits no C ABI or public codec yet; public requirements,
+factory construction, completion, fuzz, CLI, benchmark, and interoperability
+remain separate steps.
