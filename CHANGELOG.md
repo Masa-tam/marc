@@ -30,7 +30,10 @@ format versions, and C ABI versions are independent namespaces.
   without partial destination writes on capacity failure. Its first bounded
   streaming encoder preserves the same concatenated exact frames under
   one-byte I/O, output starvation, nonterminal `Flush`, and retained
-  `EndInput`. No combined public codec is exposed yet.
+  `EndInput`. Its matching bounded streaming decoder validates and reconstructs
+  complete frames before raw publication, rejects all truncations and trailing
+  data, and leaves a malformed later frame unpublished. No combined public
+  codec is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

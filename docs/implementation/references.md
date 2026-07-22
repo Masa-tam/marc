@@ -1095,3 +1095,9 @@ exact-frame transaction, marc's core transform contract, generic stream and
 LZMW parameter serializers, checked reference bounds, and caller-owned
 workspace policy. No external combined streaming encoder, buffering strategy,
 source code, API, chunk schedule, corpus, or test suite was consulted.
+
+The LZMW plus Adaptive Huffman streaming decoder uses only DD-350, DD-346's
+private reconstruction boundary, DD-344 bounds, marc's generic stream/frame
+parsers, core transform contract, and checked caller-owned workspace policy. No
+external combined streaming decoder, buffering design, source code, API,
+malformed corpus, chunk schedule, or test suite was consulted.

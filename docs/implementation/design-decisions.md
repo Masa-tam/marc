@@ -6657,3 +6657,24 @@ stable terminal errors. Require byte identity with concatenated one-shot frames
 under one-byte buffers and sticky `EndOfStream`. This remains internal;
 streaming decode, public factory, completion, fuzz, CLI, benchmark, and
 interoperability are separate admissions.
+
+## DD-350: LZMW Adaptive streaming decode publishes only validated frames
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add the matching incremental decoder as a bounded adapter over DD-346. Collect
+the 80-byte prefix, then each 56-byte generic frame header before admitting its
+complete descriptor and payload extent. At header admission, enforce the `4F`
+reference ceiling, four-byte alignment, one Adaptive descriptor, `33S` payload
+ceiling, exact caller capacities, and the sum of encoded frame, reference,
+private raw, phrase-record, and expansion-stack storage.
+
+Collect one complete serialized frame, invoke the private-staging decoder, and
+only then drain the validated raw frame. A malformed later frame may not publish
+any byte of that frame or retract earlier completed output. Preserve a valid
+`EndInput` while raw output drains; reject every truncation, trailing byte,
+unknown flag, and `ResetBlock` with a sticky position-stable terminal error.
+Require one-byte input/output round trip and all proper-prefix rejection. This
+remains internal; profile, public factory, completion, fuzz, CLI, benchmark,
+and interoperability are separate admissions.

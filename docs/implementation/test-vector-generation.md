@@ -2348,3 +2348,13 @@ with one-byte input and output. Separately retain `EndInput` while only one
 prefix byte can drain, confirm nonterminal `Flush` leaves a one-byte partial
 frame open, and reject short raw, reference, typed-entry, serialized-frame, and
 aggregate workspaces plus premature/excess input and unsupported flags.
+
+For bounded streaming decoding, feed that same independently assembled stream
+with one-byte input and output and require exact raw `ABABX`. Repeat with the
+complete input and `EndInput` on every call while allowing only one raw output
+byte, proving retained finish across validated-frame drain. Reject every proper
+prefix and one appended byte. Corrupt the second frame's Adaptive descriptor,
+require only the first two raw bytes to be published, preserve the next output
+sentinel, and require the identical sticky byte position on another call.
+Separately reject each short encoded-frame, reference, private-raw, phrase, and
+expansion region, a one-byte-short aggregate limit, and unsupported flags.

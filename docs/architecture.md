@@ -1730,6 +1730,13 @@ the complete serialized frame are caller-owned and checked as one aggregate
 working set. Output starvation retains both prepared bytes and a previously
 observed valid `EndInput`; nonterminal `Flush` never changes a partial frame.
 
+The matching incremental decoder collects the prefix, admits each frame extent
+from its checked generic header, and retains one complete serialized frame. It
+invokes private reconstruction into the caller-owned raw staging only after the
+body is complete, then drains that validated raw span. Consequently a malformed
+later frame cannot publish any part of itself, while raw bytes from already
+completed frames remain committed. Truncation and trailing data are terminal.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

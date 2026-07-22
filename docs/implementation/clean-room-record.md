@@ -6947,3 +6947,28 @@ discarded and the reviewed seed retained.
 - Local validation: five focused streaming-encoder tests and all 1,417 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman streaming decoder
+
+- Authoring method: wrapped DD-346's private reconstruction transaction in the
+  repository's bounded frame collection and validated-output drain states.
+- References used: DD-350, DD-346, DD-344 bounds, generic stream and frame
+  parsing, the core process contract, and checked caller-owned workspace policy.
+- Known implementations intentionally not consulted: external combined
+  streaming decoders, source code, buffering layouts, APIs, malformed corpora,
+  chunk schedules, and test suites.
+- Independent decisions: admit all capacities and aggregate storage from the
+  frame header; collect one complete body; reconstruct privately; publish only
+  a successful complete frame; retain finish during raw drain; make malformed
+  and protocol failures sticky with a stable byte position.
+- Generated-code task description: add bounded streaming decode, prove one-byte
+  round trip, all truncations and trailing input, later-frame atomic corruption,
+  retained `EndInput`, empty input, and every storage and protocol failure while
+  keeping the composition internal.
+- Similarity review: state transitions use marc's established transform and
+  private-staging conventions, while all byte bounds and grammar come from the
+  local DD-344 through DD-346 specifications. No external combined decoder
+  expression was viewed or compared.
+- Local validation: five focused streaming-decoder tests and all 1,422 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

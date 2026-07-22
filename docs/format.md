@@ -2290,7 +2290,10 @@ collects exactly the configured outer frames, and drains each complete exact-
 frame encoding before accepting another. One-byte I/O, output starvation, and
 a retained valid `EndInput` cannot change bytes; `Flush` does not close a
 partial frame and `ResetBlock` is rejected. No public profile is admitted by
-these frame-level or streaming-encode steps.
+these frame-level or streaming steps. The internal streaming decoder collects
+one complete serialized frame, validates and reconstructs it privately, and
+only then drains raw bytes. Every proper truncation and trailing byte is
+rejected, and a malformed later frame publishes none of that frame.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
