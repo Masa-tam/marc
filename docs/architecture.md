@@ -1722,6 +1722,14 @@ records, reference staging, descriptor, and exact payload before returning the
 serialized extent. The encoder rejects insufficient destination capacity before
 writing and reproduces the independent 75-byte frame.
 
+The first bounded incremental encoder adds only one outer ownership layer. It
+drains the immutable 80-byte prefix, collects at most one raw frame, freezes and
+encodes that frame through the exact transaction, and drains it before accepting
+the next frame. Raw input, complete reference staging, typed LZMW records, and
+the complete serialized frame are caller-owned and checked as one aggregate
+working set. Output starvation retains both prepared bytes and a previously
+observed valid `EndInput`; nonterminal `Flush` never changes a partial frame.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

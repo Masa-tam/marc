@@ -6922,3 +6922,28 @@ discarded and the reviewed seed retained.
 - Local validation: five focused encoder tests and all 1,412 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman streaming encoder
+
+- Authoring method: wrapped DD-348's exact-frame transaction in marc's bounded
+  transform state machine with an independently serialized stream prefix.
+- References used: DD-349, DD-348, the core process contract, generic stream
+  and LZMW parameter serialization, the checked `4F` reference ceiling, and
+  caller-owned aggregate-workspace policy.
+- Known implementations intentionally not consulted: external combined
+  streaming encoders, source code, buffering strategies, APIs, chunk schedules,
+  corpora, and test suites.
+- Independent decisions: drain the immutable prefix first; hold at most one raw
+  frame and one complete encoded frame; retain a valid `EndInput` across output
+  starvation; leave partial frames unchanged on `Flush`; reject cross-layer
+  reset and unknown flags; keep the transform internal.
+- Generated-code task description: add the bounded incremental encoder, compare
+  it with independently concatenated exact frames under one-byte I/O, exercise
+  retained finish and nonterminal flush, and reject every storage, aggregate,
+  declared-size, and flag failure without a public-profile claim.
+- Similarity review: the state and ownership transitions follow marc's existing
+  transform contract while all LZMW bounds and bytes come from DD-348. No
+  external combined encoder expression was viewed or compared.
+- Local validation: five focused streaming-encoder tests and all 1,417 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

@@ -2285,7 +2285,12 @@ frame encoder performs the inverse transaction: it completes the deterministic
 LZMW parse and freezes all canonical references before Adaptive planning,
 counts typed encoder records, staging, descriptor, and exact payload, then
 checks the complete destination before serializing. It reproduces the 75-byte
-vector above. No public profile is admitted by these frame-level steps.
+vector above. The internal bounded streaming encoder emits the 80-byte prefix,
+collects exactly the configured outer frames, and drains each complete exact-
+frame encoding before accepting another. One-byte I/O, output starvation, and
+a retained valid `EndInput` cannot change bytes; `Flush` does not close a
+partial frame and `ResetBlock` is rejected. No public profile is admitted by
+these frame-level or streaming-encode steps.
 
 ## LZMW variant 1 plus Blocked Huffman variant 1
 

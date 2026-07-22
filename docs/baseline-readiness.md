@@ -116,9 +116,11 @@ entropy output. An internal transactional decoder now copies a complete
 successful frame to caller-visible output while leaving it unchanged on every
 failure. Its exact-frame planner freezes canonical LZMW references before
 Adaptive planning; the deterministic encoder reproduces the independent vector
-and round-trips generated references without partial destination writes. It has
-no streaming transform, public API, tool adapter, completion, fuzz, benchmark,
-or interoperability claim yet.
+and round-trips generated references without partial destination writes. Its
+first bounded streaming encoder now reproduces concatenated exact frames under
+one-byte I/O, output starvation, nonterminal `Flush`, and retained `EndInput`.
+It has no streaming decoder, public API, tool adapter, completion, fuzz,
+benchmark, or interoperability claim yet.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -310,7 +312,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-348, the complete Release suite contains 1,412 tests and passes under both
+At DD-349, the complete Release suite contains 1,417 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

@@ -2339,3 +2339,12 @@ identity plus complete-frame round trip. Exercise insufficient typed encoder
 workspace, reference staging, serialized destination, aggregate workspace,
 empty input, and unexpected frame extent; capacity failures must leave their
 caller-visible sentinel regions unchanged.
+
+For bounded streaming encoding, serialize the ordinary 80-byte known-size
+prefix independently, split raw `ABABX` into configured two-byte outer frames,
+and append the result of each exact-frame planner and encoder transaction.
+Require the incremental encoder to reproduce that complete reference stream
+with one-byte input and output. Separately retain `EndInput` while only one
+prefix byte can drain, confirm nonterminal `Flush` leaves a one-byte partial
+frame open, and reject short raw, reference, typed-entry, serialized-frame, and
+aggregate workspaces plus premature/excess input and unsupported flags.
