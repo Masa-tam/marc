@@ -8,7 +8,8 @@ LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
 profiles, LZW variant 1, the LZW
 plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
 the LZD plus Blocked Huffman and LZD plus Adaptive Huffman profiles, and LZMW
-variant 1 and the LZMW plus Blocked Huffman profile with
+variant 1 and the LZMW plus Blocked Huffman and LZMW plus Adaptive Huffman
+profiles with
 known-size encoding and bounded caller-owned workspace. All functions are
 `noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
@@ -24,7 +25,8 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`, and
-`marc_lzmw_blocked_huffman_*` are the currently public
+`marc_lzmw_blocked_huffman_*`, and `marc_lzmw_adaptive_huffman_*` are the
+currently public
 dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
@@ -57,8 +59,8 @@ cross-product pairings as callable C ABI features.
    `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
    `marc_lzd_adaptive_huffman_config_init()`, or
-   `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()` for
-   encode or decode
+   `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`, or
+   `marc_lzmw_adaptive_huffman_config_init()` for encode or decode
    direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
@@ -192,6 +194,12 @@ staging followed by serialized-frame storage; the decoder region contains
 reference staging followed by transactional raw output. Query
 `marc_lzmw_blocked_huffman_workspace_requirements()` whenever an entry, frame,
 entropy-block, or hard limit changes.
+The LZMW plus Adaptive Huffman factory retains the same reference and raw/frame
+secondary regions without entropy block views. Its aligned opaque region holds
+encoder entries or the decoder's checked phrase-entry/expansion-stack layout.
+Query `marc_lzmw_adaptive_huffman_workspace_requirements()` again whenever the
+direction, known original size, frame size, maximum entries, or a hard limit
+changes.
 
 ## Processing contract
 

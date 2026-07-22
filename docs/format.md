@@ -2302,6 +2302,11 @@ reconstructed as internal views after their offsets and extent are revalidated.
 This storage description does not change the stream representation or admit a
 public ABI.
 
+The public C requirements query and factory select this identical fixed profile
+and add no format or parameter variant. Encoding remains known-size; decoder
+workspace sizing depends only on caller-supplied local limits, and collected
+stream parameters are validated against them before any frame publication.
+
 ## LZMW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 6, dictionary variant 1,

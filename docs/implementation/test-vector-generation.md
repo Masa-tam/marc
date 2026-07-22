@@ -2369,3 +2369,13 @@ bytes, ten dictionary entries, and 1,024 aggregate bytes, require ten phrase
 records, eleven expansion references, aligned nonoverlapping views, and an
 encoded capacity of `56+1024`. Reject altered offsets, short and misaligned
 opaque regions, inconsistent empty requirements, and invalid limits.
+
+For the public C boundary, configure two-byte frames, eight reference bytes,
+264 maximum payload bytes, 512 aggregate bytes, and 65,536 dictionary entries.
+Require encode workspace extents of 2 primary and 344 secondary bytes. Encode
+raw `41 42 41 42 58`, then require decode extents of 568 primary and 10
+secondary bytes and reproduce the input through the C11 transform API. Require
+a nonempty aligned opaque region in both directions. Reject each one-byte-short
+workspace, a deliberately misaligned views region, a null output-handle pointer,
+and a nonzero reserved field while preserving a null transform on every
+factory failure.

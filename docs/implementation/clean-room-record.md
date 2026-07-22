@@ -6998,3 +6998,28 @@ discarded and the reviewed seed retained.
 - Local validation: seven focused profile tests and all 1,429 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-22 - LZMW plus Adaptive Huffman public C ABI
+
+- Authoring method: bound DD-351's workspace profile and the existing streaming
+  transforms to marc's allocation-free three-region C transform lifecycle.
+- References used: DD-352, the public configuration/query/factory convention,
+  checked buffer validation, opaque aligned views, and the first-party C11
+  assertion harness.
+- Known implementations intentionally not consulted: external combined APIs,
+  factory implementations, allocator interfaces, ABI layouts, source code, or
+  C test suites.
+- Independent decisions: preserve known-size input; add a fixed profile config,
+  query, and factory; place references before frame/raw secondary storage;
+  recalculate all requirements at creation; partition typed views privately;
+  keep every failed output handle null.
+- Generated-code task description: expose LZMW/Adaptive through the public C
+  header, prove exact small-limit workspace values and a C11 round trip, reject
+  one-byte-short and misaligned regions, null handle output, and reserved fields,
+  then update scope documentation without completion or tooling claims.
+- Similarity review: API names and lifecycle follow marc's existing public ABI;
+  LZMW-specific extents and views are derived only from DD-351. No external
+  combined factory expression was viewed or compared.
+- Local validation: the strict C11 shared-library test and all 1,430 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

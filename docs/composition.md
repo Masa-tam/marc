@@ -117,7 +117,9 @@ retains those bytes across one-byte I/O, output starvation, nonterminal
 validates each complete frame before raw publication, making malformed later
 frames atomic. Its internal profile now derives direction-specific byte regions
 and safely partitions opaque aligned LZMW records without exposing their C++
-layouts. It is not yet a public factory or CLI profile.
+layouts. Its bounded C requirements query and factory now expose this fixed
+profile through the common three caller-owned regions. It is not yet a CLI
+profile.
 
 ## Why publication is not automatic
 

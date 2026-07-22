@@ -6700,3 +6700,25 @@ overflow before publishing any span. Empty encode views require zero bytes and
 alignment one. This admits no C ABI or public codec yet; public requirements,
 factory construction, completion, fuzz, CLI, benchmark, and interoperability
 remain separate steps.
+
+## DD-352: LZMW Adaptive enters the C ABI with coupled opaque views
+
+- Date: 2026-07-22
+- Status: accepted
+
+Expose the fixed LZMW variant 1 plus Adaptive Huffman FGK variant 1 profile
+through `marc_lzmw_adaptive_huffman_config`, a direction-specific requirements
+query, and an immutable-direction factory. Preserve known-size encoding and the
+common three-workspace ABI. Primary storage holds raw frame input while
+encoding and a complete serialized frame while decoding. Secondary storage
+contains canonical LZMW reference staging followed by serialized-frame storage
+for encode, or reference staging followed by private raw storage for decode.
+
+Keep the aligned views region opaque to C. It contains LZMW encoder entries for
+encode; for decode it contains phrase entries followed by an explicitly aligned
+bounded `uint32_t` expansion stack. Creation must rerun the profile calculation
+and checked partition instead of trusting queried extents. Require a strict C11
+round trip, exact small-limit workspace checks, short and misaligned workspace
+rejection, reserved-field rejection, and a null output handle on every factory
+failure. This adds no allocator callback, unknown-size input, completion, fuzz,
+CLI, benchmark, or interoperability claim.

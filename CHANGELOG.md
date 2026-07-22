@@ -34,8 +34,9 @@ format versions, and C ABI versions are independent namespaces.
   complete frames before raw publication, rejects all truncations and trailing
   data, and leaves a malformed later frame unpublished. Its internal bounded
   profile now derives direction-specific byte workspaces and safely partitions
-  opaque aligned encoder, phrase, and expansion-record regions. No combined
-  public codec is exposed yet.
+  opaque aligned encoder, phrase, and expansion-record regions. A bounded C
+  requirements query and immutable-direction factory now expose those regions
+  without placing C++ record layouts in the ABI. No CLI profile is exposed yet.
 - The reserved `lzd-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked token, phrase, expansion-stack, and
   Adaptive payload bounds, transactional validation order, and an independent

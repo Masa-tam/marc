@@ -1107,3 +1107,9 @@ DD-350 streaming requirements, the local LZMW entry/phrase layouts, checked
 alignment arithmetic, and marc's opaque byte-view convention. No external ABI,
 combined profile, record layout, allocator, source code, API, or test suite was
 consulted.
+
+The LZMW plus Adaptive Huffman C ABI uses only DD-352, DD-351's bounded profile,
+the established marc transform lifecycle and three-region ABI, checked opaque
+view partitioning, and the first-party C11 assertion harness. No external
+combined API, factory, allocator interface, ABI layout, source code, or test
+suite was consulted.

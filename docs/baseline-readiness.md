@@ -123,8 +123,9 @@ The matching bounded streaming decoder now rejects every truncation and
 trailing byte and publishes no raw bytes from a malformed later frame. It has
 an internal bounded profile that derives all direction-specific byte extents
 and partitions aligned encoder, phrase, and expansion records from one opaque
-region. It has no public API, tool adapter, completion, fuzz, benchmark, or
-interoperability claim yet.
+region. A bounded C requirements query and immutable-direction factory now bind
+those regions without exposing the private record layouts. It has no tool
+adapter, completion, fuzz, benchmark, or interoperability claim yet.
 `lzw-adaptive-huffman` has now entered that queue with its exact representation,
 checked bounds, validation order, and independent hand vector fixed by DD-316.
 Its first complete-frame boundary now strictly reconstructs the packed LZW byte
@@ -316,7 +317,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-351, the complete Release suite contains 1,429 tests and passes under both
+At DD-352, the complete Release suite contains 1,430 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

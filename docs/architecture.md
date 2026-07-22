@@ -1744,6 +1744,12 @@ alignment. Decode requirements expose complete-frame, reference, private-raw,
 and one opaque region containing separately aligned phrase and expansion spans.
 Partitioning rederives offsets and totals before returning typed internal views.
 
+The public C boundary now binds those requirements and streaming transforms to
+the common allocation-free three-region lifecycle. The query exposes only byte
+extents and alignment. Factory construction repeats profile calculation and
+opaque partitioning before publishing a handle, so encoder entries, phrase
+records, and expansion references remain private implementation types.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather
