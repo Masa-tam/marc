@@ -7378,3 +7378,28 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-decoder tests and all 1,472
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range bounded workspace profile
+
+- Authoring method: derived direction-specific caller-owned byte extents from
+  the already documented raw-frame, canonical-token, range-payload, and local
+  decoder-limit formulas.
+- References used: DD-366, the `16F` LZ77 token ceiling, Dynamic Range 2^24
+  symbol cap and `2S + 5` payload ceiling, generic frame sizes, checked
+  arithmetic, and the completed streaming region ownership.
+- Known implementations intentionally not consulted: external combined
+  profiles, allocation calculators, allocator APIs, private layouts, source
+  code, workspace tests, and ABI designs.
+- Independent decisions: default to 65,536 raw bytes; size encoder regions from
+  the actual largest known frame; return zero regions for empty input; derive
+  decoder capacities only from trusted local limits; expose stable byte-only
+  requirements and error mapping.
+- Generated-code task description: add the bounded profile calculator and test
+  default, short, empty, payload-limit, format-cap, invalid-parameter, local
+  decoder-limit, and stable-error cases.
+- Similarity review: every formula is a direct checked composition of marc's
+  independently documented component bounds. No external workspace layout or
+  implementation was compared.
+- Local validation: all seven focused profile tests and all 1,479 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

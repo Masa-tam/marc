@@ -6987,3 +6987,22 @@ drains; reject truncation once that drain completes, trailing bytes after the
 declared original size, impossible workspace, unknown flags, and `ResetBlock`.
 Make both terminal success and failure stable. This step adds no typed profile
 or public C ABI factory.
+
+## DD-366: LZ77 Dynamic Range profile exposes only bounded byte regions
+
+- Date: 2026-07-23
+- Status: accepted
+
+Define a fixed profile with a default 65,536-byte raw frame and the format's
+2^20-byte maximum. Encoder requirements use the smaller of known original size
+and configured frame size: `F` raw bytes, `16F` canonical-token bytes, and a
+serialized-frame capacity consisting of the 56-byte header, 16-byte descriptor,
+and conservative `2(16F) + 5` Dynamic Range payload. Reject every component or
+aggregate extent that exceeds the caller's local limits.
+
+Decoder requirements must use only trusted local limits and the format cap.
+Bound raw bytes by `min(max_frame_size, 2^20)`, token bytes by `16F`, the local
+dictionary limit, and the 2^24 Dynamic Range symbol cap, and serialized storage
+by the generic header plus the local internal-buffer ceiling. Expose only byte
+counts and stable profile errors; do not expose private record layouts or add a
+public C ABI factory in this step.

@@ -25,7 +25,9 @@ format versions, and C ABI versions are independent namespaces.
   input and output, output starvation, nonterminal `Flush`, and retained
   `EndInput`. Its matching bounded streaming decoder validates and reconstructs
   a complete frame before exposing raw bytes and keeps malformed later frames
-  atomic. It is not yet exposed through the public C ABI or CLI.
+  atomic. Its bounded profile now calculates all three direction-specific byte
+  workspaces from trusted configuration and local limits. It is not yet
+  exposed through the public C ABI or CLI.
 
 ## 0.1.1 - 2026-07-23
 

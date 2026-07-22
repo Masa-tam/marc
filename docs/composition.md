@@ -151,7 +151,9 @@ arbitrarily small output and preserves exact one-shot bytes across one-byte
 input, nonterminal `Flush`, and retained `EndInput`. Its matching bounded
 decoder collects, validates, and reconstructs each complete frame before raw
 publication, so a malformed later frame cannot expose any of that frame's
-bytes. No public factory, CLI selector, benchmark, fuzz target, or
+bytes. Its bounded profile now derives direction-specific raw, canonical-token,
+serialized-frame, and private-raw byte extents without exposing a private C++
+layout. No public factory, CLI selector, benchmark, fuzz target, or
 interoperability entry exists yet.
 
 ## Why publication is not automatic

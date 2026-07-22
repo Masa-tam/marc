@@ -1223,6 +1223,14 @@ token, and private raw regions. It admits a frame to output only after complete
 collection, nested validation, and reconstruction, so malformed later frames
 are atomic. The public factory remains a separate later admission step.
 
+The bounded profile exposes only three byte counts per direction. Encoding
+uses raw collection, canonical-token staging, and serialized-frame storage;
+decoding uses serialized-frame storage, canonical-token staging, and private
+raw storage. Encoder extents use the known original size and configured frame
+size, while decoder extents use only trusted local limits and the format cap.
+No private C++ object layout or input-controlled allocation crosses this
+profile boundary.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

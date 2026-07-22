@@ -1963,6 +1963,16 @@ below their sum. Reject final-byte truncation, trailing data, and `ResetBlock`;
 accept the empty stream, treat empty `Flush` as input starvation, and prove
 that premature `EndInput` fails only after already validated raw bytes drain.
 
+For the bounded LZ77 plus Dynamic Range profile, require the default 65,536-byte
+raw frame to expose encoder extents 65,536 raw, 1,048,576 token, and 2,097,229
+serialized bytes. For original size 17 require 17, 272, and 621 bytes; empty
+input requires zero for all three. Lower the compressed-payload limit below the
+17-byte worst case, exceed the 2^20 raw-frame cap, and supply invalid LZ77
+parameters independently. For decoder limits of 4,096 raw bytes, 6,000 token
+bytes, and 8,192 aggregate bytes, require 8,248 serialized, 6,000 token, and
+4,096 private-raw bytes. Verify every profile error maps to its stable core
+category.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

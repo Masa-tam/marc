@@ -1375,6 +1375,15 @@ publish any raw byte from that frame or retract earlier completed frames.
 Truncation under `EndInput`, trailing bytes, unsupported reset, impossible
 workspace extents, and nested layer failures enter a sticky error state.
 
+The fixed bounded profile defaults to 65,536 raw bytes per frame. For the
+largest possible raw frame `F`, encoder requirements are `F` raw collection
+bytes, `16F` canonical-token bytes, and `56 + 16 + (2(16F) + 5)` serialized
+frame bytes. The last expression is a conservative capacity; the exact planner
+may use less. Decoder requirements derive raw staging from the smaller of the
+local frame limit and 2^20, token staging from the smaller of `16F`, the local
+dictionary limit, and 2^24, and serialized-frame capacity solely from trusted
+local limits. No untrusted frame field controls workspace allocation.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently

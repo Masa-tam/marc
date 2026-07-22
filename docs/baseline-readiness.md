@@ -107,7 +107,8 @@ succeeds. Its exact planner and deterministic encoder now freeze canonical
 tokens before range planning and reproduce the independent frame. It remains
 `Specified`; its bounded streaming encoder now preserves exact frame bytes and
 finish semantics, and its matching streaming decoder now provides atomic
-complete-frame publication. A typed bounded workspace profile remains open.
+complete-frame publication. Its bounded profile now derives all three
+direction-specific byte regions; the public C ABI factory remains open.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
@@ -343,7 +344,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-365, the complete Release suite contains 1,472 tests and passes under both
+At DD-366, the complete Release suite contains 1,479 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

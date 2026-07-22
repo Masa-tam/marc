@@ -1187,3 +1187,9 @@ complete-frame private decoder, marc's generic stream and frame parsers,
 transform status contract, checked workspace accounting, and transactional
 frame-publication rule. No external streaming decoder, buffering state machine,
 source code, malformed corpus, error taxonomy, or test suite was consulted.
+
+The LZ77 plus Dynamic Range bounded workspace profile uses only DD-366, the
+documented `16F` token and `2S + 5` payload bounds, generic header and descriptor
+sizes, local decoder limits, checked arithmetic, and existing streaming-region
+ownership. No external workspace calculator, allocator interface, combined
+profile, source code, ABI layout, or test suite was consulted.
