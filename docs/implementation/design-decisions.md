@@ -6850,3 +6850,30 @@ silently reuse an existing algorithm or variant ID for different bytes. Make
 the installed CMake package enforce this boundary with `SameMinorVersion`
 rather than treating every project version whose major component is zero as
 compatible.
+
+## DD-359: LZ77 Dynamic Range entropizes canonical token bytes
+
+- Date: 2026-07-23
+- Status: accepted
+
+Reserve `lz77-dynamic-range` for LZ77 variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZ77
+parameter region, use no entropy parameter bytes, and set stream entropy block
+size to zero. Complete the canonical LZ77 token stream before range coding;
+the adaptive order-0 model consumes every token byte without interpreting
+token fields and resets together with LZ77 history at each outer frame.
+
+For raw frame size `F`, require canonical token extent `S` to be a nonzero
+multiple of 16 with `S <= 16F` and `S <= 2^24`. Bound range payload extent by
+`P <= 2S + 5`. The format-level raw-frame maximum is therefore 2^20 bytes;
+the reference profile uses 65,536-byte frames so token staging, payload
+staging, private raw reconstruction, and their checked aggregate remain within
+the baseline memory policy.
+
+Store exactly one 16-byte Dynamic Range descriptor and one byte-aligned payload
+per nonempty frame. Require descriptor symbol count `S`, payload count `P`, one
+entropy block, and the generic header's exact extents. Decode the complete
+range payload into bounded private token staging, strictly validate all LZ77
+tokens and exact raw extent, reconstruct into separate bounded private raw
+staging, and publish only after every stage succeeds. This step reserves the
+format and independent vector only; it publishes no factory or CLI selector.

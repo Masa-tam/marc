@@ -19,7 +19,7 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Specified | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
@@ -128,6 +128,15 @@ with the fixed 64-KiB reference profile. Interoperability schema 13 appends it
 as the twenty-fourth archive, and its bidirectional Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is recorded in
 `docs/interoperability.md`.
+
+`lz77-dynamic-range` is the first Dynamic Range composition to receive a
+reserved representation. It fixes the complete canonical 16-byte LZ77 token
+stream before a fresh per-frame adaptive order-0 range model consumes it. The
+format caps raw frames at 2^20 bytes, bounds token bytes by `16F` and range
+payload bytes by `2S + 5`, and requires entropy decoding, complete LZ77 token
+validation, and private raw reconstruction before publication. An independent
+88-byte single-Literal frame fixes the component boundary. No public factory,
+CLI selector, benchmark, fuzz target, or interoperability entry exists yet.
 
 ## Why publication is not automatic
 

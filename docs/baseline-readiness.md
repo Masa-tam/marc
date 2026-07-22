@@ -93,6 +93,12 @@ kept separate because it requires artifacts produced outside the local build.
 
 ## Composed-profile admission queue
 
+`lz77-dynamic-range` has entered the queue as the first Dynamic Range
+composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw
+frame ceiling, checked `16F` token and `2S + 5` range-payload bounds,
+transactional validation order, and independent 88-byte single-Literal frame.
+It remains `Specified` until the bounded validator and decoding path exist.
+
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
 now also has a public-ABI completion matrix, bounded fuzz evidence, a
@@ -327,7 +333,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-358, the complete Release suite contains 1,438 tests and passes under both
+At DD-359, the complete Release suite contains 1,439 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

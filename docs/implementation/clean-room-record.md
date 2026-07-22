@@ -7190,3 +7190,36 @@ discarded and the reviewed seed retained.
   including the runtime version assertion, all 24 benchmark smoke tests, and
   the schema 1-through-13 compatibility chain. The final metadata and
   documentation-layout tests also passed after the release prose update.
+
+## 2026-07-23 - LZ77 plus Dynamic Range specification and hand vector
+
+- Authoring method: composed marc's independently specified LZ77 variant 1
+  token stream with its independently specified Dynamic Range Coder variant 1
+  at the canonical byte-stream boundary, then calculated the first payload
+  directly from the documented integer state transitions.
+- References used: DD-359, marc's LZ77 token grammar, Dynamic Range interval,
+  model, normalization, delayed-carry and termination rules, generic frame
+  format, decoder limits, and existing composition policy.
+- Known implementations intentionally not consulted: external LZ/range
+  combinations, range-coder source or pseudocode, container formats, profiles,
+  vectors, workspace layouts, and test suites.
+- Independent decisions: reserve `lz77-dynamic-range`; retain format 1.0 and
+  both component variant IDs; cap raw frames at 2^20 bytes from `S <= 16F` and
+  the 2^24-symbol entropy cap; use `P <= 2S + 5`; reset both states per frame;
+  require range decode, complete token validation, and private raw decode before
+  publication.
+- Generated-code task description: specify exact fields, bounds, reset and
+  transactional behavior, independently calculate the single-Literal range
+  payload, and verify it only through the standalone component encoders and
+  generic serializers without implementing the combined codec.
+- Similarity review: the representation and 88-byte vector follow only marc's
+  documented component grammars and serialization rules. No external combined
+  expression or byte stream was used.
+- Validation note: the first C++ expected-frame initializer accidentally
+  omitted four leading zero payload bytes. The fixed-vector test rejected it;
+  indexwise comparison showed that the independently calculated payload and
+  standalone encoder agreed, and the initializer alone was corrected to the
+  documented 56-byte header, 16-byte descriptor, and 16-byte payload boundary.
+- Local validation: the focused vector and documentation tests and all 1,439
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

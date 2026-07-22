@@ -2423,3 +2423,18 @@ as archive 24. Generate and locally decode all archives before writing
 foreign decode equality, and byte-identical local re-encoding. Reorder two
 entries and require rejection, then remove only archive 24 while converting to
 schema 12 and verify every frozen schema down through schema 1.
+
+For the first LZ77 plus Dynamic Range vector, begin with raw byte `41` and
+derive the canonical 16-byte LZ77 Literal token directly from the published
+token table. Independently run Dynamic Range variant 1 over those fixed bytes:
+start all 256 frequencies at one, update the 32-bit range and 64-bit low in the
+documented integer order, normalize below 2^24 with delayed carry, update the
+model only after each byte, and perform exactly five termination shifts. The
+payload must be `00 00 00 00 00 00 00 00 00 06 5c d6 5f 00 00 00`.
+
+As a separate implementation check, require marc's existing LZ77 encoder to
+reproduce the fixed token, then require the standalone Dynamic Range encoder to
+reproduce the independently calculated payload and 16-byte descriptor. Serialize
+the generic frame header and descriptor independently and require the exact
+documented 88-byte frame. Do not use a future combined encoder to construct its
+own oracle.

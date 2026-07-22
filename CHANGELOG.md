@@ -3,6 +3,16 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## Unreleased
+
+### Added
+
+- The reserved `lz77-dynamic-range` composition now has an exact
+  decoder-visible representation, checked token and range-payload bounds,
+  transactional validation order, and an independent single-Literal frame
+  vector assembled from the standalone LZ77 and Dynamic Range primitives. It
+  is not yet exposed through the public C ABI or CLI.
+
 ## 0.1.1 - 2026-07-23
 
 ### Changed

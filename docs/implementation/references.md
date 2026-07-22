@@ -1144,3 +1144,10 @@ local generator, verifier, SHA-256, exact re-encoding, and one-generation
 compatibility contracts. No external archive protocol, codec registry,
 manifest schema, test fixture, source code, or verification suite was
 consulted.
+
+The LZ77 plus Dynamic Range composition specification and hand vector use only
+marc's documented LZ77 variant 1 token grammar, Dynamic Range Coder variant 1
+integer model and delayed-carry rules, generic frame format, checked decoder
+limits, and repository-owned composition policy. No external combined codec,
+range-coder implementation, format, profile, stream, test vector, or workspace
+layout was consulted.
