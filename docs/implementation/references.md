@@ -1040,3 +1040,9 @@ requirements query and factory, the fixed local reference-profile bounds, and
 the repository's existing transactional file adapter and round-trip script. No
 external compression CLI, dispatch table, allocation wrapper, source code, or
 test suite was consulted.
+
+The `lzd-adaptive-huffman` benchmark adapter uses only DD-342, the published
+marc C requirements query and factory, the CLI's fixed limits, and the existing
+repository measurement and verification contract. No external benchmark,
+combined-codec tool, record layout, source code, corpus, or test suite was
+consulted.

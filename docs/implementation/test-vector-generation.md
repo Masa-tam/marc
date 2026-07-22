@@ -2279,3 +2279,9 @@ and decode it with explicit `--codec lzd-adaptive-huffman` and compare the
 restored bytes exactly. Separately append one zero byte to the valid archive,
 require decode failure, and require that neither the destination nor temporary
 transaction file remains.
+
+For benchmark smoke, run `marc_benchmark lzd-adaptive-huffman README.md 1`.
+Require the tool's untimed public-C encode/decode verification to reproduce the
+input exactly before it reports any measurement. Treat successful completion
+and well-formed metric fields as coverage; record ratio and throughput as
+observations rather than fixed expected values.

@@ -74,8 +74,7 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for the twenty-two profiles currently
-admitted to the benchmark registry.
+and peak caller-owned codec workspace for all twenty-three public profiles.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 

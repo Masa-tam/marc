@@ -6472,3 +6472,25 @@ an appended trailing byte, cannot commit a destination file. Require a multi-
 frame round trip and strict trailing-data rejection through the public factory.
 This admission adds no format variant, benchmark registry entry, or
 interoperability schema entry.
+
+## DD-342: LZD Adaptive benchmark measures a verified public round trip
+
+- Date: 2026-07-22
+- Status: accepted
+
+Add `lzd-adaptive-huffman` to the dependency-free benchmark through the same
+public C ABI and 65,536-byte, 65,536-entry, 16-MiB policy as the CLI. Reserve
+complete-stream encoded capacity with checked arithmetic from the 80-byte
+parameterized prefix, one 56-byte frame header and 16-byte Adaptive descriptor
+per nonempty frame, and `264*ceil(total_raw_bytes/2)` payload bytes so an odd
+final frame retains its complete terminal token ceiling. Query
+both direction-specific workspace sizes and opaque-view alignments from the ABI;
+do not reproduce LZD encoder, phrase, or expansion layouts.
+
+Before timing, encode once, decode once, and require byte-exact equality with
+the source. Time fresh transform instances per iteration and report encoded
+size, ratio, directional elapsed time and throughput, all six queried workspace
+extents, and the larger caller-reserved total. Treat correctness, checked-bound,
+allocation, and API failures as benchmark failures, but impose no performance
+threshold. Add a one-iteration smoke test over repository-owned input. This step
+adds no interoperability claim.

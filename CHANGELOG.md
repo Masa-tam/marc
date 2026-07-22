@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   A bounded dual-path decoder fuzz harness and permanent atomic regressions now
   cover truncation, extreme frame extents, and invalid Adaptive descriptors. A
   transactional `lzd-adaptive-huffman` CLI selector now exposes the public C
-  factory with fixed 64-KiB frames and checked local limits.
+  factory with fixed 64-KiB frames and checked local limits. A matching
+  public-ABI benchmark now verifies a byte-exact round trip before reporting
+  compression ratio, directional throughput, and caller-owned peak workspace.
 - The `lzw-adaptive-huffman` composition now has an exact
   decoder-visible representation, checked packed-code and Adaptive payload
   bounds, transactional validation order, and an independent single-code frame

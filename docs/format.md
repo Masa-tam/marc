@@ -2098,6 +2098,7 @@ variant. Encoding remains known-size; decoder workspace sizing uses only local
 limits, and stream parameters are validated after collection against them.
 The `lzd-adaptive-huffman` CLI selector uses that factory with the 65,536-byte
 reference frame and adds no representation or parameter variant.
+The benchmark adapter uses the same profile and likewise adds no format variant.
 
 ## LZD variant 1 plus Blocked Huffman variant 1
 

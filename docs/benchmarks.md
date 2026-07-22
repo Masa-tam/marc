@@ -24,6 +24,7 @@ marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzw-adaptive-huffman corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzd-blocked-huffman corpus.bin 5
+marc_benchmark lzd-adaptive-huffman corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 marc_benchmark lzmw-blocked-huffman corpus.bin 5
 ```
@@ -151,6 +152,18 @@ LZD dictionary policy. Capacity includes one 16-byte descriptor per possible
 token block and raw entropy fallback. The public C ABI query supplies all
 reported encoder and decoder workspace bytes, including the decoder's private
 entropy-view, phrase, and iterative-expansion storage.
+
+`lzd-adaptive-huffman` uses the CLI's 65,536-byte raw frame, 262,144-byte
+canonical-token ceiling, 8,650,752-byte Adaptive payload ceiling, 65,536-entry
+dictionary policy, and 16-MiB active aggregate limit. Capacity planning adds
+one 16-byte descriptor and 56-byte frame header per nonempty frame to the
+80-byte parameterized prefix and reserves Adaptive payload as the checked exact
+ceiling `264*ceil(raw_bytes/2)`, including an odd final frame. Both direction-
+specific workspace extents and opaque-view alignment come from the public C
+ABI, and a complete byte-exact
+round trip succeeds before timing. The reported caller-reserved peak may exceed
+16 MiB because conservative encoded-frame, token, raw, phrase, and expansion
+regions coexist even though active codec operations obey the aggregate limit.
 
 `lzmw-blocked-huffman` uses the same one-MiB raw frame, 65,536-symbol entropy
 block, four-byte-per-raw-byte reference bound, 64-block cap, 65,536-entry

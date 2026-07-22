@@ -1668,6 +1668,12 @@ workspace extents and opaque-view alignment from the public requirements query.
 The command-line layer therefore owns file transaction policy but no private
 LZD record layout or alternate stream representation.
 
+The benchmark adapter uses the same public factory and fixed limits. It reserves
+complete-stream output with checked arithmetic, performs an untimed byte-exact
+round trip, then measures fresh encoder and decoder instances independently.
+It reports queried caller-owned workspace rather than estimating private record
+layouts, and imposes no throughput or compression-ratio pass threshold.
+
 ### Published LZW plus Blocked Huffman boundary
 
 LZW's canonical dictionary output is a packed variable-width bitstream rather

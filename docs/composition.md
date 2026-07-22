@@ -95,8 +95,9 @@ vector are present. Its bounded public C requirements query and factory preserve
 opaque encoder-entry, phrase, and expansion-stack layouts. The public completion
 matrix covers required data classes, deterministic arbitrary chunking, sticky
 terminal states, and malformed-final-frame atomicity; bounded fuzzing exercises
-both decoder paths. A transactional CLI selector uses that factory with the fixed
-64-KiB reference profile. No benchmark or interoperability entry is claimed yet.
+both decoder paths. A transactional CLI selector and verified public-C benchmark
+use that factory with the fixed 64-KiB reference profile. No interoperability
+entry is claimed yet.
 
 ## Why publication is not automatic
 

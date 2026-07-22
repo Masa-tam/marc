@@ -6741,3 +6741,27 @@ discarded and the reviewed seed retained.
 - Local validation: the focused selector test and all 1,390 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
   official CMake 4.3.4.
+
+## 2026-07-22 - LZD plus Adaptive Huffman benchmark profile
+
+- Authoring method: extended marc's dependency-free public-C measurement tool
+  with the fixed profile already admitted by DD-341.
+- References used: DD-342, the public requirements query and factory, checked
+  maximum encoded-size arithmetic, and the repository measurement contract.
+- Known implementations intentionally not consulted: external benchmarks,
+  combined-codec tools, workspace estimators, record layouts, source code,
+  corpora, or test suites.
+- Independent decisions: reuse 64-KiB frames, 262,144 token bytes, 8,650,752
+  payload bytes, 65,536 dictionary entries, and the 16-MiB active aggregate
+  limit; reserve an odd final token pair explicitly; verify exact decoded bytes
+  before timing; apply no performance floor.
+- Generated-code task description: register `lzd-adaptive-huffman`, query and
+  report all public workspace extents, prove an untimed round trip, measure
+  fresh transforms, and add a single-iteration repository-input smoke test.
+- Similarity review: configuration, checked reservation, verification, timing,
+  and reporting extend only marc's existing benchmark. No external benchmark
+  structure or distinctive metric schema was compared.
+- Local validation: the focused smoke test and all 1,391 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
+  official CMake 4.3.4. The smoke run reported every required metric only after
+  a successful exact round trip.
