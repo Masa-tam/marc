@@ -1943,6 +1943,16 @@ transactional boundary. Reject 15-byte token staging without changing its
 sentinels, reject empty and unexpected raw frame extents, and reject an
 aggregate ceiling one byte below descriptor plus payload plus token staging.
 
+For bounded streaming LZ77 plus Dynamic Range encoding, use raw `ABABX` with
+two-byte frames. Independently concatenate the stream prefix and three outputs
+from the exact-frame encoder, then require the streaming encoder to reproduce
+that reference with one-byte input and output. Feed one byte with `Flush` and
+require only the prefix, then finish with the remaining input and require the
+same complete reference. Reject short raw, token, and serialized workspaces,
+and an aggregate ceiling one byte below raw plus canonical tokens plus the
+serialized frame. Verify empty input, premature `EndInput`, unsupported
+`ResetBlock`, and stable repeated `EndOfStream`.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

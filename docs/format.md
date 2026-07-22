@@ -1357,6 +1357,15 @@ serialized output before writing it, then emits the header, descriptor, and
 payload in order. Replanning the unchanged private token bytes must reproduce
 the exact payload extent and descriptor; disagreement is an internal error.
 
+The bounded streaming encoder writes the stream header and LZ77 parameter
+prefix first, collects at most one configured raw frame, invokes the exact
+planner and encoder, and drains the resulting immutable serialized frame before
+reusing any storage. Input and output chunking do not change the bytes.
+`Flush` does not close a partial frame. `EndInput` is retained after all known
+input is accepted and becomes `EndOfStream` only after the final frame is fully
+drained. `ResetBlock` is unsupported because the outer frame size already owns
+the synchronized dictionary and entropy reset boundary.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently

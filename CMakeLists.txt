@@ -120,6 +120,7 @@ set(MARC_SOURCES
     src/frame/lz77_dynamic_range_frame.cpp
     src/frame/lz77_adaptive_huffman_frame_streaming_decoder.cpp
     src/frame/lz77_adaptive_huffman_frame_streaming_encoder.cpp
+    src/frame/lz77_dynamic_range_frame_streaming_encoder.cpp
     src/frame/lz77_adaptive_huffman_profile.cpp
     src/frame/lz77_blocked_huffman_frame.cpp
     src/frame/lz77_blocked_huffman_frame_streaming_decoder.cpp
@@ -915,6 +916,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_adaptive_huffman_frame_tests.cpp
         tests/lz77_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lz77_adaptive_huffman_frame_streaming_encoder_tests.cpp
+        tests/lz77_dynamic_range_frame_streaming_encoder_tests.cpp
         tests/lz77_adaptive_huffman_completion_tests.cpp
         tests/lz77_adaptive_huffman_fuzz_regression_tests.cpp
         tests/lz77_adaptive_huffman_profile_tests.cpp

@@ -1204,6 +1204,23 @@ CLI representation as its nineteenth archive. Generation verifies a local
 round trip; foreign verification checks manifest order and hashes, decodes to
 the common fixture, and requires byte-identical local re-encoding.
 
+### LZ77 plus Dynamic Range staged boundary
+
+The Dynamic Range composition preserves the canonical 16-byte LZ77 token
+boundary and resets both dictionary history and the adaptive order-0 range
+model at every outer frame. Exact encoding owns three caller-supplied byte
+regions: raw frame collection, frozen canonical tokens, and the immutable
+serialized frame. All three are checked against the aggregate internal-buffer
+limit before a completed frame becomes drainable.
+
+The bounded streaming encoder emits the stream prefix, collects exactly one
+configured raw frame, plans and encodes through the complete-frame boundary,
+and drains the retained result before reusing storage. One-byte I/O and output
+starvation therefore cannot alter encoded bytes. `Flush` leaves an incomplete
+frame open, while `EndInput` is retained until the last complete frame has been
+fully emitted. The streaming decoder and public factory remain separate later
+admission steps.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

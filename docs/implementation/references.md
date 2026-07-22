@@ -1175,3 +1175,9 @@ existing deterministic LZ77 encoder, Dynamic Range planner and encoder,
 generic frame serializer, checked arithmetic, and local caller-owned staging
 contract. No external combined encoder, planning algorithm, source code,
 format, vector generator, or test suite was consulted.
+
+The LZ77 plus Dynamic Range bounded streaming encoder uses only DD-364, the
+exact-frame planner and encoder, marc's transform status contract, stream
+header and parameter serializers, checked aggregate accounting, and existing
+frame-boundary semantics. No external streaming codec, buffering design,
+state machine, source code, test vector, or test suite was consulted.

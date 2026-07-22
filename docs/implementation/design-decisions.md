@@ -6949,3 +6949,22 @@ the generic header, Dynamic Range descriptor, and payload in their specified
 order. Preserve component encode errors for diagnosis and treat disagreement
 after a successful plan as an internal error. This step adds no streaming or
 public C ABI surface.
+
+## DD-364: LZ77 Dynamic Range streaming retains complete encoded frames
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add a bounded streaming encoder that owns caller-supplied raw-frame, canonical
+token, and serialized-frame regions. Emit the stream header and LZ77 parameter
+prefix first. Collect exactly the configured outer-frame extent, invoke the
+DD-363 exact planner and encoder, and retain the immutable completed frame until
+arbitrary output chunking drains it. Count all three live regions against the
+aggregate internal-buffer limit before encoding.
+
+Do not let ordinary input chunking or `Flush` alter frame boundaries or bytes.
+Retain `EndInput` once the declared original size has been accepted, but return
+`EndOfStream` only after all final serialized bytes are emitted. Reject
+premature finish, excess input, unknown flags, and `ResetBlock`; keep terminal
+success and failure stable on repeated calls. This step adds no streaming
+decoder or public C ABI factory.

@@ -20,8 +20,10 @@ format versions, and C ABI versions are independent namespaces.
   only after entropy decoding, token validation, and raw reconstruction all
   succeed. Its exact-frame planner freezes canonical LZ77 tokens before range
   planning, and its deterministic encoder reproduces the independent 88-byte
-  vector without partial destination writes on capacity failure. It is not yet
-  exposed through the public C ABI or CLI.
+  vector without partial destination writes on capacity failure. Its first
+  bounded streaming encoder preserves the exact frame sequence under one-byte
+  input and output, output starvation, nonterminal `Flush`, and retained
+  `EndInput`. It is not yet exposed through the public C ABI or CLI.
 
 ## 0.1.1 - 2026-07-23
 

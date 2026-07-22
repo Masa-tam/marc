@@ -146,8 +146,10 @@ private raw frame only after every layer succeeds, leaving caller output
 unchanged on failure. Its exact-frame planner now freezes canonical LZ77 token
 bytes before Dynamic Range planning, and its deterministic encoder reproduces
 the independent frame without partial destination writes on capacity failure.
-No public factory, CLI selector, benchmark, fuzz target, or interoperability
-entry exists yet.
+Its first bounded streaming encoder retains completed frames while draining
+arbitrarily small output and preserves exact one-shot bytes across one-byte
+input, nonterminal `Flush`, and retained `EndInput`. No public factory, CLI
+selector, benchmark, fuzz target, or interoperability entry exists yet.
 
 ## Why publication is not automatic
 

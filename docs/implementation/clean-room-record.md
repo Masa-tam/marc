@@ -7327,3 +7327,28 @@ discarded and the reviewed seed retained.
 - Local validation: all twenty-four combined frame tests and all 1,463 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range bounded streaming encoder
+
+- Authoring method: wrapped the completed exact-frame planner and encoder in a
+  bounded transform state machine using caller-owned collection, token, and
+  serialized-frame regions.
+- References used: DD-364, marc's process/status invariants, stream-prefix
+  serializers, exact-frame encoder, checked arithmetic, and outer-frame reset
+  rules.
+- Known implementations intentionally not consulted: external streaming LZ or
+  range codecs, buffering state machines, source code, APIs, test vectors, and
+  test suites.
+- Independent decisions: retain complete encoded frames until drained; count
+  raw, canonical-token, and serialized-frame regions in the active aggregate;
+  keep `Flush` nonterminal; retain finish through output starvation; reject
+  cross-layer `ResetBlock`.
+- Generated-code task description: add a bounded streaming encoder and prove
+  byte identity with independently concatenated exact frames under one-byte
+  I/O, flush, finish, workspace failures, empty input, and protocol misuse.
+- Similarity review: state transitions follow only marc's local transform
+  contract and the already documented frame ownership order. No external
+  streaming implementation or control-flow structure was compared.
+- Local validation: all four focused streaming-encoder tests and all 1,467
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
