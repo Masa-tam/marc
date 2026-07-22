@@ -2,8 +2,9 @@
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
-Blocked Huffman and LZ77 plus Adaptive Huffman profiles, LZSS variant 1, the
-LZSS plus Blocked Huffman and LZSS plus Adaptive Huffman profiles,
+Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
+profiles, LZSS variant 1, the LZSS plus Blocked Huffman and LZSS plus Adaptive
+Huffman profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
 profiles, LZW variant 1, the LZW
 plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
@@ -21,6 +22,7 @@ dictionary and entropy objects that callers combine at runtime. Each standalone
 dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
+`marc_lz77_dynamic_range_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
@@ -50,7 +52,8 @@ cross-product pairings as callable C ABI features.
    `marc_dynamic_range_config_init()`, `marc_rans_config_init()`, or
    `marc_tans_config_init()`, `marc_lz77_config_init()`,
    `marc_lz77_blocked_huffman_config_init()`,
-   `marc_lz77_adaptive_huffman_config_init()`, or
+   `marc_lz77_adaptive_huffman_config_init()`,
+   `marc_lz77_dynamic_range_config_init()`,
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
@@ -104,6 +107,12 @@ by serialized-frame staging for encode, or token staging followed by private
 raw-frame staging for decode. Every outer frame owns one reset FGK tree, so the
 configuration has no entropy-block size. Query requirements again after
 changing any frame, LZ77 parameter, original size, or local limit.
+The LZ77 plus Dynamic Range profile uses the same two byte workspaces and no
+views region. Encoding partitions secondary storage into canonical LZ77 tokens
+followed by the complete range-coded frame; decoding partitions it into token
+staging followed by private raw staging. Query requirements again after
+changing direction, original size, frame size, LZ77 parameters, or any local
+limit. Factory failure leaves the transform pointer null.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

@@ -1193,3 +1193,9 @@ documented `16F` token and `2S + 5` payload bounds, generic header and descripto
 sizes, local decoder limits, checked arithmetic, and existing streaming-region
 ownership. No external workspace calculator, allocator interface, combined
 profile, source code, ABI layout, or test suite was consulted.
+
+The LZ77 plus Dynamic Range public C requirements query and factory use only
+DD-367, DD-366's byte-only bounded profile, the completed streaming encoder and
+decoder, ABI version 1's existing two-region transform lifecycle, checked
+offsets, and `nothrow` handle publication. No external C API, allocation model,
+combined factory, source code, ABI layout, or test suite was consulted.

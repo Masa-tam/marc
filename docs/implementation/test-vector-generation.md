@@ -1973,6 +1973,14 @@ bytes, and 8,192 aggregate bytes, require 8,248 serialized, 6,000 token, and
 4,096 private-raw bytes. Verify every profile error maps to its stable core
 category.
 
+For the first public C boundary, initialize the encode config, set original and
+frame size to raw `ABABABX`, query two byte regions with no views workspace,
+create the transform, and finish the encode in one public process call. Destroy
+it, initialize decode with explicit local limits, query again, create, and
+recover the exact seven bytes through the same C11 lifecycle. Require decode
+secondary storage to equal `16F + F`, reject a one-byte-short secondary region,
+and reject a nonzero reserved field while keeping the transform null.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

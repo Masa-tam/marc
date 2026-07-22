@@ -7006,3 +7006,21 @@ dictionary limit, and the 2^24 Dynamic Range symbol cap, and serialized storage
 by the generic header plus the local internal-buffer ceiling. Expose only byte
 counts and stable profile errors; do not expose private record layouts or add a
 public C ABI factory in this step.
+
+## DD-367: LZ77 Dynamic Range enters ABI v1 through two byte regions
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add a named public C config, requirements query, and factory without changing
+ABI version 1 or any existing public layout. Mirror the established LZ77
+configuration fields and hard limits. Report raw collection as primary and
+canonical tokens plus serialized frame as secondary for encode; report
+serialized-frame storage as primary and tokens plus private raw staging as
+secondary for decode. Report zero views bytes and alignment one.
+
+The factory must repeat configuration and requirements validation, reject every
+short or invalid region before construction, partition secondary storage only
+at the checked token extent, construct the matching bounded streaming transform
+with `nothrow`, and leave the caller's handle null on every failure. This step
+adds no CLI, benchmark, fuzz, completion matrix, or interoperability entry.

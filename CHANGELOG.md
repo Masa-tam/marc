@@ -26,8 +26,10 @@ format versions, and C ABI versions are independent namespaces.
   `EndInput`. Its matching bounded streaming decoder validates and reconstructs
   a complete frame before exposing raw bytes and keeps malformed later frames
   atomic. Its bounded profile now calculates all three direction-specific byte
-  workspaces from trusted configuration and local limits. It is not yet
-  exposed through the public C ABI or CLI.
+  workspaces from trusted configuration and local limits. A bounded public C
+  requirements query and factory now expose the fixed profile through two
+  caller-owned byte regions without leaking private C++ layouts into ABI
+  version 1. It is not yet exposed through the CLI.
 
 ## 0.1.1 - 2026-07-23
 

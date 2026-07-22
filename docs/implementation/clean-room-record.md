@@ -7403,3 +7403,29 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused profile tests and all 1,479 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range public C factory
+
+- Authoring method: connected the completed bounded profile and streaming pair
+  to marc ABI version 1's existing config, requirements, factory, process, and
+  destroy lifecycle.
+- References used: DD-367, DD-366's byte-only requirements, the bounded
+  streaming transforms, checked offset arithmetic, null-on-failure publication,
+  and the repository's first-party C11 assertion harness.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation or ownership models, combined factories, private ABI
+  layouts, source code, tests, and bindings.
+- Independent decisions: add named symbols without altering ABI version or
+  existing layouts; reuse the LZ77 parameter and limit fields; expose two byte
+  workspaces and no views region; repeat profile calculation before internal
+  partitioning; construct with `nothrow` and publish only on success.
+- Generated-code task description: add the config initializer, requirements
+  query, factory, header declarations, and a pure-C shared-library round trip
+  covering encode, decode, exact workspace roles, short secondary storage, and
+  reserved-field rejection.
+- Similarity review: the public surface follows marc's already published ABI
+  conventions and independently derived profile. No external API expression or
+  implementation was compared.
+- Local validation: the focused C11 shared-library test and all 1,480 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

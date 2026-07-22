@@ -1384,6 +1384,14 @@ local frame limit and 2^20, token staging from the smaller of `16F`, the local
 dictionary limit, and 2^24, and serialized-frame capacity solely from trusted
 local limits. No untrusted frame field controls workspace allocation.
 
+The public C profile maps encoder raw collection to `primary_workspace` and
+combines token staging followed by serialized-frame storage in
+`secondary_workspace`. Decode maps serialized-frame storage to primary and
+combines token staging followed by private raw storage in secondary. Both
+regions have byte alignment. The requirements query and factory repeat the same
+checked formulas; factory failure publishes no transform handle. These ABI
+operations do not alter the stream bytes.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently

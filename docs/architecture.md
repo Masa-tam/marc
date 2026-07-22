@@ -1231,6 +1231,15 @@ size, while decoder extents use only trusted local limits and the format cap.
 No private C++ object layout or input-controlled allocation crosses this
 profile boundary.
 
+The public C requirements query combines each direction's token and trailing
+frame/raw extents into one secondary byte region and reports alignment one;
+the primary region remains raw collection for encode and serialized-frame
+storage for decode. Factory creation repeats the profile calculation, validates
+both regions, partitions secondary storage with checked offsets, constructs the
+matching streaming transform, and publishes no handle on failure. ABI version
+1 gains only named config, query, and factory symbols; no existing layout or
+symbol changes.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and
