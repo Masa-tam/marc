@@ -7753,3 +7753,28 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused streaming-decoder tests and all 1,523
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range bounded workspace profile
+
+- Authoring method: derived direction-specific caller-owned byte regions from
+  the completed component bounds and streaming ownership rules, using checked
+  arithmetic throughout.
+- References used: DD-380, the local `2F` token and `2S + 5` payload ceilings,
+  generic frame and Dynamic Range descriptor sizes, decoder limits, format
+  ceilings, and existing profile error contract.
+- Known implementations intentionally not consulted: external workspace
+  calculators, allocator interfaces, combined codec profiles, ABI layouts,
+  source code, capacity formulas, and test suites.
+- Independent decisions: use the actual largest encoder frame; return zero
+  frame regions for empty input; count raw, tokens, and complete serialized
+  frame together; derive decoder regions independently from local limits;
+  expose byte counts only and map failures to stable core categories.
+- Generated-code task description: add the profile constructor, decoder query,
+  and error mapping; prove default, short, empty, payload-limit, aggregate-
+  limit, format-cap, invalid-parameter, decoder-limit, and mapping cases.
+- Similarity review: all formulas follow directly from marc's documented local
+  formats and simultaneous-lifetime rules. No external capacity formula,
+  layout, code structure, or test expression was compared.
+- Local validation: all eight focused profile tests and all 1,531 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

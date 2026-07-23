@@ -1534,6 +1534,17 @@ trailing input, and invalid prefix, header, descriptor, payload, or token data
 are malformed streams. `EndInput` remains effective while the final verified
 frame drains.
 
+The bounded workspace profile derives all regions without inspecting input
+bytes. For largest configured raw frame `F`, encoder raw storage is `F`, token
+staging is `2F`, the conservative payload is `4F + 5`, and the complete
+serialized-frame region is `4F + 77`. Thus the three simultaneously live
+encoder byte regions require at most `7F + 77` aggregate bytes. Empty input
+requires zero frame workspaces. Decoder requirements are derived independently
+from local limits: raw staging is bounded by `min(max_frame_size, 2^23)`,
+token staging by the least of `2F`, the dictionary limit, and `2^24`, and
+serialized-frame storage by the established frame-header-plus-internal-buffer
+ceiling. Every multiplication, addition, and `size_t` conversion is checked.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token `00 41`.

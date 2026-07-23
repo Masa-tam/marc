@@ -114,9 +114,10 @@ exact-frame representation under arbitrary one-byte chunking, nonterminal
 `Flush`, and output starvation while retaining `EndInput`. Its matching
 bounded streaming decoder validates and reconstructs a complete frame before
 raw draining, rejects impossible extents before body collection, and keeps
-malformed later frames atomic. The public C factory, completion matrix,
-fuzzing, CLI, benchmark, and interoperability evidence are not yet
-implemented.
+malformed later frames atomic. Its bounded workspace profile now derives all
+six direction-specific byte regions with checked arithmetic and no exposed
+private layouts. The public C factory, completion matrix, fuzzing, CLI,
+benchmark, and interoperability evidence are not yet implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

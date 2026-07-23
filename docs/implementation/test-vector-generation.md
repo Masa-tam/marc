@@ -2654,3 +2654,18 @@ serialize a valid generic header whose token extent is `2F + 1`; require
 malformed-stream rejection immediately after that header, before body
 collection or output publication. Empty input must accept the prefix alone,
 and `Flush` while starved must remain `NeedInput`.
+
+For the LZSS plus Dynamic Range workspace profile, use default frame size
+65,536 and an original size larger than one frame. Derive `F = 65,536`,
+`S = 131,072`, `P = 262,149`, and complete frame storage 262,221 bytes; require
+the query to return exactly those raw, token, and serialized extents. For a
+17-byte stream require 17, 34, and 145 bytes, and for empty input require all
+zeros.
+
+Lower the compressed-payload limit one byte below the short-stream bound,
+set the short-stream aggregate limit to 195 bytes rather than the required
+196, exceed the 2^23 format frame ceiling, and provide inconsistent LZSS
+parameters; require stable failure categories and zeroed output requirements.
+For decoder limits with raw frame 4,096, dictionary limit 6,000, and internal
+buffered bytes 8,192, require raw 4,096, token 6,000, and serialized 8,248
+bytes. Exercise every profile-to-core error mapping explicitly.

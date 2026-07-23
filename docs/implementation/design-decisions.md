@@ -7266,3 +7266,26 @@ premature end, trailing bytes, unknown flags, and `ResetBlock` with stable
 transform categories and sticky terminal state. This step adds no workspace
 profile, public C ABI, completion matrix, fuzz target, CLI, benchmark, or
 interoperability claim.
+
+## DD-380: LZSS Dynamic Range profile exposes byte-only workspaces
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add a bounded profile constructor and decoder-workspace query above DD-378 and
+DD-379. For largest encoder raw frame `F`, require `F` raw bytes, `2F`
+canonical-token bytes, and `56 + 16 + (4F + 5) = 4F + 77` serialized-frame
+bytes. Count the simultaneously live regions as `7F + 77`; also enforce the
+2^24 token ceiling, compressed-payload limit, dictionary limit, entropy
+buffered limit, and aggregate internal-buffer limit. Use the actual largest
+frame `min(original_size, configured_frame_size)` and return zero workspaces
+for empty input.
+
+Derive decoder raw staging from `min(max_frame_size, 2^23)`, token staging
+from the least of `2F`, the dictionary limit, and 2^24, and serialized-frame
+storage from the established 56-byte header plus local internal-buffer
+ceiling. Validate limits first and check every arithmetic operation and
+`size_t` conversion. Publish only byte counts and stable profile-to-core error
+mapping; expose no aligned or private typed layout. This step adds no public C
+requirements query or factory, completion matrix, fuzz target, CLI, benchmark,
+or interoperability claim.

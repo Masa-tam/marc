@@ -199,6 +199,13 @@ extents, and corruption of a later frame publish no bytes from the failing
 frame. No public factory, CLI selector, benchmark, fuzz target, or
 interoperability entry is implied.
 
+The bounded profile now derives the three encoder and three decoder byte
+regions independently. Encoder sizing uses the actual largest frame and the
+`2F` token plus `2S + 5` payload ceilings; decoder sizing uses only validated
+local limits and format caps. All conversions and aggregate sums are checked,
+empty streams need no frame workspace, and no private typed layout enters the
+future C ABI.
+
 ## Why publication is not automatic
 
 The mechanical pipeline shape is common:

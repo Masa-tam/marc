@@ -27,7 +27,9 @@ format versions, and C ABI versions are independent namespaces.
   `EndInput`. Its matching bounded streaming decoder validates and reconstructs
   each complete frame before raw draining, rejects impossible extents before
   body collection, and preserves current-frame atomicity on truncation,
-  trailing data, or later corruption.
+  trailing data, or later corruption. Its bounded profile now calculates all
+  three encoder and three decoder byte workspaces from trusted configuration,
+  local limits, and the composition's checked worst-case bounds.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

@@ -1275,3 +1275,9 @@ transform status contract, checked extent and workspace arithmetic, and
 transactional frame-publication rule. No external streaming decoder, buffering
 state machine, source code, malformed corpus, error taxonomy, or test suite was
 consulted.
+
+The LZSS plus Dynamic Range bounded workspace profile uses only DD-380, the
+documented `2F` token and `2S + 5` payload bounds, generic header and descriptor
+sizes, local decoder limits, checked arithmetic, and existing streaming-region
+ownership. No external workspace calculator, allocator interface, combined
+profile, source code, ABI layout, or test suite was consulted.

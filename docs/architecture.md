@@ -1331,6 +1331,14 @@ private raw staging through the transactional frame decoder, and drains that
 frame only after complete success. A malformed later frame therefore leaves
 earlier committed output intact and publishes none of the failing frame.
 
+The profile layer now turns these ownership rules into byte-only requirements.
+For the encoder it derives raw, token, and complete serialized-frame regions
+from the actual largest configured frame, so a short stream and empty input do
+not reserve a full default frame. The decoder query depends only on validated
+local limits and the 2^23 raw / 2^24 token format ceilings. No aligned or typed
+view region is needed; later public construction can partition ordinary byte
+storage without exposing a private C++ record layout.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and
