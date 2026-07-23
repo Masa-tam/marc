@@ -2613,3 +2613,15 @@ descriptor and, separately, encode a valid Literal followed by an unknown
 token tag; both must preserve every output sentinel. These checks distinguish
 successful private reconstruction from caller-visible commit and do not add a
 streaming contract.
+
+For exact LZSS plus Dynamic Range encoding, plan raw `41` into two token bytes,
+seven payload bytes, one 16-byte descriptor, and a 79-byte complete frame.
+Require the encoder to reproduce the independent frame byte for byte. For six
+repeated `A` bytes, encode twice, require identical frames, and decode through
+the transactional frame boundary to the original input.
+
+Reject one-byte token staging without changing its sentinel. After a successful
+plan, supply a 78-byte serialized destination, require the reported exact
+79-byte extent, and preserve every destination sentinel. Reject empty input,
+input inconsistent with the outer frame extent, and aggregate storage one byte
+below descriptor plus payload plus tokens.

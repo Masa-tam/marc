@@ -1501,8 +1501,16 @@ visible byte is published. The transactional complete-frame decoder implements
 step 6: it checks caller output capacity before entropy output, reconstructs
 into private raw staging, and copies exactly `F` bytes only after every nested
 stage succeeds. Every failure leaves caller output unchanged. No combined
-encoder, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
-target, or interoperability profile is implied.
+streaming transform, C ABI factory, CLI selector, benchmark, fuzz target, or
+interoperability profile is implied.
+
+The exact-frame planner first determines and emits the complete canonical LZSS
+token stream into bounded private staging. It plans Dynamic Range variant 1
+over those frozen bytes, validates the exact header and aggregate workspace,
+and reports the complete serialized extent. The deterministic encoder repeats
+the range plan, rejects short serialized output before writing it, then emits
+the header, descriptor, and payload in order. Replanning unchanged token bytes
+must reproduce the exact payload extent; disagreement is an internal error.
 
 ### Hand-checkable single-Literal frame
 

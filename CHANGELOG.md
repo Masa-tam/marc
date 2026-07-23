@@ -18,7 +18,10 @@ format versions, and C ABI versions are independent namespaces.
   aggregate policy and reconstructs only validated Literal and overlap-Match
   tokens. Its transactional complete-frame decoder checks output capacity
   before entropy work and copies the private raw extent only after every layer
-  succeeds, leaving caller output unchanged on all failures.
+  succeeds, leaving caller output unchanged on all failures. Its exact-frame
+  planner freezes canonical LZSS tokens before range planning, and its
+  deterministic encoder reproduces the independent 79-byte frame without
+  partial serialized-output writes on capacity failure.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

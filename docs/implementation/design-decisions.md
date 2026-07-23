@@ -7205,3 +7205,21 @@ must leave caller output unchanged. Bytes beyond `F` are never touched. This
 step completes transactional publication for one exact frame but adds no
 encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or interoperability
 claim.
+
+## DD-377: LZSS Dynamic Range plans from frozen token bytes
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add an exact-frame planner and encoder for the DD-373 representation. Plan and
+encode the complete deterministic LZSS token stream into caller-owned private
+staging before invoking Dynamic Range planning. Enforce `S <= min(2F, 2^24)`,
+`P <= 2S + 5`, descriptor-plus-payload-plus-token aggregate storage, exact
+outer-frame extent, and all component limits.
+
+Report the exact `56 + 16 + P` serialized extent. The encoder must reject a
+short serialized destination before writing it, replan the unchanged token
+bytes, require the same payload extent, and then serialize header, descriptor,
+and payload in order. It must reproduce the independent 79-byte frame and be
+byte-identical across repeated calls. This step adds no streaming transform,
+C ABI, CLI, benchmark, fuzz, or interoperability claim.

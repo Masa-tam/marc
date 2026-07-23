@@ -439,3 +439,107 @@ TEST(LzssDynamicRangeFrameDecoder, MalformedFrameNeverPublishesOutput) {
     EXPECT_EQ(output[0], std::byte{0xa5});
     EXPECT_EQ(output[1], std::byte{0xa5});
 }
+
+TEST(LzssDynamicRangeFrameEncoder, PlansExactHandVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    const auto result = marc::frame::plan_lzss_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, LzssDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.dictionary_size, 2U);
+    EXPECT_EQ(result.descriptor_size, 16U);
+    EXPECT_EQ(result.payload_size, 7U);
+    EXPECT_EQ(result.serialized_size, single_literal_frame.size());
+    constexpr std::array expected{std::byte{0x00}, std::byte{0x41}};
+    EXPECT_EQ(staging, expected);
+}
+
+TEST(LzssDynamicRangeFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, single_literal_frame.size()> output{};
+    const auto result = marc::frame::encode_lzss_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging, output);
+    ASSERT_EQ(result.error, LzssDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(output, single_literal_frame);
+}
+
+TEST(LzssDynamicRangeFrameEncoder,
+     RoundTripsOverlappingMatchDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'},
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'}};
+    std::array<std::byte, raw.size() * 2> encode_staging{};
+    const auto plan = marc::frame::plan_lzss_dynamic_range_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, encode_staging);
+    ASSERT_EQ(plan.error, LzssDynamicRangeFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw,
+                  encode_staging, first).error,
+              LzssDynamicRangeFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzss_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw,
+                  encode_staging, second).error,
+              LzssDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<std::byte, raw.size() * 2> decode_staging{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzss_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, first,
+                  decode_staging, raw_staging, decoded).error,
+              LzssDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssDynamicRangeFrameEncoder,
+     CapacityFailuresAreSerializedOutputAtomic) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array short_staging{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::plan_lzss_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0, raw,
+                  short_staging).error,
+              LzssDynamicRangeFrameValidationError::
+                  dictionary_staging_too_small);
+    EXPECT_EQ(short_staging[0], std::byte{0xa5});
+
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, single_literal_frame.size() - 1> short_output{};
+    short_output.fill(std::byte{0xa5});
+    const auto result = marc::frame::encode_lzss_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging, short_output);
+    EXPECT_EQ(result.error, LzssDynamicRangeFrameValidationError::
+                                serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, single_literal_frame.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+}
+
+TEST(LzssDynamicRangeFrameEncoder, RejectsEmptyAndUnexpectedFrameExtent) {
+    std::array<std::byte, 4> staging{};
+    EXPECT_EQ(marc::frame::plan_lzss_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0,
+                  std::span<const std::byte>{}, staging).error,
+              LzssDynamicRangeFrameValidationError::input_size_mismatch);
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(marc::frame::plan_lzss_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, staging).error,
+              LzssDynamicRangeFrameValidationError::input_size_mismatch);
+}
+
+TEST(LzssDynamicRangeFrameEncoder, EnforcesAggregateWorkspaceBound) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 24;
+    limits.max_internal_buffered_bytes = 24;
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    EXPECT_EQ(marc::frame::plan_lzss_dynamic_range_frame(
+                  stream_for(1), {}, limits, 0, 0, raw, staging).error,
+              LzssDynamicRangeFrameValidationError::workspace_limit);
+}

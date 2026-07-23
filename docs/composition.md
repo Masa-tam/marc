@@ -185,8 +185,11 @@ and reconstructs validated Literal and overlap-Match tokens without exposing a
 caller-visible output boundary. Its transactional complete-frame decoder now
 checks output capacity before entropy work and copies the completed private raw
 frame only after all layers succeed, leaving caller output unchanged on every
-failure. No combined encoder, streaming transform, public factory, CLI
-selector, benchmark, fuzz target, or interoperability entry is implied.
+failure. Its exact-frame planner now freezes the complete LZSS token region
+before range planning, and its deterministic encoder reproduces the 79-byte
+independent frame without partial serialized-output writes on capacity
+failure. No streaming transform, public factory, CLI selector, benchmark, fuzz
+target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

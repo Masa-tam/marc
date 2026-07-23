@@ -7674,3 +7674,27 @@ discarded and the reviewed seed retained.
 - Local validation: all nine focused frame-decoder tests and all 1,506 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range exact planner and encoder
+
+- Authoring method: composed marc's deterministic LZSS planner/encoder,
+  Dynamic Range planner/encoder, and generic serializers around a frozen
+  caller-owned token span.
+- References used: DD-377, DD-373 bounds, local checked arithmetic, descriptor
+  format, exact-frame header rules, and caller-owned staging contract.
+- Known implementations intentionally not consulted: external combined
+  encoders, range pipelines, planning algorithms, archive formats, vector
+  generators, workspace designs, source code, and tests.
+- Independent decisions: complete tokens before range planning; replan frozen
+  tokens before serialization; reject short output before writing; require
+  exact frame extent and deterministic repeated bytes.
+- Generated-code task description: add exact planner and encoder, reproduce
+  the 79-byte hand frame, prove deterministic overlap round trip, and test
+  token staging, serialized output, frame extent, empty input, and aggregate
+  limits.
+- Similarity review: the implementation follows only marc's component APIs and
+  DD-377 ordering. No external control flow, output bytes, or test structure
+  was compared.
+- Local validation: all six focused encoder tests and all 1,512 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

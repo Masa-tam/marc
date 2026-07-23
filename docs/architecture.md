@@ -1310,6 +1310,13 @@ reconstructs only into private raw staging, and performs one final exact-extent
 copy after all nested checks succeed. Descriptor, entropy, token, capacity, or
 reconstruction failure therefore leaves caller output byte-for-byte unchanged.
 
+Exact encoding uses separate caller-owned raw input, canonical-token staging,
+and serialized-frame output. The planner completes LZSS parsing first, plans
+the adaptive range payload over those immutable token bytes, validates header
+and aggregate bounds, and returns an exact extent. The encoder refuses a short
+destination before writing and rechecks that the frozen token bytes yield the
+same descriptor and payload extent before serializing.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

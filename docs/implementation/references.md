@@ -1255,3 +1255,10 @@ DD-376, the completed private raw decoder, caller-supplied byte spans, and
 marc's existing exact-frame commit convention. No external decompression API,
 transactional-output strategy, buffer design, source code, malformed corpus,
 or test suite was consulted.
+
+The LZSS plus Dynamic Range exact planner and encoder use only DD-377, marc's
+existing deterministic LZSS encoder, Dynamic Range planner and encoder,
+generic frame and descriptor serializers, checked arithmetic, and local
+caller-owned staging contract. No external combined encoder, planning
+algorithm, source code, format, vector generator, workspace design, or test
+suite was consulted.
