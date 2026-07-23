@@ -192,8 +192,12 @@ failure. Its first bounded streaming encoder now drains the canonical prefix,
 collects one exact raw frame, freezes and encodes the complete token region,
 and retains the immutable serialized frame across arbitrary output starvation.
 One-byte input/output, nonterminal `Flush`, and retained `EndInput` preserve
-the exact-frame byte sequence. No streaming decoder, public factory, CLI
-selector, benchmark, fuzz target, or interoperability entry is implied.
+the exact-frame byte sequence. Its matching bounded streaming decoder collects
+one admitted frame, validates and reconstructs it privately, then exposes raw
+bytes under arbitrary output starvation. Truncation, trailing data, impossible
+extents, and corruption of a later frame publish no bytes from the failing
+frame. No public factory, CLI selector, benchmark, fuzz target, or
+interoperability entry is implied.
 
 ## Why publication is not automatic
 

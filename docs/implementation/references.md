@@ -1268,3 +1268,10 @@ completed exact-frame planner and encoder, marc's transform status contract,
 stream header and LZSS parameter serializers, checked aggregate accounting,
 and existing frame-boundary semantics. No external streaming codec, buffering
 design, state machine, source code, test vector, or test suite was consulted.
+
+The LZSS plus Dynamic Range bounded streaming decoder uses only DD-379, the
+private complete-frame decoder, marc's generic stream and frame parsers,
+transform status contract, checked extent and workspace arithmetic, and
+transactional frame-publication rule. No external streaming decoder, buffering
+state machine, source code, malformed corpus, error taxonomy, or test suite was
+consulted.

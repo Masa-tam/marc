@@ -2639,3 +2639,18 @@ one byte below raw plus actual tokens plus exact serialized frame and require a
 stable limit error. For empty input require only the 80-byte prefix. Reject
 premature `EndInput`, excess input, unknown flags, and `ResetBlock` without
 silently changing the declared frame sequence.
+
+For bounded LZSS plus Dynamic Range streaming decoding, consume the DD-378
+multi-frame stream one input byte at a time and drain one raw byte at a time;
+require `ABABX`, exact input consumption, and sticky completion. Corrupt the
+second frame's Dynamic Range descriptor and require only the first frame's
+`AB` to commit while every later output sentinel remains unchanged.
+
+Reject every final-byte truncation, one trailing byte, premature `EndInput`
+after the first complete frame, and `ResetBlock`. Exercise short serialized,
+token, and raw regions independently, then set the aggregate limit one byte
+below the first frame's serialized-plus-token-plus-raw requirement. Finally,
+serialize a valid generic header whose token extent is `2F + 1`; require
+malformed-stream rejection immediately after that header, before body
+collection or output publication. Empty input must accept the prefix alone,
+and `Flush` while starved must remain `NeedInput`.

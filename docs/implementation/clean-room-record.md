@@ -7725,3 +7725,31 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-encoder tests and all 1,517
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range bounded streaming decoder
+
+- Authoring method: placed marc's incremental prefix and frame collection
+  contract around the completed private exact-frame reconstruction boundary.
+- References used: DD-379, DD-375, local stream and frame parsers, Dynamic
+  Range and LZSS extent bounds, checked arithmetic, caller-owned staging, and
+  transform status invariants.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, combined LZ/range pipelines, source
+  code, malformed corpora, error taxonomies, and test suites.
+- Independent decisions: reject impossible token and payload extents after
+  the fixed frame header and before body collection; collect exactly one
+  admitted frame; reconstruct privately; expose only a complete successful
+  frame; retain finalization while raw output drains; preserve earlier frames
+  while keeping a malformed later frame atomic.
+- Generated-code task description: add the bounded inverse transform; prove
+  one-byte input/output, empty and sticky terminal behavior, prior-frame
+  commit under later corruption, workspace errors, truncation, trailing data,
+  premature finish, unknown flags, `ResetBlock`, and early rejection of
+  `S > 2F`.
+- Similarity review: the state machine and early checks follow only marc's
+  documented local transform, frame, and exact-decoder contracts. No external
+  control flow, buffer layout, malformed-case selection, or test expression
+  was compared.
+- Local validation: all six focused streaming-decoder tests and all 1,523
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

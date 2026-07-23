@@ -1522,6 +1522,18 @@ last complete frame has drained. Empty input consists only of the prefix.
 factory, CLI selector, benchmark, fuzz target, or interoperability profile is
 implied.
 
+The matching bounded streaming decoder incrementally collects the 80-byte
+prefix and each 56-byte frame header. Before accepting a frame body it checks
+`S <= 2F`, `S <= 2^24`, `P <= 2S + 5`, all caller capacities, the exact
+serialized extent, and aggregate serialized-plus-token-plus-raw workspace.
+It then collects exactly that frame, invokes the private complete-frame
+decoder, and makes raw bytes drainable only after all entropy, token, and
+reconstruction checks succeed. A malformed later frame cannot retract already
+committed earlier frames but publishes none of its own bytes. Premature end,
+trailing input, and invalid prefix, header, descriptor, payload, or token data
+are malformed streams. `EndInput` remains effective while the final verified
+frame drains.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token `00 41`.

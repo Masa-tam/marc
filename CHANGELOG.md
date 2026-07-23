@@ -24,7 +24,10 @@ format versions, and C ABI versions are independent namespaces.
   partial serialized-output writes on capacity failure. Its first bounded
   streaming encoder preserves the exact concatenated frame bytes under
   one-byte input/output, output starvation, nonterminal `Flush`, and retained
-  `EndInput`.
+  `EndInput`. Its matching bounded streaming decoder validates and reconstructs
+  each complete frame before raw draining, rejects impossible extents before
+  body collection, and preserves current-frame atomicity on truncation,
+  trailing data, or later corruption.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

@@ -7244,3 +7244,25 @@ it through output starvation; emit prefix only for empty input. Reject
 `ResetBlock`, excess or premature input, invalid configuration, and insufficient
 workspace with stable transform errors. This step adds no streaming decoder,
 C ABI, CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-379: LZSS Dynamic Range streaming decoding admits one frame
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add the inverse bounded transform for DD-378. Incrementally collect and parse
+the 80-byte stream prefix and one 56-byte frame header. Before collecting its
+body, require nonzero `S <= min(2F, 2^24)`, `P <= 2S + 5`, sufficient
+serialized-frame, token, and private-raw capacities, and the aggregate
+serialized-plus-token-plus-raw limit.
+
+Collect exactly the admitted serialized frame, invoke DD-375 private
+reconstruction, and expose raw bytes only after that whole frame succeeds.
+Retain a successfully decoded frame across arbitrary output starvation and
+retain final `EndInput` until it drains. Earlier complete frames remain
+committed if a later frame fails, but the failing frame publishes nothing.
+Reject invalid prefixes, parameters, headers, descriptors, payloads, tokens,
+premature end, trailing bytes, unknown flags, and `ResetBlock` with stable
+transform categories and sticky terminal state. This step adds no workspace
+profile, public C ABI, completion matrix, fuzz target, CLI, benchmark, or
+interoperability claim.

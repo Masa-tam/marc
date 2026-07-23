@@ -1324,7 +1324,12 @@ declared raw frame, freezes and encodes it through the exact-frame boundary,
 then drains that immutable frame before accepting the next. This preserves
 byte identity across one-byte input and output, retains finalization across
 output starvation, and leaves nonterminal `Flush` unable to alter framing. A
-matching streaming decoder remains the next separate boundary.
+matching streaming decoder incrementally collects the prefix, one fixed frame
+header, and only the admitted exact frame body. It validates the Dynamic Range
+and LZSS extent ceilings before body collection, reconstructs into caller-owned
+private raw staging through the transactional frame decoder, and drains that
+frame only after complete success. A malformed later frame therefore leaves
+earlier committed output intact and publishes none of the failing frame.
 
 ### LZSS plus Adaptive Huffman specified boundary
 
