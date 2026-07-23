@@ -105,9 +105,11 @@ strictly range-decodes into private token staging, and validates the entire
 variable-length LZSS stream with stable token and byte positions. It remains
 `Specified`: its bounded private decoder now counts raw staging in the
 aggregate and reconstructs only validated Literal and overlap-Match tokens.
-A transactional caller-visible frame boundary, combined encoder, streaming
-transforms, public C factory, completion matrix, fuzzing, CLI, benchmark, and
-interoperability evidence are not yet implemented.
+Its transactional complete-frame decoder now publishes only a fully validated
+and reconstructed private frame and leaves output unchanged on failure. A
+combined encoder, streaming transforms, public C factory, completion matrix,
+fuzzing, CLI, benchmark, and interoperability evidence are not yet
+implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

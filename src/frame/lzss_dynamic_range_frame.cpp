@@ -45,7 +45,9 @@ inline constexpr std::uint64_t termination_bytes = 5;
     const std::span<const std::byte> input,
     const std::span<std::byte> dictionary_staging,
     const bool require_raw_staging,
-    const std::span<std::byte> raw_staging) noexcept {
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzssDynamicRangeFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -135,6 +137,11 @@ inline constexpr std::uint64_t termination_bytes = 5;
     if (require_raw_staging && raw_staging.size() < result.raw_size) {
         result.error =
             LzssDynamicRangeFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error =
+            LzssDynamicRangeFrameValidationError::raw_output_too_small;
         return result;
     }
 
@@ -241,7 +248,7 @@ LzssDynamicRangeFrameValidationResult validate_lzss_dynamic_range_frame(
     const std::span<std::byte> dictionary_staging) noexcept {
     return validate_frame(stream, parameters, limits, expected_sequence,
                           output_already_committed, input, dictionary_staging,
-                          false, {});
+                          false, {}, false, {});
 }
 
 LzssDynamicRangeFrameValidationResult
@@ -257,7 +264,7 @@ decode_lzss_dynamic_range_frame_to_staging(
     auto result = validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, dictionary_staging, true,
-        raw_staging);
+        raw_staging, false, {});
     if (result.error != LzssDynamicRangeFrameValidationError::none) {
         return result;
     }
@@ -265,6 +272,31 @@ decode_lzss_dynamic_range_frame_to_staging(
             result, parameters, limits, dictionary_staging, raw_staging)) {
         return result;
     }
+    return result;
+}
+
+LzssDynamicRangeFrameValidationResult decode_lzss_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, true,
+        raw_staging, true, output);
+    if (result.error != LzssDynamicRangeFrameValidationError::none) {
+        return result;
+    }
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 

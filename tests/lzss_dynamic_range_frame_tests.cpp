@@ -351,3 +351,91 @@ TEST(LzssDynamicRangeFrameDecoder, MalformedLayersDoNotTouchRawStaging) {
     EXPECT_EQ(raw_staging[0], std::byte{0xa5});
     EXPECT_EQ(raw_staging[1], std::byte{0xa5});
 }
+
+TEST(LzssDynamicRangeFrameDecoder, PublishesHandVectorAfterPrivateDecode) {
+    std::array<std::byte, 2> dictionary_staging{};
+    std::array raw_staging{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    std::array output{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    const auto result = marc::frame::decode_lzss_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, single_literal_frame,
+        dictionary_staging, raw_staging, output);
+    ASSERT_EQ(result.error, LzssDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+    EXPECT_EQ(output[2], std::byte{0xa5});
+}
+
+TEST(LzssDynamicRangeFrameDecoder, PublishesOverlappingMatchAtomically) {
+    std::array<std::byte, 11> tokens{};
+    std::size_t written{};
+    ASSERT_EQ(marc::dictionary::internal::serialize_lzss_token(
+                  {marc::dictionary::internal::LzssTokenTag::literal,
+                   0, 0, 'A'},
+                  tokens, written),
+              marc::dictionary::internal::LzssFormatError::none);
+    ASSERT_EQ(marc::dictionary::internal::serialize_lzss_token(
+                  {marc::dictionary::internal::LzssTokenTag::match,
+                   1, 5, 0},
+                  std::span<std::byte>{tokens}.subspan(written), written),
+              marc::dictionary::internal::LzssFormatError::none);
+    const auto frame = frame_for_tokens(tokens, 6);
+
+    std::array<std::byte, tokens.size()> dictionary_staging{};
+    std::array<std::byte, 6> raw_staging{};
+    std::array output{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
+        std::byte{0xa5}};
+    const auto result = marc::frame::decode_lzss_dynamic_range_frame(
+        stream_for(6), {}, {}, 0, 0, frame, dictionary_staging,
+        raw_staging, output);
+    ASSERT_EQ(result.error, LzssDynamicRangeFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::all_of(
+        std::span<const std::byte>{output}.first<6>(),
+        [](const std::byte value) {
+            return value == std::byte{'A'};
+        }));
+    EXPECT_EQ(output[6], std::byte{0xa5});
+}
+
+TEST(LzssDynamicRangeFrameDecoder, OutputCapacityFailurePrecedesMutation) {
+    std::array dictionary_staging{std::byte{0xa5}, std::byte{0xa5}};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lzss_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, single_literal_frame,
+        dictionary_staging, raw_staging, {});
+    EXPECT_EQ(result.error,
+              LzssDynamicRangeFrameValidationError::raw_output_too_small);
+    EXPECT_EQ(dictionary_staging[0], std::byte{0xa5});
+    EXPECT_EQ(dictionary_staging[1], std::byte{0xa5});
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(LzssDynamicRangeFrameDecoder, MalformedFrameNeverPublishesOutput) {
+    std::array<std::byte, 4> dictionary_staging{};
+    std::array raw_staging{std::byte{0xa5}, std::byte{0xa5}};
+    std::array output{std::byte{0xa5}, std::byte{0xa5}};
+    auto malformed_descriptor = single_literal_frame;
+    malformed_descriptor[71] = std::byte{1};
+    EXPECT_EQ(marc::frame::decode_lzss_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0, malformed_descriptor,
+                  dictionary_staging, raw_staging, output).error,
+              LzssDynamicRangeFrameValidationError::descriptor_error);
+    EXPECT_EQ(output[0], std::byte{0xa5});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+
+    constexpr std::array invalid_tokens{
+        std::byte{0x00}, std::byte{0x41},
+        std::byte{0x02}, std::byte{0x42}};
+    const auto invalid_dictionary = frame_for_tokens(invalid_tokens, 2);
+    EXPECT_EQ(marc::frame::decode_lzss_dynamic_range_frame(
+                  stream_for(2), {}, {}, 0, 0, invalid_dictionary,
+                  dictionary_staging, raw_staging, output).error,
+              LzssDynamicRangeFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0xa5});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+}

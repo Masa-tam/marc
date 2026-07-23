@@ -16,7 +16,9 @@ format versions, and C ABI versions are independent namespaces.
   variable-length token stream in private staging with stable token and byte
   failure positions. Its bounded private decoder now counts raw staging in the
   aggregate policy and reconstructs only validated Literal and overlap-Match
-  tokens. No raw byte is published to a caller-visible output boundary.
+  tokens. Its transactional complete-frame decoder checks output capacity
+  before entropy work and copies the private raw extent only after every layer
+  succeeds, leaving caller output unchanged on all failures.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

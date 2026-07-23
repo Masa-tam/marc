@@ -1249,3 +1249,9 @@ semantics, checked raw and aggregate workspace policy, and local exact-frame
 contracts. No external combined decoder, decompression pipeline,
 transactional-publication design, source code, malformed corpus, workspace
 layout, or test suite was consulted.
+
+The LZSS plus Dynamic Range transactional publication boundary uses only
+DD-376, the completed private raw decoder, caller-supplied byte spans, and
+marc's existing exact-frame commit convention. No external decompression API,
+transactional-output strategy, buffer design, source code, malformed corpus,
+or test suite was consulted.

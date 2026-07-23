@@ -182,9 +182,11 @@ complete variable-length LZSS stream without reconstructing or publishing raw
 bytes. It reports stable token index and byte offset for dictionary failures.
 Its bounded private decoder now includes raw staging in the aggregate policy
 and reconstructs validated Literal and overlap-Match tokens without exposing a
-caller-visible output boundary. No combined encoder, transactional publication
-boundary, streaming transform, public factory, CLI selector, benchmark, fuzz
-target, or interoperability entry is implied.
+caller-visible output boundary. Its transactional complete-frame decoder now
+checks output capacity before entropy work and copies the completed private raw
+frame only after all layers succeed, leaving caller output unchanged on every
+failure. No combined encoder, streaming transform, public factory, CLI
+selector, benchmark, fuzz target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

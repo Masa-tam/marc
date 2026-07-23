@@ -1304,6 +1304,12 @@ against only that private raw span. Short raw storage, aggregate-limit failure,
 and malformed descriptor or token layers therefore cannot mutate raw staging.
 There is still no caller-visible publication boundary in this step.
 
+The transactional complete-frame decoder adds that boundary without changing
+the representation. It rejects short caller output before entropy work,
+reconstructs only into private raw staging, and performs one final exact-extent
+copy after all nested checks succeed. Descriptor, entropy, token, capacity, or
+reconstruction failure therefore leaves caller output byte-for-byte unchanged.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

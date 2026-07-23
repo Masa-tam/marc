@@ -1497,8 +1497,11 @@ through step 5: it checks raw capacity and the
 descriptor-plus-payload-plus-token-plus-raw aggregate before entropy output,
 then applies the ordinary LZSS Literal and overlap-Match reconstruction only
 to fully validated tokens. Its raw staging remains private and no caller-
-visible byte is published. No combined encoder, transactional publication
-boundary, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
+visible byte is published. The transactional complete-frame decoder implements
+step 6: it checks caller output capacity before entropy output, reconstructs
+into private raw staging, and copies exactly `F` bytes only after every nested
+stage succeeds. Every failure leaves caller output unchanged. No combined
+encoder, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
 target, or interoperability profile is implied.
 
 ### Hand-checkable single-Literal frame

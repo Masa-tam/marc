@@ -7188,3 +7188,20 @@ failure into a distinct combined error with its token and byte position.
 Return the private raw extent without copying it to caller-visible output.
 This step adds no publication boundary, encoder, streaming transform, C ABI,
 CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-376: LZSS Dynamic Range publishes only complete frames
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add a caller-visible exact-frame decoder above DD-375. Require output capacity
+for exactly `F` bytes before entropy output, in addition to the existing token,
+private raw, and aggregate checks. Run the unchanged validator and private
+reconstruction path, then copy the complete private raw extent to output only
+after success.
+
+Every capacity, header, descriptor, entropy, token, or reconstruction failure
+must leave caller output unchanged. Bytes beyond `F` are never touched. This
+step completes transactional publication for one exact frame but adds no
+encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or interoperability
+claim.

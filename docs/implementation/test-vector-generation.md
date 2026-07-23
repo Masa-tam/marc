@@ -2601,3 +2601,15 @@ raw and preserve both token and raw sentinels. Corrupt the descriptor and,
 separately, range-code a valid Literal followed by an unknown tag; neither case
 may mutate private raw staging. No caller-visible output participates in these
 tests.
+
+For transactional LZSS plus Dynamic Range publication, decode the independent
+single-Literal frame into private raw and a three-byte sentinel-filled output;
+require only output byte zero to become `41`. Publish the distance-one,
+length-five overlap vector into a seven-byte output and require six `41` bytes
+while preserving the final sentinel.
+
+Reject zero caller output before token or raw staging mutation. Corrupt the
+descriptor and, separately, encode a valid Literal followed by an unknown
+token tag; both must preserve every output sentinel. These checks distinguish
+successful private reconstruction from caller-visible commit and do not add a
+streaming contract.
