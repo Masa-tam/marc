@@ -7169,3 +7169,22 @@ format category, token index, and byte offset in the combined result. This
 boundary does not reconstruct raw bytes and therefore cannot publish any. It
 adds no encoder, streaming transform, public C ABI, CLI, benchmark, fuzz, or
 interoperability claim.
+
+## DD-375: LZSS Dynamic Range reconstructs only validated tokens
+
+- Date: 2026-07-24
+- Status: accepted
+
+Extend the DD-374 boundary with caller-owned private raw staging. Before range
+output, require raw capacity for exactly `F` bytes and count descriptor,
+payload, canonical tokens, and raw staging together against the internal
+buffer limit. Reuse DD-374 unchanged for pipeline, header, descriptor, entropy,
+and complete variable-token validation.
+
+Only after successful validation, invoke the existing bounded LZSS decoder on
+the private token and raw spans. Preserve Literal handling and specified
+forward overlap-copy semantics; map any impossible post-validation decoder
+failure into a distinct combined error with its token and byte position.
+Return the private raw extent without copying it to caller-visible output.
+This step adds no publication boundary, encoder, streaming transform, C ABI,
+CLI, benchmark, fuzz, or interoperability claim.

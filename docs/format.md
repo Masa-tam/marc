@@ -1492,9 +1492,14 @@ the frame. The internal bounded validator implements steps 1 through 4. It
 checks descriptor-plus-payload-plus-token aggregate storage before entropy
 output, range-decodes only after a successful no-output preflight, and reports
 the stable token index and byte offset of LZSS validation failures. It stops at
-private canonical token staging and neither reconstructs nor publishes raw
-bytes. No combined encoder, streaming transform, C ABI factory, CLI selector,
-benchmark, fuzz target, or interoperability profile is implied.
+private canonical token staging. The bounded private decoder extends this
+through step 5: it checks raw capacity and the
+descriptor-plus-payload-plus-token-plus-raw aggregate before entropy output,
+then applies the ordinary LZSS Literal and overlap-Match reconstruction only
+to fully validated tokens. Its raw staging remains private and no caller-
+visible byte is published. No combined encoder, transactional publication
+boundary, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
+target, or interoperability profile is implied.
 
 ### Hand-checkable single-Literal frame
 

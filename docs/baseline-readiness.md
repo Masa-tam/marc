@@ -103,7 +103,9 @@ order, and independent 79-byte single-Literal frame. Its first bounded
 complete-frame validator now enforces those extents and aggregate storage,
 strictly range-decodes into private token staging, and validates the entire
 variable-length LZSS stream with stable token and byte positions. It remains
-`Specified`: private raw reconstruction, a combined encoder, streaming
+`Specified`: its bounded private decoder now counts raw staging in the
+aggregate and reconstructs only validated Literal and overlap-Match tokens.
+A transactional caller-visible frame boundary, combined encoder, streaming
 transforms, public C factory, completion matrix, fuzzing, CLI, benchmark, and
 interoperability evidence are not yet implemented.
 

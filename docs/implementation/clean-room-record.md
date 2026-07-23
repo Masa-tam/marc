@@ -7628,3 +7628,27 @@ discarded and the reviewed seed retained.
 - Local validation: all eight focused validator tests and all 1,497 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range private raw decoder
+
+- Authoring method: extended the completed exact-frame validator with marc's
+  existing bounded LZSS reconstruction path and a separate caller-owned raw
+  staging span.
+- References used: DD-375, DD-374, local LZSS Literal and overlap-Match
+  semantics, checked aggregate accounting, and exact-frame result categories.
+- Known implementations intentionally not consulted: external combined
+  decoders, decompression pipelines, overlap-copy implementations,
+  transactional buffer designs, source code, malformed corpora, and tests.
+- Independent decisions: check raw capacity and the four-region aggregate
+  before entropy output; reconstruct only after full token validation; retain
+  decoder error position; expose no caller-visible output in this step.
+- Generated-code task description: add private reconstruction, prove the hand
+  vector and a distance-one overlap Match, and reject short raw storage,
+  aggregate shortage, malformed descriptors, and invalid later tokens without
+  raw mutation.
+- Similarity review: the implementation composes only marc-owned component
+  contracts and its documented forward-copy rule. No external code structure
+  or test selection was compared.
+- Local validation: all five focused private-decoder tests and all 1,502
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

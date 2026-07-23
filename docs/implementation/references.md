@@ -1242,3 +1242,10 @@ descriptor and strict two-pass decoder, LZSS token validator, checked
 arithmetic, and local decoder-limit contracts. No external combined
 LZ/range validator, decompression pipeline, source code, malformed corpus,
 error taxonomy, or test suite was consulted.
+
+The LZSS plus Dynamic Range private raw decoder uses only DD-375, the completed
+DD-374 validator, marc's existing bounded LZSS decoder and overlap-copy
+semantics, checked raw and aggregate workspace policy, and local exact-frame
+contracts. No external combined decoder, decompression pipeline,
+transactional-publication design, source code, malformed corpus, workspace
+layout, or test suite was consulted.

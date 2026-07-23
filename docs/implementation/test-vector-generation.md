@@ -2588,3 +2588,16 @@ and byte offset 2. Separately encode a four-byte prefix of a Match token and
 require a truncated-token error at token index and byte offset zero. These
 checks exercise the variable token grammar without using a future combined
 encoder as an oracle.
+
+For private LZSS plus Dynamic Range reconstruction, decode the independent
+single-Literal frame into a three-byte sentinel-filled raw span and require
+only the first byte to become `41`. Construct canonical LZSS bytes for Literal
+`A` followed by Match distance 1 and length 5, range-code those bytes with the
+standalone entropy encoder, and require six private `A` bytes.
+
+Before entropy output, reject zero raw capacity and preserve token sentinels.
+Set the aggregate limit one byte below descriptor plus payload plus tokens plus
+raw and preserve both token and raw sentinels. Corrupt the descriptor and,
+separately, range-code a valid Literal followed by an unknown tag; neither case
+may mutate private raw staging. No caller-visible output participates in these
+tests.

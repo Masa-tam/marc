@@ -14,7 +14,9 @@ format versions, and C ABI versions are independent namespaces.
   first bounded complete-frame validator now checks all declared and aggregate
   extents, range-decodes only after strict preflight, and validates the entire
   variable-length token stream in private staging with stable token and byte
-  failure positions. It reconstructs and publishes no raw bytes.
+  failure positions. Its bounded private decoder now counts raw staging in the
+  aggregate policy and reconstructs only validated Literal and overlap-Match
+  tokens. No raw byte is published to a caller-visible output boundary.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

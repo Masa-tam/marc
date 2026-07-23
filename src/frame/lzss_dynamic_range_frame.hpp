@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZSS_DYNAMIC_RANGE_FRAME_HPP
 #define MARC_FRAME_LZSS_DYNAMIC_RANGE_FRAME_HPP
 
+#include "dictionary/lzss_decoder.hpp"
 #include "dictionary/lzss_format.hpp"
 #include "dictionary/lzss_validator.hpp"
 #include "entropy/dynamic_range_decoder.hpp"
@@ -23,10 +24,12 @@ enum class LzssDynamicRangeFrameValidationError : std::uint8_t {
     invalid_dictionary_extent,
     invalid_entropy_extent,
     dictionary_staging_too_small,
+    raw_staging_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
 };
 
@@ -47,6 +50,8 @@ struct LzssDynamicRangeFrameValidationResult {
         dictionary::internal::LzssValidationError::none};
     dictionary::internal::LzssFormatError dictionary_format_error{
         dictionary::internal::LzssFormatError::none};
+    dictionary::internal::LzssDecodeError dictionary_decode_error{
+        dictionary::internal::LzssDecodeError::none};
     LzssDynamicRangeFrameValidationError error{
         LzssDynamicRangeFrameValidationError::none};
 };
@@ -63,6 +68,19 @@ validate_lzss_dynamic_range_frame(
     std::uint64_t output_already_committed,
     std::span<const std::byte> input,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Validates every layer and reconstructs exactly one frame into private raw
+// staging without publishing it to caller-visible output.
+[[nodiscard]] LzssDynamicRangeFrameValidationResult
+decode_lzss_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

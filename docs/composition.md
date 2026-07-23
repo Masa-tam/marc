@@ -180,8 +180,11 @@ complete-frame validator now checks declared and aggregate extents, performs a
 strict range preflight, decodes into private token staging, and validates the
 complete variable-length LZSS stream without reconstructing or publishing raw
 bytes. It reports stable token index and byte offset for dictionary failures.
-No combined encoder, streaming transform, public factory, CLI selector,
-benchmark, fuzz target, or interoperability entry is implied.
+Its bounded private decoder now includes raw staging in the aggregate policy
+and reconstructs validated Literal and overlap-Match tokens without exposing a
+caller-visible output boundary. No combined encoder, transactional publication
+boundary, streaming transform, public factory, CLI selector, benchmark, fuzz
+target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

@@ -1295,7 +1295,14 @@ and descriptor-plus-payload-plus-token aggregate bounds before mutation, then
 uses the range decoder's no-output preflight before filling private token
 staging. The ordinary LZSS validator parses that complete variable-length
 region and returns stable token and byte positions. No raw output boundary is
-present in this step.
+present in that validator.
+
+The private decoder adds a separately bounded raw region to the aggregate
+before entropy output. After the complete token stream passes validation, it
+invokes the ordinary LZSS reconstruction path, including forward overlap copy,
+against only that private raw span. Short raw storage, aggregate-limit failure,
+and malformed descriptor or token layers therefore cannot mutate raw staging.
+There is still no caller-visible publication boundary in this step.
 
 ### LZSS plus Adaptive Huffman specified boundary
 
