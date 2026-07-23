@@ -1360,6 +1360,14 @@ partial-I/O schedules and a fixed call ceiling make a stalled state machine
 reproducible. Permanent tests retain frame-atomic rejection of every canonical
 truncation, saturated extent fields, and a malformed range descriptor.
 
+The explicit CLI selector is a thin public-C-ABI adapter. It fixes 64-KiB raw
+frames, the 128-KiB LZSS token ceiling, the 262,149-byte range-payload ceiling,
+and the 458,829-byte aggregate policy, then obtains the actual
+direction-specific regions from the public requirements query. Output remains
+hidden in a sibling `.tmp` path until the transform ends, the file closes, and
+an atomic rename publishes it. Any malformed or trailing input removes the
+temporary output, including after earlier frames were decoded internally.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

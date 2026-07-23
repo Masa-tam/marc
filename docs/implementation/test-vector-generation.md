@@ -2721,3 +2721,13 @@ bytes 16 through 39 with `ff`, then set the last byte of the 16-byte Dynamic
 Range descriptor nonzero; both mutations must satisfy the same atomic and
 sticky failure checks. Retain only the hand-authored five-byte `MARC\n`
 truncation as the initial fuzz corpus.
+
+For `lzss-dynamic-range` CLI admission, create the repository-standard binary
+fixture by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode
+with the explicit selector and compare the restored file byte for byte. Repeat
+encode to the same destination and require refusal. Decode `not-a-marc-stream`
+and a valid archive with one appended `x`; both must fail and leave neither
+the requested destination nor its sibling `.tmp`. Finally round-trip a
+zero-byte file. The CLI profile fixes `F = 65,536`, `S = 131,072`,
+`P = 262,149`, and aggregate limit 458,829, while all actual workspace extents
+must come from the public C requirements query.

@@ -7863,3 +7863,32 @@ discarded and the reviewed seed retained.
   The LZSS harness compiled in ordinary builds, all three permanent regressions
   passed, and all 1,538 Release tests passed under both MSVC/Visual Studio 2026
   and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range transactional CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit-selector and transactional temporary-file loop without calling
+  private C++ frame APIs.
+- References used: DD-384, the public LZSS Dynamic Range config, requirements
+  query and factory, the local 64-KiB reference profile, and the repository's
+  existing CLI process and round-trip contracts.
+- Known implementations intentionally not consulted: external archive tools,
+  compression CLIs, combined codec adapters, workspace policies, source code,
+  command syntax, and test suites.
+- Independent decisions: keep LZ77 as the default; require the explicit
+  `lzss-dynamic-range` selector in both directions; derive the 131,072-byte
+  token, 262,149-byte payload, and 458,829-byte aggregate limits directly from
+  the local format; query actual direction-specific workspaces through C;
+  retain output invisibility until close and rename succeed.
+- Generated-code task description: add the selector, fixed profile
+  configuration, requirements and creation dispatch, usage text, and a CLI
+  regression for binary/empty round trip, overwrite refusal, malformed and
+  trailing rejection, and temporary-output cleanup.
+- Similarity review: the new branches mirror marc's own public-profile adapter
+  convention and use only published local C symbols and formulas. No external
+  CLI structure, option spelling, workspace partition, error flow, or test
+  expression was compared.
+- Local validation: the new test first failed with exit code 2 while the
+  selector was absent, then passed after the public-C-only adapter was added.
+  All 1,539 Release tests passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

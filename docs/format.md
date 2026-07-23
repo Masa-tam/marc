@@ -1562,6 +1562,9 @@ from serialized metadata, and uses a finite process-call ceiling. Permanent
 regressions preserve transactional rejection for every proper prefix of a
 canonical frame, saturated generic-frame extent fields, and an invalid
 Dynamic Range descriptor. This evidence adds no format field or variant.
+The explicit CLI selector `lzss-dynamic-range` binds this same profile through
+the public C ABI and transactional file adapter; it does not infer a codec from
+the stream or alter any serialized byte.
 
 ### Hand-checkable single-Literal frame
 

@@ -7359,3 +7359,23 @@ sanitizer-linked libFuzzer executable. Also register the previously omitted
 sanitizer executable for the existing LZ77 Dynamic Range harness so documented
 and buildable targets agree. This step changes no format or ABI and adds no
 CLI, benchmark, or interoperability claim.
+
+## DD-384: LZSS Dynamic Range CLI uses the bounded public profile
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add the explicit selector `lzss-dynamic-range` through only the public C ABI
+and existing transactional temporary-file loop. Use 65,536-byte raw frames,
+the `2F = 131,072` canonical LZSS token ceiling, the
+`2S + 5 = 262,149` Dynamic Range payload ceiling, and the resulting
+`7F + 77 = 458,829` complete simultaneous-workspace policy. Obtain both
+direction-specific workspace extents from the public requirements query; do
+not reproduce the private workspace partition.
+
+Require binary and empty round trips, refusal to overwrite an existing output,
+malformed-input and strict trailing-data rejection, and removal of both the
+requested output and `.tmp` staging path on failure. Keep selection explicit,
+retain `lz77` as the default, and require callers to select the same codec for
+decode rather than inferring it from the stream. This step changes no stream or
+C ABI representation and adds no benchmark or interoperability entry.

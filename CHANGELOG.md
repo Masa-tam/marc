@@ -38,7 +38,9 @@ format versions, and C ABI versions are independent namespaces.
   frame and incremental parsing with bounded caller-owned workspaces and a
   fixed call ceiling. Permanent regressions cover every canonical truncation,
   extreme frame extents, and an invalid Dynamic Range descriptor without
-  current-frame output publication.
+  current-frame output publication. The explicit `lzss-dynamic-range` CLI
+  selector now uses the bounded public C profile through the existing
+  transactional temporary-file workflow.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

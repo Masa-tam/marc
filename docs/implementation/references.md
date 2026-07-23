@@ -1301,3 +1301,9 @@ generation. The five-byte seed and all permanent malformed cases were written
 from marc's own magic, header, descriptor, and transactional-publication
 rules. No external fuzz harness, corpus, crash sample, combined codec,
 implementation source, or test suite was consulted.
+
+The LZSS plus Dynamic Range CLI adapter uses only DD-384, the published marc C
+requirements query and factory, the local fixed 64-KiB reference profile, and
+the repository's existing transactional file loop and CLI round-trip script.
+No external command-line interface, archive tool, combined codec adapter,
+workspace policy, source code, or test suite was consulted.

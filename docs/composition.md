@@ -196,8 +196,8 @@ the exact-frame byte sequence. Its matching bounded streaming decoder collects
 one admitted frame, validates and reconstructs it privately, then exposes raw
 bytes under arbitrary output starvation. Truncation, trailing data, impossible
 extents, and corruption of a later frame publish no bytes from the failing
-frame. No CLI selector, benchmark, fuzz target, or interoperability entry is
-implied by the streaming boundary alone.
+frame. That streaming boundary alone did not imply a CLI selector, benchmark,
+fuzz target, or interoperability entry; each is admitted independently below.
 
 The bounded profile now derives the three encoder and three decoder byte
 regions independently. Encoder sizing uses the actual largest frame and the
@@ -219,8 +219,10 @@ Its bounded dual-path decoder fuzz target now exercises exact-frame and
 incremental admission with fixed arrays, byte-derived chunks, and a finite call
 ceiling. Permanent malformed regressions require every canonical truncation,
 extreme generic-frame lengths, and an invalid Dynamic Range descriptor to fail
-without publishing a byte from the current frame. CLI, benchmark, and
-interoperability admission remain separate steps.
+without publishing a byte from the current frame. Its explicit CLI selector
+now reaches the composition only through the public requirements query and
+factory and retains the common transactional temporary-file boundary.
+Benchmark and interoperability admission remain separate steps.
 
 ## Why publication is not automatic
 

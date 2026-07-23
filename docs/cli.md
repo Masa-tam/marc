@@ -40,6 +40,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzss` | LZSS | None | Variant 1 |
 | `lzss-blocked-huffman` | LZSS | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzss-adaptive-huffman` | LZSS | Adaptive Huffman | FGK tree reset per outer frame |
+| `lzss-dynamic-range` | LZSS | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lz78` | LZ78 | None | Variant 1 |
 | `lz78-blocked-huffman` | LZ78 | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lz78-adaptive-huffman` | LZ78 | Adaptive Huffman | FGK tree reset per outer frame |
@@ -72,6 +73,13 @@ exact LZSS worst case is 131,072 canonical token bytes and its conservative
 Adaptive payload limit is 4,325,376 bytes. The CLI supplies these hard limits
 but obtains both direction-specific workspace extents from the public C ABI
 query; it does not reproduce the private token/frame partition.
+
+The `lzss-dynamic-range` adapter uses the same 65,536-byte raw frames and
+131,072-byte canonical LZSS token ceiling. Its conservative `2S + 5` Dynamic
+Range payload bound is 262,149 bytes and its complete simultaneous-workspace
+policy is 458,829 bytes. Both direction-specific workspace extents come from
+the public C ABI requirements query; the CLI does not reproduce the private
+partition.
 
 The `lz78-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the eight-byte-per-raw-byte LZ78 token bound, at most 128
