@@ -2002,6 +2002,14 @@ Range descriptor byte to one. Each deterministic failure must publish zero
 bytes, leave every `a5` output sentinel unchanged, and repeat the same error
 category and byte position.
 
+For CLI integration, generate the deterministic
+`ABRACADABRA-0123456789\n` fixture repeated 3,200 times. Encode and decode with
+the exact selector `lz77-dynamic-range`, compare restored bytes, and repeat the
+lifecycle for empty input. Require a second encode to refuse the existing
+output. Decode `not-a-marc-stream` and a valid archive with one trailing `x`;
+both must fail and leave neither the requested destination nor its `.tmp`
+staging path.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

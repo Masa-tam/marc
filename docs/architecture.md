@@ -1257,6 +1257,13 @@ extreme frame extents and a malformed range descriptor. Each case must publish
 zero current-frame bytes, preserve the output sentinel, and repeat the same
 sticky error.
 
+The command-line adapter selects this composition only through the public C
+configuration, requirements, factory, process, and destroy lifecycle. It fixes
+65,536-byte raw frames, supplies the documented `16F` token and `2S + 5`
+payload limits, and receives both workspace extents from the requirements
+query. Output remains hidden in a sibling `.tmp` path until the transform ends,
+the file closes successfully, and the final rename commits it.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

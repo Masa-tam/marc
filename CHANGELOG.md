@@ -36,7 +36,8 @@ format versions, and C ABI versions are independent namespaces.
   bounded input, caller-owned workspaces, and a fixed call ceiling. Permanent
   regressions cover every canonical truncation, extreme frame extents, and a
   malformed Dynamic Range descriptor without current-frame output publication.
-  It is not yet exposed through the CLI.
+  The explicit `lz77-dynamic-range` CLI selector now uses the bounded public C
+  profile through the existing transactional temporary-file workflow.
 
 ## 0.1.1 - 2026-07-23
 

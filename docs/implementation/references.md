@@ -1211,3 +1211,8 @@ marc's private complete-frame validator, bounded streaming decoder, local
 decoder limits, caller-owned fixed arrays, and the repository-authored
 truncated-magic seed. No external fuzzer harness, corpus, combined decoder,
 malformed archive, source code, or test suite was consulted.
+
+The `lz77-dynamic-range` CLI adapter uses only DD-370, marc's public combined C
+ABI, fixed profile bounds, local transactional file loop, and established
+repository CLI integration script. No external command-line tool, adapter,
+archive workflow, source code, or test fixture was consulted.

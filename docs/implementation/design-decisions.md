@@ -7064,3 +7064,22 @@ regressions. Each must publish no current-frame output, preserve sentinels, and
 return the same sticky error on repetition. Any future fuzz finding requires a
 new deterministic regression. This step adds no CLI, benchmark, or
 interoperability entry and changes no stream representation.
+
+## DD-370: LZ77 Dynamic Range CLI uses the bounded public profile
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add the explicit selector `lz77-dynamic-range` through only the public C ABI
+and existing transactional temporary-file loop. Use 65,536-byte raw frames,
+the `16F = 1,048,576` canonical LZ77 token ceiling, the `2S + 5 = 2,097,157`
+Dynamic Range payload ceiling, and the resulting 3,211,341-byte complete-frame
+aggregate policy. Obtain both direction-specific workspace extents from the
+public requirements query; do not reproduce the private workspace partition.
+
+Require binary and empty round trips, refusal to overwrite an existing output,
+malformed-input and strict trailing-data rejection, and removal of both the
+requested output and `.tmp` staging path on failure. Keep selection explicit,
+retain `lz77` as the default, and require callers to select the same codec for
+decode rather than inferring it from the stream. This step changes no stream or
+C ABI representation and adds no benchmark or interoperability entry.

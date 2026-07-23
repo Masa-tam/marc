@@ -161,7 +161,9 @@ A fixed-memory decoder fuzz boundary now drives both complete-frame validation
 and the incremental transform with bounded input, fixed caller-owned storage,
 and a fixed call ceiling. Canonical truncations, extreme frame extents, and a
 malformed range descriptor are retained as deterministic atomic-failure
-regressions. No CLI selector, benchmark, or interoperability entry exists yet.
+regressions. The explicit CLI selector now uses the public C requirements query
+and factory through the common transactional file loop. No benchmark or
+interoperability entry exists yet.
 
 ## Why publication is not automatic
 

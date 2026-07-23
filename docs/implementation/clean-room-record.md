@@ -7480,3 +7480,28 @@ discarded and the reviewed seed retained.
   regression groups passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4. All 1,486 Release tests passed under
   both toolchains.
+
+## 2026-07-23 - LZ77 plus Dynamic Range CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit codec selector and transactional temporary-file processing loop.
+- References used: DD-370, the public `marc_lz77_dynamic_range_*` lifecycle,
+  documented `16F` token and `2S + 5` payload bounds, and the repository-owned
+  CLI integration script.
+- Known implementations intentionally not consulted: external compression
+  tools, command-line adapters, archive workflows, source code, tests, and
+  fixtures.
+- Independent decisions: name the selector `lz77-dynamic-range`; use
+  65,536-byte frames, 1,048,576 token bytes, a 2,097,157-byte payload ceiling,
+  and a 3,211,341-byte aggregate policy; query both workspaces through the C
+  ABI; retain explicit decode selection and transactional rename.
+- Generated-code task description: add selector parsing and help, fixed-profile
+  configuration, public requirements/factory dispatch, binary and empty round
+  trips, overwrite refusal, malformed and trailing rejection, and synchronized
+  CLI/readiness documentation.
+- Similarity review: the adapter repeats only marc's existing public-ABI and
+  transactional CLI structure with independently derived local bounds. No
+  external CLI expression or implementation was compared.
+- Local validation: the focused CLI contract and all 1,487 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
+  official CMake 4.3.4.

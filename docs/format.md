@@ -1395,6 +1395,8 @@ operations do not alter the stream bytes.
 The fixed-memory decoder fuzz boundary changes no representation. It exercises
 the same complete-frame and streaming parsers under local limits and retains
 canonical truncation and structural-corruption cases as ordinary regressions.
+The explicit `lz77-dynamic-range` CLI selector also changes no representation;
+it supplies the fixed reference-profile limits to the public C factory.
 
 ### Hand-checkable single-Literal frame
 
