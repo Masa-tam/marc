@@ -1555,6 +1555,14 @@ header corruption, final-byte truncation, and trailing data in the fourth
 frame publish exactly the first three verified frames and no byte of the
 failing final frame. These tests add no new format field or variant.
 
+The bounded decoder fuzz boundary applies this unchanged representation to
+both exact-frame and incremental parsing. It preallocates encoded-frame,
+canonical-token, private-raw, and final-output storage, derives no capacity
+from serialized metadata, and uses a finite process-call ceiling. Permanent
+regressions preserve transactional rejection for every proper prefix of a
+canonical frame, saturated generic-frame extent fields, and an invalid
+Dynamic Range descriptor. This evidence adds no format field or variant.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token `00 41`.

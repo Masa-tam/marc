@@ -34,7 +34,11 @@ format versions, and C ABI versions are independent namespaces.
   through two caller-owned byte workspaces and no views region. Its public-ABI
   completion matrix now covers required binary classes, deterministic
   arbitrary chunking, stable terminal states, and atomic malformed-final-frame
-  rejection.
+  rejection. A fixed-memory decoder fuzz boundary now exercises both exact-
+  frame and incremental parsing with bounded caller-owned workspaces and a
+  fixed call ceiling. Permanent regressions cover every canonical truncation,
+  extreme frame extents, and an invalid Dynamic Range descriptor without
+  current-frame output publication.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

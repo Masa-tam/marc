@@ -7330,3 +7330,32 @@ each must return a sticky malformed-stream result, commit exactly the first
 192 raw bytes, and preserve the final output sentinel. This closes public API
 completion evidence but adds no fuzz target, CLI, benchmark, interoperability
 entry, format change, or ABI change.
+
+## DD-383: LZSS Dynamic Range fuzzing fixes the complete working set
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add an LLVM-compatible decoder harness that reaches both the exact-frame
+private-staging boundary and the public incremental transform. Truncate each
+supplied case to 8 KiB and fix total output at 4 KiB, one raw frame at 1 KiB,
+canonical LZSS token staging at 2 KiB, Dynamic Range payload at 8 KiB, and the
+encoded-frame extent at the generic header plus descriptor and payload bound.
+Count encoded-frame, token, private-raw, and final-output arrays in one checked
+aggregate policy before parsing.
+
+Require an exact LZSS variant 1 plus Dynamic Range variant 1 prefix before the
+complete-frame path. Independently feed every case to the incremental decoder
+with byte-derived input and output chunks and a fixed call ceiling. Abort the
+harness on impossible result counts, `Progress` without progress, or a call-
+ceiling violation so a stall becomes reproducible. Retain only a reviewed
+five-byte truncated-magic seed.
+
+Add permanent deterministic regressions requiring every proper prefix of a
+canonical frame, saturated generic-frame extent fields, and a nonzero reserved
+descriptor byte to fail atomically, preserve the entire raw destination, and
+retain stable error position. Register ordinary compile-smoke coverage and a
+sanitizer-linked libFuzzer executable. Also register the previously omitted
+sanitizer executable for the existing LZ77 Dynamic Range harness so documented
+and buildable targets agree. This step changes no format or ABI and adds no
+CLI, benchmark, or interoperability claim.

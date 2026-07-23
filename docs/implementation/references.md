@@ -1293,3 +1293,11 @@ published marc C lifecycle, DD-380 bounds, repository-authored deterministic
 generators, and local frame-extent parsing. No external conformance suite,
 corpus, combined codec API, malformed archive, source code, or test vectors
 were consulted.
+
+The LZSS plus Dynamic Range bounded decoder fuzz boundary uses only DD-383,
+marc's completed exact-frame and incremental decoders, local workspace
+formulas, transform invariants, and repository-authored canonical frame
+generation. The five-byte seed and all permanent malformed cases were written
+from marc's own magic, header, descriptor, and transactional-publication
+rules. No external fuzz harness, corpus, crash sample, combined codec,
+implementation source, or test suite was consulted.

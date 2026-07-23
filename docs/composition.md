@@ -215,6 +215,13 @@ terminal calls, and transactional rejection of a corrupted, truncated, or
 extended final frame. The matrix invokes only the public config, workspace,
 factory, process, and destroy functions.
 
+Its bounded dual-path decoder fuzz target now exercises exact-frame and
+incremental admission with fixed arrays, byte-derived chunks, and a finite call
+ceiling. Permanent malformed regressions require every canonical truncation,
+extreme generic-frame lengths, and an invalid Dynamic Range descriptor to fail
+without publishing a byte from the current frame. CLI, benchmark, and
+interoperability admission remain separate steps.
+
 ## Why publication is not automatic
 
 The mechanical pipeline shape is common:

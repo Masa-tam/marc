@@ -92,7 +92,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzss-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -121,8 +121,10 @@ private layouts. Its public C requirements query and factory now bind those
 regions to both streaming directions without a views workspace. The completion
 matrix now covers required binary classes, deterministic chunking, stable
 terminal states, and atomic malformed-final-frame rejection entirely through
-the public C ABI. Fuzzing, CLI, benchmark, and interoperability evidence are
-not yet implemented.
+the public C ABI. Its bounded dual-decoder fuzz target fixes every workspace
+before parsing, and permanent regressions preserve atomic rejection of every
+canonical truncation, extreme frame extents, and an invalid range descriptor.
+CLI, benchmark, and interoperability evidence are not yet implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

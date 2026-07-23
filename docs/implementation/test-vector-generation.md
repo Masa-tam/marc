@@ -2701,3 +2701,23 @@ three generic frame extents locally, and alter byte 8 of the fourth frame
 header. Separately remove the archive's final byte and append one zero byte.
 Each public decoder must report sticky malformed stream, produce exactly the
 first 192 original bytes, and leave the final `a5` sentinel unchanged.
+
+For bounded LZSS plus Dynamic Range fuzzing, clamp arbitrary serialized input
+to 8,192 bytes. Fix maximum total raw output at 4,096 bytes, one raw frame at
+1,024 bytes, canonical tokens at 2,048 bytes, Dynamic Range payload at 8,192
+bytes, and complete encoded-frame storage at `56 + 16 + 8,192` bytes. Count
+those arrays and the private raw frame in the local aggregate limit. When the
+first 80 bytes parse as the exact profile, pass the remaining exact frame to
+private-staging decode. Always run the incremental decoder with input chunks
+`1 + byte mod 17`, output chunks `1 + byte mod 19`, and no more than
+`8,192 + 4,096 + 32` process calls. Treat impossible counts, progress without
+counts, or exhaustion of that ceiling as a harness failure.
+
+Build the permanent canonical regression from raw `ABABX` through the bounded
+streaming encoder. For every proper archive prefix, require malformed-stream
+failure, zero published bytes, an unchanged `a5` output buffer, and the same
+error position on a repeated call. Independently fill generic-frame extent
+bytes 16 through 39 with `ff`, then set the last byte of the 16-byte Dynamic
+Range descriptor nonzero; both mutations must satisfy the same atomic and
+sticky failure checks. Retain only the hand-authored five-byte `MARC\n`
+truncation as the initial fuzz corpus.

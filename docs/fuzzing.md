@@ -1,9 +1,10 @@
 # Fuzzing
 
-The twenty-five bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-six bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
-Dynamic Range, LZSS plus Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
+Dynamic Range, LZSS plus Blocked Huffman, LZSS plus Adaptive Huffman, LZSS plus
+Dynamic Range, LZ78 plus
 Blocked Huffman, LZ78 plus Adaptive Huffman, LZW plus Blocked Huffman, LZW plus
 Adaptive Huffman, LZD plus Adaptive Huffman, LZD plus Blocked Huffman, LZMW plus
 Blocked Huffman, LZMW plus Adaptive Huffman, and checksum-raw profiles. Targets
@@ -33,6 +34,13 @@ The combined LZ77 plus Dynamic Range target uses the same 8 KiB supplied-input,
 ceilings. It exercises both the complete-frame and incremental decoders with
 fixed arrays and a fixed call ceiling; no input-controlled allocation is
 permitted.
+The combined LZSS plus Dynamic Range target applies the same dual-decoder
+policy with LZSS's tighter variable-token bound: at most 8 KiB supplied input,
+4 KiB total output, one 1 KiB raw frame, 2 KiB canonical-token staging, and
+8 KiB range payload. Encoded-frame, token, private-raw, and final-output
+storage are fixed arrays counted in one aggregate policy. Byte-derived partial
+I/O and a fixed call ceiling make stalls reproducible without accepting
+input-controlled workspace sizes.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,
@@ -147,7 +155,9 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzss_stream \
   marc_fuzz_lz77_blocked_huffman_stream \
   marc_fuzz_lz77_adaptive_huffman_stream \
+  marc_fuzz_lz77_dynamic_range_stream \
   marc_fuzz_lzss_adaptive_huffman_stream \
+  marc_fuzz_lzss_dynamic_range_stream \
   marc_fuzz_lz78_adaptive_huffman_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
@@ -171,8 +181,12 @@ out/build/fuzz/marc_fuzz_lz77_blocked_huffman_stream \
   fuzz/corpus/lz77_blocked_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_adaptive_huffman_stream \
   fuzz/corpus/lz77_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lz77_dynamic_range_stream \
+  fuzz/corpus/lz77_dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \
   fuzz/corpus/lzss_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzss_dynamic_range_stream \
+  fuzz/corpus/lzss_dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_adaptive_huffman_stream \
   fuzz/corpus/lz78_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \

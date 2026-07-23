@@ -1351,6 +1351,15 @@ archives across arbitrary chunk schedules, and repeats both ended and error
 states. A corrupted final one-byte frame demonstrates that C ABI publication
 inherits the same complete-frame commit boundary as the internal decoder.
 
+The bounded fuzz boundary drives both the exact-frame private decoder and the
+incremental controller with fixed storage. It caps supplied input at 8 KiB,
+total output at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB,
+and range payload at 8 KiB. Encoded-frame, token, private-raw, and final-output
+arrays are counted in one aggregate policy before parsing. Input-derived
+partial-I/O schedules and a fixed call ceiling make a stalled state machine
+reproducible. Permanent tests retain frame-atomic rejection of every canonical
+truncation, saturated extent fields, and a malformed range descriptor.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

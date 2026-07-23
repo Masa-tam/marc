@@ -7830,3 +7830,36 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion tests and all 1,535 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: derived a fixed-memory dual-decoder harness and permanent
+  malformed regressions from the completed local frame, workspace, streaming,
+  and transactional-publication contracts.
+- References used: DD-383, DD-373 through DD-382, marc's exact-frame private
+  decoder, incremental transform, local size formulas, process invariants, and
+  repository-authored canonical encoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, crash samples, combined LZ/range codecs, implementation source,
+  malformed archives, and test suites.
+- Independent decisions: clamp input at 8 KiB; fix output/frame/token/payload
+  limits at 4 KiB/1 KiB/2 KiB/8 KiB; count all fixed arrays in one aggregate;
+  use byte-derived modulo-17/modulo-19 chunks; cap calls at 12,320; retain only
+  a hand-authored truncated-magic seed; require every canonical prefix,
+  saturated frame lengths, and one reserved descriptor mutation to fail
+  atomically with sticky position.
+- Generated-code task description: add the LLVM-compatible exact-frame and
+  streaming harness, ordinary compile smoke, sanitizer executable, one
+  reviewed corpus seed, and permanent atomic malformed regressions; reconcile
+  the existing LZ77 Dynamic Range harness with its missing sanitizer target.
+- Similarity review: buffer layout, limits, chunk schedules, call ceiling,
+  malformed mutations, and assertions follow only marc's local contracts and
+  independently selected constants. No external harness structure, corpus
+  bytes beyond marc's own magic, control flow, or test expression was
+  compared.
+- Local validation: the LZ77 and LZSS Dynamic Range libFuzzer executables
+  linked with AddressSanitizer and UndefinedBehaviorSanitizer and completed a
+  hand-seed `-runs=1` startup smoke without findings, peaking at 37 MiB RSS.
+  The LZSS harness compiled in ordinary builds, all three permanent regressions
+  passed, and all 1,538 Release tests passed under both MSVC/Visual Studio 2026
+  and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
