@@ -19,8 +19,8 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | Specified | Candidate | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Specified | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
@@ -168,6 +168,16 @@ verified round trip before measurement. Interoperability schema 14 appends it
 once after the frozen schema-13 set. Its bidirectional Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is recorded in
 `docs/interoperability.md`.
+
+`lzss-dynamic-range` is the second Dynamic Range composition to receive a
+reserved representation. It fixes the complete variable-length LZSS token
+stream before a fresh per-frame adaptive order-0 range model consumes it. The
+format caps raw frames at 2^23 bytes, bounds token bytes by `2F` and range
+payload bytes by `2S + 5`, and requires complete entropy and token validation
+plus private raw reconstruction before publication. An independently derived
+79-byte single-Literal frame fixes the component boundary. No combined
+validator, public factory, CLI selector, benchmark, fuzz target, or
+interoperability entry is implied by this reservation.
 
 ## Why publication is not automatic
 

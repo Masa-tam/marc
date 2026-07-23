@@ -49,6 +49,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
 | `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Ready | Included |
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
+| `lzss-dynamic-range` | Second Dynamic Range composition | Specified | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 14 contains twenty-five archives: the frozen twenty-four-entry schema-13
@@ -95,6 +96,14 @@ kept separate because it requires artifacts produced outside the local build.
 
 ## Composed-profile admission queue
 
+`lzss-dynamic-range` is the next queued composition. DD-373 fixes the
+canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
+checked `2F` token and `2S + 5` range-payload bounds, transactional validation
+order, and independent 79-byte single-Literal frame. It remains `Specified`:
+the combined validator, streaming transforms, public C factory, completion
+matrix, fuzzing, CLI, benchmark, and interoperability evidence are not yet
+implemented.
+
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw
 frame ceiling, checked `16F` token and `2S + 5` range-payload bounds,
@@ -106,10 +115,10 @@ now reconstructs validated tokens, including overlapping matches, into a
 separately bounded private raw staging region, then publishes the complete
 frame through a transactional caller-visible boundary only after every layer
 succeeds. Its exact planner and deterministic encoder now freeze canonical
-tokens before range planning and reproduce the independent frame. It remains
-`Specified`; its bounded streaming encoder now preserves exact frame bytes and
-finish semantics, and its matching streaming decoder now provides atomic
-complete-frame publication. Its bounded profile now derives all three
+tokens before range planning and reproduce the independent frame. It is
+`Ready`; its bounded streaming encoder preserves exact frame bytes and finish
+semantics, and its matching streaming decoder provides atomic complete-frame
+publication. Its bounded profile derives all three
 direction-specific byte regions, and its bounded public C requirements query
 and factory now construct both streaming directions. Its public-ABI completion
 matrix covers binary classes, deterministic chunking, terminal stability, and

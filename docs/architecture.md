@@ -1223,7 +1223,7 @@ frame open, while `EndInput` is retained until the last complete frame has been
 fully emitted. The matching bounded decoder owns serialized-frame, canonical
 token, and private raw regions. It admits a frame to output only after complete
 collection, nested validation, and reconstruction, so malformed later frames
-are atomic. The public factory remains a separate later admission step.
+are atomic. The later public factory preserves this same commit boundary.
 
 The bounded profile exposes only three byte counts per direction. Encoding
 uses raw collection, canonical-token staging, and serialized-frame storage;
@@ -1271,6 +1271,25 @@ queries encoder and decoder workspaces. Its checked complete-stream capacity
 uses 32 payload bytes per raw byte plus one descriptor, five termination bytes,
 and one generic header per frame. It verifies byte-exact decode before timing
 either direction and reports the larger caller-reserved workspace total.
+
+### LZSS plus Dynamic Range specified boundary
+
+The next Dynamic Range composition preserves LZSS's complete variable-length
+token stream as the entropy boundary. The LZSS encoder must finish every
+two-byte Literal or nine-byte Match token before one fresh frame-local adaptive
+order-0 model consumes those bytes. Entropy decoding must reconstruct the
+entire token region into private staging before token tags, reserved fields,
+references, or lengths are interpreted.
+
+The exact all-Literal ceiling is two token bytes per raw byte. Combined with
+Dynamic Range variant 1's `2S + 5` conservative payload bound and 2^24-symbol
+limit, the format raw-frame ceiling is 2^23 bytes; the reference profile
+remains 64 KiB. A decoder validates all declared and aggregate extents before
+entropy output, parses the complete variable-length token stream, reconstructs
+exactly the declared raw extent into separate private storage, and only then
+publishes a frame. The initial reservation fixes this boundary and an
+independent frame vector without yet adding a combined implementation or
+public surface.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

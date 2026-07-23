@@ -1228,3 +1228,10 @@ order, the public `lz77-dynamic-range` CLI selector, and marc's existing
 repository-owned generator, verifier, deterministic fixture, and compatibility
 chain. No external archive protocol, schema, manifest, corpus, source code,
 test vector, or verification suite was consulted.
+
+The LZSS plus Dynamic Range composition specification and hand vector use only
+DD-373, marc's documented LZSS variant 1 token grammar, Dynamic Range Coder
+variant 1 integer model and delayed-carry rules, generic frame format, checked
+decoder limits, and repository-owned composition policy. No external combined
+codec, range-coder implementation, format, profile, stream, test vector,
+workspace layout, source code, or test suite was consulted.

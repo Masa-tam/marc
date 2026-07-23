@@ -7122,3 +7122,30 @@ at-a-time chain through schema 1. Local admission proves generator, verifier,
 compatibility rules, and same-machine CLI determinism only. Cross-platform
 evidence still requires CI artifacts from the same full Git revision and the
 established four-direction external verification procedure.
+
+## DD-373: LZSS Dynamic Range consumes complete variable tokens
+
+- Date: 2026-07-24
+- Status: accepted
+
+Reserve `lzss-dynamic-range` for LZSS variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZSS
+parameter region, use no entropy parameter bytes, and set stream entropy block
+size to zero. Complete the canonical variable-length LZSS token stream before
+range coding; the adaptive order-0 model consumes every token byte without
+interpreting its role.
+
+For raw frame extent `F`, require nonzero token extent `S <= 2F`, range-symbol
+extent `S <= 2^24`, raw extent `F <= 2^23`, and payload extent `P <= 2S + 5`.
+Use one descriptor and one fresh model per nonempty frame. On decode, validate
+the exact pipeline and all extents, range-decode exactly `S` private bytes with
+exact payload exhaustion, parse every complete two- or nine-byte LZSS token
+and derive exactly `F` raw bytes, reconstruct privately, and publish only the
+whole successful frame.
+
+Fix raw `41` as the independent boundary vector: canonical LZSS bytes `00 41`,
+Dynamic Range payload `00 00 41 BE 41 7C 00`, descriptor symbol/payload extents
+2 and 7, and a complete 79-byte generic frame. This step reserves format,
+bounds, validation order, and vector only. It publishes no combined validator,
+transform, C ABI factory, CLI selector, benchmark, fuzz target, or
+interoperability entry.

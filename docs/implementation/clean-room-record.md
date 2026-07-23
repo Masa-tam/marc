@@ -7577,3 +7577,28 @@ discarded and the reviewed seed retained.
 - Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
   system interoperability on x86-64. It does not claim a second architecture,
   a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.
+
+## 2026-07-24 - LZSS plus Dynamic Range format reservation
+
+- Authoring method: composed marc's already specified LZSS token serialization
+  with its already specified Dynamic Range variant at the canonical byte
+  boundary, then derived the smallest nonempty frame independently.
+- References used: DD-373, local LZSS token grammar, local Dynamic Range
+  integer and delayed-carry rules, generic frame layout, and decoder limits.
+- Known implementations intentionally not consulted: external combined
+  LZ/range codecs, range-coder source, archive formats, streams, vectors,
+  malformed corpora, workspace layouts, and test suites.
+- Independent decisions: preserve complete variable-length tokens before
+  entropy coding; cap token bytes by `2F`, raw frames by 2^23, and payload by
+  `2S + 5`; reset both layers per frame; decode and validate all private tokens
+  before private raw reconstruction and publication.
+- Generated-code task description: reserve the exact profile identifiers and
+  bounds, document transactional validation order, derive the raw-`41`
+  two-byte token, seven-byte range payload, descriptor, and 79-byte frame, and
+  add a standalone-component test for that oracle.
+- Similarity review: the representation follows only marc's local component
+  contracts. No external combined format, implementation structure, byte
+  sequence, or test expression was compared.
+- Local validation: the focused independent-vector test and all 1,489 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

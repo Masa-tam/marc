@@ -2558,3 +2558,18 @@ reproduce the independently calculated payload and 16-byte descriptor. Serialize
 the generic frame header and descriptor independently and require the exact
 documented 88-byte frame. Do not use a future combined encoder to construct its
 own oracle.
+
+For the second Dynamic Range composition vector, begin with raw byte `41` and
+derive the canonical LZSS Literal `00 41` directly from the published token
+grammar. Independently apply Dynamic Range variant 1 to those two fixed bytes:
+start all 256 frequencies at one, divide the 32-bit range before updating the
+64-bit low, normalize below 2^24 with delayed carry, increment only the
+just-coded symbol, and perform exactly five termination shifts. The payload
+must be `00 00 41 be 41 7c 00`.
+
+As a separate implementation check, require the standalone LZSS encoder to
+reproduce `00 41`, then require the standalone Dynamic Range encoder to
+reproduce the seven-byte payload and descriptor with symbol count 2 and payload
+size 7. Serialize the generic header and descriptor independently and require
+the exact documented 79-byte frame. Do not use a future combined encoder to
+construct its own oracle.
