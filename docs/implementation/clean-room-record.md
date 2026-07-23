@@ -7533,3 +7533,30 @@ discarded and the reviewed seed retained.
   encoded 4,441 bytes to 4,597 bytes and reported a 4,325,509-byte peak
   caller-reserved workspace under both builds; throughput remains
   non-normative.
+
+## 2026-07-23 - Interoperability schema 14
+
+- Authoring method: extended marc's append-only interoperability manifest after
+  completing the first Dynamic Range composition's public CLI boundary.
+- References used: DD-372, frozen schema-13 profile order, public
+  `lz77-dynamic-range` selector, and the existing repository-owned generator,
+  verifier, fixture, hashing, and compatibility procedures.
+- Known implementations intentionally not consulted: external archive formats,
+  interoperability schemas, manifests, corpora, test vectors, source code, and
+  verification suites.
+- Independent decisions: append `lz77-dynamic-range` exactly once as archive
+  25; name codec set `marc-cli-v14`; preserve schemas 1 through 13; require
+  local round trip before manifest publication; require exact foreign decode
+  and byte-identical re-encoding.
+- Generated-code task description: update generator and verifier, derive all
+  thirteen frozen predecessors from a schema-14 bundle, reject reordered
+  schema 14, and synchronize format, architecture, readiness,
+  interoperability, composition, changelog, and provenance records.
+- Similarity review: the change extends only marc's append-only local schema
+  and PowerShell procedures. No external schema or compatibility expression was
+  compared.
+- Local validation: both MSVC and ClangCL compatibility runs generated and
+  verified all 25 schema-14 archives, rejected the reordered manifest, and
+  verified schemas 13 through 1 after removing only each generation's newest
+  entry. All 1,488 Release tests passed under both toolchains on Windows x64
+  using official CMake 4.3.4.

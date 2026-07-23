@@ -1398,6 +1398,8 @@ canonical truncation and structural-corruption cases as ordinary regressions.
 The explicit `lz77-dynamic-range` CLI selector also changes no representation;
 it supplies the fixed reference-profile limits to the public C factory. The
 matching benchmark uses the same factory and changes no representation.
+Interoperability schema 14 emits and accepts this exact profile as archive 25
+without changing the version-1.0 stream representation.
 
 ### Hand-checkable single-Literal frame
 

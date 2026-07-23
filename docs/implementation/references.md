@@ -1222,3 +1222,9 @@ factory, independently derived profile and complete-stream capacity bounds,
 and marc's repository-owned measurement contract. No external benchmark
 harness, implementation, result, corpus, capacity formula, or tuning guidance
 was consulted.
+
+Interoperability schema 14 uses only DD-372, the frozen schema-13 manifest
+order, the public `lz77-dynamic-range` CLI selector, and marc's existing
+repository-owned generator, verifier, deterministic fixture, and compatibility
+chain. No external archive protocol, schema, manifest, corpus, source code,
+test vector, or verification suite was consulted.

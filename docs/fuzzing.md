@@ -1,9 +1,9 @@
 # Fuzzing
 
-The twenty-four bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-five bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
-the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZSS plus
-Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
+the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
+Dynamic Range, LZSS plus Blocked Huffman, LZSS plus Adaptive Huffman, LZ78 plus
 Blocked Huffman, LZ78 plus Adaptive Huffman, LZW plus Blocked Huffman, LZW plus
 Adaptive Huffman, LZD plus Adaptive Huffman, LZD plus Blocked Huffman, LZMW plus
 Blocked Huffman, LZMW plus Adaptive Huffman, and checksum-raw profiles. Targets
@@ -28,6 +28,11 @@ and compressed payload at 8 KiB. It always exercises incremental decoding and,
 after a valid exact profile prefix, also invokes complete-frame private-staging
 decode over the remaining extent. Both paths use fixed arrays and the common
 input-derived chunk and call-ceiling policy.
+The combined LZ77 plus Dynamic Range target uses the same 8 KiB supplied-input,
+4 KiB output, 1 KiB raw-frame, 16 KiB canonical-token, and 8 KiB payload
+ceilings. It exercises both the complete-frame and incremental decoders with
+fixed arrays and a fixed call ceiling; no input-controlled allocation is
+permitted.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,

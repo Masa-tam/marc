@@ -2017,6 +2017,14 @@ encode/decode seconds and MiB/s, six direction-specific workspace extents, and
 peak caller-reserved workspace fields. Treat values as local observations, not
 frozen performance thresholds.
 
+For interoperability schema 14, retain the deterministic 8,193-byte fixture
+and exact schema-13 archive order, then append `lz77-dynamic-range` once as
+archive 25. Generate and locally decode all archives before writing
+`manifest.json`; require codec set `marc-cli-v14`, exact order, sizes, SHA-256,
+foreign decode equality, and byte-identical local re-encoding. Reorder two
+entries and require rejection, then remove only archive 25 while converting to
+schema 13 and verify every frozen schema down through schema 1.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

@@ -40,6 +40,8 @@ format versions, and C ABI versions are independent namespaces.
   profile through the existing transactional temporary-file workflow. The
   dependency-free benchmark now measures the same public profile only after a
   verified round trip and reports both direction-specific workspaces.
+  Interoperability schema 14 appends this profile as archive 25 while freezing
+  all thirteen earlier schema meanings.
 
 ## 0.1.1 - 2026-07-23
 

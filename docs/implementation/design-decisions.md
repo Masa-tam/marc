@@ -7102,3 +7102,23 @@ regions, and report ratio, direction-specific elapsed time and throughput, six
 workspace extents, and peak caller-reserved workspace. Performance values are
 local observations, not thresholds. This step changes no format or C ABI and
 adds no interoperability entry.
+
+## DD-372: Interoperability schema 14 appends LZ77 Dynamic Range once
+
+- Date: 2026-07-23
+- Status: accepted
+
+Define interoperability schema 14 and codec set `marc-cli-v14` as the exact
+twenty-four-entry schema-13 order followed by `lz77-dynamic-range`. Reuse the
+unchanged deterministic 8,193-byte binary fixture. Generation must round-trip
+all twenty-five profiles before writing the manifest; verification must check
+the exact count and order, every declared size and SHA-256 value, foreign
+decode equality, and byte-identical local re-encoding.
+
+Keep schemas 1 through 13 frozen. The compatibility test starts from a complete
+schema-14 bundle, rejects a reordered schema-14 manifest, removes only archive
+25 while converting to schema 13, and continues the existing one-generation-
+at-a-time chain through schema 1. Local admission proves generator, verifier,
+compatibility rules, and same-machine CLI determinism only. Cross-platform
+evidence still requires CI artifacts from the same full Git revision and the
+established four-direction external verification procedure.
