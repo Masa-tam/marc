@@ -122,7 +122,9 @@ malformed and trailing-data rejection. Its dependency-free benchmark now
 verifies the public profile before reporting throughput, ratio, and both
 direction-specific workspaces. Local schema-14 generation, verification,
 exact-order rejection, and schemas 1 through 13 compatibility are present.
-External schema-14 artifact evidence remains open.
+The pushed Windows/MSVC and Ubuntu 24.04 artifacts plus an independently
+generated Ubuntu 26.04/Clang bundle have passed the complete four-direction
+external verification contract at revision `802c7a1ab913b07ee79a04fa5b3390c061c88966`.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

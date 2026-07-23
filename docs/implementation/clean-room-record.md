@@ -7560,3 +7560,20 @@ discarded and the reviewed seed retained.
   verified schemas 13 through 1 after removing only each generation's newest
   entry. All 1,488 Release tests passed under both toolchains on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-24 - Interoperability schema 14 external validation record
+
+- Evidence source: user-supplied output from four executions of marc's
+  schema-14 verifier at full revision
+  `802c7a1ab913b07ee79a04fa5b3390c061c88966`.
+- Producing environments: GitHub CI Windows/MSVC via Visual Studio 2026 x64,
+  GitHub CI Ubuntu 24.04 default C++ compiler via Ninja x64, and an external
+  Ubuntu 26.04/Clang 21.1.8 via Ninja x64 bundle.
+- Consuming environments: Ubuntu 26.04/Clang verified both CI bundles and its
+  own bundle; Windows/MSVC verified the Ubuntu 26.04 bundle.
+- Result: all four invocations reported `Verified 25 archives` at the exact
+  revision. Each invocation checked manifest order, size and SHA-256, decoded
+  fixture equality, and byte-identical local re-encoding.
+- Scope: this records bidirectional Windows/WSL2 Linux compiler and operating-
+  system interoperability on x86-64. It does not claim a second architecture,
+  a non-WSL Linux kernel, authenticity, or long-term 0.x compatibility.

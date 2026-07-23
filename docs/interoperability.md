@@ -166,6 +166,20 @@ byte-identical local re-encoding for every archive. This establishes canonical
 schema-13 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
 
+Revision `802c7a1ab913b07ee79a04fa5b3390c061c88966` received the schema-14
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all
+twenty-five archives from both the Windows/MSVC via Visual Studio 2026 and
+Ubuntu 24.04 default-compiler/Ninja artifacts. It then generated and verified
+an `ubuntu-26.04-ninja-x64` twenty-five-archive bundle. The Windows/MSVC
+executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-14
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
 Interoperability work products are kept outside the source repository; only
 the resulting environment and verifier evidence are recorded here. These
 checks remain x86-64 evidence and do not cover a non-WSL Linux kernel.

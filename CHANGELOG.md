@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   dependency-free benchmark now measures the same public profile only after a
   verified round trip and reports both direction-specific workspaces.
   Interoperability schema 14 appends this profile as archive 25 while freezing
-  all thirteen earlier schema meanings.
+  all thirteen earlier schema meanings. Windows/MSVC, Ubuntu 24.04/Ninja, and
+  Ubuntu 26.04/Clang artifacts passed the four-direction external verifier at
+  the exact schema-14 revision.
 
 ## 0.1.1 - 2026-07-23
 

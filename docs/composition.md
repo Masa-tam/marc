@@ -165,8 +165,9 @@ regressions. The explicit CLI selector now uses the public C requirements query
 and factory through the common transactional file loop. The dependency-free
 benchmark uses that same public profile, checked complete-stream capacity, and
 verified round trip before measurement. Interoperability schema 14 appends it
-once after the frozen schema-13 set; external artifact evidence remains
-separate.
+once after the frozen schema-13 set. Its bidirectional Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is recorded in
+`docs/interoperability.md`.
 
 ## Why publication is not automatic
 
