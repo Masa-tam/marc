@@ -7083,3 +7083,22 @@ requested output and `.tmp` staging path on failure. Keep selection explicit,
 retain `lz77` as the default, and require callers to select the same codec for
 decode rather than inferring it from the stream. This step changes no stream or
 C ABI representation and adds no benchmark or interoperability entry.
+
+## DD-371: LZ77 Dynamic Range benchmark verifies before measuring
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add `lz77-dynamic-range` to the dependency-free benchmark through only the
+public C requirements, factory, process, and destroy lifecycle. Use the CLI's
+65,536-byte frame, `16F` token ceiling, `2S + 5` payload ceiling, 80-byte
+parameterized prefix, and checked complete-stream capacity of 32 payload bytes
+per raw byte plus a 56-byte header, 16-byte descriptor, and five termination
+bytes per nonempty frame.
+
+Query encoder and decoder workspace independently, verify byte-exact round trip
+before timing, exclude allocation and transform construction from timed
+regions, and report ratio, direction-specific elapsed time and throughput, six
+workspace extents, and peak caller-reserved workspace. Performance values are
+local observations, not thresholds. This step changes no format or C ABI and
+adds no interoperability entry.

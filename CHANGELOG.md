@@ -37,7 +37,9 @@ format versions, and C ABI versions are independent namespaces.
   regressions cover every canonical truncation, extreme frame extents, and a
   malformed Dynamic Range descriptor without current-frame output publication.
   The explicit `lz77-dynamic-range` CLI selector now uses the bounded public C
-  profile through the existing transactional temporary-file workflow.
+  profile through the existing transactional temporary-file workflow. The
+  dependency-free benchmark now measures the same public profile only after a
+  verified round trip and reports both direction-specific workspaces.
 
 ## 0.1.1 - 2026-07-23
 

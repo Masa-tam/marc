@@ -13,6 +13,7 @@ marc_benchmark tans corpus.bin 5
 marc_benchmark lz77 corpus.bin 5
 marc_benchmark lz77-blocked-huffman corpus.bin 5
 marc_benchmark lz77-adaptive-huffman corpus.bin 5
+marc_benchmark lz77-dynamic-range corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lzss-adaptive-huffman corpus.bin 5
@@ -95,6 +96,14 @@ payload bound for each token byte, one 16-byte descriptor per nonempty frame,
 each 56-byte frame header, and the 80-byte parameterized stream prefix. The
 benchmark obtains both direction-specific workspace extents from the public C
 ABI and verifies a complete round trip before timing.
+
+`lz77-dynamic-range` uses the same 65,536-byte raw frame as its CLI profile,
+at most 1,048,576 canonical LZ77 token bytes, and the conservative `2S + 5`
+payload ceiling. Checked complete-stream capacity uses a factor of 32 payload
+bytes per raw byte plus one 16-byte descriptor, five termination bytes, and
+one generic header per frame. The benchmark queries encoder and decoder
+workspace independently through the public C ABI and verifies a complete
+round trip before timing.
 
 `lzss-blocked-huffman` uses the same frame and entropy-block policy. Capacity
 planning substitutes LZSS's two-byte all-Literal token bound, includes one

@@ -1216,3 +1216,9 @@ The `lz77-dynamic-range` CLI adapter uses only DD-370, marc's public combined C
 ABI, fixed profile bounds, local transactional file loop, and established
 repository CLI integration script. No external command-line tool, adapter,
 archive workflow, source code, or test fixture was consulted.
+
+The `lz77-dynamic-range` benchmark adapter uses only DD-371, the same public C
+factory, independently derived profile and complete-stream capacity bounds,
+and marc's repository-owned measurement contract. No external benchmark
+harness, implementation, result, corpus, capacity formula, or tuning guidance
+was consulted.

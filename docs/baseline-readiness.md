@@ -90,7 +90,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -118,8 +118,9 @@ now covers complete-frame and incremental parsing with fixed workspaces and a
 fixed call ceiling, while deterministic regressions preserve truncation,
 extreme-extent, and descriptor-corruption failures. Its explicit CLI selector
 now passes binary and empty round trips, overwrite refusal, and transactional
-malformed and trailing-data rejection. Benchmark and interoperability evidence
-remain open.
+malformed and trailing-data rejection. Its dependency-free benchmark now
+verifies the public profile before reporting throughput, ratio, and both
+direction-specific workspaces. Interoperability evidence remains open.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
@@ -355,7 +356,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-370, the complete Release suite contains 1,487 tests and passes under both
+At DD-371, the complete Release suite contains 1,488 tests and passes under both
 MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
 compiler-independence evidence on one architecture. Public run 29647453799 adds
 Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining

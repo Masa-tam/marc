@@ -2010,6 +2010,13 @@ output. Decode `not-a-marc-stream` and a valid archive with one trailing `x`;
 both must fail and leave neither the requested destination nor its `.tmp`
 staging path.
 
+For benchmark smoke, run
+`marc_benchmark lz77-dynamic-range README.md 1`. Require a complete verified
+round trip before timing and the standard codec name, byte counts, ratio,
+encode/decode seconds and MiB/s, six direction-specific workspace extents, and
+peak caller-reserved workspace fields. Treat values as local observations, not
+frozen performance thresholds.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

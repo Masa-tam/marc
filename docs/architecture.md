@@ -1264,6 +1264,12 @@ payload limits, and receives both workspace extents from the requirements
 query. Output remains hidden in a sibling `.tmp` path until the transform ends,
 the file closes successfully, and the final rename commits it.
 
+The dependency-free benchmark uses the same public profile and independently
+queries encoder and decoder workspaces. Its checked complete-stream capacity
+uses 32 payload bytes per raw byte plus one descriptor, five termination bytes,
+and one generic header per frame. It verifies byte-exact decode before timing
+either direction and reports the larger caller-reserved workspace total.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

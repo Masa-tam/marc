@@ -162,8 +162,9 @@ and the incremental transform with bounded input, fixed caller-owned storage,
 and a fixed call ceiling. Canonical truncations, extreme frame extents, and a
 malformed range descriptor are retained as deterministic atomic-failure
 regressions. The explicit CLI selector now uses the public C requirements query
-and factory through the common transactional file loop. No benchmark or
-interoperability entry exists yet.
+and factory through the common transactional file loop. The dependency-free
+benchmark uses that same public profile, checked complete-stream capacity, and
+verified round trip before measurement. No interoperability entry exists yet.
 
 ## Why publication is not automatic
 

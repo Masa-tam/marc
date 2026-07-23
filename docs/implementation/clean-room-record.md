@@ -7505,3 +7505,31 @@ discarded and the reviewed seed retained.
 - Local validation: the focused CLI contract and all 1,487 Release tests passed
   under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
   official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range benchmark adapter
+
+- Authoring method: extended marc's dependency-free public-C benchmark with the
+  completed combined profile and independently derived complete-stream
+  capacity.
+- References used: DD-371, the public C requirements and factory lifecycle,
+  CLI profile constants, checked capacity arithmetic, and repository benchmark
+  reporting contract.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, compression implementations, published results, corpora, capacity
+  formulas, source code, and tuning guidance.
+- Independent decisions: use 65,536-byte frames; reserve 32 payload bytes per
+  raw byte plus a 16-byte descriptor and five termination bytes per frame;
+  retain the 80-byte prefix; query encoder and decoder workspaces separately;
+  verify before timing; exclude corpus and result buffers from peak workspace.
+- Generated-code task description: add codec naming and parsing, public config,
+  requirements and factory dispatch, checked output capacity, README smoke
+  registration, measurement documentation, and readiness evidence.
+- Similarity review: the adapter reuses only marc-owned benchmark conventions
+  and independently documented component bounds. No external benchmark
+  expression, capacity rule, or result was compared.
+- Local validation: the focused smoke and all 1,488 Release tests, including
+  all 25 labeled benchmark smokes, passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4. The README observation
+  encoded 4,441 bytes to 4,597 bytes and reported a 4,325,509-byte peak
+  caller-reserved workspace under both builds; throughput remains
+  non-normative.
