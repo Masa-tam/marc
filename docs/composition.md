@@ -157,7 +157,11 @@ layout. A bounded public C requirements query and factory now expose the fixed
 profile through the common primary and secondary byte regions. Its public-ABI
 completion matrix now proves required binary classes, byte determinism across
 chunking, stable terminal calls, and atomic malformed-final-frame rejection.
-No CLI selector, benchmark, fuzz target, or interoperability entry exists yet.
+A fixed-memory decoder fuzz boundary now drives both complete-frame validation
+and the incremental transform with bounded input, fixed caller-owned storage,
+and a fixed call ceiling. Canonical truncations, extreme frame extents, and a
+malformed range descriptor are retained as deterministic atomic-failure
+regressions. No CLI selector, benchmark, or interoperability entry exists yet.
 
 ## Why publication is not automatic
 

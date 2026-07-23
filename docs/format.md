@@ -1392,6 +1392,10 @@ regions have byte alignment. The requirements query and factory repeat the same
 checked formulas; factory failure publishes no transform handle. These ABI
 operations do not alter the stream bytes.
 
+The fixed-memory decoder fuzz boundary changes no representation. It exercises
+the same complete-frame and streaming parsers under local limits and retains
+canonical truncation and structural-corruption cases as ordinary regressions.
+
 ### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently

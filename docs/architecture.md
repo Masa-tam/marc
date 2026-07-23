@@ -1246,6 +1246,17 @@ one-byte and mixed schedules, repeats successful and failing terminal calls,
 and proves that a corrupted, truncated, or trailing fourth frame can commit
 only the first three complete frames.
 
+The decoder fuzz boundary is intentionally fixed-memory. It caps each supplied
+input at 8,192 bytes and exercises both the private complete-frame validator
+and the public-style incremental decoder. The streaming path owns fixed arrays
+for serialized frames, canonical tokens, reconstructed raw bytes, and output;
+derives small input and output chunks only from bounded seed bytes; and aborts
+after a fixed call ceiling rather than permitting an input-controlled loop.
+Normal regression tests retain every proper prefix of a canonical frame plus
+extreme frame extents and a malformed range descriptor. Each case must publish
+zero current-frame bytes, preserve the output sentinel, and repeat the same
+sticky error.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

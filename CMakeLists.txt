@@ -922,6 +922,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_dynamic_range_frame_streaming_decoder_tests.cpp
         tests/lz77_dynamic_range_profile_tests.cpp
         tests/lz77_dynamic_range_completion_tests.cpp
+        tests/lz77_dynamic_range_fuzz_regression_tests.cpp
         tests/lz77_adaptive_huffman_completion_tests.cpp
         tests/lz77_adaptive_huffman_fuzz_regression_tests.cpp
         tests/lz77_adaptive_huffman_profile_tests.cpp
@@ -1129,6 +1130,23 @@ if(MARC_BUILD_TESTS)
     else()
         target_compile_options(
             marc_lz77_adaptive_huffman_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_lz77_dynamic_range_fuzz_compile_smoke OBJECT
+        fuzz/lz77_dynamic_range_stream_fuzz.cpp)
+    target_compile_features(marc_lz77_dynamic_range_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_include_directories(
+        marc_lz77_dynamic_range_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(
+            marc_lz77_dynamic_range_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(
+            marc_lz77_dynamic_range_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

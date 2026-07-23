@@ -1992,6 +1992,16 @@ sequence byte, remove its final byte, and append one zero separately. Each
 decoder must publish exactly 192 bytes, preserve the last sentinel, and return
 identical terminal status and error positions when called again.
 
+For the bounded LZ77 plus Dynamic Range decoder fuzz boundary, seed only the
+five-byte truncated magic `4d 41 52 43 0a`. Cap fuzzer input at 8,192 bytes,
+use fixed arrays for all parser, dictionary, raw, and output storage, and drive
+both the direct complete-frame validator and incremental decoder under a fixed
+call ceiling. Independently encode raw `ABABX`, reject every proper prefix,
+overwrite all generic frame extent fields with `ff`, and set the final Dynamic
+Range descriptor byte to one. Each deterministic failure must publish zero
+bytes, leave every `a5` output sentinel unchanged, and repeat the same error
+category and byte position.
+
 For the first complete-frame validator, accept the frozen 75-byte single-Pair
 frame into eight token-staging bytes and one aligned phrase entry. Reject every
 proper prefix and one trailing byte. Before entropy output, reject independently

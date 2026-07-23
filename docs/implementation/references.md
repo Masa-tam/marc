@@ -1205,3 +1205,9 @@ published marc C lifecycle, DD-359 bounds, repository-authored deterministic
 generators, and local frame-extent parsing. No external conformance suite,
 corpus, combined codec API, malformed archive, source code, or test vectors
 were consulted.
+
+The LZ77 plus Dynamic Range bounded decoder fuzz boundary uses only DD-369,
+marc's private complete-frame validator, bounded streaming decoder, local
+decoder limits, caller-owned fixed arrays, and the repository-authored
+truncated-magic seed. No external fuzzer harness, corpus, combined decoder,
+malformed archive, source code, or test suite was consulted.

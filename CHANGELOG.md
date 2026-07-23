@@ -31,7 +31,12 @@ format versions, and C ABI versions are independent namespaces.
   caller-owned byte regions without leaking private C++ layouts into ABI
   version 1. Its public-ABI completion matrix now covers required binary data,
   deterministic arbitrary chunking, stable terminal states, and transactional
-  malformed-final-frame rejection. It is not yet exposed through the CLI.
+  malformed-final-frame rejection. A fixed-memory decoder fuzz boundary now
+  exercises both complete-frame validation and incremental streaming with
+  bounded input, caller-owned workspaces, and a fixed call ceiling. Permanent
+  regressions cover every canonical truncation, extreme frame extents, and a
+  malformed Dynamic Range descriptor without current-frame output publication.
+  It is not yet exposed through the CLI.
 
 ## 0.1.1 - 2026-07-23
 

@@ -7043,3 +7043,24 @@ each decoder may publish exactly the first three validated frames, must preserve
 the final output sentinel, and must repeat the same sticky error category and
 position. This step adds no fuzz target, CLI, benchmark, or interoperability
 entry.
+
+## DD-369: LZ77 Dynamic Range fuzzing is fixed-memory and dual-boundary
+
+- Date: 2026-07-23
+- Status: accepted
+
+Add one decoder fuzz entry point that caps supplied data at 8,192 bytes and
+uses only fixed caller-owned arrays. Exercise the private complete-frame
+validator when the canonical prefix parses, and independently exercise the
+incremental decoder with small byte-derived input and output chunks. Bound the
+incremental loop by the maximum input plus maximum output and a fixed margin;
+abort on an invalid process result, an impossible zero-progress state, or
+exhaustion of that ceiling.
+
+Keep only the repository-authored five-byte truncated-magic seed. Preserve
+every proper prefix of a canonical `ABABX` stream, extreme generic frame
+extents, and a nonzero reserved Dynamic Range descriptor byte as permanent
+regressions. Each must publish no current-frame output, preserve sentinels, and
+return the same sticky error on repetition. Any future fuzz finding requires a
+new deterministic regression. This step adds no CLI, benchmark, or
+interoperability entry and changes no stream representation.

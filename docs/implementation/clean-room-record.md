@@ -7454,3 +7454,29 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion groups and all 1,483 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-23 - LZ77 plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: connected marc's completed private complete-frame validator
+  and bounded streaming decoder to a fixed-memory LLVM-compatible entry point,
+  then retained independently constructed malformed cases as ordinary tests.
+- References used: DD-369, local decoder limits, transform-result invariants,
+  the `lz77-dynamic-range` frame layout, and the existing bounded decoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, combined-codec decoders, malformed archives, source code, and test
+  suites.
+- Independent decisions: cap input at 8,192 bytes; use fixed arrays for every
+  workspace; exercise complete-frame and incremental boundaries separately;
+  derive only bounded chunks from input; impose a fixed call ceiling; seed only
+  truncated marc magic; retain canonical truncation, extreme extent, and
+  descriptor-reserved-byte regressions.
+- Generated-code task description: add the fixed-memory decoder fuzz entry
+  point, compile-smoke target, local seed, and deterministic atomic-failure
+  tests for every proper canonical prefix and two structural mutations.
+- Similarity review: the harness follows only marc's local state, limit, and
+  publication contracts. No external harness structure, mutation strategy, or
+  corpus was compared.
+- Local validation: both fuzz compile-smoke targets and all three focused
+  regression groups passed under MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4. All 1,486 Release tests passed under
+  both toolchains.
