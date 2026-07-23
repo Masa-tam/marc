@@ -1565,6 +1565,9 @@ Dynamic Range descriptor. This evidence adds no format field or variant.
 The explicit CLI selector `lzss-dynamic-range` binds this same profile through
 the public C ABI and transactional file adapter; it does not infer a codec from
 the stream or alter any serialized byte.
+The dependency-free benchmark selects that same public profile and adds no
+format field or variant. Its conservative output capacity and mandatory
+round-trip verification are tooling policy, not part of the stream.
 
 ### Hand-checkable single-Literal frame
 

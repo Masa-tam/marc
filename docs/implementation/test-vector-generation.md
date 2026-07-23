@@ -2731,3 +2731,13 @@ the requested destination nor its sibling `.tmp`. Finally round-trip a
 zero-byte file. The CLI profile fixes `F = 65,536`, `S = 131,072`,
 `P = 262,149`, and aggregate limit 458,829, while all actual workspace extents
 must come from the public C requirements query.
+
+For the LZSS plus Dynamic Range benchmark smoke, select
+`lzss-dynamic-range`, use `README.md`, and run one iteration. Before timing,
+encode once into checked capacity `80 + 4N + 77K`, decode the exact encoded
+extent once, and require byte equality. Then require one encode and one decode
+measurement to reproduce those exact extents while reporting all public
+workspace requirements. On the 2026-07-24 MSVC Release build, the 4,441-byte
+README produced 3,390 bytes, ratio 0.763, with encoder workspaces
+4,441/26,723/0 bytes, decoder workspaces 458,885/196,608/0 bytes, and peak
+caller reservation 655,493 bytes. Treat throughput as descriptive only.

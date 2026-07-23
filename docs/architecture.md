@@ -1368,6 +1368,14 @@ hidden in a sibling `.tmp` path until the transform ends, the file closes, and
 an atomic rename publishes it. Any malformed or trailing input removes the
 temporary output, including after earlier frames were decoded internally.
 
+The dependency-free benchmark selects the identical public profile. Its
+checked complete-stream destination bound is `80 + 4N + 77K`, where four
+payload bytes per raw byte cover the LZSS and range worst cases and each frame
+adds a header, descriptor, and termination extent. An untimed byte-exact round
+trip gates measurement; encode and decode throughput, ratio, all six queried
+workspace extents, and peak caller reservation are descriptive outputs rather
+than performance thresholds.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

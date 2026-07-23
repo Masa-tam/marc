@@ -7379,3 +7379,27 @@ requested output and `.tmp` staging path on failure. Keep selection explicit,
 retain `lz77` as the default, and require callers to select the same codec for
 decode rather than inferring it from the stream. This step changes no stream or
 C ABI representation and adds no benchmark or interoperability entry.
+
+## DD-385: LZSS Dynamic Range benchmark verifies before measuring
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add `lzss-dynamic-range` to the dependency-free benchmark through only the
+public C requirements query, factory, process, and destroy lifecycle. Preserve
+the CLI's 65,536-byte frame, 131,072-byte canonical-token,
+262,149-byte payload, and 458,829-byte aggregate policy. Query encoder and
+decoder workspaces independently and report their exact primary, secondary,
+and zero-view extents plus the larger total.
+
+For input extent `N` and nonempty frame count `K`, reserve complete-stream
+output using checked arithmetic as `80 + 4N + 77K`: four payload bytes per raw
+byte cover the `2F` LZSS and `2S` range bounds, while each frame adds one
+56-byte header, one 16-byte descriptor, and five termination bytes. Empty
+input reserves only the 80-byte prefix.
+
+Before timing, encode once, decode the exact encoded extent once, and require a
+byte-identical complete round trip. Time encode and decode separately and
+report ratio, throughput, and workspace without defining pass/fail performance
+thresholds. Add a one-iteration README smoke. This changes no format or ABI
+and adds no interoperability entry.

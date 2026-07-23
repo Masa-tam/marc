@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | Specified | Candidate | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
@@ -222,7 +222,9 @@ extreme generic-frame lengths, and an invalid Dynamic Range descriptor to fail
 without publishing a byte from the current frame. Its explicit CLI selector
 now reaches the composition only through the public requirements query and
 factory and retains the common transactional temporary-file boundary.
-Benchmark and interoperability admission remain separate steps.
+The dependency-free benchmark uses the same public profile, checked
+`80 + 4N + 77K` destination bound, mandatory untimed round trip, and queried
+directional workspaces. Interoperability admission remains a separate step.
 
 ## Why publication is not automatic
 

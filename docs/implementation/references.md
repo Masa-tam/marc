@@ -1307,3 +1307,9 @@ requirements query and factory, the local fixed 64-KiB reference profile, and
 the repository's existing transactional file loop and CLI round-trip script.
 No external command-line interface, archive tool, combined codec adapter,
 workspace policy, source code, or test suite was consulted.
+
+The LZSS plus Dynamic Range benchmark adapter uses only DD-385, the published
+marc C lifecycle, DD-384's fixed reference profile, checked local arithmetic,
+and the repository's existing dependency-free measurement runner. No external
+benchmark framework, combined codec adapter, capacity formula, performance
+result, source code, or test suite was consulted.

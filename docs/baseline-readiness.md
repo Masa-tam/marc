@@ -49,7 +49,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
 | `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Ready | Included |
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
-| `lzss-dynamic-range` | Second Dynamic Range composition | Specified | Not included |
+| `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 14 contains twenty-five archives: the frozen twenty-four-entry schema-13
@@ -92,7 +92,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -125,8 +125,10 @@ the public C ABI. Its bounded dual-decoder fuzz target fixes every workspace
 before parsing, and permanent regressions preserve atomic rejection of every
 canonical truncation, extreme frame extents, and an invalid range descriptor.
 Its explicit CLI selector now uses only the public requirements query and
-factory through transactional temporary-file publication. Benchmark and
-interoperability evidence are not yet implemented.
+factory through transactional temporary-file publication. Its dependency-free
+benchmark independently queries both direction workspaces, verifies a complete
+round trip before timing, and reports ratio, throughput, and caller-reserved
+peak memory. Interoperability evidence is not yet implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

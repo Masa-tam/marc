@@ -17,6 +17,7 @@ marc_benchmark lz77-dynamic-range corpus.bin 5
 marc_benchmark lzss corpus.bin 5
 marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lzss-adaptive-huffman corpus.bin 5
+marc_benchmark lzss-dynamic-range corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lz78-adaptive-huffman corpus.bin 5
@@ -118,6 +119,17 @@ Capacity planning reserves 33 Adaptive payload bytes per token byte, one
 parameterized stream prefix. Both direction-specific workspace extents come
 from the public C ABI. A complete byte-exact round trip succeeds before either
 direction is timed.
+
+`lzss-dynamic-range` uses the same 65,536-byte raw frame and 131,072-byte
+canonical LZSS token ceiling as its CLI profile. Checked complete-stream
+capacity is `80 + 4N + 77K` for input extent `N` and nonempty frame count `K`,
+covering the `2S + 5` range payload, one 16-byte descriptor, and one 56-byte
+generic header per frame. Both direction-specific workspace extents come from
+the public C ABI, and a complete byte-exact round trip succeeds before either
+direction is timed. A one-iteration MSVC Release smoke over the 4,441-byte
+README encoded 3,390 bytes, ratio 0.763, and reported 655,493 bytes of peak
+caller-reserved workspace; throughput from that small input is descriptive
+only.
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 and at most 65,536 LZ78 phrase entries. Capacity planning uses the exact

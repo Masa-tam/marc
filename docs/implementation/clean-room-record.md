@@ -7892,3 +7892,32 @@ discarded and the reviewed seed retained.
   selector was absent, then passed after the public-C-only adapter was added.
   All 1,539 Release tests passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range verified benchmark adapter
+
+- Authoring method: registered the completed public C profile in marc's
+  dependency-free runner and derived its destination capacity from the local
+  token, range-payload, frame-header, and descriptor bounds.
+- References used: DD-385, DD-384's fixed 64-KiB profile, the public
+  requirements/factory/process lifecycle, and the repository's existing
+  untimed-verification and directional-measurement contract.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined codec adapters, capacity formulas, performance reports,
+  source code, and test suites.
+- Independent decisions: reserve `80 + 4N + 77K` bytes with checked
+  arithmetic; query encoder and decoder workspace separately; require an exact
+  untimed round trip; time only the process call; report all six public
+  workspace extents and their larger sum; impose no ratio or throughput
+  threshold.
+- Generated-code task description: add profile naming, configuration,
+  capacity, requirements, factory, usage, and selector branches plus a
+  one-iteration README benchmark smoke and corresponding documentation.
+- Similarity review: the adapter reuses only marc's local measurement runner
+  and published C profile. No external registry structure, sizing expression,
+  timing boundary, report schema, or test expression was compared.
+- Local validation: the smoke first failed by printing usage while the codec
+  was absent, then passed after registration. The MSVC Release README sample
+  encoded 4,441 bytes to 3,390 bytes, ratio 0.763, and reported a 655,493-byte
+  caller-workspace peak. All 1,540 Release tests, including 26 labeled
+  benchmark smokes, passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
