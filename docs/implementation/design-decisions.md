@@ -7149,3 +7149,23 @@ Dynamic Range payload `00 00 41 BE 41 7C 00`, descriptor symbol/payload extents
 bounds, validation order, and vector only. It publishes no combined validator,
 transform, C ABI factory, CLI selector, benchmark, fuzz target, or
 interoperability entry.
+
+## DD-374: LZSS Dynamic Range validation stops at private tokens
+
+- Date: 2026-07-24
+- Status: accepted
+
+Implement the first executable combined boundary as a bounded exact-frame
+validator. Accept only LZSS variant 1 plus Dynamic Range variant 1, stream
+frames no larger than 2^23 raw bytes, one 16-byte descriptor, nonzero token
+extent `S <= min(2F, 2^24)`, and payload extent `P <= 2S + 5`. Reject
+truncation, trailing bytes, impossible headers, short staging, and aggregate
+descriptor-plus-payload-plus-token storage before entropy output.
+
+Parse and preflight the descriptor, range-decode exactly `S` bytes into
+caller-owned private staging with exact payload exhaustion, then run the
+existing complete LZSS token validator for exactly `F` raw bytes. Preserve its
+format category, token index, and byte offset in the combined result. This
+boundary does not reconstruct raw bytes and therefore cannot publish any. It
+adds no encoder, streaming transform, public C ABI, CLI, benchmark, fuzz, or
+interoperability claim.

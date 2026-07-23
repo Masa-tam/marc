@@ -1287,9 +1287,15 @@ limit, the format raw-frame ceiling is 2^23 bytes; the reference profile
 remains 64 KiB. A decoder validates all declared and aggregate extents before
 entropy output, parses the complete variable-length token stream, reconstructs
 exactly the declared raw extent into separate private storage, and only then
-publishes a frame. The initial reservation fixes this boundary and an
-independent frame vector without yet adding a combined implementation or
-public surface.
+publishes a frame.
+
+The first implemented boundary stops before reconstruction. It validates the
+exact frame and one range descriptor, checks `2F`, `2S + 5`, caller staging,
+and descriptor-plus-payload-plus-token aggregate bounds before mutation, then
+uses the range decoder's no-output preflight before filling private token
+staging. The ordinary LZSS validator parses that complete variable-length
+region and returns stable token and byte positions. No raw output boundary is
+present in this step.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

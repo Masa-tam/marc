@@ -7602,3 +7602,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused independent-vector test and all 1,489 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range complete-frame validator
+
+- Authoring method: connected marc's generic exact-frame parser, strict
+  Dynamic Range decoder, and complete LZSS token validator at the already
+  specified private canonical-byte boundary.
+- References used: DD-374, DD-373's representation and bounds, local frame and
+  descriptor formats, checked arithmetic, decoder limits, and LZSS validation
+  result contract.
+- Known implementations intentionally not consulted: external combined
+  LZ/range validators, decoding pipelines, source code, malformed corpora,
+  workspace policies, error taxonomies, and test suites.
+- Independent decisions: stop at private token staging; preflight range input
+  before writes; count descriptor, payload, and token regions together; retain
+  token index and byte offset; reject every frame truncation and any trailing
+  byte.
+- Generated-code task description: implement the bounded exact-frame
+  validator, accept the independent 79-byte frame, and test declared extents,
+  staging, aggregate workspace, descriptor corruption, variable-token
+  truncation and unknown tags, sequence, pipeline, and format frame ceiling.
+- Similarity review: the control flow follows marc's documented nested
+  validation order and existing component APIs. No external implementation
+  structure, malformed case selection, or test expression was compared.
+- Local validation: all eight focused validator tests and all 1,497 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

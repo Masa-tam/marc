@@ -10,7 +10,11 @@ format versions, and C ABI versions are independent namespaces.
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
   transactional validation order, and an independent 79-byte single-Literal
-  frame assembled from the standalone LZSS and Dynamic Range primitives.
+  frame assembled from the standalone LZSS and Dynamic Range primitives. Its
+  first bounded complete-frame validator now checks all declared and aggregate
+  extents, range-decodes only after strict preflight, and validates the entire
+  variable-length token stream in private staging with stable token and byte
+  failure positions. It reconstructs and publishes no raw bytes.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

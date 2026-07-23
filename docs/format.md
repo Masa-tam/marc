@@ -1488,10 +1488,13 @@ byte, the decoder must:
 
 Failure at any stage publishes no current-frame byte. Encoding likewise
 finalizes the complete LZSS token stream and range-payload plan before writing
-the frame. This section reserves the decoder-visible representation and its
-validation order only; it does not publish a combined validator, transform,
-C ABI factory, CLI selector, benchmark, fuzz target, or interoperability
-profile.
+the frame. The internal bounded validator implements steps 1 through 4. It
+checks descriptor-plus-payload-plus-token aggregate storage before entropy
+output, range-decodes only after a successful no-output preflight, and reports
+the stable token index and byte offset of LZSS validation failures. It stops at
+private canonical token staging and neither reconstructs nor publishes raw
+bytes. No combined encoder, streaming transform, C ABI factory, CLI selector,
+benchmark, fuzz target, or interoperability profile is implied.
 
 ### Hand-checkable single-Literal frame
 

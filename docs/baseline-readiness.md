@@ -99,10 +99,13 @@ kept separate because it requires artifacts produced outside the local build.
 `lzss-dynamic-range` is the next queued composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
 checked `2F` token and `2S + 5` range-payload bounds, transactional validation
-order, and independent 79-byte single-Literal frame. It remains `Specified`:
-the combined validator, streaming transforms, public C factory, completion
-matrix, fuzzing, CLI, benchmark, and interoperability evidence are not yet
-implemented.
+order, and independent 79-byte single-Literal frame. Its first bounded
+complete-frame validator now enforces those extents and aggregate storage,
+strictly range-decodes into private token staging, and validates the entire
+variable-length LZSS stream with stable token and byte positions. It remains
+`Specified`: private raw reconstruction, a combined encoder, streaming
+transforms, public C factory, completion matrix, fuzzing, CLI, benchmark, and
+interoperability evidence are not yet implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

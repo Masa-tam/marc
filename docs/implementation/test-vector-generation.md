@@ -2573,3 +2573,18 @@ reproduce the seven-byte payload and descriptor with symbol count 2 and payload
 size 7. Serialize the generic header and descriptor independently and require
 the exact documented 79-byte frame. Do not use a future combined encoder to
 construct its own oracle.
+
+For the first LZSS plus Dynamic Range validator boundary, feed the independent
+79-byte single-Literal frame into two bytes of caller-owned private staging and
+require exact `00 41`. Reject every proper frame prefix and one appended byte.
+Reject one-byte-short token staging, a one-byte-short aggregate workspace,
+`S > 2F`, `P > 2S + 5`, a nonzero descriptor reserved byte, a wrong sequence,
+an unsupported entropy block size, and a stream frame size above 2^23 before
+unsafe mutation.
+
+Build malformed token payloads only with the standalone Dynamic Range encoder.
+After one valid Literal, encode an unknown tag and require LZSS token index 1
+and byte offset 2. Separately encode a four-byte prefix of a Match token and
+require a truncated-token error at token index and byte offset zero. These
+checks exercise the variable token grammar without using a future combined
+encoder as an oracle.
