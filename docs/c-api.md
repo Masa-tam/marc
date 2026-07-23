@@ -143,6 +143,12 @@ has no entropy-block parameter. Call
 `marc_lzss_dynamic_range_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
 Creation failure leaves the caller's transform pointer null.
+The public completion matrix uses only these functions with 64-byte frames. It
+covers empty input, all 256 one-byte values, all byte values in sequence,
+repetition, generated binary data, frame-boundary lengths, deterministic
+multi-frame output under four chunk schedules, sticky completion, and sticky
+failure. Corruption, truncation, or one trailing byte in the fourth frame
+commits the first 192 raw bytes and leaves the final output sentinel unchanged.
 LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
 reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local

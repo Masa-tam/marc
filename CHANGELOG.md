@@ -31,7 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   three encoder and three decoder byte workspaces from trusted configuration,
   local limits, and the composition's checked worst-case bounds. A public C
   config, requirements query, and factory now expose both streaming directions
-  through two caller-owned byte workspaces and no views region.
+  through two caller-owned byte workspaces and no views region. Its public-ABI
+  completion matrix now covers required binary classes, deterministic
+  arbitrary chunking, stable terminal states, and atomic malformed-final-frame
+  rejection.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

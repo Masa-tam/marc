@@ -7310,3 +7310,23 @@ same profile during creation, construct the selected completed streaming
 transform with `nothrow`, and leave the output handle null on every failure.
 This step adds no completion matrix, fuzz target, CLI, benchmark, or
 interoperability claim and does not change stream bytes or the ABI version.
+
+## DD-382: LZSS Dynamic Range completion is audited through C
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add a public-ABI completion matrix above DD-381 with a fixed 64-byte audit
+frame. Through only config initialization, requirements query, factory,
+process, and destroy, cover empty input, every one-byte value, all byte values,
+long zeros, repeated binary patterns, generated incompressible-looking bytes,
+and lengths 63, 64, and 65. Require repeated encoding to be byte-identical.
+
+For a 193-byte four-frame stream, require the same archive under whole-buffer,
+1/1, 7/5, and 13/17 input/output schedules and exact decode under each. Repeated
+calls after success must remain ended with zero counts. Corrupt the final frame
+header, truncate its final byte, and append one trailing byte independently;
+each must return a sticky malformed-stream result, commit exactly the first
+192 raw bytes, and preserve the final output sentinel. This closes public API
+completion evidence but adds no fuzz target, CLI, benchmark, interoperability
+entry, format change, or ABI change.

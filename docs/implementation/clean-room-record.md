@@ -7804,3 +7804,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused forty-four LZSS Dynamic Range and C ABI tests
   and all 1,532 Release tests passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range public-ABI completion matrix
+
+- Authoring method: exercised the published C lifecycle exclusively across
+  required data classes, chunk schedules, terminal states, and malformed final
+  frames.
+- References used: DD-382, the local 64-byte audit frame, public requirements
+  and factory, deterministic repository LCG, generic frame extent fields, and
+  frame-atomic publication contract.
+- Known implementations intentionally not consulted: external conformance
+  suites, corpora, combined codecs, malformed archives, source code, vector
+  generators, and test suites.
+- Independent decisions: compare whole-buffer encoding against 1/1, 7/5, and
+  13/17 schedules; repeat success and failure calls; target a one-byte fourth
+  frame so sentinel preservation identifies any partial publication; test
+  corruption, truncation, and trailing data independently.
+- Generated-code task description: add the public completion matrix for all
+  required binary classes, determinism, chunking, stable terminal states, and
+  malformed-final-frame atomicity without invoking internal frame APIs.
+- Similarity review: the data classes come from AGENTS.md and all schedules,
+  seeds, frame traversal, corruption point, and assertions were selected from
+  marc's local format and API contracts. No external test expression or corpus
+  was compared.
+- Local validation: all three focused completion tests and all 1,535 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

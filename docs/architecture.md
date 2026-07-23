@@ -1344,6 +1344,13 @@ staging. The requirements query and factory revalidate the same configuration,
 construct the immutable streaming direction with `nothrow`, use no views
 workspace, and publish no handle on failure.
 
+The public completion audit exercises this construction boundary rather than
+calling internal frame helpers. It spans required binary classes and raw sizes
+immediately around the 64-byte audit frame, compares complete multi-frame
+archives across arbitrary chunk schedules, and repeats both ended and error
+states. A corrupted final one-byte frame demonstrates that C ABI publication
+inherits the same complete-frame commit boundary as the internal decoder.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

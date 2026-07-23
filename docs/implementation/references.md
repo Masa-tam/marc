@@ -1287,3 +1287,9 @@ DD-381, DD-380's byte-only profile, the completed streaming encoder and
 decoder, ABI version 1's existing two-region transform lifecycle, checked
 offsets, and `nothrow` handle publication. No external C API, allocation model,
 combined factory, source code, ABI layout, or test suite was consulted.
+
+The LZSS plus Dynamic Range public-ABI completion matrix uses only DD-382, the
+published marc C lifecycle, DD-380 bounds, repository-authored deterministic
+generators, and local frame-extent parsing. No external conformance suite,
+corpus, combined codec API, malformed archive, source code, or test vectors
+were consulted.

@@ -1549,6 +1549,11 @@ The public C entry points are `marc_lzss_dynamic_range_config_init()`,
 `marc_lzss_dynamic_range_create()`. They bind exactly this representation and
 the completed bounded streaming pair. The query exposes two caller-owned byte
 workspaces and no views region; the factory publishes no handle on failure.
+The public completion audit fixes 64-byte frames and proves byte-identical
+archives across one-byte and mixed chunking schedules. It also proves that
+header corruption, final-byte truncation, and trailing data in the fourth
+frame publish exactly the first three verified frames and no byte of the
+failing final frame. These tests add no new format field or variant.
 
 ### Hand-checkable single-Literal frame
 
