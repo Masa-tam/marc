@@ -1544,6 +1544,11 @@ from local limits: raw staging is bounded by `min(max_frame_size, 2^23)`,
 token staging by the least of `2F`, the dictionary limit, and `2^24`, and
 serialized-frame storage by the established frame-header-plus-internal-buffer
 ceiling. Every multiplication, addition, and `size_t` conversion is checked.
+The public C entry points are `marc_lzss_dynamic_range_config_init()`,
+`marc_lzss_dynamic_range_workspace_requirements()`, and
+`marc_lzss_dynamic_range_create()`. They bind exactly this representation and
+the completed bounded streaming pair. The query exposes two caller-owned byte
+workspaces and no views region; the factory publishes no handle on failure.
 
 ### Hand-checkable single-Literal frame
 

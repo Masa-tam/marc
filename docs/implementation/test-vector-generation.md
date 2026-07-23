@@ -2669,3 +2669,17 @@ parameters; require stable failure categories and zeroed output requirements.
 For decoder limits with raw frame 4,096, dictionary limit 6,000, and internal
 buffered bytes 8,192, require raw 4,096, token 6,000, and serialized 8,248
 bytes. Exercise every profile-to-core error mapping explicitly.
+
+For the LZSS plus Dynamic Range C ABI smoke, initialize an encoder config,
+verify the fixed ABI metadata and 65,536-byte frame/window defaults, then set
+the seven-byte `ABABABX` input as one frame. Require workspace query values
+primary 7, secondary 119, views 0, alignment 1; construct through the public
+factory, finish in one call, and retain the resulting archive.
+
+Initialize decode independently with raw-frame limit 7, token limit 14, and
+internal-buffer limit 4,096. Require primary 4,152 and secondary 21, construct
+the decoder, and reproduce the seven input bytes exactly. Destroy both handles.
+Then shorten secondary by one byte and require creation failure with a null
+handle; set a reserved config field and require query rejection. Compile this
+test as C11 and link it through the same shared-or-static public target used by
+the other C ABI smoke tests.

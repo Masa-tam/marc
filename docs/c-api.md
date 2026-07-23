@@ -4,7 +4,7 @@ The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
 profiles, LZSS variant 1, the LZSS plus Blocked Huffman and LZSS plus Adaptive
-Huffman profiles,
+Huffman profiles, and the LZSS plus Dynamic Range profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
 profiles, LZW variant 1, the LZW
 plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
@@ -24,6 +24,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
 `marc_lz77_dynamic_range_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
+`marc_lzss_dynamic_range_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`, and
@@ -56,6 +57,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_dynamic_range_config_init()`,
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
+   `marc_lzss_dynamic_range_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
    `marc_lz78_adaptive_huffman_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
@@ -133,6 +135,14 @@ decoding partitions it into token staging followed by private raw staging.
 Each outer frame resets both LZSS history and its one FGK tree. Call
 `marc_lzss_adaptive_huffman_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
+The LZSS plus Dynamic Range factory has the same byte-only ownership and no
+views region. Encoding partitions secondary storage into canonical LZSS tokens
+and one complete range-coded frame; decoding partitions it into token staging
+and private raw staging. The configuration fixes Dynamic Range variant 1 and
+has no entropy-block parameter. Call
+`marc_lzss_dynamic_range_workspace_requirements()` again after changing the
+direction, known original size, frame size, LZSS parameters, or any hard limit.
+Creation failure leaves the caller's transform pointer null.
 LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
 reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local

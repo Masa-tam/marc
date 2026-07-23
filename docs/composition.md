@@ -196,15 +196,18 @@ the exact-frame byte sequence. Its matching bounded streaming decoder collects
 one admitted frame, validates and reconstructs it privately, then exposes raw
 bytes under arbitrary output starvation. Truncation, trailing data, impossible
 extents, and corruption of a later frame publish no bytes from the failing
-frame. No public factory, CLI selector, benchmark, fuzz target, or
-interoperability entry is implied.
+frame. No completion matrix, CLI selector, benchmark, fuzz target, or
+interoperability entry is implied by the streaming boundary alone.
 
 The bounded profile now derives the three encoder and three decoder byte
 regions independently. Encoder sizing uses the actual largest frame and the
 `2F` token plus `2S + 5` payload ceilings; decoder sizing uses only validated
 local limits and format caps. All conversions and aggregate sums are checked,
 empty streams need no frame workspace, and no private typed layout enters the
-future C ABI.
+public C ABI. The public config, requirements query, and factory now bind this
+fixed profile through the common opaque-transform lifecycle. They use two
+caller-owned byte regions, no aligned views region, stable core-status mapping,
+and null-handle publication on every construction failure.
 
 ## Why publication is not automatic
 

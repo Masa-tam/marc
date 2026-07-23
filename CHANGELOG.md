@@ -29,7 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   body collection, and preserves current-frame atomicity on truncation,
   trailing data, or later corruption. Its bounded profile now calculates all
   three encoder and three decoder byte workspaces from trusted configuration,
-  local limits, and the composition's checked worst-case bounds.
+  local limits, and the composition's checked worst-case bounds. A public C
+  config, requirements query, and factory now expose both streaming directions
+  through two caller-owned byte workspaces and no views region.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

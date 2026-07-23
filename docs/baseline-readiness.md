@@ -92,6 +92,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzss-dynamic-range` | Yes | Yes | Yes | No | No | No | No | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -116,8 +117,10 @@ bounded streaming decoder validates and reconstructs a complete frame before
 raw draining, rejects impossible extents before body collection, and keeps
 malformed later frames atomic. Its bounded workspace profile now derives all
 six direction-specific byte regions with checked arithmetic and no exposed
-private layouts. The public C factory, completion matrix, fuzzing, CLI,
-benchmark, and interoperability evidence are not yet implemented.
+private layouts. Its public C requirements query and factory now bind those
+regions to both streaming directions without a views workspace. The completion
+matrix, fuzzing, CLI, benchmark, and interoperability evidence are not yet
+implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

@@ -7778,3 +7778,29 @@ discarded and the reviewed seed retained.
 - Local validation: all eight focused profile tests and all 1,531 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range public C requirements and factory
+
+- Authoring method: bound the completed byte-only profile and streaming pair to
+  marc ABI version 1's existing opaque-transform lifecycle.
+- References used: DD-381, DD-380, the local fixed-width C configuration
+  convention, checked secondary partitioning, stable status mapping, and
+  `nothrow` handle publication.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation models, combined profile factories, ABI layouts, source
+  code, wrapper libraries, and test suites.
+- Independent decisions: reuse two caller-owned byte regions and no views
+  workspace; initialize LZSS defaults 65,536 / 5 / 258; revalidate the query
+  during creation; partition secondary by the typed profile counts internally;
+  keep the handle null on every failure; leave ABI version and stream bytes
+  unchanged.
+- Generated-code task description: add the fixed-width config and three public
+  functions, wire both streaming directions, register a pure C11 shared/static
+  smoke, verify exact query counts and round trip, and reject short workspace
+  and nonzero reserved fields.
+- Similarity review: the ABI shape and implementation follow only marc's
+  already published C lifecycle and DD-381. No external symbol set, object
+  layout, partition strategy, or test expression was compared.
+- Local validation: the focused forty-four LZSS Dynamic Range and C ABI tests
+  and all 1,532 Release tests passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

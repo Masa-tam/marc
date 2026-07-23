@@ -1337,7 +1337,12 @@ from the actual largest configured frame, so a short stream and empty input do
 not reserve a full default frame. The decoder query depends only on validated
 local limits and the 2^23 raw / 2^24 token format ceilings. No aligned or typed
 view region is needed; later public construction can partition ordinary byte
-storage without exposing a private C++ record layout.
+storage without exposing a private C++ record layout. The public C boundary
+now performs that partition: primary owns raw input or serialized input;
+secondary owns token staging followed by serialized-frame or private-raw
+staging. The requirements query and factory revalidate the same configuration,
+construct the immutable streaming direction with `nothrow`, use no views
+workspace, and publish no handle on failure.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

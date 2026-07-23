@@ -7289,3 +7289,24 @@ ceiling. Validate limits first and check every arithmetic operation and
 mapping; expose no aligned or private typed layout. This step adds no public C
 requirements query or factory, completion matrix, fuzz target, CLI, benchmark,
 or interoperability claim.
+
+## DD-381: LZSS Dynamic Range enters C ABI version 1
+
+- Date: 2026-07-24
+- Status: accepted
+
+Expose `marc_lzss_dynamic_range_config` plus initialization, requirements-query,
+and creation functions as one immutable LZSS variant 1 plus Dynamic Range
+variant 1 profile. Preserve known-size encoding, the common opaque-transform
+lifecycle, stable process statuses, and ABI version 1. Carry frame size, LZSS
+parameters, and applicable local limits in fixed-width C fields; require all
+reserved fields to remain zero.
+
+Use primary storage for raw frames while encoding or serialized frames while
+decoding. Partition secondary storage into canonical tokens followed by the
+complete encoded frame for encode, or tokens followed by private raw staging
+for decode. Require no views workspace and report alignment one. Revalidate the
+same profile during creation, construct the selected completed streaming
+transform with `nothrow`, and leave the output handle null on every failure.
+This step adds no completion matrix, fuzz target, CLI, benchmark, or
+interoperability claim and does not change stream bytes or the ABI version.

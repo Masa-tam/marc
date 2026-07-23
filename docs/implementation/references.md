@@ -1281,3 +1281,9 @@ documented `2F` token and `2S + 5` payload bounds, generic header and descriptor
 sizes, local decoder limits, checked arithmetic, and existing streaming-region
 ownership. No external workspace calculator, allocator interface, combined
 profile, source code, ABI layout, or test suite was consulted.
+
+The LZSS plus Dynamic Range public C requirements query and factory use only
+DD-381, DD-380's byte-only profile, the completed streaming encoder and
+decoder, ABI version 1's existing two-region transform lifecycle, checked
+offsets, and `nothrow` handle publication. No external C API, allocation model,
+combined factory, source code, ABI layout, or test suite was consulted.
