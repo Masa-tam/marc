@@ -1317,6 +1317,15 @@ and aggregate bounds, and returns an exact extent. The encoder refuses a short
 destination before writing and rechecks that the frozen token bytes yield the
 same descriptor and payload extent before serializing.
 
+The first outer streaming encoder owns no allocation. Callers provide one raw
+frame region, a `2F` canonical-token region, and one complete serialized-frame
+region. The transform drains the 80-byte prefix, collects exactly one format-
+declared raw frame, freezes and encodes it through the exact-frame boundary,
+then drains that immutable frame before accepting the next. This preserves
+byte identity across one-byte input and output, retains finalization across
+output starvation, and leaves nonterminal `Flush` unable to alter framing. A
+matching streaming decoder remains the next separate boundary.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

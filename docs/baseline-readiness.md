@@ -109,8 +109,11 @@ Its transactional complete-frame decoder now publishes only a fully validated
 and reconstructed private frame and leaves output unchanged on failure. A
 deterministic exact-frame planner and encoder now freeze canonical LZSS tokens
 before range planning and reproduce the independent frame without short-output
-mutation. Streaming transforms, public C factory, completion matrix, fuzzing,
-CLI, benchmark, and interoperability evidence are not yet implemented.
+mutation. Its first bounded streaming encoder now preserves the concatenated
+exact-frame representation under arbitrary one-byte chunking, nonterminal
+`Flush`, and output starvation while retaining `EndInput`. The matching
+streaming decoder, public C factory, completion matrix, fuzzing, CLI, benchmark,
+and interoperability evidence are not yet implemented.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

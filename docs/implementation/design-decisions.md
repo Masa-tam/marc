@@ -7223,3 +7223,24 @@ bytes, require the same payload extent, and then serialize header, descriptor,
 and payload in order. It must reproduce the independent 79-byte frame and be
 byte-identical across repeated calls. This step adds no streaming transform,
 C ABI, CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-378: LZSS Dynamic Range streaming encoding freezes each frame
+
+- Date: 2026-07-24
+- Status: accepted
+
+Add a bounded encoder transform around DD-377. Emit the canonical 64-byte
+stream header and 16-byte LZSS parameter region first. Buffer exactly one
+declared raw frame, complete and freeze its canonical LZSS token stream, encode
+one exact Dynamic Range frame, then drain that immutable serialized extent
+before collecting another frame.
+
+Require caller-owned raw storage for `F`, token staging for `2F`, and one
+complete serialized-frame region. Count raw, actual tokens, and the exact
+serialized frame against the aggregate internal-buffer limit before frame
+publication. Input/output chunking and nonterminal `Flush` do not alter frame
+boundaries. Accept `EndInput` only with all remaining declared input and retain
+it through output starvation; emit prefix only for empty input. Reject
+`ResetBlock`, excess or premature input, invalid configuration, and insufficient
+workspace with stable transform errors. This step adds no streaming decoder,
+C ABI, CLI, benchmark, fuzz, or interoperability claim.

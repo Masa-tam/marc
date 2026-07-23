@@ -2625,3 +2625,17 @@ plan, supply a 78-byte serialized destination, require the reported exact
 79-byte extent, and preserve every destination sentinel. Reject empty input,
 input inconsistent with the outer frame extent, and aggregate storage one byte
 below descriptor plus payload plus tokens.
+
+For bounded LZSS plus Dynamic Range streaming encoding, independently assemble
+the canonical stream prefix and concatenate exact frames produced by the
+DD-377 encoder for raw frame extents 2, 2, and 1 over `ABABX`. Feed and drain
+the streaming transform one byte at a time and require byte-for-byte equality
+with that reference. Separately prove that `Flush` after one raw byte does not
+close a partial frame, that a complete final frame retains `EndInput` while
+draining, and that repeated calls after completion remain ended.
+
+Reject short raw, token, and serialized-frame regions; set aggregate storage
+one byte below raw plus actual tokens plus exact serialized frame and require a
+stable limit error. For empty input require only the 80-byte prefix. Reject
+premature `EndInput`, excess input, unknown flags, and `ResetBlock` without
+silently changing the declared frame sequence.

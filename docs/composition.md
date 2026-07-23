@@ -188,8 +188,12 @@ frame only after all layers succeed, leaving caller output unchanged on every
 failure. Its exact-frame planner now freezes the complete LZSS token region
 before range planning, and its deterministic encoder reproduces the 79-byte
 independent frame without partial serialized-output writes on capacity
-failure. No streaming transform, public factory, CLI selector, benchmark, fuzz
-target, or interoperability entry is implied.
+failure. Its first bounded streaming encoder now drains the canonical prefix,
+collects one exact raw frame, freezes and encodes the complete token region,
+and retains the immutable serialized frame across arbitrary output starvation.
+One-byte input/output, nonterminal `Flush`, and retained `EndInput` preserve
+the exact-frame byte sequence. No streaming decoder, public factory, CLI
+selector, benchmark, fuzz target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

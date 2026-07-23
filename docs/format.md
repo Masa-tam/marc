@@ -1500,9 +1500,7 @@ to fully validated tokens. Its raw staging remains private and no caller-
 visible byte is published. The transactional complete-frame decoder implements
 step 6: it checks caller output capacity before entropy output, reconstructs
 into private raw staging, and copies exactly `F` bytes only after every nested
-stage succeeds. Every failure leaves caller output unchanged. No combined
-streaming transform, C ABI factory, CLI selector, benchmark, fuzz target, or
-interoperability profile is implied.
+stage succeeds. Every failure leaves caller output unchanged.
 
 The exact-frame planner first determines and emits the complete canonical LZSS
 token stream into bounded private staging. It plans Dynamic Range variant 1
@@ -1511,6 +1509,18 @@ and reports the complete serialized extent. The deterministic encoder repeats
 the range plan, rejects short serialized output before writing it, then emits
 the header, descriptor, and payload in order. Replanning unchanged token bytes
 must reproduce the exact payload extent; disagreement is an internal error.
+
+The bounded streaming encoder emits the canonical 80-byte stream prefix, then
+collects exactly one declared raw frame in caller-owned storage. It invokes the
+exact planner and encoder only when that frame is complete, retains the
+resulting immutable serialized frame across arbitrary output starvation, and
+does not collect the next frame until the current one has drained. Ordinary
+input chunking and `Flush` do not create frame boundaries. `EndInput` is valid
+only with all remaining declared raw bytes and remains effective until the
+last complete frame has drained. Empty input consists only of the prefix.
+`ResetBlock` is unsupported because the format fixes frame resets. No public C
+factory, CLI selector, benchmark, fuzz target, or interoperability profile is
+implied.
 
 ### Hand-checkable single-Literal frame
 

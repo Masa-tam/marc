@@ -7698,3 +7698,30 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused encoder tests and all 1,512 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-24 - LZSS plus Dynamic Range bounded streaming encoder
+
+- Authoring method: wrapped the completed exact-frame planner and encoder in
+  marc's existing transform contract while retaining frame-complete staging
+  and caller-owned storage.
+- References used: DD-378, DD-377, local stream header and LZSS parameter
+  serializers, checked arithmetic, aggregate workspace policy, and transform
+  status invariants.
+- Known implementations intentionally not consulted: external streaming
+  codecs, buffering state machines, combined LZ/range pipelines, source code,
+  test vectors, malformed corpora, and test suites.
+- Independent decisions: drain the canonical prefix first; collect one exact
+  raw frame; freeze and encode it completely before publication; refuse the
+  next frame until draining completes; retain valid `EndInput` across output
+  starvation; let neither input chunking nor `Flush` change boundaries.
+- Generated-code task description: add the allocation-free bounded transform,
+  compare one-byte input/output against independently concatenated exact
+  frames, and cover empty input, finish retention, flush, workspace shortages,
+  aggregate limits, excess or premature input, unknown flags, and
+  `ResetBlock`.
+- Similarity review: the state machine follows only marc's documented
+  transform and exact-frame contracts. No external control flow, buffer layout,
+  stream bytes, or test expression was compared.
+- Local validation: all five focused streaming-encoder tests and all 1,517
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
