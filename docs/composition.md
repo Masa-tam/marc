@@ -239,10 +239,12 @@ before publication. An independently derived 83-byte single-Pair frame fixes
 the component boundary. Its first bounded complete-frame validator checks all
 declared and aggregate extents, performs strict range preflight, fills private
 token staging, and validates the complete bounded phrase graph without raw
-reconstruction or publication. It reports stable LZ78 format, token index, and
-byte offset on dictionary failure. No combined encoder, streaming transform,
-public factory, CLI selector, benchmark, fuzz target, or interoperability
-entry is implied.
+publication. Its bounded private decoder counts raw staging in the aggregate
+policy and iteratively reconstructs exactly the declared extent only after
+that phrase graph succeeds. It reports stable LZ78 format, token index, and
+byte offset on dictionary failure. No transactional caller-output boundary,
+combined encoder, streaming transform, public factory, CLI selector,
+benchmark, fuzz target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

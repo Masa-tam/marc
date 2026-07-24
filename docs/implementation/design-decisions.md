@@ -7477,3 +7477,22 @@ phrase entries. Preserve its format category, token index, and byte offset in
 the combined result. This boundary builds and validates the phrase graph but
 does not reconstruct or publish any raw byte. It adds no encoder, streaming
 transform, public C ABI, CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-389: LZ78 Dynamic Range reconstructs only validated phrases
+
+- Date: 2026-07-25
+- Status: accepted
+
+Extend DD-388 with a caller-owned private raw-staging boundary. Before any
+entropy output, require raw capacity for the declared frame extent and count
+descriptor, payload, token staging, aligned phrase entries, and raw staging in
+one checked aggregate. Preserve the existing validator unchanged for callers
+that stop at the phrase graph.
+
+Only after strict range decoding and complete phrase-graph validation succeeds,
+invoke marc's existing bounded, non-recursive LZ78 decoder over exactly the
+validated tokens and phrase entries. Reconstruct exactly the declared raw
+extent into private staging, preserve stable dictionary error categories and
+positions, and return without copying a byte to caller-visible output. This
+step adds no transactional publication, encoder, streaming transform, public C
+ABI, CLI, benchmark, fuzz, or interoperability claim.

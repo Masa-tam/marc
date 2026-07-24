@@ -1663,9 +1663,16 @@ It checks descriptor, payload, token, and aligned phrase-table aggregate
 storage before entropy output, range-decodes only after a successful no-output
 preflight, and reports stable LZ78 format, token-index, and byte-offset
 failures. It stops after validating the private canonical token staging and
-phrase graph; it neither reconstructs nor publishes raw bytes. No combined
-encoder, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
-target, or interoperability profile is implied.
+phrase graph.
+
+The internal bounded private decoder extends that boundary through step 5. It
+requires the complete raw staging extent and counts descriptor, payload,
+tokens, aligned phrase entries, and raw bytes together before entropy output.
+After complete phrase-graph validation, it invokes the existing bounded
+non-recursive LZ78 decoder to reconstruct exactly `F` private bytes. It does
+not publish caller-visible raw bytes. No combined encoder, streaming
+transform, C ABI factory, CLI selector, benchmark, fuzz target, or
+interoperability profile is implied.
 
 ### Hand-checkable single-Pair frame
 

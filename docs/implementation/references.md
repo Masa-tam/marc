@@ -1335,3 +1335,9 @@ descriptor and strict two-pass decoder, LZ78 token and phrase-graph validator,
 checked arithmetic, and local decoder-limit contracts. No external combined
 LZ/range validator, decompression pipeline, source code, malformed corpus,
 workspace policy, error taxonomy, or test suite was consulted.
+
+The LZ78 plus Dynamic Range private raw decoder uses only DD-389, DD-388's
+complete phrase-graph boundary, marc's existing bounded non-recursive LZ78
+decoder, caller-owned spans, checked aggregate arithmetic, and local decoder
+limits. No external combined decoder, phrase expansion implementation,
+buffering layout, source code, malformed corpus, or test suite was consulted.

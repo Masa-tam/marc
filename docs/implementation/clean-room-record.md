@@ -8032,3 +8032,27 @@ discarded and the reviewed seed retained.
 - Local validation: all eight focused validator tests and all 1,549 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range private raw decoder
+
+- Authoring method: extended marc's local complete-frame validator with the
+  existing bounded, iterative standalone LZ78 reconstruction path.
+- References used: DD-389, DD-388, the local LZ78 decoder, checked workspace
+  arithmetic, and caller-owned staging contracts.
+- Known implementations intentionally not consulted: external combined
+  LZ/range decoders, phrase expansion source code, workspace layouts,
+  malformed corpora, and test suites.
+- Independent decisions: require raw capacity and count descriptor, payload,
+  tokens, aligned phrase entries, and raw bytes before entropy output; decode
+  only an already validated phrase graph without recursion; and stop before
+  caller-visible publication.
+- Generated-code task description: add private raw reconstruction, preserve
+  stable dictionary failures, test the independent Pair and nested `ABAB`
+  phrase graph, and prove capacity, aggregate, descriptor, and phrase-reference
+  failures do not expose private raw bytes.
+- Similarity review: the control flow composes only marc's documented nested
+  validation order and existing LZ78 decoder. No external implementation
+  structure, byte sequence, or test expression was compared.
+- Local validation: all five focused private-decoder tests and all 1,554
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

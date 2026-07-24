@@ -2783,3 +2783,16 @@ Range encoder: change the Pair's phrase index from root zero to forward index
 one, range-code those eight bytes, and require token index zero, byte offset
 zero, and `invalid_phrase_index`. This exercises the fixed token and phrase
 graph boundary without using a future combined encoder as its own oracle.
+
+For the LZ78 plus Dynamic Range private raw boundary, decode the independent
+83-byte single-Pair frame into a three-byte sentinel span and require only its
+first byte to become `41`. Separately form canonical tokens for Pair(root,
+`A`), Pair(root, `B`), and Pair(index 1, `B`), range-code them with the
+standalone Dynamic Range encoder, and require private raw `ABAB` plus the
+nested phrase `{prefix 1, symbol 42, length 2}`.
+
+Reject zero raw capacity and a descriptor-plus-payload-plus-token-plus-phrase-
+plus-raw aggregate limit one byte short before token staging changes. Corrupt
+the descriptor reserved byte and independently range-code a forward phrase
+reference; both must leave private raw staging unchanged. No caller-visible
+output span participates in this boundary.

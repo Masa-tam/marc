@@ -15,7 +15,9 @@ format versions, and C ABI versions are independent namespaces.
   validator now checks declared and aggregate extents before entropy output,
   strictly range-decodes into private token staging, and validates the entire
   LZ78 phrase graph with stable format, token-index, and byte-offset failures.
-  It reconstructs and publishes no raw bytes.
+  Its bounded private decoder additionally counts raw staging in the aggregate
+  policy and iteratively reconstructs only the already validated phrase graph.
+  It publishes no caller-visible raw bytes.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

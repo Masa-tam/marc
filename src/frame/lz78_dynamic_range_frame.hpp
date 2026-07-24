@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZ78_DYNAMIC_RANGE_FRAME_HPP
 #define MARC_FRAME_LZ78_DYNAMIC_RANGE_FRAME_HPP
 
+#include "dictionary/lz78_decoder.hpp"
 #include "dictionary/lz78_format.hpp"
 #include "dictionary/lz78_validator.hpp"
 #include "entropy/dynamic_range_decoder.hpp"
@@ -24,10 +25,12 @@ enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     invalid_entropy_extent,
     dictionary_staging_too_small,
     phrase_workspace_too_small,
+    raw_staging_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
 };
 
@@ -49,6 +52,8 @@ struct Lz78DynamicRangeFrameValidationResult {
         dictionary::internal::Lz78ValidationError::none};
     dictionary::internal::Lz78FormatError dictionary_format_error{
         dictionary::internal::Lz78FormatError::none};
+    dictionary::internal::Lz78DecodeError dictionary_decode_error{
+        dictionary::internal::Lz78DecodeError::none};
     Lz78DynamicRangeFrameValidationError error{
         Lz78DynamicRangeFrameValidationError::none};
 };
@@ -68,6 +73,21 @@ validate_lz78_dynamic_range_frame(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::Lz78PhraseEntry>
         phrase_workspace) noexcept;
+
+// Validates every encoded layer and reconstructs exactly one frame into
+// private raw staging. On error, all three workspace contents must be
+// discarded. Input, token staging, and raw staging must not overlap.
+[[nodiscard]] Lz78DynamicRangeFrameValidationResult
+decode_lz78_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

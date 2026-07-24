@@ -1395,13 +1395,18 @@ aggregate extents before entropy output, builds and checks the complete phrase
 graph in bounded aligned workspace, reconstructs exactly the declared raw
 extent without recursion, and only then publishes a frame.
 
-The first implemented boundary stops at the validated phrase graph. It checks
+The first validator boundary stops at the validated phrase graph. It checks
 the exact frame, descriptor, `8F`, `2S + 5`, token staging, aligned phrase
 entries, and their aggregate extent before mutation. The strict range decoder
 preflights the complete payload before filling private token staging, after
 which the ordinary LZ78 validator records the complete bounded phrase graph
-and stable token and byte positions. No raw reconstruction or publication
-boundary exists in this step.
+and stable token and byte positions.
+
+The next bounded boundary also requires a separate private raw region and
+counts its complete extent in the same pre-entropy aggregate check. Only after
+the phrase graph is valid does the existing non-recursive LZ78 decoder
+iteratively reconstruct exactly the declared raw extent into that region.
+There is still no caller-visible publication boundary in this step.
 
 ### LZSS plus Adaptive Huffman specified boundary
 
