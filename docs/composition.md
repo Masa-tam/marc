@@ -225,8 +225,9 @@ factory and retains the common transactional temporary-file boundary.
 The dependency-free benchmark uses the same public profile, checked
 `80 + 4N + 77K` destination bound, mandatory untimed round trip, and queried
 directional workspaces. Interoperability schema 15 appends it once after the
-frozen schema-14 order; external cross-platform verification remains a
-separate evidence step.
+frozen schema-14 order. Four-direction external verification passed at
+revision `504af4f6942aee7662bcb51abf9b55289c957d6c` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
 
 ## Why publication is not automatic
 

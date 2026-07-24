@@ -131,7 +131,10 @@ benchmark independently queries both direction workspaces, verifies a complete
 round trip before timing, and reports ratio, throughput, and caller-reserved
 peak memory. Local schema-15 generation, exact-order verification, reordered-
 manifest rejection, and schemas 1 through 14 compatibility are present.
-External cross-platform schema-15 evidence remains pending.
+Four-direction schema-15 verification at revision
+`504af4f6942aee7662bcb51abf9b55289c957d6c` passed for the Windows/MSVC and
+Ubuntu 24.04/Ninja artifacts plus an Ubuntu 26.04/Clang-generated bundle,
+including reverse verification on Windows/MSVC.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

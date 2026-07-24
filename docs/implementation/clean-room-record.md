@@ -7950,5 +7950,30 @@ discarded and the reviewed seed retained.
   15, 13, 8, and 7 archive predecessors through schemas 14 to 1. The reordered
   schema-15 manifest was rejected. All 1,540 Release tests passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake
-  4.3.4. Cross-platform schema-15 verification remains pending and is not
-  claimed here.
+  4.3.4. At this local-admission point, cross-platform schema-15 verification
+  had not yet been claimed.
+
+## 2026-07-24 - Interoperability schema 15 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `504af4f6942aee7662bcb51abf9b55289c957d6c`.
+- References used: DD-386, marc's schema-15 generator and verifier, the
+  established schema-14 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external archive
+  protocols, interoperability schemas, test vectors, source code, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-six archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-six-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 26 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-15 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.
+- Scope: this record changes no implementation or stream format. It is x86-64
+  evidence and does not claim coverage of another architecture or a non-WSL
+  Linux kernel.

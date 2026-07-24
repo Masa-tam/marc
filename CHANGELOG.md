@@ -44,7 +44,9 @@ format versions, and C ABI versions are independent namespaces.
   verifies a complete public-ABI round trip before reporting compression ratio,
   directional throughput, and queried caller-owned workspace. Interoperability
   schema 15 appends this profile as archive 26 while freezing all fourteen
-  earlier schema meanings.
+  earlier schema meanings. Four-direction external verification passed at
+  revision `504af4f6942aee7662bcb51abf9b55289c957d6c` for Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
 
 - The reserved `lz77-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
