@@ -236,9 +236,13 @@ consumes it. The format caps raw frames at 2^21 bytes, bounds token bytes by
 `8F` and range payload bytes by `2S + 5`, and requires complete entropy,
 fixed-token, and phrase-graph validation plus private iterative reconstruction
 before publication. An independently derived 83-byte single-Pair frame fixes
-the component boundary. No combined validator, public factory, CLI selector,
-benchmark, fuzz target, or interoperability entry is implied by this
-reservation.
+the component boundary. Its first bounded complete-frame validator checks all
+declared and aggregate extents, performs strict range preflight, fills private
+token staging, and validates the complete bounded phrase graph without raw
+reconstruction or publication. It reports stable LZ78 format, token index, and
+byte offset on dictionary failure. No combined encoder, streaming transform,
+public factory, CLI selector, benchmark, fuzz target, or interoperability
+entry is implied.
 
 ## Why publication is not automatic
 

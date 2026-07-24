@@ -2768,3 +2768,18 @@ reproduce the independently calculated payload and descriptor with symbol
 count 8 and payload size 11. Serialize the generic header and descriptor
 independently and require the exact documented 83-byte frame. Do not use a
 future combined encoder to construct its own oracle.
+
+For the first LZ78 plus Dynamic Range validator boundary, feed the independent
+83-byte single-Pair frame into eight bytes of caller-owned token staging and
+one aligned phrase entry. Require exact Pair bytes and phrase
+`{prefix 0, symbol 41, length 1}`. Reject every proper frame prefix and one
+appended byte. Before entropy output, reject seven-byte token staging, zero
+phrase entries, a one-byte-short aggregate workspace, non-multiple-of-eight or
+`S > 8F`, `P > 2S + 5`, a nonzero descriptor reserved byte, a wrong sequence,
+an unsupported entropy block size, and a stream frame size above 2^21.
+
+Build the malformed phrase-reference payload only with the standalone Dynamic
+Range encoder: change the Pair's phrase index from root zero to forward index
+one, range-code those eight bytes, and require token index zero, byte offset
+zero, and `invalid_phrase_index`. This exercises the fixed token and phrase
+graph boundary without using a future combined encoder as its own oracle.

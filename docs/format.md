@@ -1658,10 +1658,14 @@ byte, the decoder must:
 
 Failure at any stage publishes no current-frame byte. Encoding likewise fixes
 the deterministic LZ78 parse and complete token stream before range planning
-or frame output. This section reserves the decoder-visible representation and
-validation order only; it does not publish a combined validator, transform,
-C ABI factory, CLI selector, benchmark, fuzz target, or interoperability
-profile.
+or frame output. The internal bounded validator implements steps 1 through 4.
+It checks descriptor, payload, token, and aligned phrase-table aggregate
+storage before entropy output, range-decodes only after a successful no-output
+preflight, and reports stable LZ78 format, token-index, and byte-offset
+failures. It stops after validating the private canonical token staging and
+phrase graph; it neither reconstructs nor publishes raw bytes. No combined
+encoder, streaming transform, C ABI factory, CLI selector, benchmark, fuzz
+target, or interoperability profile is implied.
 
 ### Hand-checkable single-Pair frame
 

@@ -7456,3 +7456,24 @@ Fix raw `41` as the independent boundary vector: canonical LZ78 Pair bytes
 validation order, and vector only. It publishes no combined validator,
 transform, C ABI factory, CLI selector, benchmark, fuzz target, or
 interoperability entry.
+
+## DD-388: LZ78 Dynamic Range validation stops at the phrase graph
+
+- Date: 2026-07-24
+- Status: accepted
+
+Implement the first executable combined boundary as a bounded exact-frame
+validator. Accept only LZ78 variant 1 plus Dynamic Range variant 1, stream
+frames no larger than 2^21 raw bytes, one 16-byte descriptor, nonzero token
+extent `S` that is a multiple of eight with `S <= min(8F, 2^24)`, and payload
+extent `5 <= P <= 2S + 5`. Reject truncation, trailing bytes, impossible
+headers, short token or aligned phrase workspace, and aggregate
+descriptor-plus-payload-plus-token-plus-phrase storage before entropy output.
+
+Parse and preflight the descriptor, range-decode exactly `S` bytes into
+caller-owned private staging with exact payload exhaustion, then run the
+existing complete LZ78 validator for exactly `F` raw bytes in caller-owned
+phrase entries. Preserve its format category, token index, and byte offset in
+the combined result. This boundary builds and validates the phrase graph but
+does not reconstruct or publish any raw byte. It adds no encoder, streaming
+transform, public C ABI, CLI, benchmark, fuzz, or interoperability claim.

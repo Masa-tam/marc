@@ -11,7 +11,11 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked fixed-token and range-payload
   bounds, bounded phrase-graph validation and transactional publication order,
   and an independent 83-byte single-Pair frame assembled from the standalone
-  LZ78 and Dynamic Range primitives.
+  LZ78 and Dynamic Range primitives. Its first bounded complete-frame
+  validator now checks declared and aggregate extents before entropy output,
+  strictly range-decodes into private token staging, and validates the entire
+  LZ78 phrase graph with stable format, token-index, and byte-offset failures.
+  It reconstructs and publishes no raw bytes.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

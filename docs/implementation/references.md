@@ -1328,3 +1328,10 @@ generic frame format, checked decoder limits, and repository-owned composition
 policy. No external combined codec, range-coder implementation, format,
 profile, stream, test vector, workspace layout, source code, or test suite was
 consulted.
+
+The LZ78 plus Dynamic Range complete-frame validator uses only DD-388, the
+reserved combined format, marc's generic frame parser, Dynamic Range
+descriptor and strict two-pass decoder, LZ78 token and phrase-graph validator,
+checked arithmetic, and local decoder-limit contracts. No external combined
+LZ/range validator, decompression pipeline, source code, malformed corpus,
+workspace policy, error taxonomy, or test suite was consulted.

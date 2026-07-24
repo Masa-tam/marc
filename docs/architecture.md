@@ -1393,9 +1393,15 @@ limit therefore gives this profile a 2^21-byte format frame ceiling; the
 reference profile remains 64 KiB. A decoder validates all declared and
 aggregate extents before entropy output, builds and checks the complete phrase
 graph in bounded aligned workspace, reconstructs exactly the declared raw
-extent without recursion, and only then publishes a frame. The initial
-reservation fixes this boundary and an independent 83-byte frame vector
-without adding a combined implementation or public surface.
+extent without recursion, and only then publishes a frame.
+
+The first implemented boundary stops at the validated phrase graph. It checks
+the exact frame, descriptor, `8F`, `2S + 5`, token staging, aligned phrase
+entries, and their aggregate extent before mutation. The strict range decoder
+preflights the complete payload before filling private token staging, after
+which the ordinary LZ78 validator records the complete bounded phrase graph
+and stable token and byte positions. No raw reconstruction or publication
+boundary exists in this step.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

@@ -103,9 +103,13 @@ kept separate because it requires artifacts produced outside the local build.
 fixed-width LZ78-token boundary, 2^21-byte format frame ceiling, checked `8F`
 token and `2S + 5` range-payload bounds, bounded aligned phrase validation,
 transactional publication order, and independent 83-byte single-Pair frame.
-It remains `Specified`: the combined validator, streaming transforms, public C
-factory, completion matrix, fuzzing, CLI, benchmark, and interoperability
-evidence are not yet implemented.
+Its first bounded complete-frame validator now enforces those extents, counts
+aligned phrase storage in the aggregate, strictly range-decodes into private
+token staging, and validates the complete LZ78 phrase graph with stable token
+and byte positions. It remains `Specified`: private raw reconstruction, a
+combined encoder, streaming transforms, public C factory, completion matrix,
+fuzzing, CLI, benchmark, and interoperability evidence are not yet
+implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
