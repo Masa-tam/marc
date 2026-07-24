@@ -7403,3 +7403,28 @@ byte-identical complete round trip. Time encode and decode separately and
 report ratio, throughput, and workspace without defining pass/fail performance
 thresholds. Add a one-iteration README smoke. This changes no format or ABI
 and adds no interoperability entry.
+
+## DD-386: Interoperability schema 15 appends LZSS Dynamic Range once
+
+- Date: 2026-07-24
+- Status: accepted
+
+Define interoperability schema 15 and codec set `marc-cli-v15` as the exact
+twenty-five-entry schema-14 order followed by `lzss-dynamic-range`. Reuse the
+deterministic 8,193-byte repository fixture. Generation must round-trip all
+twenty-six profiles before writing a manifest; verification must check the
+exact count and order, every declared size and SHA-256 value, foreign decode
+equality, byte-identical local re-encoding, platform metadata, and a full Git
+object ID.
+
+Keep schemas 1 through 14 accepted with their frozen codec sets and orders.
+The compatibility test must generate and verify schema 15, reject a reordered
+schema-15 manifest, remove only archive 26 to derive schema 14, and continue
+the existing one-generation-at-a-time conversion through schema 1. No prior
+schema meaning or stream representation changes.
+
+Local generation and verification establish deterministic same-build evidence
+only. Cross-platform admission requires the Windows/MSVC and Ubuntu 24.04 CI
+artifacts plus an Ubuntu 26.04/Clang bundle to pass the four established
+verification directions at the exact pushed revision. Record that evidence
+only after it exists.

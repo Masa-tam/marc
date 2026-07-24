@@ -7921,3 +7921,34 @@ discarded and the reviewed seed retained.
   caller-workspace peak. All 1,540 Release tests, including 26 labeled
   benchmark smokes, passed under both MSVC/Visual Studio 2026 and
   Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-24 - Interoperability schema 15 local admission
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by appending the newly completed public profile without altering any prior
+  schema order or meaning.
+- References used: DD-386, the frozen schema-14 order, the public
+  `lzss-dynamic-range` CLI selector, deterministic fixture generator, manifest
+  hash rules, verifier, and existing compatibility conversion chain.
+- Known implementations intentionally not consulted: external archive
+  protocols, interoperability schemas, manifests, corpora, source code, test
+  vectors, and verification suites.
+- Independent decisions: append `lzss-dynamic-range` once as archive 26; name
+  codec set `marc-cli-v15`; preserve schemas 1 through 14; require generation-
+  time round trip, exact manifest order, full revision, sizes, SHA-256, foreign
+  decode, and byte-identical local re-encoding; reject reordered schema 15;
+  derive schema 14 by removing only the new archive.
+- Generated-code task description: update generator, verifier, compatibility
+  chain, current-schema documentation, format/readiness records, and local
+  tests while retaining historical schema-14 external evidence unchanged.
+- Similarity review: schema evolution, ordering, fixture, validation, and
+  compatibility behavior follow only marc's local versioned protocol and
+  DD-386. No external manifest field, archive order, conversion algorithm, or
+  test expression was compared.
+- Local validation: direct Windows/MSVC generation reported `Verified 26
+  archives`, then verified the frozen 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+  15, 13, 8, and 7 archive predecessors through schemas 14 to 1. The reordered
+  schema-15 manifest was rejected. All 1,540 Release tests passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake
+  4.3.4. Cross-platform schema-15 verification remains pending and is not
+  claimed here.

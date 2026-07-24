@@ -1313,3 +1313,10 @@ marc C lifecycle, DD-384's fixed reference profile, checked local arithmetic,
 and the repository's existing dependency-free measurement runner. No external
 benchmark framework, combined codec adapter, capacity formula, performance
 result, source code, or test suite was consulted.
+
+Interoperability schema 15 uses only DD-386, the frozen schema-14 manifest
+order, the public `lzss-dynamic-range` CLI selector, and marc's existing
+repository-owned generator, verifier, deterministic fixture, SHA-256 metadata,
+and one-generation compatibility chain. No external archive protocol, schema,
+manifest, corpus, source code, test vector, or verification suite was
+consulted.

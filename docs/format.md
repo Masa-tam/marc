@@ -1568,6 +1568,9 @@ the stream or alter any serialized byte.
 The dependency-free benchmark selects that same public profile and adds no
 format field or variant. Its conservative output capacity and mandatory
 round-trip verification are tooling policy, not part of the stream.
+Interoperability schema 15 emits and accepts this exact profile as archive 26
+after the frozen twenty-five-entry schema-14 order. This changes no format
+version or profile representation.
 
 ### Hand-checkable single-Literal frame
 

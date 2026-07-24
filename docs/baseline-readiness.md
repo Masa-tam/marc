@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 14 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 15 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 14 |
+| Profile | Purpose | Local status | Interoperability schema 15 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -49,13 +49,14 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-adaptive-huffman` | Fifth Adaptive Huffman composition | Ready | Included |
 | `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Ready | Included |
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
-| `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Not included |
+| `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 14 contains twenty-five archives: the frozen twenty-four-entry schema-13
-set followed by the LZ77 Dynamic Range profile. Schemas 1 through 13 remain
+Schema 15 contains twenty-six archives: the frozen twenty-five-entry schema-14
+set followed by the LZSS Dynamic Range profile. Schemas 1 through 14 remain
 frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
-nineteen, twenty, twenty-one, twenty-two, twenty-three, and twenty-four
+nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four, and
+twenty-five
 profiles; their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -66,7 +67,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 14 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 15 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -92,19 +93,19 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
-`lzss-dynamic-range` is the next queued composition. DD-373 fixes the
+`lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
 checked `2F` token and `2S + 5` range-payload bounds, transactional validation
 order, and independent 79-byte single-Literal frame. Its first bounded
 complete-frame validator now enforces those extents and aggregate storage,
 strictly range-decodes into private token staging, and validates the entire
-variable-length LZSS stream with stable token and byte positions. It remains
-`Specified`: its bounded private decoder now counts raw staging in the
+variable-length LZSS stream with stable token and byte positions. It is now
+`Ready` locally: its bounded private decoder counts raw staging in the
 aggregate and reconstructs only validated Literal and overlap-Match tokens.
 Its transactional complete-frame decoder now publishes only a fully validated
 and reconstructed private frame and leaves output unchanged on failure. A
@@ -128,7 +129,9 @@ Its explicit CLI selector now uses only the public requirements query and
 factory through transactional temporary-file publication. Its dependency-free
 benchmark independently queries both direction workspaces, verifies a complete
 round trip before timing, and reports ratio, throughput, and caller-reserved
-peak memory. Interoperability evidence is not yet implemented.
+peak memory. Local schema-15 generation, exact-order verification, reordered-
+manifest rejection, and schemas 1 through 14 compatibility are present.
+External cross-platform schema-15 evidence remains pending.
 
 `lz77-dynamic-range` has entered the queue as the first Dynamic Range
 composition. DD-359 fixes its canonical LZ77-token boundary, 2^20-byte raw

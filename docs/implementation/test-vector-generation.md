@@ -2741,3 +2741,14 @@ workspace requirements. On the 2026-07-24 MSVC Release build, the 4,441-byte
 README produced 3,390 bytes, ratio 0.763, with encoder workspaces
 4,441/26,723/0 bytes, decoder workspaces 458,885/196,608/0 bytes, and peak
 caller reservation 655,493 bytes. Treat throughput as descriptive only.
+
+For interoperability schema 15, retain the deterministic 8,193-byte fixture
+and exact schema-14 archive order, then append `lzss-dynamic-range` once as
+archive 26. Encode and decode all twenty-six profiles before writing
+`manifest.json`; require codec set `marc-cli-v15`, exact order, sizes, SHA-256,
+full source revision, platform, compiler, OS, architecture, and CLI hash.
+Verification must decode each foreign archive and reproduce every archive byte
+for byte locally. Swap the first two entries and require order rejection.
+Remove only `lzss-dynamic-range.marc`, change the schema and codec set to 14,
+and require the frozen twenty-five-entry bundle to verify before continuing
+the established one-generation conversions through schema 1.
