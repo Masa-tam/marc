@@ -50,6 +50,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-adaptive-huffman` | Sixth Adaptive Huffman composition | Ready | Included |
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
+| `lz78-dynamic-range` | Third Dynamic Range composition | Specified | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 15 contains twenty-six archives: the frozen twenty-five-entry schema-14
@@ -97,6 +98,14 @@ kept separate because it requires artifacts produced outside the local build.
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
+
+`lz78-dynamic-range` is the next queued composition. DD-387 fixes the canonical
+fixed-width LZ78-token boundary, 2^21-byte format frame ceiling, checked `8F`
+token and `2S + 5` range-payload bounds, bounded aligned phrase validation,
+transactional publication order, and independent 83-byte single-Pair frame.
+It remains `Specified`: the combined validator, streaming transforms, public C
+factory, completion matrix, fuzzing, CLI, benchmark, and interoperability
+evidence are not yet implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,

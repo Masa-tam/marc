@@ -7,6 +7,12 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lz78-dynamic-range` composition now has an exact
+  decoder-visible representation, checked fixed-token and range-payload
+  bounds, bounded phrase-graph validation and transactional publication order,
+  and an independent 83-byte single-Pair frame assembled from the standalone
+  LZ78 and Dynamic Range primitives.
+
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
   transactional validation order, and an independent 79-byte single-Literal

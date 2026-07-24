@@ -2752,3 +2752,19 @@ for byte locally. Swap the first two entries and require order rejection.
 Remove only `lzss-dynamic-range.marc`, change the schema and codec set to 14,
 and require the frozen twenty-five-entry bundle to verify before continuing
 the established one-generation conversions through schema 1.
+
+For the third Dynamic Range composition vector, begin with raw byte `41` and
+derive the canonical fixed-width LZ78 Pair
+`00 41 00 00 00 00 00 00` directly from the published token grammar.
+Independently apply Dynamic Range variant 1 to those eight fixed bytes: start
+all 256 frequencies at one, update the 32-bit range and 64-bit low in the
+documented integer order, normalize below 2^24 with delayed carry, update the
+model after each byte, and perform exactly five termination shifts. The
+payload must be `00 00 41 be 41 7c 00 00 00 00 00`.
+
+As a separate implementation check, require the standalone LZ78 encoder to
+reproduce the fixed Pair, then require the standalone Dynamic Range encoder to
+reproduce the independently calculated payload and descriptor with symbol
+count 8 and payload size 11. Serialize the generic header and descriptor
+independently and require the exact documented 83-byte frame. Do not use a
+future combined encoder to construct its own oracle.

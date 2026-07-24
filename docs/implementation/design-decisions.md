@@ -7428,3 +7428,31 @@ only. Cross-platform admission requires the Windows/MSVC and Ubuntu 24.04 CI
 artifacts plus an Ubuntu 26.04/Clang bundle to pass the four established
 verification directions at the exact pushed revision. Record that evidence
 only after it exists.
+
+## DD-387: LZ78 Dynamic Range preserves fixed phrase tokens
+
+- Date: 2026-07-24
+- Status: accepted
+
+Reserve `lz78-dynamic-range` for LZ78 variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZ78
+parameter region, use no entropy parameter bytes, and set stream entropy block
+size to zero. Complete the canonical fixed-width LZ78 token stream before
+range coding; the adaptive order-0 model consumes every stored token byte
+without interpreting its tag, symbol, reserved bytes, or phrase index.
+
+For raw frame extent `F`, require nonzero token extent `S` to be a multiple of
+eight with `S <= 8F` and `S <= 2^24`. The format-level raw-frame ceiling is
+therefore 2^21 bytes. Require range payload extent `P <= 2S + 5`, one
+descriptor, and one fresh LZ78 dictionary and range model per nonempty frame.
+Before publication, range-decode exactly `S` private bytes with exact payload
+exhaustion, validate every complete LZ78 token and phrase reference in bounded
+aligned workspace, derive exactly `F` raw bytes, and reconstruct privately.
+
+Fix raw `41` as the independent boundary vector: canonical LZ78 Pair bytes
+`00 41 00 00 00 00 00 00`, Dynamic Range payload
+`00 00 41 BE 41 7C 00 00 00 00 00`, descriptor symbol/payload extents 8 and
+11, and a complete 83-byte generic frame. This step reserves format, bounds,
+validation order, and vector only. It publishes no combined validator,
+transform, C ABI factory, CLI selector, benchmark, fuzz target, or
+interoperability entry.

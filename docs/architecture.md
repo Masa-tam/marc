@@ -1378,6 +1378,25 @@ trip gates measurement; encode and decode throughput, ratio, all six queried
 workspace extents, and peak caller reservation are descriptive outputs rather
 than performance thresholds.
 
+### LZ78 plus Dynamic Range specified boundary
+
+The third Dynamic Range composition preserves LZ78's complete fixed-width
+eight-byte token stream as the entropy boundary. The deterministic LZ78 parse
+and token serialization finish before one fresh frame-local adaptive order-0
+model consumes those bytes. Entropy decoding must reconstruct the entire
+private token region before interpreting tags, symbols, reserved bytes, or
+phrase indices.
+
+For raw extent `F`, token extent `S` is a nonzero multiple of eight with
+`S <= 8F`, and the range payload is bounded by `2S + 5`. The 2^24-symbol range
+limit therefore gives this profile a 2^21-byte format frame ceiling; the
+reference profile remains 64 KiB. A decoder validates all declared and
+aggregate extents before entropy output, builds and checks the complete phrase
+graph in bounded aligned workspace, reconstructs exactly the declared raw
+extent without recursion, and only then publishes a frame. The initial
+reservation fixes this boundary and an independent 83-byte frame vector
+without adding a combined implementation or public surface.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

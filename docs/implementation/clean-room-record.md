@@ -7977,3 +7977,32 @@ discarded and the reviewed seed retained.
 - Scope: this record changes no implementation or stream format. It is x86-64
   evidence and does not claim coverage of another architecture or a non-WSL
   Linux kernel.
+
+## 2026-07-24 - LZ78 plus Dynamic Range format reservation
+
+- Authoring method: composed marc's already specified fixed-width LZ78 token
+  serialization with its already specified Dynamic Range variant at the
+  canonical byte boundary, then derived the smallest nonempty frame
+  independently.
+- References used: DD-387, local LZ78 token grammar and phrase bounds, local
+  Dynamic Range integer and delayed-carry rules, generic frame layout, and
+  decoder limits.
+- Known implementations intentionally not consulted: external combined
+  LZ/range codecs, range-coder source, archive formats, streams, vectors,
+  malformed corpora, workspace layouts, and test suites.
+- Independent decisions: preserve complete eight-byte tokens before entropy
+  coding; require `S` to be a multiple of eight and no larger than `8F`; cap
+  raw frames at 2^21 and payload at `2S + 5`; reset both layers per frame; and
+  validate the complete phrase graph in bounded aligned workspace before
+  private reconstruction and publication.
+- Generated-code task description: reserve the exact profile identifiers and
+  bounds, document transactional validation order, derive the raw-`41`
+  eight-byte Pair, eleven-byte range payload, descriptor, and 83-byte frame,
+  and add a standalone-component test for that oracle.
+- Similarity review: the representation follows only marc's local component
+  contracts. No external combined format, implementation structure, byte
+  sequence, or test expression was compared.
+- Local validation: the independently fixed vector was reproduced by the
+  standalone LZ78 and Dynamic Range encoders. All 1,541 Release tests passed
+  under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using
+  official CMake 4.3.4.

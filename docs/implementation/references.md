@@ -1320,3 +1320,11 @@ repository-owned generator, verifier, deterministic fixture, SHA-256 metadata,
 and one-generation compatibility chain. No external archive protocol, schema,
 manifest, corpus, source code, test vector, or verification suite was
 consulted.
+
+The LZ78 plus Dynamic Range composition specification and hand vector use only
+DD-387, marc's documented LZ78 variant 1 fixed token grammar and phrase
+bounds, Dynamic Range Coder variant 1 integer model and delayed-carry rules,
+generic frame format, checked decoder limits, and repository-owned composition
+policy. No external combined codec, range-coder implementation, format,
+profile, stream, test vector, workspace layout, source code, or test suite was
+consulted.

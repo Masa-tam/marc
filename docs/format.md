@@ -1602,6 +1602,102 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the last seven bytes are the payload. The
 stream-level LZSS parameter region is not repeated in the frame.
 
+## LZ78 variant 1 plus Dynamic Range Coder variant 1
+
+The reserved profile name is `lz78-dynamic-range`. This composition uses
+dictionary algorithm ID 3, dictionary variant 1, entropy algorithm ID 3, and
+entropy variant 1 under format version 1.0. The stream parameter regions are
+the 16-byte LZ78 parameters followed by the empty Dynamic Range parameter
+region. `entropy block size` is zero.
+
+For raw frame size `F`, the canonical LZ78 token stream has extent `S`, where
+`S` is nonzero, is a multiple of eight, and satisfies `S <= 8F`. Dynamic Range
+variant 1 accepts at most 2^24 input symbols, so this composition's format-level
+raw-frame ceiling is 2^21 bytes. The reference profile uses 65,536 raw bytes
+per frame. Its conservative range payload bound is `P <= 2S + 5`. Token,
+payload, aligned phrase-table, private raw, and aggregate extents must all pass
+trusted local limits before allocation or mutation.
+
+Each nonempty outer frame is one range-coded entropy block. The LZ78 phrase
+dictionary, range coder, and adaptive order-0 model all reset at that boundary.
+The range model consumes the finalized LZ78 token bytes in stored order without
+interpreting token fields. Empty input has no frame, descriptor, payload, or
+entropy state.
+
+The generic frame header records `F` as `uncompressed size`, `S` as
+`dictionary serialized size`, `P` as `compressed payload size`, entropy block
+count 1, descriptor size 16, and checksum trailer size zero. The body is:
+
+```text
+generic frame header
+one Dynamic Range descriptor
+Dynamic Range payload over the canonical LZ78 token bytes
+```
+
+The descriptor's `symbol count` must equal `S` and its `payload size` must
+equal `P`. All flags and reserved bytes are zero. The byte-aligned payload uses
+the unchanged Dynamic Range variant-1 initialization, delayed-carry, and
+five-shift termination rules. It must be consumed exactly while producing
+exactly `S` token bytes. No separate LZ78 token region is stored.
+
+Decoding is transactional at the outer frame boundary. Before publishing a raw
+byte, the decoder must:
+
+1. validate the exact variants, LZ78 parameters, sequence, format frame cap,
+   declared extents, one-block count, descriptor size, and aggregate bounds;
+2. parse and validate the Dynamic Range descriptor and payload bounds;
+3. range-decode exactly `S` bytes into private token staging and require exact
+   payload exhaustion;
+4. require a complete sequence of eight-byte tokens, reject unknown tags,
+   nonzero reserved or unused fields, forward phrase references, root
+   FinalIndex, invalid terminal placement, and checked length overflow, and
+   derive exactly `F` raw bytes in bounded aligned phrase workspace;
+5. reconstruct into separate bounded private raw staging without recursion;
+   and only then
+6. publish the complete frame.
+
+Failure at any stage publishes no current-frame byte. Encoding likewise fixes
+the deterministic LZ78 parse and complete token stream before range planning
+or frame output. This section reserves the decoder-visible representation and
+validation order only; it does not publish a combined validator, transform,
+C ABI factory, CLI selector, benchmark, fuzz target, or interoperability
+profile.
+
+### Hand-checkable single-Pair frame
+
+For raw input `A`, LZ78 emits the canonical eight-byte Pair token:
+
+```text
+00 41 00 00 00 00 00 00
+```
+
+Independently applying Dynamic Range variant 1 to those bytes produces:
+
+```text
+00 00 41 BE 41 7C 00 00 00 00 00
+```
+
+The Dynamic Range descriptor is:
+
+```text
+08 00 00 00 0B 00 00 00 00 00 00 00 00 00 00 00
+```
+
+The complete 83-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  0B 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+08 00 00 00 0B 00 00 00  00 00 00 00 00 00 00 00
+00 00 41 BE 41 7C 00 00  00 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Dynamic Range descriptor, and the last eleven bytes are the payload. The
+stream-level LZ78 parameter region is not repeated in the frame.
+
 ## LZSS variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lzss-adaptive-huffman`. This composition uses

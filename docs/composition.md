@@ -21,7 +21,7 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Specified | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
@@ -228,6 +228,17 @@ directional workspaces. Interoperability schema 15 appends it once after the
 frozen schema-14 order. Four-direction external verification passed at
 revision `504af4f6942aee7662bcb51abf9b55289c957d6c` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
+
+`lz78-dynamic-range` is the third Dynamic Range composition to receive a
+reserved representation. It fixes the complete sequence of canonical
+eight-byte LZ78 tokens before a fresh per-frame adaptive order-0 range model
+consumes it. The format caps raw frames at 2^21 bytes, bounds token bytes by
+`8F` and range payload bytes by `2S + 5`, and requires complete entropy,
+fixed-token, and phrase-graph validation plus private iterative reconstruction
+before publication. An independently derived 83-byte single-Pair frame fixes
+the component boundary. No combined validator, public factory, CLI selector,
+benchmark, fuzz target, or interoperability entry is implied by this
+reservation.
 
 ## Why publication is not automatic
 
