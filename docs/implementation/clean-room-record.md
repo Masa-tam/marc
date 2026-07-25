@@ -8352,3 +8352,25 @@ discarded and the reviewed seed retained.
   generated MSVC and ClangCL schema-16 bundles cross-verified all 27 archives
   in both local toolchain directions. Cross-platform schema-16 verification
   has not yet been claimed.
+
+## 2026-07-25 - Interoperability schema 16 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40`.
+- References used: DD-401, marc's schema-16 generator and verifier, the
+  established schema-15 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-seven archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-seven-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 27 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-16 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.

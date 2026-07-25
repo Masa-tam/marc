@@ -269,7 +269,9 @@ composition only through the public requirements query and factory. The
 dependency-free benchmark uses the same public profile, checked
 `80 + 16N + 77K` destination bound, mandatory untimed round trip, and queried
 directional workspaces. Interoperability schema 16 appends it once after the
-frozen schema-15 order; cross-platform artifact verification remains pending.
+frozen schema-15 order. Four-direction external verification passed at
+revision `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
 
 ## Why publication is not automatic
 

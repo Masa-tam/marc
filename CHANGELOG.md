@@ -47,6 +47,9 @@ format versions, and C ABI versions are independent namespaces.
   before reporting compression ratio, directional throughput, and queried
   caller-owned workspace. Interoperability schema 16 appends this profile as
   archive 27 while freezing all fifteen earlier schema meanings.
+  Four-direction external verification passed at revision
+  `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40` for Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

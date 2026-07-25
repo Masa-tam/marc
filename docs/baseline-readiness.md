@@ -132,8 +132,10 @@ boundary, permanent atomic malformed regressions, and transactional public-ABI
 CLI selector are also present. Its dependency-free public-ABI benchmark
 verifies a complete round trip before measurement. Local schema-16 generation,
 exact-order verification, reordered-manifest rejection, and schemas 1 through
-15 compatibility are present. Four-direction external schema-16 verification
-remains pending.
+15 compatibility are present. Four-direction schema-16 verification at
+revision `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40` passed for the
+Windows/MSVC and Ubuntu 24.04/Ninja artifacts plus an Ubuntu 26.04/Clang-
+generated bundle, including reverse verification on Windows/MSVC.
 
 `lzss-dynamic-range` is a locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
