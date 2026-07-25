@@ -8799,3 +8799,25 @@ discarded and the reviewed seed retained.
   ClangCL using official CMake 4.3.4. Independently generated MSVC and ClangCL
   schema-17 bundles cross-verified all 28 archives in both local toolchain
   directions. Cross-platform schema-17 verification has not yet been claimed.
+
+## 2026-07-26 - Interoperability schema 17 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b`.
+- References used: DD-416, marc's schema-17 generator and verifier, the
+  established schema-16 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-eight archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-eight-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 28 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-17 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.

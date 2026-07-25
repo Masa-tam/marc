@@ -314,7 +314,9 @@ the composition only through the public C requirements query and factory. The
 dependency-free benchmark uses that same profile, checked
 `80 + 4N + 77K` capacity, mandatory untimed round trip, and queried
 directional workspaces. Interoperability schema 17 appends it once after the
-frozen schema-16 order; cross-platform artifact verification remains pending.
+frozen schema-16 order. Four-direction external verification passed at
+revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
 
 ## Why publication is not automatic
 

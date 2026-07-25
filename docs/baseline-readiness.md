@@ -137,7 +137,10 @@ dependency-free benchmark uses the same profile, requires an untimed
 byte-exact round trip, and reports queried directional workspaces. Local
 schema-17 generation, exact-order verification, reordered-manifest rejection,
 and schemas 1 through 16 compatibility are present. Four-direction external
-schema-17 verification remains pending.
+schema-17 verification at revision
+`b4c700aca87fc925aab642cfb6a6b72f3a29c86b` passed for the Windows/MSVC and
+Ubuntu 24.04/Ninja artifacts plus an Ubuntu 26.04/Clang-generated bundle,
+including reverse verification on Windows/MSVC.
 
 `lz78-dynamic-range` is a locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,
