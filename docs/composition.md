@@ -299,7 +299,10 @@ bounded streaming encoder collects and encodes one complete frame at a time,
 then drains its immutable bytes before accepting the next frame; chunking and
 nonterminal `Flush` do not alter the stream. The bounded streaming decoder
 admits one checked encoded frame, transactionally reconstructs it, and drains
-raw bytes only after complete success.
+raw bytes only after complete success. Its internal profile now derives the
+encoder's raw, packed, encoded-frame, and aligned-entry regions and the
+decoder's encoded-frame, packed, private-raw, and aligned-phrase regions from
+trusted configuration or local limits, with checked aggregate accounting.
 
 ## Why publication is not automatic
 

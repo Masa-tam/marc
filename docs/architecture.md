@@ -1906,6 +1906,10 @@ encoded frame, and drains it before accepting the next frame. Chunking and
 nonterminal `Flush` do not alter canonical bytes. The streaming decoder admits
 bounded complete-frame storage from the parsed header, transactionally
 validates and reconstructs it, and only then drains immutable raw bytes.
+The internal profile calculator derives these direction-specific byte regions
+and opaque aligned LZW record extents with checked aggregate bounds. Typed
+partitioning rejects inconsistent byte counts, insufficient storage, and
+misalignment before exposing encoder entries or decoder phrases.
 
 ### Published LZD plus Adaptive Huffman boundary
 

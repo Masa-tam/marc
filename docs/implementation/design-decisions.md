@@ -7942,3 +7942,24 @@ the prefix or a frame drains, require its input to complete the declared known
 size, reject `ResetBlock` and unknown flags, and make ended and error results
 sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-410: LZW Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-408 and DD-409.
+For encoding, derive the largest raw frame, conservative
+`S = ceil(FW/8)` packed staging, `2S + 5` Dynamic Range payload, complete
+serialized-frame storage, and the exact LZW encoder-record count. Count every
+region in one checked aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded packed staging,
+private raw staging, and the conservative phrase-record count solely from
+validated local limits. Keep byte storage separate from caller-allocated,
+properly aligned record storage. Partition helpers must verify the reported
+record byte count and alignment before producing typed spans; empty record
+storage uses zero bytes and neutral alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.

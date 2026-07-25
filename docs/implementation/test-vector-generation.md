@@ -3073,3 +3073,17 @@ error position must remain stable. Reject every proper encoded prefix,
 trailing data, short encoded-frame, packed, raw, and phrase workspaces,
 aggregate workspace one byte short, `ResetBlock`, and unknown flags. Accept
 the exact empty 80-byte stream.
+
+For the LZW plus Dynamic Range profile, configure 17 raw bytes with a ten-byte
+frame and the default 16-bit LZW ceiling. Require a ten-byte largest frame,
+20-byte conservative packed staging, 45-byte range-payload ceiling, 117-byte
+complete encoded-frame storage, and nine aligned encoder records. A seven-byte
+short frame must instead require 14 packed bytes, 33 payload bytes, and six
+records. Empty input must return all-zero regions with alignment one.
+
+Independently lower packed, payload, and aggregate limits by one and require
+rejection with cleared requirements. For decoding, use local limits of 64 raw
+bytes, 128 packed bytes, 1,024 internally buffered bytes, and 300 dictionary
+entries; require 1,080 encoded bytes, 64 private raw bytes, and 112 aligned
+phrase records. Partition both record types and reject altered counts, short
+storage, and misalignment.

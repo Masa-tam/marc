@@ -122,8 +122,10 @@ reproduces the independent 79-byte frame and preserves short destinations.
 Its bounded streaming encoder now preserves canonical bytes under arbitrary
 input and output starvation and nonterminal `Flush`. Its bounded streaming
 decoder validates complete frames before raw draining and preserves frame
-atomicity under later corruption. No C ABI, CLI, benchmark, fuzz, completion,
-or interoperability entry exists yet.
+atomicity under later corruption. Its internal direction-specific profile now
+calculates every caller-owned byte region and safely partitions opaque aligned
+LZW records. No C ABI, CLI, benchmark, fuzz, completion, or interoperability
+entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

@@ -8608,3 +8608,31 @@ discarded and the reviewed seed retained.
   encoder, streaming-decoder, and documentation tests passed, followed by all
   1,624 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range direction-specific profile
+
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-410, the already implemented LZW packed-code ceiling,
+  Dynamic Range payload ceiling, complete-frame ownership, and local record
+  types.
+- References used: DD-410, DD-408, DD-409, marc's local checked arithmetic,
+  LZW workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  packed staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded packed and private raw
+  staging, and a conservative phrase-record count derived only from local
+  limits. Typed records remain in separately aligned caller-owned storage and
+  empty storage uses neutral alignment one.
+- Generated-code task description: add the internal LZW plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZW- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 7/7 under
+  both MSVC and ClangCL. The complete Release suite passed 1,630/1,630 under
+  MSVC and 1,630/1,630 under ClangCL using official CMake 4.3.4.
