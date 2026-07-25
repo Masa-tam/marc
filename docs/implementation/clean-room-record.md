@@ -8403,3 +8403,35 @@ discarded and the reviewed seed retained.
   `00 40 FF FF BF 00 00` for finalized LZW bytes `41 00`; both the standalone-
   component test and all 1,594 Release tests passed under MSVC/Visual Studio
   2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZW plus Dynamic Range complete-frame validation
+
+- Authoring method: joined marc's existing strict Dynamic Range frame decoder
+  to the existing LZW packed-code validator at the DD-402 byte boundary while
+  preserving caller-owned bounded workspaces.
+- References used: DD-403, DD-402, the generic frame parser, checked arithmetic,
+  Dynamic Range descriptor/parser/decoder, LZW parameter and packed-code
+  validators, and the local complete-frame validation conventions.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation order, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: validate the exact frame and all `S`/`P` bounds before
+  workspace mutation; count descriptor, payload, packed staging, and aligned
+  phrase records in one aggregate; decode exactly one range block; retain LZW
+  code count and detailed format errors; and reconstruct or publish no raw
+  byte at this boundary.
+- Generated-code task description: add a minimal internal result/error contract,
+  strict validator, independent positive anchor, every-prefix and trailing
+  rejection, pre-entropy capacity and aggregate checks, descriptor and
+  noncanonical payload failures, post-entropy LZW padding failure, sequence,
+  extent, and pipeline regressions.
+- Similarity review: control flow follows only marc's existing layer contracts
+  and independently documented error order. No external decoder structure,
+  error taxonomy, mutation schedule, or test expression was compared.
+- Local validation: all eight focused vector/validator tests and the
+  documentation check passed, followed by all 1,601 Release tests under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake
+  4.3.4. One initial aggregate-limit test setup violated the common
+  `max_block_size <= max_internal_buffered_bytes` limits invariant; the setup
+  was corrected to isolate the intended combined-workspace boundary without
+  weakening either production check.

@@ -282,8 +282,10 @@ For raw frame size `F` and maximum code width `W`, packed staging is bounded by
 raw-frame cap and validates range exhaustion before the ordinary LZW width,
 reference, `KwKwK`, padding, and exact-raw-extent pass. The independent raw-`A`
 vector fixes packed bytes `41 00`, range payload `00 40 FF FF BF 00 00`, and
-the complete 79-byte frame. No combined validator or public adapter is implied
-yet.
+the complete 79-byte frame. Its first bounded complete-frame validator now
+admits every extent and workspace before range decoding into private packed
+staging, then applies the existing LZW semantic validator. It reconstructs and
+publishes no raw bytes yet.
 
 ## Why publication is not automatic
 

@@ -2333,8 +2333,16 @@ The complete 79-byte frame is:
 
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the final seven bytes are its payload. The
-stream-level LZW parameter region is not repeated in the frame. This vector
-reserves the representation; it does not by itself publish a combined codec.
+stream-level LZW parameter region is not repeated in the frame.
+
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned packed-byte staging and phrase records.
+It checks generic extents, the packed and payload ceilings, all caller
+capacities, and aggregate workspace before parsing the descriptor or decoding
+entropy. Dynamic Range must exhaust the payload exactly before the ordinary
+LZW validator checks width transitions, references, `KwKwK`, final padding,
+and the declared raw extent. This boundary reconstructs and publishes no raw
+bytes; later decoding and streaming work must retain the same validation order.
 
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 

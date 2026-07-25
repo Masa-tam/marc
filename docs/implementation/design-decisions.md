@@ -7776,3 +7776,30 @@ standalone LZW encoder, Dynamic Range encoder, and generic serializers. This
 decision specifies bytes and a reserved name only; it does not publish a
 combined validator, decoder, encoder, streaming transform, factory, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-403: LZW Dynamic Range validation stops at the packed-byte boundary
+
+- Date: 2026-07-25
+- Status: accepted
+
+Admit the first combined `lzw-dynamic-range` implementation as a strict bounded
+complete-frame validator only. Validate the stream profile, LZW parameters,
+sequence, generic frame header, exact complete-frame extent, checked
+`S = ceil(FW/8)` packed bound, one 16-byte Dynamic Range descriptor,
+`P = 2S + 5` payload bound, every caller-owned capacity, aligned phrase bytes,
+and the aggregate workspace limit before entropy output.
+
+Parse the descriptor only after that admission succeeds. Range-decode exactly
+the declared packed-byte count into private caller-owned staging with exact
+payload exhaustion, then invoke the existing LZW validator over the complete
+span. Preserve LZW's width schedule, reference and `KwKwK` rules, final
+high-bit padding check, exact declared raw extent, code count, format error,
+and phrase-table requirements.
+
+Use stable error precedence: unsupported profile, truncated header, generic
+header, complete-frame extent, packed and entropy extents, caller workspace,
+aggregate workspace, descriptor, range payload, then LZW code stream. On every
+error the caller must discard staging and phrase contents; no raw byte is
+reconstructed or published. This step adds no private raw decoder, encoder,
+streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion matrix, or interoperability entry.

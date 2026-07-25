@@ -11,7 +11,10 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked packed-code and range-payload
   bounds, transactional validation order, and an independent 79-byte
   single-code frame assembled from the standalone LZW and Dynamic Range
-  primitives.
+  primitives. Its first bounded complete-frame validator now checks all
+  declared and aggregate extents before entropy output, strictly range-decodes
+  into private packed-byte staging, and applies the existing LZW width,
+  reference, `KwKwK`, padding, and exact-raw-extent validator.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

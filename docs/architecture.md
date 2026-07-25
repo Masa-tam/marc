@@ -1885,9 +1885,12 @@ Decoding must reconstruct the exact packed bytes through a fresh order-0 range
 model, then apply the ordinary LZW width-change, reference, `KwKwK`, padding,
 and raw-extent validator before private reconstruction and frame publication.
 The independent raw-`A` vector fixes packed bytes `41 00`, range payload
-`00 40 FF FF BF 00 00`, and the complete 79-byte frame. The initial boundary
-is specified and independently tested but has no combined validator or public
-factory yet.
+`00 40 FF FF BF 00 00`, and the complete 79-byte frame. The first combined
+boundary now validates one exact complete frame. It admits the complete header,
+packed and entropy extents, caller capacities, and aggregate workspace before
+range-decoding into private packed staging, then applies the existing LZW
+validator. It exposes diagnostics and validated workspace only; raw
+reconstruction and public factories remain later boundaries.
 
 ### Published LZD plus Adaptive Huffman boundary
 

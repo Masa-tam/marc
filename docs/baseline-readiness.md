@@ -108,8 +108,11 @@ maximum code width `W`, it checks `S = ceil(FW/8)` packed bytes and
 `P = 2S + 5` range-payload bytes, retains the 2^20-byte raw-frame cap, and
 requires range validation before LZW width, reference, `KwKwK`, padding, and
 exact-raw-extent validation. Its independently assembled 79-byte raw-`A` frame
-is covered by a standalone-component vector test. No combined validator,
-streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
+is covered by a standalone-component vector test. Its first complete-frame
+validator now checks generic, packed, entropy, capacity, and aggregate extents
+before strictly range-decoding into private packed staging and invoking the
+existing LZW validator. It reconstructs no raw bytes. No private decoder,
+encoder, streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
 interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes

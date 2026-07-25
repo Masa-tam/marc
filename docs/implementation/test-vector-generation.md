@@ -2981,3 +2981,18 @@ reproduce that payload and descriptor. Serialize the generic frame header and
 descriptor independently and compare all 79 bytes with `docs/format.md`. Do
 not call a future combined LZW Dynamic Range codec while establishing its own
 oracle.
+
+For the first combined LZW plus Dynamic Range validator, accept the independent
+79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
+zero generated phrase entries. Reject every proper frame prefix, one trailing
+byte, a dictionary extent above `ceil(FW/8)`, a wrong sequence, and an
+unsupported entropy variant.
+
+Prove pre-entropy admission by preserving a sentinel-filled staging buffer when
+packed storage is short, the phrase table is short, or aggregate storage is
+one byte below the descriptor plus payload plus packed bytes plus aligned
+phrase records. Independently corrupt a reserved descriptor byte and the
+canonical first range payload byte; require descriptor and entropy errors
+before LZW validation. Finally range-encode packed bytes `41 80` and require
+the existing LZW validator to report nonzero final padding only after entropy
+decoding succeeds.
