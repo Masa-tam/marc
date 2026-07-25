@@ -7694,3 +7694,27 @@ failure, or rename failure must leave no requested destination or temporary
 file. Test binary and empty round trips, overwrite refusal, malformed input,
 and a valid stream with trailing data. This step adds no benchmark or
 interoperability entry.
+
+## DD-400: LZ78 Dynamic Range benchmark measures the public CLI profile
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add `lz78-dynamic-range` to the dependency-free benchmark with the exact DD-399
+public profile: 65,536-byte raw frames, 524,288 canonical token bytes,
+1,048,581 range-payload bytes, the public default LZ78 entry limit, and a
+4-MiB aggregate policy.
+
+For input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `80 + 16N + 77K`. The `16N` term covers the conservative
+`S <= 8N` and `P <= 2S + 5` payload relation; each frame contributes its
+56-byte header, 16-byte descriptor, and five termination bytes. Overflow must
+fail before allocating the encoded buffer.
+
+Construct both directions only through the public config initializer,
+requirements query, factory, process, and destroy lifecycle. Require one
+untimed byte-exact round trip before timing fresh transforms. Report encoded
+ratio, encode/decode throughput, all six queried workspace extents, and the
+larger three-region sum as descriptive peak workspace. Add a one-iteration
+smoke test with no performance threshold. This step adds no interoperability
+entry.

@@ -1476,6 +1476,12 @@ opaque alignment through the public requirements query and creates only the
 public C transform. The common temporary-file transaction prevents malformed
 or trailing input from publishing a destination.
 
+The dependency-free benchmark selects the identical public profile. Its
+checked destination formula is `80 + 16N + 77K`; an untimed byte-exact round
+trip gates all measurement. Fresh C transforms then report encoded ratio,
+directional throughput, all six queried workspace extents, and the larger
+three-region sum without a performance threshold.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

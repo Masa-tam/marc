@@ -42,7 +42,10 @@ format versions, and C ABI versions are independent namespaces.
   regressions cover every canonical truncation, saturated frame extents, and a
   nonzero reserved Dynamic Range descriptor byte. The explicit
   `lz78-dynamic-range` CLI selector now uses the bounded public C profile
-  through the existing transactional temporary-file workflow.
+  through the existing transactional temporary-file workflow. Its
+  dependency-free benchmark now verifies a complete public-ABI round trip
+  before reporting compression ratio, directional throughput, and queried
+  caller-owned workspace.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

@@ -95,7 +95,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -128,8 +128,9 @@ public-ABI completion matrix now covers required binary classes, deterministic
 and chunk-independent streams, sticky terminal states, and transactional
 malformed-final-frame rejection. Its fixed-memory dual-path decoder fuzz
 boundary, permanent atomic malformed regressions, and transactional public-ABI
-CLI selector are also present, but benchmark and interoperability evidence are
-not yet implemented.
+CLI selector are also present. Its dependency-free public-ABI benchmark
+verifies a complete round trip before measurement; only interoperability
+evidence is not yet implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,

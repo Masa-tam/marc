@@ -1738,6 +1738,9 @@ The explicit CLI selector `lz78-dynamic-range` binds this unchanged profile
 through the public C ABI and transactional file adapter. Its 64-KiB frame and
 4-MiB local workspace policy add no serialized field and do not infer the
 codec from stream contents.
+The dependency-free benchmark selects the same unchanged public profile. Its
+checked output capacity, untimed round-trip gate, timing, ratio, and workspace
+reporting are tooling policy and add no format field or variant.
 
 ### Hand-checkable single-Pair frame
 

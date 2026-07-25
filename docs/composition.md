@@ -265,8 +265,10 @@ byte and phrase-record storage before accepting input and caps incremental
 calls independently of serialized contents. Permanent regressions retain
 atomic failure for truncation, saturated frame lengths, and an invalid Dynamic
 Range descriptor. Its explicit transactional CLI selector now reaches the
-composition only through the public requirements query and factory. No
-benchmark or interoperability entry is implied.
+composition only through the public requirements query and factory. The
+dependency-free benchmark uses the same public profile, checked
+`80 + 16N + 77K` destination bound, mandatory untimed round trip, and queried
+directional workspaces. No interoperability entry is implied.
 
 ## Why publication is not automatic
 

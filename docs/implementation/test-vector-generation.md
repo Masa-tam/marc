@@ -2941,3 +2941,15 @@ The CLI profile fixes `F = 65,536`, `S = 524,288`, `P = 1,048,581`, at most
 65,536 dictionary entries, and a 4-MiB aggregate policy. Actual primary,
 secondary, and aligned opaque-view workspace requirements must come only from
 the public C query.
+
+For the LZ78 plus Dynamic Range benchmark smoke, select `lz78-dynamic-range`,
+use `README.md`, and run one iteration. Before timing, encode once into checked
+capacity `80 + 16N + 77K`, decode the exact encoded extent once, and require
+byte equality. Then require one encode and one decode measurement to reproduce
+those exact extents while reporting all public workspace requirements.
+
+On the 2026-07-25 MSVC Release build, the 4,511-byte README encoded to 4,630
+bytes, ratio 1.026, with encoder workspaces 4,511/108,341/72,176 bytes and
+decoder workspaces 4,194,360/589,824/1,048,576 bytes. Peak caller reservation
+was 5,832,760 bytes. These values document the tested deterministic extents;
+the observed throughput is descriptive and not a conformance threshold.
