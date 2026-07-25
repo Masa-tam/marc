@@ -1447,6 +1447,13 @@ private-raw, and opaque aligned phrase-entry requirements only from local
 limits and the format cap. Partition helpers revalidate record count, byte
 extent, alignment, and capacity before constructing internal typed spans.
 
+The public C factory binds that profile to ABI version 1's size-tagged config,
+requirements query, opaque transform handle, and three caller-owned regions.
+Factory construction repeats profile admission and typed-view partitioning
+before publishing the handle. The C boundary therefore exposes only byte
+extents and alignment while retaining the exact streaming encoder and
+frame-atomic decoder behavior.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

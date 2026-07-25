@@ -1726,6 +1726,20 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_lz78_adaptive_huffman_c_api_tests
         COMMAND marc_lz78_adaptive_huffman_c_api_tests)
 
+    add_executable(marc_lz78_dynamic_range_c_api_tests
+        tests/lz78_dynamic_range_c_api_tests.c)
+    target_compile_features(marc_lz78_dynamic_range_c_api_tests
+        PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_lz78_dynamic_range_c_api_tests
+            PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_lz78_dynamic_range_c_api_tests
+            PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_lz78_dynamic_range_c_api_tests
+        COMMAND marc_lz78_dynamic_range_c_api_tests)
+
     add_executable(marc_lzw_c_api_tests tests/lzw_c_api_tests.c)
     target_compile_features(marc_lzw_c_api_tests PRIVATE c_std_11)
     if(TARGET marc_shared)
@@ -1855,6 +1869,7 @@ if(MARC_BUILD_TESTS)
         marc_lz78_c_api_tests
         marc_lz78_blocked_huffman_c_api_tests
         marc_lz78_adaptive_huffman_c_api_tests
+        marc_lz78_dynamic_range_c_api_tests
         marc_lzw_c_api_tests
         marc_lzw_blocked_huffman_c_api_tests
         marc_lzw_adaptive_huffman_c_api_tests

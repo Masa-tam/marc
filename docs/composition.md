@@ -256,8 +256,10 @@ retained `EndInput`. Its matching bounded streaming decoder rejects impossible
 extents after the fixed frame header, collects one admitted frame, validates
 and reconstructs it privately, and only then drains its raw bytes. Its bounded
 profile derives all direction-specific byte regions and exposes internal LZ78
-records only through checked opaque-byte partitioning. No public factory, CLI
-selector, benchmark, fuzz target, or interoperability entry is implied.
+records only through checked opaque-byte partitioning. Its public C factory
+binds those regions to the streaming pair through the common transform
+lifecycle. No completion matrix, CLI selector, benchmark, fuzz target, or
+interoperability entry is implied.
 
 ## Why publication is not automatic
 

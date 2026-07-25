@@ -1378,3 +1378,9 @@ and Dynamic Range bounds, existing exact-frame encoder and streaming decoder
 workspace contracts, checked arithmetic, and marc's opaque aligned-record
 partition convention. No external profile API, allocator design, workspace
 formula, record layout, source code, or test suite was consulted.
+
+The LZ78 plus Dynamic Range public C factory uses only DD-396, the completed
+DD-395 profile, local streaming transforms, marc ABI version 1's size-tagged
+config and transform lifecycle, checked workspace splitting, and opaque
+record partition helpers. No external C API, factory lifecycle, allocation
+contract, ABI layout, source code, or test suite was consulted.

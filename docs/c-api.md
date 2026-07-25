@@ -5,8 +5,8 @@ Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
 profiles, LZSS variant 1, the LZSS plus Blocked Huffman and LZSS plus Adaptive
 Huffman profiles, and the LZSS plus Dynamic Range profile,
-LZ78 variant 1, the LZ78 plus Blocked Huffman and LZ78 plus Adaptive Huffman
-profiles, LZW variant 1, the LZW
+LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
+LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW
 plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
 the LZD plus Blocked Huffman and LZD plus Adaptive Huffman profiles, and LZMW
 variant 1 and the LZMW plus Blocked Huffman and LZMW plus Adaptive Huffman
@@ -26,6 +26,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lzss_dynamic_range_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
+`marc_lz78_dynamic_range_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`, and
 `marc_lzmw_blocked_huffman_*`, and `marc_lzmw_adaptive_huffman_*` are the
@@ -59,7 +60,8 @@ cross-product pairings as callable C ABI features.
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lzss_dynamic_range_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
-   `marc_lz78_adaptive_huffman_config_init()`, or
+   `marc_lz78_adaptive_huffman_config_init()`,
+   `marc_lz78_dynamic_range_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
@@ -170,6 +172,12 @@ token staging followed by private raw staging while decoding. The opaque
 aligned views region contains only encoder entries in the first direction and
 only phrase entries in the second. Call
 `marc_lz78_adaptive_huffman_workspace_requirements()` again after changing the
+direction, known original size, frame or entry bounds, or any local limit.
+The LZ78 plus Dynamic Range factory has the same three-region ownership and
+opaque aligned LZ78 record policy. Its secondary encode region contains
+canonical token staging followed by the complete range-coded frame; its decode
+region contains token staging followed by private raw staging. Query
+`marc_lz78_dynamic_range_workspace_requirements()` again after changing
 direction, known original size, frame or entry bounds, or any local limit.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use

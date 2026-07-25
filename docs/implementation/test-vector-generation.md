@@ -2873,3 +2873,17 @@ decoder workspace from a 4,096-byte local raw limit, 6,000 token bytes, and an
 capacity of `56 + 8192`. Partition aligned encoder and phrase arrays, then
 reject changed counts, one-byte-short storage, and deliberately misaligned
 storage. Verify every profile error maps to its stable core category.
+
+For the first LZ78 plus Dynamic Range C ABI boundary, initialize an encoder,
+set raw `ABABX`, two-byte frames, two LZ78 entries, and fixed small local
+limits, then require two primary bytes, 125 secondary bytes, and a nonempty
+aligned opaque views region. Encode all five bytes with `EndInput`, destroy the
+handle, and retain the serialized extent.
+
+Initialize a decoder under the same local frame, token, and entry limits.
+Require 1,080 primary bytes, 18 secondary bytes, and a nonempty aligned views
+region. Decode the retained stream and require exact `ABABX`. Independently
+shorten primary, secondary, and views by one byte, misalign the views pointer,
+pass a null publication pointer, and set a reserved config field. Each factory
+or query must reject the call and every failed factory must leave the transform
+pointer null.

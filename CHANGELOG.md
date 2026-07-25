@@ -31,7 +31,9 @@ format versions, and C ABI versions are independent namespaces.
   frame in private storage, and publishes no byte from a malformed later
   frame. Its bounded profile now derives direction-specific byte and aligned
   LZ78-record workspaces with checked aggregate limits and safely partitions
-  opaque typed storage.
+  opaque typed storage. Its public C factory now connects both streaming
+  directions through the common three-workspace lifecycle without exposing
+  private C++ record layouts.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

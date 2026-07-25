@@ -1716,6 +1716,14 @@ decoder capacities are derived only from trusted local limits and the
 2^21-byte format cap. Typed record layouts remain private C++ details and are
 exposed to later ABI layers only as checked byte extents and alignments.
 
+The public representation-neutral C entry points are
+`marc_lz78_dynamic_range_config_init()`,
+`marc_lz78_dynamic_range_workspace_requirements()`, and
+`marc_lz78_dynamic_range_create()`. They require a known original size for
+encoding, return direction-specific primary, secondary, and aligned opaque
+views requirements, and publish no transform handle when configuration,
+capacity, or alignment validation fails.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

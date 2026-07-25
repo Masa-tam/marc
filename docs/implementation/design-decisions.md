@@ -7606,3 +7606,21 @@ alignment. Partition them only after rechecking count, byte extent, alignment,
 and caller capacity. Empty encode input requires no active workspace and
 retains alignment one. This step adds no C ABI factory, completion matrix, CLI,
 benchmark, fuzz, or interoperability claim.
+
+## DD-396: LZ78 Dynamic Range enters C ABI v1 through three workspaces
+
+- Date: 2026-07-25
+- Status: accepted
+
+Expose a size-tagged `marc_lz78_dynamic_range_config`, initializer,
+direction-specific requirements query, and factory in the existing C ABI
+version 1. Retain the known original-size contract and the DD-395 default
+65,536-byte raw frame and LZ78 entry limit.
+
+The requirements query reports one primary byte region, one secondary byte
+region, and one aligned opaque views region. The factory rechecks every config
+tag, reserved field, limit, capacity, and views alignment; recalculates the
+profile; partitions typed records privately; and publishes a transform only
+after construction succeeds. C callers never name or size a C++ LZ78 record.
+This step adds no completion matrix, fuzz target, CLI selector, benchmark, or
+interoperability entry.

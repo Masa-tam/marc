@@ -8196,3 +8196,27 @@ discarded and the reviewed seed retained.
 - Local validation: all seven focused profile tests and all 1,584 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range public C factory
+
+- Authoring method: connected the completed DD-395 profile and streaming pair
+  to marc ABI version 1's existing size-tagged config, requirements, factory,
+  process, and destroy lifecycle.
+- References used: DD-396, the local profile and partition helpers, streaming
+  encoder and decoder constructors, checked secondary-region splitting, null-
+  on-failure publication, and the repository's C11 assertion harness.
+- Known implementations intentionally not consulted: external C APIs, factory
+  lifecycles, allocator contracts, ABI layouts, source code, and test suites.
+- Independent decisions: mirror the stable LZ78 Adaptive config shape; expose
+  only three byte regions and views alignment; repeat all profile and partition
+  checks during factory construction; and keep the transform pointer null on
+  every failure.
+- Generated-code task description: add the public config, requirements query,
+  factory, and a pure-C three-frame round trip with independent primary,
+  secondary, views, alignment, reserved-field, and null-publication failures.
+- Similarity review: the adapter composes only marc's existing public ABI and
+  first-party profile contracts. No external ABI expression, factory control
+  flow, or test expression was compared.
+- Local validation: the focused C11 factory test and all 1,585 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.
