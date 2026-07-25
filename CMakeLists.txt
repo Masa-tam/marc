@@ -1020,6 +1020,7 @@ if(MARC_BUILD_TESTS)
         tests/lz78_dynamic_range_vector_tests.cpp
         tests/lz78_dynamic_range_frame_tests.cpp
         tests/lz78_dynamic_range_profile_tests.cpp
+        tests/lz78_dynamic_range_completion_tests.cpp
         tests/lz78_dynamic_range_frame_streaming_decoder_tests.cpp
         tests/lz78_dynamic_range_frame_streaming_encoder_tests.cpp
         tests/lz78_adaptive_huffman_frame_tests.cpp

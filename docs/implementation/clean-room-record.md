@@ -8220,3 +8220,26 @@ discarded and the reviewed seed retained.
 - Local validation: the focused C11 factory test and all 1,585 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range public-ABI completion matrix
+
+- Authoring method: exercised the completed profile only through marc's public
+  C config, requirements, factory, process, and destroy lifecycle.
+- References used: DD-397, DD-396, the local required-data-class checklist,
+  deterministic byte generator, generic little-endian frame extents, and
+  frame-atomic publication contract.
+- Known implementations intentionally not consulted: external completion
+  suites, corpora, malformed vectors, combined codecs, source code, and test
+  suites.
+- Independent decisions: fix 64-byte audit frames; cover every one-byte value
+  and representative binary classes; compare unlimited, one-byte, and mixed
+  chunk schedules; and mutate only the fourth frame of a 193-byte stream.
+- Generated-code task description: add three public-ABI completion tests for
+  required deterministic round trips, chunk independence, repeated terminal
+  states, and sticky atomic corruption, truncation, and trailing-data failure.
+- Similarity review: the matrix composes only repository-owned data generation,
+  C ABI calls, and documented frame fields. No external corpus, test control
+  flow, or expression was compared.
+- Local validation: all three focused completion tests and all 1,588 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

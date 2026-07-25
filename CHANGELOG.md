@@ -33,7 +33,9 @@ format versions, and C ABI versions are independent namespaces.
   LZ78-record workspaces with checked aggregate limits and safely partitions
   opaque typed storage. Its public C factory now connects both streaming
   directions through the common three-workspace lifecycle without exposing
-  private C++ record layouts.
+  private C++ record layouts. Its public-ABI completion matrix now proves
+  required binary classes, deterministic and chunk-independent streams,
+  stable terminal states, and transactional malformed-final-frame rejection.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

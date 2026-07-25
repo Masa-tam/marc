@@ -1724,6 +1724,11 @@ encoding, return direction-specific primary, secondary, and aligned opaque
 views requirements, and publish no transform handle when configuration,
 capacity, or alignment validation fails.
 
+The completion audit changes no representation. It fixes 64-byte raw frames
+only as a test profile and verifies through the public C ABI that input/output
+chunking cannot change stream bytes and that a malformed fourth frame cannot
+publish any of its raw extent.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

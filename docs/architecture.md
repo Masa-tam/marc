@@ -1454,6 +1454,13 @@ before publishing the handle. The C boundary therefore exposes only byte
 extents and alignment while retaining the exact streaming encoder and
 frame-atomic decoder behavior.
 
+The public-ABI completion matrix constructs both directions only through that
+factory. It covers required binary input classes, byte-identical repeated
+encoding, one-byte and mixed chunk schedules, stable repeated success, and a
+four-frame transaction test. Corruption, truncation, or trailing data in the
+fourth frame commits exactly the first three 64-byte frames and no byte from
+the fourth.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

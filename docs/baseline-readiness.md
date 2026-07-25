@@ -95,6 +95,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-adaptive-huffman` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lz78-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -123,8 +124,10 @@ direction-specific byte and aligned record region and partitions opaque typed
 storage only after validating its layout. Its public C factory now exposes
 that streaming pair through size-tagged configuration and three caller-owned
 regions without leaking private record types. It remains `Specified`: a
-completion matrix, fuzzing, CLI, benchmark, and interoperability evidence are
-not yet implemented.
+public-ABI completion matrix now covers required binary classes, deterministic
+and chunk-independent streams, sticky terminal states, and transactional
+malformed-final-frame rejection, but fuzzing, CLI, benchmark, and
+interoperability evidence are not yet implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,

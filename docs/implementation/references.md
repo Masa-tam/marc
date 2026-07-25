@@ -1384,3 +1384,9 @@ DD-395 profile, local streaming transforms, marc ABI version 1's size-tagged
 config and transform lifecycle, checked workspace splitting, and opaque
 record partition helpers. No external C API, factory lifecycle, allocation
 contract, ABI layout, source code, or test suite was consulted.
+
+The LZ78 plus Dynamic Range public completion matrix uses only DD-397, the
+published marc C ABI, the local 64-byte audit convention, deterministic
+first-party byte generation, generic frame length fields, and transactional
+frame-publication contract. No external completion suite, corpus, malformed
+vector, source code, or test framework expression was consulted.

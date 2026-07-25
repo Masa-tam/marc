@@ -179,6 +179,11 @@ canonical token staging followed by the complete range-coded frame; its decode
 region contains token staging followed by private raw staging. Query
 `marc_lz78_dynamic_range_workspace_requirements()` again after changing
 direction, known original size, frame or entry bounds, or any local limit.
+The public completion matrix uses only this C lifecycle with 64-byte frames.
+It covers every one-byte value, representative binary and generated input,
+frame-boundary lengths, deterministic one-byte and mixed chunking, repeated
+terminal calls, and atomic rejection of a corrupted, truncated, or extended
+fourth frame.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized

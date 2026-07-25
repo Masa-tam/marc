@@ -7624,3 +7624,26 @@ profile; partitions typed records privately; and publishes a transform only
 after construction succeeds. C callers never name or size a C++ LZ78 record.
 This step adds no completion matrix, fuzz target, CLI selector, benchmark, or
 interoperability entry.
+
+## DD-397: LZ78 Dynamic Range completion is proven through C ABI v1
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add a public-ABI completion matrix above DD-396 with a fixed 64-byte raw frame,
+512-byte conservative LZ78 token extent, 1,029-byte Dynamic Range payload
+extent, and 65,536-byte active workspace limit. Construct both directions only
+through config initialization, requirements query, factory, process, and
+destroy.
+
+Cover empty input, every one-byte value, the ordered byte alphabet, long zero
+runs, repeated binary patterns, deterministic generated data, and lengths 63,
+64, and 65. Require repeated encoding and one-byte or mixed chunking to produce
+identical streams, exact round trips, stable repeated success, and no
+zero-progress `Progress`.
+
+For 193 raw bytes, corrupt, truncate, and append data to the fourth frame.
+Each failure must publish exactly the first three 64-byte frames, preserve the
+final output sentinel, and return the same sticky error category and position
+on a repeated call. This step adds no fuzz target, CLI selector, benchmark, or
+interoperability entry.

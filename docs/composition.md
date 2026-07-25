@@ -258,7 +258,9 @@ and reconstructs it privately, and only then drains its raw bytes. Its bounded
 profile derives all direction-specific byte regions and exposes internal LZ78
 records only through checked opaque-byte partitioning. Its public C factory
 binds those regions to the streaming pair through the common transform
-lifecycle. No completion matrix, CLI selector, benchmark, fuzz target, or
+lifecycle. Its public-ABI completion matrix now proves required binary classes,
+determinism, arbitrary chunking, sticky terminal behavior, and atomic rejection
+of a malformed final frame. No CLI selector, benchmark, fuzz target, or
 interoperability entry is implied.
 
 ## Why publication is not automatic
