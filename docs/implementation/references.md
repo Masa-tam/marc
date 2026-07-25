@@ -1460,3 +1460,10 @@ explicit stream/LZW parameter serializers, checked arithmetic, and established
 caller-owned frame-draining state conventions. No external streaming encoder,
 state machine, buffering layout, source code, corpus, or test suite was
 consulted.
+
+The LZW plus Dynamic Range bounded streaming decoder uses only DD-409,
+DD-405's transactional complete-frame decoder, marc's core process contract,
+explicit prefix and frame parsers, checked arithmetic, and established
+caller-owned validated-frame draining conventions. No external streaming
+decoder, state machine, buffering layout, source code, malformed corpus, or
+test suite was consulted.

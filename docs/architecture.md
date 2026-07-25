@@ -1818,7 +1818,8 @@ the LZW encoder table. It emits a prebuilt stream prefix, fills and encodes only
 complete outer frames, then drains immutable serialized bytes. This keeps
 one-shot framing authoritative while satisfying one-byte I/O, output
 starvation, nonterminal `Flush`, retained `EndInput`, and sticky terminal-state
-requirements. A matching streaming decoder remains a separate next boundary.
+requirements. The matching streaming decoder provides the inverse boundary
+described below.
 
 The streaming decoder now provides that inverse boundary. It separates prefix,
 frame-header, frame-body, private reconstruction, and raw-drain states; admits
@@ -1902,7 +1903,9 @@ the header, descriptor, and exact range payload and reproduces the independent
 79-byte vector without partial writes on capacity failure. The bounded
 streaming encoder collects one raw frame, prepares one complete immutable
 encoded frame, and drains it before accepting the next frame. Chunking and
-nonterminal `Flush` do not alter canonical bytes.
+nonterminal `Flush` do not alter canonical bytes. The streaming decoder admits
+bounded complete-frame storage from the parsed header, transactionally
+validates and reconstructs it, and only then drains immutable raw bytes.
 
 ### Published LZD plus Adaptive Huffman boundary
 

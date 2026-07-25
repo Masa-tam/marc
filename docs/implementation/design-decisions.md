@@ -7777,6 +7777,30 @@ decision specifies bytes and a reserved name only; it does not publish a
 combined validator, decoder, encoder, streaming transform, factory, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
 
+## DD-409: LZW Dynamic Range streaming decode validates before draining
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= ceil(FW/8)`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, packed staging, private raw staging, and aligned LZW
+phrase records, plus their checked aggregate workspace.
+
+Collect exactly the admitted descriptor and payload, invoke DD-405's
+transactional complete-frame decoder into private raw storage, and only then
+drain that immutable raw frame. Do not collect a later frame while validated
+raw bytes remain pending. Earlier complete frames may be published, but a
+malformed later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
 ## DD-403: LZW Dynamic Range validation stops at the packed-byte boundary
 
 - Date: 2026-07-25

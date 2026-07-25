@@ -26,7 +26,10 @@ format versions, and C ABI versions are independent namespaces.
   reproduces the independent 79-byte frame and leaves short destinations
   completely unchanged. Its first bounded streaming encoder preserves those
   canonical bytes under one-byte input and output, output starvation,
-  nonterminal `Flush`, and retained `EndInput`.
+  nonterminal `Flush`, and retained `EndInput`. The matching bounded streaming
+  decoder validates complete frames before raw draining and rejects every
+  truncation, trailing byte, and later-frame corruption without partially
+  publishing the failing frame.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload
