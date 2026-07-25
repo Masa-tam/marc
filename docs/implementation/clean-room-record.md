@@ -8100,3 +8100,25 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused planner tests and all 1,563 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range deterministic exact-frame encoder
+
+- Authoring method: placed marc's generic and Dynamic Range serializers above
+  the completed exact planner and frozen canonical token staging.
+- References used: DD-392, DD-391, local frame and descriptor serializers,
+  local Dynamic Range encoder, and caller-owned output spans.
+- Known implementations intentionally not consulted: external combined
+  encoders, archive serializers, range pipelines, source code, encoded corpora,
+  and test suites.
+- Independent decisions: finish planning before output capacity checks; replan
+  unchanged tokens and require the same payload extent; then serialize header,
+  descriptor, and payload in order.
+- Generated-code task description: reproduce the independent 83-byte frame,
+  prove byte-identical nested-phrase encoding and transactional round trip, and
+  prove one-byte-short output remains unmodified.
+- Similarity review: the composition follows only marc's local component APIs
+  and DD-392 ordering. No external control flow, output bytes, or test
+  expression was compared.
+- Local validation: all eight focused encoder tests and all 1,566 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

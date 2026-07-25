@@ -21,7 +21,9 @@ format versions, and C ABI versions are independent namespaces.
   before entropy work and copies the private raw extent only after every layer
   succeeds, leaving caller output unchanged on all failures. Its exact-frame
   planner now freezes canonical LZ78 tokens before range planning and reports
-  the complete serialized extent without writing serialized output.
+  the complete serialized extent without writing serialized output. Its
+  deterministic encoder reproduces the independent 83-byte frame and rejects
+  short serialized destinations without partial writes.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

@@ -574,3 +574,65 @@ TEST(Lz78DynamicRangeFrameEncoder, EnforcesAggregateWorkspaceBound) {
                   staging).error,
               Lz78DynamicRangeFrameValidationError::workspace_limit);
 }
+
+TEST(Lz78DynamicRangeFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, single_pair_frame.size()> output{};
+    const auto result = marc::frame::encode_lz78_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    ASSERT_EQ(result.error, Lz78DynamicRangeFrameValidationError::none);
+    EXPECT_EQ(output, single_pair_frame);
+}
+
+TEST(Lz78DynamicRangeFrameEncoder,
+     RoundTripsNestedPhrasesDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, raw.size()>
+        entries{};
+    std::array<std::byte, raw.size() * 8> encode_staging{};
+    const auto plan = marc::frame::plan_lz78_dynamic_range_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, entries,
+        encode_staging);
+    ASSERT_EQ(plan.error, Lz78DynamicRangeFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lz78_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, entries,
+                  encode_staging, first).error,
+              Lz78DynamicRangeFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lz78_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, entries,
+                  encode_staging, second).error,
+              Lz78DynamicRangeFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<std::byte, raw.size() * 8> decode_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lz78_dynamic_range_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, first,
+                  decode_staging, phrases, raw_staging, decoded).error,
+              Lz78DynamicRangeFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(Lz78DynamicRangeFrameEncoder, ShortOutputIsUnmodified) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, single_pair_frame.size() - 1> output{};
+    output.fill(std::byte{0xa5});
+    const auto result = marc::frame::encode_lz78_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    EXPECT_EQ(result.error, Lz78DynamicRangeFrameValidationError::
+                                serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, single_pair_frame.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+}

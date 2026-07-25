@@ -7531,3 +7531,19 @@ payload in one checked aggregate. Enforce `S <= 8F`, `S <= 2^24`, `P <= 2S +
 Return the plan without writing any serialized frame byte. This step adds no
 serialized-frame encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or
 interoperability claim.
+
+## DD-392: LZ78 Dynamic Range emits only an exact completed plan
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add the deterministic exact-frame encoder above DD-391. Complete the planner
+first, then reject a serialized destination shorter than its exact extent
+before writing any output byte. Replan Dynamic Range over the unchanged
+canonical LZ78 staging and require the same payload extent before serialization.
+
+Serialize the validated generic header, 16-byte descriptor, and exact payload
+in order. The raw-`41` input must reproduce the independent 83-byte frame;
+repeated encoding of nested `ABAB` must be byte-identical and decode through
+the transactional frame boundary. This step adds no streaming transform, C
+ABI, CLI, benchmark, fuzz, or interoperability claim.

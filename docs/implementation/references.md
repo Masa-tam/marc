@@ -1353,3 +1353,9 @@ standalone deterministic LZ78 encoder and Dynamic Range planner, the reserved
 composition bounds, generic frame validation, checked arithmetic, and
 caller-owned workspaces. No external combined encoder, parse strategy,
 workspace layout, source code, encoded corpus, or test suite was consulted.
+
+The LZ78 plus Dynamic Range deterministic exact-frame encoder uses only DD-392,
+DD-391's completed plan, marc's generic header and Dynamic Range serializers,
+the local range encoder, and caller-owned spans. No external combined encoder,
+archive serializer, transactional-output design, source code, encoded corpus,
+or test suite was consulted.

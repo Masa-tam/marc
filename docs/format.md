@@ -1685,6 +1685,12 @@ entries, tokens, the 16-byte descriptor, and payload are checked as one
 aggregate. It validates the resulting generic header fields and reports exact
 serialized extent `56 + 16 + P`, but writes no serialized frame byte.
 
+The matching internal exact-frame encoder first completes that plan and rejects
+a serialized destination shorter than the reported extent before writing. It
+replans Dynamic Range over the unchanged canonical token staging, requires the
+same `P`, then serializes the generic header, descriptor, and exact payload in
+order. Identical input and configuration produce byte-identical frame output.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

@@ -1419,8 +1419,11 @@ complete aligned LZ78 encoder-entry region and token staging, performs the
 deterministic phrase parse into canonical eight-byte tokens, and only then
 plans Dynamic Range payload extent from those immutable bytes. Encoder
 entries, tokens, descriptor, and payload participate in one checked aggregate.
-The resulting frame extent is exact; serialized frame emission remains a
-separate boundary.
+The resulting frame extent is exact. The matching encoder rejects short output
+after that complete plan, replans the unchanged token staging, requires an
+identical payload extent, and serializes header, descriptor, and payload in
+order. Repeated calls with identical input and configuration produce identical
+frame bytes.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

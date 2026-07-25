@@ -2819,3 +2819,14 @@ Separately plan raw `ABAB` and require three canonical Pair tokens: root plus
 and seven-byte token staging while preserving every token sentinel. Reject
 empty input, a raw extent different from the configured frame, and an
 encoder-entry-plus-token-plus-descriptor-plus-payload aggregate one byte short.
+
+For exact LZ78 plus Dynamic Range emission, encode raw `41` after the complete
+plan and require byte equality with the independently assembled 83-byte frame.
+Encode raw `ABAB` twice through the same caller-owned entry and token regions,
+require byte-identical frames, and decode one through the transactional
+complete-frame decoder to the original four bytes.
+
+Provide an 82-byte sentinel-filled destination for raw `41`; require the
+reported serialized extent to remain 83, return
+`serialized_output_too_small`, and preserve every destination byte. This is
+the only capacity failure that reaches the serialized-output boundary.

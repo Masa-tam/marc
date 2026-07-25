@@ -21,6 +21,7 @@ enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
     input_size_mismatch,
+    serialized_output_too_small,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
@@ -39,6 +40,7 @@ enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     dictionary_encode_error,
     entropy_encode_error,
     arithmetic_overflow,
+    internal_error,
 };
 
 struct Lz78DynamicRangeFrameValidationResult {
@@ -83,6 +85,20 @@ plan_lz78_dynamic_range_frame(
     std::span<const std::byte> input,
     std::span<dictionary::internal::Lz78EncoderEntry> encoder_workspace,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing serialized output. Input, encoder workspace,
+// token staging, and output must be mutually non-overlapping.
+[[nodiscard]] Lz78DynamicRangeFrameValidationResult
+encode_lz78_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::Lz78EncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Entropy-decodes and validates exactly one frame into private canonical LZ78
 // token staging and a caller-owned phrase table. No raw byte is reconstructed

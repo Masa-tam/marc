@@ -112,10 +112,11 @@ that validated phrase graph into separate raw staging. Its transactional
 complete-frame decoder now publishes only a fully validated and reconstructed
 private frame and leaves output unchanged on failure. Its exact-frame planner
 now freezes canonical LZ78 tokens and obtains the range payload and complete
-frame extents without writing serialized output. It remains `Specified`: a
-deterministic serialized-frame encoder, streaming transforms, public C factory,
-completion matrix, fuzzing, CLI, benchmark, and interoperability evidence are
-not yet implemented.
+frame extents without writing serialized output. Its deterministic exact-frame
+encoder now reproduces the independent 83-byte frame without partial writes on
+short capacity. It remains `Specified`: streaming transforms, public C
+factory, completion matrix, fuzzing, CLI, benchmark, and interoperability
+evidence are not yet implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,
