@@ -36,6 +36,11 @@ format versions, and C ABI versions are independent namespaces.
   private C++ record layouts. Its public-ABI completion matrix now proves
   required binary classes, deterministic and chunk-independent streams,
   stable terminal states, and transactional malformed-final-frame rejection.
+  A fixed-memory decoder fuzz boundary now exercises both exact-frame private
+  validation and the outer streaming decoder with fixed byte arrays, phrase
+  records, decoder limits, and a finite call budget. Permanent atomic
+  regressions cover every canonical truncation, saturated frame extents, and a
+  nonzero reserved Dynamic Range descriptor byte.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

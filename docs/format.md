@@ -1729,6 +1729,12 @@ only as a test profile and verifies through the public C ABI that input/output
 chunking cannot change stream bytes and that a malformed fourth frame cannot
 publish any of its raw extent.
 
+The fixed-memory decoder fuzz boundary also changes no representation. It
+applies arbitrary bounded bytes to the exact-frame private decoder when a
+complete profile prefix is available and always to the incremental stream
+decoder. All byte regions, phrase records, decoder limits, chunk ranges, and
+the call ceiling are fixed independently of input contents.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

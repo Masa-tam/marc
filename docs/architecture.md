@@ -1461,6 +1461,14 @@ four-frame transaction test. Corruption, truncation, or trailing data in the
 fourth frame commits exactly the first three 64-byte frames and no byte from
 the fourth.
 
+The bounded decoder fuzz boundary uses the same exact-frame private decoder
+and incremental stream decoder without changing either public surface. It
+preallocates serialized input, encoded-frame, token, private-raw, final-output,
+and aligned phrase-record storage under fixed local limits. Arbitrary bytes
+may choose only modulo-bounded input and output chunks. A finite call ceiling
+turns a stalled state machine into a reproducible invariant failure rather
+than input-controlled work.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

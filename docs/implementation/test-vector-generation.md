@@ -2906,3 +2906,25 @@ payload length fields. Corrupt its sequence field, remove the final payload
 byte, and append one trailing byte in separate cases. Each decode must report a
 sticky malformed stream, produce exactly the first 192 raw bytes, and preserve
 the final output sentinel.
+
+For bounded LZ78 plus Dynamic Range fuzzing, clamp arbitrary serialized input
+to 8,192 bytes. Fix maximum total raw output at 4,096 bytes, one raw frame at
+1,024 bytes, canonical tokens and Dynamic Range payload at 8,192 bytes each,
+the phrase table at 1,024 records, and complete encoded-frame storage at
+`56 + 16 + 8,192` bytes. Count every fixed byte array and the phrase records in
+the local aggregate limit.
+
+When the first 80 bytes parse as the exact LZ78 plus Dynamic Range profile,
+pass the remaining admitted frame to the private exact-frame decoder. Always
+run the incremental decoder with input chunks `1 + byte mod 17`, output chunks
+`1 + byte mod 19`, and no more than `8,192 + 4,096 + 32` process calls. Treat
+impossible counts, progress without counts, or exhaustion of that finite
+ceiling as a harness failure; malformed serialized input is an ordinary
+decoder result.
+
+Build the permanent canonical regression from raw `ABABX` through the bounded
+streaming encoder. For every proper archive prefix, require malformed-stream
+failure, zero published bytes, an unchanged `a5` output buffer, and the same
+sticky error on a repeated call. Independently fill generic-frame extent bytes
+16 through 39 with `ff`, then set the last byte of the 16-byte Dynamic Range
+descriptor nonzero; both mutations must satisfy the same atomic failure check.

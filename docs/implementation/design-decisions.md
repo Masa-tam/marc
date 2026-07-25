@@ -7647,3 +7647,26 @@ Each failure must publish exactly the first three 64-byte frames, preserve the
 final output sentinel, and return the same sticky error category and position
 on a repeated call. This step adds no fuzz target, CLI selector, benchmark, or
 interoperability entry.
+
+## DD-398: LZ78 Dynamic Range fuzzing is fixed-memory and decoder-only
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add one LLVM-compatible decoder entry point that bounds accepted input at
+8,192 bytes and exercises both the exact-frame private decoder and the outer
+streaming decoder. Fix total raw output at 4,096 bytes, each raw frame at 1,024
+bytes, token and payload regions at 8,192 bytes each, the phrase table at 1,024
+records, and the incremental call budget at input plus output capacity plus 32.
+
+Input bytes may select only bounded chunk sizes. They must not resize an
+allocation, change a decoder limit, select recursion, or extend the call
+budget. Abort only for a violated internal process invariant or exhausted
+finite budget; malformed input is an ordinary decoder result.
+
+Compile this entry point with ordinary warning levels in every test build and
+with libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer only when fuzz
+targets are explicitly enabled. Preserve canonical truncation, extreme frame
+length, and invalid Dynamic Range descriptor failures as normal atomic
+regression tests. This step adds no CLI selector, benchmark, or interoperability
+entry and does not require an unbounded fuzz campaign.

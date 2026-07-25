@@ -1390,3 +1390,9 @@ published marc C ABI, the local 64-byte audit convention, deterministic
 first-party byte generation, generic frame length fields, and transactional
 frame-publication contract. No external completion suite, corpus, malformed
 vector, source code, or test framework expression was consulted.
+
+The LZ78 plus Dynamic Range bounded decoder fuzz boundary uses only DD-398,
+the local exact-frame and streaming decoders, fixed compile-time workspaces,
+the core process-result validator, and repository-owned canonical streams.
+No external fuzz harness, corpus, malformed vector, allocation strategy,
+source code, or regression suite was consulted.

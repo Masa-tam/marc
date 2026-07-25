@@ -8243,3 +8243,30 @@ discarded and the reviewed seed retained.
 - Local validation: all three focused completion tests and all 1,588 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: specialized marc's fixed-memory dual-decoder fuzz contract
+  to the completed local LZ78 Dynamic Range exact-frame, streaming, workspace,
+  and transactional-publication boundaries.
+- References used: DD-398, DD-387 through DD-397, the local private exact-frame
+  decoder, incremental transform, checked phrase-table layout, process
+  invariants, and repository-authored canonical encoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, dictionaries, crash samples, combined LZ/range codecs, source code,
+  malformed archives, and test suites.
+- Independent decisions: clamp input at 8 KiB; fix output/frame/token/payload
+  limits at 4 KiB/1 KiB/8 KiB/8 KiB and phrase storage at 1,024 records; derive
+  modulo-17/modulo-19 chunks from bytes; cap calls at input plus output plus 32;
+  and retain canonical truncation, saturated frame lengths, and one reserved
+  descriptor mutation as atomic sticky regressions.
+- Generated-code task description: add an LLVM-compatible decoder entry point,
+  ordinary warning-level compile smoke, explicit sanitizer target, and three
+  permanent malformed regressions without starting an unbounded fuzz campaign.
+- Similarity review: buffer layout, limits, schedules, call ceiling, mutations,
+  and assertions follow only marc's repository-owned contracts and independently
+  selected constants. No external harness expression or corpus was compared.
+- Local validation: the ordinary fuzz entry point compiled, all three focused
+  permanent regressions passed, and all 1,591 Release tests passed under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake
+  4.3.4. No unbounded fuzz campaign was run in this step.

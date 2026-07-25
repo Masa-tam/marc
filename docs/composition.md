@@ -260,8 +260,12 @@ records only through checked opaque-byte partitioning. Its public C factory
 binds those regions to the streaming pair through the common transform
 lifecycle. Its public-ABI completion matrix now proves required binary classes,
 determinism, arbitrary chunking, sticky terminal behavior, and atomic rejection
-of a malformed final frame. No CLI selector, benchmark, fuzz target, or
-interoperability entry is implied.
+of a malformed final frame. Its bounded dual-path decoder fuzz target fixes all
+byte and phrase-record storage before accepting input and caps incremental
+calls independently of serialized contents. Permanent regressions retain
+atomic failure for truncation, saturated frame lengths, and an invalid Dynamic
+Range descriptor. No CLI selector, benchmark, or interoperability entry is
+implied.
 
 ## Why publication is not automatic
 
