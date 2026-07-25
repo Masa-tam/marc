@@ -2367,6 +2367,9 @@ requirements query.
 The dependency-free benchmark selects the same unchanged profile. Its checked
 capacity, mandatory untimed round trip, timing, ratio, and workspace reporting
 are tooling policy and add no format field or variant.
+Interoperability schema 17 emits and accepts this exact profile as archive 28
+after the frozen twenty-seven-entry schema-16 order. This changes no format
+version or profile representation.
 
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 

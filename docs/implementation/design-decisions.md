@@ -8076,3 +8076,24 @@ ratio, encode/decode throughput, all six queried workspace extents, and the
 larger three-region sum as descriptive peak workspace. Add a one-iteration
 smoke test with no performance threshold. This step adds no interoperability
 entry.
+
+## DD-416: Interoperability schema 17 appends LZW Dynamic Range once
+
+- Date: 2026-07-26
+- Status: accepted
+
+Define interoperability schema 17 and codec set `marc-cli-v17` as the exact
+twenty-seven-entry schema-16 order followed by `lzw-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must locally decode every archive before publishing the manifest.
+The verifier must require exactly twenty-eight archives in canonical order,
+validate all declared extents and SHA-256 values, decode every foreign archive,
+and reproduce every archive byte for byte with the local encoder.
+
+The compatibility test must generate and verify schema 17, reject a reordered
+schema-17 manifest before archive decoding, remove only archive 28 to derive
+schema 16, and continue the complete frozen conversion chain through schema 1.
+No previous schema, archive order, codec set, stream representation, fixture,
+or manifest field changes. Cross-platform interoperability remains unproven
+until one pushed revision passes the established Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.

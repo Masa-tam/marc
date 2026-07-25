@@ -29,7 +29,7 @@ public format or API guarantee yet.
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 16 includes all current published profiles while
+publication: schema 17 includes all current published profiles while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -313,7 +313,8 @@ regressions are now present. Its explicit transactional CLI selector reaches
 the composition only through the public C requirements query and factory. The
 dependency-free benchmark uses that same profile, checked
 `80 + 4N + 77K` capacity, mandatory untimed round trip, and queried
-directional workspaces.
+directional workspaces. Interoperability schema 17 appends it once after the
+frozen schema-16 order; cross-platform artifact verification remains pending.
 
 ## Why publication is not automatic
 

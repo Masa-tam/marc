@@ -2954,6 +2954,19 @@ decoder workspaces 8,388,664/196,608/1,044,480 bytes. Peak caller reservation
 was 9,629,752 bytes. These values document the tested deterministic extents;
 the observed throughput is descriptive and not a conformance threshold.
 
+For interoperability schema 17, retain the deterministic 8,193-byte fixture
+and exact schema-16 archive order, then append `lzw-dynamic-range` once as
+archive 28. Generate and locally decode all twenty-eight archives before
+writing `manifest.json`; require codec set `marc-cli-v17`, exact order, sizes,
+SHA-256 values, and one full Git object ID. Verification must decode every
+archive and reproduce it byte for byte.
+
+Copy the generated schema-17 bundle, exchange its first two manifest entries,
+and require rejection before archive decoding. Derive schema 16 by removing
+only archive 28 and changing only `schema_version` and `codec_set`, verify all
+twenty-seven frozen archives, then continue the established one-generation
+conversion and verification chain through schema 1.
+
 For the LZ78 plus Dynamic Range benchmark smoke, select `lz78-dynamic-range`,
 use `README.md`, and run one iteration. Before timing, encode once into checked
 capacity `80 + 16N + 77K`, decode the exact encoded extent once, and require
