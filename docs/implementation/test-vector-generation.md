@@ -2953,3 +2953,16 @@ bytes, ratio 1.026, with encoder workspaces 4,511/108,341/72,176 bytes and
 decoder workspaces 4,194,360/589,824/1,048,576 bytes. Peak caller reservation
 was 5,832,760 bytes. These values document the tested deterministic extents;
 the observed throughput is descriptive and not a conformance threshold.
+
+For interoperability schema 16, retain the deterministic 8,193-byte fixture
+and exact schema-15 archive order, then append `lz78-dynamic-range` once as
+archive 27. Generate and locally decode all twenty-seven archives before
+writing `manifest.json`; require codec set `marc-cli-v16`, exact order, sizes,
+SHA-256 values, and one full Git object ID. Verification must decode every
+archive and reproduce it byte for byte.
+
+Copy the generated schema-16 bundle, exchange its first two manifest entries,
+and require rejection before archive decoding. Derive schema 15 by removing
+only archive 27 and changing only `schema_version` and `codec_set`, verify all
+twenty-six frozen archives, then continue the established one-generation
+conversion and verification chain through schema 1.

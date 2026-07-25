@@ -45,7 +45,8 @@ format versions, and C ABI versions are independent namespaces.
   through the existing transactional temporary-file workflow. Its
   dependency-free benchmark now verifies a complete public-ABI round trip
   before reporting compression ratio, directional throughput, and queried
-  caller-owned workspace.
+  caller-owned workspace. Interoperability schema 16 appends this profile as
+  archive 27 while freezing all fifteen earlier schema meanings.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

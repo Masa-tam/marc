@@ -7718,3 +7718,24 @@ ratio, encode/decode throughput, all six queried workspace extents, and the
 larger three-region sum as descriptive peak workspace. Add a one-iteration
 smoke test with no performance threshold. This step adds no interoperability
 entry.
+
+## DD-401: Interoperability schema 16 appends LZ78 Dynamic Range once
+
+- Date: 2026-07-25
+- Status: accepted
+
+Define interoperability schema 16 and codec set `marc-cli-v16` as the exact
+twenty-six-entry schema-15 order followed by `lz78-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must locally decode every archive before publishing the manifest.
+The verifier must require exactly twenty-seven archives in canonical order,
+validate all declared extents and SHA-256 values, decode every foreign archive,
+and reproduce every archive byte for byte with the local encoder.
+
+The compatibility test must generate and verify schema 16, reject a reordered
+schema-16 manifest before archive decoding, remove only archive 27 to derive
+schema 15, and continue the complete frozen conversion chain through schema 1.
+No previous schema, archive order, codec set, stream representation, fixture,
+or manifest field changes. Cross-platform interoperability remains unproven
+until one pushed revision passes the established Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.

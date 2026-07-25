@@ -651,9 +651,11 @@ plus Adaptive Huffman to the frozen twenty-three-profile schema-12 order.
 Schema 14 names `marc-cli-v14` and appends LZ77 plus Dynamic Range to the frozen
 twenty-four-profile schema-13 order. Schema 15 names `marc-cli-v15` and appends
 LZSS plus Dynamic Range to the frozen twenty-five-profile schema-14 order.
-Schemas 1 through 14 remain frozen at
+Schema 16 names `marc-cli-v16` and appends LZ78 plus Dynamic Range to the frozen
+twenty-six-profile schema-15 order. Schemas 1 through 15 remain frozen at
 seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen, nineteen,
-twenty, twenty-one, twenty-two, twenty-three, twenty-four, and twenty-five
+twenty, twenty-one, twenty-two, twenty-three, twenty-four, twenty-five, and
+twenty-six
 profiles respectively.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
@@ -2130,13 +2132,13 @@ The first independent-toolchain check builds the complete project with Clang's
 GNU-style driver and Ninja on Windows, then runs the same optimized suite used
 by the MSVC build. As a separate representation check, the MSVC and Clang
 command-line tools encode one common input through every public CLI profile;
-all twenty-six schema-15 archives must compare byte for byte. This establishes
+all twenty-seven schema-16 archives must compare byte for byte. This establishes
 compiler independence on one architecture, while cross-architecture evidence
 remains a separate gate.
 
 CI turns this check into an externally consumable protocol. Each reference job
 generates the same 8,193-byte binary fixture, validates a local round trip for
-all twenty-six schema-15 profiles, and uploads the fixture, complete archives,
+all twenty-seven schema-16 profiles, and uploads the fixture, complete archives,
 and a JSON manifest containing the source revision. The external verifier first
 validates manifest bounds and hashes, then decodes foreign archives and
 independently re-encodes the fixture with the local CLI. Artifact hashes detect

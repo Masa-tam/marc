@@ -8319,3 +8319,36 @@ discarded and the reviewed seed retained.
 - Local validation: the focused one-iteration smoke and all 1,593 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4. All twenty-seven labeled benchmark smokes passed.
+
+## 2026-07-25 - Interoperability schema 16 local admission
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by one append-only public profile and preserved every prior frozen schema.
+- References used: DD-401, the completed `lz78-dynamic-range` CLI profile, the
+  frozen schema-15 order, deterministic 8,193-byte fixture, existing manifest
+  fields, SHA-256 checks, strict verifier, and one-generation compatibility
+  converter.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, combined-codec
+  archives, corpora, source code, test vectors, and verification suites.
+- Independent decisions: append `lz78-dynamic-range` exactly once as archive
+  27; name codec set `marc-cli-v16`; preserve schemas 1 through 15; require a
+  generation-time local round trip, exact order, full revision, sizes,
+  SHA-256, foreign decode, and byte-identical local re-encoding; reject a
+  reordered schema-16 manifest; and derive schema 15 by removing only the new
+  archive.
+- Generated-code task description: update the bundle generator, verifier,
+  compatibility regression, format and architecture descriptions, readiness
+  matrices, interoperability instructions, changelog, and provenance for the
+  append-only schema.
+- Similarity review: the implementation extends only marc's earlier schema
+  chain and public selector. No external manifest field, archive order,
+  conversion algorithm, script structure, or test expression was compared.
+- Local validation: schema 16 generated and verified all 27 archives, rejected
+  the reordered manifest, and verified the frozen 26, 25, 24, 23, 22, 21, 20,
+  19, 18, 17, 16, 15, 13, 8, and 7 archive predecessors through schemas 15 to
+  1. All 1,593 Release tests passed under both MSVC/Visual Studio 2026 and
+  Clang 22.1.3 on Windows x64 using official CMake 4.3.4. Independently
+  generated MSVC and ClangCL schema-16 bundles cross-verified all 27 archives
+  in both local toolchain directions. Cross-platform schema-16 verification
+  has not yet been claimed.

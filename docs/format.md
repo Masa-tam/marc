@@ -1741,6 +1741,9 @@ codec from stream contents.
 The dependency-free benchmark selects the same unchanged public profile. Its
 checked output capacity, untimed round-trip gate, timing, ratio, and workspace
 reporting are tooling policy and add no format field or variant.
+Interoperability schema 16 emits and accepts this exact profile as archive 27
+after the frozen twenty-six-entry schema-15 order. This changes no format
+version or profile representation.
 
 ### Hand-checkable single-Pair frame
 
