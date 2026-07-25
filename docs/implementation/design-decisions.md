@@ -7827,3 +7827,24 @@ raw staging. No caller-visible raw output is accepted by this API, so no byte
 is published at this boundary. This step adds no transactional publication
 wrapper, encoder, streaming transform, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-405: LZW Dynamic Range publishes only a complete successful frame
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an internal caller-visible complete-frame decoder above DD-404. Require
+destination capacity for the complete declared raw frame together with packed
+staging, aligned phrase records, and private raw staging before parsing the
+Dynamic Range descriptor or producing entropy output. Caller-visible output is
+not scratch and therefore is not counted in aggregate internal workspace.
+
+Run the unchanged DD-403 validation order and DD-404 private reconstruction.
+Only after every generic-frame, range, LZW, capacity, bounds, and exact-extent
+check succeeds may the decoder copy the complete private raw span once into
+the destination.
+
+Preserve every existing combined error value and append a distinct output-
+capacity error. On every failure, publish no destination byte. This step adds
+no encoder, streaming transform, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion matrix, or interoperability entry.

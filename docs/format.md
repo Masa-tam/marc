@@ -2290,8 +2290,9 @@ declared raw extent into bounded phrase records. Before entropy output, the
 private decoder requires the complete raw staging extent and counts it with
 the descriptor, payload, packed bytes, and aligned phrase records against the
 aggregate workspace limit. It then reconstructs only the completely validated
-phrase graph into private raw staging. Only a completely successful frame may
-later be published.
+phrase graph into private raw staging. The transactional complete-frame
+boundary checks destination capacity before entropy output and copies this
+private extent once only after every operation succeeds.
 A malformed later frame cannot publish any of that frame's raw bytes, although
 earlier frames may already be committed.
 

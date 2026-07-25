@@ -287,7 +287,9 @@ admits every extent and workspace before range decoding into private packed
 staging, then applies the existing LZW semantic validator. The matching
 private decoder checks raw capacity and aggregate storage before entropy
 output, then iteratively reconstructs the completely validated phrase graph
-into bounded raw staging. Caller-visible publication remains a later boundary.
+into bounded raw staging. The internal transactional decoder also admits
+complete destination capacity before entropy output and copies the private raw
+frame only after every layer succeeds.
 
 ## Why publication is not automatic
 

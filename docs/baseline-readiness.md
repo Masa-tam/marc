@@ -113,9 +113,10 @@ validator now checks generic, packed, entropy, capacity, and aggregate extents
 before strictly range-decoding into private packed staging and invoking the
 existing LZW validator. A bounded private decoder now admits and counts raw
 staging before entropy output, then iteratively reconstructs the validated
-phrase graph without caller-visible publication. No transactional output
-decoder, encoder, streaming transform, C ABI, CLI, benchmark, fuzz,
-completion, or interoperability entry exists yet.
+phrase graph without caller-visible publication. Its internal transactional
+decoder now checks complete destination capacity before entropy output and
+publishes only a successful private raw frame. No encoder, streaming transform,
+C ABI, CLI, benchmark, fuzz, completion, or interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

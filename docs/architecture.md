@@ -1891,8 +1891,10 @@ packed and entropy extents, caller capacities, and aggregate workspace before
 range-decoding into private packed staging, then applies the existing LZW
 validator. Its bounded private decoder also admits raw capacity and aggregate
 storage before entropy output, then iteratively reconstructs the validated
-phrase graph into private raw staging. Caller-visible publication and public
-factories remain later boundaries.
+phrase graph into private raw staging. The internal transactional boundary
+also checks destination capacity before entropy output and copies the complete
+private raw frame only after success. Public factories remain a later
+boundary.
 
 ### Published LZD plus Adaptive Huffman boundary
 

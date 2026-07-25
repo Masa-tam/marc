@@ -1435,3 +1435,9 @@ DD-403 validator, marc's existing iterative LZW decoder, caller-owned packed,
 phrase, and raw spans, and checked aggregate arithmetic. No external combined
 decoder, phrase-expansion implementation, buffering layout, source code,
 malformed corpus, or test suite was consulted.
+
+The LZW plus Dynamic Range transactional frame decoder uses only DD-405,
+DD-404's private reconstruction boundary, caller-owned destination capacity,
+and marc's established copy-after-success convention. No external combined
+decoder, publication protocol, buffering layout, source code, malformed
+corpus, or test suite was consulted.

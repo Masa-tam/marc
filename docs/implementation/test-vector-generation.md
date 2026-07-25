@@ -3009,3 +3009,15 @@ must fail before entropy output and preserve both sentinels. Corrupt the range
 payload and independently range-encode packed bytes with nonzero LZW padding;
 both must leave raw staging unchanged. The decoder exposes no caller-visible
 output span in this step.
+
+For the LZW plus Dynamic Range transactional decoder, initialize output with a
+sentinel, decode the independent raw-`A` frame, and require publication of
+exactly `A`. Repeat with the multi-code `ABABABA` frame and require one complete
+byte-exact publication.
+
+Provide a destination one byte shorter than the declared two-byte raw frame.
+Require the dedicated output-capacity error before either packed or private raw
+staging changes. Corrupt the raw-`A` range payload independently and require
+the complete caller-visible output sentinel to remain unchanged. These tests
+establish atomic publication for one complete frame only; they make no
+streaming-decoder claim.

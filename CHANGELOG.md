@@ -17,7 +17,10 @@ format versions, and C ABI versions are independent namespaces.
   reference, `KwKwK`, padding, and exact-raw-extent validator. Its bounded
   private decoder additionally checks and counts raw staging before entropy
   output, then iteratively reconstructs only the completely validated LZW
-  stream without publishing caller-visible bytes.
+  stream without publishing caller-visible bytes. Its internal transactional
+  decoder checks destination capacity before entropy work and copies the
+  complete private raw extent only after every layer succeeds, leaving output
+  unchanged on all failures.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

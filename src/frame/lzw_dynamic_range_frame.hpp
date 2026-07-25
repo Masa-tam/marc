@@ -30,6 +30,7 @@ enum class LzwDynamicRangeFrameValidationError : std::uint8_t {
     dictionary_validation_error,
     dictionary_decode_error,
     arithmetic_overflow,
+    raw_output_too_small,
 };
 
 struct LzwDynamicRangeFrameValidationResult {
@@ -85,6 +86,22 @@ decode_lzw_dynamic_range_frame_to_staging(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates and reconstructs privately, then copies the complete raw frame to
+// caller-visible output only after every operation succeeds. Input, dictionary
+// staging, raw staging, and output must be mutually non-overlapping.
+[[nodiscard]] LzwDynamicRangeFrameValidationResult
+decode_lzw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 
