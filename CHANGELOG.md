@@ -33,6 +33,9 @@ format versions, and C ABI versions are independent namespaces.
   direction-specific byte regions and safely partitions opaque aligned LZW
   encoder and phrase records. Its bounded C requirements query and factory now
   expose both streaming directions without leaking those private C++ layouts.
+  Its public-ABI completion matrix covers required binary inputs, deterministic
+  chunk-independent streams, sticky terminal states, and atomic rejection of a
+  malformed final frame.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

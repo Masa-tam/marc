@@ -7983,3 +7983,25 @@ Require a strict C11 round trip, exact small-limit requirements, one-byte-short
 and misaligned workspace rejection, reserved-field rejection, and a null
 transform on every factory failure. This step adds no CLI selector, benchmark,
 fuzz target, completion matrix, or interoperability entry.
+
+## DD-412: LZW Dynamic Range completion is audited through the public C ABI
+
+- Date: 2026-07-26
+- Status: accepted
+
+Audit only `marc_lzw_dynamic_range_config_init`, its requirements query,
+factory, the common process function, and transform destruction. Use 64-byte
+frames and the checked `S = ceil(FW/8)`, `P = 2S + 5` workspace policy.
+
+Cover empty input, every one-byte value, the full byte alphabet, repetitive
+and generated binary inputs, and lengths 63, 64, and 65. Require deterministic
+re-encoding and identical streams under `(1,1)`, `(7,5)`, and `(13,17)`
+input/output chunk schedules, with repeatable EndOfStream.
+
+For a 193-byte four-frame stream, independently corrupt, truncate, and extend
+the fourth frame. Each decoder must commit exactly the first 192 bytes, leave
+the failing frame's destination sentinel unchanged, and repeat the same stable
+terminal error. Reuse the LZW public-ABI test body across entropy profiles with
+only the fixed factory family and payload ceiling parameterized, preventing
+evidence drift. This step adds no CLI, benchmark, fuzz, or interoperability
+entry.

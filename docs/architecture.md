@@ -1914,6 +1914,10 @@ The bounded C adapter publishes only size-tagged configuration, byte counts,
 alignment, opaque buffers, and the ordinary transform handle. It recalculates
 and repartitions the profile during creation, so no C++ record layout or
 caller-modified requirement becomes trusted ABI state.
+The public-ABI completion matrix drives this adapter over required binary
+classes, multiple chunk schedules, stable terminal states, and fourth-frame
+corruption, truncation, and trailing data. A failing fourth frame never
+publishes its final raw byte while the three validated frames remain committed.
 
 ### Published LZD plus Adaptive Huffman boundary
 

@@ -8661,3 +8661,29 @@ discarded and the reviewed seed retained.
   passed under both MSVC and ClangCL. The complete Release suite passed
   1,631/1,631 under MSVC and 1,631/1,631 under ClangCL using official
   CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range public completion matrix
+
+- Authoring method: parameterized marc's first-party LZW public-ABI admission
+  matrix only at the entropy payload ceiling and public C symbol family, then
+  instantiated it independently for Dynamic Range under DD-412.
+- References used: DD-412, the published local LZW Dynamic Range C ABI,
+  generic-frame field offsets, and repository-authored deterministic generator
+  and chunk schedules.
+- Known implementations intentionally not consulted: external completion
+  suites, malformed corpora, source code, and encoded vectors.
+- Independent decisions: use 64-byte frames; cover empty input, every one-byte
+  value, full alphabet, repetition, binary patterns, generated data, and frame
+  neighbors; require byte-identical output across three chunk schedules and
+  stable ended/error calls; and verify that corruption, truncation, or trailing
+  data in frame four commits only the first three frames.
+- Generated-code task description: make the existing LZW completion body
+  explicitly parameterizable, instantiate it for the Dynamic Range C symbols
+  and `2S + 5` bound, register it, and synchronize architecture, C API,
+  readiness, composition, changelog, decision, reference, and vector records.
+- Similarity review: all test logic derives from marc's own prior LZW public
+  contract and DD-412; no external test expression was compared.
+- Local validation: the seven focused Dynamic Range completion, reused
+  Adaptive completion, and documentation tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 1,634/1,634 under MSVC and
+  1,634/1,634 under ClangCL using official CMake 4.3.4.

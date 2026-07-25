@@ -304,8 +304,10 @@ encoder's raw, packed, encoded-frame, and aligned-entry regions and the
 decoder's encoded-frame, packed, private-raw, and aligned-phrase regions from
 trusted configuration or local limits, with checked aggregate accounting.
 Its bounded C requirements query and factory now expose those three workspace
-roles without exposing private LZW record layouts. CLI, completion, fuzz,
-benchmark, and interoperability admission remain pending.
+roles without exposing private LZW record layouts. The public C completion
+matrix now covers required binary classes, deterministic arbitrary
+chunking, stable terminal states, and malformed-final-frame atomicity; CLI,
+fuzz, benchmark, and interoperability admission remain pending.
 
 ## Why publication is not automatic
 
