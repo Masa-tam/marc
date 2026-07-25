@@ -47,7 +47,9 @@ inline constexpr std::uint64_t termination_bytes = 5;
     const std::span<dictionary::internal::Lz78PhraseEntry>
         phrase_workspace,
     const bool require_raw_staging,
-    const std::span<std::byte> raw_staging) noexcept {
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     Lz78DynamicRangeFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -154,6 +156,11 @@ inline constexpr std::uint64_t termination_bytes = 5;
     if (require_raw_staging && raw_staging.size() < result.raw_size) {
         result.error =
             Lz78DynamicRangeFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error =
+            Lz78DynamicRangeFrameValidationError::raw_output_too_small;
         return result;
     }
 
@@ -274,7 +281,7 @@ Lz78DynamicRangeFrameValidationResult validate_lz78_dynamic_range_frame(
     return validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, dictionary_staging, phrase_workspace,
-        false, {});
+        false, {}, false, {});
 }
 
 Lz78DynamicRangeFrameValidationResult
@@ -291,13 +298,40 @@ decode_lz78_dynamic_range_frame_to_staging(
     auto result = validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, dictionary_staging, phrase_workspace,
-        true, raw_staging);
+        true, raw_staging, false, {});
     if (result.error != Lz78DynamicRangeFrameValidationError::none) {
         return result;
     }
     (void)reconstruct_validated_tokens(
         result, parameters, limits, dictionary_staging, phrase_workspace,
         raw_staging);
+    return result;
+}
+
+Lz78DynamicRangeFrameValidationResult decode_lz78_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        true, raw_staging, true, output);
+    if (result.error != Lz78DynamicRangeFrameValidationError::none) {
+        return result;
+    }
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, phrase_workspace,
+            raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 

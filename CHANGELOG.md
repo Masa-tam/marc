@@ -17,7 +17,9 @@ format versions, and C ABI versions are independent namespaces.
   LZ78 phrase graph with stable format, token-index, and byte-offset failures.
   Its bounded private decoder additionally counts raw staging in the aggregate
   policy and iteratively reconstructs only the already validated phrase graph.
-  It publishes no caller-visible raw bytes.
+  Its transactional complete-frame decoder checks caller output capacity
+  before entropy work and copies the private raw extent only after every layer
+  succeeds, leaving caller output unchanged on all failures.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

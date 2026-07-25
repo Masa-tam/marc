@@ -349,7 +349,8 @@ TEST(Lz78DynamicRangeFrameDecoder, CountsRawStagingInAggregateWorkspace) {
     std::array dictionary_staging{
         std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
         std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
-    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array phrases{
+        marc::dictionary::internal::Lz78PhraseEntry{7, 0xa5, 9}};
     std::array raw_staging{std::byte{0xa5}};
     const auto result =
         marc::frame::decode_lz78_dynamic_range_frame_to_staging(
@@ -361,6 +362,9 @@ TEST(Lz78DynamicRangeFrameDecoder, CountsRawStagingInAggregateWorkspace) {
         dictionary_staging, [](const std::byte value) {
             return value == std::byte{0xa5};
         }));
+    EXPECT_EQ(phrases[0].prefix_index, 7U);
+    EXPECT_EQ(phrases[0].symbol, 0xa5U);
+    EXPECT_EQ(phrases[0].length, 9U);
     EXPECT_EQ(raw_staging[0], std::byte{0xa5});
 }
 
@@ -386,4 +390,96 @@ TEST(Lz78DynamicRangeFrameDecoder, MalformedLayersDoNotTouchRawStaging) {
               Lz78DynamicRangeFrameValidationError::
                   dictionary_validation_error);
     EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(Lz78DynamicRangeFrameDecoder, PublishesHandVectorAfterPrivateDecode) {
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    std::array output{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, single_pair_frame,
+        dictionary_staging, phrases, raw_staging, output);
+    ASSERT_EQ(result.error, Lz78DynamicRangeFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+    EXPECT_EQ(output[2], std::byte{0xa5});
+}
+
+TEST(Lz78DynamicRangeFrameDecoder, PublishesNestedPhraseAtomically) {
+    constexpr std::array nested_tokens{
+        std::byte{0x00}, std::byte{0x41}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    const auto frame = frame_for_tokens(nested_tokens, 4);
+    std::array<std::byte, nested_tokens.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, 4> raw_staging{};
+    std::array output{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
+        std::byte{0xa5}, std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_dynamic_range_frame(
+        stream_for(4), {}, {}, 0, 0, frame, dictionary_staging, phrases,
+        raw_staging, output);
+    ASSERT_EQ(result.error, Lz78DynamicRangeFrameValidationError::none);
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{output}.first<4>(), expected));
+    EXPECT_EQ(output[4], std::byte{0xa5});
+}
+
+TEST(Lz78DynamicRangeFrameDecoder, OutputCapacityFailurePrecedesMutation) {
+    std::array dictionary_staging{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    std::array phrases{
+        marc::dictionary::internal::Lz78PhraseEntry{7, 0xa5, 9}};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_dynamic_range_frame(
+        stream_for(1), {}, {}, 0, 0, single_pair_frame,
+        dictionary_staging, phrases, raw_staging, {});
+    EXPECT_EQ(result.error,
+              Lz78DynamicRangeFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(phrases[0].prefix_index, 7U);
+    EXPECT_EQ(phrases[0].symbol, 0xa5U);
+    EXPECT_EQ(phrases[0].length, 9U);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(Lz78DynamicRangeFrameDecoder, MalformedFrameNeverPublishesOutput) {
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    std::array output{std::byte{0xa5}, std::byte{0xa5}};
+
+    auto malformed_descriptor = single_pair_frame;
+    malformed_descriptor[71] = std::byte{1};
+    EXPECT_EQ(marc::frame::decode_lz78_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0, malformed_descriptor,
+                  dictionary_staging, phrases, raw_staging, output).error,
+              Lz78DynamicRangeFrameValidationError::descriptor_error);
+    EXPECT_EQ(output[0], std::byte{0xa5});
+    EXPECT_EQ(output[1], std::byte{0xa5});
+
+    auto invalid_tokens = pair_a;
+    invalid_tokens[4] = std::byte{1};
+    const auto invalid_dictionary = frame_for_tokens(invalid_tokens, 1);
+    EXPECT_EQ(marc::frame::decode_lz78_dynamic_range_frame(
+                  stream_for(1), {}, {}, 0, 0, invalid_dictionary,
+                  dictionary_staging, phrases, raw_staging, output).error,
+              Lz78DynamicRangeFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0xa5});
+    EXPECT_EQ(output[1], std::byte{0xa5});
 }

@@ -8056,3 +8056,25 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused private-decoder tests and all 1,554
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range transactional frame publication
+
+- Authoring method: placed one caller-visible commit copy above the completed
+  private raw decoder and extended preflight with exact output capacity.
+- References used: DD-390, DD-389, caller-owned spans, and marc's existing
+  frame-atomic publication convention.
+- Known implementations intentionally not consulted: external decompression
+  APIs, transactional-output strategies, buffering implementations, source
+  code, malformed corpora, and tests.
+- Independent decisions: reject short output before entropy work; copy exactly
+  the declared raw extent only after all nested stages succeed; preserve bytes
+  beyond that extent and all output bytes on failure.
+- Generated-code task description: add the transactional frame API and prove
+  hand-vector publication, nested-phrase publication, early short-output
+  rejection, and descriptor/phrase-reference failure atomicity.
+- Similarity review: the boundary follows directly from marc's local private
+  staging and commit rules. No external API shape, control flow, or test
+  expression was compared.
+- Local validation: all nine focused frame-decoder tests and all 1,558 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

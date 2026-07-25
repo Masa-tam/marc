@@ -26,6 +26,7 @@ enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     dictionary_staging_too_small,
     phrase_workspace_too_small,
     raw_staging_too_small,
+    raw_output_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
@@ -88,6 +89,22 @@ decode_lz78_dynamic_range_frame_to_staging(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates every layer, reconstructs into private raw staging, and publishes
+// only after reconstruction succeeds. Input, token staging, phrase workspace,
+// raw staging, and output must be mutually non-overlapping.
+[[nodiscard]] Lz78DynamicRangeFrameValidationResult
+decode_lz78_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

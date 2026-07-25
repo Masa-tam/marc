@@ -242,9 +242,11 @@ token staging, and validates the complete bounded phrase graph without raw
 publication. Its bounded private decoder counts raw staging in the aggregate
 policy and iteratively reconstructs exactly the declared extent only after
 that phrase graph succeeds. It reports stable LZ78 format, token index, and
-byte offset on dictionary failure. No transactional caller-output boundary,
-combined encoder, streaming transform, public factory, CLI selector,
-benchmark, fuzz target, or interoperability entry is implied.
+byte offset on dictionary failure. Its transactional complete-frame decoder
+checks caller output capacity before entropy work and copies the completed
+private raw frame only after every layer succeeds, preserving output on every
+failure. No combined encoder, streaming transform, public factory, CLI
+selector, benchmark, fuzz target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

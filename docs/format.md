@@ -1670,9 +1670,12 @@ requires the complete raw staging extent and counts descriptor, payload,
 tokens, aligned phrase entries, and raw bytes together before entropy output.
 After complete phrase-graph validation, it invokes the existing bounded
 non-recursive LZ78 decoder to reconstruct exactly `F` private bytes. It does
-not publish caller-visible raw bytes. No combined encoder, streaming
-transform, C ABI factory, CLI selector, benchmark, fuzz target, or
-interoperability profile is implied.
+not publish caller-visible raw bytes. The transactional complete-frame decoder
+implements step 6: it checks caller output capacity before entropy output,
+reconstructs into private raw staging, and copies exactly `F` bytes only after
+every nested stage succeeds. Every failure leaves caller output unchanged. No
+combined encoder, streaming transform, C ABI factory, CLI selector, benchmark,
+fuzz target, or interoperability profile is implied.
 
 ### Hand-checkable single-Pair frame
 

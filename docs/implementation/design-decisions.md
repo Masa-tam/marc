@@ -7496,3 +7496,20 @@ extent into private staging, preserve stable dictionary error categories and
 positions, and return without copying a byte to caller-visible output. This
 step adds no transactional publication, encoder, streaming transform, public C
 ABI, CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-390: LZ78 Dynamic Range publishes only complete frames
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add a caller-visible exact-frame decoder above DD-389. Require output capacity
+for exactly `F` bytes before entropy output, in addition to the existing token,
+aligned phrase, private raw, and aggregate checks. Run the unchanged validator
+and private reconstruction path, then copy the complete private raw extent to
+output only after success.
+
+Every capacity, header, descriptor, entropy, token, phrase, or reconstruction
+failure must leave caller output unchanged. Bytes beyond `F` are never touched.
+This step completes transactional publication for one exact frame but adds no
+encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or interoperability
+claim.

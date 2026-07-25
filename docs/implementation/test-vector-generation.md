@@ -2796,3 +2796,15 @@ plus-raw aggregate limit one byte short before token staging changes. Corrupt
 the descriptor reserved byte and independently range-code a forward phrase
 reference; both must leave private raw staging unchanged. No caller-visible
 output span participates in this boundary.
+
+For transactional LZ78 plus Dynamic Range publication, decode the independent
+single-Pair frame into private raw and a three-byte sentinel-filled output;
+require only output byte zero to become `41`. Publish the nested `ABAB` phrase
+graph into a five-byte output and require its first four bytes while preserving
+the final sentinel.
+
+Reject zero caller output before token, phrase, or raw staging mutation.
+Corrupt the descriptor and, separately, range-code a forward phrase reference;
+both must preserve every output sentinel. These checks distinguish successful
+private reconstruction from caller-visible commit and do not add a streaming
+contract.

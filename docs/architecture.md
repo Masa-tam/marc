@@ -1406,7 +1406,13 @@ The next bounded boundary also requires a separate private raw region and
 counts its complete extent in the same pre-entropy aggregate check. Only after
 the phrase graph is valid does the existing non-recursive LZ78 decoder
 iteratively reconstruct exactly the declared raw extent into that region.
-There is still no caller-visible publication boundary in this step.
+
+The transactional complete-frame decoder adds the caller-visible boundary
+without changing the representation. It rejects short caller output before
+entropy work, reconstructs only into private raw staging, and performs one
+final exact-extent copy after all nested checks succeed. Header, descriptor,
+entropy, token, phrase, capacity, or reconstruction failure therefore leaves
+caller output byte-for-byte unchanged.
 
 ### LZSS plus Adaptive Huffman specified boundary
 

@@ -108,10 +108,12 @@ aligned phrase storage in the aggregate, strictly range-decodes into private
 token staging, and validates the complete LZ78 phrase graph with stable token
 and byte positions. Its bounded private decoder now includes the complete raw
 extent in the pre-entropy aggregate policy and iteratively reconstructs only
-that validated phrase graph into separate raw staging. It remains `Specified`:
-transactional caller-visible publication, a combined encoder, streaming
-transforms, public C factory, completion matrix, fuzzing, CLI, benchmark, and
-interoperability evidence are not yet implemented.
+that validated phrase graph into separate raw staging. Its transactional
+complete-frame decoder now publishes only a fully validated and reconstructed
+private frame and leaves output unchanged on failure. It remains `Specified`:
+a combined encoder, streaming transforms, public C factory, completion matrix,
+fuzzing, CLI, benchmark, and interoperability evidence are not yet
+implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,

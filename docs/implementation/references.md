@@ -1341,3 +1341,9 @@ complete phrase-graph boundary, marc's existing bounded non-recursive LZ78
 decoder, caller-owned spans, checked aggregate arithmetic, and local decoder
 limits. No external combined decoder, phrase expansion implementation,
 buffering layout, source code, malformed corpus, or test suite was consulted.
+
+The LZ78 plus Dynamic Range transactional publication boundary uses only
+DD-390, the completed private raw decoder, caller-supplied spans, and marc's
+existing exact-frame commit convention. No external decompression API,
+transactional-output strategy, buffer design, source code, malformed corpus,
+or test suite was consulted.
