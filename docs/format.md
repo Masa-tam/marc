@@ -1708,6 +1708,14 @@ the whole frame succeeds. `EndInput` before the declared stream extent,
 trailing input after it, and any malformed current frame are sticky errors;
 bytes from an earlier completed frame remain committed.
 
+The bounded profile changes no byte representation. Its encoder capacity is
+derived from the largest actual raw frame `F`, conservative token extent
+`S = 8F`, conservative payload `P = 2S + 5`, complete frame extent
+`56 + 16 + P`, and `min(F, maximum entries)` opaque LZ78 encoder records. Its
+decoder capacities are derived only from trusted local limits and the
+2^21-byte format cap. Typed record layouts remain private C++ details and are
+exposed to later ABI layers only as checked byte extents and alignments.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

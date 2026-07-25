@@ -1372,3 +1372,9 @@ generic prefix and frame parsers, checked caller-owned storage, and existing
 transactional frame-publication convention. No external streaming decoder,
 buffering state machine, malformed corpus, source code, chunk schedule, error
 taxonomy, or test suite was consulted.
+
+The LZ78 plus Dynamic Range bounded profile uses only DD-395, the local LZ78
+and Dynamic Range bounds, existing exact-frame encoder and streaming decoder
+workspace contracts, checked arithmetic, and marc's opaque aligned-record
+partition convention. No external profile API, allocator design, workspace
+formula, record layout, source code, or test suite was consulted.

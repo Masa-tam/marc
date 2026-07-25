@@ -8171,3 +8171,28 @@ discarded and the reviewed seed retained.
 - Local validation: all six focused streaming-decoder tests and all 1,577
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range bounded profile
+
+- Authoring method: derived direction-specific byte and typed-record extents
+  directly from the completed local streaming constructors and DD-387 bounds,
+  then applied marc's existing opaque aligned-record partition convention.
+- References used: DD-395, the local LZ78 parameter and token rules, Dynamic
+  Range descriptor and payload limits, checked arithmetic, stream-header
+  validation, and caller-owned workspace contracts.
+- Known implementations intentionally not consulted: external profile APIs,
+  allocator designs, workspace formulas, record layouts, source code, and test
+  suites.
+- Independent decisions: use the largest actual known frame for encoder
+  storage; return zero active regions for empty input; derive decoder capacity
+  only from local limits and the format cap; and revalidate opaque record
+  count, extent, alignment, and capacity during partition.
+- Generated-code task description: add the bounded profile and seven tests for
+  default, short, empty, format, payload, aggregate, parameter, decoder,
+  partition, alignment, and stable-error behavior.
+- Similarity review: every formula composes only marc's documented local
+  bounds and record sizes. No external layout, control flow, or test expression
+  was compared.
+- Local validation: all seven focused profile tests and all 1,584 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

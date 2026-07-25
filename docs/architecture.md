@@ -1440,6 +1440,13 @@ and reconstructs the complete frame into private raw storage, and only then
 drains raw bytes. A malformed or truncated later frame therefore publishes
 none of that frame while leaving earlier completed frames committed.
 
+The bounded profile owns no storage. For encoding it derives raw-frame, token,
+serialized-frame, and opaque aligned encoder-entry requirements from the
+largest actual known frame. For decoding it derives serialized-frame, token,
+private-raw, and opaque aligned phrase-entry requirements only from local
+limits and the format cap. Partition helpers revalidate record count, byte
+extent, alignment, and capacity before constructing internal typed spans.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

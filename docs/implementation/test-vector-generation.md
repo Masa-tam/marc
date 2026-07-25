@@ -2859,3 +2859,17 @@ frame. Finally, rewrite the first frame header with `S > 8F`, serialize its
 otherwise valid checksum, and provide no body; require rejection immediately
 after the fixed header, proving that impossible extents are not admitted for
 body collection.
+
+For the LZ78 plus Dynamic Range bounded profile, require a 65,536-byte default
+raw frame to produce 524,288 token bytes and a 1,048,653-byte conservative
+serialized frame, plus one encoder record per possible raw-byte phrase. For a
+17-byte largest frame require 136 token bytes, a 349-byte serialized frame,
+and 17 records. Empty input must report zero active regions and alignment one.
+
+Reject the 2^21-byte format cap plus one, invalid LZ78 parameters, a
+one-byte-short payload limit, and a one-byte-short active aggregate. Derive a
+decoder workspace from a 4,096-byte local raw limit, 6,000 token bytes, and an
+8,192-byte buffered limit; require 750 phrase records and a serialized-frame
+capacity of `56 + 8192`. Partition aligned encoder and phrase arrays, then
+reject changed counts, one-byte-short storage, and deliberately misaligned
+storage. Verify every profile error maps to its stable core category.

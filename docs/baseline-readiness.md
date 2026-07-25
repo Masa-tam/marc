@@ -118,9 +118,11 @@ short capacity. Its bounded known-size streaming encoder now preserves exact
 one-shot bytes under arbitrary input/output chunking, nonterminal `Flush`, and
 retained `EndInput`. Its matching bounded streaming decoder preflights each
 declared frame extent before body collection and publishes only a completely
-validated and reconstructed frame. It remains `Specified`: a public C factory,
-completion matrix, fuzzing, CLI, benchmark, and interoperability evidence are
-not yet implemented.
+validated and reconstructed frame. Its bounded profile now calculates every
+direction-specific byte and aligned record region and partitions opaque typed
+storage only after validating its layout. It remains `Specified`: a public C
+factory, completion matrix, fuzzing, CLI, benchmark, and interoperability
+evidence are not yet implemented.
 
 `lzss-dynamic-range` is the current locally completed composition. DD-373 fixes the
 canonical variable-length LZSS-token boundary, 2^23-byte format frame ceiling,

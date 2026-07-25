@@ -7586,3 +7586,23 @@ output behavior, retained `EndInput`, stable ended and sticky error states,
 strict truncation and trailing-data rejection, and rejection of `ResetBlock`
 and unknown flags. This step adds no C ABI, CLI, benchmark, fuzz, or
 interoperability claim.
+
+## DD-395: LZ78 Dynamic Range profile exposes opaque aligned records
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add a bounded profile and direction-specific workspace calculation without
+changing the DD-387 representation. For encoding, derive the largest actual
+raw frame, its conservative `S = 8F` token staging, `P = 2S + 5` range
+payload, complete serialized-frame extent, and
+`min(F, maximum_entries)` LZ78 encoder records. Count every active region in
+one checked aggregate.
+
+For decoding, derive conservative serialized-frame, token, private-raw, and
+phrase-record capacities only from trusted local limits and the 2^21-byte
+profile cap. Report typed encoder and phrase records as opaque byte counts plus
+alignment. Partition them only after rechecking count, byte extent, alignment,
+and caller capacity. Empty encode input requires no active workspace and
+retains alignment one. This step adds no C ABI factory, completion matrix, CLI,
+benchmark, fuzz, or interoperability claim.

@@ -29,7 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   `EndInput`. Its matching bounded streaming decoder rejects impossible frame
   extents before collecting a body, validates and reconstructs each complete
   frame in private storage, and publishes no byte from a malformed later
-  frame.
+  frame. Its bounded profile now derives direction-specific byte and aligned
+  LZ78-record workspaces with checked aggregate limits and safely partitions
+  opaque typed storage.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
