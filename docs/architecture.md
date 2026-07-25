@@ -1910,6 +1910,10 @@ The internal profile calculator derives these direction-specific byte regions
 and opaque aligned LZW record extents with checked aggregate bounds. Typed
 partitioning rejects inconsistent byte counts, insufficient storage, and
 misalignment before exposing encoder entries or decoder phrases.
+The bounded C adapter publishes only size-tagged configuration, byte counts,
+alignment, opaque buffers, and the ordinary transform handle. It recalculates
+and repartitions the profile during creation, so no C++ record layout or
+caller-modified requirement becomes trusted ABI state.
 
 ### Published LZD plus Adaptive Huffman boundary
 

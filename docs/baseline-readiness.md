@@ -51,7 +51,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
-| `lzw-dynamic-range` | Fourth Dynamic Range composition | Specified | Not included |
+| `lzw-dynamic-range` | Fourth Dynamic Range composition | C ABI | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 16 contains twenty-seven archives: the frozen twenty-six-entry schema-15
@@ -97,6 +97,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzw-dynamic-range` | Yes | Yes | Yes | No | No | No | No | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -124,8 +125,9 @@ input and output starvation and nonterminal `Flush`. Its bounded streaming
 decoder validates complete frames before raw draining and preserves frame
 atomicity under later corruption. Its internal direction-specific profile now
 calculates every caller-owned byte region and safely partitions opaque aligned
-LZW records. No C ABI, CLI, benchmark, fuzz, completion, or interoperability
-entry exists yet.
+LZW records. A bounded C requirements query and transform factory now connect
+both streaming directions through those opaque regions. No CLI, benchmark,
+fuzz, completion, or interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

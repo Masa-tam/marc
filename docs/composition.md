@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Specified | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | C ABI | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
@@ -303,6 +303,9 @@ raw bytes only after complete success. Its internal profile now derives the
 encoder's raw, packed, encoded-frame, and aligned-entry regions and the
 decoder's encoded-frame, packed, private-raw, and aligned-phrase regions from
 trusted configuration or local limits, with checked aggregate accounting.
+Its bounded C requirements query and factory now expose those three workspace
+roles without exposing private LZW record layouts. CLI, completion, fuzz,
+benchmark, and interoperability admission remain pending.
 
 ## Why publication is not automatic
 

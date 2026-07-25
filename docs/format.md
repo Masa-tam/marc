@@ -2422,6 +2422,12 @@ this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and input/output
 chunking alone must not change serialized bytes.
 
+The C ABI functions `marc_lzw_dynamic_range_config_init()`,
+`marc_lzw_dynamic_range_workspace_requirements()`, and
+`marc_lzw_dynamic_range_create()` select exactly this representation. The
+aligned views workspace remains opaque and direction-specific; requirements
+must be queried again after changing any configuration or local limit.
+
 The C ABI functions `marc_lzw_adaptive_huffman_config_init()`,
 `marc_lzw_adaptive_huffman_workspace_requirements()`, and
 `marc_lzw_adaptive_huffman_create()` select exactly this representation. The

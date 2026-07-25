@@ -31,7 +31,8 @@ format versions, and C ABI versions are independent namespaces.
   truncation, trailing byte, and later-frame corruption without partially
   publishing the failing frame. Its internal profile now derives checked
   direction-specific byte regions and safely partitions opaque aligned LZW
-  encoder and phrase records.
+  encoder and phrase records. Its bounded C requirements query and factory now
+  expose both streaming directions without leaking those private C++ layouts.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

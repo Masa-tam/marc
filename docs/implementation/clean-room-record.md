@@ -8636,3 +8636,28 @@ discarded and the reviewed seed retained.
 - Local validation: focused profile and documentation tests passed 7/7 under
   both MSVC and ClangCL. The complete Release suite passed 1,630/1,630 under
   MSVC and 1,630/1,630 under ClangCL using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range public C ABI
+
+- Authoring method: connected DD-411 directly to DD-410's checked profile and
+  the existing bounded streaming encoder and decoder through marc's established
+  three-workspace transform lifecycle.
+- References used: DD-411, DD-410, the local C ABI version-1 conventions,
+  checked workspace partitions, and first-party streaming transforms.
+- Known implementations intentionally not consulted: external ABI adapters,
+  ownership schemes, source code, corpora, and test suites.
+- Independent decisions: preserve ABI version 1; add a size-tagged
+  direction-specific configuration; expose only byte counts, alignment, opaque
+  buffers, and a transform handle; and rerun all profile and partition checks
+  during creation. C++ record layouts remain private.
+- Generated-code task description: add public declarations and implementation,
+  a strict C11 requirements/round-trip/negative test, CMake registration, and
+  synchronized format, C API, architecture, composition, readiness, changelog,
+  reference, and vector documentation.
+- Similarity review: the adapter follows marc's local lifecycle and the
+  independently documented LZW Dynamic Range ownership roles; no external API
+  expression or test was compared.
+- Local validation: the eight focused profile, C ABI, and documentation tests
+  passed under both MSVC and ClangCL. The complete Release suite passed
+  1,631/1,631 under MSVC and 1,631/1,631 under ClangCL using official
+  CMake 4.3.4.

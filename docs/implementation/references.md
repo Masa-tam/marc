@@ -1473,3 +1473,8 @@ DD-408/409's established caller-owned regions, marc's local LZW workspace
 formulas and record types, Dynamic Range bounds, checked arithmetic, and the
 already published profile conventions. No external allocator, workspace
 layout, combined codec, source code, corpus, or test suite was consulted.
+
+The LZW plus Dynamic Range public C ABI uses only DD-411, DD-410's checked
+requirements and typed partitions, the local streaming transforms, and marc's
+established three-workspace C lifecycle. No external ABI adapter, ownership
+scheme, source code, corpus, or test suite was consulted.

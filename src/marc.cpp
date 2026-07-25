@@ -60,6 +60,9 @@
 #include "frame/lzw_adaptive_huffman_frame_streaming_decoder.hpp"
 #include "frame/lzw_adaptive_huffman_frame_streaming_encoder.hpp"
 #include "frame/lzw_adaptive_huffman_profile.hpp"
+#include "frame/lzw_dynamic_range_frame_streaming_decoder.hpp"
+#include "frame/lzw_dynamic_range_frame_streaming_encoder.hpp"
+#include "frame/lzw_dynamic_range_profile.hpp"
 #include "frame/lzd_profile.hpp"
 #include "frame/lzd_frame_streaming_decoder.hpp"
 #include "frame/lzd_frame_streaming_encoder.hpp"
@@ -530,6 +533,26 @@ bool load_config(const marc_lzw_adaptive_huffman_config* config,
     if (config == nullptr
         || config->struct_size
             != sizeof(marc_lzw_adaptive_huffman_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0) return false;
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_compressed_payload_size =
+        config->max_compressed_payload_size;
+    limits.max_dictionary_serialized_size =
+        config->max_dictionary_serialized_size;
+    limits.max_internal_buffered_bytes =
+        config->max_internal_buffered_bytes;
+    limits.max_dictionary_entries = config->max_dictionary_entries;
+    limits.max_block_size = std::min(
+        limits.max_block_size, limits.max_internal_buffered_bytes);
+    return true;
+}
+
+bool load_config(const marc_lzw_dynamic_range_config* config,
+                 marc::core::DecoderLimits& limits) noexcept {
+    if (config == nullptr
+        || config->struct_size != sizeof(marc_lzw_dynamic_range_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0) return false;
     limits.max_total_output_size = config->max_total_output_size;
@@ -3681,6 +3704,171 @@ marc_status marc_lzw_adaptive_huffman_create(
         }
         implementation = new (std::nothrow)
             marc::frame::LzwAdaptiveHuffmanFrameStreamingDecoder(
+                limits,
+                {reinterpret_cast<std::byte*>(primary_workspace.data),
+                 needed.frame_encoded_bytes},
+                {secondary, needed.dictionary_staging_bytes},
+                {secondary + needed.dictionary_staging_bytes,
+                 needed.frame_decoded_bytes}, views.phrases);
+    }
+    return publish_transform(implementation, transform);
+}
+
+marc_status marc_lzw_dynamic_range_config_init(
+    const marc_direction direction,
+    marc_lzw_dynamic_range_config* config) noexcept {
+    if (config == nullptr
+        || (direction != MARC_DIRECTION_ENCODE
+            && direction != MARC_DIRECTION_DECODE)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    *config = {};
+    config->struct_size = sizeof(*config);
+    config->abi_version = MARC_ABI_VERSION;
+    config->direction = direction;
+    config->frame_size = UINT32_C(1) << 16;
+    config->maximum_code_width = 16;
+    const marc::core::DecoderLimits limits{};
+    config->max_total_output_size = limits.max_total_output_size;
+    config->max_frame_size = limits.max_frame_size;
+    config->max_compressed_payload_size =
+        limits.max_compressed_payload_size;
+    config->max_dictionary_serialized_size =
+        limits.max_dictionary_serialized_size;
+    config->max_internal_buffered_bytes =
+        limits.max_internal_buffered_bytes;
+    config->max_dictionary_entries = limits.max_dictionary_entries;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_lzw_dynamic_range_workspace_requirements(
+    const marc_lzw_dynamic_range_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {};
+    requirements->struct_size = sizeof(*requirements);
+    requirements->abi_version = MARC_ABI_VERSION;
+    requirements->views_alignment = 1;
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzwParameters parameters{
+            config->maximum_code_width, 0, 0};
+        marc::frame::StreamHeader stream{};
+        marc::frame::LzwDynamicRangeEncoderWorkspaceRequirements needed{};
+        const auto error = marc::frame::make_lzw_dynamic_range_profile(
+            {config->original_size, config->frame_size, parameters},
+            limits, stream, needed);
+        if (error != marc::frame::LzwDynamicRangeProfileError::none) {
+            return status_for(
+                marc::frame::lzw_dynamic_range_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_input_bytes;
+        if (!marc::core::checked_add(
+                needed.dictionary_staging_bytes,
+                needed.frame_encoded_bytes,
+                requirements->secondary_bytes)) {
+            return MARC_STATUS_LIMIT_EXCEEDED;
+        }
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    if (config->direction == MARC_DIRECTION_DECODE) {
+        marc::frame::LzwDynamicRangeDecoderWorkspaceRequirements needed{};
+        const auto error =
+            marc::frame::calculate_lzw_dynamic_range_decoder_workspace(
+                limits, needed);
+        if (error != marc::frame::LzwDynamicRangeProfileError::none) {
+            return status_for(
+                marc::frame::lzw_dynamic_range_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_encoded_bytes;
+        if (!marc::core::checked_add(
+                needed.dictionary_staging_bytes,
+                needed.frame_decoded_bytes,
+                requirements->secondary_bytes)) {
+            return MARC_STATUS_LIMIT_EXCEEDED;
+        }
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    return MARC_STATUS_INVALID_ARGUMENT;
+}
+
+marc_status marc_lzw_dynamic_range_create(
+    const marc_lzw_dynamic_range_config* config,
+    const marc_buffer primary_workspace,
+    const marc_buffer secondary_workspace,
+    const marc_buffer views_workspace,
+    marc_transform** transform) noexcept {
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *transform = nullptr;
+    marc_workspace_requirements required{};
+    const auto query = marc_lzw_dynamic_range_workspace_requirements(
+        config, &required);
+    if (query != MARC_STATUS_OK) return query;
+    if (!valid_buffer(primary_workspace.data, primary_workspace.size)
+        || !valid_buffer(secondary_workspace.data, secondary_workspace.size)
+        || !valid_buffer(views_workspace.data, views_workspace.size)
+        || primary_workspace.size < required.primary_bytes
+        || secondary_workspace.size < required.secondary_bytes
+        || views_workspace.size < required.views_bytes
+        || (required.views_bytes != 0
+            && reinterpret_cast<std::uintptr_t>(views_workspace.data)
+                % required.views_alignment != 0)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    auto* const secondary =
+        reinterpret_cast<std::byte*>(secondary_workspace.data);
+    const auto views_storage = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(views_workspace.data),
+        required.views_bytes};
+    marc::core::Transform* implementation{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzwParameters parameters{
+            config->maximum_code_width, 0, 0};
+        marc::frame::StreamHeader stream{};
+        marc::frame::LzwDynamicRangeEncoderWorkspaceRequirements needed{};
+        if (marc::frame::make_lzw_dynamic_range_profile(
+                {config->original_size, config->frame_size, parameters},
+                limits, stream, needed)
+            != marc::frame::LzwDynamicRangeProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::LzwDynamicRangeEncoderViews views{};
+        if (marc::frame::partition_lzw_dynamic_range_encoder_views(
+                needed, views_storage, views)
+            != marc::frame::LzwDynamicRangeWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        auto* const encoded = needed.dictionary_staging_bytes == 0
+            ? secondary : secondary + needed.dictionary_staging_bytes;
+        implementation = new (std::nothrow)
+            marc::frame::LzwDynamicRangeFrameStreamingEncoder(
+                stream, parameters, limits,
+                {reinterpret_cast<std::byte*>(primary_workspace.data),
+                 needed.frame_input_bytes},
+                {secondary, needed.dictionary_staging_bytes},
+                {encoded, needed.frame_encoded_bytes}, views.entries);
+    } else {
+        marc::frame::LzwDynamicRangeDecoderWorkspaceRequirements needed{};
+        if (marc::frame::calculate_lzw_dynamic_range_decoder_workspace(
+                limits, needed)
+            != marc::frame::LzwDynamicRangeProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::LzwDynamicRangeDecoderViews views{};
+        if (marc::frame::partition_lzw_dynamic_range_decoder_views(
+                needed, views_storage, views)
+            != marc::frame::LzwDynamicRangeWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        implementation = new (std::nothrow)
+            marc::frame::LzwDynamicRangeFrameStreamingDecoder(
                 limits,
                 {reinterpret_cast<std::byte*>(primary_workspace.data),
                  needed.frame_encoded_bytes},

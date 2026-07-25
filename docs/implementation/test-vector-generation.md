@@ -3087,3 +3087,13 @@ bytes, 128 packed bytes, 1,024 internally buffered bytes, and 300 dictionary
 entries; require 1,080 encoded bytes, 64 private raw bytes, and 112 aligned
 phrase records. Partition both record types and reject altered counts, short
 storage, and misalignment.
+
+For the public LZW plus Dynamic Range C ABI, initialize encode defaults and
+require frame size 65,536 and maximum code width 16. With two-byte frames,
+width nine, a 16-byte packed limit, 64-byte payload limit, 1,024 aggregate
+bytes, and 256 dictionary entries, require two primary bytes and 86 secondary
+bytes. Encode `41 42 41 42 58`, then require decode workspaces of 1,080 primary
+and 18 secondary bytes and reproduce the original through only the C11
+transform API. Both directions require a nonempty aligned opaque region.
+Reject every one-byte-short region, deliberate views misalignment, a null
+transform output pointer, and a nonzero reserved field.

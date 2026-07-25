@@ -6,8 +6,8 @@ Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
 profiles, LZSS variant 1, the LZSS plus Blocked Huffman and LZSS plus Adaptive
 Huffman profiles, and the LZSS plus Dynamic Range profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
-LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW
-plus Blocked Huffman and LZW plus Adaptive Huffman profiles, LZD variant 1,
+LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW plus Blocked Huffman,
+LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman and LZD plus Adaptive Huffman profiles, and LZMW
 variant 1 and the LZMW plus Blocked Huffman and LZMW plus Adaptive Huffman
 profiles with
@@ -28,6 +28,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
+`marc_lzw_dynamic_range_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`, and
 `marc_lzmw_blocked_huffman_*`, and `marc_lzmw_adaptive_huffman_*` are the
 currently public
@@ -64,6 +65,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz78_dynamic_range_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzw_adaptive_huffman_config_init()`,
+   `marc_lzw_dynamic_range_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
    `marc_lzd_adaptive_huffman_config_init()`, or
    `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`, or
@@ -203,6 +205,13 @@ decoding. Query `marc_lzw_adaptive_huffman_workspace_requirements()` again
 after changing direction, original size, frame size, maximum code width, or a
 local limit; decode sizing is derived solely from trusted local limits and the
 stream parameters are validated later.
+The LZW plus Dynamic Range factory retains the same opaque three-region
+ownership. Encoding uses packed LZW staging followed by one complete
+range-coded frame; decoding uses packed staging followed by private raw
+staging. The aligned views region contains only encoder entries or only phrase
+entries according to the immutable direction. Query
+`marc_lzw_dynamic_range_workspace_requirements()` again after changing
+direction, original size, frame size, maximum code width, or any local limit.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

@@ -7963,3 +7963,23 @@ storage uses zero bytes and neutral alignment one.
 
 This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
 completion matrix, or interoperability entry.
+
+## DD-411: LZW Dynamic Range enters the C ABI with opaque typed views
+
+- Date: 2026-07-26
+- Status: accepted
+
+Expose the fixed LZW variant 1 plus Dynamic Range variant 1 profile through a
+size-tagged `marc_lzw_dynamic_range_config`, direction-specific requirements
+query, and immutable-direction factory without changing C ABI version 1.
+
+Retain the common three caller-owned workspaces. Encoding uses raw primary
+storage, packed-plus-serialized secondary storage, and aligned opaque encoder
+records. Decoding uses serialized primary storage, packed-plus-private-raw
+secondary storage, and aligned opaque phrase records. Creation reruns DD-410
+and its checked partition helpers instead of trusting caller-supplied extents.
+
+Require a strict C11 round trip, exact small-limit requirements, one-byte-short
+and misaligned workspace rejection, reserved-field rejection, and a null
+transform on every factory failure. This step adds no CLI selector, benchmark,
+fuzz target, completion matrix, or interoperability entry.
