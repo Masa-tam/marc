@@ -1396,3 +1396,9 @@ the local exact-frame and streaming decoders, fixed compile-time workspaces,
 the core process-result validator, and repository-owned canonical streams.
 No external fuzz harness, corpus, malformed vector, allocation strategy,
 source code, or regression suite was consulted.
+
+The `lz78-dynamic-range` CLI adapter uses only DD-399, the published marc C
+config, requirements query and factory, the existing local transactional
+temporary-file loop, and the repository-owned CLI regression script. No
+external archive tool, command syntax, combined-codec adapter, workspace
+policy, source code, or test suite was consulted.

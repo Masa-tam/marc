@@ -1,11 +1,11 @@
 # Fuzzing
 
-The twenty-six bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-seven bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
 Dynamic Range, LZSS plus Blocked Huffman, LZSS plus Adaptive Huffman, LZSS plus
-Dynamic Range, LZ78 plus
-Blocked Huffman, LZ78 plus Adaptive Huffman, LZW plus Blocked Huffman, LZW plus
+Dynamic Range, LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, LZ78 plus
+Dynamic Range, LZW plus Blocked Huffman, LZW plus
 Adaptive Huffman, LZD plus Adaptive Huffman, LZD plus Blocked Huffman, LZMW plus
 Blocked Huffman, LZMW plus Adaptive Huffman, and checksum-raw profiles. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
@@ -62,6 +62,12 @@ output at 4 KiB, one raw frame at 1 KiB, canonical token staging and compressed
 payload at 8 KiB each, and the LZ78 phrase table at 1,024 records. The aggregate
 limit includes all byte regions and phrase records before input metadata is
 accepted.
+The combined LZ78 plus Dynamic Range target applies the same fixed LZ78 byte
+and phrase limits to the exact-frame private decoder and incremental stream
+decoder. Supplied input, total output, one raw frame, canonical tokens, range
+payload, and phrase records remain capped at 8 KiB, 4 KiB, 1 KiB, 8 KiB,
+8 KiB, and 1,024 entries respectively. Input bytes may select only bounded
+chunk sizes under the fixed call ceiling.
 The combined LZW plus Adaptive Huffman target also exercises exact-frame and
 incremental decode. It caps supplied input and Adaptive payload at 8 KiB,
 total output and packed staging at 4 KiB, and one raw frame at 1 KiB. The local

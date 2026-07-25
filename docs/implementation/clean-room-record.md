@@ -8270,3 +8270,28 @@ discarded and the reviewed seed retained.
   permanent regressions passed, and all 1,591 Release tests passed under both
   MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official CMake
   4.3.4. No unbounded fuzz campaign was run in this step.
+
+## 2026-07-25 - LZ78 plus Dynamic Range transactional CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit-selector and transactional temporary-file loop without calling
+  private C++ frame APIs.
+- References used: DD-399, the public LZ78 Dynamic Range config, requirements
+  query and factory, the local 64-KiB reference profile, and the repository's
+  existing CLI process and round-trip contracts.
+- Known implementations intentionally not consulted: external archive tools,
+  compression CLIs, combined-codec adapters, workspace policies, source code,
+  command syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lz78-dynamic-range` selector in both directions; derive only the public
+  524,288-byte token and 1,048,581-byte payload limits; use a 4-MiB aggregate
+  policy; and query actual three-region workspaces and alignment through C.
+- Generated-code task description: add selector parsing, fixed public config,
+  requirements and factory dispatch, usage and profile documentation, and the
+  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
+- Similarity review: the adapter composes only marc's own public ABI and
+  transactional CLI. No external CLI structure, option spelling, workspace
+  layout, or test expression was compared.
+- Local validation: the focused transactional CLI test and all 1,592 Release
+  tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

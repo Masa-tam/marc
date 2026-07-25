@@ -21,7 +21,7 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | Specified | Candidate | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
@@ -264,8 +264,9 @@ of a malformed final frame. Its bounded dual-path decoder fuzz target fixes all
 byte and phrase-record storage before accepting input and caps incremental
 calls independently of serialized contents. Permanent regressions retain
 atomic failure for truncation, saturated frame lengths, and an invalid Dynamic
-Range descriptor. No CLI selector, benchmark, or interoperability entry is
-implied.
+Range descriptor. Its explicit transactional CLI selector now reaches the
+composition only through the public requirements query and factory. No
+benchmark or interoperability entry is implied.
 
 ## Why publication is not automatic
 

@@ -7670,3 +7670,27 @@ targets are explicitly enabled. Preserve canonical truncation, extreme frame
 length, and invalid Dynamic Range descriptor failures as normal atomic
 regression tests. This step adds no CLI selector, benchmark, or interoperability
 entry and does not require an unbounded fuzz campaign.
+
+## DD-399: LZ78 Dynamic Range CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add the explicit `lz78-dynamic-range` selector to the existing transactional
+CLI without changing the default codec. Use a 65,536-byte raw frame, the
+canonical `S = 8F = 524,288` token ceiling, the
+`P = 2S + 5 = 1,048,581` Dynamic Range payload ceiling, the public default
+LZ78 entry limit, and a 4-MiB aggregate buffered-byte policy.
+
+The CLI must initialize the public size-tagged config, set only public format
+parameters and hard limits, query all three direction-specific workspace
+regions and views alignment, and construct the transform through
+`marc_lz78_dynamic_range_create()`. It must not name private record types,
+recalculate opaque record sizes, or invoke a private C++ frame API.
+
+Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
+decoding failure, malformed input, strict trailing data, write failure, close
+failure, or rename failure must leave no requested destination or temporary
+file. Test binary and empty round trips, overwrite refusal, malformed input,
+and a valid stream with trailing data. This step adds no benchmark or
+interoperability entry.

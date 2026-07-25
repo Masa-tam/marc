@@ -2928,3 +2928,16 @@ failure, zero published bytes, an unchanged `a5` output buffer, and the same
 sticky error on a repeated call. Independently fill generic-frame extent bytes
 16 through 39 with `ff`, then set the last byte of the 16-byte Dynamic Range
 descriptor nonzero; both mutations must satisfy the same atomic failure check.
+
+For `lz78-dynamic-range` CLI admission, reuse the repository-standard binary
+fixture formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and
+decode with the explicit selector and compare the restored file byte for byte.
+Repeat encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 524,288`, `P = 1,048,581`, at most
+65,536 dictionary entries, and a 4-MiB aggregate policy. Actual primary,
+secondary, and aligned opaque-view workspace requirements must come only from
+the public C query.

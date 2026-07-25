@@ -1734,6 +1734,10 @@ applies arbitrary bounded bytes to the exact-frame private decoder when a
 complete profile prefix is available and always to the incremental stream
 decoder. All byte regions, phrase records, decoder limits, chunk ranges, and
 the call ceiling are fixed independently of input contents.
+The explicit CLI selector `lz78-dynamic-range` binds this unchanged profile
+through the public C ABI and transactional file adapter. Its 64-KiB frame and
+4-MiB local workspace policy add no serialized field and do not infer the
+codec from stream contents.
 
 ### Hand-checkable single-Pair frame
 

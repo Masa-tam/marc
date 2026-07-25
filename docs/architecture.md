@@ -1469,6 +1469,13 @@ may choose only modulo-bounded input and output chunks. A finite call ceiling
 turns a stalled state machine into a reproducible invariant failure rather
 than input-controlled work.
 
+The explicit `lz78-dynamic-range` CLI adapter selects a fixed 65,536-byte raw
+frame, 524,288-byte canonical token ceiling, 1,048,581-byte range payload
+ceiling, and 4-MiB aggregate policy. It obtains all three workspace extents and
+opaque alignment through the public requirements query and creates only the
+public C transform. The common temporary-file transaction prevents malformed
+or trailing input from publishing a destination.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and
