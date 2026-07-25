@@ -2996,3 +2996,16 @@ canonical first range payload byte; require descriptor and entropy errors
 before LZW validation. Finally range-encode packed bytes `41 80` and require
 the existing LZW validator to report nonzero final padding only after entropy
 decoding succeeds.
+
+For the LZW plus Dynamic Range private raw decoder, reconstruct the independent
+79-byte frame into one private byte and require `A`. Generate a multi-code
+frame from raw `ABABABA`, then require exact reconstruction, the expected
+nonzero phrase requirement, and the validator's code count.
+
+Fill packed and raw staging with different sentinels. Shorten raw capacity by
+one and set the aggregate workspace limit one byte below descriptor, payload,
+packed bytes, aligned phrase records, and the complete raw extent; both calls
+must fail before entropy output and preserve both sentinels. Corrupt the range
+payload and independently range-encode packed bytes with nonzero LZW padding;
+both must leave raw staging unchanged. The decoder exposes no caller-visible
+output span in this step.

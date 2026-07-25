@@ -14,7 +14,10 @@ format versions, and C ABI versions are independent namespaces.
   primitives. Its first bounded complete-frame validator now checks all
   declared and aggregate extents before entropy output, strictly range-decodes
   into private packed-byte staging, and applies the existing LZW width,
-  reference, `KwKwK`, padding, and exact-raw-extent validator.
+  reference, `KwKwK`, padding, and exact-raw-extent validator. Its bounded
+  private decoder additionally checks and counts raw staging before entropy
+  output, then iteratively reconstructs only the completely validated LZW
+  stream without publishing caller-visible bytes.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

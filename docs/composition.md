@@ -284,8 +284,10 @@ reference, `KwKwK`, padding, and exact-raw-extent pass. The independent raw-`A`
 vector fixes packed bytes `41 00`, range payload `00 40 FF FF BF 00 00`, and
 the complete 79-byte frame. Its first bounded complete-frame validator now
 admits every extent and workspace before range decoding into private packed
-staging, then applies the existing LZW semantic validator. It reconstructs and
-publishes no raw bytes yet.
+staging, then applies the existing LZW semantic validator. The matching
+private decoder checks raw capacity and aggregate storage before entropy
+output, then iteratively reconstructs the completely validated phrase graph
+into bounded raw staging. Caller-visible publication remains a later boundary.
 
 ## Why publication is not automatic
 

@@ -251,4 +251,80 @@ TEST(LzwDynamicRangeFrameValidator,
               LzwDynamicRangeFrameValidationError::unsupported_pipeline);
 }
 
+TEST(LzwDynamicRangeFrameDecoder, ReconstructsHandAndMultiCodeFrames) {
+    std::array<std::byte, 2> staging{};
+    std::array<std::byte, 1> raw_staging{};
+    auto result = marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+        stream_for_size(1), {}, {}, 0, 0, single_code_frame, staging, {},
+        raw_staging);
+    ASSERT_EQ(result.error, LzwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}};
+    const auto frame = frame_for_raw(raw);
+    std::array<std::byte, raw.size() * 2> packed{};
+    std::array<marc::dictionary::internal::LzwPhraseEntry, raw.size()> phrases{};
+    std::array<std::byte, raw.size()> decoded{};
+    result = marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+        stream_for_size(raw.size()), {}, {}, 0, 0, frame, packed, phrases,
+        decoded);
+    ASSERT_EQ(result.error, LzwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(result.code_count, 4U);
+    EXPECT_EQ(result.phrase_entries, 3U);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzwDynamicRangeFrameDecoder,
+     RawCapacityAndAggregateFailuresPrecedeEntropyOutput) {
+    std::array<std::byte, 2> packed{};
+    packed.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, single_code_frame,
+                  packed, {}, {}).error,
+              LzwDynamicRangeFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        packed, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    limits.max_internal_buffered_bytes = 25;
+    std::array<std::byte, 1> raw_staging{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+                  stream_for_size(1), {}, limits, 0, 0, single_code_frame,
+                  packed, {}, raw_staging).error,
+              LzwDynamicRangeFrameValidationError::workspace_limit);
+    EXPECT_TRUE(std::ranges::all_of(
+        packed, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(LzwDynamicRangeFrameDecoder,
+     EncodedFailuresDoNotMutatePrivateRawStaging) {
+    std::array<std::byte, 2> packed{};
+    std::array<std::byte, 1> raw_staging{std::byte{0xa5}};
+    auto payload = single_code_frame;
+    payload[72] = std::byte{0x01};
+    EXPECT_EQ(marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, payload, packed, {},
+                  raw_staging).error,
+              LzwDynamicRangeFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+
+    constexpr std::array malformed_codes{
+        std::byte{0x41}, std::byte{0x80}};
+    const auto malformed = frame_for_codes(malformed_codes, 1);
+    EXPECT_EQ(marc::frame::decode_lzw_dynamic_range_frame_to_staging(
+                  stream_for_size(1), {}, {}, 0, 0, malformed, packed, {},
+                  raw_staging).error,
+              LzwDynamicRangeFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
 } // namespace

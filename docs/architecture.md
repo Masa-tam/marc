@@ -1889,8 +1889,10 @@ The independent raw-`A` vector fixes packed bytes `41 00`, range payload
 boundary now validates one exact complete frame. It admits the complete header,
 packed and entropy extents, caller capacities, and aggregate workspace before
 range-decoding into private packed staging, then applies the existing LZW
-validator. It exposes diagnostics and validated workspace only; raw
-reconstruction and public factories remain later boundaries.
+validator. Its bounded private decoder also admits raw capacity and aggregate
+storage before entropy output, then iteratively reconstructs the validated
+phrase graph into private raw staging. Caller-visible publication and public
+factories remain later boundaries.
 
 ### Published LZD plus Adaptive Huffman boundary
 

@@ -7803,3 +7803,27 @@ error the caller must discard staging and phrase contents; no raw byte is
 reconstructed or published. This step adds no private raw decoder, encoder,
 streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
 completion matrix, or interoperability entry.
+
+## DD-404: LZW Dynamic Range reconstructs only into private raw staging
+
+- Date: 2026-07-25
+- Status: accepted
+
+Extend DD-403 with a bounded complete-frame decoder that reconstructs the
+already validated packed LZW stream into caller-owned private raw staging.
+Require raw capacity for the complete declared frame and add that full extent
+to aggregate workspace accounting before parsing the Dynamic Range descriptor
+or producing packed bytes.
+
+Reuse the DD-403 validator without weakening or duplicating its header,
+`S`/`P`, workspace, descriptor, payload-exhaustion, width-change, reference,
+`KwKwK`, padding, and exact-raw-extent checks. Only after all validation
+succeeds may the existing iterative LZW decoder expand the staged packed codes
+through the validated phrase table into private raw storage. Preserve detailed
+LZW validation, format, and decode diagnostics.
+
+On every failure the caller must discard packed staging, phrase records, and
+raw staging. No caller-visible raw output is accepted by this API, so no byte
+is published at this boundary. This step adds no transactional publication
+wrapper, encoder, streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.

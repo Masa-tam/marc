@@ -1429,3 +1429,9 @@ Dynamic Range descriptor and decoder, existing LZW validator, caller-owned
 spans, and checked aggregate arithmetic. No external combined decoder,
 validation order, workspace layout, malformed corpus, source code, or test
 suite was consulted.
+
+The LZW plus Dynamic Range private raw decoder uses only DD-404, the completed
+DD-403 validator, marc's existing iterative LZW decoder, caller-owned packed,
+phrase, and raw spans, and checked aggregate arithmetic. No external combined
+decoder, phrase-expansion implementation, buffering layout, source code,
+malformed corpus, or test suite was consulted.

@@ -35,9 +35,7 @@ inline constexpr std::uint64_t termination_bytes = 5;
     return entropy_limits;
 }
 
-} // namespace
-
-LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
+[[nodiscard]] LzwDynamicRangeFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzwParameters& parameters,
     const core::DecoderLimits& limits,
@@ -46,7 +44,9 @@ LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
     const std::span<const std::byte> input,
     const std::span<std::byte> dictionary_staging,
     const std::span<dictionary::internal::LzwPhraseEntry>
-        phrase_workspace) noexcept {
+        phrase_workspace,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging) noexcept {
     LzwDynamicRangeFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -152,6 +152,11 @@ LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
             phrase_workspace_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error =
+            LzwDynamicRangeFrameValidationError::raw_staging_too_small;
+        return result;
+    }
 
     std::uint64_t phrase_bytes{};
     std::uint64_t workspace_bytes{};
@@ -168,7 +173,11 @@ LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
             static_cast<std::uint64_t>(result.dictionary_size),
             workspace_bytes)
         || !core::checked_add(
-            workspace_bytes, phrase_bytes, workspace_bytes)) {
+            workspace_bytes, phrase_bytes, workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             LzwDynamicRangeFrameValidationError::arithmetic_overflow;
         return result;
@@ -222,6 +231,71 @@ LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
         result.error = LzwDynamicRangeFrameValidationError::
             dictionary_validation_error;
     }
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_codes(
+    LzwDynamicRangeFrameValidationResult& result,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lzw_code_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::LzwDecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error =
+        LzwDynamicRangeFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+LzwDynamicRangeFrameValidationResult validate_lzw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzwPhraseEntry>
+        phrase_workspace) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        false, {});
+}
+
+LzwDynamicRangeFrameValidationResult
+decode_lzw_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        true, raw_staging);
+    if (result.error != LzwDynamicRangeFrameValidationError::none) {
+        return result;
+    }
+
+    (void)reconstruct_validated_codes(
+        result, parameters, limits, dictionary_staging, phrase_workspace,
+        raw_staging);
     return result;
 }
 

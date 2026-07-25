@@ -111,9 +111,11 @@ exact-raw-extent validation. Its independently assembled 79-byte raw-`A` frame
 is covered by a standalone-component vector test. Its first complete-frame
 validator now checks generic, packed, entropy, capacity, and aggregate extents
 before strictly range-decoding into private packed staging and invoking the
-existing LZW validator. It reconstructs no raw bytes. No private decoder,
-encoder, streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
-interoperability entry exists yet.
+existing LZW validator. A bounded private decoder now admits and counts raw
+staging before entropy output, then iteratively reconstructs the validated
+phrase graph without caller-visible publication. No transactional output
+decoder, encoder, streaming transform, C ABI, CLI, benchmark, fuzz,
+completion, or interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

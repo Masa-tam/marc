@@ -8435,3 +8435,33 @@ discarded and the reviewed seed retained.
   `max_block_size <= max_internal_buffered_bytes` limits invariant; the setup
   was corrected to isolate the intended combined-workspace boundary without
   weakening either production check.
+
+## 2026-07-25 - LZW plus Dynamic Range private raw reconstruction
+
+- Authoring method: extended marc's DD-403 complete-frame validator with the
+  existing iterative LZW decoder after all encoded-layer checks succeed,
+  retaining caller-owned bounded packed, phrase, and raw workspaces.
+- References used: DD-404, DD-403, the local Dynamic Range decoder, the local
+  LZW packed-code validator and decoder, checked aggregate arithmetic, and
+  established private-staging conventions from other marc compositions.
+- Known implementations intentionally not consulted: external LZW/range
+  decoders, phrase-expansion implementations, buffering layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: require the complete private raw extent before
+  descriptor parsing or entropy output; count it with descriptor, payload,
+  packed staging, and aligned phrase records; reuse the strict DD-403 order;
+  reconstruct only after full validation; preserve detailed LZW validation,
+  format, and decode diagnostics; and expose no caller-visible output at this
+  boundary.
+- Generated-code task description: add the minimal private decoder and error
+  result fields; verify the independent raw-`A` frame and a multi-code
+  `ABABABA` frame; require raw-capacity and aggregate failures before entropy
+  output; and preserve raw sentinels on encoded-layer failures.
+- Similarity review: the implementation composes only existing marc functions
+  and independently documented workspace rules. No external control flow,
+  phrase-table representation, error taxonomy, naming scheme, or test
+  expression was compared.
+- Local validation: all twelve focused vector, validator, private-decoder, and
+  documentation tests passed, followed by all 1,604 Release tests under both
+  MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
+  CMake 4.3.4.

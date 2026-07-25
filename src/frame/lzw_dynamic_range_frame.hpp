@@ -23,10 +23,12 @@ enum class LzwDynamicRangeFrameValidationError : std::uint8_t {
     invalid_entropy_extent,
     dictionary_staging_too_small,
     phrase_workspace_too_small,
+    raw_staging_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
 };
 
@@ -47,6 +49,8 @@ struct LzwDynamicRangeFrameValidationResult {
         dictionary::internal::LzwValidationError::none};
     dictionary::internal::LzwFormatError dictionary_format_error{
         dictionary::internal::LzwFormatError::none};
+    dictionary::internal::LzwDecodeError dictionary_decode_error{
+        dictionary::internal::LzwDecodeError::none};
     LzwDynamicRangeFrameValidationError error{
         LzwDynamicRangeFrameValidationError::none};
 };
@@ -66,6 +70,21 @@ validate_lzw_dynamic_range_frame(
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::LzwPhraseEntry>
         phrase_workspace) noexcept;
+
+// Validates every encoded layer and reconstructs exactly one frame into
+// caller-owned private raw staging. On error, all workspace contents must be
+// discarded. Input, dictionary staging, and raw staging must not overlap.
+[[nodiscard]] LzwDynamicRangeFrameValidationResult
+decode_lzw_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

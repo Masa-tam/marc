@@ -2286,8 +2286,12 @@ declared packed-byte count with exact payload exhaustion. The ordinary LZW
 validator consumes that complete private span, reproduces the specified
 width-growth schedule, validates dictionary references and `KwKwK`, requires
 zero high padding bits in the final packed byte, and derives exactly the
-declared raw extent into bounded phrase records. Reconstruction occurs in
-private raw staging, and only a completely successful frame may be published.
+declared raw extent into bounded phrase records. Before entropy output, the
+private decoder requires the complete raw staging extent and counts it with
+the descriptor, payload, packed bytes, and aligned phrase records against the
+aggregate workspace limit. It then reconstructs only the completely validated
+phrase graph into private raw staging. Only a completely successful frame may
+later be published.
 A malformed later frame cannot publish any of that frame's raw bytes, although
 earlier frames may already be committed.
 
