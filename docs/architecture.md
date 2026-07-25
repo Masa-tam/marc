@@ -1936,6 +1936,29 @@ trip gates all measurement. Fresh C transforms then report encoded ratio,
 directional throughput, all six queried workspace extents, and the larger
 three-region sum without a performance threshold.
 
+### Specified LZD plus Dynamic Range boundary
+
+LZD first completes its fixed-width eight-byte little-endian reference-pair
+stream. Dynamic Range consumes that finalized byte sequence as ordinary
+symbols, so token and reference-field boundaries remain invisible. Both states
+reset at every outer frame.
+
+For raw frame size `F`, token staging is bounded by
+`S = 8 * ceil(F/2)` and the conservative range payload by `P = 2S + 5`. The
+reference 65,536-byte profile therefore admits 262,144 token bytes, 524,293
+payload bytes, at most 32,768 generated phrases, and at most 32,769 expansion
+references. All raw, token, serialized-frame, aligned-record, expansion-stack,
+and aggregate extents must be checked before mutation.
+
+Decoding must reconstruct the exact token bytes through a fresh order-0 range
+model, then apply the ordinary LZD token-width, backward-reference, terminal-
+absence, phrase-length, and raw-extent validator before iterative private
+reconstruction and frame publication. The independent raw-`A` vector fixes
+token bytes `41 00 00 00 FF FF FF FF`, range payload
+`00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. The
+initial boundary is specified and independently tested but has no combined
+validator or public factory yet.
+
 ### Published LZD plus Adaptive Huffman boundary
 
 LZD first freezes its complete canonical eight-byte reference-pair stream.

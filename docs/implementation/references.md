@@ -1423,6 +1423,13 @@ standalone encoders. No external LZW/range composition, archive format,
 combined-codec implementation, source code, encoded corpus, or test suite was
 consulted.
 
+The LZD plus Dynamic Range reserved representation uses only DD-417, marc's
+already documented LZD variant 1 reference-pair grammar, Dynamic Range variant
+1, generic frame format, checked arithmetic rules, and repository-authored
+standalone encoders. No external LZD/range composition, archive format,
+combined-codec implementation, source code, encoded corpus, or test suite was
+consulted.
+
 The first LZW plus Dynamic Range complete-frame validator uses only DD-403,
 DD-402's fixed packed-byte boundary and bounds, marc's generic frame parser,
 Dynamic Range descriptor and decoder, existing LZW validator, caller-owned

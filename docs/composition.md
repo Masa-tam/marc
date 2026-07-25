@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Specified | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
@@ -317,6 +317,19 @@ directional workspaces. Interoperability schema 17 appends it once after the
 frozen schema-16 order. Four-direction external verification passed at
 revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
+
+`lzd-dynamic-range` is the fifth Dynamic Range composition to receive a
+reserved representation. LZD first completes its fixed-width eight-byte
+little-endian reference-pair stream; a fresh per-frame adaptive order-0 range
+model then consumes every byte without interpreting token or reference-field
+boundaries. For raw frame size `F`, token staging is bounded by
+`S = 8 * ceil(F/2)` and range payload by `P = 2S + 5`. The format retains the
+2^20-byte raw-frame cap and validates exact range exhaustion before the
+ordinary LZD token-width, backward-reference, terminal-absence, phrase-length,
+and exact-raw-extent pass. The independent raw-`A` vector fixes token bytes
+`41 00 00 00 FF FF FF FF`, range payload
+`00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. No
+combined validator or public adapter is implied yet.
 
 ## Why publication is not automatic
 

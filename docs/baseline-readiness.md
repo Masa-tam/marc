@@ -52,6 +52,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
+| `lzd-dynamic-range` | Fifth Dynamic Range composition | Specified | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 17 contains twenty-eight archives: the frozen twenty-seven-entry
@@ -101,6 +102,17 @@ kept separate because it requires artifacts produced outside the local build.
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
+
+`lzd-dynamic-range` is the next queued composition. DD-417 fixes the complete
+eight-byte LZD reference-pair boundary before one fresh per-frame Dynamic Range
+model consumes it. For raw frame size `F`, it checks
+`S = 8 * ceil(F/2)` token bytes and `P = 2S + 5` range-payload bytes, retains
+the 2^20-byte raw-frame cap, and requires range validation before LZD
+token-width, backward-reference, terminal-absence, phrase-length, and exact-
+raw-extent validation. Its independently assembled 84-byte raw-`A` frame is
+covered by a standalone-component vector test. No combined validator,
+streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
+interoperability entry exists yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

@@ -8821,3 +8821,31 @@ discarded and the reviewed seed retained.
   This establishes canonical schema-17 bytes across the three recorded
   producers and bidirectional decoding between the recorded Windows and WSL2
   Linux x86-64 environments.
+
+## 2026-07-26 - LZD plus Dynamic Range specification and vector
+
+- Authoring method: composed marc's already frozen LZD reference-pair grammar
+  and Dynamic Range byte-symbol grammar at their documented byte-stream
+  boundary before implementing a combined codec.
+- References used: DD-417, the local LZD variant 1 and Dynamic Range variant 1
+  format sections, generic frame serializers, checked arithmetic rules, and
+  repository-authored standalone encoders.
+- Known implementations intentionally not consulted: external LZD/range
+  compositions, archive formats, codec source, encoded corpora, malformed
+  corpora, and test suites.
+- Independent decisions: reserve `lzd-dynamic-range`; retain format 1.0; make
+  all eight bytes of every reference pair ordinary range symbols; reset both
+  layers per frame; use checked `S = 8 * ceil(F/2)` and `P = 2S + 5` bounds;
+  retain the 2^20-byte format cap; and require exact range exhaustion before
+  LZD graph validation and private iterative reconstruction.
+- Generated-code task description: document the complete decoder-visible
+  composition, bounds, validation and publication order, empty and boundary
+  behavior, and a raw-`A` hand vector; add a test that assembles the frame only
+  from standalone LZD, standalone Dynamic Range, and generic serializers.
+- Similarity review: the specification and test use only marc's local
+  component contracts and direct field composition. No external combined
+  format, implementation structure, byte vector, naming scheme, or test
+  expression was compared.
+- Local validation: the independent terminal-token vector and documentation
+  layout tests passed 2/2 under both MSVC and ClangCL. The complete Release
+  suite passed 1,640/1,640 under both compilers using official CMake 4.3.4.

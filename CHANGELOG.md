@@ -7,6 +7,12 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lzd-dynamic-range` composition now has an exact
+  decoder-visible representation, checked reference-pair and range-payload
+  bounds, transactional validation order, and an independent 84-byte
+  terminal-token frame assembled from the standalone LZD and Dynamic Range
+  primitives.
+
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload
   bounds, transactional validation order, and an independent 79-byte

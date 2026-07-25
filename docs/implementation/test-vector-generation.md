@@ -3007,6 +3007,21 @@ descriptor independently and compare all 79 bytes with `docs/format.md`. Do
 not call a future combined LZW Dynamic Range codec while establishing its own
 oracle.
 
+For the specified LZD plus Dynamic Range vector, encode raw `A` through the
+already frozen standalone LZD grammar. The sole terminal reference pair is
+`41 00 00 00 FF FF FF FF`. Independently apply Dynamic Range variant 1 to
+those eight complete bytes using the documented integer interval, delayed-
+carry, model-update, and five-shift termination rules. Require payload
+`00 40 FF FF C4 DC 92 F3 69 BC 8B 00` and descriptor symbol/payload counts
+`(8, 12)`.
+
+As a separate implementation check, require the standalone LZD encoder to
+reproduce the terminal token, then require the standalone Dynamic Range
+encoder to reproduce that payload and descriptor. Serialize the generic frame
+header and descriptor independently and compare all 84 bytes with
+`docs/format.md`. Do not call a future combined LZD Dynamic Range codec while
+establishing its own oracle.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing

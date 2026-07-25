@@ -2615,6 +2615,120 @@ layout before exposing either typed span. The CLI selector uses that public C
 factory and does not define another format variant. Interoperability schema 5
 emits and accepts this exact profile as its sixteenth archive.
 
+## LZD variant 1 plus Dynamic Range Coder variant 1
+
+The reserved profile name is `lzd-dynamic-range`. This composition uses
+dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 3, and
+entropy variant 1 under format version 1.0. Its stream parameter regions are
+the 16-byte LZD parameters followed by the empty Dynamic Range parameter
+region. `entropy block size` is zero.
+
+Each nonempty outer frame owns one freshly reset LZD phrase dictionary and one
+freshly reset adaptive order-0 range model. LZD first produces its complete
+canonical sequence of eight-byte little-endian reference pairs. Dynamic Range
+then treats every byte in that finalized sequence as one symbol. It does not
+observe token, reference-field, or terminal-marker boundaries.
+
+The generic frame header records raw bytes as `uncompressed size`, LZD token
+bytes as `dictionary serialized size`, Dynamic Range payload bytes as
+`compressed payload size`, entropy block count one, descriptor size 16, and
+checksum trailer size zero. The body is:
+
+```text
+generic frame header
+one Dynamic Range descriptor
+Dynamic Range payload over the complete LZD token region
+```
+
+The descriptor's `symbol count` equals `dictionary serialized size`, and its
+`payload size` equals `compressed payload size`. All Dynamic Range interval,
+normalization, delayed-carry, five-byte termination, exact payload-exhaustion,
+model-update, rescaling, descriptor, and reset rules are unchanged from
+Dynamic Range variant 1. No separate token region is stored.
+
+For raw frame size `F`, the checked token ceiling is:
+
+```text
+S = 8 * ceil(F / 2)
+```
+
+The conservative Dynamic Range payload ceiling is:
+
+```text
+P = 2S + 5
+```
+
+At most `floor(F / 2)` right-present tokens can create phrase entries; the
+phrase-record count is the lesser of that value and the configured LZD
+maximum. Iterative expansion requires at most that phrase count plus one
+reference. The format-level raw-frame cap remains 2^20 bytes. The reference
+profile uses `F = 65,536`, giving `S = 262,144`, `P = 524,293`, at most 32,768
+generated phrases, and at most 32,769 expansion references. Every ceiling
+division, product, frame extent, aligned phrase-record extent, expansion-stack
+extent, and aggregate workspace sum must be checked before allocation or
+mutation.
+
+Encoding must freeze the deterministic LZD parse and complete token bytes in
+caller-owned staging before Dynamic Range planning. It must validate the
+complete header, descriptor, payload, destination extent, and workspace bounds
+before publishing any frame byte.
+
+Decoding is transactional at the outer frame boundary. It first validates the
+pipeline IDs and variants, LZD parameters, sequence, generic extents, one-block
+count, 16-byte descriptor extent, token ceiling, range-payload ceiling, and
+caller-owned capacities. Dynamic Range must then reconstruct exactly the
+declared token-byte count with exact payload exhaustion. The ordinary LZD
+validator consumes that complete private span, requires a multiple of eight
+bytes, validates every backward phrase reference and checked phrase length,
+permits an absent right reference only on the final token, and derives exactly
+the declared raw extent into bounded phrase records. Iterative reconstruction
+occurs in private raw staging, and only a completely successful frame may be
+published. A malformed later frame cannot publish any of that frame's raw
+bytes, although earlier frames may already be committed.
+
+The known-size stream is the ordinary 64-byte version-1.0 header followed by
+the 16-byte LZD parameter region and zero or more frames. Empty input is exactly
+this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
+`ResetBlock` is unsupported at this composition boundary, and input/output
+chunking alone must not change serialized bytes.
+
+### Hand-checkable terminal-token frame
+
+For raw input `A`, standalone LZD variant 1 emits:
+
+```text
+41 00 00 00 FF FF FF FF
+```
+
+Independently applying Dynamic Range variant 1 to those eight complete bytes
+produces:
+
+```text
+00 40 FF FF C4 DC 92 F3 69 BC 8B 00
+```
+
+The descriptor is:
+
+```text
+08 00 00 00 0C 00 00 00 00 00 00 00 00 00 00 00
+```
+
+The complete 84-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00  0C 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+08 00 00 00 0C 00 00 00  00 00 00 00 00 00 00 00
+00 40 FF FF C4 DC 92 F3  69 BC 8B 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Dynamic Range descriptor, and the final twelve bytes are its payload. The
+stream-level LZD parameter region is not repeated in the frame. This vector
+reserves the representation; it does not by itself publish a combined codec.
+
 ## LZD variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lzd-adaptive-huffman`. This composition uses

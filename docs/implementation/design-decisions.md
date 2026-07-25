@@ -8097,3 +8097,44 @@ No previous schema, archive order, codec set, stream representation, fixture,
 or manifest field changes. Cross-platform interoperability remains unproven
 until one pushed revision passes the established Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.
+
+## DD-417: LZD Dynamic Range entropizes finalized reference-pair bytes
+
+- Date: 2026-07-26
+- Status: accepted
+
+Reserve `lzd-dynamic-range` for LZD variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZD
+parameters, empty entropy parameters, fixed eight-byte little-endian reference
+pairs, and terminal absent-right value. Complete the token byte stream before
+entropy processing; Dynamic Range consumes every resulting byte without
+interpreting token, reference-field, or terminal-marker boundaries. Reset both
+the LZD phrase dictionary and adaptive order-0 range model at every outer
+frame.
+
+For raw frame size `F`, use checked token staging bound
+`S = 8 * ceil(F / 2)` and Dynamic Range payload bound `P = 2S + 5`. Bound
+generated phrases by `min(floor(F / 2), configured_maximum)` and the iterative
+expansion stack by that phrase count plus one. Retain the LZD composition
+format cap `F <= 2^20`. The reference profile uses `F = 65,536`, giving
+`S = 262,144`, `P = 524,293`, at most 32,768 generated phrases, and at most
+32,769 expansion references.
+
+Encoding freezes the canonical LZD token bytes before range planning. Decoding
+range-decodes exactly the declared token-byte count into private staging, then
+applies the ordinary LZD multiple-of-eight, backward-reference, terminal-
+absence, phrase-length, and exact-raw-extent validation before iterative
+private reconstruction and any raw publication. Error precedence is generic
+header and extent validation, workspace admission, range descriptor and
+payload validation, LZD validation, then private reconstruction and
+publication.
+
+Freeze raw `A` independently: LZD emits terminal token
+`41 00 00 00 FF FF FF FF`; Dynamic Range variant 1 over those eight bytes
+produces payload `00 40 FF FF C4 DC 92 F3 69 BC 8B 00` and descriptor
+`(8, 12, 0)`. Record the complete 84-byte frame in the format document and
+prove it by composing only the existing standalone LZD encoder, Dynamic Range
+encoder, and generic serializers. This decision specifies bytes and a reserved
+name only; it does not publish a combined validator, decoder, encoder,
+streaming transform, factory, CLI, benchmark, fuzz target, completion matrix,
+or interoperability entry.
