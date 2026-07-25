@@ -11,7 +11,10 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation, checked reference-pair and range-payload
   bounds, transactional validation order, and an independent 84-byte
   terminal-token frame assembled from the standalone LZD and Dynamic Range
-  primitives.
+  primitives. Its first bounded complete-frame validator now checks all
+  declared and aggregate extents before entropy output, strictly range-decodes
+  into private token staging, and applies the existing LZD token, backward-
+  reference, terminal-absence, phrase-length, and exact-raw-extent validator.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

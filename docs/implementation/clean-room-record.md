@@ -8849,3 +8849,31 @@ discarded and the reviewed seed retained.
 - Local validation: the independent terminal-token vector and documentation
   layout tests passed 2/2 under both MSVC and ClangCL. The complete Release
   suite passed 1,640/1,640 under both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range complete-frame validator
+
+- Authoring method: connected marc's local generic frame parser, strict Dynamic
+  Range decoder, and existing LZD semantic validator at the byte boundary
+  fixed by DD-417.
+- References used: DD-418, DD-417, the local Dynamic Range descriptor and
+  decoder contracts, LZD token validator and workspace formulas, checked
+  arithmetic, and the independent 84-byte frame.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: validate all generic, token, entropy, capacity,
+  aligned phrase-record, and aggregate extents before entropy output; require
+  exact range payload exhaustion; retain LZD's stable semantic diagnostics;
+  report but do not allocate future expansion storage; and reconstruct or
+  publish no raw bytes at this boundary.
+- Generated-code task description: add a bounded complete-frame validator,
+  result and error types, exact-vector acceptance, exhaustive proper-prefix
+  rejection, capacity and aggregate-limit tests, descriptor and payload
+  corruption tests, malformed LZD reference tests, and profile/extent tests.
+- Similarity review: the implementation composes only existing marc parsers,
+  limits, and validators using the repository's established transactional
+  frame convention. No external combined control flow, format, diagnostic
+  scheme, malformed input, or test expression was compared.
+- Local validation: the eight focused LZD Dynamic Range tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,647/1,647 under
+  both compilers using official CMake 4.3.4.

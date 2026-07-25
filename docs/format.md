@@ -2726,8 +2726,17 @@ The complete 84-byte frame is:
 
 The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the final twelve bytes are its payload. The
-stream-level LZD parameter region is not repeated in the frame. This vector
-reserves the representation; it does not by itself publish a combined codec.
+stream-level LZD parameter region is not repeated in the frame.
+
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned token staging and phrase records. It
+checks generic extents, the token and payload ceilings, all caller capacities,
+and aggregate workspace before parsing the descriptor or decoding entropy.
+Dynamic Range must exhaust the payload exactly before the ordinary LZD
+validator checks the multiple-of-eight token extent, backward references,
+terminal absence, phrase lengths, and declared raw extent. This boundary
+reconstructs and publishes no raw bytes; later decoding and streaming work
+must retain the same validation order.
 
 ## LZD variant 1 plus Adaptive Huffman FGK variant 1
 

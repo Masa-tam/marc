@@ -329,7 +329,10 @@ ordinary LZD token-width, backward-reference, terminal-absence, phrase-length,
 and exact-raw-extent pass. The independent raw-`A` vector fixes token bytes
 `41 00 00 00 FF FF FF FF`, range payload
 `00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. No
-combined validator or public adapter is implied yet.
+public adapter is implied yet. Its first bounded complete-frame validator now
+admits every extent and workspace before range decoding into private token
+staging, then applies the existing LZD semantic validator without
+reconstructing or publishing raw bytes.
 
 ## Why publication is not automatic
 

@@ -8138,3 +8138,32 @@ encoder, and generic serializers. This decision specifies bytes and a reserved
 name only; it does not publish a combined validator, decoder, encoder,
 streaming transform, factory, CLI, benchmark, fuzz target, completion matrix,
 or interoperability entry.
+
+## DD-418: LZD Dynamic Range validation stops at the token boundary
+
+- Date: 2026-07-26
+- Status: accepted
+
+Admit the first combined `lzd-dynamic-range` implementation as a strict bounded
+complete-frame validator only. Validate the stream profile, LZD parameters,
+sequence, generic frame header, exact complete-frame extent, checked
+`S = 8 * ceil(F/2)` token bound, token-width divisibility, one 16-byte Dynamic
+Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
+aligned phrase bytes, and the aggregate workspace limit before entropy output.
+
+Parse the descriptor only after that admission succeeds. Range-decode exactly
+the declared token-byte count into private caller-owned staging with exact
+payload exhaustion, then invoke the existing LZD validator over the complete
+span. Preserve LZD's backward-reference, terminal-absence, checked phrase-
+length, exact declared raw extent, token count, dictionary-entry count, format
+error, and phrase-table requirements.
+
+Use stable error precedence: unsupported profile, truncated header, generic
+header, complete-frame extent, token and entropy extents, caller workspace,
+aggregate workspace, descriptor, range payload, then LZD token stream. On
+every error the caller must discard staging and phrase contents; no raw byte is
+reconstructed or published. Report the future iterative expansion requirement
+as a diagnostic, but do not include unrequested expansion or raw staging in
+this validator's workspace total. This step adds no private raw decoder,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion matrix, or interoperability entry.

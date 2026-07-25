@@ -1956,8 +1956,12 @@ absence, phrase-length, and raw-extent validator before iterative private
 reconstruction and frame publication. The independent raw-`A` vector fixes
 token bytes `41 00 00 00 FF FF FF FF`, range payload
 `00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. The
-initial boundary is specified and independently tested but has no combined
-validator or public factory yet.
+first combined boundary now validates one exact complete frame. It admits the
+complete header, token and entropy extents, caller capacities, phrase records,
+and aggregate workspace before range-decoding into private token staging, then
+applies the existing LZD graph validator. It exposes diagnostics and validated
+workspace only; raw reconstruction and public factories remain later
+boundaries.
 
 ### Published LZD plus Adaptive Huffman boundary
 

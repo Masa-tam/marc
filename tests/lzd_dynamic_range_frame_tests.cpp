@@ -1,0 +1,289 @@
+#include "frame/lzd_dynamic_range_frame.hpp"
+
+#include "dictionary/lzd_encoder.hpp"
+#include "entropy/dynamic_range_encoder.hpp"
+
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <span>
+#include <vector>
+
+namespace {
+
+using marc::frame::LzdDynamicRangeFrameValidationError;
+
+constexpr std::array terminal_token_a{
+    std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0xff}, std::byte{0xff}, std::byte{0xff}, std::byte{0xff}};
+constexpr std::array<std::byte, 84> terminal_token_frame{
+    std::byte{0x4d}, std::byte{0x52}, std::byte{0x46}, std::byte{0x31},
+    std::byte{0x38}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x08}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x0c}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x10}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x08}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x0c}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+    std::byte{0x00}, std::byte{0x40}, std::byte{0xff}, std::byte{0xff},
+    std::byte{0xc4}, std::byte{0xdc}, std::byte{0x92}, std::byte{0xf3},
+    std::byte{0x69}, std::byte{0xbc}, std::byte{0x8b}, std::byte{0x00}};
+
+[[nodiscard]] marc::frame::StreamHeader stream_for_size(
+    const std::uint32_t size) {
+    marc::frame::StreamHeader stream{};
+    stream.dictionary_algorithm = marc::frame::DictionaryAlgorithm::lzd;
+    stream.dictionary_variant = 1;
+    stream.entropy_algorithm = marc::frame::EntropyAlgorithm::dynamic_range;
+    stream.entropy_variant = 1;
+    stream.frame_size = size;
+    stream.dictionary_parameters_size =
+        marc::dictionary::internal::lzd_parameter_size;
+    stream.original_size = size;
+    return stream;
+}
+
+[[nodiscard]] std::vector<std::byte> frame_for_tokens(
+    const std::span<const std::byte> tokens,
+    const std::uint32_t raw_size) {
+    marc::entropy::internal::DynamicRangeDescriptor descriptor{};
+    const auto plan = marc::entropy::internal::plan_dynamic_range_frame(
+        tokens, {}, descriptor);
+    EXPECT_EQ(plan.error,
+              marc::entropy::internal::DynamicRangeEncodeError::none);
+    std::vector<std::byte> frame(
+        marc::frame::frame_header_size
+        + marc::entropy::internal::dynamic_range_descriptor_size
+        + plan.payload_size);
+
+    marc::frame::FrameHeader header{};
+    header.uncompressed_size = raw_size;
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(tokens.size());
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(plan.payload_size);
+    header.entropy_block_count = 1;
+    header.block_descriptors_size =
+        marc::entropy::internal::dynamic_range_descriptor_size;
+    const marc::core::DecoderLimits limits{};
+    EXPECT_EQ(marc::frame::serialize_frame_header(
+                  header, {stream_for_size(raw_size), limits, 0, 0},
+                  std::span<std::byte, marc::frame::frame_header_size>{
+                      frame.data(), marc::frame::frame_header_size}),
+              marc::frame::FrameHeaderError::none);
+    EXPECT_EQ(marc::entropy::internal::serialize_dynamic_range_descriptor(
+                  descriptor, tokens.size(), plan.payload_size, limits,
+                  std::span<std::byte,
+                            marc::entropy::internal::
+                                dynamic_range_descriptor_size>{
+                      frame.data() + marc::frame::frame_header_size,
+                      marc::entropy::internal::
+                          dynamic_range_descriptor_size}),
+              marc::entropy::internal::DynamicRangeFormatError::none);
+    EXPECT_EQ(marc::entropy::internal::encode_dynamic_range_frame(
+                  tokens, {},
+                  std::span<std::byte>{frame}.subspan(
+                      marc::frame::frame_header_size
+                      + marc::entropy::internal::
+                          dynamic_range_descriptor_size),
+                  descriptor).error,
+              marc::entropy::internal::DynamicRangeEncodeError::none);
+    return frame;
+}
+
+[[nodiscard]] std::vector<std::byte> frame_for_raw(
+    const std::span<const std::byte> raw) {
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> workspace(
+        marc::dictionary::internal::lzd_encoder_workspace_entries(
+            raw.size(), {}));
+    const auto plan = marc::dictionary::internal::plan_lzd_token_stream(
+        raw, {}, {}, workspace);
+    EXPECT_EQ(plan.error, marc::dictionary::internal::LzdEncodeError::none);
+    std::vector<std::byte> tokens(plan.output_size);
+    EXPECT_EQ(marc::dictionary::internal::encode_lzd_token_stream(
+                  raw, {}, {}, workspace, tokens).error,
+              marc::dictionary::internal::LzdEncodeError::none);
+    return frame_for_tokens(tokens, static_cast<std::uint32_t>(raw.size()));
+}
+
+TEST(LzdDynamicRangeFrameValidator, AcceptsSpecifiedHandVector) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    const auto result = marc::frame::validate_lzd_dynamic_range_frame(
+        stream_for_size(1), {}, {}, 0, 0, terminal_token_frame, staging, {});
+    ASSERT_EQ(result.error, LzdDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(result.serialized_size, terminal_token_frame.size());
+    EXPECT_EQ(result.dictionary_size, terminal_token_a.size());
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.descriptor_size, 16U);
+    EXPECT_EQ(result.payload_size, 12U);
+    EXPECT_EQ(result.phrase_entries, 0U);
+    EXPECT_EQ(result.expansion_entries, 1U);
+    EXPECT_EQ(result.token_count, 1U);
+    EXPECT_EQ(result.dictionary_entries, 0U);
+    EXPECT_EQ(staging, terminal_token_a);
+}
+
+TEST(LzdDynamicRangeFrameValidator,
+     StrictlyRejectsEveryTruncationAndTrailingData) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    for (std::size_t size = 0; size < terminal_token_frame.size(); ++size) {
+        EXPECT_NE(marc::frame::validate_lzd_dynamic_range_frame(
+                      stream_for_size(1), {}, {}, 0, 0,
+                      std::span<const std::byte>{terminal_token_frame}.first(
+                          size),
+                      staging, {}).error,
+                  LzdDynamicRangeFrameValidationError::none)
+            << size;
+    }
+    std::vector<std::byte> extended(terminal_token_frame.begin(),
+                                    terminal_token_frame.end());
+    extended.push_back(std::byte{});
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, extended, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::trailing_frame_bytes);
+}
+
+TEST(LzdDynamicRangeFrameValidator,
+     RejectsWorkspaceShortageBeforeEntropyOutput) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, terminal_token_frame, {},
+                  {}).error,
+              LzdDynamicRangeFrameValidationError::
+                  dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    const auto frame = frame_for_raw(raw);
+    std::array<std::byte, 8> pair_staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 1> phrases{};
+    ASSERT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(2), {}, {}, 0, 0, frame, pair_staging,
+                  phrases).error,
+              LzdDynamicRangeFrameValidationError::none);
+    pair_staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(2), {}, {}, 0, 0, frame, pair_staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::
+                  phrase_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        pair_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(LzdDynamicRangeFrameValidator, CountsAllValidationWorkspace) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    const std::uint64_t required = 16 + 12 + 8;
+    limits.max_internal_buffered_bytes = required - 1;
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, limits, 0, 0,
+                  terminal_token_frame, staging, {}).error,
+              LzdDynamicRangeFrameValidationError::workspace_limit);
+}
+
+TEST(LzdDynamicRangeFrameValidator,
+     RejectsDescriptorAndPayloadBeforeLzdValidation) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    staging.fill(std::byte{0x5a});
+    auto descriptor = terminal_token_frame;
+    descriptor[64] = std::byte{0x09};
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, descriptor, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::descriptor_error);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    auto payload = terminal_token_frame;
+    payload[72] = std::byte{0x01};
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, payload, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::entropy_decode_error);
+}
+
+TEST(LzdDynamicRangeFrameValidator,
+     RejectsInvalidTerminalAndForwardReferenceAfterEntropyDecode) {
+    const auto malformed = frame_for_tokens(terminal_token_a, 2);
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 1> phrases{};
+    const auto result = marc::frame::validate_lzd_dynamic_range_frame(
+        stream_for_size(2), {}, {}, 0, 0, malformed, staging, phrases);
+    EXPECT_EQ(result.error, LzdDynamicRangeFrameValidationError::
+                                dictionary_validation_error);
+    EXPECT_EQ(result.dictionary_error,
+              marc::dictionary::internal::LzdValidationError::token_error);
+    EXPECT_EQ(result.dictionary_format_error,
+              marc::dictionary::internal::LzdFormatError::
+                  invalid_terminal_reference);
+
+    constexpr std::array forward_reference{
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0xff}, std::byte{0xff}, std::byte{0xff}, std::byte{0xff}};
+    const auto forward = frame_for_tokens(forward_reference, 1);
+    const auto forward_result =
+        marc::frame::validate_lzd_dynamic_range_frame(
+            stream_for_size(1), {}, {}, 0, 0, forward, staging, {});
+    EXPECT_EQ(forward_result.error,
+              LzdDynamicRangeFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(forward_result.dictionary_error,
+              marc::dictionary::internal::LzdValidationError::token_error);
+    EXPECT_EQ(forward_result.dictionary_format_error,
+              marc::dictionary::internal::LzdFormatError::
+                  invalid_phrase_reference);
+}
+
+TEST(LzdDynamicRangeFrameValidator,
+     RejectsInvalidExtentSequenceAndPipeline) {
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    auto extent = terminal_token_frame;
+    extent[20] = std::byte{0x10};
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, extent, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::
+                  invalid_dictionary_extent);
+    extent = terminal_token_frame;
+    extent[20] = std::byte{0x07};
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, extent, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::
+                  invalid_dictionary_extent);
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 1, 0, terminal_token_frame,
+                  staging, {}).error,
+              LzdDynamicRangeFrameValidationError::header_error);
+    auto stream = stream_for_size(1);
+    stream.entropy_variant = 0;
+    EXPECT_EQ(marc::frame::validate_lzd_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, terminal_token_frame, staging, {})
+                  .error,
+              LzdDynamicRangeFrameValidationError::unsupported_pipeline);
+}
+
+} // namespace

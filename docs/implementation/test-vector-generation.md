@@ -3022,6 +3022,20 @@ header and descriptor independently and compare all 84 bytes with
 `docs/format.md`. Do not call a future combined LZD Dynamic Range codec while
 establishing its own oracle.
 
+For the LZD plus Dynamic Range complete-frame validator, submit the independent
+84-byte terminal-token frame and require the exact eight token bytes, one
+token, zero generated phrases, and one future expansion-stack entry. Reject
+every proper prefix and one trailing byte.
+
+Before entropy output, reject token staging one byte short, phrase storage one
+record short for raw `AB`, and aggregate validation storage one byte short.
+Corrupt the descriptor and range payload independently and require entropy-
+layer errors before LZD validation. Independently range-encode an absent-right
+token against a contradictory two-byte raw extent and a forward phrase
+reference, then require the existing stable LZD format errors. Also reject
+non-multiple-of-eight and over-ceiling token extents, wrong sequence, and an
+unsupported entropy variant.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing
