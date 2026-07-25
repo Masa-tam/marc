@@ -2966,3 +2966,18 @@ and require rejection before archive decoding. Derive schema 15 by removing
 only archive 27 and changing only `schema_version` and `codec_set`, verify all
 twenty-six frozen archives, then continue the established one-generation
 conversion and verification chain through schema 1.
+
+For the specified LZW plus Dynamic Range vector, encode raw `A` through the
+already frozen standalone LZW grammar. Code 65 at width nine produces packed
+bytes `41 00`, whose final seven high bits are zero LZW padding. Independently
+apply Dynamic Range variant 1 to those two complete bytes using the documented
+integer interval, delayed-carry, model-update, and five-shift termination
+rules. Require payload `00 40 FF FF BF 00 00` and descriptor symbol/payload
+counts `(2, 7)`.
+
+As a separate implementation check, require the standalone LZW encoder to
+reproduce `41 00`, then require the standalone Dynamic Range encoder to
+reproduce that payload and descriptor. Serialize the generic frame header and
+descriptor independently and compare all 79 bytes with `docs/format.md`. Do
+not call a future combined LZW Dynamic Range codec while establishing its own
+oracle.

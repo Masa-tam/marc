@@ -1415,3 +1415,10 @@ deterministic fixture generator, strict verifier, SHA-256 metadata, and
 one-generation compatibility chain. No external archive protocol, manifest
 schema, interoperability harness, combined-codec archive, corpus, source code,
 or test vector was consulted.
+
+The LZW plus Dynamic Range reserved representation uses only DD-402, marc's
+already documented LZW variant 1 packed-code grammar, Dynamic Range variant 1,
+generic frame format, checked arithmetic rules, and repository-authored
+standalone encoders. No external LZW/range composition, archive format,
+combined-codec implementation, source code, encoded corpus, or test suite was
+consulted.

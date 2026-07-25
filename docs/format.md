@@ -2220,6 +2220,122 @@ before exposing either typed span. The public C factory, CLI selector,
 benchmark adapter, and interoperability schema-4 tools emit and accept this
 representation.
 
+## LZW variant 1 plus Dynamic Range Coder variant 1
+
+The reserved profile name is `lzw-dynamic-range`. This composition uses
+dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 3, and
+entropy variant 1 under format version 1.0. Its stream parameter regions are
+the 16-byte LZW parameters followed by the empty Dynamic Range parameter
+region. `entropy block size` is zero.
+
+Each nonempty outer frame owns one freshly reset LZW dictionary and one freshly
+reset adaptive order-0 range model. LZW first produces its complete canonical
+LSB-first packed-code byte stream, including the required zero padding in the
+high bits of its final byte. Dynamic Range then treats every byte of that
+finalized region as one symbol. It does not observe code boundaries and does
+not remove or reinterpret the LZW padding.
+
+The generic frame header records raw bytes as `uncompressed size`, packed LZW
+code bytes as `dictionary serialized size`, Dynamic Range payload bytes as
+`compressed payload size`, entropy block count one, descriptor size 16, and
+checksum trailer size zero. The body is:
+
+```text
+generic frame header
+one Dynamic Range descriptor
+Dynamic Range payload over the packed LZW bytes
+```
+
+The descriptor's `symbol count` equals `dictionary serialized size`, and its
+`payload size` equals `compressed payload size`. All Dynamic Range interval,
+normalization, delayed-carry, five-byte termination, exact payload-exhaustion,
+model-update, rescaling, descriptor, and reset rules are unchanged from
+Dynamic Range variant 1. No separate packed-code region is stored.
+
+For raw frame size `F` and configured maximum LZW code width `W`, the checked
+packed-code ceiling is:
+
+```text
+S = ceil(F * W / 8)
+```
+
+The conservative Dynamic Range payload ceiling is:
+
+```text
+P = 2S + 5
+```
+
+The generated LZW entry count is zero when `F` is zero; otherwise it is at most
+the lesser of `F - 1`, `2^W - 256`, and the local dictionary-entry limit. The
+format-level raw-frame cap is 2^20 bytes. The reference profile uses
+`F = 65,536` and `W = 16`, giving `S = 131,072`, `P = 262,149`, and at most
+65,280 generated entries. Every product, ceiling division, complete-frame
+extent, aligned entry-table extent, and aggregate workspace sum must be checked
+before allocation or mutation.
+
+Encoding must freeze the deterministic LZW parse, width schedule, packed bytes,
+and final zero padding in caller-owned staging before Dynamic Range planning.
+It must validate the complete header, descriptor, payload, destination extent,
+and workspace bounds before publishing any frame byte.
+
+Decoding is transactional at the outer frame boundary. It first validates the
+pipeline IDs and variants, LZW parameters, sequence, generic extents, one-block
+count, 16-byte descriptor extent, packed-code ceiling, range-payload ceiling,
+and caller-owned capacities. Dynamic Range must then reconstruct exactly the
+declared packed-byte count with exact payload exhaustion. The ordinary LZW
+validator consumes that complete private span, reproduces the specified
+width-growth schedule, validates dictionary references and `KwKwK`, requires
+zero high padding bits in the final packed byte, and derives exactly the
+declared raw extent into bounded phrase records. Reconstruction occurs in
+private raw staging, and only a completely successful frame may be published.
+A malformed later frame cannot publish any of that frame's raw bytes, although
+earlier frames may already be committed.
+
+The known-size stream is the ordinary 64-byte version-1.0 header followed by
+the 16-byte LZW parameter region and zero or more frames. Empty input is exactly
+this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
+`ResetBlock` is unsupported at this composition boundary, and input/output
+chunking alone must not change serialized bytes.
+
+### Hand-checkable single-code frame
+
+For raw input `A`, standalone LZW variant 1 emits code 65 at width nine and
+therefore produces the finalized packed bytes:
+
+```text
+41 00
+```
+
+The high seven bits of the second byte are LZW padding, but the complete byte
+is an ordinary zero-valued Dynamic Range symbol. Independently applying
+Dynamic Range variant 1 to `41 00` produces:
+
+```text
+00 40 FF FF BF 00 00
+```
+
+The descriptor is:
+
+```text
+02 00 00 00 07 00 00 00 00 00 00 00 00 00 00 00
+```
+
+The complete 79-byte frame is:
+
+```text
+4D 52 46 31 38 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00  07 00 00 00 01 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+02 00 00 00 07 00 00 00  00 00 00 00 00 00 00 00
+00 40 FF FF BF 00 00
+```
+
+The first 56 bytes are the generic frame header, the next 16 bytes are the
+Dynamic Range descriptor, and the final seven bytes are its payload. The
+stream-level LZW parameter region is not repeated in the frame. This vector
+reserves the representation; it does not by itself publish a combined codec.
+
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 
 The profile name is `lzw-adaptive-huffman`. This composition uses

@@ -1866,6 +1866,29 @@ the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
 generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
 system directions for all twenty-two archives at one full revision.
 
+### Specified LZW plus Dynamic Range boundary
+
+LZW first completes its variable-width LSB-first code stream and zero-pads the
+last partial byte. Dynamic Range consumes that finalized byte sequence as
+ordinary symbols, so the complete padding byte remains visible to the entropy
+model while LZW code boundaries remain invisible. Both states reset at every
+outer frame.
+
+For raw frame size `F` and maximum code width `W`, packed staging is bounded by
+`S = ceil(FW/8)` and the conservative range payload by `P = 2S + 5`. The
+reference 65,536-byte, 16-bit profile therefore admits 131,072 packed bytes,
+262,149 payload bytes, and at most 65,280 generated LZW entries. All raw,
+packed, serialized-frame, aligned-record, and aggregate extents must be checked
+before mutation.
+
+Decoding must reconstruct the exact packed bytes through a fresh order-0 range
+model, then apply the ordinary LZW width-change, reference, `KwKwK`, padding,
+and raw-extent validator before private reconstruction and frame publication.
+The independent raw-`A` vector fixes packed bytes `41 00`, range payload
+`00 40 FF FF BF 00 00`, and the complete 79-byte frame. The initial boundary
+is specified and independently tested but has no combined validator or public
+factory yet.
+
 ### Published LZD plus Adaptive Huffman boundary
 
 LZD first freezes its complete canonical eight-byte reference-pair stream.

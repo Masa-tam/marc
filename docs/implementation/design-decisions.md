@@ -7739,3 +7739,40 @@ No previous schema, archive order, codec set, stream representation, fixture,
 or manifest field changes. Cross-platform interoperability remains unproven
 until one pushed revision passes the established Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.
+
+## DD-402: LZW Dynamic Range entropizes finalized packed-code bytes
+
+- Date: 2026-07-25
+- Status: accepted
+
+Reserve `lzw-dynamic-range` for LZW variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZW
+parameters, empty entropy parameters, LSB-first variable-width code schedule,
+and final LZW zero padding. Complete the packed-code byte stream before entropy
+processing; Dynamic Range consumes every resulting byte, including the final
+padded byte, without interpreting LZW code or padding boundaries. Reset both
+the LZW dictionary and adaptive order-0 range model at every outer frame.
+
+For raw frame size `F` and maximum code width `W`, use checked packed staging
+bound `S = ceil(F * W / 8)` and Dynamic Range payload bound `P = 2S + 5`.
+Bound generated entries for a nonempty frame by
+`min(F - 1, 2^W - 256, local_limit)`. Retain the LZW composition format cap
+`F <= 2^20`. The reference profile uses `F = 65,536` and `W = 16`, giving
+`S = 131,072`, `P = 262,149`, and at most 65,280 generated entries.
+
+Encoding freezes the canonical LZW packed bytes before range planning.
+Decoding range-decodes exactly the declared packed-byte count into private
+staging, then applies the ordinary LZW width-change, reference, `KwKwK`,
+zero-padding, and exact-raw-extent validation before any raw publication.
+Error precedence is generic header and extent validation, workspace admission,
+range descriptor and payload validation, LZW validation, then private
+reconstruction and publication.
+
+Freeze raw `A` independently: LZW code 65 at width nine produces packed bytes
+`41 00`; Dynamic Range variant 1 over those two bytes produces payload
+`00 40 FF FF BF 00 00` and descriptor `(2, 7, 0)`. Record the complete 79-byte
+frame in the format document and prove it by composing only the existing
+standalone LZW encoder, Dynamic Range encoder, and generic serializers. This
+decision specifies bytes and a reserved name only; it does not publish a
+combined validator, decoder, encoder, streaming transform, factory, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.

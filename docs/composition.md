@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | Specified | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
@@ -272,6 +272,18 @@ directional workspaces. Interoperability schema 16 appends it once after the
 frozen schema-15 order. Four-direction external verification passed at
 revision `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang-generated bundles.
+
+`lzw-dynamic-range` is the fourth Dynamic Range composition to receive a
+reserved representation. LZW first completes its variable-width LSB-first
+code stream and final zero padding; a fresh per-frame adaptive order-0 range
+model then consumes every finalized byte without interpreting code boundaries.
+For raw frame size `F` and maximum code width `W`, packed staging is bounded by
+`S = ceil(FW/8)` and range payload by `2S + 5`. The format retains the 2^20-byte
+raw-frame cap and validates range exhaustion before the ordinary LZW width,
+reference, `KwKwK`, padding, and exact-raw-extent pass. The independent raw-`A`
+vector fixes packed bytes `41 00`, range payload `00 40 FF FF BF 00 00`, and
+the complete 79-byte frame. No combined validator or public adapter is implied
+yet.
 
 ## Why publication is not automatic
 

@@ -8374,3 +8374,32 @@ discarded and the reviewed seed retained.
   This establishes canonical schema-16 bytes across the three recorded
   producers and bidirectional decoding between the recorded Windows and WSL2
   Linux x86-64 environments.
+
+## 2026-07-25 - LZW plus Dynamic Range reserved representation
+
+- Authoring method: composed marc's already specified LZW packed-code boundary
+  with its independently specified Dynamic Range frame coder, without
+  implementing a combined codec.
+- References used: DD-402, the local LZW variant 1 grammar and width schedule,
+  Dynamic Range variant 1 interval and termination equations, generic frame
+  serializers, checked arithmetic policy, and repository-owned standalone
+  encoders.
+- Known implementations intentionally not consulted: external LZW/range
+  compositions, archive formats, combined-codec source, encoded corpora,
+  pseudocode, test vectors, and test suites.
+- Independent decisions: entropize the complete finalized packed-code bytes,
+  including LZW high-bit padding; reset both states per frame; retain the
+  2^20-byte raw-frame cap; bound packed bytes by `ceil(FW/8)`, range payload by
+  `2S + 5`, and generated entries by the LZW capacity and local limit; validate
+  entropy before the ordinary LZW semantic pass; and reserve no public adapter.
+- Generated-code task description: specify the decoder-visible representation,
+  bounds, error order, known-size stream behavior, and one raw-`A` frame; add a
+  test that obtains LZW bytes, Dynamic Range payload, descriptor, and frame
+  only from independent existing components.
+- Similarity review: the representation and test compose only marc's local
+  primitives. No external byte stream, field order, control flow, naming
+  scheme, or test expression was compared.
+- Local validation: independent integer audit produced payload
+  `00 40 FF FF BF 00 00` for finalized LZW bytes `41 00`; both the standalone-
+  component test and all 1,594 Release tests passed under MSVC/Visual Studio
+  2026 and Clang 22.1.3 on Windows x64 using official CMake 4.3.4.

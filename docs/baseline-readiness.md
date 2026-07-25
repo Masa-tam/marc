@@ -51,6 +51,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
+| `lzw-dynamic-range` | Fourth Dynamic Range composition | Specified | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 16 contains twenty-seven archives: the frozen twenty-six-entry schema-15
@@ -99,6 +100,17 @@ kept separate because it requires artifacts produced outside the local build.
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
+
+`lzw-dynamic-range` is the next queued composition. DD-402 fixes the complete
+LSB-first LZW packed-code boundary, including final dictionary padding, before
+one fresh per-frame Dynamic Range model consumes it. For raw frame size `F` and
+maximum code width `W`, it checks `S = ceil(FW/8)` packed bytes and
+`P = 2S + 5` range-payload bytes, retains the 2^20-byte raw-frame cap, and
+requires range validation before LZW width, reference, `KwKwK`, padding, and
+exact-raw-extent validation. Its independently assembled 79-byte raw-`A` frame
+is covered by a standalone-component vector test. No combined validator,
+streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
+interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,
