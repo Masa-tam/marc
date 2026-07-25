@@ -1899,7 +1899,10 @@ final padding before range planning, checks their combined workspace and
 generic header, and reports the complete serialized extent without writing a
 frame. The deterministic complete-frame encoder uses that plan to serialize
 the header, descriptor, and exact range payload and reproduces the independent
-79-byte vector without partial writes on capacity failure.
+79-byte vector without partial writes on capacity failure. The bounded
+streaming encoder collects one raw frame, prepares one complete immutable
+encoded frame, and drains it before accepting the next frame. Chunking and
+nonterminal `Flush` do not alter canonical bytes.
 
 ### Published LZD plus Adaptive Huffman boundary
 

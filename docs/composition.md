@@ -294,7 +294,10 @@ packed codes and their final zero padding before range planning, enforces the
 combined workspace policy, and reports the complete serialized extent without
 writing a frame. The deterministic complete-frame encoder then serializes the
 generic header, descriptor, and exact range payload and reproduces the
-independent 79-byte vector without partial writes on capacity failure.
+independent 79-byte vector without partial writes on capacity failure. The
+bounded streaming encoder collects and encodes one complete frame at a time,
+then drains its immutable bytes before accepting the next frame; chunking and
+nonterminal `Flush` do not alter the stream.
 
 ## Why publication is not automatic
 

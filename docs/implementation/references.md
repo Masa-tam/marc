@@ -1453,3 +1453,10 @@ DD-407, DD-406's exact plan, marc's explicit generic-header and Dynamic Range
 descriptor serializers, and local Dynamic Range encoder. No external combined
 encoder, frame writer, buffering layout, source code, encoded corpus, or test
 suite was consulted.
+
+The LZW plus Dynamic Range bounded streaming encoder uses only DD-408,
+DD-407's deterministic complete-frame encoder, marc's core process contract,
+explicit stream/LZW parameter serializers, checked arithmetic, and established
+caller-owned frame-draining state conventions. No external streaming encoder,
+state machine, buffering layout, source code, corpus, or test suite was
+consulted.

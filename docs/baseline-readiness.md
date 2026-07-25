@@ -118,9 +118,10 @@ decoder now checks complete destination capacity before entropy output and
 publishes only a successful private raw frame. Its exact-frame planner freezes
 canonical packed bytes before range planning and reports the complete frame
 extent without serialized output. Its deterministic complete-frame encoder
-reproduces the independent 79-byte frame and preserves short destinations. No
-streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
-interoperability entry exists yet.
+reproduces the independent 79-byte frame and preserves short destinations.
+Its bounded streaming encoder now preserves canonical bytes under arbitrary
+input and output starvation and nonterminal `Flush`. No streaming decoder,
+C ABI, CLI, benchmark, fuzz, completion, or interoperability entry exists yet.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

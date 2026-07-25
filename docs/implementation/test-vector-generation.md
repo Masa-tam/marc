@@ -3046,3 +3046,16 @@ and require identical complete frames, then decode one through the
 transactional decoder and require the original raw bytes. Shorten the raw-`A`
 serialized destination by one byte, fill it with a sentinel, and require the
 dedicated capacity error with every destination byte unchanged.
+
+For the LZW plus Dynamic Range bounded streaming encoder, independently build
+the expected stream prefix and concatenate exact complete-frame encodings for
+raw `AB`, `AB`, and final `X`. Feed the streaming encoder one input byte and
+one output byte at a time and require exact equality with that reference.
+
+Repeat with a nonterminal `Flush` after one raw byte and require no shortened
+frame, then finish with the remaining bytes. Submit all input with `EndInput`
+while only one prefix byte can drain and require the retained finish request to
+complete later without being repeated. Exercise empty known-size input,
+insufficient raw, packed, encoded-frame, and encoder-record storage, aggregate
+workspace one byte short, premature and excess input, `ResetBlock`, unknown
+flags, sticky error, and repeated post-end calls.
