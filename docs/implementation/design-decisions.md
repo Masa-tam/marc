@@ -8028,3 +8028,27 @@ Permanent regressions must reject every proper prefix of a canonical stream,
 saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
 All failures preserve the raw output sentinel and remain sticky. This step adds
 no CLI, benchmark, or interoperability entry.
+
+## DD-414: LZW Dynamic Range CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add the explicit `lzw-dynamic-range` selector to the existing transactional
+CLI without changing the default codec. Use a 65,536-byte raw frame, the
+canonical `S = 2F = 131,072` packed-code ceiling, the
+`P = 2S + 5 = 262,149` Dynamic Range payload ceiling, at most 65,280 generated
+LZW entries, and an 8-MiB aggregate buffered-byte policy.
+
+The CLI must initialize the public size-tagged config, set only public format
+parameters and hard limits, query all three direction-specific workspace
+regions and views alignment, and construct the transform through
+`marc_lzw_dynamic_range_create()`. It must not name private record types,
+recalculate opaque record sizes, or invoke a private C++ frame API.
+
+Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
+decoding failure, malformed input, strict trailing data, write failure, close
+failure, or rename failure must leave no requested destination or temporary
+file. Test binary and empty round trips, overwrite refusal, malformed input,
+and a valid stream with trailing data. This step adds no benchmark or
+interoperability entry.

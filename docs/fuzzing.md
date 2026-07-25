@@ -1,12 +1,13 @@
 # Fuzzing
 
-The twenty-seven bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The twenty-eight bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
 Dynamic Range, LZSS plus Blocked Huffman, LZSS plus Adaptive Huffman, LZSS plus
 Dynamic Range, LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, LZ78 plus
 Dynamic Range, LZW plus Blocked Huffman, LZW plus
-Adaptive Huffman, LZD plus Adaptive Huffman, LZD plus Blocked Huffman, LZMW plus
+Adaptive Huffman, LZW plus Dynamic Range, LZD plus Adaptive Huffman,
+LZD plus Blocked Huffman, LZMW plus
 Blocked Huffman, LZMW plus Adaptive Huffman, and checksum-raw profiles. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
 input and also use a strict one-shot decoder where that internal helper exists.
@@ -74,6 +75,10 @@ total output and packed staging at 4 KiB, and one raw frame at 1 KiB. The local
 4,096-entry dictionary policy admits 3,639 phrase records from the minimum
 nine-bit code density; all frame, packed, raw, and typed storage is included in
 the fixed aggregate limit.
+The combined LZW plus Dynamic Range target uses the same fixed LZW storage,
+phrase-record, dual-decoder, and call-ceiling policy. Its supplied input and
+range payload remain capped at 8 KiB, total output and packed staging at
+4 KiB, and one raw frame at 1 KiB; no input controls an allocation.
 The combined LZD plus Adaptive Huffman target exercises the same two decoder
 paths with at most 8 KiB supplied input and Adaptive payload, 4 KiB total
 output and token staging, and one 1 KiB raw frame. The frame limit derives

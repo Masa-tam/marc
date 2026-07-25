@@ -48,6 +48,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzw` | LZW | None | Variant 1 |
 | `lzw-blocked-huffman` | LZW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzw-adaptive-huffman` | LZW | Adaptive Huffman | FGK tree reset per outer frame |
+| `lzw-dynamic-range` | LZW | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |
 | `lzd-blocked-huffman` | Lempel-Ziv Double | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzd-adaptive-huffman` | Lempel-Ziv Double | Adaptive Huffman | FGK tree reset per outer frame |
@@ -111,6 +112,13 @@ The `lzw-adaptive-huffman` adapter uses 65,536-byte raw frames and maximum
 code width 16. Its packed LZW ceiling is 131,072 bytes, its conservative
 Adaptive payload ceiling is 4,325,376 bytes, and its aggregate internal limit
 is 8 MiB. At most 65,280 generated entries are admitted. The public C ABI
+requirements query remains authoritative for all three workspace extents and
+the opaque typed-record alignment.
+
+The `lzw-dynamic-range` adapter uses 65,536-byte raw frames and maximum code
+width 16. Its packed LZW ceiling is 131,072 bytes, its conservative `2S + 5`
+Dynamic Range payload ceiling is 262,149 bytes, and its aggregate internal
+limit is 8 MiB. At most 65,280 generated entries are admitted. The public C ABI
 requirements query remains authoritative for all three workspace extents and
 the opaque typed-record alignment.
 

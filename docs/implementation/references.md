@@ -1488,3 +1488,9 @@ The LZW plus Dynamic Range bounded fuzz boundary uses only DD-413, marc's local
 complete-frame and streaming decoders, fixed-array limits, process-result
 invariants, and the first-party LZW fuzz harness. No external fuzz target,
 malformed corpus, source code, or test suite was consulted.
+
+The `lzw-dynamic-range` CLI adapter uses only DD-414, the published marc C
+config, requirements query and factory, the existing local transactional
+temporary-file loop, and the repository-owned CLI regression script. No
+external archive tool, command syntax, combined-codec adapter, workspace
+policy, source code, or test suite was consulted.

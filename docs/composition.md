@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | Candidate | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | C ABI | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Candidate | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
@@ -306,10 +306,11 @@ trusted configuration or local limits, with checked aggregate accounting.
 Its bounded C requirements query and factory now expose those three workspace
 roles without exposing private LZW record layouts. The public C completion
 matrix now covers required binary classes, deterministic arbitrary
-chunking, stable terminal states, and malformed-final-frame atomicity; CLI,
-benchmark, and interoperability admission remain pending. A bounded dual-path
+chunking, stable terminal states, and malformed-final-frame atomicity;
+benchmark and interoperability admission remain pending. A bounded dual-path
 decoder fuzz target and permanent truncation, saturated-extent, and descriptor
-regressions are now present.
+regressions are now present. Its explicit transactional CLI selector reaches
+the composition only through the public C requirements query and factory.
 
 ## Why publication is not automatic
 

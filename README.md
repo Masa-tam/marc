@@ -9,11 +9,11 @@ compression components. Its public version 1 profiles include five standalone
 entropy codecs, all six required dictionary codecs, and every required
 dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
 profile with mandatory per-frame CRC-32C and all six dictionary codecs composed
-with Adaptive Huffman are also available. LZ77, LZSS, and LZ78 are additionally
-composed with Dynamic Range. All twenty-seven profiles are exposed through a
-small C ABI and the command-line tool. The format and API are still under
-development and version 0.x streams are not yet promised long-term
-compatibility.
+with Adaptive Huffman are also available. LZ77, LZSS, LZ78, and LZW are
+additionally composed with Dynamic Range. All twenty-eight profiles are
+exposed through a small C ABI and the command-line tool. The format and API are
+still under development and version 0.x streams are not yet promised
+long-term compatibility.
 
 The [documentation index](docs/README.md) separates library and format guides
 from validation material and chronological implementation records.
@@ -75,14 +75,15 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for all twenty-seven public profiles.
+and peak caller-owned codec workspace for the twenty-seven benchmark-admitted
+profiles.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
 
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-bounded stream-decoder fuzz targets for all twenty-seven public profiles. Build
+bounded stream-decoder fuzz targets for all twenty-eight public profiles. Build
 and corpus instructions are in
 [`docs/fuzzing.md`](docs/fuzzing.md).
 

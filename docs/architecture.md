@@ -1894,8 +1894,8 @@ validator. Its bounded private decoder also admits raw capacity and aggregate
 storage before entropy output, then iteratively reconstructs the validated
 phrase graph into private raw staging. The internal transactional boundary
 also checks destination capacity before entropy output and copies the complete
-private raw frame only after success. Public factories remain a later
-boundary. The exact-frame planner fixes the canonical packed-code extent and
+private raw frame only after success. Public factories retain that transaction.
+The exact-frame planner fixes the canonical packed-code extent and
 final padding before range planning, checks their combined workspace and
 generic header, and reports the complete serialized extent without writing a
 frame. The deterministic complete-frame encoder uses that plan to serialize
@@ -1922,6 +1922,12 @@ The bounded dual-path fuzz boundary fixes all encoded, packed, raw, output, and
 phrase storage before accepting input and enforces a finite call budget. Its
 permanent regressions preserve frame atomicity across every canonical
 truncation, saturated extents, and invalid Dynamic Range descriptor padding.
+The explicit `lzw-dynamic-range` CLI adapter selects 65,536-byte raw frames,
+a 131,072-byte packed ceiling, a 262,149-byte range-payload ceiling, 65,280
+generated dictionary entries, and an 8-MiB aggregate policy. It obtains all
+three concrete workspace extents and opaque alignment from the public C
+requirements query and uses the common temporary-file transaction, so a
+malformed or trailing stream cannot publish a destination.
 
 ### Published LZD plus Adaptive Huffman boundary
 

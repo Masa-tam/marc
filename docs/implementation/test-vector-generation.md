@@ -3124,3 +3124,16 @@ proper truncation, saturated generic-frame length fields, and a nonzero final
 reserved byte in the 16-byte Dynamic Range descriptor. Each must publish zero
 bytes from the failing frame, preserve its sentinel, and return the same error
 code and byte position on the next call.
+
+For `lzw-dynamic-range` CLI admission, reuse the repository-standard binary
+fixture formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and
+decode with the explicit selector and compare the restored file byte for byte.
+Repeat encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 131,072`, `P = 262,149`, at most
+65,280 generated entries, and an 8-MiB aggregate policy. Actual primary,
+secondary, and aligned opaque-view workspace requirements must come only from
+the public C query.

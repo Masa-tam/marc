@@ -2358,6 +2358,13 @@ LZW validator checks width transitions, references, `KwKwK`, final padding,
 and the declared raw extent. This boundary reconstructs and publishes no raw
 bytes; later decoding and streaming work must retain the same validation order.
 
+The public C factory and `lzw-dynamic-range` CLI selector use this exact
+representation. The CLI selects 65,536-byte raw frames, maximum code width 16,
+a 131,072-byte packed ceiling, a 262,149-byte Dynamic Range payload ceiling,
+65,280 generated entries, and an 8-MiB aggregate internal limit. It obtains
+all concrete workspace extents and opaque alignment from the public
+requirements query.
+
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 
 The profile name is `lzw-adaptive-huffman`. This composition uses
