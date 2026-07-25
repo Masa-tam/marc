@@ -289,7 +289,10 @@ private decoder checks raw capacity and aggregate storage before entropy
 output, then iteratively reconstructs the completely validated phrase graph
 into bounded raw staging. The internal transactional decoder also admits
 complete destination capacity before entropy output and copies the private raw
-frame only after every layer succeeds.
+frame only after every layer succeeds. The exact-frame planner fixes canonical
+packed codes and their final zero padding before range planning, enforces the
+combined workspace policy, and reports the complete serialized extent without
+writing a frame.
 
 ## Why publication is not automatic
 

@@ -8493,3 +8493,32 @@ discarded and the reviewed seed retained.
   transactional-decoder, and documentation tests passed, followed by all 1,607
   Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range exact-frame planning
+
+- Authoring method: composed marc's existing deterministic LZW planner and
+  encoder with its Dynamic Range planner at the already specified finalized
+  packed-byte boundary.
+- References used: DD-406, DD-402, the local LZW variant-1 planner and encoder,
+  Dynamic Range variant-1 planner, generic frame validator, checked arithmetic,
+  and caller-owned workspace conventions.
+- Known implementations intentionally not consulted: external LZW/range
+  encoders, combined planning algorithms, buffering layouts, source code,
+  encoded corpora, and test suites.
+- Independent decisions: require one nonempty exact frame; fix complete
+  canonical packed bytes including final zero padding before range planning;
+  enforce `S <= ceil(FW/8)` and `P <= 2S + 5`; count encoder records, packed
+  staging, descriptor, and exact payload together; validate the synthesized
+  generic header; and write no serialized frame at this boundary.
+- Generated-code task description: add the minimal planner result fields and
+  errors; require the raw-`A` packed bytes and 79-byte extent; repeat a
+  multi-code plan for deterministic equality; reject short encoder and packed
+  workspaces; enforce the exact aggregate limit; and reject empty or
+  frame-inconsistent raw input.
+- Similarity review: control flow composes only local marc layer contracts and
+  independently documented bounds. No external planning structure, workspace
+  policy, error taxonomy, naming scheme, or test expression was compared.
+- Local validation: all nineteen focused vector, validator, planner, decoder,
+  and documentation tests passed, followed by all 1,611 Release tests under
+  both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
+  CMake 4.3.4.

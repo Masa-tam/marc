@@ -1441,3 +1441,9 @@ DD-404's private reconstruction boundary, caller-owned destination capacity,
 and marc's established copy-after-success convention. No external combined
 decoder, publication protocol, buffering layout, source code, malformed
 corpus, or test suite was consulted.
+
+The LZW plus Dynamic Range exact-frame planner uses only DD-406, marc's local
+LZW variant-1 planner and encoder, Dynamic Range variant-1 planner, generic
+frame validator, caller-owned workspaces, and checked arithmetic. No external
+combined encoder, planning algorithm, buffering layout, source code, encoded
+corpus, or test suite was consulted.

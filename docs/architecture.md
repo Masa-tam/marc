@@ -1894,7 +1894,10 @@ storage before entropy output, then iteratively reconstructs the validated
 phrase graph into private raw staging. The internal transactional boundary
 also checks destination capacity before entropy output and copies the complete
 private raw frame only after success. Public factories remain a later
-boundary.
+boundary. The exact-frame planner fixes the canonical packed-code extent and
+final padding before range planning, checks their combined workspace and
+generic header, and reports the complete serialized extent without writing a
+frame.
 
 ### Published LZD plus Adaptive Huffman boundary
 

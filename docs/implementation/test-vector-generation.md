@@ -3021,3 +3021,17 @@ staging changes. Corrupt the raw-`A` range payload independently and require
 the complete caller-visible output sentinel to remain unchanged. These tests
 establish atomic publication for one complete frame only; they make no
 streaming-decoder claim.
+
+For the LZW plus Dynamic Range exact-frame planner, pass raw `A` through the
+existing LZW plan and encoder into two-byte packed staging. Require bytes
+`41 00`, one code, zero encoder entries, a 16-byte descriptor, seven payload
+bytes, and the complete 79-byte serialized extent without supplying serialized
+output.
+
+Plan raw `ABABABA` twice with separately initialized packed staging and require
+identical packed bytes and every reported extent. For raw `AB`, shorten the
+encoder workspace and packed staging independently; the former must report its
+dedicated capacity error, while the latter must leave its sentinel unchanged.
+Set the aggregate workspace limit one byte below the raw-`A` requirement and
+require rejection after exact entropy planning. Also reject empty input and a
+raw extent inconsistent with the stream frame contract.

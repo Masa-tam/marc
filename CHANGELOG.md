@@ -20,7 +20,9 @@ format versions, and C ABI versions are independent namespaces.
   stream without publishing caller-visible bytes. Its internal transactional
   decoder checks destination capacity before entropy work and copies the
   complete private raw extent only after every layer succeeds, leaving output
-  unchanged on all failures.
+  unchanged on all failures. Its exact-frame planner now freezes canonical
+  packed LZW bytes before range planning and reports the complete serialized
+  extent without writing serialized output.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

@@ -251,6 +251,97 @@ TEST(LzwDynamicRangeFrameValidator,
               LzwDynamicRangeFrameValidationError::unsupported_pipeline);
 }
 
+TEST(LzwDynamicRangeFramePlanner, PlansExactHandVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    const auto result = marc::frame::plan_lzw_dynamic_range_frame(
+        stream_for_size(raw.size()), {}, {}, 0, 0, raw, {}, staging);
+    ASSERT_EQ(result.error, LzwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, raw.size());
+    EXPECT_EQ(result.dictionary_size, packed_code_a.size());
+    EXPECT_EQ(result.encoder_entries, 0U);
+    EXPECT_EQ(result.code_count, 1U);
+    EXPECT_EQ(result.descriptor_size, 16U);
+    EXPECT_EQ(result.payload_size, 7U);
+    EXPECT_EQ(result.serialized_size, single_code_frame.size());
+    EXPECT_EQ(staging, packed_code_a);
+}
+
+TEST(LzwDynamicRangeFramePlanner, PlansMultiCodeFrameDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}};
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> workspace(
+        marc::dictionary::internal::lzw_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 2> first{};
+    std::array<std::byte, raw.size() * 2> second{};
+    const auto stream = stream_for_size(raw.size());
+    const auto first_plan = marc::frame::plan_lzw_dynamic_range_frame(
+        stream, {}, {}, 0, 0, raw, workspace, first);
+    ASSERT_EQ(first_plan.error, LzwDynamicRangeFrameValidationError::none);
+    const auto second_plan = marc::frame::plan_lzw_dynamic_range_frame(
+        stream, {}, {}, 0, 0, raw, workspace, second);
+    ASSERT_EQ(second_plan.error, LzwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(first_plan.dictionary_size, second_plan.dictionary_size);
+    EXPECT_EQ(first_plan.payload_size, second_plan.payload_size);
+    EXPECT_EQ(first_plan.serialized_size, second_plan.serialized_size);
+    EXPECT_EQ(first_plan.code_count, second_plan.code_count);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{first}.first(first_plan.dictionary_size),
+        std::span<const std::byte>{second}.first(second_plan.dictionary_size)));
+}
+
+TEST(LzwDynamicRangeFramePlanner, RejectsWorkspaceCapacityAtomically) {
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    const auto entries =
+        marc::dictionary::internal::lzw_encoder_workspace_entries(
+            raw.size(), {});
+    ASSERT_GT(entries, 0U);
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> short_workspace(
+        entries - 1);
+    std::array<std::byte, 3> staging{};
+    staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::plan_lzw_dynamic_range_frame(
+                  stream_for_size(raw.size()), {}, {}, 0, 0, raw,
+                  short_workspace, staging).error,
+              LzwDynamicRangeFrameValidationError::
+                  encoder_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> workspace(entries);
+    EXPECT_EQ(marc::frame::plan_lzw_dynamic_range_frame(
+                  stream_for_size(raw.size()), {}, {}, 0, 0, raw, workspace,
+                  std::span<std::byte>{staging}.first(2)).error,
+              LzwDynamicRangeFrameValidationError::
+                  dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(LzwDynamicRangeFramePlanner, EnforcesAggregateAndFrameExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, 2> staging{};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    limits.max_internal_buffered_bytes = 24;
+    EXPECT_EQ(marc::frame::plan_lzw_dynamic_range_frame(
+                  stream_for_size(raw.size()), {}, limits, 0, 0, raw, {},
+                  staging).error,
+              LzwDynamicRangeFrameValidationError::workspace_limit);
+    EXPECT_EQ(marc::frame::plan_lzw_dynamic_range_frame(
+                  stream_for_size(1), {}, {}, 0, 0, {}, {}, staging).error,
+              LzwDynamicRangeFrameValidationError::input_size_mismatch);
+    EXPECT_EQ(marc::frame::plan_lzw_dynamic_range_frame(
+                  stream_for_size(2), {}, {}, 0, 0, raw, {}, staging).error,
+              LzwDynamicRangeFrameValidationError::input_size_mismatch);
+}
+
 TEST(LzwDynamicRangeFrameDecoder, ReconstructsHandAndMultiCodeFrames) {
     std::array<std::byte, 2> staging{};
     std::array<std::byte, 1> raw_staging{};

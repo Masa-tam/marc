@@ -2275,8 +2275,10 @@ before allocation or mutation.
 
 Encoding must freeze the deterministic LZW parse, width schedule, packed bytes,
 and final zero padding in caller-owned staging before Dynamic Range planning.
-It must validate the complete header, descriptor, payload, destination extent,
-and workspace bounds before publishing any frame byte.
+The exact-frame planner now validates the complete header, exact descriptor and
+payload extents, and aggregate workspace bounds and reports the serialized
+extent without writing serialized output. A later encoder must also validate
+destination extent before publishing any frame byte.
 
 Decoding is transactional at the outer frame boundary. It first validates the
 pipeline IDs and variants, LZW parameters, sequence, generic extents, one-block
