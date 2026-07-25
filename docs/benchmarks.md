@@ -25,6 +25,7 @@ marc_benchmark lz78-dynamic-range corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzw-adaptive-huffman corpus.bin 5
+marc_benchmark lzw-dynamic-range corpus.bin 5
 marc_benchmark lzd corpus.bin 5
 marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzd-adaptive-huffman corpus.bin 5
@@ -179,6 +180,17 @@ from the public C ABI. A complete byte-exact round trip succeeds before either
 direction is timed. The reported caller-reserved peak may exceed 8 MiB because
 the conservative complete-frame reservation coexists with packed, raw, and
 typed-record workspaces.
+
+`lzw-dynamic-range` uses the CLI's 65,536-byte raw frame, maximum code width
+16, 131,072-byte packed LZW ceiling, 262,149-byte range-payload ceiling, and
+8-MiB active aggregate policy. Checked complete-stream capacity is
+`80 + 4N + 77K` for input extent `N` and nonempty frame count `K`, covering
+`S <= 2N`, `P <= 2S + 5`, one 16-byte descriptor, and one 56-byte header per
+frame. Both direction-specific three-region workspaces and opaque alignment
+come from the public C ABI, and an untimed byte-exact round trip succeeds
+before measurement. A one-iteration MSVC Release smoke over the 4,528-byte
+README encoded 2,948 bytes, ratio 0.651, and reported 9,629,752 bytes of peak
+caller reservation; throughput from this small input is descriptive only.
 
 `lzd-blocked-huffman` uses the CLI's one-MiB raw frames, 65,536-symbol entropy
 blocks, exact four-MiB token bound, at most 64 entropy blocks, and 65,536-entry

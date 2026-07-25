@@ -307,10 +307,13 @@ Its bounded C requirements query and factory now expose those three workspace
 roles without exposing private LZW record layouts. The public C completion
 matrix now covers required binary classes, deterministic arbitrary
 chunking, stable terminal states, and malformed-final-frame atomicity;
-benchmark and interoperability admission remain pending. A bounded dual-path
+interoperability admission remains pending. A bounded dual-path
 decoder fuzz target and permanent truncation, saturated-extent, and descriptor
 regressions are now present. Its explicit transactional CLI selector reaches
-the composition only through the public C requirements query and factory.
+the composition only through the public C requirements query and factory. The
+dependency-free benchmark uses that same profile, checked
+`80 + 4N + 77K` capacity, mandatory untimed round trip, and queried
+directional workspaces.
 
 ## Why publication is not automatic
 

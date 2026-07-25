@@ -2364,6 +2364,9 @@ a 131,072-byte packed ceiling, a 262,149-byte Dynamic Range payload ceiling,
 65,280 generated entries, and an 8-MiB aggregate internal limit. It obtains
 all concrete workspace extents and opaque alignment from the public
 requirements query.
+The dependency-free benchmark selects the same unchanged profile. Its checked
+capacity, mandatory untimed round trip, timing, ratio, and workspace reporting
+are tooling policy and add no format field or variant.
 
 ## LZW variant 1 plus Adaptive Huffman FGK variant 1
 

@@ -28,6 +28,7 @@ constexpr std::uint64_t lzss_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzw_adaptive_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lzw_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzd_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzmw_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz77_token_size = 16;
@@ -61,6 +62,7 @@ enum class Codec {
     lzw,
     lzw_blocked_huffman,
     lzw_adaptive_huffman,
+    lzw_dynamic_range,
     lzd,
     lzd_blocked_huffman,
     lzd_adaptive_huffman,
@@ -100,6 +102,7 @@ struct CodecConfig {
     marc_lzw_config lzw{};
     marc_lzw_blocked_huffman_config lzw_blocked_huffman{};
     marc_lzw_adaptive_huffman_config lzw_adaptive_huffman{};
+    marc_lzw_dynamic_range_config lzw_dynamic_range{};
     marc_lzd_config lzd{};
     marc_lzd_blocked_huffman_config lzd_blocked_huffman{};
     marc_lzd_adaptive_huffman_config lzd_adaptive_huffman{};
@@ -154,6 +157,8 @@ struct Measurement {
         return "lzw-blocked-huffman";
     if (codec == Codec::lzw_adaptive_huffman)
         return "lzw-adaptive-huffman";
+    if (codec == Codec::lzw_dynamic_range)
+        return "lzw-dynamic-range";
     if (codec == Codec::lzd) return "lzd";
     if (codec == Codec::lzd_blocked_huffman)
         return "lzd-blocked-huffman";
@@ -198,6 +203,8 @@ struct Measurement {
         return UINT64_C(2);
     if (codec == Codec::lzw_adaptive_huffman)
         return UINT64_C(2) * adaptive_payload_bytes_per_symbol;
+    if (codec == Codec::lzw_dynamic_range)
+        return UINT64_C(4);
     if (codec == Codec::lzd_adaptive_huffman)
         return UINT64_C(4) * adaptive_payload_bytes_per_symbol;
     if (codec == Codec::lzmw_adaptive_huffman)
@@ -237,7 +244,8 @@ struct Measurement {
     }
     if (codec == Codec::lz77_dynamic_range
         || codec == Codec::lzss_dynamic_range
-        || codec == Codec::lz78_dynamic_range)
+        || codec == Codec::lz78_dynamic_range
+        || codec == Codec::lzw_dynamic_range)
         return entropy_descriptor_size + UINT64_C(5);
     if (codec == Codec::lz77_adaptive_huffman
         || codec == Codec::lzss_adaptive_huffman
@@ -269,6 +277,8 @@ struct Measurement {
                     ? lz78_dynamic_range_frame_size
                 : codec == Codec::lzw_adaptive_huffman
                     ? lzw_adaptive_frame_size
+                : codec == Codec::lzw_dynamic_range
+                    ? lzw_dynamic_range_frame_size
                     : codec == Codec::lzd_adaptive_huffman
                         ? lzd_adaptive_frame_size
                         : codec == Codec::lzmw_adaptive_huffman
@@ -278,6 +288,7 @@ struct Measurement {
                || codec == Codec::lz77_dynamic_range
                || codec == Codec::lzss_dynamic_range
                || codec == Codec::lz78_dynamic_range
+               || codec == Codec::lzw_dynamic_range
             ? UINT64_C(5) : UINT64_C(0))
         + (codec == Codec::rans
             ? block_count * rans_state_size : UINT64_C(0))
@@ -333,6 +344,8 @@ struct Measurement {
     } else if (codec == Codec::lz78_dynamic_range) {
         maximum_buffered = UINT64_C(4) << 20;
     } else if (codec == Codec::lzw_adaptive_huffman) {
+        maximum_buffered = UINT64_C(8) << 20;
+    } else if (codec == Codec::lzw_dynamic_range) {
         maximum_buffered = UINT64_C(8) << 20;
     } else if (codec == Codec::lzd_adaptive_huffman) {
         maximum_buffered = UINT64_C(16) << 20;
@@ -628,6 +641,21 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_dictionary_entries =
             (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
+    } else if (codec == Codec::lzw_dynamic_range) {
+        auto& config = result.lzw_dynamic_range;
+        if (marc_lzw_dynamic_range_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size =
+            static_cast<std::uint32_t>(lzw_dynamic_range_frame_size);
+        config.max_frame_size = lzw_dynamic_range_frame_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_dictionary_serialized_size =
+            lzw_dynamic_range_frame_size * UINT64_C(2);
+        config.max_internal_buffered_bytes = maximum_buffered;
+        config.max_dictionary_entries =
+            (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
     } else if (codec == Codec::lzd) {
         if (marc_lzd_config_init(direction, &result.lzd) != MARC_STATUS_OK)
             return false;
@@ -776,6 +804,9 @@ struct Measurement {
     if (config.codec == Codec::lzw_adaptive_huffman)
         return marc_lzw_adaptive_huffman_workspace_requirements(
             &config.lzw_adaptive_huffman, &requirements);
+    if (config.codec == Codec::lzw_dynamic_range)
+        return marc_lzw_dynamic_range_workspace_requirements(
+            &config.lzw_dynamic_range, &requirements);
     if (config.codec == Codec::lzd)
         return marc_lzd_workspace_requirements(&config.lzd, &requirements);
     if (config.codec == Codec::lzd_blocked_huffman)
@@ -869,6 +900,9 @@ struct Measurement {
         return marc_lzw_adaptive_huffman_create(
             &config.lzw_adaptive_huffman, primary, secondary, views,
             transform);
+    if (config.codec == Codec::lzw_dynamic_range)
+        return marc_lzw_dynamic_range_create(
+            &config.lzw_dynamic_range, primary, secondary, views, transform);
     if (config.codec == Codec::lzd)
         return marc_lzd_create(
             &config.lzd, primary, secondary, views, transform);
@@ -939,6 +973,8 @@ struct Measurement {
                     ? lz78_dynamic_range_frame_size
                 : codec == Codec::lzw_adaptive_huffman
                     ? lzw_adaptive_frame_size
+                : codec == Codec::lzw_dynamic_range
+                    ? lzw_dynamic_range_frame_size
                     : codec == Codec::lzd_adaptive_huffman
                         ? lzd_adaptive_frame_size
                         : codec == Codec::lzmw_adaptive_huffman
@@ -1101,6 +1137,7 @@ void print_usage() {
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, "
                  "lzw, lzw-blocked-huffman, lzw-adaptive-huffman, "
+                 "lzw-dynamic-range, "
                  "lzd, lzd-blocked-huffman, lzd-adaptive-huffman, lzmw, "
                  "lzmw-blocked-huffman, lzmw-adaptive-huffman\n";
 }
@@ -1237,6 +1274,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzw_blocked_huffman;
     else if (name == "lzw-adaptive-huffman")
         codec = Codec::lzw_adaptive_huffman;
+    else if (name == "lzw-dynamic-range")
+        codec = Codec::lzw_dynamic_range;
     else if (name == "lzd") codec = Codec::lzd;
     else if (name == "lzd-blocked-huffman")
         codec = Codec::lzd_blocked_huffman;

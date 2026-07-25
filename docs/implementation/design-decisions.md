@@ -8052,3 +8052,27 @@ failure, or rename failure must leave no requested destination or temporary
 file. Test binary and empty round trips, overwrite refusal, malformed input,
 and a valid stream with trailing data. This step adds no benchmark or
 interoperability entry.
+
+## DD-415: LZW Dynamic Range benchmark measures the public CLI profile
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add `lzw-dynamic-range` to the dependency-free benchmark with the exact DD-414
+public profile: 65,536-byte raw frames, 131,072 packed LZW bytes, 262,149
+range-payload bytes, maximum code width 16, 65,280 generated entries, and an
+8-MiB aggregate policy.
+
+For input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `80 + 4N + 77K`. The `4N` term covers the conservative
+`S <= 2N` and `P <= 2S + 5` payload relation; each frame contributes its
+56-byte header, 16-byte descriptor, and five termination bytes. Overflow must
+fail before allocating the encoded buffer.
+
+Construct both directions only through the public config initializer,
+requirements query, factory, process, and destroy lifecycle. Require one
+untimed byte-exact round trip before timing fresh transforms. Report encoded
+ratio, encode/decode throughput, all six queried workspace extents, and the
+larger three-region sum as descriptive peak workspace. Add a one-iteration
+smoke test with no performance threshold. This step adds no interoperability
+entry.

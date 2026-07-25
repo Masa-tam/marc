@@ -51,7 +51,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-dynamic-range` | First Dynamic Range composition | Ready | Included |
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
-| `lzw-dynamic-range` | Fourth Dynamic Range composition | CLI | Not included |
+| `lzw-dynamic-range` | Fourth Dynamic Range composition | Benchmark | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 16 contains twenty-seven archives: the frozen twenty-six-entry schema-15
@@ -97,7 +97,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -126,12 +126,14 @@ decoder validates complete frames before raw draining and preserves frame
 atomicity under later corruption. Its internal direction-specific profile now
 calculates every caller-owned byte region and safely partitions opaque aligned
 LZW records. A bounded C requirements query and transform factory now connect
-both streaming directions through those opaque regions. No benchmark or
-interoperability entry exists yet. Its public-ABI completion matrix
+both streaming directions through those opaque regions. No interoperability
+entry exists yet. Its public-ABI completion matrix
 now covers determinism, arbitrary chunking, terminal states, and malformed
 final-frame atomicity. A bounded dual-path decoder fuzz target and permanent
 atomic malformed regressions are now present. Its explicit transactional CLI
-selector uses only the public requirements query and factory.
+selector uses only the public requirements query and factory. The
+dependency-free benchmark uses the same profile, requires an untimed
+byte-exact round trip, and reports queried directional workspaces.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,
