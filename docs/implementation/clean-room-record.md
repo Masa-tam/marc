@@ -8145,3 +8145,29 @@ discarded and the reviewed seed retained.
 - Local validation: all five focused streaming-encoder tests and all 1,571
   Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range bounded streaming decoder
+
+- Authoring method: wrapped marc's private complete-frame decoder in the
+  repository's established prefix, header-preflight, admitted-body collection,
+  and validated-frame drain state machine.
+- References used: DD-394, DD-390, the local transform status contract, generic
+  stream and frame parsers, checked storage arithmetic, and caller-owned
+  workspaces.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, malformed corpora, source code, chunk
+  schedules, error taxonomies, and test suites.
+- Independent decisions: reject impossible profile and storage extents after
+  the fixed header and before body collection; validate and reconstruct a
+  complete frame privately; publish only that completed frame; and retain
+  prior frame commits on a later error.
+- Generated-code task description: add the bounded streaming decoder and prove
+  one-byte decode, frame-atomic later corruption, workspace and aggregate
+  failures, strict truncation and trailing handling, empty and premature end,
+  protocol failures, and header-stage extent rejection.
+- Similarity review: the state transitions compose only marc's existing local
+  contracts. No external control flow, malformed vector, or test expression
+  was compared.
+- Local validation: all six focused streaming-decoder tests and all 1,577
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

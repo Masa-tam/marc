@@ -2843,3 +2843,19 @@ reference bytes. Reject short raw, token, encoder-entry, and serialized-frame
 storage, and an active raw-plus-token-plus-entry-plus-frame aggregate one byte
 short. Also cover empty input, premature end, `ResetBlock`, an unknown flag,
 and input beyond the declared size.
+
+For bounded LZ78 plus Dynamic Range streaming decode, encode the same raw
+`ABABX` as two-byte frames and feed the resulting stream with one-byte input
+and output capacities. Require exact raw bytes and a stable ended state.
+Corrupt the final frame descriptor and require only the first completed frame
+to be published; every destination byte reserved for the failed frame remains
+a sentinel.
+
+Exercise serialized-frame, token, private-raw, phrase, and aggregate workspace
+shortages independently. End the stream one byte early, append one trailing
+byte, issue `ResetBlock`, and issue an unknown flag; require stable errors.
+Also cover empty input, nonterminal `Flush`, and `EndInput` after only the first
+frame. Finally, rewrite the first frame header with `S > 8F`, serialize its
+otherwise valid checksum, and provide no body; require rejection immediately
+after the fixed header, proving that impossible extents are not admitted for
+body collection.

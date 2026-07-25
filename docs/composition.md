@@ -252,8 +252,11 @@ exact-frame encoder replans those frozen tokens, reproduces the independent
 83-byte frame, and rejects short output without a partial write. Its bounded
 known-size streaming encoder retains complete exact frames while draining and
 preserves one-shot bytes across one-byte input/output, nonterminal `Flush`, and
-retained `EndInput`. No streaming decoder, public factory, CLI selector,
-benchmark, fuzz target, or interoperability entry is implied.
+retained `EndInput`. Its matching bounded streaming decoder rejects impossible
+extents after the fixed frame header, collects one admitted frame, validates
+and reconstructs it privately, and only then drains its raw bytes. No public
+factory, CLI selector, benchmark, fuzz target, or interoperability entry is
+implied.
 
 ## Why publication is not automatic
 

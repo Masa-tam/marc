@@ -1365,3 +1365,10 @@ completed exact-frame encoder, marc's transform status contract, checked
 caller-owned storage, known-size stream header rules, and existing prefix/frame
 drain convention. No external streaming encoder, buffering state machine,
 source code, chunk schedule, error taxonomy, or test suite was consulted.
+
+The LZ78 plus Dynamic Range bounded streaming decoder uses only DD-394, the
+completed private complete-frame decoder, marc's transform status contract,
+generic prefix and frame parsers, checked caller-owned storage, and existing
+transactional frame-publication convention. No external streaming decoder,
+buffering state machine, malformed corpus, source code, chunk schedule, error
+taxonomy, or test suite was consulted.

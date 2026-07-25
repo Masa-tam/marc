@@ -1432,6 +1432,14 @@ chunks. `Flush` does not close a partial frame. `EndInput` is accepted only
 with the complete remaining declared input and remains latched until every
 prefix and frame byte drains.
 
+The matching bounded streaming decoder incrementally collects the fixed
+80-byte prefix and one 56-byte frame header. Before accepting the frame body,
+it rejects impossible `S`, `P`, descriptor, caller-workspace, serialized-frame,
+and aggregate extents. It then collects exactly the admitted body, validates
+and reconstructs the complete frame into private raw storage, and only then
+drains raw bytes. A malformed or truncated later frame therefore publishes
+none of that frame while leaving earlier completed frames committed.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

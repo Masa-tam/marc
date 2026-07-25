@@ -1698,6 +1698,16 @@ collecting the next. A nonterminal `Flush` never creates a shorter frame.
 `EndInput` must accompany the complete remaining declared input and is retained
 while prefix or frame bytes remain pending.
 
+The matching bounded streaming decoder also changes no representation. It
+collects the 80-byte prefix, then each 56-byte frame header, and checks the
+profile equations, exact serialized extent, caller-owned staging capacities,
+and aggregate buffered-byte limit before collecting that frame's descriptor
+and payload. Once the complete admitted frame is present, it invokes the
+private validator and reconstructor and makes raw bytes drainable only after
+the whole frame succeeds. `EndInput` before the declared stream extent,
+trailing input after it, and any malformed current frame are sticky errors;
+bytes from an earlier completed frame remain committed.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

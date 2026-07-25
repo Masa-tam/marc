@@ -7566,3 +7566,23 @@ sticky error states. Reject `ResetBlock` and unknown flags. Count raw, token,
 encoder-entry, and serialized-frame storage in the active aggregate. This step
 adds no streaming decoder, C ABI, CLI, benchmark, fuzz, or interoperability
 claim.
+
+## DD-394: LZ78 Dynamic Range streaming decode admits only complete frames
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add the matching bounded streaming decoder above DD-390. Incrementally collect
+and validate the fixed 80-byte prefix, then collect one 56-byte frame header.
+Before accepting its body, reject impossible `S`, `P`, descriptor, exact
+serialized-frame, token staging, private raw, aligned phrase-workspace, and
+aggregate buffered-byte extents.
+
+Collect only the admitted descriptor and payload, invoke the existing private
+complete-frame decoder, and expose raw bytes only after validation and
+reconstruction both succeed. A malformed later frame publishes none of that
+frame; already drained frames remain committed. Preserve one-byte input and
+output behavior, retained `EndInput`, stable ended and sticky error states,
+strict truncation and trailing-data rejection, and rejection of `ResetBlock`
+and unknown flags. This step adds no C ABI, CLI, benchmark, fuzz, or
+interoperability claim.

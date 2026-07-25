@@ -26,7 +26,10 @@ format versions, and C ABI versions are independent namespaces.
   short serialized destinations without partial writes. Its bounded streaming
   encoder preserves those exact concatenated frame bytes under one-byte
   input/output, output starvation, nonterminal `Flush`, and retained
-  `EndInput`.
+  `EndInput`. Its matching bounded streaming decoder rejects impossible frame
+  extents before collecting a body, validates and reconstructs each complete
+  frame in private storage, and publishes no byte from a malformed later
+  frame.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
