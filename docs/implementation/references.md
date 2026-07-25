@@ -1447,3 +1447,9 @@ LZW variant-1 planner and encoder, Dynamic Range variant-1 planner, generic
 frame validator, caller-owned workspaces, and checked arithmetic. No external
 combined encoder, planning algorithm, buffering layout, source code, encoded
 corpus, or test suite was consulted.
+
+The LZW plus Dynamic Range deterministic complete-frame encoder uses only
+DD-407, DD-406's exact plan, marc's explicit generic-header and Dynamic Range
+descriptor serializers, and local Dynamic Range encoder. No external combined
+encoder, frame writer, buffering layout, source code, encoded corpus, or test
+suite was consulted.

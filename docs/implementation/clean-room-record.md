@@ -8522,3 +8522,30 @@ discarded and the reviewed seed retained.
   and documentation tests passed, followed by all 1,611 Release tests under
   both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64 using official
   CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range deterministic frame encoding
+
+- Authoring method: placed explicit frame serialization above DD-406's exact
+  plan and reused marc's existing generic-header, Dynamic Range descriptor,
+  and payload writers.
+- References used: DD-407, DD-406, the independent 79-byte raw-`A` vector,
+  local explicit serializers, local Dynamic Range planner and encoder, and
+  caller-owned output conventions.
+- Known implementations intentionally not consulted: external LZW/range
+  encoders, frame writers, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: complete planning before output-capacity admission;
+  require the repeated range plan to match the frozen payload extent; serialize
+  header and descriptor explicitly; encode only the exact payload region; and
+  preserve every output byte on planner or capacity failure.
+- Generated-code task description: add the minimal complete-frame encoder and
+  output-capacity error; reproduce the independent 79-byte frame; encode a
+  multi-code input twice and transactionally decode it; and preserve a
+  one-byte-short destination sentinel.
+- Similarity review: the implementation directly composes local marc plans and
+  serializers. No external frame-writing control flow, error taxonomy, naming
+  scheme, output mutation schedule, or test expression was compared.
+- Local validation: all twenty-two focused vector, validator, planner,
+  encoder, decoder, and documentation tests passed, followed by all 1,614
+  Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.

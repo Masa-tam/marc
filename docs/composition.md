@@ -292,7 +292,9 @@ complete destination capacity before entropy output and copies the private raw
 frame only after every layer succeeds. The exact-frame planner fixes canonical
 packed codes and their final zero padding before range planning, enforces the
 combined workspace policy, and reports the complete serialized extent without
-writing a frame.
+writing a frame. The deterministic complete-frame encoder then serializes the
+generic header, descriptor, and exact range payload and reproduces the
+independent 79-byte vector without partial writes on capacity failure.
 
 ## Why publication is not automatic
 

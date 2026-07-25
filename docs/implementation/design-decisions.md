@@ -7871,3 +7871,25 @@ encoder-workspace, dictionary-encode, entropy-encode, and internal-consistency
 errors. This step adds no serialized encoder, streaming transform, profile
 calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
 interoperability entry.
+
+## DD-407: LZW Dynamic Range encoding is plan-first and deterministic
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-406. Invoke the exact
+planner first so canonical packed LZW bytes, final zero padding, exact range
+payload size, generic frame fields, and aggregate workspace are fixed before
+serialized output is considered. Require destination capacity for the complete
+planned extent before writing any serialized byte.
+
+Repeat Dynamic Range planning over the frozen packed span and require its
+payload extent to match DD-406. Serialize the generic frame header and 16-byte
+descriptor explicitly, then encode the exact payload into its planned region.
+The independent raw-`A` input must reproduce the complete 79-byte vector.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Capacity and all planner failures leave serialized
+output unchanged. This step adds no streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
+entry.

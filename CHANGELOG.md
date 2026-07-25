@@ -22,7 +22,9 @@ format versions, and C ABI versions are independent namespaces.
   complete private raw extent only after every layer succeeds, leaving output
   unchanged on all failures. Its exact-frame planner now freezes canonical
   packed LZW bytes before range planning and reports the complete serialized
-  extent without writing serialized output.
+  extent without writing serialized output. The deterministic encoder
+  reproduces the independent 79-byte frame and leaves short destinations
+  completely unchanged.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload
