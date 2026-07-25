@@ -249,9 +249,11 @@ failure. Its no-output planner fixes the canonical LZ78 tokens before range
 planning and reports the exact complete-frame extent while counting encoder
 entries, tokens, descriptor, and payload together. Its deterministic
 exact-frame encoder replans those frozen tokens, reproduces the independent
-83-byte frame, and rejects short output without a partial write. No streaming
-transform, public factory, CLI selector, benchmark, fuzz target, or
-interoperability entry is implied.
+83-byte frame, and rejects short output without a partial write. Its bounded
+known-size streaming encoder retains complete exact frames while draining and
+preserves one-shot bytes across one-byte input/output, nonterminal `Flush`, and
+retained `EndInput`. No streaming decoder, public factory, CLI selector,
+benchmark, fuzz target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

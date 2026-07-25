@@ -7547,3 +7547,22 @@ in order. The raw-`41` input must reproduce the independent 83-byte frame;
 repeated encoding of nested `ABAB` must be byte-identical and decode through
 the transactional frame boundary. This step adds no streaming transform, C
 ABI, CLI, benchmark, fuzz, or interoperability claim.
+
+## DD-393: LZ78 Dynamic Range streams only completed exact frames
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-392. Serialize the existing
+stream header and 16-byte LZ78 parameters as the 80-byte prefix. Collect one
+complete configured raw frame, plan and encode it into retained private frame
+storage, and drain that immutable frame before collecting another.
+
+The stream bytes must equal concatenated one-shot frame bytes for every
+input/output chunking. A nonterminal `Flush` does not close a partial frame.
+Accept `EndInput` only when the call supplies the complete remaining declared
+input, latch it while prefix and frame bytes drain, and return stable ended or
+sticky error states. Reject `ResetBlock` and unknown flags. Count raw, token,
+encoder-entry, and serialized-frame storage in the active aggregate. This step
+adds no streaming decoder, C ABI, CLI, benchmark, fuzz, or interoperability
+claim.

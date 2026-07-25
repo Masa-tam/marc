@@ -1691,6 +1691,13 @@ replans Dynamic Range over the unchanged canonical token staging, requires the
 same `P`, then serializes the generic header, descriptor, and exact payload in
 order. Identical input and configuration produce byte-identical frame output.
 
+The bounded known-size streaming encoder changes no representation. It emits
+the ordinary 80-byte stream prefix, collects each complete configured raw
+frame, invokes the exact-frame encoder, and drains that retained frame before
+collecting the next. A nonterminal `Flush` never creates a shorter frame.
+`EndInput` must accompany the complete remaining declared input and is retained
+while prefix or frame bytes remain pending.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

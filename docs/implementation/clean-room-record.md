@@ -8122,3 +8122,26 @@ discarded and the reviewed seed retained.
 - Local validation: all eight focused encoder tests and all 1,566 Release tests
   passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
   using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range bounded streaming encoder
+
+- Authoring method: wrapped marc's exact-frame encoder in its established
+  prefix, complete-frame collection, and retained-frame drain state machine.
+- References used: DD-393, DD-392, the local transform status contract,
+  stream-prefix serializers, checked storage arithmetic, and caller-owned
+  workspaces.
+- Known implementations intentionally not consulted: external streaming
+  encoders, buffering state machines, source code, chunk schedules, malformed
+  corpora, error taxonomies, and test suites.
+- Independent decisions: collect only complete known-size frames; keep
+  nonterminal `Flush` representation-neutral; latch a valid `EndInput`; and
+  count raw, token, entry, and serialized-frame regions together.
+- Generated-code task description: add the bounded streaming encoder and prove
+  one-byte equivalence, full-frame flush behavior, retained end, workspace and
+  aggregate errors, empty input, and protocol failures.
+- Similarity review: the state transitions follow marc's local transform and
+  frame-controller rules. No external control flow or test expression was
+  compared.
+- Local validation: all five focused streaming-encoder tests and all 1,571
+  Release tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.

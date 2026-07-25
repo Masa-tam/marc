@@ -1425,6 +1425,13 @@ identical payload extent, and serializes header, descriptor, and payload in
 order. Repeated calls with identical input and configuration produce identical
 frame bytes.
 
+The bounded known-size streaming encoder emits the serialized stream prefix,
+collects exactly one configured raw frame, invokes the exact-frame boundary,
+and retains that complete serialized frame while draining arbitrary output
+chunks. `Flush` does not close a partial frame. `EndInput` is accepted only
+with the complete remaining declared input and remains latched until every
+prefix and frame byte drains.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

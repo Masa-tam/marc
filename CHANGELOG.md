@@ -23,7 +23,10 @@ format versions, and C ABI versions are independent namespaces.
   planner now freezes canonical LZ78 tokens before range planning and reports
   the complete serialized extent without writing serialized output. Its
   deterministic encoder reproduces the independent 83-byte frame and rejects
-  short serialized destinations without partial writes.
+  short serialized destinations without partial writes. Its bounded streaming
+  encoder preserves those exact concatenated frame bytes under one-byte
+  input/output, output starvation, nonterminal `Flush`, and retained
+  `EndInput`.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,

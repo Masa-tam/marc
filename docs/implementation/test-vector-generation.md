@@ -2830,3 +2830,16 @@ Provide an 82-byte sentinel-filled destination for raw `41`; require the
 reported serialized extent to remain 83, return
 `serialized_output_too_small`, and preserve every destination byte. This is
 the only capacity failure that reaches the serialized-output boundary.
+
+For bounded LZ78 plus Dynamic Range streaming encode, use raw `ABABX` with
+two-byte frames. Independently concatenate the serialized stream prefix and
+three exact one-shot frames, then require the streaming encoder to reproduce
+it with one-byte input and output. Repeat by passing all remaining input with
+`EndInput` on the first call while draining one byte at a time.
+
+Issue `Flush` after only the first raw byte and require only the prefix to be
+available; complete the remaining input with `EndInput` and require unchanged
+reference bytes. Reject short raw, token, encoder-entry, and serialized-frame
+storage, and an active raw-plus-token-plus-entry-plus-frame aggregate one byte
+short. Also cover empty input, premature end, `ResetBlock`, an unknown flag,
+and input beyond the declared size.

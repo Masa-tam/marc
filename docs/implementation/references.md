@@ -1359,3 +1359,9 @@ DD-391's completed plan, marc's generic header and Dynamic Range serializers,
 the local range encoder, and caller-owned spans. No external combined encoder,
 archive serializer, transactional-output design, source code, encoded corpus,
 or test suite was consulted.
+
+The LZ78 plus Dynamic Range bounded streaming encoder uses only DD-393, the
+completed exact-frame encoder, marc's transform status contract, checked
+caller-owned storage, known-size stream header rules, and existing prefix/frame
+drain convention. No external streaming encoder, buffering state machine,
+source code, chunk schedule, error taxonomy, or test suite was consulted.
