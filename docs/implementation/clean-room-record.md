@@ -8078,3 +8078,25 @@ discarded and the reviewed seed retained.
 - Local validation: all nine focused frame-decoder tests and all 1,558 Release
   tests passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
+
+## 2026-07-25 - LZ78 plus Dynamic Range exact-frame planner
+
+- Authoring method: connected marc's standalone deterministic LZ78 encoder to
+  its Dynamic Range planner at the already specified canonical token boundary.
+- References used: DD-391, local LZ78 encoder entries and token grammar, local
+  Dynamic Range planner, generic frame validation, and checked limits.
+- Known implementations intentionally not consulted: external combined
+  encoders, phrase parsers, range-coder sources, workspace layouts, encoded
+  corpora, and test suites.
+- Independent decisions: require aligned encoder entries first; freeze complete
+  tokens before range planning; count entries, tokens, descriptor, and payload
+  together; and return exact frame extent without serialized output.
+- Generated-code task description: add a no-output planner and test the
+  independent Pair extent, nested `ABAB` tokens, workspace atomicity, frame
+  extent mismatch, and a one-byte-short aggregate.
+- Similarity review: the control flow composes only marc's documented component
+  APIs and bounds. No external implementation structure, byte sequence, or
+  test expression was compared.
+- Local validation: all five focused planner tests and all 1,563 Release tests
+  passed under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64
+  using official CMake 4.3.4.

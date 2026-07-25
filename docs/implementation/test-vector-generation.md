@@ -2808,3 +2808,14 @@ Corrupt the descriptor and, separately, range-code a forward phrase reference;
 both must preserve every output sentinel. These checks distinguish successful
 private reconstruction from caller-visible commit and do not add a streaming
 contract.
+
+For LZ78 plus Dynamic Range frame planning, feed raw `41` through one encoder
+entry and eight token bytes. Require canonical Pair
+`00 41 00 00 00 00 00 00`, payload extent 11, descriptor extent 16, and exact
+serialized extent 83 without supplying serialized output.
+
+Separately plan raw `ABAB` and require three canonical Pair tokens: root plus
+`A`, root plus `B`, and phrase index one plus `B`. Reject zero encoder entries
+and seven-byte token staging while preserving every token sentinel. Reject
+empty input, a raw extent different from the configured frame, and an
+encoder-entry-plus-token-plus-descriptor-plus-payload aggregate one byte short.

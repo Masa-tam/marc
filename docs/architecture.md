@@ -1414,6 +1414,14 @@ final exact-extent copy after all nested checks succeed. Header, descriptor,
 entropy, token, phrase, capacity, or reconstruction failure therefore leaves
 caller output byte-for-byte unchanged.
 
+The first encoder boundary is a no-serialized-output planner. It requires the
+complete aligned LZ78 encoder-entry region and token staging, performs the
+deterministic phrase parse into canonical eight-byte tokens, and only then
+plans Dynamic Range payload extent from those immutable bytes. Encoder
+entries, tokens, descriptor, and payload participate in one checked aggregate.
+The resulting frame extent is exact; serialized frame emission remains a
+separate boundary.
+
 ### LZSS plus Adaptive Huffman specified boundary
 
 The next Adaptive composition retains LZSS's variable two-byte Literal and

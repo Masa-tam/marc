@@ -2,9 +2,11 @@
 #define MARC_FRAME_LZ78_DYNAMIC_RANGE_FRAME_HPP
 
 #include "dictionary/lz78_decoder.hpp"
+#include "dictionary/lz78_encoder.hpp"
 #include "dictionary/lz78_format.hpp"
 #include "dictionary/lz78_validator.hpp"
 #include "entropy/dynamic_range_decoder.hpp"
+#include "entropy/dynamic_range_encoder.hpp"
 #include "entropy/dynamic_range_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -18,11 +20,13 @@ namespace marc::frame {
 enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
+    input_size_mismatch,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
     invalid_dictionary_extent,
     invalid_entropy_extent,
+    encoder_workspace_too_small,
     dictionary_staging_too_small,
     phrase_workspace_too_small,
     raw_staging_too_small,
@@ -32,6 +36,8 @@ enum class Lz78DynamicRangeFrameValidationError : std::uint8_t {
     entropy_decode_error,
     dictionary_validation_error,
     dictionary_decode_error,
+    dictionary_encode_error,
+    entropy_encode_error,
     arithmetic_overflow,
 };
 
@@ -41,6 +47,7 @@ struct Lz78DynamicRangeFrameValidationResult {
     std::size_t raw_size{};
     std::size_t descriptor_size{};
     std::size_t payload_size{};
+    std::size_t encoder_entries{};
     std::size_t phrase_entries{};
     std::size_t dictionary_token_index{};
     std::size_t dictionary_input_offset{};
@@ -55,9 +62,27 @@ struct Lz78DynamicRangeFrameValidationResult {
         dictionary::internal::Lz78FormatError::none};
     dictionary::internal::Lz78DecodeError dictionary_decode_error{
         dictionary::internal::Lz78DecodeError::none};
+    dictionary::internal::Lz78EncodeError dictionary_encode_error{
+        dictionary::internal::Lz78EncodeError::none};
+    entropy::internal::DynamicRangeEncodeError entropy_encode_error{
+        entropy::internal::DynamicRangeEncodeError::none};
     Lz78DynamicRangeFrameValidationError error{
         Lz78DynamicRangeFrameValidationError::none};
 };
+
+// Produces canonical LZ78 token staging and determines the complete frame
+// extent without writing a serialized frame. Input and token staging must not
+// overlap.
+[[nodiscard]] Lz78DynamicRangeFrameValidationResult
+plan_lz78_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::Lz78EncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Entropy-decodes and validates exactly one frame into private canonical LZ78
 // token staging and a caller-owned phrase table. No raw byte is reconstructed

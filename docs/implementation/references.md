@@ -1347,3 +1347,9 @@ DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,
 transactional-output strategy, buffer design, source code, malformed corpus,
 or test suite was consulted.
+
+The LZ78 plus Dynamic Range exact-frame planner uses only DD-391, marc's
+standalone deterministic LZ78 encoder and Dynamic Range planner, the reserved
+composition bounds, generic frame validation, checked arithmetic, and
+caller-owned workspaces. No external combined encoder, parse strategy,
+workspace layout, source code, encoded corpus, or test suite was consulted.

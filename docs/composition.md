@@ -245,8 +245,11 @@ that phrase graph succeeds. It reports stable LZ78 format, token index, and
 byte offset on dictionary failure. Its transactional complete-frame decoder
 checks caller output capacity before entropy work and copies the completed
 private raw frame only after every layer succeeds, preserving output on every
-failure. No combined encoder, streaming transform, public factory, CLI
-selector, benchmark, fuzz target, or interoperability entry is implied.
+failure. Its no-output planner fixes the canonical LZ78 tokens before range
+planning and reports the exact complete-frame extent while counting encoder
+entries, tokens, descriptor, and payload together. No serialized-frame
+encoder, streaming transform, public factory, CLI selector, benchmark, fuzz
+target, or interoperability entry is implied.
 
 ## Why publication is not automatic
 

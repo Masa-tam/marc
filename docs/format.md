@@ -1677,6 +1677,14 @@ every nested stage succeeds. Every failure leaves caller output unchanged. No
 combined encoder, streaming transform, C ABI factory, CLI selector, benchmark,
 fuzz target, or interoperability profile is implied.
 
+The internal exact-frame planner begins the encode side without changing this
+representation. It first requires and counts aligned LZ78 encoder entries,
+plans and emits the complete canonical token sequence into private staging,
+then plans Dynamic Range payload size from exactly those frozen bytes. Encoder
+entries, tokens, the 16-byte descriptor, and payload are checked as one
+aggregate. It validates the resulting generic header fields and reports exact
+serialized extent `56 + 16 + P`, but writes no serialized frame byte.
+
 ### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:

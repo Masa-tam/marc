@@ -7513,3 +7513,21 @@ failure must leave caller output unchanged. Bytes beyond `F` are never touched.
 This step completes transactional publication for one exact frame but adds no
 encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or interoperability
 claim.
+
+## DD-391: LZ78 Dynamic Range planning freezes canonical tokens
+
+- Date: 2026-07-25
+- Status: accepted
+
+Add a no-serialized-output exact-frame planner. Require the complete aligned
+LZ78 encoder-entry workspace before phrase parsing. Plan the deterministic
+parse, require canonical token staging for the exact `S` bytes, emit all
+eight-byte tokens there, and only then invoke the unchanged Dynamic Range
+planner over that immutable extent.
+
+Count encoder entries, token staging, the 16-byte descriptor, and planned
+payload in one checked aggregate. Enforce `S <= 8F`, `S <= 2^24`, `P <= 2S +
+5`, the generic header contract, and exact serialized extent `56 + 16 + P`.
+Return the plan without writing any serialized frame byte. This step adds no
+serialized-frame encoder, streaming transform, C ABI, CLI, benchmark, fuzz, or
+interoperability claim.

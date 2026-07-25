@@ -19,7 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   policy and iteratively reconstructs only the already validated phrase graph.
   Its transactional complete-frame decoder checks caller output capacity
   before entropy work and copies the private raw extent only after every layer
-  succeeds, leaving caller output unchanged on all failures.
+  succeeds, leaving caller output unchanged on all failures. Its exact-frame
+  planner now freezes canonical LZ78 tokens before range planning and reports
+  the complete serialized extent without writing serialized output.
 
 - The reserved `lzss-dynamic-range` composition now has an exact
   decoder-visible representation, checked token and range-payload bounds,
