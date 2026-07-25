@@ -35,7 +35,9 @@ format versions, and C ABI versions are independent namespaces.
   expose both streaming directions without leaking those private C++ layouts.
   Its public-ABI completion matrix covers required binary inputs, deterministic
   chunk-independent streams, sticky terminal states, and atomic rejection of a
-  malformed final frame.
+  malformed final frame. Its fixed-memory dual-path decoder fuzz boundary and
+  permanent regressions cover all canonical truncations, saturated frame
+  extents, and invalid Dynamic Range descriptor padding.
 
 - The reserved `lz78-dynamic-range` composition now has an exact
   decoder-visible representation, checked fixed-token and range-payload

@@ -97,7 +97,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzw-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -127,9 +127,10 @@ atomicity under later corruption. Its internal direction-specific profile now
 calculates every caller-owned byte region and safely partitions opaque aligned
 LZW records. A bounded C requirements query and transform factory now connect
 both streaming directions through those opaque regions. No CLI, benchmark,
-fuzz, or interoperability entry exists yet. Its public-ABI completion matrix
+or interoperability entry exists yet. Its public-ABI completion matrix
 now covers determinism, arbitrary chunking, terminal states, and malformed
-final-frame atomicity.
+final-frame atomicity. A bounded dual-path decoder fuzz target and permanent
+atomic malformed regressions are now present.
 
 `lz78-dynamic-range` is the current locally completed composition. DD-387 fixes
 the canonical fixed-width LZ78-token boundary, 2^21-byte format frame ceiling,

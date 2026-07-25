@@ -8687,3 +8687,33 @@ discarded and the reviewed seed retained.
   Adaptive completion, and documentation tests passed under both MSVC and
   ClangCL. The complete Release suite passed 1,634/1,634 under MSVC and
   1,634/1,634 under ClangCL using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: parameterized marc's first-party LZW dual-path decoder
+  harness only at the entropy decoder entry points, then instantiated it for
+  Dynamic Range under DD-413.
+- References used: DD-413, DD-412, the local generic-frame layout, LZW Dynamic
+  Range limits, complete-frame decoder, streaming decoder, and existing
+  repository-authored bounded fuzz conventions.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, source code, and encoded vectors.
+- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
+  output, 1,024-byte frame, 8,192-byte payload, and 4,096-entry dictionary
+  ceilings; exercise both complete-frame and streaming decode paths; impose a
+  finite call ceiling; and permanently require atomic rejection of every
+  canonical truncation, extreme frame lengths, and invalid descriptors.
+- Generated-code task description: instantiate the shared bounded LZW decoder
+  fuzz harness and permanent malformed regressions for Dynamic Range, add a
+  compile-smoke target and optional libFuzzer target, and synchronize
+  architecture, readiness, composition, changelog, decision, reference, and
+  vector records.
+- Similarity review: the work reuses only marc's own harness and public format
+  contracts, with entropy-specific substitutions at documented local entry
+  points; no external implementation, harness structure, corpus, or test
+  expression was compared.
+- Local validation: both fuzz compile-smoke targets built under MSVC and
+  ClangCL; the seven focused Dynamic Range regression, reused Adaptive
+  regression, and documentation tests passed under both compilers. The
+  complete Release suite passed 1,637/1,637 under MSVC and 1,637/1,637 under
+  ClangCL using official CMake 4.3.4.

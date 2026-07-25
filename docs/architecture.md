@@ -1918,6 +1918,10 @@ The public-ABI completion matrix drives this adapter over required binary
 classes, multiple chunk schedules, stable terminal states, and fourth-frame
 corruption, truncation, and trailing data. A failing fourth frame never
 publishes its final raw byte while the three validated frames remain committed.
+The bounded dual-path fuzz boundary fixes all encoded, packed, raw, output, and
+phrase storage before accepting input and enforces a finite call budget. Its
+permanent regressions preserve frame atomicity across every canonical
+truncation, saturated extents, and invalid Dynamic Range descriptor padding.
 
 ### Published LZD plus Adaptive Huffman boundary
 

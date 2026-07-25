@@ -8005,3 +8005,26 @@ terminal error. Reuse the LZW public-ABI test body across entropy profiles with
 only the fixed factory family and payload ceiling parameterized, preventing
 evidence drift. This step adds no CLI, benchmark, fuzz, or interoperability
 entry.
+
+## DD-413: LZW Dynamic Range fuzzing is fixed-memory and dual-path
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add one bounded decoder fuzz entry that exercises both the private complete-
+frame decoder and the outer frame-committing streaming decoder. Cap accepted
+input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
+bytes, packed LZW staging at 4,096 bytes, and dictionary entries at 4,096.
+Allocate every byte and phrase region as a fixed local array before inspecting
+input.
+
+Derive chunk sizes only within those arrays and stop after
+`input_bound + output_bound + 32` calls. Abort on an invalid process result,
+zero progress reported as Progress, impossible NeedInput after final input, or
+the finite-call ceiling. Reuse the established bounded LZW harness with only
+the entropy identity and combined entry points parameterized.
+
+Permanent regressions must reject every proper prefix of a canonical stream,
+saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
+All failures preserve the raw output sentinel and remain sticky. This step adds
+no CLI, benchmark, or interoperability entry.
