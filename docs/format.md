@@ -2433,7 +2433,10 @@ The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZW parameter region and zero or more frames. Empty input is exactly
 this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and input/output
-chunking alone must not change serialized bytes.
+chunking alone must not change serialized bytes. The bounded streaming encoder
+implements this contract by collecting one raw frame, preparing its complete
+serialized representation, and draining that immutable extent before
+collecting the next frame.
 
 The C ABI functions `marc_lzw_dynamic_range_config_init()`,
 `marc_lzw_dynamic_range_workspace_requirements()`, and

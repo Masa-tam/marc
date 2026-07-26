@@ -3241,3 +3241,16 @@ The CLI profile fixes `F = 65,536`, `S = 131,072`, `P = 262,149`, at most
 65,280 generated entries, and an 8-MiB aggregate policy. Actual primary,
 secondary, and aligned opaque-view workspace requirements must come only from
 the public C query.
+
+For the LZD plus Dynamic Range bounded streaming encoder, independently build
+the expected stream prefix and concatenate exact complete-frame encodings for
+raw `AB`, `AB`, and final `X`. Feed the streaming encoder one input byte and
+one output byte at a time and require exact equality with that reference.
+
+Repeat with a nonterminal `Flush` after one raw byte and require no shortened
+frame, then finish with the remaining bytes. Submit all input with `EndInput`
+while only one prefix byte can drain and require the retained finish request to
+complete later without being repeated. Exercise empty known-size input,
+insufficient raw, token, encoded-frame, and encoder-record storage, aggregate
+workspace one byte short, premature and excess input, `ResetBlock`, unknown
+flags, sticky error, and repeated post-end calls.

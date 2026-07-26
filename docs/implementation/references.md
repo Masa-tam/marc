@@ -1545,3 +1545,10 @@ deterministic fixture generator, strict verifier, SHA-256 metadata, and
 one-generation compatibility chain. No external archive protocol, manifest
 schema, interoperability harness, combined-codec archive, corpus, source code,
 or test vector was consulted.
+
+The LZD plus Dynamic Range bounded streaming encoder uses only DD-423,
+DD-422's deterministic complete-frame encoder, marc's core process contract,
+explicit stream/LZD parameter serializers, checked arithmetic, and established
+caller-owned frame-draining state conventions. No external streaming encoder,
+state machine, buffering layout, source code, corpus, or test suite was
+consulted.

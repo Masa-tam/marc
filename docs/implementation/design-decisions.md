@@ -8260,3 +8260,28 @@ output-capacity error. Capacity and all planner failures leave serialized
 output unchanged. This step adds no streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
 entry.
+
+## DD-423: LZD Dynamic Range streaming encode buffers one bounded frame
+
+- Date: 2026-07-27
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-422. Emit the ordinary
+64-byte stream header and 16-byte LZD parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the deterministic exact-frame encoder, and
+drain that immutable frame under arbitrary output starvation before accepting
+bytes for the next frame.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `8 * ceil(F/2)` token staging, and LZD encoder
+records. Before encoding each collected frame, count raw collection, exact
+token staging, exact serialized frame, and encoder records in one checked
+aggregate and require complete encoded-frame storage.
+
+Input and output chunking alone must not change serialized bytes. `Flush` keeps
+the logical stream open and does not shorten a frame. Retain `EndInput` while
+the prefix or a frame drains, require its input to complete the declared known
+size, reject `ResetBlock` and unknown flags, and make ended and error results
+sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
