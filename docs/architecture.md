@@ -1979,7 +1979,10 @@ then drains immutable raw bytes. The internal profile calculator derives these
 direction-specific byte regions and opaque aligned LZD record extents with
 checked aggregate bounds. Typed partitioning rejects inconsistent byte counts,
 offsets, insufficient storage, and misalignment before exposing encoder
-entries, decoder phrases, or expansion references.
+entries, decoder phrases, or expansion references. The public C ABI now maps
+its fixed-width LZD configuration to this profile, queries all three workspace
+regions, partitions opaque typed storage internally, and constructs the
+matching immutable-direction streaming transform.
 
 ### Published LZD plus Adaptive Huffman boundary
 

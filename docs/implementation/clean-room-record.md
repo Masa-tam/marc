@@ -9079,3 +9079,28 @@ discarded and the reviewed seed retained.
 - Local validation: focused profile and documentation tests passed 7/7 under
   both MSVC and ClangCL. The complete Release suite passed 1,678/1,678 under
   both MSVC and ClangCL using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range C ABI
+
+- Authoring method: mapped DD-425's calculated regions and partitions directly
+  to marc's fixed-width C transform lifecycle.
+- References used: DD-426, DD-425, DD-423, DD-424, the local C ABI header,
+  status bridge, buffer validation, placement-independent factory pattern, and
+  C11 test harness.
+- Known implementations intentionally not consulted: external compression
+  ABIs, allocator interfaces, wrappers, source code, corpora, and test suites.
+- Independent decisions: add a separately size-tagged config without changing
+  ABI version; expose only byte counts and opaque views alignment; recompute
+  requirements during creation; validate every region and reserved field;
+  partition all typed records internally; and borrow rather than own storage.
+- Generated-code task description: add the minimal public declarations,
+  config loader, requirements query, encoder/decoder factory, pure C11 shared-
+  library round trip, short-region and misalignment rejection, and synchronized
+  public and provenance documentation.
+- Similarity review: the functions compose only marc's local profile,
+  partition, transform, and status contracts. No external ABI layout, naming
+  scheme, ownership policy, factory control flow, or test expression was
+  compared.
+- Local validation: the pure C11 shared-library test passed under both MSVC and
+  ClangCL, followed by all 1,679 Release tests under both compilers using
+  official CMake 4.3.4.

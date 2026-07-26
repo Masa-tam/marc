@@ -8,9 +8,9 @@ Huffman profiles, and the LZSS plus Dynamic Range profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
 LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
-the LZD plus Blocked Huffman and LZD plus Adaptive Huffman profiles, and LZMW
-variant 1 and the LZMW plus Blocked Huffman and LZMW plus Adaptive Huffman
-profiles with
+the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, and LZD plus Dynamic
+Range profiles, and LZMW variant 1 and the LZMW plus Blocked Huffman and LZMW
+plus Adaptive Huffman profiles with
 known-size encoding and bounded caller-owned workspace. All functions are
 `noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
@@ -29,7 +29,8 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzw_dynamic_range_*`,
-`marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`, and
+`marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
+`marc_lzd_dynamic_range_*`, and
 `marc_lzmw_blocked_huffman_*`, and `marc_lzmw_adaptive_huffman_*` are the
 currently public
 dictionary-plus-entropy factories.
@@ -67,7 +68,8 @@ cross-product pairings as callable C ABI features.
    `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzw_dynamic_range_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
-   `marc_lzd_adaptive_huffman_config_init()`, or
+   `marc_lzd_adaptive_huffman_config_init()`,
+   `marc_lzd_dynamic_range_config_init()`, or
    `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`, or
    `marc_lzmw_adaptive_huffman_config_init()` for encode or decode
    direction.
@@ -238,6 +240,13 @@ hard limit; decode sizing is derived only from trusted local limits.
 The public completion matrix exercises this factory exclusively, including
 zero encoder views for empty and one-byte input, byte-identical repeated and
 arbitrarily chunked encoding, and atomic rejection of a malformed final frame.
+The LZD plus Dynamic Range factory retains the same three-region ownership.
+Encoding uses token staging followed by one complete range-coded frame;
+decoding uses token staging followed by private raw staging. Its aligned opaque
+region contains encoder entries or a checked phrase-entry/expansion-stack
+layout. Call `marc_lzd_dynamic_range_workspace_requirements()` again after
+changing direction, original size, frame size, maximum entries, or any hard
+limit; no C++ record type crosses the ABI.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

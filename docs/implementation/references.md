@@ -1565,3 +1565,8 @@ DD-423/424's established caller-owned regions, marc's local LZD workspace
 formulas and record types, Dynamic Range bounds, checked arithmetic, and the
 already published profile conventions. No external allocator, workspace
 layout, combined codec, source code, corpus, or test suite was consulted.
+
+The LZD plus Dynamic Range C ABI uses only DD-426, DD-425's requirements and
+partition helpers, DD-423/424's streaming transforms, marc's existing
+fixed-width C lifecycle, and the local status bridge. No external ABI,
+allocator interface, wrapper, source code, corpus, or test suite was consulted.

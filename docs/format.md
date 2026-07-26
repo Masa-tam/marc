@@ -2706,7 +2706,19 @@ The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZD parameter region and zero or more frames. Empty input is exactly
 this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and input/output
-chunking alone must not change serialized bytes.
+chunking alone must not change serialized bytes. The bounded streaming encoder
+collects one raw frame, prepares its complete serialized representation, and
+drains that immutable extent before collecting the next frame. The matching
+streaming decoder parses and bounds one complete encoded frame,
+transactionally reconstructs it into private raw staging, and drains that
+immutable raw extent before collecting another frame.
+
+The C ABI functions `marc_lzd_dynamic_range_config_init()`,
+`marc_lzd_dynamic_range_workspace_requirements()`, and
+`marc_lzd_dynamic_range_create()` select exactly this profile and do not define
+another representation. Byte workspace contains the raw/frame and token/raw
+regions reported for the immutable direction; aligned opaque workspace holds
+private LZD encoder entries or decoder phrase and expansion records.
 
 ### Hand-checkable terminal-token frame
 

@@ -350,7 +350,9 @@ reconstructs it, and drains raw bytes only after complete success. Its internal
 profile now derives the encoder's raw, token, encoded-frame, and aligned-entry
 regions and the decoder's encoded-frame, token, private-raw, aligned-phrase,
 and expansion regions from trusted configuration or local limits, with checked
-aggregate accounting.
+aggregate accounting. The public C ABI now exposes this exact profile through
+fixed-width config, requirements, and factory functions while retaining every
+C++ record layout behind the opaque aligned views region.
 
 ## Why publication is not automatic
 

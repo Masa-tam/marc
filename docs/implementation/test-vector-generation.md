@@ -3282,3 +3282,14 @@ bytes, 128 token bytes, 1,024 internally buffered bytes, and ten dictionary
 entries; require 1,080 encoded bytes, 64 private raw bytes, ten aligned phrase
 records, and eleven expansion references. Partition both encoder and decoder
 typed storage and reject altered offsets, short storage, and misalignment.
+
+For the LZD plus Dynamic Range C ABI, initialize encode configuration for raw
+`41 42 41 42 58`, two-byte frames, eight token bytes, a 21-byte range-payload
+limit, and 512 aggregate bytes. Require workspace extents of 2 primary and 101
+secondary bytes plus a nonempty aligned opaque region. Encode, then request
+decoder workspaces of 568 primary and 10 secondary bytes and reproduce the
+original through only the C11 transform API.
+
+Reject every one-byte-short region, deliberately misaligned views storage, a
+null transform output pointer, and a nonzero reserved field. Require factory
+failure to leave the transform pointer null.

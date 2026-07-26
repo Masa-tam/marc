@@ -8331,3 +8331,26 @@ alignment one.
 
 This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
 completion matrix, or interoperability entry.
+
+## DD-426: LZD Dynamic Range C ABI owns no caller storage
+
+- Date: 2026-07-27
+- Status: accepted
+
+Publish a fixed-width `marc_lzd_dynamic_range_config` and three functions:
+configuration initialization, direction-specific workspace requirements, and
+transform creation. Retain ABI version 1 because this adds new symbols and a
+new independently size-tagged structure without changing any existing layout
+or behavior.
+
+Map the C fields to DD-425 and return primary byte storage, combined secondary
+byte storage, and one separately aligned opaque views region. On creation,
+recompute the requirements, validate all pointers, capacities, reserved fields,
+and alignment, partition typed LZD records internally, and construct exactly
+the DD-423 encoder or DD-424 decoder. The transform borrows every workspace;
+no allocator callback or private record layout crosses the ABI.
+
+Add a pure C11 shared-library test that queries both directions, round-trips
+`ABABX`, and rejects each short region, misaligned views, null output handle,
+and nonzero reserved field. This step adds no CLI selector, benchmark, fuzz
+target, completion matrix, or interoperability entry.

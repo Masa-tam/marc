@@ -127,8 +127,10 @@ now preserves canonical bytes under arbitrary input and output starvation and
 nonterminal `Flush`. Its bounded streaming decoder validates complete frames
 before raw draining and preserves frame atomicity under later corruption. Its
 internal direction-specific profile now calculates every caller-owned byte
-region and safely partitions opaque aligned LZD records. No C ABI, CLI,
-benchmark, fuzz, completion, or interoperability entry exists yet.
+region and safely partitions opaque aligned LZD records. Its small C ABI now
+publishes requirements queries and factories without exposing those record
+layouts. No CLI, benchmark, fuzz, completion, or interoperability entry exists
+yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary
