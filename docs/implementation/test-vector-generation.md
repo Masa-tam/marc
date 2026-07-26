@@ -3049,6 +3049,18 @@ unreached sentinels. Corrupt the Dynamic Range descriptor and independently
 encode a contradictory LZD terminal token; both must leave private raw staging
 unchanged. The decoder exposes no caller-visible output span in this step.
 
+For the LZD plus Dynamic Range transactional decoder, initialize output with a
+sentinel, decode the independent raw-`A` frame, and require publication of
+exactly `A`. Repeat with the phrase-bearing `ABABAB` frame and require one
+complete byte-exact publication.
+
+Provide a destination one byte shorter than the declared two-byte raw frame.
+Require the dedicated output-capacity error before token, expansion, or private
+raw staging changes. Corrupt the raw-`A` range payload independently and
+require the complete caller-visible output sentinel to remain unchanged. These
+tests establish atomic publication for one complete frame only; they make no
+streaming-decoder claim.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing

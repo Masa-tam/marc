@@ -2685,10 +2685,11 @@ the declared raw extent into bounded phrase records. Before entropy output, the
 private decoder requires the complete raw and expansion-stack extents and
 counts them with the descriptor, payload, token bytes, and aligned phrase
 records against the aggregate workspace limit. It then reconstructs only the
-completely validated phrase graph iteratively into private raw staging. Only a
-completely successful frame may later be published. A malformed later frame
-cannot publish any of that frame's raw bytes, although earlier frames may
-already be committed.
+completely validated phrase graph iteratively into private raw staging. The
+transactional complete-frame boundary checks destination capacity before
+entropy output and copies this private extent once only after every operation
+succeeds. A malformed later frame cannot publish any of that frame's raw
+bytes, although earlier frames may already be committed.
 
 The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZD parameter region and zero or more frames. Empty input is exactly

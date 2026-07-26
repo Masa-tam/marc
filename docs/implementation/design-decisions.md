@@ -8193,3 +8193,25 @@ this API, so no byte is published at this boundary. This step adds no
 transactional publication wrapper, encoder, streaming transform, profile
 calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
 interoperability entry.
+
+## DD-420: LZD Dynamic Range publishes only a complete successful frame
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an internal caller-visible complete-frame decoder above DD-419. Require
+destination capacity for the complete declared raw frame together with token
+staging, aligned phrase records, explicit expansion-stack storage, and private
+raw staging before parsing the Dynamic Range descriptor or producing entropy
+output. Caller-visible output is not scratch and therefore is not counted in
+aggregate internal workspace.
+
+Run the unchanged DD-418 validation order and DD-419 private reconstruction.
+Only after every generic-frame, range, LZD, capacity, bounds, graph, and exact-
+extent check succeeds may the decoder copy the complete private raw span once
+into the destination.
+
+Preserve every existing combined error value and append a distinct output-
+capacity error. On every failure, publish no destination byte. This step adds
+no encoder, streaming transform, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion matrix, or interoperability entry.

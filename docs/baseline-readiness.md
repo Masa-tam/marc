@@ -112,15 +112,15 @@ token-width, backward-reference, terminal-absence, phrase-length, and exact-
 raw-extent validation. Its independently assembled 84-byte raw-`A` frame is
 covered by a standalone-component vector test. Its first complete-frame
 validator now checks generic, token, entropy, caller-capacity, phrase-record,
-and aggregate
-extents before strictly range-decoding into private token staging and invoking
+and aggregate extents before strictly range-decoding into private token staging
+and invoking
 the existing LZD validator. A bounded private decoder now admits raw and
 expansion-stack capacity and aggregate storage before entropy output, then
 iteratively reconstructs the validated phrase graph without caller-visible
-publication. Transactional output publication remains the next admission
-boundary; no
-encoder, streaming transform, C ABI, CLI, benchmark, fuzz, completion, or
-interoperability entry exists yet.
+publication. Its internal transactional decoder now checks complete
+destination capacity before entropy output and publishes only a successful
+private raw frame. No encoder, streaming transform, C ABI, CLI, benchmark,
+fuzz, completion, or interoperability entry exists yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

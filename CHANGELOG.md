@@ -17,7 +17,10 @@ format versions, and C ABI versions are independent namespaces.
   reference, terminal-absence, phrase-length, and exact-raw-extent validator.
   Its bounded private decoder additionally checks and counts raw and expansion
   staging before entropy output, then iteratively reconstructs only the
-  completely validated LZD graph without publishing caller-visible bytes.
+  completely validated LZD graph without publishing caller-visible bytes. Its
+  internal transactional decoder checks destination capacity before entropy
+  work and copies the complete private raw extent only after every layer
+  succeeds, leaving caller output unchanged on all failures.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

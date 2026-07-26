@@ -335,7 +335,9 @@ staging, then applies the existing LZD semantic validator without
 publishing raw bytes. The matching private decoder checks raw and expansion-
 stack capacity plus aggregate storage before entropy output, then iteratively
 reconstructs the completely validated phrase graph into bounded raw staging.
-Caller-visible publication remains a later boundary.
+The internal transactional decoder also admits complete destination capacity
+before entropy output and copies the private raw frame only after every layer
+succeeds.
 
 ## Why publication is not automatic
 

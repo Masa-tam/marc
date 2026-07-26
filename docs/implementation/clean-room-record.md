@@ -8908,3 +8908,31 @@ discarded and the reviewed seed retained.
   private-decoder, and documentation tests passed under both MSVC and ClangCL.
   The complete Release suite passed 1,651/1,651 under both compilers using
   official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range transactional frame publication
+
+- Authoring method: placed a caller-visible complete-frame boundary above the
+  DD-419 private reconstruction path, following marc's independently designed
+  copy-after-success convention.
+- References used: DD-420, DD-419, DD-418, the local combined result contract,
+  caller-owned span semantics, and existing checked-capacity conventions.
+- Known implementations intentionally not consulted: external LZD/range
+  decoders, publication protocols, buffering layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: append a stable output-capacity error; check the
+  complete destination extent before descriptor parsing or entropy output; do
+  not count caller-visible destination storage as internal scratch; reuse the
+  validator and private decoder unchanged; and copy the complete private raw
+  extent once only after every layer succeeds.
+- Generated-code task description: add the minimal internal transactional
+  decoder; publish the independent raw-`A` and phrase-bearing `ABABAB` frames;
+  reject a destination one byte short before staging mutation; and preserve
+  caller output on malformed range payload.
+- Similarity review: the implementation is a direct composition of local marc
+  boundaries and standard bounded-span copying. No external control flow,
+  publication state machine, error taxonomy, naming scheme, or test expression
+  was compared.
+- Local validation: all fifteen focused LZD Dynamic Range vector, validator,
+  private-decoder, transactional-decoder, and documentation tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,654/1,654 under
+  both compilers using official CMake 4.3.4.
