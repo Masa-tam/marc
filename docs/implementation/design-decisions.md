@@ -8309,3 +8309,25 @@ truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
 unknown flag. Retain `EndInput` while a validated frame drains and make ended
 and error states sticky. This step adds no profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-425: LZD Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-27
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-423 and DD-424.
+For encoding, derive the largest raw frame, conservative
+`S = 8 * ceil(F/2)` token staging, `2S + 5` Dynamic Range payload, complete
+serialized-frame storage, and the exact LZD encoder-record count. Count every
+region in one checked aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded token staging,
+private raw staging, conservative phrase records, and phrase expansion
+references solely from validated local limits. Keep byte storage separate from
+caller-allocated, properly aligned typed storage. Partition helpers must verify
+the reported record counts, byte extent, expansion offset, and alignment before
+producing typed spans; empty encoder-record storage uses zero bytes and neutral
+alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.

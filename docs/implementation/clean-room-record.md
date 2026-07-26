@@ -9052,3 +9052,30 @@ discarded and the reviewed seed retained.
   encoder, streaming-decoder, and documentation tests passed, followed by all
   1,671 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
   Windows x64 using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range direction-specific profile
+
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-425, the already implemented LZD token ceiling, Dynamic Range
+  payload ceiling, complete-frame ownership, and local record types.
+- References used: DD-425, DD-423, DD-424, marc's local checked arithmetic,
+  LZD workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  token staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded token and private raw
+  staging, conservative phrase records, and expansion references derived only
+  from local limits. Typed records remain in separately aligned caller-owned
+  storage and empty encoder storage uses neutral alignment one.
+- Generated-code task description: add the internal LZD plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZD- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 7/7 under
+  both MSVC and ClangCL. The complete Release suite passed 1,678/1,678 under
+  both MSVC and ClangCL using official CMake 4.3.4.

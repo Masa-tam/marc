@@ -3268,3 +3268,17 @@ error position must remain stable. Reject every proper encoded prefix,
 trailing data, short encoded-frame, token, raw, phrase, and expansion
 workspaces, aggregate workspace one byte short, `ResetBlock`, and unknown
 flags. Accept the exact empty 80-byte stream.
+
+For the LZD plus Dynamic Range profile, configure 17 raw bytes with a ten-byte
+frame. Require a ten-byte largest frame, 40-byte conservative token staging,
+85-byte range-payload ceiling, 157-byte complete encoded-frame storage, and
+five aligned encoder records. A seven-byte short frame with a two-entry
+dictionary ceiling must instead require 32 token bytes, 69 payload bytes, and
+two records. Empty input must return all-zero regions with alignment one.
+
+Independently lower token, payload, and aggregate limits by one and require
+rejection with cleared requirements. For decoding, use local limits of 64 raw
+bytes, 128 token bytes, 1,024 internally buffered bytes, and ten dictionary
+entries; require 1,080 encoded bytes, 64 private raw bytes, ten aligned phrase
+records, and eleven expansion references. Partition both encoder and decoder
+typed storage and reject altered offsets, short storage, and misalignment.

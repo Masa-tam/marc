@@ -29,7 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   output starvation, nonterminal `Flush`, and retained `EndInput`. The matching
   bounded streaming decoder validates complete frames before raw draining and
   rejects every truncation, trailing byte, and later-frame corruption without
-  partially publishing the failing frame.
+  partially publishing the failing frame. Its internal profile now derives
+  checked direction-specific byte regions and safely partitions opaque aligned
+  LZD encoder, phrase, and expansion records.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

@@ -1975,7 +1975,11 @@ raw frame, prepares one complete immutable encoded frame, and drains it before
 accepting the next frame. Chunking and nonterminal `Flush` do not alter
 canonical bytes. The streaming decoder admits bounded complete-frame storage
 from the parsed header, transactionally validates and reconstructs it, and only
-then drains immutable raw bytes.
+then drains immutable raw bytes. The internal profile calculator derives these
+direction-specific byte regions and opaque aligned LZD record extents with
+checked aggregate bounds. Typed partitioning rejects inconsistent byte counts,
+offsets, insufficient storage, and misalignment before exposing encoder
+entries, decoder phrases, or expansion references.
 
 ### Published LZD plus Adaptive Huffman boundary
 

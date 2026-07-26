@@ -1559,3 +1559,9 @@ explicit prefix and frame parsers, checked arithmetic, and established caller-
 owned validated-frame draining conventions. No external streaming decoder,
 state machine, buffering layout, source code, malformed corpus, or test suite
 was consulted.
+
+The LZD plus Dynamic Range direction-specific profile uses only DD-425,
+DD-423/424's established caller-owned regions, marc's local LZD workspace
+formulas and record types, Dynamic Range bounds, checked arithmetic, and the
+already published profile conventions. No external allocator, workspace
+layout, combined codec, source code, corpus, or test suite was consulted.
