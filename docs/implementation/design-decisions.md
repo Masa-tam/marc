@@ -8285,3 +8285,27 @@ the prefix or a frame drains, require its input to complete the declared known
 size, reject `ResetBlock` and unknown flags, and make ended and error results
 sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-424: LZD Dynamic Range streaming decode validates before draining
+
+- Date: 2026-07-27
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= 8 * ceil(F/2)`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, token staging, private raw staging, aligned LZD phrase
+records, and expansion references, plus their checked aggregate workspace.
+
+Collect exactly the admitted descriptor and payload, invoke DD-420's
+transactional complete-frame decoder into private raw storage, and only then
+drain that immutable raw frame. Do not collect a later frame while validated
+raw bytes remain pending. Earlier complete frames may be published, but a
+malformed later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.

@@ -1973,7 +1973,9 @@ exact range payload and reproduces the independent 84-byte vector without
 partial writes on capacity failure. The bounded streaming encoder collects one
 raw frame, prepares one complete immutable encoded frame, and drains it before
 accepting the next frame. Chunking and nonterminal `Flush` do not alter
-canonical bytes.
+canonical bytes. The streaming decoder admits bounded complete-frame storage
+from the parsed header, transactionally validates and reconstructs it, and only
+then drains immutable raw bytes.
 
 ### Published LZD plus Adaptive Huffman boundary
 

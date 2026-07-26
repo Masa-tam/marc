@@ -2436,7 +2436,9 @@ this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 chunking alone must not change serialized bytes. The bounded streaming encoder
 implements this contract by collecting one raw frame, preparing its complete
 serialized representation, and draining that immutable extent before
-collecting the next frame.
+collecting the next frame. The matching streaming decoder parses and bounds one
+complete encoded frame, transactionally reconstructs it into private raw
+staging, and drains that immutable raw extent before collecting another frame.
 
 The C ABI functions `marc_lzw_dynamic_range_config_init()`,
 `marc_lzw_dynamic_range_workspace_requirements()`, and

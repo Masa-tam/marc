@@ -124,8 +124,9 @@ range planning and reports the complete frame extent without serialized
 output. Its deterministic complete-frame encoder reproduces the independent
 84-byte frame and preserves short destinations. Its bounded streaming encoder
 now preserves canonical bytes under arbitrary input and output starvation and
-nonterminal `Flush`. No streaming decoder, C ABI, CLI, benchmark, fuzz,
-completion, or interoperability entry exists yet.
+nonterminal `Flush`. Its bounded streaming decoder validates complete frames
+before raw draining and preserves frame atomicity under later corruption. No
+C ABI, CLI, benchmark, fuzz, completion, or interoperability entry exists yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

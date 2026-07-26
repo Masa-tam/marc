@@ -344,7 +344,9 @@ encoder then serializes the generic header, descriptor, and exact range
 payload and reproduces the independent 84-byte vector without partial writes
 on capacity failure. The bounded streaming encoder collects and encodes one
 complete frame at a time, then drains its immutable bytes before accepting the
-next frame; chunking and nonterminal `Flush` do not alter the stream.
+next frame; chunking and nonterminal `Flush` do not alter the stream. The
+bounded streaming decoder admits one checked encoded frame, transactionally
+reconstructs it, and drains raw bytes only after complete success.
 
 ## Why publication is not automatic
 

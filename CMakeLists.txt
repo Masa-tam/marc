@@ -160,6 +160,7 @@ set(MARC_SOURCES
     src/frame/lz78_dynamic_range_frame.cpp
     src/frame/lzw_dynamic_range_frame.cpp
     src/frame/lzd_dynamic_range_frame.cpp
+    src/frame/lzd_dynamic_range_frame_streaming_decoder.cpp
     src/frame/lzd_dynamic_range_frame_streaming_encoder.cpp
     src/frame/lzw_dynamic_range_profile.cpp
     src/frame/lzw_dynamic_range_frame_streaming_decoder.cpp
@@ -1114,6 +1115,7 @@ if(MARC_BUILD_TESTS)
         tests/lzd_adaptive_huffman_vector_tests.cpp
         tests/lzd_dynamic_range_vector_tests.cpp
         tests/lzd_dynamic_range_frame_tests.cpp
+        tests/lzd_dynamic_range_frame_streaming_decoder_tests.cpp
         tests/lzd_dynamic_range_frame_streaming_encoder_tests.cpp
         tests/lzd_adaptive_huffman_frame_tests.cpp
         tests/lzd_adaptive_huffman_frame_streaming_decoder_tests.cpp

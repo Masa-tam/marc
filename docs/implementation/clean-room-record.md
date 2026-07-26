@@ -9021,3 +9021,34 @@ discarded and the reviewed seed retained.
   complete-frame, streaming-encoder, and documentation tests passed, followed
   by all 1,666 Release tests under both MSVC/Visual Studio 2026 and Clang
   22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range bounded streaming decoding
+
+- Authoring method: placed incremental prefix and frame collection above
+  DD-420's transactional complete-frame decoder and drained only validated
+  private raw frames.
+- References used: DD-424, DD-420, DD-418, the local core process contract,
+  explicit stream/LZD/frame parsers, checked arithmetic, and caller-owned
+  validated-frame workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: validate the fixed prefix before frame collection;
+  admit `S`, `P`, descriptor, encoded-frame, token, raw, phrase, expansion, and
+  aggregate extents from each header; collect exactly one complete frame;
+  transactionally reconstruct before draining; retain `EndInput` across raw
+  starvation; and preserve earlier frames while publishing none of a malformed
+  later frame.
+- Generated-code task description: add the minimal transform and CMake entries;
+  verify one-byte input/output and retained finish; corrupt the second frame
+  and require first-frame-only output; reject every truncation and trailing
+  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
+  flag, and sticky-error cases.
+- Similarity review: the implementation follows only marc's documented frame
+  parser, bounds, and process contract. No external state-machine structure,
+  admission order, naming scheme, error mapping, buffering layout, or test
+  expression was compared.
+- Local validation: all thirty-two focused vector, complete-frame, streaming-
+  encoder, streaming-decoder, and documentation tests passed, followed by all
+  1,671 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
