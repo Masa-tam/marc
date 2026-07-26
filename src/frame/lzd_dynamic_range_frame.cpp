@@ -1,8 +1,6 @@
 #include "frame/lzd_dynamic_range_frame.hpp"
 
 #include "core/checked_math.hpp"
-#include "dictionary/lzd_decoder.hpp"
-
 #include <algorithm>
 #include <cstdint>
 
@@ -36,9 +34,7 @@ inline constexpr std::uint64_t termination_bytes = 5;
     return entropy_limits;
 }
 
-} // namespace
-
-LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
+[[nodiscard]] LzdDynamicRangeFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzdParameters& parameters,
     const core::DecoderLimits& limits,
@@ -47,7 +43,10 @@ LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
     const std::span<const std::byte> input,
     const std::span<std::byte> dictionary_staging,
     const std::span<dictionary::internal::LzdPhraseEntry>
-        phrase_workspace) noexcept {
+        phrase_workspace,
+    const bool require_raw_staging,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
     LzdDynamicRangeFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -153,14 +152,30 @@ LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
             LzdDynamicRangeFrameValidationError::phrase_workspace_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error =
+            LzdDynamicRangeFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_raw_staging
+        && expansion_workspace.size() < result.expansion_entries) {
+        result.error = LzdDynamicRangeFrameValidationError::
+            expansion_workspace_too_small;
+        return result;
+    }
 
     std::uint64_t phrase_bytes{};
+    std::uint64_t expansion_bytes{};
     std::uint64_t workspace_bytes{};
     if (!core::checked_multiply(
             static_cast<std::uint64_t>(result.phrase_entries),
             static_cast<std::uint64_t>(
                 sizeof(dictionary::internal::LzdPhraseEntry)),
             phrase_bytes)
+        || !core::checked_multiply(
+            static_cast<std::uint64_t>(result.expansion_entries),
+            static_cast<std::uint64_t>(sizeof(std::uint32_t)),
+            expansion_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(result.descriptor_size),
             static_cast<std::uint64_t>(result.payload_size), workspace_bytes)
@@ -169,7 +184,14 @@ LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
             static_cast<std::uint64_t>(result.dictionary_size),
             workspace_bytes)
         || !core::checked_add(
-            workspace_bytes, phrase_bytes, workspace_bytes)) {
+            workspace_bytes, phrase_bytes, workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, expansion_bytes, workspace_bytes))
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error =
             LzdDynamicRangeFrameValidationError::arithmetic_overflow;
         return result;
@@ -224,6 +246,74 @@ LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
         result.error = LzdDynamicRangeFrameValidationError::
             dictionary_validation_error;
     }
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_tokens(
+    LzdDynamicRangeFrameValidationResult& result,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lzd_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        expansion_workspace.first(result.expansion_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::LzdDecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error =
+        LzdDynamicRangeFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry>
+        phrase_workspace) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        false, {}, {});
+}
+
+LzdDynamicRangeFrameValidationResult
+decode_lzd_dynamic_range_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzdPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, dictionary_staging, phrase_workspace,
+        true, expansion_workspace, raw_staging);
+    if (result.error != LzdDynamicRangeFrameValidationError::none) {
+        return result;
+    }
+
+    (void)reconstruct_validated_tokens(
+        result, parameters, limits, dictionary_staging, phrase_workspace,
+        expansion_workspace, raw_staging);
     return result;
 }
 

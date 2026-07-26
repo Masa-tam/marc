@@ -332,7 +332,10 @@ and exact-raw-extent pass. The independent raw-`A` vector fixes token bytes
 public adapter is implied yet. Its first bounded complete-frame validator now
 admits every extent and workspace before range decoding into private token
 staging, then applies the existing LZD semantic validator without
-reconstructing or publishing raw bytes.
+publishing raw bytes. The matching private decoder checks raw and expansion-
+stack capacity plus aggregate storage before entropy output, then iteratively
+reconstructs the completely validated phrase graph into bounded raw staging.
+Caller-visible publication remains a later boundary.
 
 ## Why publication is not automatic
 

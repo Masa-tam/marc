@@ -8877,3 +8877,34 @@ discarded and the reviewed seed retained.
 - Local validation: the eight focused LZD Dynamic Range tests passed under
   both MSVC and ClangCL. The complete Release suite passed 1,647/1,647 under
   both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range private raw reconstruction
+
+- Authoring method: extended marc's DD-418 complete-frame validator with the
+  existing iterative LZD decoder after all encoded-layer checks succeed,
+  retaining caller-owned bounded token, phrase, expansion-stack, and raw
+  workspaces.
+- References used: DD-419, DD-418, the local Dynamic Range decoder, LZD token
+  validator and iterative decoder, checked aggregate arithmetic, and
+  established private-staging conventions from other marc compositions.
+- Known implementations intentionally not consulted: external LZD/range
+  decoders, phrase-expansion implementations, buffering layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: require complete private raw and expansion-stack
+  extents before descriptor parsing or entropy output; count both with the
+  descriptor, payload, token staging, and aligned phrase records; reuse the
+  strict DD-418 order; reconstruct only after full validation; preserve
+  detailed LZD validation, format, and decode diagnostics; and expose no
+  caller-visible output at this boundary.
+- Generated-code task description: add the minimal private decoder and error
+  result fields; verify the independent raw-`A` frame and phrase-bearing
+  `ABABAB` frame; require raw, expansion, and aggregate failures before entropy
+  output; and preserve raw sentinels on encoded-layer failures.
+- Similarity review: the implementation composes only existing marc functions
+  and independently documented workspace rules. No external control flow,
+  phrase-table representation, stack convention, error taxonomy, naming
+  scheme, or test expression was compared.
+- Local validation: all twelve focused LZD Dynamic Range vector, validator,
+  private-decoder, and documentation tests passed under both MSVC and ClangCL.
+  The complete Release suite passed 1,651/1,651 under both compilers using
+  official CMake 4.3.4.

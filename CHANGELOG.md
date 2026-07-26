@@ -15,6 +15,9 @@ format versions, and C ABI versions are independent namespaces.
   declared and aggregate extents before entropy output, strictly range-decodes
   into private token staging, and applies the existing LZD token, backward-
   reference, terminal-absence, phrase-length, and exact-raw-extent validator.
+  Its bounded private decoder additionally checks and counts raw and expansion
+  staging before entropy output, then iteratively reconstructs only the
+  completely validated LZD graph without publishing caller-visible bytes.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

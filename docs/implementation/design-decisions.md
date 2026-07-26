@@ -8167,3 +8167,29 @@ as a diagnostic, but do not include unrequested expansion or raw staging in
 this validator's workspace total. This step adds no private raw decoder,
 encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
 target, completion matrix, or interoperability entry.
+
+## DD-419: LZD Dynamic Range reconstructs only into private raw staging
+
+- Date: 2026-07-26
+- Status: accepted
+
+Extend DD-418 with a bounded complete-frame decoder that reconstructs the
+already validated LZD token stream into caller-owned private raw staging.
+Require raw capacity for the complete declared frame and expansion-stack
+capacity for the checked phrase-count-plus-one requirement. Add both full
+extents to aggregate workspace accounting before parsing the Dynamic Range
+descriptor or producing token bytes.
+
+Reuse the DD-418 validator without weakening or duplicating its header,
+`S`/`P`, workspace, descriptor, payload-exhaustion, reference, terminal,
+phrase-length, and exact-raw-extent checks. Only after all validation succeeds
+may the existing iterative LZD decoder expand the staged token graph through
+the validated phrase table and explicit `uint32_t` stack into private raw
+storage. Preserve detailed LZD validation, format, and decode diagnostics.
+
+On every failure the caller must discard token staging, phrase records,
+expansion stack, and raw staging. No caller-visible raw output is accepted by
+this API, so no byte is published at this boundary. This step adds no
+transactional publication wrapper, encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
+interoperability entry.

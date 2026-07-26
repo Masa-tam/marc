@@ -1437,6 +1437,12 @@ spans, and checked aggregate arithmetic. No external combined decoder,
 validation order, workspace layout, malformed corpus, source code, or test
 suite was consulted.
 
+The LZD plus Dynamic Range private raw decoder uses only DD-419, the completed
+DD-418 validator, marc's existing iterative LZD decoder, caller-owned token,
+phrase, expansion-stack, and raw spans, and checked aggregate arithmetic. No
+external combined decoder, phrase-expansion implementation, buffering layout,
+source code, malformed corpus, or test suite was consulted.
+
 The first LZW plus Dynamic Range complete-frame validator uses only DD-403,
 DD-402's fixed packed-byte boundary and bounds, marc's generic frame parser,
 Dynamic Range descriptor and decoder, existing LZW validator, caller-owned

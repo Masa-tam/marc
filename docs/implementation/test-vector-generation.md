@@ -3036,6 +3036,19 @@ reference, then require the existing stable LZD format errors. Also reject
 non-multiple-of-eight and over-ceiling token extents, wrong sequence, and an
 unsupported entropy variant.
 
+For the LZD plus Dynamic Range private raw decoder, reconstruct the independent
+84-byte frame into one private byte and require `A`. Generate a phrase-bearing
+frame from raw `ABABAB`, then require exact reconstruction, two tokens, two
+generated phrases, and three expansion-stack entries.
+
+Fill token, expansion, and raw staging with distinct sentinels. Shorten raw and
+expansion capacity independently and set the aggregate workspace limit below
+the descriptor, payload, token bytes, aligned phrase records, expansion stack,
+and complete raw extent; each must fail before entropy output and preserve the
+unreached sentinels. Corrupt the Dynamic Range descriptor and independently
+encode a contradictory LZD terminal token; both must leave private raw staging
+unchanged. The decoder exposes no caller-visible output span in this step.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing

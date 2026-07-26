@@ -1959,8 +1959,10 @@ token bytes `41 00 00 00 FF FF FF FF`, range payload
 first combined boundary now validates one exact complete frame. It admits the
 complete header, token and entropy extents, caller capacities, phrase records,
 and aggregate workspace before range-decoding into private token staging, then
-applies the existing LZD graph validator. It exposes diagnostics and validated
-workspace only; raw reconstruction and public factories remain later
+applies the existing LZD graph validator. Its bounded private decoder also
+admits raw capacity, expansion-stack capacity, and aggregate storage before
+entropy output, then iteratively reconstructs the validated graph into private
+raw staging. Caller-visible publication and public factories remain later
 boundaries.
 
 ### Published LZD plus Adaptive Huffman boundary
