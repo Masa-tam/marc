@@ -473,6 +473,90 @@ LzdDynamicRangeFrameValidationResult plan_lzd_dynamic_range_frame(
     return result;
 }
 
+LzdDynamicRangeFrameValidationResult encode_lzd_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = plan_lzd_dynamic_range_frame(
+        stream, parameters, limits, sequence, output_already_committed, input,
+        encoder_workspace, dictionary_staging);
+    if (result.error != LzdDynamicRangeFrameValidationError::none) {
+        return result;
+    }
+    if (output.size() < result.serialized_size) {
+        result.error = LzdDynamicRangeFrameValidationError::
+            serialized_output_too_small;
+        return result;
+    }
+
+    entropy::internal::DynamicRangeDescriptor descriptor{};
+    const auto entropy_limits =
+        entropy_limits_for(limits, result.dictionary_size);
+    const auto entropy_plan =
+        entropy::internal::plan_dynamic_range_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            descriptor);
+    if (entropy_plan.error
+            != entropy::internal::DynamicRangeEncodeError::none
+        || entropy_plan.payload_size != result.payload_size) {
+        result.entropy_encode_error = entropy_plan.error;
+        result.error = LzdDynamicRangeFrameValidationError::internal_error;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(result.raw_size);
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count = 1;
+    header.block_descriptors_size =
+        entropy::internal::dynamic_range_descriptor_size;
+    const FrameValidationContext context{
+        stream, limits, sequence, output_already_committed};
+    if (serialize_frame_header(
+            header, context,
+            std::span<std::byte, frame_header_size>{
+                output.data(), frame_header_size})
+        != FrameHeaderError::none) {
+        result.error = LzdDynamicRangeFrameValidationError::internal_error;
+        return result;
+    }
+    result.descriptor_error =
+        entropy::internal::serialize_dynamic_range_descriptor(
+            descriptor, header.dictionary_serialized_size,
+            header.compressed_payload_size, entropy_limits,
+            std::span<std::byte,
+                      entropy::internal::dynamic_range_descriptor_size>{
+                output.data() + frame_header_size,
+                entropy::internal::dynamic_range_descriptor_size});
+    if (result.descriptor_error
+        != entropy::internal::DynamicRangeFormatError::none) {
+        result.error = LzdDynamicRangeFrameValidationError::internal_error;
+        return result;
+    }
+    const auto entropy_encoded =
+        entropy::internal::encode_dynamic_range_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            output.subspan(frame_header_size + result.descriptor_size,
+                           result.payload_size),
+            descriptor);
+    result.entropy_encode_error = entropy_encoded.error;
+    if (entropy_encoded.error
+        != entropy::internal::DynamicRangeEncodeError::none) {
+        result.error = LzdDynamicRangeFrameValidationError::internal_error;
+    }
+    return result;
+}
+
 LzdDynamicRangeFrameValidationResult validate_lzd_dynamic_range_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzdParameters& parameters,

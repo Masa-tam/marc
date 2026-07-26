@@ -1967,7 +1967,10 @@ capacity before entropy output and copies the complete private raw frame only
 after success. Public factories remain a later boundary. The exact-frame
 planner fixes the canonical token extent before range planning, checks encoder
 records, token bytes, descriptor, payload, and generic header, and reports the
-complete serialized extent without writing a frame.
+complete serialized extent without writing a frame. The deterministic
+complete-frame encoder uses that plan to serialize the header, descriptor, and
+exact range payload and reproduces the independent 84-byte vector without
+partial writes on capacity failure.
 
 ### Published LZD plus Adaptive Huffman boundary
 

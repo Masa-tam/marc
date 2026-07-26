@@ -339,7 +339,10 @@ The internal transactional decoder also admits complete destination capacity
 before entropy output and copies the private raw frame only after every layer
 succeeds. The exact-frame planner fixes canonical token bytes before range
 planning, enforces the combined workspace policy, and reports the complete
-serialized extent without writing a frame.
+serialized extent without writing a frame. The deterministic complete-frame
+encoder then serializes the generic header, descriptor, and exact range
+payload and reproduces the independent 84-byte vector without partial writes
+on capacity failure.
 
 ## Why publication is not automatic
 

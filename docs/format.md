@@ -2674,8 +2674,10 @@ complete header, descriptor, payload, destination extent, and workspace bounds
 before publishing any frame byte. The exact-frame planner now fixes the
 canonical token bytes, validates the exact descriptor and payload extents plus
 aggregate workspace, validates the synthesized generic header, and reports the
-serialized extent without writing serialized output. A later encoder must also
-validate destination extent before publication.
+serialized extent without writing serialized output. The complete-frame
+encoder validates destination extent before publication, repeats the exact
+range plan over the frozen token bytes, and explicitly serializes the header,
+descriptor, and payload.
 
 Decoding is transactional at the outer frame boundary. It first validates the
 pipeline IDs and variants, LZD parameters, sequence, generic extents, one-block

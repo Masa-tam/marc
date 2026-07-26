@@ -3075,6 +3075,17 @@ Set the aggregate workspace limit one byte below the raw-`A` requirement and
 require rejection after exact entropy planning. Also reject empty input and a
 raw extent inconsistent with the stream frame contract.
 
+For the LZD plus Dynamic Range deterministic complete-frame encoder, encode raw
+`A` with the exact planner's eight-byte token staging and require byte-for-byte
+equality with the independently assembled 84-byte frame. This comparison
+covers the generic header, descriptor, and twelve-byte range payload.
+
+Encode raw `ABABAB` twice into separately initialized exact-size destinations
+and require identical complete frames, then decode one through the
+transactional decoder and require the original raw bytes. Shorten the raw-`A`
+serialized destination by one byte, fill it with a sentinel, and require the
+dedicated capacity error with every destination byte unchanged.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing

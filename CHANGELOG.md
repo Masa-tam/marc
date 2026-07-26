@@ -23,6 +23,8 @@ format versions, and C ABI versions are independent namespaces.
   succeeds, leaving caller output unchanged on all failures. Its exact-frame
   planner now freezes canonical LZD token bytes before range planning and
   reports the complete serialized extent without writing serialized output.
+  The deterministic encoder reproduces the independent 84-byte frame and
+  leaves short destinations completely unchanged.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

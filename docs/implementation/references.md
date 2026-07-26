@@ -1455,6 +1455,12 @@ frame validator, caller-owned workspaces, and checked arithmetic. No external
 combined encoder, planning algorithm, buffering layout, source code, encoded
 corpus, or test suite was consulted.
 
+The LZD plus Dynamic Range deterministic complete-frame encoder uses only
+DD-422, DD-421's exact plan, marc's explicit generic-header and Dynamic Range
+descriptor serializers, and local Dynamic Range encoder. No external combined
+encoder, frame writer, buffering layout, source code, encoded corpus, or test
+suite was consulted.
+
 The first LZW plus Dynamic Range complete-frame validator uses only DD-403,
 DD-402's fixed packed-byte boundary and bounds, marc's generic frame parser,
 Dynamic Range descriptor and decoder, existing LZW validator, caller-owned

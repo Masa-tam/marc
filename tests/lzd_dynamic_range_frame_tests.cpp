@@ -381,6 +381,71 @@ TEST(LzdDynamicRangeFramePlanner, EnforcesAggregateAndFrameExtent) {
               LzdDynamicRangeFrameValidationError::input_size_mismatch);
 }
 
+TEST(LzdDynamicRangeFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::byte, terminal_token_frame.size()> output{};
+    const auto result = marc::frame::encode_lzd_dynamic_range_frame(
+        stream_for_size(raw.size()), {}, {}, 0, 0, raw, {}, staging, output);
+    ASSERT_EQ(result.error, LzdDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(output, terminal_token_frame);
+}
+
+TEST(LzdDynamicRangeFrameEncoder,
+     RoundTripsPhraseReferencesDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> workspace(
+        marc::dictionary::internal::lzd_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> encode_staging{};
+    const auto stream = stream_for_size(raw.size());
+    const auto plan = marc::frame::plan_lzd_dynamic_range_frame(
+        stream, {}, {}, 0, 0, raw, workspace, encode_staging);
+    ASSERT_EQ(plan.error, LzdDynamicRangeFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size, std::byte{0xa5});
+    std::vector<std::byte> second(plan.serialized_size, std::byte{0x5a});
+    ASSERT_EQ(marc::frame::encode_lzd_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  first).error,
+              LzdDynamicRangeFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzd_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  second).error,
+              LzdDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::vector<std::byte> decode_staging(plan.dictionary_size);
+    std::array<marc::dictionary::internal::LzdPhraseEntry, raw.size() / 2>
+        phrases{};
+    std::array<std::uint32_t, raw.size() / 2 + 1> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzd_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, first, decode_staging, phrases,
+                  expansion, raw_staging, decoded).error,
+              LzdDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzdDynamicRangeFrameEncoder,
+     ShortSerializedOutputIsCompletelyUnchanged) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::byte, terminal_token_frame.size() - 1> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::encode_lzd_dynamic_range_frame(
+                  stream_for_size(raw.size()), {}, {}, 0, 0, raw, {},
+                  staging, output).error,
+              LzdDynamicRangeFrameValidationError::
+                  serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+}
+
 TEST(LzdDynamicRangeFrameDecoder, ReconstructsHandVectorPrivately) {
     std::array<std::byte, terminal_token_a.size()> staging{};
     std::array<std::uint32_t, 1> expansion{};
