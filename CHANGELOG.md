@@ -20,7 +20,9 @@ format versions, and C ABI versions are independent namespaces.
   completely validated LZD graph without publishing caller-visible bytes. Its
   internal transactional decoder checks destination capacity before entropy
   work and copies the complete private raw extent only after every layer
-  succeeds, leaving caller output unchanged on all failures.
+  succeeds, leaving caller output unchanged on all failures. Its exact-frame
+  planner now freezes canonical LZD token bytes before range planning and
+  reports the complete serialized extent without writing serialized output.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

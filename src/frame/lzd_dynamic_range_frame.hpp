@@ -2,7 +2,9 @@
 #define MARC_FRAME_LZD_DYNAMIC_RANGE_FRAME_HPP
 
 #include "dictionary/lzd_decoder.hpp"
+#include "dictionary/lzd_encoder.hpp"
 #include "entropy/dynamic_range_decoder.hpp"
+#include "entropy/dynamic_range_encoder.hpp"
 #include "entropy/dynamic_range_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -32,6 +34,11 @@ enum class LzdDynamicRangeFrameValidationError : std::uint8_t {
     dictionary_decode_error,
     arithmetic_overflow,
     raw_output_too_small,
+    input_size_mismatch,
+    encoder_workspace_too_small,
+    dictionary_encode_error,
+    entropy_encode_error,
+    internal_error,
 };
 
 struct LzdDynamicRangeFrameValidationResult {
@@ -40,6 +47,7 @@ struct LzdDynamicRangeFrameValidationResult {
     std::size_t raw_size{};
     std::size_t descriptor_size{};
     std::size_t payload_size{};
+    std::size_t encoder_entries{};
     std::size_t phrase_entries{};
     std::size_t expansion_entries{};
     std::size_t token_count{};
@@ -55,9 +63,27 @@ struct LzdDynamicRangeFrameValidationResult {
         dictionary::internal::LzdFormatError::none};
     dictionary::internal::LzdDecodeError dictionary_decode_error{
         dictionary::internal::LzdDecodeError::none};
+    dictionary::internal::LzdEncodeError dictionary_encode_error{
+        dictionary::internal::LzdEncodeError::none};
+    entropy::internal::DynamicRangeEncodeError entropy_encode_error{
+        entropy::internal::DynamicRangeEncodeError::none};
     LzdDynamicRangeFrameValidationError error{
         LzdDynamicRangeFrameValidationError::none};
 };
+
+// Fixes the complete canonical LZD token stream before planning Dynamic Range
+// over those exact bytes. It reports the exact complete-frame extent without
+// writing serialized output. Raw input and token staging must not overlap.
+[[nodiscard]] LzdDynamicRangeFrameValidationResult
+plan_lzd_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Entropy-decodes and validates exactly one complete frame into private LZD
 // token staging and a caller-owned phrase table. No raw byte is reconstructed

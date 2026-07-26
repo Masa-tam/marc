@@ -3061,6 +3061,20 @@ require the complete caller-visible output sentinel to remain unchanged. These
 tests establish atomic publication for one complete frame only; they make no
 streaming-decoder claim.
 
+For the LZD plus Dynamic Range exact-frame planner, pass raw `A` through the
+existing LZD plan and encoder into eight-byte token staging. Require bytes
+`41 00 00 00 FF FF FF FF`, one token, zero encoder entries, a 16-byte
+descriptor, twelve payload bytes, and the complete 84-byte serialized extent
+without supplying serialized output.
+
+Plan raw `ABABAB` twice with separately initialized token staging and require
+identical token bytes and every reported extent. For raw `AB`, shorten the
+encoder workspace and token staging independently; the former must report its
+dedicated capacity error, while the latter must leave its sentinel unchanged.
+Set the aggregate workspace limit one byte below the raw-`A` requirement and
+require rejection after exact entropy planning. Also reject empty input and a
+raw extent inconsistent with the stream frame contract.
+
 For the first combined LZW plus Dynamic Range validator, accept the independent
 79-byte raw-`A` frame and require packed staging `41 00`, code count one, and
 zero generated phrase entries. Reject every proper frame prefix, one trailing

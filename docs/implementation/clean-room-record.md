@@ -8936,3 +8936,32 @@ discarded and the reviewed seed retained.
   private-decoder, transactional-decoder, and documentation tests passed under
   both MSVC and ClangCL. The complete Release suite passed 1,654/1,654 under
   both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range exact-frame planning
+
+- Authoring method: composed marc's existing deterministic LZD planner and
+  encoder with its Dynamic Range planner at the already specified finalized
+  token-byte boundary.
+- References used: DD-421, DD-417, the local LZD variant-1 planner and encoder,
+  Dynamic Range variant-1 planner, generic frame validator, checked arithmetic,
+  and caller-owned workspace conventions.
+- Known implementations intentionally not consulted: external LZD/range
+  encoders, combined planning algorithms, buffering layouts, source code,
+  encoded corpora, and test suites.
+- Independent decisions: require one nonempty exact frame; fix complete
+  canonical reference-pair bytes before range planning; enforce
+  `S <= 8 * ceil(F/2)` and `P <= 2S + 5`; count encoder records, token staging,
+  descriptor, and exact payload together; validate the synthesized generic
+  header; and write no serialized frame at this boundary.
+- Generated-code task description: add the minimal planner result fields and
+  errors; require the raw-`A` token bytes and 84-byte extent; repeat a phrase-
+  bearing plan for deterministic equality; reject short encoder and token
+  workspaces; enforce the exact aggregate limit; and reject empty or frame-
+  inconsistent raw input.
+- Similarity review: control flow composes only local marc layer contracts and
+  independently documented bounds. No external planning structure, workspace
+  policy, error taxonomy, naming scheme, or test expression was compared.
+- Local validation: all nineteen focused LZD Dynamic Range vector, validator,
+  planner, decoder, and documentation tests passed under both MSVC and ClangCL.
+  The complete Release suite passed 1,658/1,658 under both compilers using
+  official CMake 4.3.4.

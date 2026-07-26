@@ -1449,6 +1449,12 @@ and marc's established copy-after-success convention. No external combined
 decoder, publication protocol, buffering layout, source code, malformed
 corpus, or test suite was consulted.
 
+The LZD plus Dynamic Range exact-frame planner uses only DD-421, marc's local
+LZD variant-1 planner and encoder, Dynamic Range variant-1 planner, generic
+frame validator, caller-owned workspaces, and checked arithmetic. No external
+combined encoder, planning algorithm, buffering layout, source code, encoded
+corpus, or test suite was consulted.
+
 The first LZW plus Dynamic Range complete-frame validator uses only DD-403,
 DD-402's fixed packed-byte boundary and bounds, marc's generic frame parser,
 Dynamic Range descriptor and decoder, existing LZW validator, caller-owned

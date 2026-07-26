@@ -8215,3 +8215,26 @@ Preserve every existing combined error value and append a distinct output-
 capacity error. On every failure, publish no destination byte. This step adds
 no encoder, streaming transform, profile calculator, C ABI, CLI, benchmark,
 fuzz target, completion matrix, or interoperability entry.
+
+## DD-421: LZD Dynamic Range planning freezes tokens before range output
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an exact-frame planner for `lzd-dynamic-range`. Require one nonempty raw
+frame, validate the selected profile and caller-owned LZD encoder workspace,
+and run the deterministic LZD plan. Require token staging for the exact planned
+extent, then encode the complete canonical eight-byte reference-pair stream
+before invoking Dynamic Range planning.
+
+Plan Dynamic Range over that immutable token-byte extent and require the exact
+payload to satisfy `P <= 2S + 5`. Count LZD encoder records, token staging, the
+16-byte descriptor, and exact payload in one checked internal-workspace sum.
+Construct and validate the complete generic frame header and report its exact
+serialized extent without writing any serialized-frame byte.
+
+Preserve every existing combined error value and append distinct input-size,
+encoder-workspace, dictionary-encode, entropy-encode, and internal-consistency
+errors. This step adds no serialized encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
+interoperability entry.
