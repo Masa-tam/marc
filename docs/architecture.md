@@ -1985,7 +1985,11 @@ regions, partitions opaque typed storage internally, and constructs the
 matching immutable-direction streaming transform. The public completion matrix
 then exercises this lifecycle exclusively across required data classes,
 multiple chunk schedules, repeatable terminal states, and malformed final-frame
-publication boundaries.
+publication boundaries. The bounded dual-path fuzz boundary fixes encoded,
+token, raw, output, phrase, and expansion storage before accepting input and
+enforces a finite call budget. Its permanent regressions preserve frame
+atomicity across every canonical truncation, saturated extents, and invalid
+Dynamic Range descriptor padding.
 
 ### Published LZD plus Adaptive Huffman boundary
 

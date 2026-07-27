@@ -8376,3 +8376,27 @@ the final payload, and append trailing data. Each failure may publish exactly
 the first three validated frames, must preserve the final raw sentinel, and
 must repeat its terminal status and error positions. This step adds no CLI
 selector, benchmark, fuzz target, or interoperability entry.
+
+## DD-428: LZD Dynamic Range fuzzing is fixed-memory and dual-path
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add one bounded decoder fuzz entry that exercises both the private complete-
+frame decoder and the outer frame-committing streaming decoder. Cap accepted
+input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
+bytes, canonical LZD token staging at 4,096 bytes, range payload at 8,192
+bytes, phrase records at 512, and iterative expansion references at 513.
+Allocate every byte, phrase, and expansion region as a fixed local array before
+inspecting input.
+
+Derive chunk sizes only within those arrays and stop after
+`input_bound + output_bound + 32` calls. Abort on an invalid process result,
+zero progress reported as Progress, impossible NeedInput after final input, or
+the finite-call ceiling. Reuse the established bounded LZD harness with only
+the entropy identity and combined entry points parameterized.
+
+Permanent regressions must reject every proper prefix of a canonical stream,
+saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
+All failures preserve the raw output sentinel and remain sticky. This step adds
+no CLI, benchmark, or interoperability entry.

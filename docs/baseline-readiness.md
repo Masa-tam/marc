@@ -99,7 +99,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzd-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -132,7 +132,9 @@ region and safely partitions opaque aligned LZD records. Its small C ABI now
 publishes requirements queries and factories without exposing those record
 layouts. Its public C ABI completion matrix now proves required data classes,
 chunk determinism, sticky terminal states, and malformed final-frame
-atomicity. No CLI, benchmark, fuzz, or interoperability entry exists yet.
+atomicity. A bounded dual-path decoder fuzz target and permanent atomic
+malformed regressions are now present. No CLI, benchmark, or interoperability
+entry exists yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

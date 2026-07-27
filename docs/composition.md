@@ -355,7 +355,9 @@ fixed-width config, requirements, and factory functions while retaining every
 C++ record layout behind the opaque aligned views region. Its completion
 matrix uses only that ABI to prove required binary inputs, deterministic
 multi-frame chunking, repeated terminal results, and non-publication of a
-corrupt, truncated, or extended final frame.
+corrupt, truncated, or extended final frame. A bounded dual-path decoder fuzz
+target and permanent truncation, saturated-extent, and descriptor regressions
+are now present.
 
 ## Why publication is not automatic
 

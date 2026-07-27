@@ -36,7 +36,10 @@ format versions, and C ABI versions are independent namespaces.
   caller-owned regions without publishing C++ record layouts. Its public
   completion matrix now covers required binary classes, deterministic and
   arbitrarily chunked streams, sticky terminal states, and frame-atomic
-  rejection of corrupted, truncated, and extended final frames.
+  rejection of corrupted, truncated, and extended final frames. Its fixed-
+  memory dual-path decoder fuzz boundary and permanent regressions cover every
+  canonical truncation, saturated frame extents, and invalid Dynamic Range
+  descriptor padding.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

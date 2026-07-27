@@ -9129,3 +9129,34 @@ discarded and the reviewed seed retained.
 - Local validation: all three public completion tests passed under both MSVC
   and ClangCL, followed by all 1,682 Release tests under both compilers using
   official CMake 4.3.4.
+
+## 2026-07-28 - LZD plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: parameterized marc's first-party LZD dual-path decoder
+  harness only at the entropy decoder entry points, then instantiated it for
+  Dynamic Range under DD-428.
+- References used: DD-428, DD-427, the local generic-frame layout, LZD Dynamic
+  Range limits, complete-frame decoder, streaming decoder, and existing
+  repository-authored bounded fuzz conventions.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, source code, and encoded vectors.
+- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
+  output and token staging, 1,024-byte frame, 8,192-byte payload, 512-phrase,
+  and 513-expansion-reference ceilings; exercise both complete-frame and
+  streaming decode paths; impose a finite call ceiling; and permanently require
+  atomic rejection of every canonical truncation, extreme frame lengths, and
+  invalid descriptors.
+- Generated-code task description: instantiate the shared bounded LZD decoder
+  fuzz harness and permanent malformed regressions for Dynamic Range, add a
+  seed corpus, compile-smoke and optional libFuzzer targets, and synchronize
+  architecture, readiness, composition, fuzzing, changelog, decision,
+  reference, and vector records.
+- Similarity review: the work reuses only marc's own harness and public format
+  contracts, with entropy-specific substitutions at documented local entry
+  points; no external implementation, harness structure, corpus, or test
+  expression was compared.
+- Local validation: the fuzz compile-smoke target built under MSVC; the
+  sanitizer target completed a finite 1,000-run smoke under Clang 22.1.3 with
+  libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer; the three focused
+  malformed regressions passed. The complete Release suite passed 1,685/1,685
+  under both MSVC and ClangCL using official CMake 4.3.4.
