@@ -8354,3 +8354,25 @@ Add a pure C11 shared-library test that queries both directions, round-trips
 `ABABX`, and rejects each short region, misaligned views, null output handle,
 and nonzero reserved field. This step adds no CLI selector, benchmark, fuzz
 target, completion matrix, or interoperability entry.
+
+## DD-427: LZD Dynamic Range completion evidence is public-ABI only
+
+- Date: 2026-07-27
+- Status: accepted
+
+Reuse the LZD plus Adaptive Huffman public completion schedules through only
+the `marc_lzd_dynamic_range_*` configuration, requirements, factory, process,
+and destroy lifecycle. Change only the entropy payload ceiling to `2S + 5` and
+the public symbol family so evidence for the two LZD compositions cannot drift.
+
+Cover empty input, every one-byte value, all byte values, repetitive and
+patterned binary data, deterministic generated data, and lengths immediately
+around the 64-byte frame boundary. Require byte-identical repeated encoding,
+unchunked, one-byte, and mixed chunk schedules, round trip, and sticky
+`EndOfStream`.
+
+For a four-frame stream, independently corrupt the final sequence, truncate
+the final payload, and append trailing data. Each failure may publish exactly
+the first three validated frames, must preserve the final raw sentinel, and
+must repeat its terminal status and error positions. This step adds no CLI
+selector, benchmark, fuzz target, or interoperability entry.

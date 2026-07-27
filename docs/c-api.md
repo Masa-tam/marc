@@ -246,7 +246,10 @@ decoding uses token staging followed by private raw staging. Its aligned opaque
 region contains encoder entries or a checked phrase-entry/expansion-stack
 layout. Call `marc_lzd_dynamic_range_workspace_requirements()` again after
 changing direction, original size, frame size, maximum entries, or any hard
-limit; no C++ record type crosses the ABI.
+limit; no C++ record type crosses the ABI. The public completion matrix uses
+only this lifecycle and covers zero-view edge cases, byte-identical repeated
+and arbitrarily chunked encoding, sticky terminal results, and frame-atomic
+rejection of malformed final frames.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

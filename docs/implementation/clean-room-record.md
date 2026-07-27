@@ -9104,3 +9104,28 @@ discarded and the reviewed seed retained.
 - Local validation: the pure C11 shared-library test passed under both MSVC and
   ClangCL, followed by all 1,679 Release tests under both compilers using
   official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range public completion matrix
+
+- Authoring method: instantiated the existing independently generated LZD
+  public-ABI evidence schedules with the Dynamic Range symbol family and
+  payload ceiling.
+- References used: DD-427, the published local LZD plus Dynamic Range C ABI,
+  deterministic local generators, generic-frame extent fields, and the
+  existing LZD completion criteria.
+- Known implementations intentionally not consulted: external completion
+  suites, malformed corpora, source code, encoded vectors, and test schedules.
+- Independent decisions: keep every data, chunk, terminal, and corruption
+  schedule identical between the two LZD entropy compositions; change only the
+  public symbol family and `2S + 5` payload bound; and require only three
+  earlier frames to publish on final-frame failure.
+- Generated-code task description: factor the LZD payload ceiling, instantiate
+  the matrix for Dynamic Range, run all required binary classes and chunk
+  schedules, and preserve sticky status, error positions, and final sentinel
+  under sequence corruption, truncation, and trailing data.
+- Similarity review: the matrix reuses only repository-authored schedules and
+  public APIs. No external test organization, data corpus, malformed mutation,
+  naming scheme, or expected byte stream was compared.
+- Local validation: all three public completion tests passed under both MSVC
+  and ClangCL, followed by all 1,682 Release tests under both compilers using
+  official CMake 4.3.4.

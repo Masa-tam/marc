@@ -1982,7 +1982,10 @@ offsets, insufficient storage, and misalignment before exposing encoder
 entries, decoder phrases, or expansion references. The public C ABI now maps
 its fixed-width LZD configuration to this profile, queries all three workspace
 regions, partitions opaque typed storage internally, and constructs the
-matching immutable-direction streaming transform.
+matching immutable-direction streaming transform. The public completion matrix
+then exercises this lifecycle exclusively across required data classes,
+multiple chunk schedules, repeatable terminal states, and malformed final-frame
+publication boundaries.
 
 ### Published LZD plus Adaptive Huffman boundary
 
