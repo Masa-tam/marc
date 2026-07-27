@@ -2000,6 +2000,13 @@ checked destination formula is `80 + 16*ceil(N/2) + 77K`; an untimed byte-exact
 round trip gates all measurement. Fresh C transforms then report encoded
 ratio, directional throughput, all six queried workspace extents, and the
 larger three-region sum without a performance threshold.
+Interoperability schema 18 preserves the exact twenty-eight-entry schema-17
+order and appends `lzd-dynamic-range`. Generation round-trips all twenty-nine
+profiles; verification requires exact manifest order, foreign decode equality,
+and byte-identical local re-encoding while retaining schemas 1 through 17.
+Local MSVC admission proves the generator, verifier, reordered-manifest
+rejection, and the complete compatibility chain; external cross-platform
+evidence remains a post-push step.
 
 ### Published LZD plus Adaptive Huffman boundary
 

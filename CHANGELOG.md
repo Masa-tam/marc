@@ -43,7 +43,9 @@ format versions, and C ABI versions are independent namespaces.
   the bounded public C profile through the existing transactional temporary-
   file workflow. Its dependency-free benchmark now verifies a complete public-
   ABI round trip before reporting compression ratio, directional throughput,
-  and queried caller-owned workspace.
+  and queried caller-owned workspace. Interoperability schema 18 appends this
+  profile once after the frozen schema-17 order while retaining verification
+  compatibility for schemas 1 through 17.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

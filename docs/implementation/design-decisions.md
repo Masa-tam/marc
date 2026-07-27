@@ -8448,3 +8448,24 @@ ratio, encode/decode throughput, all six queried workspace extents, and the
 larger three-region sum as descriptive peak workspace. Add a one-iteration
 smoke test with no performance threshold. This step adds no interoperability
 entry.
+
+## DD-431: Interoperability schema 18 appends LZD Dynamic Range once
+
+- Date: 2026-07-28
+- Status: accepted
+
+Define interoperability schema 18 and codec set `marc-cli-v18` as the exact
+twenty-eight-entry schema-17 order followed by `lzd-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must locally decode every archive before publishing the manifest.
+
+The verifier must require exactly twenty-nine archives in canonical order,
+validate all sizes and SHA-256 values, decode each foreign archive, and require
+byte-identical local re-encoding. Unknown, duplicate, missing, reordered, or
+extra profiles remain errors.
+
+Keep schemas 1 through 17 as explicit frozen codec sets. The compatibility test
+must generate schema 18, reject a reordered schema-18 manifest, derive and
+verify schema 17, then continue the existing schema-16-through-1 chain. This
+step records local admission only; external cross-platform evidence requires
+artifacts produced after push.

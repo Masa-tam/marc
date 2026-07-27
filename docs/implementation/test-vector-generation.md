@@ -3256,6 +3256,18 @@ decoder workspaces 16,777,272/327,680/655,364 bytes. Peak caller reservation
 was 17,760,316 bytes. These values document the tested deterministic extents;
 the observed throughput is descriptive and not a conformance threshold.
 
+For interoperability schema 18, generate the same deterministic 8,193-byte
+fixture and retain the exact schema-17 archive order. Append exactly one
+`lzd-dynamic-range` archive as entry 29, set `schema_version` to 18 and
+`codec_set` to `marc-cli-v18`, and record each complete archive's size and
+SHA-256 after a local decode equality check.
+
+Verify all twenty-nine archives in manifest order, require foreign decode
+equality and byte-identical local re-encoding, and reject a manifest with its
+first two entries swapped. Derive schema 17 by removing only the new archive
+and restoring `marc-cli-v17`, then verify the unchanged schemas 17 through 1
+compatibility chain.
+
 For bounded LZW plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZW harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output to 4,096, a raw frame to 1,024, packed staging and entries

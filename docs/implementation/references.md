@@ -1592,3 +1592,10 @@ marc C profile as the CLI, the local checked encoded-capacity helper, and the
 repository's dependency-free measurement runner. No external benchmark
 framework, combined-codec adapter, capacity formula, performance result,
 source code, or test suite was consulted.
+
+Interoperability schema 18 uses only DD-431, the frozen schema-17 manifest
+order, the public `lzd-dynamic-range` CLI selector, and marc's existing
+deterministic fixture generator, strict verifier, SHA-256 metadata, and
+one-generation compatibility chain. No external archive protocol, manifest
+schema, interoperability harness, combined-codec archive, corpus, source code,
+or test vector was consulted.

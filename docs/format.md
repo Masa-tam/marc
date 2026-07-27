@@ -2728,6 +2728,9 @@ workspace extents and opaque alignment from the public requirements query.
 The dependency-free benchmark selects the same unchanged profile. Its checked
 capacity, mandatory untimed round trip, timing, ratio, and workspace reporting
 are tooling policy and add no format field or variant.
+Interoperability schema 18 emits and accepts this exact profile as archive 29
+after the frozen twenty-eight-entry schema-17 order. The schema adds no stream
+field or codec variant.
 
 ### Hand-checkable terminal-token frame
 

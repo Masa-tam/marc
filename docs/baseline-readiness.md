@@ -52,15 +52,15 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
-| `lzd-dynamic-range` | Fifth Dynamic Range composition | Benchmark | Not included |
+| `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 17 contains twenty-eight archives: the frozen twenty-seven-entry
-schema-16 set followed by the LZW Dynamic Range profile. Schemas 1 through 16
+Schema 18 contains twenty-nine archives: the frozen twenty-eight-entry
+schema-17 set followed by the LZD Dynamic Range profile. Schemas 1 through 17
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, and twenty-seven profiles; their meanings are fixed
-by their version and codec-set rules.
+twenty-five, twenty-six, twenty-seven, and twenty-eight profiles; their
+meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -70,7 +70,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 17 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 18 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -99,7 +99,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -136,7 +136,9 @@ atomicity. A bounded dual-path decoder fuzz target and permanent atomic
 malformed regressions are now present. Its explicit transactional CLI selector
 uses only the public requirements query and factory. The dependency-free
 benchmark uses the same profile, requires an untimed byte-exact round trip, and
-reports queried directional workspaces. No interoperability entry exists yet.
+reports queried directional workspaces. Interoperability schema 18 appends it
+once after the frozen schema-17 order; local generation, verification,
+reordered-manifest rejection, and schemas 1 through 17 compatibility pass.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

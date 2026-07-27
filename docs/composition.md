@@ -361,7 +361,9 @@ are now present. Its explicit transactional CLI selector reaches the
 composition only through the public C requirements query and factory. The
 dependency-free benchmark uses that same profile, checked
 `80 + 16*ceil(N/2) + 77K` capacity, mandatory untimed round trip, and queried
-directional workspaces.
+directional workspaces. Interoperability schema 18 appends it once after the
+frozen schema-17 order and preserves the verifier's schemas 1 through 17
+compatibility chain.
 
 ## Why publication is not automatic
 

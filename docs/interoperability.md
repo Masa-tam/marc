@@ -8,9 +8,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-17 bundle contains the same generated `input.bin`, one
+Each current schema-18 bundle contains the same generated `input.bin`, one
 archive for every public CLI profile, and `manifest.json`. The manifest declares
-codec set `marc-cli-v17` and records
+codec set `marc-cli-v18` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -31,7 +31,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all twenty-eight foreign archives and compares their output byte
+2. decodes all twenty-nine foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -44,7 +44,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 28 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 29 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 The verifier remains able to validate legacy schema-1 bundles with their exact
@@ -73,18 +73,21 @@ twenty-six archives, appending `lzss-dynamic-range` to the frozen schema-14
 order. Schema 16 requires `marc-cli-v16` and all twenty-seven archives,
 appending `lz78-dynamic-range` to the frozen schema-15 order. Schema 17
 requires `marc-cli-v17` and all twenty-eight archives, appending
-`lzw-dynamic-range` to the frozen schema-16 order. No schema silently inherits
-profiles added by a later schema.
+`lzw-dynamic-range` to the frozen schema-16 order. Schema 18 requires
+`marc-cli-v18` and all twenty-nine archives, appending `lzd-dynamic-range` to
+the frozen schema-17 order. No schema silently inherits profiles added by a
+later schema.
 
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 17 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 16
+Schema 18 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 17
 compatibility evidence. Its Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
-26.04/Clang four-direction external cross-check is recorded below.
+26.04/Clang four-direction external cross-check remains a post-push step.
+Schema 17's completed external cross-check is recorded below.
 
 ## Recorded external cross-checks
 

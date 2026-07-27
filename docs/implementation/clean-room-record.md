@@ -9211,3 +9211,33 @@ discarded and the reviewed seed retained.
   passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
   1,687/1,687 under both compilers using official CMake 4.3.4. All twenty-nine
   labeled benchmark smokes passed.
+
+## 2026-07-28 - Interoperability schema 18
+
+- Authoring method: extended marc's repository-authored manifest generator and
+  verifier by one frozen suffix entry while preserving every schema-17 profile
+  and all legacy codec-set definitions.
+- References used: DD-431, the public `lzd-dynamic-range` CLI selector, schema
+  17's canonical order, the local deterministic fixture, SHA-256 manifest
+  fields, exact re-encoding check, and compatibility conversion helper.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, encoded archives,
+  corpora, source code, and test suites.
+- Independent decisions: name the new set `marc-cli-v18`; append
+  `lzd-dynamic-range` once as archive 29; keep schemas 1 through 17 explicit;
+  reject reordered schema-18 manifests; and require local decode and exact
+  re-encoding before later external admission.
+- Generated-code task description: extend generator, verifier, reordered-
+  manifest regression, and schema compatibility chain by one profile; update
+  architecture, readiness, composition, format, interoperability, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the work changes only marc's own scripts and documented
+  schema order. No external format, archive bytes, manifest organization,
+  verifier control flow, or test expression was compared.
+- Local validation: the schema compatibility test generated and verified all
+  twenty-nine schema-18 archives, rejected reordered schema 18, and verified
+  the complete schemas 17 through 1 chain under both MSVC and ClangCL. The
+  complete Release suite passed 1,687/1,687 under both compilers using official
+  CMake 4.3.4. A separate local MSVC bundle generation and verification also
+  reported `Verified 29 archives` at revision
+  `2338bdda75f2d8fb2fff86d70d1c47a4de693dca`.
