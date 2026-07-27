@@ -358,7 +358,10 @@ multi-frame chunking, repeated terminal results, and non-publication of a
 corrupt, truncated, or extended final frame. A bounded dual-path decoder fuzz
 target and permanent truncation, saturated-extent, and descriptor regressions
 are now present. Its explicit transactional CLI selector reaches the
-composition only through the public C requirements query and factory.
+composition only through the public C requirements query and factory. The
+dependency-free benchmark uses that same profile, checked
+`80 + 16*ceil(N/2) + 77K` capacity, mandatory untimed round trip, and queried
+directional workspaces.
 
 ## Why publication is not automatic
 

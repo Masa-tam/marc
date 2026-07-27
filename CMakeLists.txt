@@ -451,6 +451,11 @@ if(MARC_BUILD_BENCHMARKS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzd_adaptive_huffman_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lzd_dynamic_range_smoke
+            COMMAND marc_benchmark lzd-dynamic-range
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzd_dynamic_range_smoke
+            PROPERTIES LABELS benchmark-smoke)
         add_test(NAME marc_benchmark_lzmw_smoke
             COMMAND marc_benchmark lzmw ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzmw_smoke

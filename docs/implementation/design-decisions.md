@@ -8424,3 +8424,27 @@ failure, or rename failure must leave no requested destination or temporary
 file. Test binary and empty round trips, overwrite refusal, malformed input,
 and a valid stream with trailing data. This step adds no benchmark or
 interoperability entry.
+
+## DD-430: LZD Dynamic Range benchmark measures the public CLI profile
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add `lzd-dynamic-range` to the dependency-free benchmark with the exact DD-429
+public profile: 65,536-byte raw frames, 262,144 canonical LZD token bytes,
+524,293 range-payload bytes, 65,536 dictionary entries, and a 16-MiB aggregate
+policy.
+
+For input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `80 + 16*ceil(N/2) + 77K`. The pair term covers
+`S = 8*ceil(N/2)` and `P <= 2S + 5`; each frame contributes its 56-byte header,
+16-byte descriptor, and five termination bytes. Overflow must fail before
+allocating the encoded buffer.
+
+Construct both directions only through the public config initializer,
+requirements query, factory, process, and destroy lifecycle. Require one
+untimed byte-exact round trip before timing fresh transforms. Report encoded
+ratio, encode/decode throughput, all six queried workspace extents, and the
+larger three-region sum as descriptive peak workspace. Add a one-iteration
+smoke test with no performance threshold. This step adds no interoperability
+entry.

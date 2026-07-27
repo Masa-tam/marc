@@ -2725,6 +2725,9 @@ raw frames, a 262,144-byte token ceiling, a 524,293-byte Dynamic Range payload
 ceiling, at most 65,536 dictionary entries, and a 16-MiB aggregate internal
 limit. It adds no representation or parameter variant and obtains all concrete
 workspace extents and opaque alignment from the public requirements query.
+The dependency-free benchmark selects the same unchanged profile. Its checked
+capacity, mandatory untimed round trip, timing, ratio, and workspace reporting
+are tooling policy and add no format field or variant.
 
 ### Hand-checkable terminal-token frame
 

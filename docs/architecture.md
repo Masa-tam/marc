@@ -1995,6 +1995,11 @@ range-payload ceiling, 65,536 dictionary entries, and a 16-MiB aggregate
 policy. It obtains all three concrete workspace extents and opaque alignment
 from the public C requirements query and uses the common temporary-file
 transaction, so a malformed or trailing stream cannot publish a destination.
+The dependency-free benchmark selects the identical public profile. Its
+checked destination formula is `80 + 16*ceil(N/2) + 77K`; an untimed byte-exact
+round trip gates all measurement. Fresh C transforms then report encoded
+ratio, directional throughput, all six queried workspace extents, and the
+larger three-region sum without a performance threshold.
 
 ### Published LZD plus Adaptive Huffman boundary
 

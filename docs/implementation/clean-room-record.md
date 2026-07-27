@@ -9185,3 +9185,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused transactional CLI and documentation tests
   passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
   1,686/1,686 under both compilers using official CMake 4.3.4.
+
+## 2026-07-28 - LZD plus Dynamic Range public-ABI benchmark adapter
+
+- Authoring method: added the completed public profile to marc's dependency-
+  free measurement runner without invoking private frame APIs or reproducing
+  typed workspace layouts.
+- References used: DD-430, DD-429, the public config, requirements query and
+  factory, the local `8*ceil(F/2)` and `2S + 5` bounds, checked arithmetic, and
+  the existing untimed round-trip gate.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  workspace layouts, source code, and test suites.
+- Independent decisions: reuse the 64-KiB CLI frame and 16-MiB policy; derive
+  checked capacity `80 + 16*ceil(N/2) + 77K`; query both directional three-
+  region workspaces; report their larger sum; and impose no speed or ratio
+  threshold.
+- Generated-code task description: add benchmark selector, configuration,
+  capacity, requirements and factory dispatch, one labeled smoke, measurement
+  documentation, and readiness evidence.
+- Similarity review: the adapter extends only marc's existing runner with the
+  independently specified public profile. No external runner structure,
+  formula expression, output schema, or test expression was compared.
+- Local validation: the focused one-iteration smoke and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,687/1,687 under both compilers using official CMake 4.3.4. All twenty-nine
+  labeled benchmark smokes passed.
