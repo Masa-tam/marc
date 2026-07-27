@@ -9241,3 +9241,25 @@ discarded and the reviewed seed retained.
   CMake 4.3.4. A separate local MSVC bundle generation and verification also
   reported `Verified 29 archives` at revision
   `2338bdda75f2d8fb2fff86d70d1c47a4de693dca`.
+
+## 2026-07-28 - Interoperability schema 18 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `fd11d1c7ef833873a02694da91f9f6d8d378948b`.
+- References used: DD-431, marc's schema-18 generator and verifier, the
+  established schema-17 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-nine archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-nine-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 29 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-18 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.

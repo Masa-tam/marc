@@ -2005,8 +2005,10 @@ order and appends `lzd-dynamic-range`. Generation round-trips all twenty-nine
 profiles; verification requires exact manifest order, foreign decode equality,
 and byte-identical local re-encoding while retaining schemas 1 through 17.
 Local MSVC admission proves the generator, verifier, reordered-manifest
-rejection, and the complete compatibility chain; external cross-platform
-evidence remains a post-push step.
+rejection, and the complete compatibility chain. Revision
+`fd11d1c7ef833873a02694da91f9f6d8d378948b` additionally has four-direction
+external evidence across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
+26.04/Clang.
 
 ### Published LZD plus Adaptive Huffman boundary
 

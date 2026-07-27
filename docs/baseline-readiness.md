@@ -139,6 +139,9 @@ benchmark uses the same profile, requires an untimed byte-exact round trip, and
 reports queried directional workspaces. Interoperability schema 18 appends it
 once after the frozen schema-17 order; local generation, verification,
 reordered-manifest rejection, and schemas 1 through 17 compatibility pass.
+The four-direction Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+cross-check verifies all twenty-nine archives at revision
+`fd11d1c7ef833873a02694da91f9f6d8d378948b`.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary
