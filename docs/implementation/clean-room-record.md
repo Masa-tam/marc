@@ -9160,3 +9160,28 @@ discarded and the reviewed seed retained.
   libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer; the three focused
   malformed regressions passed. The complete Release suite passed 1,685/1,685
   under both MSVC and ClangCL using official CMake 4.3.4.
+
+## 2026-07-28 - LZD plus Dynamic Range transactional CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit-selector and transactional temporary-file loop without calling
+  private C++ frame APIs.
+- References used: DD-429, the public LZD Dynamic Range config, requirements
+  query and factory, the local 64-KiB reference profile, and the repository's
+  existing CLI process and round-trip contracts.
+- Known implementations intentionally not consulted: external archive tools,
+  compression CLIs, combined-codec adapters, workspace policies, source code,
+  command syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lzd-dynamic-range` selector in both directions; fix the public 262,144-byte
+  token and 524,293-byte range-payload limits; use a 16-MiB aggregate policy;
+  and query actual three-region workspaces and alignment through C.
+- Generated-code task description: add selector parsing, fixed public config,
+  requirements and factory dispatch, usage and profile documentation, and the
+  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
+- Similarity review: the adapter composes only marc's own public ABI and
+  transactional CLI. No external CLI structure, option spelling, workspace
+  layout, or test expression was compared.
+- Local validation: the focused transactional CLI and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,686/1,686 under both compilers using official CMake 4.3.4.

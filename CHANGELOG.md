@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   rejection of corrupted, truncated, and extended final frames. Its fixed-
   memory dual-path decoder fuzz boundary and permanent regressions cover every
   canonical truncation, saturated frame extents, and invalid Dynamic Range
-  descriptor padding.
+  descriptor padding. The explicit `lzd-dynamic-range` CLI selector now uses
+  the bounded public C profile through the existing transactional temporary-
+  file workflow.
 
 - The reserved `lzw-dynamic-range` composition now has an exact
   decoder-visible representation, checked packed-code and range-payload

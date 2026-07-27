@@ -52,6 +52,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzd` | Lempel-Ziv Double | None | Variant 1 |
 | `lzd-blocked-huffman` | Lempel-Ziv Double | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzd-adaptive-huffman` | Lempel-Ziv Double | Adaptive Huffman | FGK tree reset per outer frame |
+| `lzd-dynamic-range` | Lempel-Ziv Double | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lzmw` | LZMW | None | Variant 1 |
 | `lzmw-blocked-huffman` | LZMW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzmw-adaptive-huffman` | LZMW | Adaptive Huffman | FGK tree reset per outer frame |
@@ -135,6 +136,14 @@ ceiling. It admits at most 65,536 dictionary entries and uses a 16-MiB aggregate
 internal limit. The public C ABI requirements query supplies the exact primary,
 secondary, and opaque aligned-view extents for each direction; the CLI does not
 reproduce private encoder-entry, phrase, or expansion-stack layouts.
+
+The `lzd-dynamic-range` adapter uses 65,536-byte raw frames, at most 262,144
+canonical LZD token bytes, and the conservative `2S + 5` Dynamic Range payload
+ceiling of 524,293 bytes. It admits at most 65,536 dictionary entries and uses
+a 16-MiB aggregate internal limit. The public C ABI requirements query supplies
+the exact primary, secondary, and opaque aligned-view extents for each
+direction; the CLI does not reproduce private encoder-entry, phrase, or
+expansion-stack layouts.
 
 The `lzmw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the exact four-byte-per-raw-byte fixed-reference bound, at most

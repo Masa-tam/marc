@@ -52,7 +52,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-dynamic-range` | Second Dynamic Range composition | Ready | Included |
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
-| `lzd-dynamic-range` | Fifth Dynamic Range composition | Specified | Not included |
+| `lzd-dynamic-range` | Fifth Dynamic Range composition | CLI | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 17 contains twenty-eight archives: the frozen twenty-seven-entry
@@ -99,7 +99,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzd-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -133,8 +133,9 @@ publishes requirements queries and factories without exposing those record
 layouts. Its public C ABI completion matrix now proves required data classes,
 chunk determinism, sticky terminal states, and malformed final-frame
 atomicity. A bounded dual-path decoder fuzz target and permanent atomic
-malformed regressions are now present. No CLI, benchmark, or interoperability
-entry exists yet.
+malformed regressions are now present. Its explicit transactional CLI selector
+uses only the public requirements query and factory. No benchmark or
+interoperability entry exists yet.
 
 `lzw-dynamic-range` is the current locally completed composition. DD-402 fixes
 the complete LSB-first LZW packed-code boundary, including final dictionary

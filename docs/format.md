@@ -2720,6 +2720,12 @@ another representation. Byte workspace contains the raw/frame and token/raw
 regions reported for the immutable direction; aligned opaque workspace holds
 private LZD encoder entries or decoder phrase and expansion records.
 
+The `lzd-dynamic-range` CLI selector uses this same factory with 65,536-byte
+raw frames, a 262,144-byte token ceiling, a 524,293-byte Dynamic Range payload
+ceiling, at most 65,536 dictionary entries, and a 16-MiB aggregate internal
+limit. It adds no representation or parameter variant and obtains all concrete
+workspace extents and opaque alignment from the public requirements query.
+
 ### Hand-checkable terminal-token frame
 
 For raw input `A`, standalone LZD variant 1 emits:

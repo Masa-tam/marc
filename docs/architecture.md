@@ -1964,7 +1964,7 @@ admits raw capacity, expansion-stack capacity, and aggregate storage before
 entropy output, then iteratively reconstructs the validated graph into private
 raw staging. The internal transactional boundary also checks destination
 capacity before entropy output and copies the complete private raw frame only
-after success. Public factories remain a later boundary. The exact-frame
+after success. The public factory retains that transaction. The exact-frame
 planner fixes the canonical token extent before range planning, checks encoder
 records, token bytes, descriptor, payload, and generic header, and reports the
 complete serialized extent without writing a frame. The deterministic
@@ -1989,7 +1989,12 @@ publication boundaries. The bounded dual-path fuzz boundary fixes encoded,
 token, raw, output, phrase, and expansion storage before accepting input and
 enforces a finite call budget. Its permanent regressions preserve frame
 atomicity across every canonical truncation, saturated extents, and invalid
-Dynamic Range descriptor padding.
+Dynamic Range descriptor padding. The explicit `lzd-dynamic-range` CLI adapter
+selects 65,536-byte raw frames, a 262,144-byte token ceiling, a 524,293-byte
+range-payload ceiling, 65,536 dictionary entries, and a 16-MiB aggregate
+policy. It obtains all three concrete workspace extents and opaque alignment
+from the public C requirements query and uses the common temporary-file
+transaction, so a malformed or trailing stream cannot publish a destination.
 
 ### Published LZD plus Adaptive Huffman boundary
 

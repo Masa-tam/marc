@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | Specified | Candidate | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
@@ -328,8 +328,8 @@ boundaries. For raw frame size `F`, token staging is bounded by
 ordinary LZD token-width, backward-reference, terminal-absence, phrase-length,
 and exact-raw-extent pass. The independent raw-`A` vector fixes token bytes
 `41 00 00 00 FF FF FF FF`, range payload
-`00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. No
-public adapter is implied yet. Its first bounded complete-frame validator now
+`00 40 FF FF C4 DC 92 F3 69 BC 8B 00`, and the complete 84-byte frame. Its
+first bounded complete-frame validator now
 admits every extent and workspace before range decoding into private token
 staging, then applies the existing LZD semantic validator without
 publishing raw bytes. The matching private decoder checks raw and expansion-
@@ -357,7 +357,8 @@ matrix uses only that ABI to prove required binary inputs, deterministic
 multi-frame chunking, repeated terminal results, and non-publication of a
 corrupt, truncated, or extended final frame. A bounded dual-path decoder fuzz
 target and permanent truncation, saturated-extent, and descriptor regressions
-are now present.
+are now present. Its explicit transactional CLI selector reaches the
+composition only through the public C requirements query and factory.
 
 ## Why publication is not automatic
 
