@@ -3241,6 +3241,18 @@ decoder workspaces 16,777,272/327,680/1,310,704 bytes. Peak caller reservation
 was 18,415,656 bytes. These values document tested deterministic extents; the
 observed throughput is descriptive and not a conformance threshold.
 
+For interoperability schema 19, generate the same deterministic 8,193-byte
+fixture and retain the exact schema-18 archive order. Append exactly one
+`lzmw-dynamic-range` archive as entry 30, set `schema_version` to 19 and
+`codec_set` to `marc-cli-v19`, and record each complete archive's size and
+SHA-256 after a local decode equality check.
+
+Require the verifier to reject any reordered schema-19 manifest, validate all
+thirty archives in exact order, decode every archive to the fixture, and
+re-encode every profile byte-identically. Derive schema 18 by removing only
+entry 30 and changing its version and codec set, then retain the complete
+schema-18-through-schema-1 compatibility chain.
+
 For the first LZMW plus Dynamic Range vector, encode raw byte `41` using the
 standalone LZMW variant-1 encoder and require the complete four-byte reference
 `41 00 00 00`. Pass exactly that frozen byte span to a fresh standalone

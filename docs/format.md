@@ -3150,7 +3150,12 @@ API beneath bounded streaming transforms. The C ABI functions
 `marc_lzmw_dynamic_range_workspace_requirements()`, and
 `marc_lzmw_dynamic_range_create()` select exactly this representation and
 borrow all reported workspaces for the transform lifetime. Their publication
-does not imply CLI, benchmark, fuzz, completion, or interoperability coverage.
+does not define another representation. The CLI and dependency-free benchmark
+use this same public factory and fixed 65,536-byte profile; their file
+transaction, capacity, verification, timing, and reporting policy add no
+format field or variant. Interoperability schema 19 emits and accepts this
+exact profile as archive 30 after the frozen twenty-nine-entry schema-18 order.
+The schema adds no stream field or codec variant.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

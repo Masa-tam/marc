@@ -2079,6 +2079,10 @@ The dependency-free benchmark retains that exact profile and public lifecycle.
 It reserves complete-stream output with checked `80 + 8N + 77K` arithmetic,
 requires an untimed byte-exact round trip, then reports descriptive timing and
 all queried workspace extents.
+Interoperability schema 19 appends the unchanged CLI representation exactly
+once after schema 18's frozen twenty-nine profiles. The manifest verifier keeps
+every earlier codec set explicit and requires exact order, count, size,
+SHA-256, foreign decode equality, and byte-identical local re-encoding.
 
 ### Published LZD plus Adaptive Huffman boundary
 

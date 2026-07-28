@@ -8060,6 +8060,28 @@ Report ratio, directional throughput, each workspace region, and peak
 caller-reserved workspace without imposing a performance floor.
 Interoperability admission remains separate.
 
+## DD-446: Interoperability schema 19 appends LZMW Dynamic Range
+
+- Date: 2026-07-28
+- Status: accepted
+
+Define interoperability schema 19 and codec set `marc-cli-v19` as the exact
+twenty-nine-entry schema-18 order followed by `lzmw-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must round-trip every archive locally before publishing the
+manifest.
+
+The verifier must require exactly thirty archives in canonical order, validate
+leaf-only names, complete revision, sizes and SHA-256 values, decode every
+foreign archive, and reproduce every archive byte-identically with the local
+CLI. Keep schemas 1 through 18 explicit rather than deriving their meaning from
+the current profile list.
+
+The compatibility regression must reject a reordered schema-19 manifest before
+archive decoding, remove only archive 30 to derive schema 18, then exercise the
+existing schema-18-through-schema-1 conversion chain. Cross-platform admission
+remains pending until artifacts from the pushed revision are exchanged.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

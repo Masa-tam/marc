@@ -29,7 +29,7 @@ public format or API guarantee yet.
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 18 includes all current published profiles while
+publication: schema 19 includes all current published profiles while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -166,8 +166,11 @@ fixed 64-KiB profile through the public C factory and preserves the existing
 temporary-file, strict trailing-data, and overwrite-refusal behavior.
 Its dependency-free benchmark uses the same public profile, verifies an
 untimed byte-exact round trip, and reports queried workspace extents before
-descriptive timing. Interoperability coverage remains a separate admission
-step.
+descriptive timing. Schema 19 now appends this profile once after the frozen
+schema-18 order; local generation, exact-order verification, reordered-
+manifest rejection, and schemas 1 through 18 compatibility pass. Cross-
+platform interoperability evidence remains pending until pushed CI artifacts
+are exchanged.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

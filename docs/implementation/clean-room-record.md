@@ -8598,6 +8598,36 @@ discarded and the reviewed seed retained.
   under MSVC and ClangCL. The complete Release suite passed 1,736/1,736 under
   both compilers using official CMake 4.3.4. Schema-18 compatibility remained
   successful.
+
+## 2026-07-28 - Interoperability schema 19
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by one append-only public profile while retaining every schema-18 entry and
+  all earlier explicit codec sets.
+- References used: DD-446, the completed `lzmw-dynamic-range` CLI profile,
+  frozen schema-18 order, deterministic fixture generator, manifest verifier,
+  SHA-256 fields, and compatibility conversion helper.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, combined-codec
+  archives, corpora, source code, test vectors, and verification suites.
+- Independent decisions: append `lzmw-dynamic-range` exactly once as archive
+  30; name codec set `marc-cli-v19`; preserve schemas 1 through 18; require
+  local generation-time round trips, exact order, complete revision, sizes,
+  SHA-256, foreign decode equality, and byte-identical local re-encoding; and
+  reject reordered schema-19 manifests.
+- Generated-code task description: extend generator and verifier to schema 19,
+  convert schema 19 to 18 by removing only the new suffix entry, exercise the
+  entire earlier compatibility chain, and update format, interoperability,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records without claiming external results.
+- Similarity review: the work is a mechanical append-only extension of marc's
+  own manifest protocol. No external schema layout, compatibility policy,
+  corpus, archive bytes, or test expression was compared.
+- Local validation: schema-19 generation, thirty-archive self-verification,
+  reordered-manifest rejection, and the schema-18-through-schema-1 conversion
+  chain passed under both MSVC and ClangCL. The complete Release suite passed
+  1,736/1,736 under both compilers using official CMake 4.3.4. External
+  cross-platform artifact verification remains pending.
 - Local validation: all twenty-two focused LZMW Dynamic Range validator,
   planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
   complete Release suite passed 1,710/1,710 under both compilers using official

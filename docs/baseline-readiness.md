@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 18 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 19 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 18 |
+| Profile | Purpose | Local status | Interoperability schema 19 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -53,14 +53,15 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-dynamic-range` | Third Dynamic Range composition | Ready | Included |
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
+| `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 18 contains twenty-nine archives: the frozen twenty-eight-entry
-schema-17 set followed by the LZD Dynamic Range profile. Schemas 1 through 17
+Schema 19 contains thirty archives: the frozen twenty-nine-entry schema-18 set
+followed by the LZMW Dynamic Range profile. Schemas 1 through 18
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, twenty-seven, and twenty-eight profiles; their
-meanings are fixed by their version and codec-set rules.
+twenty-five, twenty-six, twenty-seven, twenty-eight, and twenty-nine profiles;
+their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
 
@@ -70,7 +71,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 18 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 19 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -100,7 +101,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -139,8 +140,10 @@ transactional CLI selector uses the fixed 64-KiB profile through the public C
 factory and passes multi-frame, empty-input, malformed-input, trailing-data,
 and overwrite-refusal coverage. Its dependency-free public-C benchmark verifies
 a complete byte-exact round trip before reporting ratio, directional
-throughput, and all queried workspace extents. Interoperability admission
-remains queued.
+throughput, and all queried workspace extents. Interoperability schema 19
+appends it once after the frozen schema-18 order; local generation,
+verification, reordered-manifest rejection, and schemas 1 through 18
+compatibility pass. External cross-platform verification remains pending.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame
