@@ -142,7 +142,10 @@ raw and expansion staging, then iteratively reconstructs only the validated
 graph into disposable storage. Its transactional frame decoder copies to
 caller output only after every layer succeeds. Its exact-frame planner freezes
 canonical references before range planning and reports the complete extent
-without serialized output. No public API is implied.
+without serialized output. Its deterministic complete-frame encoder serializes
+the generic header, descriptor, and exact range payload and reproduces the
+independent 80-byte vector without partial writes on capacity failure. No
+public API is implied.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

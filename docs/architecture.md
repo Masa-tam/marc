@@ -2041,7 +2041,10 @@ raw extent once only after every operation succeeds. The exact-frame planner
 performs the inverse bounded preparation: it freezes the deterministic LZMW
 reference stream in caller-owned staging, plans Dynamic Range over those exact
 bytes, validates the synthesized generic header and aggregate workspace, and
-reports the complete serialized extent without writing serialized output.
+reports the complete serialized extent without writing serialized output. The
+deterministic complete-frame encoder uses that plan to serialize the header,
+descriptor, and exact range payload and reproduces the independent 80-byte
+vector without partial writes on capacity failure.
 
 ### Published LZD plus Adaptive Huffman boundary
 

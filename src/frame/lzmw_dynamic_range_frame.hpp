@@ -39,6 +39,7 @@ enum class LzmwDynamicRangeFrameValidationError : std::uint8_t {
     dictionary_encode_error,
     entropy_encode_error,
     internal_error,
+    serialized_output_too_small,
 };
 
 struct LzmwDynamicRangeFrameValidationResult {
@@ -84,6 +85,20 @@ plan_lzmw_dynamic_range_frame(
     std::span<const std::byte> input,
     std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing serialized output. Input, encoder workspace,
+// reference staging, and output must be mutually non-overlapping.
+[[nodiscard]] LzmwDynamicRangeFrameValidationResult
+encode_lzmw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Entropy-decodes and validates exactly one complete frame into private LZMW
 // reference staging and a caller-owned phrase table. No raw byte is

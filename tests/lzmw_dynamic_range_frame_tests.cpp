@@ -418,6 +418,71 @@ TEST(LzmwDynamicRangeFramePlanner, EnforcesAggregateAndFrameExtent) {
               LzmwDynamicRangeFrameValidationError::input_size_mismatch);
 }
 
+TEST(LzmwDynamicRangeFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::byte, single_reference_frame.size()> output{};
+    const auto result = marc::frame::encode_lzmw_dynamic_range_frame(
+        stream_for_size(raw.size()), {}, {}, 0, 0, raw, {}, staging, output);
+    ASSERT_EQ(result.error, LzmwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(output, single_reference_frame);
+}
+
+TEST(LzmwDynamicRangeFrameEncoder,
+     RoundTripsPhraseReferencesDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    std::vector<marc::dictionary::internal::LzmwEncoderEntry> workspace(
+        marc::dictionary::internal::lzmw_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> encode_staging{};
+    const auto stream = stream_for_size(raw.size());
+    const auto plan = marc::frame::plan_lzmw_dynamic_range_frame(
+        stream, {}, {}, 0, 0, raw, workspace, encode_staging);
+    ASSERT_EQ(plan.error, LzmwDynamicRangeFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size, std::byte{0xa5});
+    std::vector<std::byte> second(plan.serialized_size, std::byte{0x5a});
+    ASSERT_EQ(marc::frame::encode_lzmw_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  first).error,
+              LzmwDynamicRangeFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzmw_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  second).error,
+              LzmwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::vector<std::byte> decode_staging(plan.dictionary_size);
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, raw.size() - 1>
+        phrases{};
+    std::array<std::uint32_t, raw.size()> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzmw_dynamic_range_frame(
+                  stream, {}, {}, 0, 0, first, decode_staging, phrases,
+                  expansion, raw_staging, decoded).error,
+              LzmwDynamicRangeFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzmwDynamicRangeFrameEncoder,
+     ShortSerializedOutputIsCompletelyUnchanged) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::byte, single_reference_frame.size() - 1> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::encode_lzmw_dynamic_range_frame(
+                  stream_for_size(raw.size()), {}, {}, 0, 0, raw, {},
+                  staging, output).error,
+              LzmwDynamicRangeFrameValidationError::
+                  serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+}
+
 TEST(LzmwDynamicRangeFrameDecoder, ReconstructsHandVectorPrivately) {
     std::array<std::byte, reference_a.size()> staging{};
     std::array<std::uint32_t, 1> expansion{};

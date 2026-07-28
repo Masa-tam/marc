@@ -120,8 +120,9 @@ reconstructs only the validated phrase graph into disposable raw staging. Its
 transactional complete-frame decoder additionally checks destination capacity
 before entropy work and publishes only a successful private raw frame. Its
 exact-frame planner freezes canonical references before range planning and
-reports the complete frame extent without serialized output. No frame encoder,
-streaming transform, or public profile exists yet.
+reports the complete frame extent without serialized output. Its deterministic
+complete-frame encoder reproduces the independent 80-byte frame and preserves
+short destinations. No streaming transform or public profile exists yet.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

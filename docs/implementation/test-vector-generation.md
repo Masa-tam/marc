@@ -3291,6 +3291,18 @@ aggregate limit one byte below `4 references + 16 descriptor + 8 payload`;
 also pass empty input and two bytes to a one-byte frame independently. Require
 stable workspace or input-size errors and no serialized output.
 
+For the LZMW plus Dynamic Range deterministic complete-frame encoder, encode
+raw `A` with the exact planner's four reference-staging bytes and require byte-
+for-byte equality with the independently assembled 80-byte frame. This
+comparison covers the generic header, descriptor, and eight-byte range
+payload.
+
+Encode raw `ABABAB` twice into separately initialized exact-size destinations
+and require identical complete frames, then decode one through the
+transactional decoder and require the original raw bytes. Shorten the raw-`A`
+serialized destination by one byte, fill it with a sentinel, and require the
+dedicated capacity error with every destination byte unchanged.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

@@ -21,7 +21,9 @@ format versions, and C ABI versions are independent namespaces.
   output capacity before entropy work and publishes the private raw frame only
   after every layer succeeds. Its exact-frame planner now freezes canonical
   LZMW references before range planning and reports the complete serialized
-  extent without writing serialized output.
+  extent without writing serialized output. Its deterministic encoder
+  reproduces the independent 80-byte frame and leaves short destinations
+  completely unchanged.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

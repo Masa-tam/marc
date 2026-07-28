@@ -8611,3 +8611,25 @@ reference staging one entry short before staging mutation; and reject aggregate
 workspace one byte short, empty input, and a frame-size mismatch. This decision
 adds no serialized frame encoder, streaming transform, public factory, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-437: LZMW Dynamic Range encoding is plan-first and deterministic
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-436. Invoke the exact
+planner first so canonical LZMW reference bytes, exact range payload size,
+generic frame fields, and aggregate workspace are fixed before serialized
+output is considered. Require destination capacity for the complete planned
+extent before writing any serialized byte.
+
+Repeat Dynamic Range planning over the frozen reference span and require its
+payload extent to match DD-436. Serialize the generic frame header and 16-byte
+descriptor explicitly, then encode the exact payload into its planned region.
+The independent raw-`A` input must reproduce the complete 80-byte vector.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Capacity and all planner failures leave serialized
+output unchanged. This step adds no streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
+entry.

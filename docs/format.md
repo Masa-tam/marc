@@ -3137,9 +3137,11 @@ those frozen bytes. It checks encoder records, reference bytes, descriptor,
 exact payload, generic header validity, and aggregate workspace, then reports
 the complete `56 + 16 + payload_size` frame extent. Repeated planning of the
 same input and configuration must return identical references and extents.
-This remains an internal frame API; no frame encoder, streaming transform,
-public factory, CLI selector, benchmark, fuzz target, completion claim, or
-interoperability entry is implied.
+The complete-frame encoder validates destination extent before publication,
+repeats the exact range plan over the frozen references, and explicitly
+serializes the header, descriptor, and payload. This remains an internal frame
+API; no streaming transform, public factory, CLI selector, benchmark, fuzz
+target, completion claim, or interoperability entry is implied.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

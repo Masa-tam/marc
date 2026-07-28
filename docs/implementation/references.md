@@ -1354,6 +1354,12 @@ frame validator, caller-owned workspaces, and checked arithmetic. No external
 combined encoder, planning algorithm, buffering layout, source code, encoded
 corpus, or test suite was consulted.
 
+The LZMW plus Dynamic Range deterministic complete-frame encoder uses only
+DD-437, DD-436's exact plan, marc's explicit generic-header and Dynamic Range
+descriptor serializers, and local Dynamic Range encoder. No external combined
+encoder, frame writer, buffering layout, source code, encoded corpus, or test
+suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,
