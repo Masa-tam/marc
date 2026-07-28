@@ -125,8 +125,9 @@ complete-frame encoder reproduces the independent 80-byte frame and preserves
 short destinations. Its bounded streaming encoder now preserves canonical
 bytes under arbitrary input and output starvation and nonterminal `Flush`. No
 Its bounded streaming decoder validates complete frames before raw draining
-and preserves frame atomicity under later corruption. No public profile exists
-yet.
+and preserves frame atomicity under later corruption. Its internal direction-
+specific profile now calculates every caller-owned byte region and safely
+partitions opaque aligned LZMW records. No public C ABI profile exists yet.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

@@ -7777,6 +7777,28 @@ decision specifies bytes and a reserved name only; it does not publish a
 combined validator, decoder, encoder, streaming transform, factory, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
 
+## DD-440: LZMW Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-438 and DD-439.
+For encoding, derive the largest raw frame, conservative `S = 4F` reference
+staging, `2S + 5` Dynamic Range payload, complete serialized-frame storage,
+and the exact LZMW encoder-record count. Count every region in one checked
+aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded reference
+staging, private raw staging, conservative phrase records, and phrase expansion
+references solely from validated local limits. Keep byte storage separate from
+caller-allocated, properly aligned typed storage. Partition helpers must verify
+the reported record counts, byte extent, expansion offset, and alignment before
+producing typed spans; empty encoder-record storage uses zero bytes and neutral
+alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.
+
 ## DD-409: LZW Dynamic Range streaming decode validates before draining
 
 - Date: 2026-07-26

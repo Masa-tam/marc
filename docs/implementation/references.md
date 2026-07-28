@@ -1374,6 +1374,12 @@ owned validated-frame draining conventions. No external streaming decoder,
 state machine, buffering layout, source code, malformed corpus, or test suite
 was consulted.
 
+The LZMW plus Dynamic Range direction-specific profile uses only DD-440,
+DD-438/439's established caller-owned regions, marc's local LZMW workspace
+formulas and record types, Dynamic Range bounds, checked arithmetic, and the
+already published profile conventions. No external allocator, workspace
+layout, combined codec, source code, corpus, or test suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

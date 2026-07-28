@@ -149,7 +149,11 @@ bounded streaming encoder collects and encodes one complete frame at a time,
 then drains its immutable bytes before accepting the next frame; chunking and
 nonterminal `Flush` do not alter the stream. The bounded streaming decoder
 admits one checked encoded frame, transactionally reconstructs it, and drains
-raw bytes only after complete success. No public API is implied.
+raw bytes only after complete success. Its internal profile now derives the
+encoder's raw, reference, encoded-frame, and aligned-entry regions and the
+decoder's encoded-frame, reference, private-raw, aligned-phrase, and expansion
+regions from trusted configuration or local limits, with checked aggregate
+accounting. No public API is implied.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

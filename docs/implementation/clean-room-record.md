@@ -8612,6 +8612,34 @@ discarded and the reviewed seed retained.
   both MSVC and ClangCL. The complete Release suite passed 1,720/1,720 under
   both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
   smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range direction-specific profile
+
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-440, the implemented LZMW reference ceiling, Dynamic Range
+  payload ceiling, complete-frame ownership, and local record types.
+- References used: DD-440, DD-438, DD-439, marc's local checked arithmetic,
+  LZMW workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  reference staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded reference and private raw
+  staging, conservative phrase records, and expansion references derived only
+  from local limits. Typed records remain in separately aligned caller-owned
+  storage and empty encoder storage uses neutral alignment one.
+- Generated-code task description: add the internal LZMW plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZMW- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 8/8 under
+  both MSVC and ClangCL. The complete Release suite passed 1,727/1,727 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
 - Local validation: all twenty-two focused vector, validator, planner,
   encoder, decoder, and documentation tests passed, followed by all 1,614
   Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
