@@ -8580,6 +8580,38 @@ discarded and the reviewed seed retained.
   passed under both MSVC and ClangCL. The complete Release suite passed
   1,715/1,715 under both compilers using official CMake 4.3.4. All twenty-nine
   existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range bounded streaming decoding
+
+- Authoring method: placed incremental prefix and frame collection above
+  DD-434's private complete-frame decoder and drained only validated private
+  raw frames.
+- References used: DD-439, DD-434, DD-433, the local core process contract,
+  explicit stream/LZMW/frame parsers, checked arithmetic, and caller-owned
+  validated-frame workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: validate the fixed prefix before frame collection;
+  admit `S`, `P`, descriptor, encoded-frame, reference, raw, phrase, expansion,
+  and aggregate extents from each header; collect exactly one complete frame;
+  reconstruct privately before draining; retain `EndInput` across raw
+  starvation; and preserve earlier frames while publishing none of a malformed
+  later frame.
+- Generated-code task description: add the minimal transform and CMake entries;
+  verify one-byte input/output and retained finish; corrupt the second frame
+  and require first-frame-only output; reject every truncation and trailing
+  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
+  flag, and sticky-error cases.
+- Similarity review: the implementation follows only marc's documented frame
+  parser, bounds, and process contract. No external state-machine structure,
+  admission order, naming scheme, error mapping, buffering layout, or test
+  expression was compared.
+- Local validation: all thirty-three focused LZMW Dynamic Range vector,
+  complete-frame, streaming-encoder, and streaming-decoder tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,720/1,720 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
 - Local validation: all twenty-two focused vector, validator, planner,
   encoder, decoder, and documentation tests passed, followed by all 1,614
   Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows

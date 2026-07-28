@@ -7943,6 +7943,31 @@ size, reject `ResetBlock` and unknown flags, and make ended and error results
 sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
 
+## DD-439: LZMW Dynamic Range streaming decode validates before draining
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= 4F`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, reference staging, private raw staging, aligned LZMW
+phrase records, and expansion references, plus their checked aggregate
+workspace.
+
+Collect exactly the admitted descriptor and payload, invoke DD-434's private
+complete-frame decoder into private raw storage, and only then drain that
+immutable raw frame. Do not collect a later frame while validated raw bytes
+remain pending. Earlier complete frames may be published, but a malformed
+later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
 ## DD-408: LZW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-26

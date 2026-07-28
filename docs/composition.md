@@ -147,7 +147,9 @@ the generic header, descriptor, and exact range payload and reproduces the
 independent 80-byte vector without partial writes on capacity failure. The
 bounded streaming encoder collects and encodes one complete frame at a time,
 then drains its immutable bytes before accepting the next frame; chunking and
-nonterminal `Flush` do not alter the stream. No public API is implied.
+nonterminal `Flush` do not alter the stream. The bounded streaming decoder
+admits one checked encoded frame, transactionally reconstructs it, and drains
+raw bytes only after complete success. No public API is implied.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

@@ -1367,6 +1367,13 @@ established caller-owned frame-draining state conventions. No external
 streaming encoder, state machine, buffering layout, source code, corpus, or
 test suite was consulted.
 
+The LZMW plus Dynamic Range bounded streaming decoder uses only DD-439,
+DD-434's private complete-frame decoder, marc's core process contract,
+explicit prefix and frame parsers, checked arithmetic, and established caller-
+owned validated-frame draining conventions. No external streaming decoder,
+state machine, buffering layout, source code, malformed corpus, or test suite
+was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

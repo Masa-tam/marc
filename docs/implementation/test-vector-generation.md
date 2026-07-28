@@ -3316,6 +3316,20 @@ insufficient raw, reference, encoded-frame, and encoder-record storage,
 aggregate workspace one byte short, premature and excess input, `ResetBlock`,
 unknown flags, sticky error, and repeated post-end calls.
 
+For the LZMW plus Dynamic Range bounded streaming decoder, feed the streaming-
+encoder reference one encoded byte at a time and provide one raw output byte at
+a time. Require the original `ABABX`, exact input consumption, and stable post-
+end behavior. Separately submit all encoded bytes with `EndInput` while
+allowing one raw byte per call and require the finish request to remain active
+while validated frames drain.
+
+Corrupt the second frame's Dynamic Range descriptor and require only the first
+raw `AB` frame to be published; the failing frame's output sentinel and sticky
+error position must remain stable. Reject every proper encoded prefix,
+trailing data, short encoded-frame, reference, raw, phrase, and expansion
+workspaces, aggregate workspace one byte short, `ResetBlock`, and unknown
+flags. Accept the exact empty 80-byte stream.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range
