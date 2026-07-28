@@ -3145,8 +3145,12 @@ same input and configuration must return identical references and extents.
 The complete-frame encoder validates destination extent before publication,
 repeats the exact range plan over the frozen references, and explicitly
 serializes the header, descriptor, and payload. This remains an internal frame
-API; no streaming transform, public factory, CLI selector, benchmark, fuzz
-target, completion claim, or interoperability entry is implied.
+API beneath bounded streaming transforms. The C ABI functions
+`marc_lzmw_dynamic_range_config_init()`,
+`marc_lzmw_dynamic_range_workspace_requirements()`, and
+`marc_lzmw_dynamic_range_create()` select exactly this representation and
+borrow all reported workspaces for the transform lifetime. Their publication
+does not imply CLI, benchmark, fuzz, completion, or interoperability coverage.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

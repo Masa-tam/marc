@@ -153,7 +153,12 @@ raw bytes only after complete success. Its internal profile now derives the
 encoder's raw, reference, encoded-frame, and aligned-entry regions and the
 decoder's encoded-frame, reference, private-raw, aligned-phrase, and expansion
 regions from trusted configuration or local limits, with checked aggregate
-accounting. No public API is implied.
+accounting. The small C ABI exposes this fixed profile through
+`marc_lzmw_dynamic_range_config_init()`,
+`marc_lzmw_dynamic_range_workspace_requirements()`, and
+`marc_lzmw_dynamic_range_create()` while keeping typed record layouts opaque.
+This admission does not yet imply completion, CLI, benchmark, fuzz, or
+interoperability coverage.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

@@ -1380,6 +1380,12 @@ formulas and record types, Dynamic Range bounds, checked arithmetic, and the
 already published profile conventions. No external allocator, workspace
 layout, combined codec, source code, corpus, or test suite was consulted.
 
+The LZMW plus Dynamic Range C ABI uses only DD-441, DD-440's bounded profile,
+the established marc transform lifecycle and three-region ABI, checked opaque
+view partitioning, and the first-party C11 assertion harness. No external
+combined API, factory, allocator interface, ABI layout, source code, or test
+suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

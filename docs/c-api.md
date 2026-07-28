@@ -31,8 +31,8 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lzw_dynamic_range_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
 `marc_lzd_dynamic_range_*`, and
-`marc_lzmw_blocked_huffman_*`, and `marc_lzmw_adaptive_huffman_*` are the
-currently public
+`marc_lzmw_blocked_huffman_*`, `marc_lzmw_adaptive_huffman_*`, and
+`marc_lzmw_dynamic_range_*` are the currently public
 dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
@@ -70,9 +70,9 @@ cross-product pairings as callable C ABI features.
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
    `marc_lzd_adaptive_huffman_config_init()`,
    `marc_lzd_dynamic_range_config_init()`, or
-   `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`, or
-   `marc_lzmw_adaptive_huffman_config_init()` for encode or decode
-   direction.
+   `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`,
+   `marc_lzmw_adaptive_huffman_config_init()`, or
+   `marc_lzmw_dynamic_range_config_init()` for encode or decode direction.
 2. Set the desired encoder sizes or decoder hard limits.
 3. Call the matching workspace-requirements function.
 4. Allocate each reported workspace, respecting `views_alignment`.
@@ -271,6 +271,12 @@ The public completion matrix exercises this factory exclusively, including zero
 encoder views for empty and one-byte input, byte-identical repeated and
 arbitrarily chunked encoding, sticky success and error results, and atomic
 rejection of a malformed final frame.
+The LZMW plus Dynamic Range factory uses the same canonical-reference and
+raw/frame secondary regions. Its aligned opaque region holds encoder entries
+or the decoder's checked phrase-entry/expansion-stack layout. Query
+`marc_lzmw_dynamic_range_workspace_requirements()` again whenever the
+direction, known original size, frame size, maximum entries, or a hard limit
+changes. No C++ record type crosses this ABI.
 
 ## Processing contract
 

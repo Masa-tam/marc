@@ -7799,6 +7799,31 @@ alignment one.
 This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
 completion matrix, or interoperability entry.
 
+## DD-441: LZMW Dynamic Range C ABI borrows all workspace
+
+- Date: 2026-07-28
+- Status: accepted
+
+Publish `marc_lzmw_dynamic_range_config` with fixed-width fields and matching
+configuration initialization, direction-specific workspace requirements, and
+opaque-transform factory functions. Retain C ABI version 1 and the existing
+status, process, end-state, and destroy contracts.
+
+Map encoding to DD-440's raw-frame primary region, reference-plus-encoded-frame
+secondary region, and aligned encoder records. Map decoding to its encoded-
+frame primary region, reference-plus-private-raw secondary region, and aligned
+phrase-plus-expansion records. Recalculate the complete profile during factory
+creation, validate all pointers, capacities, reserved fields, and alignment,
+partition typed records privately, and borrow every region until transform
+destruction. No allocator callback or C++ record type crosses the ABI.
+
+Prove the lifecycle from pure C11 with raw `ABABX` and two-byte frames. Require
+exact queried small-limit regions, a complete round trip, a null output handle
+on every failed creation, and rejection of every one-byte-short region,
+misaligned views, null transform output, and nonzero reserved state. This
+decision adds no completion matrix, fuzz target, CLI selector, benchmark, or
+interoperability entry.
+
 ## DD-409: LZW Dynamic Range streaming decode validates before draining
 
 - Date: 2026-07-26

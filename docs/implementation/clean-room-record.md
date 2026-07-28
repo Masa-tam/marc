@@ -8640,6 +8640,31 @@ discarded and the reviewed seed retained.
   both MSVC and ClangCL. The complete Release suite passed 1,727/1,727 under
   both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
   smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range public C ABI
+
+- Authoring method: bound DD-440's direction-specific profile and the existing
+  streaming transforms to marc's allocation-free three-region C lifecycle.
+- References used: DD-441, DD-440, the established transform adapter, checked
+  arithmetic, private typed-view partitioners, and first-party C11 assertions.
+- Known implementations intentionally not consulted: external combined-codec
+  APIs, factory implementations, allocator interfaces, ABI layouts, source
+  code, corpora, and test suites.
+- Independent decisions: retain C ABI version 1; publish one fixed-width
+  config, query, and factory; place references before frame/raw secondary
+  storage; recalculate requirements at creation; keep typed layouts private;
+  and leave every failed transform output null.
+- Generated-code task description: expose LZMW plus Dynamic Range in the public
+  C header, prove exact two-byte-frame workspace values and a C11 round trip,
+  reject short and misaligned regions, null output, and reserved fields, and
+  update scope documentation without completion or tooling claims.
+- Similarity review: the adapter follows only marc's established public
+  lifecycle and DD-440's independently derived regions. No external API,
+  record layout, implementation flow, or test expression was compared.
+- Local validation: the complete Release suite passed 1,728/1,728 under both
+  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including the
+  new pure-C test, all twenty-nine benchmark smokes, and schema-18
+  compatibility.
 - Local validation: all twenty-two focused vector, validator, planner,
   encoder, decoder, and documentation tests passed, followed by all 1,614
   Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows

@@ -2055,6 +2055,13 @@ and opaque aligned LZMW record extents with checked aggregate bounds. Typed
 partitioning rejects inconsistent byte counts, offsets, insufficient storage,
 and misalignment before exposing encoder entries, decoder phrases, or
 expansion references.
+The public C boundary expresses the same ownership through one fixed-width
+configuration, a direction-specific requirements query, and the common opaque
+transform lifecycle. Primary storage holds raw-frame collection while encoding
+or encoded-frame collection while decoding. Secondary storage holds canonical
+references followed by the encoded frame or private raw frame. The aligned
+views region retains all C++ encoder, phrase, and expansion record layouts
+behind the ABI.
 
 ### Published LZD plus Adaptive Huffman boundary
 

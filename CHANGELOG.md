@@ -30,7 +30,9 @@ format versions, and C ABI versions are independent namespaces.
   truncation, trailing byte, and later-frame corruption without partially
   publishing the failing frame. Its internal profile now derives checked
   direction-specific byte regions and safely partitions opaque aligned LZMW
-  encoder, phrase, and expansion records.
+  encoder, phrase, and expansion records. The small C ABI now exposes
+  direction-specific requirements queries and factories over those
+  caller-owned regions without publishing C++ record layouts.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload
