@@ -3231,6 +3231,24 @@ descriptor, and payload and require the exact 80-byte frame recorded in
 standalone Dynamic Range planner/encoder, and generic serializers; it must not
 depend on a future combined implementation.
 
+Pass the exact 80-byte frame to the first combined validator with four private
+reference bytes and no phrase records. Require complete acceptance, exact
+reference bytes, one token, zero generated phrases, and a one-reference future
+expansion ceiling. Reject all 80 proper prefixes and one trailing byte.
+
+Generate raw `AB` using only the standalone LZMW and Dynamic Range encoders;
+require two references, one phrase record `(A, B, length 2)`, and a two-
+reference future expansion ceiling. Before entropy output, reject reference
+staging and phrase storage one entry short and reject aggregate validation
+workspace one byte short while preserving guarded staging.
+
+Independently corrupt the descriptor and payload, range-code a forward phrase
+reference, declare the single literal as two raw bytes, alter reference extent
+to both an oversized and an unaligned value, change the expected sequence, and
+select an unsupported entropy variant. Require stable descriptor, entropy,
+LZMW validation, extent, header, and pipeline error categories in that order;
+no case may reconstruct or publish a raw byte.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

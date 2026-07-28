@@ -8507,3 +8507,31 @@ variant 1 over those four bytes produces payload
 existing standalone LZMW encoder, Dynamic Range encoder, and generic
 serializers. This decision specifies bytes and a reserved name only; it does
 not publish a combined implementation or interoperability entry.
+
+## DD-433: LZMW Dynamic Range validation stops at the reference boundary
+
+- Date: 2026-07-28
+- Status: accepted
+
+Admit the first combined `lzmw-dynamic-range` implementation as a strict
+bounded complete-frame validator only. Validate the exact stream profile,
+LZMW parameters, sequence, generic frame header, exact complete-frame extent,
+checked `S = 4F` reference bound, four-byte alignment, one 16-byte Dynamic
+Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
+aligned phrase bytes, and aggregate validation workspace before entropy
+output.
+
+Parse the descriptor only after admission succeeds. Range-decode exactly the
+declared reference-byte count into private caller-owned staging with exact
+payload exhaustion, then invoke the existing LZMW validator over that complete
+span. Preserve LZMW's literal/prior-reference validation, bounded adjacent-
+phrase construction, checked phrase lengths, exact declared raw extent, token
+and dictionary-entry counts, stable format error, and phrase-table
+requirements.
+
+On success, reduce the reported expansion-stack ceiling from the conservative
+phrase capacity to the actual generated-phrase count plus one for a nonempty
+frame. Reconstruct and publish no raw byte. On every failure, the caller must
+discard reference and phrase workspace. This decision adds no private raw
+decoder, transactional publication, encoder, stream transform, public factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.

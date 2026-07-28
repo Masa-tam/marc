@@ -2024,8 +2024,14 @@ bounded adjacent-phrase graph, and exact raw extent, then reconstruct into
 private raw staging before publication. Encoding must freeze the deterministic
 LZMW parse before range planning. The independent raw-`A` vector fixes
 reference `41 00 00 00`, range payload `00 40 FF FF BF 00 00 00`, and a
-complete 80-byte frame. This boundary is specified but not yet implemented as
-a combined codec.
+complete 80-byte frame.
+
+The first combined boundary implements the validation half of that order. It
+checks the complete generic frame, LZMW and Dynamic Range extents, caller-owned
+reference and phrase capacities, and aggregate validation workspace before
+entropy output. It then reconstructs the exact reference region, invokes the
+ordinary LZMW validator, and reports the actual phrase and expansion ceilings
+without reconstructing or publishing raw bytes.
 
 ### Published LZD plus Adaptive Huffman boundary
 

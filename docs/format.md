@@ -3103,10 +3103,19 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the final eight bytes are its payload. The
 stream-level LZMW parameter region is not repeated in the frame.
 
-This decision reserves representation bytes and a profile name only. It does
-not publish a combined validator, decoder, encoder, streaming transform,
-factory, CLI selector, benchmark, fuzz target, completion claim, or
-interoperability entry.
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned reference staging and phrase records. It
+checks generic extents, the `4F` reference ceiling, four-byte reference
+alignment, the single 16-byte descriptor, the `2S + 5` payload ceiling, caller
+capacities, and aggregate validation workspace before entropy output. Dynamic
+Range must exhaust the payload exactly before the ordinary LZMW validator
+checks every literal or prior generated reference, constructs the bounded
+adjacent-phrase graph, and derives the declared raw extent. It reports the
+actual generated-phrase count and corresponding nonempty expansion-stack
+ceiling but reconstructs and publishes no raw byte. This remains an internal
+frame API; no decoder, encoder, streaming transform, public factory, CLI
+selector, benchmark, fuzz target, completion claim, or interoperability entry
+is implied.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

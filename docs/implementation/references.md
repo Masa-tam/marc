@@ -1606,3 +1606,10 @@ generic frame format, checked arithmetic rules, and repository-authored
 standalone encoders. No external LZMW/range composition, archive format,
 combined-codec implementation, source code, encoded corpus, or test suite was
 consulted.
+
+The first LZMW plus Dynamic Range complete-frame validator uses only DD-433,
+DD-432's fixed reference-byte boundary and bounds, marc's generic frame parser,
+Dynamic Range descriptor and decoder, existing LZMW validator, caller-owned
+spans, and checked aggregate arithmetic. No external combined decoder,
+validation order, workspace layout, malformed corpus, source code, or test
+suite was consulted.

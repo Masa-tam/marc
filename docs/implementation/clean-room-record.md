@@ -9291,3 +9291,33 @@ discarded and the reviewed seed retained.
   ClangCL. The complete Release test inventory passed 1,688/1,688 under both
   compilers using official CMake 4.3.4; the MSVC invocation was split after
   test 1,684 solely by the command runner's 120-second limit.
+
+## 2026-07-28 - LZMW plus Dynamic Range complete-frame validator
+
+- Authoring method: combined marc's existing generic frame admission, Dynamic
+  Range decode, and LZMW reference validation contracts in the DD-433 order
+  without adding reconstruction or publication.
+- References used: DD-433, DD-432, the local Dynamic Range descriptor and
+  decoder, the LZMW validator and phrase records, checked arithmetic helpers,
+  and caller-owned bounded spans.
+- Known implementations intentionally not consulted: external combined
+  decoders, archive formats, validation sequences, workspace layouts,
+  malformed corpora, source code, and test suites.
+- Independent decisions: preflight the exact frame, reference and payload
+  bounds, all caller capacities, phrase bytes, and aggregate workspace before
+  entropy output; decode references privately; validate the complete LZMW
+  graph; report the actual expansion ceiling; and publish no raw byte.
+- Generated-code task description: add an internal result and stable error
+  taxonomy, exact-frame validator, fixed-vector acceptance, all-prefix and
+  trailing rejection, guarded workspace failures, descriptor/payload errors,
+  invalid references and raw extent, sequence and pipeline regressions, and
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  independently documented frame, Dynamic Range, and LZMW components. No
+  external control flow, error taxonomy, workspace organization, malformed
+  vector, or test expression was compared.
+- Local validation: the focused vector and validator suite passed 8/8 under
+  both MSVC and ClangCL. The complete Release suite passed 1,695/1,695 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing
+  benchmark smokes and schema-18 compatibility remained successful.

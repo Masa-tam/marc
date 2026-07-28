@@ -135,7 +135,9 @@ stream before a fresh per-frame adaptive order-0 range model consumes it.
 Checked bounds are `S = 4F` reference bytes and `P = 2S + 5` range payload
 bytes, with bounded adjacent-phrase records and iterative expansion stack. An
 independent raw-`A` component composition fixes its complete 80-byte frame.
-No combined implementation or public API is implied by this reservation.
+Its first internal complete-frame validator strictly range-decodes into private
+reference staging and validates the complete adjacent-phrase graph without
+reconstructing or publishing raw bytes. No public API is implied.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

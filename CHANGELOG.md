@@ -11,7 +11,10 @@ format versions, and C ABI versions are independent namespaces.
   decoder-visible representation and an independent raw-`A` vector assembled
   from the standalone LZMW and Dynamic Range encoders. It freezes complete
   four-byte references before range coding, checks `S = 4F` reference bytes
-  and `P = 2S + 5` payload bytes, and does not yet publish a combined codec.
+  and `P = 2S + 5` payload bytes. Its first bounded complete-frame validator
+  checks every declared and aggregate extent before entropy output, strictly
+  reconstructs the private reference region, and validates the complete LZMW
+  adjacent-phrase graph without reconstructing or publishing raw bytes.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

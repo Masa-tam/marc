@@ -110,8 +110,12 @@ model consumes it. For raw frame size `F`, it checks `S = 4F` reference bytes
 and `P = 2S + 5 = 8F + 5` range-payload bytes, retains the 2^20-byte raw-frame
 cap, and requires range validation before LZMW reference alignment, generated-
 phrase graph, and exact-raw-extent validation. Its independently assembled
-80-byte raw-`A` frame is covered by a standalone-component vector test. No
-combined validator or public profile exists yet.
+80-byte raw-`A` frame is covered by a standalone-component vector test. Its
+first complete-frame validator now checks generic, reference, entropy,
+caller-capacity, phrase-record, and aggregate extents before strictly range-
+decoding into private reference staging and invoking the existing LZMW
+validator. It reconstructs and publishes no raw byte; no public profile exists
+yet.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame
