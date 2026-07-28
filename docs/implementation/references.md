@@ -1681,3 +1681,9 @@ configuration, requirements query and factory, the existing local
 transactional temporary-file loop, and the repository-owned generic CLI
 regression script. No external archive tool, command syntax, combined-codec
 adapter, workspace policy, source code, or test suite was consulted.
+
+The `lzmw-dynamic-range` benchmark adapter uses only DD-445, the same published
+marc C profile as the CLI, the local checked encoded-capacity helper, and the
+repository's dependency-free measurement runner. No external benchmark
+framework, combined-codec adapter, capacity formula, performance result,
+source code, or test suite was consulted.

@@ -2075,6 +2075,10 @@ ceiling, 524,293-byte range-payload ceiling, 65,536 generated entries, and a
 16-MiB aggregate policy. It obtains every direction-specific workspace extent
 and alignment from the public C requirements query and creates the transform
 only through the public C factory.
+The dependency-free benchmark retains that exact profile and public lifecycle.
+It reserves complete-stream output with checked `80 + 8N + 77K` arithmetic,
+requires an untimed byte-exact round trip, then reports descriptive timing and
+all queried workspace extents.
 
 ### Published LZD plus Adaptive Huffman boundary
 

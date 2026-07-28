@@ -33,6 +33,7 @@ marc_benchmark lzd-dynamic-range corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 marc_benchmark lzmw-blocked-huffman corpus.bin 5
 marc_benchmark lzmw-adaptive-huffman corpus.bin 5
+marc_benchmark lzmw-dynamic-range corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -244,6 +245,18 @@ round trip succeeds before timing. The reported caller-reserved peak may exceed
 16 MiB because conservative encoded-frame, reference, raw, phrase, and
 expansion regions coexist even though active codec operations obey the
 aggregate limit.
+
+`lzmw-dynamic-range` uses the CLI's 65,536-byte raw frame, 262,144-byte
+canonical-reference ceiling, 524,293-byte range-payload ceiling, 65,536-entry
+dictionary policy, and 16-MiB active aggregate limit. Checked complete-stream
+capacity is `80 + 8N + 77K` for input extent `N` and nonempty frame count `K`,
+covering `S <= 4N`, `P <= 2S + 5`, one 16-byte descriptor, and one 56-byte
+header per frame. Both direction-specific three-region workspaces and opaque
+alignment come from the public C ABI, and an untimed byte-exact round trip
+succeeds before measurement. A one-iteration MSVC Release smoke over the
+4,520-byte README encoded 3,870 bytes, ratio 0.856, and reported 18,415,656
+bytes of peak caller reservation; throughput from this small input is
+descriptive only.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

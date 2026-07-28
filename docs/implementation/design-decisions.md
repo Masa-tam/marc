@@ -8038,6 +8038,28 @@ cleanup, appended-data rejection, and empty-stream handling through the generic
 CLI regression. Benchmark and interoperability admission remain separate
 steps.
 
+## DD-445: LZMW Dynamic Range benchmark measures the public CLI profile
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add `lzmw-dynamic-range` to the dependency-free benchmark with the exact DD-444
+public profile: 65,536-byte raw frames, 262,144 canonical LZMW reference bytes,
+524,293 range-payload bytes, 65,536 generated entries, and a 16-MiB aggregate
+policy.
+
+Reserve complete-stream encoded capacity with checked arithmetic as
+`80 + 8N + 77K`, where `N` is total raw input and `K` is the nonempty frame
+count. This follows from `S <= 4N`, `P <= 2S + 5`, the 16-byte descriptor, and
+56-byte generic header. Obtain all encoder and decoder workspace extents and
+opaque alignment from the public C query.
+
+Before timing, encode and decode once through fresh public transforms and
+require exact byte equality. Each timed sample also creates a fresh transform.
+Report ratio, directional throughput, each workspace region, and peak
+caller-reserved workspace without imposing a performance floor.
+Interoperability admission remains separate.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

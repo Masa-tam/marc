@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   fuzz target and permanent truncation, saturated-extent, and descriptor
   regressions are now present. The explicit `lzmw-dynamic-range` CLI selector
   now uses the bounded public C profile through the existing transactional
-  temporary-file workflow.
+  temporary-file workflow. Its dependency-free benchmark verifies a complete
+  public-ABI round trip before reporting compression ratio, directional
+  throughput, and queried workspace extents.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

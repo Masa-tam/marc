@@ -164,7 +164,10 @@ region before input parsing and has permanent truncation, saturated-extent, and
 descriptor regressions. A transactional CLI selector now exposes the same
 fixed 64-KiB profile through the public C factory and preserves the existing
 temporary-file, strict trailing-data, and overwrite-refusal behavior.
-Benchmark and interoperability coverage remain separate admission steps.
+Its dependency-free benchmark uses the same public profile, verifies an
+untimed byte-exact round trip, and reports queried workspace extents before
+descriptive timing. Interoperability coverage remains a separate admission
+step.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

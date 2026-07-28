@@ -3229,6 +3229,18 @@ The CLI profile fixes `F = 65,536`, `S = 262,144`, `P = 524,293`, at most
 secondary, and aligned opaque-view workspace requirements must come only from
 the public C query.
 
+For the LZMW plus Dynamic Range benchmark smoke, select `lzmw-dynamic-range`,
+use `README.md`, and run one iteration. Before timing, encode once into checked
+capacity `80 + 8N + 77K`, decode the exact encoded extent once, and require
+byte equality. Then require one encode and one decode measurement to reproduce
+those exact extents while reporting all public workspace requirements.
+
+On the 2026-07-28 MSVC Release build, the 4,520-byte README encoded to 3,870
+bytes, ratio 0.856, with encoder workspaces 4,520/54,317/72,304 bytes and
+decoder workspaces 16,777,272/327,680/1,310,704 bytes. Peak caller reservation
+was 18,415,656 bytes. These values document tested deterministic extents; the
+observed throughput is descriptive and not a conformance threshold.
+
 For the first LZMW plus Dynamic Range vector, encode raw byte `41` using the
 standalone LZMW variant-1 encoder and require the complete four-byte reference
 `41 00 00 00`. Pass exactly that frozen byte span to a fresh standalone

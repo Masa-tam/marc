@@ -8573,6 +8573,31 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release suite passed 1,735/1,735 under both
   compilers using official CMake 4.3.4. All twenty-nine existing benchmark
   smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range benchmark admission
+
+- Authoring method: extended marc's dependency-free public-C measurement
+  runner by one already published CLI profile.
+- References used: DD-445, DD-444's fixed configuration, the local public
+  requirements query and factory, checked complete-stream capacity arithmetic,
+  and the established untimed verification boundary.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  corpora, source code, and test suites.
+- Independent decisions: reserve `80 + 8N + 77K`; query all three workspace
+  regions and alignment; require exact untimed decode equality; construct a
+  fresh transform for every timed sample; and impose no performance floor.
+- Generated-code task description: register `lzmw-dynamic-range`, extend
+  checked capacity, configuration, query, factory, usage, and selector
+  dispatch, add a one-iteration README smoke, report observed deterministic
+  extents, and update public readiness without claiming interoperability.
+- Similarity review: the adapter reuses only marc's existing benchmark runner
+  and public lifecycle. No external control flow, measurement convention,
+  capacity expression, result, or test expression was compared.
+- Local validation: the focused smoke and all thirty benchmark smokes passed
+  under MSVC and ClangCL. The complete Release suite passed 1,736/1,736 under
+  both compilers using official CMake 4.3.4. Schema-18 compatibility remained
+  successful.
 - Local validation: all twenty-two focused LZMW Dynamic Range validator,
   planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
   complete Release suite passed 1,710/1,710 under both compilers using official
