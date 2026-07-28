@@ -100,7 +100,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzmw-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -133,8 +133,9 @@ partitions opaque aligned LZMW records. Its small C ABI now publishes
 direction-specific requirements and factories over three caller-owned regions
 without exposing those record layouts. Its public completion matrix proves the
 required binary classes, deterministic arbitrary chunking, sticky terminal
-states, and frame-atomic malformed-final-frame rejection. Fuzz, CLI, benchmark,
-and interoperability admission remain queued.
+states, and frame-atomic malformed-final-frame rejection. Its bounded
+dual-decoder fuzz target and permanent malformed regressions are present. CLI,
+benchmark, and interoperability admission remain queued.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

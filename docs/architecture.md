@@ -2066,6 +2066,10 @@ The completion boundary exercises only that public C lifecycle. It fixes
 64-byte raw frames and proves byte-identical output across repeated and
 arbitrarily chunked calls, then demonstrates that a malformed fourth frame
 cannot publish its final raw byte after three valid frames have committed.
+The bounded fuzz boundary exercises both complete-frame private decoding and
+incremental stream decoding with fixed caller-owned arrays, input-derived
+finite chunk sizes, and a checked call ceiling. Serialized metadata can never
+resize those regions.
 
 ### Published LZD plus Adaptive Huffman boundary
 

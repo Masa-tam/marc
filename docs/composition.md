@@ -159,7 +159,9 @@ accounting. The small C ABI exposes this fixed profile through
 `marc_lzmw_dynamic_range_create()` while keeping typed record layouts opaque.
 Its public-only completion matrix now proves required data classes,
 deterministic repeated and chunked streams, sticky results, and final-frame
-atomicity. This admission does not yet imply CLI, benchmark, fuzz, or
+atomicity. Its bounded dual-path decoder fuzz target fixes every byte and typed
+region before input parsing and has permanent truncation, saturated-extent, and
+descriptor regressions. This admission does not yet imply CLI, benchmark, or
 interoperability coverage.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a

@@ -8695,6 +8695,34 @@ discarded and the reviewed seed retained.
   MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including
   all twenty-nine benchmark smokes and schema-18 compatibility.
 
+## 2026-07-28 - LZMW plus Dynamic Range bounded fuzz boundary
+
+- Authoring method: instantiated marc's existing bounded LZMW dual-decoder
+  harness and permanent malformed schedules for the fixed Dynamic Range
+  profile.
+- References used: DD-443, DD-439, local decoder limits, LZMW reference,
+  phrase, and expansion ceilings, core process invariants, and the canonical
+  first-party stream generator.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, mutation dictionaries, source code, and tests.
+- Independent decisions: cap input and range payload at 8 KiB, total output and
+  reference staging at 4 KiB, raw frames at 1 KiB, phrases at 1,023,
+  expansion references at 1,024, and calls at 12,320; keep generated corpus
+  entries under the build tree.
+- Generated-code task description: select the LZMW Dynamic Range symbols in
+  the audited fixed-memory harness, add compile-smoke and sanitizer targets,
+  retain one truncated-magic seed, and persist truncation, saturated-length,
+  and descriptor-reserved regressions.
+- Similarity review: the wrappers alter only marc-local profile identifiers;
+  storage, schedules, and assertions remain repository-authored. No external
+  harness or test expression was compared.
+- Local validation: three focused MSVC Release regressions and the compile-
+  smoke target passed. The ASan/UBSan/libFuzzer target completed 1,000 bounded
+  seed-derived runs without a finding. The complete Release suite passed
+  1,734/1,734 under both MSVC/Visual Studio 2026 and ClangCL using official
+  CMake 4.3.4, including all twenty-nine benchmark smokes and schema-18
+  compatibility.
+
 ## 2026-07-26 - LZW plus Dynamic Range bounded streaming encoding
 
 - Authoring method: placed a known-size frame collection and immutable draining

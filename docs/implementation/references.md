@@ -1392,6 +1392,12 @@ bounds, and repository-authored deterministic fixtures and malformed
 mutations. No external completion suite, corpus, combined-codec API, source
 code, or test vector was consulted.
 
+The LZMW plus Dynamic Range bounded fuzz boundary uses only DD-443, the local
+exact-frame private decoder, incremental decoder, fixed limit contract, LZMW
+reference/phrase/expansion ceilings, and repository-authored canonical stream
+generator. No external fuzz harness, corpus, malformed archive, source code,
+or test suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

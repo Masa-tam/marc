@@ -3370,6 +3370,20 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the final sentinel,
 and repeat the same terminal status and error positions.
 
+For bounded LZMW plus Dynamic Range decoder fuzzing, run the fixed-memory
+dual-path LZMW harness with Dynamic Range profile symbols. Limit input and
+range payload to 8,192 bytes, total output and reference staging to 4,096,
+one raw frame to 1,024, phrase records to 1,023, expansion references to
+1,024, and the incremental loop to the checked finite call budget. The
+complete-frame path proceeds only after a valid 80-byte prefix; the streaming
+path validates every process result and progress state.
+
+Persist three malformed families around the canonical `ABABX` stream: every
+proper truncation, saturated generic-frame length fields, and a nonzero final
+reserved byte in the 16-byte Dynamic Range descriptor. Each must publish zero
+bytes, preserve its sentinel, and repeat the same error category and byte
+position.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range
