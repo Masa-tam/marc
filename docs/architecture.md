@@ -2062,6 +2062,10 @@ or encoded-frame collection while decoding. Secondary storage holds canonical
 references followed by the encoded frame or private raw frame. The aligned
 views region retains all C++ encoder, phrase, and expansion record layouts
 behind the ABI.
+The completion boundary exercises only that public C lifecycle. It fixes
+64-byte raw frames and proves byte-identical output across repeated and
+arbitrarily chunked calls, then demonstrates that a malformed fourth frame
+cannot publish its final raw byte after three valid frames have committed.
 
 ### Published LZD plus Adaptive Huffman boundary
 

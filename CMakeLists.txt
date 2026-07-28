@@ -1167,6 +1167,7 @@ if(MARC_BUILD_TESTS)
         tests/lzmw_dynamic_range_frame_streaming_decoder_tests.cpp
         tests/lzmw_dynamic_range_frame_streaming_encoder_tests.cpp
         tests/lzmw_dynamic_range_profile_tests.cpp
+        tests/lzmw_dynamic_range_completion_tests.cpp
         tests/lzmw_adaptive_huffman_frame_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_encoder_tests.cpp

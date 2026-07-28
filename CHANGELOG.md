@@ -32,7 +32,10 @@ format versions, and C ABI versions are independent namespaces.
   direction-specific byte regions and safely partitions opaque aligned LZMW
   encoder, phrase, and expansion records. The small C ABI now exposes
   direction-specific requirements queries and factories over those
-  caller-owned regions without publishing C++ record layouts.
+  caller-owned regions without publishing C++ record layouts. Its public
+  completion matrix now covers the required binary classes, deterministic
+  arbitrary chunking, sticky terminal results, and frame-atomic rejection of
+  corrupt, truncated, or extended final frames.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

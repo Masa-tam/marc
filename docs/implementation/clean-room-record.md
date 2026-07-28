@@ -8670,6 +8670,31 @@ discarded and the reviewed seed retained.
   Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
   x64 using official CMake 4.3.4.
 
+## 2026-07-28 - LZMW plus Dynamic Range public completion matrix
+
+- Authoring method: audited only the published C ABI against the repository's
+  completion requirements using deterministic first-party inputs and bounded
+  caller-owned storage.
+- References used: DD-442, DD-441, the required data classes, deterministic
+  generator, public transform contract, fixed LZMW/Dynamic Range profile,
+  frame atomicity, and strict trailing-data rules.
+- Known implementations intentionally not consulted: external completion
+  suites, compression corpora, combined-codec APIs, source code, and tests.
+- Independent decisions: exercise 64-byte raw frames, the 256-byte reference
+  ceiling, 517-byte range-payload ceiling, 63-entry dictionary limit, and
+  65,536-byte aggregate limit; keep empty and one-byte encoder views empty;
+  use four frames to observe failure after three committed frames.
+- Generated-code task description: reuse the audited LZMW public-ABI schedules
+  with only the entropy profile, payload formula, and public symbol family
+  changed; prove required data classes, deterministic chunking, sticky
+  results, and final-frame non-publication.
+- Similarity review: the wrapper and shared schedules derive only from marc's
+  two established public completion matrices. No external combined-codec test
+  expression or fixture was viewed or compared.
+- Local validation: the complete Release suite passed 1,731/1,731 under both
+  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including
+  all twenty-nine benchmark smokes and schema-18 compatibility.
+
 ## 2026-07-26 - LZW plus Dynamic Range bounded streaming encoding
 
 - Authoring method: placed a known-size frame collection and immutable draining

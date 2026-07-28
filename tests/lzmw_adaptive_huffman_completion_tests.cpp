@@ -15,7 +15,12 @@ namespace {
 
 constexpr std::size_t test_frame_size = 64;
 constexpr std::size_t maximum_dictionary_size = 4 * test_frame_size;
-constexpr std::size_t maximum_payload_size = maximum_dictionary_size * 33;
+#ifndef MARC_LZMW_COMPLETION_MAXIMUM_PAYLOAD
+#define MARC_LZMW_COMPLETION_MAXIMUM_PAYLOAD(dictionary_size) \
+    ((dictionary_size) * 33)
+#endif
+constexpr std::size_t maximum_payload_size =
+    MARC_LZMW_COMPLETION_MAXIMUM_PAYLOAD(maximum_dictionary_size);
 constexpr std::size_t maximum_frame_size = 56 + 16 + maximum_payload_size;
 constexpr std::size_t maximum_dictionary_entries = test_frame_size - 1;
 constexpr std::size_t maximum_buffered_bytes = 65536;

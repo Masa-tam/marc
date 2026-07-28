@@ -100,11 +100,13 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzmw-dynamic-range` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
-`lzmw-dynamic-range` is the next queued composition. DD-432 fixes the complete
+`lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
+complete
 four-byte LZMW reference boundary before one fresh per-frame Dynamic Range
 model consumes it. For raw frame size `F`, it checks `S = 4F` reference bytes
 and `P = 2S + 5 = 8F + 5` range-payload bytes, retains the 2^20-byte raw-frame
@@ -129,8 +131,10 @@ and preserves frame atomicity under later corruption. Its internal direction-
 specific profile now calculates every caller-owned byte region and safely
 partitions opaque aligned LZMW records. Its small C ABI now publishes
 direction-specific requirements and factories over three caller-owned regions
-without exposing those record layouts. Completion, fuzz, CLI, benchmark, and
-interoperability admission remain queued.
+without exposing those record layouts. Its public completion matrix proves the
+required binary classes, deterministic arbitrary chunking, sticky terminal
+states, and frame-atomic malformed-final-frame rejection. Fuzz, CLI, benchmark,
+and interoperability admission remain queued.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

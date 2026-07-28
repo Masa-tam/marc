@@ -277,6 +277,10 @@ or the decoder's checked phrase-entry/expansion-stack layout. Query
 `marc_lzmw_dynamic_range_workspace_requirements()` again whenever the
 direction, known original size, frame size, maximum entries, or a hard limit
 changes. No C++ record type crosses this ABI.
+The LZMW plus Dynamic Range completion matrix uses only this lifecycle,
+including zero encoder views for empty and one-byte input, byte-identical
+repeated and arbitrarily chunked encoding, sticky success and error results,
+and atomic rejection of a malformed final frame.
 
 ## Processing contract
 

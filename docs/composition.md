@@ -157,7 +157,9 @@ accounting. The small C ABI exposes this fixed profile through
 `marc_lzmw_dynamic_range_config_init()`,
 `marc_lzmw_dynamic_range_workspace_requirements()`, and
 `marc_lzmw_dynamic_range_create()` while keeping typed record layouts opaque.
-This admission does not yet imply completion, CLI, benchmark, fuzz, or
+Its public-only completion matrix now proves required data classes,
+deterministic repeated and chunked streams, sticky results, and final-frame
+atomicity. This admission does not yet imply CLI, benchmark, fuzz, or
 interoperability coverage.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a

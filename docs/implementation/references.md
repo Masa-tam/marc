@@ -1386,6 +1386,12 @@ view partitioning, and the first-party C11 assertion harness. No external
 combined API, factory, allocator interface, ABI layout, source code, or test
 suite was consulted.
 
+The LZMW plus Dynamic Range public completion matrix uses only DD-442, the
+published C configuration/query/factory/process/destroy lifecycle, DD-432
+bounds, and repository-authored deterministic fixtures and malformed
+mutations. No external completion suite, corpus, combined-codec API, source
+code, or test vector was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,
