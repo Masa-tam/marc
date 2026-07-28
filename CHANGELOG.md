@@ -13,7 +13,12 @@ format versions, and C ABI versions are independent namespaces.
   `S = 16F` token bytes, `K = ceil(S/B)` blocks, `P = S + 8K` payload bytes,
   and `528K` descriptor bytes. rANS blocks may split tokens but never frames,
   and the specified validation order reconstructs the complete private token
-  region before any LZ77 semantic check or raw publication.
+  region before any LZ77 semantic check or raw publication. Its first bounded
+  complete-frame validator now checks all declared extents, caller-owned
+  workspaces, and aggregate bytes before entropy work; validates every rANS
+  block without output; reconstructs the complete private token region only
+  after all blocks succeed; and applies the ordinary LZ77 semantic validator
+  without reconstructing or publishing raw bytes.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

@@ -1051,6 +1051,13 @@ raw extent are checked only over that complete region. No combined decoder or
 public profile is implied until private reconstruction and transactional
 publication are implemented and tested.
 
+The first internal validator now realizes this boundary with caller-owned token
+and rANS-view spans. It preflights exact descriptor, payload, token, and view
+bytes in one aggregate policy. One loop validates every block state path
+without output; a second loop fills token staging only after the first loop
+succeeds. The existing LZ77 validator then checks the complete reconstructed
+token stream. Raw staging and caller-visible output are deliberately absent.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

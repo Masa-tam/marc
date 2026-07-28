@@ -8111,6 +8111,36 @@ serializers. This decision specifies bytes and a reserved name only; it does
 not publish a combined decoder, encoder, stream transform, C factory, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-448: LZ77 rANS validation stops at the token boundary
+
+- Date: 2026-07-28
+- Status: accepted
+
+Admit the first combined `lz77-rans` implementation as a strict bounded
+complete-frame validator only. Validate the exact stream profile, LZ77
+parameters, sequence, generic frame header, complete frame extent,
+`S <= 16F` token bound and alignment, exact
+`K = ceil(S/B)` block count, exact `528K` descriptor bytes, bounded
+`8K <= P <= S + 8K` payload, caller-owned token and view capacities, and
+their aggregate workspace before entropy output.
+
+Parse every descriptor only after admission succeeds. Validate every rANS
+block's model, state path, terminal state, and exact payload exhaustion before
+decoding any block. Only after that complete validation pass may a second pass
+reconstruct exactly `S` token bytes into private caller-owned staging. Invoke
+the existing LZ77 validator over the complete span and preserve its stable
+token index, format error, reference, overlap, and exact raw-extent checks.
+
+No raw staging or output span exists at this boundary. On every failure the
+caller discards token and view workspace. Prove the 592-byte Literal vector,
+a token split across four rANS blocks, every truncation, trailing data, short
+storage, aggregate admission one byte short, malformed descriptors, a
+malformed later block with untouched token staging, invalid reconstructed
+LZ77 tokens, impossible entropy extents, and profile rejection. This decision
+adds no private raw decoder, transactional publication, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

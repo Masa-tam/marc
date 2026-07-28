@@ -1700,3 +1700,10 @@ documented LZ77 variant 1 token grammar, scalar rANS variant 1, generic frame
 format, checked arithmetic rules, and repository-authored standalone
 encoders. No external LZ77/rANS composition, archive format, combined-codec
 implementation, source code, encoded corpus, or test suite was consulted.
+
+The first LZ77 plus rANS complete-frame validator uses only DD-448, DD-447's
+fixed byte-stream boundary and bounds, marc's generic frame parser, rANS
+descriptor controller and strict decoder, existing LZ77 validator,
+caller-owned spans, and checked aggregate arithmetic. No external combined
+decoder, validation order, workspace layout, malformed corpus, source code, or
+test suite was consulted.

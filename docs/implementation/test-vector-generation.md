@@ -3231,6 +3231,21 @@ else in the frequency region. Append the payload and compare every one of the
 592 bytes against output assembled only from the standalone LZ77 encoder,
 rANS encoder, and explicit generic serializers.
 
+For the first LZ77 plus rANS validator tests, require the 592-byte hand vector
+to reconstruct the exact Literal token in private staging. Re-encode that same
+token with rANS block size five and require four blocks, deliberately proving
+that entropy boundaries may split a token. Reject every proper frame prefix
+and one trailing byte.
+
+Use one-entry-short view storage, one-byte-short token staging, and an
+aggregate workspace ceiling one byte below descriptor, payload, token, and
+view bytes; each must fail before token mutation. Lower a normalized frequency
+to invalidate the descriptor, and replace the second of two eight-symbol
+block states with zero; the latter must report block index one while preserving
+the entire token sentinel. Finally encode a token with invalid kind `FF` and
+require rANS success followed by the stable LZ77 token error, and raise the
+declared payload above `S + 8K` for early extent rejection.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

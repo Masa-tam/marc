@@ -8574,6 +8574,34 @@ discarded and the reviewed seed retained.
   CMake 4.3.4; all thirty benchmark smokes and schema-19 compatibility
   remained successful.
 
+## 2026-07-28 - LZ77 plus rANS complete-frame validator
+
+- Authoring method: combined marc's generic frame admission, strict two-pass
+  rANS block decoder, and existing LZ77 validator at DD-447's private token
+  boundary.
+- References used: DD-448, DD-447, local checked arithmetic, rANS descriptor
+  views and state validation, and the canonical LZ77 token validator.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, buffer layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: preflight exact extents and all caller-owned storage;
+  count views in aggregate workspace; validate every entropy block before
+  decoding any; reconstruct only the complete private token region; and stop
+  before raw reconstruction or publication.
+- Generated-code task description: add a bounded complete-frame validator and
+  stable layered errors; test the independent vector, block splits,
+  truncation, storage and aggregate limits, malformed descriptor and later
+  payload atomicity, invalid reconstructed token, entropy bounds, and pipeline
+  rejection; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-authored
+  parsers, validators, decoders, and span contracts. No external control flow,
+  workspace formula, malformed vector, or test expression was compared.
+- Local validation: the focused validator suite passed 10/10 under both MSVC
+  and ClangCL. The complete Release suite passed 1,747/1,747 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

@@ -3740,6 +3740,15 @@ It next requires 16-byte alignment and validates the complete LZ77 token
 stream, distances, overlap-copy semantics, and exact declared raw extent
 before private reconstruction and any caller-visible publication.
 
+The first combined validator implements exactly this decoder-facing boundary.
+Before entropy work it additionally admits caller-owned token staging and
+`K * sizeof(RansBlockView)` bounded view storage, and counts both with the
+descriptor and payload regions against `max_internal_buffered_bytes`. It
+validates all `K` rANS payloads before decoding any of them, so a malformed
+later block cannot leave an earlier token prefix in staging. After a successful
+second pass reconstructs exactly `S` token bytes, LZ77 validation runs without
+raw reconstruction. Callers discard token and view storage on every failure.
+
 For raw `A`, LZ77 emits:
 
 ```text
