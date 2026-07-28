@@ -169,8 +169,9 @@ untimed byte-exact round trip, and reports queried workspace extents before
 descriptive timing. Schema 19 now appends this profile once after the frozen
 schema-18 order; local generation, exact-order verification, reordered-
 manifest rejection, and schemas 1 through 18 compatibility pass. Cross-
-platform interoperability evidence remains pending until pushed CI artifacts
-are exchanged.
+platform interoperability is now verified in all four established directions
+for thirty archives at revision
+`f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

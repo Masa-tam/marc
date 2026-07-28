@@ -8628,6 +8628,28 @@ discarded and the reviewed seed retained.
   chain passed under both MSVC and ClangCL. The complete Release suite passed
   1,736/1,736 under both compilers using official CMake 4.3.4. External
   cross-platform artifact verification remains pending.
+
+## 2026-07-28 - Interoperability schema 19 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
+- References used: DD-446, marc's schema-19 generator and verifier, the
+  established schema-18 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the thirty archives from both the Windows/MSVC via Visual
+  Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own thirty-archive bundle, which the Windows/MSVC
+  executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 30 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-19 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.
 - Local validation: all twenty-two focused LZMW Dynamic Range validator,
   planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
   complete Release suite passed 1,710/1,710 under both compilers using official

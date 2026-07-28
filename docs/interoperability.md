@@ -84,8 +84,8 @@ and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 18 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 17
+Schema 19 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 18
 compatibility evidence. Its completed Windows/MSVC, Ubuntu 24.04/Ninja, and
 Ubuntu 26.04/Clang four-direction external cross-check is recorded below.
 
@@ -246,6 +246,20 @@ executable verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-18
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+Revision `f8d51680a0ef827fa09f5782ad4ced4c335d346e` received the schema-19
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and verified an
+`ubuntu-26.04-ninja-x64` thirty-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-19
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 

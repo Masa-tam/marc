@@ -143,7 +143,9 @@ a complete byte-exact round trip before reporting ratio, directional
 throughput, and all queried workspace extents. Interoperability schema 19
 appends it once after the frozen schema-18 order; local generation,
 verification, reordered-manifest rejection, and schemas 1 through 18
-compatibility pass. External cross-platform verification remains pending.
+compatibility pass. The four-direction Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang cross-check verifies all thirty archives at revision
+`f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

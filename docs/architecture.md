@@ -2083,6 +2083,9 @@ Interoperability schema 19 appends the unchanged CLI representation exactly
 once after schema 18's frozen twenty-nine profiles. The manifest verifier keeps
 every earlier codec set explicit and requires exact order, count, size,
 SHA-256, foreign decode equality, and byte-identical local re-encoding.
+The established four-direction exchange verified all thirty archives across
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers at revision
+`f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
 
 ### Published LZD plus Adaptive Huffman boundary
 

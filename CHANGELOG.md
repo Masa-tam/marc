@@ -43,7 +43,10 @@ format versions, and C ABI versions are independent namespaces.
   public-ABI round trip before reporting compression ratio, directional
   throughput, and queried workspace extents. Interoperability schema 19
   appends the profile once after the frozen schema-18 order and preserves
-  explicit verification support for schemas 1 through 18.
+  explicit verification support for schemas 1 through 18. Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang bundles passed the established
+  four-direction external verifier for all thirty archives at the exact
+  schema-19 revision.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload
