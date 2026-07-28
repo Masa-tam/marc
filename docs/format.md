@@ -3127,9 +3127,19 @@ caller-visible output capacity before entropy output. It performs the same
 private reconstruction and copies the exact raw frame once only after all
 layers succeed. A short output, malformed header, descriptor or payload,
 invalid LZMW graph, limit failure, or unexpected reconstruction failure leaves
-caller-visible output unchanged. This remains an internal frame API; no
-streaming transform, public factory, CLI selector, benchmark, fuzz target,
-completion claim, or interoperability entry is implied.
+caller-visible output unchanged.
+
+The exact-frame planner performs the inverse preparation without writing
+serialized output. It plans the deterministic LZMW parse in bounded caller-
+owned encoder records, checks the exact reference extent and staging capacity,
+serializes all references into that staging, and plans Dynamic Range over
+those frozen bytes. It checks encoder records, reference bytes, descriptor,
+exact payload, generic header validity, and aggregate workspace, then reports
+the complete `56 + 16 + payload_size` frame extent. Repeated planning of the
+same input and configuration must return identical references and extents.
+This remains an internal frame API; no frame encoder, streaming transform,
+public factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry is implied.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

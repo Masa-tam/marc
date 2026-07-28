@@ -19,7 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   entropy output and reconstructs only the validated graph into disposable
   caller-owned storage. Its transactional complete-frame decoder checks caller
   output capacity before entropy work and publishes the private raw frame only
-  after every layer succeeds.
+  after every layer succeeds. Its exact-frame planner now freezes canonical
+  LZMW references before range planning and reports the complete serialized
+  extent without writing serialized output.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

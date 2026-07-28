@@ -3,6 +3,7 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <limits>
 
 namespace marc::frame {
 namespace {
@@ -287,6 +288,196 @@ inline constexpr std::uint64_t termination_bytes = 5;
 }
 
 } // namespace
+
+LzmwDynamicRangeFrameValidationResult plan_lzmw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    LzmwDynamicRangeFrameValidationResult result{};
+    result.raw_size = input.size();
+    if (validate_stream_header(stream, limits) != StreamHeaderError::none
+        || !supported_pipeline(stream)
+        || dictionary::internal::validate_lzmw_parameters(parameters, limits)
+               != dictionary::internal::LzmwFormatError::none) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::unsupported_pipeline;
+        return result;
+    }
+    if (input.empty()
+        || input.size() > std::numeric_limits<std::uint32_t>::max()) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::input_size_mismatch;
+        return result;
+    }
+
+    result.encoder_entries =
+        dictionary::internal::lzmw_encoder_workspace_entries(
+            input.size(), parameters);
+    if (encoder_workspace.size() < result.encoder_entries) {
+        result.error = LzmwDynamicRangeFrameValidationError::
+            encoder_workspace_too_small;
+        return result;
+    }
+    const auto used_encoder_workspace =
+        encoder_workspace.first(result.encoder_entries);
+    const auto dictionary_plan =
+        dictionary::internal::plan_lzmw_token_stream(
+            input, parameters, limits, used_encoder_workspace);
+    result.dictionary_size = dictionary_plan.output_size;
+    result.token_count = dictionary_plan.token_count;
+    result.dictionary_entries = dictionary_plan.dictionary_entries;
+    result.dictionary_encode_error = dictionary_plan.error;
+    result.dictionary_format_error = dictionary_plan.format_error;
+    if (dictionary_plan.error
+        != dictionary::internal::LzmwEncodeError::none) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+
+    std::size_t maximum_dictionary_size{};
+    if (!dictionary::internal::lzmw_maximum_token_stream_size(
+            input.size(), maximum_dictionary_size)) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (result.dictionary_size == 0
+        || result.dictionary_size % dictionary::internal::lzmw_token_size != 0
+        || result.dictionary_size
+               > entropy::internal::dynamic_range_max_frame_size
+        || result.dictionary_size > maximum_dictionary_size
+        || result.dictionary_size
+               > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzmwDynamicRangeFrameValidationError::
+            invalid_dictionary_extent;
+        return result;
+    }
+    if (dictionary_staging.size() < result.dictionary_size) {
+        result.error = LzmwDynamicRangeFrameValidationError::
+            dictionary_staging_too_small;
+        return result;
+    }
+
+    std::uint64_t encoder_bytes{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(result.encoder_entries),
+            static_cast<std::uint64_t>(
+                sizeof(dictionary::internal::LzmwEncoderEntry)),
+            encoder_bytes)) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    const auto dictionary_encoded =
+        dictionary::internal::encode_lzmw_token_stream(
+            input, parameters, limits, used_encoder_workspace,
+            dictionary_staging.first(result.dictionary_size));
+    result.dictionary_encode_error = dictionary_encoded.error;
+    result.dictionary_format_error = dictionary_encoded.format_error;
+    if (dictionary_encoded.error
+            != dictionary::internal::LzmwEncodeError::none
+        || dictionary_encoded.token_count != result.token_count
+        || dictionary_encoded.dictionary_entries
+               != result.dictionary_entries) {
+        result.error = dictionary_encoded.error
+                == dictionary::internal::LzmwEncodeError::none
+            ? LzmwDynamicRangeFrameValidationError::internal_error
+            : LzmwDynamicRangeFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+
+    entropy::internal::DynamicRangeDescriptor descriptor{};
+    const auto entropy_limits =
+        entropy_limits_for(limits, result.dictionary_size);
+    const auto entropy_plan =
+        entropy::internal::plan_dynamic_range_frame(
+            dictionary_staging.first(result.dictionary_size), entropy_limits,
+            descriptor);
+    result.entropy_encode_error = entropy_plan.error;
+    result.payload_size = entropy_plan.payload_size;
+    result.descriptor_size =
+        entropy::internal::dynamic_range_descriptor_size;
+    if (entropy_plan.error
+        != entropy::internal::DynamicRangeEncodeError::none) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::entropy_encode_error;
+        return result;
+    }
+
+    std::uint64_t maximum_payload_size{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(result.dictionary_size),
+            max_payload_bytes_per_symbol, maximum_payload_size)
+        || !core::checked_add(maximum_payload_size, termination_bytes,
+                              maximum_payload_size)) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (result.payload_size > maximum_payload_size
+        || result.payload_size > std::numeric_limits<std::uint32_t>::max()) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::invalid_entropy_extent;
+        return result;
+    }
+
+    std::uint64_t workspace_bytes{};
+    if (!core::checked_add(
+            encoder_bytes,
+            static_cast<std::uint64_t>(result.dictionary_size),
+            workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes,
+            static_cast<std::uint64_t>(result.descriptor_size),
+            workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes,
+            static_cast<std::uint64_t>(result.payload_size),
+            workspace_bytes)) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (workspace_bytes > limits.max_internal_buffered_bytes) {
+        result.error = LzmwDynamicRangeFrameValidationError::workspace_limit;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(input.size());
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count = 1;
+    header.block_descriptors_size =
+        entropy::internal::dynamic_range_descriptor_size;
+    const FrameValidationContext context{
+        stream, limits, sequence, output_already_committed};
+    result.header_error = validate_frame_header(header, context);
+    if (result.header_error != FrameHeaderError::none) {
+        result.error = result.header_error
+                == FrameHeaderError::unexpected_frame_size
+            ? LzmwDynamicRangeFrameValidationError::input_size_mismatch
+            : LzmwDynamicRangeFrameValidationError::header_error;
+        return result;
+    }
+    if (!core::checked_add(frame_header_size, result.descriptor_size,
+                           result.serialized_size)
+        || !core::checked_add(result.serialized_size, result.payload_size,
+                              result.serialized_size)) {
+        result.error =
+            LzmwDynamicRangeFrameValidationError::arithmetic_overflow;
+    }
+    return result;
+}
 
 LzmwDynamicRangeFrameValidationResult validate_lzmw_dynamic_range_frame(
     const StreamHeader& stream,

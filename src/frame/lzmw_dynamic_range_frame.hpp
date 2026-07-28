@@ -2,7 +2,9 @@
 #define MARC_FRAME_LZMW_DYNAMIC_RANGE_FRAME_HPP
 
 #include "dictionary/lzmw_decoder.hpp"
+#include "dictionary/lzmw_encoder.hpp"
 #include "entropy/dynamic_range_decoder.hpp"
+#include "entropy/dynamic_range_encoder.hpp"
 #include "entropy/dynamic_range_format.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
@@ -32,6 +34,11 @@ enum class LzmwDynamicRangeFrameValidationError : std::uint8_t {
     dictionary_validation_error,
     dictionary_decode_error,
     arithmetic_overflow,
+    input_size_mismatch,
+    encoder_workspace_too_small,
+    dictionary_encode_error,
+    entropy_encode_error,
+    internal_error,
 };
 
 struct LzmwDynamicRangeFrameValidationResult {
@@ -44,6 +51,7 @@ struct LzmwDynamicRangeFrameValidationResult {
     std::size_t expansion_entries{};
     std::size_t token_count{};
     std::size_t dictionary_entries{};
+    std::size_t encoder_entries{};
     FrameHeaderError header_error{FrameHeaderError::none};
     entropy::internal::DynamicRangeFormatError descriptor_error{
         entropy::internal::DynamicRangeFormatError::none};
@@ -55,9 +63,27 @@ struct LzmwDynamicRangeFrameValidationResult {
         dictionary::internal::LzmwFormatError::none};
     dictionary::internal::LzmwDecodeError dictionary_decode_error{
         dictionary::internal::LzmwDecodeError::none};
+    dictionary::internal::LzmwEncodeError dictionary_encode_error{
+        dictionary::internal::LzmwEncodeError::none};
+    entropy::internal::DynamicRangeEncodeError entropy_encode_error{
+        entropy::internal::DynamicRangeEncodeError::none};
     LzmwDynamicRangeFrameValidationError error{
         LzmwDynamicRangeFrameValidationError::none};
 };
+
+// Fixes the complete canonical LZMW reference stream before planning Dynamic
+// Range over those exact bytes. It reports the exact complete-frame extent
+// without writing serialized output. Raw input and staging must not overlap.
+[[nodiscard]] LzmwDynamicRangeFrameValidationResult
+plan_lzmw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Entropy-decodes and validates exactly one complete frame into private LZMW
 // reference staging and a caller-owned phrase table. No raw byte is

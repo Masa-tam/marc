@@ -2037,7 +2037,11 @@ aggregate bytes before entropy output. It then invokes the ordinary iterative
 LZMW decoder only over the completely validated graph and writes solely into
 discardable private raw staging. The transactional frame boundary also checks
 the complete caller destination before entropy output and copies that private
-raw extent once only after every operation succeeds.
+raw extent once only after every operation succeeds. The exact-frame planner
+performs the inverse bounded preparation: it freezes the deterministic LZMW
+reference stream in caller-owned staging, plans Dynamic Range over those exact
+bytes, validates the synthesized generic header and aggregate workspace, and
+reports the complete serialized extent without writing serialized output.
 
 ### Published LZD plus Adaptive Huffman boundary
 

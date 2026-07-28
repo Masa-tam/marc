@@ -1348,6 +1348,12 @@ and marc's established copy-after-success convention. No external combined
 decoder, publication protocol, buffering layout, source code, malformed
 corpus, or test suite was consulted.
 
+The LZMW plus Dynamic Range exact-frame planner uses only DD-436, marc's local
+LZMW variant-1 planner and encoder, Dynamic Range variant-1 planner, generic
+frame validator, caller-owned workspaces, and checked arithmetic. No external
+combined encoder, planning algorithm, buffering layout, source code, encoded
+corpus, or test suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

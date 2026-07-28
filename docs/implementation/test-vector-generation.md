@@ -3277,6 +3277,20 @@ Independently corrupt the descriptor and encode a forward reference with full
 capacity; require the corresponding descriptor or LZMW validation error while
 preserving both private raw and caller-output guards.
 
+For the LZMW plus Dynamic Range exact-frame planner, pass raw `A`, no encoder
+records, and four reference-staging bytes. Require one token, zero generated
+phrases, frozen reference `41 00 00 00`, descriptor size 16, payload size 8,
+and complete frame size 80 without any serialized output span.
+
+For raw `ABABAB`, allocate the exact standalone LZMW encoder-record count and
+`4F` reference staging. Plan twice and require identical reference bytes,
+token and dictionary-entry counts, payload size, and complete extent. For raw
+`AB`, make encoder records one entry short and preserve guarded staging. For
+raw `A`, make reference staging one byte short and preserve its guard. Set the
+aggregate limit one byte below `4 references + 16 descriptor + 8 payload`;
+also pass empty input and two bytes to a one-byte frame independently. Require
+stable workspace or input-size errors and no serialized output.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

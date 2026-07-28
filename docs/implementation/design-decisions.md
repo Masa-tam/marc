@@ -8585,3 +8585,29 @@ Prove preflight atomicity with short output and post-admission atomicity with
 descriptor and forward-reference failures. This decision adds no frame
 encoder, streaming transform, public factory, CLI, benchmark, fuzz target,
 completion claim, or interoperability entry.
+
+## DD-436: LZMW Dynamic Range planning freezes reference bytes
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal exact-frame planner for the inverse of DD-433 through DD-435.
+Validate the exact stream profile, LZMW parameters, nonempty input extent, and
+frame-local bounds. Determine and require the bounded LZMW encoder-record
+capacity before reference staging can change. Plan the deterministic parse,
+require the exact checked `S <= 4F` reference extent and staging capacity, then
+serialize all canonical four-byte references into caller-owned staging.
+
+Plan Dynamic Range only over that frozen reference span. Require its exact
+payload to fit `P <= 2S + 5` and 32-bit frame fields. Count encoder records,
+reference staging, the 16-byte descriptor, and exact payload against
+`max_internal_buffered_bytes`. Validate the synthesized generic frame header
+with sequence and already-committed output context, and report the checked
+complete frame extent without writing serialized output.
+
+Prove the exact raw-`A` reference, descriptor, payload and 80-byte extent;
+repeat a generated-phrase plan byte-identically; reject encoder records and
+reference staging one entry short before staging mutation; and reject aggregate
+workspace one byte short, empty input, and a frame-size mismatch. This decision
+adds no serialized frame encoder, streaming transform, public factory, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.

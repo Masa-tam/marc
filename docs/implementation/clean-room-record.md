@@ -9375,3 +9375,31 @@ discarded and the reviewed seed retained.
   passed 15/15 under both MSVC and ClangCL. The complete Release suite passed
   1,703/1,703 under both compilers using official CMake 4.3.4. All twenty-nine
   existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range exact-frame planner
+
+- Authoring method: composed marc's deterministic LZMW planner/encoder,
+  Dynamic Range planner, and generic frame validator into a write-free
+  complete-frame sizing boundary.
+- References used: DD-436, the local LZMW and Dynamic Range encoder contracts,
+  DD-432 bounds, caller-owned staging, and checked arithmetic.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: admit encoder records before reference mutation;
+  freeze complete canonical references before range planning; count exact
+  planner workspace; validate the synthesized header; and return size without
+  accepting a serialized output span.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and generated-phrase determinism tests,
+  guarded encoder/reference shortages, aggregate and frame-size rejection, and
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  independently specified planners, serializers, generic header checks, and
+  bounded spans. No external control flow, capacity formula, encoded bytes, or
+  test expression was compared.
+- Local validation: the focused validator, planner, and decoder suite passed
+  19/19 under both MSVC and ClangCL. The complete Release suite passed
+  1,707/1,707 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
