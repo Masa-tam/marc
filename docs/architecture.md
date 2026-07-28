@@ -2010,6 +2010,23 @@ rejection, and the complete compatibility chain. Revision
 external evidence across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang.
 
+### Specified LZMW plus Dynamic Range boundary
+
+LZMW first freezes its complete canonical sequence of four-byte little-endian
+references. Dynamic Range consumes those bytes through one freshly reset
+adaptive order-0 model per outer frame without interpreting reference
+boundaries. For raw frame size `F`, reference staging is bounded by `S = 4F`
+and the conservative entropy payload by `P = 2S + 5`.
+
+Decoding must reconstruct exactly the declared reference extent, validate its
+multiple-of-four shape, every literal or prior generated reference, the
+bounded adjacent-phrase graph, and exact raw extent, then reconstruct into
+private raw staging before publication. Encoding must freeze the deterministic
+LZMW parse before range planning. The independent raw-`A` vector fixes
+reference `41 00 00 00`, range payload `00 40 FF FF BF 00 00 00`, and a
+complete 80-byte frame. This boundary is specified but not yet implemented as
+a combined codec.
+
 ### Published LZD plus Adaptive Huffman boundary
 
 LZD first freezes its complete canonical eight-byte reference-pair stream.

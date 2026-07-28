@@ -104,9 +104,18 @@ kept separate because it requires artifacts produced outside the local build.
 
 ## Composed-profile admission queue
 
-`lzd-dynamic-range` is the next queued composition. DD-417 fixes the complete
-eight-byte LZD reference-pair boundary before one fresh per-frame Dynamic Range
-model consumes it. For raw frame size `F`, it checks
+`lzmw-dynamic-range` is the next queued composition. DD-432 fixes the complete
+four-byte LZMW reference boundary before one fresh per-frame Dynamic Range
+model consumes it. For raw frame size `F`, it checks `S = 4F` reference bytes
+and `P = 2S + 5 = 8F + 5` range-payload bytes, retains the 2^20-byte raw-frame
+cap, and requires range validation before LZMW reference alignment, generated-
+phrase graph, and exact-raw-extent validation. Its independently assembled
+80-byte raw-`A` frame is covered by a standalone-component vector test. No
+combined validator or public profile exists yet.
+
+`lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
+the complete eight-byte LZD reference-pair boundary before one fresh per-frame
+Dynamic Range model consumes it. For raw frame size `F`, it checks
 `S = 8 * ceil(F/2)` token bytes and `P = 2S + 5` range-payload bytes, retains
 the 2^20-byte raw-frame cap, and requires range validation before LZD
 token-width, backward-reference, terminal-absence, phrase-length, and exact-

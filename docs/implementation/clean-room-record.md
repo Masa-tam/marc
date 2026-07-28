@@ -9263,3 +9263,31 @@ discarded and the reviewed seed retained.
   This establishes canonical schema-18 bytes across the three recorded
   producers and bidirectional decoding between the recorded Windows and WSL2
   Linux x86-64 environments.
+
+## 2026-07-28 - LZMW plus Dynamic Range specification and vector
+
+- Authoring method: composed marc's already frozen LZMW reference grammar and
+  Dynamic Range byte-symbol grammar at their documented byte-stream boundary
+  before implementing a combined codec.
+- References used: DD-432, the local LZMW variant 1 and Dynamic Range variant
+  1 format sections, generic frame serializers, checked arithmetic rules, and
+  repository-authored standalone encoders.
+- Known implementations intentionally not consulted: external LZMW/range
+  compositions, archive formats, codec source, encoded corpora, malformed
+  corpora, and test suites.
+- Independent decisions: reserve `lzmw-dynamic-range`; retain format 1.0; make
+  all four bytes of every reference ordinary range symbols; reset both layers
+  per frame; use checked `S = 4F` and `P = 2S + 5` bounds; and require strict
+  range exhaustion before LZMW graph validation and private reconstruction.
+- Generated-code task description: specify the complete combined frame,
+  bounds, reset and validation order, publication boundary, raw-`A` vector,
+  roadmap state, reference record, and provenance without implementing a
+  combined decoder or encoder.
+- Similarity review: the representation and vector compose only marc's own
+  independently documented component contracts and direct field
+  serialization. No external combined format, implementation structure, byte
+  stream, naming scheme, or test expression was compared.
+- Local validation: the independent 80-byte vector passed under both MSVC and
+  ClangCL. The complete Release test inventory passed 1,688/1,688 under both
+  compilers using official CMake 4.3.4; the MSVC invocation was split after
+  test 1,684 solely by the command runner's 120-second limit.

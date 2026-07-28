@@ -7,6 +7,12 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- The reserved `lzmw-dynamic-range` composition now has an exact
+  decoder-visible representation and an independent raw-`A` vector assembled
+  from the standalone LZMW and Dynamic Range encoders. It freezes complete
+  four-byte references before range coding, checks `S = 4F` reference bytes
+  and `P = 2S + 5` payload bytes, and does not yet publish a combined codec.
+
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload
   bounds, transactional validation order, and an independent 84-byte

@@ -1158,6 +1158,7 @@ if(MARC_BUILD_TESTS)
         tests/lzd_profile_tests.cpp
         tests/lzd_stream_tests.cpp
         tests/lzmw_adaptive_huffman_vector_tests.cpp
+        tests/lzmw_dynamic_range_vector_tests.cpp
         tests/lzmw_adaptive_huffman_frame_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_encoder_tests.cpp

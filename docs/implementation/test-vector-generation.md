@@ -3216,6 +3216,21 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the first LZMW plus Dynamic Range vector, encode raw byte `41` using the
+standalone LZMW variant-1 encoder and require the complete four-byte reference
+`41 00 00 00`. Pass exactly that frozen byte span to a fresh standalone
+Dynamic Range variant-1 encoder and require payload
+`00 40 FF FF BF 00 00 00` with descriptor `(symbol_count=4,
+payload_size=8, reserved=0)`.
+
+Independently serialize a generic sequence-zero frame header with raw size one,
+dictionary-serialized size four, compressed-payload size eight, entropy block
+count one, descriptor size sixteen, and no trailer. Concatenate header,
+descriptor, and payload and require the exact 80-byte frame recorded in
+`docs/format.md`. The vector test must call only the standalone LZMW encoder,
+standalone Dynamic Range planner/encoder, and generic serializers; it must not
+depend on a future combined implementation.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

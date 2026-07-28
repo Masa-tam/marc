@@ -24,12 +24,12 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Candidate | Candidate | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Specified | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 17 includes all current published profiles while
+publication: schema 18 includes all current published profiles while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
@@ -128,6 +128,14 @@ with the fixed 64-KiB reference profile. Interoperability schema 13 appends it
 as the twenty-fourth archive, and its bidirectional Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 verification is recorded in
 `docs/interoperability.md`.
+
+`lzmw-dynamic-range` is reserved as the final baseline Dynamic Range
+composition. It fixes the complete four-byte little-endian LZMW reference
+stream before a fresh per-frame adaptive order-0 range model consumes it.
+Checked bounds are `S = 4F` reference bytes and `P = 2S + 5` range payload
+bytes, with bounded adjacent-phrase records and iterative expansion stack. An
+independent raw-`A` component composition fixes its complete 80-byte frame.
+No combined implementation or public API is implied by this reservation.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

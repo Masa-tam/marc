@@ -8469,3 +8469,41 @@ must generate schema 18, reject a reordered schema-18 manifest, derive and
 verify schema 17, then continue the existing schema-16-through-1 chain. This
 step records local admission only; external cross-platform evidence requires
 artifacts produced after push.
+
+## DD-432: LZMW Dynamic Range entropizes finalized reference bytes
+
+- Date: 2026-07-28
+- Status: accepted
+
+Reserve `lzmw-dynamic-range` for LZMW variant 1 followed by Dynamic Range
+Coder variant 1 under format version 1.0. Preserve the standalone 16-byte LZMW
+parameters, empty entropy parameters, and fixed four-byte little-endian
+references. Complete the reference byte stream before entropy processing;
+Dynamic Range consumes every byte without interpreting reference boundaries.
+Reset both the LZMW phrase dictionary and adaptive order-0 range model at every
+outer frame.
+
+For raw frame size `F`, use checked reference staging bound `S = 4F` and
+Dynamic Range payload bound `P = 2S + 5 = 8F + 5`. Bound generated phrases by
+the lesser of `max(F - 1, 0)`, the configured LZMW maximum, and the local
+decoder limit; bound the iterative expansion stack by that phrase count plus
+one for a nonempty frame. Retain the LZMW composition format cap
+`F <= 2^20`. The reference profile uses `F = 65,536`, giving `S = 262,144`,
+`P = 524,293`, at most 65,535 generated phrases, and at most 65,536 expansion
+references.
+
+Encoding freezes canonical LZMW reference bytes before range planning.
+Decoding range-decodes exactly the declared reference-byte count into private
+staging, then applies ordinary LZMW reference alignment, prior-reference,
+adjacent-phrase graph, and exact-raw-extent validation before iterative private
+reconstruction and any raw publication. Error precedence is generic header and
+extent validation, workspace admission, range descriptor and payload
+validation, LZMW validation, then private reconstruction and publication.
+
+For raw `A`, independently freeze LZMW reference `41 00 00 00`; Dynamic Range
+variant 1 over those four bytes produces payload
+`00 40 FF FF BF 00 00 00` and descriptor `(4, 8, 0)`. Record the complete
+80-byte frame in the format document and prove it by composing only the
+existing standalone LZMW encoder, Dynamic Range encoder, and generic
+serializers. This decision specifies bytes and a reserved name only; it does
+not publish a combined implementation or interoperability entry.
