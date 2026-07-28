@@ -25,9 +25,7 @@ inline constexpr std::uint64_t max_raw_frame_size = UINT64_C(1) << 20;
         && stream.entropy_parameters_size == 0;
 }
 
-} // namespace
-
-Lz77RansFrameValidationResult validate_lz77_rans_frame(
+[[nodiscard]] Lz77RansFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::Lz77Parameters& parameters,
     const core::DecoderLimits& limits,
@@ -35,7 +33,9 @@ Lz77RansFrameValidationResult validate_lz77_rans_frame(
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
     const std::span<entropy::internal::RansBlockView> views,
-    const std::span<std::byte> dictionary_staging) noexcept {
+    const std::span<std::byte> dictionary_staging,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging) noexcept {
     Lz77RansFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -138,6 +138,11 @@ Lz77RansFrameValidationResult validate_lz77_rans_frame(
             Lz77RansFrameValidationError::dictionary_staging_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error =
+            Lz77RansFrameValidationError::raw_staging_too_small;
+        return result;
+    }
 
     std::uint64_t view_bytes{};
     std::uint64_t workspace_bytes{};
@@ -155,7 +160,12 @@ Lz77RansFrameValidationResult validate_lz77_rans_frame(
             static_cast<std::uint64_t>(result.dictionary_size),
             workspace_bytes)
         || !core::checked_add(
-            workspace_bytes, view_bytes, workspace_bytes)) {
+            workspace_bytes, view_bytes, workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes,
+                static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error = Lz77RansFrameValidationError::arithmetic_overflow;
         return result;
     }
@@ -231,6 +241,53 @@ Lz77RansFrameValidationResult validate_lz77_rans_frame(
         != dictionary::internal::Lz77ValidationError::none) {
         result.error =
             Lz77RansFrameValidationError::dictionary_validation_error;
+    }
+    return result;
+}
+
+} // namespace
+
+Lz77RansFrameValidationResult validate_lz77_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::RansBlockView> views,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging, false, {});
+}
+
+Lz77RansFrameValidationResult decode_lz77_rans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::RansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging, true,
+        raw_staging);
+    if (result.error != Lz77RansFrameValidationError::none) {
+        return result;
+    }
+
+    const auto decoded = dictionary::internal::decode_lz77_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error != dictionary::internal::Lz77DecodeError::none) {
+        result.dictionary_error = decoded.validation_error;
+        result.dictionary_format_error = decoded.format_error;
+        result.error =
+            Lz77RansFrameValidationError::dictionary_decode_error;
     }
     return result;
 }

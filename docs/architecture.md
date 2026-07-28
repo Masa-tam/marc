@@ -1058,6 +1058,13 @@ without output; a second loop fills token staging only after the first loop
 succeeds. The existing LZ77 validator then checks the complete reconstructed
 token stream. Raw staging and caller-visible output are deliberately absent.
 
+The next internal layer admits a distinct private raw span before any rANS
+work and counts it in the same aggregate bound. It reuses the complete
+validator, then runs the existing allocation-free LZ77 decoder over immutable
+token staging. Literal and overlapping-match reconstruction therefore occurs
+only after both entropy and dictionary semantics succeed. Publication remains
+a later, separate boundary.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

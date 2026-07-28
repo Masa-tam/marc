@@ -3246,6 +3246,19 @@ the entire token sentinel. Finally encode a token with invalid kind `FF` and
 require rANS success followed by the stable LZ77 token error, and raise the
 declared payload above `S + 8K` for early extent rejection.
 
+For private LZ77 plus rANS reconstruction, decode the 592-byte hand frame into
+a three-byte guarded raw span and require only its first byte to become `41`.
+Independently serialize a Literal `A` followed by terminal match
+`(distance=1,length=4)`, rANS-code the complete 32-byte token region, and
+require private output `AAAAA`, exercising forward overlap copy.
+
+Submit zero raw capacity for the one-byte frame and require rejection before
+token staging changes. Set the aggregate limit one byte below descriptor,
+payload, token, view, and raw bytes and require both token and raw sentinels to
+remain unchanged. Finally corrupt the second of two rANS block states and
+separately rANS-code token kind `FF`; both must leave raw staging untouched,
+with entropy and dictionary errors remaining distinct.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

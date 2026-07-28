@@ -38,7 +38,10 @@ The independently derived raw-`A` vector fixes the complete 592-byte frame.
 Its first bounded complete-frame validator now admits exact extents and all
 caller-owned storage before entropy processing, validates every rANS block
 before writing any token byte, reconstructs the complete private token region,
-and applies the ordinary LZ77 validator without raw reconstruction.
+and applies the ordinary LZ77 validator without raw reconstruction. Its
+bounded private decoder now preflights separate raw staging and adds it to
+aggregate workspace, then reconstructs the fully validated token stream
+without exposing a caller-visible output boundary.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

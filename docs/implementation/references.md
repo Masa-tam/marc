@@ -1707,3 +1707,9 @@ descriptor controller and strict decoder, existing LZ77 validator,
 caller-owned spans, and checked aggregate arithmetic. No external combined
 decoder, validation order, workspace layout, malformed corpus, source code, or
 test suite was consulted.
+
+The LZ77 plus rANS private raw decoder uses only DD-449, DD-448's complete
+validator, marc's existing allocation-free LZ77 decoder and overlap-copy
+semantics, separate caller-owned staging, and checked aggregate arithmetic.
+No external combined decoder, reconstruction strategy, buffer layout,
+malformed corpus, source code, or test suite was consulted.

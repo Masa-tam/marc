@@ -3749,6 +3749,15 @@ later block cannot leave an earlier token prefix in staging. After a successful
 second pass reconstructs exactly `S` token bytes, LZ77 validation runs without
 raw reconstruction. Callers discard token and view storage on every failure.
 
+The bounded private decoder extends that admission with exactly `F` bytes of
+separate raw staging and includes those bytes in the same aggregate workspace
+check before entropy processing. After all rANS and LZ77 validation succeeds,
+it invokes the ordinary LZ77 decoder over the immutable token staging,
+including forward overlap-copy semantics, and writes exactly `F` private raw
+bytes. No caller-visible output span exists. A malformed entropy block or
+token stream leaves raw staging unchanged, and callers discard all private
+workspace on any reported failure.
+
 For raw `A`, LZ77 emits:
 
 ```text

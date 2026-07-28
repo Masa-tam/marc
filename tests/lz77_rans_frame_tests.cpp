@@ -314,3 +314,122 @@ TEST(Lz77RansFrameValidator, RejectsUnsupportedPipeline) {
                   stream, {}, {}, 0, 0, frame, views, staging).error,
               Lz77RansFrameValidationError::unsupported_pipeline);
 }
+
+TEST(Lz77RansFrameDecoder, ReconstructsHandVectorIntoPrivateStaging) {
+    const auto frame = single_literal_frame();
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    std::array<std::byte, 3> raw_staging{};
+    raw_staging.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_rans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        raw_staging);
+    ASSERT_EQ(result.error, Lz77RansFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0x5a});
+    EXPECT_EQ(raw_staging[2], std::byte{0x5a});
+}
+
+TEST(Lz77RansFrameDecoder, ReconstructsOverlappingMatch) {
+    std::array<std::byte, 32> tokens{};
+    const marc::dictionary::internal::Lz77Token literal{
+        marc::dictionary::internal::Lz77TokenTag::literal, 0, 0, 'A'};
+    const marc::dictionary::internal::Lz77Token match{
+        marc::dictionary::internal::Lz77TokenTag::terminal_match, 1, 4, 0};
+    ASSERT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  literal,
+                  std::span<std::byte,
+                            marc::dictionary::internal::lz77_token_size>{
+                      tokens.data(),
+                      marc::dictionary::internal::lz77_token_size}),
+              marc::dictionary::internal::Lz77FormatError::none);
+    ASSERT_EQ(marc::dictionary::internal::serialize_lz77_token(
+                  match,
+                  std::span<std::byte,
+                            marc::dictionary::internal::lz77_token_size>{
+                      tokens.data()
+                          + marc::dictionary::internal::lz77_token_size,
+                      marc::dictionary::internal::lz77_token_size}),
+              marc::dictionary::internal::Lz77FormatError::none);
+    const auto frame = frame_for_tokens(tokens, 5);
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, tokens.size()> dictionary_staging{};
+    std::array<std::byte, 5> raw_staging{};
+    const auto result = marc::frame::decode_lz77_rans_frame_to_staging(
+        stream_for(5), {}, {}, 0, 0, frame, views, dictionary_staging,
+        raw_staging);
+    ASSERT_EQ(result.error, Lz77RansFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::all_of(raw_staging, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(Lz77RansFrameDecoder, RejectsShortRawStagingBeforeTokenMutation) {
+    const auto frame = single_literal_frame();
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_rans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging, {});
+    EXPECT_EQ(result.error,
+              Lz77RansFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(Lz77RansFrameDecoder, IncludesRawStagingInAggregateLimit) {
+    constexpr std::uint32_t block_size = 16;
+    const auto frame =
+        frame_for_tokens(literal_a_token, 1, block_size);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = block_size;
+    limits.max_internal_buffered_bytes =
+        528 + 8 + 16
+        + sizeof(marc::entropy::internal::RansBlockView) + 1 - 1;
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0x5a});
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    const auto result = marc::frame::decode_lz77_rans_frame_to_staging(
+        stream_for(1, block_size), {}, limits, 0, 0, frame, views,
+        dictionary_staging, raw_staging);
+    EXPECT_EQ(result.error, Lz77RansFrameValidationError::workspace_limit);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+}
+
+TEST(Lz77RansFrameDecoder, MalformedLayersNeverMutateRawStaging) {
+    auto malformed_entropy =
+        frame_for_tokens(literal_a_token, 1, 8);
+    const auto payload_base =
+        marc::frame::frame_header_size
+        + 2 * marc::entropy::internal::rans_descriptor_size;
+    std::ranges::fill(
+        std::span<std::byte>{malformed_entropy}.subspan(
+            payload_base + 8, 8),
+        std::byte{0});
+    std::array<marc::entropy::internal::RansBlockView, 2> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lz77_rans_frame_to_staging(
+                  stream_for(1, 8), {}, {}, 0, 0, malformed_entropy, views,
+                  dictionary_staging, raw_staging).error,
+              Lz77RansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+
+    std::array<std::byte, literal_a_token.size()> invalid_tokens{};
+    invalid_tokens[0] = std::byte{0xff};
+    const auto malformed_dictionary = frame_for_tokens(invalid_tokens);
+    std::array<marc::entropy::internal::RansBlockView, 1> one_view{};
+    EXPECT_EQ(marc::frame::decode_lz77_rans_frame_to_staging(
+                  stream_for(1), {}, {}, 0, 0, malformed_dictionary,
+                  one_view, dictionary_staging, raw_staging).error,
+              Lz77RansFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+}

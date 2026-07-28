@@ -18,7 +18,11 @@ format versions, and C ABI versions are independent namespaces.
   workspaces, and aggregate bytes before entropy work; validates every rANS
   block without output; reconstructs the complete private token region only
   after all blocks succeed; and applies the ordinary LZ77 semantic validator
-  without reconstructing or publishing raw bytes.
+  without reconstructing or publishing raw bytes. Its bounded private decoder
+  additionally admits raw staging before entropy work, includes it in the
+  aggregate policy, and reconstructs literals and overlapping matches only
+  from a completely validated token stream. Malformed entropy and dictionary
+  layers leave private raw staging untouched.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

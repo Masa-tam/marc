@@ -341,9 +341,11 @@ single-Literal frame. Its first bounded complete-frame validator now admits
 all exact extents, token and view capacities, and aggregate workspace before
 entropy work. It validates every rANS block before filling private token
 staging, then validates complete LZ77 semantics without reconstructing raw
-bytes. It remains `Specified`: no private raw decoder, transactional
-publication, encoder, streaming transform, C factory, CLI selector, benchmark,
-fuzz target, completion claim, or interoperability entry exists yet.
+bytes. Its bounded private decoder now preflights and counts separate raw
+staging, then reconstructs literals and overlapping matches only from the
+validated token region. It remains `Specified`: no transactional publication,
+encoder, streaming transform, C factory, CLI selector, benchmark, fuzz target,
+completion claim, or interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

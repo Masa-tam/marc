@@ -8602,6 +8602,32 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-28 - LZ77 plus rANS private raw decoder
+
+- Authoring method: extended DD-448's private token boundary with marc's
+  existing allocation-free LZ77 decoder and a separate caller-owned raw span.
+- References used: DD-449, DD-448, the local LZ77 decoder, overlap-copy rules,
+  checked aggregate arithmetic, and bounded span contracts.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: admit the complete raw extent before entropy work;
+  count raw staging in aggregate workspace; retain complete entropy and token
+  validation; reconstruct only into private storage; and defer publication.
+- Generated-code task description: add private raw reconstruction and stable
+  decode reporting; test the hand vector, overlapping match, raw-capacity and
+  aggregate shortages, and unchanged raw sentinels after entropy and token
+  failures; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  validator, decoder, checked bounds, and caller-owned spans. No external
+  control flow, overlap loop, malformed vector, or test expression was
+  compared.
+- Local validation: the focused validator and private-decoder suite passed
+  15/15 under both MSVC and ClangCL. The complete Release suite passed
+  1,752/1,752 under both compilers using official CMake 4.3.4; all thirty
+  benchmark smokes and schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

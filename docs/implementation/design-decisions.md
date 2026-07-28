@@ -8141,6 +8141,33 @@ adds no private raw decoder, transactional publication, encoder, streaming
 transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
 claim, or interoperability entry.
 
+## DD-449: LZ77 rANS reconstruction remains private
+
+- Date: 2026-07-28
+- Status: accepted
+
+Extend DD-448 with a bounded complete-frame decoder that reconstructs only
+into caller-owned private raw staging. Require capacity for the complete
+declared raw frame before descriptor parsing or entropy output, and count
+those `F` bytes together with descriptor, payload, token staging, and rANS
+views against `max_internal_buffered_bytes`.
+
+Retain DD-448's two-pass entropy rule and complete LZ77 validation. Only after
+all rANS blocks and all LZ77 token semantics succeed may the existing
+allocation-free decoder reconstruct literals and forward overlapping matches
+from immutable token staging into exactly `F` private raw bytes. Preserve its
+stable validation, format, and decode error categories; an unexpected failure
+after successful validation is a distinct dictionary-decode error.
+
+No caller-visible output span exists. On every failure the caller discards
+views, token staging, and raw staging. Prove the Literal frame, a distance-one
+overlapping terminal match, raw staging one byte short before token mutation,
+aggregate workspace one byte short including raw bytes, and unchanged raw
+sentinels after a malformed later rANS block or invalid decoded token. This
+decision adds no transactional publication, encoder, streaming transform,
+profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28
