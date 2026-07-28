@@ -3342,6 +3342,15 @@ requirements for raw `ABABX`, construct the streaming encoder and decoder
 only from those capacities, and require byte-exact round trip and stable
 profile-to-core error mapping.
 
+For the first public LZ77 plus rANS C boundary, initialize encoding for raw
+`ABABABX`, set both frame dimensions, and require seven primary bytes, 4,032
+secondary bytes, zero views, and alignment one. Create and finish through the
+opaque transform lifecycle. Initialize decoding with local 4,096-byte frame
+and block limits, 6,000 dictionary bytes, 8,192 internal bytes, and seven
+blocks; require 8,248 primary bytes, 10,096 secondary bytes, and nonzero
+aligned opaque views. Recover the exact seven raw bytes. Reject one-byte-short
+views and a nonzero reserved field while keeping the transform null.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

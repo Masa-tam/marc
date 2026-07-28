@@ -8325,6 +8325,32 @@ and overflow behavior, stable mapping, and construction of both streaming
 directions from the reported requirements. This step adds no C ABI, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-456: LZ77 rANS enters ABI v1 through three opaque regions
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add named public C configuration initialization, direction-specific workspace
+requirements, and a transform factory without changing ABI version 1 or any
+existing public layout. Mirror the combined LZ77 profile fields, adding the
+rANS block size and block-count limit. Keep rANS table and view types absent
+from the public header.
+
+For encoding, report raw collection as primary, token staging plus serialized
+frame as secondary, and zero views with alignment one. For decoding, report
+serialized frame as primary, token plus private raw staging as secondary, and
+`block_view_count * sizeof(RansBlockView)` opaque view bytes with the internal
+alignment. Use checked additions and multiplication.
+
+The factory must query and repeat profile validation, reject invalid, short,
+or misaligned regions before construction, partition secondary only at the
+checked token extent, borrow every region for the transform lifetime, use
+`nothrow` construction, and leave the output handle null on every failure.
+Prove the complete C11 lifecycle with raw `ABABABX`, exact queried region
+values, byte-exact round trip, short view rejection, and reserved-field
+rejection. This step adds no completion matrix, fuzz target, CLI, benchmark,
+completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

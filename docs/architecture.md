@@ -1110,6 +1110,14 @@ token, and private-raw byte regions plus a typed view count; a later C ABI may
 convert that count to opaque bytes and alignment. All calculations use local
 limits and checked conversion to `size_t`.
 
+The public C factory performs that conversion while preserving the existing
+three-workspace lifecycle. It revalidates the complete profile, partitions
+secondary bytes only at checked token boundaries, rejects short or misaligned
+regions before construction, and publishes the opaque transform only after a
+`nothrow` streaming allocation succeeds. The C header contains configuration,
+byte counts, and alignment only; the rANS descriptor-view type remains an
+internal C++ detail.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

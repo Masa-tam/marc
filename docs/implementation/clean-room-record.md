@@ -8800,6 +8800,35 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS public C ABI
+
+- Authoring method: connected DD-455's local workspace profile and the
+  completed streaming transforms to marc's existing opaque C transform
+  lifecycle.
+- References used: DD-456, DD-455, the local LZ77/rANS streaming constructors,
+  ABI version 1 configuration and workspace conventions, checked arithmetic,
+  internal rANS view size/alignment, and `nothrow` publication.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation models, combined factories, ABI layouts, source code, and
+  test suites.
+- Independent decisions: expose a new configuration without modifying existing
+  layouts; report encoder views as zero/alignment one; report decoder views as
+  opaque aligned bytes; partition secondary into token/frame or token/raw
+  regions; and repeat the requirements query before factory construction.
+- Generated-code task description: add public declarations, configuration
+  loading and defaults, requirements query, factory dispatch, CMake wiring,
+  and a pure-C lifecycle test covering exact regions, round trip, short views,
+  and reserved fields; synchronize C API, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance
+  documentation.
+- Similarity review: the entry points and storage roles extend only marc's
+  established ABI v1 conventions and local profile. No external API naming,
+  structure layout, partitioning code, or test expression was compared.
+- Local validation: the focused LZ77 plus rANS implementation and C ABI tests
+  passed 44/44 under both MSVC and ClangCL. The complete Release suite passed
+  1,780/1,780 under both compilers using official CMake 4.3.4; all thirty
+  benchmark smokes and schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

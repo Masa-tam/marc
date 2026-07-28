@@ -357,9 +357,11 @@ raw drain, includes rANS views in aggregate workspace, and rejects malformed
 later frames without publishing their bytes. Its internal bounded profile now
 derives every encoder and decoder byte region plus the decoder rANS view count
 from canonical configuration and validated local limits, and its requirements
-construct the streaming pair directly. It remains `Specified`: no C factory,
-CLI selector, benchmark, fuzz target, completion claim, or interoperability
-entry exists yet.
+construct the streaming pair directly. Its public ABI v1 configuration,
+requirements query, and factory now expose those transforms through three
+borrowed opaque regions, with aligned rANS views only for decoding. It remains
+`C ABI`: no CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

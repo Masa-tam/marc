@@ -3,14 +3,15 @@
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
-profiles, LZSS variant 1, the LZSS plus Blocked Huffman and LZSS plus Adaptive
-Huffman profiles, and the LZSS plus Dynamic Range profile,
+profiles, the LZ77 plus rANS profile, LZSS variant 1, the LZSS plus Blocked
+Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
+Range profile,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
 LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, and LZD plus Dynamic
-Range profiles, and LZMW variant 1 and the LZMW plus Blocked Huffman and LZMW
-plus Adaptive Huffman profiles with
+Range profiles, and LZMW variant 1 and the LZMW plus Blocked Huffman, LZMW
+plus Adaptive Huffman, and LZMW plus Dynamic Range profiles with
 known-size encoding and bounded caller-owned workspace. All functions are
 `noexcept` in C++ translation units,
 and no C++ type appears in the ABI.
@@ -23,6 +24,7 @@ dictionary factory binds entropy `None`, and each standalone entropy factory
 binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
 `marc_lz77_dynamic_range_*`,
+`marc_lz77_rans_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lzss_dynamic_range_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
@@ -58,6 +60,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_blocked_huffman_config_init()`,
    `marc_lz77_adaptive_huffman_config_init()`,
    `marc_lz77_dynamic_range_config_init()`,
+   `marc_lz77_rans_config_init()`,
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lzss_dynamic_range_config_init()`,
@@ -121,6 +124,14 @@ followed by the complete range-coded frame; decoding partitions it into token
 staging followed by private raw staging. Query requirements again after
 changing direction, original size, frame size, LZ77 parameters, or any local
 limit. Factory failure leaves the transform pointer null.
+The LZ77 plus rANS profile retains the common three-workspace ABI. Encoding
+uses primary for raw-frame collection, partitions secondary into canonical
+LZ77 tokens and the complete rANS frame, and reports no views. Decoding uses
+primary for the serialized frame, partitions secondary into token and private
+raw staging, and uses aligned opaque views for validated rANS block
+descriptors. Query requirements again after changing either frame dimension,
+direction, original size, LZ77 parameters, or any local limit. The public
+header exposes only byte counts and alignment, never `RansBlockView`.
 The public completion matrix fixes 64-byte frames and verifies every one-byte
 value, representative binary and generated data, exact determinism, one-byte
 and mixed chunking, repeated terminal calls, and atomic rejection of a

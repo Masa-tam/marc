@@ -41,7 +41,10 @@ format versions, and C ABI versions are independent namespaces.
   profile calculator now fixes the canonical 64-KiB reference configuration,
   derives conservative encoder and decoder workspace requirements with
   checked arithmetic, and supplies every byte region and rANS view count
-  needed to construct the streaming pair.
+  needed to construct the streaming pair. The public C ABI now exposes named
+  configuration initialization, direction-specific requirements, and a
+  factory that borrows three opaque workspace regions, validates alignment,
+  and binds the completed streaming pair without exposing C++ types.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

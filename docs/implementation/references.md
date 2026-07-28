@@ -1750,3 +1750,9 @@ checked `16F`, `528K`, and `S + 8K` bounds, DD-453/DD-454's caller-owned
 streaming workspaces, marc's local limits, checked arithmetic, and established
 direction-specific profile conventions. No external profile API, allocation
 policy, opaque workspace layout, source code, or test suite was consulted.
+
+The LZ77 plus rANS public C requirements query and factory use only DD-456,
+DD-455's direction-specific requirements, the completed local streaming pair,
+ABI version 1's existing three-region lifecycle, checked offsets and
+alignment, and `nothrow` handle publication. No external C API, allocation
+model, combined factory, ABI layout, source code, or test suite was consulted.
