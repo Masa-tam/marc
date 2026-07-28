@@ -8243,6 +8243,33 @@ for the 592-byte frame and require rejection without modifying any byte. This
 decision adds no streaming transform, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-453: LZ77 rANS streaming encode retains one completed frame
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-452. Serialize the
+ordinary stream header and LZ77 parameter extension into a fixed prefix.
+Collect at most one configured outer raw frame in caller-owned storage,
+prepare it through the exact planner and deterministic complete-frame encoder,
+and retain that immutable serialized frame until arbitrary output starvation
+has drained it completely.
+
+At construction, validate the fixed profile, LZ77 parameters, known original
+size, largest raw frame, conservative `16F` token staging, and prefix
+serialization. Before each frame is encoded, count raw collection, exact token
+staging, and exact serialized-frame storage in one checked aggregate. Do not
+reuse any of those extents until the pending frame has drained.
+
+Require chunking-independent bytes with one-byte input and output. `Flush`
+keeps a partial frame open. Preserve `EndInput` while prefix or frame bytes
+remain pending, require it to accompany every remaining declared input byte,
+return stable terminal states, reject `ResetBlock` and unknown flags, and emit
+only the prefix for empty input. Exercise constructor storage, completed-frame
+storage, and aggregate-limit failures. This decision adds no streaming
+decoder, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

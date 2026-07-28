@@ -3295,6 +3295,20 @@ frame. Require the exact planned extent 592, the stable short-output error,
 and preservation of every sentinel. This capacity case must fail after token
 planning but before generic header, descriptor, or payload publication.
 
+For bounded LZ77 plus rANS streaming encode, use raw `ABABX`, outer frame size
+two, and rANS block size five. Independently assemble the 80-byte stream
+prefix and each complete combined frame through the one-shot APIs. Feed and
+drain the streaming encoder one byte at a time and require exact equality with
+that reference plus stable repeated `EndOfStream`.
+
+Separately submit one raw byte with `Flush`, require only the prefix and keep
+the partial frame open, then finish the remaining input and compare the whole
+stream. Reject short raw collection and conservative token staging at
+construction, reject completed-frame storage when the first frame becomes
+ready, and set the aggregate limit one byte below
+`raw + exact tokens + serialized frame`. For empty known-size input require
+prefix-only completion; reject premature `EndInput` and `ResetBlock`.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

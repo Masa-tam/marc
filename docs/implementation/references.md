@@ -1731,3 +1731,9 @@ planner, marc's generic frame and rANS descriptor serializers, deterministic
 scalar rANS encoder, and checked spans. No external combined encoder, frame
 writer, output transaction, buffer layout, encoded corpus, source code, or
 test suite was consulted.
+
+The LZ77 plus rANS bounded streaming encoder uses only DD-453, DD-452's local
+complete-frame encoder, marc's established immutable frame-drain state
+contract, generic process statuses, checked workspace arithmetic, and
+caller-owned spans. No external streaming encoder, buffering strategy, state
+machine, source code, encoded corpus, or test suite was consulted.

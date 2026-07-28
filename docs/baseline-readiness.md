@@ -349,9 +349,12 @@ encoder-side exact-frame planner now freezes canonical tokens, plans every
 rANS block without serialized output, and returns all exact frame extents.
 Its deterministic complete-frame encoder now emits the exact independent
 592-byte vector, handles block boundaries inside tokens, and rejects short
-serialized output atomically. It remains `Specified`: no streaming transform,
-C factory, CLI selector, benchmark, fuzz target, completion claim, or
-interoperability entry exists yet.
+serialized output atomically. Its bounded known-size streaming encoder now
+matches the one-shot stream under one-byte input/output chunking and handles
+finish, flush, empty input, protocol misuse, and aggregate workspace limits.
+It remains `Specified`: no streaming decoder, C factory, CLI selector,
+benchmark, fuzz target, completion claim, or interoperability entry exists
+yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

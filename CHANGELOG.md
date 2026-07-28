@@ -31,7 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   the aggregate workspace policy. Its deterministic complete-frame encoder
   preflights the entire serialized destination, then writes the generic
   header, all descriptors, and all payloads; the raw-`A` result exactly matches
-  the independent 592-byte vector, and short output remains untouched.
+  the independent 592-byte vector, and short output remains untouched. Its
+  bounded known-size streaming encoder now collects one raw frame, prepares
+  one immutable serialized frame, and drains both stream prefix and frames
+  correctly under one-byte output starvation without changing encoded bytes.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

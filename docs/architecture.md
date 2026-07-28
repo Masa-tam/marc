@@ -1086,6 +1086,14 @@ and reproduces each count-only rANS plan during deterministic encoding.
 Output-capacity failure therefore publishes no prefix, while any discrepancy
 after admission is treated as an internal invariant violation.
 
+The bounded known-size streaming encoder adds an immutable drain state above
+that complete-frame transaction. It serializes the fixed stream prefix at
+construction, collects no more than one outer raw frame, prepares the entire
+combined frame in caller-owned storage, and drains it before that storage may
+be reused. `EndInput` is retained across prefix and frame starvation, while
+`Flush` leaves partial collection open. The live aggregate consists of raw
+collection, canonical token staging, and the completed serialized frame.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

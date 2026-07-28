@@ -3796,6 +3796,20 @@ exactly the independent 592-byte vector below. With `B = 5`, its 16 token
 bytes produce four descriptors followed by four payloads, including a final
 one-symbol block, and decode back to the same raw byte.
 
+The bounded streaming encoder emits the ordinary 64-byte stream header and
+16-byte LZ77 parameter extension, then processes a declared known-size input
+as consecutive outer frames. It collects at most `F` raw bytes, freezes at
+most `16F` canonical token bytes, invokes the exact complete-frame encoder,
+and retains that completed frame unchanged until every byte has drained.
+Input/output chunking alone therefore cannot change the stream.
+
+`Flush` does not close a partial raw frame. `EndInput` is valid only when the
+same call supplies every remaining declared raw byte, and remains effective
+while the prefix or final frame drains. `ResetBlock` and unknown flags are
+rejected. Empty known-size input emits only the stream prefix and then ends.
+The aggregate steady-state bound counts raw collection, exact token staging,
+and exact serialized-frame storage before encoding each frame.
+
 For raw `A`, LZ77 emits:
 
 ```text

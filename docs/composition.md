@@ -49,7 +49,10 @@ plans every full or final-short rANS block without accepting a serialized
 destination, and returns exact `S`, `K`, `528K`, `P`, and complete-frame
 extents. Its complete-frame encoder uses that plan as a transaction boundary,
 requires the whole serialized destination, and deterministically writes the
-generic header, complete descriptor region, and complete payload region.
+generic header, complete descriptor region, and complete payload region. Its
+known-size streaming encoder buffers one bounded raw frame and one completed
+serialized frame, preserving the same bytes under arbitrary input and output
+chunking.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

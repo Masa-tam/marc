@@ -8711,6 +8711,34 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS bounded streaming encoder
+
+- Authoring method: placed marc's established bounded frame-collection and
+  immutable-drain state contract above DD-452's local complete-frame encoder.
+- References used: DD-453, DD-452, local process statuses and flags, generic
+  stream and LZ77 parameter serialization, checked workspace arithmetic, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, buffering strategies, source code, encoded
+  corpora, and test suites.
+- Independent decisions: keep one raw frame and one completed encoded frame;
+  retain `EndInput` across draining; leave partial frames open on `Flush`;
+  count raw, exact token, and serialized storage together; and reject
+  caller-requested block resets.
+- Generated-code task description: add the known-size streaming encoder and
+  CMake coverage; compare one-byte input/output against independently
+  assembled one-shot frames; test flush, empty input, repeated terminal state,
+  protocol errors, constructor storage, completed-frame storage, and aggregate
+  limits; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation follows only marc's existing
+  immutable completed-frame lifecycle. No external control flow, state naming,
+  error mapping, storage layout, or test expression was compared.
+- Local validation: the focused LZ77 plus rANS suite passed 30/30 under both
+  MSVC and ClangCL. The complete Release suite passed 1,767/1,767 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and
