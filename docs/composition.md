@@ -54,7 +54,10 @@ known-size streaming encoder buffers one bounded raw frame and one completed
 serialized frame, preserving the same bytes under arbitrary input and output
 chunking. Its streaming decoder buffers one serialized frame plus rANS views,
 token staging, and private raw staging, and exposes only completely validated
-raw frames.
+raw frames. Its internal profile calculator now derives the three byte
+regions required by each direction and the decoder's rANS view count from the
+canonical 64-KiB configuration and validated local limits. The typed view
+layout remains private pending C ABI admission.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

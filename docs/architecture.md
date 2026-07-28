@@ -1102,6 +1102,14 @@ aggregate bound. A completed frame becomes visible only through the final raw
 drain state, so corruption in a later frame cannot leak that frame's prefix or
 roll back already committed earlier frames.
 
+The internal profile calculator now bridges configuration to those streaming
+constructors without exposing `RansBlockView`. Encoder requirements are raw
+frame collection, conservative `16F` token staging, and the complete
+`56 + 528K + S + 8K` frame ceiling. Decoder requirements are serialized-frame,
+token, and private-raw byte regions plus a typed view count; a later C ABI may
+convert that count to opaque bytes and alignment. All calculations use local
+limits and checked conversion to `size_t`.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

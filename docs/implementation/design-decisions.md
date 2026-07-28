@@ -8296,6 +8296,35 @@ premature `EndInput`, and `ResetBlock`. This decision adds no profile
 calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-455: LZ77 rANS profile exposes bytes plus a private view count
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-453 and
+DD-454. The reference configuration uses 65,536-byte outer frames and
+65,536-byte rANS blocks, retains LZ77 and scalar-rANS variant 1, and accepts
+known original size plus ordinary LZ77 parameters.
+
+For largest nonempty raw frame `F = min(original_size, frame_size)`, derive
+the conservative token ceiling `S = 16F`, block ceiling `K = ceil(S/B)`,
+descriptor bytes `D = 528K`, payload bytes `P = S + 8K`, and serialized-frame
+ceiling `E = 56 + D + P`. Report encoder raw, token, and serialized-frame byte
+regions only after checking generic limits, 32-bit format fields, the one-MiB
+composition cap, and aggregate `F + S + E`. Return zero active frame
+workspaces for empty known-size input.
+
+Derive decoder requirements solely from validated local limits: serialized
+frame bytes, bounded token bytes, private raw bytes, and an rANS block-view
+count. Keep `RansBlockView` private so a later C ABI can expose only checked
+opaque bytes and alignment. Use checked arithmetic and checked `size_t`
+conversion throughout, reset outputs on failure, and map profile errors to
+stable core categories. Prove canonical and short-frame ceilings, empty input,
+block/payload/aggregate/frame limits, invalid LZ77 parameters, decoder-limit
+and overflow behavior, stable mapping, and construction of both streaming
+directions from the reported requirements. This step adds no C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

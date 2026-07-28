@@ -3825,6 +3825,22 @@ publishes no byte of frame `N`. Truncation, trailing bytes, premature
 `EndInput`, `ResetBlock`, and unknown flags are rejected; empty input accepts
 the prefix alone.
 
+The internal reference profile defaults both the outer frame and rANS block
+to 65,536 bytes. For the largest nonempty raw frame
+`F = min(original_size, frame_size)`, it reserves `S = 16F`,
+`K = ceil(S/B)`, `D = 528K`, `P = S + 8K`, and a complete encoded-frame
+ceiling `E = 56 + D + P`. Encoder admission checks `F + S + E` against the
+aggregate internal-buffer limit. Empty known-size input requires no per-frame
+encoder workspace because only the fixed prefix is emitted.
+
+Decoder workspace is derived solely from validated local limits: private raw
+storage is capped at the composition's one-MiB frame ceiling, token storage is
+the smaller of `16F` and the configured dictionary-serialization limit,
+serialized-frame storage is `56 + max_internal_buffered_bytes`, and the view
+count is `max_blocks_per_frame`. These are conservative caller-capacity
+requirements, not extra serialized fields and not permission to exceed the
+per-frame aggregate checks performed from actual declared extents.
+
 For raw `A`, LZ77 emits:
 
 ```text

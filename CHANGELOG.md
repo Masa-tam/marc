@@ -37,7 +37,11 @@ format versions, and C ABI versions are independent namespaces.
   correctly under one-byte output starvation without changing encoded bytes.
   Its bounded streaming decoder now collects one complete frame, validates
   rANS and LZ77 layers into private storage, and drains raw bytes only after
-  success; malformed later frames cannot publish a raw prefix.
+  success; malformed later frames cannot publish a raw prefix. Its internal
+  profile calculator now fixes the canonical 64-KiB reference configuration,
+  derives conservative encoder and decoder workspace requirements with
+  checked arithmetic, and supplies every byte region and rANS view count
+  needed to construct the streaming pair.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

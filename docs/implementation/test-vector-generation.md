@@ -3326,6 +3326,22 @@ byte, one appended zero, and `ResetBlock`. Accept prefix-only empty input,
 treat `Flush` during starvation as `NeedInput`, and retain premature
 `EndInput` through first-frame raw drain before reporting truncation.
 
+For the LZ77 plus rANS profile calculator, use a 2,500,000-byte known stream
+with default 65,536-byte frame and block sizes. Require `F=65,536`,
+`S=1,048,576`, `K=16`, and encoded-frame ceiling 1,057,208 bytes. For a
+17-byte stream require 17 raw bytes, 272 token bytes, one descriptor, and an
+864-byte encoded-frame ceiling; empty input requires zero active encoder
+workspace. Reject independently excessive block count, payload, aggregate,
+frame size, and invalid LZ77 parameters.
+
+For decoder sizing, use local limits of 4,096 raw bytes, 6,000 token bytes,
+8,192 internal bytes, and seven blocks; require 8,248 serialized bytes,
+6,000 token bytes, 4,096 raw bytes, and seven views. Overflow the serialized
+extent and require cleared outputs. Finally obtain both direction
+requirements for raw `ABABX`, construct the streaming encoder and decoder
+only from those capacities, and require byte-exact round trip and stable
+profile-to-core error mapping.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

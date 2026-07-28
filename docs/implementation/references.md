@@ -1744,3 +1744,9 @@ header parser, rANS view type, checked workspace arithmetic, and immutable raw
 drain convention. No external streaming decoder, frame parser, buffering
 strategy, state machine, malformed corpus, source code, or test suite was
 consulted.
+
+The LZ77 plus rANS internal profile calculator uses only DD-455, DD-447's
+checked `16F`, `528K`, and `S + 8K` bounds, DD-453/DD-454's caller-owned
+streaming workspaces, marc's local limits, checked arithmetic, and established
+direction-specific profile conventions. No external profile API, allocation
+policy, opaque workspace layout, source code, or test suite was consulted.

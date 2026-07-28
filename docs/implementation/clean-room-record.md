@@ -8770,6 +8770,36 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS internal workspace profile
+
+- Authoring method: derived conservative direction-specific workspace
+  requirements directly from marc's existing LZ77/rANS format bounds and
+  streaming constructor spans.
+- References used: DD-455, DD-447, local LZ77 token size, local rANS
+  descriptor and state constants, DD-453/DD-454 caller-owned storage, generic
+  limits, and checked arithmetic.
+- Known implementations intentionally not consulted: external combined-codec
+  profile APIs, allocator policies, workspace layouts, source code, and test
+  suites.
+- Independent decisions: default both frame dimensions to 65,536 bytes;
+  expose only three encoder byte regions, three decoder byte regions, and a
+  decoder view count; retain the typed view layout privately; use the largest
+  actual known input frame for encoding; cap the composition at one MiB; and
+  clear all requirements on arithmetic or conversion failure.
+- Generated-code task description: add the internal profile constructor,
+  decoder workspace query, stable core-error mapping, CMake registration,
+  canonical/short/empty and boundary tests, direct streaming construction
+  round trip, and synchronized format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the formulas and API shape use only marc's already
+  documented representation and established local profile convention. No
+  external storage order, error mapping, naming scheme, or test expression
+  was compared.
+- Local validation: the focused LZ77 plus rANS suite passed 43/43 under both
+  MSVC and ClangCL. The complete Release suite passed 1,779/1,779 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and
