@@ -114,8 +114,10 @@ phrase graph, and exact-raw-extent validation. Its independently assembled
 first complete-frame validator now checks generic, reference, entropy,
 caller-capacity, phrase-record, and aggregate extents before strictly range-
 decoding into private reference staging and invoking the existing LZMW
-validator. It reconstructs and publishes no raw byte; no public profile exists
-yet.
+validator. A bounded private decoder now admits raw and expansion-stack
+capacity and aggregate storage before entropy output, then iteratively
+reconstructs only the validated phrase graph into disposable raw staging. No
+caller-visible decoder or public profile exists yet.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

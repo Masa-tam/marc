@@ -3112,10 +3112,18 @@ Range must exhaust the payload exactly before the ordinary LZMW validator
 checks every literal or prior generated reference, constructs the bounded
 adjacent-phrase graph, and derives the declared raw extent. It reports the
 actual generated-phrase count and corresponding nonempty expansion-stack
-ceiling but reconstructs and publishes no raw byte. This remains an internal
-frame API; no decoder, encoder, streaming transform, public factory, CLI
-selector, benchmark, fuzz target, completion claim, or interoperability entry
-is implied.
+ceiling but reconstructs and publishes no raw byte.
+
+The next bounded boundary requires private raw staging and the conservative
+maximum expansion stack before entropy output, counts both regions against the
+aggregate workspace limit, then reduces the active expansion span to the
+actual generated-phrase count plus one after validation and invokes the
+ordinary iterative LZMW decoder. Successful raw bytes remain private, and
+descriptor, payload, reference, phrase, capacity, aggregate, or reconstruction
+failure requires all staging to be discarded. This remains an internal frame
+API; no caller-visible decoder, encoder, streaming transform, public factory,
+CLI selector, benchmark, fuzz target, completion claim, or interoperability
+entry is implied.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

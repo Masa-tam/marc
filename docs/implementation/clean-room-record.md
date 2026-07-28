@@ -9321,3 +9321,31 @@ discarded and the reviewed seed retained.
   both MSVC and ClangCL. The complete Release suite passed 1,695/1,695 under
   both compilers using official CMake 4.3.4. All twenty-nine existing
   benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range private raw decoder
+
+- Authoring method: extended the DD-433 validation boundary with marc's
+  existing iterative LZMW decoder while retaining caller-owned disposable
+  staging and adding no publication span.
+- References used: DD-434, DD-433, the local LZMW decoder and expansion helper,
+  checked aggregate arithmetic, and the established private-staging contract.
+- Known implementations intentionally not consulted: external combined
+  decoders, phrase-expansion implementations, buffer layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: require conservative expansion and exact raw capacity
+  before entropy output; count both against the aggregate limit; narrow the
+  active expansion span after graph validation; reconstruct iteratively; and
+  require every failure to discard all private workspace.
+- Generated-code task description: add private reconstruction and stable decode
+  reporting; test literal and generated-phrase frames, raw and expansion
+  shortages, aggregate admission, descriptor and forward-reference failures,
+  and guarded raw staging; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the work composes only marc's existing validator,
+  iterative LZMW decoder, and bounded-span contracts. No external control flow,
+  expansion strategy, staging organization, malformed input, or test
+  expression was compared.
+- Local validation: the focused validator and private-decoder suite passed
+  11/11 under both MSVC and ClangCL. The complete Release suite passed
+  1,699/1,699 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.

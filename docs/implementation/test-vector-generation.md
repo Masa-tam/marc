@@ -3249,6 +3249,21 @@ select an unsupported entropy variant. Require stable descriptor, entropy,
 LZMW validation, extent, header, and pipeline error categories in that order;
 no case may reconstruct or publish a raw byte.
 
+For the LZMW plus Dynamic Range private decoder, pass the exact raw-`A` frame
+with four reference bytes, one expansion entry, and one private raw byte.
+Require exact private `A` reconstruction and no dictionary decode error.
+Independently make raw and expansion storage one entry short and require
+rejection before entropy output while all reference, expansion, and raw guards
+remain unchanged.
+
+Set the aggregate limit to the validator-only 28 bytes
+(`16 descriptor + 8 payload + 4 references`) and require private decoding to
+reject the additional four-byte expansion entry and one raw byte. Generate
+raw `ABABAB` through standalone LZMW and Dynamic Range encoders, require four
+references, three generated phrases, a four-entry active expansion ceiling,
+and exact private reconstruction. Corrupt the descriptor and encode a forward
+reference independently; both must preserve the private raw guard.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

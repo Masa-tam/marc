@@ -8535,3 +8535,29 @@ frame. Reconstruct and publish no raw byte. On every failure, the caller must
 discard reference and phrase workspace. This decision adds no private raw
 decoder, transactional publication, encoder, stream transform, public factory,
 CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-434: LZMW Dynamic Range reconstruction remains private
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add a bounded complete-frame decoder that retains DD-433's exact validation
+order and reconstructs only into caller-owned private raw staging. Before
+entropy output, require the complete raw extent and the conservative expansion
+stack derived from phrase capacity and count their bytes with the descriptor,
+payload, reference staging, and aligned phrase records against
+`max_internal_buffered_bytes`.
+
+After strict range exhaustion and complete LZMW validation succeed, reduce the
+active expansion span to the actual generated-phrase count plus one for a
+nonempty frame. Invoke the existing iterative LZMW decoder over only that
+validated graph. Propagate its stable validation, format, and decode errors;
+an unexpected reconstruction failure is a distinct combined-frame error.
+
+No caller-visible output span exists at this boundary. On every failure, the
+caller discards reference, phrase, expansion, and raw staging. Prove a literal
+frame and a phrase-reference frame, one-entry-short raw and expansion storage,
+aggregate workspace one byte short, and unchanged raw guards after descriptor
+or reference failure. This decision adds no publication boundary, encoder,
+streaming transform, public factory, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.

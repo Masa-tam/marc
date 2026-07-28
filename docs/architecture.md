@@ -2031,7 +2031,11 @@ checks the complete generic frame, LZMW and Dynamic Range extents, caller-owned
 reference and phrase capacities, and aggregate validation workspace before
 entropy output. It then reconstructs the exact reference region, invokes the
 ordinary LZMW validator, and reports the actual phrase and expansion ceilings
-without reconstructing or publishing raw bytes.
+without reconstructing or publishing raw bytes. The next bounded boundary
+preflights private raw staging, the conservative expansion stack, and their
+aggregate bytes before entropy output. It then invokes the ordinary iterative
+LZMW decoder only over the completely validated graph and writes solely into
+discardable private raw staging.
 
 ### Published LZD plus Adaptive Huffman boundary
 

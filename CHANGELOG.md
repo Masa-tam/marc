@@ -14,7 +14,10 @@ format versions, and C ABI versions are independent namespaces.
   and `P = 2S + 5` payload bytes. Its first bounded complete-frame validator
   checks every declared and aggregate extent before entropy output, strictly
   reconstructs the private reference region, and validates the complete LZMW
-  adjacent-phrase graph without reconstructing or publishing raw bytes.
+  adjacent-phrase graph without reconstructing or publishing raw bytes. Its
+  bounded private decoder additionally admits raw and expansion staging before
+  entropy output and reconstructs only the validated graph into disposable
+  caller-owned storage.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload
