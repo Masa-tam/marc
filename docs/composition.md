@@ -19,7 +19,7 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | C ABI | Candidate |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
@@ -60,13 +60,16 @@ canonical 64-KiB configuration and validated local limits. The typed view
 layout remains private. Its public C ABI now exposes configuration,
 requirements query, and factory entry points; the factory partitions byte
 regions internally, validates the opaque view alignment, and binds the
-streaming pair without publishing a CLI selector or completion claim.
+streaming pair without publishing private layout.
 Its public-ABI completion matrix now covers required data classes,
 deterministic multi-frame encoding, arbitrary input/output chunking, sticky
 terminal results, and transactional malformed-final-frame rejection. Its
 bounded dual-decoder fuzz target uses fixed encoded, view, token, raw, and
 output arrays and retains atomic regressions for truncation, saturated frame
-lengths, and invalid rANS metadata.
+lengths, and invalid rANS metadata. Its explicit CLI selector now uses only
+the public C lifecycle and passes binary and empty round trips, overwrite
+refusal, and transactional malformed and trailing-data rejection. Benchmark
+and interoperability admission remain separate later steps.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

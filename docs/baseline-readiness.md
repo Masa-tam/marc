@@ -54,6 +54,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
+| `lz77-rans` | First rANS composition | CLI admitted | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 19 contains thirty archives: the frozen twenty-nine-entry schema-18 set
@@ -103,7 +104,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-rans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lz77-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -333,7 +334,7 @@ The pushed Windows/MSVC and Ubuntu 24.04 artifacts plus an independently
 generated Ubuntu 26.04/Clang bundle have passed the complete four-direction
 external verification contract at revision `802c7a1ab913b07ee79a04fa5b3390c061c88966`.
 
-`lz77-rans` is the next admission candidate and the first reserved rANS
+`lz77-rans` is the active admission composition and the first reserved rANS
 composition. DD-447 fixes complete canonical LZ77 token staging before rANS,
 independent byte-block boundaries within an outer frame, checked
 `S = 16F`, `K = ceil(S/B)`, `P = S + 8K`, and `528K` descriptor ceilings,
@@ -360,13 +361,14 @@ derives every encoder and decoder byte region plus the decoder rANS view count
 from canonical configuration and validated local limits, and its requirements
 construct the streaming pair directly. Its public ABI v1 configuration,
 requirements query, and factory now expose those transforms through three
-borrowed opaque regions, with aligned rANS views only for decoding. It remains
-`C ABI`: its public-ABI completion matrix now covers required binary classes,
+borrowed opaque regions, with aligned rANS views only for decoding. Its
+public-ABI completion matrix now covers required binary classes,
 determinism, arbitrary chunking, sticky terminal results, and atomic malformed
 final-frame rejection. Its bounded complete-frame plus streaming fuzz target
 now fixes all byte and rANS-view workspaces and retains permanent atomic
-regressions. No CLI selector, benchmark, completion claim, or interoperability
-entry exists yet.
+regressions. Its transactional CLI selector now passes the standard file-level
+admission suite exclusively through the public C ABI. No benchmark adapter,
+full readiness claim, or interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

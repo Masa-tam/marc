@@ -24,6 +24,18 @@ constexpr std::uint64_t tans_descriptor_size = 528;
 constexpr std::uint64_t tans_state_size = 2;
 constexpr std::uint64_t lz77_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz77_dynamic_range_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lz77_rans_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lz77_rans_dictionary_size =
+    lz77_rans_frame_size * UINT64_C(16);
+constexpr std::uint64_t lz77_rans_block_count =
+    (lz77_rans_dictionary_size + entropy_block_size - 1)
+    / entropy_block_size;
+constexpr std::uint64_t lz77_rans_payload_size =
+    lz77_rans_dictionary_size + lz77_rans_block_count * rans_state_size;
+constexpr std::uint64_t lz77_rans_buffered_size =
+    lz77_rans_frame_size + lz77_rans_dictionary_size + frame_header_size
+    + lz77_rans_block_count * rans_descriptor_size
+    + lz77_rans_payload_size;
 constexpr std::uint64_t lzss_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;
@@ -46,6 +58,7 @@ enum class Codec {
     lz77_blocked_huffman,
     lz77_adaptive_huffman,
     lz77_dynamic_range,
+    lz77_rans,
     lzss,
     lzss_blocked_huffman,
     lzss_adaptive_huffman,
@@ -92,6 +105,7 @@ constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
     if (codec == Codec::lz77_dynamic_range)
         return lz77_dynamic_range_frame_size * UINT64_C(16) * UINT64_C(2)
             + UINT64_C(5);
+    if (codec == Codec::lz77_rans) return lz77_rans_payload_size;
     if (codec == Codec::lzss
         || codec == Codec::lzss_blocked_huffman)
         return frame_size * UINT64_C(2);
@@ -177,6 +191,7 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
             + frame_header_size + entropy_descriptor_size
             + maximum_frame_payload(codec);
     }
+    if (codec == Codec::lz77_rans) return lz77_rans_buffered_size;
     if (codec == Codec::lzss_adaptive_huffman) {
         const auto dictionary_bytes =
             lzss_adaptive_frame_size * UINT64_C(2);
@@ -468,6 +483,33 @@ bool configure(
     config.max_dictionary_serialized_size = dictionary_bytes;
     config.max_internal_buffered_bytes =
         maximum_buffered_bytes(Codec::lz77_dynamic_range);
+    config.max_lz_distance = UINT64_C(1) << 16;
+    config.max_lz_match_length = 258;
+    return true;
+}
+
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
+    marc_lz77_rans_config& config) {
+    const auto status = marc_lz77_rans_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size =
+        static_cast<std::uint32_t>(lz77_rans_frame_size);
+    config.entropy_block_size =
+        static_cast<std::uint32_t>(entropy_block_size);
+    config.max_frame_size = lz77_rans_frame_size;
+    config.max_block_size = entropy_block_size;
+    config.max_compressed_payload_size =
+        maximum_frame_payload(Codec::lz77_rans);
+    config.max_dictionary_serialized_size = lz77_rans_dictionary_size;
+    config.max_internal_buffered_bytes =
+        maximum_buffered_bytes(Codec::lz77_rans);
+    config.max_blocks_per_frame = static_cast<std::uint32_t>(
+        lz77_rans_block_count);
     config.max_lz_distance = UINT64_C(1) << 16;
     config.max_lz_match_length = 258;
     return true;
@@ -964,6 +1006,7 @@ bool process_file(const marc_direction direction,
     marc_lz77_blocked_huffman_config combined_config{};
     marc_lz77_adaptive_huffman_config adaptive_combined_config{};
     marc_lz77_dynamic_range_config range_combined_config{};
+    marc_lz77_rans_config rans_combined_config{};
     marc_lzss_config lzss_config{};
     marc_lzss_blocked_huffman_config lzss_combined_config{};
     marc_lzss_adaptive_huffman_config lzss_adaptive_combined_config{};
@@ -1008,6 +1051,9 @@ bool process_file(const marc_direction direction,
             return false;
     } else if (codec == Codec::lz77_dynamic_range) {
         if (!configure(direction, source_size, range_combined_config))
+            return false;
+    } else if (codec == Codec::lz77_rans) {
+        if (!configure(direction, source_size, rans_combined_config))
             return false;
     } else if (codec == Codec::lzss) {
         if (!configure(direction, source_size, lzss_config)) return false;
@@ -1095,6 +1141,9 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lz77_dynamic_range)
         status = marc_lz77_dynamic_range_workspace_requirements(
             &range_combined_config, &needed);
+    else if (codec == Codec::lz77_rans)
+        status = marc_lz77_rans_workspace_requirements(
+            &rans_combined_config, &needed);
     else if (codec == Codec::lzss)
         status = marc_lzss_workspace_requirements(&lzss_config, &needed);
     else if (codec == Codec::lzss_blocked_huffman)
@@ -1214,6 +1263,10 @@ bool process_file(const marc_direction direction,
         status = marc_lz77_dynamic_range_create(
             &range_combined_config, primary_buffer, secondary_buffer,
             &raw_transform);
+    else if (codec == Codec::lz77_rans)
+        status = marc_lz77_rans_create(
+            &rans_combined_config, primary_buffer, secondary_buffer,
+            views_buffer, &raw_transform);
     else if (codec == Codec::lzss)
         status = marc_lzss_create(
             &lzss_config, primary_buffer, secondary_buffer, &raw_transform);
@@ -1434,6 +1487,7 @@ void usage() {
                  "codecs: checksum-raw, blocked-huffman, adaptive-huffman, "
                  "dynamic-range, rans, tans, lz77, lz77-blocked-huffman, "
                  "lz77-adaptive-huffman, lz77-dynamic-range, "
+                 "lz77-rans, "
                  "lzss, lzss-blocked-huffman, lzss-adaptive-huffman, "
                  "lzss-dynamic-range, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
@@ -1482,6 +1536,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lz77_adaptive_huffman;
         else if (name == "lz77-dynamic-range")
             codec = Codec::lz77_dynamic_range;
+        else if (name == "lz77-rans")
+            codec = Codec::lz77_rans;
         else if (name == "lzss") codec = Codec::lzss;
         else if (name == "lzss-blocked-huffman")
             codec = Codec::lzss_blocked_huffman;

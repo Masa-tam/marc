@@ -1768,3 +1768,9 @@ marc C lifecycle, DD-447's fixed representation, repository-authored
 deterministic generators, and local generic frame-extent parsing. No external
 conformance suite, corpus, combined codec API, malformed archive, source code,
 or test vector was consulted.
+
+The LZ77 plus rANS CLI adapter uses only DD-459, the published
+`marc_lz77_rans_*` lifecycle, DD-455's local bounded profile arithmetic, and
+marc's existing transactional file adapter and repository-authored integration
+fixture. No external CLI, combined codec wrapper, allocation layout, archive,
+source code, or test suite was consulted.

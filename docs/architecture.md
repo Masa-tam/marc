@@ -1131,6 +1131,14 @@ only bounded chunk sizes. A finite call ceiling converts any stalled state
 machine into a reproducible failure, while permanent regressions preserve
 transactional behavior for every canonical truncation and malformed extents.
 
+The command-line adapter selects this contract as `lz77-rans` and remains
+strictly above the public C ABI. Its fixed 64-KiB raw frames and entropy blocks
+derive a 1,048,576-byte token ceiling, sixteen rANS blocks, a 1,048,704-byte
+payload ceiling, and a 2,171,320-byte encoder aggregate bound. Actual byte
+regions and decoder-view alignment remain authoritative results of the public
+requirements query. The shared temporary-file path preserves overwrite
+refusal and whole-operation transactional publication.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

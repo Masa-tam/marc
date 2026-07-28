@@ -51,6 +51,8 @@ format versions, and C ABI versions are independent namespaces.
   fuzz target now fixes every byte and rANS-view workspace before processing,
   caps input, output, blocks, and calls, and retains permanent atomic
   regressions for truncation, extreme frame lengths, and an invalid descriptor.
+  The explicit `lz77-rans` CLI selector now uses only the public C ABI with a
+  fixed bounded profile and retains transactional file publication.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

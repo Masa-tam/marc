@@ -3376,6 +3376,14 @@ prefix truncation to fail without raw publication. Saturate generic frame
 extent fields and alter the first normalized-frequency entry independently;
 both must preserve all `A5` output sentinels and repeat the same sticky error.
 
+For `lz77-rans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode
+with the exact selector and compare the restored file byte for byte. Repeat
+encode to the existing destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the destination nor its `.tmp` sibling. Finally round-trip
+an empty file.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

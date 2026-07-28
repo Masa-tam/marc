@@ -8889,6 +8889,31 @@ discarded and the reviewed seed retained.
   official CMake 4.3.4; all thirty benchmark smokes and schema-19
   compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS CLI admission
+
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one completed public C profile.
+- References used: DD-459, DD-455's local bounded arithmetic, the public
+  `marc_lz77_rans_*` lifecycle, and the repository-standard CLI integration
+  fixture.
+- Known implementations intentionally not consulted: external LZ77/rANS
+  wrappers, command-line tools, workspace layouts, encoded archives, source
+  code, and test suites.
+- Independent decisions: use 64-KiB raw frames and rANS blocks; derive the
+  token, descriptor, payload, block-count, and aggregate limits from the fixed
+  profile; keep typed views and partitions private; and reuse strict
+  temporary-file publication.
+- Generated-code task description: add selector parsing and help text, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  parameterized transactional CLI test, and documentation/provenance updates.
+- Similarity review: the adapter follows only marc's existing public ABI and
+  file-processing pattern. No external control flow, naming scheme, bound,
+  fixture, or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release suite passed 1,787/1,787 under
+  both compilers using official CMake 4.3.4; all thirty existing benchmark
+  smokes and schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

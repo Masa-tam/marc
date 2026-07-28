@@ -8400,6 +8400,26 @@ libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer and complete a
 bounded smoke run. This step adds no CLI, benchmark, completion claim, or
 interoperability entry.
 
+## DD-459: LZ77 rANS CLI admission uses only the public profile
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add the explicit selector `lz77-rans` to the existing transactional file
+adapter. Fix both raw frames and rANS blocks at 65,536 bytes. Derive
+`S = 1,048,576` canonical token bytes, `K = 16` blocks, `P = 1,048,704`
+payload bytes, `528K = 8,448` descriptor bytes, and the encoder aggregate
+`F + S + 56 + 528K + P = 2,171,320` bytes with checked fixed-profile
+arithmetic.
+
+Configuration initialization, direction-specific requirements, transform
+creation, processing, and destruction must use only `marc_lz77_rans_*` and
+the common public C ABI. The CLI must not name private rANS view types or
+reproduce workspace partitions. Reuse the shared temporary-file path and
+prove nonempty and empty round trips, overwrite refusal, malformed-stream
+cleanup, and strict trailing-data rejection. This step adds no benchmark
+adapter, readiness claim, interoperability schema, or external evidence.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28
