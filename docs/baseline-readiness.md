@@ -103,7 +103,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-rans` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lz77-rans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -363,8 +363,10 @@ requirements query, and factory now expose those transforms through three
 borrowed opaque regions, with aligned rANS views only for decoding. It remains
 `C ABI`: its public-ABI completion matrix now covers required binary classes,
 determinism, arbitrary chunking, sticky terminal results, and atomic malformed
-final-frame rejection. No CLI selector, benchmark, fuzz target, completion
-claim, or interoperability entry exists yet.
+final-frame rejection. Its bounded complete-frame plus streaming fuzz target
+now fixes all byte and rANS-view workspaces and retains permanent atomic
+regressions. No CLI selector, benchmark, completion claim, or interoperability
+entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

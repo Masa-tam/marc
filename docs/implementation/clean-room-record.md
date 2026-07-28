@@ -8859,6 +8859,36 @@ discarded and the reviewed seed retained.
   4.3.4; all thirty benchmark smokes and schema-19 compatibility remained
   successful.
 
+## 2026-07-29 - LZ77 plus rANS bounded decoder fuzzing
+
+- Authoring method: composed marc's local private frame decoder and incremental
+  decoder under fixed caller-owned arrays and sanitizer instrumentation.
+- References used: DD-458, the local LZ77/rANS frame and streaming decoders,
+  rANS view type, checked process-result contract, existing bounded fuzz
+  conventions, and a repository-authored truncated-magic seed.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, combined decoders, malformed archives, source code, and test suites.
+- Independent decisions: cap input/payload at 8 KiB, output/token staging at
+  4 KiB, raw frames at 1 KiB, and views at eight; exercise both decoder
+  boundaries; derive chunks only within fixed arrays; and cap calls at 12,320.
+- Generated-code task description: add the sanitizer target and corpus seed;
+  exercise complete-frame and incremental decoding; abort on process-contract
+  or finite-progress violations; add atomic regressions for every truncation,
+  saturated extents, and invalid rANS metadata; update fuzzing, readiness,
+  architecture, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the harness uses only local decoder calls, fixed storage,
+  and the established repository fuzz loop. No external mutation strategy,
+  corpus byte sequence beyond the local magic prefix, assertion layout, or
+  test expression was compared.
+- Local validation: the focused LZ77 plus rANS implementation, C ABI,
+  completion, and fuzz regressions passed 50/50 under both MSVC and ClangCL.
+  The Clang libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer target built
+  and completed 1,000 bounded runs without a crash, hang, or sanitizer report.
+  The complete Release suite passed 1,786/1,786 under both compilers using
+  official CMake 4.3.4; all thirty benchmark smokes and schema-19
+  compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

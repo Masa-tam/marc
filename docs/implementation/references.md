@@ -1472,6 +1472,12 @@ one-generation compatibility chain. No external archive protocol, manifest
 schema, interoperability harness, combined-codec archive, corpus, source code,
 or test vector was consulted.
 
+The LZ77 plus rANS bounded decoder fuzz boundary uses only DD-458, the local
+private complete-frame staging decoder, bounded streaming decoder, fixed
+caller-owned arrays and view records, checked process invariants, and the
+repository-authored truncated-magic seed. No external fuzz harness, corpus,
+combined decoder, malformed archive, source code, or test suite was consulted.
+
 The LZW plus Dynamic Range reserved representation uses only DD-402, marc's
 already documented LZW variant 1 packed-code grammar, Dynamic Range variant 1,
 generic frame format, checked arithmetic rules, and repository-authored

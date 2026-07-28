@@ -47,7 +47,10 @@ format versions, and C ABI versions are independent namespaces.
   and binds the completed streaming pair without exposing C++ types. Its
   public-ABI completion matrix now proves required binary classes,
   deterministic encoding, arbitrary chunking, stable terminal results, and
-  transactional rejection of a malformed final frame.
+  transactional rejection of a malformed final frame. A bounded dual-decoder
+  fuzz target now fixes every byte and rANS-view workspace before processing,
+  caps input, output, blocks, and calls, and retains permanent atomic
+  regressions for truncation, extreme frame lengths, and an invalid descriptor.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

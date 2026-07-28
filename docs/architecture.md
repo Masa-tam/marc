@@ -1124,6 +1124,13 @@ encodes byte for byte, varies both input and output chunking across multiple
 frames, and confirms that only previously validated frames remain visible
 when the final frame is corrupt, truncated, or followed by trailing data.
 
+The fuzz boundary exercises the private complete-frame decoder beside the
+incremental decoder with the same fixed limits. Eight rANS views and all byte
+regions exist before serialized metadata is inspected; input bytes may vary
+only bounded chunk sizes. A finite call ceiling converts any stalled state
+machine into a reproducible failure, while permanent regressions preserve
+transactional behavior for every canonical truncation and malformed extents.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

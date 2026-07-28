@@ -63,7 +63,10 @@ regions internally, validates the opaque view alignment, and binds the
 streaming pair without publishing a CLI selector or completion claim.
 Its public-ABI completion matrix now covers required data classes,
 deterministic multi-frame encoding, arbitrary input/output chunking, sticky
-terminal results, and transactional malformed-final-frame rejection.
+terminal results, and transactional malformed-final-frame rejection. Its
+bounded dual-decoder fuzz target uses fixed encoded, view, token, raw, and
+output arrays and retains atomic regressions for truncation, saturated frame
+lengths, and invalid rANS metadata.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

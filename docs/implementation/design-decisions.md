@@ -8374,6 +8374,32 @@ first three validated 64-byte frames, must preserve the final raw sentinel,
 and must repeat the same sticky error category and position. This step adds no
 fuzz target, CLI, benchmark, completion claim, or interoperability entry.
 
+## DD-458: LZ77 rANS fuzzing is fixed-memory and dual-boundary
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add one libFuzzer entry point that submits every bounded input to both the
+private complete-frame staging decoder and the public-form incremental
+streaming decoder. Truncate supplied input to 8,192 bytes. Fix total output at
+4,096 bytes, one raw frame at 1,024 bytes, token staging at 4,096 bytes,
+payload at 8,192 bytes, and rANS metadata at eight `RansBlockView` records.
+Allocate no workspace from serialized metadata.
+
+For the complete-frame path, parse only the exact LZ77/rANS prefix and
+parameters before passing the remaining extent to the strict private decoder.
+For streaming, derive bounded input and output chunk sizes from bytes and cap
+calls at `maximum_input + maximum_output + 32`. Abort on an invalid
+`ProcessResult`, progress without progress, input exhaustion reported as
+`NeedInput`, or exhaustion of the finite call budget.
+
+Seed the corpus with truncated magic. Add permanent regression tests requiring
+atomic output and sticky errors for every truncation of a canonical stream,
+saturated frame-length fields, and an invalid rANS frequency table. Build with
+libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer and complete a
+bounded smoke run. This step adds no CLI, benchmark, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

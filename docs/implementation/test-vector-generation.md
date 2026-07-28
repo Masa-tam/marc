@@ -3364,6 +3364,18 @@ and append one zero byte. Each decode must publish exactly the first 192 raw
 bytes, preserve the final `A5` sentinel, and return the identical sticky error
 category and position on a subsequent empty call.
 
+For the bounded LZ77 plus rANS fuzz target, cap input and payload at 8,192
+bytes, total output and token staging at 4,096 bytes, one raw frame at 1,024
+bytes, and rANS metadata at eight views. Exercise the strict complete-frame
+staging decoder after a valid exact prefix and always exercise the incremental
+decoder with byte-derived chunks and at most 12,320 calls.
+
+Retain `MARC\n` as the truncated-magic seed. As permanent regressions, generate
+the canonical `ABABX` stream with 16-byte rANS blocks and require every strict
+prefix truncation to fail without raw publication. Saturate generic frame
+extent fields and alter the first normalized-frequency entry independently;
+both must preserve all `A5` output sentinels and repeat the same sticky error.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
