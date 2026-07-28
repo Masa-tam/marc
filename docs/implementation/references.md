@@ -1694,3 +1694,9 @@ deterministic fixture generator, strict verifier, SHA-256 metadata, and
 one-generation compatibility chain. No external archive protocol, manifest
 schema, interoperability harness, combined-codec archive, corpus, source code,
 or test vector was consulted.
+
+The LZ77 plus rANS reserved representation uses only DD-447, marc's already
+documented LZ77 variant 1 token grammar, scalar rANS variant 1, generic frame
+format, checked arithmetic rules, and repository-authored standalone
+encoders. No external LZ77/rANS composition, archive format, combined-codec
+implementation, source code, encoded corpus, or test suite was consulted.

@@ -3216,6 +3216,21 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
+require the canonical 16-byte Literal token
+`00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte
+counts to rANS total 4096, yielding only `00:3840` and `41:256`. Apply the
+documented reverse rANS recurrence from `L = 2^31`; require final little-endian
+state payload `00 A5 22 10 15 00 00 00` with no renormalization bytes.
+
+Assemble a generic frame independently with raw size 1, token size 16, payload
+size 8, one block, and descriptor size 528. Require descriptor prefix
+`10 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`, frequency bytes
+`00 0F` at offsets 16..17 and `00 01` at offsets 146..147, and zero everywhere
+else in the frequency region. Append the payload and compare every one of the
+592 bytes against output assembled only from the standalone LZ77 encoder,
+rANS encoder, and explicit generic serializers.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

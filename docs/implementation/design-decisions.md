@@ -8082,6 +8082,35 @@ archive decoding, remove only archive 30 to derive schema 18, then exercise the
 existing schema-18-through-schema-1 conversion chain. Cross-platform admission
 remains pending until artifacts from the pushed revision are exchanged.
 
+## DD-447: LZ77 rANS entropizes the finalized token byte stream
+
+- Date: 2026-07-28
+- Status: accepted
+
+Reserve `lz77-rans` for LZ77 variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZ77 parameter extension,
+empty entropy parameters, and canonical 16-byte token serialization. Complete
+the token byte stream before entropy processing. rANS treats it as untyped
+bytes, so a block may split a token but cannot cross an outer frame. Reset the
+LZ77 window and every rANS model and state at each frame.
+
+For raw frame size `F`, use checked token bound `S = 16F`. For nonzero rANS
+block size `B`, require `K = ceil(S/B)`, payload bound `P = S + 8K`, and exact
+descriptor extent `528K`. Retain the LZ77 composition cap `F <= 2^20`.
+Validate generic extents and all rANS descriptors, tables, state paths,
+terminal states, and payload exhaustion before reconstructing the exact token
+region in private staging. Only then validate 16-byte alignment, LZ77
+references, overlap semantics, and exact raw extent before any private raw
+reconstruction or publication.
+
+For raw `A`, independently freeze the 16-byte Literal token. Its rANS model is
+`00:3840, 41:256`, final-state payload is
+`00 A5 22 10 15 00 00 00`, and the complete frame is 592 bytes. Prove this by
+composing only the existing standalone LZ77 encoder, rANS encoder, and generic
+serializers. This decision specifies bytes and a reserved name only; it does
+not publish a combined decoder, encoder, stream transform, C factory, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

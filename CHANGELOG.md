@@ -7,6 +7,14 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lz77-rans` composition with a complete decoder-visible
+  representation and independent raw-`A` vector. Canonical 16-byte LZ77
+  tokens are finalized before scalar rANS block coding; checked bounds cover
+  `S = 16F` token bytes, `K = ceil(S/B)` blocks, `P = S + 8K` payload bytes,
+  and `528K` descriptor bytes. rANS blocks may split tokens but never frames,
+  and the specified validation order reconstructs the complete private token
+  region before any LZ77 semantic check or raw publication.
+
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled
   from the standalone LZMW and Dynamic Range encoders. It freezes complete

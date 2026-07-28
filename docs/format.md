@@ -3702,6 +3702,73 @@ and two 8-byte payloads. The serialized frame size is
 `56 + 2*528 + 16 = 1128` bytes. Its first payload is the `AB` vector and its
 second payload is the one-symbol `A` vector above.
 
+## LZ77 variant 1 plus rANS variant 1
+
+The reserved composition name is `lz77-rans`. Format version 1.0 uses the
+ordinary 16-byte LZ77 variant-1 parameter extension, no entropy-parameter
+extension, and a nonzero stream entropy block size `B`. Both the LZ77 window
+and every rANS model reset at each outer frame.
+
+For a raw frame of `F` bytes, LZ77 first emits its complete canonical 16-byte
+token sequence. Let its exact byte size be `S`; require `S` to be a multiple of
+16 and enforce the checked bound `S <= 16F`. rANS consumes this sequence as
+untyped bytes. It divides the sequence into `K = ceil(S/B)` consecutive
+blocks, where the final block may be short. A block boundary may occur inside
+an LZ77 token because dictionary parsing occurs only after the complete byte
+sequence is reconstructed. No rANS block crosses an outer frame.
+
+The generic frame fields are:
+
+- `uncompressed size = F`;
+- `dictionary serialized size = S`;
+- `entropy block count = K`;
+- `block descriptors size = 528K`;
+- `compressed payload size = P`, the checked sum of all descriptor payload
+  sizes.
+
+Each block uses the exact rANS descriptor, normalization, payload, and strict
+terminal-state rules above. Since variant 1 emits at most one renormalization
+byte per input symbol, require `P <= S + 8K`. The format retains the LZ77 raw
+frame cap `F <= 2^20`. All products and sums are checked before allocation or
+entropy decoding.
+
+Decoding validates the stream profile and LZ77 parameters, generic frame
+header and complete extent, exact block count, descriptor region, every rANS
+model and state path, and exact aggregate payload exhaustion in that order.
+Only then may it reconstruct exactly `S` bytes into private token staging.
+It next requires 16-byte alignment and validates the complete LZ77 token
+stream, distances, overlap-copy semantics, and exact declared raw extent
+before private reconstruction and any caller-visible publication.
+
+For raw `A`, LZ77 emits:
+
+```text
+00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00
+```
+
+With `B = 65,536`, this is one rANS block. Its only nonzero normalized
+frequencies are symbol `00:3840` and symbol `41:256`; its payload is:
+
+```text
+00 A5 22 10 15 00 00 00
+```
+
+The complete frame is 592 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 10 00 00 00 08 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`10 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 0F`) and 146..147 (`00 01`). The eight payload bytes above immediately
+follow the descriptor. This sparse notation uniquely defines all 592 bytes
+without listing the remaining 254 zero-frequency entries.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

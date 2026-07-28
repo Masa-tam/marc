@@ -1035,6 +1035,22 @@ EndOfStream, and frame-atomic rejection of a malformed final frame, truncation,
 and trailing bytes. Queried aligned views are used throughout. This closes the
 local implementation loop without claiming external release evidence.
 
+### Specified LZ77 plus rANS boundary
+
+The first rANS composition freezes the entire canonical LZ77 token byte stream
+before entropy processing. rANS remains a byte transform: its block controller
+may divide the stream inside a 16-byte token, while the outer frame controller
+prevents a block from crossing the dictionary reset boundary. This keeps
+entropy block sizing independent of dictionary record layout.
+
+The decoder-facing boundary is deliberately staged. Generic extents and every
+rANS descriptor, normalized model, state transition, terminal state, and
+payload byte are admitted before the complete token region is materialized in
+private storage. LZ77 alignment, references, overlap semantics, and declared
+raw extent are checked only over that complete region. No combined decoder or
+public profile is implied until private reconstruction and transactional
+publication are implemented and tested.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

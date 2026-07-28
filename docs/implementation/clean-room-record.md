@@ -8546,6 +8546,34 @@ discarded and the reviewed seed retained.
   serializers. No external frame-writing control flow, error taxonomy, naming
   scheme, output mutation schedule, or test expression was compared.
 
+## 2026-07-28 - LZ77 plus rANS reserved representation
+
+- Authoring method: composed marc's independently documented canonical LZ77
+  byte tokens with its scalar rANS block format at the neutral byte-stream
+  boundary.
+- References used: DD-447, the local LZ77 variant-1 token grammar, local rANS
+  normalization and state recurrence, generic frame fields, and checked
+  arithmetic.
+- Known implementations intentionally not consulted: external LZ77/rANS
+  compositions, archive formats, source code, encoded corpora, malformed
+  corpora, and test suites.
+- Independent decisions: freeze all token bytes before entropy work; allow
+  byte-sized rANS boundaries inside tokens but never across frames; validate
+  all entropy blocks before dictionary semantics; and reserve no public
+  implementation until transactional reconstruction exists.
+- Generated-code task description: specify the LZ77/rANS boundary, bounds,
+  reset and validation order; independently calculate the raw-`A` model,
+  payload, descriptor, and complete frame; prove it through standalone
+  components; and update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: only repository-authored component APIs and mathematical
+  rules were used. No external control flow, model layout, combined vector, or
+  test expression was compared.
+- Local validation: the independent vector passed under MSVC and ClangCL. The
+  complete Release suite passed 1,737/1,737 under both compilers using official
+  CMake 4.3.4; all thirty benchmark smokes and schema-19 compatibility
+  remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

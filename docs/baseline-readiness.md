@@ -332,6 +332,15 @@ The pushed Windows/MSVC and Ubuntu 24.04 artifacts plus an independently
 generated Ubuntu 26.04/Clang bundle have passed the complete four-direction
 external verification contract at revision `802c7a1ab913b07ee79a04fa5b3390c061c88966`.
 
+`lz77-rans` is the next admission candidate and the first reserved rANS
+composition. DD-447 fixes complete canonical LZ77 token staging before rANS,
+independent byte-block boundaries within an outer frame, checked
+`S = 16F`, `K = ceil(S/B)`, `P = S + 8K`, and `528K` descriptor ceilings,
+strict entropy-before-dictionary validation, and an independent 592-byte
+single-Literal frame. It remains `Specified`: no combined decoder, streaming
+transform, C factory, CLI selector, benchmark, fuzz target, completion claim,
+or interoperability entry exists yet.
+
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
 now also has a public-ABI completion matrix, bounded fuzz evidence, a
