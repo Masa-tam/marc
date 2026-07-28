@@ -1360,6 +1360,13 @@ descriptor serializers, and local Dynamic Range encoder. No external combined
 encoder, frame writer, buffering layout, source code, encoded corpus, or test
 suite was consulted.
 
+The LZMW plus Dynamic Range bounded streaming encoder uses only DD-438,
+DD-437's deterministic complete-frame encoder, marc's core process contract,
+explicit stream/LZMW parameter serializers, checked arithmetic, and
+established caller-owned frame-draining state conventions. No external
+streaming encoder, state machine, buffering layout, source code, corpus, or
+test suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

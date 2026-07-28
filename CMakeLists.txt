@@ -206,6 +206,7 @@ set(MARC_SOURCES
     src/frame/lzmw_blocked_huffman_frame.cpp
     src/frame/lzmw_adaptive_huffman_frame.cpp
     src/frame/lzmw_dynamic_range_frame.cpp
+    src/frame/lzmw_dynamic_range_frame_streaming_encoder.cpp
     src/frame/lzmw_adaptive_huffman_frame_streaming_decoder.cpp
     src/frame/lzmw_adaptive_huffman_frame_streaming_encoder.cpp
     src/frame/lzmw_adaptive_huffman_profile.cpp
@@ -1161,6 +1162,7 @@ if(MARC_BUILD_TESTS)
         tests/lzmw_adaptive_huffman_vector_tests.cpp
         tests/lzmw_dynamic_range_vector_tests.cpp
         tests/lzmw_dynamic_range_frame_tests.cpp
+        tests/lzmw_dynamic_range_frame_streaming_encoder_tests.cpp
         tests/lzmw_adaptive_huffman_frame_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzmw_adaptive_huffman_frame_streaming_encoder_tests.cpp

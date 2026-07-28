@@ -23,7 +23,9 @@ format versions, and C ABI versions are independent namespaces.
   LZMW references before range planning and reports the complete serialized
   extent without writing serialized output. Its deterministic encoder
   reproduces the independent 80-byte frame and leaves short destinations
-  completely unchanged.
+  completely unchanged. Its first bounded streaming encoder preserves those
+  canonical bytes under one-byte input and output, output starvation,
+  nonterminal `Flush`, and retained `EndInput`.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

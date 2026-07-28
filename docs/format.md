@@ -3065,7 +3065,10 @@ The known-size stream is the ordinary 64-byte version-1.0 header followed by
 the 16-byte LZMW parameter region and zero or more frames. Empty input is
 exactly this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and ordinary input
-or output chunking cannot change serialized bytes.
+or output chunking cannot change serialized bytes. The bounded streaming
+encoder implements this contract by collecting one raw frame, preparing its
+complete serialized representation, and draining that immutable extent before
+collecting the next frame.
 
 ### Hand-checkable single-reference frame
 
