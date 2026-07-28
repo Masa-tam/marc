@@ -1675,3 +1675,9 @@ Dynamic Range descriptor and decoder, existing LZMW validator, caller-owned
 spans, and checked aggregate arithmetic. No external combined decoder,
 validation order, workspace layout, malformed corpus, source code, or test
 suite was consulted.
+
+The `lzmw-dynamic-range` CLI adapter uses only DD-444, the published marc C
+configuration, requirements query and factory, the existing local
+transactional temporary-file loop, and the repository-owned generic CLI
+regression script. No external archive tool, command syntax, combined-codec
+adapter, workspace policy, source code, or test suite was consulted.

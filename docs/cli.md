@@ -56,6 +56,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzmw` | LZMW | None | Variant 1 |
 | `lzmw-blocked-huffman` | LZMW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzmw-adaptive-huffman` | LZMW | Adaptive Huffman | FGK tree reset per outer frame |
+| `lzmw-dynamic-range` | LZMW | Dynamic Range | Adaptive order-0 model reset per outer frame |
 
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
@@ -157,6 +158,14 @@ The `lzmw-adaptive-huffman` adapter uses 65,536-byte raw frames, at most
 Adaptive payload ceiling. It admits at most 65,536 generated entries and uses
 a 16-MiB aggregate internal limit. The public C ABI requirements query supplies
 the exact primary, secondary, and opaque aligned-view extents for each
+direction; the CLI does not reproduce private encoder-entry, phrase, or
+expansion-stack layouts.
+
+The `lzmw-dynamic-range` adapter uses 65,536-byte raw frames, at most 262,144
+canonical LZMW reference bytes, and the conservative `2S + 5` Dynamic Range
+payload ceiling of 524,293 bytes. It admits at most 65,536 generated entries
+and uses a 16-MiB aggregate internal limit. The public C ABI requirements query
+supplies the exact primary, secondary, and opaque aligned-view extents for each
 direction; the CLI does not reproduce private encoder-entry, phrase, or
 expansion-stack layouts.
 

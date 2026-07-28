@@ -8015,6 +8015,29 @@ output unchanged. This step adds no streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
 entry.
 
+## DD-444: LZMW Dynamic Range receives a transactional CLI selector
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the explicit `lzmw-dynamic-range` selector to the existing transactional
+CLI without changing the default codec. Use a 65,536-byte raw frame, the
+canonical `S = 4F = 262,144` LZMW reference ceiling, the
+`P = 2S + 5 = 524,293` Dynamic Range payload ceiling, at most 65,536 generated
+entries, and a 16-MiB aggregate internal policy.
+
+Initialize configuration, query all direction-specific workspace extents and
+alignment, create the transform, process it, and destroy it only through the
+public C ABI. Do not reproduce opaque encoder-entry, phrase-record, or
+expansion-stack layouts in the tool. Retain the common temporary-file commit,
+destination overwrite refusal, strict trailing-data rejection, fixed input
+size, and bounded 64-KiB I/O loop.
+
+Prove a multi-frame binary round trip, repeated-output refusal, malformed input
+cleanup, appended-data rejection, and empty-stream handling through the generic
+CLI regression. Benchmark and interoperability admission remain separate
+steps.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

@@ -8545,6 +8545,34 @@ discarded and the reviewed seed retained.
 - Similarity review: the implementation directly composes local marc plans and
   serializers. No external frame-writing control flow, error taxonomy, naming
   scheme, output mutation schedule, or test expression was compared.
+
+## 2026-07-28 - LZMW plus Dynamic Range CLI admission
+
+- Authoring method: extended marc's existing explicit selector table and
+  transactional file-processing adapter by one already published public C
+  profile.
+- References used: DD-444, the local LZMW plus Dynamic Range C configuration,
+  requirements query and factory, fixed profile bounds, and the generic CLI
+  regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, workspace policies, source code, command
+  syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lzmw-dynamic-range` selector in both directions; fix the public 262,144-byte
+  reference and 524,293-byte range-payload limits; use a 16-MiB aggregate
+  policy; and obtain all three workspace regions and alignment through C.
+- Generated-code task description: add selector parsing, fixed public
+  configuration, requirements-query and factory dispatch, multi-frame and
+  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
+  rejection, and public documentation without adding benchmark or
+  interoperability claims.
+- Similarity review: the adapter follows only marc's existing public C
+  lifecycle and file transaction. No external command structure, allocation
+  layout, error behavior, or test expression was compared.
+- Local validation: the focused multi-frame CLI regression passed under MSVC
+  and ClangCL. The complete Release suite passed 1,735/1,735 under both
+  compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
 - Local validation: all twenty-two focused LZMW Dynamic Range validator,
   planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
   complete Release suite passed 1,710/1,710 under both compilers using official

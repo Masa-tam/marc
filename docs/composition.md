@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | Specified | Candidate | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
@@ -161,8 +161,10 @@ Its public-only completion matrix now proves required data classes,
 deterministic repeated and chunked streams, sticky results, and final-frame
 atomicity. Its bounded dual-path decoder fuzz target fixes every byte and typed
 region before input parsing and has permanent truncation, saturated-extent, and
-descriptor regressions. This admission does not yet imply CLI, benchmark, or
-interoperability coverage.
+descriptor regressions. A transactional CLI selector now exposes the same
+fixed 64-KiB profile through the public C factory and preserves the existing
+temporary-file, strict trailing-data, and overwrite-refusal behavior.
+Benchmark and interoperability coverage remain separate admission steps.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

@@ -3216,6 +3216,19 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
+fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
+decode with the explicit selector and compare the restored file byte for byte.
+Repeat encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 262,144`, `P = 524,293`, at most
+65,536 generated entries, and a 16-MiB aggregate policy. Actual primary,
+secondary, and aligned opaque-view workspace requirements must come only from
+the public C query.
+
 For the first LZMW plus Dynamic Range vector, encode raw byte `41` using the
 standalone LZMW variant-1 encoder and require the complete four-byte reference
 `41 00 00 00`. Pass exactly that frozen byte span to a fresh standalone

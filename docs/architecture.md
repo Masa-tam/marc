@@ -2010,7 +2010,7 @@ rejection, and the complete compatibility chain. Revision
 external evidence across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang.
 
-### Specified LZMW plus Dynamic Range boundary
+### Published LZMW plus Dynamic Range boundary
 
 LZMW first freezes its complete canonical sequence of four-byte little-endian
 references. Dynamic Range consumes those bytes through one freshly reset
@@ -2070,6 +2070,11 @@ The bounded fuzz boundary exercises both complete-frame private decoding and
 incremental stream decoding with fixed caller-owned arrays, input-derived
 finite chunk sizes, and a checked call ceiling. Serialized metadata can never
 resize those regions.
+The command-line adapter fixes a 65,536-byte raw frame, 262,144-byte reference
+ceiling, 524,293-byte range-payload ceiling, 65,536 generated entries, and a
+16-MiB aggregate policy. It obtains every direction-specific workspace extent
+and alignment from the public C requirements query and creates the transform
+only through the public C factory.
 
 ### Published LZD plus Adaptive Huffman boundary
 

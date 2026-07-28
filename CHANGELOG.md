@@ -37,7 +37,9 @@ format versions, and C ABI versions are independent namespaces.
   arbitrary chunking, sticky terminal results, and frame-atomic rejection of
   corrupt, truncated, or extended final frames. A bounded dual-path decoder
   fuzz target and permanent truncation, saturated-extent, and descriptor
-  regressions are now present.
+  regressions are now present. The explicit `lzmw-dynamic-range` CLI selector
+  now uses the bounded public C profile through the existing transactional
+  temporary-file workflow.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

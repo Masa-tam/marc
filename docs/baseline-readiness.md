@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 17 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 18 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 17 |
+| Profile | Purpose | Local status | Interoperability schema 18 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -100,7 +100,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-dynamic-range` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
@@ -134,8 +134,11 @@ direction-specific requirements and factories over three caller-owned regions
 without exposing those record layouts. Its public completion matrix proves the
 required binary classes, deterministic arbitrary chunking, sticky terminal
 states, and frame-atomic malformed-final-frame rejection. Its bounded
-dual-decoder fuzz target and permanent malformed regressions are present. CLI,
-benchmark, and interoperability admission remain queued.
+dual-decoder fuzz target and permanent malformed regressions are present. Its
+transactional CLI selector uses the fixed 64-KiB profile through the public C
+factory and passes multi-frame, empty-input, malformed-input, trailing-data,
+and overwrite-refusal coverage. Benchmark and interoperability admission
+remain queued.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame
