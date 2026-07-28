@@ -3283,6 +3283,18 @@ three for the four-block case, then restore four blocks and set the aggregate
 limit one byte below `4*528 + 4*8 + 16`; require stable entropy-limit and
 workspace-limit errors respectively.
 
+For deterministic LZ77 plus rANS frame encoding, provide exactly 592 output
+bytes for raw `41` and require byte-for-byte equality with the independent
+frame already assembled from the generic header, standalone LZ77 token, rANS
+descriptor, and rANS payload. Repeat at `B=5`, encode twice, and require both
+outputs to equal each other and the separately assembled four-block frame;
+then decode it through the combined transactional decoder to raw `41`.
+
+Provide only 591 output bytes prefilled with `5A` for the ordinary one-block
+frame. Require the exact planned extent 592, the stable short-output error,
+and preservation of every sentinel. This capacity case must fail after token
+planning but before generic header, descriptor, or payload publication.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

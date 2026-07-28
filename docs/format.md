@@ -3781,6 +3781,21 @@ payload byte. Short token staging is rejected before staging mutation. On any
 later planning failure the caller discards private staging; no serialized
 output exists to expose a partial frame.
 
+The deterministic complete-frame encoder first runs that exact planner and
+requires a distinct serialized destination of at least
+`56 + 528K + P` bytes. Capacity failure occurs before any serialized byte is
+written. After admission it writes the generic frame header, serializes each
+block descriptor into the contiguous descriptor region, and encodes each
+corresponding rANS payload into the contiguous payload region. Every repeated
+block plan and encoded payload extent must equal the values admitted by the
+first pass; disagreement is an internal error.
+
+For identical input, parameters, limits, sequence, and committed-output
+context, repeated calls emit identical bytes. The one-Literal result is
+exactly the independent 592-byte vector below. With `B = 5`, its 16 token
+bytes produce four descriptors followed by four payloads, including a final
+one-symbol block, and decode back to the same raw byte.
+
 For raw `A`, LZ77 emits:
 
 ```text

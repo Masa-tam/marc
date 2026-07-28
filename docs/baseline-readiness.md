@@ -347,8 +347,10 @@ validated token region. Its transactional frame decoder preflights complete
 caller output and publishes the private raw frame only after success. Its
 encoder-side exact-frame planner now freezes canonical tokens, plans every
 rANS block without serialized output, and returns all exact frame extents.
-It remains `Specified`: no complete frame encoder, streaming transform, C
-factory, CLI selector, benchmark, fuzz target, completion claim, or
+Its deterministic complete-frame encoder now emits the exact independent
+592-byte vector, handles block boundaries inside tokens, and rejects short
+serialized output atomically. It remains `Specified`: no streaming transform,
+C factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded

@@ -8683,6 +8683,34 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS complete-frame encoder
+
+- Authoring method: placed marc's generic frame and scalar rANS serializers
+  above DD-451's independently written exact planner.
+- References used: DD-452, DD-451, local generic frame serialization,
+  fixed-size rANS descriptor serialization, deterministic scalar rANS
+  encoding, and caller-owned non-overlapping spans.
+- Known implementations intentionally not consulted: external combined
+  encoders, frame writers, output transactions, buffer layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: preflight the complete serialized destination;
+  preserve contiguous descriptor-then-payload layout; re-plan immutable token
+  blocks; cross-check all extents; and classify any post-plan disagreement as
+  an internal invariant failure.
+- Generated-code task description: add deterministic complete-frame encoding
+  and a stable short-output error; prove exact equality with the 592-byte hand
+  frame, deterministic four-block token-splitting output, combined round trip,
+  and unchanged short-output sentinels; update format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation composes only local serializers and
+  encoder APIs. No external write order, planning loop, mutation schedule,
+  buffer layout, error taxonomy, or test expression was compared.
+- Local validation: the focused LZ77 plus rANS suite passed 26/26 under both
+  MSVC and ClangCL. The complete Release suite passed 1,763/1,763 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

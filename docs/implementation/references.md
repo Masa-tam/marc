@@ -1725,3 +1725,9 @@ boundary, marc's deterministic LZ77 planner and encoder, scalar rANS block
 planner, generic frame validation, and checked aggregate arithmetic. No
 external combined encoder, planning strategy, buffer layout, encoded corpus,
 source code, or test suite was consulted.
+
+The LZ77 plus rANS complete-frame encoder uses only DD-452, DD-451's exact
+planner, marc's generic frame and rANS descriptor serializers, deterministic
+scalar rANS encoder, and checked spans. No external combined encoder, frame
+writer, output transaction, buffer layout, encoded corpus, source code, or
+test suite was consulted.

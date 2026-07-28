@@ -1079,6 +1079,13 @@ complete frame extent before a future encoder receives any serialized
 destination. Token staging plus the planned descriptor and payload regions
 share one checked aggregate bound.
 
+The complete-frame encoder makes that plan the serialized-output transaction
+boundary. It admits the full destination before writing, emits the generic
+header, keeps all fixed-size descriptors contiguous ahead of all payloads,
+and reproduces each count-only rANS plan during deterministic encoding.
+Output-capacity failure therefore publishes no prefix, while any discrepancy
+after admission is treated as an internal invariant violation.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

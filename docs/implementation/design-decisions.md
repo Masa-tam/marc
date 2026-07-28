@@ -8218,6 +8218,31 @@ decision adds no serialized frame encoder, streaming transform, profile
 calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-452: LZ77 rANS frame encoding admits the complete destination
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-451. Run the exact
+planner first and require capacity for the complete serialized extent before
+writing any frame byte. Input, canonical token staging, and serialized output
+remain mutually non-overlapping caller-owned spans.
+
+After admission, serialize the validated generic frame header. Re-plan each
+rANS block over immutable token staging, serialize its 528-byte descriptor in
+the contiguous descriptor region, and encode its exact payload in the
+contiguous payload region. Require every repeated plan and encoded payload
+extent to agree with the first pass, consume exactly `S` token bytes and `P`
+payload bytes, and report any disagreement as an internal invariant error.
+
+Prove byte-for-byte equality with the independent 592-byte one-Literal frame.
+At `B=5`, require deterministic repeated output, equality with a frame
+assembled only from standalone components, four descriptor/payload blocks,
+and complete decode back to raw `A`. Submit a 591-byte sentinel destination
+for the 592-byte frame and require rejection without modifying any byte. This
+decision adds no streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

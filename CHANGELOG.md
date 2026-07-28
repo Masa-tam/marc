@@ -28,7 +28,10 @@ format versions, and C ABI versions are independent namespaces.
   encoder-side exact-frame planner now freezes canonical LZ77 bytes in
   caller-owned staging, plans every rANS block without serialized output, and
   reports exact block, descriptor, payload, and complete-frame extents under
-  the aggregate workspace policy.
+  the aggregate workspace policy. Its deterministic complete-frame encoder
+  preflights the entire serialized destination, then writes the generic
+  header, all descriptors, and all payloads; the raw-`A` result exactly matches
+  the independent 592-byte vector, and short output remains untouched.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

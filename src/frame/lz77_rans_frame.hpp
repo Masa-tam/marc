@@ -21,6 +21,7 @@ enum class Lz77RansFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
     input_size_mismatch,
+    serialized_output_too_small,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
@@ -50,6 +51,8 @@ struct Lz77RansFrameValidationResult {
     std::size_t block_count{};
     std::size_t block_index{};
     FrameHeaderError header_error{FrameHeaderError::none};
+    entropy::internal::RansFormatError descriptor_error{
+        entropy::internal::RansFormatError::none};
     entropy::internal::RansControllerError controller_error{
         entropy::internal::RansControllerError::none};
     entropy::internal::RansDecodeError entropy_error{
@@ -79,6 +82,19 @@ struct Lz77RansFrameValidationResult {
     std::uint64_t output_already_committed,
     std::span<const std::byte> input,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing the generic header, all rANS descriptors,
+// and all rANS payloads. Input, staging, and output must be mutually
+// non-overlapping.
+[[nodiscard]] Lz77RansFrameValidationResult encode_lz77_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Validates and rANS-decodes one complete frame into private canonical
 // LZ77-token staging. All rANS blocks are validated before any token byte is
