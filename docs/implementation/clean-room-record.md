@@ -8829,6 +8829,36 @@ discarded and the reviewed seed retained.
   1,780/1,780 under both compilers using official CMake 4.3.4; all thirty
   benchmark smokes and schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS public-ABI completion matrix
+
+- Authoring method: applied marc's existing completion criteria to the new
+  published LZ77/rANS C lifecycle without calling private combined APIs.
+- References used: DD-457, the public `marc_lz77_rans_*` entry points,
+  repository-authored deterministic generators, generic frame fields, and
+  established transactional streaming expectations.
+- Known implementations intentionally not consulted: external conformance
+  suites, corpora, combined codec tests, malformed archives, source code, and
+  test vectors.
+- Independent decisions: fix both frame dimensions at 64 bytes; encode each
+  required class twice; compare three chunk schedules against one canonical
+  193-byte stream; and target the fourth frame so exactly 192 earlier bytes
+  may remain committed on failure.
+- Generated-code task description: add a public-only completion matrix for
+  required data classes, determinism, boundary lengths, arbitrary chunking,
+  repeated terminal success, corrupt/truncated/trailing final frames, sticky
+  errors, and sentinel preservation; update readiness, C API, architecture,
+  composition, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the test matrix and corruption cases reuse only marc's
+  local public lifecycle and established completion convention. No external
+  control flow, fixture, malformed byte choice, or test expression was
+  compared.
+- Local validation: the focused LZ77 plus rANS implementation, C ABI, and
+  completion tests passed 47/47 under both MSVC and ClangCL. The complete
+  Release suite passed 1,783/1,783 under both compilers using official CMake
+  4.3.4; all thirty benchmark smokes and schema-19 compatibility remained
+  successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

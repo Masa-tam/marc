@@ -1756,3 +1756,9 @@ DD-455's direction-specific requirements, the completed local streaming pair,
 ABI version 1's existing three-region lifecycle, checked offsets and
 alignment, and `nothrow` handle publication. No external C API, allocation
 model, combined factory, ABI layout, source code, or test suite was consulted.
+
+The LZ77 plus rANS public-ABI completion matrix uses only DD-457, the published
+marc C lifecycle, DD-447's fixed representation, repository-authored
+deterministic generators, and local generic frame-extent parsing. No external
+conformance suite, corpus, combined codec API, malformed archive, source code,
+or test vector was consulted.

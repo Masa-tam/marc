@@ -132,6 +132,10 @@ raw staging, and uses aligned opaque views for validated rANS block
 descriptors. Query requirements again after changing either frame dimension,
 direction, original size, LZ77 parameters, or any local limit. The public
 header exposes only byte counts and alignment, never `RansBlockView`.
+Its public completion matrix fixes 64-byte frames and blocks and verifies
+empty input, every one-byte value, representative binary and generated data,
+determinism, one-byte and mixed chunking, repeated terminal calls, and atomic
+rejection of a malformed final frame entirely through these C functions.
 The public completion matrix fixes 64-byte frames and verifies every one-byte
 value, representative binary and generated data, exact determinism, one-byte
 and mixed chunking, repeated terminal calls, and atomic rejection of a

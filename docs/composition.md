@@ -61,6 +61,9 @@ layout remains private. Its public C ABI now exposes configuration,
 requirements query, and factory entry points; the factory partitions byte
 regions internally, validates the opaque view alignment, and binds the
 streaming pair without publishing a CLI selector or completion claim.
+Its public-ABI completion matrix now covers required data classes,
+deterministic multi-frame encoding, arbitrary input/output chunking, sticky
+terminal results, and transactional malformed-final-frame rejection.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

@@ -44,7 +44,10 @@ format versions, and C ABI versions are independent namespaces.
   needed to construct the streaming pair. The public C ABI now exposes named
   configuration initialization, direction-specific requirements, and a
   factory that borrows three opaque workspace regions, validates alignment,
-  and binds the completed streaming pair without exposing C++ types.
+  and binds the completed streaming pair without exposing C++ types. Its
+  public-ABI completion matrix now proves required binary classes,
+  deterministic encoding, arbitrary chunking, stable terminal results, and
+  transactional rejection of a malformed final frame.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

@@ -1118,6 +1118,12 @@ regions before construction, and publishes the opaque transform only after a
 byte counts, and alignment only; the rANS descriptor-view type remains an
 internal C++ detail.
 
+The public-ABI completion boundary exercises only those C entry points. It
+constructs fresh queried workspaces for each direction, compares repeated
+encodes byte for byte, varies both input and output chunking across multiple
+frames, and confirms that only previously validated frames remain visible
+when the final frame is corrupt, truncated, or followed by trailing data.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

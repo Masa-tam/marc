@@ -8351,6 +8351,29 @@ values, byte-exact round trip, short view rejection, and reserved-field
 rejection. This step adds no completion matrix, fuzz target, CLI, benchmark,
 completion claim, or interoperability entry.
 
+## DD-457: LZ77 rANS completion is proven through the C ABI
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add a public-ABI completion matrix using fixed 64-byte raw frames and 64-byte
+rANS blocks. Exercise only the published configuration, requirements query,
+factory, process, and destroy lifecycle; allocate and align all three
+workspaces from each direction's query.
+
+Cover empty input, every one-byte symbol, all byte values, repetitive and
+patterned binary input, deterministic generated input, and lengths immediately
+below, equal to, and above the outer-frame boundary. Encode every required
+class twice and require identical bytes before round-trip decode.
+
+For a 193-byte stream, require unchunked, one-byte, and mixed schedules to
+produce the identical multi-frame representation and decoded bytes. Repeated
+successful terminal calls remain `EndOfStream`. Corrupt, truncate, and append
+data to the fourth frame independently; each decoder may publish exactly the
+first three validated 64-byte frames, must preserve the final raw sentinel,
+and must repeat the same sticky error category and position. This step adds no
+fuzz target, CLI, benchmark, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28
