@@ -52,7 +52,9 @@ requires the whole serialized destination, and deterministically writes the
 generic header, complete descriptor region, and complete payload region. Its
 known-size streaming encoder buffers one bounded raw frame and one completed
 serialized frame, preserving the same bytes under arbitrary input and output
-chunking.
+chunking. Its streaming decoder buffers one serialized frame plus rANS views,
+token staging, and private raw staging, and exposes only completely validated
+raw frames.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

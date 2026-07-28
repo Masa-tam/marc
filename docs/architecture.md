@@ -1094,6 +1094,14 @@ be reused. `EndInput` is retained across prefix and frame starvation, while
 `Flush` leaves partial collection open. The live aggregate consists of raw
 collection, canonical token staging, and the completed serialized frame.
 
+The matching streaming decoder first separates prefix admission, generic
+frame-header admission, complete body collection, private combined decode,
+and raw drain into distinct states. rANS block views are caller-owned and
+their exact used bytes join serialized-frame, token, and raw storage in the
+aggregate bound. A completed frame becomes visible only through the final raw
+drain state, so corruption in a later frame cannot leak that frame's prefix or
+roll back already committed earlier frames.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

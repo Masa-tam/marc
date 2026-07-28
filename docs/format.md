@@ -3810,6 +3810,21 @@ rejected. Empty known-size input emits only the stream prefix and then ends.
 The aggregate steady-state bound counts raw collection, exact token staging,
 and exact serialized-frame storage before encoding each frame.
 
+The bounded streaming decoder incrementally collects the same 80-byte prefix,
+then each 56-byte frame header and its exact declared descriptor/payload body.
+Before body collection it admits the complete serialized frame, `K`
+caller-owned rANS block views, `S` token bytes, and `F` private raw bytes, and
+counts all four extents against `max_internal_buffered_bytes`.
+
+Only a completely collected frame is passed to the strict combined private
+decoder. All rANS blocks and the complete LZ77 token stream therefore succeed
+before exactly `F` private raw bytes become drainable. Arbitrary input and
+output chunking, including one byte at a time, preserves decoded bytes.
+Malformed frame `N` may follow already committed frames `0..N-1`, but it
+publishes no byte of frame `N`. Truncation, trailing bytes, premature
+`EndInput`, `ResetBlock`, and unknown flags are rejected; empty input accepts
+the prefix alone.
+
 For raw `A`, LZ77 emits:
 
 ```text

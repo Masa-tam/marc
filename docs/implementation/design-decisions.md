@@ -8270,6 +8270,32 @@ storage, and aggregate-limit failures. This decision adds no streaming
 decoder, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
 claim, or interoperability entry.
 
+## DD-454: LZ77 rANS streaming decode commits only complete frames
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add the bounded streaming decoder matching DD-453. Incrementally collect the
+80-byte stream prefix, one generic frame header, and that frame's exact
+descriptor/payload body. Before accepting the body, require caller-owned
+storage for the complete serialized frame, declared rANS block views,
+canonical token extent, and private raw extent. Count all four used extents in
+one checked aggregate.
+
+Invoke DD-450's private complete-frame decoder only after the full frame has
+been collected. Retain its reconstructed raw bytes unchanged while draining
+under arbitrary output starvation. Advance sequence and committed raw extent
+only after private decode succeeds. A malformed later frame may follow already
+committed earlier frames but must publish no part of itself.
+
+Prove one-byte input and output round-trip of DD-453's multi-frame stream,
+stable completion, first-frame-only publication before a corrupt second rANS
+descriptor, each caller workspace boundary including views, the aggregate
+limit, every final-byte truncation, trailing data, empty input, `Flush`,
+premature `EndInput`, and `ResetBlock`. This decision adds no profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

@@ -35,6 +35,9 @@ format versions, and C ABI versions are independent namespaces.
   bounded known-size streaming encoder now collects one raw frame, prepares
   one immutable serialized frame, and drains both stream prefix and frames
   correctly under one-byte output starvation without changing encoded bytes.
+  Its bounded streaming decoder now collects one complete frame, validates
+  rANS and LZ77 layers into private storage, and drains raw bytes only after
+  success; malformed later frames cannot publish a raw prefix.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

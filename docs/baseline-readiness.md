@@ -352,9 +352,11 @@ Its deterministic complete-frame encoder now emits the exact independent
 serialized output atomically. Its bounded known-size streaming encoder now
 matches the one-shot stream under one-byte input/output chunking and handles
 finish, flush, empty input, protocol misuse, and aggregate workspace limits.
-It remains `Specified`: no streaming decoder, C factory, CLI selector,
-benchmark, fuzz target, completion claim, or interoperability entry exists
-yet.
+Its bounded streaming decoder now validates complete frames privately before
+raw drain, includes rANS views in aggregate workspace, and rejects malformed
+later frames without publishing their bytes. It remains `Specified`: no C
+factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

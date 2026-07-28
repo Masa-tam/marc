@@ -3309,6 +3309,23 @@ ready, and set the aggregate limit one byte below
 `raw + exact tokens + serialized frame`. For empty known-size input require
 prefix-only completion; reject premature `EndInput` and `ResetBlock`.
 
+For bounded LZ77 plus rANS streaming decode, consume the `ABABX`, `F=2`,
+`B=5` stream generated above one input byte at a time and publish one raw byte
+at a time; require exact raw bytes and stable repeated `EndOfStream`. Corrupt
+descriptor frequency byte 17 of the second frame, submit the whole stream, and
+require only first-frame `AB` publication while every remaining output
+sentinel stays `5A`.
+
+For the first frame independently shorten serialized-frame storage by one,
+provide six rather than seven rANS views, shorten 32-byte token staging by
+one, and shorten two-byte private raw staging by one; require `OutOfMemory`.
+Then set the aggregate limit one byte below
+`serialized + 32 tokens + 2 raw + 7*sizeof(RansBlockView)` with a compatible
+block limit and require `LimitExceeded`. Reject the stream missing its final
+byte, one appended zero, and `ResetBlock`. Accept prefix-only empty input,
+treat `Flush` during starvation as `NeedInput`, and retain premature
+`EndInput` through first-frame raw drain before reporting truncation.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

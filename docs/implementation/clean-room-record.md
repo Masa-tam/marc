@@ -8739,6 +8739,37 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS bounded streaming decoder
+
+- Authoring method: extended marc's established complete-frame collection and
+  private raw drain lifecycle with DD-450's local combined decoder and
+  caller-owned rANS views.
+- References used: DD-454, DD-450, DD-453's stream layout, local generic frame
+  parsing, rANS view storage, checked aggregate arithmetic, and process
+  statuses.
+- Known implementations intentionally not consulted: external streaming
+  decoders, frame parsers, buffering strategies, state machines, malformed
+  corpora, source code, and test suites.
+- Independent decisions: preflight serialized, view, token, and raw storage
+  from the frame header; decode only complete frames; retain private raw bytes
+  while draining; commit sequence only after decode; and permit earlier
+  complete frames to remain published before later corruption.
+- Generated-code task description: add the bounded streaming decoder and
+  CMake coverage; test one-byte round trip, later-frame corruption, all four
+  workspace boundaries, aggregate accounting, truncation, trailing data,
+  empty input, flush starvation, retained premature finish, reset rejection,
+  and stable terminal states; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the implementation composes only local parsing,
+  complete-frame decode, and immutable drain contracts. No external state
+  flow, storage order, error mapping, malformed vector, or test expression was
+  compared.
+- Local validation: the focused LZ77 plus rANS suite passed 35/35 under both
+  MSVC and ClangCL. The complete Release suite passed 1,772/1,772 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

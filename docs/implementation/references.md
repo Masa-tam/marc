@@ -1737,3 +1737,10 @@ complete-frame encoder, marc's established immutable frame-drain state
 contract, generic process statuses, checked workspace arithmetic, and
 caller-owned spans. No external streaming encoder, buffering strategy, state
 machine, source code, encoded corpus, or test suite was consulted.
+
+The LZ77 plus rANS bounded streaming decoder uses only DD-454, DD-450's local
+private frame decoder, DD-453's prefix and frame sequence, marc's generic
+header parser, rANS view type, checked workspace arithmetic, and immutable raw
+drain convention. No external streaming decoder, frame parser, buffering
+strategy, state machine, malformed corpus, source code, or test suite was
+consulted.
