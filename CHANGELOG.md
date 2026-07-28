@@ -17,7 +17,9 @@ format versions, and C ABI versions are independent namespaces.
   adjacent-phrase graph without reconstructing or publishing raw bytes. Its
   bounded private decoder additionally admits raw and expansion staging before
   entropy output and reconstructs only the validated graph into disposable
-  caller-owned storage.
+  caller-owned storage. Its transactional complete-frame decoder checks caller
+  output capacity before entropy work and publishes the private raw frame only
+  after every layer succeeds.
 
 - The reserved `lzd-dynamic-range` composition now has an exact
   decoder-visible representation, checked reference-pair and range-payload

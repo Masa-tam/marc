@@ -25,6 +25,7 @@ enum class LzmwDynamicRangeFrameValidationError : std::uint8_t {
     phrase_workspace_too_small,
     raw_staging_too_small,
     expansion_workspace_too_small,
+    raw_output_too_small,
     workspace_limit,
     descriptor_error,
     entropy_decode_error,
@@ -89,6 +90,23 @@ decode_lzmw_dynamic_range_frame_to_staging(
     std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
     std::span<std::uint32_t> expansion_workspace,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates and reconstructs privately, then copies the complete raw frame to
+// caller-visible output only after every operation succeeds. All supplied
+// storage regions must be mutually non-overlapping.
+[[nodiscard]] LzmwDynamicRangeFrameValidationResult
+decode_lzmw_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
+    std::span<std::uint32_t> expansion_workspace,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

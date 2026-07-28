@@ -116,8 +116,10 @@ caller-capacity, phrase-record, and aggregate extents before strictly range-
 decoding into private reference staging and invoking the existing LZMW
 validator. A bounded private decoder now admits raw and expansion-stack
 capacity and aggregate storage before entropy output, then iteratively
-reconstructs only the validated phrase graph into disposable raw staging. No
-caller-visible decoder or public profile exists yet.
+reconstructs only the validated phrase graph into disposable raw staging. Its
+transactional complete-frame decoder additionally checks destination capacity
+before entropy work and publishes only a successful private raw frame. No
+streaming decoder or public profile exists yet.
 
 `lzd-dynamic-range` is the most recently completed composition. DD-417 fixes
 the complete eight-byte LZD reference-pair boundary before one fresh per-frame

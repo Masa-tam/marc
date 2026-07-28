@@ -2035,7 +2035,9 @@ without reconstructing or publishing raw bytes. The next bounded boundary
 preflights private raw staging, the conservative expansion stack, and their
 aggregate bytes before entropy output. It then invokes the ordinary iterative
 LZMW decoder only over the completely validated graph and writes solely into
-discardable private raw staging.
+discardable private raw staging. The transactional frame boundary also checks
+the complete caller destination before entropy output and copies that private
+raw extent once only after every operation succeeds.
 
 ### Published LZD plus Adaptive Huffman boundary
 

@@ -1342,6 +1342,12 @@ decoder, caller-owned spans, checked aggregate arithmetic, and local decoder
 limits. No external combined decoder, phrase expansion implementation,
 buffering layout, source code, malformed corpus, or test suite was consulted.
 
+The LZMW plus Dynamic Range transactional frame decoder uses only DD-435,
+DD-434's private reconstruction boundary, caller-owned destination capacity,
+and marc's established copy-after-success convention. No external combined
+decoder, publication protocol, buffering layout, source code, malformed
+corpus, or test suite was consulted.
+
 The LZ78 plus Dynamic Range transactional publication boundary uses only
 DD-390, the completed private raw decoder, caller-supplied spans, and marc's
 existing exact-frame commit convention. No external decompression API,

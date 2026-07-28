@@ -3120,10 +3120,16 @@ aggregate workspace limit, then reduces the active expansion span to the
 actual generated-phrase count plus one after validation and invokes the
 ordinary iterative LZMW decoder. Successful raw bytes remain private, and
 descriptor, payload, reference, phrase, capacity, aggregate, or reconstruction
-failure requires all staging to be discarded. This remains an internal frame
-API; no caller-visible decoder, encoder, streaming transform, public factory,
-CLI selector, benchmark, fuzz target, completion claim, or interoperability
-entry is implied.
+failure requires all staging to be discarded.
+
+The transactional complete-frame decoder additionally validates the complete
+caller-visible output capacity before entropy output. It performs the same
+private reconstruction and copies the exact raw frame once only after all
+layers succeed. A short output, malformed header, descriptor or payload,
+invalid LZMW graph, limit failure, or unexpected reconstruction failure leaves
+caller-visible output unchanged. This remains an internal frame API; no
+streaming transform, public factory, CLI selector, benchmark, fuzz target,
+completion claim, or interoperability entry is implied.
 
 ## LZMW variant 1 plus Adaptive Huffman FGK variant 1
 

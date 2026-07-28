@@ -3264,6 +3264,19 @@ references, three generated phrases, a four-entry active expansion ceiling,
 and exact private reconstruction. Corrupt the descriptor and encode a forward
 reference independently; both must preserve the private raw guard.
 
+For the transactional LZMW plus Dynamic Range frame decoder, decode the exact
+raw-`A` frame through distinct reference, expansion, private raw, and caller
+output spans. Require private and caller output to become `A` only after
+success. Generate raw `ABABAB` through standalone components and require the
+complete phrase frame to publish all six bytes once.
+
+For raw `AB`, provide caller output one byte short and seed reference,
+expansion, private raw, and output spans with distinct guards. Require
+`raw_output_too_small` before entropy output and preserve every guard.
+Independently corrupt the descriptor and encode a forward reference with full
+capacity; require the corresponding descriptor or LZMW validation error while
+preserving both private raw and caller-output guards.
+
 For bounded LZD plus Dynamic Range decoder fuzzing, run the same fixed-memory
 dual-path LZD harness with Dynamic Range profile symbols. Limit input to 8,192
 bytes, total output and token staging to 4,096, a raw frame to 1,024, the range

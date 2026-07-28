@@ -139,7 +139,8 @@ Its first internal complete-frame validator strictly range-decodes into private
 reference staging and validates the complete adjacent-phrase graph without
 reconstructing or publishing raw bytes. Its bounded private decoder preflights
 raw and expansion staging, then iteratively reconstructs only the validated
-graph into disposable storage. No public API is implied.
+graph into disposable storage. Its transactional frame decoder copies to
+caller output only after every layer succeeds. No public API is implied.
 
 `lz77-dynamic-range` is the first Dynamic Range composition to receive a
 reserved representation. It fixes the complete canonical 16-byte LZ77 token

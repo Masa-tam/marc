@@ -8561,3 +8561,27 @@ aggregate workspace one byte short, and unchanged raw guards after descriptor
 or reference failure. This decision adds no publication boundary, encoder,
 streaming transform, public factory, CLI, benchmark, fuzz target, completion
 claim, or interoperability entry.
+
+## DD-435: LZMW Dynamic Range frame publication is transactional
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal complete-frame decoder that accepts a distinct caller-visible
+output span. Before descriptor parsing or entropy output, retain all DD-433 and
+DD-434 admission checks and additionally require capacity for the complete
+declared raw frame. A one-byte-short output must leave reference staging,
+phrase records, expansion stack, private raw staging, and caller output
+unmodified.
+
+After strict range exhaustion, complete LZMW graph validation, and successful
+iterative private reconstruction, copy exactly `raw_size` bytes from private
+raw staging to caller output once. Never expose partially reconstructed raw
+bytes. Descriptor, payload, reference, phrase, workspace, limit, or
+reconstruction failure leaves caller output unchanged.
+
+Prove publication for the single-literal vector and a generated-phrase frame.
+Prove preflight atomicity with short output and post-admission atomicity with
+descriptor and forward-reference failures. This decision adds no frame
+encoder, streaming transform, public factory, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.

@@ -9349,3 +9349,29 @@ discarded and the reviewed seed retained.
   11/11 under both MSVC and ClangCL. The complete Release suite passed
   1,699/1,699 under both compilers using official CMake 4.3.4. All twenty-nine
   existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range transactional frame decoder
+
+- Authoring method: wrapped DD-434's private reconstruction with a distinct
+  caller output span and marc's established validate-and-copy publication
+  boundary.
+- References used: DD-435, DD-434, the local complete-frame validator and
+  private decoder, checked caller capacity, and bounded span copying.
+- Known implementations intentionally not consulted: external combined
+  decoders, publication protocols, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the entire output before entropy work;
+  reconstruct only in private staging; copy once after complete success; and
+  preserve caller output on every error.
+- Generated-code task description: add caller-visible transactional decoding
+  and a stable short-output error; prove literal and phrase publication, short-
+  output preservation of all guards, and malformed descriptor and reference
+  atomicity; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation uses only marc's existing private
+  decoder and standard bounded-span copying. No external publication control
+  flow, buffering scheme, malformed vector, or test expression was compared.
+- Local validation: the focused validator and transactional-decoder suite
+  passed 15/15 under both MSVC and ClangCL. The complete Release suite passed
+  1,703/1,703 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
