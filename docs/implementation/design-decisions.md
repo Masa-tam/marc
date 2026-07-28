@@ -8191,6 +8191,33 @@ caller output sentinels unchanged. This decision adds no encoder, streaming
 transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
 claim, or interoperability entry.
 
+## DD-451: LZ77 rANS planning freezes tokens before counting blocks
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an encoder-side exact-frame planner for the inverse of DD-447. Require one
+nonempty raw frame and validate the fixed profile and LZ77 parameters. First
+run the deterministic LZ77 plan, admit caller-owned staging for the exact
+token extent `S`, and encode the complete canonical token sequence once.
+Reject short staging before modifying it.
+
+Over the frozen token bytes, plan every consecutive rANS block of at most `B`
+bytes without serialized output. Accumulate exact block count `K`, descriptor
+extent `528K`, payload extent `P`, and complete serialized extent
+`56 + 528K + P` with checked arithmetic. Enforce the block-count ceiling and
+count token staging, planned descriptors, and planned payload against the
+aggregate internal-buffer limit. Validate the resulting generic frame header.
+
+Prove the one-Literal plan reproduces `S=16`, `K=1`, descriptor size 528,
+payload size 8, and complete size 592. Split those token bytes at `B=5` and
+require four blocks, reject short staging without mutation, reject empty and
+unexpected raw extents, and exercise block-count and aggregate-workspace
+ceilings. Callers discard private staging after any later failure. This
+decision adds no serialized frame encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

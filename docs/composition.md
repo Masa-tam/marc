@@ -43,7 +43,11 @@ bounded private decoder now preflights separate raw staging and adds it to
 aggregate workspace, then reconstructs the fully validated token stream
 without exposing a caller-visible output boundary. Its transactional frame
 decoder now admits the complete output extent before entropy work and copies
-the private raw frame once only after successful reconstruction.
+the private raw frame once only after successful reconstruction. Its
+encoder-side exact-frame planner now fixes canonical token staging first,
+plans every full or final-short rANS block without accepting a serialized
+destination, and returns exact `S`, `K`, `528K`, `P`, and complete-frame
+extents.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

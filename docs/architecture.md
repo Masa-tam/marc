@@ -1071,6 +1071,14 @@ beside all private capacities, runs the private reconstruction, and performs a
 single bounded copy only on success. A failing frame cannot expose a prefix or
 modify an existing output sentinel.
 
+The first encoder-side layer mirrors that private boundary without yet
+serializing a frame. It freezes the complete canonical LZ77 token sequence in
+caller-owned staging, then performs a count-only rANS plan for every byte
+block. This establishes the exact descriptor region, payload region, and
+complete frame extent before a future encoder receives any serialized
+destination. Token staging plus the planned descriptor and payload regions
+share one checked aggregate bound.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

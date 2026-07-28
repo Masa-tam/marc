@@ -8653,6 +8653,36 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
 
+## 2026-07-28 - LZ77 plus rANS exact-frame planner
+
+- Authoring method: composed marc's deterministic LZ77 token planner and
+  encoder with its scalar rANS count-only block planner at DD-447's fixed byte
+  boundary.
+- References used: DD-451, DD-447, local LZ77 and rANS encoder contracts,
+  generic frame validation, caller-owned staging, and checked aggregate
+  arithmetic.
+- Known implementations intentionally not consulted: external combined
+  encoders, frame planners, buffer layouts, encoded corpora, source code, and
+  test suites.
+- Independent decisions: admit exact token staging before mutation; freeze
+  tokens once; plan every rANS block without serialized output; count planned
+  descriptors, payload, and staging together; and require callers to discard
+  private staging after later failure.
+- Generated-code task description: add the exact-frame planner and layered
+  encode errors; prove the 592-byte hand extent, token-splitting blocks,
+  pre-mutation staging rejection, raw-frame boundaries, block-count ceiling,
+  and aggregate-workspace ceiling; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the implementation composes only local planner APIs and
+  generic checked arithmetic. No external planning control flow, error
+  taxonomy, mutation schedule, buffer design, or test expression was
+  compared.
+- Local validation: the focused LZ77 plus rANS suite passed 23/23 under both
+  MSVC and ClangCL. The complete Release suite passed 1,760/1,760 under both
+  compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

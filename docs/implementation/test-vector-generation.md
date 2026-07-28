@@ -3270,6 +3270,19 @@ entropy or dictionary error while private raw and output sentinels remain
 unchanged. These cases distinguish successful private reconstruction from the
 single final publication copy.
 
+For the first LZ77 plus rANS encoder-side planner, submit raw `41` and require
+the existing 16-byte Literal token in private staging, one 528-byte
+descriptor, one eight-byte payload, and complete extent 592 without providing
+a serialized destination. Repeat with `B=5`; require four rANS blocks even
+though the boundaries split that one token.
+
+Submit only 15 staging bytes prefilled with `5A`; require the exact required
+size 16 and preserve every sentinel. Reject empty raw input and two raw bytes
+against a one-byte frame declaration. Finally set the block-count limit to
+three for the four-block case, then restore four blocks and set the aggregate
+limit one byte below `4*528 + 4*8 + 16`; require stable entropy-limit and
+workspace-limit errors respectively.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

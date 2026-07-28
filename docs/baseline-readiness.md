@@ -344,10 +344,12 @@ staging, then validates complete LZ77 semantics without reconstructing raw
 bytes. Its bounded private decoder now preflights and counts separate raw
 staging, then reconstructs literals and overlapping matches only from the
 validated token region. Its transactional frame decoder preflights complete
-caller output and publishes the private raw frame only after success. It
-remains `Specified`: no encoder, streaming transform, C factory, CLI selector,
-benchmark, fuzz target, completion claim, or interoperability entry exists
-yet.
+caller output and publishes the private raw frame only after success. Its
+encoder-side exact-frame planner now freezes canonical tokens, plans every
+rANS block without serialized output, and returns all exact frame extents.
+It remains `Specified`: no complete frame encoder, streaming transform, C
+factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

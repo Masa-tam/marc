@@ -24,7 +24,11 @@ format versions, and C ABI versions are independent namespaces.
   from a completely validated token stream. Malformed entropy and dictionary
   layers leave private raw staging untouched. Its transactional complete-frame
   decoder also preflights the complete caller output and publishes the private
-  raw frame in one copy only after every layer succeeds.
+  raw frame in one copy only after every layer succeeds. Its first
+  encoder-side exact-frame planner now freezes canonical LZ77 bytes in
+  caller-owned staging, plans every rANS block without serialized output, and
+  reports exact block, descriptor, payload, and complete-frame extents under
+  the aggregate workspace policy.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

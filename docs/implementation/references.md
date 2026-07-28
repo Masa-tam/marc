@@ -1719,3 +1719,9 @@ DD-449's private raw decoder, caller-owned spans, exact preflight capacity, and
 marc's established bounded copy policy. No external publication protocol,
 combined decoder, buffer layout, source code, malformed corpus, or test suite
 was consulted.
+
+The LZ77 plus rANS exact-frame planner uses only DD-451, DD-447's frozen token
+boundary, marc's deterministic LZ77 planner and encoder, scalar rANS block
+planner, generic frame validation, and checked aggregate arithmetic. No
+external combined encoder, planning strategy, buffer layout, encoded corpus,
+source code, or test suite was consulted.

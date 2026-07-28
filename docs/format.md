@@ -3766,6 +3766,21 @@ tokens, and reconstruction failure publish no caller-visible byte. Output
 capacity is not counted as internal workspace because ownership remains with
 the caller and it is the defined publication destination.
 
+The encoder-side exact-frame planner accepts one nonempty raw frame and
+caller-owned token staging but no serialized destination. It first computes
+the exact LZ77 token extent `S`, admits staging for all `S` bytes, and writes
+the complete canonical token sequence once. It then plans each consecutive
+full or final-short rANS block over those immutable bytes and accumulates
+exact `K`, `528K`, and `P` values with checked arithmetic. Descriptor bytes,
+planned payload bytes, and token staging are counted against
+`max_internal_buffered_bytes`; caller raw input is not.
+
+The planner validates the resulting generic frame header and returns the exact
+serialized extent `56 + 528K + P`. It writes no frame header, descriptor, or
+payload byte. Short token staging is rejected before staging mutation. On any
+later planning failure the caller discards private staging; no serialized
+output exists to expose a partial frame.
+
 For raw `A`, LZ77 emits:
 
 ```text
