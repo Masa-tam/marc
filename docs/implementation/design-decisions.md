@@ -8168,6 +8168,29 @@ decision adds no transactional publication, encoder, streaming transform,
 profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-450: LZ77 rANS frame publication is transactional
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-449. Require capacity for
+the entire declared raw frame in a distinct output span before descriptor
+parsing, entropy output, token staging mutation, or private raw mutation.
+Output remains caller-owned publication storage and is not added to the
+internal workspace total already fixed by DD-449.
+
+Retain DD-448's complete entropy and token validation and DD-449's private
+reconstruction. Copy exactly `F` bytes from private raw staging to caller
+output once, only after the LZ77 decoder succeeds. Preserve all layered error
+details and return without publication on every earlier failure.
+
+Prove the Literal frame publishes only its declared byte while preserving
+guards, a one-byte-short output fails before private mutation, and malformed
+later rANS state or invalid reconstructed token leaves both private raw and
+caller output sentinels unchanged. This decision adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

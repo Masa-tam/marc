@@ -3758,6 +3758,14 @@ bytes. No caller-visible output span exists. A malformed entropy block or
 token stream leaves raw staging unchanged, and callers discard all private
 workspace on any reported failure.
 
+The transactional complete-frame decoder additionally requires a distinct
+caller output span of at least `F` bytes during the same preflight. It performs
+the unchanged private decode, then copies exactly `F` bytes from raw staging to
+output once. Short output, malformed descriptors or rANS state, invalid LZ77
+tokens, and reconstruction failure publish no caller-visible byte. Output
+capacity is not counted as internal workspace because ownership remains with
+the caller and it is the defined publication destination.
+
 For raw `A`, LZ77 emits:
 
 ```text

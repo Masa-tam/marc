@@ -1713,3 +1713,9 @@ validator, marc's existing allocation-free LZ77 decoder and overlap-copy
 semantics, separate caller-owned staging, and checked aggregate arithmetic.
 No external combined decoder, reconstruction strategy, buffer layout,
 malformed corpus, source code, or test suite was consulted.
+
+The LZ77 plus rANS transactional publication boundary uses only DD-450,
+DD-449's private raw decoder, caller-owned spans, exact preflight capacity, and
+marc's established bounded copy policy. No external publication protocol,
+combined decoder, buffer layout, source code, malformed corpus, or test suite
+was consulted.

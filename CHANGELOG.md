@@ -22,7 +22,9 @@ format versions, and C ABI versions are independent namespaces.
   additionally admits raw staging before entropy work, includes it in the
   aggregate policy, and reconstructs literals and overlapping matches only
   from a completely validated token stream. Malformed entropy and dictionary
-  layers leave private raw staging untouched.
+  layers leave private raw staging untouched. Its transactional complete-frame
+  decoder also preflights the complete caller output and publishes the private
+  raw frame in one copy only after every layer succeeds.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

@@ -3259,6 +3259,17 @@ remain unchanged. Finally corrupt the second of two rANS block states and
 separately rANS-code token kind `FF`; both must leave raw staging untouched,
 with entropy and dictionary errors remaining distinct.
 
+For transactional LZ77 plus rANS publication, decode the hand frame with
+three-byte private and output guards. Require only byte zero of each to become
+`41`. Submit an empty output span with otherwise sufficient workspace and
+require rejection before token or private raw mutation.
+
+Corrupt the second state of a two-block rANS frame and separately encode token
+kind `FF`. Invoke the caller-visible decoder for both and require the stable
+entropy or dictionary error while private raw and output sentinels remain
+unchanged. These cases distinguish successful private reconstruction from the
+single final publication copy.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

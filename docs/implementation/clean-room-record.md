@@ -8628,6 +8628,31 @@ discarded and the reviewed seed retained.
   1,752/1,752 under both compilers using official CMake 4.3.4; all thirty
   benchmark smokes and schema-19 compatibility remained successful.
 
+## 2026-07-28 - LZ77 plus rANS transactional frame decoder
+
+- Authoring method: wrapped DD-449's private reconstruction with a distinct
+  caller output span and marc's established validate-and-copy boundary.
+- References used: DD-450, DD-449, complete output-capacity preflight, bounded
+  span copying, and the existing layered error result.
+- Known implementations intentionally not consulted: external publication
+  protocols, combined decoders, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the full output before private mutation;
+  keep output outside internal workspace accounting; reconstruct privately;
+  and publish exactly once only after complete success.
+- Generated-code task description: add transactional publication and a stable
+  short-output error; test guarded successful publication, output shortage,
+  and unchanged private/output sentinels after entropy and token failures;
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation uses only marc's private decoder and
+  bounded range copying. No external publication control flow, mutation
+  schedule, malformed vector, or test expression was compared.
+- Local validation: the focused validator and decoder suite passed 18/18 under
+  both MSVC and ClangCL. The complete Release suite passed 1,755/1,755 under
+  both compilers using official CMake 4.3.4; all thirty benchmark smokes and
+  schema-19 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

@@ -1065,6 +1065,12 @@ token staging. Literal and overlapping-match reconstruction therefore occurs
 only after both entropy and dictionary semantics succeed. Publication remains
 a later, separate boundary.
 
+The transactional frame boundary now adds that publication step without
+weakening private validation. It preflights the full caller output extent
+beside all private capacities, runs the private reconstruction, and performs a
+single bounded copy only on success. A failing frame cannot expose a prefix or
+modify an existing output sentinel.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
