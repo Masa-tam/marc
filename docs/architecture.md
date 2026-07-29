@@ -1169,8 +1169,13 @@ the checked bounds are `S <= 2F`, `K = ceil(S/B)`,
 `8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. Decoding must admit
 and validate the complete entropy representation before reconstructing the
 private token region, then validate the whole LZSS grammar and exact raw
-extent before any raw publication. This boundary currently fixes format and
-the independent raw-`A` vector only.
+extent before any raw publication.
+
+The first internal complete-frame validator now implements that boundary.
+It admits descriptor views and token staging plus their aggregate workspace
+before entropy work, validates every rANS block without output, reconstructs
+the exact private token extent in a second pass, and invokes the existing LZSS
+validator. It intentionally stops before raw reconstruction.
 
 ### tANS foundation
 

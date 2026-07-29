@@ -9024,6 +9024,38 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
   schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS complete-frame validator
+
+- Authoring method: combined marc's generic frame admission, strict two-pass
+  scalar rANS decoder, and existing LZSS validator at DD-462's private
+  variable-token boundary.
+- References used: DD-463, DD-462, local checked arithmetic, descriptor views,
+  rANS model and state validation, bounded spans, and the canonical LZSS
+  validator.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight every extent and caller-owned workspace;
+  include descriptor views in aggregate storage; validate all entropy blocks
+  before any token output; reconstruct only the exact complete token region;
+  retain stable LZSS token and byte failure positions; and stop before raw
+  reconstruction.
+- Generated-code task description: implement the bounded complete-frame
+  validator and layered errors; test the independent vector, an intra-Literal
+  block split, strict extent handling, short and aggregate storage,
+  descriptor and later-block atomicity, invalid reconstructed grammar,
+  impossible bounds, and profile rejection; update format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation composes only repository-authored
+  parsers, controllers, validators, decoders, and span contracts. No external
+  control flow, workspace formula, malformed vector, or test expression was
+  compared.
+- Local validation: the focused validator suite passed 11/11 under both MSVC
+  and ClangCL. The complete Release suite passed 1,800/1,800 under both
+  compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
+  schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

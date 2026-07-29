@@ -393,9 +393,14 @@ decoder-visible representation and reserved public name are specified.
 variable-length LZSS token boundary before scalar rANS, checked `S <= 2F`,
 `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes,
 entropy-before-dictionary validation, and an independently assembled 592-byte
-single-Literal frame. It remains `Specified`: no combined validator, encoder,
-streaming transform, C ABI, CLI, benchmark, fuzz target, completion matrix, or
-interoperability entry exists yet.
+single-Literal frame. Its first bounded complete-frame validator now admits
+all extents, descriptor views, token staging, and aggregate workspace before
+entropy processing. It validates every rANS block before mutating token
+staging, then applies complete LZSS grammar, reference, overlap, and exact
+raw-extent validation without reconstructing raw bytes. It remains
+`Specified`: no combined raw decoder, encoder, streaming transform, C ABI,
+CLI, benchmark, fuzz target, completion matrix, or interoperability entry
+exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

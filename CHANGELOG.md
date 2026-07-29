@@ -12,7 +12,11 @@ format versions, and C ABI versions are independent namespaces.
   variable-length LZSS token sequence is frozen before scalar rANS block
   coding; checked bounds cover `S <= 2F`, `K = ceil(S/B)`,
   `8K <= P <= S + 8K`, and `528K` descriptor bytes. Entropy validation
-  precedes complete LZSS token validation and any raw publication.
+  precedes complete LZSS token validation and any raw publication. Its first
+  bounded complete-frame validator now checks every extent, caller-owned
+  workspace, and aggregate byte before entropy output; validates every rANS
+  block before reconstructing any token byte; then applies the complete LZSS
+  grammar and exact-raw-extent validator without reconstructing raw bytes.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

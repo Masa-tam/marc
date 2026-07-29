@@ -85,8 +85,12 @@ untyped bytes into `K = ceil(S/B)` blocks with payload bound
 two-byte Literal or nine-byte Match but cannot cross the outer frame. Entropy
 validation and complete private token reconstruction precede LZSS grammar,
 reference, overlap, and exact raw-extent validation. The independently
-derived raw-`A` vector fixes the complete 592-byte frame. No combined
-implementation or public entry point exists yet.
+derived raw-`A` vector fixes the complete 592-byte frame. Its first bounded
+complete-frame validator now checks exact extents and all caller-owned
+workspace before entropy output, validates every rANS block before filling
+private token staging, and applies the existing complete LZSS validator
+without reconstructing raw bytes. No combined encoder, raw decoder, or public
+entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

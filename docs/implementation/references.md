@@ -1792,3 +1792,9 @@ documented LZSS variant-1 token grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external
 LZSS/rANS composition, archive format, combined-codec implementation, encoded
 corpus, source code, or test suite was consulted.
+
+The first LZSS plus rANS complete-frame validator uses only DD-463 and DD-462,
+marc's generic frame parser, strict two-pass scalar rANS controller and
+decoder, checked arithmetic, bounded spans, and existing LZSS validator. No
+external combined decoder, validation order, workspace layout, malformed
+corpus, source code, or test suite was consulted.

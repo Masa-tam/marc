@@ -8499,6 +8499,35 @@ serializers. This decision specifies bytes and a reserved name only; it does
 not publish a combined decoder, encoder, stream transform, C factory, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-463: LZSS rANS validation stops before raw reconstruction
+
+- Date: 2026-07-30
+- Status: accepted
+
+Admit the first combined `lzss-rans` implementation as a strict bounded
+complete-frame validator only. Validate the exact stream profile, LZSS
+parameters, sequence, generic frame header and frame extent, `0 < S <= 2F`,
+exact `K = ceil(S/B)` block count, exact `528K` descriptor bytes,
+`8K <= P <= S + 8K`, caller-owned descriptor views and token staging, and
+their aggregate workspace before entropy output.
+
+After admission, parse the complete descriptor region and validate every rANS
+model, state path, terminal state, and exact payload exhaustion without
+producing output. Only when every block succeeds may a second pass reconstruct
+exactly `S` private token bytes. Apply the existing LZSS validator to the
+complete variable-length region and preserve its stable token index, byte
+offset, format error, distance, match-length, overlap, and exact raw-extent
+checks.
+
+No raw staging or output span exists at this boundary. Prove the independent
+592-byte Literal vector, a block boundary within that Literal, all
+truncations, trailing input, short views and staging, aggregate admission one
+byte short, malformed descriptor and later-block atomicity, invalid
+reconstructed LZSS grammar, impossible dictionary and entropy extents, and
+profile rejection. This decision adds no raw decoder, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

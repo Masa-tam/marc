@@ -3415,6 +3415,17 @@ size 8, one block, and 528 descriptor bytes. Require descriptor prefix
 `00 08` at offsets 16..17 and 146..147, and the exact payload suffix. Compare
 all 592 bytes against a separately assembled sparse expected array.
 
+For the first LZSS plus rANS validator suite, generate frames only with the
+standalone rANS planner, descriptor serializer, and encoder over already
+frozen token bytes. Require the independent 592-byte Literal frame to decode
+to private `00 41` staging. Repeat with block size 1 so the block boundary
+splits that Literal. Reject every strict truncation, trailing bytes, short
+views or staging, an aggregate workspace one byte below the exact requirement,
+a malformed descriptor, and a malformed second block before any staging byte
+changes. Separately require invalid reconstructed tag `FF` to report the LZSS
+token error and reject dictionary or entropy extents beyond DD-462's bounds
+before mutation.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
