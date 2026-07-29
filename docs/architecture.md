@@ -1203,6 +1203,14 @@ immutable token block, requires every exact payload extent to match the frozen
 aggregate, explicitly serializes its descriptor, and encodes only the assigned
 payload subspan. The final token and payload offsets must equal the plan.
 
+The known-size streaming encoder owns no allocation. Caller-owned storage
+holds at most one raw frame, its `2F` worst-case LZSS token region, and one
+complete encoded frame. The state machine drains the 80-byte stream prefix,
+collects exactly the next declared frame extent, prepares one immutable frame
+through the deterministic writer, and drains it before accepting the next
+frame. `Flush` does not close a partial frame; `EndInput` must coincide with
+the declared original size.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

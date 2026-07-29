@@ -29,7 +29,10 @@ format versions, and C ABI versions are independent namespaces.
   accepting an output buffer. Its deterministic complete-frame encoder now
   completes planning before output admission, then explicitly writes the
   generic header, every descriptor, and every payload; short output remains
-  unchanged.
+  unchanged. Its known-size bounded streaming encoder now emits the stream
+  prefix, collects at most one raw frame, prepares one immutable encoded
+  frame, and drains it under arbitrary output starvation with sticky terminal
+  states and deterministic bytes.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -8626,6 +8626,34 @@ complete serialized-output preservation when capacity is one byte short.
 This decision adds no streaming transform, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-468: LZSS rANS streaming encode buffers one bounded frame
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add a known-size streaming encoder above DD-467. Emit the ordinary 64-byte
+stream header and 16-byte LZSS parameter extension first. Collect at most one
+configured raw frame in caller-owned storage, prepare its complete immutable
+representation through the deterministic planner and writer, and drain that
+frame under arbitrary output starvation before accepting the next frame.
+
+At construction, validate the fixed pipeline, LZSS parameters, known original
+size, raw storage for `min(original_size, frame_size)`, worst-case `2F` token
+staging, and prefix serialization. At each frame preparation, count raw input,
+exact token staging, and complete serialized frame storage together against
+`max_internal_buffered_bytes`, and require sufficient encoded-frame storage
+before invoking the writer.
+
+`Flush` is non-terminal and does not close a partial frame. `EndInput` is
+accepted only with exactly all remaining declared input. Reject `ResetBlock`
+and unknown flags, over-input, premature end, and invalid workspace with stable
+errors. Ended and error states are sticky and never report false progress.
+Prove one-byte input/output equivalence to independently concatenated one-shot
+frames, full-buffer and non-terminal-flush behavior, storage and aggregate
+failures, empty input, premature end, unsupported reset, and repeated ended
+calls. This decision adds no streaming decoder, profile calculator, C ABI,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

@@ -99,8 +99,10 @@ canonical LZSS staging, computes every exact rANS block payload, validates the
 synthesized header, and reports the complete frame extent without serialized
 output. Its deterministic frame writer plans completely before output
 admission, explicitly serializes every region, and produces repeatable
-round-trippable frames while preserving short output. No streaming or public
-entry point exists yet.
+round-trippable frames while preserving short output. Its known-size bounded
+streaming encoder emits the canonical prefix, buffers at most one raw and one
+encoded frame, and reproduces one-shot bytes under arbitrary starvation. No
+streaming decoder or public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

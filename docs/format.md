@@ -3942,6 +3942,12 @@ explicitly emits that header, the `K` consecutive 528-byte descriptors, and
 their consecutive payloads only after complete planning and output-capacity
 admission. This section publishes no public entry point.
 
+The internal known-size streaming encoder serializes the ordinary 64-byte
+stream header followed by the ordinary 16-byte LZSS parameter extension, then
+the complete frames above in sequence. It buffers no more than one raw frame,
+one canonical token region, and one encoded frame. Chunk boundaries and
+non-terminal `Flush` do not alter any encoded byte.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

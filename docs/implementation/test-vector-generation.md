@@ -3463,6 +3463,16 @@ and complete round-trip through four rANS blocks. Give the raw-`A` writer a
 591-byte sentinel-filled destination and require every byte to remain
 unchanged.
 
+For bounded LZSS plus rANS streaming encode, use five bytes `ABABX`, raw frame
+size 2, and entropy block size 5. Independently concatenate the canonical
+80-byte prefix and three one-shot frames with sequence and committed-output
+positions 0/0, 1/2, and 2/4. Require the streaming transform to reproduce that
+exact sequence with one-byte input and output buffers and to return stable
+EndOfStream afterward. Separately prove that `Flush` after one raw byte emits
+only available prefix bytes and remains open; reject short raw, `2F` token,
+encoded-frame, and aggregate storage; accept canonical empty input; and reject
+premature `EndInput` and `ResetBlock`.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -1821,3 +1821,9 @@ exact plan, marc's generic header serializer, scalar rANS descriptor
 serializer and encoder, checked subspans, and caller-owned output. No external
 combined encoder, frame writer, buffering layout, source code, encoded corpus,
 or test suite was consulted.
+
+The LZSS plus rANS bounded streaming encoder uses only DD-468, DD-467's local
+planner and writer, marc's stream-header and LZSS-parameter serializers,
+immutable-direction `ProcessResult` contract, checked aggregate arithmetic,
+and caller-owned spans. No external streaming encoder, state machine,
+buffering strategy, source code, encoded corpus, or test suite was consulted.

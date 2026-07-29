@@ -9172,6 +9172,35 @@ discarded and the reviewed seed retained.
   1,819/1,819 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS bounded streaming encoder
+
+- Authoring method: placed marc's immutable-direction transform state machine
+  above DD-467's deterministic frame writer using only caller-owned bounded
+  storage.
+- References used: DD-468, DD-467, the local stream-header and LZSS-parameter
+  serializers, known-size frame controller rules, checked aggregate
+  arithmetic, and `ProcessResult` invariants.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: emit the fixed prefix first; collect one exact raw
+  frame; freeze one complete encoded frame before draining; admit raw, token,
+  and encoded storage together; keep Flush non-terminal; require exact known
+  EndInput; and make terminal states sticky.
+- Generated-code task description: add the bounded streaming encoder and
+  state-to-error mapping; prove one-byte equivalence to concatenated one-shot
+  frames, full-buffer and Flush behavior, workspace and aggregate failures,
+  empty input, premature end, reset rejection, and repeated end; update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation specializes marc's existing local
+  transform contract and frame writer. No external state machine, buffer
+  schedule, encoded byte sequence, or test expression was compared.
+- Local validation: the focused frame and streaming-encoder suite passed
+  34/34 under both MSVC and ClangCL. The complete Release suite passed
+  1,823/1,823 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

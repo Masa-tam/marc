@@ -410,9 +410,12 @@ extent. Its deterministic complete-frame encoder now plans fully before output
 admission, explicitly serializes the generic header and every descriptor, and
 encodes every exact payload subspan. It reproduces the independent vector,
 round-trips split Literals and generated Matches deterministically, and leaves
-short output unchanged. It remains `Specified`: no streaming transform, C
-ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability entry
-exists yet.
+short output unchanged. Its bounded known-size streaming encoder now emits
+the canonical prefix and byte-identical one-shot frames under one-byte input
+and output chunking, keeps `Flush` non-terminal, and enforces exact input,
+workspace, and sticky error contracts. It remains `Specified`: no streaming
+decoder, C ABI, CLI, benchmark, fuzz target, completion matrix, or
+interoperability entry exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
