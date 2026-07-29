@@ -1139,6 +1139,13 @@ regions and decoder-view alignment remain authoritative results of the public
 requirements query. The shared temporary-file path preserves overwrite
 refusal and whole-operation transactional publication.
 
+The dependency-free benchmark selects the identical public profile and creates
+fresh public transforms outside every timed region. It first requires a
+byte-exact round trip, then reports compression ratio, directional throughput,
+all queried workspace regions, and peak caller-reserved workspace. Its checked
+complete-stream capacity is `80 + 16N + 8632K`, where `N` is raw input bytes
+and `K` is the number of nonempty 64-KiB outer frames.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

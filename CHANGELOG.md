@@ -52,7 +52,9 @@ format versions, and C ABI versions are independent namespaces.
   caps input, output, blocks, and calls, and retains permanent atomic
   regressions for truncation, extreme frame lengths, and an invalid descriptor.
   The explicit `lz77-rans` CLI selector now uses only the public C ABI with a
-  fixed bounded profile and retains transactional file publication.
+  fixed bounded profile and retains transactional file publication. Its
+  dependency-free benchmark adapter verifies a public-ABI round trip before
+  reporting ratio, throughput, and direction-specific workspace use.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

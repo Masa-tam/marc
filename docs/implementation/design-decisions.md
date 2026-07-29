@@ -8420,6 +8420,31 @@ prove nonempty and empty round trips, overwrite refusal, malformed-stream
 cleanup, and strict trailing-data rejection. This step adds no benchmark
 adapter, readiness claim, interoperability schema, or external evidence.
 
+## DD-460: LZ77 rANS benchmark verifies before measuring
+
+- Date: 2026-07-29
+- Status: accepted
+
+Add `lz77-rans` to the dependency-free benchmark through only the public C
+requirements, factory, process, and destroy lifecycle. Use DD-459's
+65,536-byte raw frame and entropy block, 1,048,576-byte token ceiling,
+sixteen-block ceiling, 1,048,704-byte payload ceiling, and 2,171,320-byte
+encoder aggregate policy.
+
+Reserve complete-stream output with checked arithmetic as
+`80 + 16N + 8632K`, where `N` is total raw input and `K` is the nonempty frame
+count. The per-frame term is one 56-byte generic header, sixteen 528-byte
+descriptors, and sixteen eight-byte final states. This conservative bound
+allows final-short frames to reserve fewer actual blocks without changing
+the format.
+
+Query encoder and decoder workspaces independently, verify a byte-exact round
+trip before timing, and create each timed transform outside the elapsed
+region. Report ratio, direction-specific elapsed time and throughput, all six
+workspace extents, and peak caller-reserved workspace. Performance values are
+observations rather than thresholds. This step changes no format or C ABI and
+adds no interoperability entry or external evidence.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

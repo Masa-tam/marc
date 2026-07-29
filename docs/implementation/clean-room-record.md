@@ -8914,6 +8914,30 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4; all thirty existing benchmark
   smokes and schema-19 compatibility remained successful.
 
+## 2026-07-29 - LZ77 plus rANS public benchmark
+
+- Authoring method: extended marc's dependency-free public-C measurement
+  harness by the already admitted fixed LZ77/rANS profile.
+- References used: DD-460, DD-459's bounded CLI configuration, the public
+  `marc_lz77_rans_*` lifecycle, and marc's existing checked capacity and
+  measurement conventions.
+- Known implementations intentionally not consulted: external LZ77/rANS
+  benchmarks, wrappers, allocation layouts, capacity formulas, performance
+  results, source code, and test suites.
+- Independent decisions: reserve `80 + 16N + 8632K` complete-stream bytes;
+  obtain both workspaces from the public query; verify exact round trip before
+  timing; and report observed performance without a threshold.
+- Generated-code task description: add benchmark selector, configuration,
+  requirements and factory dispatch, checked capacity support, usage text,
+  smoke registration, and documentation/provenance updates.
+- Similarity review: the adapter composes only marc's existing public profile
+  and repository-owned harness. No external benchmark control flow, capacity
+  expression, output schema, or test expression was compared.
+- Local validation: the focused benchmark smoke passed under MSVC and
+  ClangCL. The complete Release suite passed 1,788/1,788 under both compilers
+  using official CMake 4.3.4; all thirty-one benchmark smokes and schema-19
+  compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

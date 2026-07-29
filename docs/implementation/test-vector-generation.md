@@ -3384,6 +3384,13 @@ encode to the existing destination and require refusal. Decode
 and leave neither the destination nor its `.tmp` sibling. Finally round-trip
 an empty file.
 
+For the LZ77 plus rANS benchmark smoke, select `lz77-rans`, use repository
+`README.md` as the ordinary input, and request one iteration. Require the
+adapter to complete a public-ABI encode/decode equality check before timing
+and to report the selector, input and encoded sizes, ratio, both directional
+times and throughputs, all six queried workspace extents, and peak workspace.
+No throughput or compression-ratio threshold is a test oracle.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

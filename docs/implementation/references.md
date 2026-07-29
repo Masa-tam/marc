@@ -1774,3 +1774,9 @@ The LZ77 plus rANS CLI adapter uses only DD-459, the published
 marc's existing transactional file adapter and repository-authored integration
 fixture. No external CLI, combined codec wrapper, allocation layout, archive,
 source code, or test suite was consulted.
+
+The LZ77 plus rANS benchmark adapter uses only DD-460, DD-459's fixed public
+profile, the published `marc_lz77_rans_*` lifecycle, checked local capacity
+arithmetic, and marc's existing dependency-free measurement harness. No
+external benchmark wrapper, performance result, capacity formula, source code,
+or test suite was consulted.

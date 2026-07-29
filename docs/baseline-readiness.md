@@ -54,7 +54,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
-| `lz77-rans` | First rANS composition | CLI admitted | Not included |
+| `lz77-rans` | First rANS composition | Benchmark admitted | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 19 contains thirty archives: the frozen twenty-nine-entry schema-18 set
@@ -104,7 +104,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -367,8 +367,10 @@ determinism, arbitrary chunking, sticky terminal results, and atomic malformed
 final-frame rejection. Its bounded complete-frame plus streaming fuzz target
 now fixes all byte and rANS-view workspaces and retains permanent atomic
 regressions. Its transactional CLI selector now passes the standard file-level
-admission suite exclusively through the public C ABI. No benchmark adapter,
-full readiness claim, or interoperability entry exists yet.
+admission suite exclusively through the public C ABI. Its dependency-free
+benchmark verifies an exact public-ABI round trip before reporting ratio,
+directional throughput, and queried workspace extents. No full readiness claim
+or interoperability entry exists yet.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

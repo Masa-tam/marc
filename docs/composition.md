@@ -68,8 +68,10 @@ bounded dual-decoder fuzz target uses fixed encoded, view, token, raw, and
 output arrays and retains atomic regressions for truncation, saturated frame
 lengths, and invalid rANS metadata. Its explicit CLI selector now uses only
 the public C lifecycle and passes binary and empty round trips, overwrite
-refusal, and transactional malformed and trailing-data rejection. Benchmark
-and interoperability admission remain separate later steps.
+refusal, and transactional malformed and trailing-data rejection. Its
+dependency-free benchmark now verifies the public profile before reporting
+throughput, ratio, and both direction-specific workspaces. Interoperability
+admission remains a separate later step.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
