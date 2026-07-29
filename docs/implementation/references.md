@@ -1786,3 +1786,9 @@ order, marc's deterministic 8,193-byte fixture, the published `lz77-rans` CLI
 profile, and the repository-owned generator, verifier, and compatibility
 conversion. No external interoperability schema, manifest, archive corpus,
 source code, or test suite was consulted.
+
+The LZSS plus rANS reserved representation uses only DD-462, marc's already
+documented LZSS variant-1 token grammar, scalar rANS variant 1, generic frame
+serialization, and the existing independent standalone encoders. No external
+LZSS/rANS composition, archive format, combined-codec implementation, encoded
+corpus, source code, or test suite was consulted.

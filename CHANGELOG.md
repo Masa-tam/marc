@@ -7,6 +7,13 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lzss-rans` composition with a complete decoder-visible
+  representation and independent 592-byte raw-`A` frame. The complete
+  variable-length LZSS token sequence is frozen before scalar rANS block
+  coding; checked bounds cover `S <= 2F`, `K = ceil(S/B)`,
+  `8K <= P <= S + 8K`, and `528K` descriptor bytes. Entropy validation
+  precedes complete LZSS token validation and any raw publication.
+
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77
   tokens are finalized before scalar rANS block coding; checked bounds cover

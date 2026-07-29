@@ -335,9 +335,9 @@ The pushed Windows/MSVC and Ubuntu 24.04 artifacts plus an independently
 generated Ubuntu 26.04/Clang bundle have passed the complete four-direction
 external verification contract at revision `802c7a1ab913b07ee79a04fa5b3390c061c88966`.
 
-`lz77-rans` is the active admission composition and the first reserved rANS
-composition. DD-447 fixes complete canonical LZ77 token staging before rANS,
-independent byte-block boundaries within an outer frame, checked
+`lz77-rans` is the completed first rANS composition. DD-447 fixes complete
+canonical LZ77 token staging before rANS, independent byte-block boundaries
+within an outer frame, checked
 `S = 16F`, `K = ceil(S/B)`, `P = S + 8K`, and `528K` descriptor ceilings,
 strict entropy-before-dictionary validation, and an independent 592-byte
 single-Literal frame. Its first bounded complete-frame validator now admits
@@ -389,6 +389,14 @@ profile is `Ready`.
 Candidate pairings remain
 listed in `docs/composition.md`; they enter the queue only after their exact
 decoder-visible representation and reserved public name are specified.
+`lzss-rans` is now the active admission composition. DD-462 fixes the complete
+variable-length LZSS token boundary before scalar rANS, checked `S <= 2F`,
+`K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes,
+entropy-before-dictionary validation, and an independently assembled 592-byte
+single-Literal frame. It remains `Specified`: no combined validator, encoder,
+streaming transform, C ABI, CLI, benchmark, fuzz target, completion matrix, or
+interoperability entry exists yet.
+
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
 `4F` token and `132F` payload ceilings, adjacent-phrase and expansion-workspace

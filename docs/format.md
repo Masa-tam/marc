@@ -3874,6 +3874,65 @@ The 512-byte frequency region is zero except descriptor offsets 16..17
 follow the descriptor. This sparse notation uniquely defines all 592 bytes
 without listing the remaining 254 zero-frequency entries.
 
+## LZSS variant 1 plus rANS variant 1
+
+The reserved composition name is `lzss-rans`. Format version 1.0 uses the
+ordinary 16-byte LZSS variant-1 parameter extension, no entropy-parameter
+extension, and a nonzero stream entropy block size `B`. Both the LZSS window
+and every rANS model reset at each outer frame.
+
+For a nonempty raw frame of `F` bytes, LZSS first emits its complete canonical
+variable-length token sequence. Let its exact byte size be `S`; require
+`0 < S <= 2F`. rANS consumes this sequence as untyped bytes and divides it
+into `K = ceil(S/B)` consecutive blocks. The final block may be short, and a
+block boundary may split either a two-byte Literal or a nine-byte Match token.
+No rANS block crosses an outer frame.
+
+The generic frame fields are:
+
+- `uncompressed size = F`;
+- `dictionary serialized size = S`;
+- `entropy block count = K`;
+- `block descriptors size = 528K`;
+- `compressed payload size = P`, the checked sum of all block payload sizes.
+
+Each block uses scalar rANS variant 1 exactly as specified above. Require
+`8K <= P <= S + 8K`, retain the LZSS composition cap `F <= 2^20`, and check
+all products and sums before allocation or entropy decoding.
+
+Decoding validates the stream profile and LZSS parameters, generic header and
+complete frame extent, exact block count, descriptor region, every rANS model
+and state path, and exact aggregate payload exhaustion before reconstructing
+exactly `S` private token bytes. It then parses the complete two- or nine-byte
+LZSS token grammar, rejecting unknown tags, truncation, invalid distance or
+length, output overrun, and any raw extent other than exactly `F`, before
+private raw reconstruction or caller-visible publication.
+
+For raw `A`, LZSS emits `00 41`. With `B = 65,536`, this is one rANS block
+whose only nonzero normalized frequencies are symbols `00:2048` and
+`41:2048`. Its payload is:
+
+```text
+00 10 00 00 02 00 00 00
+```
+
+The complete frame is 592 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00 08 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`02 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 08`) and 146..147 (`00 08`). The eight payload bytes above immediately
+follow the descriptor. This sparse notation uniquely fixes every frame byte.
+This section reserves bytes and a name only; it publishes no combined
+implementation or public entry point.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

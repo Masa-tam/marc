@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Candidate | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Specified | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
@@ -76,6 +76,17 @@ exact-order verification, reordered-manifest rejection, and schemas 1 through
 19 compatibility pass. Four-direction external schema-20 verification passed
 at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+`lzss-rans` is the second rANS composition to receive a reserved
+representation. LZSS first freezes its complete variable-length canonical
+token sequence with checked bound `S <= 2F`; scalar rANS then divides those
+untyped bytes into `K = ceil(S/B)` blocks with payload bound
+`8K <= P <= S + 8K` and exact descriptor extent `528K`. A block may split a
+two-byte Literal or nine-byte Match but cannot cross the outer frame. Entropy
+validation and complete private token reconstruction precede LZSS grammar,
+reference, overlap, and exact raw-extent validation. The independently
+derived raw-`A` vector fixes the complete 592-byte frame. No combined
+implementation or public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

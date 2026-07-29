@@ -8995,6 +8995,35 @@ discarded and the reviewed seed retained.
   environment labels. No external encoded representation or implementation
   structure was compared.
 
+## 2026-07-29 - LZSS plus rANS reserved representation
+
+- Authoring method: composed marc's already documented LZSS token grammar,
+  scalar rANS block representation, and generic frame serialization without
+  consulting another combined format.
+- References used: DD-462, the local LZSS variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame header
+  serializer, checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZSS/rANS
+  compositions, archive formats, combined encoders or decoders, encoded
+  corpora, source code, and test suites.
+- Independent decisions: reserve `lzss-rans`; retain format 1.0 and the
+  16-byte LZSS parameter extension; freeze complete variable tokens before
+  rANS; permit entropy blocks to split tokens but not frames; require
+  `S <= 2F`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and `528K` descriptor
+  bytes; and validate entropy before LZSS grammar or raw publication.
+- Generated-code task description: specify the complete decoder-visible
+  boundary and sparse raw-`A` frame, add a standalone-component vector test,
+  reserve the matrix cell, and update architecture, readiness, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the representation is a direct composition of marc's
+  independent local formats and explicit serializers. No external control
+  flow, naming scheme, capacity formula, encoded bytes, or test expression was
+  compared.
+- Local validation: the focused sparse raw-`A` vector passed 1/1 under both
+  MSVC and ClangCL. The complete Release suite passed 1,789/1,789 under both
+  compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
+  schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

@@ -1157,6 +1157,21 @@ The established four-direction exchange verified all thirty-one schema-20
 archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad`.
 
+### Specified LZSS plus rANS boundary
+
+The second rANS composition freezes the complete canonical LZSS byte sequence
+before entropy processing. Scalar rANS remains unaware of the variable
+two-byte Literal and nine-byte Match grammar, so a block may split either
+token while the outer frame remains the shared reset boundary.
+
+For raw frame size `F`, token extent `S`, block size `B`, and block count `K`,
+the checked bounds are `S <= 2F`, `K = ceil(S/B)`,
+`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. Decoding must admit
+and validate the complete entropy representation before reconstructing the
+private token region, then validate the whole LZSS grammar and exact raw
+extent before any raw publication. This boundary currently fixes format and
+the independent raw-`A` vector only.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

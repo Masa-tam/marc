@@ -3403,6 +3403,18 @@ entries. Derive schema 19 by removing only entry 31 and restoring
 `schema_version=19` and `codec_set=marc-cli-v19`, then exercise the unchanged
 schema-19-through-schema-1 compatibility chain.
 
+For the first LZSS plus rANS vector, begin with raw byte `41` and independently
+require the standalone LZSS encoder to emit Literal token `00 41`. Submit only
+those two frozen bytes to a fresh standalone scalar rANS encoder. Require
+normalized frequencies `00:2048` and `41:2048` and payload
+`00 10 00 00 02 00 00 00`.
+
+Serialize one generic frame declaring raw size 1, dictionary size 2, payload
+size 8, one block, and 528 descriptor bytes. Require descriptor prefix
+`02 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`, zero frequencies except
+`00 08` at offsets 16..17 and 146..147, and the exact payload suffix. Compare
+all 592 bytes against a separately assembled sparse expected array.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

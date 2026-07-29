@@ -1084,6 +1084,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_adaptive_huffman_vector_tests.cpp
         tests/lz77_dynamic_range_vector_tests.cpp
         tests/lz77_rans_vector_tests.cpp
+        tests/lzss_rans_vector_tests.cpp
         tests/lz77_dynamic_range_frame_tests.cpp
         tests/lz77_rans_frame_tests.cpp
         tests/lz77_rans_frame_streaming_encoder_tests.cpp

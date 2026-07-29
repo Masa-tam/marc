@@ -8468,6 +8468,37 @@ This is local generation and verification evidence. Cross-platform canonical
 bytes remain unproven until CI artifacts and an independent platform complete
 the four established verification directions.
 
+## DD-462: LZSS rANS entropizes the finalized variable-token stream
+
+- Date: 2026-07-29
+- Status: accepted
+
+Reserve `lzss-rans` for LZSS variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZSS parameter extension,
+empty entropy parameters, and canonical variable-length token serialization.
+Complete the token byte stream before entropy processing. rANS treats it as
+untyped bytes, so a block may split a two-byte Literal or nine-byte Match but
+cannot cross an outer frame. Reset the LZSS window and every rANS model and
+state at each frame.
+
+For raw frame size `F`, use the checked token bound `S <= 2F`. For nonzero
+rANS block size `B`, require `K = ceil(S/B)`, payload bounds
+`8K <= P <= S + 8K`, and exact descriptor extent `528K`. Retain the
+composition cap `F <= 2^20`. Validate generic extents and all rANS descriptors,
+models, state paths, terminal states, and payload exhaustion before
+reconstructing the exact private token region. Only then parse the complete
+LZSS token grammar and validate tags, field truncation, distance, match length,
+overlap semantics, and exact raw extent before any raw reconstruction or
+publication.
+
+For raw `A`, independently freeze Literal token `00 41`. Its normalized rANS
+model is `00:2048, 41:2048`, final-state payload is
+`00 10 00 00 02 00 00 00`, and the complete frame is 592 bytes. Prove this by
+composing only the existing standalone LZSS encoder, rANS encoder, and generic
+serializers. This decision specifies bytes and a reserved name only; it does
+not publish a combined decoder, encoder, stream transform, C factory, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28
