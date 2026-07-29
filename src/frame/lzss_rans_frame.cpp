@@ -3,6 +3,7 @@
 #include "core/checked_math.hpp"
 #include "entropy/rans_format.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -36,7 +37,9 @@ inline constexpr std::uint64_t max_dictionary_bytes_per_raw_byte = 2;
     const std::span<entropy::internal::RansBlockView> views,
     const std::span<std::byte> dictionary_staging,
     const bool require_raw_staging,
-    const std::span<std::byte> raw_staging) noexcept {
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzssRansFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -138,6 +141,10 @@ inline constexpr std::uint64_t max_dictionary_bytes_per_raw_byte = 2;
     }
     if (require_raw_staging && raw_staging.size() < result.raw_size) {
         result.error = LzssRansFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error = LzssRansFrameValidationError::raw_output_too_small;
         return result;
     }
 
@@ -277,7 +284,8 @@ LzssRansFrameValidationResult validate_lzss_rans_frame(
     const std::span<std::byte> dictionary_staging) noexcept {
     return validate_frame(
         stream, parameters, limits, expected_sequence,
-        output_already_committed, input, views, dictionary_staging, false, {});
+        output_already_committed, input, views, dictionary_staging, false, {},
+        false, {});
 }
 
 LzssRansFrameValidationResult decode_lzss_rans_frame_to_staging(
@@ -293,13 +301,40 @@ LzssRansFrameValidationResult decode_lzss_rans_frame_to_staging(
     auto result = validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, views, dictionary_staging, true,
-        raw_staging);
+        raw_staging, false, {});
     if (result.error != LzssRansFrameValidationError::none) {
         return result;
     }
 
     (void)reconstruct_validated_tokens(
         result, parameters, limits, dictionary_staging, raw_staging);
+    return result;
+}
+
+LzssRansFrameValidationResult decode_lzss_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::RansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging, true,
+        raw_staging, true, output);
+    if (result.error != LzssRansFrameValidationError::none) {
+        return result;
+    }
+
+    if (!reconstruct_validated_tokens(
+            result, parameters, limits, dictionary_staging, raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 

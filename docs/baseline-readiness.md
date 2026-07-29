@@ -400,10 +400,12 @@ staging, then applies complete LZSS grammar, reference, overlap, and exact
 raw-extent validation without reconstructing raw bytes. Its bounded private
 decoder now admits and counts the entire raw staging region before entropy
 work, then reconstructs only the completely validated Literal and overlap-
-Match sequence into caller-owned disposable storage. It remains `Specified`:
-no transactional public-output decoder, encoder, streaming transform, C ABI,
-CLI, benchmark, fuzz target, completion matrix, or interoperability entry
-exists yet.
+Match sequence into caller-owned disposable storage. Its transactional frame
+decoder now preflights the complete destination before entropy processing and
+publishes the private raw frame with one copy only after every layer succeeds.
+It remains `Specified`: no encoder, streaming transform, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry exists
+yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

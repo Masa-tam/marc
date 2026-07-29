@@ -3436,6 +3436,14 @@ plus raw staging must fail before token or raw mutation. Corrupt a later rANS
 block and separately encode invalid LZSS grammar; neither may change private
 raw staging.
 
+For transactional LZSS plus rANS publication, give the independent raw-`A`
+frame oversized sentinel-filled private and output spans. Require one private
+and one published `41` byte with both tails unchanged. Repeat the canonical
+Literal plus overlap-Match case and require exactly six published `A` bytes
+with the seventh sentinel intact. A zero-length output for the one-byte frame
+must fail before token or raw mutation. A malformed later rANS block and
+invalid reconstructed LZSS grammar must leave every output byte unchanged.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

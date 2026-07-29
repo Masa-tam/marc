@@ -9085,6 +9085,34 @@ discarded and the reviewed seed retained.
   1,805/1,805 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS transactional frame decoder
+
+- Authoring method: wrapped DD-464's private reconstruction with a distinct
+  caller output span and marc's established validate-and-copy publication
+  boundary.
+- References used: DD-465, DD-464, the local complete-frame validator and
+  private decoder, checked caller capacity, and bounded span copying.
+- Known implementations intentionally not consulted: external combined
+  decoders, publication protocols, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight complete output capacity before entropy
+  work; retain private staging; publish exactly once only after successful
+  reconstruction; exclude caller output from internal workspace; and preserve
+  output on every failure.
+- Generated-code task description: add caller-visible transactional decoding
+  and a stable short-output error; prove Literal and overlap-Match
+  publication, short-output preservation of all staging, and malformed
+  entropy and dictionary output atomicity; update format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation uses only marc's existing private
+  decoder and standard bounded-span copying. No external publication control
+  flow, buffering scheme, malformed vector, or test expression was compared.
+- Local validation: the focused validator and transactional-decoder suite
+  passed 20/20 under both MSVC and ClangCL. The complete Release suite passed
+  1,809/1,809 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

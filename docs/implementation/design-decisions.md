@@ -8553,6 +8553,28 @@ caller-visible publication, encoder, streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
 entry.
 
+## DD-465: LZSS rANS publication is one transactional copy
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-464. Require a distinct
+output span with capacity for the entire declared raw frame before descriptor
+parsing, entropy output, token staging mutation, or private raw mutation.
+Caller output is publication storage rather than internal workspace and is
+therefore not included in DD-464's aggregate buffered-byte total.
+
+Retain DD-463's complete entropy and token validation and DD-464's private raw
+reconstruction. Only after the LZSS decoder succeeds may the wrapper copy
+exactly `F` bytes from private staging to output once. No incremental or
+partial caller-visible publication is permitted.
+
+Prove single-Literal publication, atomic overlap-Match publication, output
+capacity rejection before all private mutation, and unchanged output for
+malformed later entropy and invalid reconstructed LZSS grammar. This decision
+adds no encoder, streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

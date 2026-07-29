@@ -1184,6 +1184,12 @@ free LZSS decoder reconstruct Literal and forward-overlap Match tokens into
 that disposable caller-owned span. No caller-visible publication boundary is
 present yet.
 
+The transactional decoder adds a distinct caller-visible output span. It
+preflights capacity for the complete raw frame before descriptor parsing,
+retains the private reconstruction boundary, and copies exactly the validated
+`F` bytes once after success. Output capacity is not internal workspace, and
+every failure leaves the caller-visible span unchanged.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -1804,3 +1804,8 @@ existing allocation-free LZSS decoder, documented overlap-copy semantics,
 checked aggregate arithmetic, and caller-owned bounded spans. No external
 combined decoder, reconstruction strategy, buffer layout, source code,
 malformed corpus, or test suite was consulted.
+
+The LZSS plus rANS transactional frame decoder uses only DD-465, DD-464's
+private raw decoder, caller-owned spans, exact preflight capacity, and bounded
+byte copying. No external publication protocol, output mutation schedule,
+combined decoder, source code, malformed corpus, or test suite was consulted.

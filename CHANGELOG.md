@@ -20,7 +20,9 @@ format versions, and C ABI versions are independent namespaces.
   Its bounded private decoder additionally admits the complete raw staging
   extent before entropy work, counts it in aggregate storage, and reconstructs
   only fully validated Literal and overlap-Match tokens without publishing
-  caller-visible output.
+  caller-visible output. Its transactional complete-frame decoder now admits
+  complete destination capacity before entropy work and copies the private raw
+  frame exactly once only after all validation and reconstruction succeeds.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

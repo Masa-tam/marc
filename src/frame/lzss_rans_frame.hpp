@@ -26,6 +26,7 @@ enum class LzssRansFrameValidationError : std::uint8_t {
     views_too_small,
     dictionary_staging_too_small,
     raw_staging_too_small,
+    raw_output_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
@@ -88,6 +89,21 @@ decode_lzss_rans_frame_to_staging(
     std::span<entropy::internal::RansBlockView> views,
     std::span<std::byte> dictionary_staging,
     std::span<std::byte> raw_staging) noexcept;
+
+// Validates every layer, reconstructs into private raw staging, and publishes
+// to output only after reconstruction succeeds. Input, views, both staging
+// extents, and output must be mutually non-overlapping.
+[[nodiscard]] LzssRansFrameValidationResult decode_lzss_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::RansBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> raw_staging,
+    std::span<std::byte> output) noexcept;
 
 } // namespace marc::frame
 

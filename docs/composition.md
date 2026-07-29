@@ -92,7 +92,10 @@ private token staging, and applies the existing complete LZSS validator
 without reconstructing raw bytes. Its bounded private decoder additionally
 preflights and counts separate raw staging, then reconstructs the validated
 Literal and overlap-Match sequence without publishing caller-visible output.
-No combined encoder or public entry point exists yet.
+Its transactional frame decoder admits complete output capacity before
+entropy work and copies the private raw extent only after success, leaving
+output unchanged on every failure. No combined encoder or public entry point
+exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
