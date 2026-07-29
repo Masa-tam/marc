@@ -3391,6 +3391,18 @@ and to report the selector, input and encoded sizes, ratio, both directional
 times and throughputs, all six queried workspace extents, and peak workspace.
 No throughput or compression-ratio threshold is a test oracle.
 
+For interoperability schema 20, retain the exact schema-19 archive order over
+the deterministic 8,193-byte fixture and append exactly one `lz77-rans`
+archive as entry 31. Set `schema_version` to 20 and `codec_set` to
+`marc-cli-v20`; record every complete archive's size and SHA-256 only after
+its local decode matches the fixture.
+
+Require exact thirty-one-entry order, foreign decode equality, byte-identical
+local re-encoding, and rejection after swapping the first two manifest
+entries. Derive schema 19 by removing only entry 31 and restoring
+`schema_version=19` and `codec_set=marc-cli-v19`, then exercise the unchanged
+schema-19-through-schema-1 compatibility chain.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

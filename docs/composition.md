@@ -71,12 +71,14 @@ the public C lifecycle and passes binary and empty round trips, overwrite
 refusal, and transactional malformed and trailing-data rejection. Its
 dependency-free benchmark now verifies the public profile before reporting
 throughput, ratio, and both direction-specific workspaces. Interoperability
-admission remains a separate later step.
+schema 20 appends it once after the frozen schema-19 order; local generation,
+exact-order verification, reordered-manifest rejection, and schemas 1 through
+19 compatibility pass. Cross-platform schema-20 evidence remains pending.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 19 includes all current published profiles while
+publication: schema 20 includes all current published profiles while
 preserving the exact earlier schema profile sets.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a

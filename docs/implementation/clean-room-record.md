@@ -8938,6 +8938,35 @@ discarded and the reviewed seed retained.
   using official CMake 4.3.4; all thirty-one benchmark smokes and schema-19
   compatibility remained successful.
 
+## 2026-07-29 - Interoperability schema 20
+
+- Authoring method: extended marc's append-only repository-owned manifest
+  generator and explicit multi-version verifier by one already admitted
+  public CLI profile.
+- References used: DD-461, the frozen schema-19 profile order, the local
+  deterministic 8,193-byte fixture, `lz77-rans`, and the existing
+  generator/verifier/compatibility scripts.
+- Known implementations intentionally not consulted: external manifest
+  protocols, interoperability suites, encoded corpora, archive formats,
+  source code, and test suites.
+- Independent decisions: append `lz77-rans` only as entry 31; name codec set
+  `marc-cli-v20`; preserve schemas 1 through 19 explicitly; reject reordered
+  schema-20 manifests; and separate local schema evidence from future external
+  canonical-byte evidence.
+- Generated-code task description: extend generation and verification to
+  schema 20, convert schema 20 to 19 by removing only its suffix, exercise the
+  complete earlier compatibility chain, and update format, interoperability,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the change follows only marc's established append-only
+  manifest protocol and local scripts. No external schema structure,
+  conversion order, encoded fixture, or test expression was compared.
+- Local validation: schema-20 generation, thirty-one-archive self-verification,
+  reordered-manifest rejection, and schemas 1 through 19 compatibility passed
+  under MSVC and ClangCL. The complete Release suite passed 1,788/1,788 under
+  both compilers using official CMake 4.3.4; all thirty-one benchmark smokes
+  remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

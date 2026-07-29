@@ -3841,6 +3841,10 @@ count is `max_blocks_per_frame`. These are conservative caller-capacity
 requirements, not extra serialized fields and not permission to exceed the
 per-frame aggregate checks performed from actual declared extents.
 
+Interoperability schema 20 emits this unchanged profile as `lz77-rans` after
+the frozen thirty-entry schema-19 set. The schema changes only the external
+manifest profile set; it adds no stream field or variant.
+
 For raw `A`, LZ77 emits:
 
 ```text

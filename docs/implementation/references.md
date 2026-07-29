@@ -1780,3 +1780,9 @@ profile, the published `marc_lz77_rans_*` lifecycle, checked local capacity
 arithmetic, and marc's existing dependency-free measurement harness. No
 external benchmark wrapper, performance result, capacity formula, source code,
 or test suite was consulted.
+
+Interoperability schema 20 uses only DD-461, the frozen schema-19 manifest
+order, marc's deterministic 8,193-byte fixture, the published `lz77-rans` CLI
+profile, and the repository-owned generator, verifier, and compatibility
+conversion. No external interoperability schema, manifest, archive corpus,
+source code, or test suite was consulted.

@@ -55,6 +55,8 @@ format versions, and C ABI versions are independent namespaces.
   fixed bounded profile and retains transactional file publication. Its
   dependency-free benchmark adapter verifies a public-ABI round trip before
   reporting ratio, throughput, and direction-specific workspace use.
+  Interoperability schema 20 appends the unchanged CLI profile as archive 31
+  while retaining explicit verification of schemas 1 through 19.
 
 - The reserved `lzmw-dynamic-range` composition now has an exact
   decoder-visible representation and an independent raw-`A` vector assembled

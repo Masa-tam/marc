@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 19 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 20 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 19 |
+| Profile | Purpose | Local status | Interoperability schema 20 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -54,14 +54,15 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-dynamic-range` | Fourth Dynamic Range composition | Ready | Included |
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
-| `lz77-rans` | First rANS composition | Benchmark admitted | Not included |
+| `lz77-rans` | First rANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 19 contains thirty archives: the frozen twenty-nine-entry schema-18 set
-followed by the LZMW Dynamic Range profile. Schemas 1 through 18
+Schema 20 contains thirty-one archives: the frozen thirty-entry schema-19 set
+followed by the LZ77 rANS profile. Schemas 1 through 19
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, twenty-seven, twenty-eight, and twenty-nine profiles;
+twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, and thirty
+profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -72,7 +73,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 19 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 20 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -104,7 +105,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -369,8 +370,10 @@ now fixes all byte and rANS-view workspaces and retains permanent atomic
 regressions. Its transactional CLI selector now passes the standard file-level
 admission suite exclusively through the public C ABI. Its dependency-free
 benchmark verifies an exact public-ABI round trip before reporting ratio,
-directional throughput, and queried workspace extents. No full readiness claim
-or interoperability entry exists yet.
+directional throughput, and queried workspace extents. Local schema-20
+generation, exact-order verification, reordered-manifest rejection, and
+schemas 1 through 19 compatibility now make the profile `Ready`. External
+cross-platform schema-20 verification remains pending.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It
