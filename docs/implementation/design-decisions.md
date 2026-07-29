@@ -8575,6 +8575,33 @@ malformed later entropy and invalid reconstructed LZSS grammar. This decision
 adds no encoder, streaming transform, profile calculator, C ABI, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-466: LZSS rANS planning freezes variable tokens first
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add a write-free exact-frame planner as the first combined encoder-side
+boundary. Use the standalone LZSS planner to determine exact token extent `S`,
+admit caller-owned token staging, and then invoke the standalone LZSS encoder
+once to freeze the complete canonical variable-length sequence. Reject empty
+or unexpected raw frame extents and enforce `0 < S <= 2F` before rANS work.
+
+Partition only that immutable token span into `K = ceil(S/B)` consecutive
+blocks. Plan each scalar rANS block independently with one local descriptor,
+sum exact payload sizes with checked arithmetic, enforce block-count and
+32-bit serialized-field limits, and count exact descriptor, payload, and
+token bytes against `max_internal_buffered_bytes`. Synthesize and validate the
+generic frame header before returning exact complete size
+`56 + 528K + P`. Accept no serialized output span.
+
+Prove the independent 592-byte Literal extent, a block split inside the
+Literal, deterministic planning of an encoder-generated overlap Match,
+staging shortage before mutation, empty and unexpected input rejection,
+block-count refusal, and aggregate workspace one byte short. This decision
+adds no serialized frame encoder, streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

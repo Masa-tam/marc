@@ -3935,8 +3935,10 @@ through the private LZSS-token boundary. The matching bounded decoder may
 reconstruct the validated tokens into separate private raw staging only after
 all entropy and dictionary checks succeed. Its transactional wrapper admits
 the complete caller output extent before entropy work and publishes with one
-copy after private reconstruction. This section publishes no public entry
-point.
+copy after private reconstruction. The write-free planner derives the same
+header and exact extents from a completely materialized canonical LZSS token
+sequence before any serialized output exists. This section publishes no
+public entry point.
 
 ## tANS variant 1
 

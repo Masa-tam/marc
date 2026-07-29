@@ -403,9 +403,12 @@ work, then reconstructs only the completely validated Literal and overlap-
 Match sequence into caller-owned disposable storage. Its transactional frame
 decoder now preflights the complete destination before entropy processing and
 publishes the private raw frame with one copy only after every layer succeeds.
-It remains `Specified`: no encoder, streaming transform, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry exists
-yet.
+Its write-free exact planner now freezes the canonical variable-length token
+sequence, plans every rANS block, applies block-count and aggregate workspace
+limits, validates the synthesized frame header, and reports the exact complete
+extent. It remains `Specified`: no serialized frame encoder, streaming
+transform, C ABI, CLI, benchmark, fuzz target, completion matrix, or
+interoperability entry exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

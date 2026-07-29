@@ -9113,6 +9113,36 @@ discarded and the reviewed seed retained.
   1,809/1,809 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS exact-frame planner
+
+- Authoring method: composed marc's deterministic LZSS planner and encoder,
+  scalar rANS block planner, checked arithmetic, and generic frame validator
+  into a write-free complete-frame sizing boundary.
+- References used: DD-466, the local LZSS and scalar rANS encoder contracts,
+  DD-462 bounds, caller-owned staging, and checked header validation.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: plan LZSS before staging admission; freeze the
+  complete canonical variable-token sequence; plan rANS over only immutable
+  staging; retain one temporary descriptor; count exact descriptor, payload,
+  and token workspace; validate the synthesized header; and accept no
+  serialized output span.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A`, intra-Literal split, and generated-
+  Match determinism tests, guarded staging shortage, empty and unexpected
+  input rejection, block-count and aggregate limits; update format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  independently specified planners, encoders, validators, serializers, and
+  bounded spans. No external planning control flow, capacity formula, encoded
+  bytes, or test expression was compared.
+- Local validation: the focused validator, decoder, and planner suite passed
+  26/26 under both MSVC and ClangCL. The complete Release suite passed
+  1,815/1,815 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

@@ -23,6 +23,10 @@ format versions, and C ABI versions are independent namespaces.
   caller-visible output. Its transactional complete-frame decoder now admits
   complete destination capacity before entropy work and copies the private raw
   frame exactly once only after all validation and reconstruction succeeds.
+  Its write-free exact-frame planner now freezes canonical LZSS staging,
+  plans every rANS block, enforces block and aggregate limits, validates the
+  synthesized frame header, and reports the exact serialized extent without
+  accepting an output buffer.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

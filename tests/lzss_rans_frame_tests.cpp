@@ -551,3 +551,110 @@ TEST(LzssRansFrameDecoder, MalformedLayersNeverPublishOutput) {
     EXPECT_EQ(output[0], std::byte{0xa5});
     EXPECT_EQ(output[1], std::byte{0xa5});
 }
+
+TEST(LzssRansFrameEncoder, PlansExactHandVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, literal_a_token.size()> staging{};
+    const auto result = marc::frame::plan_lzss_rans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, LzssRansFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_EQ(result.descriptor_size, 528U);
+    EXPECT_EQ(result.payload_size, 8U);
+    EXPECT_EQ(result.block_count, 1U);
+    EXPECT_EQ(result.block_index, 1U);
+    EXPECT_EQ(result.serialized_size, single_literal_frame().size());
+    EXPECT_EQ(staging, literal_a_token);
+}
+
+TEST(LzssRansFrameEncoder, PlansBlockThatSplitsLiteral) {
+    constexpr std::array raw{std::byte{'A'}};
+    constexpr std::uint32_t block_size = 1;
+    std::array<std::byte, literal_a_token.size()> staging{};
+    const auto result = marc::frame::plan_lzss_rans_frame(
+        stream_for(1, block_size), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, LzssRansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_EQ(result.block_count, 2U);
+    EXPECT_EQ(result.block_index, 2U);
+    EXPECT_EQ(result.descriptor_size, 2U * 528U);
+    EXPECT_EQ(result.payload_size, 2U * 8U);
+    EXPECT_EQ(staging, literal_a_token);
+}
+
+TEST(LzssRansFrameEncoder, PlansGeneratedMatchDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'},
+        std::byte{'A'}, std::byte{'A'}, std::byte{'A'}};
+    constexpr std::uint32_t block_size = 3;
+    std::array<std::byte, raw.size() * 2> first{};
+    std::array<std::byte, raw.size() * 2> second{};
+    const auto first_plan = marc::frame::plan_lzss_rans_frame(
+        stream_for(raw.size(), block_size), {}, {}, 0, 0, raw, first);
+    const auto second_plan = marc::frame::plan_lzss_rans_frame(
+        stream_for(raw.size(), block_size), {}, {}, 0, 0, raw, second);
+    ASSERT_EQ(first_plan.error, LzssRansFrameValidationError::none);
+    ASSERT_EQ(second_plan.error, LzssRansFrameValidationError::none);
+    EXPECT_EQ(first_plan.dictionary_size, 11U);
+    EXPECT_EQ(first_plan.block_count, 4U);
+    EXPECT_EQ(first_plan.serialized_size, second_plan.serialized_size);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{first}.first(first_plan.dictionary_size),
+        std::span<const std::byte>{second}.first(
+            second_plan.dictionary_size)));
+    const auto validated =
+        marc::dictionary::internal::validate_lzss_token_stream(
+            std::span<const std::byte>{first}.first(
+                first_plan.dictionary_size),
+            {}, raw.size(), {});
+    EXPECT_EQ(validated.error,
+              marc::dictionary::internal::LzssValidationError::none);
+}
+
+TEST(LzssRansFrameEncoder, ShortStagingFailsBeforeMutation) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, literal_a_token.size() - 1> staging{};
+    staging.fill(std::byte{0xa5});
+    const auto result = marc::frame::plan_lzss_rans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging);
+    EXPECT_EQ(result.error, LzssRansFrameValidationError::
+                                dictionary_staging_too_small);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_EQ(staging[0], std::byte{0xa5});
+}
+
+TEST(LzssRansFrameEncoder, RejectsEmptyAndUnexpectedFrameExtent) {
+    std::array<std::byte, 4> staging{};
+    EXPECT_EQ(marc::frame::plan_lzss_rans_frame(
+                  stream_for(1), {}, {}, 0, 0,
+                  std::span<const std::byte>{}, staging).error,
+              LzssRansFrameValidationError::input_size_mismatch);
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(marc::frame::plan_lzss_rans_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, staging).error,
+              LzssRansFrameValidationError::input_size_mismatch);
+}
+
+TEST(LzssRansFrameEncoder, EnforcesBlockCountAndAggregateWorkspaceBounds) {
+    constexpr std::array raw{std::byte{'A'}};
+    constexpr std::uint32_t block_size = 1;
+    std::array<std::byte, literal_a_token.size()> staging{};
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = block_size;
+    limits.max_blocks_per_frame = 1;
+    auto result = marc::frame::plan_lzss_rans_frame(
+        stream_for(1, block_size), {}, limits, 0, 0, raw, staging);
+    EXPECT_EQ(result.error,
+              LzssRansFrameValidationError::entropy_encode_error);
+    EXPECT_EQ(result.entropy_encode_error,
+              marc::entropy::internal::RansEncodeError::limit_exceeded);
+
+    limits.max_blocks_per_frame = 2;
+    limits.max_internal_buffered_bytes =
+        2 * 528 + 2 * 8 + literal_a_token.size() - 1;
+    result = marc::frame::plan_lzss_rans_frame(
+        stream_for(1, block_size), {}, limits, 0, 0, raw, staging);
+    EXPECT_EQ(result.error, LzssRansFrameValidationError::workspace_limit);
+}

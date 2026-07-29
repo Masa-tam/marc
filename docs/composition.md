@@ -94,8 +94,10 @@ preflights and counts separate raw staging, then reconstructs the validated
 Literal and overlap-Match sequence without publishing caller-visible output.
 Its transactional frame decoder admits complete output capacity before
 entropy work and copies the private raw extent only after success, leaving
-output unchanged on every failure. No combined encoder or public entry point
-exists yet.
+output unchanged on every failure. Its write-free planner now freezes
+canonical LZSS staging, computes every exact rANS block payload, validates the
+synthesized header, and reports the complete frame extent without serialized
+output. No combined frame writer or public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

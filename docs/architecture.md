@@ -1190,6 +1190,13 @@ retains the private reconstruction boundary, and copies exactly the validated
 `F` bytes once after success. Output capacity is not internal workspace, and
 every failure leaves the caller-visible span unchanged.
 
+The encoder-side planner first computes and materializes the complete
+canonical LZSS token sequence in caller-owned staging. It then walks immutable
+consecutive rANS blocks, retaining only one temporary descriptor at a time,
+and sums exact payload and descriptor extents with checked arithmetic. The
+planner validates the synthesized generic header and returns the complete
+frame size without accepting or modifying serialized output.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

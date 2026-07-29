@@ -3444,6 +3444,16 @@ with the seventh sentinel intact. A zero-length output for the one-byte frame
 must fail before token or raw mutation. A malformed later rANS block and
 invalid reconstructed LZSS grammar must leave every output byte unchanged.
 
+For exact LZSS plus rANS planning, pass raw `A` through the standalone LZSS
+planner and encoder into caller-owned staging, then plan its rANS block without
+providing serialized output. Require `S=2`, `K=1`, descriptor size 528,
+payload size 8, and complete size 592. Repeat with `B=1` and require two
+blocks, 1,056 descriptor bytes, and 16 payload bytes. Plan six repeated `A`
+bytes twice with `B=3`; require the same canonical 11-byte Literal-plus-Match
+sequence and four blocks. Reject short staging without mutation, empty and
+unexpected frame extents, a block limit of one for the split Literal, and
+aggregate storage one byte below `528K + P + S`.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

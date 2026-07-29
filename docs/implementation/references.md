@@ -1809,3 +1809,9 @@ The LZSS plus rANS transactional frame decoder uses only DD-465, DD-464's
 private raw decoder, caller-owned spans, exact preflight capacity, and bounded
 byte copying. No external publication protocol, output mutation schedule,
 combined decoder, source code, malformed corpus, or test suite was consulted.
+
+The LZSS plus rANS exact-frame planner uses only DD-466, the local LZSS
+planner and encoder, scalar rANS block planner, generic frame-header validator,
+checked arithmetic, and bounded caller-owned staging. No external combined
+encoder, planning algorithm, allocation layout, source code, encoded corpus,
+or test suite was consulted.
