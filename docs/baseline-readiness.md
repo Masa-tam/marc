@@ -373,7 +373,9 @@ benchmark verifies an exact public-ABI round trip before reporting ratio,
 directional throughput, and queried workspace extents. Local schema-20
 generation, exact-order verification, reordered-manifest rejection, and
 schemas 1 through 19 compatibility now make the profile `Ready`. External
-cross-platform schema-20 verification remains pending.
+schema-20 verification subsequently passed in all four established directions
+at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad` across the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lz78-adaptive-huffman` now has its exact format, checked frame path, bounded
 streaming transforms, typed workspace profile, and public C ABI factory. It

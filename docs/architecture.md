@@ -1153,6 +1153,10 @@ once. The verifier requires exact order, count, size, SHA-256, foreign decode
 equality, and byte-identical local re-encoding while retaining explicit
 support for schemas 1 through 19.
 
+The established four-direction exchange verified all thirty-one schema-20
+archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad`.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

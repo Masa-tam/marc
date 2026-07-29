@@ -8967,6 +8967,34 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4; all thirty-one benchmark smokes
   remained successful.
 
+## 2026-07-29 - Interoperability schema 20 external validation record
+
+- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
+  no non-x86-64 or non-WSL Linux claim is added.
+- References used: DD-461, marc's schema-20 generator and verifier, the
+  successful pushed CI artifacts, and the independently generated Ubuntu
+  26.04 bundle.
+- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
+  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
+  via Ninja on Ubuntu 26.04 WSL2 x64.
+- Known implementations intentionally not consulted: external compression
+  source code, archive formats, interoperability harnesses, corpora, and test
+  suites.
+- Result: revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad`
+  completed all four established verification directions. Ubuntu 26.04
+  verified the Windows/MSVC and Ubuntu 24.04 CI bundles, generated and
+  self-verified its own bundle, and Windows/MSVC verified that Ubuntu bundle.
+  Every invocation reported `Verified 31 archives` and performed exact
+  manifest-order, size, SHA-256, decoded-fixture, and byte-identical local
+  re-encoding checks.
+- Metadata note: the Ubuntu bundle's compiler label already contained `X64`,
+  so the verifier's separate architecture suffix rendered `X64, X64`. This
+  display-only duplication does not alter manifest validation or archive
+  bytes.
+- Similarity review: this record contains only observed local tool outputs and
+  environment labels. No external encoded representation or implementation
+  structure was compared.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

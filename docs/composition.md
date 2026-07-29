@@ -73,7 +73,9 @@ dependency-free benchmark now verifies the public profile before reporting
 throughput, ratio, and both direction-specific workspaces. Interoperability
 schema 20 appends it once after the frozen schema-19 order; local generation,
 exact-order verification, reordered-manifest rejection, and schemas 1 through
-19 compatibility pass. Cross-platform schema-20 evidence remains pending.
+19 compatibility pass. Four-direction external schema-20 verification passed
+at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
