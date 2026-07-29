@@ -8602,6 +8602,30 @@ adds no serialized frame encoder, streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
 entry.
 
+## DD-467: LZSS rANS frame writing follows the complete plan
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add the deterministic complete-frame writer above DD-466. Invoke exact
+planning first, including canonical LZSS staging, every rANS block plan,
+aggregate workspace, and synthesized-header validation. Require serialized
+output capacity for the complete planned extent before writing any byte.
+
+After admission, explicitly serialize the generic header. Walk the immutable
+token staging in the same block order, re-plan one descriptor at a time,
+require every payload extent to fit and match the frozen aggregate, serialize
+the descriptor into its exact 528-byte slot, and encode only that block's
+assigned payload subspan. Require final token and payload offsets to equal the
+plan. Any post-admission divergence is an internal error, not a new format.
+
+Prove exact reproduction of the independent 592-byte frame, deterministic
+round-trip when the Literal is split between two blocks, deterministic
+round-trip of an encoder-generated Match split across four blocks, and
+complete serialized-output preservation when capacity is one byte short.
+This decision adds no streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

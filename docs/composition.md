@@ -97,7 +97,10 @@ entropy work and copies the private raw extent only after success, leaving
 output unchanged on every failure. Its write-free planner now freezes
 canonical LZSS staging, computes every exact rANS block payload, validates the
 synthesized header, and reports the complete frame extent without serialized
-output. No combined frame writer or public entry point exists yet.
+output. Its deterministic frame writer plans completely before output
+admission, explicitly serializes every region, and produces repeatable
+round-trippable frames while preserving short output. No streaming or public
+entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

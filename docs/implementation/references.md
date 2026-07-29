@@ -1815,3 +1815,9 @@ planner and encoder, scalar rANS block planner, generic frame-header validator,
 checked arithmetic, and bounded caller-owned staging. No external combined
 encoder, planning algorithm, allocation layout, source code, encoded corpus,
 or test suite was consulted.
+
+The LZSS plus rANS deterministic frame encoder uses only DD-467, DD-466's
+exact plan, marc's generic header serializer, scalar rANS descriptor
+serializer and encoder, checked subspans, and caller-owned output. No external
+combined encoder, frame writer, buffering layout, source code, encoded corpus,
+or test suite was consulted.

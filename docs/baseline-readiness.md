@@ -406,9 +406,13 @@ publishes the private raw frame with one copy only after every layer succeeds.
 Its write-free exact planner now freezes the canonical variable-length token
 sequence, plans every rANS block, applies block-count and aggregate workspace
 limits, validates the synthesized frame header, and reports the exact complete
-extent. It remains `Specified`: no serialized frame encoder, streaming
-transform, C ABI, CLI, benchmark, fuzz target, completion matrix, or
-interoperability entry exists yet.
+extent. Its deterministic complete-frame encoder now plans fully before output
+admission, explicitly serializes the generic header and every descriptor, and
+encodes every exact payload subspan. It reproduces the independent vector,
+round-trips split Literals and generated Matches deterministically, and leaves
+short output unchanged. It remains `Specified`: no streaming transform, C
+ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability entry
+exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -26,7 +26,10 @@ format versions, and C ABI versions are independent namespaces.
   Its write-free exact-frame planner now freezes canonical LZSS staging,
   plans every rANS block, enforces block and aggregate limits, validates the
   synthesized frame header, and reports the exact serialized extent without
-  accepting an output buffer.
+  accepting an output buffer. Its deterministic complete-frame encoder now
+  completes planning before output admission, then explicitly writes the
+  generic header, every descriptor, and every payload; short output remains
+  unchanged.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -3937,8 +3937,10 @@ all entropy and dictionary checks succeed. Its transactional wrapper admits
 the complete caller output extent before entropy work and publishes with one
 copy after private reconstruction. The write-free planner derives the same
 header and exact extents from a completely materialized canonical LZSS token
-sequence before any serialized output exists. This section publishes no
-public entry point.
+sequence before any serialized output exists. The complete-frame writer then
+explicitly emits that header, the `K` consecutive 528-byte descriptors, and
+their consecutive payloads only after complete planning and output-capacity
+admission. This section publishes no public entry point.
 
 ## tANS variant 1
 

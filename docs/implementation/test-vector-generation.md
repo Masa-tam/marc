@@ -3454,6 +3454,15 @@ sequence and four blocks. Reject short staging without mutation, empty and
 unexpected frame extents, a block limit of one for the split Literal, and
 aggregate storage one byte below `528K + P + S`.
 
+For deterministic LZSS plus rANS frame writing, require raw `A` to reproduce
+all 592 independently assembled bytes. With `B=1`, encode twice and compare
+the complete frames with each other and the standalone-component frame, then
+transactionally decode to raw `A`. Repeat six `A` bytes with `B=3`; require
+the same generated 11-byte Literal-plus-Match staging, byte-identical frames,
+and complete round-trip through four rANS blocks. Give the raw-`A` writer a
+591-byte sentinel-filled destination and require every byte to remain
+unchanged.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

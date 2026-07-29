@@ -9143,6 +9143,35 @@ discarded and the reviewed seed retained.
   1,815/1,815 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS deterministic frame encoding
+
+- Authoring method: placed explicit complete-frame serialization above
+  DD-466's exact plan and reused marc's generic header, scalar rANS descriptor,
+  and payload writers.
+- References used: DD-467, DD-466, the independent 592-byte raw-`A` vector,
+  local explicit serializers, rANS planner and encoder, and caller-owned
+  output conventions.
+- Known implementations intentionally not consulted: external combined
+  encoders, frame writers, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: complete planning before output admission; require
+  every repeated block plan to fit the frozen aggregate; explicitly serialize
+  header and descriptors; encode only exact payload subspans; verify final
+  offsets; and preserve short output completely.
+- Generated-code task description: add deterministic complete-frame encoding
+  and short-output error; reproduce the independent frame; prove split-
+  Literal and generated-Match determinism and transactional round-trip; and
+  preserve a one-byte-short destination sentinel; update format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation directly composes local marc plans
+  and serializers. No external frame-writing control flow, error taxonomy,
+  naming scheme, output mutation schedule, or test expression was compared.
+- Local validation: the focused validator, decoder, planner, and encoder suite
+  passed 30/30 under both MSVC and ClangCL. The complete Release suite passed
+  1,819/1,819 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

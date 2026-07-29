@@ -1197,6 +1197,12 @@ and sums exact payload and descriptor extents with checked arithmetic. The
 planner validates the synthesized generic header and returns the complete
 frame size without accepting or modifying serialized output.
 
+The complete-frame writer invokes that planner first and rejects insufficient
+serialized output before writing the generic header. It then re-plans each
+immutable token block, requires every exact payload extent to match the frozen
+aggregate, explicitly serializes its descriptor, and encodes only the assigned
+payload subspan. The final token and payload offsets must equal the plan.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
