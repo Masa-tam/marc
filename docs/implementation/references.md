@@ -1798,3 +1798,9 @@ marc's generic frame parser, strict two-pass scalar rANS controller and
 decoder, checked arithmetic, bounded spans, and existing LZSS validator. No
 external combined decoder, validation order, workspace layout, malformed
 corpus, source code, or test suite was consulted.
+
+The LZSS plus rANS private raw decoder uses only DD-464, DD-463, marc's
+existing allocation-free LZSS decoder, documented overlap-copy semantics,
+checked aggregate arithmetic, and caller-owned bounded spans. No external
+combined decoder, reconstruction strategy, buffer layout, source code,
+malformed corpus, or test suite was consulted.

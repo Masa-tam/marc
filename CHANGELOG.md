@@ -17,6 +17,10 @@ format versions, and C ABI versions are independent namespaces.
   workspace, and aggregate byte before entropy output; validates every rANS
   block before reconstructing any token byte; then applies the complete LZSS
   grammar and exact-raw-extent validator without reconstructing raw bytes.
+  Its bounded private decoder additionally admits the complete raw staging
+  extent before entropy work, counts it in aggregate storage, and reconstructs
+  only fully validated Literal and overlap-Match tokens without publishing
+  caller-visible output.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

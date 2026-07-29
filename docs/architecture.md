@@ -1177,6 +1177,13 @@ before entropy work, validates every rANS block without output, reconstructs
 the exact private token extent in a second pass, and invokes the existing LZSS
 validator. It intentionally stops before raw reconstruction.
 
+The matching private decoder extends admission with the complete raw staging
+extent and includes those bytes in the same aggregate workspace calculation.
+Only after entropy and LZSS validation succeed does the existing allocation-
+free LZSS decoder reconstruct Literal and forward-overlap Match tokens into
+that disposable caller-owned span. No caller-visible publication boundary is
+present yet.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

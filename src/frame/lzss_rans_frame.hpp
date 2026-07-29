@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZSS_RANS_FRAME_HPP
 #define MARC_FRAME_LZSS_RANS_FRAME_HPP
 
+#include "dictionary/lzss_decoder.hpp"
 #include "dictionary/lzss_format.hpp"
 #include "dictionary/lzss_validator.hpp"
 #include "entropy/rans_controller.hpp"
@@ -24,10 +25,12 @@ enum class LzssRansFrameValidationError : std::uint8_t {
     invalid_entropy_extent,
     views_too_small,
     dictionary_staging_too_small,
+    raw_staging_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -51,6 +54,8 @@ struct LzssRansFrameValidationResult {
         dictionary::internal::LzssValidationError::none};
     dictionary::internal::LzssFormatError dictionary_format_error{
         dictionary::internal::LzssFormatError::none};
+    dictionary::internal::LzssDecodeError dictionary_decode_error{
+        dictionary::internal::LzssDecodeError::none};
     LzssRansFrameValidationError error{
         LzssRansFrameValidationError::none};
 };
@@ -68,6 +73,21 @@ struct LzssRansFrameValidationResult {
     std::span<const std::byte> input,
     std::span<entropy::internal::RansBlockView> views,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Validates every layer and reconstructs exactly one frame into caller-owned
+// private raw staging. No caller-visible output extent is published. Input,
+// views, token staging, and raw staging must not overlap.
+[[nodiscard]] LzssRansFrameValidationResult
+decode_lzss_rans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::RansBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

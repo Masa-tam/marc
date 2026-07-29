@@ -9056,6 +9056,35 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
   schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS private raw decoder
+
+- Authoring method: extended DD-463's validated private token boundary with
+  marc's existing allocation-free LZSS decoder and a distinct caller-owned
+  raw staging span.
+- References used: DD-464, DD-463, the local LZSS decoder, overlap-copy rules,
+  checked aggregate arithmetic, and bounded span contracts.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: admit the full raw extent before entropy output;
+  count it in aggregate workspace; retain complete entropy and token
+  validation; reconstruct only validated Literal and forward-overlap Match
+  tokens; and expose no publication span.
+- Generated-code task description: add the private raw decoder and layered
+  error; test the independent Literal, overlap reconstruction, short raw
+  capacity before token mutation, aggregate storage one byte short, and raw
+  staging preservation under malformed entropy and dictionary layers; update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation adds only a bounded call to marc's
+  existing LZSS decoder after local validation. No external reconstruction
+  control flow, buffer scheme, malformed vector, or test expression was
+  compared.
+- Local validation: the focused validator and private-decoder suite passed
+  16/16 under both MSVC and ClangCL. The complete Release suite passed
+  1,805/1,805 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

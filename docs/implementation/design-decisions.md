@@ -8528,6 +8528,31 @@ profile rejection. This decision adds no raw decoder, encoder, streaming
 transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
 claim, or interoperability entry.
 
+## DD-464: LZSS rANS reconstruction remains private
+
+- Date: 2026-07-30
+- Status: accepted
+
+Extend DD-463 with a bounded complete-frame decoder that reconstructs only
+into a distinct caller-owned private raw span. Require capacity for the full
+declared `F` bytes before descriptor parsing or entropy output and add those
+bytes to the descriptor, payload, token staging, and rANS-view aggregate
+checked against `max_internal_buffered_bytes`.
+
+Retain DD-463's all-block entropy preflight and complete LZSS validation. Only
+after both succeed may the existing allocation-free LZSS decoder reconstruct
+the validated Literal and forward-overlap Match sequence into exactly `F`
+private bytes. Preserve stable LZSS format, token index, byte offset, and
+decode error details. A decoder failure after successful validation remains a
+distinct internal dictionary-decode category.
+
+Prove the independent Literal frame, overlap copying, raw capacity admission
+before token mutation, aggregate admission one byte short, and unchanged raw
+staging for malformed entropy or dictionary layers. This decision adds no
+caller-visible publication, encoder, streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

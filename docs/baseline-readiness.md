@@ -397,8 +397,11 @@ single-Literal frame. Its first bounded complete-frame validator now admits
 all extents, descriptor views, token staging, and aggregate workspace before
 entropy processing. It validates every rANS block before mutating token
 staging, then applies complete LZSS grammar, reference, overlap, and exact
-raw-extent validation without reconstructing raw bytes. It remains
-`Specified`: no combined raw decoder, encoder, streaming transform, C ABI,
+raw-extent validation without reconstructing raw bytes. Its bounded private
+decoder now admits and counts the entire raw staging region before entropy
+work, then reconstructs only the completely validated Literal and overlap-
+Match sequence into caller-owned disposable storage. It remains `Specified`:
+no transactional public-output decoder, encoder, streaming transform, C ABI,
 CLI, benchmark, fuzz target, completion matrix, or interoperability entry
 exists yet.
 

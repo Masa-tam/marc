@@ -89,8 +89,10 @@ derived raw-`A` vector fixes the complete 592-byte frame. Its first bounded
 complete-frame validator now checks exact extents and all caller-owned
 workspace before entropy output, validates every rANS block before filling
 private token staging, and applies the existing complete LZSS validator
-without reconstructing raw bytes. No combined encoder, raw decoder, or public
-entry point exists yet.
+without reconstructing raw bytes. Its bounded private decoder additionally
+preflights and counts separate raw staging, then reconstructs the validated
+Literal and overlap-Match sequence without publishing caller-visible output.
+No combined encoder or public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

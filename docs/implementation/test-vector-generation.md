@@ -3426,6 +3426,16 @@ changes. Separately require invalid reconstructed tag `FF` to report the LZSS
 token error and reject dictionary or entropy extents beyond DD-462's bounds
 before mutation.
 
+For private LZSS plus rANS reconstruction, decode the independent raw-`A`
+frame into an oversized sentinel-filled raw span and require only its first
+byte to become `41`. Build a separate canonical Literal-`A`, Match(distance 1,
+length 5) token sequence with the standalone serializer and require six
+private `A` bytes, proving forward overlap. A raw span one byte short and an
+aggregate limit one byte below descriptor plus payload plus views plus token
+plus raw staging must fail before token or raw mutation. Corrupt a later rANS
+block and separately encode invalid LZSS grammar; neither may change private
+raw staging.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

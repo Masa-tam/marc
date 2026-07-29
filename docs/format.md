@@ -3931,7 +3931,9 @@ The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 08`) and 146..147 (`00 08`). The eight payload bytes above immediately
 follow the descriptor. This sparse notation uniquely fixes every frame byte.
 The internal complete-frame validator admits and validates this representation
-through the private LZSS-token boundary. This section publishes no public
+through the private LZSS-token boundary. The matching bounded decoder may
+reconstruct the validated tokens into separate private raw staging only after
+all entropy and dictionary checks succeed. This section publishes no public
 entry point.
 
 ## tANS variant 1
