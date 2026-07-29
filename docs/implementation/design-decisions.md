@@ -8654,6 +8654,37 @@ failures, empty input, premature end, unsupported reset, and repeated ended
 calls. This decision adds no streaming decoder, profile calculator, C ABI,
 CLI, benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-469: LZSS rANS streaming decode commits complete frames
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add the bounded known-size streaming decoder over DD-465's transactional frame
+boundary. Incrementally collect the fixed 80-byte prefix and validate the
+exact LZSS/rANS variants and parameter region. For each expected frame,
+collect the 56-byte generic header first, validate sequence and committed raw
+position, and use its declared extents to admit encoded-frame storage, rANS
+views, token staging, raw staging, and their checked aggregate before
+collecting the body.
+
+Decode only after one exact frame is present. Invoke the private complete-frame
+decoder into caller-owned raw staging, then enter an immutable drain state.
+Only fully validated frames may contribute output; a malformed later frame
+does not retract earlier committed frames but publishes no byte of its own.
+Input and output starvation may occur at every prefix, header, body, and raw
+drain byte.
+
+Require exact known-size completion. Reject malformed prefix or parameters,
+invalid frame headers or bodies, truncation, trailing bytes, premature end,
+unsupported reset and unknown flags, and insufficient or excessive aggregate
+workspace with stable errors. Empty streams contain only the prefix. Ended
+and error states are sticky. Prove one-byte input/output round-trip, later-
+frame corruption after one committed frame, each workspace shortage,
+aggregate admission one byte short, strict truncation and trailing rejection,
+reset refusal, empty input, non-terminal Flush, and premature end while
+draining. This decision adds no profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

@@ -1827,3 +1827,9 @@ planner and writer, marc's stream-header and LZSS-parameter serializers,
 immutable-direction `ProcessResult` contract, checked aggregate arithmetic,
 and caller-owned spans. No external streaming encoder, state machine,
 buffering strategy, source code, encoded corpus, or test suite was consulted.
+
+The LZSS plus rANS bounded streaming decoder uses only DD-469, DD-465's local
+transactional frame decoder, marc's prefix and generic-header parsers,
+immutable-direction transform contract, checked workspace arithmetic, and
+caller-owned spans. No external streaming decoder, state machine, buffering
+strategy, malformed corpus, source code, or test suite was consulted.

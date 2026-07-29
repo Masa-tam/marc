@@ -3473,6 +3473,18 @@ only available prefix bytes and remains open; reject short raw, `2F` token,
 encoded-frame, and aggregate storage; accept canonical empty input; and reject
 premature `EndInput` and `ResetBlock`.
 
+For bounded LZSS plus rANS streaming decode, generate the same `ABABX`
+three-frame stream through the local streaming encoder. Feed encoded and raw
+bytes one at a time and require exact output and stable repeated end. Corrupt
+the second frame's rANS descriptor and require only the first raw `AB` frame
+to be published before a sticky malformed error. Use the first frame's exact
+header to reject encoded storage one byte short, zero descriptor views,
+three-byte token staging, one-byte raw staging, and aggregate storage one byte
+short. Reject every final-byte truncation, one trailing zero byte, and
+`ResetBlock`; accept prefix-only empty input and non-terminal Flush; and prove
+premature EndInput becomes malformed only after the already validated first
+frame finishes draining.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

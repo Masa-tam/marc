@@ -101,8 +101,10 @@ output. Its deterministic frame writer plans completely before output
 admission, explicitly serializes every region, and produces repeatable
 round-trippable frames while preserving short output. Its known-size bounded
 streaming encoder emits the canonical prefix, buffers at most one raw and one
-encoded frame, and reproduces one-shot bytes under arbitrary starvation. No
-streaming decoder or public entry point exists yet.
+encoded frame, and reproduces one-shot bytes under arbitrary starvation. Its
+bounded streaming decoder collects and privately validates one exact frame,
+then drains only committed raw bytes; malformed later frames publish nothing
+from that frame. No public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

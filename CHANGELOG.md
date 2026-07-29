@@ -32,7 +32,10 @@ format versions, and C ABI versions are independent namespaces.
   unchanged. Its known-size bounded streaming encoder now emits the stream
   prefix, collects at most one raw frame, prepares one immutable encoded
   frame, and drains it under arbitrary output starvation with sticky terminal
-  states and deterministic bytes.
+  states and deterministic bytes. Its bounded streaming decoder now collects
+  one complete encoded frame, validates and reconstructs it privately, and
+  drains only that committed raw frame; malformed later frames cannot alter
+  previously emitted or future output.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

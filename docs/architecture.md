@@ -1211,6 +1211,14 @@ through the deterministic writer, and drains it before accepting the next
 frame. `Flush` does not close a partial frame; `EndInput` must coincide with
 the declared original size.
 
+The bounded streaming decoder incrementally collects the fixed prefix, one
+generic frame header, and then exactly the declared frame body. Header
+admission checks encoded storage, rANS views, `2F` token staging, raw staging,
+and their aggregate before the body is accepted. A complete frame passes the
+private transactional decoder before its raw bytes enter a distinct drain
+state. Earlier frames may be committed; a malformed later frame publishes
+nothing from that frame and makes the error sticky.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

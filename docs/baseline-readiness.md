@@ -413,9 +413,13 @@ round-trips split Literals and generated Matches deterministically, and leaves
 short output unchanged. Its bounded known-size streaming encoder now emits
 the canonical prefix and byte-identical one-shot frames under one-byte input
 and output chunking, keeps `Flush` non-terminal, and enforces exact input,
-workspace, and sticky error contracts. It remains `Specified`: no streaming
-decoder, C ABI, CLI, benchmark, fuzz target, completion matrix, or
-interoperability entry exists yet.
+workspace, and sticky error contracts. Its bounded streaming decoder now
+collects one exact encoded frame, privately validates and reconstructs it,
+then drains only committed raw bytes under arbitrary starvation. It strictly
+rejects malformed prefixes, frames, truncation, trailing bytes, premature end,
+and workspace shortages with sticky errors. It remains `Specified`: no C ABI,
+CLI, benchmark, fuzz target, completion matrix, or interoperability entry
+exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

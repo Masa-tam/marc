@@ -3948,6 +3948,13 @@ the complete frames above in sequence. It buffers no more than one raw frame,
 one canonical token region, and one encoded frame. Chunk boundaries and
 non-terminal `Flush` do not alter any encoded byte.
 
+The internal streaming decoder accepts the same known-size representation.
+It collects the 80-byte prefix, each 56-byte frame header, and then exactly
+that frame's declared descriptor and payload bytes. No raw byte from a frame
+is visible until the complete rANS and LZSS validation and private
+reconstruction succeed. A final short frame is determined only by the known
+original size and generic frame rules; trailing bytes are rejected.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
