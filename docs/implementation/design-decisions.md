@@ -8717,6 +8717,32 @@ direct construction of a complete streaming round trip using only the
 returned extents. This decision adds no C ABI, CLI, benchmark, fuzz target,
 completion matrix, or interoperability entry.
 
+## DD-471: LZSS rANS enters ABI v1 through three opaque regions
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add named C configuration initialization, direction-specific workspace
+requirements, and an immutable transform factory without changing ABI version
+1 or any existing public structure. Mirror DD-470's profile fields, including
+entropy block size and per-frame block-count limit, while keeping
+`RansBlockView` and every C++ type private.
+
+For encoding, report raw-frame collection as primary, token staging plus
+serialized-frame storage as secondary, and zero view bytes with alignment one.
+For decoding, report encoded-frame storage as primary, token plus private raw
+staging as secondary, and checked `block_view_count * sizeof(RansBlockView)`
+opaque bytes with the internal alignment.
+
+The factory must invoke the public requirements query, reject null, short, or
+misaligned regions before construction, repeat the profile calculation,
+partition secondary only at the checked token boundary, borrow all workspaces
+for the transform lifetime, use `nothrow` allocation only for the opaque
+handle, and leave that handle null on every failure. Prove the complete C11
+lifecycle with raw `ABABABX`, exact queried regions, round trip, short views,
+and reserved-field rejection. This decision adds no completion matrix, fuzz
+target, CLI, benchmark, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

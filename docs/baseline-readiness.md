@@ -420,8 +420,11 @@ rejects malformed prefixes, frames, truncation, trailing bytes, premature end,
 and workspace shortages with sticky errors. Its bounded internal profile now
 constructs the fixed stream identity and supplies checked direction-specific
 workspace requirements, including descriptor-view count, without exposing
-private layouts. It remains `Specified`: no C ABI, CLI, benchmark, fuzz target,
-completion matrix, or interoperability entry exists yet.
+private layouts. Its public ABI v1 configuration, requirements query, and
+factory now bind those workspaces as three opaque caller-owned regions and
+round-trip through a pure C11 caller. It remains `Specified`: no CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry exists
+yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

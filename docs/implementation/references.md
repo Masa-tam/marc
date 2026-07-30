@@ -1839,3 +1839,9 @@ The LZSS plus rANS internal profile calculator uses only DD-470, the specified
 streaming workspaces, marc's local limits, checked arithmetic, and established
 direction-specific profile conventions. No external profile API, allocation
 policy, opaque workspace layout, source code, or test suite was consulted.
+
+The LZSS plus rANS public C requirements query and factory use only DD-471,
+DD-470's direction-specific requirements, the completed local streaming pair,
+ABI version 1's existing three-region lifecycle, checked offsets and
+alignment, and `nothrow` handle publication. No external C API, allocation
+model, combined factory, ABI layout, source code, or test suite was consulted.

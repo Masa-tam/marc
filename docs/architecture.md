@@ -1227,6 +1227,12 @@ private raw, and rANS-view capacities only from validated local limits. The
 profile retains the composition's specified 1-MiB raw-frame cap; its `2F`
 token ceiling therefore remains well within the scalar rANS block bound.
 
+The public C ABI binds that profile without exposing any C++ type. Encoding
+uses raw collection as primary and token-plus-frame storage as secondary;
+decoding uses encoded-frame storage as primary, token-plus-raw storage as
+secondary, and an opaque aligned rANS-view region. The requirements query is
+the only public authority for all sizes and view alignment.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

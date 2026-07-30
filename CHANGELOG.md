@@ -38,7 +38,9 @@ format versions, and C ABI versions are independent namespaces.
   previously emitted or future output. Its bounded internal profile now
   constructs the immutable stream header and derives exact encoder and
   conservative decoder workspace requirements entirely from configuration
-  and validated local limits.
+  and validated local limits. A public C ABI now exposes configuration
+  initialization, direction-specific requirements, and an immutable transform
+  factory through three caller-owned opaque workspace regions.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -106,7 +106,10 @@ bounded streaming decoder collects and privately validates one exact frame,
 then drains only committed raw bytes; malformed later frames publish nothing
 from that frame. Its internal profile now constructs the immutable stream
 header and derives exact encoder plus conservative decoder storage from
-validated configuration and limits. No public entry point exists yet.
+validated configuration and limits. Its public C ABI now exposes that fixed
+profile through a requirements query and immutable-direction factory; no CLI,
+benchmark, completion matrix, fuzz target, or interoperability entry exists
+yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

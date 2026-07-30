@@ -5,7 +5,7 @@ Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
 profiles, the LZ77 plus rANS profile, LZSS variant 1, the LZSS plus Blocked
 Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
-Range profile,
+Range and LZSS plus rANS profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
 LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
@@ -26,7 +26,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_dynamic_range_*`,
 `marc_lz77_rans_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
-`marc_lzss_dynamic_range_*`,
+`marc_lzss_dynamic_range_*`, `marc_lzss_rans_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
@@ -64,6 +64,7 @@ cross-product pairings as callable C ABI features.
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lzss_dynamic_range_config_init()`,
+   `marc_lzss_rans_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
    `marc_lz78_adaptive_huffman_config_init()`,
    `marc_lz78_dynamic_range_config_init()`, or
@@ -164,6 +165,14 @@ has no entropy-block parameter. Call
 `marc_lzss_dynamic_range_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
 Creation failure leaves the caller's transform pointer null.
+The LZSS plus rANS factory uses the common three-region convention. Encoding
+uses primary for raw-frame collection, partitions secondary into canonical
+LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses
+primary for the serialized frame, partitions secondary into token and private
+raw staging, and receives aligned opaque rANS block views. Call
+`marc_lzss_rans_workspace_requirements()` again after changing direction,
+known original size, either block dimension, LZSS parameters, or any hard
+limit. The public header exposes only byte counts and alignment.
 The public completion matrix uses only these functions with 64-byte frames. It
 covers empty input, all 256 one-byte values, all byte values in sequence,
 repetition, generated binary data, frame-boundary lengths, deterministic

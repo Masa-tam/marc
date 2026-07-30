@@ -3499,6 +3499,15 @@ encoded bytes, 6,000 token bytes, 4,096 raw bytes, and seven views. Finally
 allocate exactly the returned encoder and decoder extents and round-trip
 `ABABX` with `F=2` and `B=5` through only the two streaming transforms.
 
+For the LZSS plus rANS C ABI, initialize encoding for raw `ABABABX`, set
+`F=7` and `B=16`, and require seven primary bytes, 620 secondary bytes, zero
+view bytes, and alignment one. Encode through only the public C11 transform
+lifecycle. Initialize decoding with 4,096-byte raw and block limits, 6,000
+token bytes, 8,192 internally buffered bytes, and seven views; require 8,248
+primary bytes, 10,096 secondary bytes, nonzero opaque views, and their
+reported alignment. Decode byte-exactly, then reject one-byte-short views and
+a nonzero reserved field while leaving the transform handle null.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

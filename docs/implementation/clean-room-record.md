@@ -9260,6 +9260,33 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
   schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS public C ABI
+
+- Authoring method: connected DD-470's local profile and completed streaming
+  transforms to marc's established opaque C transform lifecycle.
+- References used: DD-471, DD-470, the local LZSS/rANS streaming constructors,
+  ABI version 1 configuration and workspace conventions, checked arithmetic,
+  internal rANS view size/alignment, and `nothrow` publication.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation models, combined factories, ABI layouts, source code, and
+  test suites.
+- Independent decisions: add a new configuration without modifying existing
+  layouts; report encoder views as zero/alignment one; expose decoder views
+  only as opaque aligned bytes; partition secondary into token/frame or
+  token/raw regions; and repeat requirements validation before construction.
+- Generated-code task description: add declarations, configuration loading and
+  defaults, requirements query, factory dispatch, CMake wiring, and a pure-C
+  lifecycle test covering exact regions, round trip, short views, and reserved
+  fields; synchronize C API, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the entry points and storage roles extend only marc's
+  established ABI v1 conventions and local profile. No external API naming,
+  structure layout, partitioning code, or test expression was compared.
+- Local validation: the focused LZSS plus rANS implementation and C ABI tests
+  passed 48/48 under both MSVC and ClangCL. The complete Release suite passed
+  1,836/1,836 under both compilers using official CMake 4.3.4. All thirty-one
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and
