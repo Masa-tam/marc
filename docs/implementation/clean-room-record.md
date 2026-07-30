@@ -9405,6 +9405,33 @@ discarded and the reviewed seed retained.
   over the 4,520-byte README encoded 3,819 bytes at ratio 0.845 and reported
   722,008 bytes of peak caller-reserved workspace.
 
+## 2026-07-31 - Interoperability schema 21
+
+- Authoring method: extended marc's versioned bundle generator, exact-order
+  verifier, and compatibility conversion by one already published CLI profile.
+- References used: DD-476, the frozen schema-20 profile order, the
+  deterministic 8,193-byte fixture, `lzss-rans`, and repository-owned
+  interoperability scripts.
+- Known implementations intentionally not consulted: external archive
+  manifests, interoperability schemas, bundle generators, verifiers, corpora,
+  source code, and test suites.
+- Independent decisions: append `lzss-rans` only as entry 32; name codec set
+  `marc-cli-v21`; preserve schemas 1 through 20 explicitly; reject reordered
+  schema-21 manifests; and convert to schema 20 by removing only the suffix.
+- Generated-code task description: update the generator to schema 21, add the
+  exact verifier profile set, generate and self-verify 32 archives, reject a
+  reordered manifest, convert schema 21 to 20, exercise schemas 20 through 1,
+  and synchronize format, architecture, readiness, interoperability,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the work extends only marc's own append-only manifest
+  convention and PowerShell scripts. No external manifest structure, ordering
+  policy, validation flow, corpus, or test expression was compared.
+- Local validation: schema-21 generation, thirty-two-archive
+  self-verification, reordered-manifest rejection, and schemas 1 through 20
+  compatibility passed under both MSVC and ClangCL. The complete Release
+  suite passed 1,844/1,844 under both compilers using official CMake 4.3.4;
+  all thirty-two benchmark smokes remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

@@ -51,6 +51,8 @@ format versions, and C ABI versions are independent namespaces.
   fixed 65,536-byte raw and entropy blocks, and transactional file output.
   Its dependency-free benchmark now verifies a public-ABI round trip before
   reporting ratio, directional throughput, and all queried workspace regions.
+  Interoperability schema 21 appends the unchanged CLI representation as
+  archive 32 while retaining exact verification of schemas 1 through 20.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -3961,6 +3961,10 @@ is visible until the complete rANS and LZSS validation and private
 reconstruction succeed. A final short frame is determined only by the known
 original size and generic frame rules; trailing bytes are rejected.
 
+Interoperability schema 21 emits this unchanged profile as `lzss-rans` after
+the frozen thirty-one-entry schema-20 set. The schema changes only the
+external manifest profile set; it adds no stream field or variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

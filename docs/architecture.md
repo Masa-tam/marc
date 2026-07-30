@@ -658,8 +658,9 @@ Schema 18 names `marc-cli-v18` and appends LZD plus Dynamic Range to the frozen
 twenty-eight-profile schema-17 order. Schema 19 names `marc-cli-v19` and
 appends LZMW plus Dynamic Range to the frozen twenty-nine-profile schema-18
 order. Schema 20 names `marc-cli-v20` and appends LZ77 plus rANS to the frozen
-thirty-profile schema-19 order. Schemas 1 through 19 retain their exact
-versioned profile sets.
+thirty-profile schema-19 order. Schema 21 names `marc-cli-v21` and appends
+LZSS plus rANS to the frozen thirty-one-profile schema-20 order. Schemas 1
+through 20 retain their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1258,6 +1259,13 @@ outside the elapsed region and reports ratio, directional throughput, all
 queried workspace regions, and peak caller-reserved workspace. Checked
 complete-stream capacity is `80 + 2N + 1128K` for raw extent `N` and nonempty
 64-KiB frame count `K`.
+
+Interoperability schema 21 names codec set `marc-cli-v21`, preserves the exact
+thirty-one-entry schema-20 order, and appends this unchanged CLI
+representation once. Local generation and verification require exact order,
+count, size, SHA-256, fixture decode equality, and byte-identical local
+re-encoding while retaining explicit support for schemas 1 through 20.
+Cross-platform schema-21 evidence remains pending.
 
 ### tANS foundation
 

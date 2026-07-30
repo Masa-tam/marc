@@ -117,13 +117,16 @@ public C lifecycle, obtains all opaque workspace sizes and alignment from the
 requirements query, and preserves the common transactional output contract.
 Its dependency-free benchmark now verifies the public profile before
 reporting ratio, directional throughput, and all queried workspace regions.
-No interoperability entry exists yet.
+Interoperability schema 21 appends it once after the frozen schema-20 order;
+local generation, exact-order verification, reordered-manifest rejection, and
+schemas 1 through 20 compatibility pass. External schema-21 evidence remains
+pending.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 20 preserves the profile set admitted before
-`lzss-rans`, and every earlier schema profile set remains exact.
+publication: schema 21 contains the current published profile set, and every
+earlier schema profile set remains exact.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

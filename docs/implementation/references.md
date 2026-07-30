@@ -1869,3 +1869,9 @@ profile, the published `marc_lzss_rans_*` lifecycle, checked complete-stream
 capacity arithmetic, and marc's existing verification-first measurement
 runner. No external benchmark framework, combined-codec adapter, capacity
 formula, performance result, source code, or test suite was consulted.
+
+Interoperability schema 21 uses only DD-476, the frozen schema-20 manifest
+order, marc's deterministic 8,193-byte fixture, the published `lzss-rans` CLI
+profile, and the repository-owned generator, verifier, and compatibility
+conversion. No external interoperability schema, manifest, archive corpus,
+source code, or test suite was consulted.

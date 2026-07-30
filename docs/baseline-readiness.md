@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 20 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 21 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 20 |
+| Profile | Purpose | Local status | Interoperability schema 21 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -55,15 +55,15 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
 | `lz77-rans` | First rANS composition | Ready | Included |
-| `lzss-rans` | Second rANS composition | Locally ready; interoperability pending | Pending |
+| `lzss-rans` | Second rANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 20 contains thirty-one archives: the frozen thirty-entry schema-19 set
-followed by the LZ77 rANS profile. Schemas 1 through 19
+Schema 21 contains thirty-two archives: the frozen thirty-one-entry schema-20
+set followed by the LZSS rANS profile. Schemas 1 through 20
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, and thirty
-profiles;
+twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty, and
+thirty-one profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -74,7 +74,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 20 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 21 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -107,7 +107,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Pending |
+| `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -431,8 +431,11 @@ now has a fixed-memory dual-boundary fuzz target plus permanent atomicity
 regressions. Its CLI selector now uses only the public lifecycle and retains
 transactional output and strict trailing-data rejection. Its dependency-free
 benchmark verifies an exact public-ABI round trip before reporting ratio,
-directional throughput, and queried workspace extents. Interoperability
-admission remains pending.
+directional throughput, and queried workspace extents. Interoperability schema
+21 appends the profile after the frozen schema-20 order, and its local
+generation, exact-order verification, reordered-manifest rejection, and
+schemas 1 through 20 compatibility pass. External schema-21 verification
+remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

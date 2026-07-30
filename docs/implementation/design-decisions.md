@@ -8841,6 +8841,30 @@ workspace extents, and peak caller-reserved workspace. Performance values are
 observations rather than thresholds. This step changes no format or C ABI and
 adds no interoperability entry or external evidence.
 
+## DD-476: Interoperability schema 21 appends LZSS rANS
+
+- Date: 2026-07-31
+- Status: accepted
+
+Define interoperability schema 21 and codec set `marc-cli-v21` as the exact
+thirty-one-entry schema-20 order followed by `lzss-rans`. Reuse the
+deterministic 8,193-byte binary fixture and unchanged public CLI
+representation. Each bundle must contain exactly thirty-two archives in
+canonical order with recorded size and SHA-256 after local decode equality
+succeeds.
+
+The verifier must select an explicit expected profile array for every schema
+1 through 21, reject unknown or duplicate profiles and every order change,
+decode every foreign archive to the fixture, and re-encode every profile
+byte-identically. The compatibility regression must reject a reordered
+schema-21 manifest, then derive schema 20 by removing only the final
+`lzss-rans` archive and changing only version and codec set before exercising
+the unchanged schema-20-through-schema-1 chain.
+
+This is local generation and verification evidence. Cross-platform canonical
+bytes remain unproven until CI artifacts and an independent platform complete
+the four established verification directions.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

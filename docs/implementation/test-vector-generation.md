@@ -3559,6 +3559,18 @@ workspaces 524,344/196,608/1,056 bytes. Peak caller reservation was 722,008
 bytes. These values document tested deterministic extents; throughput is
 descriptive and not a conformance threshold.
 
+For interoperability schema 21, retain the exact schema-20 archive order over
+the deterministic 8,193-byte fixture and append exactly one `lzss-rans`
+archive as entry 32. Set `schema_version` to 21 and `codec_set` to
+`marc-cli-v21`; record every complete archive's size and SHA-256 only after
+local decode equality succeeds.
+
+Require exact thirty-two-entry order, foreign decode equality, byte-identical
+local re-encoding, and rejection of a manifest whose first two entries are
+swapped. Remove only `lzss-rans.marc`, change only the schema and codec set to
+20, and then exercise the unchanged schema-20-through-schema-1 conversion and
+verification chain.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

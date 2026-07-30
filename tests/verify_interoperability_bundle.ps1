@@ -93,6 +93,7 @@ $schema17Profiles = $schema16Profiles + @('lzw-dynamic-range')
 $schema18Profiles = $schema17Profiles + @('lzd-dynamic-range')
 $schema19Profiles = $schema18Profiles + @('lzmw-dynamic-range')
 $schema20Profiles = $schema19Profiles + @('lz77-rans')
+$schema21Profiles = $schema20Profiles + @('lzss-rans')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -193,6 +194,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema20Profiles
+} elseif ($manifest.schema_version -eq 21) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v21') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema21Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
