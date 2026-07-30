@@ -4050,6 +4050,15 @@ the final frame may be shorter according to `original_size`. Input or output
 chunking does not alter bytes. `Flush` does not terminate a partial frame, and
 `ResetBlock` is not accepted by this profile.
 
+The known-size streaming decoder accepts that same prefix and frame sequence.
+It parses the complete generic header before calculating and admitting the
+exact descriptor-plus-payload extent, then collects one complete encoded frame
+in caller-owned bounded storage. rANS views, private token bytes, LZ78 phrase
+records, and private raw bytes are all admitted before frame-body decoding.
+Only a completely validated and reconstructed frame may enter the raw drain
+state. The final frame is determined by `original_size`; a premature
+`EndInput`, any trailing byte, or an unsupported reset is an error.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

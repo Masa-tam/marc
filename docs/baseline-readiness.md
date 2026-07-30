@@ -456,8 +456,11 @@ An exact-frame planner and encoder now freeze deterministic LZ78 tokens before
 planning every rANS block, enforce encoder-workspace and aggregate limits, and
 reproduce the independent 592-byte frame. A bounded known-size streaming
 encoder now emits the fixed prefix, buffers one raw frame, and drains immutable
-exact-frame bytes under arbitrary output starvation. Streaming decode, public
-API, and admission evidence remain pending.
+exact-frame bytes under arbitrary output starvation. The matching bounded
+streaming decoder now admits the prefix and each complete frame incrementally,
+checks all caller-owned decoder regions and their aggregate before body
+collection, and drains private raw staging only after complete frame success.
+Public API and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

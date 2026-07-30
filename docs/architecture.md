@@ -1328,6 +1328,16 @@ cannot alter frame bytes. `Flush` keeps a partial frame open, while
 `ResetBlock` is unsupported because outer frame boundaries are fixed by the
 configured raw frame size.
 
+The matching streaming decoder incrementally admits the fixed 80-byte prefix,
+then one 56-byte generic frame header before deriving the exact complete frame
+extent. It requires encoded-frame, rANS-view, token, phrase, and private raw
+storage and their checked aggregate before collecting the remaining frame.
+Only a complete frame is passed to the transactional private decoder; its raw
+staging is drained afterward under arbitrary output starvation. Thus a
+malformed later frame cannot publish any byte from that frame, while already
+drained earlier frames remain committed. Known original size determines the
+final frame, and truncation or trailing bytes are rejected.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

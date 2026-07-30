@@ -3632,6 +3632,21 @@ serialized-frame storage; set the combined raw, token, frame, and record
 aggregate one byte short; and reject premature end, reset, unknown flags, and
 excess input. Empty known-size input emits only the prefix and ends.
 
+For LZ78 plus rANS streaming decode, feed that exact streaming-encoder output
+one encoded byte at a time and accept one raw byte at a time. Require
+`41 42 41 42 58`, exact encoded consumption, and stable repeated end. Corrupt
+the second frame after a valid first frame and require only raw `41 42` to be
+published while the rest of the output sentinel remains unchanged.
+
+Independently reject one-byte-short final input, one trailing zero,
+`ResetBlock`, encoded-frame storage one byte short, zero rANS views, token
+staging one byte short, raw staging one byte short, zero phrase records, and
+the aggregate decoder workspace one byte short. A nonterminal `Flush` with no
+input must request input. Submit `EndInput` with only the first complete frame
+while allowing one output byte, then require the retained finish request to
+report truncation after that verified frame finishes draining. Accept the
+exact empty 80-byte stream.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

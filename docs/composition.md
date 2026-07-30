@@ -149,8 +149,12 @@ succeeds and otherwise preserves the entire caller output. Its exact-frame
 planner and encoder freeze canonical LZ78 tokens before deterministic rANS
 block planning and reproduce the independent frame. A bounded known-size
 streaming encoder now emits the fixed prefix and produces byte-identical
-frames for arbitrary input and output chunking. No streaming decoder, public
-factory, CLI, benchmark, fuzz target, or interoperability entry exists yet.
+frames for arbitrary input and output chunking. Its bounded streaming decoder
+now collects one exact frame, invokes the transactional private decoder, and
+publishes that frame only while draining verified raw staging; truncation,
+trailing data, and malformed later frames are rejected transactionally. No
+public factory, CLI, benchmark, fuzz target, or interoperability entry exists
+yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

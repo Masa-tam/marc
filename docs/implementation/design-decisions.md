@@ -9008,6 +9008,28 @@ frame bytes drain; `ResetBlock`, unknown flags, premature end, and excess input
 are rejected. This decision adds no streaming decoder, C factory, CLI selector,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-483: LZ78 rANS streaming decode commits complete frames
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add the bounded known-size streaming decoder matching DD-482. Collect and
+validate the fixed 80-byte prefix incrementally. For each nonempty frame,
+collect the 56-byte generic header first, derive its exact checked serialized
+extent, and admit encoded-frame storage, rANS views, canonical token staging,
+LZ78 phrase records, private raw staging, and their combined internal byte
+total before collecting the body.
+
+Pass only a complete encoded frame to DD-479's private staging decoder. Drain
+its raw result under arbitrary output starvation only after all entropy,
+token-graph, and reconstruction checks succeed. A malformed later frame may
+not publish any byte from that frame or retract earlier committed frames.
+Retain `EndInput` while verified raw bytes drain; reject premature end,
+trailing bytes, reset, unknown flags, invalid extents, and insufficient
+workspace with sticky terminal behavior. Empty known-size input contains only
+the prefix. This decision adds no profile calculator, C factory, CLI selector,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

@@ -9623,6 +9623,35 @@ discarded and the reviewed seed retained.
   both MSVC and ClangCL. The complete Release CTest suite passed
   1,877/1,877 under both compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS bounded streaming decoder
+
+- Authoring method: connected DD-479's private complete-frame staging decoder
+  to marc's established incremental prefix, exact-frame collection, and
+  verified-raw drain state machine.
+- References used: DD-483, DD-479, local prefix and generic frame parsers,
+  checked arithmetic, transform status invariants, and repository-authored
+  streaming tests only.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  streaming decoders, buffer managers, state machines, malformed corpora,
+  encoded corpora, source code, and test suites.
+- Independent decisions: parse the fixed prefix and frame header separately;
+  admit all decoder regions and their aggregate before body collection; decode
+  only a complete frame; drain private raw afterward; retain `EndInput` across
+  draining; and reject truncation, trailing data, reset, and unknown flags.
+- Generated-code task description: add the bounded streaming decoder and
+  CMake wiring; prove one-byte input/output, transactional later-frame
+  corruption, storage and aggregate limits, empty input, retained premature
+  end, and strict protocol rejection; and synchronize format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation composes only repository-authored
+  frame decoding and state-machine conventions. No external control flow,
+  buffer layout, naming scheme, malformed vector, encoded bytes, or test
+  expression was compared.
+- Local validation: the five focused streaming decoder tests passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed
+  1,882/1,882 under both compilers using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and
