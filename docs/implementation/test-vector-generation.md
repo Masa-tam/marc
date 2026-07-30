@@ -3571,6 +3571,19 @@ swapped. Remove only `lzss-rans.marc`, change only the schema and codec set to
 20, and then exercise the unchanged schema-20-through-schema-1 conversion and
 verification chain.
 
+For the first LZ78 plus rANS vector, begin with raw byte `41` and independently
+derive canonical LZ78 Pair token `00 41 00 00 00 00 00 00`. Feed exactly
+those eight bytes to standalone scalar rANS block planning. Require normalized
+frequencies `00:3584` and `41:512`, payload
+`00 7C 9D 2F 0A 00 00 00`, one 528-byte descriptor, and a complete 592-byte
+frame.
+
+Construct the generic header separately with raw extent 1, dictionary extent
+8, payload extent 8, one block, and descriptor extent 528. Serialize the rANS
+descriptor separately, append the payload, and compare every byte with the
+independently recorded sparse frame representation. Do not invoke any future
+combined LZ78/rANS implementation in this vector.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

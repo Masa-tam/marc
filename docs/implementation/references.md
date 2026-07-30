@@ -1465,6 +1465,12 @@ repository's dependency-free measurement runner. No external benchmark
 framework, combined-codec adapter, capacity formula, performance result,
 source code, or test suite was consulted.
 
+The LZ78 plus rANS reserved representation uses only DD-477, marc's documented
+LZ78 variant-1 fixed token grammar, scalar rANS variant 1, generic frame
+serialization, and the existing independent standalone encoders. No external
+LZ78/rANS composition, archive format, combined-codec implementation, encoded
+corpus, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

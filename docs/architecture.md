@@ -1270,6 +1270,26 @@ schema-21 archives at revision
 `110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
+### Specified LZ78 plus rANS boundary
+
+The third rANS composition freezes the complete canonical LZ78 token sequence
+before entropy processing. Scalar rANS remains unaware of the fixed eight-byte
+Pair and FinalIndex grammar, so an entropy block may split a token while the
+outer frame remains the shared dictionary and model reset boundary.
+
+For raw frame extent `F`, token extent `S`, entropy block size `B`, and block
+count `K`, require aligned `0 < S <= 8F`, `K = ceil(S/B)`,
+`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. The decoder must
+validate every rANS block into private token staging before checking LZ78
+alignment, fields, phrase references, phrase lengths, dictionary growth, and
+exact raw extent. Phrase expansion and caller-visible publication remain
+outside this first specification step.
+
+The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
+rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
+the `00:3584` and `41:512` normalized model, the eight-byte final-state
+payload, and the complete 592-byte frame.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

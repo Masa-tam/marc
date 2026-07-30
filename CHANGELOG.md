@@ -7,6 +7,14 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lz78-rans` composition with a complete decoder-visible
+  representation and independent 592-byte raw-`A` frame. The fixed eight-byte
+  LZ78 token stream is finalized before scalar rANS block coding; checked
+  bounds cover `S <= 8F`, token alignment, `K = ceil(S/B)`,
+  `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and bounded phrase
+  records. Entropy validation precedes complete LZ78 token-graph validation
+  and any raw reconstruction.
+
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete
   variable-length LZSS token sequence is frozen before scalar rANS block

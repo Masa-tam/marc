@@ -8865,6 +8865,42 @@ This is local generation and verification evidence. Cross-platform canonical
 bytes remain unproven until CI artifacts and an independent platform complete
 the four established verification directions.
 
+## DD-477: LZ78 rANS preserves fixed phrase tokens
+
+- Date: 2026-07-31
+- Status: accepted
+
+Reserve `lz78-rans` for LZ78 variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZ78 parameter extension,
+empty entropy parameters, and canonical fixed eight-byte tokens. Complete the
+token stream before entropy processing; an rANS block may split a token but
+cannot cross an outer frame. Reset the LZ78 phrase dictionary and every rANS
+model and state at each frame.
+
+For raw frame extent `F`, require aligned token extent `0 < S <= 8F`,
+`K = ceil(S/B)` for nonzero rANS block size `B`,
+`8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound token count by
+`F` and generated phrase records by the Pair count, configured LZ78 entry
+limit, and local decoder limit. Preserve the existing one-MiB LZ78 composition
+frame cap.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly
+`S` private token bytes. Only then validate eight-byte alignment, tags,
+reserved fields, backward phrase references, FinalIndex placement, checked
+phrase lengths, dictionary growth, and exact raw extent before any raw
+reconstruction or publication.
+
+For raw `A`, independently freeze LZ78 Pair token
+`00 41 00 00 00 00 00 00`. Its normalized rANS model is
+`00:3584, 41:512`, final-state payload is
+`00 7C 9D 2F 0A 00 00 00`, and the complete frame is 592 bytes. Prove this by
+composing only the existing standalone LZ78 encoder, scalar rANS encoder, and
+generic serializers. This decision specifies bytes and a reserved name only;
+it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

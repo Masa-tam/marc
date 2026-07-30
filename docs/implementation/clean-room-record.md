@@ -9456,6 +9456,37 @@ discarded and the reviewed seed retained.
   environment labels supplied by the project owner. No external encoded
   representation or implementation structure was compared.
 
+## 2026-07-31 - LZ78 plus rANS reserved representation
+
+- Authoring method: composed marc's already documented fixed LZ78 token
+  grammar, scalar rANS block representation, and generic frame serialization
+  without consulting another combined format.
+- References used: DD-477, the local LZ78 variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame serializer,
+  checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  compositions, archive formats, combined encoders or decoders, encoded
+  corpora, source code, and test suites.
+- Independent decisions: reserve `lz78-rans`; retain format 1.0 and the
+  16-byte LZ78 parameter extension; freeze aligned eight-byte tokens before
+  rANS; permit entropy blocks to split tokens but not frames; require
+  `S <= 8F`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and exact `528K`
+  descriptor bytes; bound phrase records; and validate entropy before the
+  LZ78 graph or raw reconstruction.
+- Generated-code task description: specify the complete decoder-visible
+  boundary and sparse raw-`A` frame, add a standalone-component vector test,
+  and synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records without adding a
+  combined implementation.
+- Similarity review: the representation directly composes marc's existing
+  independently implemented formats and checked bounds. No external token
+  grammar, combined layout, validation order, code, or test expression was
+  compared.
+- Local validation: the independent LZ78/rANS single-Pair vector passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,845/1,845 under
+  both compilers using official CMake 4.3.4; all thirty-two benchmark smokes
+  and schema-21 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

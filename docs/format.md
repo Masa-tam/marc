@@ -3965,6 +3965,68 @@ Interoperability schema 21 emits this unchanged profile as `lzss-rans` after
 the frozen thirty-one-entry schema-20 set. The schema changes only the
 external manifest profile set; it adds no stream field or variant.
 
+## LZ78 variant 1 plus rANS variant 1
+
+The reserved composition name is `lz78-rans`. Format version 1.0 uses the
+ordinary 16-byte LZ78 parameter extension, entropy parameter size zero, and
+the generic frame header. Both algorithms reset at every outer frame.
+
+Complete the canonical fixed-width LZ78 token stream before entropy coding.
+For raw frame size `F`, token extent `S`, nonzero rANS block size `B`, and
+block count `K`, require:
+
+```text
+0 < S <= 8F
+S mod 8 = 0
+K = ceil(S / B)
+descriptor bytes = 528K
+8K <= P <= S + 8K
+```
+
+`S / 8` is the token count and cannot exceed `F`. Generated non-root phrase
+records cannot exceed the lesser of the Pair-token count, the LZ78 parameter
+limit, and the local dictionary-entry limit. rANS consumes finalized token
+bytes without interpreting token boundaries, so a block may split one
+eight-byte token but cannot cross an outer frame.
+
+Decoding first validates the generic frame extents and every rANS descriptor,
+model, state path, terminal state, and exact payload exhaustion. Only after all
+blocks succeed may it reconstruct exactly `S` private token bytes. It must then
+validate eight-byte alignment, tags, zero reserved and unused fields,
+backward phrase references, FinalIndex placement, bounded phrase lengths,
+dictionary growth, and exact declared raw extent before any raw
+reconstruction or caller-visible publication.
+
+For raw `A`, LZ78 emits Pair token:
+
+```text
+00 41 00 00 00 00 00 00
+```
+
+With `B = 65,536`, its normalized rANS frequencies are `00:3584` and
+`41:512`; the payload is:
+
+```text
+00 7C 9D 2F 0A 00 00 00
+```
+
+The complete frame is 592 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00 08 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`08 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 0E`) and 146..147 (`00 02`). The eight payload bytes above immediately
+follow the descriptor. This sparse notation uniquely fixes every frame byte.
+This section reserves representation and name only; it publishes no combined
+implementation or public entry point.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

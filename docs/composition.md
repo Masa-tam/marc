@@ -21,7 +21,7 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Specified | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
@@ -129,6 +129,18 @@ per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
 publication: schema 21 contains the current published profile set, and every
 earlier schema profile set remains exact.
+
+`lz78-rans` is the third rANS composition to receive a reserved
+representation. LZ78 first freezes its complete fixed eight-byte Pair or
+FinalIndex token sequence with checked `S <= 8F`; scalar rANS then divides
+those bytes into `K = ceil(S/B)` blocks with payload bound
+`8K <= P <= S + 8K` and exact descriptor extent `528K`. A block may split a
+token but cannot cross an outer frame. Entropy validation and complete private
+token reconstruction precede alignment, tag, reserved-field, phrase-reference,
+dictionary-growth, and exact raw-extent validation. The independently derived
+raw-`A` vector fixes the complete 592-byte frame. No combined implementation,
+public factory, CLI, benchmark, fuzz target, or interoperability entry exists
+yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
