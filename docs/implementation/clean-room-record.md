@@ -9541,6 +9541,32 @@ discarded and the reviewed seed retained.
   under both MSVC and ClangCL. The complete Release CTest suite passed
   1,860/1,860 under both compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS transactional frame publication
+
+- Authoring method: placed one caller-visible commit copy above DD-479's
+  completed private raw decoder and extended preflight with exact output
+  capacity.
+- References used: DD-480, DD-479, local caller-owned span conventions,
+  checked frame extents, and existing transactional publication tests only.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  decompression APIs, transactional buffer designs, malformed archives,
+  source code, and test suites.
+- Independent decisions: reject short output before private mutation; exclude
+  caller output from internal workspace accounting; copy exactly the declared
+  raw extent once; and preserve excess capacity and all output on failure.
+- Generated-code task description: publish the independent Pair and nested
+  token-splitting frame; prove output-capacity precedence; preserve output
+  under malformed entropy and dictionary layers; and synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: this is marc's established exact-frame commit convention
+  applied to repository-authored validators and staging. No external control
+  flow, publication strategy, error taxonomy, or test expression was
+  compared.
+- Local validation: the nineteen focused validator and decoder tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  1,864/1,864 under both compilers using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

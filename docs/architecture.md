@@ -1299,7 +1299,14 @@ extent and is counted in the aggregate workspace before any entropy output.
 The existing non-recursive LZ78 decoder walks the validated parent links into
 the separate raw region; malformed entropy or token data therefore cannot
 touch raw staging. The result remains private and is not transactionally
-published to a caller-visible output span.
+published by that boundary.
+
+The transactional complete-frame decoder adds one caller-visible output span.
+Its exact raw capacity is checked with the other capacities before any private
+mutation, but it is not counted as internal workspace. After complete entropy,
+phrase-graph, and raw reconstruction success, one copy publishes exactly the
+declared frame extent; failure at any earlier layer leaves the complete output
+span unchanged.
 
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,

@@ -1484,6 +1484,12 @@ staging, and checked aggregate limits. No external combined decoder,
 phrase-expansion structure, allocation layout, malformed corpus, source code,
 or test suite was consulted.
 
+The LZ78 plus rANS transactional publication boundary uses only DD-480, the
+completed DD-479 private decoder, caller-owned spans, and marc's existing
+exact-frame commit convention. No external decompression API, transactional
+output strategy, buffer design, malformed corpus, source code, or test suite
+was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

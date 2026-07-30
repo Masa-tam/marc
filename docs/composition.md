@@ -143,9 +143,10 @@ complete-frame validator now enforces these extents and workspace limits,
 validates all entropy blocks before private token mutation, and validates the
 complete phrase graph. A bounded internal decoder now expands the validated
 graph iteratively into separate private raw staging, counting its exact
-declared extent in the aggregate limit before entropy output. No
-caller-visible publication, public factory, CLI, benchmark, fuzz target, or
-interoperability entry exists yet.
+declared extent in the aggregate limit before entropy output. A transactional
+decoder now publishes exactly that raw extent only after all private work
+succeeds and otherwise preserves the entire caller output. No public factory,
+CLI, benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

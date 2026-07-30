@@ -4030,8 +4030,10 @@ limit, validates every rANS block before decoding any token byte, and then
 validates the complete LZ78 phrase graph. The bounded internal decoder also
 preflights exact raw staging and counts it in the aggregate limit before
 entropy output, then reconstructs the validated graph iteratively into that
-separate private region. It publishes no caller-visible output or public entry
-point.
+separate private region. The transactional decoder checks caller output
+capacity before private mutation and copies exactly the declared raw extent
+only after reconstruction succeeds; failure leaves the entire output
+unchanged. This remains an internal entry point.
 
 ## tANS variant 1
 

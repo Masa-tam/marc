@@ -450,8 +450,9 @@ workspace extents, validates every entropy block before private token
 mutation, and validates the exact LZ78 phrase graph without expanding it.
 A bounded decoder now expands that validated graph iteratively into separate
 private raw staging after checking raw capacity and aggregate workspace before
-entropy output. Transactional publication, streaming, public API, and
-admission evidence remain pending.
+entropy output. Transactional frame publication now checks output capacity
+before private mutation and copies only after complete reconstruction.
+Streaming, public API, and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -8945,6 +8945,25 @@ decision adds no caller-visible publication, encoder, streaming transform,
 C factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-480: LZ78 rANS publication is one post-success copy
+
+- Date: 2026-07-31
+- Status: accepted
+
+Extend DD-479 with an internal transactional complete-frame decoder. Require a
+caller-visible output span at least as large as the declared raw frame and
+check that capacity with all private capacities before parsing an rANS
+descriptor or mutating any workspace. The output span is caller storage and
+does not count toward the internal-buffer aggregate.
+
+Run the unchanged DD-478 validation and DD-479 private reconstruction. Only
+after both succeed, copy exactly the declared raw extent from private staging
+to caller output once. Do not touch excess output capacity. Every header,
+entropy, token, phrase, capacity, aggregate-limit, or reconstruction failure
+must preserve the entire caller output. This decision adds no encoder,
+streaming transform, C factory, CLI selector, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

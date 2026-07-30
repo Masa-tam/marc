@@ -3603,6 +3603,14 @@ Reject an empty raw region and a one-byte-short aggregate limit before token
 or phrase mutation. Corrupt the final rANS block and separately entropy-code
 an invalid LZ78 tag; both cases must preserve the raw sentinel.
 
+For transactional LZ78 plus rANS publication, decode the frozen single-Pair
+frame into private raw and a three-byte sentinel-filled output; require only
+output byte zero to become `41`. Publish the nested `ABAB` phrase graph from
+five-byte rANS blocks into a five-byte output and preserve its final sentinel.
+An empty output must reject before token, phrase, or raw mutation. A corrupted
+late rANS block and an entropy-coded invalid LZ78 tag must preserve every
+caller-visible output byte.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
