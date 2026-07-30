@@ -1471,6 +1471,13 @@ serialization, and the existing independent standalone encoders. No external
 LZ78/rANS composition, archive format, combined-codec implementation, encoded
 corpus, source code, or test suite was consulted.
 
+The first LZ78 plus rANS complete-frame validator uses only DD-478, the
+repository's generic frame parser, scalar rANS descriptor controller and
+decoder validator, LZ78 phrase-graph validator, caller-owned spans, checked
+arithmetic, and the frozen independent 592-byte vector. No external combined
+decoder, validation order, workspace layout, malformed corpus, source code,
+or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

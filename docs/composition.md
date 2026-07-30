@@ -138,9 +138,12 @@ those bytes into `K = ceil(S/B)` blocks with payload bound
 token but cannot cross an outer frame. Entropy validation and complete private
 token reconstruction precede alignment, tag, reserved-field, phrase-reference,
 dictionary-growth, and exact raw-extent validation. The independently derived
-raw-`A` vector fixes the complete 592-byte frame. No combined implementation,
-public factory, CLI, benchmark, fuzz target, or interoperability entry exists
-yet.
+raw-`A` vector fixes the complete 592-byte frame. The first internal
+complete-frame validator now enforces these extents and workspace limits,
+validates all entropy blocks before private token mutation, and validates the
+complete phrase graph without reconstructing raw bytes. No combined raw
+decoder, public factory, CLI, benchmark, fuzz target, or interoperability
+entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

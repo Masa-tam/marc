@@ -445,8 +445,11 @@ checks `S <= 8F`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K`
 descriptor bytes, and bounded phrase records, and requires entropy validation
 before LZ78 graph validation or raw reconstruction. An independently assembled
 592-byte single-Pair frame fixes the first canonical representation. Combined
-validation, reconstruction, streaming, public API, and admission evidence
-remain pending.
+validation is now implemented internally: it checks complete frame and
+workspace extents, validates every entropy block before private token
+mutation, and validates the exact LZ78 phrase graph without expanding it.
+Raw reconstruction, streaming, public API, and admission evidence remain
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -8901,6 +8901,30 @@ it does not publish a combined validator, decoder, encoder, streaming
 transform, C factory, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-478: LZ78 rANS first validator stops at the phrase graph
+
+- Date: 2026-07-31
+- Status: accepted
+
+Implement the first `lz78-rans` combined component as an internal bounded
+complete-frame validator. Accept exactly one serialized frame and reject
+truncation or trailing bytes. Before touching private token staging, verify
+the generic header, `0 < S <= 8F`, eight-byte alignment,
+`K = ceil(S/B)`, exact `528K` descriptor bytes,
+`8K <= P <= S + 8K`, caller-owned rANS-view, token, and phrase capacities,
+and the aggregate descriptor, payload, token, view, and phrase-workspace
+limit.
+
+Parse and validate every rANS descriptor, model, state path, terminal state,
+and exact payload exhaustion before decoding any block. Only after all blocks
+succeed may the validator reconstruct exactly `S` private token bytes and run
+the existing bounded LZ78 validator over alignment, fields, backward
+references, dictionary growth, phrase lengths, FinalIndex placement, and
+exact declared raw extent. A later step must add iterative raw reconstruction
+behind a separate private staging boundary. This decision adds no raw decoder,
+encoder, streaming transform, C factory, CLI selector, benchmark, fuzz target,
+or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

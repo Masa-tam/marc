@@ -3584,6 +3584,17 @@ descriptor separately, append the payload, and compare every byte with the
 independently recorded sparse frame representation. Do not invoke any future
 combined LZ78/rANS implementation in this vector.
 
+For the first LZ78 plus rANS complete-frame validator, admit the frozen
+592-byte single-Pair frame into one rANS view, eight private token bytes, and
+one phrase record. Re-encode the same token with `B = 3` so three entropy
+blocks split the token at byte boundaries unrelated to its eight-byte grammar.
+Reject every strict prefix and one trailing byte. Exercise one-short view,
+token, phrase, and aggregate workspace limits before token mutation. Corrupt
+the third block's final state and require all sentinel token bytes to remain
+unchanged; separately entropy-code an invalid LZ78 tag and require the nested
+token error. Also reject a seven-byte dictionary extent, a payload beyond
+`S + 8K`, and a mismatched entropy algorithm.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

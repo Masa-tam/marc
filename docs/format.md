@@ -4024,8 +4024,11 @@ Descriptor bytes 0 through 15 are
 The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 0E`) and 146..147 (`00 02`). The eight payload bytes above immediately
 follow the descriptor. This sparse notation uniquely fixes every frame byte.
-This section reserves representation and name only; it publishes no combined
-implementation or public entry point.
+The internal complete-frame validator accepts only one exact serialized frame,
+preflights caller-owned view, token, and phrase workspaces plus their aggregate
+limit, validates every rANS block before decoding any token byte, and then
+validates the complete LZ78 phrase graph. It performs no raw reconstruction
+and publishes no public entry point.
 
 ## tANS variant 1
 

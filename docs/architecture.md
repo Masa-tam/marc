@@ -1270,7 +1270,7 @@ schema-21 archives at revision
 `110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-### Specified LZ78 plus rANS boundary
+### Validated LZ78 plus rANS boundary
 
 The third rANS composition freezes the complete canonical LZ78 token sequence
 before entropy processing. Scalar rANS remains unaware of the fixed eight-byte
@@ -1283,7 +1283,15 @@ count `K`, require aligned `0 < S <= 8F`, `K = ceil(S/B)`,
 validate every rANS block into private token staging before checking LZ78
 alignment, fields, phrase references, phrase lengths, dictionary growth, and
 exact raw extent. Phrase expansion and caller-visible publication remain
-outside this first specification step.
+outside this first implementation step.
+
+The first internal complete-frame validator implements that boundary. It
+checks exact serialized extent, block count, descriptor and payload bounds,
+token and phrase workspace capacities, and the aggregate internal-buffer
+limit before token mutation. It validates every descriptor and rANS state
+path before decoding any block, reconstructs exactly `S` private token bytes,
+and runs the bounded LZ78 phrase-graph validator. It deliberately exposes no
+raw reconstruction, public factory, or streaming transform.
 
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,

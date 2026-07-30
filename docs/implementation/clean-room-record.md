@@ -9487,6 +9487,35 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4; all thirty-two benchmark smokes
   and schema-21 compatibility remained successful.
 
+## 2026-07-31 - LZ78 plus rANS complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, rANS block
+  controller and decoder validator, and LZ78 phrase-graph validator under the
+  independently specified DD-478 transaction boundary.
+- References used: DD-478, the frozen 592-byte LZ78/rANS vector, local checked
+  arithmetic, caller-owned workspace conventions, and existing malformed
+  layer tests.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  decoders, validation pipelines, workspace layouts, malformed archives,
+  source code, and test suites.
+- Independent decisions: accept exactly one frame; preflight exact extents and
+  aggregate descriptor, payload, token, view, and phrase storage; validate
+  every entropy block before decoding any token; then validate the complete
+  phrase graph without reconstructing or publishing raw bytes.
+- Generated-code task description: implement the bounded internal validator;
+  cover the independent vector, token-splitting entropy blocks, all
+  truncations, trailing data, one-short workspaces, malformed later entropy,
+  invalid decoded tokens, impossible extents, and pipeline mismatch; and
+  synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: control flow and tests compose only repository-authored
+  validators, bounds, and vectors. No external code, error taxonomy,
+  allocation strategy, or test expression was compared.
+- Local validation: the ten focused validator tests passed under both MSVC
+  and ClangCL. The complete GoogleTest executable passed 1,755/1,755 under
+  both compilers; CTest passed 1,239/1,239 under MSVC and 1,234/1,234 under
+  ClangCL using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

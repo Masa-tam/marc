@@ -13,7 +13,10 @@ format versions, and C ABI versions are independent namespaces.
   bounds cover `S <= 8F`, token alignment, `K = ceil(S/B)`,
   `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and bounded phrase
   records. Entropy validation precedes complete LZ78 token-graph validation
-  and any raw reconstruction.
+  and any raw reconstruction. Its first bounded complete-frame validator
+  checks exact frame extents and aggregate caller-owned workspace, validates
+  every rANS block before mutating private token staging, and then validates
+  the complete LZ78 phrase graph without reconstructing raw bytes.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete
