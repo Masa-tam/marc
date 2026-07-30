@@ -155,7 +155,9 @@ publishes that frame only while draining verified raw staging; truncation,
 trailing data, and malformed later frames are rejected transactionally. Its
 internal profile now derives all three caller byte regions and partitions
 aligned encoder records or rANS-view-plus-phrase records from one opaque
-region. No public factory, CLI, benchmark, fuzz target, or interoperability
+region. The public C requirements query and factory now expose that fixed
+profile through the common transform lifecycle without exposing the record
+types. No completion matrix, CLI, benchmark, fuzz target, or interoperability
 entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a

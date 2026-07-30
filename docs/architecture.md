@@ -1347,6 +1347,13 @@ from local limits; one aligned opaque region contains rANS block views first
 and LZ78 phrase records at a checked aligned offset. Partitioning rederives
 every count, offset, extent, and alignment before returning typed spans.
 
+The public C adapter preserves that ownership model. Its requirements query
+reports raw or encoded-frame storage as primary, token-plus-frame/raw storage
+as secondary, and only an opaque byte extent plus maximum alignment for typed
+records. Factory construction repeats profile calculation and layout
+partitioning before publishing an immutable-direction handle. A failed query,
+short or misaligned region, or allocation failure leaves the handle null.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

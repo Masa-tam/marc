@@ -3663,6 +3663,20 @@ phrase records. Partition both directional opaque layouts; reject altered
 offsets, one-byte-short storage, and misalignment. Finally construct encoder
 and decoder solely from calculated regions and round-trip `41 42 41 42 58`.
 
+For the LZ78 plus rANS C ABI, initialize encoding for raw
+`41 42 41 42 58`, two-byte raw frames, five-byte entropy blocks, two LZ78
+entries, and bounded local policy. Require queried primary storage of two
+bytes, secondary storage of 2,232 bytes, and a nonempty aligned opaque region.
+Encode through only the C11 lifecycle.
+
+For decoding, use an 8,192-byte aggregate policy, seven-block ceiling,
+16-byte token ceiling, and a five-byte local frame ceiling so the standalone
+rANS layer may admit its configured block. Require 8,248 primary and 21
+secondary bytes plus aligned opaque views, then reproduce the original.
+Reject each region one byte short, deliberate views misalignment, a null
+transform output pointer, and a nonzero reserved field; every creation failure
+must leave the transform pointer null.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

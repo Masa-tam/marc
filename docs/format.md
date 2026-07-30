@@ -4067,6 +4067,17 @@ only from configured hard limits. Its opaque typed region stores bounded rANS
 block views followed at an aligned checked offset by bounded LZ78 phrase
 records. These workspace layouts do not add serialized fields.
 
+The representation-neutral public C entry points are
+`marc_lz78_rans_config_init()`,
+`marc_lz78_rans_workspace_requirements()`, and
+`marc_lz78_rans_create()`. They require known original size for encoding,
+report direction-specific primary, secondary, and aligned opaque workspace
+requirements, and publish no transform handle when configuration, capacity,
+layout, or alignment validation fails. The configuration's local
+`max_frame_size` must admit both the raw outer frame and any larger entropy
+block decoded at the byte-transform boundary; this policy adds no stream
+field.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

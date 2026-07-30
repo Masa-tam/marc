@@ -1515,6 +1515,12 @@ regions, marc's local hard limits, checked alignment arithmetic, and existing
 directional profile conventions. No external profile API, allocation policy,
 opaque workspace layout, source code, or test suite was consulted.
 
+The LZ78 plus rANS public C requirements query and factory use only DD-485,
+DD-484's direction-specific requirements, the completed local streaming pair,
+ABI version 1's existing three-region lifecycle, checked opaque partitioning,
+and `nothrow` handle publication. No external C API, allocation model,
+combined factory, ABI layout, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

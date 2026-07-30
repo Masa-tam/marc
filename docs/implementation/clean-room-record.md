@@ -9680,6 +9680,32 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
   compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS public C requirements and factory
+
+- Authoring method: connected DD-484's exact requirements and opaque
+  partitioners to marc ABI version 1's existing generic transform lifecycle.
+- References used: DD-485, DD-484, the local streaming encoder and decoder,
+  public size-tagging conventions, checked secondary partitioning, and
+  repository-authored pure-C tests only.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation models, combined-codec factories, ABI layouts, source code,
+  encoded corpora, and test suites.
+- Independent decisions: expose one dedicated size-tagged configuration;
+  preserve the three-region ABI; return only opaque bytes and alignment;
+  repeat profile and partition validation in factory construction; require
+  `nothrow` publication; and document the shared entropy-layer frame limit.
+- Generated-code task description: add public declarations, config loading,
+  requirements query, immutable-direction factory, pure-C round trip and
+  capacity/alignment rejection, build registration, and synchronized API,
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-authored
+  profile and public-handle conventions. No external function set, struct
+  layout, allocation behavior, control flow, or test expression was compared.
+- Local validation: the pure-C lifecycle passed under both MSVC and ClangCL.
+  The complete Release CTest suite passed 1,890/1,890 under both compilers
+  using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

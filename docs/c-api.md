@@ -7,7 +7,8 @@ profiles, the LZ77 plus rANS profile, LZSS variant 1, the LZSS plus Blocked
 Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
 Range and LZSS plus rANS profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
-LZ78 plus Dynamic Range profiles, LZW variant 1, the LZW plus Blocked Huffman,
+LZ78 plus Dynamic Range and LZ78 plus rANS profiles, LZW variant 1, the LZW
+plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, and LZD plus Dynamic
 Range profiles, and LZMW variant 1 and the LZMW plus Blocked Huffman, LZMW
@@ -29,6 +30,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lzss_dynamic_range_*`, `marc_lzss_rans_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lz78_dynamic_range_*`,
+`marc_lz78_rans_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzw_dynamic_range_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
@@ -67,7 +69,8 @@ cross-product pairings as callable C ABI features.
    `marc_lzss_rans_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
    `marc_lz78_adaptive_huffman_config_init()`,
-   `marc_lz78_dynamic_range_config_init()`, or
+   `marc_lz78_dynamic_range_config_init()`,
+   `marc_lz78_rans_config_init()`, or
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzw_dynamic_range_config_init()`,
@@ -217,6 +220,17 @@ It covers every one-byte value, representative binary and generated input,
 frame-boundary lengths, deterministic one-byte and mixed chunking, repeated
 terminal calls, and atomic rejection of a corrupted, truncated, or extended
 fourth frame.
+The LZ78 plus rANS factory retains this opaque three-region policy while
+adding entropy views in the decode direction. Encoding uses primary for raw
+frame collection, secondary for canonical LZ78 tokens followed by the complete
+rANS frame, and aligned views for encoder records. Decoding uses primary for
+the encoded frame, secondary for token staging followed by private raw
+staging, and one aligned opaque views region containing rANS block views
+followed by LZ78 phrase records. Call
+`marc_lz78_rans_workspace_requirements()` again after changing direction,
+known original size, either block dimension, maximum entries, or any hard
+limit. Because entropy blocks operate on expanded token bytes, a local
+`max_frame_size` must also admit the configured entropy block size.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized

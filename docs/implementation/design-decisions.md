@@ -9053,6 +9053,33 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-485: LZ78 rANS C factory exposes only opaque workspace bytes
+
+- Date: 2026-07-31
+- Status: accepted
+
+Expose size-tagged `marc_lz78_rans_config`, initializer, workspace query, and
+factory under ABI version 1. Retain the common three-region lifecycle. Encode
+reports raw-frame collection as primary, token staging plus complete frame as
+secondary, and aligned LZ78 encoder records as opaque views. Decode reports
+encoded-frame collection as primary, token plus private raw staging as
+secondary, and the checked rANS-view/padding/LZ78-phrase layout as opaque
+views.
+
+The query must map DD-484 errors stably. The factory first invokes that public
+query, rejects null, short, or misaligned regions, repeats the profile
+calculation, rederives the opaque layout, constructs only with `nothrow`, and
+leaves the handle null on every failure. Direction remains immutable. Because
+the common rANS validator applies `max_frame_size` to its own decoded byte
+block, require local policy to admit the larger of the raw outer-frame extent
+and configured entropy-block extent.
+
+Prove the complete pure-C11 lifecycle with two-byte raw frames and five-byte
+rANS blocks, queried workspaces, three-frame round trip, every one-byte-short
+region, misalignment, null handle output, and reserved-field rejection. This
+decision adds no completion matrix, fuzz target, CLI selector, benchmark,
+completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28
