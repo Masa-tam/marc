@@ -3622,6 +3622,16 @@ short encoder or token workspace, excessive block count, one-short aggregate
 workspace, and one-short serialized output; the last case must preserve every
 output sentinel.
 
+For LZ78 plus rANS streaming encode, use five raw bytes `41 42 41 42 58`,
+two-byte raw frames, and five-byte rANS blocks. Independently concatenate the
+80-byte stream prefix and three exact frames produced at sequences 0, 1, and
+2, then require one-byte input and output processing to match every byte.
+Repeat with a partial-frame `Flush` and with `EndInput` supplied while the
+prefix still drains. Exercise short raw, `8F` token, encoder-record, and
+serialized-frame storage; set the combined raw, token, frame, and record
+aggregate one byte short; and reject premature end, reset, unknown flags, and
+excess input. Empty known-size input emits only the prefix and ends.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

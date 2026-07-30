@@ -454,8 +454,10 @@ entropy output. Transactional frame publication now checks output capacity
 before private mutation and copies only after complete reconstruction.
 An exact-frame planner and encoder now freeze deterministic LZ78 tokens before
 planning every rANS block, enforce encoder-workspace and aggregate limits, and
-reproduce the independent 592-byte frame. Streaming, public API, and admission
-evidence remain pending.
+reproduce the independent 592-byte frame. A bounded known-size streaming
+encoder now emits the fixed prefix, buffers one raw frame, and drains immutable
+exact-frame bytes under arbitrary output starvation. Streaming decode, public
+API, and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

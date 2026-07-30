@@ -1496,6 +1496,12 @@ frame serializer, checked arithmetic, caller-owned spans, and the frozen
 592-byte vector. No external combined encoder, block-planning strategy,
 workspace layout, encoded corpus, source code, or test suite was consulted.
 
+The LZ78 plus rANS streaming encoder uses only DD-482, DD-481's exact-frame
+planner and encoder, marc's established bounded frame-draining state machine,
+explicit stream and parameter serializers, checked aggregate arithmetic, and
+caller-owned spans. No external streaming codec, buffering design, state
+machine, source code, encoded corpus, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

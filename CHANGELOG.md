@@ -24,7 +24,9 @@ format versions, and C ABI versions are independent namespaces.
   reconstruction succeeds. Its exact-frame planner and encoder now freeze
   canonical LZ78 tokens, plan every rANS block deterministically, count
   encoder records in the aggregate workspace, and reproduce the independent
-  592-byte frame exactly.
+  592-byte frame exactly. Its bounded known-size streaming encoder now
+  collects one raw frame, prepares one immutable exact frame, and drains it
+  under arbitrary output starvation without changing serialized bytes.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

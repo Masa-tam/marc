@@ -8986,6 +8986,28 @@ the frozen 592-byte frame exactly. This decision adds no streaming transform,
 C factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-482: LZ78 rANS streaming encode buffers one exact frame
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-481. Emit the ordinary
+64-byte stream header and 16-byte LZ78 parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the exact planner and encoder, and drain
+that immutable frame under arbitrary output starvation before accepting bytes
+for the next frame.
+
+At construction, validate the fixed pipeline, parameters, known original
+size, largest raw frame, conservative `8F` token staging, and LZ78 encoder
+records. Before encoding each collected frame, count raw collection, exact
+token staging, exact serialized frame, and encoder records in one checked
+aggregate. Input and output chunking alone must not change serialized bytes.
+`Flush` keeps a partial frame open; `EndInput` is retained while prefix or
+frame bytes drain; `ResetBlock`, unknown flags, premature end, and excess input
+are rejected. This decision adds no streaming decoder, C factory, CLI selector,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

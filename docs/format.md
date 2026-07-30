@@ -4043,6 +4043,13 @@ and repeats the same deterministic block plans to emit descriptors and
 payloads in order. The raw-`A` encoding must equal the 592-byte representation
 above byte for byte.
 
+The known-size streaming encoder writes the ordinary 64-byte version 1.0
+stream header and 16-byte LZ78 parameter region, then emits consecutive exact
+frames. Each nonempty frame contains at most the configured raw frame size;
+the final frame may be shorter according to `original_size`. Input or output
+chunking does not alter bytes. `Flush` does not terminate a partial frame, and
+`ResetBlock` is not accepted by this profile.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

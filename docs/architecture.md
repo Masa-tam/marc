@@ -1318,6 +1318,16 @@ deterministic block plans only after serialized output capacity is known,
 then writes the header, all descriptors, and all payloads. The independent
 raw-`A` input reproduces the frozen 592-byte frame exactly.
 
+The known-size streaming encoder emits the ordinary 80-byte stream prefix,
+collects at most one configured raw frame, invokes the exact planner and
+encoder into caller-owned immutable frame storage, and drains that frame
+before accepting bytes for the next one. Raw collection, encoder records,
+canonical tokens, and the complete serialized frame are checked as one
+aggregate before encoding. Arbitrary input and output chunking therefore
+cannot alter frame bytes. `Flush` keeps a partial frame open, while
+`ResetBlock` is unsupported because outer frame boundaries are fixed by the
+configured raw frame size.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

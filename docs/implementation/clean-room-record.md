@@ -9595,6 +9595,34 @@ discarded and the reviewed seed retained.
   tests passed under both MSVC and ClangCL. The complete Release CTest suite
   passed 1,872/1,872 under both compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS bounded streaming encoder
+
+- Authoring method: connected DD-481's exact-frame encoder to marc's existing
+  caller-owned known-size frame collection and immutable drain state machine.
+- References used: DD-482, DD-481, local stream and LZ78 parameter
+  serializers, checked arithmetic, status invariants, and repository streaming
+  tests only.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  streaming codecs, buffer managers, state machines, encoded corpora, source
+  code, and test suites.
+- Independent decisions: emit the fixed 80-byte prefix; buffer one raw frame;
+  count raw, token, encoded frame, and encoder records together; retain
+  `EndInput` across draining; keep `Flush` non-terminal; and reject reset,
+  unknown flags, premature end, and excess input.
+- Generated-code task description: add the bounded streaming encoder and
+  CMake wiring; compare one-byte processing with exact-frame concatenation;
+  cover flush, retained end, empty input, storage and aggregate limits, and
+  protocol misuse; and synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the implementation composes only repository-authored
+  frame encoding and state-machine conventions. No external control flow,
+  buffer layout, naming scheme, encoded bytes, or test expression was
+  compared.
+- Local validation: the five focused streaming encoder tests passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed
+  1,877/1,877 under both compilers using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

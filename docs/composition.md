@@ -147,9 +147,10 @@ declared extent in the aggregate limit before entropy output. A transactional
 decoder now publishes exactly that raw extent only after all private work
 succeeds and otherwise preserves the entire caller output. Its exact-frame
 planner and encoder freeze canonical LZ78 tokens before deterministic rANS
-block planning and reproduce the independent frame. No streaming transform,
-public factory, CLI, benchmark, fuzz target, or interoperability entry exists
-yet.
+block planning and reproduce the independent frame. A bounded known-size
+streaming encoder now emits the fixed prefix and produces byte-identical
+frames for arbitrary input and output chunking. No streaming decoder, public
+factory, CLI, benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
