@@ -35,7 +35,10 @@ format versions, and C ABI versions are independent namespaces.
   states and deterministic bytes. Its bounded streaming decoder now collects
   one complete encoded frame, validates and reconstructs it privately, and
   drains only that committed raw frame; malformed later frames cannot alter
-  previously emitted or future output.
+  previously emitted or future output. Its bounded internal profile now
+  constructs the immutable stream header and derives exact encoder and
+  conservative decoder workspace requirements entirely from configuration
+  and validated local limits.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -1219,6 +1219,14 @@ private transactional decoder before its raw bytes enter a distinct drain
 state. Earlier frames may be committed; a malformed later frame publishes
 nothing from that frame and makes the error sticky.
 
+The internal profile is the sole sizing authority for this streaming pair.
+For encoding it derives the largest raw frame, conservative `2F` token
+staging, exact worst-case descriptor and payload storage, and the complete
+encoded-frame extent. For decoding it derives encoded-frame, bounded token,
+private raw, and rANS-view capacities only from validated local limits. The
+profile retains the composition's specified 1-MiB raw-frame cap; its `2F`
+token ceiling therefore remains well within the scalar rANS block bound.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

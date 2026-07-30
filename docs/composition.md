@@ -104,7 +104,9 @@ streaming encoder emits the canonical prefix, buffers at most one raw and one
 encoded frame, and reproduces one-shot bytes under arbitrary starvation. Its
 bounded streaming decoder collects and privately validates one exact frame,
 then drains only committed raw bytes; malformed later frames publish nothing
-from that frame. No public entry point exists yet.
+from that frame. Its internal profile now constructs the immutable stream
+header and derives exact encoder plus conservative decoder storage from
+validated configuration and limits. No public entry point exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

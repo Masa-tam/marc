@@ -9231,6 +9231,35 @@ discarded and the reviewed seed retained.
   1,828/1,828 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS internal profile calculator
+
+- Authoring method: specialized marc's established direction-specific profile
+  convention with the already specified LZSS/rANS bounds and the completed
+  local streaming pair.
+- References used: DD-470, DD-462, DD-468, DD-469, local decoder limits,
+  checked arithmetic, and existing profile error conventions.
+- Known implementations intentionally not consulted: external combined-codec
+  profiles, allocation policies, opaque workspace layouts, source code, and
+  test suites.
+- Independent decisions: retain the existing 1-MiB composition cap; size
+  encoding from the largest actual raw frame and conservative `2F` staging;
+  size decoding only from local limits; expose descriptor views as a count;
+  publish zero extents for empty encoding; and clear requirements on failure.
+- Generated-code task description: add immutable profile configuration,
+  direction-specific byte/count requirements, stable error mapping, exact
+  default/short/empty and limit tests, and construction of a streaming
+  round-trip solely from returned requirements; update format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the work applies repository-local arithmetic and API
+  conventions to already documented bounds. No external profile structure,
+  capacity formula, allocation layout, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZSS/rANS suite passed 47/47 under both MSVC
+  and ClangCL. The complete Release suite passed 1,835/1,835 under both
+  compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
+  schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

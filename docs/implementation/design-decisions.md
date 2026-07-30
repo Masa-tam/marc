@@ -8685,6 +8685,38 @@ reset refusal, empty input, non-terminal Flush, and premature end while
 draining. This decision adds no profile calculator, C ABI, CLI, benchmark,
 fuzz target, completion claim, or interoperability entry.
 
+## DD-470: LZSS rANS profile owns all streaming workspace sizes
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add an internal immutable profile constructor for the DD-468/DD-469 streaming
+pair. Accept known original size, raw frame size, entropy block size, and LZSS
+variant-1 parameters; validate them with the caller's complete local limits;
+and construct only the exact LZSS/rANS stream identity. Retain the specified
+`F <= 2^20` composition cap and 65,536-byte default raw and entropy blocks.
+
+For encoding, size the largest actual frame as
+`min(original_size, frame_size)`, reserve conservative canonical LZSS staging
+`S = 2F`, compute `K = ceil(S/B)`, `528K` descriptor bytes, `S + 8K`
+worst-case payload bytes, and the complete generic-frame storage. Enforce
+block-count, 32-bit frame-field, dictionary, payload, entropy-buffer, and
+aggregate raw-plus-token-plus-frame limits before publishing requirements.
+Empty known-size input publishes an all-zero workspace.
+
+For decoding, derive one complete encoded-frame extent as the generic header
+plus `max_internal_buffered_bytes`; derive raw staging from the lesser of the
+local frame limit and composition cap; derive token staging from the lesser of
+`2F` and the local dictionary limit; and expose rANS view count directly from
+the local per-frame block limit. Clear all requirements on failure and map
+stable profile errors to core errors.
+
+Prove exact default and short-frame values, empty input, every governing
+limit, invalid LZSS parameters, arithmetic overflow, stable error mapping, and
+direct construction of a complete streaming round trip using only the
+returned extents. This decision adds no C ABI, CLI, benchmark, fuzz target,
+completion matrix, or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

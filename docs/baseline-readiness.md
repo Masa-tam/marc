@@ -417,9 +417,11 @@ workspace, and sticky error contracts. Its bounded streaming decoder now
 collects one exact encoded frame, privately validates and reconstructs it,
 then drains only committed raw bytes under arbitrary starvation. It strictly
 rejects malformed prefixes, frames, truncation, trailing bytes, premature end,
-and workspace shortages with sticky errors. It remains `Specified`: no C ABI,
-CLI, benchmark, fuzz target, completion matrix, or interoperability entry
-exists yet.
+and workspace shortages with sticky errors. Its bounded internal profile now
+constructs the fixed stream identity and supplies checked direction-specific
+workspace requirements, including descriptor-view count, without exposing
+private layouts. It remains `Specified`: no C ABI, CLI, benchmark, fuzz target,
+completion matrix, or interoperability entry exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

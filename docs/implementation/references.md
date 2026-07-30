@@ -1833,3 +1833,9 @@ transactional frame decoder, marc's prefix and generic-header parsers,
 immutable-direction transform contract, checked workspace arithmetic, and
 caller-owned spans. No external streaming decoder, state machine, buffering
 strategy, malformed corpus, source code, or test suite was consulted.
+
+The LZSS plus rANS internal profile calculator uses only DD-470, the specified
+`S <= 2F`, `528K`, and `S + 8K` bounds, DD-468/DD-469's caller-owned
+streaming workspaces, marc's local limits, checked arithmetic, and established
+direction-specific profile conventions. No external profile API, allocation
+policy, opaque workspace layout, source code, or test suite was consulted.

@@ -3485,6 +3485,20 @@ short. Reject every final-byte truncation, one trailing zero byte, and
 premature EndInput becomes malformed only after the already validated first
 frame finishes draining.
 
+For the LZSS plus rANS internal profile, use original size 2,500,000 with
+default `F = B = 65,536`. Require 65,536 raw bytes, conservative 131,072-byte
+token staging, two rANS blocks, and a 132,200-byte complete encoded-frame
+extent. With only 17 raw bytes, require 17 raw, 34 token, and 626 encoded
+bytes; empty input requires all-zero encoder extents.
+
+Independently lower block-count, payload, aggregate workspace, and the
+composition's 1-MiB raw-frame cap and require rejection with cleared
+requirements. For decoding, configure 4,096 raw bytes, 6,000 dictionary
+bytes, 8,192 internally buffered bytes, and seven blocks; require 8,248
+encoded bytes, 6,000 token bytes, 4,096 raw bytes, and seven views. Finally
+allocate exactly the returned encoder and decoder extents and round-trip
+`ABABX` with `F=2` and `B=5` through only the two streaming transforms.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

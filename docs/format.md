@@ -3900,6 +3900,12 @@ Each block uses scalar rANS variant 1 exactly as specified above. Require
 `8K <= P <= S + 8K`, retain the LZSS composition cap `F <= 2^20`, and check
 all products and sums before allocation or entropy decoding.
 
+The bounded internal profile uses 65,536-byte raw frames and entropy blocks
+by default. It retains `F <= 2^20`, derives encoder storage from the largest
+actual frame and the conservative `S = 2F` ceiling, and derives decoder
+storage solely from validated local limits. These sizing rules do not alter
+the serialized representation.
+
 Decoding validates the stream profile and LZSS parameters, generic header and
 complete frame extent, exact block count, descriptor region, every rANS model
 and state path, and exact aggregate payload exhaustion before reconstructing
