@@ -448,8 +448,10 @@ before LZ78 graph validation or raw reconstruction. An independently assembled
 validation is now implemented internally: it checks complete frame and
 workspace extents, validates every entropy block before private token
 mutation, and validates the exact LZ78 phrase graph without expanding it.
-Raw reconstruction, streaming, public API, and admission evidence remain
-pending.
+A bounded decoder now expands that validated graph iteratively into separate
+private raw staging after checking raw capacity and aggregate workspace before
+entropy output. Transactional publication, streaming, public API, and
+admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

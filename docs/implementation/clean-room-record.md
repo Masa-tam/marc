@@ -9512,9 +9512,34 @@ discarded and the reviewed seed retained.
   validators, bounds, and vectors. No external code, error taxonomy,
   allocation strategy, or test expression was compared.
 - Local validation: the ten focused validator tests passed under both MSVC
-  and ClangCL. The complete GoogleTest executable passed 1,755/1,755 under
-  both compilers; CTest passed 1,239/1,239 under MSVC and 1,234/1,234 under
-  ClangCL using official CMake 4.3.4.
+  and ClangCL. The complete Release CTest suite passed 1,855/1,855 under both
+  compilers using official CMake 4.3.4.
+
+## 2026-07-31 - LZ78 plus rANS private raw reconstruction
+
+- Authoring method: extended DD-478's complete validator with marc's existing
+  iterative LZ78 decoder and a separate caller-owned raw staging boundary.
+- References used: DD-479, DD-478, the local LZ78 decoder, the frozen
+  single-Pair frame, checked workspace arithmetic, and repository transaction
+  conventions only.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  decoders, phrase expansion algorithms, buffer layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: preflight exact raw capacity and aggregate bytes
+  before entropy output; reuse the already validated phrase graph; reconstruct
+  without recursion; and leave caller-visible publication for a later step.
+- Generated-code task description: add the private raw decoder; reconstruct
+  the independent Pair and a nested phrase graph across token-splitting rANS
+  blocks; prove raw-capacity and aggregate-limit precedence; preserve raw
+  staging on malformed entropy and dictionary layers; and synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation directly composes repository-authored
+  validators and the existing iterative decoder. No external control flow,
+  expansion structure, error taxonomy, or test expression was compared.
+- Local validation: the fifteen focused validator and decoder tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  1,860/1,860 under both compilers using official CMake 4.3.4.
 
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 

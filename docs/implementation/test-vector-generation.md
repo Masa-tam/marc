@@ -3595,6 +3595,14 @@ unchanged; separately entropy-code an invalid LZ78 tag and require the nested
 token error. Also reject a seven-byte dictionary extent, a payload beyond
 `S + 8K`, and a mismatched entropy algorithm.
 
+For private LZ78 plus rANS raw reconstruction, decode the frozen single-Pair
+frame into a one-byte sentinel region and require `41`. Encode Pair `A`, Pair
+`B`, and Pair `(1,B)` as three canonical tokens, split their 24 bytes into
+five-byte rANS blocks, and require iterative reconstruction of `41 42 41 42`.
+Reject an empty raw region and a one-byte-short aggregate limit before token
+or phrase mutation. Corrupt the final rANS block and separately entropy-code
+an invalid LZ78 tag; both cases must preserve the raw sentinel.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

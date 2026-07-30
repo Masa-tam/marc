@@ -141,9 +141,11 @@ dictionary-growth, and exact raw-extent validation. The independently derived
 raw-`A` vector fixes the complete 592-byte frame. The first internal
 complete-frame validator now enforces these extents and workspace limits,
 validates all entropy blocks before private token mutation, and validates the
-complete phrase graph without reconstructing raw bytes. No combined raw
-decoder, public factory, CLI, benchmark, fuzz target, or interoperability
-entry exists yet.
+complete phrase graph. A bounded internal decoder now expands the validated
+graph iteratively into separate private raw staging, counting its exact
+declared extent in the aggregate limit before entropy output. No
+caller-visible publication, public factory, CLI, benchmark, fuzz target, or
+interoperability entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

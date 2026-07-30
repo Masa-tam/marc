@@ -8925,6 +8925,26 @@ behind a separate private staging boundary. This decision adds no raw decoder,
 encoder, streaming transform, C factory, CLI selector, benchmark, fuzz target,
 or interoperability entry.
 
+## DD-479: LZ78 rANS reconstructs only into private raw staging
+
+- Date: 2026-07-31
+- Status: accepted
+
+Extend DD-478 with a bounded internal decoder that reconstructs one completely
+validated frame into caller-owned private raw staging. Require capacity for
+the exact declared raw extent and add those bytes to the aggregate descriptor,
+payload, rANS-view, token, and phrase workspace total before parsing an rANS
+descriptor or mutating token staging.
+
+After every rANS block and the complete LZ78 phrase graph validate, invoke the
+existing iterative LZ78 decoder over the exact private token and phrase
+regions. Do not add a recursion stack or a second interpretation of phrase
+links. Any entropy, token, phrase, capacity, or aggregate-limit failure leaves
+raw staging untouched; all other workspaces remain discard-on-error. This
+decision adds no caller-visible publication, encoder, streaming transform,
+C factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

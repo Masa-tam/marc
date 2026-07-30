@@ -1291,7 +1291,15 @@ token and phrase workspace capacities, and the aggregate internal-buffer
 limit before token mutation. It validates every descriptor and rANS state
 path before decoding any block, reconstructs exactly `S` private token bytes,
 and runs the bounded LZ78 phrase-graph validator. It deliberately exposes no
-raw reconstruction, public factory, or streaming transform.
+caller-visible output, public factory, or streaming transform.
+
+The next internal boundary adds iterative raw reconstruction only after that
+complete validation succeeds. Raw staging must hold the exact declared frame
+extent and is counted in the aggregate workspace before any entropy output.
+The existing non-recursive LZ78 decoder walks the validated parent links into
+the separate raw region; malformed entropy or token data therefore cannot
+touch raw staging. The result remains private and is not transactionally
+published to a caller-visible output span.
 
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,

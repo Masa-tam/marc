@@ -16,7 +16,9 @@ format versions, and C ABI versions are independent namespaces.
   and any raw reconstruction. Its first bounded complete-frame validator
   checks exact frame extents and aggregate caller-owned workspace, validates
   every rANS block before mutating private token staging, and then validates
-  the complete LZ78 phrase graph without reconstructing raw bytes.
+  the complete LZ78 phrase graph. Its bounded decoder now reconstructs that
+  validated graph iteratively into separate private raw staging, with raw
+  capacity and aggregate storage checked before entropy output.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

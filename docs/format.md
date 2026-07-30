@@ -4027,8 +4027,11 @@ follow the descriptor. This sparse notation uniquely fixes every frame byte.
 The internal complete-frame validator accepts only one exact serialized frame,
 preflights caller-owned view, token, and phrase workspaces plus their aggregate
 limit, validates every rANS block before decoding any token byte, and then
-validates the complete LZ78 phrase graph. It performs no raw reconstruction
-and publishes no public entry point.
+validates the complete LZ78 phrase graph. The bounded internal decoder also
+preflights exact raw staging and counts it in the aggregate limit before
+entropy output, then reconstructs the validated graph iteratively into that
+separate private region. It publishes no caller-visible output or public entry
+point.
 
 ## tANS variant 1
 

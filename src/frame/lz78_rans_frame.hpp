@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZ78_RANS_FRAME_HPP
 #define MARC_FRAME_LZ78_RANS_FRAME_HPP
 
+#include "dictionary/lz78_decoder.hpp"
 #include "dictionary/lz78_format.hpp"
 #include "dictionary/lz78_validator.hpp"
 #include "entropy/rans_controller.hpp"
@@ -25,10 +26,12 @@ enum class Lz78RansFrameValidationError : std::uint8_t {
     views_too_small,
     dictionary_staging_too_small,
     phrase_workspace_too_small,
+    raw_staging_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -53,6 +56,8 @@ struct Lz78RansFrameValidationResult {
         dictionary::internal::Lz78ValidationError::none};
     dictionary::internal::Lz78FormatError dictionary_format_error{
         dictionary::internal::Lz78FormatError::none};
+    dictionary::internal::Lz78DecodeError dictionary_decode_error{
+        dictionary::internal::Lz78DecodeError::none};
     Lz78RansFrameValidationError error{
         Lz78RansFrameValidationError::none};
 };
@@ -71,6 +76,22 @@ struct Lz78RansFrameValidationResult {
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::Lz78PhraseEntry>
         phrase_workspace) noexcept;
+
+// Validates every encoded layer and reconstructs exactly one frame into
+// private raw staging. On error, all workspaces must be discarded. Input,
+// token staging, and raw staging must be mutually non-overlapping.
+[[nodiscard]] Lz78RansFrameValidationResult
+decode_lz78_rans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::RansBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

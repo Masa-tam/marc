@@ -205,7 +205,8 @@ TEST(Lz78RansFrameValidator, RejectsShortWorkspacesBeforeTokenMutation) {
 TEST(Lz78RansFrameValidator, EnforcesAggregateWorkspaceBeforeMutation) {
     const auto frame = single_pair_frame();
     auto limits = marc::core::DecoderLimits{};
-    limits.max_block_size = pair_a.size();
+    limits.max_block_size =
+        static_cast<std::uint32_t>(pair_a.size());
     limits.max_internal_buffered_bytes =
         528 + 8 + 8
         + sizeof(marc::entropy::internal::RansBlockView)
@@ -312,4 +313,125 @@ TEST(Lz78RansFrameValidator, RejectsUnsupportedPipeline) {
                   stream, {}, {}, 0, 0, frame, views, staging,
                   phrases).error,
               Lz78RansFrameValidationError::unsupported_pipeline);
+}
+
+TEST(Lz78RansFrameDecoder, ReconstructsIndependentVectorIntoRawStaging) {
+    const auto frame = single_pair_frame();
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_rans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        phrases, raw_staging);
+    ASSERT_EQ(result.error, Lz78RansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::Lz78DecodeError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+}
+
+TEST(Lz78RansFrameDecoder,
+     ReconstructsNestedPhrasesAcrossTokenSplittingBlocks) {
+    constexpr std::array nested_tokens{
+        std::byte{0x00}, std::byte{0x41}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::uint32_t block_size = 5;
+    const auto frame =
+        frame_for_tokens(nested_tokens, 4, block_size);
+    std::array<marc::entropy::internal::RansBlockView, 5> views{};
+    std::array<std::byte, nested_tokens.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, 4> raw_staging{};
+    const auto result = marc::frame::decode_lz78_rans_frame_to_staging(
+        stream_for(4, block_size), {}, {}, 0, 0, frame, views,
+        dictionary_staging, phrases, raw_staging);
+    ASSERT_EQ(result.error, Lz78RansFrameValidationError::none);
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(raw_staging, expected);
+}
+
+TEST(Lz78RansFrameDecoder, RawCapacityFailurePrecedesPrivateMutation) {
+    const auto frame = single_pair_frame();
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0xa5});
+    std::array phrases{
+        marc::dictionary::internal::Lz78PhraseEntry{7, 0xa5, 9}};
+    const auto result = marc::frame::decode_lz78_rans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        phrases, {});
+    EXPECT_EQ(result.error,
+              Lz78RansFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(phrases[0].prefix_index, 7U);
+    EXPECT_EQ(phrases[0].symbol, 0xa5U);
+    EXPECT_EQ(phrases[0].length, 9U);
+}
+
+TEST(Lz78RansFrameDecoder, CountsRawStagingInAggregateWorkspace) {
+    const auto frame = single_pair_frame();
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size =
+        static_cast<std::uint32_t>(pair_a.size());
+    limits.max_internal_buffered_bytes =
+        528 + 8 + 8
+        + sizeof(marc::entropy::internal::RansBlockView)
+        + sizeof(marc::dictionary::internal::Lz78PhraseEntry) + 1 - 1;
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0xa5});
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_rans_frame_to_staging(
+        stream_for(
+            1, static_cast<std::uint32_t>(pair_a.size())),
+        {}, limits, 0, 0, frame, views, dictionary_staging, phrases,
+        raw_staging);
+    EXPECT_EQ(result.error, Lz78RansFrameValidationError::workspace_limit);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(Lz78RansFrameDecoder, MalformedLayersNeverTouchRawStaging) {
+    constexpr std::uint32_t block_size = 3;
+    auto malformed_entropy = frame_for_tokens(pair_a, 1, block_size);
+    const auto payload_base =
+        marc::frame::frame_header_size
+        + 3 * marc::entropy::internal::rans_descriptor_size;
+    std::ranges::fill(
+        std::span<std::byte>{malformed_entropy}.subspan(
+            payload_base + 16, 8),
+        std::byte{0});
+    std::array<marc::entropy::internal::RansBlockView, 3> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::decode_lz78_rans_frame_to_staging(
+                  stream_for(1, block_size), {}, {}, 0, 0,
+                  malformed_entropy, views, dictionary_staging, phrases,
+                  raw_staging).error,
+              Lz78RansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+
+    auto invalid_tokens = pair_a;
+    invalid_tokens[0] = std::byte{0xff};
+    const auto malformed_dictionary = frame_for_tokens(invalid_tokens);
+    std::array<marc::entropy::internal::RansBlockView, 1> single_view{};
+    EXPECT_EQ(marc::frame::decode_lz78_rans_frame_to_staging(
+                  stream_for(1), {}, {}, 0, 0, malformed_dictionary,
+                  single_view, dictionary_staging, phrases, raw_staging)
+                  .error,
+              Lz78RansFrameValidationError::dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
 }
