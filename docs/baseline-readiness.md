@@ -452,7 +452,10 @@ A bounded decoder now expands that validated graph iteratively into separate
 private raw staging after checking raw capacity and aggregate workspace before
 entropy output. Transactional frame publication now checks output capacity
 before private mutation and copies only after complete reconstruction.
-Streaming, public API, and admission evidence remain pending.
+An exact-frame planner and encoder now freeze deterministic LZ78 tokens before
+planning every rANS block, enforce encoder-workspace and aggregate limits, and
+reproduce the independent 592-byte frame. Streaming, public API, and admission
+evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

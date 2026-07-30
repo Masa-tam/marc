@@ -1490,6 +1490,12 @@ exact-frame commit convention. No external decompression API, transactional
 output strategy, buffer design, malformed corpus, source code, or test suite
 was consulted.
 
+The LZ78 plus rANS exact-frame planner and encoder use only DD-481, marc's
+existing deterministic LZ78 encoder, scalar rANS planner and encoder, generic
+frame serializer, checked arithmetic, caller-owned spans, and the frozen
+592-byte vector. No external combined encoder, block-planning strategy,
+workspace layout, encoded corpus, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

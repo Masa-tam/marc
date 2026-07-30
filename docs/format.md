@@ -4035,6 +4035,14 @@ capacity before private mutation and copies exactly the declared raw extent
 only after reconstruction succeeds; failure leaves the entire output
 unchanged. This remains an internal entry point.
 
+The exact-frame encoder completes LZ78 parsing and canonical token
+serialization before planning any rANS block. It derives `K`, each descriptor,
+each payload extent, and the complete serialized size without writing the
+frame output. After output capacity succeeds, it serializes the generic header
+and repeats the same deterministic block plans to emit descriptors and
+payloads in order. The raw-`A` encoding must equal the 592-byte representation
+above byte for byte.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

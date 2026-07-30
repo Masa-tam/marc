@@ -3611,6 +3611,17 @@ An empty output must reject before token, phrase, or raw mutation. A corrupted
 late rANS block and an entropy-coded invalid LZ78 tag must preserve every
 caller-visible output byte.
 
+For exact LZ78 plus rANS encoding, plan raw `41` with one LZ78 encoder record
+and require canonical token `00 41 00 00 00 00 00 00`, one 528-byte
+descriptor, eight payload bytes, and complete extent 592. Encode and compare
+every byte with the independent frame. Repeat with `B = 3` and require three
+blocks that split the token. Encode raw `41 42 41 42` with `B = 5`, require
+the three canonical Pair tokens and five blocks, encode twice byte-identically,
+and decode to the original raw bytes. Reject empty or mismatched frame input,
+short encoder or token workspace, excessive block count, one-short aggregate
+workspace, and one-short serialized output; the last case must preserve every
+output sentinel.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

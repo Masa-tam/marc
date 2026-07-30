@@ -9567,6 +9567,34 @@ discarded and the reviewed seed retained.
   under both MSVC and ClangCL. The complete Release CTest suite passed
   1,864/1,864 under both compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS deterministic frame encoding
+
+- Authoring method: composed marc's existing LZ78 planner and encoder, scalar
+  rANS block planner and encoder, and generic frame serializer under DD-481's
+  frozen-token boundary.
+- References used: DD-481, the local LZ78 and rANS encoder contracts, checked
+  arithmetic, caller-owned workspaces, and the independent 592-byte frame.
+- Known implementations intentionally not consulted: external LZ78/rANS
+  encoders, block planners, workspace layouts, encoded corpora, source code,
+  and test suites.
+- Independent decisions: finish canonical LZ78 tokens before rANS planning;
+  count encoder records in the aggregate; plan the whole frame before output
+  mutation; repeat and verify deterministic block extents during emission; and
+  preserve short serialized output.
+- Generated-code task description: add exact planning and encoding; reproduce
+  the independent frame; cover token-splitting blocks, generated phrases,
+  deterministic round trip, short workspaces, block and aggregate limits,
+  input extent mismatch, and atomic short output; and synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: implementation and tests directly compose only
+  repository-authored algorithms, bounds, and vectors. No external control
+  flow, planning layout, naming scheme, encoded bytes, or test expression was
+  compared.
+- Local validation: the twenty-seven focused validator, decoder, and encoder
+  tests passed under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,872/1,872 under both compilers using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

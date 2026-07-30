@@ -542,3 +542,169 @@ TEST(Lz78RansFrameDecoder, MalformedLayersNeverPublishOutput) {
     EXPECT_EQ(output[0], std::byte{0xa5});
     EXPECT_EQ(output[1], std::byte{0xa5});
 }
+
+TEST(Lz78RansFrameEncoder, PlansExactIndependentVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    const auto result = marc::frame::plan_lz78_rans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging);
+    ASSERT_EQ(result.error, Lz78RansFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.encoder_entries, 1U);
+    EXPECT_EQ(result.dictionary_size, pair_a.size());
+    EXPECT_EQ(result.block_count, 1U);
+    EXPECT_EQ(result.block_index, 1U);
+    EXPECT_EQ(result.descriptor_size, 528U);
+    EXPECT_EQ(result.payload_size, 8U);
+    EXPECT_EQ(result.serialized_size, single_pair_frame().size());
+    EXPECT_EQ(staging, pair_a);
+}
+
+TEST(Lz78RansFrameEncoder, PlansBlocksThatSplitOneToken) {
+    constexpr std::array raw{std::byte{'A'}};
+    constexpr std::uint32_t block_size = 3;
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    const auto result = marc::frame::plan_lz78_rans_frame(
+        stream_for(1, block_size), {}, {}, 0, 0, raw, entries, staging);
+    ASSERT_EQ(result.error, Lz78RansFrameValidationError::none);
+    EXPECT_EQ(result.block_count, 3U);
+    EXPECT_EQ(result.descriptor_size, 3U * 528U);
+    EXPECT_EQ(result.payload_size, 3U * 8U);
+    EXPECT_EQ(staging, pair_a);
+}
+
+TEST(Lz78RansFrameEncoder, CapacityFailuresPrecedeTokenMutation) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array staging{
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5},
+        std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}, std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::plan_lz78_rans_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, {}, staging).error,
+              Lz78RansFrameValidationError::encoder_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    EXPECT_EQ(marc::frame::plan_lz78_rans_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, entries,
+                  std::span<std::byte>{staging}.first<7>()).error,
+              Lz78RansFrameValidationError::dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+}
+
+TEST(Lz78RansFrameEncoder, RejectsEmptyAndUnexpectedFrameExtent) {
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 2> entries{};
+    std::array<std::byte, 16> staging{};
+    EXPECT_EQ(marc::frame::plan_lz78_rans_frame(
+                  stream_for(1), {}, {}, 0, 0,
+                  std::span<const std::byte>{}, entries, staging).error,
+              Lz78RansFrameValidationError::input_size_mismatch);
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(marc::frame::plan_lz78_rans_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, entries,
+                  staging).error,
+              Lz78RansFrameValidationError::input_size_mismatch);
+}
+
+TEST(Lz78RansFrameEncoder, EnforcesBlockCountAndAggregateWorkspace) {
+    constexpr std::array raw{std::byte{'A'}};
+    constexpr std::uint32_t block_size = 1;
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = block_size;
+    limits.max_blocks_per_frame = 7;
+    auto result = marc::frame::plan_lz78_rans_frame(
+        stream_for(1, block_size), {}, limits, 0, 0, raw, entries, staging);
+    EXPECT_EQ(result.error,
+              Lz78RansFrameValidationError::entropy_encode_error);
+    EXPECT_EQ(result.entropy_encode_error,
+              marc::entropy::internal::RansEncodeError::limit_exceeded);
+
+    limits.max_blocks_per_frame = 8;
+    limits.max_internal_buffered_bytes =
+        8 * 528 + 8 * 8 + pair_a.size()
+        + sizeof(marc::dictionary::internal::Lz78EncoderEntry) - 1;
+    result = marc::frame::plan_lz78_rans_frame(
+        stream_for(1, block_size), {}, limits, 0, 0, raw, entries, staging);
+    EXPECT_EQ(result.error, Lz78RansFrameValidationError::workspace_limit);
+}
+
+TEST(Lz78RansFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, 592> output{};
+    const auto result = marc::frame::encode_lz78_rans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    ASSERT_EQ(result.error, Lz78RansFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::equal(output, single_pair_frame()));
+}
+
+TEST(Lz78RansFrameEncoder,
+     GeneratedPhrasesAreDeterministicAndRoundTrip) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::array expected_tokens{
+        std::byte{0x00}, std::byte{0x41}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::uint32_t block_size = 5;
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, raw.size()>
+        entries{};
+    std::array<std::byte, expected_tokens.size()> encode_staging{};
+    const auto plan = marc::frame::plan_lz78_rans_frame(
+        stream_for(raw.size(), block_size), {}, {}, 0, 0, raw, entries,
+        encode_staging);
+    ASSERT_EQ(plan.error, Lz78RansFrameValidationError::none);
+    EXPECT_EQ(encode_staging, expected_tokens);
+    EXPECT_EQ(plan.block_count, 5U);
+
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lz78_rans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, raw,
+                  entries, encode_staging, first).error,
+              Lz78RansFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lz78_rans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, raw,
+                  entries, encode_staging, second).error,
+              Lz78RansFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<marc::entropy::internal::RansBlockView, 5> views{};
+    std::array<std::byte, expected_tokens.size()> decode_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lz78_rans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, first,
+                  views, decode_staging, phrases, raw_staging,
+                  decoded).error,
+              Lz78RansFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(Lz78RansFrameEncoder, ShortSerializedOutputIsAtomic) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, 591> output{};
+    output.fill(std::byte{0xa5});
+    const auto result = marc::frame::encode_lz78_rans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    EXPECT_EQ(result.error,
+              Lz78RansFrameValidationError::serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, 592U);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+}

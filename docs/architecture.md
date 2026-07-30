@@ -1308,6 +1308,16 @@ phrase-graph, and raw reconstruction success, one copy publishes exactly the
 declared frame extent; failure at any earlier layer leaves the complete output
 span unchanged.
 
+Exact encoding first completes deterministic LZ78 parsing into caller-owned
+encoder records and freezes the complete canonical token region. Only then
+does the planner visit each scalar rANS block in forward serialized order,
+accumulate exact descriptor and payload extents, count encoder records,
+tokens, descriptors, and payloads in one checked workspace total, and
+validate the synthesized generic frame header. The encoder repeats those
+deterministic block plans only after serialized output capacity is known,
+then writes the header, all descriptors, and all payloads. The independent
+raw-`A` input reproduces the frozen 592-byte frame exactly.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

@@ -8964,6 +8964,28 @@ must preserve the entire caller output. This decision adds no encoder,
 streaming transform, C factory, CLI selector, benchmark, fuzz target,
 completion claim, or interoperability entry.
 
+## DD-481: LZ78 rANS encoding freezes tokens before block planning
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add a bounded exact-frame planner and encoder above DD-480. Complete
+deterministic LZ78 parsing first using caller-owned encoder records, then
+serialize the entire canonical fixed-width token sequence into separate
+staging. Only that immutable byte sequence may be divided into scalar rANS
+blocks; block boundaries remain independent of token boundaries.
+
+The planner must determine every rANS payload extent, exact `528K` descriptor
+bytes, and complete frame size without writing serialized output. Count LZ78
+encoder records, token staging, descriptors, and payloads in one checked
+internal-workspace total. Validate the synthesized generic header before
+success. The encoder must complete this plan and check complete output capacity
+before writing the header, descriptors, or payloads, then repeat the
+deterministic block plans and require identical extents. Raw `A` must reproduce
+the frozen 592-byte frame exactly. This decision adds no streaming transform,
+C factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

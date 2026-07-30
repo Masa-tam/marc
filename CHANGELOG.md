@@ -21,7 +21,10 @@ format versions, and C ABI versions are independent namespaces.
   capacity and aggregate storage checked before entropy output. A
   transactional boundary now checks caller output capacity before private
   mutation and publishes exactly the declared raw extent only after complete
-  reconstruction succeeds.
+  reconstruction succeeds. Its exact-frame planner and encoder now freeze
+  canonical LZ78 tokens, plan every rANS block deterministically, count
+  encoder records in the aggregate workspace, and reproduce the independent
+  592-byte frame exactly.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete
