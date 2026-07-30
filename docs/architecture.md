@@ -1245,6 +1245,13 @@ query may select only subspans of those arrays. Input-derived chunks are
 bounded, and a finite call ceiling turns non-progress into a reproducible
 failure.
 
+The command-line adapter selects this contract as `lzss-rans` using only the
+public C configuration, workspace query, factory, process, and destroy
+functions. It fixes raw and entropy blocks at 65,536 bytes, supplies a
+conservative 512-KiB aggregate policy that covers both directions, and leaves
+all opaque view sizing and alignment to the public query. File publication
+retains the shared temporary-file transaction.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

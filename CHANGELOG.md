@@ -46,7 +46,9 @@ format versions, and C ABI versions are independent namespaces.
   atomic rejection of a malformed final frame. A fixed-memory dual-boundary
   fuzz target now exercises both the private complete-frame decoder and the
   public C streaming lifecycle; permanent regressions cover every canonical
-  truncation, saturated frame lengths, and invalid rANS descriptors.
+  truncation, saturated frame lengths, and invalid rANS descriptors. The
+  explicit `lzss-rans` CLI selector now uses only that public C lifecycle,
+  fixed 65,536-byte raw and entropy blocks, and transactional file output.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

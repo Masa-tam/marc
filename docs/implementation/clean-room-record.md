@@ -9347,6 +9347,34 @@ discarded and the reviewed seed retained.
   bounded inputs without a crash, hang, or sanitizer finding at 39 MiB peak
   RSS.
 
+## 2026-07-31 - LZSS plus rANS CLI selector
+
+- Authoring method: extended marc's existing selector table and transactional
+  file adapter by one completed public C profile.
+- References used: DD-474, the published `marc_lzss_rans_*` configuration,
+  requirements query and factory, independently derived profile bounds, and
+  the repository-owned generic CLI regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, workspace layouts, source code, command
+  syntax, and test suites.
+- Independent decisions: fix both raw and entropy blocks at 65,536 bytes;
+  retain the exact 328,808-byte encoder aggregate; use a conservative 512-KiB
+  shared aggregate so the public query remains the sole authority for opaque
+  decoder views; and preserve temporary-file publication.
+- Generated-code task description: add selector parsing, fixed public
+  configuration, requirements and factory dispatch, binary and empty round
+  trips, overwrite refusal, malformed cleanup, trailing rejection, and
+  synchronized CLI, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance documentation.
+- Similarity review: the adapter follows only marc's existing public C
+  lifecycle and file transaction. No external command structure, private
+  partition, allocation layout, error behavior, or test expression was
+  compared.
+- Local validation: the focused transactional CLI regression passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,843/1,843 under
+  both compilers using official CMake 4.3.4. All thirty-one existing
+  benchmark smokes and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

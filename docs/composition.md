@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | Specified | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Candidate | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
@@ -112,14 +112,16 @@ public-ABI completion matrix covers required binary classes, deterministic
 multi-frame encoding, arbitrary chunking, sticky terminal states, and atomic
 rejection of a malformed final frame. Its bounded fuzz target now covers
 private exact-frame and public C streaming decode with fixed workspaces and
-permanent malformed regressions; no CLI, benchmark, or interoperability entry
-exists yet.
+permanent malformed regressions. Its explicit CLI selector now binds only the
+public C lifecycle, obtains all opaque workspace sizes and alignment from the
+requirements query, and preserves the common transactional output contract.
+No benchmark or interoperability entry exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 20 includes all current published profiles while
-preserving the exact earlier schema profile sets.
+publication: schema 20 preserves the profile set admitted before
+`lzss-rans`, and every earlier schema profile set remains exact.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

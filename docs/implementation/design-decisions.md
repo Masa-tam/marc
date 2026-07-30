@@ -8794,6 +8794,29 @@ libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer and complete a
 bounded smoke run. This decision adds no CLI, benchmark, completion claim, or
 interoperability entry.
 
+## DD-474: LZSS rANS CLI admission uses only the public profile
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add the explicit selector `lzss-rans` to the transactional file adapter. Fix
+both raw frames and rANS blocks at 65,536 bytes. Derive `S = 131,072`
+canonical token bytes, `K = 2` blocks, `P = 131,088` payload bytes, `528K =
+1,056` descriptor bytes, and exact encoder aggregate
+`F + S + 56 + 528K + P = 328,808` bytes.
+
+Use a conservative 512-KiB `max_internal_buffered_bytes` policy for both
+directions. This admits the exact encoder aggregate and the decoder's private
+`RansBlockView` extent without naming, sizing, or aligning that C++ type in the
+CLI. Configuration initialization, workspace requirements, transform
+creation, processing, and destruction must use only `marc_lzss_rans_*` and
+the common public C ABI.
+
+Reuse the shared temporary-file transaction. Prove nonempty and empty round
+trips, overwrite refusal, malformed-stream cleanup, and strict trailing-data
+rejection under both supported Windows compilers. This step adds no benchmark
+adapter, readiness claim, interoperability schema, or external evidence.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

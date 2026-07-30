@@ -1857,3 +1857,9 @@ DD-473, the local private frame decoder, published `marc_lzss_rans_*`
 lifecycle, repository-authored canonical stream, fixed caller-owned arrays,
 and byte-derived chunk schedules. No external fuzz harness, malformed corpus,
 seed corpus, source code, sanitizer finding, or test suite was consulted.
+
+The LZSS plus rANS CLI selector uses only DD-474, the published
+`marc_lzss_rans_*` lifecycle, the independently derived fixed-profile bounds,
+and marc's existing transactional file adapter and regression script. No
+external compression CLI, combined-codec adapter, private workspace layout,
+source code, command syntax, or test suite was consulted.

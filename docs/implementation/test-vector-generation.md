@@ -3535,6 +3535,17 @@ blocks, 2,048 token bytes, 8,192 payload bytes, and eight views; reject any
 requirements exceeding its compile-time arrays. Derive chunks modulo 17 and
 19 and cap calls at input plus output plus 32.
 
+For `marc --codec lzss-rans`, generate the repository-standard binary fixture
+by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and decode with the
+explicit selector and require byte equality. Repeat encoding to the occupied
+destination and require refusal. Decode `not-a-marc-stream` and a valid archive
+with one appended `x`; both must fail and leave neither the requested output
+nor its sibling `.tmp`. Finally round-trip an empty file.
+
+Fix `F = B = 65,536`, `S = 131,072`, `K = 2`, `P = 131,088`, descriptor bytes
+at 1,056, and the shared aggregate policy at 512 KiB. Obtain primary,
+secondary, and opaque-view extents and alignment only from the public C query.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
