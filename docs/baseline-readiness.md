@@ -460,7 +460,10 @@ exact-frame bytes under arbitrary output starvation. The matching bounded
 streaming decoder now admits the prefix and each complete frame incrementally,
 checks all caller-owned decoder regions and their aggregate before body
 collection, and drains private raw staging only after complete frame success.
-Public API and admission evidence remain pending.
+An internal profile calculator now derives direction-specific byte extents,
+aligned encoder records, and an opaque decode layout containing rANS views
+followed by LZ78 phrase records. Public API and admission evidence remain
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

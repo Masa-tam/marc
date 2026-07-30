@@ -4059,6 +4059,14 @@ Only a completely validated and reconstructed frame may enter the raw drain
 state. The final frame is determined by `original_size`; a premature
 `EndInput`, any trailing byte, or an unsupported reset is an error.
 
+For workspace planning, a largest raw frame `F` reserves at most `S=8F`
+canonical token bytes and `K=ceil(S/B)` rANS blocks. The encoder's complete
+frame ceiling is therefore `56 + 528K + S + 8K` bytes, plus separate raw,
+token, and aligned LZ78 encoder-record storage. Decoder byte capacities derive
+only from configured hard limits. Its opaque typed region stores bounded rANS
+block views followed at an aligned checked offset by bounded LZ78 phrase
+records. These workspace layouts do not add serialized fields.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

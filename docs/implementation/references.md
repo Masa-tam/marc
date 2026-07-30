@@ -1509,6 +1509,12 @@ caller-owned spans. No external streaming decoder, buffering design, state
 machine, malformed corpus, source code, encoded corpus, or test suite was
 consulted.
 
+The LZ78 plus rANS internal profile calculator uses only DD-484, the specified
+`S <= 8F`, `528K`, and `S + 8K` bounds, DD-482/DD-483's caller-owned streaming
+regions, marc's local hard limits, checked alignment arithmetic, and existing
+directional profile conventions. No external profile API, allocation policy,
+opaque workspace layout, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

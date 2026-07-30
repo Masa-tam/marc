@@ -9652,6 +9652,34 @@ discarded and the reviewed seed retained.
   both MSVC and ClangCL. The complete Release CTest suite passed
   1,882/1,882 under both compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS internal profile calculator
+
+- Authoring method: combined DD-481's conservative LZ78 encoder bounds,
+  scalar rANS block bounds, DD-483 decoder capacities, and marc's established
+  typed opaque-region partition convention.
+- References used: DD-484, DD-481 through DD-483, local hard limits, checked
+  arithmetic, record alignment, and repository-authored profile tests only.
+- Known implementations intentionally not consulted: external combined-codec
+  profiles, allocator APIs, ABI workspace layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: size the actual largest encode frame; use `8F`,
+  `528K`, and `S+8K` conservative bounds; count encoder records in aggregate;
+  derive decoder maxima only from local limits; place rANS views before an
+  aligned phrase region; and rederive all layout facts during partitioning.
+- Generated-code task description: add profile requirements, error mapping,
+  encode and decode opaque partitioners, CMake wiring, canonical and short
+  sizing tests, limit and alignment rejection, and a requirements-built
+  streaming round trip; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the implementation composes only repository-authored
+  formulas, checked-math helpers, and profile conventions. No external
+  allocation layout, naming scheme, sizing formula, source code, or test
+  expression was compared.
+- Local validation: the seven focused profile tests passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
+  compilers using official CMake 4.3.4.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

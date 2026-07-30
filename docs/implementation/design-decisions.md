@@ -9030,6 +9030,29 @@ workspace with sticky terminal behavior. Empty known-size input contains only
 the prefix. This decision adds no profile calculator, C factory, CLI selector,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+## DD-484: LZ78 rANS profile fixes directional workspace layouts
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add an internal profile calculator above DD-482 and DD-483. For the actual
+largest nonempty raw frame `F`, reserve conservative canonical token extent
+`S=8F`, block count `K=ceil(S/B)`, exact `528K` descriptors, maximum `S+8K`
+payload, and complete encoded-frame extent `56+528K+S+8K`. Bound LZ78 encoder
+records by the lesser of `F` and the configured entry limit. Count raw, token,
+complete frame, and encoder records against the aggregate policy.
+
+For decode, derive complete-frame, token, private-raw, maximum rANS-view, and
+maximum LZ78-phrase capacities only from local hard limits. Place rANS block
+views first in one opaque region, align the phrase offset explicitly, and
+place phrase records second. Recompute counts, offsets, total bytes, and
+maximum alignment before returning typed spans; reject short or misaligned
+storage and altered requirements. Empty encoding has zero byte regions and
+alignment one. Prove that calculated regions directly construct the bounded
+streaming round trip. This decision adds no C requirements query, public
+factory, CLI selector, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

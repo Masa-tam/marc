@@ -1338,6 +1338,15 @@ malformed later frame cannot publish any byte from that frame, while already
 drained earlier frames remain committed. Known original size determines the
 final frame, and truncation or trailing bytes are rejected.
 
+The internal profile calculator gives those caller-owned regions a stable
+typed layout without exposing record definitions at a future ABI boundary.
+Encoding uses raw-frame bytes, conservative `8F` token bytes, a complete
+`56 + 528K + S + 8K` encoded-frame region, and aligned LZ78 encoder records.
+Decoding derives encoded-frame, token, and private-raw byte regions solely
+from local limits; one aligned opaque region contains rANS block views first
+and LZ78 phrase records at a checked aligned offset. Partitioning rederives
+every count, offset, extent, and alignment before returning typed spans.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

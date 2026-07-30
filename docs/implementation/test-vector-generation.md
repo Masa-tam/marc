@@ -3647,6 +3647,22 @@ while allowing one output byte, then require the retained finish request to
 report truncation after that verified frame finishes draining. Accept the
 exact empty 80-byte stream.
 
+For the LZ78 plus rANS profile, configure 2,500,000 raw bytes with default
+65,536-byte raw and entropy blocks. Require a 65,536-byte largest frame,
+524,288 token bytes, eight rANS blocks, and a 528,632-byte complete encoded
+frame ceiling. A 17-byte short stream must instead require 136 token bytes,
+one block, and 728 encoded bytes; lowering the LZ78 entry ceiling to two must
+reserve only two encoder records. Empty input has zero byte regions and
+alignment one.
+
+Independently exceed the block-count, payload, aggregate, and one-MiB profile
+limits. For decoding, use local limits of 64 raw bytes, 128 token bytes, 1,024
+internally buffered bytes, four rANS blocks, and ten dictionary entries.
+Require 1,080 encoded bytes, 64 private raw bytes, four block views, and ten
+phrase records. Partition both directional opaque layouts; reject altered
+offsets, one-byte-short storage, and misalignment. Finally construct encoder
+and decoder solely from calculated regions and round-trip `41 42 41 42 58`.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -152,9 +152,11 @@ streaming encoder now emits the fixed prefix and produces byte-identical
 frames for arbitrary input and output chunking. Its bounded streaming decoder
 now collects one exact frame, invokes the transactional private decoder, and
 publishes that frame only while draining verified raw staging; truncation,
-trailing data, and malformed later frames are rejected transactionally. No
-public factory, CLI, benchmark, fuzz target, or interoperability entry exists
-yet.
+trailing data, and malformed later frames are rejected transactionally. Its
+internal profile now derives all three caller byte regions and partitions
+aligned encoder records or rANS-view-plus-phrase records from one opaque
+region. No public factory, CLI, benchmark, fuzz target, or interoperability
+entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

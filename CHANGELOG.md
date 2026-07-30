@@ -31,7 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   frame into caller-owned storage, reconstructs into private raw staging, and
   drains raw bytes only after complete frame success; arbitrary one-byte I/O,
   retained end-of-input, strict truncation and trailing-data rejection, and
-  aggregate decoder workspace limits are covered.
+  aggregate decoder workspace limits are covered. Its internal profile now
+  derives conservative encoder and decoder byte regions from the exact
+  `8F`, `528K`, and `S + 8K` bounds, and partitions aligned LZ78 encoder
+  records or rANS-view-plus-phrase records from one opaque region.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete
