@@ -9375,6 +9375,36 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4. All thirty-one existing
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-31 - LZSS plus rANS benchmark adapter
+
+- Authoring method: extended marc's dependency-free verification-first
+  measurement runner by one completed public C profile.
+- References used: DD-475, DD-474's fixed bounds, the published
+  `marc_lzss_rans_*` lifecycle, checked capacity arithmetic, and existing
+  workspace reporting.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance
+  results, corpora, source code, and test suites.
+- Independent decisions: reserve `80 + 2N + 1128K`; obtain all three regions
+  and alignment independently for each direction; verify exact decode equality
+  before timing; construct fresh transforms outside timing; and impose no
+  performance threshold.
+- Generated-code task description: add benchmark selection, public
+  configuration, requirements and factory dispatch, checked capacity,
+  verification-first measurement, a one-iteration CTest smoke, and synchronized
+  benchmark, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the adapter specializes marc's own public-C benchmark
+  runner to the independently specified LZSS/rANS bounds. No external
+  benchmark control flow, capacity expression, reporting scheme, or measured
+  value was compared.
+- Local validation: the focused verification-first benchmark smoke passed
+  under both MSVC and ClangCL. The complete Release suite passed 1,844/1,844
+  under both compilers using official CMake 4.3.4. All thirty-two benchmark
+  smokes and schema-20 compatibility remained successful. The MSVC observation
+  over the 4,520-byte README encoded 3,819 bytes at ratio 0.845 and reported
+  722,008 bytes of peak caller-reserved workspace.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

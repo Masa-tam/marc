@@ -1863,3 +1863,9 @@ The LZSS plus rANS CLI selector uses only DD-474, the published
 and marc's existing transactional file adapter and regression script. No
 external compression CLI, combined-codec adapter, private workspace layout,
 source code, command syntax, or test suite was consulted.
+
+The LZSS plus rANS benchmark adapter uses only DD-475, DD-474's fixed public
+profile, the published `marc_lzss_rans_*` lifecycle, checked complete-stream
+capacity arithmetic, and marc's existing verification-first measurement
+runner. No external benchmark framework, combined-codec adapter, capacity
+formula, performance result, source code, or test suite was consulted.

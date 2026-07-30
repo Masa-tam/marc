@@ -55,7 +55,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-dynamic-range` | Fifth Dynamic Range composition | Ready | Included |
 | `lzmw-dynamic-range` | Sixth Dynamic Range composition | Ready | Included |
 | `lz77-rans` | First rANS composition | Ready | Included |
-| `lzss-rans` | Second rANS composition | CLI admitted; benchmark pending | Pending |
+| `lzss-rans` | Second rANS composition | Locally ready; interoperability pending | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 20 contains thirty-one archives: the frozen thirty-entry schema-19 set
@@ -107,7 +107,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-dynamic-range` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Pending |
+| `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Pending |
 
 ## Composed-profile admission queue
 
@@ -429,8 +429,10 @@ covers required data classes, byte determinism, frame boundaries, arbitrary
 chunking, sticky terminal states, and malformed-final-frame atomicity. It
 now has a fixed-memory dual-boundary fuzz target plus permanent atomicity
 regressions. Its CLI selector now uses only the public lifecycle and retains
-transactional output and strict trailing-data rejection. Benchmark and
-interoperability admission remain pending.
+transactional output and strict trailing-data rejection. Its dependency-free
+benchmark verifies an exact public-ABI round trip before reporting ratio,
+directional throughput, and queried workspace extents. Interoperability
+admission remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -1252,6 +1252,13 @@ conservative 512-KiB aggregate policy that covers both directions, and leaves
 all opaque view sizing and alignment to the public query. File publication
 retains the shared temporary-file transaction.
 
+The dependency-free benchmark selects the same public profile and verifies a
+complete byte-exact round trip before timing. It creates each public transform
+outside the elapsed region and reports ratio, directional throughput, all
+queried workspace regions, and peak caller-reserved workspace. Checked
+complete-stream capacity is `80 + 2N + 1128K` for raw extent `N` and nonempty
+64-KiB frame count `K`.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

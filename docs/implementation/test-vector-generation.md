@@ -3546,6 +3546,19 @@ Fix `F = B = 65,536`, `S = 131,072`, `K = 2`, `P = 131,088`, descriptor bytes
 at 1,056, and the shared aggregate policy at 512 KiB. Obtain primary,
 secondary, and opaque-view extents and alignment only from the public C query.
 
+For the LZSS plus rANS benchmark smoke, select `lzss-rans`, use `README.md`,
+and run one iteration. Reserve checked complete-stream capacity
+`80 + 2N + 1128K`. Before timing, encode once, decode the exact encoded extent,
+and require byte equality. Then require one encode and one decode measurement
+to reproduce those extents while reporting all six public workspace sizes and
+the larger three-region sum.
+
+On the 2026-07-31 MSVC Release build, the 4,520-byte README encoded to 3,819
+bytes, ratio 0.845, with encoder workspaces 4,520/18,672/0 bytes and decoder
+workspaces 524,344/196,608/1,056 bytes. Peak caller reservation was 722,008
+bytes. These values document tested deterministic extents; throughput is
+descriptive and not a conformance threshold.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

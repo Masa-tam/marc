@@ -115,7 +115,9 @@ private exact-frame and public C streaming decode with fixed workspaces and
 permanent malformed regressions. Its explicit CLI selector now binds only the
 public C lifecycle, obtains all opaque workspace sizes and alignment from the
 requirements query, and preserves the common transactional output contract.
-No benchmark or interoperability entry exists yet.
+Its dependency-free benchmark now verifies the public profile before
+reporting ratio, directional throughput, and all queried workspace regions.
+No interoperability entry exists yet.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

@@ -49,6 +49,8 @@ format versions, and C ABI versions are independent namespaces.
   truncation, saturated frame lengths, and invalid rANS descriptors. The
   explicit `lzss-rans` CLI selector now uses only that public C lifecycle,
   fixed 65,536-byte raw and entropy blocks, and transactional file output.
+  Its dependency-free benchmark now verifies a public-ABI round trip before
+  reporting ratio, directional throughput, and all queried workspace regions.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

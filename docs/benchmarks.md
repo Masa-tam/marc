@@ -19,6 +19,7 @@ marc_benchmark lzss corpus.bin 5
 marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lzss-adaptive-huffman corpus.bin 5
 marc_benchmark lzss-dynamic-range corpus.bin 5
+marc_benchmark lzss-rans corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lz78-adaptive-huffman corpus.bin 5
@@ -144,6 +145,18 @@ direction is timed. A one-iteration MSVC Release smoke over the 4,441-byte
 README encoded 3,390 bytes, ratio 0.763, and reported 655,493 bytes of peak
 caller-reserved workspace; throughput from that small input is descriptive
 only.
+
+`lzss-rans` uses the CLI's 65,536-byte raw frame and 65,536-byte entropy
+block. Capacity planning reserves two canonical LZSS token bytes per raw byte
+and at most two rANS blocks per frame. Complete-stream storage is therefore
+bounded by `80 + 2N + 1128K`, where `N` is raw input bytes and `K` is the
+nonempty frame count; 1,128 bytes covers one generic header, two 528-byte
+descriptors, and two eight-byte final states. Both direction-specific
+workspaces and the opaque view alignment come from the public C ABI. A
+byte-exact round trip succeeds before either direction is timed. A
+one-iteration MSVC Release smoke over the 4,520-byte README encoded 3,819
+bytes, ratio 0.845, and reported 722,008 bytes of peak caller-reserved
+workspace; throughput from that small input is descriptive only.
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 and at most 65,536 LZ78 phrase entries. Capacity planning uses the exact
