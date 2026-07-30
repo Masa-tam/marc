@@ -582,6 +582,18 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_lz77_rans_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lz77_rans_stream PRIVATE marc::static)
+    add_executable(marc_fuzz_lzss_rans_stream
+        fuzz/lzss_rans_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_rans_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_rans_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_rans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_rans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_rans_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_dynamic_range_stream
         fuzz/lzss_dynamic_range_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_dynamic_range_stream
@@ -1094,6 +1106,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_rans_frame_streaming_decoder_tests.cpp
         tests/lzss_rans_profile_tests.cpp
         tests/lzss_rans_completion_tests.cpp
+        tests/lzss_rans_fuzz_regression_tests.cpp
         tests/lz77_dynamic_range_frame_tests.cpp
         tests/lz77_rans_frame_tests.cpp
         tests/lz77_rans_frame_streaming_encoder_tests.cpp

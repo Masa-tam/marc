@@ -1238,6 +1238,13 @@ It proves every required data class, deterministic output across chunking,
 sticky terminal calls, and frame-atomic rejection of corruption, truncation,
 or trailing data in a final short frame through only the C lifecycle.
 
+The fuzz boundary independently submits bounded input to the private
+complete-frame decoder and to a C-ABI-created streaming decoder. All byte
+regions and rANS views have compile-time ceilings; the public requirements
+query may select only subspans of those arrays. Input-derived chunks are
+bounded, and a finite call ceiling turns non-progress into a reproducible
+failure.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -1,12 +1,13 @@
 # Fuzzing
 
-The thirty-one bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The thirty-two bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
-Dynamic Range, LZ77 plus rANS, LZSS plus Blocked Huffman, LZSS plus Adaptive
-Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked Huffman, LZ78 plus
-Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus Blocked Huffman, LZW plus
-Adaptive Huffman, LZW plus Dynamic Range, LZD plus Adaptive Huffman,
+Dynamic Range, LZ77 plus rANS, LZSS plus rANS, LZSS plus Blocked Huffman,
+LZSS plus Adaptive Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked
+Huffman, LZ78 plus Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus
+Blocked Huffman, LZW plus Adaptive Huffman, LZW plus Dynamic Range,
+LZD plus Adaptive Huffman,
 LZD plus Dynamic Range,
 LZD plus Blocked Huffman, LZMW plus Blocked Huffman, LZMW plus Adaptive
 Huffman, LZMW plus Dynamic Range, and checksum-raw profiles. Targets
@@ -42,6 +43,14 @@ payload at 8 KiB, and entropy metadata at eight fixed `RansBlockView` records.
 The encoded frame, views, token staging, private raw frame, and final output
 are fixed arrays included in one aggregate policy. Both complete-frame and
 incremental paths use byte-derived chunks and a fixed call ceiling.
+The combined LZSS plus rANS target applies the same two-boundary policy with
+LZSS's `2F` token ceiling. It truncates supplied input to 8 KiB, caps total raw
+output at 4 KiB and one frame at 1 KiB, fixes token staging at 2 KiB, payload
+at 8 KiB, and metadata at eight `RansBlockView` records. The private exact-
+frame decoder and the public C ABI streaming decoder share fixed local limits;
+the latter obtains sizes and alignment from its public query but may only bind
+preallocated arrays with compile-time ceilings. Byte-derived chunking and a
+fixed call budget make stalls reproducible.
 The combined LZSS plus Dynamic Range target applies the same dual-decoder
 policy with LZSS's tighter variable-token bound: at most 8 KiB supplied input,
 4 KiB total output, one 1 KiB raw frame, 2 KiB canonical-token staging, and
@@ -183,6 +192,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_adaptive_huffman_stream \
   marc_fuzz_lz77_dynamic_range_stream \
   marc_fuzz_lz77_rans_stream \
+  marc_fuzz_lzss_rans_stream \
   marc_fuzz_lzss_adaptive_huffman_stream \
   marc_fuzz_lzss_dynamic_range_stream \
   marc_fuzz_lz78_adaptive_huffman_stream \
@@ -214,6 +224,8 @@ out/build/fuzz/marc_fuzz_lz77_dynamic_range_stream \
   fuzz/corpus/lz77_dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_rans_stream \
   fuzz/corpus/lz77_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzss_rans_stream \
+  fuzz/corpus/lzss_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \
   fuzz/corpus/lzss_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_dynamic_range_stream \
@@ -372,6 +384,14 @@ five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
+
+The composed LZSS plus rANS private-frame/public-C decoder target received a
+bounded 1,000-input sanitizer smoke on 2026-07-31 with 8 KiB maximum input, a
+five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
+crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
+and peaked at 39 MiB RSS. Nine generated corpus changes remain only in the
+ignored build workspace; the repository retains the reviewed five-byte
+truncated-magic seed.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

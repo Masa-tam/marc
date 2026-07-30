@@ -1851,3 +1851,9 @@ published `marc_lzss_rans_*` lifecycle, DD-462's fixed representation,
 repository-authored deterministic generators, and local generic frame-extent
 parsing. No external conformance suite, corpus, combined codec API, malformed
 archive, source code, or test vector was consulted.
+
+The LZSS plus rANS dual-boundary fuzzer and permanent regressions use only
+DD-473, the local private frame decoder, published `marc_lzss_rans_*`
+lifecycle, repository-authored canonical stream, fixed caller-owned arrays,
+and byte-derived chunk schedules. No external fuzz harness, malformed corpus,
+seed corpus, source code, sanitizer finding, or test suite was consulted.

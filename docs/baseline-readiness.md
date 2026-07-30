@@ -425,8 +425,9 @@ factory now bind those workspaces as three opaque caller-owned regions and
 round-trip through a pure C11 caller. Its public-ABI completion matrix now
 covers required data classes, byte determinism, frame boundaries, arbitrary
 chunking, sticky terminal states, and malformed-final-frame atomicity. It
-remains `Specified`: no CLI, benchmark, fuzz target, or interoperability entry
-exists yet.
+now has a fixed-memory dual-boundary fuzz target plus permanent atomicity
+regressions. It remains `Specified`: no CLI, benchmark, or interoperability
+entry exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

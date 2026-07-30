@@ -43,7 +43,10 @@ format versions, and C ABI versions are independent namespaces.
   factory through three caller-owned opaque workspace regions. Its public-ABI
   completion matrix now proves required binary data classes, deterministic
   output, frame-boundary and arbitrary-chunk behavior, sticky completion, and
-  atomic rejection of a malformed final frame.
+  atomic rejection of a malformed final frame. A fixed-memory dual-boundary
+  fuzz target now exercises both the private complete-frame decoder and the
+  public C streaming lifecycle; permanent regressions cover every canonical
+  truncation, saturated frame lengths, and invalid rANS descriptors.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -3521,6 +3521,20 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the final sentinel,
 and repeat the same terminal status and error positions.
 
+For LZSS plus rANS fuzz regression, generate canonical raw `ABABX` with one
+five-byte frame and a 16-byte entropy block. Submit every proper prefix to a
+fresh streaming decoder with sentinel output and require zero publication,
+sticky error category, and stable byte position. Independently saturate frame
+fields at offsets 16 through 39 and toggle one normalized frequency byte in
+the first rANS descriptor; require the same atomic contract.
+
+Seed the bounded fuzzer only with `MARC\n`. Limit supplied input to 8,192
+bytes. The private path parses an exact LZSS/rANS prefix before complete-frame
+decode. The public C path fixes 4,096 total raw bytes, 1,024-byte frames and
+blocks, 2,048 token bytes, 8,192 payload bytes, and eight views; reject any
+requirements exceeding its compile-time arrays. Derive chunks modulo 17 and
+19 and cap calls at input plus output plus 32.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

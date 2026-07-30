@@ -9316,6 +9316,37 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4. All thirty-one benchmark smokes
   and schema-20 compatibility remained successful.
 
+## 2026-07-31 - LZSS plus rANS dual-boundary fuzzing
+
+- Authoring method: combined marc's private exact-frame decoder and published
+  C streaming lifecycle under one fixed-array libFuzzer entry point, then
+  promoted hand-selected malformed families to ordinary regressions.
+- References used: DD-473, DD-462, the local LZSS/rANS frame and streaming
+  decoders, public C requirements and factory, checked result invariants, and
+  repository-authored canonical stream generation.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, seed corpora, source code, sanitizer findings, and test
+  suites.
+- Independent decisions: cap input at 8 KiB; fix raw, token, payload, view, and
+  call ceilings; let the public query choose only bounded subspans; exercise
+  both decoder boundaries; retain one truncated-magic seed; and permanently
+  test truncation, saturated lengths, and invalid descriptor atomicity.
+- Generated-code task description: add the dual-boundary harness, CMake
+  sanitizer target, reviewed seed, three regression families, bounded smoke
+  execution, and synchronized fuzzing, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the harness specializes marc's local LZ77/rANS fixed-
+  memory policy to the independently specified LZSS token bound and newly
+  published C lifecycle. No external fuzz control flow, corpus content,
+  mutation, or test expression was compared.
+- Local validation: the three permanent fuzz regressions passed under both
+  MSVC and ClangCL. The complete Release suite passed 1,842/1,842 under both
+  compilers using official CMake 4.3.4. All thirty-one benchmark smokes and
+  schema-20 compatibility remained successful. The Clang
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer target completed 1,000
+  bounded inputs without a crash, hang, or sanitizer finding at 39 MiB peak
+  RSS.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and
