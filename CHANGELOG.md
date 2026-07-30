@@ -52,7 +52,10 @@ format versions, and C ABI versions are independent namespaces.
   Its dependency-free benchmark now verifies a public-ABI round trip before
   reporting ratio, directional throughput, and all queried workspace regions.
   Interoperability schema 21 appends the unchanged CLI representation as
-  archive 32 while retaining exact verification of schemas 1 through 20.
+  archive 32 while retaining exact verification of schemas 1 through 20. All
+  thirty-two archives passed the established four-direction Windows/Linux
+  cross-check at revision
+  `110bf3c9f80f5bc3723232c6f027867e4c2e7a2f`.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

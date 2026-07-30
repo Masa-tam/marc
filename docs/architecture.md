@@ -1265,7 +1265,10 @@ thirty-one-entry schema-20 order, and appends this unchanged CLI
 representation once. Local generation and verification require exact order,
 count, size, SHA-256, fixture decode equality, and byte-identical local
 re-encoding while retaining explicit support for schemas 1 through 20.
-Cross-platform schema-21 evidence remains pending.
+The established four-direction exchange subsequently verified all thirty-two
+schema-21 archives at revision
+`110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 ### tANS foundation
 

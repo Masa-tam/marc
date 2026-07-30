@@ -435,7 +435,9 @@ directional throughput, and queried workspace extents. Interoperability schema
 21 appends the profile after the frozen schema-20 order, and its local
 generation, exact-order verification, reordered-manifest rejection, and
 schemas 1 through 20 compatibility pass. External schema-21 verification
-remains pending.
+subsequently passed in all four established directions at revision
+`110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

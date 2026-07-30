@@ -119,8 +119,10 @@ Its dependency-free benchmark now verifies the public profile before
 reporting ratio, directional throughput, and all queried workspace regions.
 Interoperability schema 21 appends it once after the frozen schema-20 order;
 local generation, exact-order verification, reordered-manifest rejection, and
-schemas 1 through 20 compatibility pass. External schema-21 evidence remains
-pending.
+schemas 1 through 20 compatibility pass. Four-direction external schema-21
+verification passed at revision
+`110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
