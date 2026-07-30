@@ -9287,6 +9287,35 @@ discarded and the reviewed seed retained.
   1,836/1,836 under both compilers using official CMake 4.3.4. All thirty-one
   benchmark smokes and schema-20 compatibility remained successful.
 
+## 2026-07-30 - LZSS plus rANS public-ABI completion matrix
+
+- Authoring method: exercised the newly published C profile exclusively
+  through its initialization, requirements, factory, process, and destroy
+  functions using repository-authored data and mutation schedules.
+- References used: DD-472, the public `marc_lzss_rans_*` lifecycle, DD-462's
+  fixed representation, generic frame fields, and local deterministic byte
+  generator.
+- Known implementations intentionally not consulted: external conformance
+  suites, combined-codec corpora, malformed archives, source code, and test
+  vectors.
+- Independent decisions: fix both block dimensions at 64 bytes; cover every
+  required data class and adjacent frame lengths; compare three starvation
+  schedules to unchunked bytes; mutate only the fourth frame; permit exactly
+  192 earlier bytes to remain committed; and require sticky error identity.
+- Generated-code task description: add a pure-public-ABI completion matrix for
+  required data, determinism, frame boundaries, chunk independence, repeated
+  completion, and corruption, truncation, and trailing-data atomicity; update
+  architecture, readiness, C API, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the harness specializes marc's own completed LZ77/rANS
+  public-boundary test structure to independently implemented LZSS bounds and
+  entry points. No external corpus, mutation, control flow, or test expression
+  was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release suite passed 1,839/1,839 under
+  both compilers using official CMake 4.3.4. All thirty-one benchmark smokes
+  and schema-20 compatibility remained successful.
+
 ## 2026-07-28 - LZMW plus Dynamic Range CLI admission
 
 - Authoring method: extended marc's existing explicit selector table and

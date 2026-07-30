@@ -40,7 +40,10 @@ format versions, and C ABI versions are independent namespaces.
   conservative decoder workspace requirements entirely from configuration
   and validated local limits. A public C ABI now exposes configuration
   initialization, direction-specific requirements, and an immutable transform
-  factory through three caller-owned opaque workspace regions.
+  factory through three caller-owned opaque workspace regions. Its public-ABI
+  completion matrix now proves required binary data classes, deterministic
+  output, frame-boundary and arbitrary-chunk behavior, sticky completion, and
+  atomic rejection of a malformed final frame.
 
 - Reserved the `lz77-rans` composition with a complete decoder-visible
   representation and independent raw-`A` vector. Canonical 16-byte LZ77

@@ -108,8 +108,10 @@ from that frame. Its internal profile now constructs the immutable stream
 header and derives exact encoder plus conservative decoder storage from
 validated configuration and limits. Its public C ABI now exposes that fixed
 profile through a requirements query and immutable-direction factory; no CLI,
-benchmark, completion matrix, fuzz target, or interoperability entry exists
-yet.
+benchmark, fuzz target, or interoperability entry exists yet. Its public-ABI
+completion matrix covers required binary classes, deterministic multi-frame
+encoding, arbitrary chunking, sticky terminal states, and atomic rejection of
+a malformed final frame.
 
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable

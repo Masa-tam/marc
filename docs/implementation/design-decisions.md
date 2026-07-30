@@ -8743,6 +8743,30 @@ lifecycle with raw `ABABABX`, exact queried regions, round trip, short views,
 and reserved-field rejection. This decision adds no completion matrix, fuzz
 target, CLI, benchmark, completion claim, or interoperability entry.
 
+## DD-472: LZSS rANS completion is proven through the C ABI
+
+- Date: 2026-07-30
+- Status: accepted
+
+Add a public-ABI completion matrix with fixed 64-byte raw frames and 64-byte
+rANS blocks. Exercise only `marc_lzss_rans_config_init`, the requirements
+query, factory, generic process function, and destroy lifecycle; allocate and
+align all three regions exclusively from each direction's query.
+
+Cover empty input, every one-byte symbol, all byte values, repetitive and
+patterned binary input, deterministic generated input, and lengths immediately
+below, equal to, and above the outer-frame boundary. Encode each class twice
+and require byte identity before decoding.
+
+For a 193-byte stream, require unchunked, one-byte, and mixed schedules to
+produce identical multi-frame streams and raw output. Repeated successful
+terminal calls remain EndOfStream. Independently corrupt the sequence field,
+truncate the final payload, and append one trailing byte to the fourth frame;
+each decoder may publish exactly the first three validated 64-byte frames,
+must preserve the final sentinel, and must repeat the same sticky error and
+position. This decision adds no fuzz target, CLI, benchmark, completion claim,
+or interoperability entry.
+
 ## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
 
 - Date: 2026-07-28

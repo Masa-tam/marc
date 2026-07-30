@@ -1233,6 +1233,11 @@ decoding uses encoded-frame storage as primary, token-plus-raw storage as
 secondary, and an opaque aligned rANS-view region. The requirements query is
 the only public authority for all sizes and view alignment.
 
+The public-ABI completion matrix fixes 64-byte raw frames and entropy blocks.
+It proves every required data class, deterministic output across chunking,
+sticky terminal calls, and frame-atomic rejection of corruption, truncation,
+or trailing data in a final short frame through only the C lifecycle.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -1845,3 +1845,9 @@ DD-470's direction-specific requirements, the completed local streaming pair,
 ABI version 1's existing three-region lifecycle, checked offsets and
 alignment, and `nothrow` handle publication. No external C API, allocation
 model, combined factory, ABI layout, source code, or test suite was consulted.
+
+The LZSS plus rANS public-ABI completion matrix uses only DD-472, the
+published `marc_lzss_rans_*` lifecycle, DD-462's fixed representation,
+repository-authored deterministic generators, and local generic frame-extent
+parsing. No external conformance suite, corpus, combined codec API, malformed
+archive, source code, or test vector was consulted.

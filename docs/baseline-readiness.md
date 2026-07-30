@@ -422,9 +422,11 @@ constructs the fixed stream identity and supplies checked direction-specific
 workspace requirements, including descriptor-view count, without exposing
 private layouts. Its public ABI v1 configuration, requirements query, and
 factory now bind those workspaces as three opaque caller-owned regions and
-round-trip through a pure C11 caller. It remains `Specified`: no CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry exists
-yet.
+round-trip through a pure C11 caller. Its public-ABI completion matrix now
+covers required data classes, byte determinism, frame boundaries, arbitrary
+chunking, sticky terminal states, and malformed-final-frame atomicity. It
+remains `Specified`: no CLI, benchmark, fuzz target, or interoperability entry
+exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
