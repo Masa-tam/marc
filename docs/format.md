@@ -4094,6 +4094,70 @@ Interoperability schema 22 emits this unchanged profile as `lz78-rans` after
 the frozen thirty-two-entry schema-21 set. The schema changes only the
 external manifest profile set; it adds no stream field or variant.
 
+## LZW variant 1 plus rANS variant 1
+
+The reserved composition name is `lzw-rans`. Format version 1.0 uses
+dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 4,
+entropy variant 1, the ordinary 16-byte LZW parameter extension, and no
+entropy parameter bytes. Both algorithms reset at every outer frame.
+
+Complete the canonical LSB-first packed LZW code stream, including all final
+zero padding through the last byte, before entropy coding. For raw frame size
+`F`, configured maximum LZW code width `W`, packed extent `S`, nonzero rANS
+block size `B`, and block count `K`, require:
+
+```text
+0 < S <= ceil(FW / 8)
+K = ceil(S / B)
+descriptor bytes = 528K
+8K <= P <= S + 8K
+```
+
+A nonempty raw frame emits at least one LZW code. Generated LZW dictionary
+entries cannot exceed the lesser of `F - 1`, `2^W - 256`, the configured
+entry limit, and the local decoder limit. The format-level raw-frame cap is
+2^20 bytes. rANS consumes finalized packed bytes without interpreting code
+boundaries or padding, so a block may split one variable-width code but
+cannot split a byte or cross an outer frame.
+
+Decoding first validates the generic frame extents and every rANS descriptor,
+model, state path, terminal state, and exact payload exhaustion. Only after
+all blocks succeed may it reconstruct exactly `S` private packed bytes. It
+must then validate LZW width transitions, the first literal, backward and
+`KwKwK` references, bounded phrase lengths, dictionary growth, exact declared
+raw extent, exact packed extent, and zero high padding bits before any raw
+reconstruction or caller-visible publication.
+
+For raw `A`, LZW emits code 65 at width nine and freezes packed bytes:
+
+```text
+41 00
+```
+
+With `B = 65,536`, its normalized rANS frequencies are `00:2048` and
+`41:2048`; the payload is:
+
+```text
+00 08 00 00 02 00 00 00
+```
+
+The complete frame is 592 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 02 00 00 00 08 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`02 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 08`) and 146..147 (`00 08`). The eight payload bytes above immediately
+follow the descriptor. This sparse notation uniquely fixes every frame byte.
+This section reserves representation and name only; it publishes no combined
+implementation or public entry point.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

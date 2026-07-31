@@ -9761,6 +9761,38 @@ discarded and the reviewed seed retained.
   environment labels supplied by the project owner. No external encoded
   representation or implementation structure was compared.
 
+## 2026-08-01 - LZW plus rANS reserved representation
+
+- Authoring method: composed marc's already documented LZW packed-code
+  grammar, scalar rANS block representation, and generic frame serialization
+  without consulting another combined format.
+- References used: DD-491, the local LZW variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame serializer,
+  checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZW/rANS
+  compositions, archive formats, combined encoders or decoders, encoded
+  corpora, source code, and test suites.
+- Independent decisions: reserve `lzw-rans`; retain format 1.0 and the
+  16-byte LZW parameter extension; freeze packed code bytes and final zero
+  padding before rANS; permit entropy blocks to split codes but not bytes or
+  frames; require `S <= ceil(FW/8)`, `K = ceil(S/B)`,
+  `8K <= P <= S + 8K`, and exact `528K` descriptor bytes; bound dictionary
+  records; and validate entropy before the LZW code stream or raw
+  reconstruction.
+- Generated-code task description: specify the complete decoder-visible
+  boundary and sparse raw-`A` frame, add a standalone-component vector test,
+  and synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records without adding a
+  combined implementation.
+- Similarity review: the representation directly composes marc's existing
+  independently implemented formats and checked bounds. No external packed-
+  code grammar, combined layout, validation order, code, or test expression
+  was compared.
+- Local validation: the independent LZW/rANS single-code vector passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,899/1,899 under
+  both compilers using official CMake 4.3.4; all 33 benchmark smokes and
+  schema-22 compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

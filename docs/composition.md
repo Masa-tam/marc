@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Specified | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
 
@@ -176,6 +176,18 @@ direction external schema-22 verification passed at revision
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
 interoperability coverage.
+
+`lzw-rans` is the fourth rANS composition to receive a reserved
+representation. LZW first freezes its complete LSB-first packed-code byte
+stream, including final zero padding, with checked
+`S <= ceil(FW/8)`; scalar rANS then divides those bytes into
+`K = ceil(S/B)` blocks with payload bound `8K <= P <= S + 8K` and exact
+descriptor extent `528K`. A block may split a packed LZW code but cannot
+cross an outer frame. Entropy validation and complete private packed-byte
+reconstruction precede LZW width, reference, `KwKwK`, padding, dictionary-
+growth, and exact raw-extent validation. The independently derived raw-`A`
+vector fixes the complete 592-byte frame. No combined implementation, public
+factory, CLI, benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

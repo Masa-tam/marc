@@ -1395,6 +1395,28 @@ rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state
 payload, and the complete 592-byte frame.
 
+### Specified LZW plus rANS boundary
+
+The fourth rANS composition freezes the complete canonical LZW packed-code
+byte stream before entropy processing. Scalar rANS remains unaware of the
+LSB-first variable-width code grammar and final zero padding, so an entropy
+block may split a packed code while the outer frame remains the shared
+dictionary and model reset boundary.
+
+For raw frame extent `F`, configured maximum code width `W`, packed extent
+`S`, entropy block size `B`, and block count `K`, require
+`0 < S <= ceil(FW/8)`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and exactly
+`528K` descriptor bytes. The decoder must validate every rANS block into
+private packed staging before checking LZW width transitions, references,
+`KwKwK`, final padding, dictionary growth, and exact raw extent. Phrase
+expansion and caller-visible publication remain outside this first
+specification step.
+
+The independent raw-`A` vector composes only the existing LZW encoder, scalar
+rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
+equal `00:2048` and `41:2048` normalized model, the eight-byte final-state
+payload, and the complete 592-byte frame.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

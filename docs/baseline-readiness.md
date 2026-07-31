@@ -486,6 +486,16 @@ four established directions at revision
 `2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
+`lzw-rans` is now the active admission composition. Its initial specification
+freezes the complete LSB-first packed LZW byte region, including final zero
+padding, before scalar rANS. It checks `S <= ceil(FW/8)`,
+`K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and
+bounded dictionary records, and requires entropy validation before LZW code-
+stream validation or raw reconstruction. An independently assembled 592-byte
+single-code frame fixes the first canonical representation. Combined
+validation, reconstruction, streaming, public API, and admission evidence
+remain pending.
+
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
 `4F` token and `132F` payload ceilings, adjacent-phrase and expansion-workspace

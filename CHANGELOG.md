@@ -7,6 +7,14 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lzw-rans` composition with a complete decoder-visible
+  representation and independent 592-byte raw-`A` frame. The final LSB-first
+  packed LZW byte stream, including zero padding, is frozen before scalar
+  rANS block coding; checked bounds cover `S <= ceil(FW/8)`,
+  `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and
+  bounded LZW dictionary records. Entropy validation precedes complete LZW
+  code-stream validation and any raw reconstruction.
+
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte
   LZ78 token stream is finalized before scalar rANS block coding; checked

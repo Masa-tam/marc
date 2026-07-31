@@ -9053,6 +9053,42 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-491: LZW rANS preserves finalized packed codes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Reserve `lzw-rans` for LZW variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZW parameter extension,
+empty entropy parameters, and canonical LSB-first variable-width codes.
+Complete the packed byte stream, including final zero padding, before entropy
+processing. An rANS block may split a packed code but cannot split a byte or
+cross an outer frame. Reset the LZW dictionary and every rANS model and state
+at each frame.
+
+For raw frame extent `F` and maximum code width `W`, require packed extent
+`0 < S <= ceil(FW/8)`, `K = ceil(S/B)` for nonzero rANS block size `B`,
+`8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
+dictionary entries by `F - 1`, `2^W - 256`, the configured entry limit, and
+the local decoder limit. Preserve the existing 2^20-byte LZW composition
+frame cap.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly
+`S` private packed bytes. Only then validate width transitions, the first
+literal, ordinary and `KwKwK` references, checked phrase lengths, dictionary
+growth, exact packed and raw extents, and zero high padding before any raw
+reconstruction or publication.
+
+For raw `A`, independently freeze LZW packed bytes `41 00`. Their normalized
+rANS model is `00:2048, 41:2048`, final-state payload is
+`00 08 00 00 02 00 00 00`, and the complete frame is 592 bytes. Prove this
+by composing only the existing standalone LZW encoder, scalar rANS encoder,
+and generic serializers. This decision specifies bytes and a reserved name
+only; it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-490: Interoperability schema 22 appends LZ78 rANS
 
 - Date: 2026-07-31
