@@ -214,8 +214,10 @@ frames. Its bounded dual-path decoder fuzz target fixes all byte and typed
 workspace before input, drives both complete-frame and public C streaming
 decode, and caps calls independently of serialized contents. Permanent
 regressions retain atomic failure for every canonical truncation, saturated
-frame extents, and invalid rANS descriptor metadata. No CLI, benchmark, or
-interoperability entry exists yet.
+frame extents, and invalid rANS descriptor metadata. Its explicit
+transactional CLI selector now binds the public C factory under the fixed
+64-KiB raw-frame and entropy-block profile. No benchmark or interoperability
+entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

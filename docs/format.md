@@ -4237,6 +4237,13 @@ The public-ABI completion matrix uses the same representation with 64-byte
 outer frames and 64-byte rANS blocks. Its alternate chunk schedules and
 malformed-final-frame cases add evidence only and do not define a new variant.
 
+The explicit `lzw-rans` CLI selector uses this unchanged representation with
+65,536-byte outer frames, 65,536-byte rANS blocks, maximum code width 16, at
+most 65,280 generated entries, a 131,072-byte packed-code ceiling, a
+131,088-byte payload ceiling, two blocks per frame, and an 8-MiB aggregate
+internal-buffer policy. Direction-specific workspace extents remain public
+C-query results; the selector adds no stream field or format variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

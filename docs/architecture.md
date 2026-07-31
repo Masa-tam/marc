@@ -1495,6 +1495,13 @@ the other uses only the public C requirements, factory, process, and destroy
 lifecycle under variable small chunks. A fixed call ceiling turns failure to
 terminate into a reproducible harness failure.
 
+The transactional command-line adapter now selects this public profile as
+`lzw-rans`. It fixes raw frames and rANS blocks at 65,536 bytes, supplies only
+public format and hard-limit values, obtains all three direction-specific
+workspace regions from the public C query, and creates the transform through
+the public factory. Existing-output refusal, sibling `.tmp` cleanup, strict
+trailing-data rejection, and final atomic rename remain common CLI policy.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

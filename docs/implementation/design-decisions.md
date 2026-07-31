@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-503: LZW rANS CLI binds one fixed public profile
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add explicit selector `lzw-rans` to the transactional CLI and reach the codec
+only through `marc_lzw_rans_config_init()`, its public requirements query,
+factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
+65,536 bytes and maximum code width at 16. The packed-code ceiling is 131,072
+bytes, producing at most two rANS blocks, 1,056 descriptor bytes, and a
+131,088-byte payload. Admit at most 65,280 generated dictionary entries and
+use a conservative 8-MiB aggregate internal-buffer policy.
+
+The CLI may supply these public bounds but must not reproduce LZW encoder,
+phrase, or rANS-view layouts. Allocate primary, secondary, and aligned opaque
+views only from the direction-specific public query. Retain known-size input,
+immutable direction, overwrite refusal, sibling `.tmp` cleanup, strict
+malformed and trailing-data rejection, and atomic destination rename.
+
+Prove a multi-frame binary round trip, overwrite refusal, malformed-input
+cleanup, trailing-data cleanup, and empty input through the common CLI
+regression under both supported Windows compilers. This step adds no benchmark
+adapter or interoperability entry.
+
 ## DD-502: LZW rANS fuzzing crosses private and public boundaries
 
 - Date: 2026-08-01

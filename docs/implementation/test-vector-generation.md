@@ -3854,6 +3854,16 @@ rANS descriptor to one. Both complete streams must fail atomically. The live
 fuzzer accepts at most 8 KiB, uses only fixed caller-owned arrays, and stops
 after at most maximum input plus maximum output plus 32 process calls.
 
+For `lzw-rans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode
+with the explicit selector and compare the restored file byte for byte. Repeat
+encoding to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file. Fix `F = B = 65,536`, `S <= 131,072`, `K <= 2`,
+`P <= 131,088`, maximum code width 16, at most 65,280 generated entries, and
+an 8-MiB aggregate policy. Obtain actual storage only from the public query.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

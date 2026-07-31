@@ -1621,6 +1621,11 @@ fixed-array limit arithmetic, local process-result invariants, and a
 repository-generated canonical stream. No external fuzz harness, corpus,
 malformed archive, source code, or test suite was consulted.
 
+The `lzw-rans` CLI adapter uses only DD-503, the published marc C config,
+requirements query, factory, generic transform lifecycle, documented local
+frame and rANS bounds, and the repository's transactional file protocol. No
+external CLI, wrapper, archive tool, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS transactional CLI adapter
+
+- Authoring method: applied DD-503 to marc's existing transactional CLI and
+  the already published `marc_lzw_rans_*` lifecycle.
+- References used: DD-503, DD-500, public fixed-width config and workspace
+  query, local rANS bounds, and the generic CLI round-trip regression.
+- Known implementations intentionally not consulted: external LZW/rANS tools,
+  archive CLIs, wrappers, source code, encoded corpora, and test suites.
+- Independent decisions: fix both frame and entropy block at 65,536 bytes;
+  retain the 8-MiB aggregate policy used by the other admitted LZW entropy
+  profiles; obtain every actual workspace from the public query; and preserve
+  the shared temporary-file transaction without codec-specific file handling.
+- Generated-code task description: add the enum, public-limit configuration,
+  requirements and factory dispatch, selector and usage text, common CLI
+  regression, and synchronize changelog, CLI, format, architecture, readiness,
+  composition, decision, reference, vector, and provenance records.
+- Similarity review: the adapter extends only marc's local switch and public C
+  lifecycle. No external CLI structure, profile constants, error handling,
+  naming scheme, or test expression was compared.
+- Local validation: the dedicated transactional CLI regression passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed 1,951/1,951
+  under both compilers using official CMake 4.3.4; all 33 benchmark smokes and
+  schema-22 compatibility remained successful.
+
 ## 2026-08-01 - LZW plus rANS bounded decoder fuzz boundary
 
 - Authoring method: applied DD-502 to marc's local complete-frame decoder and

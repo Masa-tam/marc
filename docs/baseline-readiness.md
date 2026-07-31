@@ -517,8 +517,9 @@ the common opaque transform lifecycle. Its public-ABI completion matrix now
 proves required data classes, deterministic arbitrary chunking, sticky terminal
 states, and malformed-final-frame atomicity. A bounded dual-path decoder fuzz
 harness and permanent atomic truncation, saturated-extent, and descriptor
-regressions are now present. CLI, benchmark, and interoperability admission
-evidence remain pending.
+regressions are now present. A transactional CLI selector now binds the same
+public factory under the fixed 64-KiB reference profile. Benchmark and
+interoperability admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
