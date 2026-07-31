@@ -4078,6 +4078,11 @@ layout, or alignment validation fails. The configuration's local
 block decoded at the byte-transform boundary; this policy adds no stream
 field.
 
+The bounded decoder fuzz boundary applies this unchanged representation to
+both the private complete-frame decoder and public incremental decoder. Its
+fixed workspace ceilings, finite call budget, and malformed-stream regression
+corpus add no stream field or variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

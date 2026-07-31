@@ -1354,6 +1354,15 @@ records. Factory construction repeats profile calculation and layout
 partitioning before publishing an immutable-direction handle. A failed query,
 short or misaligned region, or allocation failure leaves the handle null.
 
+The bounded decoder fuzz boundary invokes both the private exact-frame decoder
+and that public C streaming lifecycle. It caps supplied input at 8 KiB, total
+raw output at 4 KiB, one raw frame at 1 KiB, canonical LZ78 tokens at 8 KiB,
+rANS payload at 16 KiB, metadata at eight block views, and phrase state at
+1,024 records. Every byte and typed region has a compile-time ceiling before
+serialized metadata is parsed. Input-derived chunks remain within a fixed
+call budget, so malformed data cannot create allocation or unbounded-progress
+behavior.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

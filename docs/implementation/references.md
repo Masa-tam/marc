@@ -1527,6 +1527,12 @@ repository-authored deterministic generators, and local generic-frame extent
 parsing. No external conformance suite, corpus, combined codec API, malformed
 archive, source code, or test vector was consulted.
 
+The LZ78 plus rANS dual-boundary fuzzer and permanent regressions use only
+DD-487, the local private frame decoder, published `marc_lz78_rans_*`
+lifecycle, repository-authored canonical stream, fixed caller-owned arrays,
+and byte-derived chunk schedules. No external fuzz harness, malformed corpus,
+seed corpus, source code, sanitizer finding, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

@@ -9053,6 +9053,34 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-487: LZ78 rANS fuzzing fixes both decoder boundaries
+
+- Date: 2026-07-31
+- Status: accepted
+
+Submit at most 8,192 arbitrary serialized bytes independently to the private
+complete-frame staging decoder after a valid 80-byte profile prefix and to the
+published C streaming decoder. Fix total output at 4,096 bytes, one raw frame
+at 1,024 bytes, canonical token staging at 8,192 bytes, rANS payload at 16,384
+bytes, entropy metadata at eight views, and LZ78 state at 1,024 phrase records.
+Count encoded-frame, token, raw, views, and phrase extents into one conservative
+local policy before parsing input.
+
+The public path must obtain its exact three-region sizes and alignment from
+`marc_lz78_rans_workspace_requirements()`, but may bind them only when they fit
+compile-time fixed arrays. Derive partial input and output chunks from bounded
+input bytes and impose a fixed call ceiling. Abort on invalid process results,
+zero-progress protocol violations, input exhaustion reported as `NeedInput`,
+or call-budget exhaustion; ordinary decoder rejection is a successful fuzz
+case.
+
+Persist repository-authored regressions for every proper truncation of the
+canonical `ABABX` stream, saturated generic-frame extent fields, and a nonzero
+rANS descriptor reserved byte. Each must publish no raw byte, preserve the
+caller sentinel, and repeat its stable terminal error. This decision changes
+no stream representation, public ABI, CLI, benchmark, or interoperability
+entry.
+
 ## DD-486: LZ78 rANS completion is proved through the public ABI
 
 - Date: 2026-07-31

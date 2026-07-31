@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   workspace query, and immutable-direction factory over those same bounded
   streaming transforms. Its public-ABI completion matrix now covers required
   data classes, deterministic arbitrary chunking, stable post-end calls, and
-  transactional malformed-final-frame rejection.
+  transactional malformed-final-frame rejection. Its bounded dual-path
+  decoder fuzz target and permanent truncation, saturated-extent, and
+  nonzero-descriptor-reserved-byte regressions are now present.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

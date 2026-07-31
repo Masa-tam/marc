@@ -159,8 +159,10 @@ region. The public C requirements query and factory now expose that fixed
 profile through the common transform lifecycle without exposing the record
 types. Its public-ABI completion matrix proves deterministic required-data-class
 round trips, arbitrary encode/decode chunking, stable terminal states, and
-transactional malformed-final-frame rejection. No CLI, benchmark, fuzz target,
-or interoperability entry exists yet.
+transactional malformed-final-frame rejection. Its bounded dual-path decoder
+fuzz target fixes encoded, token, raw, rANS-view, and phrase storage and adds
+permanent atomic regressions for truncation, saturated extents, and descriptor
+reserved bytes. No CLI, benchmark, or interoperability entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

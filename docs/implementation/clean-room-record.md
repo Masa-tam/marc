@@ -9680,6 +9680,35 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
   compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS bounded decoder fuzz boundary
+
+- Authoring method: applied DD-487 after the public completion matrix proved
+  both ordinary chunking and transactional malformed-final-frame behavior.
+- References used: DD-487, DD-486, the local private frame decoder, public C
+  lifecycle, fixed format fields, and repository-authored stream generator
+  only.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, malformed archives, combined-codec fuzzers, source code, and
+  sanitizer findings.
+- Independent decisions: cap input at 8 KiB; fix raw, token, payload, view,
+  and phrase ceilings; query but never dynamically allocate public workspaces;
+  derive chunks from input bytes under a fixed call budget; and retain three
+  hand-authored malformed families.
+- Generated-code task description: add the dual-boundary harness, normal-build
+  compile smoke, truncated-magic corpus seed, canonical truncation, saturated
+  extent, and descriptor-reserved regressions; synchronize fuzzing, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the harness composes only marc's local decoder entry
+  points, public ABI, checked limits, fixed arrays, and process invariants. No
+  external harness structure, corpus, mutation schedule, or failure was
+  compared.
+- Local validation: the harness compile-smoke and three focused permanent
+  regressions passed under both MSVC and ClangCL. The complete Release CTest
+  suite passed 1,896/1,896 under both compilers using official CMake 4.3.4;
+  all 32 benchmark smokes and interoperability schema compatibility remained
+  successful. A sanitizer campaign remains a separate execution step.
+
 ## 2026-07-31 - LZ78 plus rANS public-ABI completion
 
 - Authoring method: applied DD-486 to the published C lifecycle after the

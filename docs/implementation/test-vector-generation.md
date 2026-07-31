@@ -3691,6 +3691,19 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel,
 and repeat the same terminal status and error positions.
 
+For bounded LZ78 plus rANS decoder fuzzing, cap supplied input at 8,192 bytes,
+total output at 4,096, raw frames at 1,024, canonical tokens at 8,192, rANS
+payload at 16,384, block views at eight, and phrase records at 1,024. Exercise
+the private complete-frame decoder only after parsing a valid 80-byte prefix,
+and always exercise the public C streaming decoder through queried workspaces.
+Use byte-derived chunks and a checked finite call budget.
+
+Persist the canonical `ABABX` stream's every proper truncation, all-ones
+generic frame extent fields, and a nonzero byte at the first rANS descriptor's
+reserved offset 10. Each regression must produce no output from its failing
+frame, preserve the output sentinel, and return the same error code and byte
+position on the next call.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

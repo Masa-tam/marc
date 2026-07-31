@@ -108,6 +108,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lz78-rans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -467,8 +468,12 @@ factory now bind those three regions without exposing private record layouts.
 The public-ABI completion matrix now covers all one-byte values, representative
 binary and boundary-length inputs, deterministic multi-frame output under
 arbitrary chunking, stable post-end calls, and transactional rejection of a
-corrupt, truncated, or trailing final frame. Fuzz, tooling, and interoperability
-evidence remain pending.
+corrupt, truncated, or trailing final frame. A bounded dual-path decoder fuzz
+target now fixes all byte and typed workspaces before input is inspected and
+guards byte-derived chunking with a finite call ceiling. Permanent regressions
+cover every canonical truncation, saturated frame extents, and a nonzero rANS
+reserved byte without publishing the failing frame. Tooling and
+interoperability evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
