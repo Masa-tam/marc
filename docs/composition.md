@@ -207,8 +207,10 @@ accepted raw frame before reading another header. Its internal profile
 calculator derives all direction-specific byte regions and partitions aligned
 opaque storage into encoder entries or rANS views followed by LZW phrases. Its
 public C requirements query and factory now bind that exact profile without
-exposing either record type. No completion matrix, CLI, benchmark, fuzz target,
-or interoperability entry exists yet.
+exposing either record type. Its public-ABI completion matrix now proves
+required binary classes, byte-identical arbitrary chunking, sticky terminal
+states, and atomic rejection of corrupted, truncated, or extended final
+frames. No CLI, benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

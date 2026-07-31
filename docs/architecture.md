@@ -1480,6 +1480,13 @@ records. The requirements query and factory both recalculate the internal
 profile; the factory validates sizes and alignment, partitions typed views
 privately, and publishes a transform handle only after construction succeeds.
 
+Public-ABI completion evidence exercises only that C lifecycle. It spans empty
+input, every one-byte value, all byte values, repeated and patterned input,
+deterministic pseudo-random input, frame-boundary lengths, and multi-frame
+streams under one-byte and mixed chunk schedules. Repeated terminal calls are
+stable. Corruption, truncation, or extension of the final frame leaves every
+byte of that frame unpublished while earlier drained frames remain committed.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

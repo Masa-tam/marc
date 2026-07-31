@@ -1609,6 +1609,12 @@ partition helpers, marc's existing transform handle lifecycle, fixed-width C
 types, and standard C allocation in its test. No external codec ABI, wrapper,
 workspace convention, source code, or test suite was consulted.
 
+The LZW plus rANS public-ABI completion matrix uses only DD-501, the local
+DD-500 C lifecycle, marc's existing independently authored LZW completion
+schedules, and the documented scalar-rANS block ceiling. No external
+conformance suite, encoded corpus, wrapper, source code, or test expression was
+consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

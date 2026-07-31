@@ -21,7 +21,15 @@ constexpr std::size_t maximum_dictionary_size = test_frame_size * 2;
 #endif
 constexpr std::size_t maximum_payload_size =
     MARC_LZW_COMPLETION_MAXIMUM_PAYLOAD(maximum_dictionary_size);
-constexpr std::size_t maximum_frame_size = 56 + 16 + maximum_payload_size;
+#ifndef MARC_LZW_COMPLETION_MAXIMUM_FRAME
+#define MARC_LZW_COMPLETION_MAXIMUM_FRAME(dictionary_size) \
+    (56 + 16 + MARC_LZW_COMPLETION_MAXIMUM_PAYLOAD(dictionary_size))
+#endif
+#ifndef MARC_LZW_COMPLETION_CONFIGURE_PROFILE
+#define MARC_LZW_COMPLETION_CONFIGURE_PROFILE(config) ((void)0)
+#endif
+constexpr std::size_t maximum_frame_size =
+    MARC_LZW_COMPLETION_MAXIMUM_FRAME(maximum_dictionary_size);
 constexpr std::size_t maximum_buffered_bytes = 65536;
 
 struct TransformDeleter {
@@ -53,6 +61,7 @@ struct Workspace {
     result.max_dictionary_serialized_size = maximum_dictionary_size;
     result.max_internal_buffered_bytes = maximum_buffered_bytes;
     result.max_dictionary_entries = UINT32_C(1) << 16;
+    MARC_LZW_COMPLETION_CONFIGURE_PROFILE(result);
     return result;
 }
 

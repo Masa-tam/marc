@@ -272,7 +272,11 @@ followed by private raw staging, and aligned opaque views containing rANS block
 views followed by LZW phrase entries. Call
 `marc_lzw_rans_workspace_requirements()` again after changing direction,
 original size, frame size, entropy block size, maximum code width, or any hard
-limit. Private C++ record definitions never enter the C ABI.
+limit. Private C++ record definitions never enter the C ABI. The public
+completion matrix uses only this lifecycle with 64-byte frames and blocks and
+covers required binary classes, deterministic one-byte and mixed chunking,
+repeatable terminal states, and frame-atomic rejection of corrupted,
+truncated, and extended fourth frames.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

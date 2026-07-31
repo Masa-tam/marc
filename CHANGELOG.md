@@ -40,6 +40,9 @@ format versions, and C ABI versions are independent namespaces.
   opaque LZW/rANS record layouts sufficient to construct the streaming pair.
   Its public C ABI now exposes fixed-width configuration, requirements query,
   and factory functions over the common three-workspace transform lifecycle.
+  Its public-ABI completion matrix now covers required binary classes,
+  deterministic arbitrary chunking, sticky terminal states, and frame-atomic
+  rejection of malformed, truncated, and extended final frames.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

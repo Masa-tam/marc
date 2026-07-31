@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-501: LZW rANS completion evidence stays on the C ABI
+
+- Date: 2026-08-01
+- Status: accepted
+
+Establish the initial public-ABI completion matrix using only DD-500's config,
+requirements query, factory, process, and destroy lifecycle. Reuse the common
+LZW evidence schedules while supplying the scalar-rANS payload and descriptor
+ceiling plus 64-byte entropy-block configuration. This keeps input classes,
+chunk schedules, terminal assertions, and malformed-frame publication checks
+identical across admitted LZW compositions.
+
+Cover empty input, all 256 one-byte values, all byte values in sequence,
+repeated bytes, repeated multi-byte patterns, deterministic pseudo-random data,
+and lengths 63, 64, and 65. Require byte-identical multi-frame encoding under
+one-byte and mixed input/output chunking, exact decode, sticky ended state, and
+sticky malformed state. Corrupt, truncate, and extend the fourth frame of a
+193-byte stream; require exactly the first 192 bytes to remain committed and
+the final byte untouched. This step adds no fuzz target, CLI, benchmark,
+completion claim beyond the public-ABI matrix, or interoperability entry.
+
 ## DD-500: LZW rANS C ABI retains three opaque workspaces
 
 - Date: 2026-08-01

@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS public-ABI completion matrix
+
+- Authoring method: applied DD-501 to marc's local DD-500 C lifecycle and the
+  repository's independently authored common LZW completion schedules.
+- References used: DD-501, DD-500, the public C header, local transform
+  lifecycle, documented rANS block bounds, and deterministic local generators.
+- Known implementations intentionally not consulted: external LZW/rANS test
+  suites, conformance corpora, encoded archives, source code, and wrappers.
+- Independent decisions: keep all evidence on the public C boundary; retain
+  identical LZW input classes and chunk schedules; specialize only the rANS
+  frame ceiling and block configuration; and treat one final-frame byte as the
+  transactional publication unit after three committed 64-byte frames.
+- Generated-code task description: add the public-ABI completion matrix;
+  exercise required data classes, repeat determinism, four encode/decode chunk
+  schedules, sticky end and error states, and corrupted, truncated, and
+  extended fourth-frame atomicity; synchronize C API, format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the matrix reuses only repository-local evidence
+  schedules and public symbols. No external vector, scheduling pattern,
+  malformed corpus, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/rANS internal, pure-C, and public-ABI
+  completion suite passed 49/49 under both MSVC and ClangCL. The complete
+  Release CTest suite passed 1,947/1,947 under both compilers using official
+  CMake 4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
+  successful.
+
 ## 2026-08-01 - LZW plus rANS public C factory
 
 - Authoring method: bound DD-500 directly to marc's local DD-499 profile,
