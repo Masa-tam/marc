@@ -661,8 +661,9 @@ order. Schema 20 names `marc-cli-v20` and appends LZ77 plus rANS to the frozen
 thirty-profile schema-19 order. Schema 21 names `marc-cli-v21` and appends
 LZSS plus rANS to the frozen thirty-one-profile schema-20 order. Schema 22
 names `marc-cli-v22` and appends LZ78 plus rANS to the frozen thirty-two-
-profile schema-21 order. Schemas 1 through 21 retain their exact versioned
-profile sets.
+profile schema-21 order. Schema 23 names `marc-cli-v23` and appends LZW plus
+rANS to the frozen thirty-three-profile schema-22 order. Schemas 1 through 22
+retain their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1508,6 +1509,14 @@ direction independently, verifies one byte-exact round trip, and only then
 times fresh public transforms. It reports compression ratio, directional
 throughput, each primary/secondary/views extent, and the larger directional
 workspace sum; performance is descriptive rather than an admission threshold.
+
+Interoperability schema 23 appends this unchanged `lzw-rans` CLI profile once
+after the frozen schema-22 order. The generator self-decodes before recording
+size and SHA-256. The verifier requires all 34 canonical names in exact order,
+decodes every archive, and requires byte-identical local re-encoding. The
+compatibility test rejects a reordered schema-23 manifest, removes only
+`lzw-rans` to derive schema 22, and verifies the unchanged schemas 22 through
+1. External four-direction validation remains pending.
 
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the

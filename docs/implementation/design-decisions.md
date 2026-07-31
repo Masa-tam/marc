@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-505: Interoperability schema 23 appends LZW rANS
+
+- Date: 2026-08-01
+- Status: accepted
+
+Define interoperability schema 23 and codec set `marc-cli-v23` as the exact
+frozen schema-22 profile order followed once by `lzw-rans`. The unchanged
+transactional CLI profile becomes archive 34 over the existing deterministic
+8,193-byte fixture. Do not add, remove, reorder, or reinterpret an earlier
+schema entry.
+
+The generator must locally decode every archive before publishing its size and
+SHA-256. The verifier must require exactly thirty-four archives in canonical
+order, validate leaf names, extents, and hashes, decode each foreign archive,
+and require byte-identical local re-encoding. The compatibility test must
+reject a reordered schema-23 manifest, convert schema 23 to the frozen schema
+22 set by removing only `lzw-rans`, and continue verifying schemas 22 through
+1 unchanged. Cross-platform interoperability remains unproven until external
+artifacts produced at one complete revision pass the established four
+directions.
+
 ## DD-504: LZW rANS benchmark verifies before timing
 
 - Date: 2026-08-01

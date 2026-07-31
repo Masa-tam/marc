@@ -1631,6 +1631,12 @@ marc's existing dependency-free measurement runner, checked integer capacity
 arithmetic, and the public transform lifecycle. No external benchmark harness,
 LZW/rANS tool, encoded corpus, source code, or performance baseline was used.
 
+Interoperability schema 23 uses only DD-505, the frozen schema-22 manifest
+order, marc's deterministic 8,193-byte fixture, the published `lzw-rans` CLI
+profile, and the repository-owned generator, verifier, and compatibility
+conversion. No external interoperability schema, manifest, archive corpus,
+source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

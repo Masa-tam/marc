@@ -52,6 +52,11 @@ format versions, and C ABI versions are independent namespaces.
   frame and entropy-block profile. A verified public-C benchmark adapter now
   reports ratio, directional throughput, and all caller-owned workspace bytes
   for that same profile without imposing a performance threshold.
+  Interoperability schema 23 appends the unchanged `lzw-rans` CLI profile as
+  archive 34 after the frozen schema-22 order. Local generation, exact-order
+  verification, byte-identical re-encoding, reordered-manifest rejection, and
+  schemas 1 through 22 compatibility pass; external four-direction validation
+  remains pending.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

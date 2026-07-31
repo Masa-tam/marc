@@ -13,7 +13,7 @@ and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 22 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 23 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -34,7 +34,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 22 |
+| Profile | Purpose | Local status | Interoperability schema 23 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -57,14 +57,15 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-rans` | First rANS composition | Ready | Included |
 | `lzss-rans` | Second rANS composition | Ready | Included |
 | `lz78-rans` | Third rANS composition | Ready | Included |
+| `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 22 contains thirty-three archives: the frozen thirty-two-entry schema-21
-set followed by the LZ78 rANS profile. Schemas 1 through 21
+Schema 23 contains thirty-four archives: the frozen thirty-three-entry schema-22
+set followed by the LZW rANS profile. Schemas 1 through 22
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty, and
-thirty-one, and thirty-two profiles;
+twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
+thirty-one, thirty-two, and thirty-three profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -75,7 +76,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 22 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 23 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -110,6 +111,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 

@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - Interoperability schema 23 appends LZW plus rANS
+
+- Authoring method: applied DD-505 after the fixed `lzw-rans` CLI, completion,
+  fuzz, and benchmark boundaries were locally complete.
+- References used: DD-505, the frozen schema-22 manifest order, marc's
+  deterministic 8,193-byte fixture, and the repository-owned generator,
+  verifier, and compatibility scripts.
+- Known implementations intentionally not consulted: external
+  interoperability schemas, manifests, archive corpora, source code, and test
+  suites.
+- Independent decisions: append exactly one profile; name codec set
+  `marc-cli-v23`; retain every earlier schema exactly; locally round-trip
+  before manifest publication; require canonical order and deterministic
+  re-encoding; and keep external evidence explicitly pending.
+- Generated-code task description: update the generator to schema 23, add
+  `lzw-rans` as archive 34, teach the verifier the exact new set, reject a
+  reordered schema-23 manifest, convert schema 23 to 22, exercise schemas 22
+  through 1, and synchronize interoperability, format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the change extends only marc's existing versioned
+  manifest chain by one local selector. No external schema structure, archive,
+  conversion flow, validation expression, or test data was compared.
+- Local validation: focused schema-23 generation, all 34 deterministic local
+  round trips, reordered-manifest rejection, and the schema-22-through-1
+  compatibility chain passed under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,952/1,952 under both compilers using official CMake
+  4.3.4; all 34 benchmark smokes remained successful.
+
 ## 2026-08-01 - LZW plus rANS verified benchmark adapter
 
 - Authoring method: extended marc's dependency-free public-C benchmark runner

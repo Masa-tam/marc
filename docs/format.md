@@ -4248,6 +4248,10 @@ The dependency-free `lzw-rans` benchmark uses the same selector profile and
 checked complete-stream ceiling. Its untimed verification, timing schedule,
 and workspace reporting add no stream field or format variant.
 
+Interoperability schema 23 emits this unchanged profile as `lzw-rans` after
+the frozen thirty-three-entry schema-22 set. The schema changes only the
+external manifest profile set; it adds no stream field or variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
