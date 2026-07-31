@@ -9680,6 +9680,34 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
   compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS public-ABI completion
+
+- Authoring method: applied DD-486 to the published C lifecycle after the
+  representation, bounded streaming pair, workspace profile, and C factory
+  were complete.
+- References used: DD-486, DD-485, the generic frame layout, public process
+  contract, repository-authored generators, and existing local completion
+  criteria only.
+- Known implementations intentionally not consulted: external completion
+  suites, compression corpora, malformed archives, combined-codec APIs,
+  source code, and test vectors.
+- Independent decisions: use a 64-byte dual boundary; derive conservative
+  workspace ceilings from the local format; cover every one-byte value and
+  three deterministic chunk schedules; locate the final frame from serialized
+  extents; and require transactional publication plus sticky diagnostics.
+- Generated-code task description: add public-ABI required-data-class,
+  determinism, arbitrary-chunking, post-end, and malformed-final-frame tests;
+  register them in the core suite; and synchronize readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the test composes only marc's published C lifecycle,
+  documented bounds, local deterministic generator, and generic frame fields.
+  No external test structure, corpus, mutation schedule, or expected stream
+  was compared.
+- Local validation: the three focused completion tests passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 1,893/1,893 under both
+  compilers using official CMake 4.3.4; all 32 benchmark smokes and
+  interoperability schema compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS public C requirements and factory
 
 - Authoring method: connected DD-484's exact requirements and opaque

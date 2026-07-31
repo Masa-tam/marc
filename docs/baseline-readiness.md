@@ -464,7 +464,11 @@ An internal profile calculator now derives direction-specific byte extents,
 aligned encoder records, and an opaque decode layout containing rANS views
 followed by LZ78 phrase records. A bounded public C requirements query and
 factory now bind those three regions without exposing private record layouts.
-Completion, fuzz, tooling, and interoperability evidence remain pending.
+The public-ABI completion matrix now covers all one-byte values, representative
+binary and boundary-length inputs, deterministic multi-frame output under
+arbitrary chunking, stable post-end calls, and transactional rejection of a
+corrupt, truncated, or trailing final frame. Fuzz, tooling, and interoperability
+evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

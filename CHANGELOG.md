@@ -37,7 +37,9 @@ format versions, and C ABI versions are independent namespaces.
   records or rANS-view-plus-phrase records from one opaque region. The public
   C ABI now exposes a size-tagged `marc_lz78_rans_config`, direction-specific
   workspace query, and immutable-direction factory over those same bounded
-  streaming transforms.
+  streaming transforms. Its public-ABI completion matrix now covers required
+  data classes, deterministic arbitrary chunking, stable post-end calls, and
+  transactional malformed-final-frame rejection.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

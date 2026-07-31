@@ -9053,6 +9053,31 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-486: LZ78 rANS completion is proved through the public ABI
+
+- Date: 2026-07-31
+- Status: accepted
+
+Exercise the published `marc_lz78_rans_*` lifecycle rather than private C++
+constructors. Use 64-byte raw frames, 64-byte entropy blocks, the conservative
+`S=8F`, `K=ceil(S/B)`, exact `528K` descriptor, and `S+8K` payload bounds,
+with all primary, secondary, and aligned opaque-view regions obtained only
+from the requirements query.
+
+Require deterministic round trips for empty input, all 256 one-byte values,
+`00..FF`, repeated zeros, a four-symbol binary pattern, generated binary data,
+and sizes immediately below, equal to, and above the frame boundary. For a
+193-byte multi-frame stream, require byte-identical encoding and exact decode
+under `(1,1)`, `(7,5)`, and `(13,17)` input/output chunk schedules. Repeated
+calls after completion must remain `EndOfStream` with zero progress.
+
+Locate the fourth frame through checked generic-frame extents. Independently
+corrupt its sequence, truncate its final byte, and append trailing data. Each
+decoder must publish exactly the first three verified frames, preserve the
+sentinel for the failing final byte, and repeat the same terminal status and
+error position without progress. This decision adds no fuzz target, CLI
+selector, benchmark, or interoperability entry.
+
 ## DD-485: LZ78 rANS C factory exposes only opaque workspace bytes
 
 - Date: 2026-07-31

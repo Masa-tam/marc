@@ -1521,6 +1521,12 @@ ABI version 1's existing three-region lifecycle, checked opaque partitioning,
 and `nothrow` handle publication. No external C API, allocation model,
 combined factory, ABI layout, source code, or test suite was consulted.
 
+The LZ78 plus rANS public-ABI completion matrix uses only DD-486, the
+published `marc_lz78_rans_*` lifecycle, DD-477's fixed representation,
+repository-authored deterministic generators, and local generic-frame extent
+parsing. No external conformance suite, corpus, combined codec API, malformed
+archive, source code, or test vector was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and
