@@ -55,8 +55,9 @@ format versions, and C ABI versions are independent namespaces.
   Interoperability schema 23 appends the unchanged `lzw-rans` CLI profile as
   archive 34 after the frozen schema-22 order. Local generation, exact-order
   verification, byte-identical re-encoding, reordered-manifest rejection, and
-  schemas 1 through 22 compatibility pass; external four-direction validation
-  remains pending.
+  schemas 1 through 22 compatibility pass. Four-direction external validation
+  passed at revision `5397f261fa04ee49832d9f72b09960a156232aad` across
+  Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

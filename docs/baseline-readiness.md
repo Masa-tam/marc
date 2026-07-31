@@ -488,7 +488,7 @@ four established directions at revision
 `2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-`lzw-rans` is now the active admission composition. Its initial specification
+`lzw-rans` is the completed fourth rANS admission composition. Its specification
 freezes the complete LSB-first packed LZW byte region, including final zero
 padding, before scalar rANS. It checks `S <= ceil(FW/8)`,
 `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and
@@ -522,7 +522,12 @@ harness and permanent atomic truncation, saturated-extent, and descriptor
 regressions are now present. A transactional CLI selector now binds the same
 public factory under the fixed 64-KiB reference profile. A verified public-ABI
 benchmark now measures that profile after a byte-exact round trip.
-Interoperability admission evidence remains pending.
+Interoperability schema 23 appends it after the frozen schema-22 order; local
+generation, exact-order verification, reordered-manifest rejection, byte-
+identical re-encoding, and schemas 1 through 22 compatibility pass. External
+schema-23 verification subsequently passed in all four established directions
+at revision `5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

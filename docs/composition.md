@@ -221,8 +221,10 @@ measures the same profile only after a byte-exact round trip and reports all
 three caller-owned regions. Interoperability schema 23 appends the unchanged
 CLI representation after the frozen schema-22 order. Local generation, exact-
 order verification, byte-identical re-encoding, reordered-manifest rejection,
-and schemas 1 through 22 compatibility pass. External four-direction schema-23
-verification remains pending.
+and schemas 1 through 22 compatibility pass. Four-direction external schema-23
+verification passed at revision
+`5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

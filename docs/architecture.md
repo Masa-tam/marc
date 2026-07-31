@@ -1516,7 +1516,9 @@ size and SHA-256. The verifier requires all 34 canonical names in exact order,
 decodes every archive, and requires byte-identical local re-encoding. The
 compatibility test rejects a reordered schema-23 manifest, removes only
 `lzw-rans` to derive schema 22, and verifies the unchanged schemas 22 through
-1. External four-direction validation remains pending.
+1. Four-direction external validation passed at revision
+`5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
