@@ -4087,6 +4087,9 @@ The explicit CLI selector `lz78-rans` binds this unchanged profile with
 65,536-byte raw frames and entropy blocks. It introduces no alternate stream
 variant or serialized field.
 
+The benchmark adapter binds the same selector and public profile; its capacity
+and timing policy do not alter serialized bytes.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

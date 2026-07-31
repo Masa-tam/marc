@@ -24,6 +24,7 @@ marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lz78-adaptive-huffman corpus.bin 5
 marc_benchmark lz78-dynamic-range corpus.bin 5
+marc_benchmark lz78-rans corpus.bin 5
 marc_benchmark lzw corpus.bin 5
 marc_benchmark lzw-blocked-huffman corpus.bin 5
 marc_benchmark lzw-adaptive-huffman corpus.bin 5
@@ -187,6 +188,18 @@ C ABI, and an untimed byte-exact round trip succeeds before measurement.
 A one-iteration MSVC Release smoke over the 4,511-byte README encoded 4,630
 bytes, ratio 1.026, and reported 5,832,760 bytes of peak caller reservation;
 throughput from this small input is descriptive only.
+
+`lz78-rans` uses the CLI's 65,536-byte raw frame and entropy block,
+524,288-byte canonical LZ78 token ceiling, eight rANS blocks, and 4-MiB active
+aggregate policy. Checked complete-stream capacity is
+`80 + 8N + 4344K` for input extent `N` and nonempty frame count `K`; the
+per-frame term covers one 56-byte generic header, eight 528-byte descriptors,
+and eight eight-byte final states. Both direction-specific three-region
+workspaces and opaque alignment come from the public C ABI. An untimed
+byte-exact round trip succeeds before measurement, and no throughput floor is
+applied. A one-iteration MSVC Release smoke over the 4,522-byte README encoded
+4,984 bytes, ratio 1.102, and reported 5,836,984 bytes of peak caller
+reservation; throughput from this small input is descriptive only.
 
 `lzw-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 the exact two-byte-per-raw-byte packed-code bound, at most 32 entropy blocks,

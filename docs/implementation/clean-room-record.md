@@ -9680,6 +9680,34 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
   compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS benchmark admission
+
+- Authoring method: applied DD-489 to the fixed public CLI profile only after
+  its transactional selector and regression were complete.
+- References used: DD-489, DD-488's fixed configuration, the published
+  `marc_lz78_rans_*` lifecycle, checked complete-stream arithmetic, and the
+  existing verification-first benchmark runner only.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance
+  results, source code, and test suites.
+- Independent decisions: reserve `80 + 8N + 4344K`; query all three workspace
+  regions and alignment; require exact untimed decode equality; construct a
+  fresh transform for every timed sample; and impose no performance floor.
+- Generated-code task description: register `lz78-rans`, extend checked
+  capacity, configuration, query, factory, usage, and selector dispatch, add a
+  one-iteration README smoke, report observed deterministic extents, and
+  synchronize benchmark, readiness, composition, changelog, architecture,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter reuses only marc's existing benchmark runner
+  and public lifecycle. No external control flow, measurement convention,
+  capacity expression, result, or test expression was compared.
+- Local validation: the focused benchmark smoke passed under MSVC and ClangCL
+  with identical 4,522-byte input, 4,984-byte encoded extent, and 5,836,984
+  peak caller-workspace bytes. The complete Release CTest suite passed
+  1,898/1,898 under both compilers using official CMake 4.3.4; all 33
+  benchmark smokes and interoperability schema compatibility remained
+  successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

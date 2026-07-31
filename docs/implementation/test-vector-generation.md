@@ -3717,6 +3717,12 @@ at most 65,536 generated entries, and a 4-MiB aggregate policy. Actual primary,
 secondary, and aligned opaque-view workspace requirements must come only from
 the public C query.
 
+For the LZ78 plus rANS benchmark smoke, select `lz78-rans`, use `README.md`,
+and run one iteration. Before timing, encode once into checked capacity
+`80 + 8N + 4344K`, decode the exact encoded extent once, and require byte
+equality. Then require one encode and one decode measurement to reproduce those
+exact extents while reporting all public workspace requirements.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

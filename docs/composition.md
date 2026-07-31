@@ -163,8 +163,9 @@ transactional malformed-final-frame rejection. Its bounded dual-path decoder
 fuzz target fixes encoded, token, raw, rANS-view, and phrase storage and adds
 permanent atomic regressions for truncation, saturated extents, and descriptor
 reserved bytes. Its explicit transactional CLI selector binds the same fixed
-profile through only the public C lifecycle. No benchmark or interoperability
-entry exists yet.
+profile through only the public C lifecycle. Its verification-first benchmark
+reports complete-stream ratio, directional throughput, and queried workspace
+extents without a performance threshold. No interoperability entry exists yet.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4

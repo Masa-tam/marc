@@ -108,7 +108,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `checksum-raw` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -475,8 +475,9 @@ cover every canonical truncation, saturated frame extents, and a nonzero rANS
 reserved byte without publishing the failing frame. Its explicit CLI selector
 now uses only the public lifecycle and preserves overwrite refusal,
 transactional temporary-output cleanup, strict trailing-data rejection, and
-empty-stream round trips. Benchmark and interoperability evidence remain
-pending.
+empty-stream round trips. Its benchmark adapter performs an untimed public-ABI
+round trip before measuring ratio, directional throughput, and queried
+workspace extents. Interoperability evidence remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

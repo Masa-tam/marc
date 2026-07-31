@@ -1371,6 +1371,13 @@ regions and opaque alignment from the public query, and retains the common
 temporary-output transaction so malformed or trailing input cannot leave a
 destination file.
 
+The benchmark adapter uses the identical public profile. Its checked encoded
+capacity is `80 + 8N + 4344K`, where `N` is raw input and `K` is the nonempty
+frame count. It verifies exact decode equality before timing, constructs a
+fresh public transform for every sample, and reports the queried primary,
+secondary, views, and peak directional workspace without imposing a speed
+floor.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

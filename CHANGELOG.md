@@ -43,7 +43,8 @@ format versions, and C ABI versions are independent namespaces.
   decoder fuzz target and permanent truncation, saturated-extent, and
   nonzero-descriptor-reserved-byte regressions are now present. The
   transactional CLI now exposes it explicitly as `lz78-rans` through only the
-  public C lifecycle.
+  public C lifecycle. The dependency-free benchmark runner now verifies and
+  measures the same public profile.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

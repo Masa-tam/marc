@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-489: LZ78 rANS benchmark verifies before measuring
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add `lz78-rans` to the dependency-free benchmark runner using exactly DD-488's
+fixed public profile. For raw input extent `N` and nonempty 65,536-byte frame
+count `K`, reserve checked complete-stream capacity
+`80 + 8N + 4344K`. The per-frame term consists of the 56-byte generic header,
+eight 528-byte rANS descriptors, and eight eight-byte final states. Short
+frames may use fewer bytes; the bound remains deterministic and conservative.
+
+Initialize encoder and decoder configurations independently, query all three
+workspace regions and opaque alignment through the public C ABI, encode once,
+decode the exact encoded extent once, and require byte equality before timing.
+Each timed sample constructs a fresh transform and invokes only the common
+one-shot process boundary while the clock is active. Report complete-stream
+ratio, directional throughput, every queried region, and the larger
+directional workspace sum. Impose no performance threshold. This decision
+adds no interoperability entry.
+
 ## DD-488: LZ78 rANS CLI binds one fixed public profile
 
 - Date: 2026-07-31
