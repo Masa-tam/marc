@@ -3,8 +3,10 @@
 
 #include "dictionary/lzw_format.hpp"
 #include "dictionary/lzw_decoder.hpp"
+#include "dictionary/lzw_encoder.hpp"
 #include "entropy/rans_controller.hpp"
 #include "entropy/rans_decoder.hpp"
+#include "entropy/rans_encoder.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
 
@@ -17,6 +19,7 @@ namespace marc::frame {
 enum class LzwRansFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
+    input_size_mismatch,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
@@ -27,11 +30,14 @@ enum class LzwRansFrameValidationError : std::uint8_t {
     phrase_workspace_too_small,
     raw_staging_too_small,
     raw_output_too_small,
+    encoder_workspace_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
     dictionary_decode_error,
+    dictionary_encode_error,
+    entropy_encode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -44,6 +50,7 @@ struct LzwRansFrameValidationResult {
     std::size_t payload_size{};
     std::size_t block_count{};
     std::size_t block_index{};
+    std::size_t encoder_entries{};
     std::size_t phrase_entries{};
     std::size_t code_count{};
     std::size_t code_index{};
@@ -60,8 +67,25 @@ struct LzwRansFrameValidationResult {
         dictionary::internal::LzwFormatError::none};
     dictionary::internal::LzwDecodeError dictionary_decode_error{
         dictionary::internal::LzwDecodeError::none};
+    dictionary::internal::LzwEncodeError dictionary_encode_error{
+        dictionary::internal::LzwEncodeError::none};
+    entropy::internal::RansEncodeError entropy_encode_error{
+        entropy::internal::RansEncodeError::none};
     LzwRansFrameValidationError error{LzwRansFrameValidationError::none};
 };
+
+// Produces canonical packed LZW staging and determines every rANS block and
+// the complete frame extent without writing serialized output. Input, encoder
+// workspace, and packed staging must be mutually non-overlapping.
+[[nodiscard]] LzwRansFrameValidationResult plan_lzw_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzwEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Validates every rANS block before reconstructing the private packed LZW
 // byte region, then validates the complete code graph without expanding or

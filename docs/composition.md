@@ -195,7 +195,9 @@ caller-visible publication.
 
 Its transactional complete-frame decoder now admits caller output before
 private mutation and copies exactly the declared extent once only after full
-success. No encoder, streaming transform, public factory, CLI, benchmark, fuzz
+success. Its write-free planner now freezes canonical packed codes and plans
+all rANS blocks and the exact complete-frame extent without serialized output.
+No frame encoder, streaming transform, public factory, CLI, benchmark, fuzz
 target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a

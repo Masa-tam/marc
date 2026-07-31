@@ -1574,6 +1574,12 @@ local private decoder, checked caller capacity, and bounded span copying. No
 external publication protocol, combined decoder, buffer layout, malformed
 corpus, source code, or test suite was consulted.
 
+The LZW plus rANS exact-frame planner uses only DD-495, marc's deterministic
+LZW planner and encoder, scalar rANS block planner, generic frame validation,
+checked arithmetic, and caller-owned staging. No external LZW/rANS encoder,
+planning algorithm, capacity formula, allocation layout, source code, encoded
+corpus, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

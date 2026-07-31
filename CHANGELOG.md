@@ -23,7 +23,10 @@ format versions, and C ABI versions are independent namespaces.
   publishing caller-visible bytes. Its transactional complete-frame decoder
   additionally checks destination capacity before private mutation and copies
   exactly the declared raw extent once only after complete success, preserving
-  all destination bytes on every failure.
+  all destination bytes on every failure. Its write-free exact-frame planner
+  now freezes canonical packed LZW bytes, plans every rANS block
+  deterministically, counts encoder storage in the aggregate, validates the
+  synthesized header, and reports the exact complete-frame extent.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

@@ -1429,6 +1429,12 @@ reconstruction, and publishes exactly the declared raw extent in one final
 copy. Destination bytes are never part of aggregate scratch accounting and
 remain entirely unchanged on failure.
 
+The encoding-side planning boundary first fixes the complete canonical packed
+LZW region in caller-owned staging, then plans each rANS block over those exact
+bytes. It computes and validates the synthesized frame and all aggregate
+workspace without accepting serialized output. This prevents descriptor or
+payload emission from observing a partial or differently chunked LZW stream.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

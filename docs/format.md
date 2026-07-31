@@ -4184,6 +4184,14 @@ complete success. Output is not internal workspace and is not aggregate-
 counted; excess destination capacity is untouched, and every failure preserves
 the whole destination.
 
+The exact-frame planner completes deterministic LZW parsing and writes the
+entire canonical packed-code region, including final zero padding, into
+caller-owned staging before planning entropy. It then plans every scalar rANS
+block over those immutable bytes and returns exact `S`, `K`, descriptor,
+payload, and complete-frame extents without accepting or writing a serialized
+frame destination. Encoder records, packed staging, descriptors, and payload
+all count toward aggregate internal storage.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

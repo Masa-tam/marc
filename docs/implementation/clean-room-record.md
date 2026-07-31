@@ -9878,6 +9878,34 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
   compatibility remained successful.
 
+## 2026-08-01 - LZW plus rANS exact-frame planning
+
+- Authoring method: composed DD-495 from marc's local deterministic LZW
+  planner and encoder, scalar rANS block planner, and generic frame validator.
+- References used: DD-495, DD-491, the local LZW encoder contract, scalar rANS
+  planner, checked arithmetic, generic frame bounds, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS
+  encoders, combined planners, capacity formulas, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: freeze the complete packed stream before entropy
+  planning; plan all blocks without serialized output; count encoder records,
+  packed bytes, descriptors, and payload in one aggregate; and validate the
+  synthesized frame header before success.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and cross-block `ABABABA` determinism,
+  guarded workspace and staging shortages, aggregate and frame-size rejection,
+  and synchronized format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the planner directly sequences local independently
+  specified components and checked spans. No external planning order, storage
+  organization, capacity formula, encoded bytes, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZW/rANS validator, decoder, publication, and
+  planner suite passed 25/25 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,923/1,923 under both compilers using official CMake
+  4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
+  successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

@@ -500,7 +500,10 @@ reconstruction is now implemented into separately admitted private staging
 only after that complete validation; raw capacity and aggregate storage are
 checked before entropy output. Transactional complete-frame publication now
 preflights caller capacity and copies the declared raw extent once only after
-private success. Encoding, streaming, public API, and admission evidence remain
+private success. Its write-free exact-frame planner now freezes canonical
+packed LZW bytes, plans every rANS block deterministically, and reports the
+validated complete-frame extent while counting encoder records in aggregate
+storage. Frame emission, streaming, public API, and admission evidence remain
 pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive

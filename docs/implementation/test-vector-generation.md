@@ -3778,6 +3778,16 @@ one byte short and require packed, phrase, raw, and output storage to remain
 unchanged. Corrupt a later rANS state and separately entropy-code `41 80`;
 both must preserve the complete destination.
 
+For exact LZW plus rANS planning, feed raw `A` to the standalone LZW planner
+and encoder, require packed bytes `41 00`, then independently plan its one rANS
+block and require descriptor extent 528, payload extent 8, and complete frame
+extent 592 without serialized output. For raw `ABABABA`, require codes 65, 66,
+256, 258 packed as `41 84 00 14 08`; with `B=2`, require three blocks, 1,584
+descriptor bytes, 24 payload bytes, and deterministic repeated plans. Reject a
+short encoder workspace and packed span before packed mutation, aggregate
+storage one byte short, empty input, and a raw extent inconsistent with the
+stream header.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
