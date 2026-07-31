@@ -1385,7 +1385,10 @@ thirty-two-entry schema-21 order, and appends this unchanged CLI
 representation once. Local generation and verification require exact order,
 count, size, SHA-256, fixture decode equality, and byte-identical local
 re-encoding while retaining explicit support for schemas 1 through 21.
-External cross-platform schema-22 evidence remains pending.
+The established four-direction exchange subsequently verified all thirty-three
+schema-22 archives at revision
+`2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,

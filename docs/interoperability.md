@@ -91,9 +91,8 @@ retention settings; regenerate them by running CI for the required commit.
 
 Schema 22 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 21
-compatibility evidence. Its external cross-platform check remains pending.
-The completed schema-21 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
-26.04/Clang four-direction cross-check is recorded below.
+compatibility evidence. Its completed Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang four-direction external cross-check is recorded below.
 
 ## Recorded external cross-checks
 
@@ -294,6 +293,20 @@ Windows/MSVC executable verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-21
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+Revision `2aa51ded63bdeacb0e5b2ec28a21075a867bb353` received the schema-22
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty-
+three archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu
+24.04 default-compiler/Ninja artifacts. It then generated and self-verified
+an `ubuntu-26.04-ninja-x64` thirty-three-archive bundle. The Windows/MSVC
+executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-22
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 

@@ -9737,6 +9737,30 @@ discarded and the reviewed seed retained.
   CTest suite passed 1,898/1,898 under both compilers using official CMake
   4.3.4; all 33 benchmark smokes remained successful.
 
+## 2026-08-01 - Interoperability schema 22 external validation record
+
+- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
+  no non-x86-64 or non-WSL Linux claim is added.
+- References used: DD-490, marc's schema-22 generator and verifier, the
+  successful pushed CI artifacts, and the independently generated Ubuntu
+  26.04 bundle.
+- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
+  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
+  via Ninja on Ubuntu 26.04 WSL2 x64.
+- Known implementations intentionally not consulted: external compression
+  source code, archive formats, interoperability harnesses, corpora, and test
+  suites.
+- Result: revision `2aa51ded63bdeacb0e5b2ec28a21075a867bb353`
+  completed all four established verification directions. Ubuntu 26.04
+  verified the Windows/MSVC and Ubuntu 24.04 CI bundles, generated and
+  self-verified its own bundle, and Windows/MSVC verified that Ubuntu bundle.
+  Every invocation reported `Verified 33 archives` and performed exact
+  manifest-order, size, SHA-256, decoded-fixture, and byte-identical local
+  re-encoding checks.
+- Similarity review: this record contains only observed tool outputs and
+  environment labels supplied by the project owner. No external encoded
+  representation or implementation structure was compared.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

@@ -48,7 +48,9 @@ format versions, and C ABI versions are independent namespaces.
   unchanged CLI representation as archive 33 while preserving explicit
   verification of schemas 1 through 21; local generation, exact-order
   validation, reordered-manifest rejection, and byte-identical re-encoding
-  pass, while external cross-platform evidence remains pending.
+  pass. All thirty-three archives subsequently passed the established four-
+  direction Windows/Linux cross-check at revision
+  `2aa51ded63bdeacb0e5b2ec28a21075a867bb353`.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

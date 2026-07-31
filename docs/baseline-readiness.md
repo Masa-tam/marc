@@ -481,8 +481,10 @@ round trip before measuring ratio, directional throughput, and queried
 workspace extents. Interoperability schema 22 appends it after the frozen
 schema-21 order; local generation, exact-order verification, reordered-
 manifest rejection, byte-identical re-encoding, and schemas 1 through 21
-compatibility pass. External schema-22 cross-platform evidence remains
-pending.
+compatibility pass. External schema-22 verification subsequently passed in all
+four established directions at revision
+`2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -168,8 +168,10 @@ reports complete-stream ratio, directional throughput, and queried workspace
 extents without a performance threshold. Interoperability schema 22 appends
 the unchanged CLI representation after the frozen schema-21 order. Local
 generation, exact-order verification, byte-identical re-encoding, reordered-
-manifest rejection, and schemas 1 through 21 compatibility pass; external
-cross-platform evidence remains pending.
+manifest rejection, and schemas 1 through 21 compatibility pass. Four-
+direction external schema-22 verification passed at revision
+`2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
