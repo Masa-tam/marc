@@ -1363,6 +1363,14 @@ serialized metadata is parsed. Input-derived chunks remain within a fixed
 call budget, so malformed data cannot create allocation or unbounded-progress
 behavior.
 
+The command-line adapter selects this contract explicitly as `lz78-rans`.
+It fixes 65,536-byte raw frames and entropy blocks, the 524,288-byte token
+ceiling, eight rANS blocks, the 524,352-byte payload ceiling, 65,536 phrase
+entries, and a 4-MiB aggregate policy. It obtains all direction-specific byte
+regions and opaque alignment from the public query, and retains the common
+temporary-output transaction so malformed or trailing input cannot leave a
+destination file.
+
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
 the `00:3584` and `41:512` normalized model, the eight-byte final-state

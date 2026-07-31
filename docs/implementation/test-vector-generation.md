@@ -3704,6 +3704,19 @@ reserved offset 10. Each regression must produce no output from its failing
 frame, preserve the output sentinel, and return the same error code and byte
 position on the next call.
 
+For `lz78-rans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode
+with the explicit selector and compare the restored file byte for byte. Repeat
+encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 524,288`, `K = 8`, `P = 524,352`,
+at most 65,536 generated entries, and a 4-MiB aggregate policy. Actual primary,
+secondary, and aligned opaque-view workspace requirements must come only from
+the public C query.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

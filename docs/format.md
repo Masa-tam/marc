@@ -4083,6 +4083,10 @@ both the private complete-frame decoder and public incremental decoder. Its
 fixed workspace ceilings, finite call budget, and malformed-stream regression
 corpus add no stream field or variant.
 
+The explicit CLI selector `lz78-rans` binds this unchanged profile with
+65,536-byte raw frames and entropy blocks. It introduces no alternate stream
+variant or serialized field.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

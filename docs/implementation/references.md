@@ -1533,6 +1533,12 @@ lifecycle, repository-authored canonical stream, fixed caller-owned arrays,
 and byte-derived chunk schedules. No external fuzz harness, malformed corpus,
 seed corpus, source code, sanitizer finding, or test suite was consulted.
 
+The LZ78 plus rANS CLI selector uses only DD-488, the published
+`marc_lz78_rans_*` lifecycle, independently derived fixed-profile bounds, and
+marc's existing transactional file adapter and regression script. No external
+compression CLI, combined-codec adapter, private workspace layout, source
+code, command syntax, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

@@ -9680,6 +9680,33 @@ discarded and the reviewed seed retained.
   and ClangCL. The complete Release CTest suite passed 1,889/1,889 under both
   compilers using official CMake 4.3.4.
 
+## 2026-07-31 - LZ78 plus rANS CLI admission
+
+- Authoring method: applied DD-488 only after format, streaming, C ABI,
+  completion, and bounded fuzz boundaries were present.
+- References used: DD-488, the published `marc_lz78_rans_*` lifecycle, local
+  format bounds, and the existing transactional CLI adapter and regression
+  script only.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, source code,
+  command syntax, and test suites.
+- Independent decisions: expose an explicit selector; fix 65,536-byte raw and
+  entropy boundaries, eight blocks, the 524,352-byte payload ceiling, 65,536
+  phrase entries, and a 4-MiB aggregate policy; and obtain all three workspace
+  regions and alignment from C.
+- Generated-code task description: add selector parsing, fixed public
+  configuration, requirements-query and factory dispatch, multi-frame and
+  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
+  rejection, and synchronized CLI, readiness, composition, changelog,
+  architecture, decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows only marc's existing public C
+  lifecycle and file transaction. No external command structure, allocation
+  layout, error behavior, or test expression was compared.
+- Local validation: the focused multi-frame CLI regression passed under MSVC
+  and ClangCL. The complete Release CTest suite passed 1,897/1,897 under both
+  compilers using official CMake 4.3.4; all 32 benchmark smokes and
+  interoperability schema compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS bounded decoder fuzz boundary
 
 - Authoring method: applied DD-487 after the public completion matrix proved

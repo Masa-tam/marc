@@ -47,6 +47,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lz78-blocked-huffman` | LZ78 | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lz78-adaptive-huffman` | LZ78 | Adaptive Huffman | FGK tree reset per outer frame |
 | `lz78-dynamic-range` | LZ78 | Dynamic Range | Adaptive order-0 model reset per outer frame |
+| `lz78-rans` | LZ78 | rANS | Scalar rANS model rebuilt per entropy block |
 | `lzw` | LZW | None | Variant 1 |
 | `lzw-blocked-huffman` | LZW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzw-adaptive-huffman` | LZW | Adaptive Huffman | FGK tree reset per outer frame |
@@ -120,6 +121,13 @@ bound of 1,048,581 bytes. It admits at most 65,536 phrase entries and applies a
 4-MiB aggregate policy. All three direction-specific workspace extents and the
 opaque typed-view alignment come from the public C ABI requirements query; the
 CLI does not name or size private LZ78 records.
+
+The `lz78-rans` adapter fixes raw frames and entropy blocks at 65,536 bytes.
+Its 524,288-byte canonical LZ78 token ceiling produces at most eight rANS
+blocks, 4,224 descriptor bytes, and a 524,352-byte payload. It permits at most
+65,536 phrase entries and uses a conservative 4-MiB aggregate policy. Every
+direction-specific workspace extent and opaque alignment comes from the public
+C ABI requirements query; the CLI does not reproduce private record layouts.
 
 The `lzw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the two-byte-per-raw-byte packed LZW bound, at most 32 entropy

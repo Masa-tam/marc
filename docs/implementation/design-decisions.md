@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-488: LZ78 rANS CLI binds one fixed public profile
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add explicit selector `lz78-rans` to the transactional CLI and reach the codec
+only through `marc_lz78_rans_config_init()`, its public requirements query,
+factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
+65,536 bytes. The canonical LZ78 token ceiling is 524,288 bytes, producing at
+most eight rANS blocks, 4,224 descriptor bytes, and a 524,352-byte payload.
+Permit at most 65,536 generated phrase entries and use a conservative 4-MiB
+aggregate internal-buffer policy.
+
+The CLI may state these public format bounds but must not reproduce encoder,
+rANS-view, or phrase-record layouts. Allocate primary, secondary, and aligned
+opaque views only from the direction-specific public query. Retain known-size
+input, immutable direction, overwrite refusal, temporary-output cleanup,
+strict malformed and trailing-data rejection, and atomic destination rename.
+
+Prove a multi-frame binary round trip, overwrite refusal, malformed-input
+cleanup, later trailing-data cleanup, and empty input through the existing
+generic CLI regression. This decision adds no benchmark adapter or
+interoperability entry.
+
 ## DD-487: LZ78 rANS fuzzing fixes both decoder boundaries
 
 - Date: 2026-07-31

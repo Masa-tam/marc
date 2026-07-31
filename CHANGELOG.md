@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   data classes, deterministic arbitrary chunking, stable post-end calls, and
   transactional malformed-final-frame rejection. Its bounded dual-path
   decoder fuzz target and permanent truncation, saturated-extent, and
-  nonzero-descriptor-reserved-byte regressions are now present.
+  nonzero-descriptor-reserved-byte regressions are now present. The
+  transactional CLI now exposes it explicitly as `lz78-rans` through only the
+  public C lifecycle.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete
