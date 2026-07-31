@@ -9053,6 +9053,36 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-492: LZW rANS validates all entropy before packed codes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Implement the first `lzw-rans` combined component as an internal bounded
+complete-frame validator. Admit the exact serialized frame, one
+`RansBlockView` per declared block, complete packed-byte staging, and the
+conservative LZW phrase-record count before parsing any descriptor or
+producing entropy output. Count descriptors, payload, packed staging, views,
+and phrase records in one checked aggregate workspace bound.
+
+Require the exact DD-491 packed ceiling, block count, descriptor extent, and
+payload interval. Parse the full descriptor region, then validate every block
+state path and exact payload exhaustion without output. If any block fails,
+leave the entire packed staging region unchanged. Only after all blocks
+validate may the component reconstruct all packed bytes in order and invoke
+the existing LZW validator for width transitions, first literal, ordinary and
+`KwKwK` references, dictionary growth, exact raw extent, trailing bits, and
+zero high padding.
+
+Report stable frame, block, and LZW error context. Reconstruct and publish no
+raw bytes. Prove the independent 592-byte vector, a block boundary inside its
+nine-bit code, every truncation, trailing data, short workspaces, aggregate
+rejection before mutation, malformed later-block atomicity, invalid LZW
+padding after successful entropy decode, impossible extents, and unsupported
+pipeline rejection. This step adds no raw decoder, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-491: LZW rANS preserves finalized packed codes
 
 - Date: 2026-08-01

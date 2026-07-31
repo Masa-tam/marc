@@ -13,7 +13,11 @@ format versions, and C ABI versions are independent namespaces.
   rANS block coding; checked bounds cover `S <= ceil(FW/8)`,
   `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes, and
   bounded LZW dictionary records. Entropy validation precedes complete LZW
-  code-stream validation and any raw reconstruction.
+  code-stream validation and any raw reconstruction. Its first bounded
+  complete-frame validator now checks every extent, caller-owned workspace,
+  and aggregate byte before entropy output; validates every rANS block before
+  reconstructing any packed byte; then applies the complete LZW code-stream
+  validator without reconstructing raw bytes.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

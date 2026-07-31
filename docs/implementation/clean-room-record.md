@@ -9793,6 +9793,36 @@ discarded and the reviewed seed retained.
   both compilers using official CMake 4.3.4; all 33 benchmark smokes and
   schema-22 compatibility remained successful.
 
+## 2026-08-01 - LZW plus rANS complete-frame validator
+
+- Authoring method: composed DD-492 directly from marc's rANS controller and
+  decoder, ordinary LZW code-stream validator, generic frame parser, and
+  checked workspace conventions.
+- References used: DD-492, DD-491, the local rANS controller and decoder, LZW
+  validator, generic frame bounds, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS
+  compositions, combined decoders, allocation layouts, error taxonomies,
+  malformed corpora, source code, and test suites.
+- Independent decisions: admit all caller storage before entropy work;
+  validate every rANS block without output; reconstruct packed bytes only
+  after all blocks succeed; apply the existing LZW validator afterward; count
+  views and phrase records in the aggregate; and publish no raw bytes.
+- Generated-code task description: add the minimal frame result and error
+  surface, exact extent and workspace checks, all-block validation followed by
+  packed reconstruction and LZW validation, independent-vector and split-code
+  success tests, truncation, trailing, workspace, aggregate, later-block,
+  padding, extent, and pipeline failures, and synchronized format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the validator directly sequences local independently
+  implemented components and checked spans. No external validation order,
+  control flow, storage organization, malformed vector, naming scheme, or test
+  expression was compared.
+- Local validation: the focused vector and complete-frame validator suite
+  passed 11/11 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,909/1,909 under both compilers using official CMake 4.3.4; all 33
+  benchmark smokes and schema-22 compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

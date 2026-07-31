@@ -1412,6 +1412,13 @@ private packed staging before checking LZW width transitions, references,
 expansion and caller-visible publication remain outside this first
 specification step.
 
+The first combined validator now admits the complete frame, rANS block views,
+packed staging, and LZW phrase records before entropy processing. It validates
+every rANS state path without output, reconstructs the packed region only
+after all blocks succeed, and then invokes the ordinary LZW validator. No raw
+byte is reconstructed or published, and a malformed later block cannot leave
+partially reconstructed packed bytes.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

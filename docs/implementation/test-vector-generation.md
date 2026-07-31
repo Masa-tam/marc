@@ -3748,6 +3748,20 @@ descriptor separately, append the payload, and compare every byte with the
 independently recorded sparse frame representation. Do not invoke any future
 combined LZW/rANS implementation in this vector.
 
+For the first LZW plus rANS complete-frame validator, admit the frozen
+single-code frame into one rANS view, two packed staging bytes, and zero phrase
+records. Require exact extents, one validated block and code, and private
+`41 00` reconstruction. With `B=1`, require two blocks that split the
+nine-bit code while preserving the same packed bytes.
+
+Reject every proper frame prefix and one trailing byte. Before packed mutation,
+reject zero views, one packed byte, a missing phrase record for packed `AB`,
+and aggregate workspace one byte short. Corrupt only the second block state
+and require the entire packed sentinel to remain unchanged. Entropy-code
+`41 80` successfully, then require LZW nonzero-padding rejection. Reject a
+packed extent above `ceil(FW/8)`, a payload above `S+8K`, and the wrong
+pipeline.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

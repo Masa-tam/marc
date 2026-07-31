@@ -1557,6 +1557,12 @@ serialization, and the existing independent standalone encoders. No external
 LZW/rANS composition, archive format, combined-codec implementation, encoded
 corpus, source code, or test suite was consulted.
 
+The first LZW plus rANS complete-frame validator uses only DD-492, the
+specified DD-491 bounds and validation order, marc's local rANS controller and
+decoder, LZW validator, checked arithmetic, and caller-owned spans. No external
+combined decoder, allocation layout, error taxonomy, malformed corpus, source
+code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

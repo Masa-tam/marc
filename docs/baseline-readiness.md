@@ -493,8 +493,10 @@ padding, before scalar rANS. It checks `S <= ceil(FW/8)`,
 bounded dictionary records, and requires entropy validation before LZW code-
 stream validation or raw reconstruction. An independently assembled 592-byte
 single-code frame fixes the first canonical representation. Combined
-validation, reconstruction, streaming, public API, and admission evidence
-remain pending.
+validation is now implemented internally: it checks complete frame and
+workspace extents, validates every entropy block before private packed-byte
+mutation, and validates the exact LZW code graph without expanding it. Raw
+reconstruction, streaming, public API, and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

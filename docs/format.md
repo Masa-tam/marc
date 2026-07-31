@@ -4158,6 +4158,18 @@ follow the descriptor. This sparse notation uniquely fixes every frame byte.
 This section reserves representation and name only; it publishes no combined
 implementation or public entry point.
 
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned rANS block views, packed-byte staging,
+and LZW phrase records. It checks generic extents, the packed and payload
+ceilings, all caller capacities, and aggregate workspace before parsing a
+descriptor or decoding entropy. Every rANS block must validate with exact
+payload exhaustion before any packed byte is reconstructed. Only after all
+blocks succeed does it reconstruct the complete packed region and apply the
+ordinary LZW validator to width transitions, references, `KwKwK`, final
+padding, and the declared raw extent. This boundary reconstructs and publishes
+no raw bytes; later decoding and streaming work must retain the same
+validation order.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
