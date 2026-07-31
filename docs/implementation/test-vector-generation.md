@@ -3814,6 +3814,17 @@ byte, `ResetBlock`, and an unknown flag; accept the empty prefix-only stream;
 keep `Flush` non-terminal; and retain premature `EndInput` while draining the
 first valid frame before reporting the missing later frame.
 
+For the LZW plus rANS profile calculator, freeze a ten-byte largest frame with
+maximum width 16 and rANS blocks of four bytes. Require 20 packed bytes, five
+blocks, a 2,756-byte complete-frame ceiling, nine encoder entries, and their
+exact aligned byte extent. Require canonical zero regions and alignment one for
+empty input. Exercise block-count, payload, aggregate, frame, parameter, and
+decoder-limit failures. For decoder limits of raw 64, packed 128, four blocks,
+and 300 local dictionary entries, require 112 LZW phrase records after an
+aligned rANS-view region. Reject altered, short, and misaligned typed storage.
+Finally allocate only the reported regions and round-trip `ABABX` through
+two-byte frames and two-byte rANS blocks.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

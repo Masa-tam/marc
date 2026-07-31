@@ -1598,6 +1598,12 @@ checked arithmetic, and caller-owned spans. No external streaming LZW/rANS
 decoder, buffering schedule, allocation layout, malformed corpus, source code,
 or test suite was consulted.
 
+The LZW plus rANS internal profile calculator uses only DD-499, the local
+streaming constructor contracts, documented LZW width and record bounds, rANS
+block bounds, checked arithmetic, and ordinary C++ alignment rules. No external
+workspace calculator, ABI layout, allocation scheme, source code, or test suite
+was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

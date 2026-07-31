@@ -9906,6 +9906,37 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS profile workspace calculation
+
+- Authoring method: derived DD-499 from marc's local streaming constructors,
+  LZW width and record bounds, scalar rANS block bounds, and checked alignment
+  helpers.
+- References used: DD-499, DD-498, DD-497, the local LZW encoder and validator
+  workspace functions, scalar rANS constants, checked arithmetic, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS
+  workspace calculators, ABI layouts, allocation schemes, source code, and
+  test suites.
+- Independent decisions: calculate conservative packed and complete-frame
+  encoder regions; aggregate-count every encoder-owned region; derive decoder
+  byte regions only from local limits; place rANS views before aligned LZW
+  phrases; use canonical empty alignment one; and validate opaque partitions
+  before publishing typed spans.
+- Generated-code task description: add direction-specific profile and typed
+  partition helpers; freeze hand-checkable requirements; exercise limits,
+  altered requirements, short and misaligned storage, stable error mapping,
+  and a streaming round trip built only from returned extents; synchronize
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: formulas directly express repository-local format bounds
+  and C++ alignment. No external sizing formula, layout, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
+  streaming-transform, and profile suite passed 45/45 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,943/1,943 under both
+  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful.
+
 ## 2026-08-01 - LZW plus rANS bounded streaming decoding
 
 - Authoring method: composed DD-498 from marc's local private complete-frame

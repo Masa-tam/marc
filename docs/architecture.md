@@ -1461,6 +1461,16 @@ header is collected. Later corruption therefore cannot retract or partially
 publish the current frame, while malformed current-frame data publishes none
 of that frame.
 
+The internal profile calculator bridges validated configuration and limits to
+the streaming constructors. Encoding receives raw-frame bytes, conservative
+`ceil(FW/8)` packed staging, the complete
+`56 + 528K + S + 8K` frame ceiling, and aligned LZW encoder records. Decoding
+receives serialized-frame, packed, and private-raw byte regions plus one
+aligned opaque layout containing rANS block views followed by LZW phrase
+records. Checked partition helpers reject inconsistent counts, offsets,
+storage extents, and alignment before exposing typed spans. The returned
+requirements directly construct a bounded streaming round trip.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-499: LZW rANS profiles separate byte and typed storage
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add an internal direction-specific workspace calculator above DD-497 and
+DD-498. Encoding derives largest raw frame `F`, conservative packed staging
+`S = ceil(FW/8)`, `K = ceil(S/B)` rANS blocks, the complete
+`56 + 528K + S + 8K` frame ceiling, and the exact LZW encoder-record count.
+Count raw, packed, complete-frame, and record bytes in one checked aggregate.
+
+Decoding derives serialized-frame, packed, and private-raw byte regions from
+validated local limits. Place the maximum rANS view count first in one aligned
+opaque region, align upward, then place the conservative LZW phrase count.
+Partition helpers must reject altered requirements, insufficient storage, and
+misalignment. Empty encoding has zero regions and alignment one. Prove that the
+returned requirements directly construct the bounded streaming round trip.
+This step adds no C requirements query, public factory, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-498: LZW rANS streaming decode publishes complete frames
 
 - Date: 2026-08-01

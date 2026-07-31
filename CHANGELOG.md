@@ -35,7 +35,9 @@ format versions, and C ABI versions are independent namespaces.
   and drains that frame completely before accepting later-frame input. Its
   bounded streaming decoder now collects and preflights one complete encoded
   frame, validates and reconstructs it privately, and drains only the fully
-  accepted raw frame before collecting the next.
+  accepted raw frame before collecting the next. Its internal profile
+  calculator now derives checked direction-specific byte regions and aligned
+  opaque LZW/rANS record layouts sufficient to construct the streaming pair.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

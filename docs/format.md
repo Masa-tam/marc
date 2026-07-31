@@ -4219,6 +4219,15 @@ accepted. Truncation, trailing bytes, malformed later blocks, `ResetBlock`,
 and unknown process flags are errors; retained `EndInput` does not discard an
 already validated frame awaiting output capacity.
 
+The internal profile calculator changes no serialized representation. For a
+known-size encoder it uses the largest frame `F`, configured width `W`,
+`S = ceil(FW/8)`, `K = ceil(S/B)`, payload ceiling `S + 8K`, and descriptor
+extent `528K`, then aggregate-counts raw, packed, complete serialized-frame,
+and LZW encoder-record regions. Decoder requirements derive conservative raw,
+packed, complete-frame, rANS-view, and LZW-phrase regions solely from validated
+local limits. Empty encoding uses zero byte and record regions with alignment
+one. Typed partitioning is internal and adds no stream field.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
