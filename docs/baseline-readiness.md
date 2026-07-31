@@ -496,7 +496,10 @@ single-code frame fixes the first canonical representation. Combined
 validation is now implemented internally: it checks complete frame and
 workspace extents, validates every entropy block before private packed-byte
 mutation, and validates the exact LZW code graph without expanding it. Raw
-reconstruction, streaming, public API, and admission evidence remain pending.
+reconstruction is now implemented into separately admitted private staging
+only after that complete validation; raw capacity and aggregate storage are
+checked before entropy output. Transactional publication, encoding, streaming,
+public API, and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

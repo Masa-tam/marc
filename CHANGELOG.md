@@ -17,7 +17,10 @@ format versions, and C ABI versions are independent namespaces.
   complete-frame validator now checks every extent, caller-owned workspace,
   and aggregate byte before entropy output; validates every rANS block before
   reconstructing any packed byte; then applies the complete LZW code-stream
-  validator without reconstructing raw bytes.
+  validator without reconstructing raw bytes. Its bounded private decoder now
+  admits and aggregate-counts the complete raw staging extent before entropy
+  work, then reconstructs the fully validated LZW graph iteratively without
+  publishing caller-visible bytes.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

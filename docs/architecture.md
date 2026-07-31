@@ -1408,9 +1408,7 @@ For raw frame extent `F`, configured maximum code width `W`, packed extent
 `0 < S <= ceil(FW/8)`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and exactly
 `528K` descriptor bytes. The decoder must validate every rANS block into
 private packed staging before checking LZW width transitions, references,
-`KwKwK`, final padding, dictionary growth, and exact raw extent. Phrase
-expansion and caller-visible publication remain outside this first
-specification step.
+`KwKwK`, final padding, dictionary growth, and exact raw extent.
 
 The first combined validator now admits the complete frame, rANS block views,
 packed staging, and LZW phrase records before entropy processing. It validates
@@ -1418,6 +1416,12 @@ every rANS state path without output, reconstructs the packed region only
 after all blocks succeed, and then invokes the ordinary LZW validator. No raw
 byte is reconstructed or published, and a malformed later block cannot leave
 partially reconstructed packed bytes.
+
+The next private boundary admits and aggregate-counts the complete raw staging
+region before entropy work. It then reuses the validated packed code graph and
+the ordinary iterative LZW decoder to reconstruct exactly one raw frame.
+Caller-visible publication remains separate, so malformed input and workspace
+failures cannot expose a partial frame.
 
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the

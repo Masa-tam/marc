@@ -188,8 +188,11 @@ reconstruction precede LZW width, reference, `KwKwK`, padding, dictionary-
 growth, and exact raw-extent validation. The independently derived raw-`A`
 vector fixes the complete 592-byte frame. Its first internal complete-frame
 validator now enforces these extents and workspace limits, validates all
-entropy blocks before private packed-byte mutation, and validates the complete
-LZW code graph. No raw reconstruction, streaming transform, public factory,
+entropy blocks before packed-byte mutation, and validates the complete LZW
+code graph. Its bounded private decoder now admits the raw extent before
+entropy work and reconstructs the validated graph iteratively without
+caller-visible publication.
+No transactional publication, encoder, streaming transform, public factory,
 CLI, benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a

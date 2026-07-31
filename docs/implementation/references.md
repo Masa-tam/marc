@@ -1563,6 +1563,12 @@ decoder, LZW validator, checked arithmetic, and caller-owned spans. No external
 combined decoder, allocation layout, error taxonomy, malformed corpus, source
 code, or test suite was consulted.
 
+The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
+validation boundary, marc's local iterative LZW decoder, checked workspace
+accounting, and caller-owned spans. No external combined decoder, phrase
+expansion implementation, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

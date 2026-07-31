@@ -3762,6 +3762,14 @@ and require the entire packed sentinel to remain unchanged. Entropy-code
 packed extent above `ceil(FW/8)`, a payload above `S+8K`, and the wrong
 pipeline.
 
+For private LZW plus rANS reconstruction, decode the frozen raw-`A` frame into
+a one-byte sentinel and require `41`. Separately pack codes 65, 66, 256, and
+258 as `41 84 00 14 08`, divide those bytes into rANS blocks of at most two
+symbols, and require raw `ABABABA`; this crosses both packed-code and phrase
+edges and exercises `KwKwK`. Reject missing raw capacity and aggregate storage
+one byte short before packed mutation. Entropy-code invalid padded bytes
+`41 80` and require the raw sentinel to remain unchanged.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

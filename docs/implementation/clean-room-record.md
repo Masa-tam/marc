@@ -9823,6 +9823,33 @@ discarded and the reviewed seed retained.
   passed 1,909/1,909 under both compilers using official CMake 4.3.4; all 33
   benchmark smokes and schema-22 compatibility remained successful.
 
+## 2026-08-01 - LZW plus rANS private raw reconstruction
+
+- Authoring method: applied DD-493 above marc's DD-492 complete-frame
+  validator and ordinary iterative LZW decoder.
+- References used: DD-493, DD-492, the local rANS controller and decoder, LZW
+  validator and decoder, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS
+  compositions, combined decoders, phrase expansion implementations,
+  allocation layouts, malformed corpora, source code, and test suites.
+- Independent decisions: admit raw capacity and aggregate storage before
+  entropy output; retain all-block rANS validation and complete LZW validation;
+  reconstruct only into separate private staging; and publish no raw bytes.
+- Generated-code task description: add a bounded private decoder and stable
+  raw-capacity and dictionary-decode errors; prove raw-`A`, phrase and `KwKwK`
+  reconstruction across rANS block boundaries, preflight atomicity, and
+  invalid-code raw preservation; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation directly composes marc's existing
+  independently specified validator, decoder, checked spans, and error
+  records. No external validation order, expansion control flow, storage
+  organization, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/rANS vector, validator, and private-decoder
+  suite passed 17/17 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 1,915/1,915 under both compilers using official CMake 4.3.4;
+  all 33 benchmark smokes and schema-22 compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,
