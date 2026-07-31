@@ -49,7 +49,9 @@ format versions, and C ABI versions are independent namespaces.
   canonical truncation, saturated frame extents, and invalid rANS descriptor
   metadata. The transactional CLI now exposes `--codec lzw-rans` through the
   same public C requirements and factory lifecycle under a fixed 64-KiB raw
-  frame and entropy-block profile.
+  frame and entropy-block profile. A verified public-C benchmark adapter now
+  reports ratio, directional throughput, and all caller-owned workspace bytes
+  for that same profile without imposing a performance threshold.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

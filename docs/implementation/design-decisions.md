@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-504: LZW rANS benchmark verifies before timing
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add `lzw-rans` to the dependency-free benchmark runner using exactly DD-503's
+public profile. For input extent `N` and nonempty frame count `K`, allocate
+checked encoded capacity `80 + 2N + 1128K`: two packed LZW bytes per raw byte,
+one 56-byte generic header, two 528-byte rANS descriptors, and two eight-byte
+final states per frame.
+
+Query encoder and decoder primary, secondary, and aligned opaque views
+independently through the public C ABI. Encode once, decode the exact encoded
+extent once, and require byte equality before timing. Each timed sample creates
+a fresh transform, measures only one complete process call, and destroys the
+transform after stopping the clock. Report complete-stream ratio, directional
+throughput, every queried region, and the larger directional workspace sum.
+Impose no performance threshold. This decision adds no interoperability entry.
+
 ## DD-503: LZW rANS CLI binds one fixed public profile
 
 - Date: 2026-08-01

@@ -3864,6 +3864,15 @@ round-trip an empty file. Fix `F = B = 65,536`, `S <= 131,072`, `K <= 2`,
 `P <= 131,088`, maximum code width 16, at most 65,280 generated entries, and
 an 8-MiB aggregate policy. Obtain actual storage only from the public query.
 
+For the LZW plus rANS benchmark smoke, select `lzw-rans`, use `README.md`, and
+run one iteration. Before timing, encode once into checked capacity
+`80 + 2N + 1128K`, decode the exact produced extent, and require byte equality.
+Then require one encode and one decode measurement to reproduce those exact
+extents while reporting all public workspace requirements. On the 2026-08-01
+MSVC Release build, the 4,522-byte README encoded to 3,396 bytes, ratio 0.751,
+with 9,630,808 bytes of peak caller reservation. Record throughput only as
+descriptive small-input evidence.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -1502,6 +1502,13 @@ workspace regions from the public C query, and creates the transform through
 the public factory. Existing-output refusal, sibling `.tmp` cleanup, strict
 trailing-data rejection, and final atomic rename remain common CLI policy.
 
+The dependency-free benchmark uses that same public CLI profile. It computes
+checked complete-stream capacity `80 + 2N + 1128K`, queries and allocates each
+direction independently, verifies one byte-exact round trip, and only then
+times fresh public transforms. It reports compression ratio, directional
+throughput, each primary/secondary/views extent, and the larger directional
+workspace sum; performance is descriptive rather than an admission threshold.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

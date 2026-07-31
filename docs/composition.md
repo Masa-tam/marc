@@ -216,8 +216,9 @@ decode, and caps calls independently of serialized contents. Permanent
 regressions retain atomic failure for every canonical truncation, saturated
 frame extents, and invalid rANS descriptor metadata. Its explicit
 transactional CLI selector now binds the public C factory under the fixed
-64-KiB raw-frame and entropy-block profile. No benchmark or interoperability
-entry exists yet.
+64-KiB raw-frame and entropy-block profile. Its verified public-ABI benchmark
+measures the same profile only after a byte-exact round trip and reports all
+three caller-owned regions. No interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

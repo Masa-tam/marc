@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS verified benchmark adapter
+
+- Authoring method: extended marc's dependency-free public-C benchmark runner
+  under DD-504 with the already admitted DD-503 CLI profile.
+- References used: DD-504, DD-503, the public LZW/rANS lifecycle, checked
+  complete-stream arithmetic, and the repository's untimed verification and
+  timed fresh-transform protocol.
+- Known implementations intentionally not consulted: external benchmark
+  suites, LZW/rANS tools, wrappers, encoded corpora, source code, and published
+  performance tables.
+- Independent decisions: use `80 + 2N + 1128K` capacity; query both directions
+  independently; verify exact round trip before measurement; report each
+  workspace and their directional maximum; and impose no speed or ratio floor.
+- Generated-code task description: add codec registration, fixed public
+  configuration, capacity arithmetic, requirements and factory dispatch,
+  verified smoke test, and synchronize changelog, benchmark, format,
+  architecture, readiness, composition, decision, reference, vector, and
+  provenance records.
+- Similarity review: the adapter changes only marc's local enum, dispatch, and
+  checked profile calculations. No external harness structure, capacity
+  formula, timing protocol, output format, or test expression was compared.
+- Local validation: the verified benchmark smoke passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,952/1,952 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-22
+  compatibility remained successful.
+
 ## 2026-08-01 - LZW plus rANS transactional CLI adapter
 
 - Authoring method: applied DD-503 to marc's existing transactional CLI and

@@ -4244,6 +4244,10 @@ most 65,280 generated entries, a 131,072-byte packed-code ceiling, a
 internal-buffer policy. Direction-specific workspace extents remain public
 C-query results; the selector adds no stream field or format variant.
 
+The dependency-free `lzw-rans` benchmark uses the same selector profile and
+checked complete-stream ceiling. Its untimed verification, timing schedule,
+and workspace reporting add no stream field or format variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
