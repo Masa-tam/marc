@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-500: LZW rANS C ABI retains three opaque workspaces
+
+- Date: 2026-08-01
+- Status: accepted
+
+Expose the fixed LZW variant-1 plus scalar-rANS variant-1 profile through a
+size-tagged `marc_lzw_rans_config`, a direction-specific workspace query, and
+an immutable-direction factory. Include known original size, outer frame size,
+entropy block size, maximum LZW width, block-count limit, and the existing hard
+limits. Retain ABI version 1 because this is an additive symbol and type set.
+
+Use the common three-workspace ABI. Primary is raw-frame or serialized-frame
+storage. Secondary is packed staging followed by encoded-frame or private-raw
+storage. Aligned opaque views contain encoder entries or the decoder's rANS
+views, padding, and LZW phrases. The query and factory must both use DD-499,
+reject wrong metadata, reserved fields, short regions, and misalignment, and
+publish a null handle on every construction failure. Prove a pure-C five-byte,
+three-frame round trip and all three short-region failures. This step adds no
+completion matrix, fuzz target, CLI, benchmark, or interoperability entry.
+
 ## DD-499: LZW rANS profiles separate byte and typed storage
 
 - Date: 2026-08-01

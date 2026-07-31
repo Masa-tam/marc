@@ -205,9 +205,10 @@ accepting later-frame input. Its bounded streaming decoder collects one exact
 encoded frame, validates and reconstructs privately, and drains only that
 accepted raw frame before reading another header. Its internal profile
 calculator derives all direction-specific byte regions and partitions aligned
-opaque storage into encoder entries or rANS views followed by LZW phrases. No
-public factory, CLI, benchmark, fuzz target, or interoperability entry exists
-yet.
+opaque storage into encoder entries or rANS views followed by LZW phrases. Its
+public C requirements query and factory now bind that exact profile without
+exposing either record type. No completion matrix, CLI, benchmark, fuzz target,
+or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

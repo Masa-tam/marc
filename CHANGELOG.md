@@ -38,6 +38,8 @@ format versions, and C ABI versions are independent namespaces.
   accepted raw frame before collecting the next. Its internal profile
   calculator now derives checked direction-specific byte regions and aligned
   opaque LZW/rANS record layouts sufficient to construct the streaming pair.
+  Its public C ABI now exposes fixed-width configuration, requirements query,
+  and factory functions over the common three-workspace transform lifecycle.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

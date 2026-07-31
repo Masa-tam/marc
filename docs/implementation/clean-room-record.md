@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS public C factory
+
+- Authoring method: bound DD-500 directly to marc's local DD-499 profile,
+  checked typed partition helpers, and established opaque transform lifecycle.
+- References used: DD-500, DD-499, the local streaming transforms, fixed-width
+  public C types, common workspace requirements, and standard C allocation.
+- Known implementations intentionally not consulted: external codec ABIs,
+  LZW/rANS wrappers, workspace conventions, source code, and test suites.
+- Independent decisions: add one size-tagged config without changing ABI
+  version; retain primary, secondary, and aligned opaque views roles; repeat
+  profile calculation in the factory; keep all record layouts private; and
+  publish a null handle on every failure.
+- Generated-code task description: add public config, requirements query, and
+  factory declarations and definitions; prove a pure-C five-byte three-frame
+  round trip, exact representative workspace extents, every short region,
+  misalignment, null output, and reserved metadata; synchronize C API, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the adapter follows marc's existing independently written
+  lifecycle and the new local profile. No external ABI layout, wrapper control
+  flow, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/rANS internal and pure-C public suite
+  passed 46/46 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,944/1,944 under both compilers using official CMake 4.3.4; all 33
+  benchmark smokes and schema-22 compatibility remained successful. MSBuild
+  required the established out-of-sandbox retry after its FileTracker returned
+  `E_ACCESSDENIED`; both compiler builds then completed normally.
+
 ## 2026-08-01 - LZW plus rANS profile workspace calculation
 
 - Authoring method: derived DD-499 from marc's local streaming constructors,

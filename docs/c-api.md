@@ -32,7 +32,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lz78_rans_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
-`marc_lzw_dynamic_range_*`,
+`marc_lzw_dynamic_range_*`, `marc_lzw_rans_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
 `marc_lzd_dynamic_range_*`, and
 `marc_lzmw_blocked_huffman_*`, `marc_lzmw_adaptive_huffman_*`, and
@@ -74,6 +74,7 @@ cross-product pairings as callable C ABI features.
    `marc_lzw_config_init()`, `marc_lzw_blocked_huffman_config_init()`,
    `marc_lzw_adaptive_huffman_config_init()`,
    `marc_lzw_dynamic_range_config_init()`,
+   `marc_lzw_rans_config_init()`,
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
    `marc_lzd_adaptive_huffman_config_init()`,
    `marc_lzd_dynamic_range_config_init()`, or
@@ -261,6 +262,17 @@ The public completion matrix uses only this lifecycle with 64-byte frames and
 covers required binary classes, deterministic one-byte and mixed chunking,
 repeatable terminal states, and frame-atomic rejection of corrupted,
 truncated, and extended fourth frames.
+
+The LZW plus rANS factory uses the same three-region ownership with an explicit
+entropy block size and maximum block count. Encoding uses primary storage for
+one raw frame, secondary storage for packed LZW bytes followed by one complete
+rANS frame, and aligned opaque views for LZW encoder entries. Decoding uses
+primary storage for one encoded frame, secondary storage for packed bytes
+followed by private raw staging, and aligned opaque views containing rANS block
+views followed by LZW phrase entries. Call
+`marc_lzw_rans_workspace_requirements()` again after changing direction,
+original size, frame size, entropy block size, maximum code width, or any hard
+limit. Private C++ record definitions never enter the C ABI.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

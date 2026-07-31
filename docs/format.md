@@ -4228,6 +4228,11 @@ packed, complete-frame, rANS-view, and LZW-phrase regions solely from validated
 local limits. Empty encoding uses zero byte and record regions with alignment
 one. Typed partitioning is internal and adds no stream field.
 
+The public `marc_lzw_rans_*` C requirements query and factory select exactly
+this existing variant-1 composition. Their fixed-width configuration and three
+opaque workspace regions change no stream byte, algorithm ID, parameter
+extension, frame rule, or validation order.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

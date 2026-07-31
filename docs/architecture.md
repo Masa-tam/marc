@@ -1471,6 +1471,15 @@ records. Checked partition helpers reject inconsistent counts, offsets,
 storage extents, and alignment before exposing typed spans. The returned
 requirements directly construct a bounded streaming round trip.
 
+The public C adapter retains the common three-workspace ownership model.
+Primary storage is raw-frame input for encoding or complete serialized-frame
+input for decoding. Secondary storage is partitioned into packed LZW staging
+followed by encoded-frame or private-raw storage. One aligned opaque views
+region contains encoder entries, or rANS block views followed by LZW phrase
+records. The requirements query and factory both recalculate the internal
+profile; the factory validates sizes and alignment, partitions typed views
+privately, and publishes a transform handle only after construction succeeds.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

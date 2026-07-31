@@ -1604,6 +1604,11 @@ block bounds, checked arithmetic, and ordinary C++ alignment rules. No external
 workspace calculator, ABI layout, allocation scheme, source code, or test suite
 was consulted.
 
+The LZW plus rANS public C adapter uses only DD-500, DD-499's local profile and
+partition helpers, marc's existing transform handle lifecycle, fixed-width C
+types, and standard C allocation in its test. No external codec ABI, wrapper,
+workspace convention, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

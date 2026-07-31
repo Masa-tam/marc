@@ -3825,6 +3825,15 @@ aligned rANS-view region. Reject altered, short, and misaligned typed storage.
 Finally allocate only the reported regions and round-trip `ABABX` through
 two-byte frames and two-byte rANS blocks.
 
+For the first LZW plus rANS pure-C vector, initialize the public encode config,
+then set raw size five, two-byte frames, two-byte entropy blocks, maximum width
+16, and bounded local limits. Require primary bytes 2 and secondary bytes
+1,136, create the transform from the three queried regions, and encode
+`41 42 41 42 58`. Reinitialize for decode, require primary bytes 8,248 and
+secondary bytes 20, decode the exact produced stream, and compare all five raw
+bytes. Reject primary, secondary, and views regions one byte short, a
+misaligned views region, null handle output, and nonzero reserved metadata.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.
