@@ -1580,6 +1580,12 @@ checked arithmetic, and caller-owned staging. No external LZW/rANS encoder,
 planning algorithm, capacity formula, allocation layout, source code, encoded
 corpus, or test suite was consulted.
 
+The LZW plus rANS deterministic frame encoder uses only DD-496, DD-495's exact
+plan, marc's generic header and rANS descriptor serializers, scalar rANS
+encoder, checked spans, and the independent local vector. No external
+LZW/rANS frame encoder, serialization schedule, archive format, source code,
+encoded corpus, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

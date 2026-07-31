@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-496: LZW rANS encoding emits only a completed plan
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the bounded complete-frame encoder above DD-495. Run the exact planner to
+completion and admit the full serialized destination before writing any frame
+byte. Serialize the generic header explicitly, then repeat each deterministic
+rANS block plan over the frozen packed LZW staging and require every payload
+extent to match the previously summed plan.
+
+Serialize each fixed descriptor and exact payload into its precomputed region,
+then require final packed and payload offsets to match the plan. Raw `A` must
+reproduce the independent 592-byte frame exactly. A multi-block `ABABABA`
+frame must be byte-identical across runs and decode transactionally to the
+source. A one-byte-short output must remain wholly unchanged. This step adds
+no streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-495: LZW rANS planning freezes packed codes before entropy
 
 - Date: 2026-08-01

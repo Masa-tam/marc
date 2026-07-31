@@ -503,8 +503,9 @@ preflights caller capacity and copies the declared raw extent once only after
 private success. Its write-free exact-frame planner now freezes canonical
 packed LZW bytes, plans every rANS block deterministically, and reports the
 validated complete-frame extent while counting encoder records in aggregate
-storage. Frame emission, streaming, public API, and admission evidence remain
-pending.
+storage. Deterministic frame emission now reproduces the independent vector,
+replans each block against the frozen extents, and preserves short output.
+Streaming, public API, and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

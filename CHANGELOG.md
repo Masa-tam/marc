@@ -26,7 +26,10 @@ format versions, and C ABI versions are independent namespaces.
   all destination bytes on every failure. Its write-free exact-frame planner
   now freezes canonical packed LZW bytes, plans every rANS block
   deterministically, counts encoder storage in the aggregate, validates the
-  synthesized header, and reports the exact complete-frame extent.
+  synthesized header, and reports the exact complete-frame extent. Its bounded
+  complete-frame encoder now admits the full destination before writing,
+  serializes explicit headers and descriptors, requires repeated rANS plans to
+  match frozen extents, and reproduces the independent vector exactly.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

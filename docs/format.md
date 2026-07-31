@@ -4192,6 +4192,13 @@ payload, and complete-frame extents without accepting or writing a serialized
 frame destination. Encoder records, packed staging, descriptors, and payload
 all count toward aggregate internal storage.
 
+The complete-frame encoder must finish that exact plan and admit the entire
+serialized destination before writing any header, descriptor, or payload. It
+serializes the generic header explicitly, repeats every rANS block plan over
+the frozen packed bytes, requires identical payload extents, and writes each
+descriptor and payload into its precomputed region. Final packed and payload
+offsets must equal the plan; short destination failure changes no output byte.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

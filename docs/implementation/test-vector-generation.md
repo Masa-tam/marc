@@ -3788,6 +3788,13 @@ short encoder workspace and packed span before packed mutation, aggregate
 storage one byte short, empty input, and a raw extent inconsistent with the
 stream header.
 
+For deterministic LZW plus rANS frame encoding, encode raw `A` through the
+combined encoder and compare all 592 bytes with the independently assembled
+vector. Encode raw `ABABABA` twice with `B=2`, require byte-identical complete
+frames, then decode one through the transactional combined decoder and require
+the original seven bytes. Give the raw-`A` encoder a 591-byte destination
+filled with `A5` and require every byte to remain unchanged.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

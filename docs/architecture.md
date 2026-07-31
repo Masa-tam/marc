@@ -1435,6 +1435,12 @@ bytes. It computes and validates the synthesized frame and all aggregate
 workspace without accepting serialized output. This prevents descriptor or
 payload emission from observing a partial or differently chunked LZW stream.
 
+The complete-frame encoder accepts only a fully successful plan and a complete
+destination. It writes the generic header, then reproduces every rANS plan over
+the immutable packed staging while placing descriptors and payloads at their
+fixed offsets. Extent disagreement is an internal error, and insufficient
+destination capacity is detected before serialized output mutation.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS deterministic frame encoding
+
+- Authoring method: placed explicit frame serialization above DD-495's exact
+  plan and reused marc's local generic-header, rANS descriptor, and rANS
+  payload writers.
+- References used: DD-496, DD-495, the independent 592-byte vector, explicit
+  local serializers, scalar rANS planner and encoder, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS frame
+  encoders, serialization schedules, archive formats, allocation layouts,
+  encoded corpora, source code, and test suites.
+- Independent decisions: complete planning and output admission before frame
+  mutation; repeat every block plan against frozen packed staging; require
+  identical extents; serialize into precomputed regions; and reject final
+  offset disagreement as an internal error.
+- Generated-code task description: add complete-frame encoding and stable
+  short-output and descriptor errors; reproduce the independent vector;
+  demonstrate deterministic multi-block round trip and wholly unchanged short
+  output; synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the encoder directly composes marc's independently
+  specified plan and serializers. No external serialization order, control
+  flow, storage organization, encoded bytes, naming scheme, or test expression
+  was compared.
+- Local validation: the focused LZW/rANS validator, decoder, planner, and
+  encoder suite passed 28/28 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,926/1,926 under both compilers using official CMake
+  4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
+  successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,
