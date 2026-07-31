@@ -498,8 +498,10 @@ workspace extents, validates every entropy block before private packed-byte
 mutation, and validates the exact LZW code graph without expanding it. Raw
 reconstruction is now implemented into separately admitted private staging
 only after that complete validation; raw capacity and aggregate storage are
-checked before entropy output. Transactional publication, encoding, streaming,
-public API, and admission evidence remain pending.
+checked before entropy output. Transactional complete-frame publication now
+preflights caller capacity and copies the declared raw extent once only after
+private success. Encoding, streaming, public API, and admission evidence remain
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

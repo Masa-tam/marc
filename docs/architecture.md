@@ -1423,6 +1423,12 @@ the ordinary iterative LZW decoder to reconstruct exactly one raw frame.
 Caller-visible publication remains separate, so malformed input and workspace
 failures cannot expose a partial frame.
 
+The caller-visible complete-frame boundary preflights the entire destination
+alongside all private regions, performs the unchanged validation and private
+reconstruction, and publishes exactly the declared raw extent in one final
+copy. Destination bytes are never part of aggregate scratch accounting and
+remain entirely unchanged on failure.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

@@ -4177,6 +4177,13 @@ iterative LZW decoder over the validated packed bytes and writes exactly the
 declared raw extent into separate private staging. It publishes no
 caller-visible bytes, and callers discard every workspace on error.
 
+The transactional complete-frame decoder also admits the entire caller output
+before descriptor parsing. It runs the same validation and private
+reconstruction, then copies exactly the declared raw extent once only after
+complete success. Output is not internal workspace and is not aggregate-
+counted; excess destination capacity is untouched, and every failure preserves
+the whole destination.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

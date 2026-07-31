@@ -3770,6 +3770,14 @@ edges and exercises `KwKwK`. Reject missing raw capacity and aggregate storage
 one byte short before packed mutation. Entropy-code invalid padded bytes
 `41 80` and require the raw sentinel to remain unchanged.
 
+For transactional LZW plus rANS publication, decode the frozen raw-`A` frame
+into private staging and a two-byte destination sentinel. Require only the
+first destination byte to become `41`. Repeat the block-size-two `ABABABA`
+`KwKwK` case and require exact private and public output. Supply a destination
+one byte short and require packed, phrase, raw, and output storage to remain
+unchanged. Corrupt a later rANS state and separately entropy-code `41 80`;
+both must preserve the complete destination.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

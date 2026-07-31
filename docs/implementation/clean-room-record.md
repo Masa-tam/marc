@@ -9850,6 +9850,34 @@ discarded and the reviewed seed retained.
   suite passed 1,915/1,915 under both compilers using official CMake 4.3.4;
   all 33 benchmark smokes and schema-22 compatibility remained successful.
 
+## 2026-08-01 - LZW plus rANS transactional publication
+
+- Authoring method: applied DD-494 directly above marc's DD-493 private raw
+  decoder using the repository's established one-copy publication boundary.
+- References used: DD-494, DD-493, the local complete-frame validator and
+  private decoder, checked caller capacity, and bounded spans.
+- Known implementations intentionally not consulted: external combined
+  decoders, publication protocols, allocation layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: preflight the entire output before entropy work;
+  retain private reconstruction; copy the exact declared extent once after
+  success; leave excess capacity untouched; and preserve output on all errors.
+- Generated-code task description: add transactional complete-frame decoding
+  and a stable short-output error; prove raw-`A` and cross-block `KwKwK`
+  publication, preflight preservation of private storage, and entropy and LZW
+  malformed-frame output atomicity; synchronize format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation uses only marc's local private decoder
+  and standard bounded-span copying. No external publication control flow,
+  storage scheme, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/rANS vector, validator, private-decoder,
+  and transactional-publication suite passed 21/21 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,919/1,919 under both
+  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

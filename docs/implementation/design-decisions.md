@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-494: LZW rANS publication is one post-success copy
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add an internal transactional complete-frame decoder above DD-493. Require a
+caller-visible output span at least as large as the declared raw frame and
+check it with all private capacities before parsing a descriptor or mutating
+any workspace. Caller output is destination storage and does not count toward
+the internal-buffer aggregate.
+
+Run the unchanged DD-492 validation and DD-493 private reconstruction. Only
+after both succeed, copy exactly the declared raw extent from private staging
+to output once, leaving excess output capacity untouched. Every frame,
+entropy, LZW, capacity, aggregate, or reconstruction error must preserve all
+caller output. This step adds no encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-493: LZW rANS reconstructs only after complete validation
 
 - Date: 2026-08-01

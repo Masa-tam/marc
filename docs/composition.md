@@ -192,8 +192,11 @@ entropy blocks before packed-byte mutation, and validates the complete LZW
 code graph. Its bounded private decoder now admits the raw extent before
 entropy work and reconstructs the validated graph iteratively without
 caller-visible publication.
-No transactional publication, encoder, streaming transform, public factory,
-CLI, benchmark, fuzz target, or interoperability entry exists yet.
+
+Its transactional complete-frame decoder now admits caller output before
+private mutation and copies exactly the declared extent once only after full
+success. No encoder, streaming transform, public factory, CLI, benchmark, fuzz
+target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

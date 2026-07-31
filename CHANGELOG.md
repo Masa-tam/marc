@@ -20,7 +20,10 @@ format versions, and C ABI versions are independent namespaces.
   validator without reconstructing raw bytes. Its bounded private decoder now
   admits and aggregate-counts the complete raw staging extent before entropy
   work, then reconstructs the fully validated LZW graph iteratively without
-  publishing caller-visible bytes.
+  publishing caller-visible bytes. Its transactional complete-frame decoder
+  additionally checks destination capacity before private mutation and copies
+  exactly the declared raw extent once only after complete success, preserving
+  all destination bytes on every failure.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

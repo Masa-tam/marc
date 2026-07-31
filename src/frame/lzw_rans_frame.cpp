@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -40,7 +41,9 @@ namespace {
     const std::span<dictionary::internal::LzwPhraseEntry>
         phrase_workspace,
     const bool require_raw_staging,
-    const std::span<std::byte> raw_staging) noexcept {
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzwRansFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -154,6 +157,10 @@ namespace {
     }
     if (require_raw_staging && raw_staging.size() < result.raw_size) {
         result.error = LzwRansFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error = LzwRansFrameValidationError::raw_output_too_small;
         return result;
     }
 
@@ -308,7 +315,7 @@ LzwRansFrameValidationResult validate_lzw_rans_frame(
     return validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, views, dictionary_staging,
-        phrase_workspace, false, {});
+        phrase_workspace, false, {}, false, {});
 }
 
 LzwRansFrameValidationResult decode_lzw_rans_frame_to_staging(
@@ -325,13 +332,41 @@ LzwRansFrameValidationResult decode_lzw_rans_frame_to_staging(
     auto result = validate_frame(
         stream, parameters, limits, expected_sequence,
         output_already_committed, input, views, dictionary_staging,
-        phrase_workspace, true, raw_staging);
+        phrase_workspace, true, raw_staging, false, {});
     if (result.error != LzwRansFrameValidationError::none) {
         return result;
     }
     (void)reconstruct_validated_codes(
         result, parameters, limits, dictionary_staging, phrase_workspace,
         raw_staging);
+    return result;
+}
+
+LzwRansFrameValidationResult decode_lzw_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::RansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzwPhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, true, raw_staging, true, output);
+    if (result.error != LzwRansFrameValidationError::none) {
+        return result;
+    }
+    if (!reconstruct_validated_codes(
+            result, parameters, limits, dictionary_staging, phrase_workspace,
+            raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 
