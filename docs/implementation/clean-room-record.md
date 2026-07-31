@@ -9708,6 +9708,35 @@ discarded and the reviewed seed retained.
   benchmark smokes and interoperability schema compatibility remained
   successful.
 
+## 2026-07-31 - Interoperability schema 22
+
+- Authoring method: applied DD-490 after the fixed `lz78-rans` CLI,
+  completion, fuzz, and benchmark boundaries were locally complete.
+- References used: DD-490, the frozen schema-21 order, the repository-authored
+  deterministic 8,193-byte fixture, the published `lz78-rans` selector, and
+  marc's existing PowerShell generator, verifier, and compatibility converter.
+- Known implementations intentionally not consulted: external
+  interoperability schemas, manifests, archive corpora, source code, and test
+  suites.
+- Independent decisions: append exactly one profile; name codec set
+  `marc-cli-v22`; retain every earlier schema exactly; locally round-trip
+  before manifest publication; require canonical order and deterministic
+  re-encoding; and keep external evidence explicitly pending.
+- Generated-code task description: update the generator to schema 22, add
+  `lz78-rans` as archive 33, teach the verifier the exact new set, reject a
+  reordered schema-22 manifest, convert schema 22 to 21, exercise schemas 21
+  through 1, and synchronize interoperability, format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the change extends only marc's existing versioned
+  manifest chain by one local selector. No external schema structure, archive,
+  conversion flow, validation expression, or test data was compared.
+- Local validation: schema-22 generation, all 33 deterministic local
+  round trips, reordered-manifest rejection, and the schema-21-through-1
+  compatibility chain passed under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,898/1,898 under both compilers using official CMake
+  4.3.4; all 33 benchmark smokes remained successful.
+
 ## 2026-07-31 - LZ78 plus rANS CLI admission
 
 - Authoring method: applied DD-488 only after format, streaming, C ABI,

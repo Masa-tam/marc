@@ -1545,6 +1545,12 @@ capacity arithmetic, and marc's existing verification-first measurement
 runner. No external benchmark framework, combined-codec adapter, capacity
 formula, performance result, source code, or test suite was consulted.
 
+Interoperability schema 22 uses only DD-490, the frozen schema-21 manifest
+order, marc's deterministic 8,193-byte fixture, the published `lz78-rans` CLI
+profile, and the repository-owned generator, verifier, and compatibility
+conversion. No external interoperability schema, manifest, archive corpus,
+source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

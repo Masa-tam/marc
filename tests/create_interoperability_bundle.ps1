@@ -101,7 +101,8 @@ $profiles = @(
     'lzd-dynamic-range',
     'lzmw-dynamic-range',
     'lz77-rans',
-    'lzss-rans'
+    'lzss-rans',
+    'lz78-rans'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -124,8 +125,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 21
-    codec_set = 'marc-cli-v21'
+    schema_version = 22
+    codec_set = 'marc-cli-v22'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

@@ -3723,6 +3723,18 @@ and run one iteration. Before timing, encode once into checked capacity
 equality. Then require one encode and one decode measurement to reproduce those
 exact extents while reporting all public workspace requirements.
 
+For interoperability schema 22, retain the exact schema-21 archive order over
+the deterministic 8,193-byte fixture and append exactly one `lz78-rans`
+archive as entry 33. Set `schema_version` to 22 and `codec_set` to
+`marc-cli-v22`; record every complete archive's size and SHA-256 only after
+local decode equality succeeds.
+
+Require exact thirty-three-entry order, foreign decode equality, byte-identical
+local re-encoding, and rejection of a manifest whose first two entries are
+swapped. Remove only `lz78-rans.marc`, change only the schema and codec set to
+21, and then exercise the unchanged schema-21-through-schema-1 conversion and
+verification chain.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

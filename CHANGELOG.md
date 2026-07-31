@@ -44,7 +44,11 @@ format versions, and C ABI versions are independent namespaces.
   nonzero-descriptor-reserved-byte regressions are now present. The
   transactional CLI now exposes it explicitly as `lz78-rans` through only the
   public C lifecycle. The dependency-free benchmark runner now verifies and
-  measures the same public profile.
+  measures the same public profile. Interoperability schema 22 appends the
+  unchanged CLI representation as archive 33 while preserving explicit
+  verification of schemas 1 through 21; local generation, exact-order
+  validation, reordered-manifest rejection, and byte-identical re-encoding
+  pass, while external cross-platform evidence remains pending.
 
 - Reserved the `lzss-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The complete

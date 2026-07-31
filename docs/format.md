@@ -4090,6 +4090,10 @@ variant or serialized field.
 The benchmark adapter binds the same selector and public profile; its capacity
 and timing policy do not alter serialized bytes.
 
+Interoperability schema 22 emits this unchanged profile as `lz78-rans` after
+the frozen thirty-two-entry schema-21 set. The schema changes only the
+external manifest profile set; it adds no stream field or variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

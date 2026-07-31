@@ -659,8 +659,10 @@ twenty-eight-profile schema-17 order. Schema 19 names `marc-cli-v19` and
 appends LZMW plus Dynamic Range to the frozen twenty-nine-profile schema-18
 order. Schema 20 names `marc-cli-v20` and appends LZ77 plus rANS to the frozen
 thirty-profile schema-19 order. Schema 21 names `marc-cli-v21` and appends
-LZSS plus rANS to the frozen thirty-one-profile schema-20 order. Schemas 1
-through 20 retain their exact versioned profile sets.
+LZSS plus rANS to the frozen thirty-one-profile schema-20 order. Schema 22
+names `marc-cli-v22` and appends LZ78 plus rANS to the frozen thirty-two-
+profile schema-21 order. Schemas 1 through 21 retain their exact versioned
+profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1377,6 +1379,13 @@ frame count. It verifies exact decode equality before timing, constructs a
 fresh public transform for every sample, and reports the queried primary,
 secondary, views, and peak directional workspace without imposing a speed
 floor.
+
+Interoperability schema 22 names codec set `marc-cli-v22`, preserves the exact
+thirty-two-entry schema-21 order, and appends this unchanged CLI
+representation once. Local generation and verification require exact order,
+count, size, SHA-256, fixture decode equality, and byte-identical local
+re-encoding while retaining explicit support for schemas 1 through 21.
+External cross-platform schema-22 evidence remains pending.
 
 The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
 rANS encoder, and generic serializers. It freezes the eight-byte Pair token,

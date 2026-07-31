@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-490: Interoperability schema 22 appends LZ78 rANS
+
+- Date: 2026-07-31
+- Status: accepted
+
+Define interoperability schema 22 and codec set `marc-cli-v22` as the exact
+frozen schema-21 profile order followed once by `lz78-rans`. The unchanged
+transactional CLI profile becomes archive 33 over the existing deterministic
+8,193-byte fixture. Do not add, remove, reorder, or reinterpret any earlier
+schema entry.
+
+The generator must locally decode every archive before publishing its size and
+SHA-256. The verifier must require exactly thirty-three archives in canonical
+order, validate leaf names, extents, and hashes, decode each foreign archive,
+and require byte-identical local re-encoding. The compatibility test must
+reject a reordered schema-22 manifest, convert schema 22 to the frozen schema
+21 set by removing only `lz78-rans`, and continue verifying schemas 21 through
+1 unchanged. Cross-platform interoperability remains unproven until external
+artifacts produced at one complete revision pass the established four
+directions.
+
 ## DD-489: LZ78 rANS benchmark verifies before measuring
 
 - Date: 2026-07-31

@@ -21,7 +21,7 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | Specified | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Candidate | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
@@ -127,7 +127,7 @@ verification passed at revision
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 21 contains the current published profile set, and every
+publication: schema 22 contains the current published profile set, and every
 earlier schema profile set remains exact.
 
 `lz78-rans` is the third rANS composition to receive a reserved
@@ -165,7 +165,11 @@ permanent atomic regressions for truncation, saturated extents, and descriptor
 reserved bytes. Its explicit transactional CLI selector binds the same fixed
 profile through only the public C lifecycle. Its verification-first benchmark
 reports complete-stream ratio, directional throughput, and queried workspace
-extents without a performance threshold. No interoperability entry exists yet.
+extents without a performance threshold. Interoperability schema 22 appends
+the unchanged CLI representation after the frozen schema-21 order. Local
+generation, exact-order verification, byte-identical re-encoding, reordered-
+manifest rejection, and schemas 1 through 21 compatibility pass; external
+cross-platform evidence remains pending.
 
 The LZ78 plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded fuzz target, a CLI selector, a benchmark adapter, and schema-4
