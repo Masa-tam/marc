@@ -1615,6 +1615,12 @@ schedules, and the documented scalar-rANS block ceiling. No external
 conformance suite, encoded corpus, wrapper, source code, or test expression was
 consulted.
 
+The LZW plus rANS dual-boundary fuzzer and permanent regressions use only
+DD-502, marc's local complete-frame decoder, DD-500 public C lifecycle,
+fixed-array limit arithmetic, local process-result invariants, and a
+repository-generated canonical stream. No external fuzz harness, corpus,
+malformed archive, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

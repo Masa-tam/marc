@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZW plus rANS bounded decoder fuzz boundary
+
+- Authoring method: applied DD-502 to marc's local complete-frame decoder and
+  DD-500 public C transform lifecycle using fixed caller-owned arrays.
+- References used: DD-502, DD-500, local LZW/rANS profile arithmetic,
+  process-result invariants, and the repository-generated `ABABX` stream.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, combined codec implementations, source code,
+  and test suites.
+- Independent decisions: exercise private complete-frame and public streaming
+  boundaries with every input; cap all byte and typed storage before parsing;
+  use deterministic small chunks and a finite call budget; treat ordinary
+  decode errors as expected; and retain truncation, saturated extent, and
+  reserved-descriptor atomicity as permanent regressions. Seed the corpus only
+  with the reviewed five-byte truncated magic prefix.
+- Generated-code task description: add the bounded dual-path harness, normal-
+  build compile-smoke target, three atomic malformed regressions, and
+  synchronize changelog, architecture, readiness, composition, fuzzing,
+  decision, reference, vector, and provenance records.
+- Similarity review: the harness and regressions compose only local public and
+  private interfaces and repository-authored vectors. No external mutation
+  strategy, corpus input, control flow, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/rANS suite passed 51/51 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 1,950/1,950 under both
+  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful. The Clang/libFuzzer executable completed
+  a bounded 1,000-input AddressSanitizer/UndefinedBehaviorSanitizer smoke with
+  no crash, hang, or sanitizer finding and 38 MiB peak RSS.
+
 ## 2026-08-01 - LZW plus rANS public-ABI completion matrix
 
 - Authoring method: applied DD-501 to marc's local DD-500 C lifecycle and the

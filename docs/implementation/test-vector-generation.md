@@ -3845,6 +3845,15 @@ and append one byte; require malformed status, sticky repeated diagnostics,
 exact publication of the first three 64-byte frames, and an untouched final
 destination byte.
 
+For LZW plus rANS fuzz regressions, generate canonical `ABABX` through the
+local streaming encoder with one five-byte frame and one 16-byte entropy
+block. Present every strict prefix to a fresh decoder and require zero
+publication plus a stable repeated error. Separately overwrite generic-frame
+extent fields at offsets 16 through 39 with `ff`, and set byte 10 of the first
+rANS descriptor to one. Both complete streams must fail atomically. The live
+fuzzer accepts at most 8 KiB, uses only fixed caller-owned arrays, and stops
+after at most maximum input plus maximum output plus 32 process calls.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

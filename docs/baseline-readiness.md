@@ -515,8 +515,10 @@ rANS-view/LZW-phrase layout, using checked worst-case bounds. Public API and
 factory coverage now expose those regions through a fixed-width C config and
 the common opaque transform lifecycle. Its public-ABI completion matrix now
 proves required data classes, deterministic arbitrary chunking, sticky terminal
-states, and malformed-final-frame atomicity. Fuzzing, CLI, benchmark, and
-interoperability admission evidence remain pending.
+states, and malformed-final-frame atomicity. A bounded dual-path decoder fuzz
+harness and permanent atomic truncation, saturated-extent, and descriptor
+regressions are now present. CLI, benchmark, and interoperability admission
+evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

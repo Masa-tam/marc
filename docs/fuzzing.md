@@ -207,6 +207,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz78_dynamic_range_stream \
   marc_fuzz_lz78_rans_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
+  marc_fuzz_lzw_rans_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
   marc_fuzz_lzd_dynamic_range_stream \
   marc_fuzz_lzmw_adaptive_huffman_stream \
@@ -248,6 +249,8 @@ out/build/fuzz/marc_fuzz_lz78_rans_stream \
   fuzz/corpus/lz78_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \
   fuzz/corpus/lzw_adaptive_huffman_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzw_rans_stream \
+  fuzz/corpus/lzw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_adaptive_huffman_stream \
   fuzz/corpus/lzd_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_dynamic_range_stream \
@@ -406,6 +409,19 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 39 MiB RSS. Nine generated corpus changes remain only in the
 ignored build workspace; the repository retains the reviewed five-byte
 truncated-magic seed.
+
+The composed LZW plus rANS target fixes an 8 KiB input ceiling, 4 KiB raw
+publication ceiling, 1 KiB frame ceiling, eight rANS views, bounded packed-code
+and phrase storage, aggregate workspace, and a finite process-call budget. It
+drives both complete-frame decoding and the public C streaming lifecycle for
+each input. Ordinary builds compile this translation unit as an object target.
+Its initial bounded Windows sanitizer smoke on 2026-08-01 completed 1,000
+inputs with an 8 KiB maximum input, five-second per-input timeout, and 512 MiB
+RSS limit without a crash, hang, AddressSanitizer finding, or
+UndefinedBehaviorSanitizer finding; peak RSS was 38 MiB. The Visual Studio
+Clang 22 sanitizer runtime directory was added only to that process's `PATH`;
+no machine-specific path was committed. Generated mutations remained only in
+memory; the repository retains the reviewed five-byte truncated-magic seed.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

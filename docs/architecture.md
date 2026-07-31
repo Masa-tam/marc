@@ -1487,6 +1487,14 @@ streams under one-byte and mixed chunk schedules. Repeated terminal calls are
 stable. Corruption, truncation, or extension of the final frame leaves every
 byte of that frame unpublished while earlier drained frames remain committed.
 
+The decoder fuzz boundary fixes serialized input at 8 KiB, raw publication at
+4 KiB, frames at 1 KiB, packed-code staging at 4 KiB, rANS views at eight,
+LZW phrase records from the packed-code ceiling, and aggregate storage before
+accepting arbitrary bytes. One path invokes complete-frame parsing directly;
+the other uses only the public C requirements, factory, process, and destroy
+lifecycle under variable small chunks. A fixed call ceiling turns failure to
+terminate into a reproducible harness failure.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

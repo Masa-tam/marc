@@ -9053,6 +9053,29 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-502: LZW rANS fuzzing crosses private and public boundaries
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add one bounded decoder fuzz target that presents each input to both the
+complete-frame decoder-visible boundary and DD-500's public C streaming
+decoder. Fix input at 8 KiB, total raw publication at 4 KiB, frame size at
+1 KiB, packed LZW staging at 4 KiB, rANS views at eight, phrase records from
+the packed-code ceiling, and all aggregate storage before accepting input.
+Never allocate from a fuzz-controlled extent.
+
+Drive the public decoder with deterministic variable chunks and a call budget
+bounded by maximum input plus maximum output plus constant protocol overhead.
+Abort on invalid process accounting, a zero-progress `Progress`, post-end
+input starvation, workspace-calculation disagreement, or call-budget
+exhaustion. Ordinary malformed input remains a successful fuzz iteration.
+Retain permanent GoogleTest regressions for every truncation of a canonical
+stream, saturated generic-frame extents, and nonzero rANS descriptor reserved
+metadata; every case must publish zero bytes and retain one stable sticky
+error. This step adds no CLI selector, benchmark, completion claim beyond the
+fuzz boundary, or interoperability entry.
+
 ## DD-501: LZW rANS completion evidence stays on the C ABI
 
 - Date: 2026-08-01

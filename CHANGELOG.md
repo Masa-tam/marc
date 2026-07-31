@@ -42,7 +42,12 @@ format versions, and C ABI versions are independent namespaces.
   and factory functions over the common three-workspace transform lifecycle.
   Its public-ABI completion matrix now covers required binary classes,
   deterministic arbitrary chunking, sticky terminal states, and frame-atomic
-  rejection of malformed, truncated, and extended final frames.
+  rejection of malformed, truncated, and extended final frames. Its bounded
+  dual-path decoder fuzz target now drives both the complete-frame validator
+  and public C streaming decoder with fixed caller-owned storage and a finite
+  call budget; permanent regressions retain atomic rejection of every
+  canonical truncation, saturated frame extents, and invalid rANS descriptor
+  metadata.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

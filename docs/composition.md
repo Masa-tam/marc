@@ -210,7 +210,12 @@ public C requirements query and factory now bind that exact profile without
 exposing either record type. Its public-ABI completion matrix now proves
 required binary classes, byte-identical arbitrary chunking, sticky terminal
 states, and atomic rejection of corrupted, truncated, or extended final
-frames. No CLI, benchmark, fuzz target, or interoperability entry exists yet.
+frames. Its bounded dual-path decoder fuzz target fixes all byte and typed
+workspace before input, drives both complete-frame and public C streaming
+decode, and caps calls independently of serialized contents. Permanent
+regressions retain atomic failure for every canonical truncation, saturated
+frame extents, and invalid rANS descriptor metadata. No CLI, benchmark, or
+interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
