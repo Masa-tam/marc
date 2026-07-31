@@ -29,7 +29,10 @@ format versions, and C ABI versions are independent namespaces.
   synthesized header, and reports the exact complete-frame extent. Its bounded
   complete-frame encoder now admits the full destination before writing,
   serializes explicit headers and descriptors, requires repeated rANS plans to
-  match frozen extents, and reproduces the independent vector exactly.
+  match frozen extents, and reproduces the independent vector exactly. Its
+  bounded known-size streaming encoder now emits the canonical 80-byte stream
+  prefix, buffers at most one raw frame, prepares one immutable exact frame,
+  and drains that frame completely before accepting later-frame input.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

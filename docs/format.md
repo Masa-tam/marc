@@ -4199,6 +4199,16 @@ the frozen packed bytes, requires identical payload extents, and writes each
 descriptor and payload into its precomputed region. Final packed and payload
 offsets must equal the plan; short destination failure changes no output byte.
 
+The bounded known-size streaming encoder emits the ordinary 64-byte stream
+header followed by the ordinary 16-byte LZW parameter extension. It then
+collects at most one declared raw frame, completes the exact-frame plan and
+encoding in caller-owned private storage, and drains the resulting immutable
+frame before accepting bytes for a later frame. Per-frame aggregate storage
+counts the raw staging, actual packed-code staging, exact serialized frame, and
+LZW encoder records. `Flush` does not close a partial frame. `EndInput` is
+retained while the final frame and all pending prefix bytes drain; premature
+end, excess input, `ResetBlock`, and unknown process flags are errors.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

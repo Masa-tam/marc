@@ -3795,6 +3795,15 @@ frames, then decode one through the transactional combined decoder and require
 the original seven bytes. Give the raw-`A` encoder a 591-byte destination
 filled with `A5` and require every byte to remain unchanged.
 
+For bounded LZW plus rANS streaming encoding, use raw `ABABX`, outer frames of
+two bytes, and rANS blocks of two bytes. Independently serialize the ordinary
+80-byte prefix and append each exact frame from the complete-frame planner and
+encoder. Require identical output when both input and output capacities are
+one byte. Verify that `Flush` leaves a partial frame open, `EndInput` retained
+while every region drains produces the same stream, workspace and aggregate
+shortages fail stably, empty input emits only the prefix, and premature end,
+excess input, `ResetBlock`, and unknown flags are rejected.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

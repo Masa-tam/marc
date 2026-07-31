@@ -199,8 +199,10 @@ success. Its write-free planner now freezes canonical packed codes and plans
 all rANS blocks and the exact complete-frame extent without serialized output.
 Its complete-frame encoder now serializes only after a complete plan and
 reproduces the independent vector and multi-block streams deterministically.
-No streaming transform, public factory, CLI, benchmark, fuzz target, or
-interoperability entry exists yet.
+Its bounded known-size streaming encoder emits the fixed 80-byte prefix,
+collects at most one raw frame, and drains the completed immutable frame before
+accepting later-frame input. No streaming decoder, public factory, CLI,
+benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
