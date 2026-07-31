@@ -32,7 +32,10 @@ format versions, and C ABI versions are independent namespaces.
   match frozen extents, and reproduces the independent vector exactly. Its
   bounded known-size streaming encoder now emits the canonical 80-byte stream
   prefix, buffers at most one raw frame, prepares one immutable exact frame,
-  and drains that frame completely before accepting later-frame input.
+  and drains that frame completely before accepting later-frame input. Its
+  bounded streaming decoder now collects and preflights one complete encoded
+  frame, validates and reconstructs it privately, and drains only the fully
+  accepted raw frame before collecting the next.
 
 - Reserved the `lz78-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The fixed eight-byte

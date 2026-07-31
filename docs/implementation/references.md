@@ -1592,6 +1592,12 @@ parameter serializers, checked arithmetic, and caller-owned spans. No external
 streaming LZW/rANS implementation, buffering schedule, allocation layout,
 source code, encoded corpus, or test suite was consulted.
 
+The LZW plus rANS bounded streaming decoder uses only DD-498, the local private
+complete-frame decoder, marc's common process contract and explicit parsers,
+checked arithmetic, and caller-owned spans. No external streaming LZW/rANS
+decoder, buffering schedule, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

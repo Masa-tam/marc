@@ -1451,6 +1451,16 @@ input and output chunking cannot change serialized bytes. `Flush` leaves a
 partial frame open, while retained `EndInput` finishes and drains the final
 short frame before reporting end of stream.
 
+The bounded streaming decoder owns caller-supplied regions for one serialized
+frame, its rANS block views, reconstructed packed codes, decoded raw bytes, and
+LZW phrase records. It collects the fixed prefix and one frame header before
+accepting the declared body extent, so every capacity and aggregate limit is
+checked before entropy decoding. A complete frame is validated and expanded
+only into private storage, then its raw bytes are drained before the next frame
+header is collected. Later corruption therefore cannot retract or partially
+publish the current frame, while malformed current-frame data publishes none
+of that frame.
+
 The independent raw-`A` vector composes only the existing LZW encoder, scalar
 rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state

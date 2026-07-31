@@ -4209,6 +4209,16 @@ LZW encoder records. `Flush` does not close a partial frame. `EndInput` is
 retained while the final frame and all pending prefix bytes drain; premature
 end, excess input, `ResetBlock`, and unknown process flags are errors.
 
+The bounded streaming decoder first collects the same 80-byte prefix. For each
+frame it collects the 56-byte generic header, validates `S`, `K`, descriptor,
+payload, raw, view, phrase-record, serialized-frame, and aggregate extents,
+then accepts exactly the declared remaining frame body. Only a completely
+collected frame is entropy-decoded, LZW-validated, and reconstructed into
+private raw staging. Those raw bytes drain before another frame header is
+accepted. Truncation, trailing bytes, malformed later blocks, `ResetBlock`,
+and unknown process flags are errors; retained `EndInput` does not discard an
+already validated frame awaiting output capacity.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

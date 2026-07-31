@@ -3804,6 +3804,16 @@ while every region drains produces the same stream, workspace and aggregate
 shortages fail stably, empty input emits only the prefix, and premature end,
 excess input, `ResetBlock`, and unknown flags are rejected.
 
+For bounded LZW plus rANS streaming decoding, feed that canonical multi-frame
+stream with one-byte input and output capacities and require raw `ABABX`.
+Corrupt the second frame's rANS model and require only first-frame raw `AB` to
+be published. Make each serialized-frame, view, packed, raw, and phrase region
+one entry short in turn, then set aggregate storage one byte below the exact
+sum and require early failure. Reject every final-byte truncation, one trailing
+byte, `ResetBlock`, and an unknown flag; accept the empty prefix-only stream;
+keep `Flush` non-terminal; and retain premature `EndInput` while draining the
+first valid frame before reporting the missing later frame.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

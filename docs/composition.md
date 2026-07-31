@@ -201,7 +201,9 @@ Its complete-frame encoder now serializes only after a complete plan and
 reproduces the independent vector and multi-block streams deterministically.
 Its bounded known-size streaming encoder emits the fixed 80-byte prefix,
 collects at most one raw frame, and drains the completed immutable frame before
-accepting later-frame input. No streaming decoder, public factory, CLI,
+accepting later-frame input. Its bounded streaming decoder collects one exact
+encoded frame, validates and reconstructs privately, and drains only that
+accepted raw frame before reading another header. No public factory, CLI,
 benchmark, fuzz target, or interoperability entry exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
