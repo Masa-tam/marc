@@ -259,7 +259,10 @@ before raw drain, and rejects malformed later frames without exposing their
 bytes. Its internal profile now derives every direction-specific byte region,
 the aligned encoder records, and the decoder's aligned rANS-view, LZD-phrase,
 and iterative-expansion regions. The returned requirements directly construct
-the bounded streaming pair. No public entry point exists yet.
+the bounded streaming pair. A size-tagged public C config, requirements query,
+and immutable-direction factory now bind those regions while keeping every
+record type and internal offset opaque. Later completion, fuzz, CLI, benchmark,
+and interoperability evidence remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

@@ -1599,6 +1599,13 @@ the complete encoded, token, and private-raw byte regions from local limits and
 partitions one opaque aligned region in rANS-view, LZD-phrase, expansion-stack
 order. Both partition offsets are recomputed before any typed span is exposed.
 
+The public C adapter retains exactly those three ownership regions. Its
+size-tagged fixed-width config carries the known-size encoder parameters or
+trusted decoder limits, and the direction-specific requirements query is the
+only allocation authority. Factory construction repeats profile calculation,
+opaque partition validation, and alignment checks before creating an
+immutable-direction transform; no private record type enters the ABI.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

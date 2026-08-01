@@ -3989,6 +3989,15 @@ offset or record count, shorten storage, and require rejection before typed
 views are published. Finally allocate every returned byte and record region and
 use only those spans to stream `ABABX` through two-byte frames and back.
 
+For the first LZD plus rANS pure-C vector, initialize the public encode config,
+then set raw size five, two-byte frames, two-byte entropy blocks, and bounded
+local limits. Require primary bytes 2 and secondary bytes 2,216, create the
+transform from the three queried regions, and encode `41 42 41 42 58`.
+Reinitialize for decode, require primary bytes 8,248 and secondary bytes 10,
+decode the exact produced extent, and compare all five raw bytes. Shorten each
+workspace independently, misalign opaque views, pass a null transform output,
+and set a reserved field; every case must fail without publishing a handle.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -1604,6 +1604,11 @@ block bounds, checked arithmetic, and ordinary C++ alignment rules. No external
 workspace calculator, ABI layout, allocation scheme, source code, or test suite
 was consulted.
 
+The LZD plus rANS public C adapter uses only DD-515, DD-514's local profile and
+partition helpers, marc's established opaque transform lifecycle, fixed-width C
+types, and standard C allocation in its test. No external codec ABI, wrapper,
+workspace convention, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS public C factory
+
+- Authoring method: bound DD-515 directly to marc's DD-514 profile, checked
+  typed partition helpers, and established opaque transform lifecycle.
+- References used: DD-515, DD-514, local streaming transforms, fixed-width
+  public C types, common workspace requirements, and standard C allocation.
+- Known implementations intentionally not consulted: external codec ABIs,
+  LZD/rANS wrappers, workspace conventions, source code, and test suites.
+- Independent decisions: add one size-tagged config without changing ABI
+  version; keep all record types and offsets opaque; retain three caller-owned
+  regions; repeat calculation and partitioning inside the factory; and reject
+  every short or misaligned region before allocating the transform handle.
+- Generated-code task description: publish config initialization,
+  direction-specific requirements, and immutable-direction creation; add a
+  pure-C queried-workspace round trip and short-region, misalignment, null, and
+  reserved-field failures; synchronize C API, format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows marc's local ABI convention and
+  DD-514 ownership exactly. No external API naming, object layout, allocation
+  scheme, wrapper control flow, or test expression was compared.
+- Local validation: the pure-C lifecycle and focused LZD/rANS validator,
+  decoder, planner, encoder, streaming-transform, and profile suite passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  1,992/1,992 under both compilers using official CMake 4.3.4; all 34 benchmark
+  smokes and schema-23 compatibility remained successful. Full target builds
+  also recompiled every existing public-header consumer under both compilers.
+
 ## 2026-08-01 - LZD plus rANS profile workspace calculation
 
 - Authoring method: derived DD-514 from marc's local LZD/rANS streaming

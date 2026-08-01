@@ -4233,6 +4233,12 @@ this existing variant-1 composition. Their fixed-width configuration and three
 opaque workspace regions change no stream byte, algorithm ID, parameter
 extension, frame rule, or validation order.
 
+The public `marc_lzd_rans_*` C requirements query and factory likewise select
+the existing LZD variant 1 plus scalar-rANS variant 1 composition. Fixed-width
+configuration and opaque direction-specific workspaces add no stream field,
+algorithm variant, parameter extension, frame rule, or altered validation
+order.
+
 The public-ABI completion matrix uses the same representation with 64-byte
 outer frames and 64-byte rANS blocks. Its alternate chunk schedules and
 malformed-final-frame cases add evidence only and do not define a new variant.

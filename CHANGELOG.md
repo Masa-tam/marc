@@ -43,8 +43,11 @@ format versions, and C ABI versions are independent namespaces.
   regions and the decoder's encoded, token, private-raw, aligned-rANS-view,
   phrase, and iterative-expansion regions. Checked partition helpers expose the
   three decoder record spans only after recomputing both offsets and the full
-  layout, and the requirements directly construct a streaming round trip. No
-  public entry point is published yet.
+  layout, and the requirements directly construct a streaming round trip. A
+  fixed-width public C config, direction-specific requirements query, and
+  immutable-direction factory now expose that streaming pair without leaking
+  private record layouts. Later completion, fuzz, CLI, benchmark, and
+  interoperability evidence remains pending.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first
