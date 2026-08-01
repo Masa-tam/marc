@@ -19,7 +19,10 @@ format versions, and C ABI versions are independent namespaces.
   caller-owned workspace before entropy processing, validates every rANS block
   before mutating private token staging, reconstructs the complete token
   region, and applies the existing LZD graph validator without expanding raw
-  bytes. No raw decoder or public entry point is published yet.
+  bytes. Its bounded private decoder now admits raw staging and the iterative
+  expansion stack before entropy work, counts both in the aggregate workspace,
+  and reconstructs only the fully validated phrase graph without publishing
+  caller-visible bytes. No public entry point is published yet.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

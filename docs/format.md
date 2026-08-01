@@ -4331,6 +4331,14 @@ alignment, references, terminal absence, phrase growth, and declared raw
 extent. This boundary reconstructs and publishes no raw bytes; later decoding
 and streaming work must retain the same validation order.
 
+The bounded private decoder additionally admits the complete declared raw
+extent and iterative expansion-stack extent before descriptor parsing and
+counts both in aggregate storage. After the entire rANS and LZD validation
+sequence succeeds, it invokes the ordinary iterative LZD decoder over the
+validated token bytes and writes exactly the declared raw extent into separate
+private staging. It publishes no caller-visible bytes, and callers discard all
+workspace contents on error.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

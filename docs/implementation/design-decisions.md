@@ -9053,6 +9053,32 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-508: LZD rANS reconstructs raw bytes only in private staging
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add private raw reconstruction above DD-507 without a caller-visible output
+boundary. Before descriptor parsing or entropy output, require the complete
+declared raw staging extent and the ordinary LZD iterative expansion extent of
+`phrase_count + 1` references. Count raw bytes and expansion records together
+with descriptors, payload, token staging, rANS views, and phrase records in
+one checked aggregate workspace bound.
+
+After DD-507 validates every entropy block and the complete LZD phrase graph,
+invoke the existing nonrecursive LZD decoder over exactly the validated token
+and phrase regions. Reconstruct exactly the declared raw extent into separate
+private staging. On any error, callers must discard token, phrase, expansion,
+and raw workspaces; this step promises no transaction over an external output
+span.
+
+Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
+four rANS blocks split references while LZD expands generated phrase 256.
+Reject raw and expansion workspaces one entry short before token mutation, and
+retain private raw bytes on malformed entropy. This step adds no public
+transactional decoder, encoder, streaming transform, profile calculator, C
+ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-507: LZD rANS validates all entropy before the phrase graph
 
 - Date: 2026-08-01

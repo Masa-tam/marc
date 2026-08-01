@@ -541,7 +541,10 @@ frame fixes the first canonical representation. Its first complete-frame
 validator now admits every encoded and caller-owned workspace extent, validates
 all rANS blocks before token mutation, reconstructs the complete private token
 region, and applies the LZD phrase-graph validator without raw expansion.
-Private raw decoding and later admission evidence remain pending.
+Private raw decoding now preflights and aggregate-counts the full raw and
+iterative expansion regions, then reconstructs only that validated graph into
+disposable staging. Transactional caller publication and later admission
+evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

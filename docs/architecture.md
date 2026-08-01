@@ -1549,7 +1549,14 @@ any token byte, then fills the complete private token region and invokes the
 ordinary LZD graph validator without expanding raw bytes. Corruption in a
 later block therefore cannot leave a partially reconstructed token region, and
 valid entropy carrying an invalid LZD graph fails only at the dictionary
-boundary. No raw decoder or public transform is published yet.
+boundary.
+
+The private raw decoder extends that same preflight with the complete declared
+raw extent and `phrase_count + 1` iterative expansion references, counting both
+in the aggregate workspace before descriptor parsing. Only after entropy and
+the complete LZD graph validate does it invoke the ordinary nonrecursive LZD
+decoder into disposable raw staging. It publishes no caller-visible output;
+short raw or expansion regions fail before token staging changes.
 
 ### tANS foundation
 

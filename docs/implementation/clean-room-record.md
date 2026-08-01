@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS private raw reconstruction
+
+- Authoring method: applied DD-508 above marc's DD-507 complete-frame validator
+  and ordinary iterative LZD decoder.
+- References used: DD-508, DD-507, the local LZD decoder and expansion bound,
+  rANS/LZD validation ordering, checked aggregate arithmetic, and caller-owned
+  private spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  decoders, phrase expansion implementations, allocation layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: admit raw and expansion storage before entropy work;
+  aggregate-count both; reuse only the completely validated phrase graph;
+  reconstruct iteratively into disposable staging; and add no external output
+  transaction.
+- Generated-code task description: extend the validator preflight and result,
+  add private raw reconstruction, raw-`A` and cross-block `ABABAB` tests, short-
+  private-region and malformed-entropy atomicity tests, and synchronize
+  changelog, format, architecture, readiness, composition, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes local validator and decoder
+  contracts with checked spans. No external reconstruction order, expansion
+  layout, buffer policy, error mapping, or test expression was compared.
+- Local validation: the focused LZD/rANS vector, validator, and private-decoder
+  suite passed 11/11 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 1,963/1,963 under both compilers using official CMake 4.3.4;
+  all 34 benchmark smokes and schema-23 compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS complete-frame validator
 
 - Authoring method: composed DD-507 directly from marc's rANS controller and

@@ -1563,6 +1563,12 @@ decoder, LZW validator, checked arithmetic, and caller-owned spans. No external
 combined decoder, allocation layout, error taxonomy, malformed corpus, source
 code, or test suite was consulted.
 
+The LZD plus rANS private raw decoder uses only DD-508, DD-507's complete
+validation boundary, marc's local iterative LZD decoder, checked workspace
+accounting, and caller-owned spans. No external combined decoder, phrase
+expansion implementation, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

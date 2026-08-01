@@ -3910,6 +3910,18 @@ to finish before the LZD validator reports its token error. Reject short view,
 token, and phrase regions, every one-byte frame truncation represented by the
 focused case, one trailing byte, and the wrong entropy pipeline.
 
+For private LZD plus rANS reconstruction, decode the frozen raw-`A` frame into
+a one-byte sentinel and require `41`. Separately serialize `(A,B), (256,256)`,
+divide its sixteen token bytes into rANS blocks of at most five symbols, and
+require raw `ABABAB`; this crosses reference, token, entropy-block, and
+generated-phrase boundaries while requiring two phrase records and three
+expansion references.
+
+Make raw staging one byte short and the expansion stack one entry short before
+entropy processing; in both cases require sentinel token staging to remain
+unchanged. Corrupt a later rANS descriptor and require the private raw sentinel
+to remain unchanged.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -238,8 +238,10 @@ validation. The independently derived raw-`A` vector fixes the complete
 593-byte frame. Its first bounded complete-frame validator now checks all
 encoded and workspace extents, validates every entropy block before private
 token mutation, reconstructs the full token region, and validates the LZD
-phrase graph without raw expansion. No raw decoder or public entry point exists
-yet.
+phrase graph without raw expansion. Its bounded private decoder additionally
+preflights and aggregate-counts raw staging and iterative expansion references,
+then reconstructs only the validated phrase graph without caller-visible
+publication. No public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
