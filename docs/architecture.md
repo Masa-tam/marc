@@ -1525,6 +1525,23 @@ rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state
 payload, and the complete 592-byte frame.
 
+### Specified LZD plus rANS boundary
+
+The next rANS composition freezes the complete canonical LZD eight-byte
+reference-pair sequence before scalar rANS sees any byte. For raw frame extent
+`F`, token bytes are bounded by `S <= 8 * ceil(F/2)` and remain a multiple of
+eight. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
+exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
+A block may split a reference or token but cannot cross an outer frame.
+
+Decoder ordering first validates every entropy block and reconstructs the
+complete private token region, then applies LZD alignment, backward-reference,
+terminal-absence, phrase-graph, and exact raw-extent validation. The initial
+raw-`A` vector independently composes the standalone LZD and rANS encoders with
+generic serializers. It fixes token bytes `41 00 00 00 FF FF FF FF`, normalized
+frequencies `00:1536`, `41:512`, `FF:2048`, the nine-byte rANS payload, and the
+complete 593-byte frame. No combined implementation is published yet.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

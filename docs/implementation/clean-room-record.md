@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS reserved representation
+
+- Authoring method: composed marc's already documented LZD reference-pair
+  grammar, scalar rANS block representation, and generic frame serialization
+  without consulting another combined format.
+- References used: DD-506, the local LZD variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame serializer,
+  checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZD/rANS
+  formats, combined codec source, archive tools, encoded corpora, and test
+  suites.
+- Independent decisions: finalize the complete eight-byte token sequence
+  before rANS; permit blocks to split references and tokens only at byte
+  boundaries; validate all entropy before the LZD graph; retain frame-local
+  reset; and freeze a sparse 593-byte raw-`A` frame.
+- Generated-code task description: specify exact IDs, parameters, token and
+  entropy boundaries, checked `S`, `K`, descriptor, `P`, phrase, expansion,
+  and frame bounds; add the standalone-component vector; and synchronize
+  changelog, format, architecture, readiness, composition, decision,
+  reference, vector-generation, and provenance records.
+- Similarity review: the composition directly sequences existing local byte-
+  stream contracts. No external combined grammar, byte layout, bound,
+  normalization table, encoded frame, naming scheme, or test expression was
+  compared.
+- Local validation: the independent LZD/rANS terminal-token vector passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed 1,953/1,953
+  under both compilers using official CMake 4.3.4; all 34 benchmark smokes and
+  schema-23 compatibility remained successful.
+
 ## 2026-08-01 - Interoperability schema 23 appends LZW plus rANS
 
 - Authoring method: applied DD-505 after the fixed `lzw-rans` CLI, completion,

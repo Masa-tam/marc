@@ -1637,6 +1637,12 @@ profile, and the repository-owned generator, verifier, and compatibility
 conversion. No external interoperability schema, manifest, archive corpus,
 source code, or test suite was consulted.
 
+The LZD plus rANS reserved representation uses only DD-506, marc's documented
+LZD variant-1 reference-pair grammar, scalar rANS variant 1, generic frame
+serialization, and the existing independent standalone encoders. No external
+LZD/rANS composition, archive format, combined-codec implementation, encoded
+corpus, source code, or test suite was consulted.
+
 Interoperability schema 16 uses only DD-401, the frozen schema-15 manifest
 order, the public `lz78-dynamic-range` CLI selector, and marc's existing
 deterministic fixture generator, strict verifier, SHA-256 metadata, and

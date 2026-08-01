@@ -22,8 +22,8 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | Specified | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Candidate | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Specified | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
 
 `lz77-rans` is the first rANS composition to receive a reserved
@@ -225,6 +225,17 @@ and schemas 1 through 22 compatibility pass. Four-direction external schema-23
 verification passed at revision
 `5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC, Ubuntu
 24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+`lzd-rans` is the fifth rANS composition to receive a reserved representation.
+LZD first freezes its complete eight-byte little-endian reference-pair stream
+with checked `S <= 8 * ceil(F/2)` and eight-byte alignment; scalar rANS then
+divides those bytes into `K = ceil(S/B)` blocks with payload bound
+`8K <= P <= S + 8K` and exact descriptor extent `528K`. A block may split a
+reference or token but cannot cross an outer frame. Entropy validation and
+complete private token reconstruction precede LZD alignment, backward phrase
+references, terminal absence, dictionary growth, and exact raw-extent
+validation. The independently derived raw-`A` vector fixes the complete
+593-byte frame. No combined implementation or public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

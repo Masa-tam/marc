@@ -7,6 +7,17 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lzd-rans` composition with a complete decoder-visible
+  representation and independent 593-byte raw-`A` frame. The finalized
+  eight-byte LZD reference-pair stream precedes scalar rANS block coding;
+  checked bounds cover `S <= 8 * ceil(F/2)`, eight-byte alignment,
+  `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes, bounded
+  phrase records, and iterative expansion storage. Every rANS block must
+  validate and reconstruct the complete private token region before LZD
+  reference, terminal-absence, phrase-graph, and exact raw-extent validation.
+  This step reserves bytes and a name without publishing a combined codec or
+  public entry point.
+
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first
   packed LZW byte stream, including zero padding, is frozen before scalar

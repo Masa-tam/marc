@@ -9053,6 +9053,42 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-506: LZD rANS preserves finalized reference pairs
+
+- Date: 2026-08-01
+- Status: accepted
+
+Reserve `lzd-rans` for LZD variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZD parameter extension,
+empty entropy parameters, and canonical eight-byte little-endian reference
+pairs. Complete the token byte stream before entropy processing. An rANS block
+may split a four-byte reference or eight-byte token but cannot split a byte or
+cross an outer frame. Reset the LZD dictionary and every rANS model and state
+at each frame.
+
+For nonempty raw frame extent `F`, require actual token extent
+`0 < S <= 8 * ceil(F/2)` with `S mod 8 = 0`, `K = ceil(S/B)` for nonzero rANS
+block size `B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`.
+Bound generated phrase records by the lesser of `floor(F/2)` and the configured
+entry limit, expansion references by that phrase count plus one, and raw frames
+by 2^20 bytes.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly `S`
+private token bytes. Only then validate eight-byte alignment, left and right
+references, terminal absence, checked phrase lengths, dictionary growth, and
+exact raw extent before any raw reconstruction or publication.
+
+For raw `A`, independently freeze LZD token bytes
+`41 00 00 00 FF FF FF FF`. Their normalized rANS model is
+`00:1536, 41:512, FF:2048`, payload is
+`82 27 A1 BD 04 00 00 00 00`, and the complete frame is 593 bytes. Prove this
+by composing only the existing standalone LZD encoder, scalar rANS encoder,
+and generic serializers. This decision specifies bytes and a reserved name
+only; it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-505: Interoperability schema 23 appends LZW rANS
 
 - Date: 2026-08-01
