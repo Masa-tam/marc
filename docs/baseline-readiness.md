@@ -550,8 +550,11 @@ bytes before per-block rANS planning, enforces the combined workspace policy,
 and reports the checked complete frame extent without serialized output.
 Its deterministic frame encoder now reproduces the independent vector,
 round-trips phrase-generating multi-block frames, and rejects short serialized
-output without publication. Streaming and later admission evidence remain
-pending.
+output without publication. Its bounded known-size streaming encoder now
+matches concatenated exact frames under one-byte I/O, preserves nonterminal
+`Flush` and sticky `EndInput`, and rejects workspace, aggregate, and protocol
+failures deterministically. Streaming decode and later admission evidence
+remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

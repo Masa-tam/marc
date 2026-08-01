@@ -1579,6 +1579,13 @@ each descriptor and payload only from the frozen token staging. Repeated block
 plans and final offsets must equal the exact plan; planner and capacity failure
 therefore occur before any serialized byte is published.
 
+The bounded known-size streaming encoder adds collection and drain state only.
+It serializes the fixed stream prefix, collects at most one raw frame, creates
+one complete immutable DD-511 frame, and drains it before accepting the next
+frame. Raw collection, token staging, complete serialized frame, and aligned
+encoder records remain caller-owned and are checked together at preparation;
+one-byte I/O and `Flush` cannot change framing or encoded bytes.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

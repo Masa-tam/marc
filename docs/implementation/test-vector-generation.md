@@ -3954,6 +3954,19 @@ serialized bytes for raw `41`; require the distinct capacity error and retain
 every destination sentinel byte. Repeat with a full 593-byte sentinel but
 empty raw input and require the planner's input-size error to preserve it too.
 
+For bounded LZD plus rANS streaming encoding, use raw `ABABX`, raw-frame size
+two, and entropy-block size two. Independently serialize the 80-byte stream
+prefix and append three one-shot frames for `AB`, `AB`, and `X` with sequences
+zero through two and committed raw offsets zero, two, and four. Feed the same
+input and collect output one byte at a time; require exact equality with that
+reference and sticky `EndOfStream`. Issue nonterminal `Flush` after only `A`
+and require only the prefix plus the unchanged later canonical frames. Present
+the complete raw input with `EndInput` on the first call while draining one
+output byte per call and require the flag to remain effective through all
+frames. Separately prove the empty 80-byte stream, raw/token/typed/frame storage
+shortages, the simultaneous-workspace sum one byte short, premature end,
+excess input, `ResetBlock`, and an unknown flag.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

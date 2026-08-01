@@ -250,7 +250,10 @@ complete serialized extent without accepting an output span. Its deterministic
 complete-frame encoder then admits the full destination, explicitly emits the
 header and every planned rANS block, reproduces the independent vector, and
 round-trips generated phrases without a partial short-capacity write. No
-public entry point exists yet.
+Its bounded known-size streaming encoder now preserves those exact bytes under
+one-byte input/output, output starvation, nonterminal `Flush`, and retained
+`EndInput`, while checking all simultaneously held caller storage. No public
+entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

@@ -4367,6 +4367,15 @@ Every repeated block extent and final offset must match the frozen plan. Raw
 byte-identical across repeated encodes and decode through the same transactional
 frame boundary.
 
+The bounded known-size streaming encoder emits the ordinary 80-byte stream
+prefix and then concatenates only those exact complete frames. It collects one
+full or final-short raw frame, plans and encodes it completely into immutable
+caller-owned storage, and drains that frame before accepting another raw byte.
+Input/output chunking, output starvation, and nonterminal `Flush` do not alter
+any byte. `EndInput` must coincide with the exact declared original extent and
+remains effective while pending prefix or frame bytes drain. `ResetBlock` is
+unsupported and creates no alternative boundary or representation.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

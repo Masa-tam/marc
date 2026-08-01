@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS bounded streaming encoder
+
+- Authoring method: wrapped DD-510 and DD-511 in marc's established immutable-
+  direction transform contract with caller-owned collection and drain storage.
+- References used: DD-512, the local complete-frame planner and encoder,
+  stream-prefix serializers, process/status invariants, checked aggregate
+  arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  streaming encoders, state machines, buffering layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: retain one complete immutable frame while draining;
+  accept no new frame input during that drain; count every simultaneously held
+  region; preserve `EndInput`; leave `Flush` nonterminal; and reject explicit
+  block reset.
+- Generated-code task description: add the known-size streaming encoder and
+  build registration; prove one-byte reference identity, flush invariance,
+  sticky end, empty streams, workspace and aggregate admission, and protocol
+  errors; synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's local transform
+  conventions and exact-frame APIs. No external state ordering, drain protocol,
+  storage organization, encoded bytes, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZD/rANS frame and streaming-encoder suite
+  passed 26/26 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,979/1,979 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS deterministic frame encoder
 
 - Authoring method: placed DD-511 directly above DD-510's exact plan and used

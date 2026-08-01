@@ -1586,6 +1586,12 @@ checked offsets, and caller-owned output. No external frame writer, combined
 encoder, serialization schedule, encoded corpus, source code, or test suite
 was consulted.
 
+The LZD plus rANS bounded streaming encoder uses only DD-512, the repository's
+immutable-direction process contract, DD-510/511 complete-frame boundaries,
+local stream-prefix serializers, checked aggregate arithmetic, and caller-owned
+storage. No external streaming implementation, state machine, buffering
+layout, encoded corpus, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase
