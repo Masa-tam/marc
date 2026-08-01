@@ -1574,6 +1574,12 @@ local private decoder, checked caller capacity, and bounded span copying. No
 external publication protocol, combined decoder, buffer layout, malformed
 corpus, source code, or test suite was consulted.
 
+The LZD plus rANS exact-frame planner uses only DD-510, marc's local LZD
+planner and encoder, scalar rANS block planner, generic frame validator,
+checked arithmetic, and caller-owned staging. No external combined encoder,
+planning control flow, capacity formula, encoded corpus, source code, or test
+suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

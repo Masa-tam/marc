@@ -4346,6 +4346,17 @@ complete success. Output is not internal workspace and is not aggregate-
 counted; excess destination capacity is untouched, and every failure preserves
 the whole destination.
 
+The exact-frame planner is the encoder-side inverse of this boundary without a
+serialized output span. It completes the deterministic LZD parse, requires the
+exact encoder-record and token-staging capacities, and serializes the complete
+canonical eight-byte token sequence before any rANS planning. It then plans
+each `B`-bounded block over those frozen bytes, accumulates exact descriptor and
+payload extents, counts encoder records, token staging, descriptors, and
+payload together under the aggregate workspace limit, validates the synthesized
+generic frame header, and reports the complete serialized extent. For raw `A`,
+the plan fixes eight token bytes, one 528-byte descriptor, nine payload bytes,
+and the 593-byte frame described above. It writes no serialized frame byte.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

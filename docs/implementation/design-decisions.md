@@ -9053,6 +9053,35 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-510: LZD rANS planning freezes canonical token bytes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a bounded write-free exact-frame planner as the inverse of DD-507 through
+DD-509. Validate the exact stream profile, LZD parameters, nonempty input, and
+frame-local limits. Determine and require the LZD encoder-record count before
+token staging can change. Plan the deterministic LZD parse, require its exact
+nonzero eight-byte-aligned extent within `S <= 8 * ceil(F/2)`, and serialize
+the complete canonical token sequence into caller-owned staging.
+
+Divide only that frozen token span into `K = ceil(S/B)` rANS blocks. Plan each
+block independently, accumulate exact payload bytes, require exact descriptor
+extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-field
+bounds. Count encoder records, token staging, all descriptors, and exact
+payload bytes against `max_internal_buffered_bytes`. Validate the synthesized
+generic frame header with sequence and already-committed-output context, then
+report the checked complete serialized extent without accepting or mutating a
+serialized output span.
+
+Prove the raw-`A` token bytes, one block, 528 descriptor bytes, nine payload
+bytes, and 593-byte extent. Repeat a phrase-generating multi-block plan byte
+identically. Reject encoder records and token staging one entry short before
+token mutation, and reject aggregate workspace one byte short, empty input,
+and a frame-size mismatch. This step adds no frame encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-509: LZD rANS publishes one complete frame transactionally
 
 - Date: 2026-08-01

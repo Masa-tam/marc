@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS exact-frame planner
+
+- Authoring method: composed DD-510 from marc's existing LZD planner and
+  encoder, scalar rANS block planner, generic frame validator, and checked
+  caller-owned staging conventions.
+- References used: DD-510, DD-506 bounds, the local LZD encoder, rANS block
+  planner, generic frame header, checked arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  encoders, planning protocols, capacity formulas, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: admit encoder records before token staging; freeze the
+  complete canonical token sequence before rANS planning; plan every block
+  without serialized output; count encoder records, tokens, descriptors, and
+  exact payload together; and validate the synthesized header last.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and phrase-block determinism, guarded
+  encoder and staging shortages, aggregate and frame-size rejection, and
+  synchronized format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation directly sequences only local
+  independently specified components and bounded spans. No external planning
+  order, workspace organization, capacity formula, encoded bytes, error
+  taxonomy, or test expression was compared.
+- Local validation: the focused LZD/rANS validator, decoder, publication, and
+  planner suite passed 18/18 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,971/1,971 under both compilers using official CMake
+  4.3.4; all 34 benchmark smokes and schema-23 compatibility remained
+  successful.
+
 ## 2026-08-01 - LZD plus rANS transactional publication
 
 - Authoring method: applied DD-509 directly above marc's DD-508 private raw

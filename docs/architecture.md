@@ -1565,6 +1565,14 @@ after success. Caller output is excluded from internal aggregate accounting;
 short capacity, malformed entropy, and invalid LZD graphs preserve every
 destination byte.
 
+The encoder-side exact-frame planner first fixes the deterministic LZD parse
+and serializes its complete canonical token sequence into caller-owned staging.
+Only that immutable byte span is divided into rANS blocks. Encoder records,
+token staging, every descriptor, and exact planned payload are checked as one
+aggregate workspace before the synthesized frame header and complete extent
+are accepted. The planner has no serialized-output span and therefore cannot
+publish a partial frame.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
