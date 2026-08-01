@@ -9906,6 +9906,38 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS profile workspace calculation
+
+- Authoring method: derived DD-514 from marc's local LZD/rANS streaming
+  constructors, LZD token and record bounds, scalar-rANS block bounds, and
+  checked alignment helpers.
+- References used: DD-514, DD-513, DD-512, the local LZD encoder and validator
+  workspace functions, scalar-rANS constants, checked arithmetic, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  workspace calculators, ABI layouts, allocation schemes, source code, and
+  test suites.
+- Independent decisions: calculate conservative token and complete-frame
+  encoder regions; aggregate-count every encoder-owned region; derive decoder
+  byte regions only from local limits; place rANS views, aligned LZD phrases,
+  and aligned expansion references in that order; and recompute the complete
+  layout before publishing typed spans.
+- Generated-code task description: add direction-specific profile and typed
+  partition helpers; freeze hand-checkable requirements; exercise limits,
+  altered layouts, short storage, stable error mapping, and a streaming round
+  trip built only from returned extents; synchronize architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: formulas directly express repository-local format bounds
+  and C++ alignment. No external sizing formula, layout, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZD/rANS validator, decoder, planner, encoder,
+  streaming-transform, and profile suite passed 38/38 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,991/1,991 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful. MSBuild required the established
+  out-of-sandbox retry after FileTracker returned `E_ACCESSDENIED`; both
+  compiler builds then completed normally.
+
 ## 2026-08-01 - LZD plus rANS bounded streaming decoder
 
 - Authoring method: combined DD-513 from marc's stream/frame parsers, DD-508

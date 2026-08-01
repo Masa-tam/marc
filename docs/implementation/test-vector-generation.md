@@ -3980,6 +3980,15 @@ the final-byte truncation, one trailing byte, `ResetBlock`, an unknown flag,
 and premature `EndInput` after only the first frame; prove the empty 80-byte
 stream and nonterminal flush starvation.
 
+For the LZD plus rANS profile calculator, freeze a ten-byte largest frame and
+four-byte rANS blocks. Require 40 maximum token bytes, ten blocks, a 5,456-byte
+complete-frame ceiling, five LZD encoder records, and their exact aligned byte
+extent. For decoding under local limits, require four rANS views followed by
+ten aligned phrase records and eleven aligned expansion references. Alter an
+offset or record count, shorten storage, and require rejection before typed
+views are published. Finally allocate every returned byte and record region and
+use only those spans to stream `ABABX` through two-byte frames and back.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

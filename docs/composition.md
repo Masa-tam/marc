@@ -249,14 +249,17 @@ checks the combined encoder/token/descriptor/payload workspace, and reports the
 complete serialized extent without accepting an output span. Its deterministic
 complete-frame encoder then admits the full destination, explicitly emits the
 header and every planned rANS block, reproduces the independent vector, and
-round-trips generated phrases without a partial short-capacity write. No
+round-trips generated phrases without a partial short-capacity write.
 Its bounded known-size streaming encoder now preserves those exact bytes under
 one-byte input/output, output starvation, nonterminal `Flush`, and retained
-`EndInput`, while checking all simultaneously held caller storage. No public
+`EndInput`, while checking all simultaneously held caller storage.
 Its matching bounded streaming decoder now admits complete encoded and private
 workspace extents from each header, validates and reconstructs one full frame
 before raw drain, and rejects malformed later frames without exposing their
-bytes. No public entry point exists yet.
+bytes. Its internal profile now derives every direction-specific byte region,
+the aligned encoder records, and the decoder's aligned rANS-view, LZD-phrase,
+and iterative-expansion regions. The returned requirements directly construct
+the bounded streaming pair. No public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

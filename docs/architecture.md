@@ -1592,6 +1592,13 @@ expansion, and private-raw extents before body collection. Only the existing
 private complete-frame decoder may transition an admitted body to raw drain,
 so malformed entropy or phrase graphs cannot expose bytes from that frame.
 
+The internal profile turns those constructor contracts into checked allocation
+requirements. Encoding derives the raw, maximum token, complete-frame, and LZD
+encoder-record regions from trusted known-size configuration. Decoding derives
+the complete encoded, token, and private-raw byte regions from local limits and
+partitions one opaque aligned region in rANS-view, LZD-phrase, expansion-stack
+order. Both partition offsets are recomputed before any typed span is exposed.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

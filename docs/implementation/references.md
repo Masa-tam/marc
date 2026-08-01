@@ -1598,6 +1598,12 @@ phrase and expansion bounds, checked aggregate arithmetic, and caller-owned
 storage. No external streaming decoder, state machine, buffering layout,
 malformed corpus, source code, or test suite was consulted.
 
+The LZD plus rANS internal profile calculator uses only DD-514, the local
+streaming constructor contracts, documented LZD token and record bounds, rANS
+block bounds, checked arithmetic, and ordinary C++ alignment rules. No external
+workspace calculator, ABI layout, allocation scheme, source code, or test suite
+was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

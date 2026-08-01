@@ -113,7 +113,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Specified | No | No | No | No | No | No | Not included |
+| `lzd-rans` | Yes | Yes | No | No | No | No | No | Not included |
 
 ## Composed-profile admission queue
 
@@ -556,7 +556,11 @@ matches concatenated exact frames under one-byte I/O, preserves nonterminal
 failures deterministically. Its matching bounded streaming decoder now admits
 complete frames before body collection and raw drain, preserves one-byte and
 sticky-end behavior, and keeps malformed later frames transactional. Profile
-calculation and later admission evidence remain pending.
+calculation now derives all encoder byte and aligned-record regions from the
+trusted profile and all decoder byte, rANS-view, phrase, and iterative expansion
+regions from local limits. Checked opaque partitioning directly constructs the
+bounded streaming round trip. Public-C admission and later evidence remain
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

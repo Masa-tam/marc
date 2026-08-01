@@ -38,8 +38,13 @@ format versions, and C ABI versions are independent namespaces.
   caller-owned workspaces and stable protocol errors. Its matching bounded
   streaming decoder now validates and privately reconstructs each complete
   frame before raw drain, supports one-byte I/O and sticky end, and prevents a
-  malformed later frame from publishing any of its bytes. No public entry point
-  is published yet.
+  malformed later frame from publishing any of its bytes. Its internal profile
+  now calculates the encoder's raw, token, complete-frame, and aligned-entry
+  regions and the decoder's encoded, token, private-raw, aligned-rANS-view,
+  phrase, and iterative-expansion regions. Checked partition helpers expose the
+  three decoder record spans only after recomputing both offsets and the full
+  layout, and the requirements directly construct a streaming round trip. No
+  public entry point is published yet.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first
