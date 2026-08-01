@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS public-ABI completion matrix
+
+- Authoring method: applied DD-516 to marc's local DD-515 C lifecycle and the
+  repository's independently authored common LZD completion schedules.
+- References used: DD-516, DD-515, the public C header, local transform
+  lifecycle, LZD token ceiling, and scalar-rANS block extent formulas.
+- Known implementations intentionally not consulted: external conformance
+  suites, LZD/rANS archives, wrappers, source code, and test expressions.
+- Independent decisions: retain one common LZD data/chunk/error schedule; add
+  representation-neutral capacity and config hooks with unchanged defaults;
+  use 64-byte frames and blocks with four-block admission; and require the
+  fourth malformed frame to preserve its final raw sentinel.
+- Generated-code task description: instantiate the common LZD public-ABI
+  matrix for rANS; cover required binary classes, deterministic repeated and
+  arbitrarily chunked streams, repeated terminal results, and corrupt,
+  truncated, and extended final-frame atomicity; retain existing LZD Adaptive
+  and Dynamic Range behavior; synchronize architecture, readiness, C API,
+  format, composition, changelog, decision, reference, vector, and provenance.
+- Similarity review: the matrix reuses only marc's local independently authored
+  schedules and public ABI. No external vector, corpus, harness, assertion
+  structure, or naming scheme was compared.
+- Local validation: the new LZD/rANS completion matrix and the unchanged LZD
+  Adaptive Huffman and Dynamic Range matrices passed 9/9 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,995/1,995 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS public C factory
 
 - Authoring method: bound DD-515 directly to marc's DD-514 profile, checked

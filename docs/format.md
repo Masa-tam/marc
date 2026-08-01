@@ -4239,6 +4239,11 @@ configuration and opaque direction-specific workspaces add no stream field,
 algorithm variant, parameter extension, frame rule, or altered validation
 order.
 
+The public-ABI completion matrix selects the same representation with 64-byte
+outer frames and 64-byte rANS blocks. Its repeated and arbitrarily chunked
+schedules plus malformed-final-frame cases are evidence only and define no new
+variant.
+
 The public-ABI completion matrix uses the same representation with 64-byte
 outer frames and 64-byte rANS blocks. Its alternate chunk schedules and
 malformed-final-frame cases add evidence only and do not define a new variant.

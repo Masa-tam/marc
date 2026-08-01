@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-516: LZD rANS completion reuses one public-ABI schedule
+
+- Date: 2026-08-01
+- Status: accepted
+
+Apply the established LZD public-ABI completion matrix to DD-515 with 64-byte
+outer frames, 64-byte rANS blocks, at most four entropy blocks per frame, and
+maximum token extent `S = 8 * ceil(64/2) = 256`. Bound each rANS payload by
+`S + 8K` and the complete frame by `56 + 528K + S + 8K`.
+
+Keep the data classes, deterministic repeated encode, one-byte and mixed chunk
+schedules, repeated terminal calls, and malformed fourth-frame schedule
+identical to the already reviewed LZD matrix. Add only representation-neutral
+test hooks for alternate payload/frame capacity and profile configuration; the
+default Adaptive and Dynamic Range instantiations must remain unchanged. The
+matrix must use only public C configuration, requirements, factory, process,
+and destroy functions. A corrupt, truncated, or extended final frame may
+publish the first three complete 64-byte frames but must leave the final raw
+byte untouched and return a stable repeated error. This step adds no fuzz,
+CLI, benchmark, interoperability entry, or `Ready` claim.
+
 ## DD-515: LZD rANS public C factory preserves opaque record layout
 
 - Date: 2026-08-01

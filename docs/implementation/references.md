@@ -1609,6 +1609,11 @@ partition helpers, marc's established opaque transform lifecycle, fixed-width C
 types, and standard C allocation in its test. No external codec ABI, wrapper,
 workspace convention, source code, or test suite was consulted.
 
+The LZD plus rANS public-ABI completion matrix uses only DD-516, DD-515's local
+C lifecycle, marc's existing independently authored LZD completion schedules,
+and the documented scalar-rANS block ceiling. No external conformance suite,
+encoded corpus, wrapper, source code, or test expression was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

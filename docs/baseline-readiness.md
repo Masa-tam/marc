@@ -113,7 +113,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Yes | Yes | Yes | No | No | No | No | Not included |
+| `lzd-rans` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -560,10 +560,13 @@ calculation now derives all encoder byte and aligned-record regions from the
 trusted profile and all decoder byte, rANS-view, phrase, and iterative expansion
 regions from local limits. Checked opaque partitioning directly constructs the
 bounded streaming round trip. Its public C requirements query and
-immutable-direction factory now
-bind those exact regions through a size-tagged fixed-width config, while all
+immutable-direction factory now bind those exact regions through a size-tagged
+fixed-width config, while all
 rANS views, phrases, expansion references, and offsets remain opaque. Public
-completion and later evidence remain pending.
+completion now covers the required binary classes, deterministic one-byte and
+mixed chunking, repeated terminal results, and frame-atomic rejection of a
+corrupt, truncated, or extended final frame through that C ABI alone. Fuzz,
+CLI, benchmark, and interoperability evidence remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

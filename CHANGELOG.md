@@ -46,8 +46,11 @@ format versions, and C ABI versions are independent namespaces.
   layout, and the requirements directly construct a streaming round trip. A
   fixed-width public C config, direction-specific requirements query, and
   immutable-direction factory now expose that streaming pair without leaking
-  private record layouts. Later completion, fuzz, CLI, benchmark, and
-  interoperability evidence remains pending.
+  private record layouts. Its public-ABI completion matrix now proves required
+  binary inputs, deterministic one-byte and mixed chunking, repeated terminal
+  results, and frame-atomic rejection of a corrupt, truncated, or extended
+  final frame. Fuzz, CLI, benchmark, and interoperability evidence remains
+  pending.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

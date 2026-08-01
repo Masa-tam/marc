@@ -261,8 +261,11 @@ the aligned encoder records, and the decoder's aligned rANS-view, LZD-phrase,
 and iterative-expansion regions. The returned requirements directly construct
 the bounded streaming pair. A size-tagged public C config, requirements query,
 and immutable-direction factory now bind those regions while keeping every
-record type and internal offset opaque. Later completion, fuzz, CLI, benchmark,
-and interoperability evidence remains pending.
+record type and internal offset opaque. Its public-ABI completion
+matrix now covers the required binary inputs, byte-identical repeated and
+arbitrarily chunked encoding, sticky terminal results, and non-publication of a
+corrupt, truncated, or extended final frame. Fuzz, CLI, benchmark, and
+interoperability evidence remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

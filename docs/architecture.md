@@ -1606,6 +1606,13 @@ only allocation authority. Factory construction repeats profile calculation,
 opaque partition validation, and alignment checks before creating an
 immutable-direction transform; no private record type enters the ABI.
 
+The public-ABI completion matrix fixes 64-byte raw frames and rANS blocks and
+uses only that allocation and transform lifecycle. It covers the required
+binary classes, deterministic repeated encoding, one-byte and mixed chunking,
+sticky terminal states, and frame-atomic rejection of a corrupt, truncated, or
+extended fourth frame. The shared LZD schedule retains its original defaults
+for the Adaptive Huffman and Dynamic Range instantiations.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -1161,6 +1161,7 @@ if(MARC_BUILD_TESTS)
         tests/lzd_rans_frame_streaming_encoder_tests.cpp
         tests/lzd_rans_frame_streaming_decoder_tests.cpp
         tests/lzd_rans_profile_tests.cpp
+        tests/lzd_rans_completion_tests.cpp
         tests/lzw_rans_frame_tests.cpp
         tests/lzw_rans_frame_streaming_encoder_tests.cpp
         tests/lzw_rans_frame_streaming_decoder_tests.cpp
