@@ -35,8 +35,11 @@ format versions, and C ABI versions are independent namespaces.
   serialized destination. Its bounded known-size streaming encoder now emits
   the ordinary prefix and exact frame sequence unchanged under one-byte I/O,
   nonterminal `Flush`, output starvation, and retained `EndInput`, with checked
-  caller-owned workspaces and stable protocol errors. No public entry point is
-  published yet.
+  caller-owned workspaces and stable protocol errors. Its matching bounded
+  streaming decoder now validates and privately reconstructs each complete
+  frame before raw drain, supports one-byte I/O and sticky end, and prevents a
+  malformed later frame from publishing any of its bytes. No public entry point
+  is published yet.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

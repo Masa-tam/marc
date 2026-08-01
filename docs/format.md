@@ -4376,6 +4376,15 @@ any byte. `EndInput` must coincide with the exact declared original extent and
 remains effective while pending prefix or frame bytes drain. `ResetBlock` is
 unsupported and creates no alternative boundary or representation.
 
+The matching bounded known-size streaming decoder first validates the complete
+80-byte prefix, then admits each generic frame header and its exact complete
+serialized extent before collecting the remaining body. It reconstructs every
+rANS block and validates the complete LZD phrase graph into private caller-owned
+storage, iteratively reconstructs the exact raw frame there, and only then
+drains raw bytes. A malformed later frame publishes none of its raw bytes;
+already completed earlier frames remain committed. Truncation, trailing bytes,
+and retained `EndInput` follow the same strict known-size contract.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

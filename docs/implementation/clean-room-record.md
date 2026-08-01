@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS bounded streaming decoder
+
+- Authoring method: combined DD-513 from marc's stream/frame parsers, DD-508
+  private complete-frame decoder, and caller-owned raw-drain state.
+- References used: DD-513, DD-508, the local rANS block-view contract, LZD
+  phrase and expansion bounds, known-size process invariants, checked
+  arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  streaming decoders, state machines, buffering layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: admit every complete frame and private region from the
+  fixed header before body collection; decode only into private raw storage;
+  drain only after success; preserve earlier committed frames; and keep errors
+  and terminal success sticky.
+- Generated-code task description: add the known-size streaming decoder and
+  build registration; prove one-byte decode, malformed-later-frame atomicity,
+  all byte and typed workspace shortages, aggregate admission, truncation,
+  trailing data, empty input, flush starvation, premature end, and protocol
+  errors; synchronize documentation and provenance.
+- Similarity review: the implementation composes only local independently
+  specified parsers, bounds, private decoding, and transform conventions. No
+  external state ordering, drain protocol, workspace organization, malformed
+  vector, error mapping, or test expression was compared.
+- Local validation: the focused LZD/rANS frame and streaming-transform suite
+  passed 31/31 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,984/1,984 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS bounded streaming encoder
 
 - Authoring method: wrapped DD-510 and DD-511 in marc's established immutable-

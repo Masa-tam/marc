@@ -1592,6 +1592,12 @@ local stream-prefix serializers, checked aggregate arithmetic, and caller-owned
 storage. No external streaming implementation, state machine, buffering
 layout, encoded corpus, source code, or test suite was consulted.
 
+The LZD plus rANS bounded streaming decoder uses only DD-513, the local stream
+and frame parsers, DD-508 private decoder, rANS view controller contract, LZD
+phrase and expansion bounds, checked aggregate arithmetic, and caller-owned
+storage. No external streaming decoder, state machine, buffering layout,
+malformed corpus, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

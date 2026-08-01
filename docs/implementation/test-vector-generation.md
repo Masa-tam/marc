@@ -3967,6 +3967,19 @@ frames. Separately prove the empty 80-byte stream, raw/token/typed/frame storage
 shortages, the simultaneous-workspace sum one byte short, premature end,
 excess input, `ResetBlock`, and an unknown flag.
 
+For bounded LZD plus rANS streaming decoding, generate the same `ABABX` stream
+through the bounded streaming encoder and feed both serialized input and raw
+output one byte at a time. Require exact raw equality and sticky
+`EndOfStream`. Locate the second frame after the first complete serialized
+extent, corrupt one later descriptor frequency byte, and require only the first
+raw `AB` frame to be published while every later destination sentinel remains
+unchanged. From the first frame header, derive exact encoded-frame, view, token,
+raw, phrase, and expansion requirements; reject each one entry short and their
+simultaneous byte sum one byte short before body reconstruction. Also reject
+the final-byte truncation, one trailing byte, `ResetBlock`, an unknown flag,
+and premature `EndInput` after only the first frame; prove the empty 80-byte
+stream and nonterminal flush starvation.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

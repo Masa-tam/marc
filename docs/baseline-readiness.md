@@ -553,8 +553,10 @@ round-trips phrase-generating multi-block frames, and rejects short serialized
 output without publication. Its bounded known-size streaming encoder now
 matches concatenated exact frames under one-byte I/O, preserves nonterminal
 `Flush` and sticky `EndInput`, and rejects workspace, aggregate, and protocol
-failures deterministically. Streaming decode and later admission evidence
-remain pending.
+failures deterministically. Its matching bounded streaming decoder now admits
+complete frames before body collection and raw drain, preserves one-byte and
+sticky-end behavior, and keeps malformed later frames transactional. Profile
+calculation and later admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

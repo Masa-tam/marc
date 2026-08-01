@@ -1586,6 +1586,12 @@ frame. Raw collection, token staging, complete serialized frame, and aligned
 encoder records remain caller-owned and are checked together at preparation;
 one-byte I/O and `Flush` cannot change framing or encoded bytes.
 
+The matching streaming decoder separates prefix, frame-header, frame-body, and
+raw-drain states. Header admission fixes complete encoded, view, token, phrase,
+expansion, and private-raw extents before body collection. Only the existing
+private complete-frame decoder may transition an admitted body to raw drain,
+so malformed entropy or phrase graphs cannot expose bytes from that frame.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

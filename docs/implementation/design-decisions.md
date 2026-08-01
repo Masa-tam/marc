@@ -9053,6 +9053,41 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-513: LZD rANS streaming decoding admits complete frames before raw drain
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder without changing DD-506
+bytes. Collect and parse the fixed 80-byte stream prefix first. For each frame,
+collect the 56-byte generic header separately and validate sequence, committed
+raw offset, exact LZD token alignment and ceiling, rANS block count,
+`528K` descriptor extent, `8K <= P <= S + 8K`, every caller-owned capacity,
+the checked complete serialized extent, and simultaneous aggregate workspace
+before copying that header into frame storage or accepting body bytes.
+
+After collecting exactly one admitted complete frame, invoke DD-508's private
+decoder through all rANS block validation, token reconstruction, LZD graph
+validation, and iterative raw reconstruction. Retain the complete raw frame in
+private caller-owned storage and drain it to arbitrary output chunks only after
+success. Count encoded frame, rANS views, token staging, raw staging, aligned
+phrase records, and expansion references together. A malformed later frame may
+not publish any byte from that frame; earlier completely drained frames remain
+committed.
+
+Preserve `EndInput` while a validated raw frame drains. Reject truncation at
+prefix, frame header, or body; trailing bytes after the declared original
+extent; malformed descriptors, payload, or LZD graph; `ResetBlock`; and unknown
+flags. Nonterminal `Flush` only exposes current starvation. Repeated calls after
+success return `EndOfStream`, and errors remain sticky with a stable serialized
+byte position.
+
+Prove one-byte input/output, atomic later-frame corruption, every typed and byte
+workspace one entry short, aggregate storage one byte short, canonical
+truncation and trailing data, empty input, flush starvation, premature end, and
+protocol errors. This step adds no profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
 ## DD-512: LZD rANS streaming encoding retains complete exact frames
 
 - Date: 2026-08-01
