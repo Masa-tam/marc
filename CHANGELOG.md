@@ -15,8 +15,11 @@ format versions, and C ABI versions are independent namespaces.
   phrase records, and iterative expansion storage. Every rANS block must
   validate and reconstruct the complete private token region before LZD
   reference, terminal-absence, phrase-graph, and exact raw-extent validation.
-  This step reserves bytes and a name without publishing a combined codec or
-  public entry point.
+  Its first bounded complete-frame validator now admits all extents and
+  caller-owned workspace before entropy processing, validates every rANS block
+  before mutating private token staging, reconstructs the complete token
+  region, and applies the existing LZD graph validator without expanding raw
+  bytes. No raw decoder or public entry point is published yet.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

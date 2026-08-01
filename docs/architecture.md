@@ -1540,7 +1540,16 @@ terminal-absence, phrase-graph, and exact raw-extent validation. The initial
 raw-`A` vector independently composes the standalone LZD and rANS encoders with
 generic serializers. It fixes token bytes `41 00 00 00 FF FF FF FF`, normalized
 frequencies `00:1536`, `41:512`, `FF:2048`, the nine-byte rANS payload, and the
-complete 593-byte frame. No combined implementation is published yet.
+complete 593-byte frame.
+
+The first combined validator admits the complete serialized extent, rANS view
+count, token staging, LZD phrase records, and aggregate workspace before
+entropy processing. It parses and validates every block before reconstructing
+any token byte, then fills the complete private token region and invokes the
+ordinary LZD graph validator without expanding raw bytes. Corruption in a
+later block therefore cannot leave a partially reconstructed token region, and
+valid entropy carrying an invalid LZD graph fails only at the dictionary
+boundary. No raw decoder or public transform is published yet.
 
 ### tANS foundation
 

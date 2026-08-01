@@ -235,7 +235,11 @@ reference or token but cannot cross an outer frame. Entropy validation and
 complete private token reconstruction precede LZD alignment, backward phrase
 references, terminal absence, dictionary growth, and exact raw-extent
 validation. The independently derived raw-`A` vector fixes the complete
-593-byte frame. No combined implementation or public entry point exists yet.
+593-byte frame. Its first bounded complete-frame validator now checks all
+encoded and workspace extents, validates every entropy block before private
+token mutation, reconstructs the full token region, and validates the LZD
+phrase graph without raw expansion. No raw decoder or public entry point exists
+yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

@@ -537,8 +537,11 @@ checks `S <= 8 * ceil(F/2)`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact
 `528K` descriptor bytes, bounded phrase records, and iterative expansion
 storage, and requires complete entropy validation before any LZD graph
 validation or raw reconstruction. An independently assembled 593-byte raw-`A`
-frame fixes the first canonical representation. Combined implementation and
-admission evidence remain pending.
+frame fixes the first canonical representation. Its first complete-frame
+validator now admits every encoded and caller-owned workspace extent, validates
+all rANS blocks before token mutation, reconstructs the complete private token
+region, and applies the LZD phrase-graph validator without raw expansion.
+Private raw decoding and later admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -9053,6 +9053,34 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-507: LZD rANS validates all entropy before the phrase graph
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the first complete-frame validator for DD-506 without reconstructing or
+publishing raw bytes. Admit the complete serialized extent, exact rANS view
+count, full token staging, bounded LZD phrase records, and their checked
+aggregate workspace before parsing descriptors or producing entropy output.
+Require DD-506's exact token ceiling and alignment, block count, descriptor
+extent, payload interval, pipeline, parameter, sequence, and frame bounds.
+
+Parse the complete descriptor region, then validate every block state path,
+terminal state, and exact payload exhaustion without output. If any block
+fails, leave the entire token staging region unchanged. Only after all blocks
+validate may the implementation decode each block into its predetermined
+private token slice. Require the slices to fill exactly the declared token
+extent, then invoke the ordinary LZD validator over the complete span.
+
+Report stable outer, controller, entropy, and LZD validation categories plus
+the failing block, token, and byte positions where available. Prove the
+independent 593-byte vector, blocks that split references and tokens, later-
+descriptor rejection before staging mutation, valid entropy carrying an
+invalid forward LZD reference, short typed and byte workspaces, truncation,
+trailing bytes, and unsupported pipelines. This step adds no raw decoder,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-506: LZD rANS preserves finalized reference pairs
 
 - Date: 2026-08-01

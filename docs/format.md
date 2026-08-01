@@ -4318,10 +4318,18 @@ Descriptor bytes 0 through 15 are
 The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 06`), 146..147 (`00 02`), and 526..527 (`00 08`). The nine payload bytes
 above immediately follow the descriptor. This sparse notation uniquely fixes
-every frame byte. This section reserves representation and name only; it
-publishes no combined validator, decoder, encoder, streaming transform, C
-factory, CLI selector, benchmark, fuzz target, completion claim, or
-interoperability entry.
+every frame byte. The independent vector invokes only standalone components.
+
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned rANS block views, token staging, and LZD
+phrase records. It checks generic extents, the token and payload ceilings, all
+caller capacities, and aggregate workspace before parsing descriptors or
+decoding entropy. Every rANS block must validate with exact payload exhaustion
+before any token byte is reconstructed. Only after all blocks succeed does it
+reconstruct the complete token region and apply the ordinary LZD validator to
+alignment, references, terminal absence, phrase growth, and declared raw
+extent. This boundary reconstructs and publishes no raw bytes; later decoding
+and streaming work must retain the same validation order.
 
 ## tANS variant 1
 

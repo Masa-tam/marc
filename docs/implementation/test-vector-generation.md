@@ -3897,6 +3897,19 @@ Serialize the sparse descriptor and append the payload; compare all 593 bytes
 with the separately recorded frame representation. Do not invoke any future
 combined LZD/rANS implementation in this vector.
 
+For the first LZD plus rANS complete-frame validator, admit the frozen raw-`A`
+frame into one rANS view, eight token staging bytes, and zero phrase records.
+Require exact extents, one validated block and token, zero generated phrases,
+and private `41 00 00 00 FF FF FF FF` reconstruction. With `B=3`, require
+three blocks that split both a four-byte reference and the eight-byte token.
+
+With `B=4`, set a reserved byte in the second descriptor and require every
+sentinel token-staging byte to remain unchanged. Separately entropy-code a
+right reference to unavailable phrase 256 and require entropy reconstruction
+to finish before the LZD validator reports its token error. Reject short view,
+token, and phrase regions, every one-byte frame truncation represented by the
+focused case, one trailing byte, and the wrong entropy pipeline.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

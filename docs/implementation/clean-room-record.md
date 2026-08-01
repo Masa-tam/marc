@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS complete-frame validator
+
+- Authoring method: composed DD-507 directly from marc's rANS controller and
+  decoder, ordinary LZD token-stream validator, generic frame parser, and
+  checked workspace conventions.
+- References used: DD-507, DD-506, the local rANS descriptor controller and
+  decoder, LZD validator, generic frame bounds, checked arithmetic, and caller-
+  owned spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  compositions, combined decoders, allocation layouts, error taxonomies,
+  malformed corpora, source code, and test suites.
+- Independent decisions: preflight every encoded and workspace extent;
+  validate all blocks before token mutation; reconstruct exactly one complete
+  private token region; invoke the existing LZD validator only afterward; and
+  publish no raw bytes.
+- Generated-code task description: add a bounded complete-frame result and
+  validator, exact extent and aggregate checks, two-pass entropy validation and
+  reconstruction, LZD graph validation, split-block and failure-atomic tests,
+  and synchronized changelog, format, architecture, readiness, composition,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation sequences local independently authored
+  boundaries and checked spans. No external combined control flow, workspace
+  layout, error mapping, malformed vector, or test expression was compared.
+- Local validation: the focused LZD/rANS vector and complete-frame validator
+  suite passed 7/7 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,959/1,959 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS reserved representation
 
 - Authoring method: composed marc's already documented LZD reference-pair
