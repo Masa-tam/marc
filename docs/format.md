@@ -4409,6 +4409,10 @@ checked complete-stream ceiling. Its untimed round-trip verification, timing
 schedule, ratio, throughput, and workspace reporting add no stream field or
 format variant.
 
+Interoperability schema 24 emits this unchanged profile as `lzd-rans` after the
+frozen thirty-four-entry schema-23 set. The schema changes only the external
+manifest profile set; it adds no stream field or format variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

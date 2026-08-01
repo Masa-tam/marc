@@ -127,7 +127,7 @@ verification passed at revision
 `checksum-raw` is the specific version 1.1 None/None profile with mandatory
 per-frame CRC-32C; the cell does not imply a generic runtime-configurable
 None/None factory. Interoperability admission is tracked separately from CLI
-publication: schema 23 contains the current published profile set, and every
+publication: schema 24 contains the current published profile set, and every
 earlier schema profile set remains exact.
 
 `lz78-rans` is the third rANS composition to receive a reserved
@@ -273,7 +273,10 @@ requirements, factory, process, and destroy lifecycle, retaining atomic file
 publication for malformed and trailing input. Its dependency-free benchmark
 uses the same public profile, preserves the odd-byte LZD half-pair in checked
 capacity, verifies a complete round trip before timing, and reports ratio,
-directional throughput, and queried workspace. Interoperability evidence
+directional throughput, and queried workspace. Interoperability schema 24 now
+appends the unchanged `lzd-rans` CLI archive once after the frozen schema-23
+order; local generation, exact-order and reordered-order checks, byte-identical
+re-encoding, and all older-schema checks pass. External cross-platform evidence
 remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a

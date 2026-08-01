@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-520: Interoperability schema 24 appends LZD rANS once
+
+- Date: 2026-08-02
+- Status: accepted
+
+Define interoperability schema 24 as the frozen schema-23 profile order followed
+once by `lzd-rans`. Set `schema_version` to 24 and `codec_set` to
+`marc-cli-v24`; require exactly 35 archives in manifest order. Keep schemas 1
+through 23 explicit and unchanged. No older schema may inherit the new profile.
+
+Generation must round-trip every archive locally before recording its size and
+SHA-256. Verification must require leaf-only names, exact profile count and
+order, recorded sizes and hashes, foreign decode equality, and byte-identical
+local re-encoding. The local compatibility regression must reject a reordered
+schema-24 manifest, derive schema 23 by removing only `lzd-rans` and restoring
+its version and codec set, then continue through every frozen older schema.
+This establishes local format determinism only; external Windows/Linux
+cross-checks remain required release evidence and no result is predicted.
+
 ## DD-519: LZD rANS benchmark retains the half-pair ceiling
 
 - Date: 2026-08-02

@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - Interoperability schema 24 admission
+
+- Authoring method: applied DD-520 by extending marc's local bundle generator,
+  strict verifier, and compatibility reducer by exactly one terminal profile.
+- References used: DD-520, the frozen schema-23 profile order, deterministic
+  local fixture generator, published `lzd-rans` CLI selector, PowerShell
+  size/SHA-256 functions, and existing schema conversion helpers.
+- Known implementations intentionally not consulted: external archives,
+  compression implementations, conformance suites, manifest formats, source
+  code, and test corpora.
+- Independent decisions: define schema 24 and `marc-cli-v24`; append
+  `lzd-rans` exactly once as archive 35; keep schema 23 unchanged; reject a
+  first-two-entry swap; derive schema 23 by removing only the new archive; and
+  retain every explicit schema through version 1.
+- Generated-code task description: update generation and verification for the
+  exact 35-profile order; add strict schema-24 dispatch and reordered-manifest
+  rejection; verify local decode and byte-identical re-encode; derive and test
+  all frozen prior schemas; synchronize interoperability, format,
+  architecture, C API, composition, readiness, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the new schema is a one-entry extension of marc's own
+  frozen manifest sequence and scripts. No external profile order, archive,
+  manifest logic, test flow, naming scheme, or code expression was compared.
+- Local validation: the focused schema-24 generation, exact-order verification,
+  reordered-manifest rejection, deterministic re-encoding, and schemas 1
+  through 23 compatibility regression passed under both MSVC and ClangCL.
+  The complete Release CTest suite passed 2,000/2,000 under both compilers
+  using official CMake 4.3.4; all 35 benchmark smokes remained successful.
+  External cross-platform artifact verification remains pending.
+
 ## 2026-08-02 - LZD plus rANS verified benchmark adapter
 
 - Authoring method: applied DD-519 to marc's dependency-free benchmark runner

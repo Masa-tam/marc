@@ -61,7 +61,11 @@ format versions, and C ABI versions are independent namespaces.
   retains the odd-byte LZD half-reference in checked capacity, verifies a
   complete round trip before timing, and reports complete-stream ratio,
   directional throughput, and all queried workspace regions. Interoperability
-  evidence remains pending.
+  schema 24 now appends the unchanged `lzd-rans` CLI archive once after the
+  frozen schema-23 order, validates all thirty-five archive hashes and order,
+  rejects reordered manifests, proves byte-identical re-encoding, and retains
+  schemas 1 through 23 unchanged. External cross-platform evidence remains
+  pending.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

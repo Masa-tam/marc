@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 23 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 24 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 23 |
+| Profile | Purpose | Local status | Interoperability schema 24 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -60,15 +60,15 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-rans` | Second rANS composition | Ready | Included |
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
-| `lzd-rans` | Fifth rANS composition | Ready | Not included |
+| `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 23 contains thirty-four archives: the frozen thirty-three-entry schema-22
-set followed by the LZW rANS profile. Schemas 1 through 22
+Schema 24 contains thirty-five archives: the frozen thirty-four-entry schema-23
+set followed by the LZD rANS profile. Schemas 1 through 23
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
-thirty-one, thirty-two, and thirty-three profiles;
+thirty-one, thirty-two, thirty-three, and thirty-four profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -79,7 +79,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 23 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 24 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -115,7 +115,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -577,7 +577,11 @@ malformed input, truncation, and trailing bytes without partial publication or
 temporary-file residue. Its public-C benchmark now retains the odd-byte
 half-reference in its checked stream ceiling, verifies a complete round trip
 before timing, and reports ratio, both throughputs, and queried workspace.
-Local readiness is complete; interoperability evidence remains pending.
+Interoperability schema 24 appends its unchanged CLI archive once after the
+frozen schema-23 order. Local generation, exact-order verification, reordered-
+manifest rejection, byte-identical re-encoding, and schemas 1 through 23
+compatibility pass. Local readiness is complete; external schema-24 cross-
+platform verification remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

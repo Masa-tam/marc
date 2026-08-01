@@ -330,7 +330,9 @@ decoder while retaining fixed caller-owned storage and call ceilings. The
 `lzd-rans` CLI selector likewise uses only this lifecycle and allocates all
 three regions from the returned sizes and alignment. The benchmark adapter
 uses the same lifecycle independently in each direction and reports those
-queried regions after an untimed verified round trip.
+queried regions after an untimed verified round trip. Interoperability schema
+24 serializes the unchanged CLI-selected C profile and introduces no ABI or
+stream-format change.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

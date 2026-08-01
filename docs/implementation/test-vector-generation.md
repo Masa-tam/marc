@@ -4040,6 +4040,16 @@ then report complete-stream ratio, both throughputs, every public workspace
 region, and the larger direction-specific caller-owned total. Retain the
 half-pair rounding explicitly so a one-byte input reserves eight token bytes.
 
+For interoperability schema 24, generate the deterministic 8,193-byte fixture
+with the unchanged repository recurrence, preserve the exact schema-23 archive
+order, and append exactly one `lzd-rans` archive as entry 35. Set
+`schema_version` to 24 and `codec_set` to `marc-cli-v24`; record every archive's
+size and SHA-256 only after local round-trip success. Verify exact order,
+leaf-only names, hashes, foreign decoding, and byte-identical local re-encoding.
+Swap the first two manifest entries and require rejection. Derive schema 23 by
+removing only `lzd-rans`, restoring `marc-cli-v23`, and then verify the unchanged
+schemas 23 through 1.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

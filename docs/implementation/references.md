@@ -1631,6 +1631,12 @@ marc's dependency-free benchmark runner, checked half-pair and frame arithmetic,
 and the published C lifecycle. No external LZD/rANS benchmark, wrapper,
 measurement result, source code, or capacity formula was consulted.
 
+Interoperability schema 24 uses only DD-520, the frozen schema-23 profile order,
+marc's deterministic 8,193-byte fixture, the published `lzd-rans` selector,
+PowerShell file/hash facilities, and the repository's existing bundle scripts.
+No external archive, codec implementation, conformance suite, manifest design,
+source code, or test corpus was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase
