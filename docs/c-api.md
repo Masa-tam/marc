@@ -324,7 +324,9 @@ limit. The internal record types and partition offsets do not cross the ABI.
 The public completion matrix uses only this lifecycle with 64-byte frames and
 blocks and covers required binary inputs, deterministic repeated and arbitrarily
 chunked encoding, sticky terminal results, and frame-atomic rejection of a
-corrupt, truncated, or extended final frame.
+corrupt, truncated, or extended final frame. The bounded decoder fuzz boundary
+exercises this same public lifecycle alongside the private complete-frame
+decoder while retaining fixed caller-owned storage and call ceilings.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

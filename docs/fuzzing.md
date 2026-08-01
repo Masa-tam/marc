@@ -1,6 +1,6 @@
 # Fuzzing
 
-The thirty-three bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The thirty-four bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
 Dynamic Range, LZ77 plus rANS, LZSS plus rANS, LZ78 plus rANS,
@@ -8,7 +8,7 @@ LZSS plus Blocked Huffman,
 LZSS plus Adaptive Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked
 Huffman, LZ78 plus Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus
 Blocked Huffman, LZW plus Adaptive Huffman, LZW plus Dynamic Range,
-LZD plus Adaptive Huffman,
+LZD plus Adaptive Huffman, LZD plus rANS,
 LZD plus Dynamic Range,
 LZD plus Blocked Huffman, LZMW plus Blocked Huffman, LZMW plus Adaptive
 Huffman, LZMW plus Dynamic Range, and checksum-raw profiles. Targets
@@ -113,6 +113,14 @@ The combined LZD plus Dynamic Range target retains those fixed LZD byte,
 phrase, expansion, dual-decoder, and call-ceiling policies while selecting the
 16-byte range descriptor and an 8 KiB payload cap. No serialized extent can
 resize its caller-owned arrays.
+The combined LZD plus rANS target caps supplied input at 8 KiB, total raw
+output and token staging at 4 KiB, one raw frame at 1 KiB, payload at 16 KiB,
+and metadata at eight `RansBlockView` records. The frame limit admits 512 LZD
+phrases and 513 iterative expansion references. Both the private complete-frame
+decoder and public C ABI streaming decoder use fixed arrays; the public query
+may bind only compile-time-bounded primary, secondary, and aligned opaque-view
+storage. Byte-derived chunks and the independent 12,320-call ceiling make
+stalls reproducible without input-controlled allocation.
 The combined LZMW plus Adaptive Huffman target also exercises exact-frame and
 incremental decode. It caps supplied input and Adaptive payload at 8 KiB,
 total raw output and canonical reference staging at 4 KiB, and one raw frame
@@ -208,6 +216,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz78_rans_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzw_rans_stream \
+  marc_fuzz_lzd_rans_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
   marc_fuzz_lzd_dynamic_range_stream \
   marc_fuzz_lzmw_adaptive_huffman_stream \
@@ -251,6 +260,8 @@ out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \
   fuzz/corpus/lzw_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_rans_stream \
   fuzz/corpus/lzw_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzd_rans_stream \
+  fuzz/corpus/lzd_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_adaptive_huffman_stream \
   fuzz/corpus/lzd_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_dynamic_range_stream \

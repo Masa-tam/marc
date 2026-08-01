@@ -4009,6 +4009,16 @@ identical bytes and raw output. Corrupt, truncate, and extend the fourth frame;
 require exactly the first 192 raw bytes, an untouched final sentinel, and a
 stable repeated terminal error.
 
+For LZD plus rANS fuzz regressions, generate canonical `ABABX` through the local
+streaming encoder with one five-byte frame and one 16-byte entropy block.
+Present every strict prefix to a fresh decoder and require zero publication
+plus a stable repeated error. Separately overwrite generic-frame extent fields
+at offsets 16 through 39 with `ff`, and set byte 10 of the first 528-byte rANS
+descriptor to one; both complete inputs must fail atomically. The fuzz entry
+caps input at 8,192 bytes and drives both private complete-frame and public C
+streaming decode with fixed arrays, byte-derived chunks, and an independent
+12,320-call ceiling.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

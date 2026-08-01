@@ -9053,6 +9053,32 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-517: LZD rANS fuzzing fixes both decoder allocation boundaries
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add one bounded fuzz entry that presents each input first to the private
+complete-frame decoder after strict prefix and parameter admission, then to the
+public C streaming decoder created only through DD-515. Cap consumed fuzz bytes
+at 8,192, total raw output at 4,096, one raw frame at 1,024, token staging at
+4,096, compressed payload at 16,384, dictionary records at 512 phrases plus
+513 iterative expansion references, and rANS views at eight blocks. Derive
+fixed byte arrays and aligned opaque storage conservatively from those bounds;
+abort if the public requirements query exceeds them.
+
+Choose input and output chunks from bounded bytes, but cap total process calls
+independently at input cap plus output cap plus 32. Abort on invalid accounting,
+zero-progress `Progress`, impossible starvation after all input, or exhaustion
+of the finite call budget. Treat an ordinary decoder error, successful end, or
+full bounded output as a valid fuzz outcome.
+
+Freeze permanent regressions for every strict prefix of one canonical `ABABX`
+stream, saturated generic frame extents, and a nonzero rANS descriptor reserved
+byte. Each must publish zero bytes from its only frame, preserve raw sentinels,
+and return the same error code and byte position on repetition. This step adds
+no CLI, benchmark, interoperability entry, or `Ready` claim.
+
 ## DD-516: LZD rANS completion reuses one public-ABI schedule
 
 - Date: 2026-08-01

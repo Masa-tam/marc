@@ -113,7 +113,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzd-rans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -565,8 +565,12 @@ fixed-width config, while all
 rANS views, phrases, expansion references, and offsets remain opaque. Public
 completion now covers the required binary classes, deterministic one-byte and
 mixed chunking, repeated terminal results, and frame-atomic rejection of a
-corrupt, truncated, or extended final frame through that C ABI alone. Fuzz,
-CLI, benchmark, and interoperability evidence remains pending.
+corrupt, truncated, or extended final frame through that C ABI alone. A bounded
+dual-path decoder fuzz target now fixes all serialized, raw, entropy-view,
+phrase, expansion, and call-count ceilings before processing arbitrary input;
+strict truncation, reserved descriptor bytes, and saturated frame extents are
+permanent regressions. CLI, benchmark, and interoperability evidence remains
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

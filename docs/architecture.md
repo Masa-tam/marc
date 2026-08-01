@@ -1613,6 +1613,16 @@ sticky terminal states, and frame-atomic rejection of a corrupt, truncated, or
 extended fourth frame. The shared LZD schedule retains its original defaults
 for the Adaptive Huffman and Dynamic Range instantiations.
 
+The bounded decoder fuzz boundary drives both the private complete-frame
+decoder and the public C streaming lifecycle. Fixed caller-owned arrays cap
+serialized input at 8 KiB, total raw output at 4 KiB, one raw frame at 1 KiB,
+rANS payload at 16 KiB, entropy metadata at eight block views, LZD phrase state
+at 512 records, and iterative expansion state at 513 records. Input-derived
+chunk sizes remain modulo bounded, and a fixed call ceiling turns any stalled
+state machine into a reproducible invariant failure. Ordinary builds compile
+the harness without executing a sanitizer campaign; canonical strict-prefix,
+reserved-field, and saturated-frame-extent cases remain permanent tests.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -264,8 +264,11 @@ and immutable-direction factory now bind those regions while keeping every
 record type and internal offset opaque. Its public-ABI completion
 matrix now covers the required binary inputs, byte-identical repeated and
 arbitrarily chunked encoding, sticky terminal results, and non-publication of a
-corrupt, truncated, or extended final frame. Fuzz, CLI, benchmark, and
-interoperability evidence remains pending.
+corrupt, truncated, or extended final frame. Its bounded dual-boundary decoder
+fuzz target now exercises the private complete-frame parser and public C
+streaming lifecycle under fixed byte, record, metadata, and call-count ceilings;
+canonical truncation and malformed-metadata findings are permanent regressions.
+CLI, benchmark, and interoperability evidence remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

@@ -9906,6 +9906,40 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS bounded decoder fuzz boundary
+
+- Authoring method: applied DD-517 independently to marc's local private
+  complete-frame decoder and DD-515 public C lifecycle using fixed
+  caller-owned arrays and the repository's ordinary process invariants.
+- References used: DD-517, DD-515, the local LZD/rANS frame and streaming
+  decoders, checked profile arithmetic, and the repository-generated canonical
+  `ABABX` stream.
+- Known implementations intentionally not consulted: external LZD/rANS
+  fuzzers, corpora, mutation dictionaries, crash reports, sanitizer harnesses,
+  source code, and test suites.
+- Independent decisions: cap arbitrary serialized input at 8 KiB, total raw
+  publication at 4 KiB, one raw frame at 1 KiB, entropy payload at 16 KiB,
+  entropy metadata at eight views, phrases at 512 records, expansion at 513
+  records, chunks modulo 17 and 19, and calls at 12,320; admit the private path
+  only after strict prefix and fixed-parameter checks; keep ordinary local
+  validation to compile-smoke and permanent deterministic regressions.
+- Generated-code task description: add a bounded dual-path decoder harness;
+  compile it in ordinary builds and expose a sanitizer/libFuzzer target where
+  supported; add canonical truncation, saturated frame-extent, and reserved
+  descriptor-byte regressions; synchronize fuzzing, architecture, composition,
+  readiness, C API, changelog, decision, reference, vector, and provenance
+  records.
+- Similarity review: the harness follows marc's existing local ownership and
+  process contracts and uses only repository-authored inputs. No external
+  corpus, harness structure, mutation logic, assertion, naming scheme, or code
+  expression was compared.
+- Local validation: the focused LZD/rANS fuzz-regression, completion, and
+  profile suite passed 13/13 under both MSVC and ClangCL. The compile-smoke
+  harness and complete Release CTest suite passed under both compilers using
+  official CMake 4.3.4, with 1,998/1,998 tests in each suite; all 34 benchmark
+  smokes and schema-23 compatibility remained successful. No sanitizer fuzz
+  campaign was run as part of this ordinary local validation.
+
 ## 2026-08-01 - LZD plus rANS public-ABI completion matrix
 
 - Authoring method: applied DD-516 to marc's local DD-515 C lifecycle and the

@@ -1614,6 +1614,12 @@ C lifecycle, marc's existing independently authored LZD completion schedules,
 and the documented scalar-rANS block ceiling. No external conformance suite,
 encoded corpus, wrapper, source code, or test expression was consulted.
 
+The LZD plus rANS dual-boundary fuzzer and permanent regressions use only
+DD-517, marc's local complete-frame decoder, DD-515 public C lifecycle,
+fixed-array limit arithmetic, local process-result invariants, and a
+repository-generated canonical stream. No external fuzz harness, corpus,
+malformed archive, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase
