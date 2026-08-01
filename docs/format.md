@@ -4357,6 +4357,16 @@ generic frame header, and reports the complete serialized extent. For raw `A`,
 the plan fixes eight token bytes, one 528-byte descriptor, nine payload bytes,
 and the 593-byte frame described above. It writes no serialized frame byte.
 
+The deterministic complete-frame encoder invokes that plan before considering
+its serialized destination and rejects a destination one byte short without
+changing it. It explicitly writes the generic header, replans every rANS block
+over the unchanged token staging, serializes all descriptors into the declared
+descriptor region, and encodes each payload into its exact planned region.
+Every repeated block extent and final offset must match the frozen plan. Raw
+`A` reproduces the complete 593-byte vector above; phrase-generating inputs are
+byte-identical across repeated encodes and decode through the same transactional
+frame boundary.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

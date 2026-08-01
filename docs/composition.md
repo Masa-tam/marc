@@ -246,8 +246,11 @@ capacity and copies the private raw extent once only after every layer
 succeeds, preserving all output on failure. Its write-free exact-frame planner
 now freezes deterministic LZD token bytes before planning each rANS block,
 checks the combined encoder/token/descriptor/payload workspace, and reports the
-complete serialized extent without accepting an output span. No public entry
-point exists yet.
+complete serialized extent without accepting an output span. Its deterministic
+complete-frame encoder then admits the full destination, explicitly emits the
+header and every planned rANS block, reproduces the independent vector, and
+round-trips generated phrases without a partial short-capacity write. No
+public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

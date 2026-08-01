@@ -3943,6 +3943,17 @@ complete token sentinel remains unchanged. Under block size eight, count
 `8 + 528 + 9 = 545` aggregate bytes and reject a 544-byte policy. Also reject
 empty input and a declared frame extent different from the supplied input.
 
+For deterministic LZD plus rANS frame encoding, pass raw `41` through the
+exact planner and encoder with a 593-byte destination, then compare every byte
+with the independently assembled frame rather than only decoding it. For raw
+`ABABAB` with block size five, plan once, encode twice into differently seeded
+destinations, require complete byte identity, and transactionally decode the
+result through four rANS views, sixteen token bytes, two phrase records, three
+expansion references, and six private raw bytes. Finally provide only 592
+serialized bytes for raw `41`; require the distinct capacity error and retain
+every destination sentinel byte. Repeat with a full 593-byte sentinel but
+empty raw input and require the planner's input-size error to preserve it too.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

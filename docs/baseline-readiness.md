@@ -548,7 +548,10 @@ destination and performs one exact copy only after private success, preserving
 all output on failure. Its exact-frame planner now fixes canonical LZD token
 bytes before per-block rANS planning, enforces the combined workspace policy,
 and reports the checked complete frame extent without serialized output.
-Deterministic frame encoding and later admission evidence remain pending.
+Its deterministic frame encoder now reproduces the independent vector,
+round-trips phrase-generating multi-block frames, and rejects short serialized
+output without publication. Streaming and later admission evidence remain
+pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -28,8 +28,11 @@ format versions, and C ABI versions are independent namespaces.
   byte on failure. Its exact-frame planner now freezes the complete canonical
   LZD token stream before planning every rANS block, checks encoder records,
   token staging, descriptors, and exact payload under one aggregate limit, and
-  reports the complete serialized extent without writing frame output. No
-  public entry point is published yet.
+  reports the complete serialized extent without writing frame output. Its
+  deterministic complete-frame encoder now reproduces the independent
+  593-byte vector, emits phrase-generating multi-block frames byte-identically,
+  round-trips them through the transactional decoder, and preserves a short
+  serialized destination. No public entry point is published yet.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

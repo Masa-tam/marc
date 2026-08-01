@@ -42,6 +42,7 @@ enum class LzdRansFrameValidationError : std::uint8_t {
     encoder_workspace_too_small,
     dictionary_encode_error,
     entropy_encode_error,
+    serialized_output_too_small,
 };
 
 struct LzdRansFrameValidationResult {
@@ -64,6 +65,8 @@ struct LzdRansFrameValidationResult {
         entropy::internal::RansControllerError::none};
     entropy::internal::RansDecodeError entropy_error{
         entropy::internal::RansDecodeError::none};
+    entropy::internal::RansFormatError descriptor_error{
+        entropy::internal::RansFormatError::none};
     dictionary::internal::LzdValidationError dictionary_error{
         dictionary::internal::LzdValidationError::none};
     dictionary::internal::LzdFormatError dictionary_format_error{
@@ -89,6 +92,19 @@ struct LzdRansFrameValidationResult {
     std::span<const std::byte> input,
     std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing the generic header, rANS descriptors, or
+// payloads. All caller-owned regions must be mutually non-overlapping.
+[[nodiscard]] LzdRansFrameValidationResult encode_lzd_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Validates every rANS block before reconstructing the private canonical LZD
 // token region, then validates the complete phrase graph without expanding or

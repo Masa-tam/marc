@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-511: LZD rANS encoding is plan-first and deterministic
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-510. Invoke the exact
+planner first so canonical LZD token bytes, exact rANS block count, descriptor
+extent, payload extent, generic frame fields, and aggregate workspace are fixed
+before serialized output is considered. Require destination capacity for the
+complete planned extent before writing any serialized byte.
+
+Serialize the generic frame header explicitly. Replan each rANS block over the
+unchanged token staging, require every payload extent and final aggregate
+offset to match DD-510, serialize every 528-byte descriptor into the complete
+descriptor region, and encode each payload into its exact planned region. The
+raw-`A` input must reproduce the independent 593-byte frame exactly.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Every planner failure and short destination must leave
+the whole serialized destination unchanged. Prove deterministic byte identity
+and transactional decode for a phrase-generating frame split across rANS block
+boundaries. This step adds no streaming transform, profile calculator, C ABI,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-510: LZD rANS planning freezes canonical token bytes
 
 - Date: 2026-08-01

@@ -1573,6 +1573,12 @@ aggregate workspace before the synthesized frame header and complete extent
 are accepted. The planner has no serialized-output span and therefore cannot
 publish a partial frame.
 
+The matching complete-frame encoder is plan-first. It admits the entire
+serialized destination, writes the generic header explicitly, and regenerates
+each descriptor and payload only from the frozen token staging. Repeated block
+plans and final offsets must equal the exact plan; planner and capacity failure
+therefore occur before any serialized byte is published.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
