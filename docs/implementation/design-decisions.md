@@ -9053,6 +9053,40 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-521: LZMW rANS preserves finalized phrase references
+
+- Date: 2026-08-02
+- Status: accepted
+
+Reserve `lzmw-rans` for LZMW variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZMW parameter extension,
+empty entropy parameters, and canonical four-byte little-endian phrase
+references. Complete the reference byte stream before entropy processing. An
+rANS block may split a reference but cannot split a byte or cross an outer
+frame. Reset the LZMW dictionary and every rANS model and state at each frame.
+
+For nonempty raw frame extent `F`, require actual reference extent
+`0 < S <= 4F` with `S mod 4 = 0`, `K = ceil(S/B)` for nonzero rANS block size
+`B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
+phrase records by the lesser of `max(F - 1, 0)` and the configured entry limit,
+expansion references by that phrase count plus one, and raw frames by 2^20
+bytes.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly `S`
+private reference bytes. Only then validate four-byte alignment, literal or
+previously generated references, checked adjacent-phrase growth, and exact raw
+extent before any raw reconstruction or publication.
+
+For raw `A`, independently freeze LZMW reference bytes `41 00 00 00`. Their
+normalized rANS model is `00:3072, 41:1024`, payload is
+`00 1C A1 BD 04 00 00 00`, and the complete frame is 592 bytes. Prove this by
+composing only the existing standalone LZMW encoder, scalar rANS encoder, and
+generic serializers. This decision specifies bytes and a reserved name only;
+it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-520: Interoperability schema 24 appends LZD rANS once
 
 - Date: 2026-08-02

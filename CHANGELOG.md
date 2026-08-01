@@ -7,6 +7,16 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lzmw-rans` composition with a complete decoder-visible
+  representation and independent 592-byte raw-`A` frame. The finalized
+  four-byte LZMW phrase-reference stream precedes scalar rANS block coding;
+  checked bounds cover `S <= 4F`, four-byte alignment, `K = ceil(S/B)`,
+  `8K <= P <= S + 8K`, exact `528K` descriptor bytes, bounded phrase records,
+  and iterative expansion storage. Every rANS block must validate and
+  reconstruct the complete private reference region before LZMW reference,
+  adjacent-phrase-graph, and exact raw-extent validation. This step reserves
+  bytes and a name without publishing a combined codec or public entry point.
+
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized
   eight-byte LZD reference-pair stream precedes scalar rANS block coding;

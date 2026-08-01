@@ -4413,6 +4413,75 @@ Interoperability schema 24 emits this unchanged profile as `lzd-rans` after the
 frozen thirty-four-entry schema-23 set. The schema changes only the external
 manifest profile set; it adds no stream field or format variant.
 
+## LZMW variant 1 plus rANS variant 1
+
+The reserved composition name is `lzmw-rans`. Format version 1.0 uses
+dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 4,
+entropy variant 1, the ordinary 16-byte LZMW parameter extension, and no
+entropy parameter bytes. Both algorithms reset at every outer frame.
+
+LZMW first completes its canonical sequence of four-byte little-endian phrase
+references. Scalar rANS then divides those finalized bytes into blocks without
+interpreting reference boundaries. An rANS block may split a reference but
+cannot split a byte or cross an outer frame.
+
+For nonempty raw frame size `F`, actual reference extent `S`, nonzero rANS
+block size `B`, block count `K`, and payload extent `P`, require checked
+arithmetic for:
+
+```text
+0 < S <= 4F
+S mod 4 = 0
+K = ceil(S / B)
+descriptor bytes = 528K
+8K <= P <= S + 8K
+```
+
+At most `max(F - 1, 0)` adjacent phrase pairs can create generated entries.
+The phrase-record count is the lesser of that value and the configured LZMW
+maximum; iterative expansion requires at most that phrase count plus one
+reference. The format-level raw-frame cap remains 2^20 bytes. Empty known-size
+streams contain only the ordinary 80-byte stream prefix and no frame.
+
+Decoding validates the generic frame extents and every rANS descriptor, model,
+state path, terminal state, and exact payload exhaustion before reconstructing
+exactly `S` private reference bytes. Only then may it validate four-byte
+alignment, literal or previously generated references, checked adjacent-phrase
+growth, and the exact declared raw extent. Raw reconstruction and caller-
+visible publication are later transactional steps and are not part of this
+initial reserved representation.
+
+For raw `A`, standalone LZMW emits:
+
+```text
+41 00 00 00
+```
+
+With `B = 65,536`, scalar rANS normalizes frequencies to `00:3072` and
+`41:1024`. Its eight-byte payload is:
+
+```text
+00 1C A1 BD 04 00 00 00
+```
+
+The complete frame is 592 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 04 00 00 00 08 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`04 00 00 00 08 00 00 00 0C 00 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 0C`) and 146..147 (`00 04`). The eight payload bytes above immediately
+follow the descriptor. This sparse notation uniquely fixes every frame byte.
+This section reserves representation and name only; it publishes no combined
+validator, decoder, encoder, streaming transform, C factory, CLI selector,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

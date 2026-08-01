@@ -1637,6 +1637,12 @@ PowerShell file/hash facilities, and the repository's existing bundle scripts.
 No external archive, codec implementation, conformance suite, manifest design,
 source code, or test corpus was consulted.
 
+The LZMW plus rANS reserved representation uses only DD-521, marc's documented
+LZMW variant-1 phrase-reference grammar, scalar rANS variant 1, generic frame
+serialization, and the existing independent standalone encoders. No external
+LZMW/rANS composition, archive format, combined-codec implementation, encoded
+corpus, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

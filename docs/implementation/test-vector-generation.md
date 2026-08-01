@@ -4050,6 +4050,18 @@ Swap the first two manifest entries and require rejection. Derive schema 23 by
 removing only `lzd-rans`, restoring `marc-cli-v23`, and then verify the unchanged
 schemas 23 through 1.
 
+For the first LZMW plus rANS vector, begin with raw byte `41` and independently
+derive canonical reference bytes `41 00 00 00`. Feed exactly those four
+finalized bytes to standalone scalar rANS block planning. Require normalized
+frequencies `00:3072` and `41:1024`, followed by payload
+`00 1C A1 BD 04 00 00 00`.
+
+Independently serialize a generic header declaring raw extent 1, dictionary
+extent 4, payload extent 8, one entropy block, and 528 descriptor bytes.
+Serialize the sparse descriptor and append the payload; compare all 592 bytes
+with the separately recorded frame representation. Do not invoke any future
+combined LZMW/rANS implementation in this vector.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

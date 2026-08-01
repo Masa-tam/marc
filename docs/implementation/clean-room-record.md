@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS reserved representation
+
+- Authoring method: composed marc's already documented LZMW phrase-reference
+  grammar, scalar rANS block representation, and generic frame serialization
+  without consulting another combined format.
+- References used: DD-521, the local LZMW variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame serializer,
+  checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  formats, combined codec source, archive tools, encoded corpora, and test
+  suites.
+- Independent decisions: finalize the complete four-byte reference sequence
+  before rANS; permit blocks to split references only at byte boundaries;
+  validate all entropy before the LZMW graph; retain frame-local reset; and
+  freeze a sparse 592-byte raw-`A` frame.
+- Generated-code task description: specify exact IDs, parameters, reference and
+  entropy boundaries, checked `S`, `K`, descriptor, `P`, phrase, expansion,
+  and frame bounds; add the standalone-component vector; and synchronize
+  changelog, format, architecture, readiness, composition, decision,
+  reference, vector-generation, and provenance records.
+- Similarity review: the composition directly sequences existing local byte-
+  stream contracts. No external combined grammar, byte layout, bound,
+  normalization table, encoded frame, naming scheme, or test expression was
+  compared.
+- Local validation: the independent LZMW/rANS single-reference vector passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,001/2,001 under both compilers using official CMake 4.3.4; all 35
+  benchmark smokes and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - Interoperability schema 24 admission
 
 - Authoring method: applied DD-520 by extending marc's local bundle generator,

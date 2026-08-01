@@ -1644,8 +1644,28 @@ frozen schema-23 order. The generator round-trips all thirty-five archives
 before recording size and SHA-256; the verifier requires exact order, hashes,
 foreign decode equality, and byte-identical local re-encoding. The compatibility
 regression rejects reordered schema 24, removes only `lzd-rans` to reconstruct
-schema 23, and then verifies every frozen schema through version 1. External
-cross-platform evidence remains a separate gate.
+schema 23, and then verifies every frozen schema through version 1. The
+four-direction schema-24 cross-check passed at revision
+`dad3638da2acb449afca969176194bf8323309f5` across the recorded Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
+
+### Specified LZMW plus rANS boundary
+
+The sixth rANS composition freezes the complete canonical LZMW four-byte
+phrase-reference sequence before scalar rANS sees any byte. For raw frame
+extent `F`, reference bytes are bounded by `S <= 4F` and remain a multiple of
+four. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
+exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
+A block may split a reference but cannot cross an outer frame.
+
+Decoder ordering first validates every entropy block and reconstructs the
+complete private reference region, then applies LZMW alignment, literal-or-
+prior-reference, adjacent-phrase-graph, and exact raw-extent validation. The
+initial raw-`A` vector independently composes the standalone LZMW and rANS
+encoders with generic serializers. It fixes reference bytes `41 00 00 00`,
+normalized frequencies `00:3072` and `41:1024`, the eight-byte rANS payload,
+and the complete 592-byte frame. No combined implementation or public entry
+point is implied by this reserved boundary.
 
 ### tANS foundation
 

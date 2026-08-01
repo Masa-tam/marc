@@ -61,6 +61,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
+| `lzmw-rans` | Sixth rANS composition | Specified | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 24 contains thirty-five archives: the frozen thirty-four-entry schema-23
@@ -116,6 +117,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzmw-rans` | Specified | No | No | No | No | No | No | Not included |
 
 ## Composed-profile admission queue
 
@@ -583,6 +585,15 @@ manifest rejection, byte-identical re-encoding, and schemas 1 through 23
 compatibility pass. Four-direction external schema-24 verification passed at
 revision `dad3638da2acb449afca969176194bf8323309f5` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+`lzmw-rans` is now the active admission composition. Its initial specification
+freezes the complete four-byte LZMW reference sequence before scalar rANS,
+checks `S <= 4F`, four-byte alignment, `K = ceil(S/B)`,
+`8K <= P <= S + 8K`, exact `528K` descriptor bytes, bounded phrase records,
+and iterative expansion storage, and requires complete entropy validation
+before any LZMW graph validation or raw reconstruction. An independently
+assembled 592-byte raw-`A` frame fixes the first canonical representation.
+Combined implementation and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

@@ -1176,6 +1176,7 @@ if(MARC_BUILD_TESTS)
         tests/lz78_rans_vector_tests.cpp
         tests/lzw_rans_vector_tests.cpp
         tests/lzd_rans_vector_tests.cpp
+        tests/lzmw_rans_vector_tests.cpp
         tests/lzd_rans_frame_tests.cpp
         tests/lzd_rans_frame_streaming_encoder_tests.cpp
         tests/lzd_rans_frame_streaming_decoder_tests.cpp
