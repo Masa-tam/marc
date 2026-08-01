@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-509: LZD rANS publishes one complete frame transactionally
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-508. Before descriptor
+parsing, entropy output, token mutation, or private raw mutation, require output
+capacity for the complete declared raw extent. Output is not internal workspace
+and must not be included in the aggregate-buffer limit.
+
+Retain DD-507's complete entropy and phrase-graph validation and DD-508's
+private iterative reconstruction unchanged. Only after both succeed, copy
+exactly the declared raw extent once from private staging to caller output.
+Leave excess output capacity untouched. Any capacity, header, entropy,
+dictionary, workspace, or reconstruction failure must preserve the entire
+caller output.
+
+Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
+`ABABAB` publication, output capacity one byte short before private mutation,
+and complete output preservation for malformed later entropy and valid entropy
+carrying an invalid LZD forward reference. This step adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-508: LZD rANS reconstructs raw bytes only in private staging
 
 - Date: 2026-08-01

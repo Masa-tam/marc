@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-01 - LZD plus rANS transactional publication
+
+- Authoring method: applied DD-509 directly above marc's DD-508 private raw
+  decoder using the repository's established one-copy publication boundary.
+- References used: DD-509, DD-508, the local private decoder, checked caller
+  capacity, bounded spans, and standard copy semantics.
+- Known implementations intentionally not consulted: external LZD/rANS
+  decoders, publication protocols, buffer layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: preflight the complete caller destination before any
+  private mutation; exclude output from aggregate workspace; copy exactly once
+  after private success; preserve excess capacity; and preserve all output on
+  every failure.
+- Generated-code task description: extend shared preflight with output
+  capacity, add transactional complete-frame publication, raw-`A` and generated-
+  phrase success tests, short-output and layered-failure atomicity tests, and
+  synchronize changelog, format, architecture, readiness, composition,
+  decision, reference, vector, and provenance records.
+- Similarity review: the boundary adds only a checked destination and final
+  standard copy above local private decoding. No external transaction flow,
+  publication order, buffer policy, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZD/rANS vector, validator, private-decoder,
+  and transactional-publication suite passed 15/15 under both MSVC and
+  ClangCL. The complete Release suite passed 1,967/1,967 under both compilers
+  using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS private raw reconstruction
 
 - Authoring method: applied DD-508 above marc's DD-507 complete-frame validator
