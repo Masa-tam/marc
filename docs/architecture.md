@@ -1631,6 +1631,13 @@ the common temporary-file transaction, so invalid or trailing input, output
 collision, allocation failure, or codec failure cannot publish the requested
 destination or leave its sibling temporary file.
 
+The dependency-free benchmark selects that same public profile. Its checked
+complete-stream capacity retains LZD's absent-right half-reference for odd
+input, verifies a byte-exact public-ABI round trip before timing, and then
+reports encoded ratio, encode/decode throughput, all queried workspace regions,
+and the larger caller-owned total. Smoke measurements establish wiring and
+correctness only, not representative performance.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

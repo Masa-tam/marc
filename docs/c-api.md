@@ -328,7 +328,9 @@ corrupt, truncated, or extended final frame. The bounded decoder fuzz boundary
 exercises this same public lifecycle alongside the private complete-frame
 decoder while retaining fixed caller-owned storage and call ceilings. The
 `lzd-rans` CLI selector likewise uses only this lifecycle and allocates all
-three regions from the returned sizes and alignment.
+three regions from the returned sizes and alignment. The benchmark adapter
+uses the same lifecycle independently in each direction and reports those
+queried regions after an untimed verified round trip.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

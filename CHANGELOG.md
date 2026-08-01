@@ -57,8 +57,11 @@ format versions, and C ABI versions are independent namespaces.
   `--codec lzd-rans` exclusively through the public C requirements query and
   lifecycle with 65,536-byte frames and entropy blocks, checked token/payload
   ceilings, opaque workspace alignment, overwrite refusal, and atomic rejection
-  of malformed or trailing input. Benchmark and interoperability evidence
-  remains pending.
+  of malformed or trailing input. A dependency-free public-C benchmark now
+  retains the odd-byte LZD half-reference in checked capacity, verifies a
+  complete round trip before timing, and reports complete-stream ratio,
+  directional throughput, and all queried workspace regions. Interoperability
+  evidence remains pending.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

@@ -4032,6 +4032,14 @@ descriptor extent 2,112, `P = 262,176`, and a 16-MiB aggregate policy. Actual
 primary, secondary, and aligned opaque-view workspace requirements must come
 only from the public C query.
 
+For the LZD plus rANS benchmark smoke, select `lzd-rans`, use `README.md`, and
+run one iteration. Before timing, encode into checked capacity
+`80 + 8 * ceil(N/2) + 2200K`, decode the exact encoded extent once, and require
+byte equality. Require the timed encode and decode to reproduce those extents,
+then report complete-stream ratio, both throughputs, every public workspace
+region, and the larger direction-specific caller-owned total. Retain the
+half-pair rounding explicitly so a one-byte input reserves eight token bytes.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

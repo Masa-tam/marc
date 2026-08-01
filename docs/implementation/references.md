@@ -1626,6 +1626,11 @@ existing transactional file adapter and deterministic fixture. No external
 LZD/rANS command-line tool, wrapper, archive, source code, or test suite was
 consulted.
 
+The LZD plus rANS benchmark adapter uses only DD-519, DD-518's public profile,
+marc's dependency-free benchmark runner, checked half-pair and frame arithmetic,
+and the published C lifecycle. No external LZD/rANS benchmark, wrapper,
+measurement result, source code, or capacity formula was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

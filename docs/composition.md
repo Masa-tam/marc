@@ -270,8 +270,11 @@ streaming lifecycle under fixed byte, record, metadata, and call-count ceilings;
 canonical truncation and malformed-metadata findings are permanent regressions.
 The transactional CLI now exposes `lzd-rans` through only the public C
 requirements, factory, process, and destroy lifecycle, retaining atomic file
-publication for malformed and trailing input. Benchmark and interoperability
-evidence remains pending.
+publication for malformed and trailing input. Its dependency-free benchmark
+uses the same public profile, preserves the odd-byte LZD half-pair in checked
+capacity, verifies a complete round trip before timing, and reports ratio,
+directional throughput, and queried workspace. Interoperability evidence
+remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

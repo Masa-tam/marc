@@ -34,6 +34,7 @@ marc_benchmark lzd corpus.bin 5
 marc_benchmark lzd-blocked-huffman corpus.bin 5
 marc_benchmark lzd-adaptive-huffman corpus.bin 5
 marc_benchmark lzd-dynamic-range corpus.bin 5
+marc_benchmark lzd-rans corpus.bin 5
 marc_benchmark lzmw corpus.bin 5
 marc_benchmark lzmw-blocked-huffman corpus.bin 5
 marc_benchmark lzmw-adaptive-huffman corpus.bin 5
@@ -273,6 +274,17 @@ byte-exact round trip succeeds before measurement. A one-iteration MSVC Release
 smoke over the 4,530-byte README encoded 4,021 bytes, ratio 0.888, and reported
 17,760,316 bytes of peak caller reservation; throughput from this small input
 is descriptive only.
+
+`lzd-rans` uses the CLI's 65,536-byte raw frame and entropy block,
+262,144-byte canonical-token ceiling, four rANS blocks, 2,112 descriptor bytes,
+262,176-byte payload ceiling, 65,536-entry dictionary policy, and 16-MiB active
+aggregate limit. Encoded capacity is checked as
+`80 + 8*ceil(N/2) + 2200K`, retaining the absent-right half-reference for an
+odd final input byte. Both direction-specific three-region workspaces and
+opaque alignment come from the public C ABI. An untimed byte-exact round trip
+succeeds before measurement; the benchmark then reports complete-stream ratio,
+both throughputs, every workspace region, and the larger caller-owned total.
+Smoke measurements establish wiring and correctness only.
 
 `lzmw-blocked-huffman` uses the same one-MiB raw frame, 65,536-symbol entropy
 block, four-byte-per-raw-byte reference bound, 64-block cap, 65,536-entry

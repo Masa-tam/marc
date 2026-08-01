@@ -60,7 +60,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-rans` | Second rANS composition | Ready | Included |
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
-| `lzd-rans` | Fifth rANS composition | In progress | Not included |
+| `lzd-rans` | Fifth rANS composition | Ready | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 23 contains thirty-four archives: the frozen thirty-three-entry schema-22
@@ -115,7 +115,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -574,8 +574,10 @@ strict truncation, reserved descriptor bytes, and saturated frame extents are
 permanent regressions. Its explicit transactional CLI selector now obtains all
 three workspaces from the public C query and rejects destination collisions,
 malformed input, truncation, and trailing bytes without partial publication or
-temporary-file residue. Benchmark and interoperability evidence remains
-pending.
+temporary-file residue. Its public-C benchmark now retains the odd-byte
+half-reference in its checked stream ceiling, verifies a complete round trip
+before timing, and reports ratio, both throughputs, and queried workspace.
+Local readiness is complete; interoperability evidence remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

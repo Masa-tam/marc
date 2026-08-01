@@ -4404,6 +4404,11 @@ aggregate internal-buffer policy. All direction-specific workspace extents and
 opaque alignment come from the public C requirements query. The selector adds
 no stream field, algorithm ID, parameter extension, or format variant.
 
+The dependency-free `lzd-rans` benchmark uses the same selector profile and
+checked complete-stream ceiling. Its untimed round-trip verification, timing
+schedule, ratio, throughput, and workspace reporting add no stream field or
+format variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

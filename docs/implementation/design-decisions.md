@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-519: LZD rANS benchmark retains the half-pair ceiling
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add `lzd-rans` to the dependency-free benchmark runner using exactly DD-518's
+65,536-byte frame and entropy-block profile and only the published C lifecycle.
+Before timing, encode once, decode the exact encoded extent once, and require
+byte equality. Then report complete-stream ratio, encode and decode throughput,
+all three direction-specific workspace extents, and the larger caller-owned
+workspace total.
+
+For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
+capacity `80 + 8 * ceil(N / 2) + 2200K`. The token term deliberately retains
+the possible final absent-right reference; do not reduce it to `4N`, which is
+one four-byte half-reference too small for odd `N`. The per-frame term reserves
+the 56-byte generic header plus four complete 528-byte descriptors and four
+eight-byte states. Short final frames may use less. This step adds no stream
+field, format variant, interoperability entry, optimization, or representative
+performance claim.
+
 ## DD-518: LZD rANS CLI delegates all storage to the public ABI
 
 - Date: 2026-08-02

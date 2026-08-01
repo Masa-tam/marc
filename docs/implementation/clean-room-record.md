@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZD plus rANS verified benchmark adapter
+
+- Authoring method: applied DD-519 to marc's dependency-free benchmark runner
+  and bound both measured directions directly to DD-518's public C profile.
+- References used: DD-519, DD-518, the public `marc_lzd_rans_*` lifecycle,
+  checked integer arithmetic, the common aligned workspace owner, and local
+  timing/reporting helpers.
+- Known implementations intentionally not consulted: external LZD/rANS
+  benchmarks, wrappers, capacity formulas, performance results, source code,
+  and test suites.
+- Independent decisions: retain the 65,536-byte frame/block profile and 16-MiB
+  aggregate policy; reserve complete-stream capacity as
+  `80 + 8*ceil(N/2) + 2200K`; verify an untimed exact round trip; and report
+  ratio, both throughputs, all six queried region sizes, and peak caller-owned
+  workspace without presenting smoke timing as representative performance.
+- Generated-code task description: add the benchmark selector and public C
+  dispatch; preserve odd-byte half-pair capacity with checked arithmetic; add
+  a README-based one-iteration smoke; synchronize benchmark, format,
+  architecture, C API, composition, readiness, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the adapter specializes marc's own benchmark and public
+  ABI patterns while deriving the half-pair ceiling directly from the local
+  format. No external harness, capacity expression, reporting layout, vector,
+  or code expression was compared.
+- Local validation: the one-iteration `lzd-rans` benchmark smoke passed over
+  the odd-length 4,521-byte README under both MSVC and ClangCL. The complete
+  Release CTest suite passed 2,000/2,000 under both compilers using official
+  CMake 4.3.4; all 35 benchmark smokes and schema-23 compatibility remained
+  successful.
+
 ## 2026-08-02 - LZD plus rANS transactional CLI selector
 
 - Authoring method: applied DD-518 to marc's existing transactional file
