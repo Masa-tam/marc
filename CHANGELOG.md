@@ -64,8 +64,9 @@ format versions, and C ABI versions are independent namespaces.
   schema 24 now appends the unchanged `lzd-rans` CLI archive once after the
   frozen schema-23 order, validates all thirty-five archive hashes and order,
   rejects reordered manifests, proves byte-identical re-encoding, and retains
-  schemas 1 through 23 unchanged. External cross-platform evidence remains
-  pending.
+  schemas 1 through 23 unchanged. Four-direction external verification passed
+  at revision `dad3638da2acb449afca969176194bf8323309f5` across Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

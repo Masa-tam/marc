@@ -9936,6 +9936,29 @@ discarded and the reviewed seed retained.
   using official CMake 4.3.4; all 35 benchmark smokes remained successful.
   External cross-platform artifact verification remains pending.
 
+## 2026-08-02 - Interoperability schema 24 external validation record
+
+- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
+  no non-x86-64 or non-WSL Linux claim is added.
+- References used: DD-520, marc's schema-24 generator and verifier, the
+  successful pushed CI artifacts, and the independently generated Ubuntu
+  26.04 bundle.
+- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
+  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
+  via Ninja on Ubuntu 26.04 WSL2 x64.
+- Known implementations intentionally not consulted: external codec source,
+  external manifest designs, conformance suites, and third-party test corpora.
+- Observed evidence: revision
+  `dad3638da2acb449afca969176194bf8323309f5` completed all four established
+  verification directions. Ubuntu 26.04 verified the Windows/MSVC and Ubuntu
+  24.04 CI bundles, generated and self-verified its own bundle, and
+  Windows/MSVC verified that Ubuntu bundle. Every invocation reported
+  `Verified 35 archives` and performed exact manifest-order, size, SHA-256,
+  decoded-fixture, and byte-identical local re-encoding checks.
+- Similarity review: this record contains only observed tool outputs and
+  environment labels supplied by the project owner. No external encoded
+  representation or implementation structure was compared.
+
 ## 2026-08-02 - LZD plus rANS verified benchmark adapter
 
 - Authoring method: applied DD-519 to marc's dependency-free benchmark runner

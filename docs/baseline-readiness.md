@@ -580,8 +580,9 @@ before timing, and reports ratio, both throughputs, and queried workspace.
 Interoperability schema 24 appends its unchanged CLI archive once after the
 frozen schema-23 order. Local generation, exact-order verification, reordered-
 manifest rejection, byte-identical re-encoding, and schemas 1 through 23
-compatibility pass. Local readiness is complete; external schema-24 cross-
-platform verification remains pending.
+compatibility pass. Four-direction external schema-24 verification passed at
+revision `dad3638da2acb449afca969176194bf8323309f5` across Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

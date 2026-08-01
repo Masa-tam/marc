@@ -276,8 +276,10 @@ capacity, verifies a complete round trip before timing, and reports ratio,
 directional throughput, and queried workspace. Interoperability schema 24 now
 appends the unchanged `lzd-rans` CLI archive once after the frozen schema-23
 order; local generation, exact-order and reordered-order checks, byte-identical
-re-encoding, and all older-schema checks pass. External cross-platform evidence
-remains pending.
+re-encoding, and all older-schema checks pass. Four-direction external
+schema-24 verification passed at revision
+`dad3638da2acb449afca969176194bf8323309f5` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
