@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | Specified | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Candidate | Candidate |
 
 `lz77-rans` is the first rANS composition to receive a reserved
@@ -268,7 +268,10 @@ corrupt, truncated, or extended final frame. Its bounded dual-boundary decoder
 fuzz target now exercises the private complete-frame parser and public C
 streaming lifecycle under fixed byte, record, metadata, and call-count ceilings;
 canonical truncation and malformed-metadata findings are permanent regressions.
-CLI, benchmark, and interoperability evidence remains pending.
+The transactional CLI now exposes `lzd-rans` through only the public C
+requirements, factory, process, and destroy lifecycle, retaining atomic file
+publication for malformed and trailing input. Benchmark and interoperability
+evidence remains pending.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

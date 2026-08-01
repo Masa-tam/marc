@@ -1525,7 +1525,7 @@ rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
 equal `00:2048` and `41:2048` normalized model, the eight-byte final-state
 payload, and the complete 592-byte frame.
 
-### Specified LZD plus rANS boundary
+### LZD plus rANS boundary
 
 The next rANS composition freezes the complete canonical LZD eight-byte
 reference-pair sequence before scalar rANS sees any byte. For raw frame extent
@@ -1622,6 +1622,14 @@ chunk sizes remain modulo bounded, and a fixed call ceiling turns any stalled
 state machine into a reproducible invariant failure. Ordinary builds compile
 the harness without executing a sanitizer campaign; canonical strict-prefix,
 reserved-field, and saturated-frame-extent cases remain permanent tests.
+
+The explicit `lzd-rans` command-line selector fixes 65,536-byte raw frames and
+rANS blocks, supplies the checked 262,144-byte token and 262,176-byte payload
+ceilings plus a 16-MiB aggregate policy, and obtains every direction-specific
+workspace extent and alignment from the public C requirements query. It reuses
+the common temporary-file transaction, so invalid or trailing input, output
+collision, allocation failure, or codec failure cannot publish the requested
+destination or leave its sibling temporary file.
 
 ### tANS foundation
 

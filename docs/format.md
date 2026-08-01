@@ -4396,6 +4396,14 @@ drains raw bytes. A malformed later frame publishes none of its raw bytes;
 already completed earlier frames remain committed. Truncation, trailing bytes,
 and retained `EndInput` follow the same strict known-size contract.
 
+The explicit `lzd-rans` CLI selector uses this unchanged representation with
+65,536-byte outer frames, 65,536-byte rANS blocks, at most 65,536 configured
+dictionary entries, a 262,144-byte canonical-token ceiling, four entropy
+blocks, 2,112 descriptor bytes, a 262,176-byte payload ceiling, and a 16-MiB
+aggregate internal-buffer policy. All direction-specific workspace extents and
+opaque alignment come from the public C requirements query. The selector adds
+no stream field, algorithm ID, parameter extension, or format variant.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

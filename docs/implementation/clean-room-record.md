@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZD plus rANS transactional CLI selector
+
+- Authoring method: applied DD-518 to marc's existing transactional file
+  adapter and bound each direction directly to the published DD-515 C
+  lifecycle.
+- References used: DD-518, DD-515, the public `marc_lzd_rans_*` functions,
+  checked profile constants, the common aligned workspace owner, and the local
+  CLI regression script.
+- Known implementations intentionally not consulted: external LZD/rANS command-
+  line tools, wrappers, archives, source code, documentation, and test suites.
+- Independent decisions: use 65,536-byte raw frames and entropy blocks; reserve
+  262,144 token bytes, four descriptors, 262,176 payload bytes, at most 65,536
+  configured entries, and a 16-MiB aggregate policy; preserve the common
+  overwrite refusal and sibling-temporary cleanup transaction.
+- Generated-code task description: add the explicit selector and conservative
+  limit arithmetic; dispatch config, requirements, create, process, and destroy
+  only through the public C ABI; add the common binary, repeat-output,
+  malformed, trailing-data, temporary-file, and empty-input CLI regression;
+  synchronize CLI, format, architecture, C API, composition, readiness,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the adapter is a new specialization of marc's own public
+  ABI and transactional CLI structure. No external option spelling, storage
+  layout, control flow, error text, vector, or test expression was compared.
+- Local validation: the transactional `lzd-rans` CLI regression passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed 1,999/1,999
+  under both compilers using official CMake 4.3.4; all 34 benchmark smokes and
+  schema-23 compatibility remained successful.
+
 ## 2026-08-01 - LZD plus rANS bounded decoder fuzz boundary
 
 - Authoring method: applied DD-517 independently to marc's local private

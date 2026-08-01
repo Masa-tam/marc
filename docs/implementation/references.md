@@ -1620,6 +1620,12 @@ fixed-array limit arithmetic, local process-result invariants, and a
 repository-generated canonical stream. No external fuzz harness, corpus,
 malformed archive, source code, or test suite was consulted.
 
+The `lzd-rans` CLI adapter uses only DD-518, the published marc C config,
+requirements, factory, process, and destroy functions, and the repository's
+existing transactional file adapter and deterministic fixture. No external
+LZD/rANS command-line tool, wrapper, archive, source code, or test suite was
+consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

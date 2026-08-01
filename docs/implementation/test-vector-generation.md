@@ -4019,6 +4019,19 @@ caps input at 8,192 bytes and drives both private complete-frame and public C
 streaming decode with fixed arrays, byte-derived chunks, and an independent
 12,320-call ceiling.
 
+For `lzd-rans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and decode it
+with explicit `--codec lzd-rans` and compare the restored file byte for byte.
+Repeat encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `B = 65,536`, `S = 262,144`, `K = 4`,
+descriptor extent 2,112, `P = 262,176`, and a 16-MiB aggregate policy. Actual
+primary, secondary, and aligned opaque-view workspace requirements must come
+only from the public C query.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

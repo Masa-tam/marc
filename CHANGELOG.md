@@ -53,8 +53,12 @@ format versions, and C ABI versions are independent namespaces.
   private complete-frame decoder and public C streaming lifecycle under fixed
   byte, record, metadata, and call ceilings. Permanent regressions cover every
   strict prefix of a canonical stream, saturated generic frame extents, and a
-  nonzero reserved rANS descriptor byte. CLI, benchmark, and interoperability
-  evidence remains pending.
+  nonzero reserved rANS descriptor byte. The transactional CLI now exposes
+  `--codec lzd-rans` exclusively through the public C requirements query and
+  lifecycle with 65,536-byte frames and entropy blocks, checked token/payload
+  ceilings, opaque workspace alignment, overwrite refusal, and atomic rejection
+  of malformed or trailing input. Benchmark and interoperability evidence
+  remains pending.
 
 - Reserved the `lzw-rans` composition with a complete decoder-visible
   representation and independent 592-byte raw-`A` frame. The final LSB-first

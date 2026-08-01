@@ -12,6 +12,8 @@ completion criteria in `AGENTS.md` or the exact representations in
 and streaming encode/decode paths, a public C ABI, CLI and benchmark adapters,
 a bounded decoder fuzz target, and a public-ABI completion matrix covering
 determinism, chunking, terminal behavior, and malformed final-frame handling.
+`In progress` means a public profile exists but one or more of those local
+readiness boundaries remain pending.
 
 | Required codec | Public CLI profile | Local status | Interoperability schema 23 |
 |---|---|---|---|
@@ -58,7 +60,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-rans` | Second rANS composition | Ready | Included |
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
-| `lzd-rans` | Fifth rANS composition | Specified | Not included |
+| `lzd-rans` | Fifth rANS composition | In progress | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 23 contains thirty-four archives: the frozen thirty-three-entry schema-22
@@ -113,7 +115,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-rans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzd-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -569,7 +571,10 @@ corrupt, truncated, or extended final frame through that C ABI alone. A bounded
 dual-path decoder fuzz target now fixes all serialized, raw, entropy-view,
 phrase, expansion, and call-count ceilings before processing arbitrary input;
 strict truncation, reserved descriptor bytes, and saturated frame extents are
-permanent regressions. CLI, benchmark, and interoperability evidence remains
+permanent regressions. Its explicit transactional CLI selector now obtains all
+three workspaces from the public C query and rejects destination collisions,
+malformed input, truncation, and trailing bytes without partial publication or
+temporary-file residue. Benchmark and interoperability evidence remains
 pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
