@@ -593,7 +593,11 @@ checks `S <= 4F`, four-byte alignment, `K = ceil(S/B)`,
 and iterative expansion storage, and requires complete entropy validation
 before any LZMW graph validation or raw reconstruction. An independently
 assembled 592-byte raw-`A` frame fixes the first canonical representation.
-Combined implementation and admission evidence remain pending.
+Its first complete-frame validator now preflights generic, reference, entropy,
+typed-record, and aggregate extents, validates every rANS block before changing
+reference staging, reconstructs the complete private reference sequence, and
+applies the ordinary LZMW graph validator without raw expansion. Raw decoding
+and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

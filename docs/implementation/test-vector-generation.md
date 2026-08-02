@@ -4062,6 +4062,19 @@ Serialize the sparse descriptor and append the payload; compare all 592 bytes
 with the separately recorded frame representation. Do not invoke any future
 combined LZMW/rANS implementation in this vector.
 
+For the first LZMW plus rANS complete-frame validator, admit the frozen raw-`A`
+frame into one block view, four reference-staging bytes, and no phrase records.
+Require the exact reference bytes and successful one-token graph validation.
+Re-encode `A | B` and split its eight reference bytes at three-byte rANS block
+boundaries to prove that entropy boundaries do not imply reference boundaries.
+
+With two four-byte blocks, corrupt only the second descriptor and fill staging
+with a sentinel; require controller rejection before any sentinel changes.
+Separately encode the valid entropy bytes `00 01 00 00` and require LZMW
+forward-reference rejection only after all four bytes appear in staging. Test
+each caller capacity one unit short, every strict serialized truncation used by
+the focused suite, one appended byte, and a tANS pipeline substituted for rANS.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

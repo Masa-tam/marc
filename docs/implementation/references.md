@@ -1643,6 +1643,12 @@ serialization, and the existing independent standalone encoders. No external
 LZMW/rANS composition, archive format, combined-codec implementation, encoded
 corpus, source code, or test suite was consulted.
 
+The first LZMW plus rANS complete-frame validator uses only DD-522, DD-521's
+exact reserved representation, marc's scalar rANS controller and decoder, the
+ordinary LZMW token validator, checked arithmetic, and caller-owned spans. No
+external combined validator, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

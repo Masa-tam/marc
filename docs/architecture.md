@@ -1664,8 +1664,16 @@ prior-reference, adjacent-phrase-graph, and exact raw-extent validation. The
 initial raw-`A` vector independently composes the standalone LZMW and rANS
 encoders with generic serializers. It fixes reference bytes `41 00 00 00`,
 normalized frequencies `00:3072` and `41:1024`, the eight-byte rANS payload,
-and the complete 592-byte frame. No combined implementation or public entry
-point is implied by this reserved boundary.
+and the complete 592-byte frame.
+
+The first combined validator admits the complete serialized extent, rANS view
+count, reference staging, LZMW phrase records, and aggregate workspace before
+entropy processing. It parses and validates every block before reconstructing
+any reference byte, then fills the complete private reference region and
+invokes the ordinary LZMW graph validator without expanding raw bytes.
+Corruption in a later block therefore cannot leave partially reconstructed
+references, and valid entropy carrying an invalid LZMW graph fails only at the
+dictionary boundary. No raw decoder or public entry point is implied yet.
 
 ### tANS foundation
 

@@ -4482,6 +4482,18 @@ This section reserves representation and name only; it publishes no combined
 validator, decoder, encoder, streaming transform, C factory, CLI selector,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
+The first combined implementation validates one exact complete frame through
+both encoded layers into caller-owned rANS block views, reference staging, and
+LZMW phrase records. It checks generic extents, the `4F` reference ceiling,
+four-byte alignment, payload and descriptor bounds, every caller capacity, and
+aggregate workspace before parsing descriptors or decoding entropy. Every
+rANS block must validate with exact payload exhaustion before any reference
+byte is reconstructed. Only after all blocks succeed does it reconstruct the
+complete reference region and apply the ordinary LZMW validator to literal or
+prior generated references, adjacent-phrase growth, dictionary freeze, and
+the declared raw extent. This boundary reconstructs and publishes no raw bytes;
+later decoding and streaming work must retain the same validation order.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

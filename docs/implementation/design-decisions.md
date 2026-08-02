@@ -9053,6 +9053,34 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-522: LZMW rANS validation stops at the phrase graph
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the first bounded complete-frame validator for DD-521 without reconstructing
+or publishing raw bytes. Before descriptor parsing, validate the exact generic
+frame extent, `0 < S <= 4F`, four-byte alignment, `K = ceil(S/B)`, exact
+`528K` descriptor bytes, `8K <= P <= S + 8K`, caller capacities for rANS block
+views, `S` reference staging, and bounded LZMW phrase records, and the aggregate
+workspace limit.
+
+Parse every descriptor and validate every rANS payload, including terminal
+state and exact byte exhaustion, before writing reference staging. Decode all
+blocks only after that pass succeeds, require exactly `S` reconstructed bytes,
+then invoke the ordinary LZMW validator for four-byte alignment, literal or
+previously generated references, adjacent-phrase growth, configured dictionary
+freeze, and exact declared raw extent.
+
+Report stable generic, controller, entropy, and LZMW validation categories plus
+the failing block, token, and input-byte positions where available. Prove the
+independent 592-byte vector, blocks that split references, later-descriptor
+rejection before staging mutation, valid entropy carrying an invalid forward
+LZMW reference, short typed and byte workspaces, truncation, trailing bytes,
+and unsupported pipelines. This step adds no raw decoder, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-521: LZMW rANS preserves finalized phrase references
 
 - Date: 2026-08-02

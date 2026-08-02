@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS complete-frame validator
+
+- Authoring method: applied DD-522 to marc's local rANS controller and decoder,
+  generic frame parser, and ordinary LZMW token validator while preserving the
+  DD-521 entropy-before-dictionary ordering.
+- References used: DD-522, DD-521, checked arithmetic, caller-owned spans,
+  scalar rANS descriptor and terminal-state validation, and the bounded LZMW
+  phrase graph.
+- Known implementations intentionally not consulted: external combined codec
+  validators, allocation layouts, malformed corpora, source code, and test
+  suites.
+- Independent decisions: admit every extent and capacity before entropy work;
+  validate all rANS blocks before changing reference staging; reconstruct the
+  complete private reference region before LZMW validation; and publish no raw
+  byte at this boundary.
+- Generated-code task description: add the private result taxonomy and bounded
+  complete-frame validator; cover the independent vector, reference-splitting
+  blocks, later-descriptor atomicity, invalid LZMW references, short storage,
+  truncation, trailing bytes, and wrong pipelines; synchronize design, format,
+  architecture, readiness, composition, changelog, reference, vector, and
+  provenance records.
+- Similarity review: the validator directly composes existing local APIs and
+  error categories. No external validation order, buffer structure, naming
+  scheme, malformed vector, or test expression was compared.
+- Local validation: the independent vector and focused LZMW/rANS validator
+  suite passed 7/7 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 2,007/2,007 under both compilers using official CMake 4.3.4;
+  all 35 benchmark smokes and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS reserved representation
 
 - Authoring method: composed marc's already documented LZMW phrase-reference

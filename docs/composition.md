@@ -289,8 +289,11 @@ exact descriptor extent `528K`. A block may split a reference but cannot cross
 an outer frame. Entropy validation and complete private reference
 reconstruction precede LZMW literal-or-prior-reference, adjacent-phrase graph,
 and exact raw-extent validation. The independently derived raw-`A` vector fixes
-the complete 592-byte frame. No combined implementation or public entry point
-exists yet.
+the complete 592-byte frame. Its first bounded complete-frame validator now
+admits all caller storage and aggregate extents before entropy processing,
+validates every block before writing reference staging, reconstructs the whole
+private reference region, and applies the existing LZMW graph validator without
+raw expansion. No raw decoder or public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
