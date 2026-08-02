@@ -91,8 +91,12 @@ decoding must restore all private token bytes before applying LZSS grammar or
 semantic checks. Bounds are `S <= 2F`, `K = ceil(S/B)`, exact `528K`
 descriptor bytes, and a per-block payload ceiling of
 `2 + ceil(12n/8)`. The independent raw-`A` vector fixes a 587-byte frame.
-There is no combined validator, C factory, CLI selector, benchmark, fuzzer,
-completion claim, or interoperability entry yet.
+Its first bounded validator admits every serialized and caller-owned extent
+before entropy work, validates all tANS blocks before writing any token byte,
+reconstructs the complete private token region, and applies the ordinary LZSS
+validator with token-index and byte-offset diagnostics. There is no raw
+decoder, C factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

@@ -1829,6 +1829,13 @@ descriptors, and the blockwise `2 + ceil(12n/8)` payload ceiling. The
 independent raw-`A` vector fixes one complete 587-byte frame without creating a
 combined codec entry point.
 
+The first internal validator realizes that order with caller-owned token and
+tANS-view spans. It admits their complete extents and aggregate workspace up
+front, validates every entropy automaton without output, and only then decodes
+all blocks into the private token region. The existing LZSS validator runs
+after exact token reconstruction and preserves token-index and byte-offset
+diagnostics. Raw staging and caller-visible output remain absent.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

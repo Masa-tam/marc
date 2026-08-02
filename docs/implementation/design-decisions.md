@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-554: LZSS tANS validation is two-pass and token-atomic
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the first bounded decoder-facing implementation of DD-553. Admit the
+complete generic frame extent, exact `K`, exact `528K` descriptor region,
+blockwise tANS payload ceiling, caller-owned `K` tANS views, complete `S`
+token staging, and their aggregate internal byte count before entropy work.
+
+Parse all descriptors and validate every tANS model, spread, transition table,
+initial state, bit path, terminal state, and padding without writing a token
+byte. Only when all `K` blocks succeed may a second pass reconstruct exactly
+`S` token bytes. Then validate the full variable-length LZSS grammar,
+references, output extent, token index, and input offset without reconstructing
+raw bytes. A malformed later block must leave all token staging untouched.
+This decision adds no raw decoder, transactional publisher, encoder, streaming
+transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
 ## DD-553: LZSS tANS entropizes finalized token bytes
 
 - Date: 2026-08-03

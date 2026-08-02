@@ -3246,6 +3246,19 @@ frequency region. Append the payload and compare all 587 bytes with output
 assembled only from the standalone LZSS encoder, tANS encoder, and explicit
 generic serializers. This vector reserves no combined implementation.
 
+For the first LZSS plus tANS validator, require the independent 587-byte frame
+to reconstruct exactly `00 41` in private token staging. Re-encode the same
+token with `B = 1` and require two blocks, proving that an entropy boundary may
+split a Literal. Reject every proper frame prefix and one trailing byte.
+
+Use one-entry-short view storage, one-byte-short token staging, and an
+aggregate workspace ceiling one byte below descriptor, payload, token, and
+view bytes; each must fail before token mutation. Corrupt a descriptor and the
+second of two block states independently and require full staging preservation.
+Entropy-decode `FF 41` successfully but require LZSS token failure at byte
+offset zero. Reject `S > 2F`, a payload beyond the 12-bit transition ceiling,
+and a non-tANS stream profile before unsafe work.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

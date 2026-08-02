@@ -1564,6 +1564,13 @@ standalone encoders. No external LZSS/tANS composition, FSE format, archive
 format, combined-codec implementation, source code, encoded corpus, or test
 suite was consulted.
 
+The first LZSS plus tANS complete-frame validator uses only DD-554, DD-553's
+fixed byte boundary and bounds, marc's generic frame parser, tANS descriptor
+controller and strict decoder, existing LZSS validator, caller-owned spans,
+and checked aggregate arithmetic. No external combined decoder, validation
+order, workspace layout, malformed corpus, source code, or test suite was
+consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

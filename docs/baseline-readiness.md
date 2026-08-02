@@ -130,8 +130,12 @@ two- or nine-byte token grammar without crossing a frame, and requires full
 private token reconstruction before dictionary validation. Its bounds are
 `S <= 2F`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked sum of
 per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A` frame is
-587 bytes. A combined validator and all later public admission gates remain
-pending, so this profile does not appear in the public tables above.
+587 bytes. Its first bounded complete-frame validator now preflights exact
+extents and caller-owned storage, validates every tANS block before any token
+mutation, reconstructs the complete private token region, and applies LZSS
+grammar and semantic validation. Raw reconstruction and all later public
+admission gates remain pending, so this profile does not appear in the public
+tables above.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

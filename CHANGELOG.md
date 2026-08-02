@@ -11,7 +11,11 @@ format versions, and C ABI versions are independent namespaces.
   frame. Canonical variable-length LZSS token bytes are finalized before tANS
   coding; entropy blocks may split tokens but not outer frames. Checked bounds
   cover `S <= 2F`, exact `528K` descriptors, and the blockwise 12-bit
-  transition ceiling. The reservation adds no combined public codec yet.
+  transition ceiling. Its first bounded complete-frame validator admits every
+  extent and caller-owned workspace before entropy work, validates all tANS
+  automata before token mutation, reconstructs the exact private token region,
+  and then applies variable-length LZSS validation. The reservation adds no
+  combined public codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

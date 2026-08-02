@@ -4866,5 +4866,18 @@ Descriptor bytes 0 through 15 are
 `02 00 00 00 03 00 00 00 0C 02 00 00 00 00 00 00`.
 The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 08`) and 146..147 (`00 08`). The three payload bytes immediately follow
-the descriptor. This sparse notation uniquely defines all 587 bytes. No
-combined decoder, encoder, or public entry point is specified by this section.
+the descriptor. This sparse notation uniquely defines all 587 bytes.
+
+The first combined validator realizes the decoder-facing boundary without raw
+reconstruction. It preflights the complete serialized extent, exact block and
+descriptor counts, blockwise payload ceiling, caller-owned token staging, and
+`K * sizeof(TansBlockView)` view storage. Descriptor, payload, token, and view
+bytes share the configured aggregate internal-workspace limit.
+
+It parses all descriptors and validates all `K` tANS automata before decoding
+any block. A second pass reconstructs exactly `S` private bytes only after the
+complete entropy region succeeds. The ordinary LZSS validator then parses the
+entire variable-length token region and records the failing token index and
+byte offset when practical. No raw byte is reconstructed or caller-visible
+output published here. This section still specifies no encoder or public entry
+point.

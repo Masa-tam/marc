@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS complete-frame validator
+
+- Authoring method: combined marc's generic frame admission, strict two-pass
+  tANS block decoder, and existing LZSS validator at DD-553's private token
+  boundary.
+- References used: DD-554, DD-553, local checked arithmetic, tANS descriptor
+  views, table and state validation, and the canonical LZSS token validator.
+- Known implementations intentionally not consulted: external combined
+  decoders, FSE implementations, validation orders, buffer layouts, source
+  code, malformed corpora, and test suites.
+- Independent decisions: preflight exact extents and all caller-owned storage;
+  calculate the per-block 12-bit payload ceiling; count views in aggregate
+  workspace; validate every entropy block before decoding any; reconstruct
+  only the complete private token region; preserve LZSS diagnostic positions;
+  and stop before raw reconstruction or publication.
+- Generated-code task description: add a bounded complete-frame validator and
+  stable layered errors; test the independent vector, an intra-Literal block
+  split, every truncation, storage and aggregate limits, malformed descriptor
+  and later payload atomicity, invalid reconstructed token, entropy bounds,
+  and pipeline rejection; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-authored
+  parsers, validators, decoders, and span contracts. No external control flow,
+  workspace formula, malformed vector, or test expression was compared.
+- Local validation: the focused validator suite passed 10/10 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,111/2,111 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS reserved representation
 
 - Authoring method: composed marc's independently documented canonical LZSS
