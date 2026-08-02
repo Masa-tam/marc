@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - Project version 0.1.2 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  all six dictionary/rANS compositions and recording schema-25 external
+  evidence.
+- References used: DD-536, the repository release procedure, the `0.1.1`
+  release policy, the public C version query, CMake package-version generation,
+  and the recorded schema-25 verification results.
+- Known implementations intentionally not consulted: external release scripts,
+  package-version policies, changelog generators, and binary-release
+  workflows.
+- Independent decisions: use `0.1.2` for compatibility-preserving additions;
+  retain stream versions 1.0 and 1.1 and C ABI version 1; publish schema 25 as
+  its own namespace; preserve every previously published stream variant; and
+  retain the stated non-x86-64, representative-benchmark, and longer-fuzz
+  evidence limits.
+- Generated-code task description: synchronize the CMake project version,
+  runtime C version string, metadata test, dated changelog, release commands,
+  validation baseline, decision record, and provenance without changing codec
+  bytes.
+- Similarity review: these changes are repository metadata and first-party
+  policy prose. No external versioning implementation or release automation
+  was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced optimized Release builds for
+  MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. After the metadata
+  change, all 2,048 tests passed under each compiler, including the runtime
+  version assertion, all 36 benchmark smokes, and the schema 1-through-25
+  compatibility chain. The exact schema-25 revision also passed pushed CI and
+  the recorded four-direction 36-archive Windows/Linux/compiler exchange.
+
 ## 2026-08-02 - Interoperability schema 25 external cross-check
 
 - Evidence method: recorded the four verifier results produced by the user

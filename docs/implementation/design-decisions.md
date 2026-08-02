@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-536: Project version 0.1.2 publishes the completed rANS column
+
+- Date: 2026-08-02
+- Status: accepted
+
+Release the completed rANS composition column as project version `0.1.2`.
+Retain C ABI version 1, stream-format versions 1.0 and 1.1, and every existing
+algorithm and variant representation. The six new named dictionary/rANS
+profiles and interoperability schema 25 are additions within the established
+compatibility-preserving `0.1.x` line; no previously published deterministic
+stream byte changes.
+
+Require the complete 2,048-test Release suite under both Windows compilers,
+the pushed Windows/MSVC and Ubuntu 24.04 CI, and the recorded four-direction
+schema-25 exchange with Ubuntu 26.04 before tagging. Preserve the explicitly
+open second-architecture, representative-measurement, and longer sanitizer
+fuzz evidence rather than overstating the release claim. Keep `0.2.0` reserved
+for potentially incompatible API/default work or separately identified format
+variants motivated by performance or compression-ratio changes.
+
 ## DD-535: Interoperability schema 25 appends LZMW rANS once
 
 - Date: 2026-08-02

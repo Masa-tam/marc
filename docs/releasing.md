@@ -76,8 +76,8 @@ After every gate is satisfied, create an annotated tag whose version exactly
 matches CMake and the changelog:
 
 ```console
-git tag -a v0.1.1 -m "marc 0.1.1"
-git push origin v0.1.1
+git tag -a v0.1.2 -m "marc 0.1.2"
+git push origin v0.1.2
 ```
 
 Create the GitHub Release from that tag. Use the matching changelog section as

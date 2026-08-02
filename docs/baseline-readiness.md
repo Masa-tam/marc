@@ -862,8 +862,10 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-372, the complete Release suite contains 1,488 tests and passes under both
-MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows x64. This is strong local
-compiler-independence evidence on one architecture. Public run 29647453799 adds
-Windows/MSVC and Ubuntu/Ninja CI plus installed-package evidence; the remaining
-release-evidence limits are stated above.
+At DD-536, the complete Release suite contains 2,048 tests and passes under
+both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
+local compiler-independence evidence on one architecture. Pushed schema-25 CI
+adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package
+evidence. The established four-direction exchange additionally verifies all
+36 archives across those producers and Ubuntu 26.04/Clang 21.1.8. The
+remaining release-evidence limits are stated above.
