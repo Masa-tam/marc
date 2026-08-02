@@ -4184,6 +4184,18 @@ complete success. Output is not internal workspace and is not aggregate-
 counted; excess destination capacity is untouched, and every failure preserves
 the whole destination.
 
+The exact-frame planner is the encoder-side inverse of this boundary without a
+serialized output span. It completes the deterministic LZMW parse, requires the
+exact encoder-record and reference-staging capacities, and serializes the
+complete canonical four-byte reference sequence before any rANS planning. It
+then plans each `B`-bounded block over those frozen bytes, accumulates exact
+descriptor and payload extents, counts encoder records, reference staging,
+descriptors, and payload together under the aggregate workspace limit,
+validates the synthesized generic frame header, and reports the complete
+serialized extent. For raw `A`, the plan fixes four reference bytes, one
+528-byte descriptor, eight payload bytes, and the 592-byte frame described
+above. It writes no serialized frame byte.
+
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into
 caller-owned staging before planning entropy. It then plans every scalar rANS

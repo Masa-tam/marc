@@ -298,8 +298,10 @@ aggregate-counts raw staging and conservative iterative expansion references,
 reduces the active stack to the validated phrase graph, and reconstructs
 without caller-visible publication. Its transactional complete-frame decoder
 preflights destination capacity and copies the private raw extent once only
-after every layer succeeds, preserving all output on failure. No public entry
-point exists yet.
+after every layer succeeds, preserving all output on failure. Its exact-frame
+planner freezes the complete canonical LZMW reference region before planning
+each rANS block and reports the exact serialized extent without writing a
+frame. No public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

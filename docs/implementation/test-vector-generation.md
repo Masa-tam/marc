@@ -4096,6 +4096,18 @@ raw, and output guards all to remain unchanged. Corrupt a later rANS descriptor
 and separately entropy-code a forward reference to phrase 256; both must
 preserve the complete destination.
 
+For LZMW plus rANS exact-frame planning, begin with raw `41`, zero encoder
+records, and four reference-staging bytes. Require canonical bytes
+`41 00 00 00`, one rANS block, 528 descriptor bytes, eight payload bytes, and
+complete extent 592 without providing serialized output. For raw `ABABAB` and
+block size five, invoke the planner twice with the same bounded encoder storage
+and separate staging regions; require sixteen identical reference bytes, four
+blocks, and identical counts and extents. With raw `AB`, reject an encoder
+region one record short and a reference region one byte short while the
+complete staging sentinel remains unchanged. Under block size eight, count
+`4 + 528 + 8 = 540` aggregate bytes and reject a 539-byte policy. Also reject
+empty input and a declared frame extent different from the supplied input.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS exact-frame planner
+
+- Authoring method: applied DD-525 to marc's independent LZMW encoder planner
+  and scalar rANS block planner, following the already documented composition
+  boundary.
+- References used: DD-525, DD-524, the local LZMW encoder and rANS planner,
+  checked arithmetic, frame-header validation, and caller-owned bounded spans.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  encoders, frame planners, allocation strategies, source code, test suites,
+  and generated streams.
+- Independent decisions: reject an empty partial frame; preflight encoder and
+  reference staging before mutation; freeze the complete canonical reference
+  sequence before entropy planning; accumulate exact block extents; count all
+  planner-owned regions against the aggregate workspace limit; and validate a
+  synthesized header without serializing it.
+- Generated-code task description: add the private exact-frame planner,
+  deterministic reference freezing, exact per-block rANS extent accumulation,
+  capacity and aggregate-limit tests, frame-extent validation, and synchronize
+  changelog, format, architecture, readiness, composition, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes only marc-local independently
+  authored primitives and checked framing rules. No external planner control
+  flow, data layout, error mapping, or test expression was compared.
+- Local validation: the focused LZMW/rANS vector, validator, private-decoder,
+  transactional-publication, and exact-planner suite passed 19/19 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,019/2,019 under
+  both compilers using official CMake 4.3.4; all 35 benchmark smokes and
+  schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS transactional publication
 
 - Authoring method: applied DD-524 directly above marc's DD-523 private raw

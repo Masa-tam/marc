@@ -25,7 +25,10 @@ format versions, and C ABI versions are independent namespaces.
   without publishing caller-visible bytes. Its transactional complete-frame
   decoder additionally admits destination capacity before private mutation and
   copies exactly the declared raw extent once only after complete success,
-  preserving every output byte on failure. No public entry point exists yet.
+  preserving every output byte on failure. Its encoder-side exact-frame planner
+  freezes the complete canonical reference sequence, plans all rANS blocks over
+  those fixed bytes, and reports checked exact frame and aggregate workspace
+  extents without writing serialized output. No public entry point exists yet.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

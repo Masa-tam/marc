@@ -9053,6 +9053,35 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-525: LZMW rANS planning freezes canonical reference bytes
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a bounded write-free exact-frame planner as the inverse of DD-522 through
+DD-524. Validate the exact stream profile, LZMW parameters, nonempty input, and
+frame-local limits. Determine and require the LZMW encoder-record count before
+reference staging can change. Plan the deterministic LZMW parse, require its
+exact nonzero four-byte-aligned extent within `S <= 4F`, and serialize the
+complete canonical reference sequence into caller-owned staging.
+
+Divide only that frozen reference span into `K = ceil(S/B)` rANS blocks. Plan
+each block independently, accumulate exact payload bytes, require exact
+descriptor extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-
+field bounds. Count encoder records, reference staging, all descriptors, and
+exact payload bytes against `max_internal_buffered_bytes`. Validate the
+synthesized generic frame header with sequence and already-committed-output
+context, then report the checked complete serialized extent without accepting
+or mutating a serialized output span.
+
+Prove the raw-`A` reference bytes, one block, 528 descriptor bytes, eight
+payload bytes, and 592-byte extent. Repeat a phrase-generating multi-block plan
+byte identically. Reject encoder records and reference staging one unit short
+before reference mutation, and reject aggregate workspace one byte short,
+empty input, and a frame-size mismatch. This step adds no frame encoder,
+streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
 ## DD-524: LZMW rANS publishes one complete frame transactionally
 
 - Date: 2026-08-02

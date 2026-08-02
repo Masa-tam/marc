@@ -1691,6 +1691,13 @@ after success. Caller output is excluded from internal aggregate accounting;
 short capacity, malformed entropy, and invalid LZMW graphs preserve every
 destination byte.
 
+The encoder-side exact-frame planner first plans and then materializes the
+complete canonical LZMW reference region in caller-owned staging. Only that
+frozen byte sequence is divided into rANS blocks. It reports exact descriptor,
+payload, and serialized frame extents without writing a frame, and admits the
+encoder dictionary plus all staged and planned bytes against the aggregate
+workspace limit before a later encoder may publish output.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

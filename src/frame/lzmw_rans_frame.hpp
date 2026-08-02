@@ -2,10 +2,12 @@
 #define MARC_FRAME_LZMW_RANS_FRAME_HPP
 
 #include "dictionary/lzmw_decoder.hpp"
+#include "dictionary/lzmw_encoder.hpp"
 #include "dictionary/lzmw_format.hpp"
 #include "dictionary/lzmw_validator.hpp"
 #include "entropy/rans_controller.hpp"
 #include "entropy/rans_decoder.hpp"
+#include "entropy/rans_encoder.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
 
@@ -36,6 +38,10 @@ enum class LzmwRansFrameValidationError : std::uint8_t {
     dictionary_decode_error,
     arithmetic_overflow,
     internal_error,
+    input_size_mismatch,
+    encoder_workspace_too_small,
+    dictionary_encode_error,
+    entropy_encode_error,
 };
 
 struct LzmwRansFrameValidationResult {
@@ -46,6 +52,7 @@ struct LzmwRansFrameValidationResult {
     std::size_t payload_size{};
     std::size_t block_count{};
     std::size_t block_index{};
+    std::size_t encoder_entries{};
     std::size_t phrase_entries{};
     std::size_t expansion_entries{};
     std::size_t token_count{};
@@ -63,8 +70,25 @@ struct LzmwRansFrameValidationResult {
         dictionary::internal::LzmwFormatError::none};
     dictionary::internal::LzmwDecodeError dictionary_decode_error{
         dictionary::internal::LzmwDecodeError::none};
+    dictionary::internal::LzmwEncodeError dictionary_encode_error{
+        dictionary::internal::LzmwEncodeError::none};
+    entropy::internal::RansEncodeError entropy_encode_error{
+        entropy::internal::RansEncodeError::none};
     LzmwRansFrameValidationError error{LzmwRansFrameValidationError::none};
 };
+
+// Fixes the complete canonical LZMW reference stream before planning every
+// rANS block and reports the exact complete-frame extent without writing
+// serialized output. Input, encoder workspace, and staging must not overlap.
+[[nodiscard]] LzmwRansFrameValidationResult plan_lzmw_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Validates every rANS block before reconstructing the private canonical LZMW
 // reference region, then validates the complete phrase graph without expanding
