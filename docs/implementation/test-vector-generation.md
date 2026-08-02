@@ -3298,6 +3298,15 @@ span one entry or byte short, aggregate capacity one byte short, every final
 truncation class, one trailing byte, ResetBlock, empty stream, Flush starvation,
 and EndInput after only the first frame.
 
+For the LZ77 plus tANS profile calculator, use a 2,500,000-byte known stream
+with default 65,536-byte frame and block sizes. Require `F=65,536`,
+`S=1,048,576`, `K=16`, per-block payload ceiling 98,306, and complete encoded
+frame capacity 1,581,400 bytes. For a 17-byte stream require 17 raw bytes, 272
+token bytes, one descriptor, a 410-byte payload ceiling, and 994 encoded bytes.
+Reject block count, payload, aggregate, and one-MiB profile bounds independently.
+Derive decoder regions only from local limits, map stable error categories, and
+construct a three-frame streaming round trip directly from calculated storage.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

@@ -653,9 +653,9 @@ private decoder additionally admits the complete raw staging extent and
 aggregate workspace before reconstructing validated literals and overlapping
 matches. Its transactional complete-frame wrapper preflights caller output and
 publishes once only after private reconstruction succeeds. It remains
-`Specified`: no encoder, streaming transform, C factory, CLI selector,
-benchmark, fuzz target, completion claim, or interoperability entry exists
-yet. The encoder-side write-free planner now freezes canonical LZ77 staging
+`Specified`: no C factory, CLI selector, benchmark, fuzz target, completion
+claim, or interoperability entry exists yet. The encoder-side write-free
+planner now freezes canonical LZ77 staging
 and computes every exact tANS block and complete-frame extent; the serialized
 writer now emits the generic header, all descriptors, and all payloads only
 after complete planning and output-capacity admission. The known-size bounded
@@ -663,7 +663,9 @@ streaming encoder now preserves identical bytes across arbitrary chunks using
 caller-owned raw, token, and serialized-frame storage. A matching streaming
 decoder now collects, validates, and privately reconstructs complete frames
 before draining them, with frame-atomic rejection of malformed later input.
-Profile calculation and public admission remain absent.
+The internal profile calculator now derives a canonical header and all
+direction-specific workspace extents using the exact blockwise tANS payload
+ceiling and local limits. Public admission remains absent.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -887,7 +889,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-544, the complete Release suite contains 2,084 tests and passes under
+At DD-545, the complete Release suite contains 2,091 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

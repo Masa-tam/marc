@@ -31,7 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   same bytes under arbitrary chunking.
   The matching known-size streaming decoder collects and validates one complete
   frame before exposing any byte from it, preserving earlier committed frames
-  when a later frame is malformed.
+  when a later frame is malformed. Its internal profile calculator now derives
+  the canonical stream header and every encoder/decoder workspace extent from
+  validated configuration and local limits, including the exact per-block
+  tANS payload ceiling, without exposing private block-view types.
 
 ## 0.1.2 - 2026-08-02
 

@@ -1600,6 +1600,12 @@ caller-owned storage, and checked aggregate arithmetic. No external streaming
 decoder, buffering state machine, malformed corpus, source code, or test suite
 was consulted.
 
+The LZ77 plus tANS internal profile calculator uses only DD-545, the specified
+`16F`, `528K`, and per-block `2 + ceil(12n/8)` bounds, DD-543/DD-544's
+caller-owned streaming regions, marc's local hard limits, checked arithmetic,
+and existing directional profile conventions. No external profile API,
+allocation policy, source code, corpus, or test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

@@ -4760,6 +4760,13 @@ bytes become visible only after the entire frame succeeds. Final short-frame
 extent follows the known original size; truncation and trailing bytes are
 rejected, and terminal status and errors remain sticky.
 
+The internal profile calculator changes no serialized representation. For the
+largest known raw frame `F`, it reports conservative token capacity `S = 16F`,
+`K = ceil(S/B)` blocks, exact descriptor capacity `528K`, and complete encoded
+frame capacity `56 + 528K + floor(S/B)Q(B) + (R == 0 ? 0 : Q(R))`, where
+`R = S mod B`. Decoder capacities derive only from validated local limits and
+never trust an input header before construction.
+
 For raw `A`, LZ77 emits:
 
 ```text

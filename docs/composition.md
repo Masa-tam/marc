@@ -35,8 +35,8 @@ staging is bounded by `S <= 16F`; with entropy block size `B`, block count is
 symbols has payload ceiling `2 + ceil(12n/8)`. Decoding validates every tANS
 block into private staging before applying token alignment, LZ77 references,
 and exact raw-extent checks. The independently derived raw-`A` vector fixes
-the complete 587-byte frame. No combined implementation or public profile
-exists yet. Its first bounded complete-frame validator now admits exact extents
+the complete 587-byte frame. No public profile exists yet. Its first bounded
+complete-frame validator now admits exact extents
 and all caller-owned storage before entropy processing, validates every tANS
 block before writing any token byte, reconstructs the complete private token
 region, and applies the ordinary LZ77 validator. Its private decoder adds raw
@@ -51,6 +51,10 @@ Its bounded known-size streaming encoder drains complete prepared frames from
 caller storage and preserves those bytes under one-byte chunking.
 Its matching streaming decoder publishes only complete validated frames and
 retains earlier frame commits when later entropy or token data is malformed.
+Its internal profile calculator derives the canonical known-size stream header,
+the encoder's raw, token, and complete-frame byte regions, and the decoder's
+serialized-frame, token, private-raw, and tANS-view requirements. All sizing
+uses checked local limits; private view layout remains an implementation detail.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

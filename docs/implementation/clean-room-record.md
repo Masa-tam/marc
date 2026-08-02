@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS internal profile calculator
+
+- Authoring method: specialized marc's repository-owned directional profile
+  convention to the already specified LZ77+tANS streaming workspaces.
+- References used: DD-545, DD-543/DD-544, local hard limits, checked arithmetic,
+  and the documented tANS block payload ceiling.
+- Known implementations intentionally not consulted: external profile APIs,
+  allocation policies, codec source, encoded corpora, and test suites.
+- Independent decisions: derive encoder storage from known-size configuration;
+  sum the exact conservative ceiling for full and final-short tANS blocks;
+  derive decoder storage only from local limits; and expose no private view
+  layout.
+- Generated-code task description: add canonical header and directional
+  workspace calculation; test exact default and short capacities, independent
+  limits, stable errors, and direct streaming construction; update build and
+  documentation records.
+- Similarity review: the calculator combines only repository-owned bounds,
+  types, and checked arithmetic. No external structure, capacity formula,
+  naming scheme, or test expression was compared.
+- Local validation: the focused profile suite passed 7/7 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,091/2,091 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
 ## 2026-08-03 - LZ77 plus tANS known-size streaming decoder
 
 - Authoring method: specialized marc's repository-owned LZ77/rANS streaming
