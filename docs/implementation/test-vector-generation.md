@@ -3249,6 +3249,17 @@ preserving the entire token sentinel. Finally encode a token with invalid kind
 raise the declared payload above the checked 12-bit transition ceiling for
 early extent rejection.
 
+For the first LZ77 plus tANS private raw decoder, reconstruct the same 587-byte
+Literal frame into a three-byte sentinel span and require only its declared
+first byte to become `41`. Independently serialize a Literal `A` followed by a
+distance-one, length-four terminal match, tANS-encode those 32 token bytes, and
+require private reconstruction of `AAAAA` to exercise forward overlap copying.
+
+Submit raw staging one byte short and an aggregate limit one byte below
+descriptor, payload, token, view, and raw bytes; both must fail before token or
+raw mutation. Reuse the invalid second-block initial state and the valid tANS
+payload carrying token kind `FF`; each must leave the raw sentinel unchanged.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

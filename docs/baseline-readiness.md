@@ -648,11 +648,12 @@ independent byte-block boundaries within an outer frame, checked `S <= 16F`,
 and an independent 587-byte single-Literal frame. Its first bounded complete-
 frame validator now admits all exact extents, token and view capacities, and
 aggregate workspace before entropy work. It validates every tANS block before
-filling private token staging, then validates complete LZ77 semantics without
-reconstructing raw bytes. It remains `Specified`: no private raw decoder,
-transactional publication, encoder, streaming transform, C factory, CLI
-selector, benchmark, fuzz target, completion claim, or interoperability entry
-exists yet.
+filling private token staging, then validates complete LZ77 semantics. Its
+private decoder additionally admits the complete raw staging extent and
+aggregate workspace before reconstructing validated literals and overlapping
+matches without publication. It remains `Specified`: no transactional
+publication, encoder, streaming transform, C factory, CLI selector, benchmark,
+fuzz target, completion claim, or interoperability entry exists yet.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -876,7 +877,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-538, the complete Release suite contains 2,059 tests and passes under
+At DD-539, the complete Release suite contains 2,064 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

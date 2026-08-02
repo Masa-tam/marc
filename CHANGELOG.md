@@ -17,8 +17,10 @@ format versions, and C ABI versions are independent namespaces.
   validator now admits every extent and caller-owned workspace before entropy
   processing, validates all tANS automata before writing any token byte,
   reconstructs the complete private token region, and applies the existing
-  LZ77 semantic validator without reconstructing or publishing raw bytes. No
-  public entry point exists yet.
+  LZ77 semantic validator. Its private decoder now preflights the complete raw
+  staging extent and aggregate workspace, then reconstructs validated literals
+  and overlapping matches without publishing raw bytes. No public entry point
+  exists yet.
 
 ## 0.1.2 - 2026-08-02
 

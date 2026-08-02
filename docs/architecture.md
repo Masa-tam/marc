@@ -1831,7 +1831,14 @@ bytes under one aggregate policy. One loop validates every tANS model, table,
 state path, terminal state, and padding bit without output; a second loop fills
 token staging only after all blocks succeed. The existing LZ77 validator then
 checks the complete reconstructed token stream. Raw staging and caller-visible
-output are deliberately absent.
+output are deliberately absent from that first boundary.
+
+The matching private decoder extends the same preflight with the complete raw
+staging extent and counts those `F` bytes in the aggregate workspace before
+descriptor parsing or token mutation. Only after every entropy and LZ77 check
+succeeds does the allocation-free LZ77 decoder reconstruct literals and
+forward overlapping matches into exactly `F` disposable raw bytes. No
+caller-visible output span exists at this boundary.
 
 ### C transform ABI
 

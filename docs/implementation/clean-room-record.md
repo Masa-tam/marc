@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZ77 plus tANS private raw decoder
+
+- Authoring method: extended DD-538's local complete-frame validator with the
+  existing allocation-free LZ77 decoder behind a private raw-staging boundary.
+- References used: DD-539, DD-538, caller-owned spans, checked aggregate
+  arithmetic, and marc's local LZ77 literal and overlap-copy semantics.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the full raw extent before entropy work;
+  include it in aggregate workspace; reuse complete entropy and token
+  validation unchanged; reconstruct exactly the declared raw extent only after
+  validation; and expose no caller-visible output span.
+- Generated-code task description: add private LZ77+tANS raw reconstruction and
+  stable raw-capacity and dictionary-decode errors; prove the independent
+  Literal, overlapping match, early storage and aggregate rejection, and raw
+  sentinel preservation after entropy or token failure; update architecture,
+  format, readiness, composition, decisions, references, vectors, changelog,
+  and provenance.
+- Similarity review: the implementation adds only repository-authored LZ77
+  decoding and bounded-span contracts above the local validator. No external
+  control flow, workspace formula, malformed vector, or test expression was
+  compared.
+- Local validation: the focused private-decoder suite passed 5/5 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,064/2,064 under
+  both compilers using official CMake 4.3.4; all 36 benchmark smokes and
+  schema-25 compatibility remained successful.
+
 ## 2026-08-02 - LZ77 plus tANS complete-frame validator
 
 - Authoring method: combined marc's generic frame admission, strict two-pass

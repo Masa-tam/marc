@@ -4718,6 +4718,15 @@ staging. After a successful second pass reconstructs exactly `S` token bytes,
 LZ77 validation runs without raw reconstruction. Callers discard token and
 view storage on every failure.
 
+The matching private decoder additionally requires caller-owned raw staging
+of at least `F` bytes before descriptor parsing or token mutation. Those `F`
+bytes are included with descriptor, payload, token, and view extents under
+`max_internal_buffered_bytes`. Only after the complete entropy pass and LZ77
+validation succeed does the existing allocation-free LZ77 decoder reconstruct
+exactly `F` bytes into that disposable staging, including forward overlap-copy
+semantics. No caller-visible output span exists; all workspace is discarded on
+failure.
+
 For raw `A`, LZ77 emits:
 
 ```text

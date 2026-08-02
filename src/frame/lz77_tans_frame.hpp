@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZ77_TANS_FRAME_HPP
 #define MARC_FRAME_LZ77_TANS_FRAME_HPP
 
+#include "dictionary/lz77_decoder.hpp"
 #include "dictionary/lz77_format.hpp"
 #include "dictionary/lz77_validator.hpp"
 #include "entropy/tans_controller.hpp"
@@ -24,10 +25,12 @@ enum class Lz77TansFrameValidationError : std::uint8_t {
     invalid_entropy_extent,
     views_too_small,
     dictionary_staging_too_small,
+    raw_staging_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -49,6 +52,8 @@ struct Lz77TansFrameValidationResult {
         dictionary::internal::Lz77ValidationError::none};
     dictionary::internal::Lz77FormatError dictionary_format_error{
         dictionary::internal::Lz77FormatError::none};
+    dictionary::internal::Lz77DecodeError dictionary_decode_error{
+        dictionary::internal::Lz77DecodeError::none};
     Lz77TansFrameValidationError error{
         Lz77TansFrameValidationError::none};
 };
@@ -66,6 +71,20 @@ struct Lz77TansFrameValidationResult {
     std::span<const std::byte> input,
     std::span<entropy::internal::TansBlockView> views,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Validates every layer and reconstructs exactly one frame into private raw
+// staging without publishing it to a caller-visible output extent.
+[[nodiscard]] Lz77TansFrameValidationResult
+decode_lz77_tans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::TansBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

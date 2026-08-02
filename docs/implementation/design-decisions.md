@@ -9053,6 +9053,34 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-539: LZ77 tANS reconstruction remains private
+
+- Date: 2026-08-02
+- Status: accepted
+
+Extend DD-538 with a bounded complete-frame decoder that reconstructs only
+into caller-owned private raw staging. Require capacity for the complete
+declared raw frame before descriptor parsing or entropy output, and count
+those `F` bytes together with descriptor, payload, token staging, and tANS
+views against `max_internal_buffered_bytes`.
+
+Retain DD-538's all-block validation pass, second token reconstruction pass,
+and complete LZ77 validation. Only after every entropy automaton and every
+token semantic succeeds may the existing allocation-free LZ77 decoder
+reconstruct literals and forward overlapping matches from immutable token
+staging into exactly `F` private raw bytes. Preserve stable validation, format,
+and decode errors; an unexpected failure after successful validation is a
+distinct dictionary-decode error.
+
+No caller-visible output span exists. On every failure the caller discards
+views, token staging, and raw staging. Prove the 587-byte Literal frame, a
+distance-one overlapping terminal match, raw staging one byte short before
+token mutation, aggregate workspace one byte short including raw bytes, and
+unchanged raw sentinels after a malformed later tANS block or invalid decoded
+token. This decision adds no transactional publication, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-538: LZ77 tANS validation stops at the token boundary
 
 - Date: 2026-08-02
