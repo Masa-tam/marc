@@ -4034,6 +4034,16 @@ report complete-stream ratio, both throughputs, every public workspace region,
 and the larger direction-specific caller-owned total. The four-byte term must
 remain the conservative one-reference-per-raw-byte LZMW ceiling.
 
+For interoperability schema 25, generate the deterministic 8,193-byte fixture
+with the unchanged repository recurrence, preserve the exact schema-24 archive
+order, and append exactly one `lzmw-rans` archive as entry 36. Set
+`schema_version` to 25 and `codec_set` to `marc-cli-v25`; record every archive's
+size and SHA-256 only after local round-trip success. Verify exact order,
+leaf-only names, hashes, foreign decoding, and byte-identical local re-encoding.
+Swap the first two manifest entries and require rejection. Derive schema 24 by
+removing only `lzmw-rans`, restoring `marc-cli-v24`, and then verify the
+unchanged schemas 24 through 1.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

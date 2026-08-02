@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 24 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 25 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 24 |
+| Profile | Purpose | Local status | Interoperability schema 25 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -61,15 +61,15 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
-| `lzmw-rans` | Sixth rANS composition | Ready | Not included |
+| `lzmw-rans` | Sixth rANS composition | Ready | Included locally |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 24 contains thirty-five archives: the frozen thirty-four-entry schema-23
-set followed by the LZD rANS profile. Schemas 1 through 23
+Schema 25 contains thirty-six archives: the frozen thirty-five-entry schema-24
+set followed by the LZMW rANS profile. Schemas 1 through 24
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
-thirty-one, thirty-two, thirty-three, and thirty-four profiles;
+thirty-one, thirty-two, thirty-three, thirty-four, and thirty-five profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -80,7 +80,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 24 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 25 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -117,7 +117,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included locally |
 
 ## Composed-profile admission queue
 
@@ -586,7 +586,7 @@ compatibility pass. Four-direction external schema-24 verification passed at
 revision `dad3638da2acb449afca969176194bf8323309f5` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-`lzmw-rans` is now the active admission composition. Its initial specification
+`lzmw-rans` has completed local admission. Its initial specification
 freezes the complete four-byte LZMW reference sequence before scalar rANS,
 checks `S <= 4F`, four-byte alignment, `K = ceil(S/B)`,
 `8K <= P <= S + 8K`, exact `528K` descriptor bytes, bounded phrase records,
@@ -632,8 +632,11 @@ requested output or temporary residue on malformed or trailing input. Its
 dependency-free benchmark now verifies an untimed exact round trip before
 reporting complete-stream ratio, directional throughput, and every queried
 workspace region under the checked `80 + 4N + 2200K` capacity ceiling.
-All local completion evidence is therefore present; interoperability admission
-remains pending.
+Interoperability schema 25 now appends the unchanged CLI archive once after the
+frozen schema-24 order. Local generation, exact-order verification, reordered-
+manifest rejection, byte-identical re-encoding, and schemas 1 through 24
+compatibility pass. All local completion evidence is therefore present;
+four-direction external schema-25 verification remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

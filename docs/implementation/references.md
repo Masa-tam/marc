@@ -1717,6 +1717,12 @@ marc's local benchmark timing/reporting helpers. No external LZMW/rANS
 benchmark, wrapper, capacity expression, performance result, source code, or
 test suite was consulted.
 
+Interoperability schema 25 uses only DD-535, the repository-owned schemas 1
+through 24, the public `lzmw-rans` CLI selector, PowerShell file/hash APIs, and
+the existing deterministic 8,193-byte fixture. No external bundle generator,
+manifest schema, archive corpus, verification script, source code, or test
+suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

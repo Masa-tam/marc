@@ -664,7 +664,9 @@ names `marc-cli-v22` and appends LZ78 plus rANS to the frozen thirty-two-
 profile schema-21 order. Schema 23 names `marc-cli-v23` and appends LZW plus
 rANS to the frozen thirty-three-profile schema-22 order. Schema 24 names
 `marc-cli-v24` and appends LZD plus rANS to the frozen thirty-four-profile
-schema-23 order. Schemas 1 through 23 retain their exact versioned profile sets.
+schema-23 order. Schema 25 names `marc-cli-v25` and appends LZMW plus rANS to
+the frozen thirty-five-profile schema-24 order. Schemas 1 through 24 retain
+their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -1745,6 +1747,13 @@ layout knowledge. Checked complete-stream capacity is `80 + 4N + 2200K` for
 raw extent `N` and nonempty frame count `K`, covering the worst-case reference
 bytes, generic frame header, four descriptors, and four final states. An
 untimed exact round trip gates ratio, throughput, and queried-workspace output.
+Interoperability schema 25 appends the unchanged CLI profile once after the
+frozen schema-24 order. Generation round-trips all thirty-six archives before
+recording size and SHA-256; verification requires exact order, hashes, foreign
+decode equality, and byte-identical local re-encoding. The compatibility
+regression rejects reordered schema 25, removes only `lzmw-rans` to reconstruct
+schema 24, and then verifies every frozen schema through version 1. External
+cross-platform schema-25 evidence remains pending.
 
 ### tANS foundation
 

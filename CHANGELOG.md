@@ -55,7 +55,10 @@ format versions, and C ABI versions are independent namespaces.
   dependency-free benchmark adapter uses the same public lifecycle, checks
   `80 + 4N + 2200K` complete-stream capacity, verifies an exact round trip
   before timing, and reports ratio, directional throughput, and all queried
-  workspace regions.
+  workspace regions. Interoperability schema 25 appends its unchanged CLI
+  archive after the frozen schema-24 order and locally proves exact generation,
+  ordered verification, reordered-manifest rejection, byte-identical local
+  re-encoding, and compatibility with schemas 1 through 24.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

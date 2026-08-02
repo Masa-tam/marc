@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - Interoperability schema 25 local admission
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by appending the completed LZMW/rANS CLI profile to the frozen schema-24 set.
+- References used: DD-535, the local schemas 1 through 24, the public
+  `lzmw-rans` selector, PowerShell file/hash APIs, and the deterministic
+  repository fixture.
+- Known implementations intentionally not consulted: external interoperability
+  schemas, bundle tools, archive corpora, verifier scripts, source code, and
+  test suites.
+- Independent decisions: name the new set `marc-cli-v25`; retain all 35 prior
+  entries byte-for-byte and append `lzmw-rans` once; require exactly 36 ordered
+  archives; derive schema 24 by removing only that final profile; and retain
+  external exchange as separate evidence.
+- Generated-code task description: update generation, strict verification, and
+  compatibility scripts for schema 25; add reordered-manifest rejection and
+  schemas 1-through-24 restoration; synchronize interoperability, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector-generation, and provenance records.
+- Similarity review: the change specializes marc's own sequential schema
+  extension and deterministic fixture. No external manifest layout, ordering,
+  hash schedule, corpus, source code, or test expression was compared.
+- Local validation: schema-25 generation, exact-order verification, reordered-
+  manifest rejection, byte-identical re-encoding, and schemas 1 through 24
+  compatibility passed under both MSVC and ClangCL using official CMake 4.3.4.
+  The complete Release CTest suite passed 2,048/2,048 under both compilers; all
+  36 benchmark smokes remained successful.
+
 ## 2026-08-02 - LZMW plus rANS verified benchmark adapter
 
 - Authoring method: applied DD-534 to marc's dependency-free benchmark runner

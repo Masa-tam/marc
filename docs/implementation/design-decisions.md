@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-535: Interoperability schema 25 appends LZMW rANS once
+
+- Date: 2026-08-02
+- Status: accepted
+
+Define interoperability schema 25 as the frozen schema-24 profile order followed
+once by `lzmw-rans`. Set `schema_version` to 25 and `codec_set` to
+`marc-cli-v25`; require exactly 36 archives in manifest order. Keep schemas 1
+through 24 explicit and unchanged. No older schema may inherit the new profile.
+
+Generation must round-trip every archive locally before recording its size and
+SHA-256. Verification must require leaf-only names, exact profile count and
+order, recorded sizes and hashes, foreign decode equality, and byte-identical
+local re-encoding. The local compatibility regression must reject a reordered
+schema-25 manifest, derive schema 24 by removing only `lzmw-rans` and restoring
+its version and codec set, then continue through every frozen older schema.
+This establishes local format determinism only; external Windows/Linux
+cross-checks remain required release evidence and no result is predicted.
+
 ## DD-534: LZMW rANS benchmark retains the exact four-byte reference ceiling
 
 - Date: 2026-08-02

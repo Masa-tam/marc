@@ -4574,6 +4574,9 @@ requirements query. The selector adds no stream field, algorithm ID, parameter
 extension, or format variant. The dependency-free benchmark selects the same
 profile. Its checked complete-stream ceiling is `80 + 4N + 2200K`; verification
 and measurement add no stream field or format variant.
+Interoperability schema 25 emits the unchanged profile as `lzmw-rans` after the
+frozen thirty-five-entry schema-24 set. The manifest change introduces no
+stream field or format variant.
 
 ## tANS variant 1
 
