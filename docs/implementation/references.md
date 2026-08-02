@@ -1684,6 +1684,12 @@ workspace accounting, and marc's transform status contract. No external
 streaming decoder, parser state machine, buffering layout, malformed corpus,
 source code, or test suite was consulted.
 
+The LZMW plus rANS profile calculator uses only DD-529, the local `4F`
+reference ceiling, scalar-rANS descriptor and payload bounds, LZMW record
+limits, checked arithmetic, standard alignment, and the existing streaming
+constructors. No external requirements API, opaque-layout convention, source
+code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

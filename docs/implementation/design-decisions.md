@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-529: LZMW rANS profiles align three decoder record regions
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add an internal direction-specific workspace calculator above DD-527 and
+DD-528 without changing their byte representation. For encoding, derive the
+largest raw frame `F`, conservative reference staging `S = 4F`, rANS block
+count `K = ceil(S/B)`, complete frame ceiling `56 + 528K + S + 8K`, and bounded
+LZMW encoder records. Count all four regions under checked aggregate arithmetic.
+
+For decoding, derive complete encoded, reference, and private-raw byte regions
+from validated local limits. Place rANS block views first in opaque storage,
+align and place LZMW phrase records second, then align and place the iterative
+`uint32_t` expansion references. Partition helpers must recompute and validate
+both offsets, total bytes, alignment, capacity, and base alignment before
+publishing typed spans. Empty encoding uses zero regions and alignment one.
+Prove that the returned requirements directly construct the existing bounded
+streaming round trip. This step adds no public C requirements query, factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-528: LZMW rANS streaming decoding admits complete frames before raw drain
 
 - Date: 2026-08-02

@@ -618,6 +618,10 @@ privately, and publishes
 only validated raw frames. It rejects truncation, trailing bytes, protocol
 errors, and later-frame corruption without publishing bytes from the failing
 frame. Admission evidence remains pending.
+The internal profile calculator now derives conservative encoder and decoder
+storage, validates the coupled opaque-view layout, and directly constructs a
+bounded streaming round trip. Public C requirements and factory admission
+remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

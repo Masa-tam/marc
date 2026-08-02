@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS profile and workspace layout
+
+- Authoring method: applied DD-529 to marc's local LZMW/rANS bounds and the
+  existing caller-owned streaming constructors.
+- References used: DD-529, `S=4F`, scalar-rANS descriptor/payload ceilings,
+  local LZMW record limits, checked arithmetic, and standard type alignment.
+- Known implementations intentionally not consulted: external profile APIs,
+  workspace calculators, opaque layouts, source code, and test suites.
+- Independent decisions: calculate direction-specific regions; make empty
+  encoding require zero bytes and alignment one; place rANS views, LZMW phrases,
+  and expansion references in that order; and recompute the full layout before
+  publishing typed spans.
+- Generated-code task description: add profile calculation, conservative
+  capacity and limit checks, aligned partition helpers, error mapping, direct
+  streaming construction tests, build registration, and synchronized format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes only marc-local bounds,
+  records, and constructors. No external formula expression, opaque layout,
+  alignment policy, error taxonomy, or test expression was compared.
+- Local validation: the focused LZMW/rANS profile suite passed 7/7 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,039/2,039 under
+  both compilers using official CMake 4.3.4; all 35 benchmark smokes and
+  schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS bounded streaming decoder
 
 - Authoring method: wrapped DD-522 and DD-523 in marc's established staged

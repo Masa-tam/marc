@@ -310,6 +310,8 @@ preserving chunk-independent bytes and terminal state. Its matching bounded
 decoder preflights every complete frame and workspace from the generic header,
 reconstructs privately, and drains only after all entropy and LZMW validation
 succeeds. No public entry point exists yet.
+Its profile calculator derives the `4F` reference ceiling, rANS frame ceiling,
+encoder records, and aligned decoder views without changing the representation.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

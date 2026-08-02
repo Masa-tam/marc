@@ -1717,6 +1717,12 @@ body. A complete frame is decoded through rANS validation and LZMW graph
 validation into private raw storage, then drained. Later-frame corruption can
 therefore leave only earlier, fully validated frames committed.
 
+The direction-specific profile calculator derives every caller-owned byte and
+typed-record requirement from the same conservative frame bounds. Decoder
+opaque storage is partitioned into aligned rANS views, LZMW phrase records, and
+iterative expansion references only after its layout is recomputed and
+validated, hiding internal C++ types from a future C ABI.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

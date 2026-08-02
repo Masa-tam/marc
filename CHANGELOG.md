@@ -38,7 +38,10 @@ format versions, and C ABI versions are independent namespaces.
   all caller-owned and aggregate storage. The matching bounded streaming
   decoder admits each complete frame before body collection, reconstructs into
   private raw staging, and prevents malformed later frames from publishing any
-  byte beyond earlier successfully drained frames.
+  byte beyond earlier successfully drained frames. Its internal profile
+  calculator now derives all encoder and decoder workspaces, validates aligned
+  opaque-view partitions, and directly constructs the bounded streaming round
+  trip without changing the format.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

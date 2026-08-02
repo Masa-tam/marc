@@ -3975,6 +3975,16 @@ short. Also reject every final-byte truncation, a trailing byte, premature end
 after a complete nonfinal frame drains, explicit reset, and unknown flags;
 accept the canonical empty stream and leave nonterminal `Flush` starved.
 
+For LZMW plus rANS profile calculation, use original size 17, frame size 10,
+and entropy block size four. Require `F=10`, `S=40`, `K=10`, complete encoded
+ceiling 5,456 bytes, and nine encoder records. Freeze a seven-byte short frame
+at two entries and require 28 reference bytes and 2,228 encoded bytes. Exercise
+block, payload, aggregate, and one-MiB frame limits. For decoding, use local
+limits that yield four rANS views, ten LZMW phrases, eleven expansion entries,
+and verify every aligned offset and partition rejection. Finally construct both
+streaming directions solely from the calculated requirements and round-trip
+raw `ABABX`.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

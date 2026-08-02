@@ -4218,6 +4218,13 @@ reconstructs into private raw staging; only then may those bytes drain to the
 caller. Thus corruption in a later frame cannot publish any byte from that
 frame, while previously drained frames remain committed.
 
+The internal profile calculator changes no bytes. For largest raw frame `F`, it
+reports reference capacity `4F`, `K = ceil(4F/B)` rANS blocks, encoded-frame
+ceiling `56 + 528K + 4F + 8K`, and at most `F-1` LZMW encoder records subject
+to configured freeze limits. Decoder opaque storage places rANS views first,
+then aligned LZMW phrase records, then aligned `uint32_t` expansion references;
+partitioning revalidates offsets, total size, alignment, and capacity.
+
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into
 caller-owned staging before planning entropy. It then plans every scalar rANS
