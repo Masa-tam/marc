@@ -37,7 +37,9 @@ format versions, and C ABI versions are independent namespaces.
   tANS payload ceiling, without exposing private block-view types. The public
   C ABI now provides a size-tagged configuration, direction-specific workspace
   query, and factory over the same streaming implementation and three borrowed
-  workspace regions.
+  workspace regions. Its public-ABI completion matrix now covers required
+  binary classes, deterministic output, arbitrary chunking, sticky terminal
+  results, and frame-atomic rejection of malformed final input.
 
 ## 0.1.2 - 2026-08-02
 

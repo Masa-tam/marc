@@ -1886,6 +1886,13 @@ private raw staging and casts the separately aligned views region only inside
 the C++ implementation. Construction revalidates the profile and publishes no
 handle on any configuration, capacity, or alignment failure.
 
+The public-ABI completion boundary treats the C lifecycle as the system under
+test rather than reconstructing private codec objects. It repeats complete
+encoding for byte identity, varies input/output chunk schedules independently,
+checks sticky terminal results, and corrupts only the final frame after three
+frames have committed. Earlier output remains visible; no byte of the failing
+frame may replace its sentinel.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

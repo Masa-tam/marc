@@ -1241,6 +1241,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_tans_frame_streaming_encoder_tests.cpp
         tests/lz77_tans_frame_streaming_decoder_tests.cpp
         tests/lz77_tans_profile_tests.cpp
+        tests/lz77_tans_completion_tests.cpp
         tests/lz77_rans_frame_streaming_encoder_tests.cpp
         tests/lz77_rans_frame_streaming_decoder_tests.cpp
         tests/lz77_rans_profile_tests.cpp

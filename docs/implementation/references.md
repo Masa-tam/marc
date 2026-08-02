@@ -1611,6 +1611,12 @@ requirements, marc's existing fixed-width C transform lifecycle, checked
 workspace partitioning, and internal tANS view alignment. No external ABI,
 factory design, allocator contract, source code, or C test suite was consulted.
 
+The LZ77 plus tANS public-ABI completion matrix uses only DD-547, the published
+`marc_lz77_tans_*` lifecycle, DD-537's fixed representation, repository-authored
+deterministic generators, and local generic-frame extent parsing. No external
+conformance suite, corpus, combined codec API, malformed archive, source code,
+or test vector was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

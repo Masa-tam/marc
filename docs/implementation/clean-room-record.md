@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS public-ABI completion matrix
+
+- Authoring method: specialized marc's repository-owned public completion
+  contract to the newly published LZ77+tANS C lifecycle and its fixed format.
+- References used: DD-547, DD-546, the public C header, deterministic local
+  generator, and explicit generic-frame extent fields.
+- Known implementations intentionally not consulted: external conformance
+  suites, corpora, combined codecs, malformed archives, source, and tests.
+- Independent decisions: cover every one-byte symbol and required binary
+  class; repeat encoding byte-identically; vary encode and decode chunks;
+  require sticky termination; and preserve a sentinel after three committed
+  frames when the fourth is corrupt, truncated, or followed by trailing data.
+- Generated-code task description: add a public-C-lifecycle completion matrix
+  for required classes, determinism, chunking, terminal behavior, and final-
+  frame atomicity; update build and documentation records.
+- Similarity review: the matrix reuses only repository-authored fixtures,
+  parser field offsets, and public lifecycle helpers. No external schedule,
+  mutation, corpus, naming, or test expression was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,095/2,095
+  under both compilers using official CMake 4.3.4; all 36 benchmark smokes and
+  schema-25 compatibility remained successful.
+
 ## 2026-08-03 - LZ77 plus tANS public C ABI
 
 - Authoring method: connected DD-545's existing bounded streaming pair to

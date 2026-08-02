@@ -157,7 +157,10 @@ and receives aligned opaque tANS views in the third region. The requirements
 query must be repeated after changing direction, either frame dimension,
 original size, LZ77 parameters, or any local limit. Factory failure leaves the
 transform pointer null, and the header never exposes `TansBlockView`. Its
-profile-specific completion matrix remains pending.
+profile-specific completion matrix uses 64-byte frames and blocks and covers
+empty input, all one-byte values, representative binary and generated data,
+deterministic re-encoding, one-byte and mixed chunking, repeated terminal
+calls, and atomic malformed-final-frame rejection through these C functions.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.
