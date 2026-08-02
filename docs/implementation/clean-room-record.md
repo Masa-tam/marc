@@ -9906,6 +9906,28 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS public C ABI
+
+- Authoring method: connected DD-545's existing bounded streaming pair to
+  marc's repository-owned fixed-width C lifecycle and three-region convention.
+- References used: DD-546, DD-545, the local C transform adapter, checked
+  workspace arithmetic, and private tANS view alignment.
+- Known implementations intentionally not consulted: external C ABIs, factory
+  layouts, allocation APIs, codec source, corpora, and test suites.
+- Independent decisions: use a distinct size-tagged config; preserve borrowed
+  primary/secondary/views storage; expose view byte count and alignment only;
+  repeat admission at construction; and leave failed handles null.
+- Generated-code task description: add public declarations, configuration
+  loading, requirements query, factory, and a pure-C round trip with exact
+  workspace and failure checks; update build and documentation records.
+- Similarity review: the adapter specializes only marc-authored ABI and profile
+  conventions. No external naming, structure layout, lifecycle control flow,
+  or test expression was compared.
+- Local validation: the pure-C ABI round trip passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,092/2,092 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
 ## 2026-08-03 - LZ77 plus tANS internal profile calculator
 
 - Authoring method: specialized marc's repository-owned directional profile

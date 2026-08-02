@@ -1879,6 +1879,13 @@ only from local hard limits and contain serialized-frame, token, private-raw,
 and tANS-view capacities. The calculator exposes only byte counts and a view
 count; `TansBlockView` remains private.
 
+The public C adapter preserves that boundary through one size-tagged config,
+one directional requirements query, and one factory. Encoding partitions the
+secondary byte region after token staging; decoding partitions it before
+private raw staging and casts the separately aligned views region only inside
+the C++ implementation. Construction revalidates the profile and publishes no
+handle on any configuration, capacity, or alignment failure.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -62,6 +62,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
+| `lz77-tans` | First tANS composition | In progress | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 25 contains thirty-six archives: the frozen thirty-five-entry schema-24
@@ -118,6 +119,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lz77-tans` | Yes | Yes | Yes | No | No | No | No | Not included |
 
 ## Composed-profile admission queue
 
@@ -652,9 +654,9 @@ filling private token staging, then validates complete LZ77 semantics. Its
 private decoder additionally admits the complete raw staging extent and
 aggregate workspace before reconstructing validated literals and overlapping
 matches. Its transactional complete-frame wrapper preflights caller output and
-publishes once only after private reconstruction succeeds. It remains
-`Specified`: no C factory, CLI selector, benchmark, fuzz target, completion
-claim, or interoperability entry exists yet. The encoder-side write-free
+publishes once only after private reconstruction succeeds. It is now a public
+C ABI profile; CLI selector, benchmark, fuzz target, completion claim, and
+interoperability entry remain absent. The encoder-side write-free
 planner now freezes canonical LZ77 staging
 and computes every exact tANS block and complete-frame extent; the serialized
 writer now emits the generic header, all descriptors, and all payloads only
@@ -665,7 +667,8 @@ decoder now collects, validates, and privately reconstructs complete frames
 before draining them, with frame-atomic rejection of malformed later input.
 The internal profile calculator now derives a canonical header and all
 direction-specific workspace extents using the exact blockwise tANS payload
-ceiling and local limits. Public admission remains absent.
+ceiling and local limits. A size-tagged C configuration, workspace query, and
+factory now bind the existing streaming pair while keeping tANS views private.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -889,7 +892,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-545, the complete Release suite contains 2,091 tests and passes under
+At DD-546, the complete Release suite contains 2,092 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

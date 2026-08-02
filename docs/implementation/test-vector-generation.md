@@ -3307,6 +3307,15 @@ Reject block count, payload, aggregate, and one-MiB profile bounds independently
 Derive decoder regions only from local limits, map stable error categories, and
 construct a three-frame streaming round trip directly from calculated storage.
 
+For the LZ77 plus tANS C ABI, initialize encoding for seven bytes
+`41 42 41 42 41 42 58`, one seven-byte frame, and 16-byte entropy blocks.
+Require seven primary bytes, 4,046 secondary bytes, zero view bytes, and
+alignment one. Encode through only C11 functions. Reinitialize decoding with
+4,096-byte frame/block limits, 6,000 dictionary bytes, 8,192 internal bytes,
+and seven blocks; require 8,248 primary and 10,096 secondary bytes plus a
+nonempty aligned view region, then reproduce the input. Reject views one byte
+short and a nonzero reserved field while leaving the handle null.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

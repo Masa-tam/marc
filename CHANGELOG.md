@@ -34,7 +34,10 @@ format versions, and C ABI versions are independent namespaces.
   when a later frame is malformed. Its internal profile calculator now derives
   the canonical stream header and every encoder/decoder workspace extent from
   validated configuration and local limits, including the exact per-block
-  tANS payload ceiling, without exposing private block-view types.
+  tANS payload ceiling, without exposing private block-view types. The public
+  C ABI now provides a size-tagged configuration, direction-specific workspace
+  query, and factory over the same streaming implementation and three borrowed
+  workspace regions.
 
 ## 0.1.2 - 2026-08-02
 

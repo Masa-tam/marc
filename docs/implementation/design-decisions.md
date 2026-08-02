@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-546: LZ77 tANS C admission preserves three opaque regions
+
+- Date: 2026-08-03
+- Status: accepted
+
+Expose the DD-545 profile through a size-tagged `marc_lz77_tans_config`, a
+direction-specific requirements query, and a factory returning the common
+opaque transform. Retain the established primary/secondary/views ABI: encode
+uses raw primary storage and token-plus-frame secondary storage with no views;
+decode uses serialized primary storage, token-plus-private-raw secondary
+storage, and aligned opaque tANS views.
+
+Repeat profile admission at construction, validate all three buffer contracts,
+and leave the transform pointer null on failure. Expose only view bytes and
+alignment, never `TansBlockView` or another C++ layout. Prove a complete C11
+round trip, exact queried extents, short-view rejection, and reserved-field
+rejection. This step adds no CLI selector, completion matrix, fuzz target,
+benchmark, or interoperability entry.
+
 ## DD-545: LZ77 tANS profiles derive the blockwise payload ceiling
 
 - Date: 2026-08-03

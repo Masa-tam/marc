@@ -4767,6 +4767,12 @@ frame capacity `56 + 528K + floor(S/B)Q(B) + (R == 0 ? 0 : Q(R))`, where
 `R = S mod B`. Decoder capacities derive only from validated local limits and
 never trust an input header before construction.
 
+The public C requirements query and factory change no byte in this format.
+They expose the same known-size parameters and local limits through fixed-width
+fields, report three caller-owned regions as byte counts plus alignment, and
+construct the existing streaming encoder or decoder without serializing ABI
+structures.
+
 For raw `A`, LZ77 emits:
 
 ```text

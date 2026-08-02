@@ -3,7 +3,7 @@
 The public C ABI is declared by `<marc/marc.h>`. It exposes Blocked Huffman,
 Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
-profiles, the LZ77 plus rANS profile, LZSS variant 1, the LZSS plus Blocked
+profiles, the LZ77 plus rANS and LZ77 plus tANS profiles, LZSS variant 1, the LZSS plus Blocked
 Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
 Range and LZSS plus rANS profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
@@ -27,6 +27,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_adaptive_huffman_*`,
 `marc_lz77_dynamic_range_*`,
 `marc_lz77_rans_*`,
+`marc_lz77_tans_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lzss_dynamic_range_*`, `marc_lzss_rans_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
@@ -64,6 +65,7 @@ cross-product pairings as callable C ABI features.
    `marc_lz77_adaptive_huffman_config_init()`,
    `marc_lz77_dynamic_range_config_init()`,
    `marc_lz77_rans_config_init()`,
+   `marc_lz77_tans_config_init()`,
    `marc_lzss_config_init()`, `marc_lzss_blocked_huffman_config_init()`,
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lzss_dynamic_range_config_init()`,
@@ -147,6 +149,15 @@ The public completion matrix fixes 64-byte frames and verifies every one-byte
 value, representative binary and generated data, exact determinism, one-byte
 and mixed chunking, repeated terminal calls, and atomic rejection of a
 malformed fourth frame entirely through these C functions.
+The LZ77 plus tANS profile has the same three-region contract. Encoding
+partitions secondary storage into canonical LZ77 tokens followed by the
+complete tANS frame and requires no views. Decoding uses primary for the
+serialized frame, partitions secondary into private token and raw staging,
+and receives aligned opaque tANS views in the third region. The requirements
+query must be repeated after changing direction, either frame dimension,
+original size, LZ77 parameters, or any local limit. Factory failure leaves the
+transform pointer null, and the header never exposes `TansBlockView`. Its
+profile-specific completion matrix remains pending.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

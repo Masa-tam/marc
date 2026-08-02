@@ -1606,6 +1606,11 @@ caller-owned streaming regions, marc's local hard limits, checked arithmetic,
 and existing directional profile conventions. No external profile API,
 allocation policy, source code, corpus, or test suite was consulted.
 
+The LZ77 plus tANS public C ABI uses only DD-546, DD-545's directional
+requirements, marc's existing fixed-width C transform lifecycle, checked
+workspace partitioning, and internal tANS view alignment. No external ABI,
+factory design, allocator contract, source code, or C test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external
