@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS transactional CLI selector
+
+- Authoring method: extended marc's existing generic transactional file
+  adapter with DD-533's fixed public LZMW/rANS profile and no private codec
+  dependencies.
+- References used: DD-533, the local `marc_lzmw_rans_*` C lifecycle, checked
+  `4F` and scalar-rANS capacity bounds, aligned workspace allocation, and the
+  repository-owned CLI regression script.
+- Known implementations intentionally not consulted: external LZMW/rANS CLI
+  tools, wrappers, archives, workspace policies, source code, and test suites.
+- Independent decisions: use 65,536-byte frames and blocks, four blocks,
+  262,144 reference bytes, 262,176 payload bytes, the public entry default, and
+  a 16-MiB aggregate policy; obtain every workspace from the public query; and
+  retain destination and `.tmp` refusal/removal semantics.
+- Generated-code task description: add the explicit selector, configuration,
+  requirements, factory dispatch, usage text, and transactional round-trip,
+  collision, malformed-input, trailing-data, and recovery coverage; synchronize
+  CLI, C-API, format, architecture, readiness, composition, changelog,
+  decision, reference, vector-generation, and provenance records.
+- Similarity review: the adapter adds one marc-local public profile to existing
+  generic dispatch and file transaction code. No external command syntax,
+  allocation flow, failure schedule, source, or test expression was compared.
+- Local validation: the focused transactional CLI suite passed 1/1 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,047/2,047 under
+  both compilers using official CMake 4.3.4; all 35 existing benchmark smokes
+  and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS bounded decoder fuzzing
 
 - Authoring method: applied marc's existing fixed-memory dual-decoder fuzz

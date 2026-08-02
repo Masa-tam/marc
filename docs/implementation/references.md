@@ -1705,6 +1705,12 @@ complete-frame decoder, DD-530's public C lifecycle, fixed local arrays, and
 marc's transform invariants. No external fuzz harness, malformed corpus,
 combined decoder, source code, or regression suite was consulted.
 
+The `lzmw-rans` CLI adapter uses only DD-533, the published marc C config,
+requirements, factory, process, and destroy functions, and the repository's
+existing transactional file adapter and deterministic fixture. No external
+LZMW/rANS command-line tool, wrapper, archive, source code, or test suite was
+consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

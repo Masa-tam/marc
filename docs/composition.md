@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | Specified | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS
@@ -321,6 +321,9 @@ Its bounded dual-path decoder fuzz target now fixes every byte and typed-record
 region before parsing arbitrary input, while permanent regressions cover all
 canonical truncations, saturated extents, and a nonzero reserved descriptor
 byte.
+The transactional CLI now exposes `lzmw-rans` only through the public C
+requirements, factory, process, and destroy lifecycle, retaining atomic file
+publication for malformed and trailing input.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

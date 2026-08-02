@@ -49,7 +49,9 @@ format versions, and C ABI versions are independent namespaces.
   rejection of corrupt, truncated, and extended final frames. Its bounded
   dual-path decoder fuzz target fixes every storage and process-call ceiling
   before untrusted parsing, with permanent atomic regressions for truncation,
-  saturated extents, and reserved descriptor bytes.
+  saturated extents, and reserved descriptor bytes. The transactional CLI now
+  exposes `--codec lzmw-rans` exclusively through the public requirements and
+  transform lifecycle with atomic refusal of malformed and trailing input.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

@@ -1649,7 +1649,7 @@ four-direction schema-24 cross-check passed at revision
 `dad3638da2acb449afca969176194bf8323309f5` across the recorded Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
 
-### Specified LZMW plus rANS boundary
+### LZMW plus rANS boundary
 
 The sixth rANS composition freezes the complete canonical LZMW four-byte
 phrase-reference sequence before scalar rANS sees any byte. For raw frame
@@ -1681,8 +1681,8 @@ the aggregate workspace before descriptor parsing. After entropy and the
 complete LZMW graph validate, it reduces the active stack to
 `dictionary_entries + 1` and invokes the ordinary nonrecursive LZMW decoder
 into disposable raw staging. It publishes no caller-visible output; short raw
-or expansion regions fail before reference staging changes. No public entry
-point is implied yet.
+or expansion regions fail before reference staging changes. That private
+validation layer itself is not a public entry point.
 
 The transactional complete-frame boundary additionally admits the entire
 caller destination before descriptor parsing, reuses the same validator and
@@ -1735,6 +1735,11 @@ decoder and that public streaming lifecycle. Its input, output, encoded frame,
 reference, rANS-view, phrase, expansion, and call counts are fixed before
 untrusted parsing; permanent regressions retain truncation and malformed-field
 atomicity.
+The explicit CLI selector fixes 65,536-byte raw frames and rANS blocks, a
+262,144-byte reference ceiling, four entropy blocks, a 262,176-byte payload
+ceiling, and a 16-MiB aggregate policy. It obtains all direction-specific
+storage and alignment from the public requirements query and retains the
+existing temporary-file publication transaction.
 
 ### tANS foundation
 

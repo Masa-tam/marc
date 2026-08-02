@@ -83,7 +83,7 @@ See
 ## Fuzzing
 
 Set `MARC_BUILD_FUZZERS=ON` in a separate Clang/LLVM sanitizer build to produce
-bounded stream-decoder fuzz targets for all thirty-four public profiles. Build
+bounded stream-decoder fuzz targets for all currently public profiles. Build
 and corpus instructions are in
 [`docs/fuzzing.md`](docs/fuzzing.md).
 

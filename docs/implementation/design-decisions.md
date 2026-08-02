@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-533: LZMW rANS CLI delegates all storage to the public ABI
+
+- Date: 2026-08-02
+- Status: accepted
+
+Publish `lzmw-rans` as an explicit selector in the existing transactional CLI.
+Use 65,536-byte outer frames and 65,536-byte rANS blocks. The exact LZMW bound
+is 262,144 canonical reference bytes, which permits four entropy blocks, 2,112
+descriptor bytes, and at most 262,176 payload bytes. Retain the public LZMW
+maximum-entry default and a conservative 16-MiB aggregate internal-buffer
+policy.
+
+Initialize, query, create, process, and destroy the codec only through
+`marc_lzmw_rans_*` and the common transform lifecycle. Allocate the three
+direction-specific workspace regions from the returned requirements, including
+the returned opaque alignment; do not reproduce any rANS-view, encoder-entry,
+phrase, expansion-stack, or partition layout in the CLI. Reuse the existing
+temporary-file transaction so configuration, allocation, codec, truncation,
+trailing-data, and destination-collision failures publish no requested output
+and leave no sibling temporary file. This step adds no benchmark,
+interoperability entry, stream field, format variant, or `Ready` claim.
+
 ## DD-532: LZMW rANS fuzzing fixes all three record regions
 
 - Date: 2026-08-02

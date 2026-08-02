@@ -4013,6 +4013,19 @@ caps input at 8,192 bytes and drives both private complete-frame and public C
 streaming decode with fixed arrays, byte-derived chunks, and an independent
 12,320-call ceiling.
 
+For `lzmw-rans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and decode it
+with explicit `--codec lzmw-rans` and compare the restored file byte for byte.
+Repeat encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+decode the valid archive again and require success, proving that failed
+transactions do not damage their source. The CLI profile uses 65,536-byte raw
+frames and rANS blocks, a 262,144-byte reference ceiling, four blocks, 2,112
+descriptor bytes, a 262,176-byte payload ceiling, the public maximum-entry
+default, and a 16-MiB aggregate policy. All primary, secondary, and aligned
+opaque-view requirements must come only from the public C query.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

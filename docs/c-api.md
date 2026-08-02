@@ -364,6 +364,13 @@ The LZMW plus Dynamic Range completion matrix uses only this lifecycle,
 including zero encoder views for empty and one-byte input, byte-identical
 repeated and arbitrarily chunked encoding, sticky success and error results,
 and atomic rejection of a malformed final frame.
+The LZMW plus rANS factory follows the same three-region ownership model while
+adding rANS block views to the decoder's aligned opaque layout. Query
+`marc_lzmw_rans_workspace_requirements()` whenever direction, known original
+size, frame size, entropy block size, maximum entries, or any hard limit
+changes. Its completion matrix and bounded dual-path fuzz target use only this
+public lifecycle. The `lzmw-rans` CLI selector likewise allocates all regions
+and their alignment from that query and adds no private layout dependency.
 
 ## Processing contract
 

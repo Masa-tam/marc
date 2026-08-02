@@ -4565,6 +4565,13 @@ final frame cannot publish any raw byte from that frame.
 The decoder fuzz boundary adds no representation: it exercises the same strict
 prefix, descriptor, extent, state, graph, and terminal checks under fixed
 storage and call ceilings.
+The explicit `lzmw-rans` CLI selector uses this unchanged representation with
+65,536-byte outer frames and rANS blocks, at most 65,536 configured dictionary
+entries, a 262,144-byte canonical-reference ceiling, four entropy blocks,
+2,112 descriptor bytes, a 262,176-byte payload ceiling, and a 16-MiB aggregate
+policy. Every workspace extent and opaque alignment comes from the public C
+requirements query. The selector adds no stream field, algorithm ID, parameter
+extension, or format variant.
 
 ## tANS variant 1
 

@@ -121,6 +121,12 @@ decoder and public C ABI streaming decoder use fixed arrays; the public query
 may bind only compile-time-bounded primary, secondary, and aligned opaque-view
 storage. Byte-derived chunks and the independent 12,320-call ceiling make
 stalls reproducible without input-controlled allocation.
+The combined LZMW plus rANS target uses the same dual-decoder and scalar-rANS
+metadata policy with a 4 KiB canonical-reference cap. Its one-KiB raw frame
+admits 1,023 LZMW phrase records and 1,024 iterative expansion references.
+All encoded-frame, reference, raw, rANS-view, phrase, expansion, and public-C
+workspace storage is fixed before input parsing, and byte-derived chunking is
+bounded by the independent 12,320-call ceiling.
 The combined LZMW plus Adaptive Huffman target also exercises exact-frame and
 incremental decode. It caps supplied input and Adaptive payload at 8 KiB,
 total raw output and canonical reference staging at 4 KiB, and one raw frame
@@ -217,6 +223,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzw_rans_stream \
   marc_fuzz_lzd_rans_stream \
+  marc_fuzz_lzmw_rans_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
   marc_fuzz_lzd_dynamic_range_stream \
   marc_fuzz_lzmw_adaptive_huffman_stream \
@@ -262,6 +269,8 @@ out/build/fuzz/marc_fuzz_lzw_rans_stream \
   fuzz/corpus/lzw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_rans_stream \
   fuzz/corpus/lzd_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzmw_rans_stream \
+  fuzz/corpus/lzmw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_adaptive_huffman_stream \
   fuzz/corpus/lzd_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_dynamic_range_stream \
