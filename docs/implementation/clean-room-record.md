@@ -9906,6 +9906,38 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS verified benchmark adapter
+
+- Authoring method: applied DD-534 to marc's dependency-free benchmark runner
+  and bound both measured directions directly to DD-533's public C profile.
+- References used: DD-534, DD-533, the public `marc_lzmw_rans_*` lifecycle,
+  checked integer arithmetic, the common aligned workspace owner, and local
+  timing/reporting helpers.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  benchmarks, wrappers, capacity formulas, performance results, source code,
+  and test suites.
+- Independent decisions: retain the 65,536-byte frame/block profile and 16-MiB
+  aggregate policy; reserve complete-stream capacity as `80 + 4N + 2200K`;
+  verify an untimed exact round trip; and report ratio, both throughputs, all
+  six queried region sizes, and peak caller-owned workspace without presenting
+  smoke timing as representative performance.
+- Generated-code task description: add the benchmark selector and public C
+  dispatch; preserve the four-byte-per-raw-byte reference ceiling with checked
+  arithmetic; add a README-based one-iteration smoke; synchronize benchmark,
+  format, architecture, C API, composition, readiness, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the adapter specializes marc's own benchmark and public
+  ABI patterns while deriving its ceiling directly from the local format. No
+  external harness, capacity expression, reporting layout, vector, or code
+  expression was compared.
+- Local validation: the focused one-iteration smoke passed over the 4,530-byte
+  README under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,048/2,048 under both compilers using official CMake 4.3.4; all 36 benchmark
+  smokes and schema-24 compatibility remained successful. The first sandboxed
+  MSVC build after CMake regeneration encountered the known MSBuild 18.8.2
+  FileTracker `E_ACCESSDENIED`; the established out-of-sandbox retry completed
+  normally.
+
 ## 2026-08-02 - LZMW plus rANS transactional CLI selector
 
 - Authoring method: extended marc's existing generic transactional file

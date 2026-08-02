@@ -10,7 +10,7 @@ entropy codecs, all six required dictionary codecs, and every required
 dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
 profile with mandatory per-frame CRC-32C and all six dictionary codecs composed
 with Adaptive Huffman are also available. All six dictionary codecs are
-additionally composed with Dynamic Range. All thirty profiles are
+additionally composed with Dynamic Range and rANS. All thirty-six profiles are
 exposed through a small C ABI and the command-line tool. The format and API are
 still under development and version 0.x streams are not yet promised
 long-term compatibility.
@@ -75,7 +75,7 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for all thirty-three benchmark-admitted
+and peak caller-owned codec workspace for all thirty-six benchmark-admitted
 profiles.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.

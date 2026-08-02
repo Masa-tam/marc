@@ -51,7 +51,11 @@ format versions, and C ABI versions are independent namespaces.
   before untrusted parsing, with permanent atomic regressions for truncation,
   saturated extents, and reserved descriptor bytes. The transactional CLI now
   exposes `--codec lzmw-rans` exclusively through the public requirements and
-  transform lifecycle with atomic refusal of malformed and trailing input.
+  transform lifecycle with atomic refusal of malformed and trailing input. Its
+  dependency-free benchmark adapter uses the same public lifecycle, checks
+  `80 + 4N + 2200K` complete-stream capacity, verifies an exact round trip
+  before timing, and reports ratio, directional throughput, and all queried
+  workspace regions.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

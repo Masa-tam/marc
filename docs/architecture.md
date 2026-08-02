@@ -1740,6 +1740,11 @@ The explicit CLI selector fixes 65,536-byte raw frames and rANS blocks, a
 ceiling, and a 16-MiB aggregate policy. It obtains all direction-specific
 storage and alignment from the public requirements query and retains the
 existing temporary-file publication transaction.
+The dependency-free benchmark reuses that public profile without private
+layout knowledge. Checked complete-stream capacity is `80 + 4N + 2200K` for
+raw extent `N` and nonempty frame count `K`, covering the worst-case reference
+bytes, generic frame header, four descriptors, and four final states. An
+untimed exact round trip gates ratio, throughput, and queried-workspace output.
 
 ### tANS foundation
 

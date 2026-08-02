@@ -4571,7 +4571,9 @@ entries, a 262,144-byte canonical-reference ceiling, four entropy blocks,
 2,112 descriptor bytes, a 262,176-byte payload ceiling, and a 16-MiB aggregate
 policy. Every workspace extent and opaque alignment comes from the public C
 requirements query. The selector adds no stream field, algorithm ID, parameter
-extension, or format variant.
+extension, or format variant. The dependency-free benchmark selects the same
+profile. Its checked complete-stream ceiling is `80 + 4N + 2200K`; verification
+and measurement add no stream field or format variant.
 
 ## tANS variant 1
 

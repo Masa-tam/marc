@@ -61,7 +61,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-rans` | Third rANS composition | Ready | Included |
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
-| `lzmw-rans` | Sixth rANS composition | In progress | Not included |
+| `lzmw-rans` | Sixth rANS composition | Ready | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 24 contains thirty-five archives: the frozen thirty-four-entry schema-23
@@ -117,7 +117,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-rans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -628,8 +628,12 @@ one-byte and mixed chunking, sticky terminal states, and final-frame atomicity.
 A bounded dual-path decoder fuzz harness and permanent truncation,
 saturated-extent, and reserved-descriptor regressions are now present. Its
 transactional CLI selector uses only the public C lifecycle and leaves no
-requested output or temporary residue on malformed or trailing input.
-Benchmark and interoperability admission evidence remain pending.
+requested output or temporary residue on malformed or trailing input. Its
+dependency-free benchmark now verifies an untimed exact round trip before
+reporting complete-stream ratio, directional throughput, and every queried
+workspace region under the checked `80 + 4N + 2200K` capacity ceiling.
+All local completion evidence is therefore present; interoperability admission
+remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

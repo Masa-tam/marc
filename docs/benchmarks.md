@@ -39,6 +39,7 @@ marc_benchmark lzmw corpus.bin 5
 marc_benchmark lzmw-blocked-huffman corpus.bin 5
 marc_benchmark lzmw-adaptive-huffman corpus.bin 5
 marc_benchmark lzmw-dynamic-range corpus.bin 5
+marc_benchmark lzmw-rans corpus.bin 5
 ```
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -318,6 +319,19 @@ succeeds before measurement. A one-iteration MSVC Release smoke over the
 4,520-byte README encoded 3,870 bytes, ratio 0.856, and reported 18,415,656
 bytes of peak caller reservation; throughput from this small input is
 descriptive only.
+
+`lzmw-rans` uses the CLI's 65,536-byte raw frame and entropy block,
+262,144-byte canonical-reference ceiling, four rANS blocks, 2,112 descriptor
+bytes, 262,176-byte payload ceiling, 65,536-entry dictionary policy, and
+16-MiB active aggregate limit. Checked complete-stream capacity is
+`80 + 4N + 2200K` for input extent `N` and nonempty frame count `K`; the
+per-frame term covers one 56-byte generic header, four 528-byte descriptors,
+and four eight-byte final states. Both direction-specific three-region
+workspaces and opaque alignment come from the public C ABI. An untimed
+byte-exact round trip succeeds before measurement. A one-iteration MSVC
+Release smoke over the 4,530-byte README encoded 4,258 bytes, ratio 0.940,
+and reported 18,417,768 bytes of peak caller reservation; throughput from this
+small input is descriptive only.
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when

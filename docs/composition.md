@@ -324,6 +324,9 @@ byte.
 The transactional CLI now exposes `lzmw-rans` only through the public C
 requirements, factory, process, and destroy lifecycle, retaining atomic file
 publication for malformed and trailing input.
+The dependency-free benchmark now selects the same public profile, verifies a
+byte-exact round trip before timing, and reports all queried workspace regions
+under the checked `80 + 4N + 2200K` complete-stream ceiling.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

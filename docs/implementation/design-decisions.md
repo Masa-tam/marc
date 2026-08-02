@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-534: LZMW rANS benchmark retains the exact four-byte reference ceiling
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add `lzmw-rans` to the dependency-free benchmark runner using exactly DD-533's
+65,536-byte frame and entropy-block profile and only the published C lifecycle.
+Before timing, encode once, decode the exact encoded extent once, and require
+byte equality. Then report complete-stream ratio, encode and decode throughput,
+all three direction-specific workspace extents, and the larger caller-owned
+workspace total.
+
+For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
+capacity `80 + 4N + 2200K`. The reference term follows the exact LZMW ceiling
+of one four-byte reference per raw byte. The per-frame term reserves the
+56-byte generic header plus four complete 528-byte descriptors and four
+eight-byte states. Short final frames may use less. This step adds no stream
+field, format variant, interoperability entry, optimization, or representative
+performance claim.
+
 ## DD-533: LZMW rANS CLI delegates all storage to the public ABI
 
 - Date: 2026-08-02

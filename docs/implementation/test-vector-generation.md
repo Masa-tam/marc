@@ -4026,6 +4026,14 @@ descriptor bytes, a 262,176-byte payload ceiling, the public maximum-entry
 default, and a 16-MiB aggregate policy. All primary, secondary, and aligned
 opaque-view requirements must come only from the public C query.
 
+For the LZMW plus rANS benchmark smoke, select `lzmw-rans`, use `README.md`,
+and run one iteration. Before timing, encode into checked capacity
+`80 + 4N + 2200K`, decode the exact encoded extent once, and require byte
+equality. Require the timed encode and decode to reproduce those extents, then
+report complete-stream ratio, both throughputs, every public workspace region,
+and the larger direction-specific caller-owned total. The four-byte term must
+remain the conservative one-reference-per-raw-byte LZMW ceiling.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

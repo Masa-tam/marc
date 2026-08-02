@@ -370,7 +370,9 @@ adding rANS block views to the decoder's aligned opaque layout. Query
 size, frame size, entropy block size, maximum entries, or any hard limit
 changes. Its completion matrix and bounded dual-path fuzz target use only this
 public lifecycle. The `lzmw-rans` CLI selector likewise allocates all regions
-and their alignment from that query and adds no private layout dependency.
+and their alignment from that query and adds no private layout dependency. The
+benchmark adapter independently queries the same three regions in each
+direction and verifies an exact round trip before timing.
 
 ## Processing contract
 
