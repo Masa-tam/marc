@@ -3280,6 +3280,18 @@ mutation. Independently corrupt the second tANS block and entropy-code an
 invalid second LZSS token; both cases must preserve the complete caller output
 sentinel.
 
+For the LZSS plus tANS exact-frame planner, submit raw `A` and require token
+bytes `00 41`, one 528-byte descriptor, three payload bytes, and complete
+587-byte extent. Repeat with `B = 1`; require two blocks, 1,056 descriptor
+bytes, four payload bytes, and complete 1,116-byte extent, proving that planning
+permits a block boundary inside the Literal.
+
+Plan six repeated `A` bytes twice with `B = 3`. Require the same canonical
+11-byte Literal-plus-Match region and identical exact extents. Reject token
+staging one byte short before mutation, empty and unexpected raw-frame extents,
+one-block policy for a two-block plan, and aggregate storage one byte below
+descriptor, payload, and token bytes.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

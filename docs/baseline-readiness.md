@@ -139,7 +139,9 @@ literals and overlapping matches without caller publication. Transactional
 publication now admits the complete caller output before private mutation and
 copies the reconstructed frame exactly once. Encoding and all later public
 admission gates remain pending, so this profile does not appear in the public
-tables above.
+tables above. The encoder-side write-free planner now freezes the canonical
+LZSS token region, plans every tANS block, and validates exact frame extents;
+serialized frame emission is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

@@ -4897,3 +4897,11 @@ storage is not internal workspace. It performs the same complete validation
 and private reconstruction, then copies exactly `F` bytes from raw staging to
 output once. Capacity failure and every malformed layer leave caller output
 unchanged.
+
+The encoder-side exact-frame planner accepts one nonempty raw frame, computes
+and materializes its complete canonical LZSS token sequence once, and then
+plans each consecutive tANS block over that frozen staging. It accumulates
+exact `K`, `528K`, `P`, and `56 + 528K + P` extents with checked arithmetic,
+enforces block-count and aggregate descriptor-plus-payload-plus-token limits,
+and validates the resulting generic frame header. It writes no serialized
+header, descriptor, or payload byte.

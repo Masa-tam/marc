@@ -1848,6 +1848,13 @@ workspace limit. It preserves the same validation and private reconstruction,
 then copies exactly the declared raw frame once. Every earlier error leaves
 caller output byte-for-byte unchanged.
 
+The encoder-side planner first derives and materializes the complete canonical
+LZSS token region in caller staging. It then plans each consecutive tANS block
+over those immutable bytes and accumulates exact descriptor, payload, block,
+and serialized-frame extents with checked arithmetic. The synthesized generic
+header is validated, but no serialized byte is emitted; a later writer must
+consume the same frozen token region.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

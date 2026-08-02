@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS exact-frame planner
+
+- Authoring method: composed marc's deterministic LZSS token planner and
+  encoder with its existing tANS block planner under DD-553's frozen byte
+  boundary.
+- References used: DD-557, local LZSS and tANS encoder primitives, generic
+  frame validation, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: materialize the exact canonical token region once;
+  plan blocks only over frozen bytes; accumulate exact descriptor, payload,
+  and frame extents; count planned serialized storage with token staging;
+  validate the synthesized header; and write no serialized output.
+- Generated-code task description: add a write-free LZSS+tANS exact-frame
+  planner and stable input, dictionary-encode, and entropy-encode errors; prove
+  the independent vector, intra-Literal block split, generated Match
+  determinism, early staging rejection, input extent rejection, block-count
+  limit, and aggregate limit; update all format, architecture, readiness,
+  composition, provenance, reference, vector, decision, and changelog records.
+- Similarity review: the implementation composes only repository-authored
+  planners, encoders, validation, and arithmetic. No external control flow,
+  sizing formula, vector, or test expression was compared.
+- Local validation: the focused planner suite passed 6/6 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,126/2,126 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS transactional publication
 
 - Authoring method: wrapped DD-555's private decoder with marc's established

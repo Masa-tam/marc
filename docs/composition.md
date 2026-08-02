@@ -99,8 +99,10 @@ adds the complete raw staging extent to the same preflight and aggregate
 policy, then reconstructs validated literals and overlapping matches without
 publishing caller output. Its transactional wrapper admits the complete caller
 output before private mutation and copies exactly once only after successful
-reconstruction. There is no encoder, C factory, CLI selector, benchmark,
-fuzzer, completion claim, or interoperability entry yet.
+reconstruction. Its write-free encoder planner freezes the complete canonical
+token region and determines exact tANS block and frame extents without a
+serialized output span. There is no complete-frame writer, C factory, CLI
+selector, benchmark, fuzzer, completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

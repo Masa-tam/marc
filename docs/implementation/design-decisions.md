@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-557: LZSS tANS planning freezes token bytes before sizing
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a write-free exact-frame planner above DD-553's encoder boundary. Plan and
+materialize the complete canonical LZSS token sequence once in caller-owned
+staging. Enforce `0 < S <= 2F`, then plan each consecutive tANS block over that
+frozen sequence and accumulate exact `K`, `528K`, `P`, and
+`56 + 528K + P` extents with checked arithmetic.
+
+Reject block-count, tANS-planning, integer, generic-frame, and aggregate
+descriptor-plus-payload-plus-token limits without accepting a serialized
+output span. Validate the synthesized generic frame header against sequence,
+committed raw extent, configured frame size, and local limits. This decision
+adds no complete-frame writer, streaming transform, profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
 ## DD-556: LZSS tANS publication is one transactional copy
 
 - Date: 2026-08-03

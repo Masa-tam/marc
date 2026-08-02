@@ -1583,6 +1583,12 @@ marc's established bounded copy policy. No external publication protocol,
 combined decoder, buffer layout, source code, malformed corpus, or test suite
 was consulted.
 
+The LZSS plus tANS exact-frame planner uses only DD-557, the local LZSS token
+planner and encoder, tANS block planner, generic frame validator, checked
+arithmetic, and caller-owned staging. No external combined encoder, planning
+strategy, allocation layout, source code, encoded corpus, or test suite was
+consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
