@@ -1700,6 +1700,11 @@ local public C lifecycle, marc's independently authored completion schedule,
 and the documented scalar-rANS and `4F` ceilings. No external conformance
 suite, encoded corpus, wrapper, source code, or test expression was consulted.
 
+The LZMW plus rANS decoder fuzz boundary uses only DD-532, the local private
+complete-frame decoder, DD-530's public C lifecycle, fixed local arrays, and
+marc's transform invariants. No external fuzz harness, malformed corpus,
+combined decoder, source code, or regression suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

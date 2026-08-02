@@ -1730,6 +1730,11 @@ The public-ABI completion matrix now exercises that boundary alone for all
 one-byte values, representative binary and boundary-sized inputs,
 byte-identical mixed chunk schedules, repeated terminal calls, and
 frame-atomic rejection of a malformed final frame.
+A bounded dual-path fuzz harness now drives both the private complete-frame
+decoder and that public streaming lifecycle. Its input, output, encoded frame,
+reference, rANS-view, phrase, expansion, and call counts are fixed before
+untrusted parsing; permanent regressions retain truncation and malformed-field
+atomicity.
 
 ### tANS foundation
 

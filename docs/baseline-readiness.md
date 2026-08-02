@@ -625,7 +625,9 @@ are now available with pure-C lifecycle, capacity, alignment, reserved-field,
 and binary round-trip coverage. Its public-ABI completion matrix now covers all
 one-byte values, representative binary and frame-boundary inputs, deterministic
 one-byte and mixed chunking, sticky terminal states, and final-frame atomicity.
-Fuzz, CLI, benchmark, and interoperability admission evidence remain pending.
+A bounded dual-path decoder fuzz harness and permanent truncation,
+saturated-extent, and reserved-descriptor regressions are now present. CLI,
+benchmark, and interoperability admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

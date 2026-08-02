@@ -317,6 +317,10 @@ bounded streaming directions while retaining caller ownership of all storage.
 Its public-ABI completion matrix now proves required binary classes,
 deterministic one-byte and mixed chunking, sticky terminal states, and
 transactional rejection of a corrupt, truncated, or extended final frame.
+Its bounded dual-path decoder fuzz target now fixes every byte and typed-record
+region before parsing arbitrary input, while permanent regressions cover all
+canonical truncations, saturated extents, and a nonzero reserved descriptor
+byte.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

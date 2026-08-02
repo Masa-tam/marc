@@ -4562,6 +4562,9 @@ and immutable-direction public C factory. The public completion schedule uses
 `P <= 288`, and the complete frame is at most 2,456 bytes. It proves that the
 format bytes do not depend on input or output chunking and that a malformed
 final frame cannot publish any raw byte from that frame.
+The decoder fuzz boundary adds no representation: it exercises the same strict
+prefix, descriptor, extent, state, graph, and terminal checks under fixed
+storage and call ceilings.
 
 ## tANS variant 1
 

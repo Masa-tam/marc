@@ -46,7 +46,10 @@ format versions, and C ABI versions are independent namespaces.
   with caller-owned storage and pure-C lifecycle/error coverage. Its
   public-ABI completion matrix now proves required binary classes,
   deterministic arbitrary chunking, stable terminal calls, and frame-atomic
-  rejection of corrupt, truncated, and extended final frames.
+  rejection of corrupt, truncated, and extended final frames. Its bounded
+  dual-path decoder fuzz target fixes every storage and process-call ceiling
+  before untrusted parsing, with permanent atomic regressions for truncation,
+  saturated extents, and reserved descriptor bytes.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

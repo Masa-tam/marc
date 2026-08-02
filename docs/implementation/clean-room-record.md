@@ -9906,6 +9906,37 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS bounded decoder fuzzing
+
+- Authoring method: applied marc's existing fixed-memory dual-decoder fuzz
+  boundary to DD-530's public lifecycle and the local private LZMW/rANS frame
+  decoder, with LZMW-specific record ceilings.
+- References used: DD-532, DD-530, the local `4F` representation, rANS block
+  views, LZMW phrase and expansion records, and common process invariants.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  implementations, fuzz harnesses, malformed corpora, source code, and test
+  suites.
+- Independent decisions: cap input at 8,192 bytes, raw output at 4,096 bytes,
+  frames at 1,024 bytes, phrases at 1,023, expansion references at 1,024, rANS
+  views at eight, and calls at 12,320; abort if queried public workspaces exceed
+  the statically derived regions; and retain atomic truncation, saturated-
+  extent, and reserved-descriptor regressions.
+- Generated-code task description: add the bounded private/public fuzz entry,
+  sanitizer target, portable compile-smoke, minimal truncated-magic seed, and
+  permanent malformed tests; synchronize design, format, architecture,
+  readiness, composition, changelog, reference, vector-generation, and
+  provenance records.
+- Similarity review: the work uses only marc-local decoder interfaces, bounds,
+  and already reviewed harness invariants. No external allocation layout,
+  mutation schedule, corpus, source, or test expression was compared.
+- Local validation: the focused malformed regression suite passed 3/3 and the
+  portable fuzz compile-smoke built under both MSVC and ClangCL. The complete
+  Release CTest suite passed 2,046/2,046 under both compilers using official
+  CMake 4.3.4; all 35 benchmark smokes and schema-24 compatibility remained
+  successful. Each first in-sandbox rebuild was blocked at `ZERO_CHECK` by the
+  known MSBuild 18.8.2 `FileTracker` access denial; the approved out-of-sandbox
+  rebuilds succeeded under both configurations.
+
 ## 2026-08-02 - LZMW plus rANS public-ABI completion matrix
 
 - Authoring method: instantiated marc's already reviewed public-ABI completion
