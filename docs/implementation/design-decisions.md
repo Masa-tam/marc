@@ -9053,6 +9053,22 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-556: LZSS tANS publication is one transactional copy
+
+- Date: 2026-08-03
+- Status: accepted
+
+Wrap DD-555 with a distinct caller output span. Require its complete `F`-byte
+capacity before descriptor parsing, token mutation, or raw reconstruction.
+Publication storage is not internal workspace and is not counted against
+`max_internal_buffered_bytes`.
+
+Preserve the complete validation and private reconstruction sequence, then
+copy exactly `F` bytes from raw staging to caller output once. Output-capacity,
+entropy, token, or reconstruction failure must leave caller output unchanged.
+This decision adds no encoder, streaming transform, profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
 ## DD-555: LZSS tANS raw reconstruction remains private
 
 - Date: 2026-08-03

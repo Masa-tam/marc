@@ -1577,6 +1577,12 @@ semantics, separate caller-owned staging, and checked aggregate arithmetic.
 No external combined decoder, reconstruction strategy, buffer layout,
 malformed corpus, source code, or test suite was consulted.
 
+The LZSS plus tANS transactional publication boundary uses only DD-556,
+DD-555's private raw decoder, caller-owned spans, exact preflight capacity, and
+marc's established bounded copy policy. No external publication protocol,
+combined decoder, buffer layout, source code, malformed corpus, or test suite
+was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

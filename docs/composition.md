@@ -97,8 +97,10 @@ reconstructs the complete private token region, and applies the ordinary LZSS
 validator with token-index and byte-offset diagnostics. Its private decoder
 adds the complete raw staging extent to the same preflight and aggregate
 policy, then reconstructs validated literals and overlapping matches without
-publishing caller output. There is no transactional publisher, C factory, CLI
-selector, benchmark, fuzzer, completion claim, or interoperability entry yet.
+publishing caller output. Its transactional wrapper admits the complete caller
+output before private mutation and copies exactly once only after successful
+reconstruction. There is no encoder, C factory, CLI selector, benchmark,
+fuzzer, completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

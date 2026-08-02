@@ -3270,6 +3270,16 @@ payload, token, view, and raw storage. Corrupt the second of two tANS blocks
 and separately entropy-code an invalid second LZSS token; neither case may
 modify any raw-staging sentinel.
 
+For transactional LZSS plus tANS publication, decode the 587-byte Literal
+frame through separate token, raw, and caller output spans. Require only the
+declared output prefix to change. Repeat with Literal `A` plus overlapping
+Match `(1,5)` and require six `A` bytes followed by an untouched guard.
+
+Provide output one byte short and require rejection before token or raw
+mutation. Independently corrupt the second tANS block and entropy-code an
+invalid second LZSS token; both cases must preserve the complete caller output
+sentinel.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

@@ -1842,6 +1842,12 @@ decode and complete LZSS validation succeed does the allocation-free LZSS
 decoder reconstruct literals and overlapping matches. This storage is still
 disposable implementation workspace; no caller-visible output is published.
 
+The transactional wrapper admits a distinct caller output extent before any
+private mutation, without charging publication storage to the internal
+workspace limit. It preserves the same validation and private reconstruction,
+then copies exactly the declared raw frame once. Every earlier error leaves
+caller output byte-for-byte unchanged.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

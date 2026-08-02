@@ -136,8 +136,10 @@ mutation, reconstructs the complete private token region, and applies LZSS
 grammar and semantic validation. Its private decoder now admits and counts the
 complete raw staging extent before entropy work, then reconstructs validated
 literals and overlapping matches without caller publication. Transactional
-publication and all later public admission gates remain pending, so this
-profile does not appear in the public tables above.
+publication now admits the complete caller output before private mutation and
+copies the reconstructed frame exactly once. Encoding and all later public
+admission gates remain pending, so this profile does not appear in the public
+tables above.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

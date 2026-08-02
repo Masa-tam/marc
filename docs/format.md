@@ -4890,3 +4890,10 @@ succeed does the allocation-free LZSS decoder reconstruct exactly `F` bytes,
 including forward overlap-copy semantics. Decode failures retain the stable
 LZSS layer, format, token-index, and input-offset diagnostics. No
 caller-visible output span exists; all workspace is disposable on failure.
+
+The transactional complete-frame wrapper additionally requires a distinct
+caller output span of at least `F` bytes before descriptor parsing. Publication
+storage is not internal workspace. It performs the same complete validation
+and private reconstruction, then copies exactly `F` bytes from raw staging to
+output once. Capacity failure and every malformed layer leave caller output
+unchanged.
