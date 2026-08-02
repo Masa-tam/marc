@@ -1752,8 +1752,10 @@ frozen schema-24 order. Generation round-trips all thirty-six archives before
 recording size and SHA-256; verification requires exact order, hashes, foreign
 decode equality, and byte-identical local re-encoding. The compatibility
 regression rejects reordered schema 25, removes only `lzmw-rans` to reconstruct
-schema 24, and then verifies every frozen schema through version 1. External
-cross-platform schema-25 evidence remains pending.
+schema 24, and then verifies every frozen schema through version 1. The
+four-direction schema-25 cross-check passed at revision
+`bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across the recorded Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
 
 ### tANS foundation
 

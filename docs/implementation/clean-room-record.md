@@ -9906,6 +9906,26 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - Interoperability schema 25 external cross-check
+
+- Evidence method: recorded the four verifier results produced by the user
+  after the pushed CI for the exact schema-25 revision completed successfully.
+- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
+  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
+  via Ninja on Ubuntu 26.04 WSL2 x64.
+- Known implementations intentionally not consulted: external codec source,
+  external manifest designs, conformance suites, and third-party test corpora.
+- Observed evidence: revision
+  `bc4cfa45fc8787d5ec9277894bda0b10df0ef638` completed all four established
+  verification directions. Ubuntu 26.04 verified the Windows/MSVC and Ubuntu
+  24.04 CI bundles, generated and self-verified its own bundle, and
+  Windows/MSVC verified that Ubuntu bundle. Every invocation reported
+  `Verified 36 archives` and performed exact manifest-order, size, SHA-256,
+  decoded-fixture, and byte-identical local re-encoding checks.
+- Similarity review: this record contains only observed tool outputs and
+  environment metadata; no third-party implementation expression was viewed
+  or compared.
+
 ## 2026-08-02 - Interoperability schema 25 local admission
 
 - Authoring method: extended marc's versioned repository-owned bundle protocol

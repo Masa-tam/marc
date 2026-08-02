@@ -58,7 +58,10 @@ format versions, and C ABI versions are independent namespaces.
   workspace regions. Interoperability schema 25 appends its unchanged CLI
   archive after the frozen schema-24 order and locally proves exact generation,
   ordered verification, reordered-manifest rejection, byte-identical local
-  re-encoding, and compatibility with schemas 1 through 24.
+  re-encoding, and compatibility with schemas 1 through 24. Four-direction
+  external verification passed at revision
+  `bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across Windows/MSVC, Ubuntu
+  24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

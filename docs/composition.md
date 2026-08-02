@@ -330,7 +330,9 @@ under the checked `80 + 4N + 2200K` complete-stream ceiling.
 Interoperability schema 25 appends the unchanged `lzmw-rans` CLI archive once
 after the frozen schema-24 order. Local generation, exact-order and reordered-
 order checks, byte-identical re-encoding, and all older-schema checks pass;
-external schema-25 exchange remains pending.
+four-direction external schema-25 verification passed at revision
+`bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI
