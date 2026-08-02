@@ -3364,6 +3364,13 @@ decode equality, byte-identical local re-encoding, and rejection after swapping
 the first two entries. Derive schema 25 by removing only entry 37 and restoring
 its version and codec set, then verify schemas 1 through 25 unchanged.
 
+For schema-26 external admission, use artifacts and local executables at exact
+revision `5b2aa31ba3333c311ad4086b3438915a6c3ce36d`. Require Ubuntu 26.04 to
+verify the Windows/MSVC and Ubuntu 24.04 bundles, verify its locally generated
+bundle, and require Windows/MSVC to verify that Ubuntu bundle. Each result must
+report 37 archives and the exact revision; the verifier itself checks manifest
+order, size, SHA-256, decoded fixture equality, and byte-identical re-encoding.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

@@ -79,7 +79,10 @@ and peak caller workspace without a performance threshold.
 Interoperability schema 26 appends the unchanged `lz77-tans` CLI archive once
 after the frozen schema-25 order. Local generation, exact-order verification,
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1 through
-25 compatibility pass; external exchange remains pending.
+25 compatibility pass. Four-direction external verification at revision
+`5b2aa31ba3333c311ad4086b3438915a6c3ce36d` establishes canonical archives
+across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+x86-64 producers.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

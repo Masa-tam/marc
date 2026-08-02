@@ -1641,6 +1641,12 @@ profile, and repository-owned generator, verifier, and compatibility
 conversion. No external schema, manifest, archive corpus, source code, or test
 suite was consulted.
 
+The schema-26 external admission record uses only DD-552, the pushed CI result
+for exact revision `5b2aa31ba3333c311ad4086b3438915a6c3ce36d`, and the four
+verifier result lines reported from the established Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang exchange. No external codec implementation,
+archive corpus, source code, or conformance suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

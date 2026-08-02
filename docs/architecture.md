@@ -1923,6 +1923,10 @@ recording exact sizes and SHA-256 values. Verification requires manifest order,
 hashes, foreign decode equality, and byte-identical local re-encoding; the
 compatibility regression removes only `lz77-tans` to reconstruct schema 25
 before checking every older schema.
+The four-direction artifact exchange at revision
+`5b2aa31ba3333c311ad4086b3438915a6c3ce36d` verifies all 37 archives from
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers, including
+byte-identical re-encoding in both platform directions.
 
 ### C transform ABI
 

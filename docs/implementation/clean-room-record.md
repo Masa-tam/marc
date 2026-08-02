@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - Schema 26 four-direction external admission
+
+- Authoring method: recorded user-executed results from marc's existing
+  repository-owned schema-26 verifier at one exact pushed revision.
+- References used: DD-552, pushed CI for revision
+  `5b2aa31ba3333c311ad4086b3438915a6c3ce36d`, and four successful verifier
+  result lines from the established three producers.
+- Known implementations intentionally not consulted: external codec code,
+  archive corpora, conformance suites, source code, and tests.
+- Independent decisions: require all 37 archives in both artifact-to-Ubuntu
+  checks, Ubuntu self-verification, and Ubuntu-to-Windows verification; bind
+  every result to the same full revision; retain the x86-64/WSL limitation.
+- Generated-code task description: record the exact four-direction evidence,
+  promote `lz77-tans` to `Ready`, and synchronize readiness, composition,
+  architecture, interoperability, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: this entry records only marc verifier outputs and local
+  admission terminology. No external stream bytes, report structure, test
+  expression, or implementation was compared.
+- External validation: all four passes reported `Verified 37 archives` at the
+  exact revision for Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+  producers. Pushed CI completed successfully before exchange. This completes
+  current admission evidence without extending it beyond the recorded x86-64
+  environments.
+
 ## 2026-08-03 - Interoperability schema 26 appends LZ77 plus tANS
 
 - Authoring method: extended marc's repository-owned versioned bundle chain by

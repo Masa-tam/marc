@@ -62,7 +62,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
-| `lz77-tans` | First tANS composition | In progress | Included |
+| `lz77-tans` | First tANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 26 contains thirty-seven archives: the frozen thirty-six-entry schema-25
@@ -682,7 +682,10 @@ reporting ratio, throughput, and both directional workspaces. Interoperability
 schema 26 now appends the unchanged CLI archive once and passes local
 generation, exact-order verification, re-encoding, reorder rejection, and
 schemas 1 through 25 compatibility. External cross-platform verification
-remains pending.
+passed in all four directions at revision
+`5b2aa31ba3333c311ad4086b3438915a6c3ce36d` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers. All current admission evidence
+is present.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -906,11 +909,10 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-551, the complete Release suite contains 2,100 tests and passes under
+At DD-552, the complete Release suite contains 2,100 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
-local compiler-independence evidence on one architecture. Local schema-26
-generation and compatibility pass. Pushed schema-25 CI
+local compiler-independence evidence on one architecture. Pushed schema-26 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package
 evidence. The established four-direction exchange additionally verifies all
-36 archives across those producers and Ubuntu 26.04/Clang 21.1.8. The
+37 archives across those producers and Ubuntu 26.04/Clang 21.1.8. The
 remaining release-evidence limits are stated above.

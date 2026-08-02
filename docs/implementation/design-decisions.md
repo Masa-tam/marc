@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-552: Schema 26 external exchange completes LZ77 tANS admission
+
+- Date: 2026-08-03
+- Status: accepted
+
+Bind external evidence to exact revision
+`5b2aa31ba3333c311ad4086b3438915a6c3ce36d`. Require the Ubuntu 26.04/Clang
+executable to verify the Windows/MSVC and Ubuntu 24.04 CI bundles, generate and
+self-verify its own schema-26 bundle, and require the Windows/MSVC executable
+to verify that Ubuntu-produced bundle.
+
+All four passes must report 37 archives and the exact revision while enforcing
+manifest order, size, SHA-256, fixture equality, and byte-identical local
+re-encoding. Together with DD-551's local chain, this satisfies every current
+admission gate and changes `lz77-tans` from `In progress` to `Ready`. The
+evidence remains x86-64 and does not imply testing on another architecture or
+a non-WSL Ubuntu 26.04 kernel.
+
 ## DD-551: Interoperability schema 26 appends LZ77 tANS
 
 - Date: 2026-08-03
