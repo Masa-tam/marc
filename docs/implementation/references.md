@@ -1672,6 +1672,12 @@ serializers, checked offsets, and bounded spans. No external combined encoder,
 serialization schedule, buffer layout, encoded corpus, source code, or test
 suite was consulted.
 
+The LZMW plus rANS bounded streaming encoder uses only DD-527, the local exact-
+frame planner and encoder, marc's transform status contract, stream-prefix
+serializers, checked aggregate accounting, and bounded caller-owned spans. No
+external streaming codec, buffering design, state machine, source code,
+encoded corpus, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

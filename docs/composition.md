@@ -304,7 +304,10 @@ each rANS block and reports the exact serialized extent without writing a
 frame. Its deterministic complete-frame encoder admits the complete destination
 before publication, explicitly emits the header, every descriptor, and every
 payload into planned regions, and preserves all output on planner or capacity
-failure. No public entry point exists yet.
+failure. Its bounded known-size streaming encoder emits the ordinary prefix,
+collects one raw frame, and drains one immutable encoded frame at a time while
+preserving chunk-independent bytes and terminal state. No public entry point
+exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

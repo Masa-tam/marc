@@ -1704,6 +1704,13 @@ the serialized destination, then explicitly writes the generic header and each
 block extent and final offset must equal the plan. A planner failure or short
 destination therefore leaves the complete output unchanged.
 
+The known-size streaming encoder adds no representation. It drains the fixed
+80-byte prefix, collects at most one raw frame, prepares one immutable complete
+frame, and drains it before accepting the next frame. `EndInput` remains sticky
+across prefix and frame starvation; `Flush` does not close a partial frame.
+All simultaneously held raw, reference, encoded-frame, and typed-entry storage
+is caller-owned and checked as one aggregate.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

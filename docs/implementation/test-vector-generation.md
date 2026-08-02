@@ -3954,6 +3954,16 @@ serialized bytes for raw `41`; require the distinct capacity error and retain
 every destination sentinel byte. Repeat with a full 592-byte sentinel but
 empty raw input and require the planner's input-size error to preserve it too.
 
+For bounded LZMW plus rANS streaming encoding, independently serialize the
+80-byte stream prefix, split raw `ABABX` into configured two-byte outer frames,
+and append the result of each exact-frame planner and encoder transaction.
+Require the incremental encoder to reproduce that complete reference stream
+with one-byte input and output. Separately retain `EndInput` while only one
+prefix or frame byte can drain, confirm nonterminal `Flush` leaves a one-byte
+partial frame open, and reject short raw, reference, typed-entry, serialized-
+frame, and aggregate storage. Cover empty known-size input, premature end,
+excess input, explicit reset, unknown flags, and repeated terminal calls.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

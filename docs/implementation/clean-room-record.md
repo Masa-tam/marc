@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS bounded streaming encoder
+
+- Authoring method: wrapped DD-525 and DD-526 in marc's established immutable-
+  direction transform contract with caller-owned collection and drain storage.
+- References used: DD-527, the local complete-frame planner and encoder,
+  stream-prefix serializers, process/status invariants, checked aggregate
+  arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  streaming encoders, state machines, buffering layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: retain one complete immutable frame while draining;
+  accept no new frame input during that drain; count every simultaneously held
+  region; preserve `EndInput`; leave `Flush` nonterminal; and reject explicit
+  block reset.
+- Generated-code task description: add the known-size streaming encoder and
+  build registration; prove one-byte reference identity, flush invariance,
+  sticky end, empty streams, workspace and aggregate failures, and protocol
+  errors; synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's local transform
+  conventions and exact-frame APIs. No external state ordering, drain protocol,
+  storage organization, encoded bytes, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZMW/rANS frame and streaming-encoder suite
+  passed 27/27 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 2,027/2,027 under both compilers using official CMake 4.3.4; all 35
+  benchmark smokes and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS deterministic frame encoder
 
 - Authoring method: placed DD-526 directly above DD-525's exact plan and used

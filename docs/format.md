@@ -4203,6 +4203,13 @@ the frozen reference bytes, requires identical payload extents, and writes each
 descriptor and payload into its precomputed region. Final reference and payload
 offsets must equal the plan; short destination failure changes no output byte.
 
+The bounded known-size streaming encoder emits the ordinary 64-byte stream
+header followed by the ordinary 16-byte LZMW parameter extension. It then
+collects at most one outer raw frame, invokes the exact-frame planner and
+encoder only for a complete full or final-short frame, and drains the resulting
+immutable serialized frame before accepting bytes for the next frame. Output
+chunking and nonterminal `Flush` do not change the representation.
+
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into
 caller-owned staging before planning entropy. It then plans every scalar rANS

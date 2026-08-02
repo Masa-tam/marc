@@ -32,7 +32,10 @@ format versions, and C ABI versions are independent namespaces.
   encoder reproduces the independent vector, emits phrase-generating
   multi-block frames byte-identically, and admits the complete destination
   before publication so planner and capacity failures preserve every byte. No
-  public entry point exists yet.
+  public entry point exists yet. Its bounded known-size streaming encoder now
+  reproduces concatenated exact frames with one-byte buffers, retains terminal
+  intent across prefix and frame drains, keeps `Flush` nonterminal, and checks
+  all caller-owned and aggregate storage.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

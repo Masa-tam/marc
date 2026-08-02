@@ -9053,6 +9053,40 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-527: LZMW rANS streaming encoding retains complete exact frames
+
+- Date: 2026-08-02
+- Status: accepted
+
+Wrap DD-525 and DD-526 in a bounded known-size streaming encoder without
+defining another byte representation. Serialize the ordinary 80-byte stream
+prefix once. Collect at most one declared raw frame in caller-owned storage,
+invoke the exact planner and encoder only when that full or final-short frame
+is complete, then retain the complete immutable serialized frame while
+draining it to arbitrary caller output chunks. Accept no new raw frame bytes
+while a serialized frame is pending.
+
+For the largest possible local frame `L = min(original_size, frame_size)`,
+require raw capacity `L`, checked reference capacity `4L`, and
+`lzmw_encoder_workspace_entries(L)` records at construction. At frame
+preparation, require complete serialized-frame capacity and count raw input,
+exact reference staging, exact serialized frame, and active encoder records
+against `max_internal_buffered_bytes`. Preserve DD-525's inner aggregate check.
+
+Known-size `EndInput` is valid only when the supplied call completes the exact
+declared original extent and remains effective while prefix or frame bytes
+drain. A full frame may be prepared before whole-stream `EndInput`; after the
+declared extent is committed, await the terminal flag if it has not arrived.
+Nonterminal `Flush` does not close a short frame or alter bytes. Reject
+`ResetBlock`, unknown flags, premature `EndInput`, and excess input with stable
+terminal errors. Repeated calls after success return `EndOfStream`.
+
+Prove equality with concatenated one-shot frames under one-byte input and
+output, unchanged bytes under `Flush`, sticky `EndInput` across every drain,
+empty known-size input, workspace and aggregate failures, and protocol errors.
+This step adds no streaming decoder, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
 ## DD-526: LZMW rANS encoding is plan-first and deterministic
 
 - Date: 2026-08-02
