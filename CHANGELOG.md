@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added interoperability schema 26 as the frozen schema-25 archive order plus
+  `lz77-tans` exactly once. Local generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 25 compatibility now pass for all 37 archives.
 - Added a dependency-free `lz77-tans` benchmark adapter that verifies a
   byte-exact public-C-ABI round trip before timing and reports compression
   ratio, encode/decode throughput, all queried workspace regions, and peak

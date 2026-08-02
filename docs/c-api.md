@@ -166,6 +166,8 @@ from the direction-specific query without reproducing a private partition or
 view layout.
 The dependency-free `lz77-tans` benchmark also uses only this lifecycle and
 reports all six queried workspace extents after its pre-timing round trip.
+Interoperability schema 26 serializes the unchanged CLI-selected C profile and
+introduces no ABI or stream-format variant.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

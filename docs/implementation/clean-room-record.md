@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - Interoperability schema 26 appends LZ77 plus tANS
+
+- Authoring method: extended marc's repository-owned versioned bundle chain by
+  one already published deterministic CLI profile.
+- References used: DD-551, frozen schema-25 ordering, the deterministic local
+  8,193-byte fixture, and local generator, verifier, and converter scripts.
+- Known implementations intentionally not consulted: external schemas,
+  manifests, archive corpora, interoperability suites, source, and tests.
+- Independent decisions: name `marc-cli-v26`; append `lz77-tans` only as entry
+  37; preserve every earlier order; reject reorder; and reconstruct schema 25
+  by removing only the new entry.
+- Generated-code task description: update bundle generation and verification,
+  add schema-26 reorder rejection and schemas 1 through 25 conversion checks,
+  and synchronize format, architecture, readiness, composition,
+  interoperability, changelog, decision, reference, vector, and provenance.
+- Similarity review: the change applies only marc's existing schema evolution
+  rule and local profile name. No external ordering, manifest shape, fixture,
+  hash record, or test expression was compared.
+- Local validation: schema-26 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 25 compatibility passed under MSVC and ClangCL. The complete Release
+  suite passed 2,100/2,100 under both compilers using official CMake 4.3.4; all
+  37 benchmark smokes passed. External schema-26 exchange remains pending.
+
 ## 2026-08-03 - LZ77 plus tANS public benchmark
 
 - Authoring method: extended marc's dependency-free public-C measurement

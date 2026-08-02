@@ -665,7 +665,9 @@ profile schema-21 order. Schema 23 names `marc-cli-v23` and appends LZW plus
 rANS to the frozen thirty-three-profile schema-22 order. Schema 24 names
 `marc-cli-v24` and appends LZD plus rANS to the frozen thirty-four-profile
 schema-23 order. Schema 25 names `marc-cli-v25` and appends LZMW plus rANS to
-the frozen thirty-five-profile schema-24 order. Schemas 1 through 24 retain
+the frozen thirty-five-profile schema-24 order. Schema 26 names
+`marc-cli-v26` and appends LZ77 plus tANS to the frozen thirty-six-profile
+schema-25 order. Schemas 1 through 25 retain
 their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
@@ -1914,6 +1916,13 @@ encoder and decoder workspaces independently, and proves a byte-exact round
 trip before starting either timer. Transform construction remains outside the
 timed interval, and speed and compression ratio are observations rather than
 pass thresholds.
+
+Interoperability schema 26 appends the unchanged CLI-selected profile once
+after the frozen schema-25 order. Generation verifies all 37 archives before
+recording exact sizes and SHA-256 values. Verification requires manifest order,
+hashes, foreign decode equality, and byte-identical local re-encoding; the
+compatibility regression removes only `lz77-tans` to reconstruct schema 25
+before checking every older schema.
 
 ### C transform ABI
 

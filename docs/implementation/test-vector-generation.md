@@ -3356,6 +3356,14 @@ input and encoded sizes, ratio, both directional times and throughputs, all six
 queried workspace extents, and peak workspace. Do not impose a speed or ratio
 threshold.
 
+For interoperability schema 26, retain the exact schema-25 archive order and
+append one `lz77-tans` archive as entry 37. Set `schema_version` to 26 and
+`codec_set` to `marc-cli-v26`; record each archive only after local decode
+matches the deterministic 8,193-byte fixture. Require exact order, foreign
+decode equality, byte-identical local re-encoding, and rejection after swapping
+the first two entries. Derive schema 25 by removing only entry 37 and restoring
+its version and codec set, then verify schemas 1 through 25 unchanged.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

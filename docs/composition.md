@@ -76,6 +76,10 @@ Its dependency-free benchmark reserves `80 + 24N + 8536K` output bytes with
 checked arithmetic, queries both workspaces through the public ABI, verifies
 byte-exact reconstruction before timing, and reports observed ratio, speed,
 and peak caller workspace without a performance threshold.
+Interoperability schema 26 appends the unchanged `lz77-tans` CLI archive once
+after the frozen schema-25 order. Local generation, exact-order verification,
+byte-identical re-encoding, reordered-manifest rejection, and schemas 1 through
+25 compatibility pass; external exchange remains pending.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

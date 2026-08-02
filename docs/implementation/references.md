@@ -1635,6 +1635,12 @@ arithmetic, and marc's dependency-free measurement harness. No external
 benchmark wrapper, performance result, capacity formula, source code, or test
 suite was consulted.
 
+Interoperability schema 26 uses only DD-551, the frozen schema-25 manifest
+order, marc's deterministic 8,193-byte fixture, the published `lz77-tans` CLI
+profile, and repository-owned generator, verifier, and compatibility
+conversion. No external schema, manifest, archive corpus, source code, or test
+suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

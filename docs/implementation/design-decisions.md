@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-551: Interoperability schema 26 appends LZ77 tANS
+
+- Date: 2026-08-03
+- Status: accepted
+
+Freeze the exact thirty-six-entry schema-25 order and append `lz77-tans` once
+as entry 37. Name the set `marc-cli-v26`, retain the deterministic 8,193-byte
+fixture, and record complete archive sizes and SHA-256 values only after local
+decode equality succeeds.
+
+The verifier requires exact schema order, hashes, foreign decode equality, and
+byte-identical local re-encoding. The compatibility regression rejects a
+reordered schema-26 manifest, derives schema 25 by removing only `lz77-tans`
+and restoring its version and codec set, then verifies every frozen schema
+through version 1. This is local schema admission; Windows/Linux artifact
+exchange remains a separate release gate and the profile remains `In progress`.
+
 ## DD-550: LZ77 tANS benchmark verifies before measuring
 
 - Date: 2026-08-03

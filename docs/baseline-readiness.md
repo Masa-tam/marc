@@ -62,15 +62,16 @@ by component tests and exercised through Blocked Huffman.
 | `lzw-rans` | Fourth rANS composition | Ready | Included |
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
-| `lz77-tans` | First tANS composition | In progress | Not included |
+| `lz77-tans` | First tANS composition | In progress | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 25 contains thirty-six archives: the frozen thirty-five-entry schema-24
-set followed by the LZMW rANS profile. Schemas 1 through 24
+Schema 26 contains thirty-seven archives: the frozen thirty-six-entry schema-25
+set followed by the LZ77 tANS profile. Schemas 1 through 25
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
-thirty-one, thirty-two, thirty-three, thirty-four, and thirty-five profiles;
+thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, and thirty-six
+profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -81,7 +82,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 25 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 26 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -119,7 +120,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -678,6 +679,9 @@ saturated lengths, and invalid tANS metadata. Its transactional CLI selector
 now fixes 64-KiB raw and entropy blocks and uses only the public C query and
 factory. Its public-ABI benchmark verifies a byte-exact round trip before
 reporting ratio, throughput, and both directional workspaces. Interoperability
+schema 26 now appends the unchanged CLI archive once and passes local
+generation, exact-order verification, re-encoding, reorder rejection, and
+schemas 1 through 25 compatibility. External cross-platform verification
 remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
@@ -902,9 +906,10 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-550, the complete Release suite contains 2,100 tests and passes under
+At DD-551, the complete Release suite contains 2,100 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
-local compiler-independence evidence on one architecture. Pushed schema-25 CI
+local compiler-independence evidence on one architecture. Local schema-26
+generation and compatibility pass. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package
 evidence. The established four-direction exchange additionally verifies all
 36 archives across those producers and Ubuntu 26.04/Clang 21.1.8. The
