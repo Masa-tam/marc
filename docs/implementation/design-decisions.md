@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-531: LZMW rANS completion reuses the reviewed public schedule
+
+- Date: 2026-08-02
+- Status: accepted
+
+Apply the established public-ABI completion matrix to DD-530 with 64-byte raw
+frames, 64-byte rANS blocks, at most four entropy blocks per frame, and the
+exact LZMW reference ceiling `S = 4 * 64 = 256`. Bound payload by
+`S + 8K = 288` and a complete frame by `56 + 528K + S + 8K = 2,456`.
+
+At this frame size the LZMW ceiling equals the already reviewed LZD completion
+ceiling `8 * ceil(64/2)`, so reuse the same data, deterministic repetition,
+one-byte and mixed chunk schedules, repeated terminal calls, and malformed
+fourth-frame schedule without changing their capacities. Invoke only public C
+configuration, requirements, factory, process, and destroy functions. A
+corrupt, truncated, or extended final frame may publish the first three
+complete 64-byte frames but must leave its final raw byte untouched and return
+a stable repeated error. This step adds no fuzz target, CLI, benchmark,
+interoperability entry, or `Ready` claim.
+
 ## DD-530: LZMW rANS public C factory preserves opaque record layout
 
 - Date: 2026-08-02

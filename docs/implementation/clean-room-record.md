@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS public-ABI completion matrix
+
+- Authoring method: instantiated marc's already reviewed public-ABI completion
+  schedule over DD-530 without introducing a new codec path or byte format.
+- References used: DD-531, the local `marc_lzmw_rans_*` C lifecycle, the
+  `S=4F` reference ceiling, scalar-rANS block bounds, and existing transform
+  completion invariants.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  implementations, conformance suites, encoded corpora, source code, wrappers,
+  and test suites.
+- Independent decisions: use 64-byte raw frames and entropy blocks; exploit
+  the exact 256-byte equality between the LZMW and reviewed LZD test ceilings;
+  preserve identical data and chunk schedules; and require a failing fourth
+  frame to leave its only raw byte unpublished with a sticky error.
+- Generated-code task description: add a public-only completion instantiation
+  for empty input, every byte value, representative binary data, frame-edge
+  sizes, deterministic repeated and arbitrarily chunked streams, repeated end,
+  and corrupt, truncated, and extended final-frame atomicity; register it and
+  synchronize design, format, architecture, readiness, composition, changelog,
+  reference, vector-generation, and provenance records.
+- Similarity review: the test instantiation reuses only marc-local public ABI
+  and reviewed marc-local schedules. No external control flow, malformed
+  vector, naming scheme, encoded bytes, or test expression was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,043/2,043
+  under both compilers using official CMake 4.3.4; all 35 benchmark smokes and
+  schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS public C factory
 
 - Authoring method: exposed DD-529 through marc's existing size-tagged C config,

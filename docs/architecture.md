@@ -1721,11 +1721,15 @@ The direction-specific profile calculator derives every caller-owned byte and
 typed-record requirement from the same conservative frame bounds. Decoder
 opaque storage is partitioned into aligned rANS views, LZMW phrase records, and
 iterative expansion references only after its layout is recomputed and
-validated, hiding internal C++ types from a future C ABI.
+validated, hiding internal C++ types from the public C ABI.
 The public C factory now consumes only the size-tagged fixed-width config and
 the three regions returned by the requirements query. It repeats profile and
 partition validation before borrowing those regions for an immutable-direction
 transform; construction failure publishes no transform.
+The public-ABI completion matrix now exercises that boundary alone for all
+one-byte values, representative binary and boundary-sized inputs,
+byte-identical mixed chunk schedules, repeated terminal calls, and
+frame-atomic rejection of a malformed final frame.
 
 ### tANS foundation
 

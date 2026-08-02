@@ -4555,6 +4555,14 @@ complete success. Output is not internal workspace and is not aggregate-
 counted; excess destination capacity is untouched, and every failure preserves
 the whole destination.
 
+The bounded streaming pair is exposed by the size-tagged
+`marc_lzmw_rans_config`, its direction-specific workspace requirements query,
+and immutable-direction public C factory. The public completion schedule uses
+64-byte raw frames and rANS blocks, for which `S <= 256`, `K <= 4`,
+`P <= 288`, and the complete frame is at most 2,456 bytes. It proves that the
+format bytes do not depend on input or output chunking and that a malformed
+final frame cannot publish any raw byte from that frame.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

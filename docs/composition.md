@@ -309,11 +309,14 @@ collects one raw frame, and drains one immutable encoded frame at a time while
 preserving chunk-independent bytes and terminal state. Its matching bounded
 decoder preflights every complete frame and workspace from the generic header,
 reconstructs privately, and drains only after all entropy and LZMW validation
-succeeds. No public entry point exists yet.
+succeeds.
 Its profile calculator derives the `4F` reference ceiling, rANS frame ceiling,
 encoder records, and aligned decoder views without changing the representation.
 Its size-tagged C config, requirements query, and factory now expose those
 bounded streaming directions while retaining caller ownership of all storage.
+Its public-ABI completion matrix now proves required binary classes,
+deterministic one-byte and mixed chunking, sticky terminal states, and
+transactional rejection of a corrupt, truncated, or extended final frame.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

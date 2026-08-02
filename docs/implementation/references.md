@@ -1695,6 +1695,11 @@ calculator and partition helpers, existing C transform lifecycle, fixed-width
 ABI conventions, and caller-owned buffers. No external C factory, requirements
 API, ownership protocol, source code, or test suite was consulted.
 
+The LZMW plus rANS public-ABI completion matrix uses only DD-531, DD-530's
+local public C lifecycle, marc's independently authored completion schedule,
+and the documented scalar-rANS and `4F` ceilings. No external conformance
+suite, encoded corpus, wrapper, source code, or test expression was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

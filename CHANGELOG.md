@@ -43,7 +43,10 @@ format versions, and C ABI versions are independent namespaces.
   opaque-view partitions, and directly constructs the bounded streaming round
   trip without changing the format. A size-tagged public C config, direction-
   specific requirements query, and transform factory now expose the profile
-  with caller-owned storage and pure-C lifecycle/error coverage.
+  with caller-owned storage and pure-C lifecycle/error coverage. Its
+  public-ABI completion matrix now proves required binary classes,
+  deterministic arbitrary chunking, stable terminal calls, and frame-atomic
+  rejection of corrupt, truncated, and extended final frames.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized
