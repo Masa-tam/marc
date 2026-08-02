@@ -3964,6 +3964,17 @@ partial frame open, and reject short raw, reference, typed-entry, serialized-
 frame, and aggregate storage. Cover empty known-size input, premature end,
 excess input, explicit reset, unknown flags, and repeated terminal calls.
 
+For bounded LZMW plus rANS streaming decoding, generate the canonical
+`ABABX` stream with the local streaming encoder and feed it one serialized byte
+at a time while allowing one raw output byte. Require exact raw equality and a
+stable repeated terminal result. Corrupt a descriptor in the second frame and
+require only the first two raw bytes to commit. Derive the first frame's exact
+encoded, view, reference, raw, phrase, and expansion extents from its admitted
+header and reject each workspace one unit short plus aggregate storage one byte
+short. Also reject every final-byte truncation, a trailing byte, premature end
+after a complete nonfinal frame drains, explicit reset, and unknown flags;
+accept the canonical empty stream and leave nonterminal `Flush` starved.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

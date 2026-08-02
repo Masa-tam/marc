@@ -306,8 +306,10 @@ before publication, explicitly emits the header, every descriptor, and every
 payload into planned regions, and preserves all output on planner or capacity
 failure. Its bounded known-size streaming encoder emits the ordinary prefix,
 collects one raw frame, and drains one immutable encoded frame at a time while
-preserving chunk-independent bytes and terminal state. No public entry point
-exists yet.
+preserving chunk-independent bytes and terminal state. Its matching bounded
+decoder preflights every complete frame and workspace from the generic header,
+reconstructs privately, and drains only after all entropy and LZMW validation
+succeeds. No public entry point exists yet.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

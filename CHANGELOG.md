@@ -35,7 +35,10 @@ format versions, and C ABI versions are independent namespaces.
   public entry point exists yet. Its bounded known-size streaming encoder now
   reproduces concatenated exact frames with one-byte buffers, retains terminal
   intent across prefix and frame drains, keeps `Flush` nonterminal, and checks
-  all caller-owned and aggregate storage.
+  all caller-owned and aggregate storage. The matching bounded streaming
+  decoder admits each complete frame before body collection, reconstructs into
+  private raw staging, and prevents malformed later frames from publishing any
+  byte beyond earlier successfully drained frames.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

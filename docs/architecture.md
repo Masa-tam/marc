@@ -1711,6 +1711,12 @@ across prefix and frame starvation; `Flush` does not close a partial frame.
 All simultaneously held raw, reference, encoded-frame, and typed-entry storage
 is caller-owned and checked as one aggregate.
 
+The matching streaming decoder admits each generic frame header against all
+encoded, typed, reference, expansion, and raw capacities before accepting the
+body. A complete frame is decoded through rANS validation and LZMW graph
+validation into private raw storage, then drained. Later-frame corruption can
+therefore leave only earlier, fully validated frames committed.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

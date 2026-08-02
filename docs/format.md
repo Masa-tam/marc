@@ -4210,6 +4210,14 @@ encoder only for a complete full or final-short frame, and drains the resulting
 immutable serialized frame before accepting bytes for the next frame. Output
 chunking and nonterminal `Flush` do not change the representation.
 
+The matching bounded streaming decoder collects the 80-byte prefix and each
+56-byte frame header separately. It admits the exact complete encoded frame and
+all caller-owned decode workspaces before accepting that frame's body. After
+the body is complete, it validates every rANS block and the full LZMW graph and
+reconstructs into private raw staging; only then may those bytes drain to the
+caller. Thus corruption in a later frame cannot publish any byte from that
+frame, while previously drained frames remain committed.
+
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into
 caller-owned staging before planning entropy. It then plans every scalar rANS

@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS bounded streaming decoder
+
+- Authoring method: wrapped DD-522 and DD-523 in marc's established staged
+  prefix, frame-header, complete-body, and private-raw drain state machine.
+- References used: DD-528, the local complete-frame private decoder, generic
+  header parsers, checked workspace accounting, bounded spans, and transform
+  progress invariants.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  streaming decoders, parser state machines, buffering layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: admit the complete frame and every workspace from the
+  generic header before body collection; decode only complete bodies; retain
+  verified raw bytes privately while draining; commit earlier frames only; and
+  keep terminal intent and terminal errors sticky.
+- Generated-code task description: add bounded streaming decoding and build
+  registration; prove one-byte operation, later-frame corruption atomicity,
+  every storage and aggregate bound, truncation, trailing data, empty input,
+  flush starvation, premature end, and protocol errors; synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the decoder composes only marc-local parsers, validators,
+  private reconstruction, and transform conventions. No external state order,
+  buffer ownership, malformed schedule, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZMW/rANS frame and streaming encoder/decoder
+  suite passed 32/32 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 2,032/2,032 under both compilers using official CMake 4.3.4; all
+  35 benchmark smokes and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS bounded streaming encoder
 
 - Authoring method: wrapped DD-525 and DD-526 in marc's established immutable-
