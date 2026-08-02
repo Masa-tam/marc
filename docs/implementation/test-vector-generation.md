@@ -4087,6 +4087,15 @@ one entry short before entropy processing; in both cases require sentinel
 reference staging to remain unchanged. Corrupt a later rANS descriptor and
 require the private raw sentinel to remain unchanged.
 
+For transactional LZMW plus rANS publication, decode the frozen raw-`A` frame
+into private staging and a three-byte destination sentinel. Require only the
+first destination byte to become `41`. Repeat the block-size-five `ABABAB`
+generated-phrase case and require exact private and public output. Supply a
+destination one byte short for raw `AB` and require reference staging, private
+raw, and output guards all to remain unchanged. Corrupt a later rANS descriptor
+and separately entropy-code a forward reference to phrase 256; both must
+preserve the complete destination.
+
 For `lzmw-dynamic-range` CLI admission, reuse the repository-standard binary
 fixture formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and
 decode with the explicit selector and compare the restored file byte for byte.

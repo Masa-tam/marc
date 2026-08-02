@@ -22,7 +22,10 @@ format versions, and C ABI versions are independent namespaces.
   private decoder now admits raw staging and the conservative iterative
   expansion stack before entropy work, counts both in aggregate workspace,
   reduces the active stack to the validated phrase graph, and reconstructs
-  without publishing caller-visible bytes. No public entry point exists yet.
+  without publishing caller-visible bytes. Its transactional complete-frame
+  decoder additionally admits destination capacity before private mutation and
+  copies exactly the declared raw extent once only after complete success,
+  preserving every output byte on failure. No public entry point exists yet.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

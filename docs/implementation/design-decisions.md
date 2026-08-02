@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-524: LZMW rANS publishes one complete frame transactionally
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-523. Before descriptor
+parsing, entropy output, reference mutation, or private raw mutation, require
+output capacity for the complete declared raw extent. Output is not internal
+workspace and must not be included in the aggregate-buffer limit.
+
+Retain DD-522's complete entropy and phrase-graph validation and DD-523's
+private iterative reconstruction unchanged. Only after both succeed, copy
+exactly the declared raw extent once from private staging to caller output.
+Leave excess output capacity untouched. Any capacity, header, entropy,
+dictionary, workspace, or reconstruction failure must preserve the entire
+caller output.
+
+Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
+`ABABAB` publication, output capacity one byte short before private mutation,
+and complete output preservation for malformed later entropy and valid entropy
+carrying an invalid LZMW forward reference. This step adds no encoder,
+streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
 ## DD-523: LZMW rANS reconstructs raw bytes only in private staging
 
 - Date: 2026-08-02

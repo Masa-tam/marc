@@ -1655,6 +1655,11 @@ accounting, and caller-owned spans. No external combined decoder, phrase
 expansion implementation, allocation layout, malformed corpus, source code,
 or test suite was consulted.
 
+The LZMW plus rANS transactional publication boundary uses only DD-524,
+DD-523's local private decoder, checked caller capacity, and bounded span
+copying. No external publication protocol, combined decoder, buffer layout,
+malformed corpus, source code, or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

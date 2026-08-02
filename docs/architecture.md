@@ -1684,6 +1684,13 @@ into disposable raw staging. It publishes no caller-visible output; short raw
 or expansion regions fail before reference staging changes. No public entry
 point is implied yet.
 
+The transactional complete-frame boundary additionally admits the entire
+caller destination before descriptor parsing, reuses the same validator and
+private reconstruction, and copies exactly the declared raw extent once only
+after success. Caller output is excluded from internal aggregate accounting;
+short capacity, malformed entropy, and invalid LZMW graphs preserve every
+destination byte.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

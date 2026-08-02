@@ -600,7 +600,9 @@ applies the ordinary LZMW graph validator without raw expansion. Private raw
 decoding now preflights and aggregate-counts the full raw region and
 conservative iterative expansion region, shrinks the active stack to the
 validated graph, and reconstructs into disposable staging. Transactional
-caller publication and admission evidence remain pending.
+caller publication now preflights the full destination and performs one exact
+copy only after private success, preserving all output on failure. Encoder and
+admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
