@@ -119,7 +119,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz77-tans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -676,7 +676,9 @@ data. Its fixed-memory dual-decoder fuzz target now exercises complete-frame
 and incremental parsing, with permanent atomic regressions for truncation,
 saturated lengths, and invalid tANS metadata. Its transactional CLI selector
 now fixes 64-KiB raw and entropy blocks and uses only the public C query and
-factory. Benchmark and interoperability remain pending.
+factory. Its public-ABI benchmark verifies a byte-exact round trip before
+reporting ratio, throughput, and both directional workspaces. Interoperability
+remains pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -900,7 +902,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-549, the complete Release suite contains 2,099 tests and passes under
+At DD-550, the complete Release suite contains 2,100 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

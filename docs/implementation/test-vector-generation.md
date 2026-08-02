@@ -3349,6 +3349,13 @@ the existing destination must fail. Decoding `not-a-marc-stream` and a valid
 archive with one appended `x` must fail and leave neither the destination nor
 its `.tmp` sibling. Finally round-trip an empty file.
 
+For the LZ77 plus tANS benchmark smoke, select `lz77-tans`, use repository
+`README.md` as input, and request one iteration. Require a public-ABI
+encode/decode equality check before timing and output fields for selector,
+input and encoded sizes, ratio, both directional times and throughputs, all six
+queried workspace extents, and peak workspace. Do not impose a speed or ratio
+threshold.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

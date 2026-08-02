@@ -72,6 +72,10 @@ derives the 16-block tANS bounds locally, and obtains every actual workspace
 extent from the public C query. The shared temporary-file transaction verifies
 binary and empty round trips, overwrite refusal, malformed cleanup, and strict
 trailing-data rejection.
+Its dependency-free benchmark reserves `80 + 24N + 8536K` output bytes with
+checked arithmetic, queries both workspaces through the public ABI, verifies
+byte-exact reconstruction before timing, and reports observed ratio, speed,
+and peak caller workspace without a performance threshold.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

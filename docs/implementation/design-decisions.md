@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-550: LZ77 tANS benchmark verifies before measuring
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add `lz77-tans` to the dependency-free benchmark through only the public C
+requirements, factory, process, and destroy lifecycle. Reuse DD-549's 64-KiB
+raw frame and entropy block, 1,048,576-byte token ceiling, sixteen-block
+ceiling, 1,572,896-byte payload ceiling, and 2,695,512-byte encoder aggregate.
+
+Reserve complete-stream output with checked `80 + 24N + 8536K` arithmetic,
+where `K` is the nonempty frame count. Query encoder and decoder workspaces
+independently, prove a byte-exact round trip before timing, and create each
+timed transform outside the elapsed interval. Report ratio, direction-specific
+time and throughput, all six workspace extents, and peak caller workspace.
+This changes no format or ABI and adds no interoperability entry or local
+`Ready` claim.
+
 ## DD-549: LZ77 tANS CLI admission uses only the public profile
 
 - Date: 2026-08-03

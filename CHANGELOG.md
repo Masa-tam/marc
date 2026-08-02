@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added a dependency-free `lz77-tans` benchmark adapter that verifies a
+  byte-exact public-C-ABI round trip before timing and reports compression
+  ratio, encode/decode throughput, all queried workspace regions, and peak
+  caller-reserved workspace.
 - Added the explicit `lz77-tans` CLI selector through only the public C ABI.
   Its fixed 64-KiB profile obtains direction-specific workspace extents from
   the public query and retains transactional nonempty, empty, malformed,

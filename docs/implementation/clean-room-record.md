@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS public benchmark
+
+- Authoring method: extended marc's dependency-free public-C measurement
+  harness by the admitted fixed LZ77+tANS profile.
+- References used: DD-550, DD-549's bounded CLI profile, the public
+  `marc_lz77_tans_*` lifecycle, and existing checked measurement conventions.
+- Known implementations intentionally not consulted: external LZ77/tANS
+  benchmarks, wrappers, layouts, capacity formulas, results, source, or tests.
+- Independent decisions: reserve `80 + 24N + 8536K`; query both workspaces;
+  verify exact reconstruction before timing; and report observations without a
+  threshold.
+- Generated-code task description: add benchmark selector, fixed configuration,
+  capacity planning, public query/factory dispatch, smoke registration, and
+  synchronized benchmark, readiness, architecture, composition, changelog,
+  decision, reference, vector, C-API, and provenance records.
+- Similarity review: the adapter follows only marc-authored public lifecycle,
+  capacity helpers, reporting fields, and measurement loop. No external
+  benchmark structure, formula, naming, fixture, or result was compared.
+- Local validation: the focused benchmark smoke passed under MSVC and ClangCL.
+  The complete Release suite passed 2,100/2,100 under both compilers using
+  official CMake 4.3.4; all 37 benchmark smokes and schema-25 compatibility
+  remained successful.
+
 ## 2026-08-03 - LZ77 plus tANS CLI admission
 
 - Authoring method: extended marc's existing selector dispatch and

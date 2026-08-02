@@ -164,6 +164,8 @@ calls, and atomic malformed-final-frame rejection through these C functions.
 The `lz77-tans` CLI selector uses only this lifecycle, allocating every region
 from the direction-specific query without reproducing a private partition or
 view layout.
+The dependency-free `lz77-tans` benchmark also uses only this lifecycle and
+reports all six queried workspace extents after its pre-timing round trip.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

@@ -1908,6 +1908,13 @@ counts and alignment returned by the direction-specific query. The common
 temporary-file transaction publishes no destination for malformed or trailing
 input and refuses to overwrite an existing path.
 
+The dependency-free benchmark uses the same fixed public profile. It reserves
+complete-stream output with checked `80 + 24N + 8536K` arithmetic, queries
+encoder and decoder workspaces independently, and proves a byte-exact round
+trip before starting either timer. Transform construction remains outside the
+timed interval, and speed and compression ratio are observations rather than
+pass thresholds.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
