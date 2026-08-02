@@ -45,7 +45,8 @@ the validated frame. Its transactional wrapper admits caller output before any
 private mutation and copies the complete frame only after reconstruction.
 Its write-free encoder planner freezes the complete canonical token region,
 plans every tANS block, and determines exact frame extents without serialized
-output.
+output. Its complete-frame writer admits the entire output first, then emits
+the header, consecutive descriptors, and consecutive payloads deterministically.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

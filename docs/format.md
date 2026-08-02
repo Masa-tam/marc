@@ -4741,6 +4741,13 @@ enforces block-count and aggregate descriptor-plus-payload-plus-token limits,
 and validates the resulting generic frame header. It writes no serialized
 header, descriptor, or payload byte.
 
+The matching complete-frame writer runs that plan first and requires output
+capacity for the entire exact serialized extent before writing. It explicitly
+serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
+and then all `K` payloads in the same order. Each block is replanned over the
+unchanged token staging and must reproduce the planned payload size; any
+internal discrepancy is an error rather than an alternate representation.
+
 For raw `A`, LZ77 emits:
 
 ```text

@@ -23,7 +23,10 @@ format versions, and C ABI versions are independent namespaces.
   caller output before any private mutation and publishes exactly once only
   after reconstruction succeeds. Its write-free planner now materializes the
   canonical LZ77 tokens once, plans every tANS block, and fixes exact frame
-  extents before serialized output exists. No public entry point exists yet.
+  extents before serialized output exists. The complete-frame writer then
+  serializes the generic header, all descriptors, and all payloads only after
+  full planning and output-capacity admission. No public entry point exists
+  yet.
 
 ## 0.1.2 - 2026-08-02
 

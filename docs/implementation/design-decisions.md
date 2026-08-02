@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-542: LZ77 tANS writing follows complete planning
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the complete-frame writer above DD-541. Invoke the exact planner first,
+then require capacity for the complete `56 + 528K + P` output before writing
+the generic frame header or any entropy bytes. Preserve the frozen canonical
+LZ77 token staging produced by planning.
+
+Explicitly serialize the generic header, all `K` fixed tANS descriptors in
+block order, and all `K` payloads in the same order. Replan and encode each
+block over its unchanged token subspan, require every payload extent to match
+the accumulated plan exactly, and reject any internal mismatch rather than
+emitting an alternate stream.
+
+Prove byte-for-byte equality with the independent 587-byte Literal frame,
+deterministic repeated writing and full decoder round trip when block size five
+splits the token, and one-byte-short serialized output without output mutation.
+This decision adds no streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-541: LZ77 tANS planning freezes tokens before counting blocks
 
 - Date: 2026-08-02

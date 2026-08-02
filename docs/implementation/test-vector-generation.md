@@ -3276,6 +3276,13 @@ Set the block-count ceiling to three for the four-block case, then restore four
 and set aggregate descriptor-plus-payload-plus-token capacity one byte below
 the exact first plan.
 
+For the LZ77 plus tANS complete-frame writer, encode raw `A` and compare all
+587 bytes against the independently assembled frame. With block size five,
+write twice from the same raw input, require byte identity with each other and
+with the component-built four-block frame, then decode through the combined
+transactional frame decoder and require `A`. Supply a 586-byte sentinel output
+for the default frame and require exact size 587 plus no output mutation.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

@@ -1582,6 +1582,12 @@ arithmetic, and caller-owned staging. No external combined encoder, planning
 strategy, allocation layout, source code, encoded corpus, or test suite was
 consulted.
 
+The LZ77 plus tANS complete-frame writer uses only DD-542, DD-541's exact
+planner, marc's explicit generic-header and tANS descriptor serializers, local
+tANS encoder, checked spans, and frozen token staging. No external combined
+encoder, archive writer, serialization layout, source code, encoded corpus, or
+test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

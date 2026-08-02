@@ -1852,6 +1852,12 @@ over those immutable bytes and accumulates exact descriptor, payload, block,
 and serialized-frame extents with checked arithmetic. It emits no serialized
 byte; a later writer must consume the same frozen staging.
 
+The complete-frame writer invokes that planner first and admits the complete
+serialized output before writing its first byte. It then emits the explicit
+generic frame header, `K` consecutive fixed descriptors, and `K` consecutive
+tANS payloads from the same frozen token staging. Replanning each block must
+reproduce the exact previously accumulated payload extent.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
