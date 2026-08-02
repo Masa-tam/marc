@@ -71,5 +71,3 @@ private:
 } // namespace marc::frame
 
 #endif
-
-

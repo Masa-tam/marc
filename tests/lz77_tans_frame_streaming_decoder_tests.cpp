@@ -31,7 +31,6 @@ constexpr std::array raw{
     stream.original_size = size;
     return stream;
 }
-
 [[nodiscard]] std::vector<std::byte> encoded_stream(
     const std::span<const std::byte> input = raw) {
     std::array<std::byte, 2> frame_input{};
@@ -255,5 +254,4 @@ TEST(Lz77TansFrameStreamingDecoder, HandlesEmptyFlushAndPrematureEnd) {
     EXPECT_EQ(result.error.code, marc::core::ErrorCode::malformed_stream);
     EXPECT_EQ(result.output_produced, 1U);
 }
-
 

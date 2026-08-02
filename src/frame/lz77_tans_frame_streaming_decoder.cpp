@@ -312,5 +312,3 @@ core::ProcessResult Lz77TansFrameStreamingDecoder::process(
 }
 
 } // namespace marc::frame
-
-
