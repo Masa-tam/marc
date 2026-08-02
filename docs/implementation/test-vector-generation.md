@@ -3985,6 +3985,13 @@ and verify every aligned offset and partition rejection. Finally construct both
 streaming directions solely from the calculated requirements and round-trip
 raw `ABABX`.
 
+For the LZMW plus rANS C ABI, initialize encode and decode configs through the
+public initializer, lower limits to two-byte frames and entropy blocks, query
+all three workspaces, allocate only those reported byte counts, and round-trip
+binary `ABABX` through `marc_transform_process`. Reject each workspace one byte
+short, a deliberately misaligned opaque region when alignment exceeds one, a
+null transform output, and a nonzero reserved field.
+
 For deterministic LZD plus rANS frame encoding, pass raw `41` through the
 exact planner and encoder with a 593-byte destination, then compare every byte
 with the independently assembled frame rather than only decoding it. For raw

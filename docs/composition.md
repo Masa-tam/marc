@@ -312,6 +312,8 @@ reconstructs privately, and drains only after all entropy and LZMW validation
 succeeds. No public entry point exists yet.
 Its profile calculator derives the `4F` reference ceiling, rANS frame ceiling,
 encoder records, and aligned decoder views without changing the representation.
+Its size-tagged C config, requirements query, and factory now expose those
+bounded streaming directions while retaining caller ownership of all storage.
 
 The LZW plus Blocked Huffman profile has public-ABI completion coverage, a
 bounded decoder fuzz target, a transactional CLI selector, a public-ABI

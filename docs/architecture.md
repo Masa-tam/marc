@@ -1722,6 +1722,10 @@ typed-record requirement from the same conservative frame bounds. Decoder
 opaque storage is partitioned into aligned rANS views, LZMW phrase records, and
 iterative expansion references only after its layout is recomputed and
 validated, hiding internal C++ types from a future C ABI.
+The public C factory now consumes only the size-tagged fixed-width config and
+the three regions returned by the requirements query. It repeats profile and
+partition validation before borrowing those regions for an immutable-direction
+transform; construction failure publishes no transform.
 
 ### tANS foundation
 

@@ -4224,6 +4224,10 @@ ceiling `56 + 528K + 4F + 8K`, and at most `F-1` LZMW encoder records subject
 to configured freeze limits. Decoder opaque storage places rANS views first,
 then aligned LZMW phrase records, then aligned `uint32_t` expansion references;
 partitioning revalidates offsets, total size, alignment, and capacity.
+The size-tagged public C config, direction-specific requirements query, and
+factory select exactly this representation. All storage remains caller-owned;
+the factory borrows it for the transform lifetime and publishes no internal C++
+record layout.
 
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into

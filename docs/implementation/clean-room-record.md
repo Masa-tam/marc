@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS public C factory
+
+- Authoring method: exposed DD-529 through marc's existing size-tagged C config,
+  requirements-query, caller-owned workspace, and transform lifecycle contract.
+- References used: DD-530, the local profile and partition helpers, fixed-width
+  C ABI types, placement construction, and stable public status mapping.
+- Known implementations intentionally not consulted: external C factories,
+  requirements APIs, allocation protocols, source code, and test suites.
+- Independent decisions: keep three caller-owned regions; make the query the
+  sole allocation authority; repeat calculation and partitioning in the
+  factory; publish no transform on failure; and retain immutable direction.
+- Generated-code task description: add size-tagged config and declarations,
+  query and factory implementations, pure-C encode/decode lifecycle, short and
+  misaligned workspace rejection, null-output and reserved-field rejection,
+  build registration, and synchronized format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the boundary is a direct composition of marc-local ABI and
+  profile conventions. No external struct layout, factory flow, ownership
+  policy, error mapping, or test expression was compared.
+- Local validation: the pure-C LZMW/rANS lifecycle suite passed 1/1 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,040/2,040 under
+  both compilers using official CMake 4.3.4; all 35 benchmark smokes and
+  schema-24 compatibility remained successful. The initial in-sandbox rebuild
+  was blocked before compilation by MSBuild 18.8.2 `FileTracker` access denial;
+  the approved out-of-sandbox rebuild succeeded under both configurations.
+
 ## 2026-08-02 - LZMW plus rANS profile and workspace layout
 
 - Authoring method: applied DD-529 to marc's local LZMW/rANS bounds and the

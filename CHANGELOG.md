@@ -41,7 +41,9 @@ format versions, and C ABI versions are independent namespaces.
   byte beyond earlier successfully drained frames. Its internal profile
   calculator now derives all encoder and decoder workspaces, validates aligned
   opaque-view partitions, and directly constructs the bounded streaming round
-  trip without changing the format.
+  trip without changing the format. A size-tagged public C config, direction-
+  specific requirements query, and transform factory now expose the profile
+  with caller-owned storage and pure-C lifecycle/error coverage.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

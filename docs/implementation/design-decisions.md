@@ -9053,6 +9053,29 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-530: LZMW rANS public C factory preserves opaque record layout
+
+- Date: 2026-08-02
+- Status: accepted
+
+Expose DD-529 through a size-tagged fixed-width `marc_lzmw_rans_config`, a
+direction-specific workspace query, and an immutable-direction transform
+factory. The config carries known original size, raw frame size, entropy block
+size, LZMW entry ceiling, rANS block ceiling, and common hard limits. Reserved
+fields must remain zero.
+
+Keep three caller-owned regions. Encoding maps primary storage to one raw frame,
+secondary storage to canonical LZMW reference staging followed by one complete
+rANS frame, and aligned opaque views to LZMW encoder entries. Decoding maps
+primary storage to one complete encoded frame, secondary storage to reference
+staging followed by private raw staging, and aligned opaque views to DD-529's
+rANS block, LZMW phrase, and iterative expansion spans. The requirements query
+is the only allocation authority; the factory repeats calculation and checked
+partitioning before construction. Prove the pure-C lifecycle, short-region and
+misalignment rejection, null-output rejection, reserved-field rejection, and
+binary round trip. This publishes no CLI, completion, fuzz, benchmark, or
+interoperability claim.
+
 ## DD-529: LZMW rANS profiles align three decoder record regions
 
 - Date: 2026-08-02

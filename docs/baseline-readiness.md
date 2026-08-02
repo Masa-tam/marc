@@ -621,6 +621,8 @@ frame. Admission evidence remains pending.
 The internal profile calculator now derives conservative encoder and decoder
 storage, validates the coupled opaque-view layout, and directly constructs a
 bounded streaming round trip. Public C requirements and factory admission
+are now available with pure-C lifecycle, capacity, alignment, reserved-field,
+and binary round-trip coverage. Completion hardening and admission evidence
 remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
