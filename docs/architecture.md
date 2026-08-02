@@ -1812,6 +1812,23 @@ truncation, and trailing bytes. Queried aligned views are used throughout. This
 closes the local implementation loop without claiming external release
 evidence.
 
+### Specified LZSS plus tANS boundary
+
+LZSS completes the canonical two-byte Literal and nine-byte Match sequence for
+one frame before tANS sees any symbol. tANS remains an untyped byte transform,
+so its block controller may divide either token form internally; the complete
+private byte sequence is restored before the LZSS parser decides token
+boundaries. The outer controller resets both layers together and forbids an
+entropy block from crossing that frame boundary.
+
+The reserved decoder order is generic extent validation, all tANS model and
+state validation, complete private token reconstruction, then variable-length
+LZSS grammar and semantic validation. Raw reconstruction and publication are
+later admission boundaries. Checked storage follows `S <= 2F`, exact `528K`
+descriptors, and the blockwise `2 + ceil(12n/8)` payload ceiling. The
+independent raw-`A` vector fixes one complete 587-byte frame without creating a
+combined codec entry point.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

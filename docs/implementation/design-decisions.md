@@ -9053,6 +9053,29 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-553: LZSS tANS entropizes finalized token bytes
+
+- Date: 2026-08-03
+- Status: accepted
+
+Reserve `lzss-tans` for LZSS variant 1 followed by tabled tANS variant 1.
+LZSS must first finalize its complete canonical variable-width token byte
+sequence for one outer frame. tANS consumes that sequence as untyped bytes;
+therefore an entropy block may split a two-byte Literal or nine-byte Match,
+but may not cross the frame boundary where both algorithms reset.
+
+For raw size `F`, token size `S`, nonzero block size `B`, and
+`K = ceil(S/B)`, require `0 < S <= 2F`, exact descriptor extent `528K`, and
+the checked sum of per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`.
+Retain `F <= 2^20`. Decode all tANS blocks into private staging before parsing
+the variable-length LZSS grammar or publishing raw bytes.
+
+Independently fix raw `A` as token bytes `00 41`, normalized frequencies
+`00:2048` and `41:2048`, tANS payload `06 00 00`, and one complete 587-byte
+frame. This decision reserves the representation and vector only; it adds no
+combined validator, factory, CLI selector, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
 ## DD-552: Schema 26 external exchange completes LZ77 tANS admission
 
 - Date: 2026-08-03

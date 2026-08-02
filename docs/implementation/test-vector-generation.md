@@ -3233,6 +3233,19 @@ else in the frequency region. Append payload `0A 05 03` and compare every one
 of the 587 bytes against output assembled only from the standalone LZ77
 encoder, tANS encoder, and explicit generic serializers.
 
+For the first LZSS plus tANS vector, begin with raw byte `41` and independently
+require canonical Literal bytes `00 41`. Normalize both byte counts to 2048.
+Apply the documented spread and reverse recurrence to obtain initial state
+offset `06 00`, two zero transition bits, and physical payload `06 00 00`.
+
+Assemble a generic frame independently with raw size 1, token size 2, payload
+size 3, one block, and descriptor size 528. Require descriptor prefix
+`02 00 00 00 03 00 00 00 0C 02 00 00 00 00 00 00`, frequency bytes
+`00 08` at offsets 16..17 and 146..147, and zero everywhere else in the
+frequency region. Append the payload and compare all 587 bytes with output
+assembled only from the standalone LZSS encoder, tANS encoder, and explicit
+generic serializers. This vector reserves no combined implementation.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

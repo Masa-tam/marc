@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Specified |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
@@ -83,6 +83,16 @@ byte-identical re-encoding, reordered-manifest rejection, and schemas 1 through
 `5b2aa31ba3333c311ad4086b3438915a6c3ce36d` establishes canonical archives
 across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 x86-64 producers.
+
+`lzss-tans` is the second tANS composition with a reserved representation.
+LZSS finalizes its variable-length canonical token bytes before tANS block
+coding. A block may split a Literal or Match, but cannot cross an outer frame;
+decoding must restore all private token bytes before applying LZSS grammar or
+semantic checks. Bounds are `S <= 2F`, `K = ceil(S/B)`, exact `528K`
+descriptor bytes, and a per-block payload ceiling of
+`2 + ceil(12n/8)`. The independent raw-`A` vector fixes a 587-byte frame.
+There is no combined validator, C factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

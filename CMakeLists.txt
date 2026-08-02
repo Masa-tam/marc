@@ -1217,6 +1217,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_dynamic_range_vector_tests.cpp
         tests/lz77_rans_vector_tests.cpp
         tests/lz77_tans_vector_tests.cpp
+        tests/lzss_tans_vector_tests.cpp
         tests/lzss_rans_vector_tests.cpp
         tests/lz78_rans_vector_tests.cpp
         tests/lzw_rans_vector_tests.cpp
