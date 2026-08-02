@@ -19,12 +19,24 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Candidate |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | Specified |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
+
+`lz77-tans` is the first tANS composition to receive a reserved
+representation. LZ77 first completes its canonical 16-byte token stream; tANS
+then treats every serialized byte as an ordinary symbol. A tANS block may
+split a token but cannot cross an outer frame. For raw frame size `F`, token
+staging is bounded by `S <= 16F`; with entropy block size `B`, block count is
+`K = ceil(S/B)`, descriptor bytes are exactly `528K`, and each block of `n`
+symbols has payload ceiling `2 + ceil(12n/8)`. Decoding validates every tANS
+block into private staging before applying token alignment, LZ77 references,
+and exact raw-extent checks. The independently derived raw-`A` vector fixes
+the complete 587-byte frame. No combined implementation or public profile
+exists yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

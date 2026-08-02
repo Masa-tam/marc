@@ -640,6 +640,15 @@ revision `bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers. All local and current
 cross-platform admission evidence is therefore present.
 
+`lz77-tans` is the next admission candidate and the first reserved tANS
+composition. DD-537 fixes complete canonical LZ77 token staging before tANS,
+independent byte-block boundaries within an outer frame, checked `S <= 16F`,
+`K = ceil(S/B)`, exact `528K` descriptor bytes, the per-block
+`2 + ceil(12n/8)` payload ceiling, strict entropy-before-dictionary validation,
+and an independent 587-byte single-Literal frame. It remains `Specified`: no
+combined decoder, streaming transform, C factory, CLI selector, benchmark,
+fuzz target, completion claim, or interoperability entry exists yet.
+
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
 `4F` token and `132F` payload ceilings, adjacent-phrase and expansion-workspace
@@ -862,7 +871,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-536, the complete Release suite contains 2,048 tests and passes under
+At DD-537, the complete Release suite contains 2,049 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

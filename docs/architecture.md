@@ -1810,6 +1810,21 @@ truncation, and trailing bytes. Queried aligned views are used throughout. This
 closes the local implementation loop without claiming external release
 evidence.
 
+### Specified LZ77 plus tANS boundary
+
+The first tANS composition freezes the complete canonical LZ77 token byte
+stream before entropy processing. tANS remains an untyped byte transform: its
+block controller may divide the stream inside a 16-byte token, while the outer
+frame controller prevents a block from crossing the LZ77 reset boundary.
+
+The decoder-facing boundary is validation-first. Generic extents, every fixed
+tANS descriptor, normalized model, spread and transition table, initial state,
+bit extent, terminal state, and padding bit must succeed before the complete
+token region is materialized in private storage. LZ77 alignment, references,
+overlap semantics, and declared raw extent are checked only over that complete
+region. No combined decoder or public profile is implied until bounded private
+reconstruction and transactional publication are implemented and tested.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

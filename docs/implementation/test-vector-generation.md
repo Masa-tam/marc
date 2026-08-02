@@ -3216,6 +3216,23 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
+require the canonical 16-byte Literal token
+`00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte
+counts to table total 4096, yielding only `00:3840` and `41:256`. Apply the
+documented step-2563 spread and inverse encode lookup. Traverse the token bytes
+in reverse from live state 4096, prepend each low-bit chunk in decoder order,
+and require final live state 5386: offset `0A 05`, five valid transition bits,
+and physical bit byte `03`.
+
+Assemble a generic frame independently with raw size 1, token size 16, payload
+size 3, one block, and descriptor size 528. Require descriptor prefix
+`10 00 00 00 03 00 00 00 0C 05 00 00 00 00 00 00`, frequency bytes
+`00 0F` at offsets 16..17 and `00 01` at offsets 146..147, and zero everywhere
+else in the frequency region. Append payload `0A 05 03` and compare every one
+of the 587 bytes against output assembled only from the standalone LZ77
+encoder, tANS encoder, and explicit generic serializers.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

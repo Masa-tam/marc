@@ -1551,6 +1551,12 @@ profile, and the repository-owned generator, verifier, and compatibility
 conversion. No external interoperability schema, manifest, archive corpus,
 source code, or test suite was consulted.
 
+The LZ77 plus tANS reserved representation uses only DD-537, marc's already
+documented LZ77 variant 1 token grammar, tabled tANS variant 1, generic frame
+format, checked arithmetic rules, and repository-authored standalone encoders.
+No external LZ77/tANS composition, FSE format, archive format, combined-codec
+implementation, source code, encoded corpus, or test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

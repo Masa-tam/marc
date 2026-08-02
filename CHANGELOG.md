@@ -5,6 +5,16 @@ format versions, and C ABI versions are independent namespaces.
 
 ## Unreleased
 
+### Added
+
+- Reserved the `lz77-tans` composition with a complete decoder-visible
+  representation and independent 587-byte raw-`A` frame. Canonical 16-byte
+  LZ77 tokens are finalized before tabled tANS block coding; checked bounds
+  cover `S <= 16F`, `K = ceil(S/B)`, exact `528K` descriptor bytes, and the
+  per-block 12-bit transition ceiling. tANS blocks may split tokens but never
+  frames, and decoding must reconstruct the complete private token region
+  before LZ77 validation or raw publication. No public entry point exists yet.
+
 ## 0.1.2 - 2026-08-02
 
 ### Added

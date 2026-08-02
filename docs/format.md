@@ -4667,3 +4667,73 @@ For `A`, descriptor bytes 0 through 15 are:
 
 All frequency entries are zero except symbol `41` at descriptor offset 146,
 whose little-endian uint16 value is `00 10`.
+
+## LZ77 variant 1 plus tANS variant 1
+
+The reserved composition name is `lz77-tans`. Format version 1.0 uses the
+ordinary 16-byte LZ77 variant-1 parameter extension, no entropy-parameter
+extension, and a nonzero stream entropy block size `B`. Both the LZ77 window
+and every tANS model and automaton reset at each outer frame.
+
+For a raw frame of `F` bytes, LZ77 first emits its complete canonical 16-byte
+token sequence. Let its exact byte size be `S`; require `S` to be a multiple of
+16 and enforce the checked bound `S <= 16F`. tANS consumes this sequence as
+untyped bytes and divides it into `K = ceil(S/B)` consecutive blocks, with a
+possibly short final block. A block boundary may occur inside a token because
+dictionary parsing occurs only after the complete byte sequence is
+reconstructed. No tANS block crosses an outer frame.
+
+The generic frame fields are:
+
+- `uncompressed size = F`;
+- `dictionary serialized size = S`;
+- `entropy block count = K`;
+- `block descriptors size = 528K`;
+- `compressed payload size = P`, the checked sum of all block payload sizes.
+
+For a block containing `n` symbols, tANS variant 1 emits at most 12 transition
+bits per symbol and a two-byte initial state, so require its payload size to be
+at most `Q(n) = 2 + ceil(12n/8)`. For `R = S mod B`, the complete payload bound
+is the checked value
+`P <= floor(S/B) * Q(B) + (R == 0 ? 0 : Q(R))`. Retain the LZ77 raw frame cap
+`F <= 2^20`. All products, ceiling operations, and sums are checked before
+allocation or entropy decoding.
+
+Decoding validates the stream profile and LZ77 parameters, generic frame
+header and complete extent, exact block count and descriptor extent, then
+every tANS model, spread and transition table, initial state, bit path,
+terminal state, padding, and exact aggregate payload exhaustion. Only after
+all blocks succeed may it reconstruct exactly `S` bytes into private token
+staging. It then requires 16-byte alignment and validates the complete LZ77
+token stream, distances, overlap-copy semantics, and exact declared raw extent
+before private reconstruction and any caller-visible publication.
+
+For raw `A`, LZ77 emits:
+
+```text
+00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00
+```
+
+With `B = 65,536`, this is one tANS block. Its only nonzero normalized
+frequencies are symbol `00:3840` and symbol `41:256`. Applying the documented
+spread and reverse state recurrence yields initial state offset `0x050A`, five
+transition bits packed as byte `03`, and payload:
+
+```text
+0A 05 03
+```
+
+The complete frame is 587 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 10 00 00 00 03 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`10 00 00 00 03 00 00 00 0C 05 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 0F`) and 146..147 (`00 01`). The three payload bytes immediately follow
+the descriptor. This sparse notation uniquely defines all 587 bytes.

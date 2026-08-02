@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZ77 plus tANS reserved representation
+
+- Authoring method: composed marc's independently documented canonical LZ77
+  byte tokens with its tabled tANS block format at the neutral byte-stream
+  boundary.
+- References used: DD-537, the local LZ77 variant-1 token grammar, local tANS
+  normalization, spread and transition recurrence, generic frame fields, and
+  checked arithmetic.
+- Known implementations intentionally not consulted: external LZ77/tANS or
+  FSE compositions, archive formats, source code, encoded or malformed
+  corpora, and test suites.
+- Independent decisions: freeze all token bytes before entropy work; allow
+  byte-sized tANS boundaries inside tokens but never across frames; validate
+  every automaton before dictionary semantics; and reserve no public
+  implementation until transactional reconstruction exists.
+- Generated-code task description: specify the LZ77/tANS boundary, exact
+  bounds, reset and validation order; independently calculate the raw-`A`
+  model, spread transitions, payload, descriptor, and complete frame; prove it
+  through standalone components; and update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: only repository-authored component APIs and mathematical
+  rules were used. No external control flow, table layout, combined vector, or
+  test expression was compared.
+- Local validation: the independent 587-byte vector passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,049/2,049 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
 ## 2026-08-02 - Project version 0.1.2 release preparation
 
 - Authoring method: advanced marc's project/package version after completing

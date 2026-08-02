@@ -9053,6 +9053,38 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-537: LZ77 tANS entropizes the finalized token byte stream
+
+- Date: 2026-08-02
+- Status: accepted
+
+Reserve `lz77-tans` for LZ77 variant 1 followed by tabled tANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZ77 parameter extension,
+empty entropy parameters, canonical 16-byte token serialization, tANS table
+log 12, and deterministic spread step 2563. Complete the token byte stream
+before entropy processing. A tANS block may split a token but cannot cross an
+outer frame. Reset the LZ77 window and every tANS model and automaton at each
+frame.
+
+For raw frame size `F`, require checked token bound `S <= 16F`. For nonzero
+block size `B`, require `K = ceil(S/B)`, exact descriptor extent `528K`, and
+per-block payload ceiling `Q(n) = 2 + ceil(12n/8)`. Bound total payload by the
+checked sum of `Q` over every full and final-short block. Retain `F <= 2^20`.
+Validate generic extents and all tANS descriptors, tables, initial states, bit
+paths, terminal states, padding, and payload exhaustion before reconstructing
+the exact token region in private staging. Only then validate LZ77 alignment,
+references, overlap semantics, and exact raw extent before any raw
+reconstruction or publication.
+
+For raw `A`, independently freeze the 16-byte Literal token. Its tANS model is
+`00:3840, 41:256`; the documented spread and state recurrence produce payload
+`0A 05 03` with five valid transition bits, and the complete frame is 587
+bytes. Prove this by composing only the existing standalone LZ77 encoder, tANS
+encoder, and explicit generic serializers. This decision specifies bytes and
+a reserved name only; it does not publish a combined decoder, encoder, stream
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-536: Project version 0.1.2 publishes the completed rANS column
 
 - Date: 2026-08-02
