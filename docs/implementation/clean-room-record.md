@@ -9906,6 +9906,28 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS known-size streaming decoder
+
+- Authoring method: specialized marc's repository-owned LZ77/rANS streaming
+  frame state contract to the DD-539 tANS private decoder and tANS view type.
+- References used: DD-544, local prefix and frame parsers, private LZ77+tANS
+  decoder, core status contract, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, malformed corpora, source, and tests.
+- Independent decisions: collect complete frames before decode; preflight all
+  storage and aggregate capacity; publish only validated private reconstruction;
+  preserve earlier commits; and keep terminal states sticky.
+- Generated-code task description: add bounded known-size streaming decoding;
+  prove one-byte round trip, later corruption atomicity, storage and aggregate
+  limits, truncation, trailing data, reset, empty, Flush, and premature end;
+  update build and documentation records.
+- Similarity review: only marc-authored state and decode contracts were reused;
+  no external control flow, malformed vector, or test expression was compared.
+- Local validation: the focused decoder suite passed 5/5 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,084/2,084 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
 ## 2026-08-02 - LZ77 plus tANS known-size streaming encoder
 
 - Authoring method: applied marc's core transform state contract above the

@@ -1865,6 +1865,12 @@ and output capacities may be one byte. Full frames may drain before EndInput;
 `Flush` does not close a partial frame, and a latched final EndInput survives
 output starvation until all bytes are emitted.
 
+The matching streaming decoder collects the 80-byte prefix, each 56-byte frame
+header, and exactly its declared body in bounded caller storage. It validates
+and reconstructs a complete frame privately before draining raw output. A
+malformed later frame therefore cannot alter earlier committed bytes or expose
+any prefix from the failing frame.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

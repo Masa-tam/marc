@@ -1594,6 +1594,12 @@ parameter serializers, caller-owned spans, and checked aggregate arithmetic.
 No external streaming encoder, buffering state machine, source code, chunking
 suite, or test expression was consulted.
 
+The LZ77 plus tANS known-size streaming decoder uses only DD-544, the local
+prefix and frame parsers, DD-539 private frame decoder, core transform contract,
+caller-owned storage, and checked aggregate arithmetic. No external streaming
+decoder, buffering state machine, malformed corpus, source code, or test suite
+was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

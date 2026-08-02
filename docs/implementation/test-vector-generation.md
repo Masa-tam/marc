@@ -3291,6 +3291,13 @@ when `Flush` accompanies the first partial frame. Exercise short raw and
 serialized storage, aggregate capacity one byte short, empty input, premature
 EndInput, ResetBlock, and repeated ended calls.
 
+For streaming decoding, encode the same three-frame `ABABX` stream locally and
+decode it with one-byte input and output. Corrupt the second frame frequency
+table and require only the first two raw bytes to commit. Exercise each storage
+span one entry or byte short, aggregate capacity one byte short, every final
+truncation class, one trailing byte, ResetBlock, empty stream, Flush starvation,
+and EndInput after only the first frame.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

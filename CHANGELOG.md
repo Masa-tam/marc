@@ -29,6 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   yet. Its first known-size streaming encoder now retains one raw frame, one
   token region, and one serialized frame in caller storage and produces the
   same bytes under arbitrary chunking.
+  The matching known-size streaming decoder collects and validates one complete
+  frame before exposing any byte from it, preserving earlier committed frames
+  when a later frame is malformed.
 
 ## 0.1.2 - 2026-08-02
 

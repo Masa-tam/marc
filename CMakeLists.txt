@@ -121,6 +121,7 @@ set(MARC_SOURCES
     src/frame/lz77_rans_frame.cpp
     src/frame/lz77_tans_frame.cpp
     src/frame/lz77_tans_frame_streaming_encoder.cpp
+    src/frame/lz77_tans_frame_streaming_decoder.cpp
     src/frame/lz77_rans_frame_streaming_encoder.cpp
     src/frame/lz77_rans_frame_streaming_decoder.cpp
     src/frame/lz77_rans_profile.cpp
@@ -1237,6 +1238,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_rans_frame_tests.cpp
         tests/lz77_tans_frame_tests.cpp
         tests/lz77_tans_frame_streaming_encoder_tests.cpp
+        tests/lz77_tans_frame_streaming_decoder_tests.cpp
         tests/lz77_rans_frame_streaming_encoder_tests.cpp
         tests/lz77_rans_frame_streaming_decoder_tests.cpp
         tests/lz77_rans_profile_tests.cpp

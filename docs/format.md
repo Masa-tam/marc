@@ -4754,6 +4754,12 @@ more than one raw frame, one canonical token region, and one serialized frame
 in caller-owned storage. Arbitrary chunking and non-terminal `Flush` do not
 change encoded bytes; `EndInput` remains latched while final output drains.
 
+The internal known-size streaming decoder collects that prefix, one complete
+declared frame, and then invokes the same private complete-frame decoder. Raw
+bytes become visible only after the entire frame succeeds. Final short-frame
+extent follows the known original size; truncation and trailing bytes are
+rejected, and terminal status and errors remain sticky.
+
 For raw `A`, LZ77 emits:
 
 ```text

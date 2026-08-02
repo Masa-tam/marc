@@ -49,6 +49,8 @@ output. Its complete-frame writer admits the entire output first, then emits
 the header, consecutive descriptors, and consecutive payloads deterministically.
 Its bounded known-size streaming encoder drains complete prepared frames from
 caller storage and preserves those bytes under one-byte chunking.
+Its matching streaming decoder publishes only complete validated frames and
+retains earlier frame commits when later entropy or token data is malformed.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

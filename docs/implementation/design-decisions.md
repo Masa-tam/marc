@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-544: LZ77 tANS streaming decoding commits complete frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the matching known-size bounded streaming decoder. Collect and validate the
+80-byte prefix, then each complete 56-byte frame header and declared body in
+caller storage. Preflight encoded frame, tANS views, token staging, private raw
+staging, and their aggregate before body collection.
+
+Invoke DD-539 private reconstruction only after the full frame is present, and
+drain raw bytes only after all tANS and LZ77 validation succeeds. Preserve
+previously committed frames when a later frame fails; expose no bytes from the
+failing frame. Retain EndInput across draining, reject truncation, trailing
+data and ResetBlock, and make ended and error states sticky.
+
+Prove one-byte input/output round trip, later-frame corruption after one commit,
+all caller storage and aggregate limits, truncation, trailing data, reset,
+empty input, nonterminal Flush, and premature final input. This decision adds
+no profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-543: LZ77 tANS streaming encoding buffers one complete frame
 
 - Date: 2026-08-02
