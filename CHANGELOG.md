@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the explicit `lz77-tans` CLI selector through only the public C ABI.
+  Its fixed 64-KiB profile obtains direction-specific workspace extents from
+  the public query and retains transactional nonempty, empty, malformed,
+  trailing-data, and overwrite-refusal behavior.
 - Added a bounded dual-decoder fuzz target for `lz77-tans`, exercising both
   complete-frame validation and incremental streaming under fixed memory and
   call limits. Permanent regressions retain atomic rejection of every
@@ -29,8 +33,9 @@ format versions, and C ABI versions are independent namespaces.
   canonical LZ77 tokens once, plans every tANS block, and fixes exact frame
   extents before serialized output exists. The complete-frame writer then
   serializes the generic header, all descriptors, and all payloads only after
-  full planning and output-capacity admission. No public entry point exists
-  yet. Its first known-size streaming encoder now retains one raw frame, one
+  full planning and output-capacity admission. At that reservation stage no
+  public entry point existed. Its first known-size streaming encoder now
+  retains one raw frame, one
   token region, and one serialized frame in caller storage and produces the
   same bytes under arbitrary chunking.
   The matching known-size streaming decoder collects and validates one complete

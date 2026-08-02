@@ -161,6 +161,9 @@ profile-specific completion matrix uses 64-byte frames and blocks and covers
 empty input, all one-byte values, representative binary and generated data,
 deterministic re-encoding, one-byte and mixed chunking, repeated terminal
 calls, and atomic malformed-final-frame rejection through these C functions.
+The `lz77-tans` CLI selector uses only this lifecycle, allocating every region
+from the direction-specific query without reproducing a private partition or
+view layout.
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
 is two bytes per raw byte; its decoder uses the same frame-atomic workspace
 roles as LZ77.

@@ -1901,6 +1901,13 @@ allocation. A finite call ceiling converts any stalled state machine into a
 reproducible failure. Canonical truncation, saturated frame lengths, and an
 invalid tANS descriptor remain permanent atomic-publication regressions.
 
+The explicit `lz77-tans` CLI selector is a thin public-C adapter over a fixed
+64-KiB raw-frame and entropy-block profile. It supplies the checked token,
+payload, block-count, and aggregate limits, then allocates only the opaque byte
+counts and alignment returned by the direction-specific query. The common
+temporary-file transaction publishes no destination for malformed or trailing
+input and refuses to overwrite an existing path.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

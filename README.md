@@ -10,10 +10,10 @@ entropy codecs, all six required dictionary codecs, and every required
 dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
 profile with mandatory per-frame CRC-32C and all six dictionary codecs composed
 with Adaptive Huffman are also available. All six dictionary codecs are
-additionally composed with Dynamic Range and rANS. All thirty-six profiles are
-exposed through a small C ABI and the command-line tool. The format and API are
-still under development and version 0.x streams are not yet promised
-long-term compatibility.
+additionally composed with Dynamic Range and rANS, and LZ77 is composed with
+tANS. All thirty-seven profiles are exposed through a small C ABI and the
+command-line tool. The format and API are still under development and version
+0.x streams are not yet promised long-term compatibility.
 
 The [documentation index](docs/README.md) separates library and format guides
 from validation material and chronological implementation records.

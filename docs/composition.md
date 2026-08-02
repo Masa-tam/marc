@@ -19,7 +19,7 @@ public format or API guarantee yet.
 | Dictionary \ Entropy | None | Blocked Huffman | Adaptive Huffman | Dynamic Range | rANS | tANS |
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
-| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | C ABI |
+| LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Candidate |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
@@ -67,6 +67,11 @@ Its bounded dual-decoder fuzz target uses fixed encoded-frame, view, token,
 raw, and output storage. It drives both the complete-frame private decoder and
 the streaming state machine, and retains atomic regressions for every canonical
 truncation, saturated frame lengths, and invalid tANS descriptor metadata.
+Its explicit CLI selector fixes 65,536-byte raw frames and entropy blocks,
+derives the 16-block tANS bounds locally, and obtains every actual workspace
+extent from the public C query. The shared temporary-file transaction verifies
+binary and empty round trips, overwrite refusal, malformed cleanup, and strict
+trailing-data rejection.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

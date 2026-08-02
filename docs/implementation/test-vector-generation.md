@@ -3342,6 +3342,13 @@ after saturating all three frame length fields and after changing one frequency
 byte in the first tANS descriptor; both must preserve the caller sentinel and
 sticky error position.
 
+For `lz77-tans` CLI admission, reuse the repository-standard fixture formed by
+repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode with the
+exact selector and compare the restored file byte for byte. A second encode to
+the existing destination must fail. Decoding `not-a-marc-stream` and a valid
+archive with one appended `x` must fail and leave neither the destination nor
+its `.tmp` sibling. Finally round-trip an empty file.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

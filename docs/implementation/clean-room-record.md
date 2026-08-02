@@ -9906,6 +9906,28 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS CLI admission
+
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one completed public C profile.
+- References used: DD-549, DD-545's bounded arithmetic, the public
+  `marc_lz77_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZ77/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, and tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
+  descriptor, payload, block-count, and aggregate limits from the fixed
+  profile; keep typed views private; and reuse strict temporary publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bound, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release suite passed 2,099/2,099 under
+  both compilers using official CMake 4.3.4; all 36 benchmark smokes and
+  schema-25 compatibility remained successful.
+
 ## 2026-08-03 - LZ77 plus tANS bounded decoder fuzz boundary
 
 - Authoring method: mechanically specialized marc's repository-owned LZ77+rANS

@@ -38,6 +38,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lz77-adaptive-huffman` | LZ77 | Adaptive Huffman | FGK tree reset per outer frame |
 | `lz77-dynamic-range` | LZ77 | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lz77-rans` | LZ77 | rANS | Scalar rANS model rebuilt per entropy block |
+| `lz77-tans` | LZ77 | tANS | Tabled model rebuilt per entropy block |
 | `lzss` | LZSS | None | Variant 1 |
 | `lzss-blocked-huffman` | LZSS | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzss-adaptive-huffman` | LZSS | Adaptive Huffman | FGK tree reset per outer frame |
@@ -84,6 +85,13 @@ rANS blocks, 8,448 descriptor bytes, and a 1,048,704-byte payload. The
 complete encoder-side simultaneous-workspace policy is 2,171,320 bytes.
 All direction-specific workspace extents and the opaque decoder-view
 alignment come from the public C ABI requirements query.
+
+The `lz77-tans` adapter also fixes raw frames and entropy blocks at 65,536
+bytes. Its 1,048,576-byte canonical token ceiling produces at most sixteen
+tANS blocks, 8,448 descriptor bytes, and a 1,572,896-byte payload. The complete
+encoder-side simultaneous-workspace policy is 2,695,512 bytes. All actual
+workspace extents and opaque decoder-view alignment come from the public C ABI
+requirements query.
 
 The `lzss-adaptive-huffman` adapter likewise uses 65,536-byte raw frames. Its
 exact LZSS worst case is 131,072 canonical token bytes and its conservative

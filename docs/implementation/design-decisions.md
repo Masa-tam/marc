@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-549: LZ77 tANS CLI admission uses only the public profile
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the explicit selector `lz77-tans` to the transactional file adapter. Fix
+raw frames and tANS blocks at 65,536 bytes. Derive `S = 1,048,576` canonical
+token bytes, `K = 16` blocks, `528K = 8,448` descriptor bytes, per-block
+`Q = 98,306`, aggregate payload `P = 1,572,896`, and encoder workspace
+`F + S + 56 + 528K + P = 2,695,512` bytes.
+
+Configuration initialization, directional requirements, transform creation,
+processing, and destruction use only `marc_lz77_tans_*` and the common public
+C ABI. Do not expose tANS view types or reproduce profile partitions in the
+CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
+overwrite refusal, malformed cleanup, and strict trailing-data rejection. This
+step adds no benchmark, interoperability entry, or local `Ready` claim.
+
 ## DD-548: LZ77 tANS fuzzing has two bounded decoder boundaries
 
 - Date: 2026-08-03

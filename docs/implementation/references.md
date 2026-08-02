@@ -1623,6 +1623,12 @@ arrays, the core process invariants, and a repository-authored truncated-magic
 seed. No external fuzz harness, corpus, mutation schedule, combined decoder,
 source code, or test suite was consulted.
 
+The LZ77 plus tANS CLI adapter uses only DD-549, the published
+`marc_lz77_tans_*` lifecycle, DD-545's checked profile arithmetic, and marc's
+existing transactional file adapter and repository-authored integration
+fixture. No external CLI, combined codec wrapper, allocation layout, archive,
+source code, or test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external
