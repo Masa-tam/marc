@@ -2,10 +2,12 @@
 #define MARC_FRAME_LZ77_TANS_FRAME_HPP
 
 #include "dictionary/lz77_decoder.hpp"
+#include "dictionary/lz77_encoder.hpp"
 #include "dictionary/lz77_format.hpp"
 #include "dictionary/lz77_validator.hpp"
 #include "entropy/tans_controller.hpp"
 #include "entropy/tans_decoder.hpp"
+#include "entropy/tans_encoder.hpp"
 #include "frame/frame_header.hpp"
 #include "frame/stream_header.hpp"
 
@@ -18,6 +20,7 @@ namespace marc::frame {
 enum class Lz77TansFrameValidationError : std::uint8_t {
     none,
     unsupported_pipeline,
+    input_size_mismatch,
     truncated_frame,
     trailing_frame_bytes,
     header_error,
@@ -32,6 +35,8 @@ enum class Lz77TansFrameValidationError : std::uint8_t {
     entropy_decode_error,
     dictionary_validation_error,
     dictionary_decode_error,
+    dictionary_encode_error,
+    entropy_encode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -55,9 +60,25 @@ struct Lz77TansFrameValidationResult {
         dictionary::internal::Lz77FormatError::none};
     dictionary::internal::Lz77DecodeError dictionary_decode_error{
         dictionary::internal::Lz77DecodeError::none};
+    dictionary::internal::Lz77EncodeError dictionary_encode_error{
+        dictionary::internal::Lz77EncodeError::none};
+    entropy::internal::TansEncodeError entropy_encode_error{
+        entropy::internal::TansEncodeError::none};
     Lz77TansFrameValidationError error{
         Lz77TansFrameValidationError::none};
 };
+
+// Produces canonical LZ77 staging and determines every tANS block and the
+// complete frame extent without writing serialized output. Input and staging
+// must not overlap.
+[[nodiscard]] Lz77TansFrameValidationResult plan_lz77_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz77Parameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging) noexcept;
 
 // Validates and tANS-decodes one complete frame into private canonical
 // LZ77-token staging. All tANS blocks are validated before any token byte is

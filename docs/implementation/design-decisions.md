@@ -9053,6 +9053,31 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-541: LZ77 tANS planning freezes tokens before counting blocks
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add an encoder-side exact-frame planner for the inverse of DD-537. Require one
+nonempty raw frame and validate the fixed profile and LZ77 parameters. First
+run the deterministic LZ77 plan, admit caller-owned staging for the exact token
+extent `S`, and encode the complete canonical token sequence once. Reject short
+staging before modifying it.
+
+Over the frozen token bytes, plan every consecutive tANS block of at most `B`
+bytes without serialized output. Accumulate exact block count `K`, descriptor
+extent `528K`, payload extent `P`, and complete serialized extent
+`56 + 528K + P` with checked arithmetic. Enforce the block-count ceiling and
+count token staging, planned descriptors, and planned payload against the
+aggregate internal-buffer limit. Validate the resulting generic frame header.
+
+Prove the 587-byte Literal extent and exact token bytes, a block size of five
+splitting one token into four independently planned blocks, short token staging
+without mutation, empty and unexpected raw extents, block-count overflow, and
+aggregate workspace one byte short. This decision writes no serialized bytes
+and adds no frame writer, streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-540: LZ77 tANS frame publication is transactional
 
 - Date: 2026-08-02

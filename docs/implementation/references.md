@@ -1576,6 +1576,12 @@ marc's established bounded copy policy. No external publication protocol,
 combined decoder, buffer layout, source code, malformed corpus, or test suite
 was consulted.
 
+The LZ77 plus tANS exact-frame planner uses only DD-541, the local LZ77 token
+planner and encoder, tANS block planner, generic frame validator, checked
+arithmetic, and caller-owned staging. No external combined encoder, planning
+strategy, allocation layout, source code, encoded corpus, or test suite was
+consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

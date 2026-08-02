@@ -21,7 +21,9 @@ format versions, and C ABI versions are independent namespaces.
   staging extent and aggregate workspace, then reconstructs validated literals
   and overlapping matches. Its transactional wrapper admits the complete
   caller output before any private mutation and publishes exactly once only
-  after reconstruction succeeds. No public entry point exists yet.
+  after reconstruction succeeds. Its write-free planner now materializes the
+  canonical LZ77 tokens once, plans every tANS block, and fixes exact frame
+  extents before serialized output exists. No public entry point exists yet.
 
 ## 0.1.2 - 2026-08-02
 

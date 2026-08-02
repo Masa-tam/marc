@@ -1846,6 +1846,12 @@ internal workspace. It preserves the full validation and private reconstruction
 sequence, then copies exactly `F` bytes once. Every earlier failure leaves the
 caller output unchanged.
 
+The encoder-side planner first derives and materializes the complete canonical
+LZ77 token region in caller staging. It then plans each consecutive tANS block
+over those immutable bytes and accumulates exact descriptor, payload, block,
+and serialized-frame extents with checked arithmetic. It emits no serialized
+byte; a later writer must consume the same frozen staging.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -494,3 +494,86 @@ TEST(Lz77TansFrameDecoder, MalformedLayersNeverPublishOutput) {
     EXPECT_EQ(raw_staging[0], std::byte{0x5a});
     EXPECT_EQ(output[0], std::byte{0x5a});
 }
+
+TEST(Lz77TansFrameEncoder, PlansExactHandVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, literal_a_token.size()> staging{};
+    const auto result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, Lz77TansFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, 1U);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_EQ(result.descriptor_size, 528U);
+    EXPECT_EQ(result.payload_size, 3U);
+    EXPECT_EQ(result.block_count, 1U);
+    EXPECT_EQ(result.block_index, 1U);
+    EXPECT_EQ(result.serialized_size, single_literal_frame().size());
+    EXPECT_EQ(staging, literal_a_token);
+}
+
+TEST(Lz77TansFrameEncoder, PlansBlocksThatSplitTokens) {
+    constexpr std::array raw{std::byte{'A'}};
+    constexpr std::uint32_t block_size = 5;
+    std::array<std::byte, literal_a_token.size()> staging{};
+    const auto result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1, block_size), {}, {}, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, Lz77TansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_EQ(result.block_count, 4U);
+    EXPECT_EQ(result.block_index, 4U);
+    EXPECT_EQ(result.descriptor_size, 4U * 528U);
+    EXPECT_EQ(staging, literal_a_token);
+}
+
+TEST(Lz77TansFrameEncoder, ShortStagingFailsBeforeMutation) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, literal_a_token.size() - 1> staging{};
+    staging.fill(std::byte{0x5a});
+    const auto result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, staging);
+    EXPECT_EQ(result.error, Lz77TansFrameValidationError::
+                                dictionary_staging_too_small);
+    EXPECT_EQ(result.dictionary_size, literal_a_token.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(Lz77TansFrameEncoder, RejectsEmptyAndUnexpectedFrameExtent) {
+    std::array<std::byte, 32> staging{};
+    EXPECT_EQ(marc::frame::plan_lz77_tans_frame(
+                  stream_for(1), {}, {}, 0, 0,
+                  std::span<const std::byte>{}, staging).error,
+              Lz77TansFrameValidationError::input_size_mismatch);
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(marc::frame::plan_lz77_tans_frame(
+                  stream_for(1), {}, {}, 0, 0, raw, staging).error,
+              Lz77TansFrameValidationError::input_size_mismatch);
+}
+
+TEST(Lz77TansFrameEncoder, EnforcesBlockCountAndAggregateWorkspaceBounds) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, literal_a_token.size()> staging{};
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 5;
+    limits.max_blocks_per_frame = 3;
+    auto result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1, 5), {}, limits, 0, 0, raw, staging);
+    EXPECT_EQ(result.error,
+              Lz77TansFrameValidationError::entropy_encode_error);
+    EXPECT_EQ(result.entropy_encode_error,
+              marc::entropy::internal::TansEncodeError::limit_exceeded);
+
+    limits.max_blocks_per_frame = 4;
+    result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1, 5), {}, limits, 0, 0, raw, staging);
+    ASSERT_EQ(result.error, Lz77TansFrameValidationError::none);
+    limits.max_internal_buffered_bytes =
+        result.descriptor_size + result.payload_size
+        + result.dictionary_size - 1;
+    result = marc::frame::plan_lz77_tans_frame(
+        stream_for(1, 5), {}, limits, 0, 0, raw, staging);
+    EXPECT_EQ(result.error, Lz77TansFrameValidationError::workspace_limit);
+}

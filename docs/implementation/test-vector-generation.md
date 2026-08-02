@@ -3267,6 +3267,15 @@ one-byte frame and require rejection before token or raw mutation. Reuse the
 invalid later tANS state and the valid tANS payload carrying token kind `FF`;
 both must preserve private raw and caller-output sentinels.
 
+For the LZ77 plus tANS exact-frame planner, submit raw `A` and require the
+frozen 16-byte Literal token, one descriptor, three payload bytes, and complete
+extent 587 without serialized output. Repeat with block size five and require
+four blocks that split the token byte region. Reject staging one byte short
+without mutation, empty input, and a two-byte input against a one-byte frame.
+Set the block-count ceiling to three for the four-block case, then restore four
+and set aggregate descriptor-plus-payload-plus-token capacity one byte below
+the exact first plan.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte
