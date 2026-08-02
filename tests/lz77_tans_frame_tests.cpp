@@ -424,3 +424,73 @@ TEST(Lz77TansFrameDecoder, MalformedLayersNeverMutateRawStaging) {
                   dictionary_validation_error);
     EXPECT_EQ(raw_staging[0], std::byte{0x5a});
 }
+
+TEST(Lz77TansFrameDecoder, PublishesOnlyAfterPrivateDecode) {
+    const auto frame = single_literal_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    std::array<std::byte, 3> raw_staging{};
+    std::array<std::byte, 3> output{};
+    raw_staging.fill(std::byte{0x5a});
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_tans_frame(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        raw_staging, output);
+    ASSERT_EQ(result.error, Lz77TansFrameValidationError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+    EXPECT_EQ(raw_staging[1], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(Lz77TansFrameDecoder, ShortOutputPrecedesPrivateMutation) {
+    const auto frame = single_literal_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    std::array<std::byte, 1> output{std::byte{0x5a}};
+    dictionary_staging.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lz77_tans_frame(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        raw_staging, {});
+    EXPECT_EQ(result.error,
+              Lz77TansFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{0x5a});
+}
+
+TEST(Lz77TansFrameDecoder, MalformedLayersNeverPublishOutput) {
+    auto malformed_entropy = frame_for_tokens(literal_a_token, 1, 8);
+    const auto payload_base =
+        marc::frame::frame_header_size
+        + 2 * marc::entropy::internal::tans_descriptor_size;
+    malformed_entropy[payload_base + 2] = std::byte{0xff};
+    malformed_entropy[payload_base + 3] = std::byte{0xff};
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array<std::byte, literal_a_token.size()> dictionary_staging{};
+    std::array<std::byte, 1> raw_staging{std::byte{0x5a}};
+    std::array<std::byte, 1> output{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lz77_tans_frame(
+                  stream_for(1, 8), {}, {}, 0, 0, malformed_entropy, views,
+                  dictionary_staging, raw_staging, output).error,
+              Lz77TansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{0x5a});
+
+    std::array<std::byte, literal_a_token.size()> invalid_tokens{};
+    invalid_tokens[0] = std::byte{0xff};
+    const auto malformed_dictionary = frame_for_tokens(invalid_tokens);
+    std::array<marc::entropy::internal::TansBlockView, 1> one_view{};
+    EXPECT_EQ(marc::frame::decode_lz77_tans_frame(
+                  stream_for(1), {}, {}, 0, 0, malformed_dictionary,
+                  one_view, dictionary_staging, raw_staging, output).error,
+              Lz77TansFrameValidationError::
+                  dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0x5a});
+    EXPECT_EQ(output[0], std::byte{0x5a});
+}

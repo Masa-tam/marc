@@ -3260,6 +3260,13 @@ descriptor, payload, token, view, and raw bytes; both must fail before token or
 raw mutation. Reuse the invalid second-block initial state and the valid tANS
 payload carrying token kind `FF`; each must leave the raw sentinel unchanged.
 
+For transactional LZ77 plus tANS publication, decode the 587-byte Literal
+frame with three-byte raw and output sentinel spans. Require only the declared
+first byte of each to become `41`. Supply a zero-byte output span for the
+one-byte frame and require rejection before token or raw mutation. Reuse the
+invalid later tANS state and the valid tANS payload carrying token kind `FF`;
+both must preserve private raw and caller-output sentinels.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

@@ -1570,6 +1570,12 @@ semantics, separate caller-owned staging, and checked aggregate arithmetic.
 No external combined decoder, reconstruction strategy, buffer layout,
 malformed corpus, source code, or test suite was consulted.
 
+The LZ77 plus tANS transactional publication boundary uses only DD-540,
+DD-539's private raw decoder, caller-owned spans, exact preflight capacity, and
+marc's established bounded copy policy. No external publication protocol,
+combined decoder, buffer layout, source code, malformed corpus, or test suite
+was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

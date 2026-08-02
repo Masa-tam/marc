@@ -41,7 +41,8 @@ and all caller-owned storage before entropy processing, validates every tANS
 block before writing any token byte, reconstructs the complete private token
 region, and applies the ordinary LZ77 validator. Its private decoder adds raw
 staging to the same up-front capacity and aggregate checks, then reconstructs
-the validated frame without caller-visible publication.
+the validated frame. Its transactional wrapper admits caller output before any
+private mutation and copies the complete frame only after reconstruction.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

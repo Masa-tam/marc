@@ -4727,6 +4727,12 @@ exactly `F` bytes into that disposable staging, including forward overlap-copy
 semantics. No caller-visible output span exists; all workspace is discarded on
 failure.
 
+The transactional complete-frame wrapper additionally requires a distinct
+caller output span of at least `F` bytes before entropy work. Publication
+storage is not internal workspace. It performs the same complete validation
+and private reconstruction, then copies exactly `F` bytes from raw staging to
+output once. Every earlier error leaves caller output unchanged.
+
 For raw `A`, LZ77 emits:
 
 ```text

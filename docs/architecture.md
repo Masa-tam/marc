@@ -1840,6 +1840,12 @@ succeeds does the allocation-free LZ77 decoder reconstruct literals and
 forward overlapping matches into exactly `F` disposable raw bytes. No
 caller-visible output span exists at this boundary.
 
+The transactional wrapper admits a distinct caller output span of at least
+`F` bytes before descriptor parsing, without counting publication storage as
+internal workspace. It preserves the full validation and private reconstruction
+sequence, then copies exactly `F` bytes once. Every earlier failure leaves the
+caller output unchanged.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

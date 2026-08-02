@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZ77 plus tANS transactional publication
+
+- Authoring method: wrapped DD-539's private decoder with marc's established
+  complete-frame preflight and single-copy publication boundary.
+- References used: DD-540, DD-539, caller-owned spans, and the local bounded
+  copy convention.
+- Known implementations intentionally not consulted: external decompression
+  APIs, publication protocols, buffer designs, source code, malformed corpora,
+  and test suites.
+- Independent decisions: admit the complete caller output before all private
+  mutation; exclude output from internal workspace; retain private decode
+  unchanged; and publish exactly the declared raw extent once.
+- Generated-code task description: add transactional LZ77+tANS frame decode;
+  prove successful guarded publication, early short-output rejection, and
+  unchanged output after entropy or token failure; update architecture,
+  format, readiness, composition, decisions, references, vectors, changelog,
+  and provenance.
+- Similarity review: the wrapper uses only repository-authored admission,
+  private reconstruction, and bounded copying. No external control flow,
+  publication schedule, malformed vector, or test expression was compared.
+- Local validation: the focused publication suite passed 3/3 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,067/2,067 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
 ## 2026-08-02 - LZ77 plus tANS private raw decoder
 
 - Authoring method: extended DD-538's local complete-frame validator with the

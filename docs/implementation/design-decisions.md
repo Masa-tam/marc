@@ -9053,6 +9053,29 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-540: LZ77 tANS frame publication is transactional
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-539. Require capacity for
+the entire declared raw frame in a distinct output span before descriptor
+parsing, entropy output, token staging mutation, or private raw mutation.
+Output remains publication storage and is not added to DD-539's internal
+workspace total.
+
+Retain DD-538's complete entropy and token validation and DD-539's private
+reconstruction. Copy exactly `F` bytes from private raw staging to caller
+output once, only after the LZ77 decoder succeeds. Preserve all layered error
+details and return without publication on every earlier failure.
+
+Prove the Literal frame publishes only its declared byte while preserving
+guards, a one-byte-short output fails before private mutation, and malformed
+later tANS state or invalid reconstructed token leaves both private raw and
+caller output sentinels unchanged. This decision adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-539: LZ77 tANS reconstruction remains private
 
 - Date: 2026-08-02

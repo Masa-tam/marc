@@ -19,8 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   reconstructs the complete private token region, and applies the existing
   LZ77 semantic validator. Its private decoder now preflights the complete raw
   staging extent and aggregate workspace, then reconstructs validated literals
-  and overlapping matches without publishing raw bytes. No public entry point
-  exists yet.
+  and overlapping matches. Its transactional wrapper admits the complete
+  caller output before any private mutation and publishes exactly once only
+  after reconstruction succeeds. No public entry point exists yet.
 
 ## 0.1.2 - 2026-08-02
 
