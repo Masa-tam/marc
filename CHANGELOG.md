@@ -13,7 +13,12 @@ format versions, and C ABI versions are independent namespaces.
   cover `S <= 16F`, `K = ceil(S/B)`, exact `528K` descriptor bytes, and the
   per-block 12-bit transition ceiling. tANS blocks may split tokens but never
   frames, and decoding must reconstruct the complete private token region
-  before LZ77 validation or raw publication. No public entry point exists yet.
+  before LZ77 validation or raw publication. Its first bounded complete-frame
+  validator now admits every extent and caller-owned workspace before entropy
+  processing, validates all tANS automata before writing any token byte,
+  reconstructs the complete private token region, and applies the existing
+  LZ77 semantic validator without reconstructing or publishing raw bytes. No
+  public entry point exists yet.
 
 ## 0.1.2 - 2026-08-02
 

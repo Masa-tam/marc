@@ -1825,6 +1825,14 @@ overlap semantics, and declared raw extent are checked only over that complete
 region. No combined decoder or public profile is implied until bounded private
 reconstruction and transactional publication are implemented and tested.
 
+The first internal validator realizes this boundary with caller-owned token
+and tANS-view spans. It preflights exact descriptor, payload, token, and view
+bytes under one aggregate policy. One loop validates every tANS model, table,
+state path, terminal state, and padding bit without output; a second loop fills
+token staging only after all blocks succeed. The existing LZ77 validator then
+checks the complete reconstructed token stream. Raw staging and caller-visible
+output are deliberately absent.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

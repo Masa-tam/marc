@@ -9053,6 +9053,37 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-538: LZ77 tANS validation stops at the token boundary
+
+- Date: 2026-08-02
+- Status: accepted
+
+Admit the first combined `lz77-tans` implementation as a strict bounded
+complete-frame validator only. Validate the exact stream profile, LZ77
+parameters, sequence, generic frame header, complete frame extent,
+`S <= 16F` token bound and alignment, exact `K = ceil(S/B)` block count,
+exact `528K` descriptor bytes, bounded payload sum from
+`Q(n) = 2 + ceil(12n/8)`, caller-owned token and view capacities, and their
+aggregate workspace before entropy output.
+
+Parse every descriptor only after admission succeeds. Validate every tANS
+block's model, spread, transition table, initial state, bit path, terminal
+state, padding, and exact payload exhaustion before decoding any block. Only
+after that complete validation pass may a second pass reconstruct exactly `S`
+token bytes into private caller-owned staging. Invoke the existing LZ77
+validator over the complete span and preserve its stable token index, format
+error, reference, overlap, and exact raw-extent checks.
+
+No raw staging or output span exists at this boundary. On every failure the
+caller discards token and view workspace. Prove the 587-byte Literal vector, a
+token split across four tANS blocks, every truncation, trailing data, short
+storage, aggregate admission one byte short, malformed descriptors, a
+malformed later block with untouched token staging, invalid reconstructed
+LZ77 tokens, impossible entropy extents, and profile rejection. This decision
+adds no private raw decoder, transactional publication, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-537: LZ77 tANS entropizes the finalized token byte stream
 
 - Date: 2026-08-02

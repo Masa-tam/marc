@@ -1557,6 +1557,13 @@ format, checked arithmetic rules, and repository-authored standalone encoders.
 No external LZ77/tANS composition, FSE format, archive format, combined-codec
 implementation, source code, encoded corpus, or test suite was consulted.
 
+The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
+fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
+descriptor controller and strict decoder, existing LZ77 validator,
+caller-owned spans, and checked aggregate arithmetic. No external combined
+decoder, validation order, workspace layout, malformed corpus, source code, or
+test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

@@ -3233,6 +3233,22 @@ else in the frequency region. Append payload `0A 05 03` and compare every one
 of the 587 bytes against output assembled only from the standalone LZ77
 encoder, tANS encoder, and explicit generic serializers.
 
+For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
+to reconstruct the exact Literal token in private staging. Re-encode that same
+token with tANS block size five and require four blocks, deliberately proving
+that entropy boundaries may split a token. Reject every proper frame prefix
+and one trailing byte.
+
+Use one-entry-short view storage, one-byte-short token staging, and an
+aggregate workspace ceiling one byte below descriptor, payload, token, and
+view bytes; each must fail before token mutation. Lower a normalized frequency
+to invalidate the descriptor, and replace the second of two eight-symbol
+block initial states with `FFFF`; the latter must report block index one while
+preserving the entire token sentinel. Finally encode a token with invalid kind
+`FF` and require tANS success followed by the stable LZ77 token error, and
+raise the declared payload above the checked 12-bit transition ceiling for
+early extent rejection.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

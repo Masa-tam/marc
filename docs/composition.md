@@ -36,7 +36,10 @@ symbols has payload ceiling `2 + ceil(12n/8)`. Decoding validates every tANS
 block into private staging before applying token alignment, LZ77 references,
 and exact raw-extent checks. The independently derived raw-`A` vector fixes
 the complete 587-byte frame. No combined implementation or public profile
-exists yet.
+exists yet. Its first bounded complete-frame validator now admits exact extents
+and all caller-owned storage before entropy processing, validates every tANS
+block before writing any token byte, reconstructs the complete private token
+region, and applies the ordinary LZ77 validator without raw reconstruction.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS
