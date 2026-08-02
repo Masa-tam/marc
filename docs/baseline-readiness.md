@@ -658,8 +658,10 @@ benchmark, fuzz target, completion claim, or interoperability entry exists
 yet. The encoder-side write-free planner now freezes canonical LZ77 staging
 and computes every exact tANS block and complete-frame extent; the serialized
 writer now emits the generic header, all descriptors, and all payloads only
-after complete planning and output-capacity admission. Streaming integration
-remains absent.
+after complete planning and output-capacity admission. The known-size bounded
+streaming encoder now preserves identical bytes across arbitrary chunks using
+caller-owned raw, token, and serialized-frame storage. A matching streaming
+decoder remains absent.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked
@@ -883,7 +885,7 @@ non-infringement or a claim of long-term 0.x compatibility.
 
 ## Current validation baseline
 
-At DD-542, the complete Release suite contains 2,075 tests and passes under
+At DD-543, the complete Release suite contains 2,079 tests and passes under
 both MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. This is strong
 local compiler-independence evidence on one architecture. Pushed schema-25 CI
 adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package

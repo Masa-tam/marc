@@ -4748,6 +4748,12 @@ and then all `K` payloads in the same order. Each block is replanned over the
 unchanged token staging and must reproduce the planned payload size; any
 internal discrepancy is an error rather than an alternate representation.
 
+The internal known-size streaming encoder writes the ordinary 64-byte stream
+header and 16-byte LZ77 parameters, then the exact frames above. It holds no
+more than one raw frame, one canonical token region, and one serialized frame
+in caller-owned storage. Arbitrary chunking and non-terminal `Flush` do not
+change encoded bytes; `EndInput` remains latched while final output drains.
+
 For raw `A`, LZ77 emits:
 
 ```text

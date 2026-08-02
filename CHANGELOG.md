@@ -26,7 +26,9 @@ format versions, and C ABI versions are independent namespaces.
   extents before serialized output exists. The complete-frame writer then
   serializes the generic header, all descriptors, and all payloads only after
   full planning and output-capacity admission. No public entry point exists
-  yet.
+  yet. Its first known-size streaming encoder now retains one raw frame, one
+  token region, and one serialized frame in caller storage and produces the
+  same bytes under arbitrary chunking.
 
 ## 0.1.2 - 2026-08-02
 

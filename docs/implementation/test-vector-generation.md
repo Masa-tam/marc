@@ -3283,6 +3283,14 @@ with the component-built four-block frame, then decode through the combined
 transactional frame decoder and require `A`. Supply a 586-byte sentinel output
 for the default frame and require exact size 587 plus no output mutation.
 
+For known-size streaming encoding, use raw `ABABX`, frame size two, and tANS
+block size five. Build the reference by explicitly serializing the 80-byte
+prefix and independently writing frames of two, two, and one raw byte. Require
+the streaming transform to match it with one-byte input and output, and again
+when `Flush` accompanies the first partial frame. Exercise short raw and
+serialized storage, aggregate capacity one byte short, empty input, premature
+EndInput, ResetBlock, and repeated ended calls.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

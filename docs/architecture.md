@@ -1858,6 +1858,13 @@ generic frame header, `K` consecutive fixed descriptors, and `K` consecutive
 tANS payloads from the same frozen token staging. Replanning each block must
 reproduce the exact previously accumulated payload extent.
 
+The known-size streaming encoder drains the 80-byte stream prefix first,
+collects exactly one bounded raw frame, prepares it completely through the
+writer, and drains the serialized frame before reusing any workspace. Input
+and output capacities may be one byte. Full frames may drain before EndInput;
+`Flush` does not close a partial frame, and a latched final EndInput survives
+output starvation until all bytes are emitted.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

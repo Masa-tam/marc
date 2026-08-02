@@ -9053,6 +9053,29 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-543: LZ77 tANS streaming encoding buffers one complete frame
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a known-size bounded streaming encoder above DD-542. Require caller-owned
+storage for the largest raw frame, its conservative `16F` token staging, and
+one complete serialized frame. Count all three active regions against
+`max_internal_buffered_bytes` before preparing a frame.
+
+Drain the fixed 80-byte stream prefix first. Collect exactly the next expected
+raw frame, plan and write it completely, then drain it before reusing storage.
+Allow completed frames to drain before EndInput, retain final EndInput across
+output starvation, leave a partial frame open on `Flush`, reject ResetBlock,
+and return sticky terminal status or errors without zero-progress `Progress`.
+
+Prove byte identity against independently concatenated exact frames under
+one-byte input and output, full-frame preparation plus nonterminal Flush,
+constructor and aggregate workspace failures, empty input, premature EndInput,
+unsupported reset, and repeated EndOfStream. This decision adds no streaming
+decoder, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-542: LZ77 tANS writing follows complete planning
 
 - Date: 2026-08-02

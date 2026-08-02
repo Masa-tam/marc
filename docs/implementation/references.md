@@ -1588,6 +1588,12 @@ tANS encoder, checked spans, and frozen token staging. No external combined
 encoder, archive writer, serialization layout, source code, encoded corpus, or
 test suite was consulted.
 
+The LZ77 plus tANS known-size streaming encoder uses only DD-543, DD-542's
+complete-frame writer, marc's core transform contract, explicit stream and
+parameter serializers, caller-owned spans, and checked aggregate arithmetic.
+No external streaming encoder, buffering state machine, source code, chunking
+suite, or test expression was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external
