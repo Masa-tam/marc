@@ -1666,6 +1666,12 @@ checked arithmetic, and caller-owned staging. No external combined encoder,
 planning control flow, capacity formula, encoded corpus, source code, or test
 suite was consulted.
 
+The LZMW plus rANS deterministic frame encoder uses only DD-526, DD-525's exact
+plan, the independent 592-byte vector, local generic-frame and scalar-rANS
+serializers, checked offsets, and bounded spans. No external combined encoder,
+serialization schedule, buffer layout, encoded corpus, source code, or test
+suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

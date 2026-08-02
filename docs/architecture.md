@@ -1698,6 +1698,12 @@ payload, and serialized frame extents without writing a frame, and admits the
 encoder dictionary plus all staged and planned bytes against the aggregate
 workspace limit before a later encoder may publish output.
 
+The deterministic complete-frame encoder invokes that plan before admitting
+the serialized destination, then explicitly writes the generic header and each
+528-byte descriptor and rANS payload into precomputed regions. Every repeated
+block extent and final offset must equal the plan. A planner failure or short
+destination therefore leaves the complete output unchanged.
+
 ### tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a

@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS deterministic frame encoder
+
+- Authoring method: placed DD-526 directly above DD-525's exact plan and used
+  marc's explicit generic-header and scalar-rANS serialization boundaries.
+- References used: DD-526, DD-525, the independent 592-byte vector, local frame
+  and rANS serializers, scalar rANS encoder, checked offsets, and bounded spans.
+- Known implementations intentionally not consulted: external LZMW/rANS frame
+  encoders, serialization schedules, buffer layouts, encoded corpora, source
+  code, and test suites.
+- Independent decisions: plan before destination admission; preserve all output
+  on planner or capacity failure; regenerate every rANS block only from frozen
+  reference staging; require repeated extents and final offsets to match; and
+  write all integer fields explicitly.
+- Generated-code task description: add deterministic complete-frame encoding,
+  a stable short-output error, independent-vector identity, phrase-generating
+  multi-block determinism and transactional round trip, output-capacity
+  atomicity, and synchronized format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the encoder composes only local independently specified
+  planners, serializers, and bounded spans. No external frame-writing control
+  flow, mutation schedule, capacity formula, encoded bytes, error taxonomy, or
+  test expression was compared.
+- Local validation: the focused LZMW/rANS validator, decoder, planner, and
+  encoder suite passed 22/22 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 2,022/2,022 under both compilers using official CMake
+  4.3.4; all 35 benchmark smokes and schema-24 compatibility remained
+  successful.
+
 ## 2026-08-02 - LZMW plus rANS exact-frame planner
 
 - Authoring method: applied DD-525 to marc's independent LZMW encoder planner

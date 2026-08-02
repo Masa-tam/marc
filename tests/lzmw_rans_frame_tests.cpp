@@ -527,3 +527,79 @@ TEST(LzmwRansFramePlanner, EnforcesAggregateAndFrameExtent) {
                   stream_for(2), {}, {}, 0, 0, raw, {}, staging).error,
               LzmwRansFrameValidationError::input_size_mismatch);
 }
+
+TEST(LzmwRansFrameEncoder, EmitsExactIndependentVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::byte, 592> output{};
+    const auto result = marc::frame::encode_lzmw_rans_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging, output);
+    ASSERT_EQ(result.error, LzmwRansFrameValidationError::none);
+    EXPECT_EQ(result.serialized_size, output.size());
+    EXPECT_TRUE(std::ranges::equal(
+        output, frame_for_references(reference_a)));
+}
+
+TEST(LzmwRansFrameEncoder, RoundTripsPhraseBlocksDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    const auto stream = stream_for(raw.size(), block_size);
+    std::vector<marc::dictionary::internal::LzmwEncoderEntry> workspace(
+        marc::dictionary::internal::lzmw_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> encode_staging{};
+    const auto plan = marc::frame::plan_lzmw_rans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, encode_staging);
+    ASSERT_EQ(plan.error, LzmwRansFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size, std::byte{0xa5});
+    std::vector<std::byte> second(plan.serialized_size, std::byte{0x5a});
+    ASSERT_EQ(marc::frame::encode_lzmw_rans_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  first).error,
+              LzmwRansFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzmw_rans_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  second).error,
+              LzmwRansFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<marc::entropy::internal::RansBlockView, 4> views{};
+    std::array<std::byte, raw.size() * 4> decode_staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 3> phrases{};
+    std::array<std::uint32_t, 4> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto result = marc::frame::decode_lzmw_rans_frame(
+        stream, {}, {}, 0, 0, first, views, decode_staging, phrases,
+        expansion, raw_staging, decoded);
+    ASSERT_EQ(result.error, LzmwRansFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzmwRansFrameEncoder, ShortOutputIsCompletelyUnchanged) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::byte, 591> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::encode_lzmw_rans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging,
+                  output).error,
+              LzmwRansFrameValidationError::serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+
+    std::array<std::byte, 592> planner_failure_output{};
+    planner_failure_output.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::encode_lzmw_rans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, {}, {}, staging,
+                  planner_failure_output).error,
+              LzmwRansFrameValidationError::input_size_mismatch);
+    EXPECT_TRUE(std::ranges::all_of(
+        planner_failure_output, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}

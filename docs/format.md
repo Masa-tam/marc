@@ -4196,6 +4196,13 @@ serialized extent. For raw `A`, the plan fixes four reference bytes, one
 528-byte descriptor, eight payload bytes, and the 592-byte frame described
 above. It writes no serialized frame byte.
 
+The complete-frame encoder must finish that exact plan and admit the entire
+serialized destination before writing any header, descriptor, or payload. It
+serializes the generic header explicitly, repeats every rANS block plan over
+the frozen reference bytes, requires identical payload extents, and writes each
+descriptor and payload into its precomputed region. Final reference and payload
+offsets must equal the plan; short destination failure changes no output byte.
+
 The exact-frame planner completes deterministic LZW parsing and writes the
 entire canonical packed-code region, including final zero padding, into
 caller-owned staging before planning entropy. It then plans every scalar rANS

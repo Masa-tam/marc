@@ -606,7 +606,10 @@ admission evidence remain pending. The encoder-side exact-frame planner now
 freezes the canonical reference sequence in private staging, plans every rANS
 block over those fixed bytes, and reports checked exact frame and aggregate
 workspace extents without writing serialized output. Deterministic frame
-encoding and admission evidence remain pending.
+encoding now reproduces the independent 592-byte vector, emits generated
+multi-block frames byte-identically, transactionally round-trips them, and
+rejects short destinations before publication. Streaming and admission
+evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

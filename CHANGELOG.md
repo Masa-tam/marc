@@ -28,7 +28,11 @@ format versions, and C ABI versions are independent namespaces.
   preserving every output byte on failure. Its encoder-side exact-frame planner
   freezes the complete canonical reference sequence, plans all rANS blocks over
   those fixed bytes, and reports checked exact frame and aggregate workspace
-  extents without writing serialized output. No public entry point exists yet.
+  extents without writing serialized output. The deterministic complete-frame
+  encoder reproduces the independent vector, emits phrase-generating
+  multi-block frames byte-identically, and admits the complete destination
+  before publication so planner and capacity failures preserve every byte. No
+  public entry point exists yet.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

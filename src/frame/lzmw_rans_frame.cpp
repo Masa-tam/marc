@@ -524,6 +524,111 @@ LzmwRansFrameValidationResult plan_lzmw_rans_frame(
     return result;
 }
 
+LzmwRansFrameValidationResult encode_lzmw_rans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = plan_lzmw_rans_frame(
+        stream, parameters, limits, sequence, output_already_committed, input,
+        encoder_workspace, dictionary_staging);
+    if (result.error != LzmwRansFrameValidationError::none) return result;
+    if (output.size() < result.serialized_size) {
+        result.error =
+            LzmwRansFrameValidationError::serialized_output_too_small;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(result.raw_size);
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count =
+        static_cast<std::uint32_t>(result.block_count);
+    header.block_descriptors_size =
+        static_cast<std::uint32_t>(result.descriptor_size);
+    if (serialize_frame_header(
+            header,
+            {stream, limits, sequence, output_already_committed},
+            std::span<std::byte, frame_header_size>{
+                output.data(), frame_header_size})
+        != FrameHeaderError::none) {
+        result.error = LzmwRansFrameValidationError::internal_error;
+        return result;
+    }
+
+    const auto payload_base = frame_header_size + result.descriptor_size;
+    std::size_t dictionary_offset{};
+    std::size_t payload_offset{};
+    for (std::size_t block = 0; block < result.block_count; ++block) {
+        const auto block_size = std::min<std::size_t>(
+            stream.entropy_block_size,
+            result.dictionary_size - dictionary_offset);
+        entropy::internal::RansDescriptor descriptor{};
+        const auto block_plan = entropy::internal::plan_rans_block(
+            dictionary_staging.subspan(dictionary_offset, block_size),
+            limits, descriptor);
+        result.entropy_encode_error = block_plan.error;
+        if (block_plan.error != entropy::internal::RansEncodeError::none
+            || payload_offset > result.payload_size
+            || block_plan.payload_size
+                   > result.payload_size - payload_offset) {
+            result.block_index = block;
+            result.error = LzmwRansFrameValidationError::internal_error;
+            return result;
+        }
+
+        result.descriptor_error =
+            entropy::internal::serialize_rans_descriptor(
+                descriptor, descriptor.symbol_count,
+                descriptor.payload_size, limits,
+                std::span<std::byte,
+                          entropy::internal::rans_descriptor_size>{
+                    output.data() + frame_header_size
+                        + block
+                            * entropy::internal::rans_descriptor_size,
+                    entropy::internal::rans_descriptor_size});
+        if (result.descriptor_error
+            != entropy::internal::RansFormatError::none) {
+            result.block_index = block;
+            result.error = LzmwRansFrameValidationError::internal_error;
+            return result;
+        }
+
+        const auto entropy_encoded = entropy::internal::encode_rans_block(
+            dictionary_staging.subspan(dictionary_offset, block_size),
+            limits,
+            output.subspan(
+                payload_base + payload_offset, block_plan.payload_size),
+            descriptor);
+        result.entropy_encode_error = entropy_encoded.error;
+        if (entropy_encoded.error
+                != entropy::internal::RansEncodeError::none
+            || entropy_encoded.payload_size != block_plan.payload_size) {
+            result.block_index = block;
+            result.error = LzmwRansFrameValidationError::internal_error;
+            return result;
+        }
+        dictionary_offset += block_size;
+        payload_offset += block_plan.payload_size;
+    }
+    if (dictionary_offset != result.dictionary_size
+        || payload_offset != result.payload_size) {
+        result.error = LzmwRansFrameValidationError::internal_error;
+        return result;
+    }
+    result.block_index = result.block_count;
+    return result;
+}
+
 LzmwRansFrameValidationResult validate_lzmw_rans_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzmwParameters& parameters,

@@ -9053,6 +9053,30 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-526: LZMW rANS encoding is plan-first and deterministic
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-525. Invoke the exact
+planner first so canonical LZMW reference bytes, exact rANS block count,
+descriptor extent, payload extent, generic frame fields, and aggregate
+workspace are fixed before serialized output is considered. Require destination
+capacity for the complete planned extent before writing any serialized byte.
+
+Serialize the generic frame header explicitly. Replan each rANS block over the
+unchanged reference staging, require every payload extent and final aggregate
+offset to match DD-525, serialize every 528-byte descriptor into the complete
+descriptor region, and encode each payload into its exact planned region. The
+raw-`A` input must reproduce the independent 592-byte frame exactly.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Every planner failure and short destination must leave
+the whole serialized destination unchanged. Prove deterministic byte identity
+and transactional decode for a phrase-generating frame split across rANS block
+boundaries. This step adds no streaming transform, profile calculator, C ABI,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-525: LZMW rANS planning freezes canonical reference bytes
 
 - Date: 2026-08-02
