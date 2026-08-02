@@ -14,8 +14,10 @@ format versions, and C ABI versions are independent namespaces.
   transition ceiling. Its first bounded complete-frame validator admits every
   extent and caller-owned workspace before entropy work, validates all tANS
   automata before token mutation, reconstructs the exact private token region,
-  and then applies variable-length LZSS validation. The reservation adds no
-  combined public codec yet.
+  and then applies variable-length LZSS validation. Its private decoder adds
+  raw staging to the up-front aggregate checks and reconstructs validated
+  literals and overlapping matches without caller-visible publication. The
+  reservation adds no combined public codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

@@ -4881,3 +4881,12 @@ entire variable-length token region and records the failing token index and
 byte offset when practical. No raw byte is reconstructed or caller-visible
 output published here. This section still specifies no encoder or public entry
 point.
+
+The matching private decoder additionally requires caller-owned raw staging of
+at least `F` bytes before descriptor parsing or token mutation. Those `F`
+bytes are included with descriptor, payload, token, and view extents under
+`max_internal_buffered_bytes`. Only after complete entropy and LZSS validation
+succeed does the allocation-free LZSS decoder reconstruct exactly `F` bytes,
+including forward overlap-copy semantics. Decode failures retain the stable
+LZSS layer, format, token-index, and input-offset diagnostics. No
+caller-visible output span exists; all workspace is disposable on failure.

@@ -3259,6 +3259,17 @@ Entropy-decode `FF 41` successfully but require LZSS token failure at byte
 offset zero. Reject `S > 2F`, a payload beyond the 12-bit transition ceiling,
 and a non-tANS stream profile before unsafe work.
 
+For the first LZSS plus tANS private raw decoder, reconstruct the 587-byte hand
+frame into guarded staging and require only its first byte to become `41`.
+Build canonical tokens for Literal `A` followed by Match `(distance=1,
+length=5)` and require six `A` bytes, proving forward overlap-copy behavior.
+
+Reject one-byte-short raw staging before token mutation. Count the exact raw
+extent in aggregate workspace and reject a limit one byte below descriptor,
+payload, token, view, and raw storage. Corrupt the second of two tANS blocks
+and separately entropy-code an invalid second LZSS token; neither case may
+modify any raw-staging sentinel.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

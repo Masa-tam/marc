@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-555: LZSS tANS raw reconstruction remains private
+
+- Date: 2026-08-03
+- Status: accepted
+
+Extend DD-554 with a caller-owned raw staging span but no caller-visible output
+span. Admit the complete `F` bytes before descriptor parsing or token mutation,
+and include them with descriptors, payload, token staging, and tANS views under
+`max_internal_buffered_bytes`.
+
+After every tANS block and the complete LZSS token grammar have succeeded,
+invoke the existing allocation-free LZSS decoder over the validated token
+region and reconstruct exactly `F` bytes. Preserve overlap-copy semantics and
+the stable LZSS decode, validation, format, token-index, and byte-offset
+diagnostics. Entropy or token failure must leave raw staging untouched. This
+decision adds no transactional caller publication, encoder, streaming
+transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
 ## DD-554: LZSS tANS validation is two-pass and token-atomic
 
 - Date: 2026-08-03

@@ -1836,6 +1836,12 @@ all blocks into the private token region. The existing LZSS validator runs
 after exact token reconstruction and preserves token-index and byte-offset
 diagnostics. Raw staging and caller-visible output remain absent.
 
+The private raw decoder adds the exact declared `F`-byte staging extent to the
+same up-front capacity and aggregate checks. Only after the two-pass entropy
+decode and complete LZSS validation succeed does the allocation-free LZSS
+decoder reconstruct literals and overlapping matches. This storage is still
+disposable implementation workspace; no caller-visible output is published.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

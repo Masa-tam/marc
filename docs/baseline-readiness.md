@@ -133,9 +133,11 @@ per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A` frame is
 587 bytes. Its first bounded complete-frame validator now preflights exact
 extents and caller-owned storage, validates every tANS block before any token
 mutation, reconstructs the complete private token region, and applies LZSS
-grammar and semantic validation. Raw reconstruction and all later public
-admission gates remain pending, so this profile does not appear in the public
-tables above.
+grammar and semantic validation. Its private decoder now admits and counts the
+complete raw staging extent before entropy work, then reconstructs validated
+literals and overlapping matches without caller publication. Transactional
+publication and all later public admission gates remain pending, so this
+profile does not appear in the public tables above.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

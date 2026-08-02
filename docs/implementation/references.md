@@ -1571,6 +1571,12 @@ and checked aggregate arithmetic. No external combined decoder, validation
 order, workspace layout, malformed corpus, source code, or test suite was
 consulted.
 
+The LZSS plus tANS private raw decoder uses only DD-555, DD-554's complete
+validator, marc's existing allocation-free LZSS decoder and overlap-copy
+semantics, separate caller-owned staging, and checked aggregate arithmetic.
+No external combined decoder, reconstruction strategy, buffer layout,
+malformed corpus, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

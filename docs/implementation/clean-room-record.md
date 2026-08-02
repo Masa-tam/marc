@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS private raw decoder
+
+- Authoring method: extended DD-554's local complete-frame validator with the
+  existing allocation-free LZSS decoder behind a private raw-staging boundary.
+- References used: DD-555, DD-554, caller-owned spans, checked aggregate
+  arithmetic, and marc's local LZSS literal and overlap-copy semantics.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the full raw extent before entropy work;
+  include it in aggregate workspace; reuse complete entropy and token
+  validation unchanged; reconstruct exactly the declared raw extent only after
+  validation; preserve layered LZSS diagnostics; and expose no caller-visible
+  output span.
+- Generated-code task description: add private LZSS+tANS raw reconstruction
+  and stable raw-capacity and dictionary-decode errors; prove the independent
+  Literal, overlapping Match, early storage and aggregate rejection, and raw
+  sentinel preservation after entropy or token failure; update architecture,
+  format, readiness, composition, decisions, references, vectors, changelog,
+  and provenance.
+- Similarity review: the implementation adds only repository-authored LZSS
+  decoding and bounded-span contracts above the local validator. No external
+  control flow, workspace formula, malformed vector, or test expression was
+  compared.
+- Local validation: the focused private-decoder suite passed 5/5 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,116/2,116 under
+  both compilers using official CMake 4.3.4; all 37 benchmark smokes and
+  schema-26 compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS complete-frame validator
 
 - Authoring method: combined marc's generic frame admission, strict two-pass
