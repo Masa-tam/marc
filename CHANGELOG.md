@@ -18,8 +18,11 @@ format versions, and C ABI versions are independent namespaces.
   complete-frame validator now admits all extents and caller-owned workspace
   before entropy processing, validates every rANS block before mutating private
   reference staging, reconstructs the complete reference region, and applies
-  the existing LZMW graph validator without expanding raw bytes. No raw decoder
-  or public entry point is published yet.
+  the existing LZMW graph validator without expanding raw bytes. Its bounded
+  private decoder now admits raw staging and the conservative iterative
+  expansion stack before entropy work, counts both in aggregate workspace,
+  reduces the active stack to the validated phrase graph, and reconstructs
+  without publishing caller-visible bytes. No public entry point exists yet.
 
 - Reserved the `lzd-rans` composition with a complete decoder-visible
   representation and independent 593-byte raw-`A` frame. The finalized

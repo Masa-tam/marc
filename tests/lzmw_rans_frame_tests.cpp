@@ -227,3 +227,102 @@ TEST(LzmwRansFrameValidator, RejectsTruncationTrailingAndWrongPipeline) {
                   .error,
               LzmwRansFrameValidationError::unsupported_pipeline);
 }
+
+TEST(LzmwRansFrameDecoder, ReconstructsIndependentVectorPrivately) {
+    const auto frame = frame_for_references(reference_a);
+    std::array<marc::entropy::internal::RansBlockView, 1> views{};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0x5a}};
+    const auto result = marc::frame::decode_lzmw_rans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, expansion,
+        raw);
+    ASSERT_EQ(result.error, LzmwRansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::LzmwDecodeError::none);
+    EXPECT_EQ(result.expansion_entries, 1U);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+}
+
+TEST(LzmwRansFrameDecoder, ReconstructsAcrossBlockAndPhraseEdges) {
+    constexpr std::array references_ababab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    const auto frame = frame_for_references(
+        references_ababab, static_cast<std::uint32_t>(expected.size()),
+        block_size);
+    std::array<marc::entropy::internal::RansBlockView, 4> views{};
+    std::array<std::byte, references_ababab.size()> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 3> phrases{};
+    std::array<std::uint32_t, 4> expansion{};
+    std::array<std::byte, expected.size()> raw{};
+    const auto result = marc::frame::decode_lzmw_rans_frame_to_staging(
+        stream_for(static_cast<std::uint32_t>(expected.size()), block_size),
+        {}, {}, 0, 0, frame, views, staging, phrases, expansion, raw);
+    ASSERT_EQ(result.error, LzmwRansFrameValidationError::none);
+    EXPECT_EQ(result.block_count, 4U);
+    EXPECT_EQ(result.dictionary_entries, 3U);
+    EXPECT_EQ(result.expansion_entries, 4U);
+    EXPECT_EQ(raw, expected);
+}
+
+TEST(LzmwRansFrameDecoder, RejectsPrivateRegionsBeforeEntropyMutation) {
+    constexpr std::array references_ababab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::uint32_t raw_size = 6;
+    const auto frame = frame_for_references(references_ababab, raw_size, 5);
+    std::array<marc::entropy::internal::RansBlockView, 4> views{};
+    std::array<std::byte, references_ababab.size()> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 3> phrases{};
+    std::array<std::uint32_t, 4> expansion{};
+    std::array<std::byte, raw_size> raw{};
+
+    staging.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::decode_lzmw_rans_frame_to_staging(
+                  stream_for(raw_size, 5), {}, {}, 0, 0, frame, views,
+                  staging, phrases, expansion,
+                  std::span<std::byte>{raw}.first(raw.size() - 1))
+                  .error,
+              LzmwRansFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging,
+        [](const std::byte value) { return value == std::byte{0xa5}; }));
+
+    EXPECT_EQ(marc::frame::decode_lzmw_rans_frame_to_staging(
+                  stream_for(raw_size, 5), {}, {}, 0, 0, frame, views,
+                  staging, phrases,
+                  std::span<std::uint32_t>{expansion}.first(
+                      expansion.size() - 1),
+                  raw)
+                  .error,
+              LzmwRansFrameValidationError::expansion_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging,
+        [](const std::byte value) { return value == std::byte{0xa5}; }));
+}
+
+TEST(LzmwRansFrameDecoder, MalformedEntropyDoesNotPublishRawStaging) {
+    constexpr std::uint32_t block_size = 2;
+    auto frame = frame_for_references(reference_a, 1, block_size);
+    const auto second_descriptor = marc::frame::frame_header_size
+        + marc::entropy::internal::rans_descriptor_size;
+    frame[second_descriptor + 9] = std::byte{0x01};
+    std::array<marc::entropy::internal::RansBlockView, 2> views{};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lzmw_rans_frame_to_staging(
+        stream_for(1, block_size), {}, {}, 0, 0, frame, views, staging, {},
+        expansion, raw);
+    EXPECT_EQ(result.error, LzmwRansFrameValidationError::controller_error);
+    EXPECT_EQ(raw[0], std::byte{0xa5});
+}

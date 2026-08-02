@@ -9053,6 +9053,35 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-523: LZMW rANS reconstructs raw bytes only in private staging
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add private raw reconstruction above DD-522 without a caller-visible output
+boundary. Before descriptor parsing or entropy output, require the complete
+declared raw staging extent and the conservative ordinary LZMW iterative
+expansion extent derived from the maximum admitted phrase-record count plus one
+reference. Count raw bytes and expansion records together with descriptors,
+payload, reference staging, rANS views, and phrase records in one checked
+aggregate workspace bound.
+
+After DD-522 validates every entropy block and the complete LZMW phrase graph,
+reduce the active expansion span to the actual generated-entry count plus one
+reference and invoke the existing nonrecursive LZMW decoder over exactly the
+validated reference and phrase regions. Reconstruct exactly the declared raw
+extent into separate private staging. On any error, callers must discard
+reference, phrase, expansion, and raw workspaces; this step promises no
+transaction over an external output span.
+
+Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
+four rANS blocks split references while LZMW expands generated phrase 256.
+Reject raw and conservative expansion workspaces one entry short before
+reference mutation, and retain private raw bytes on malformed entropy. This
+step adds no public transactional decoder, encoder, streaming transform,
+profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-522: LZMW rANS validation stops at the phrase graph
 
 - Date: 2026-08-02

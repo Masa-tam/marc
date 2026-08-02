@@ -1,6 +1,7 @@
 #ifndef MARC_FRAME_LZMW_RANS_FRAME_HPP
 #define MARC_FRAME_LZMW_RANS_FRAME_HPP
 
+#include "dictionary/lzmw_decoder.hpp"
 #include "dictionary/lzmw_format.hpp"
 #include "dictionary/lzmw_validator.hpp"
 #include "entropy/rans_controller.hpp"
@@ -25,10 +26,13 @@ enum class LzmwRansFrameValidationError : std::uint8_t {
     views_too_small,
     dictionary_staging_too_small,
     phrase_workspace_too_small,
+    expansion_workspace_too_small,
+    raw_staging_too_small,
     workspace_limit,
     controller_error,
     entropy_decode_error,
     dictionary_validation_error,
+    dictionary_decode_error,
     arithmetic_overflow,
     internal_error,
 };
@@ -42,6 +46,7 @@ struct LzmwRansFrameValidationResult {
     std::size_t block_count{};
     std::size_t block_index{};
     std::size_t phrase_entries{};
+    std::size_t expansion_entries{};
     std::size_t token_count{};
     std::size_t token_index{};
     std::size_t dictionary_input_offset{};
@@ -55,6 +60,8 @@ struct LzmwRansFrameValidationResult {
         dictionary::internal::LzmwValidationError::none};
     dictionary::internal::LzmwFormatError dictionary_format_error{
         dictionary::internal::LzmwFormatError::none};
+    dictionary::internal::LzmwDecodeError dictionary_decode_error{
+        dictionary::internal::LzmwDecodeError::none};
     LzmwRansFrameValidationError error{LzmwRansFrameValidationError::none};
 };
 
@@ -72,6 +79,23 @@ struct LzmwRansFrameValidationResult {
     std::span<std::byte> dictionary_staging,
     std::span<dictionary::internal::LzmwPhraseEntry>
         phrase_workspace) noexcept;
+
+// Validates every encoded layer and reconstructs exactly one frame into
+// caller-owned private raw staging. On error, all workspace contents must be
+// discarded. Input, reference staging, and raw staging must not overlap.
+[[nodiscard]] LzmwRansFrameValidationResult
+decode_lzmw_rans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t expected_sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<entropy::internal::RansBlockView> views,
+    std::span<std::byte> dictionary_staging,
+    std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
+    std::span<std::uint32_t> expansion_workspace,
+    std::span<std::byte> raw_staging) noexcept;
 
 } // namespace marc::frame
 

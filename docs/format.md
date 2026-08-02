@@ -4494,6 +4494,15 @@ prior generated references, adjacent-phrase growth, dictionary freeze, and
 the declared raw extent. This boundary reconstructs and publishes no raw bytes;
 later decoding and streaming work must retain the same validation order.
 
+The bounded private decoder additionally admits the complete declared raw
+extent and conservative iterative expansion-stack extent before descriptor
+parsing and counts both in aggregate storage. After the entire rANS and LZMW
+validation sequence succeeds, it reduces the active stack to the actual
+generated-phrase count plus one, invokes the ordinary iterative LZMW decoder
+over the validated reference bytes, and writes exactly the declared raw extent
+into separate private staging. It publishes no caller-visible bytes, and
+callers discard all workspace contents on error.
+
 ## tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,

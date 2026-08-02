@@ -596,8 +596,11 @@ assembled 592-byte raw-`A` frame fixes the first canonical representation.
 Its first complete-frame validator now preflights generic, reference, entropy,
 typed-record, and aggregate extents, validates every rANS block before changing
 reference staging, reconstructs the complete private reference sequence, and
-applies the ordinary LZMW graph validator without raw expansion. Raw decoding
-and admission evidence remain pending.
+applies the ordinary LZMW graph validator without raw expansion. Private raw
+decoding now preflights and aggregate-counts the full raw region and
+conservative iterative expansion region, shrinks the active stack to the
+validated graph, and reconstructs into disposable staging. Transactional
+caller publication and admission evidence remain pending.
 
 `lzmw-adaptive-huffman` has now entered that queue as the sixth Adaptive
 composition. DD-344 fixes its four-byte canonical reference boundary, checked

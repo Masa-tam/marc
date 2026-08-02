@@ -1649,6 +1649,12 @@ ordinary LZMW token validator, checked arithmetic, and caller-owned spans. No
 external combined validator, allocation layout, malformed corpus, source code,
 or test suite was consulted.
 
+The LZMW plus rANS private raw decoder uses only DD-523, DD-522's complete
+validation boundary, marc's local iterative LZMW decoder, checked workspace
+accounting, and caller-owned spans. No external combined decoder, phrase
+expansion implementation, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 The LZW plus rANS private raw decoder uses only DD-493, DD-492's complete
 validation boundary, marc's local iterative LZW decoder, checked workspace
 accounting, and caller-owned spans. No external combined decoder, phrase

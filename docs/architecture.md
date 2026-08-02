@@ -1673,7 +1673,16 @@ any reference byte, then fills the complete private reference region and
 invokes the ordinary LZMW graph validator without expanding raw bytes.
 Corruption in a later block therefore cannot leave partially reconstructed
 references, and valid entropy carrying an invalid LZMW graph fails only at the
-dictionary boundary. No raw decoder or public entry point is implied yet.
+dictionary boundary.
+
+The private raw decoder extends that same preflight with the complete declared
+raw extent and conservative iterative expansion references, counting both in
+the aggregate workspace before descriptor parsing. After entropy and the
+complete LZMW graph validate, it reduces the active stack to
+`dictionary_entries + 1` and invokes the ordinary nonrecursive LZMW decoder
+into disposable raw staging. It publishes no caller-visible output; short raw
+or expansion regions fail before reference staging changes. No public entry
+point is implied yet.
 
 ### tANS foundation
 

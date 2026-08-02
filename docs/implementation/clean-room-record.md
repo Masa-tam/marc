@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-02 - LZMW plus rANS private raw reconstruction
+
+- Authoring method: applied DD-523 above marc's DD-522 complete-frame validator
+  and ordinary iterative LZMW decoder.
+- References used: DD-523, DD-522, the local LZMW decoder and expansion bound,
+  rANS/LZMW validation ordering, checked aggregate arithmetic, and caller-owned
+  private spans.
+- Known implementations intentionally not consulted: external LZMW/rANS
+  decoders, phrase expansion implementations, allocation layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: admit raw and conservative expansion storage before
+  entropy work; aggregate-count both; shrink the active stack to the validated
+  generated-entry count; reconstruct iteratively into disposable staging; and
+  add no external output transaction.
+- Generated-code task description: extend validator preflight and result, add
+  private raw reconstruction, raw-`A` and cross-block `ABABAB` tests, short-
+  private-region and malformed-entropy atomicity tests, and synchronize
+  changelog, format, architecture, readiness, composition, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes local validator and decoder
+  contracts with checked spans. No external reconstruction order, expansion
+  layout, buffer policy, error mapping, or test expression was compared.
+- Local validation: the focused LZMW/rANS vector, validator, and private-decoder
+  suite passed 11/11 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 2,011/2,011 under both compilers using official CMake 4.3.4;
+  all 35 benchmark smokes and schema-24 compatibility remained successful.
+
 ## 2026-08-02 - LZMW plus rANS complete-frame validator
 
 - Authoring method: applied DD-522 to marc's local rANS controller and decoder,
