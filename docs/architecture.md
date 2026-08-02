@@ -1893,6 +1893,14 @@ checks sticky terminal results, and corrupts only the final frame after three
 frames have committed. Earlier output remains visible; no byte of the failing
 frame may replace its sentinel.
 
+The bounded decoder fuzz boundary exercises both the complete-frame private
+entry and the incremental streaming transform for every input. Fixed encoded,
+view, token, raw, and caller-output arrays enforce the same local limits as the
+profile, while byte-derived chunk sizes vary starvation paths without external
+allocation. A finite call ceiling converts any stalled state machine into a
+reproducible failure. Canonical truncation, saturated frame lengths, and an
+invalid tANS descriptor remain permanent atomic-publication regressions.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

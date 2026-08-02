@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZ77 plus tANS bounded decoder fuzz boundary
+
+- Authoring method: mechanically specialized marc's repository-owned LZ77+rANS
+  dual-decoder harness to the independently specified LZ77+tANS profile.
+- References used: DD-548, the local complete-frame and streaming decoders,
+  `TansBlockView`, checked process invariants, and fixed caller-owned storage.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, mutation schedules, combined codecs, source code, and test suites.
+- Independent decisions: cap input at 8,192 bytes; exercise both decoder
+  boundaries; use byte-derived chunks and a finite call ceiling; and retain
+  truncation, saturated-length, and invalid-descriptor atomic regressions.
+- Generated-code task description: add the sanitizer fuzz target, truncated-
+  magic seed, three permanent malformed-stream regressions, build wiring, and
+  synchronized architecture, readiness, composition, fuzzing, decision,
+  reference, vector, changelog, and provenance records.
+- Similarity review: the harness changes only local profile types, bounds, and
+  tANS descriptor rules. No external control flow, corpus bytes, mutation,
+  naming, or test expression was compared.
+- Local validation: the focused regression suite passed 3/3 under both MSVC
+  and ClangCL. Clang libFuzzer with AddressSanitizer and
+  UndefinedBehaviorSanitizer completed 1,000 bounded runs. The complete Release
+  CTest suite passed 2,098/2,098 under both compilers using official CMake
+  4.3.4; all 36 benchmark smokes and schema-25 compatibility remained
+  successful.
+
 ## 2026-08-03 - LZ77 plus tANS public-ABI completion matrix
 
 - Authoring method: specialized marc's repository-owned public completion

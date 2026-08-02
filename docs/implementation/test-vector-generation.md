@@ -3328,6 +3328,20 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For LZ77 plus tANS decoder fuzzing, cap each input at 8,192 bytes and exercise
+both the complete-frame private decoder and incremental streaming decoder.
+Use fixed storage for at most eight tANS views, 4,096 dictionary bytes, a
+1,024-byte private frame, 4,096 committed output bytes, and one encoded frame
+bounded by its 56-byte header, eight 528-byte descriptors, and 8,192 payload
+bytes. Derive chunks from input bytes, enforce the process-result contract and
+a 12,320-call ceiling, and seed the corpus with truncated `MARC` bytes.
+
+Generate a canonical five-byte `ABABX` stream locally. Require every proper
+prefix to fail without publishing a byte and to repeat the same error. Repeat
+after saturating all three frame length fields and after changing one frequency
+byte in the first tANS descriptor; both must preserve the caller sentinel and
+sticky error position.
+
 For the first LZ77 plus rANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

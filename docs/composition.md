@@ -63,6 +63,10 @@ The public completion matrix drives only that ABI and fixes required binary
 classes, byte-identical repeat encoding, one-byte and mixed chunk schedules,
 stable repeated termination, and atomic rejection of corrupt, truncated, or
 trailing final-frame input.
+Its bounded dual-decoder fuzz target uses fixed encoded-frame, view, token,
+raw, and output storage. It drives both the complete-frame private decoder and
+the streaming state machine, and retains atomic regressions for every canonical
+truncation, saturated frame lengths, and invalid tANS descriptor metadata.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

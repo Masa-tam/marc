@@ -627,6 +627,18 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_lz77_rans_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lz77_rans_stream PRIVATE marc::static)
+    add_executable(marc_fuzz_lz77_tans_stream
+        fuzz/lz77_tans_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lz77_tans_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lz77_tans_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lz77_tans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lz77_tans_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lz77_tans_stream PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_rans_stream
         fuzz/lzss_rans_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_rans_stream PRIVATE cxx_std_20)
@@ -1242,6 +1254,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_tans_frame_streaming_decoder_tests.cpp
         tests/lz77_tans_profile_tests.cpp
         tests/lz77_tans_completion_tests.cpp
+        tests/lz77_tans_fuzz_regression_tests.cpp
         tests/lz77_rans_frame_streaming_encoder_tests.cpp
         tests/lz77_rans_frame_streaming_decoder_tests.cpp
         tests/lz77_rans_profile_tests.cpp
@@ -1500,6 +1513,23 @@ if(MARC_BUILD_TESTS)
     else()
         target_compile_options(
             marc_lz77_dynamic_range_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_lz77_tans_fuzz_compile_smoke OBJECT
+        fuzz/lz77_tans_stream_fuzz.cpp)
+    target_compile_features(marc_lz77_tans_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_include_directories(
+        marc_lz77_tans_fuzz_compile_smoke
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(
+            marc_lz77_tans_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(
+            marc_lz77_tans_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

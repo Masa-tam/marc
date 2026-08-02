@@ -190,6 +190,12 @@ and call-count limits to the tabled ANS decoder paths. It thereby exercises
 malformed state transitions and additional-bit traversal without deriving
 workspace size from serialized metadata.
 
+`marc_fuzz_lz77_tans_stream` applies the fixed-memory dual-decoder boundary to
+the composed profile. It caps serialized input and payload at 8 KiB, total raw
+output and canonical token staging at 4 KiB, one raw frame at 1 KiB, and tANS
+metadata at eight fixed `TansBlockView` records. Complete-frame and incremental
+paths share those caller-owned arrays and the finite process-call ceiling.
+
 `marc_fuzz_blocked_huffman_stream` covers the standalone dictionary-none
 profile that the combined target cannot select. It uses eight fixed block
 views, 256-symbol blocks, code length 24, a 512-node decode-table cap, and the
@@ -214,6 +220,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_adaptive_huffman_stream \
   marc_fuzz_lz77_dynamic_range_stream \
   marc_fuzz_lz77_rans_stream \
+  marc_fuzz_lz77_tans_stream \
   marc_fuzz_lzss_rans_stream \
   marc_fuzz_lzss_adaptive_huffman_stream \
   marc_fuzz_lzss_dynamic_range_stream \
@@ -251,6 +258,8 @@ out/build/fuzz/marc_fuzz_lz77_dynamic_range_stream \
   fuzz/corpus/lz77_dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_rans_stream \
   fuzz/corpus/lz77_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lz77_tans_stream \
+  fuzz/corpus/lz77_tans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_rans_stream \
   fuzz/corpus/lzss_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \

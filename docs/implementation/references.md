@@ -1617,6 +1617,12 @@ deterministic generators, and local generic-frame extent parsing. No external
 conformance suite, corpus, combined codec API, malformed archive, source code,
 or test vector was consulted.
 
+The LZ77 plus tANS bounded decoder fuzz boundary uses only DD-548, the local
+complete-frame and incremental decoders, `TansBlockView`, fixed caller-owned
+arrays, the core process invariants, and a repository-authored truncated-magic
+seed. No external fuzz harness, corpus, mutation schedule, combined decoder,
+source code, or test suite was consulted.
+
 The LZW plus rANS reserved representation uses only DD-491, marc's documented
 LZW variant-1 packed-code grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

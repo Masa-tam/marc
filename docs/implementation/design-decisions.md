@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-548: LZ77 tANS fuzzing has two bounded decoder boundaries
+
+- Date: 2026-08-03
+- Status: accepted
+
+For each input of at most 8,192 bytes, exercise both the complete-frame private
+decoder and the incremental stream transform. Bound total raw output to 4,096
+bytes, one frame to 1,024 bytes, entropy payload to 8,192 bytes, dictionary
+staging to 4,096 bytes, and block views to eight. Use only fixed caller-owned
+arrays; derive input and output chunks from the fuzz bytes and abort if a
+process result violates the core contract or exceeds the 12,320-call ceiling.
+
+Seed the corpus with a truncated `MARC` prefix. Retain permanent tests requiring
+write-free, sticky rejection of every proper prefix of a canonical stream,
+saturated frame length fields, and invalid tANS frequency metadata. A Clang
+libFuzzer smoke under AddressSanitizer and UndefinedBehaviorSanitizer must
+complete 1,000 runs. This step adds no CLI selector, benchmark,
+interoperability entry, or local `Ready` claim.
+
 ## DD-547: LZ77 tANS completion is proven through the public ABI
 
 - Date: 2026-08-03

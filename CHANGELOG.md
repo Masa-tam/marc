@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added a bounded dual-decoder fuzz target for `lz77-tans`, exercising both
+  complete-frame validation and incremental streaming under fixed memory and
+  call limits. Permanent regressions retain atomic rejection of every
+  canonical truncation, saturated frame lengths, and invalid tANS metadata.
 - Reserved the `lz77-tans` composition with a complete decoder-visible
   representation and independent 587-byte raw-`A` frame. Canonical 16-byte
   LZ77 tokens are finalized before tabled tANS block coding; checked bounds
