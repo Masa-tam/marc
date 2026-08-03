@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS CLI selector
+
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one already specified public C profile.
+- References used: DD-578, DD-568's fixed bounds, the published
+  `marc_lz78_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, or tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; fix the
+  524,288-byte token ceiling, eight blocks, 4,224 descriptor bytes,
+  786,448-byte payload ceiling, 65,536 entries, and 4-MiB aggregate policy;
+  keep typed views private; and reuse strict temporary-file publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bounds, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release CTest suite passed 2,202/2,202
+  under both compilers using official CMake 4.3.4; all 38 benchmark smokes,
+  documentation layout, and schema-27 compatibility remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS public C requirements and factory
 
 - Authoring method: mapped DD-576's internal direction-specific requirements

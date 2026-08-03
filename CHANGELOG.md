@@ -40,7 +40,10 @@ format versions, and C ABI versions are independent namespaces.
   opaque views at their natural alignment. The public C ABI now exposes a
   size-tagged config, direction-specific requirements query, and factory over
   those exact three workspace regions; short, misaligned, or reserved-field
-  inputs publish no handle. No CLI selector is added yet.
+  inputs publish no handle. The explicit `lz78-tans` CLI selector now drives
+  only that public lifecycle, uses the fixed 64-KiB frame/block profile and a
+  conservative 4-MiB aggregate limit, and retains transactional destination
+  publication and strict trailing-data rejection.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

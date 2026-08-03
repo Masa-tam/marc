@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-578: LZ78 tANS CLI admits only the public bounded profile
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the explicit `lz78-tans` selector only after the size-tagged public C
+configuration, directional requirements query, and transform factory exist.
+Fix raw frames and entropy blocks at 65,536 bytes, canonical LZ78 staging at
+`8F = 524,288` bytes, block count at eight, tANS descriptors at 4,224 bytes,
+payload at most 786,448 bytes, phrase entries at 65,536, and aggregate
+internal storage at 4 MiB.
+
+The adapter must obtain primary, secondary, and aligned opaque-view extents
+from the public requirements query and construct the transform only through
+the public factory. It must retain existing bounded streaming, destination
+non-overwrite, temporary-file transaction, malformed-input cleanup, and strict
+trailing-data rejection. Prove the repository-standard multi-frame binary
+round trip and negative file behaviors through the generic CLI regression.
+This decision adds no benchmark, fuzz target, completion claim, interoperability
+archive, or schema revision.
+
 ## DD-577: LZ78 tANS C factory preserves exact workspace boundaries
 
 - Date: 2026-08-04

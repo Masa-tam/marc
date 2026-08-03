@@ -5094,5 +5094,6 @@ storage as secondary, and aligned encoder records as views. Decoding derives
 requirements only from local hard limits and reports encoded-frame primary
 storage, token followed by private-raw secondary storage, and one aligned tANS-
 view-plus-LZ78-phrase region. Short or misaligned storage and nonzero reserved
-fields are rejected before a handle is published. No CLI selector, benchmark,
+fields are rejected before a handle is published. The `lz78-tans` CLI selector
+uses this public profile without changing its representation. No benchmark,
 fuzzer, completion claim, or interoperability entry is defined yet.

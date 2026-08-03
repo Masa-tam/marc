@@ -1707,6 +1707,12 @@ non-throwing transform allocation, stable status mapping, and caller-owned
 three-region convention. No external C wrapper, ABI layout, allocation policy,
 source code, or test suite was consulted.
 
+The LZ78 plus tANS CLI selector uses only DD-578, the published
+`marc_lz78_tans_*` lifecycle, fixed local format bounds, and marc's existing
+transactional CLI adapter and regression script. No external compression CLI,
+workspace layout, command syntax, archive, source code, or test suite was
+consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

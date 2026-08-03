@@ -3530,6 +3530,13 @@ publishing a handle. Also reject a null handle destination and a nonzero
 reserved field through the requirements query. Compile and execute the test as
 C11 against the public installed-style header only.
 
+For `lz78-tans` CLI admission, reuse the repository-standard deterministic
+binary fixture and generic transactional test. Encode and decode enough bytes
+to cross the fixed 65,536-byte raw-frame boundary, require exact restoration,
+empty-input handling, destination overwrite refusal, malformed-input cleanup,
+and strict rejection of a valid stream with one trailing byte. The test must
+invoke only the CLI, whose adapter in turn uses only the public C lifecycle.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

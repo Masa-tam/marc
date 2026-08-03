@@ -2106,6 +2106,11 @@ is replanned only over the unchanged token staging and must reproduce its
 planned payload size; final token and payload offsets must also match. Planner
 and capacity failures therefore publish no serialized byte.
 
+The command-line adapter selects this contract explicitly as `lz78-tans`.
+It supplies only the fixed public profile limits, obtains all three directional
+workspace extents and opaque alignment from the public C ABI requirements
+query, and publishes files through the existing temporary-path transaction.
+
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,
 collects one configured raw frame in caller-owned storage, prepares the entire
