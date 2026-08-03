@@ -3340,6 +3340,18 @@ decoder limits, require `56 + max_internal_buffered_bytes` encoded bytes,
 bytes, and exactly `max_blocks_per_frame` views. Finally allocate every
 reported region and require the streaming pair to round-trip `ABABX`.
 
+For the LZSS plus tANS pure-C admission test, initialize the size-tagged encode
+config, set raw and frame size seven with entropy blocks of sixteen bytes, and
+require seven primary bytes, 621 secondary bytes, zero view bytes, and neutral
+view alignment. Construct, process `ABABABX` through `EndInput`, and retain
+the produced stream only through the common C transform lifecycle.
+
+Initialize decoding with 4,096-byte raw and block limits, 6,000 token bytes,
+8,192 internal bytes, and seven block views. Require 8,248 primary bytes,
+10,096 secondary bytes, nonzero opaque view bytes, and nonzero alignment.
+Round-trip exactly, then reject one-byte-short views with a null handle and
+reject a nonzero reserved configuration field during requirements admission.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

@@ -150,7 +150,9 @@ admits each complete encoded frame and all private workspace before collection,
 then publishes raw bytes only after transactional tANS and LZSS validation.
 Its internal profile calculator now derives canonical stream fields and every
 encoder and decoder workspace from known input configuration or local hard
-limits. A C requirements query and factories are the next boundary.
+limits. Its public C requirements query and factory now expose both directions
+through three opaque borrowed regions while keeping tANS view layout private.
+The public-ABI completion matrix is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

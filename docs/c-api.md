@@ -5,7 +5,7 @@ Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77 variant 1, the LZ77 plus
 Blocked Huffman, LZ77 plus Adaptive Huffman, and LZ77 plus Dynamic Range
 profiles, the LZ77 plus rANS and LZ77 plus tANS profiles, LZSS variant 1, the LZSS plus Blocked
 Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
-Range and LZSS plus rANS profiles,
+Range, LZSS plus rANS, and LZSS plus tANS profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
 LZ78 plus Dynamic Range and LZ78 plus rANS profiles, LZW variant 1, the LZW
 plus Blocked Huffman,
@@ -30,6 +30,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz77_tans_*`,
 `marc_lzss_blocked_huffman_*`, `marc_lzss_adaptive_huffman_*`,
 `marc_lzss_dynamic_range_*`, `marc_lzss_rans_*`,
+`marc_lzss_tans_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lz78_rans_*`,
@@ -70,6 +71,7 @@ cross-product pairings as callable C ABI features.
    `marc_lzss_adaptive_huffman_config_init()`,
    `marc_lzss_dynamic_range_config_init()`,
    `marc_lzss_rans_config_init()`,
+   `marc_lzss_tans_config_init()`,
    `marc_lz78_config_init()`, `marc_lz78_blocked_huffman_config_init()`,
    `marc_lz78_adaptive_huffman_config_init()`,
    `marc_lz78_dynamic_range_config_init()`,

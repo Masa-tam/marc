@@ -4748,36 +4748,6 @@ and then all `K` payloads in the same order. Each block is replanned over the
 unchanged token staging and must reproduce the planned payload size; any
 internal discrepancy is an error rather than an alternate representation.
 
-The internal known-size streaming encoder serializes the ordinary 64-byte
-stream header followed by the ordinary 16-byte LZSS parameter extension, then
-the complete frames above in sequence. It buffers no more than one raw frame,
-one canonical token region, and one encoded frame in caller-owned storage.
-Arbitrary input/output chunking and non-terminal `Flush` do not change encoded
-bytes; `EndInput` remains latched while final prefix or frame output drains.
-
-The internal known-size streaming decoder collects and validates that 80-byte
-prefix, then admits each 56-byte frame header and its exact declared body
-before collection continues. It invokes the private complete-frame decoder
-only after the whole frame is present, and drains raw output only after that
-transaction succeeds. Final short-frame extent follows the known original
-size. Truncation, trailing bytes, and malformed entropy or LZSS data are
-rejected without exposing bytes from the failing frame.
-
-The internal profile calculator changes no serialized representation. For the
-largest known raw frame `F`, it reports token capacity `S = 2F`,
-`K = ceil(S/B)` blocks, exact descriptor capacity `528K`, and complete
-encoded-frame capacity `56 + 528K + sum(Q(n))`, where
-`Q(n) = 2 + ceil(12n/8)`. Empty input requires no frame-local encoder
-storage. Decoder requirements are derived only from local hard limits and
-report encoded-frame, token, private-raw, and tANS-view capacities.
-
-The matching complete-frame writer runs that plan first and requires output
-capacity for the entire exact serialized extent before writing. It explicitly
-serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
-and then all `K` payloads in the same order. Each block is replanned over the
-unchanged token staging and must reproduce the planned payload size; any
-internal discrepancy is an error rather than an alternate representation.
-
 The internal known-size streaming encoder writes the ordinary 64-byte stream
 header and 16-byte LZ77 parameters, then the exact frames above. It holds no
 more than one raw frame, one canonical token region, and one serialized frame
@@ -4935,3 +4905,39 @@ exact `K`, `528K`, `P`, and `56 + 528K + P` extents with checked arithmetic,
 enforces block-count and aggregate descriptor-plus-payload-plus-token limits,
 and validates the resulting generic frame header. It writes no serialized
 header, descriptor, or payload byte.
+
+The matching complete-frame writer runs that plan first and requires output
+capacity for the entire exact serialized extent before writing. It explicitly
+serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
+and then all `K` payloads in the same order. Each block is replanned over the
+unchanged token staging and must reproduce the planned payload size; any
+internal discrepancy is an error rather than an alternate representation.
+
+The internal known-size streaming encoder serializes the ordinary 64-byte
+stream header followed by the ordinary 16-byte LZSS parameter extension, then
+the complete frames above in sequence. It buffers no more than one raw frame,
+one canonical token region, and one encoded frame in caller-owned storage.
+Arbitrary input/output chunking and non-terminal `Flush` do not change encoded
+bytes; `EndInput` remains latched while final prefix or frame output drains.
+
+The internal known-size streaming decoder collects and validates that 80-byte
+prefix, then admits each 56-byte frame header and its exact declared body
+before collection continues. It invokes the private complete-frame decoder
+only after the whole frame is present, and drains raw output only after that
+transaction succeeds. Final short-frame extent follows the known original
+size. Truncation, trailing bytes, and malformed entropy or LZSS data are
+rejected without exposing bytes from the failing frame.
+
+The internal profile calculator changes no serialized representation. For the
+largest known raw frame `F`, it reports token capacity `S = 2F`,
+`K = ceil(S/B)` blocks, exact descriptor capacity `528K`, and complete
+encoded-frame capacity `56 + 528K + sum(Q(n))`, where
+`Q(n) = 2 + ceil(12n/8)`. Empty input requires no frame-local encoder
+storage. Decoder requirements are derived only from local hard limits and
+report encoded-frame, token, private-raw, and tANS-view capacities.
+
+The public C requirements query and factory change no byte in this format.
+They expose the same known-size parameters and local limits through fixed-width
+fields, report three caller-owned regions as byte counts plus alignment, and
+construct the existing streaming encoder or decoder without serializing ABI
+structures.

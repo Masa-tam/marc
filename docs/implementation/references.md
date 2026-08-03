@@ -1613,6 +1613,11 @@ documented tANS descriptor and blockwise payload ceilings. No external profile
 API, allocation policy, capacity formula, codec source, encoded corpus, or
 test suite was consulted.
 
+The LZSS plus tANS public C ABI uses only DD-562, DD-561's directional
+requirements, marc's existing fixed-width C transform lifecycle, checked
+workspace partitioning, and internal tANS view alignment. No external ABI,
+factory design, allocator contract, source code, or C test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

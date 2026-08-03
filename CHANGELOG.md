@@ -29,8 +29,9 @@ format versions, and C ABI versions are independent namespaces.
   private raw staging, and publishes only after transactional tANS and LZSS
   validation succeeds. Its directional profile calculator derives exact
   conservative encoder storage and hard-limit-only decoder storage without
-  exposing private tANS view layouts. The reservation adds no combined public
-  codec yet.
+  exposing private tANS view layouts. Its public C requirements query and
+  factory now bind both streaming directions through three opaque caller-owned
+  regions. The reservation is not yet a completed public codec profile.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
