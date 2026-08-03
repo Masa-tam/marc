@@ -1677,6 +1677,12 @@ generic frame validator, caller-owned spans, and checked arithmetic. No
 external combined encoder, planning algorithm, storage layout, encoded corpus,
 source code, or test suite was consulted.
 
+The LZ78 plus tANS complete-frame writer uses only DD-573, DD-572's exact
+planner and frozen token staging, marc's generic frame serializer, local tANS
+descriptor serializer and block encoder, checked offsets, and caller-owned
+output. No external combined writer, serialization schedule, buffering layout,
+encoded corpus, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

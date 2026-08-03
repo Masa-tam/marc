@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS complete-frame writer
+
+- Authoring method: composed the local exact-frame planner, explicit generic
+  frame serializer, tANS descriptor serializer, and tANS block encoder over
+  the planner's frozen canonical LZ78 token staging.
+- References used: DD-573, DD-572, the independent raw-`A` frame, and only
+  repository-owned frame and entropy primitives.
+- Known implementations intentionally not consulted: external combined frame
+  writers, serialization schedules, buffering layouts, encoded corpora, source
+  code, and test suites.
+- Independent decisions: admit the complete destination after exact planning;
+  write header, contiguous descriptors, then contiguous payloads; replan only
+  over frozen tokens; require planned sizes and final offsets to agree; and
+  reject short destinations without mutation.
+- Generated-code task description: add the complete-frame writer, exact-vector,
+  token-splitting deterministic round-trip, and short-output atomicity tests,
+  then synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the writer directly sequences repository-owned bounded
+  components. No external control flow, region schedule, capacity formula,
+  encoded bytes, naming scheme, or test expression was compared.
+- Local validation: the focused LZ78+tANS encoder suite passed 8/8 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,183/2,183 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS exact-frame planning
 
 - Authoring method: composed marc's bounded LZ78 token planner and encoder with

@@ -2093,6 +2093,19 @@ It preserves the entire validation and reconstruction sequence and copies the
 complete raw frame exactly once only after success. Every earlier error leaves
 caller output unchanged.
 
+The encoder-side exact-frame planner materializes the complete canonical LZ78
+token sequence once, then plans every consecutive tANS block over that frozen
+staging. Encoder records, token bytes, descriptors, and payloads are admitted
+as one bounded aggregate before the synthesized header and exact serialized
+extent are accepted.
+
+The matching complete-frame writer invokes that plan first and admits the
+entire serialized destination before writing. It explicitly emits the generic
+header, all contiguous descriptors, and all contiguous payloads. Every block
+is replanned only over the unchanged token staging and must reproduce its
+planned payload size; final token and payload offsets must also match. Planner
+and capacity failures therefore publish no serialized byte.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

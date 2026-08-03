@@ -600,3 +600,70 @@ TEST(Lz78TansFrameEncoder, EnforcesBlockCountAndAggregateWorkspace) {
         stream_for(1, block_size), {}, limits, 0, 0, raw, entries, staging);
     EXPECT_EQ(result.error, Lz78TansFrameValidationError::workspace_limit);
 }
+
+TEST(Lz78TansFrameEncoder, EmitsExactIndependentHandVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, 587> output{};
+    const auto result = marc::frame::encode_lz78_tans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    ASSERT_EQ(result.error, Lz78TansFrameValidationError::none);
+    EXPECT_TRUE(std::ranges::equal(output, single_pair_frame()));
+}
+
+TEST(Lz78TansFrameEncoder,
+     TokenSplittingBlocksAreDeterministicAndRoundTrip) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, raw.size()>
+        entries{};
+    std::array<std::byte, raw.size() * pair_a.size()> staging{};
+    const auto plan = marc::frame::plan_lz78_tans_frame(
+        stream_for(raw.size(), block_size), {}, {}, 0, 0, raw, entries,
+        staging);
+    ASSERT_EQ(plan.error, Lz78TansFrameValidationError::none);
+    ASSERT_EQ(plan.dictionary_size, 24U);
+    ASSERT_EQ(plan.block_count, 5U);
+
+    std::vector<std::byte> first(plan.serialized_size);
+    std::vector<std::byte> second(plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lz78_tans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, raw,
+                  entries, staging, first).error,
+              Lz78TansFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lz78_tans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, raw,
+                  entries, staging, second).error,
+              Lz78TansFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<marc::entropy::internal::TansBlockView, 5> views{};
+    std::array<std::byte, 24> decode_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lz78_tans_frame(
+                  stream_for(raw.size(), block_size), {}, {}, 0, 0, first,
+                  views, decode_staging, phrases, raw_staging,
+                  decoded).error,
+              Lz78TansFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(Lz78TansFrameEncoder, ShortSerializedOutputIsAtomic) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<marc::dictionary::internal::Lz78EncoderEntry, 1> entries{};
+    std::array<std::byte, pair_a.size()> staging{};
+    std::array<std::byte, 586> output{};
+    output.fill(std::byte{0xa5});
+    const auto result = marc::frame::encode_lz78_tans_frame(
+        stream_for(1), {}, {}, 0, 0, raw, entries, staging, output);
+    EXPECT_EQ(result.error,
+              Lz78TansFrameValidationError::serialized_output_too_small);
+    EXPECT_EQ(result.serialized_size, 587U);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+}

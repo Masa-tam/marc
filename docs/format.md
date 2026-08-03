@@ -5048,6 +5048,14 @@ plans each consecutive tANS block over that frozen staging. It accumulates
 exact `K`, `528K`, `P`, and `56 + 528K + P` extents with checked arithmetic,
 counts encoder records, tokens, descriptors, and payload against the aggregate
 workspace limit, and validates the resulting generic frame header. It writes
-no serialized header, descriptor, or payload byte. No complete-frame writer,
-streaming transform, profile calculator, C factory, CLI selector, benchmark,
-fuzzer, completion claim, or interoperability entry is defined yet.
+no serialized header, descriptor, or payload byte.
+
+The matching complete-frame writer runs that plan first and requires output
+capacity for the entire exact serialized extent before writing. It explicitly
+serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
+and then all `K` payloads in the same order. Each block is replanned over the
+unchanged token staging and must reproduce the planned payload size; any
+replanning discrepancy or final-offset mismatch is an internal error. A short
+destination leaves the complete output unchanged. No streaming transform,
+profile calculator, C factory, CLI selector, benchmark, fuzzer, completion
+claim, or interoperability entry is defined yet.

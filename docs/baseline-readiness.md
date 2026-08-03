@@ -142,8 +142,11 @@ caller publication. Transactional publication now admits the complete caller
 output before private mutation and copies the reconstructed frame exactly once.
 The encoder-side write-free planner now freezes canonical LZ78 tokens, plans
 every tANS block, counts all encoder workspace, and validates exact frame
-extents. The complete-frame writer and all later admission boundaries remain
-pending.
+extents. The complete-frame writer now admits the exact complete destination
+before output mutation, emits the explicit generic header followed by all
+descriptors and payloads, and requires repeated block plans and final offsets
+to equal the frozen plan. The known-size streaming encoder and all later
+admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

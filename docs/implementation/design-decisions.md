@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-573: LZ78 tANS writes only after exact complete-frame admission
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the deterministic complete-frame writer above DD-572. Invoke the exact
+plan first and require capacity for its entire serialized extent before
+writing any output byte. Then explicitly serialize the generic frame header,
+all fixed-size descriptors contiguously, and all payloads contiguously.
+
+Replan every block only over the frozen canonical token staging and require
+its payload size and the final token and payload offsets to equal the accepted
+plan. Treat any discrepancy as an internal error. Short serialized output is
+therefore rejected without mutation. This decision adds no streaming
+transform, public API, CLI, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
 ## DD-572: LZ78 tANS planning freezes canonical tokens once
 
 - Date: 2026-08-04

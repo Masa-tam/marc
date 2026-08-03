@@ -23,8 +23,12 @@ format versions, and C ABI versions are independent namespaces.
   caller output before any private mutation and publishes the reconstructed
   frame with one final copy. Its write-free planner freezes canonical LZ78
   tokens once, plans all tANS blocks, counts encoder records and byte regions,
-  and validates exact complete-frame extents without serialized output. No
-  frame writer or public profile is added yet.
+  and validates exact complete-frame extents without serialized output. Its
+  complete-frame writer admits the entire destination after that plan, emits
+  the explicit header, contiguous descriptors, and contiguous payloads, and
+  requires every repeated block plan and final offset to match. Short output
+  is rejected without mutation. No streaming encoder or public profile is
+  added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

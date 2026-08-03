@@ -3467,6 +3467,14 @@ from eight to seven, then restore it and lower the combined eight descriptors,
 sixteen state bytes, token bytes, and encoder-record workspace by one; require
 stable entropy-limit and aggregate-workspace errors respectively.
 
+For the LZ78 plus tANS complete-frame writer, encode raw `A` and compare all
+587 bytes with the independently reserved frame. Encode raw `ABAB` with a
+five-byte entropy block so multiple tANS boundaries split fixed eight-byte
+tokens; require two independent writes to be byte-identical and require the
+complete decoder to reconstruct the original four bytes. Finally provide only
+586 output bytes for the raw-`A` frame, initialize them to `A5`, and require
+the exact 587-byte need plus complete sentinel preservation.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

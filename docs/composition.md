@@ -43,8 +43,11 @@ then expands validated phrases iteratively without caller publication. Its
 transactional wrapper admits the complete caller output before private
 mutation and copies the reconstructed frame exactly once. Its write-free
 planner now freezes the canonical LZ78 token region, plans every tANS block,
-counts all encoder workspace, and validates exact complete-frame extents. No
-frame writer or public profile exists yet.
+counts all encoder workspace, and validates exact complete-frame extents. Its
+complete-frame writer admits the entire serialized destination after planning,
+then explicitly emits the header, all descriptors, and all payloads while
+requiring each repeated block plan and final offset to match. No streaming
+encoder or public profile exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS
