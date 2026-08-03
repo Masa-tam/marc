@@ -2045,6 +2045,26 @@ The four-direction artifact exchange at revision
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers, including
 byte-identical re-encoding in both platform directions.
 
+### Specified LZ78 plus tANS boundary
+
+The third tANS composition freezes the complete canonical LZ78 token byte
+stream before entropy processing. Every token is eight bytes, while tANS
+remains an untyped byte transform; a block may therefore split a token but may
+not cross the outer frame where the phrase dictionary and entropy tables both
+reset.
+
+For raw size `F`, token size `S`, entropy block size `B`, and
+`K = ceil(S/B)`, require nonzero eight-byte-aligned `S <= 8F`, exact `528K`
+descriptor bytes, and the checked blockwise tANS payload ceiling. The decoder
+must validate all entropy descriptors and state paths before reconstructing
+exactly `S` private bytes, then validate the complete LZ78 phrase graph and
+exact `F` expansion without caller-visible publication.
+
+The independent raw-`A` boundary fixes one Pair token, normalized frequencies
+`00:3584` and `41:512`, initial-state offset `0x046B`, four zero transition
+bits, payload `6B 04 00`, and a complete 587-byte frame. This is a format and
+vector reservation only; the bounded combined validator is the next boundary.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

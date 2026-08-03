@@ -9053,6 +9053,31 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-568: LZ78 tANS entropizes finalized fixed-width tokens
+
+- Date: 2026-08-04
+- Status: accepted
+
+Reserve `lz78-tans` for LZ78 variant 1 followed by tabled tANS variant 1.
+LZ78 must first finalize its complete canonical eight-byte Pair or FinalIndex
+sequence for one outer frame. tANS consumes that sequence as untyped bytes;
+therefore an entropy block may split a token but may not cross the frame
+boundary where both algorithms reset.
+
+For raw size `F`, token size `S`, nonzero block size `B`, and
+`K = ceil(S/B)`, require `0 < S <= 8F`, `S mod 8 = 0`, exact descriptor
+extent `528K`, and the checked sum of per-block payload ceilings
+`Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`. Decode all tANS blocks into
+private staging before validating token tags, reserved fields, phrase
+references, final-token placement, or exact expansion.
+
+Independently fix raw `A` as token bytes `00 41 00 00 00 00 00 00`, normalized
+frequencies `00:3584` and `41:512`, tANS initial-state offset `0x046B`, four
+zero transition bits, payload `6B 04 00`, and one complete 587-byte frame.
+This decision reserves the representation and vector only; it adds no combined
+validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
 ## DD-567: Interoperability schema 27 appends LZSS tANS
 
 - Date: 2026-08-03

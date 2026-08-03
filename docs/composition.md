@@ -21,10 +21,21 @@ public format or API guarantee yet.
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
-| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
+| LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Specified |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
+
+`lz78-tans` is the third tANS composition with a reserved representation.
+LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS
+block coding. A block may split a record but cannot cross an outer frame. For
+raw frame size `F`, require aligned token size `S <= 8F`,
+`K = ceil(S/B)`, exact `528K` descriptor bytes, and the checked sum of
+per-block `2 + ceil(12n/8)` payload ceilings. Decoding must validate and
+reconstruct every tANS block privately before checking token alignment,
+phrase references, the final-token rule, and exact raw extent. The independent
+raw-`A` vector fixes a 587-byte frame with payload `6B 04 00`. No combined
+validator or public profile exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

@@ -126,8 +126,17 @@ kept separate because it requires artifacts produced outside the local build.
 
 ## Composed-profile admission queue
 
-`lzss-tans` is the current admission composition. DD-553 fixes complete
-LZSS token serialization before tANS, permits entropy blocks to split the
+`lz78-tans` is the current admission composition. Its reserved boundary fixes
+complete aligned eight-byte LZ78 token serialization before tANS, permits
+entropy blocks to split a token without crossing a frame, and requires full
+private entropy reconstruction before phrase-graph validation. Its bounds are
+`S <= 8F`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked sum of
+per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A` frame is
+587 bytes with payload `6B 04 00`. The combined validator and all later
+admission boundaries remain pending.
+
+`lzss-tans` is the completed preceding admission composition. DD-553 fixes
+complete LZSS token serialization before tANS, permits entropy blocks to split the
 two- or nine-byte token grammar without crossing a frame, and requires full
 private token reconstruction before dictionary validation. Its bounds are
 `S <= 2F`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked sum of

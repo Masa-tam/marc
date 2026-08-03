@@ -4773,10 +4773,6 @@ fields, report three caller-owned regions as byte counts plus alignment, and
 construct the existing streaming encoder or decoder without serializing ABI
 structures.
 
-Interoperability schema 27 emits this unchanged profile as `lzss-tans` after
-the frozen thirty-seven-entry schema-26 order. The schema changes only bundle
-membership and does not define a new stream representation.
-
 Interoperability schema 26 emits this unchanged profile as `lz77-tans` after
 the frozen thirty-six-entry schema-25 order. The schema adds no alternate
 stream representation or parameter set.
@@ -4945,3 +4941,78 @@ They expose the same known-size parameters and local limits through fixed-width
 fields, report three caller-owned regions as byte counts plus alignment, and
 construct the existing streaming encoder or decoder without serializing ABI
 structures.
+
+Interoperability schema 27 emits this unchanged profile as `lzss-tans` after
+the frozen thirty-seven-entry schema-26 order. The schema changes only bundle
+membership and does not define a new stream representation.
+
+## LZ78 variant 1 plus tANS variant 1
+
+The reserved composition name is `lz78-tans`. Format version 1.0 uses the
+ordinary 16-byte LZ78 variant-1 parameter extension, no entropy-parameter
+extension, and a nonzero stream entropy block size `B`. Both the LZ78 phrase
+dictionary and every tANS model and automaton reset at each outer frame.
+
+For a nonempty raw frame of `F` bytes, LZ78 first emits its complete canonical
+eight-byte token sequence. Let its exact byte size be `S`; require
+`0 < S <= 8F` and `S mod 8 = 0`. tANS consumes this sequence as untyped bytes
+and divides it into `K = ceil(S/B)` consecutive blocks. The final block may be
+short, and a block boundary may split a Pair or FinalIndex token. No tANS block
+crosses an outer frame.
+
+The generic frame fields are:
+
+- `uncompressed size = F`;
+- `dictionary serialized size = S`;
+- `entropy block count = K`;
+- `block descriptors size = 528K`;
+- `compressed payload size = P`, the checked sum of all block payload sizes.
+
+For a block containing `n` symbols, require payload size at most
+`Q(n) = 2 + ceil(12n/8)`. For `R = S mod B`, require the complete checked
+bound `P <= floor(S/B) * Q(B) + (R == 0 ? 0 : Q(R))`. Retain the LZ78 raw
+frame cap `F <= 2^20`. Check every product, ceiling operation, and sum before
+allocation or entropy decoding.
+
+Decoding validates the stream profile and LZ78 parameters, generic header and
+complete frame extent, exact block count and descriptor extent, then every
+tANS model, spread and transition table, initial state, bit path, terminal
+state, padding, and exact aggregate payload exhaustion. Only after all blocks
+succeed may it reconstruct exactly `S` private token bytes. It then requires
+eight-byte alignment and validates every Pair or FinalIndex, phrase reference,
+dictionary-growth rule, final-token rule, and exact declared raw extent before
+private raw reconstruction or caller-visible publication.
+
+For raw `A`, LZ78 emits:
+
+```text
+00 41 00 00 00 00 00 00
+```
+
+With `B = 65,536`, this is one tANS block whose only nonzero normalized
+frequencies are symbols `00:3584` and `41:512`. Applying the documented spread
+and reverse state recurrence yields initial state offset `0x046B`, four zero
+transition bits, and payload:
+
+```text
+6B 04 00
+```
+
+The complete frame is 587 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00 03 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`08 00 00 00 03 00 00 00 0C 04 00 00 00 00 00 00`.
+The 512-byte frequency region is zero except descriptor offsets 16..17
+(`00 0E`) and 146..147 (`00 02`). The three payload bytes immediately follow
+the descriptor. This sparse notation uniquely defines all 587 bytes.
+
+This reservation defines no combined validator, decoder, encoder, streaming
+transform, profile calculator, C factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry.

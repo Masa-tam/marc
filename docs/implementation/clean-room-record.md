@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS representation and vector reservation
+
+- Authoring method: composed marc's already specified fixed-width LZ78 token
+  representation with its independently implemented tabled tANS block format.
+- References used: DD-568, the local LZ78 token encoder and vectors, local tANS
+  normalization, table construction, reverse recurrence, descriptor
+  serializer, generic frame serializer, and checked block bounds.
+- Known implementations intentionally not consulted: external combined
+  codecs, encoded corpora, source code, stream formats, test vectors, and test
+  suites.
+- Independent decisions: finalize all LZ78 tokens before entropy coding;
+  permit entropy blocks to split tokens but not frames; require eight-byte
+  alignment before phrase validation; retain the checked `8F` token ceiling;
+  and fix raw `A` as a sparse complete-frame vector.
+- Generated-code task description: reserve the exact LZ78+tANS representation,
+  derive one hand-checkable raw-`A` vector, add a component-composition test,
+  and synchronize architecture, format, readiness, composition, changelog,
+  decision, reference, vector-generation, and provenance records.
+- Similarity review: the representation is a direct bounded composition of
+  repository-owned formats. No external byte sequence, state table, control
+  flow, capacity formula, naming scheme, or test expression was compared.
+- Local validation: the independent 587-byte vector passed under MSVC and
+  ClangCL. The complete Release CTest suite passed 2,156/2,156 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-03 - Interoperability schema 27 appends LZSS plus tANS
 
 - Authoring method: extended marc's append-only local bundle schema by one

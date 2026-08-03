@@ -3402,6 +3402,19 @@ the first two manifest entries. Derive schema 26 by removing only
 `lzss-tans.marc` and changing only version and codec set, then verify schemas
 1 through 26 unchanged.
 
+For the LZ78 plus tANS reservation, encode raw `A` with the existing canonical
+LZ78 token rules and independently require exactly
+`00 41 00 00 00 00 00 00`. Count seven `00` bytes and one `41`, then apply
+the documented deterministic normalization to require frequencies `3584` and
+`512`. Build the table using spread step 2563 and apply the reverse-state
+recurrence to the fixed token bytes; require initial-state offset `0x046B`,
+four zero transition bits, payload `6B 04 00`, and final-valid-bits value 4.
+
+Serialize one frame with raw size 1, dictionary size 8, payload size 3, one
+528-byte descriptor, and no hashes. Compare all 587 bytes with the sparse
+header, descriptor, frequency, and payload definition in `docs/format.md`.
+This test fixes the representation before a combined validator exists.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving
