@@ -3386,6 +3386,13 @@ second encode to the existing destination. Decode `not-a-marc-stream` and a
 valid archive with one appended `x`; both must fail while leaving neither the
 destination nor its `.tmp` sibling. Finally round-trip an empty file.
 
+For the LZSS plus tANS benchmark smoke, select `lzss-tans`, use repository
+`README.md` as input, and request one iteration. Require an untimed public-C
+encode/decode equality check before timing and output fields for selector,
+input and encoded sizes, ratio, both directional times and throughputs, all six
+queried workspace extents, and peak workspace. Do not impose a speed or
+compression-ratio threshold.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

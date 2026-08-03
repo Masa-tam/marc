@@ -21,6 +21,7 @@ marc_benchmark lzss-blocked-huffman corpus.bin 5
 marc_benchmark lzss-adaptive-huffman corpus.bin 5
 marc_benchmark lzss-dynamic-range corpus.bin 5
 marc_benchmark lzss-rans corpus.bin 5
+marc_benchmark lzss-tans corpus.bin 5
 marc_benchmark lz78 corpus.bin 5
 marc_benchmark lz78-blocked-huffman corpus.bin 5
 marc_benchmark lz78-adaptive-huffman corpus.bin 5
@@ -170,6 +171,16 @@ byte-exact round trip succeeds before either direction is timed. A
 one-iteration MSVC Release smoke over the 4,520-byte README encoded 3,819
 bytes, ratio 0.845, and reported 722,008 bytes of peak caller-reserved
 workspace; throughput from that small input is descriptive only.
+
+`lzss-tans` uses the CLI's 65,536-byte raw frame and 65,536-byte entropy
+block. Capacity planning reserves at most three tANS transition bytes per raw
+byte and two tANS blocks per frame. Complete-stream storage is bounded by
+`80 + 3N + 1116K`, where `N` is raw input bytes and `K` is the nonempty frame
+count; 1,116 bytes covers one generic header, two 528-byte descriptors, and
+two two-byte final states. Both directional workspaces and opaque view
+alignment come from the public C ABI. A byte-exact round trip succeeds before
+either direction is timed; speed and ratio remain descriptive rather than
+test thresholds.
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 and at most 65,536 LZ78 phrase entries. Capacity planning uses the exact

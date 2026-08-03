@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-566: LZSS tANS benchmark verifies before measuring
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add `lzss-tans` to the dependency-free benchmark through only the public C
+requirements, factory, process, and destroy lifecycle. Reuse DD-565's 65,536-
+byte raw frame and entropy block, 131,072-byte token ceiling, two tANS blocks,
+1,056 descriptor bytes, 196,612-byte payload ceiling, and conservative
+512-KiB internal policy.
+
+Size the complete encoded destination as the 80-byte prefix plus at most three
+transition bytes per raw byte and, for each nonempty frame, one 56-byte header,
+two 528-byte descriptors, and two two-byte states. Query encoder and decoder
+workspaces independently, prove byte-exact round trip before timing, and create
+each transform outside the elapsed interval. Report ratio, direction-specific
+time and throughput, all six workspace extents, and peak caller workspace.
+This changes no format or ABI and adds no interoperability entry or local
+`Ready` claim.
+
 ## DD-565: LZSS tANS CLI admission uses only the public profile
 
 - Date: 2026-08-03

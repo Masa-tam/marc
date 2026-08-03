@@ -118,8 +118,9 @@ Its bounded dual-decoder fuzz target fixes every byte and metadata workspace,
 derives chunking from bounded input, and retains atomic truncation, extreme
 length, and invalid-descriptor regressions. Its explicit CLI selector uses only
 the public C lifecycle with 64-KiB raw frames and entropy blocks and
-transactional file publication. There is no benchmark, local readiness claim,
-or interoperability entry yet.
+transactional file publication. Its dependency-free benchmark uses that same
+public lifecycle and verifies an exact round trip before timing. There is no
+local readiness claim or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

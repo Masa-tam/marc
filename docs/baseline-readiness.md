@@ -122,7 +122,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-tans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
+| `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -160,7 +160,9 @@ chunk schedules, and a finite call ceiling; permanent regressions cover every
 canonical truncation, impossible frame extents, and an invalid descriptor.
 Its explicit CLI selector now uses only the public requirements, factory,
 process, and destroy lifecycle with transactional output publication. The
-benchmark adapter is the next boundary.
+dependency-free benchmark now verifies an exact public-C round trip before
+timing and reports all directional workspace regions. Interoperability schema
+27 is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

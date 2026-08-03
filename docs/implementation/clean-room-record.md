@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS public benchmark
+
+- Authoring method: extended marc's dependency-free verified measurement
+  harness by the admitted fixed LZSS+tANS public profile.
+- References used: DD-566, DD-565's bounds, the public
+  `marc_lzss_tans_*` lifecycle, checked capacity arithmetic, and existing
+  timing/reporting conventions.
+- Known implementations intentionally not consulted: external benchmarks,
+  LZSS/tANS tools, workspace layouts, formulas, fixtures, source, or results.
+- Independent decisions: reuse the CLI profile; prove an untimed exact round
+  trip; keep transform creation outside timing; and report all queried regions
+  and peak caller workspace without performance thresholds.
+- Generated-code task description: add benchmark selection, public config/query
+  and factory dispatch, encoded-capacity bounds, one smoke, and synchronized
+  benchmark/readiness/provenance documentation.
+- Similarity review: the adapter follows only marc's public ABI and local
+  measurement structure. No external control flow, formula, naming, fixture,
+  capacity, or reporting expression was compared.
+- Local validation: the focused benchmark smoke and direct reporting run
+  passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,155/2,155 under both compilers using official CMake 4.3.4; all 38 benchmark
+  smokes, documentation layout, and schema-26 compatibility remained
+  successful.
+
 ## 2026-08-03 - LZSS plus tANS CLI selector
 
 - Authoring method: extended marc's existing selector dispatch and

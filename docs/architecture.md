@@ -1913,6 +1913,14 @@ policy. Directional workspace extents and view alignment still come from the
 requirements query. The shared temporary-file transaction prevents malformed
 or trailing input from publishing an output file.
 
+The benchmark adapter uses the same fixed profile and public C lifecycle.
+Encoded-capacity planning includes the 80-byte prefix, three transition bytes
+per raw byte, and a header plus two tANS descriptor/state pairs for every
+nonempty frame. An untimed exact round trip gates measurement; transform
+construction stays outside timed intervals, while direction-specific
+workspace regions and their peak total are reported from the requirements
+queries.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

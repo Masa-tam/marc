@@ -39,7 +39,9 @@ format versions, and C ABI versions are independent namespaces.
   lengths, and an invalid descriptor. Its explicit `lzss-tans` CLI selector
   now uses only the public C ABI with fixed 64-KiB raw frames and tANS blocks,
   conservative 512-KiB internal policy, and transactional file publication.
-  The profile is not yet locally ready.
+  Its dependency-free benchmark now verifies a byte-exact public-C round trip
+  before timing and reports ratio, directional throughput, all six workspace
+  extents, and peak caller workspace. The profile is not yet locally ready.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

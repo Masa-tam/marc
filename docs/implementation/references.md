@@ -1636,6 +1636,11 @@ marc's existing transactional file adapter and fixture. No external CLI,
 wrapper, private workspace layout, archive, source code, or integration test
 was consulted.
 
+The LZSS plus tANS benchmark adapter uses only DD-566, DD-565's fixed public
+profile, the `marc_lzss_tans_*` lifecycle, checked local capacity arithmetic,
+and marc's existing verified measurement loop. No external benchmark harness,
+workspace layout, formula, fixture, source code, or result was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
