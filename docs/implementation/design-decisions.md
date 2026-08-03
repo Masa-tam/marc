@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-574: LZ78 tANS streaming encode drains immutable frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-573. Emit the ordinary
+64-byte stream header and 16-byte LZ78 parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete token
+and serialized representation through the exact writer, and drain that
+immutable frame before reusing any workspace.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `8F` token staging, encoder records, and prefix
+serialization. Before each frame, count raw collection, exact token staging,
+encoder records, and exact serialized frame under one aggregate limit. Input
+and output capacities may be one byte. `Flush` does not close a partial frame;
+`EndInput` remains latched while prefix or frame bytes drain; full frames may
+drain before finish. `ResetBlock`, unknown flags, premature end, excess input,
+and insufficient workspace are sticky errors. This decision adds no streaming
+decoder, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
 ## DD-573: LZ78 tANS writes only after exact complete-frame admission
 
 - Date: 2026-08-04

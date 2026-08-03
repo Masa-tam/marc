@@ -27,8 +27,11 @@ format versions, and C ABI versions are independent namespaces.
   complete-frame writer admits the entire destination after that plan, emits
   the explicit header, contiguous descriptors, and contiguous payloads, and
   requires every repeated block plan and final offset to match. Short output
-  is rejected without mutation. No streaming encoder or public profile is
-  added yet.
+  is rejected without mutation. Its bounded known-size streaming encoder now
+  emits the ordinary 80-byte prefix, buffers at most one raw frame, canonical
+  token region, and encoded frame, and preserves exact bytes with one-byte
+  input/output, nonterminal `Flush`, and latched `EndInput`. No streaming
+  decoder or public profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

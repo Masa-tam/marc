@@ -5056,6 +5056,14 @@ serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
 and then all `K` payloads in the same order. Each block is replanned over the
 unchanged token staging and must reproduce the planned payload size; any
 replanning discrepancy or final-offset mismatch is an internal error. A short
-destination leaves the complete output unchanged. No streaming transform,
-profile calculator, C factory, CLI selector, benchmark, fuzzer, completion
-claim, or interoperability entry is defined yet.
+destination leaves the complete output unchanged.
+
+The internal known-size streaming encoder changes no representation. It emits
+the ordinary 64-byte stream header and 16-byte LZ78 parameter extension, then
+the complete frames above in sequence. It buffers no more than one raw frame,
+one canonical token region, one encoder-record workspace, and one serialized
+frame in caller-owned storage. Arbitrary input/output chunking and nonterminal
+`Flush` do not change encoded bytes; `EndInput` remains latched while final
+prefix or frame bytes drain. No streaming decoder, profile calculator, C
+factory, CLI selector, benchmark, fuzzer, completion claim, or interoperability
+entry is defined yet.

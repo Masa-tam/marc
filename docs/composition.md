@@ -46,8 +46,11 @@ planner now freezes the canonical LZ78 token region, plans every tANS block,
 counts all encoder workspace, and validates exact complete-frame extents. Its
 complete-frame writer admits the entire serialized destination after planning,
 then explicitly emits the header, all descriptors, and all payloads while
-requiring each repeated block plan and final offset to match. No streaming
-encoder or public profile exists yet.
+requiring each repeated block plan and final offset to match. Its bounded
+known-size streaming encoder emits the ordinary prefix, retains one raw,
+canonical-token, and encoded frame in caller-owned storage, and drains each
+complete immutable frame before reuse. No streaming decoder or public profile
+exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

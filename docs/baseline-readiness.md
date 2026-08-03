@@ -145,8 +145,12 @@ every tANS block, counts all encoder workspace, and validates exact frame
 extents. The complete-frame writer now admits the exact complete destination
 before output mutation, emits the explicit generic header followed by all
 descriptors and payloads, and requires repeated block plans and final offsets
-to equal the frozen plan. The known-size streaming encoder and all later
-admission boundaries remain pending.
+to equal the frozen plan. The bounded known-size streaming encoder now drains
+the ordinary 80-byte prefix, collects exactly one configured raw frame,
+prepares it completely, and drains immutable bytes before workspace reuse.
+One-byte capacities, nonterminal `Flush`, latched `EndInput`, and sticky
+protocol and workspace failures are covered. The streaming decoder and all
+later admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

@@ -2106,6 +2106,15 @@ is replanned only over the unchanged token staging and must reproduce its
 planned payload size; final token and payload offsets must also match. Planner
 and capacity failures therefore publish no serialized byte.
 
+The bounded known-size streaming encoder adds only collection and immutable
+drain state above that writer. It emits the ordinary 80-byte stream prefix,
+collects one configured raw frame in caller-owned storage, prepares the entire
+canonical token and encoded frame, and drains it before any workspace reuse.
+Input and output capacities may be one byte. `Flush` leaves a partial frame
+open, while a final `EndInput` remains latched across prefix and frame output
+starvation. Empty known-size input emits only the prefix; reset, unknown flags,
+premature end, excess input, and insufficient storage become sticky errors.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

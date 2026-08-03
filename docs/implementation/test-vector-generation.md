@@ -3475,6 +3475,19 @@ complete decoder to reconstruct the original four bytes. Finally provide only
 586 output bytes for the raw-`A` frame, initialize them to `A5`, and require
 the exact 587-byte need plus complete sentinel preservation.
 
+For the LZ78 plus tANS bounded streaming encoder, independently build the
+80-byte prefix and concatenate exact complete-frame encodings for raw `AB`,
+`AB`, and final `X`. Feed input and output one byte at a time and require exact
+byte equality with that reference and stable repeated end status. Submit all
+input with `EndInput` while prefix and frames drain and require the same bytes.
+
+Submit one raw byte with nonterminal `Flush`; require only the prefix and keep
+the partial frame open. Then submit the remainder with `EndInput` and require
+the unchanged reference. Exercise empty known-size input, short raw, token,
+encoder-record, and encoded-frame storage, aggregate workspace one byte short,
+premature end, excess input, `ResetBlock`, and an unknown flag. Every error is
+sticky and every result must satisfy the no-zero-progress contract.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

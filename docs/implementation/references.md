@@ -1683,6 +1683,12 @@ descriptor serializer and block encoder, checked offsets, and caller-owned
 output. No external combined writer, serialization schedule, buffering layout,
 encoded corpus, source code, or test suite was consulted.
 
+The LZ78 plus tANS known-size streaming encoder uses only DD-574, DD-573's
+exact complete-frame writer, local stream and LZ78 parameter serializers,
+checked arithmetic, caller-owned workspaces, and marc's process-result
+contract. No external streaming encoder, state machine, buffering layout,
+chunk schedule, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
