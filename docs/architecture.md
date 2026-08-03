@@ -1889,6 +1889,13 @@ private raw staging and casts the separately aligned views region only inside
 the C++ implementation. Construction revalidates the profile and publishes no
 handle on any configuration, capacity, or alignment failure.
 
+The public-ABI completion boundary treats that C lifecycle as the system under
+test. It covers required binary classes, repeated deterministic encoding,
+one-byte and mixed chunk schedules, sticky terminal results, and four-frame
+decode failures. Corruption, truncation, or trailing data in the final frame
+preserves the first three committed frames and exposes no byte from the
+failing frame.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

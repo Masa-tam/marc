@@ -63,6 +63,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
 | `lz77-tans` | First tANS composition | Ready | Included |
+| `lzss-tans` | Second tANS composition | In progress | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 26 contains thirty-seven archives: the frozen thirty-six-entry schema-25
@@ -121,6 +122,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzss-tans` | Yes | Yes | Yes | No | No | No | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -152,7 +154,9 @@ Its internal profile calculator now derives canonical stream fields and every
 encoder and decoder workspace from known input configuration or local hard
 limits. Its public C requirements query and factory now expose both directions
 through three opaque borrowed regions while keeping tANS view layout private.
-The public-ABI completion matrix is the next boundary.
+Its public-ABI completion matrix now covers required data classes,
+deterministic chunking, sticky terminals, and malformed-final-frame atomicity.
+Bounded decoder fuzzing is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

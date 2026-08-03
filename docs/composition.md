@@ -111,8 +111,10 @@ into private raw staging, and publishes only after all tANS and LZSS validation
 succeeds. Its internal profile calculator derives encoder regions from known
 input configuration and decoder regions solely from local hard limits. Its
 public C requirements query and factory bind those regions to the common
-transform lifecycle without exposing private tANS views. There is no completion
-matrix, CLI selector, benchmark, fuzzer, completion claim, or interoperability
+transform lifecycle without exposing private tANS views. Its public-ABI
+completion matrix proves required data classes, deterministic arbitrary
+chunking, sticky terminals, and malformed-final-frame atomicity. There is no
+CLI selector, benchmark, fuzzer, local readiness claim, or interoperability
 entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved

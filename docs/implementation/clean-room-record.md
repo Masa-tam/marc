@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS public-ABI completion matrix
+
+- Authoring method: exercised the published marc C lifecycle as the sole codec
+  boundary and derived all inputs and mutations independently.
+- References used: DD-563, DD-562, the public C header, deterministic local
+  byte generator, and generic frame-header offsets.
+- Known implementations intentionally not consulted: external conformance
+  suites, combined codec tests, corpora, malformed archives, source code, and
+  test vectors.
+- Independent decisions: cover required binary classes and frame boundaries;
+  compare repeated and chunked encoding byte-for-byte; corrupt only the final
+  frame after three commits; and require sticky error positions.
+- Generated-code task description: add public-lifecycle determinism,
+  chunk-boundary, round-trip, terminal, malformed-final-frame, truncation, and
+  trailing-data coverage; update readiness and provenance.
+- Similarity review: the suite composes only repository public calls, local
+  generators, and documented parser offsets. No external schedule, mutation,
+  corpus, naming, or test expression was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,150/2,150
+  under both compilers using official CMake 4.3.4; all 37 benchmark smokes and
+  schema-26 compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS public C ABI
 
 - Authoring method: connected DD-561's existing bounded streaming pair to

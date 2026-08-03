@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-563: LZSS tANS completion is proven through the public ABI
+
+- Date: 2026-08-03
+- Status: accepted
+
+Exercise the completed `marc_lzss_tans_*` lifecycle without constructing any
+private codec object. Cover empty input, every one-byte value, all byte values,
+repeated bytes, repeated binary patterns, deterministic generated data, and
+lengths immediately around frame boundaries. Repeated encoding and varied
+input/output chunking must produce identical streams and exact round trips.
+
+For a four-frame stream, corrupt the final frame header, truncate its final
+byte, and append trailing data independently. Decoding must commit exactly the
+first three frames, leave the final output sentinel unchanged, and return the
+same sticky error category and position on repeated calls. This step adds no
+fuzz target, CLI selector, benchmark, local `Ready` claim, or interoperability
+entry.
+
 ## DD-562: LZSS tANS C admission preserves opaque tANS views
 
 - Date: 2026-08-03

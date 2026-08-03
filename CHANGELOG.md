@@ -31,7 +31,9 @@ format versions, and C ABI versions are independent namespaces.
   conservative encoder storage and hard-limit-only decoder storage without
   exposing private tANS view layouts. Its public C requirements query and
   factory now bind both streaming directions through three opaque caller-owned
-  regions. The reservation is not yet a completed public codec profile.
+  regions. Its public-ABI completion matrix now proves required binary classes,
+  deterministic arbitrary chunking, sticky terminals, and atomic rejection of
+  a malformed final frame. The profile is not yet locally ready.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
