@@ -55,7 +55,9 @@ complete LZ78 phrase graph, reconstructs into private raw staging, and only
 then drains caller-visible output. Its internal profile calculator derives all
 encoder and decoder byte regions, encoder-record counts, block-view counts,
 phrase counts, and aligned opaque partitions from checked configuration and
-hard limits. No public C profile exists yet.
+hard limits. Its public C profile now exposes one size-tagged config,
+direction-specific requirements query, and factory over the same three-region
+workspace contract. No CLI selector exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

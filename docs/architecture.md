@@ -2133,6 +2133,15 @@ and contain encoded-frame, token, private-raw, tANS-view, and LZ78-phrase
 capacities. The mixed view region is explicitly aligned and partitioned into
 typed spans only after size, offset, and alignment validation.
 
+The public C adapter preserves this boundary through
+`marc_lz78_tans_config`, a direction-specific requirements query, and one
+factory. Encoding partitions secondary storage after token staging and casts
+the aligned encoder-record region only after validation. Decoding partitions
+secondary storage before private raw staging and divides the aligned opaque
+region into tANS block views and LZ78 phrase records. Construction revalidates
+the profile and publishes no handle on any configuration, capacity, reserved-
+field, or alignment failure.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

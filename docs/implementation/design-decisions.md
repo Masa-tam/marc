@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-577: LZ78 tANS C factory preserves exact workspace boundaries
+
+- Date: 2026-08-04
+- Status: accepted
+
+Expose a size-tagged `marc_lz78_tans_config`, initializer, direction-specific
+workspace requirements query, and factory without changing the ABI version or
+any existing structure. The config carries known original size, raw frame and
+entropy block sizes, LZ78 entry bound, and every local hard limit required by
+DD-576.
+
+Map encoder requirements to raw primary storage, token-plus-encoded secondary
+storage, and aligned encoder-record views. Map decoder requirements to encoded-
+frame primary storage, token-plus-private-raw secondary storage, and one aligned
+tANS-view-plus-LZ78-phrase region. Revalidate configuration, exact capacity,
+reserved fields, and alignment before typed partition or allocation; publish no
+handle on failure. Exercise the lifecycle from a C11 translation unit. This
+decision adds no CLI, benchmark, fuzzer, completion claim, or interoperability
+entry.
+
 ## DD-576: LZ78 tANS profile derives every bounded workspace
 
 - Date: 2026-08-04

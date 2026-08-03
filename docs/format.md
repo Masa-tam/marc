@@ -5084,5 +5084,15 @@ encoder records, where `Q(n) = 2 + ceil(12n/8)`. Decoder requirements are
 derived only from local hard limits and report encoded-frame, token, private-
 raw, tANS-view, and LZ78-phrase capacities. Typed block and phrase spans are
 formed only after validating the opaque region's exact layout and alignment.
-No C factory, CLI selector, benchmark, fuzzer, completion claim, or
-interoperability entry is defined yet.
+
+The public C ABI exposes this unchanged profile through
+`marc_lz78_tans_config_init()`,
+`marc_lz78_tans_workspace_requirements()`, and
+`marc_lz78_tans_create()`. Encoding requires known original size and reports
+raw collection as primary storage, token staging followed by encoded-frame
+storage as secondary, and aligned encoder records as views. Decoding derives
+requirements only from local hard limits and reports encoded-frame primary
+storage, token followed by private-raw secondary storage, and one aligned tANS-
+view-plus-LZ78-phrase region. Short or misaligned storage and nonzero reserved
+fields are rejected before a handle is published. No CLI selector, benchmark,
+fuzzer, completion claim, or interoperability entry is defined yet.

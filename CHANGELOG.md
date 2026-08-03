@@ -37,7 +37,10 @@ format versions, and C ABI versions are independent namespaces.
   cannot publish bytes from the failing frame. Its internal profile calculator
   now derives encoder raw/token/frame/record regions and decoder frame/token/
   raw/view/phrase regions with checked tANS ceilings, and partitions mixed
-  opaque views at their natural alignment. No public C profile is added yet.
+  opaque views at their natural alignment. The public C ABI now exposes a
+  size-tagged config, direction-specific requirements query, and factory over
+  those exact three workspace regions; short, misaligned, or reserved-field
+  inputs publish no handle. No CLI selector is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

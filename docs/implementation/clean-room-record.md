@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS public C requirements and factory
+
+- Authoring method: mapped DD-576's internal direction-specific requirements
+  and aligned partitions into marc's existing size-tagged C transform lifecycle.
+- References used: DD-577, DD-576, the local opaque transform adapter, stable C
+  status mapping, non-throwing allocation, and three-region workspace policy.
+- Known implementations intentionally not consulted: external C wrappers, ABI
+  layouts, allocation policies, bindings, source code, and test suites.
+- Independent decisions: add a new structure without altering existing ABI
+  objects; require exact size/version/reserved fields; expose direction-specific
+  capacities and alignment; revalidate before typed partition; and publish no
+  handle on any failure.
+- Generated-code task description: add the public config, initializer,
+  requirements query, factory, C11 round trip, short and misaligned workspace,
+  null output, and reserved-field tests; update CMake and all public and
+  provenance documentation.
+- Similarity review: the adapter follows only repository-owned profile and C
+  ABI conventions. No external symbol set, layout, control flow, naming scheme,
+  or test expression was compared.
+- Local validation: the public C11 lifecycle passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,201/2,201 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, public-header checks, and documentation layout
+  remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS internal profile calculator
 
 - Authoring method: derived bounded direction-specific workspace formulae from

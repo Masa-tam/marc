@@ -156,7 +156,9 @@ success. A malformed later frame cannot expose its output. The profile
 calculator now derives bounded encoder and decoder regions from validated
 configuration and hard limits, including aligned mixed tANS-view and LZ78-
 phrase storage; its results directly construct the streaming round trip. The C
-factory and all later admission boundaries remain pending.
+ABI now exposes the size-tagged config, direction-specific requirements query,
+and factory while preserving exact workspace and alignment validation. The CLI
+selector and all later admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

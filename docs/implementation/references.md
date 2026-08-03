@@ -1701,6 +1701,12 @@ ceilings, LZ78 record and phrase rules, checked arithmetic, and C++ alignment
 requirements. No external profile formula, allocator layout, source code,
 workspace API, or test suite was consulted.
 
+The LZ78 plus tANS public C requirements and factory use only DD-577, DD-576's
+internal requirements and partitions, marc's existing size-tagged C ABI,
+non-throwing transform allocation, stable status mapping, and caller-owned
+three-region convention. No external C wrapper, ABI layout, allocation policy,
+source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

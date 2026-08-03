@@ -3517,6 +3517,19 @@ or offsets, shorten storage, and misalign where possible; require rejection
 before typed-span publication. Finally construct both streaming directions
 solely from reported requirements and round-trip exact `ABABX`.
 
+For the LZ78 plus tANS C ABI, initialize encoding for raw `ABABX`, set raw
+frames to two bytes, entropy blocks to five bytes, and small explicit limits.
+Require primary size two, secondary size 2,218, nonzero aligned encoder views,
+and a complete encode through the opaque transform. Reinitialize decoding
+under the same hard limits; require primary size 8,248, secondary size 21, and
+aligned mixed views, then reconstruct all five bytes exactly.
+
+Shorten primary, secondary, and views independently and misalign the opaque
+region where alignment exceeds one; every factory call must reject without
+publishing a handle. Also reject a null handle destination and a nonzero
+reserved field through the requirements query. Compile and execute the test as
+C11 against the public installed-style header only.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

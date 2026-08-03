@@ -7,7 +7,8 @@ profiles, the LZ77 plus rANS and LZ77 plus tANS profiles, LZSS variant 1, the LZ
 Huffman and LZSS plus Adaptive Huffman profiles, and the LZSS plus Dynamic
 Range, LZSS plus rANS, and LZSS plus tANS profiles,
 LZ78 variant 1, the LZ78 plus Blocked Huffman, LZ78 plus Adaptive Huffman, and
-LZ78 plus Dynamic Range and LZ78 plus rANS profiles, LZW variant 1, the LZW
+LZ78 plus Dynamic Range, LZ78 plus rANS, and LZ78 plus tANS profiles, LZW
+variant 1, the LZW
 plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, LZD plus Dynamic
@@ -34,6 +35,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lz78_blocked_huffman_*`, `marc_lz78_adaptive_huffman_*`,
 `marc_lz78_dynamic_range_*`,
 `marc_lz78_rans_*`,
+`marc_lz78_tans_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzw_dynamic_range_*`, `marc_lzw_rans_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
@@ -269,6 +271,16 @@ followed by LZ78 phrase records. Call
 known original size, either block dimension, maximum entries, or any hard
 limit. Because entropy blocks operate on expanded token bytes, a local
 `max_frame_size` must also admit the configured entropy block size.
+The LZ78 plus tANS factory uses the same three-region contract with tANS block
+views in the decoder's aligned opaque region. Encoding uses primary for raw
+frame collection, secondary for canonical LZ78 tokens followed by the complete
+tANS frame, and aligned views for encoder records. Decoding uses primary for
+the encoded frame, secondary for token staging followed by private raw staging,
+and aligned views for tANS block views followed by LZ78 phrase records. Call
+`marc_lz78_tans_workspace_requirements()` again after changing direction,
+known original size, either block dimension, maximum entries, or any hard
+limit. The factory rejects short or misaligned regions and publishes no handle
+on failure.
 LZW uses the same opaque aligned-workspace convention. Its encoder requirements
 use the configured maximum code width and frame size; decoder requirements use
 only trusted local limits and conservatively cover any permitted serialized
