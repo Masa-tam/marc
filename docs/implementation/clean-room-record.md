@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS public-ABI completion
+
+- Authoring method: applied marc's established public completion categories to
+  the already published LZ78+tANS C lifecycle and fixed format.
+- References used: DD-581, DD-577, local deterministic fixture generation,
+  public process-result semantics, and frame-transactional decode behavior.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  completion suites, encoded vectors, chunk schedules, malformed corpora,
+  source code, or tests.
+- Independent decisions: use 64-byte raw and entropy boundaries; cover every
+  one-byte value and required binary classes; compare whole, `1/1`, `7/5`, and
+  `13/17` schedules; and corrupt, truncate, or extend only the fourth frame.
+- Generated-code task description: add a public-C completion suite for data
+  classes, determinism, chunking, repeated terminal behavior, and atomic final-
+  frame rejection, then synchronize readiness, format, architecture,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the suite uses only marc's C API and repository completion
+  vocabulary. No external fixture bytes, control flow, assertion structure,
+  malformed case, or test expression was compared.
+- Local validation: the focused three-test completion suite passed under MSVC
+  and ClangCL. The complete Release CTest suite passed 2,209/2,209 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, documentation
+  layout, and schema-27 compatibility remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS bounded decoder fuzzing
 
 - Authoring method: combined marc's established LZ78/rANS fixed phrase

@@ -67,6 +67,9 @@ Its bounded fuzz boundary drives both private complete-frame reconstruction
 and the public streaming decoder with fixed arrays, finite calls, and
 permanent atomic regressions for truncation, extreme extents, and malformed
 tANS metadata.
+Its public-ABI completion matrix now proves required binary classes,
+byte-identical repeat encoding, one-byte and mixed chunk schedules, stable
+repeated terminal results, and frame-transactional malformed-input rejection.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

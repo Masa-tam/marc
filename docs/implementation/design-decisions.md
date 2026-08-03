@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-581: LZ78 tANS completion is proved through the public ABI
+
+- Date: 2026-08-04
+- Status: accepted
+
+Apply the established public-ABI completion matrix to DD-577 with 64-byte raw
+frames, 64-byte entropy blocks, at most 512 canonical token bytes, eight tANS
+blocks, 64 phrase entries, and a 65,536-byte aggregate policy. Construct every
+encoder and decoder solely through the size-tagged config, directional
+requirements query, aligned three-region workspace, transform factory,
+process function, and destroy function.
+
+Round-trip empty input, every one-byte value, all byte values in sequence,
+long zero runs, repeated binary patterns, deterministic pseudo-random bytes,
+and lengths 63, 64, and 65. Require byte-identical repeated encoding and the
+same multi-frame bytes under one-byte and mixed input/output chunks. Repeated
+calls after success must remain ended with zero progress. For a four-frame
+stream, corrupt and truncate the final frame and append trailing data; retain
+exactly the first three committed frames, leave the final output sentinel
+unchanged, and repeat the same sticky error identity. This decision establishes
+local readiness only and adds no interoperability archive or schema revision.
+
 ## DD-580: LZ78 tANS fuzzing is fixed-memory and dual-boundary
 
 - Date: 2026-08-04

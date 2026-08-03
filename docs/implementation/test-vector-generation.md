@@ -3554,6 +3554,17 @@ stream, overwrite all frame extent fields with `FF`, and alter one descriptor
 frequency byte; require zero caller output, intact sentinels, and stable
 repeated errors.
 
+For LZ78 plus tANS public completion, use 64-byte raw frames and entropy
+blocks, no more than eight tANS blocks, and the public three-workspace C
+lifecycle only. Round-trip empty input, all 256 one-byte inputs, `00..FF`, 257
+zero bytes, a 259-byte `00 FF 55 AA` pattern, deterministic 513-byte random
+data, and lengths 63, 64, and 65. Encode a deterministic 193-byte fixture with
+whole, `1/1`, `7/5`, and `13/17` input/output chunks and require identical
+bytes. Locate its fourth frame from serialized extents; independently corrupt
+its sequence, truncate its last byte, and append one byte. Each decoder must
+commit exactly the first 192 raw bytes, preserve the last output sentinel, and
+repeat the same terminal error position without progress.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

@@ -1726,6 +1726,12 @@ fixed arrays, and the core progress contract. No external fuzz harness,
 mutation strategy, corpus, crash, malformed fixture, source code, or test suite
 was consulted.
 
+The LZ78 plus tANS public-ABI completion matrix uses only DD-581, the published
+size-tagged C lifecycle, DD-577's workspace contract, deterministic local
+fixture generation, and marc's existing completion categories. No external
+completion suite, encoded vector, chunk schedule, malformed corpus, source
+code, or test expression was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

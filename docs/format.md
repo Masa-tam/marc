@@ -5097,5 +5097,6 @@ view-plus-LZ78-phrase region. Short or misaligned storage and nonzero reserved
 fields are rejected before a handle is published. The `lz78-tans` CLI selector
 and benchmark use this public profile without changing its representation. A
 bounded dual-decoder fuzzer mutates the same representation without defining
-new accepted bytes. No completion claim or interoperability entry is defined
-yet.
+new accepted bytes. The public-ABI completion matrix proves deterministic
+round trips, arbitrary chunking, stable terminals, and final-frame atomicity
+without changing accepted bytes. No interoperability entry is defined yet.

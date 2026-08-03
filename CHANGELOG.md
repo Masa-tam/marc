@@ -49,7 +49,10 @@ format versions, and C ABI versions are independent namespaces.
   regions. Its bounded dual-decoder fuzz target now fixes all byte,
   `TansBlockView`, and LZ78 phrase storage, uses input-derived chunks under a
   finite call ceiling, and retains atomic regressions for every canonical
-  truncation, impossible frame extents, and invalid tANS metadata.
+  truncation, impossible frame extents, and invalid tANS metadata. Its public-
+  ABI completion matrix now proves required binary classes, repeat
+  determinism, one-byte and mixed chunking, stable repeated terminals, and
+  transactional rejection of corrupt, truncated, or trailing final frames.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

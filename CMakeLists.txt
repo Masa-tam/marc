@@ -1266,6 +1266,7 @@ if(MARC_BUILD_TESTS)
         tests/lz78_tans_frame_streaming_decoder_tests.cpp
         tests/lz78_tans_profile_tests.cpp
         tests/lz78_tans_fuzz_regression_tests.cpp
+        tests/lz78_tans_completion_tests.cpp
         tests/lzss_tans_frame_tests.cpp
         tests/lzss_tans_frame_streaming_encoder_tests.cpp
         tests/lzss_tans_frame_streaming_decoder_tests.cpp

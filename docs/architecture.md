@@ -2117,6 +2117,10 @@ The bounded decoder fuzz boundary drives both complete-frame private
 reconstruction and the public C streaming transform. All encoded, token, raw,
 tANS-view, phrase, and output regions have compile-time ceilings; byte-derived
 chunking has a finite process-call guard.
+The public completion matrix drives only the size-tagged C lifecycle. It fixes
+required binary data classes, deterministic multi-frame output under arbitrary
+chunking, stable repeated end/error results, and final-frame atomicity while
+preserving previously committed frames.
 
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,

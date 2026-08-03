@@ -64,6 +64,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
 | `lz77-tans` | First tANS composition | Ready | Included |
 | `lzss-tans` | Second tANS composition | Ready | Included |
+| `lz78-tans` | Third tANS composition | Ready | Not included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 27 contains thirty-eight archives: the frozen thirty-seven-entry
@@ -123,7 +124,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | No | No |
+| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
 
 ## Composed-profile admission queue
 
@@ -166,8 +167,11 @@ C round trip before timing and reports all three directional workspace
 regions. Its bounded dual-decoder fuzz target now fixes every byte, tANS-view,
 and LZ78-phrase region, derives chunks only within the capped input, and uses a
 finite call ceiling; permanent regressions cover every canonical truncation,
-impossible frame extents, and an invalid descriptor. Completion and
-interoperability admission remain pending.
+impossible frame extents, and an invalid descriptor. Its public-ABI completion
+matrix now covers required binary classes, repeat determinism, one-byte and
+mixed chunking, stable repeated terminals, and transactional rejection of a
+corrupt, truncated, or trailing final frame. Local readiness is complete;
+interoperability admission remains pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the
