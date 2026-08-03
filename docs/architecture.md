@@ -1855,6 +1855,12 @@ and serialized-frame extents with checked arithmetic. The synthesized generic
 header is validated, but no serialized byte is emitted; a later writer must
 consume the same frozen token region.
 
+The complete-frame writer invokes that plan before accepting any output
+mutation. Once the exact complete capacity is available, it emits the generic
+header, consecutive fixed descriptors, and consecutive payloads explicitly.
+Every block is replanned over unchanged token bytes and must reproduce the
+same payload extent, preserving one deterministic representation.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

@@ -3292,6 +3292,16 @@ staging one byte short before mutation, empty and unexpected raw-frame extents,
 one-block policy for a two-block plan, and aggregate storage one byte below
 descriptor, payload, and token bytes.
 
+For the LZSS plus tANS complete-frame writer, encode raw `A` and compare all
+587 bytes with the independent frame. With `B = 1`, encode twice and require
+byte identity with the separately assembled two-block frame, then decode it
+through the transactional wrapper to raw `A`.
+
+Encode six repeated `A` bytes with `B = 3` twice, require byte identity and an
+11-byte canonical Literal-plus-Match region, then transactionally decode the
+exact raw input. Supply a 586-byte guarded output for raw `A`; require the
+exact 587-byte planned size and no output mutation.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

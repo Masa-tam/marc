@@ -4748,6 +4748,13 @@ and then all `K` payloads in the same order. Each block is replanned over the
 unchanged token staging and must reproduce the planned payload size; any
 internal discrepancy is an error rather than an alternate representation.
 
+The matching complete-frame writer runs that plan first and requires output
+capacity for the entire exact serialized extent before writing. It explicitly
+serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
+and then all `K` payloads in the same order. Each block is replanned over the
+unchanged token staging and must reproduce the planned payload size; any
+internal discrepancy is an error rather than an alternate representation.
+
 The internal known-size streaming encoder writes the ordinary 64-byte stream
 header and 16-byte LZ77 parameters, then the exact frames above. It holds no
 more than one raw frame, one canonical token region, and one serialized frame

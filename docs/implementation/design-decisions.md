@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-558: LZSS tANS frame writing follows one complete plan
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the complete-frame writer above DD-557. Run the exact plan first and admit
+the complete serialized output capacity before writing its first byte. Emit the
+56-byte generic header, all `K` consecutive 528-byte descriptors, and all `K`
+consecutive payloads explicitly.
+
+Replan each block over the unchanged canonical token staging and require its
+payload size to equal the accumulated plan. Descriptor serialization or tANS
+encoding disagreement is an internal error, not an alternate representation.
+One-byte-short output must remain entirely unchanged. This decision adds no
+streaming transform, profile calculator, C factory, CLI, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
 ## DD-557: LZSS tANS planning freezes token bytes before sizing
 
 - Date: 2026-08-03

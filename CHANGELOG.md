@@ -20,8 +20,10 @@ format versions, and C ABI versions are independent namespaces.
   transactional wrapper preflights the caller output and publishes once only
   after complete private reconstruction. Its write-free planner freezes the
   canonical token sequence and determines exact tANS block and frame extents
-  without emitting serialized output. The reservation adds no combined public
-  codec yet.
+  without emitting serialized output. Its complete-frame writer preflights the
+  exact destination and emits the generic header, consecutive descriptors, and
+  consecutive payloads deterministically. The reservation adds no combined
+  public codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

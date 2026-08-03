@@ -101,7 +101,9 @@ publishing caller output. Its transactional wrapper admits the complete caller
 output before private mutation and copies exactly once only after successful
 reconstruction. Its write-free encoder planner freezes the complete canonical
 token region and determines exact tANS block and frame extents without a
-serialized output span. There is no complete-frame writer, C factory, CLI
+serialized output span. Its complete-frame writer admits the entire output
+first, then emits the header, consecutive descriptors, and consecutive
+payloads deterministically. There is no streaming transform, C factory, CLI
 selector, benchmark, fuzzer, completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved

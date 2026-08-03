@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS complete-frame writer
+
+- Authoring method: extended DD-557's exact planner with repository-owned
+  generic-frame and tANS serializers over the frozen token region.
+- References used: DD-558, DD-557, local generic header serializer, tANS
+  descriptor serializer and encoder, checked spans, and deterministic token
+  staging.
+- Known implementations intentionally not consulted: external combined
+  encoders, archive writers, serialization layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: admit the complete serialized output after planning
+  and before writing; emit header, descriptor region, and payload region
+  explicitly; replan each immutable block; and require exact payload agreement.
+- Generated-code task description: add deterministic complete-frame writing;
+  prove independent-vector equality, intra-Literal split determinism and round
+  trip, generated-Match determinism and round trip, and one-byte-short output
+  atomicity; update format, architecture, readiness, composition, decisions,
+  references, vectors, changelog, and provenance.
+- Similarity review: implementation structure is composed only from marc's
+  exact planner and explicit serializers. No external control flow, byte
+  layout, vector, or test expression was compared.
+- Local validation: the focused writer suite passed 4/4 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,130/2,130 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS exact-frame planner
 
 - Authoring method: composed marc's deterministic LZSS token planner and
