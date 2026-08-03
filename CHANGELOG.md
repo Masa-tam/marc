@@ -19,8 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   exact private token region, and applies aligned LZ78 phrase-graph and raw-
   extent validation. Its private decoder adds raw staging to the up-front
   capacity and aggregate checks and expands validated nested phrases
-  iteratively without caller publication. No transactional publisher or
-  public profile is added yet.
+  iteratively without caller publication. Its transactional wrapper preflights
+  caller output before any private mutation and publishes the reconstructed
+  frame with one final copy. No encoder or public profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

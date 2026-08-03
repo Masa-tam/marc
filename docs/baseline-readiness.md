@@ -138,8 +138,9 @@ validates every tANS block before token mutation, reconstructs the complete
 private token region, and applies LZ78 alignment, phrase-graph, and exact raw-
 extent validation. Its private decoder now preflights and counts the complete
 raw staging extent, then expands the validated phrase graph iteratively without
-caller publication. Transactional publication and all later admission
-boundaries remain pending.
+caller publication. Transactional publication now admits the complete caller
+output before private mutation and copies the reconstructed frame exactly once.
+The encoder and all later admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

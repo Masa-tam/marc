@@ -3443,6 +3443,16 @@ payload, tokens, views, phrase records, and raw staging and require all private
 bytes to retain their sentinels. Independently corrupt the final tANS block and
 entropy-code an unknown LZ78 tag; neither failure may alter raw staging.
 
+For transactional LZ78 plus tANS publication, decode the independent raw-`A`
+frame with one disposable raw byte and one caller output sentinel; require both
+to become `41` only after success. Repeat with an empty output span and require
+capacity rejection before token, phrase, or raw mutation.
+
+Independently corrupt the final tANS block of a token-splitting frame and
+entropy-code an unknown LZ78 tag. Give each case a full private raw span and
+caller output initialized to `A5`; both failures must preserve the caller
+output sentinel.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

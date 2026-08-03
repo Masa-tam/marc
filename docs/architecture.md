@@ -2080,6 +2080,12 @@ decoder expands phrases iteratively into exactly the declared raw extent.
 There is still no caller-visible output span, so every workspace remains
 disposable on failure.
 
+The transactional wrapper admits a separate caller output extent before any
+private mutation, without counting publication storage as internal workspace.
+It preserves the entire validation and reconstruction sequence and copies the
+complete raw frame exactly once only after success. Every earlier error leaves
+caller output unchanged.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

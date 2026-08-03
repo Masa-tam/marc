@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS transactional publication
+
+- Authoring method: wrapped marc's private LZ78+tANS reconstruction boundary
+  with its established preflight-and-copy publication rule.
+- References used: DD-571, DD-570's private decoder, caller-owned output spans,
+  exact raw extents, and repository-local atomic publication conventions.
+- Known implementations intentionally not consulted: external publication
+  protocols, combined decoders, buffer layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: admit caller capacity before any private mutation;
+  exclude publication storage from internal workspace; retain complete private
+  validation and reconstruction; and perform exactly one final copy.
+- Generated-code task description: add the minimal transactional wrapper,
+  verify successful raw-`A` publication, short-output preflight, entropy and
+  dictionary failure atomicity, and synchronize format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the wrapper directly applies repository-owned validation,
+  private reconstruction, and bounded copy rules. No external control flow,
+  publication schedule, error taxonomy, mutation case, or test expression was
+  compared.
+- Local validation: the focused decoder suite passed 8/8 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,175/2,175 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS private raw reconstruction
 
 - Authoring method: extended the locally validated LZ78+tANS boundary only

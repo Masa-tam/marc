@@ -5033,6 +5033,13 @@ bytes are included with descriptors, payload, tokens, views, and phrase records
 under `max_internal_buffered_bytes`. Only after complete entropy and LZ78
 validation succeeds does the allocation-free LZ78 decoder expand every phrase
 iteratively into exactly `F` disposable bytes. No caller-visible output span
-exists; all workspace is discarded on failure. No publisher, encoder,
-streaming transform, profile calculator, C factory, CLI selector, benchmark,
-fuzzer, completion claim, or interoperability entry is defined yet.
+exists; all workspace is discarded on failure.
+
+The transactional complete-frame wrapper additionally requires a distinct
+caller output span of at least `F` bytes before descriptor parsing.
+Publication storage is not internal workspace. It performs the same complete
+validation and private reconstruction, then copies exactly `F` bytes from raw
+staging to output once. Capacity failure and every malformed layer leave caller
+output unchanged. No encoder, streaming transform, profile calculator, C
+factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry is defined yet.

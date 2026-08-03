@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-571: LZ78 tANS publishes only complete validated frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add one transactional wrapper above DD-570. Require a distinct caller output
+span of at least the declared `F` bytes before descriptor parsing or any
+private mutation. Do not count publication storage against the internal
+workspace limit.
+
+Run the same complete entropy validation, phrase-graph validation, and private
+raw reconstruction unchanged. Copy exactly `F` bytes from private raw staging
+to caller output once and only after all layers succeed. Output capacity,
+entropy, dictionary, or reconstruction failure must preserve every caller
+output byte. This decision adds no encoder, streaming transform, public API,
+CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
 ## DD-570: LZ78 tANS reconstructs only into disposable raw staging
 
 - Date: 2026-08-04
