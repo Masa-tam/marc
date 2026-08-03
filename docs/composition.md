@@ -108,8 +108,10 @@ the ordinary prefix and complete prepared frames from caller-owned storage,
 preserving identical bytes under one-byte chunking and nonterminal `Flush`.
 Its matching streaming decoder collects and admits one complete frame, decodes
 into private raw staging, and publishes only after all tANS and LZSS validation
-succeeds. There is no C factory, CLI selector, benchmark, fuzzer, completion
-claim, or interoperability entry yet.
+succeeds. Its internal profile calculator derives encoder regions from known
+input configuration and decoder regions solely from local hard limits. There
+is no C requirements query, factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

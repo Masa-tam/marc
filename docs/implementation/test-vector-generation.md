@@ -3327,6 +3327,19 @@ every final-byte truncation, one trailing byte, `ResetBlock`, and premature
 `EndInput`; accept an empty known-size stream and require nonterminal `Flush`
 to report input starvation.
 
+For LZSS plus tANS profile sizing with default 65,536-byte frame and entropy
+block sizes, require 65,536 raw bytes, 131,072 token bytes, two descriptors,
+196,612 payload bytes, and a 197,724-byte complete frame. For a 17-byte stream,
+require 17 raw bytes, 34 token bytes, one descriptor, 53 payload bytes, and a
+637-byte frame. Empty input reserves no frame-local encoder region.
+
+Independently lower block count, payload, aggregate, and frame limits below
+those derived requirements and reject with cleared output requirements. For
+decoder limits, require `56 + max_internal_buffered_bytes` encoded bytes,
+`min(max_dictionary_serialized_size, 2F)` token bytes, `F` private raw
+bytes, and exactly `max_blocks_per_frame` views. Finally allocate every
+reported region and require the streaming pair to round-trip `ABABX`.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

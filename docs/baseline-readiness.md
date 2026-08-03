@@ -148,7 +148,9 @@ prepared frames from bounded caller-owned storage with chunk-independent bytes,
 latched finish, and nonterminal `Flush`. Its bounded streaming decoder now
 admits each complete encoded frame and all private workspace before collection,
 then publishes raw bytes only after transactional tANS and LZSS validation.
-Profile sizing is the next boundary.
+Its internal profile calculator now derives canonical stream fields and every
+encoder and decoder workspace from known input configuration or local hard
+limits. A C requirements query and factories are the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

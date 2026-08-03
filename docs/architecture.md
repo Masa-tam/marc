@@ -1930,6 +1930,13 @@ the body is collected. A complete frame is decoded privately and only then
 drained to the caller. Thus an invalid later frame preserves all earlier
 commits while publishing no byte from the invalid frame.
 
+The direction-specific profile calculator supplies those caller-owned regions
+without allocating them. Encoder sizing uses the actual largest known frame,
+the `2F` LZSS ceiling, exact descriptor count, and the blockwise 12-bit tANS
+payload ceiling. Decoder sizing depends only on local hard limits and returns a
+view count rather than exposing `TansBlockView`. Checked arithmetic and the
+same aggregate policy guard every derived extent.
+
 The matching streaming decoder collects the 80-byte prefix, each 56-byte frame
 header, and exactly its declared body in bounded caller storage. It validates
 and reconstructs a complete frame privately before draining raw output. A

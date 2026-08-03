@@ -1607,6 +1607,12 @@ transform contract, caller-owned spans, and checked aggregate arithmetic. No
 external streaming decoder, buffering state machine, malformed corpus, source
 code, chunking suite, or test expression was consulted.
 
+The LZSS plus tANS internal profile calculator uses only DD-561, DD-559 and
+DD-560's caller-owned regions, marc's hard limits, checked arithmetic, and the
+documented tANS descriptor and blockwise payload ceilings. No external profile
+API, allocation policy, capacity formula, codec source, encoded corpus, or
+test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

@@ -4763,6 +4763,14 @@ transaction succeeds. Final short-frame extent follows the known original
 size. Truncation, trailing bytes, and malformed entropy or LZSS data are
 rejected without exposing bytes from the failing frame.
 
+The internal profile calculator changes no serialized representation. For the
+largest known raw frame `F`, it reports token capacity `S = 2F`,
+`K = ceil(S/B)` blocks, exact descriptor capacity `528K`, and complete
+encoded-frame capacity `56 + 528K + sum(Q(n))`, where
+`Q(n) = 2 + ceil(12n/8)`. Empty input requires no frame-local encoder
+storage. Decoder requirements are derived only from local hard limits and
+report encoded-frame, token, private-raw, and tANS-view capacities.
+
 The matching complete-frame writer runs that plan first and requires output
 capacity for the entire exact serialized extent before writing. It explicitly
 serializes the 56-byte generic header, all `K` 528-byte descriptors in order,

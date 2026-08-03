@@ -9906,6 +9906,28 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS internal profile calculator
+
+- Authoring method: specialized marc's repository-owned directional profile
+  convention to the already specified LZSS+tANS streaming workspaces.
+- References used: DD-561, DD-559/DD-560, local hard limits, checked
+  arithmetic, and the documented tANS block payload ceiling.
+- Known implementations intentionally not consulted: external profile APIs,
+  allocation policies, codec source, encoded corpora, and test suites.
+- Independent decisions: derive encoder storage from known-size configuration;
+  sum the conservative ceiling for full and final-short tANS blocks; derive
+  decoder storage only from local limits; and expose no private view layout.
+- Generated-code task description: add canonical header and directional
+  workspace calculation; test exact default and short capacities, independent
+  limits, stable errors, and direct streaming construction; update build and
+  documentation records.
+- Similarity review: the calculator combines only repository-owned bounds,
+  types, and checked arithmetic. No external structure, capacity formula,
+  naming scheme, or test expression was compared.
+- Local validation: all 7 focused profile tests and all 2,146 repository tests
+  passed under both MSVC and ClangCL using official CMake 4.3.4; all 37
+  benchmark smokes and schema-26 compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS known-size streaming decoder
 
 - Authoring method: specialized marc's repository-owned bounded LZSS/rANS

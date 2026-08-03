@@ -27,7 +27,10 @@ format versions, and C ABI versions are independent namespaces.
   one-byte chunking, latched finish, and nonterminal `Flush`. Its bounded
   streaming decoder collects and admits one complete frame, reconstructs into
   private raw staging, and publishes only after transactional tANS and LZSS
-  validation succeeds. The reservation adds no combined public codec yet.
+  validation succeeds. Its directional profile calculator derives exact
+  conservative encoder storage and hard-limit-only decoder storage without
+  exposing private tANS view layouts. The reservation adds no combined public
+  codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

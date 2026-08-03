@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-561: LZSS tANS profiles derive bounded blockwise storage
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-559 and DD-560.
+For known-size encoding, derive the largest raw frame `F`, conservative `2F`
+token staging, `K = ceil(2F/B)` blocks, exact `528K` descriptors, and the
+sum of `Q(n) = 2 + ceil(12n/8)` for every full or final-short tANS block.
+Count raw, token, and complete encoded-frame storage under the aggregate local
+limit.
+
+For decoding, derive serialized-frame, token, private-raw, and block-view
+requirements solely from validated local limits. Expose a view count rather
+than the private `TansBlockView` layout. Use checked arithmetic throughout,
+return canonical stream-header fields, map stable core errors, and prove that
+the calculated regions directly construct the streaming pair. This decision
+adds no C requirements query, public factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
 ## DD-560: LZSS tANS streaming decode publishes complete frames
 
 - Date: 2026-08-03
