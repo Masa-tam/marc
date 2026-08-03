@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS known-size streaming decoder
+
+- Authoring method: specialized marc's repository-owned bounded LZSS/rANS
+  streaming state contract to DD-556's tANS private frame decoder and view
+  type.
+- References used: DD-560, DD-556, local stream and generic-frame parsers,
+  tANS block views, checked arithmetic, and core process-result invariants.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, malformed corpora, source code, chunking
+  suites, and tests.
+- Independent decisions: collect the prefix and frame header separately;
+  preflight all private regions before the body; decode only complete frames;
+  publish after success; preserve earlier commits; and keep terminal states
+  sticky.
+- Generated-code task description: add bounded known-size streaming decoding;
+  prove one-byte round trip, later-corruption atomicity, storage and aggregate
+  limits, truncation, trailing data, empty input, Flush, premature end, reset,
+  and repeated terminal behavior; update build and documentation records.
+- Similarity review: the implementation composes only repository parsing,
+  transactional decode, span, and state contracts. No external control flow,
+  storage layout, malformed vector, chunk schedule, or test expression was
+  compared.
+- Local validation: all 5 focused streaming-decoder tests and all 2,139
+  repository tests passed under both MSVC and ClangCL using official CMake
+  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
+  successful.
+
 ## 2026-08-03 - LZSS plus tANS known-size streaming encoder
 
 - Authoring method: applied marc's core transform state contract above the

@@ -145,7 +145,10 @@ the matching writer now admits the complete output before mutation and emits
 the header, consecutive descriptors, and consecutive payloads explicitly.
 The known-size streaming encoder now drains the 80-byte prefix and complete
 prepared frames from bounded caller-owned storage with chunk-independent bytes,
-latched finish, and nonterminal `Flush`. Streaming decode is the next boundary.
+latched finish, and nonterminal `Flush`. Its bounded streaming decoder now
+admits each complete encoded frame and all private workspace before collection,
+then publishes raw bytes only after transactional tANS and LZSS validation.
+Profile sizing is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

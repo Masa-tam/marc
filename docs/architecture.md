@@ -1923,6 +1923,13 @@ and output capacities may be one byte. Full frames may drain before EndInput;
 `Flush` does not close a partial frame, and a latched final EndInput survives
 output starvation until all bytes are emitted.
 
+The matching streaming decoder first collects the fixed prefix, then each
+generic frame header. Header validation fixes and admits the complete encoded
+extent plus tANS views, canonical token staging, and private raw staging before
+the body is collected. A complete frame is decoded privately and only then
+drained to the caller. Thus an invalid later frame preserves all earlier
+commits while publishing no byte from the invalid frame.
+
 The matching streaming decoder collects the 80-byte prefix, each 56-byte frame
 header, and exactly its declared body in bounded caller storage. It validates
 and reconstructs a complete frame privately before draining raw output. A

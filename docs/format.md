@@ -4755,6 +4755,14 @@ one canonical token region, and one encoded frame in caller-owned storage.
 Arbitrary input/output chunking and non-terminal `Flush` do not change encoded
 bytes; `EndInput` remains latched while final prefix or frame output drains.
 
+The internal known-size streaming decoder collects and validates that 80-byte
+prefix, then admits each 56-byte frame header and its exact declared body
+before collection continues. It invokes the private complete-frame decoder
+only after the whole frame is present, and drains raw output only after that
+transaction succeeds. Final short-frame extent follows the known original
+size. Truncation, trailing bytes, and malformed entropy or LZSS data are
+rejected without exposing bytes from the failing frame.
+
 The matching complete-frame writer runs that plan first and requires output
 capacity for the entire exact serialized extent before writing. It explicitly
 serializes the 56-byte generic header, all `K` 528-byte descriptors in order,

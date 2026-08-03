@@ -24,8 +24,10 @@ format versions, and C ABI versions are independent namespaces.
   exact destination and emits the generic header, consecutive descriptors, and
   consecutive payloads deterministically. Its known-size streaming encoder
   drains the ordinary prefix and bounded complete frames with byte-identical
-  one-byte chunking, latched finish, and nonterminal `Flush`. The reservation
-  adds no combined public codec yet.
+  one-byte chunking, latched finish, and nonterminal `Flush`. Its bounded
+  streaming decoder collects and admits one complete frame, reconstructs into
+  private raw staging, and publishes only after transactional tANS and LZSS
+  validation succeeds. The reservation adds no combined public codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

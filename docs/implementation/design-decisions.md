@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-560: LZSS tANS streaming decode publishes complete frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a bounded known-size streaming decoder above DD-556. Collect and validate
+the ordinary 64-byte stream header and 16-byte LZSS parameter region before
+accepting frames. For each frame, collect its 56-byte generic header first,
+admit the exact declared descriptor-plus-payload body and every caller-owned
+workspace, then collect and decode the complete frame into private raw staging.
+Drain raw bytes only after the complete transactional decode succeeds.
+
+Count encoded frame storage, tANS block views, canonical token staging, and
+private raw staging under one aggregate limit. Input and output capacities may
+be one byte. A malformed later frame cannot alter bytes committed from an
+earlier frame or expose a prefix of the failing frame. Reject truncated and
+trailing data, invalid prefix or frame extents, insufficient workspace,
+`ResetBlock`, and unknown flags with sticky errors. `Flush` remains
+nonterminal, and `EndInput` remains latched while private raw bytes drain.
+This decision adds no profile calculator, C factory, CLI, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
 ## DD-559: LZSS tANS streaming encode drains immutable frames
 
 - Date: 2026-08-03

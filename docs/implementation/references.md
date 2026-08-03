@@ -1601,6 +1601,12 @@ parameter serializers, caller-owned spans, and checked aggregate arithmetic.
 No external streaming encoder, buffering state machine, source code, chunking
 suite, or test expression was consulted.
 
+The LZSS plus tANS known-size streaming decoder uses only DD-560, DD-556's
+private complete-frame decoder, marc's generic stream and frame parsers, core
+transform contract, caller-owned spans, and checked aggregate arithmetic. No
+external streaming decoder, buffering state machine, malformed corpus, source
+code, chunking suite, or test expression was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
