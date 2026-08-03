@@ -64,16 +64,16 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
 | `lz77-tans` | First tANS composition | Ready | Included |
 | `lzss-tans` | Second tANS composition | Ready | Included |
-| `lz78-tans` | Third tANS composition | Ready | Not included |
+| `lz78-tans` | Third tANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 27 contains thirty-eight archives: the frozen thirty-seven-entry
-schema-26 set followed by the LZSS tANS profile. Schemas 1 through 26
+Schema 28 contains thirty-nine archives: the frozen thirty-eight-entry
+schema-27 set followed by the LZ78 tANS profile. Schemas 1 through 27
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
 thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, thirty-six,
-and thirty-seven profiles;
+thirty-seven, and thirty-eight profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -124,11 +124,11 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
-`lz78-tans` is the current admission composition. Its reserved boundary fixes
+`lz78-tans` is the completed third tANS admission. Its reserved boundary fixes
 complete aligned eight-byte LZ78 token serialization before tANS, permits
 entropy blocks to split a token without crossing a frame, and requires full
 private entropy reconstruction before phrase-graph validation. Its bounds are
@@ -170,8 +170,12 @@ finite call ceiling; permanent regressions cover every canonical truncation,
 impossible frame extents, and an invalid descriptor. Its public-ABI completion
 matrix now covers required binary classes, repeat determinism, one-byte and
 mixed chunking, stable repeated terminals, and transactional rejection of a
-corrupt, truncated, or trailing final frame. Local readiness is complete;
-interoperability admission remains pending.
+corrupt, truncated, or trailing final frame. Schema 28 appends its unchanged
+CLI archive once after schema 27 and preserves schemas 1 through 27.
+
+`lzw-tans` is the next candidate admission composition. Its representation,
+bounds, validator-first decode order, and independent vectors must be fixed
+before any public profile is claimed.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

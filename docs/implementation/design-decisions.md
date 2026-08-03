@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-582: Interoperability schema 28 appends LZ78 tANS
+
+- Date: 2026-08-04
+- Status: accepted
+
+Freeze the exact thirty-eight-entry schema-27 order and append `lz78-tans`
+once as entry 39. Name the new codec set `marc-cli-v28`; retain the existing
+deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
+SHA-256 records.
+
+Generation must round-trip every archive before recording it. Verification
+requires the exact schema order, foreign decode equality, and byte-identical
+local re-encoding. The compatibility regression rejects a reordered schema-28
+manifest, derives schema 27 by removing only `lz78-tans`, then verifies
+schemas 1 through 27 unchanged. This establishes local schema admission but
+does not claim cross-platform completion.
+
 ## DD-581: LZ78 tANS completion is proved through the public ABI
 
 - Date: 2026-08-04

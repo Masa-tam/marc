@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added interoperability schema 28 as the frozen schema-27 archive order plus
+  `lz78-tans` exactly once. Local generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 27 compatibility now pass for all 39 archives. Cross-platform
+  artifact exchange remains pending.
 - Reserved the `lz78-tans` composition and independent 587-byte raw-`A`
   frame. Canonical fixed eight-byte LZ78 tokens are finalized before tANS
   coding; entropy blocks may split tokens but not outer frames. Checked bounds

@@ -5099,4 +5099,7 @@ and benchmark use this public profile without changing its representation. A
 bounded dual-decoder fuzzer mutates the same representation without defining
 new accepted bytes. The public-ABI completion matrix proves deterministic
 round trips, arbitrary chunking, stable terminals, and final-frame atomicity
-without changing accepted bytes. No interoperability entry is defined yet.
+without changing accepted bytes. Interoperability schema 28 emits this
+unchanged profile as `lz78-tans` after the frozen thirty-eight-entry schema-27
+order. The schema changes only bundle membership and defines no new stream
+representation.

@@ -3565,6 +3565,15 @@ its sequence, truncate its last byte, and append one byte. Each decoder must
 commit exactly the first 192 raw bytes, preserve the last output sentinel, and
 repeat the same terminal error position without progress.
 
+For interoperability schema 28, retain the exact schema-27 archive order and
+append one `lz78-tans` archive as entry 39. Set `schema_version` to 28 and
+`codec_set` to `marc-cli-v28`; record an archive only after its local decode
+matches the deterministic 8,193-byte fixture. Require exact order, foreign
+decode equality, byte-identical local re-encoding, and rejection after swapping
+the first two manifest entries. Derive schema 27 by removing only
+`lz78-tans.marc` and changing only version and codec set, then verify schemas
+1 through 27 unchanged.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

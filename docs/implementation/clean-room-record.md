@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - Interoperability schema 28 appends LZ78 plus tANS
+
+- Authoring method: extended marc's append-only local bundle schema by one
+  already admitted CLI profile.
+- References used: DD-582, the frozen schema-27 order, repository-owned bundle
+  scripts, deterministic 8,193-byte fixture, and `lz78-tans`.
+- Known implementations intentionally not consulted: external archives,
+  manifests, interoperability suites, implementations, or test results.
+- Independent decisions: name `marc-cli-v28`; append `lz78-tans` only as entry
+  39; enforce exact order; and recover schema 27 by removing only the new
+  archive before checking every earlier schema.
+- Generated-code task description: advance bundle generation and verification
+  to schema 28, add reordered-manifest and schemas 1 through 27 compatibility
+  coverage, and synchronize format/readiness/interoperability/provenance docs.
+- Similarity review: the change is an append-only application of marc's own
+  manifest rules and fixture. No external ordering, archive bytes, metadata,
+  script structure, or expected result was compared.
+- Local validation: schema-28 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 27 compatibility passed under MSVC and ClangCL. The complete Release
+  CTest suite passed 2,209/2,209 under both compilers using official CMake
+  4.3.4; all 39 benchmark smokes and documentation layout remained
+  successful. External verification remains pending.
+
 ## 2026-08-04 - LZ78 plus tANS public-ABI completion
 
 - Authoring method: applied marc's established public completion categories to

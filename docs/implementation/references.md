@@ -1732,6 +1732,11 @@ fixture generation, and marc's existing completion categories. No external
 completion suite, encoded vector, chunk schedule, malformed corpus, source
 code, or test expression was consulted.
 
+Interoperability schema 28 uses only DD-582, the frozen local schema-27 order,
+marc's deterministic 8,193-byte fixture, the published `lz78-tans` CLI
+profile, and repository-owned bundle scripts. No external archive, manifest,
+implementation, compatibility suite, or result was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

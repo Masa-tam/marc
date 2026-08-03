@@ -668,7 +668,9 @@ schema-23 order. Schema 25 names `marc-cli-v25` and appends LZMW plus rANS to
 the frozen thirty-five-profile schema-24 order. Schema 26 names
 `marc-cli-v26` and appends LZ77 plus tANS to the frozen thirty-six-profile
 schema-25 order. Schema 27 names `marc-cli-v27` and appends LZSS plus tANS to
-the frozen thirty-seven-profile schema-26 order. Schemas 1 through 26 retain
+the frozen thirty-seven-profile schema-26 order. Schema 28 names
+`marc-cli-v28` and appends LZ78 plus tANS to the frozen thirty-eight-profile
+schema-27 order. Schemas 1 through 27 retain
 their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
@@ -2121,6 +2123,13 @@ The public completion matrix drives only the size-tagged C lifecycle. It fixes
 required binary data classes, deterministic multi-frame output under arbitrary
 chunking, stable repeated end/error results, and final-frame atomicity while
 preserving previously committed frames.
+
+Interoperability schema 28 appends the unchanged `lz78-tans` CLI archive once
+after the frozen schema-27 order. Generation verifies all 39 archives before
+recording their extents and SHA-256 values. Verification enforces exact order,
+foreign decode equality, and byte-identical local re-encoding. The compatibility
+regression rejects reordered schema-28 manifests and removes only `lz78-tans`
+to recover schema 27 before checking every earlier schema.
 
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,

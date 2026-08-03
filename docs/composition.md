@@ -70,6 +70,10 @@ tANS metadata.
 Its public-ABI completion matrix now proves required binary classes,
 byte-identical repeat encoding, one-byte and mixed chunk schedules, stable
 repeated terminal results, and frame-transactional malformed-input rejection.
+Interoperability schema 28 appends its unchanged CLI archive once after the
+frozen schema-27 order and passes local generation, exact-order verification,
+byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+through 27 compatibility.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS
