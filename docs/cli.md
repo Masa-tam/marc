@@ -44,6 +44,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzss-adaptive-huffman` | LZSS | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzss-dynamic-range` | LZSS | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lzss-rans` | LZSS | rANS | Scalar rANS model rebuilt per entropy block |
+| `lzss-tans` | LZSS | tANS | Tabled model rebuilt per entropy block |
 | `lz78` | LZ78 | None | Variant 1 |
 | `lz78-blocked-huffman` | LZ78 | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lz78-adaptive-huffman` | LZ78 | Adaptive Huffman | FGK tree reset per outer frame |
@@ -113,6 +114,14 @@ aggregate is 328,808 bytes; the shared configuration uses a conservative
 512-KiB internal-buffer policy so the decoder's opaque views also fit without
 exposing their C++ layout. Every direction-specific extent and alignment comes
 from the public C ABI requirements query.
+
+The `lzss-tans` adapter also fixes raw frames and entropy blocks at 65,536
+bytes. Its 131,072-byte canonical LZSS token ceiling produces at most two
+tANS blocks, 1,056 descriptor bytes, and a 196,612-byte payload. The exact
+encoder aggregate is 394,332 bytes; the shared configuration uses a
+conservative 512-KiB internal-buffer policy so decoder views remain opaque.
+Every directional extent and alignment comes from the public C ABI
+requirements query.
 
 The `lz78-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the eight-byte-per-raw-byte LZ78 token bound, at most 128

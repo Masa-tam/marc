@@ -3379,6 +3379,13 @@ through 39 with `FF`, and toggle the first serialized tANS frequency. Each
 case must report error, produce no output, preserve an `A5` sentinel, and
 repeat the same sticky error code and byte position.
 
+For `marc --codec lzss-tans`, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 3,200 times. Encode and decode
+with the exact selector and compare the restored file byte for byte. Reject a
+second encode to the existing destination. Decode `not-a-marc-stream` and a
+valid archive with one appended `x`; both must fail while leaving neither the
+destination nor its `.tmp` sibling. Finally round-trip an empty file.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

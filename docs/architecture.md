@@ -1905,6 +1905,14 @@ state-machine execution. Permanent regressions require every canonical
 truncation, impossible frame lengths, and invalid tANS descriptors to reject
 without publishing any byte from the failing frame.
 
+The command-line adapter selects this profile as `lzss-tans` through only the
+public C lifecycle. It fixes raw frames and tANS blocks at 65,536 bytes, uses
+the exact 131,072-byte token, two-block, 1,056-byte descriptor, and
+196,612-byte payload ceilings, and applies a conservative 512-KiB aggregate
+policy. Directional workspace extents and view alignment still come from the
+requirements query. The shared temporary-file transaction prevents malformed
+or trailing input from publishing an output file.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

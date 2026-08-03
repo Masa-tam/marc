@@ -122,11 +122,11 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-tans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
+| `lzss-tans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
-`lzss-tans` is the current specified-only composition. DD-553 fixes complete
+`lzss-tans` is the current admission composition. DD-553 fixes complete
 LZSS token serialization before tANS, permits entropy blocks to split the
 two- or nine-byte token grammar without crossing a frame, and requires full
 private token reconstruction before dictionary validation. Its bounds are
@@ -139,9 +139,8 @@ grammar and semantic validation. Its private decoder now admits and counts the
 complete raw staging extent before entropy work, then reconstructs validated
 literals and overlapping matches without caller publication. Transactional
 publication now admits the complete caller output before private mutation and
-copies the reconstructed frame exactly once. Encoding and all later public
-admission gates remain pending, so this profile does not appear in the public
-tables above. The encoder-side write-free planner now freezes the canonical
+copies the reconstructed frame exactly once. The encoder-side write-free
+planner now freezes the canonical
 LZSS token region, plans every tANS block, and validates exact frame extents;
 the matching writer now admits the complete output before mutation and emits
 the header, consecutive descriptors, and consecutive payloads explicitly.
@@ -159,7 +158,9 @@ deterministic chunking, sticky terminals, and malformed-final-frame atomicity.
 Its dual-decoder fuzz target now fixes all byte and tANS-view storage, bounded
 chunk schedules, and a finite call ceiling; permanent regressions cover every
 canonical truncation, impossible frame extents, and an invalid descriptor.
-The CLI selector is the next boundary.
+Its explicit CLI selector now uses only the public requirements, factory,
+process, and destroy lifecycle with transactional output publication. The
+benchmark adapter is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

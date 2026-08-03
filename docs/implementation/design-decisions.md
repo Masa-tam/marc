@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-565: LZSS tANS CLI admission uses only the public profile
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the explicit selector `lzss-tans` to the transactional file adapter. Fix
+raw frames and tANS blocks at 65,536 bytes. Derive `S = 131,072` canonical
+token bytes, `K = 2` blocks, `528K = 1,056` descriptor bytes, `P = 196,612`
+payload bytes, and exact encoder aggregate `F + S + 56 + 528K + P = 394,332`
+bytes. Use a conservative 512-KiB internal-buffer policy for both directions.
+
+Configuration initialization, directional requirements, transform creation,
+processing, and destruction use only `marc_lzss_tans_*` and the common public
+C ABI. Opaque tANS views and private workspace partitions remain outside the
+CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
+overwrite refusal, malformed cleanup, and strict trailing-data rejection under
+both supported Windows compilers. This step adds no benchmark,
+interoperability entry, or local `Ready` claim.
+
 ## DD-564: LZSS tANS fuzzing is bounded and frame-atomic
 
 - Date: 2026-08-03

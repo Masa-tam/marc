@@ -9906,6 +9906,28 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS CLI selector
+
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one completed public C profile.
+- References used: DD-565, DD-561's bounded arithmetic, the public
+  `marc_lzss_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZSS/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, and tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
+  descriptor, payload, block-count, and aggregate limits from the fixed
+  profile; keep typed views private; and reuse strict temporary publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bound, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release CTest suite passed 2,154/2,154
+  under both compilers using official CMake 4.3.4; all 37 benchmark smokes,
+  documentation layout, and schema-26 compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS bounded decoder fuzzing
 
 - Authoring method: adapted marc's repository-owned fixed-memory composed

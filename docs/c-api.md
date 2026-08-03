@@ -213,6 +213,15 @@ lengths, deterministic multi-frame output under four chunk schedules, sticky
 completion, and sticky failure. Corruption, truncation, or one trailing byte
 in the fourth frame commits the first 192 raw bytes and leaves the final
 output sentinel unchanged.
+The LZSS plus tANS factory follows the same three-region ownership policy.
+Encoding uses primary storage for raw-frame collection and partitions
+secondary storage into canonical LZSS tokens and one complete tANS frame;
+decoding uses primary for the serialized frame, partitions secondary into
+token and private raw staging, and receives aligned opaque tANS block views.
+Call `marc_lzss_tans_workspace_requirements()` again after changing direction,
+known original size, either block dimension, LZSS parameters, or any hard
+limit. The `lzss-tans` CLI selector allocates only the reported extents and
+uses the common public transform lifecycle without naming a private view type.
 LZ78 uses `views_workspace` as an aligned, opaque phrase table. Its encoder
 reserves one eight-byte token and at most one phrase record per raw byte; its
 decoder derives the payload and phrase capacities jointly from trusted local

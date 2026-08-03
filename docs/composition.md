@@ -20,7 +20,7 @@ public format or API guarantee yet.
 |---|---|---|---|---|---|---|
 | None | `checksum-raw` | `blocked-huffman` | `adaptive-huffman` | `dynamic-range` | `rans` | `tans` |
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
-| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | Specified |
+| LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | Candidate |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
@@ -116,8 +116,10 @@ completion matrix proves required data classes, deterministic arbitrary
 chunking, sticky terminals, and malformed-final-frame atomicity. There is no
 Its bounded dual-decoder fuzz target fixes every byte and metadata workspace,
 derives chunking from bounded input, and retains atomic truncation, extreme
-length, and invalid-descriptor regressions. There is no CLI selector,
-benchmark, local readiness claim, or interoperability entry yet.
+length, and invalid-descriptor regressions. Its explicit CLI selector uses only
+the public C lifecycle with 64-KiB raw frames and entropy blocks and
+transactional file publication. There is no benchmark, local readiness claim,
+or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

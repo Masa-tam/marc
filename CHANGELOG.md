@@ -36,7 +36,10 @@ format versions, and C ABI versions are independent namespaces.
   a malformed final frame. Its bounded dual-decoder fuzz target uses fixed
   byte and tANS-view workspaces plus a finite call ceiling; permanent tests
   retain atomic rejection for every canonical truncation, extreme frame
-  lengths, and an invalid descriptor. The profile is not yet locally ready.
+  lengths, and an invalid descriptor. Its explicit `lzss-tans` CLI selector
+  now uses only the public C ABI with fixed 64-KiB raw frames and tANS blocks,
+  conservative 512-KiB internal policy, and transactional file publication.
+  The profile is not yet locally ready.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
