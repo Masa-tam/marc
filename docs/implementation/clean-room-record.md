@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS private raw reconstruction
+
+- Authoring method: extended the locally validated LZ78+tANS boundary only
+  with marc's existing allocation-free LZ78 phrase expansion.
+- References used: DD-570, DD-569's validator, local LZ78 decoder, iterative
+  phrase expansion, caller-owned raw staging, and checked aggregate arithmetic.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: preflight and count the complete raw extent before
+  entropy work; retain the two-pass entropy and phrase validation order;
+  reconstruct only after complete success; expose no publication span; and
+  preserve existing layer and position diagnostics.
+- Generated-code task description: add the minimal private raw decoder,
+  exercise raw `A`, nested phrases across entropy splits, raw shortage,
+  aggregate shortage, malformed entropy and dictionary layers, and synchronize
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation calls repository-owned validation and
+  reconstruction components over checked spans. No external control flow,
+  expansion algorithm, storage schedule, error taxonomy, or test expression
+  was compared.
+- Local validation: the focused private-decoder suite passed 5/5 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,172/2,172 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS complete-frame validator
 
 - Authoring method: composed marc's strict two-pass tANS block controller with

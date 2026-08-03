@@ -37,8 +37,10 @@ phrase references, the final-token rule, and exact raw extent. The independent
 raw-`A` vector fixes a 587-byte frame with payload `6B 04 00`. Its first
 bounded validator now admits all serialized and caller-owned extents, validates
 every tANS block before token mutation, reconstructs the complete private token
-region, and applies aligned LZ78 phrase-graph validation. No raw decoder or
-public profile exists yet.
+region, and applies aligned LZ78 phrase-graph validation. Its private decoder
+now admits and counts the complete raw staging extent before entropy work,
+then expands validated phrases iteratively without caller publication. No
+transactional publisher or public profile exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

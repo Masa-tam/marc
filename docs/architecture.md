@@ -2071,7 +2071,14 @@ serialized and workspace extents under one aggregate policy, validates every
 tANS descriptor and state path without token output, and only then performs a
 second entropy pass into private staging. Complete LZ78 token and phrase-graph
 validation follows; raw expansion and caller-visible publication remain
-absent from this boundary.
+absent from this first boundary.
+
+The matching private decoder adds the complete raw extent to preflight and the
+aggregate workspace calculation. After the same two-pass entropy validation
+and complete phrase-graph validation, the existing allocation-free LZ78
+decoder expands phrases iteratively into exactly the declared raw extent.
+There is still no caller-visible output span, so every workspace remains
+disposable on failure.
 
 ### C transform ABI
 

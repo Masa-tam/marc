@@ -3431,6 +3431,18 @@ preserving the complete staging sentinel. Entropy-code an unknown LZ78 tag and
 require dictionary-layer rejection with token index and input offset. Reject
 misaligned dictionary extent, excessive entropy extent, and another pipeline.
 
+For private LZ78 plus tANS reconstruction, decode the independent raw-`A`
+frame into a one-byte disposable staging span and require `41`. Entropy-code
+the three canonical `ABAB` Pair tokens into five-symbol tANS blocks so that
+token boundaries are split, then require iterative phrase expansion to exact
+raw bytes `41 42 41 42`.
+
+Use an empty raw span and require capacity rejection before token or phrase
+workspace mutation. Set the aggregate ceiling to one byte below descriptors,
+payload, tokens, views, phrase records, and raw staging and require all private
+bytes to retain their sentinels. Independently corrupt the final tANS block and
+entropy-code an unknown LZ78 tag; neither failure may alter raw staging.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

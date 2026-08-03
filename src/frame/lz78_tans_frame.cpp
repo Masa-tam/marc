@@ -59,9 +59,7 @@ inline constexpr std::uint64_t max_dictionary_bytes_per_raw_byte = 8;
     return core::checked_add(full_payloads, final_payload, payload_size);
 }
 
-} // namespace
-
-Lz78TansFrameValidationResult validate_lz78_tans_frame(
+[[nodiscard]] Lz78TansFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::Lz78Parameters& parameters,
     const core::DecoderLimits& limits,
@@ -71,7 +69,9 @@ Lz78TansFrameValidationResult validate_lz78_tans_frame(
     const std::span<entropy::internal::TansBlockView> views,
     const std::span<std::byte> dictionary_staging,
     const std::span<dictionary::internal::Lz78PhraseEntry>
-        phrase_workspace) noexcept {
+        phrase_workspace,
+    const bool require_raw_staging,
+    const std::span<std::byte> raw_staging) noexcept {
     Lz78TansFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -181,6 +181,10 @@ Lz78TansFrameValidationResult validate_lz78_tans_frame(
             Lz78TansFrameValidationError::phrase_workspace_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error = Lz78TansFrameValidationError::raw_staging_too_small;
+        return result;
+    }
 
     std::uint64_t view_bytes{};
     std::uint64_t phrase_bytes{};
@@ -205,7 +209,12 @@ Lz78TansFrameValidationResult validate_lz78_tans_frame(
             workspace_bytes)
         || !core::checked_add(workspace_bytes, view_bytes, workspace_bytes)
         || !core::checked_add(
-            workspace_bytes, phrase_bytes, workspace_bytes)) {
+            workspace_bytes, phrase_bytes, workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes,
+                static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error = Lz78TansFrameValidationError::arithmetic_overflow;
         return result;
     }
@@ -285,6 +294,72 @@ Lz78TansFrameValidationResult validate_lz78_tans_frame(
         result.error =
             Lz78TansFrameValidationError::dictionary_validation_error;
     }
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_tokens(
+    Lz78TansFrameValidationResult& result,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lz78_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::Lz78DecodeError::none) {
+        return true;
+    }
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.dictionary_token_index = decoded.token_index;
+    result.dictionary_input_offset = decoded.input_offset;
+    result.error = Lz78TansFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+Lz78TansFrameValidationResult validate_lz78_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::TansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::Lz78PhraseEntry>
+        phrase_workspace) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, false, {});
+}
+
+Lz78TansFrameValidationResult decode_lz78_tans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::Lz78Parameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::TansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::Lz78PhraseEntry> phrase_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, true, raw_staging);
+    if (result.error != Lz78TansFrameValidationError::none) {
+        return result;
+    }
+    (void)reconstruct_validated_tokens(
+        result, parameters, limits, dictionary_staging, phrase_workspace,
+        raw_staging);
     return result;
 }
 

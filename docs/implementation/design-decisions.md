@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-570: LZ78 tANS reconstructs only into disposable raw staging
+
+- Date: 2026-08-04
+- Status: accepted
+
+Extend DD-569 only with private raw reconstruction. Require caller-owned raw
+staging of at least the declared `F` bytes before descriptor parsing, token
+mutation, or phrase-record mutation, and count those bytes with descriptors,
+payload, tokens, tANS views, and phrase records under the aggregate internal-
+workspace limit.
+
+Reuse the complete entropy and phrase-graph validation unchanged. Only after
+it succeeds may the allocation-free LZ78 decoder expand Pair and FinalIndex
+phrases iteratively into exactly `F` raw bytes. Retain LZ78 decode, validation,
+format, token-index, and input-offset diagnostics. Expose no caller output span
+and require every caller to discard all workspace on failure. This decision
+adds no transactional publisher, encoder, streaming transform, public API,
+CLI, benchmark, fuzzer, or interoperability entry.
+
 ## DD-569: LZ78 tANS validates all entropy before phrase parsing
 
 - Date: 2026-08-04

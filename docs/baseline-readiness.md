@@ -136,7 +136,9 @@ per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A` frame is
 now preflights exact extents and all token, view, and phrase workspaces,
 validates every tANS block before token mutation, reconstructs the complete
 private token region, and applies LZ78 alignment, phrase-graph, and exact raw-
-extent validation. Private raw reconstruction and all later admission
+extent validation. Its private decoder now preflights and counts the complete
+raw staging extent, then expands the validated phrase graph iteratively without
+caller publication. Transactional publication and all later admission
 boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes

@@ -5025,6 +5025,14 @@ any block. A second pass reconstructs exactly `S` private bytes only after the
 complete entropy region succeeds. The ordinary LZ78 validator then requires
 eight-byte alignment and checks every tag, reserved field, phrase reference,
 dictionary-growth rule, FinalIndex placement, and exact `F` expansion without
-reconstructing raw bytes. No decoder, encoder, streaming transform, profile
-calculator, C factory, CLI selector, benchmark, fuzzer, completion claim, or
-interoperability entry is defined yet.
+reconstructing raw bytes.
+
+The matching private decoder additionally requires caller-owned raw staging of
+at least `F` bytes before descriptor parsing or token mutation. Those `F`
+bytes are included with descriptors, payload, tokens, views, and phrase records
+under `max_internal_buffered_bytes`. Only after complete entropy and LZ78
+validation succeeds does the allocation-free LZ78 decoder expand every phrase
+iteratively into exactly `F` disposable bytes. No caller-visible output span
+exists; all workspace is discarded on failure. No publisher, encoder,
+streaming transform, profile calculator, C factory, CLI selector, benchmark,
+fuzzer, completion claim, or interoperability entry is defined yet.

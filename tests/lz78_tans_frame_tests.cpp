@@ -324,3 +324,116 @@ TEST(Lz78TansFrameValidator, RejectsUnsupportedPipeline) {
                   phrases).error,
               Lz78TansFrameValidationError::unsupported_pipeline);
 }
+
+TEST(Lz78TansFrameDecoder, ReconstructsIndependentVectorIntoRawStaging) {
+    const auto frame = single_pair_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_tans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        phrases, raw_staging);
+    ASSERT_EQ(result.error, Lz78TansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::Lz78DecodeError::none);
+    EXPECT_EQ(raw_staging[0], std::byte{'A'});
+}
+
+TEST(Lz78TansFrameDecoder,
+     ReconstructsNestedPhrasesAcrossTokenSplittingBlocks) {
+    constexpr std::array nested_tokens{
+        std::byte{0x00}, std::byte{0x41}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x42}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x01}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::uint32_t block_size = 5;
+    const auto frame = frame_for_tokens(nested_tokens, 4, block_size);
+    std::array<marc::entropy::internal::TansBlockView, 5> views{};
+    std::array<std::byte, nested_tokens.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 3> phrases{};
+    std::array<std::byte, 4> raw_staging{};
+    const auto result = marc::frame::decode_lz78_tans_frame_to_staging(
+        stream_for(4, block_size), {}, {}, 0, 0, frame, views,
+        dictionary_staging, phrases, raw_staging);
+    ASSERT_EQ(result.error, Lz78TansFrameValidationError::none);
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    EXPECT_EQ(raw_staging, expected);
+}
+
+TEST(Lz78TansFrameDecoder, RawCapacityFailurePrecedesPrivateMutation) {
+    const auto frame = single_pair_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0xa5});
+    std::array phrases{
+        marc::dictionary::internal::Lz78PhraseEntry{7, 0xa5, 9}};
+    const auto result = marc::frame::decode_lz78_tans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, dictionary_staging,
+        phrases, {});
+    EXPECT_EQ(result.error,
+              Lz78TansFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(phrases[0].prefix_index, 7U);
+    EXPECT_EQ(phrases[0].symbol, 0xa5U);
+    EXPECT_EQ(phrases[0].length, 9U);
+}
+
+TEST(Lz78TansFrameDecoder, CountsRawStagingInAggregateWorkspace) {
+    constexpr std::uint32_t block_size = pair_a.size();
+    const auto frame = frame_for_tokens(pair_a, 1, block_size);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = block_size;
+    limits.max_internal_buffered_bytes =
+        528 + 3 + pair_a.size()
+        + sizeof(marc::entropy::internal::TansBlockView)
+        + sizeof(marc::dictionary::internal::Lz78PhraseEntry) + 1 - 1;
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    dictionary_staging.fill(std::byte{0xa5});
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lz78_tans_frame_to_staging(
+        stream_for(1, block_size), {}, limits, 0, 0, frame, views,
+        dictionary_staging, phrases, raw_staging);
+    EXPECT_EQ(result.error, Lz78TansFrameValidationError::workspace_limit);
+    EXPECT_TRUE(std::ranges::all_of(
+        dictionary_staging, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
+
+TEST(Lz78TansFrameDecoder, MalformedLayersNeverTouchRawStaging) {
+    constexpr std::uint32_t block_size = 3;
+    auto malformed_entropy = frame_for_tokens(pair_a, 1, block_size);
+    malformed_entropy[malformed_entropy.size() - 2] = std::byte{0xff};
+    malformed_entropy[malformed_entropy.size() - 1] = std::byte{0xff};
+    std::array<marc::entropy::internal::TansBlockView, 3> views{};
+    std::array<std::byte, pair_a.size()> dictionary_staging{};
+    std::array<marc::dictionary::internal::Lz78PhraseEntry, 1> phrases{};
+    std::array raw_staging{std::byte{0xa5}};
+    EXPECT_EQ(marc::frame::decode_lz78_tans_frame_to_staging(
+                  stream_for(1, block_size), {}, {}, 0, 0,
+                  malformed_entropy, views, dictionary_staging, phrases,
+                  raw_staging).error,
+              Lz78TansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+
+    auto invalid_tokens = pair_a;
+    invalid_tokens[0] = std::byte{0xff};
+    const auto malformed_dictionary = frame_for_tokens(invalid_tokens);
+    std::array<marc::entropy::internal::TansBlockView, 1> single_view{};
+    EXPECT_EQ(marc::frame::decode_lz78_tans_frame_to_staging(
+                  stream_for(1), {}, {}, 0, 0, malformed_dictionary,
+                  single_view, dictionary_staging, phrases, raw_staging)
+                  .error,
+              Lz78TansFrameValidationError::dictionary_validation_error);
+    EXPECT_EQ(raw_staging[0], std::byte{0xa5});
+}
