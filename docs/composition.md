@@ -49,8 +49,10 @@ then explicitly emits the header, all descriptors, and all payloads while
 requiring each repeated block plan and final offset to match. Its bounded
 known-size streaming encoder emits the ordinary prefix, retains one raw,
 canonical-token, and encoded frame in caller-owned storage, and drains each
-complete immutable frame before reuse. No streaming decoder or public profile
-exists yet.
+complete immutable frame before reuse. Its matching streaming decoder collects
+the prefix and each exact frame in caller-owned storage, validates tANS and the
+complete LZ78 phrase graph, reconstructs into private raw staging, and only
+then drains caller-visible output. No public profile exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

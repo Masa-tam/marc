@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-575: LZ78 tANS streaming decode publishes only complete frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder above DD-569 through
+DD-574. Collect and validate the ordinary 80-byte prefix, then each 56-byte
+frame header. Before collecting a frame body, enforce aligned `S <= 8F`, exact
+block count and `528K` descriptors, the blockwise 12-bit transition ceiling,
+and caller capacity for the complete encoded frame, tANS views, token staging,
+LZ78 phrase records, and private raw staging under one aggregate limit.
+
+Decode a frame only after its entire declared body is collected. Invoke the
+private transactional reconstruction boundary, then drain raw bytes from
+staging before collecting the next frame. One-byte input/output is mandatory;
+`Flush` under starvation remains nonterminal; final `EndInput` survives output
+drain. Reject truncation, trailing bytes, malformed later frames, reset, and
+unknown flags with sticky errors. This decision adds no profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
 ## DD-574: LZ78 tANS streaming encode drains immutable frames
 
 - Date: 2026-08-04

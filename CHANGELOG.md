@@ -30,8 +30,11 @@ format versions, and C ABI versions are independent namespaces.
   is rejected without mutation. Its bounded known-size streaming encoder now
   emits the ordinary 80-byte prefix, buffers at most one raw frame, canonical
   token region, and encoded frame, and preserves exact bytes with one-byte
-  input/output, nonterminal `Flush`, and latched `EndInput`. No streaming
-  decoder or public profile is added yet.
+  input/output, nonterminal `Flush`, and latched `EndInput`. Its matching
+  streaming decoder admits each complete encoded frame and all token, tANS-
+  view, phrase, and private-raw workspaces before collection, validates and
+  reconstructs privately, and drains only successful frames. Later corruption
+  cannot publish bytes from the failing frame. No public profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

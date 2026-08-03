@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS known-size streaming decoder
+
+- Authoring method: applied marc's bounded frame-collection and immutable raw-
+  drain state contract above the private DD-570 LZ78+tANS reconstruction path.
+- References used: DD-575, DD-569 through DD-574, local generic header parser,
+  tANS extent rules, checked arithmetic, and caller-owned workspace policies.
+- Known implementations intentionally not consulted: external streaming
+  decoders, collection state machines, source code, malformed corpora, chunking
+  suites, and tests.
+- Independent decisions: admit every exact frame and workspace at its header;
+  collect a full body before decode; reconstruct privately; drain only after
+  success; preserve prior-frame publication on later corruption; and keep
+  terminal states sticky.
+- Generated-code task description: add the known-size bounded streaming
+  decoder; prove one-byte round trip, later-frame isolation, all workspace and
+  aggregate failures, truncation, trailing data, empty and starved input,
+  premature final input, unsupported flags, and repeated terminal behavior;
+  update build and documentation records.
+- Similarity review: the implementation composes only repository frame, tANS,
+  LZ78, span, and process contracts. No external control flow, storage layout,
+  malformed vector, chunk schedule, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZ78+tANS streaming-decoder suite passed 5/5
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,193/2,193 under both compilers using official CMake 4.3.4; all 38 benchmark
+  smokes, schema 1 through 27 compatibility, and documentation layout remained
+  successful.
+
 ## 2026-08-04 - LZ78 plus tANS known-size streaming encoder
 
 - Authoring method: applied marc's core transform state contract above the

@@ -5064,6 +5064,16 @@ the complete frames above in sequence. It buffers no more than one raw frame,
 one canonical token region, one encoder-record workspace, and one serialized
 frame in caller-owned storage. Arbitrary input/output chunking and nonterminal
 `Flush` do not change encoded bytes; `EndInput` remains latched while final
-prefix or frame bytes drain. No streaming decoder, profile calculator, C
-factory, CLI selector, benchmark, fuzzer, completion claim, or interoperability
-entry is defined yet.
+prefix or frame bytes drain.
+
+The internal known-size streaming decoder collects and validates that 80-byte
+prefix, then admits each 56-byte frame header and its exact declared body before
+collection continues. Header admission checks aligned `S <= 8F`, exact `K` and
+`528K`, the blockwise tANS payload ceiling, and all caller-owned encoded, view,
+token, phrase, and private-raw capacities. It invokes the private complete-frame
+decoder only after the whole frame is present and drains raw output only after
+that transaction succeeds. Final short-frame extent follows the known original
+size. Truncation, trailing bytes, and malformed tANS or LZ78 data are rejected
+without exposing bytes from the failing frame. No profile calculator, C factory,
+CLI selector, benchmark, fuzzer, completion claim, or interoperability entry is
+defined yet.

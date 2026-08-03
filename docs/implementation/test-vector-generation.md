@@ -3488,6 +3488,20 @@ encoder-record, and encoded-frame storage, aggregate workspace one byte short,
 premature end, excess input, `ResetBlock`, and an unknown flag. Every error is
 sticky and every result must satisfy the no-zero-progress contract.
 
+For the matching LZ78 plus tANS bounded streaming decoder, feed the encoder
+result one byte at a time and drain raw output one byte at a time; require exact
+`ABABX` and stable repeated end status. Corrupt the second frame's tANS
+descriptor and require only the first raw `AB`, leaving the rest of a sentinel
+destination unchanged and making the malformed error sticky.
+
+Independently shorten encoded-frame, view, token, private-raw, and phrase
+storage and lower the combined exact-frame, token, raw, view, and phrase
+workspace by one; require stable capacity or aggregate errors at frame-header
+admission. Reject the last-byte truncation, one trailing byte, reset, and an
+unknown flag. Accept the exact empty stream, keep `Flush` under starvation at
+`NeedInput`, and latch a premature `EndInput` while the first decoded frame
+drains before reporting truncation.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

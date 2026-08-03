@@ -1689,6 +1689,12 @@ checked arithmetic, caller-owned workspaces, and marc's process-result
 contract. No external streaming encoder, state machine, buffering layout,
 chunk schedule, source code, or test suite was consulted.
 
+The LZ78 plus tANS known-size streaming decoder uses only DD-575, DD-569
+through DD-574, the local generic and tANS header bounds, the private LZ78+tANS
+decoder, checked arithmetic, caller-owned spans, and marc's process-result
+contract. No external streaming decoder, collection state machine, workspace
+layout, malformed corpus, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

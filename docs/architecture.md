@@ -2115,6 +2115,15 @@ open, while a final `EndInput` remains latched across prefix and frame output
 starvation. Empty known-size input emits only the prefix; reset, unknown flags,
 premature end, excess input, and insufficient storage become sticky errors.
 
+The matching known-size streaming decoder collects the 80-byte prefix and each
+56-byte frame header before admitting the exact body extent. At header time it
+checks `S <= 8F`, token alignment, `K`, `528K`, the blockwise tANS payload
+ceiling, and all encoded, view, token, phrase, and private-raw regions under one
+aggregate limit. A complete frame is validated and reconstructed only into
+private staging before output drain begins. A malformed later frame therefore
+cannot alter earlier committed bytes or publish any raw prefix from the failing
+frame.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
