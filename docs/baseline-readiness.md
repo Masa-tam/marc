@@ -63,16 +63,16 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
 | `lz77-tans` | First tANS composition | Ready | Included |
-| `lzss-tans` | Second tANS composition | In progress | Not included |
+| `lzss-tans` | Second tANS composition | In progress | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 26 contains thirty-seven archives: the frozen thirty-six-entry schema-25
-set followed by the LZ77 tANS profile. Schemas 1 through 25
+Schema 27 contains thirty-eight archives: the frozen thirty-seven-entry
+schema-26 set followed by the LZSS tANS profile. Schemas 1 through 26
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
-thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, and thirty-six
-profiles;
+thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, thirty-six,
+and thirty-seven profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -83,7 +83,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 26 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 27 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -122,7 +122,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Not included |
+| `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -161,8 +161,10 @@ canonical truncation, impossible frame extents, and an invalid descriptor.
 Its explicit CLI selector now uses only the public requirements, factory,
 process, and destroy lifecycle with transactional output publication. The
 dependency-free benchmark now verifies an exact public-C round trip before
-timing and reports all directional workspace regions. Interoperability schema
-27 is the next boundary.
+timing and reports all directional workspace regions. Schema 27 now appends
+the unchanged CLI archive once and passes local generation, exact-order,
+re-encoding, reorder-rejection, and schemas 1 through 26 compatibility tests.
+External four-direction exchange is the remaining admission boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

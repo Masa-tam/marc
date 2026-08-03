@@ -667,7 +667,8 @@ rANS to the frozen thirty-three-profile schema-22 order. Schema 24 names
 schema-23 order. Schema 25 names `marc-cli-v25` and appends LZMW plus rANS to
 the frozen thirty-five-profile schema-24 order. Schema 26 names
 `marc-cli-v26` and appends LZ77 plus tANS to the frozen thirty-six-profile
-schema-25 order. Schemas 1 through 25 retain
+schema-25 order. Schema 27 names `marc-cli-v27` and appends LZSS plus tANS to
+the frozen thirty-seven-profile schema-26 order. Schemas 1 through 26 retain
 their exact versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
@@ -1920,6 +1921,13 @@ nonempty frame. An untimed exact round trip gates measurement; transform
 construction stays outside timed intervals, while direction-specific
 workspace regions and their peak total are reported from the requirements
 queries.
+
+Interoperability schema 27 appends the unchanged `lzss-tans` CLI archive once
+after the frozen schema-26 order. Generation verifies all 38 archives before
+recording their size and SHA-256; verification enforces exact order, foreign
+decode equality, and byte-identical re-encoding. The compatibility regression
+rejects reordered schema-27 manifests and removes only `lzss-tans` to recover
+schema 26 before checking every earlier schema.
 
 ### Specified LZ77 plus tANS boundary
 

@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added interoperability schema 27 as the frozen schema-26 archive order plus
+  `lzss-tans` exactly once. Local generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 26 compatibility now pass for all 38 archives. External exchange
+  remains pending.
 - Reserved the `lzss-tans` composition and independent 587-byte raw-`A`
   frame. Canonical variable-length LZSS token bytes are finalized before tANS
   coding; entropy blocks may split tokens but not outer frames. Checked bounds

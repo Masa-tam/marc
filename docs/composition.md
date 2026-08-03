@@ -120,7 +120,11 @@ length, and invalid-descriptor regressions. Its explicit CLI selector uses only
 the public C lifecycle with 64-KiB raw frames and entropy blocks and
 transactional file publication. Its dependency-free benchmark uses that same
 public lifecycle and verifies an exact round trip before timing. There is no
-local readiness claim or interoperability entry yet.
+local readiness claim yet. Interoperability schema 27 appends its unchanged
+CLI archive once after the frozen schema-26 order and passes local generation,
+exact-order verification, byte-identical re-encoding, reordered-manifest
+rejection, and schemas 1 through 26 compatibility. External exchange remains
+pending.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

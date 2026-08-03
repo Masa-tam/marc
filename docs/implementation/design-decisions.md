@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-567: Interoperability schema 27 appends LZSS tANS
+
+- Date: 2026-08-03
+- Status: accepted
+
+Freeze the exact thirty-seven-entry schema-26 order and append `lzss-tans`
+once as entry 38. Name the new codec set `marc-cli-v27`; retain the existing
+deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
+SHA-256 records.
+
+Generation must round-trip every archive before recording it. Verification
+requires the exact schema order, foreign decode equality, and byte-identical
+local re-encoding. The compatibility regression rejects a reordered schema-27
+manifest, derives schema 26 by removing only `lzss-tans`, then verifies
+schemas 1 through 26 unchanged. This establishes local schema admission but
+does not claim cross-platform completion or promote the profile to `Ready`.
+
 ## DD-566: LZSS tANS benchmark verifies before measuring
 
 - Date: 2026-08-03

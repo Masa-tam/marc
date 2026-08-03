@@ -1641,6 +1641,11 @@ profile, the `marc_lzss_tans_*` lifecycle, checked local capacity arithmetic,
 and marc's existing verified measurement loop. No external benchmark harness,
 workspace layout, formula, fixture, source code, or result was consulted.
 
+Interoperability schema 27 uses only DD-567, the frozen local schema-26 order,
+marc's deterministic 8,193-byte fixture, the published `lzss-tans` CLI
+profile, and repository-owned bundle scripts. No external archive, manifest,
+implementation, compatibility suite, or result was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

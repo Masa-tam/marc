@@ -9906,6 +9906,30 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - Interoperability schema 27 appends LZSS plus tANS
+
+- Authoring method: extended marc's append-only local bundle schema by one
+  already admitted CLI profile.
+- References used: DD-567, the frozen schema-26 order, repository-owned bundle
+  scripts, deterministic 8,193-byte fixture, and `lzss-tans`.
+- Known implementations intentionally not consulted: external archives,
+  manifests, interoperability suites, implementations, or test results.
+- Independent decisions: name `marc-cli-v27`; append `lzss-tans` only as
+  entry 38; enforce exact order; and recover schema 26 by removing only the new
+  archive before checking every earlier schema.
+- Generated-code task description: advance bundle generation and verification
+  to schema 27, add reordered-manifest and schemas 1 through 26 compatibility
+  coverage, and synchronize format/readiness/interoperability/provenance docs.
+- Similarity review: the change is an append-only application of marc's own
+  manifest rules and fixture. No external ordering, archive bytes, metadata,
+  script structure, or expected result was compared.
+- Local validation: schema-27 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 26 compatibility passed under MSVC and ClangCL. The complete Release
+  CTest suite passed 2,155/2,155 under both compilers using official CMake
+  4.3.4; all 38 benchmark smokes and documentation layout remained successful.
+  External schema-27 exchange remains pending.
+
 ## 2026-08-03 - LZSS plus tANS public benchmark
 
 - Authoring method: extended marc's dependency-free verified measurement

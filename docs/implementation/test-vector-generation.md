@@ -3393,6 +3393,15 @@ input and encoded sizes, ratio, both directional times and throughputs, all six
 queried workspace extents, and peak workspace. Do not impose a speed or
 compression-ratio threshold.
 
+For interoperability schema 27, retain the exact schema-26 archive order and
+append one `lzss-tans` archive as entry 38. Set `schema_version` to 27 and
+`codec_set` to `marc-cli-v27`; record an archive only after its local decode
+matches the deterministic 8,193-byte fixture. Require exact order, foreign
+decode equality, byte-identical local re-encoding, and rejection after swapping
+the first two manifest entries. Derive schema 26 by removing only
+`lzss-tans.marc` and changing only version and codec set, then verify schemas
+1 through 26 unchanged.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

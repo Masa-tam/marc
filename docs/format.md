@@ -4773,6 +4773,10 @@ fields, report three caller-owned regions as byte counts plus alignment, and
 construct the existing streaming encoder or decoder without serializing ABI
 structures.
 
+Interoperability schema 27 emits this unchanged profile as `lzss-tans` after
+the frozen thirty-seven-entry schema-26 order. The schema changes only bundle
+membership and does not define a new stream representation.
+
 Interoperability schema 26 emits this unchanged profile as `lz77-tans` after
 the frozen thirty-six-entry schema-25 order. The schema adds no alternate
 stream representation or parameter set.
