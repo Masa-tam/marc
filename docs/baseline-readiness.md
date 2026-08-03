@@ -63,7 +63,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-rans` | Fifth rANS composition | Ready | Included |
 | `lzmw-rans` | Sixth rANS composition | Ready | Included |
 | `lz77-tans` | First tANS composition | Ready | Included |
-| `lzss-tans` | Second tANS composition | In progress | Included |
+| `lzss-tans` | Second tANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 27 contains thirty-eight archives: the frozen thirty-seven-entry
@@ -164,7 +164,10 @@ dependency-free benchmark now verifies an exact public-C round trip before
 timing and reports all directional workspace regions. Schema 27 now appends
 the unchanged CLI archive once and passes local generation, exact-order,
 re-encoding, reorder-rejection, and schemas 1 through 26 compatibility tests.
-External four-direction exchange is the remaining admission boundary.
+Four-direction external verification at revision
+`da376a7223f8a8072531271472f40d58b69e3b7a` establishes canonical archives
+across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+x86-64 producers. All current admission evidence is present.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

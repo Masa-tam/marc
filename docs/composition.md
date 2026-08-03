@@ -120,11 +120,14 @@ length, and invalid-descriptor regressions. Its explicit CLI selector uses only
 the public C lifecycle with 64-KiB raw frames and entropy blocks and
 transactional file publication. Its dependency-free benchmark uses that same
 public lifecycle and verifies an exact round trip before timing. There is no
-local readiness claim yet. Interoperability schema 27 appends its unchanged
-CLI archive once after the frozen schema-26 order and passes local generation,
-exact-order verification, byte-identical re-encoding, reordered-manifest
-rejection, and schemas 1 through 26 compatibility. External exchange remains
-pending.
+remaining local readiness exception. Interoperability schema 27 appends its
+unchanged CLI archive once after the frozen schema-26 order and passes local
+generation, exact-order verification, byte-identical re-encoding,
+reordered-manifest rejection, and schemas 1 through 26 compatibility.
+Four-direction external verification at revision
+`da376a7223f8a8072531271472f40d58b69e3b7a` establishes canonical archives
+across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+x86-64 producers.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

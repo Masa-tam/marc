@@ -10,8 +10,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 26 compatibility now pass for all 38 archives. External exchange
-  remains pending.
+  through 26 compatibility now pass for all 38 archives. Four-direction
+  exchange at revision `da376a7223f8a8072531271472f40d58b69e3b7a`
+  additionally proves canonical output across Windows/MSVC, Ubuntu 24.04, and
+  Ubuntu 26.04/Clang x86-64 producers.
 - Reserved the `lzss-tans` composition and independent 587-byte raw-`A`
   frame. Canonical variable-length LZSS token bytes are finalized before tANS
   coding; entropy blocks may split tokens but not outer frames. Checked bounds
@@ -46,7 +48,8 @@ format versions, and C ABI versions are independent namespaces.
   conservative 512-KiB internal policy, and transactional file publication.
   Its dependency-free benchmark now verifies a byte-exact public-C round trip
   before timing and reports ratio, directional throughput, all six workspace
-  extents, and peak caller workspace. The profile is not yet locally ready.
+  extents, and peak caller workspace. The profile is locally ready and has
+  completed its external schema-27 exchange.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

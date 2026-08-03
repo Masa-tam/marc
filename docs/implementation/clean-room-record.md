@@ -9928,7 +9928,12 @@ discarded and the reviewed seed retained.
   through 26 compatibility passed under MSVC and ClangCL. The complete Release
   CTest suite passed 2,155/2,155 under both compilers using official CMake
   4.3.4; all 38 benchmark smokes and documentation layout remained successful.
-  External schema-27 exchange remains pending.
+- External validation: revision
+  `da376a7223f8a8072531271472f40d58b69e3b7a` completed all four schema-27
+  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
+  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
+  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and
+  byte-identically re-encoded all 38 archives.
 
 ## 2026-08-03 - LZSS plus tANS public benchmark
 
