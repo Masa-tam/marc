@@ -1713,6 +1713,12 @@ transactional CLI adapter and regression script. No external compression CLI,
 workspace layout, command syntax, archive, source code, or test suite was
 consulted.
 
+The LZ78 plus tANS benchmark uses only DD-579, DD-578's fixed public profile,
+the published C lifecycle, checked complete-stream capacity arithmetic, and
+marc's dependency-free timing and workspace-reporting harness. No external
+benchmark adapter, tool, corpus result, capacity formula, source code, or test
+suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

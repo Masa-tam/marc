@@ -43,7 +43,10 @@ format versions, and C ABI versions are independent namespaces.
   inputs publish no handle. The explicit `lz78-tans` CLI selector now drives
   only that public lifecycle, uses the fixed 64-KiB frame/block profile and a
   conservative 4-MiB aggregate limit, and retains transactional destination
-  publication and strict trailing-data rejection.
+  publication and strict trailing-data rejection. Its dependency-free
+  benchmark now verifies an exact public-C round trip before measuring
+  compression ratio, encode/decode throughput, and all caller-owned workspace
+  regions.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

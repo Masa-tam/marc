@@ -60,6 +60,9 @@ direction-specific requirements query, and factory over the same three-region
 workspace contract. Its explicit CLI selector now configures that public
 profile, obtains every directional extent and alignment from the C
 requirements query, and retains transactional temporary-file publication.
+Its dependency-free benchmark now selects the identical public profile,
+performs an untimed byte-exact round trip, and reports direction-specific
+caller-owned workspace before measuring throughput.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

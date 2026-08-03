@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS public benchmark
+
+- Authoring method: extended marc's dependency-free benchmark harness by the
+  already admitted fixed LZ78+tANS public profile.
+- References used: DD-579, DD-578's profile, the public
+  `marc_lz78_tans_*` lifecycle, and checked local capacity arithmetic.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  benchmarks, wrappers, corpora, results, capacity formulas, source, or tests.
+- Independent decisions: require an untimed exact public-C round trip before
+  measurement; reserve `80 + 12N + 4296K`; report all directional borrowed
+  regions; and apply no throughput floor.
+- Generated-code task description: register `lz78-tans`, extend checked
+  capacity and dispatch, add a one-iteration smoke, and synchronize benchmark,
+  readiness, format, architecture, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: only marc's existing public-C benchmark contract was
+  extended. No external control flow, formula, output schema, fixture, or test
+  expression was compared.
+- Local validation: the focused benchmark smoke and all 39 benchmark smokes
+  passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,203/2,203 under both compilers using official CMake 4.3.4; documentation
+  layout and schema-27 compatibility remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS CLI selector
 
 - Authoring method: extended marc's existing selector dispatch and

@@ -123,7 +123,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-tans` | Yes | Yes | Yes | Yes | No | No | No | No |
+| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | No | No | No |
 
 ## Composed-profile admission queue
 
@@ -161,8 +161,9 @@ ABI now exposes the size-tagged config, direction-specific requirements query,
 and factory while preserving exact workspace and alignment validation. Its
 explicit CLI selector now uses only that public lifecycle, fixes the documented
 64-KiB frame/block policy and 4-MiB aggregate bound, and retains transactional
-file publication. Benchmark, fuzz, completion, and interoperability admission
-remain pending.
+file publication. Its dependency-free benchmark now verifies one exact public
+C round trip before timing and reports all three directional workspace
+regions. Fuzz, completion, and interoperability admission remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

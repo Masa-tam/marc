@@ -5095,5 +5095,5 @@ requirements only from local hard limits and reports encoded-frame primary
 storage, token followed by private-raw secondary storage, and one aligned tANS-
 view-plus-LZ78-phrase region. Short or misaligned storage and nonzero reserved
 fields are rejected before a handle is published. The `lz78-tans` CLI selector
-uses this public profile without changing its representation. No benchmark,
+and benchmark use this public profile without changing its representation. No
 fuzzer, completion claim, or interoperability entry is defined yet.

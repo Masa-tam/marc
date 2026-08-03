@@ -3537,6 +3537,13 @@ empty-input handling, destination overwrite refusal, malformed-input cleanup,
 and strict rejection of a valid stream with one trailing byte. The test must
 invoke only the CLI, whose adapter in turn uses only the public C lifecycle.
 
+For the LZ78 plus tANS benchmark smoke, select `lz78-tans`, use `README.md`,
+and run one iteration. Before timing, require a public-C encode/decode round
+trip to reproduce every input byte. Require the report to identify the
+selector, encoded size, ratio, directional throughput, each primary,
+secondary, and views extent, and peak caller-owned workspace. Treat all speed
+values as descriptive and impose no performance threshold.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

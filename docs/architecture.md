@@ -2110,6 +2110,9 @@ The command-line adapter selects this contract explicitly as `lz78-tans`.
 It supplies only the fixed public profile limits, obtains all three directional
 workspace extents and opaque alignment from the public C ABI requirements
 query, and publishes files through the existing temporary-path transaction.
+The dependency-free benchmark selects the same public C profile and requires
+an untimed exact round trip before measuring encode/decode throughput,
+compression ratio, and caller-owned workspace.
 
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,

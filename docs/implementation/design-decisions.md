@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-579: LZ78 tANS benchmark measures the admitted public profile
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add `lz78-tans` to the dependency-free benchmark only through DD-578's fixed
+public profile and the `marc_lz78_tans_*` lifecycle. Reuse the 65,536-byte raw
+frame and entropy block, 524,288-byte token ceiling, eight tANS blocks,
+786,448-byte payload ceiling, 65,536 phrase entries, and 4-MiB aggregate
+policy. Derive checked complete-stream capacity as `80 + 12N + 4296K` for raw
+input extent `N` and nonempty frame count `K`.
+
+Query and report all three direction-specific caller-owned workspace regions,
+including aligned opaque views. Before timing, require one byte-exact encode
+and decode through independently constructed public transforms. Then report
+compression ratio and encode/decode throughput without imposing a performance
+floor. Add a one-iteration README smoke under both supported Windows compiler
+configurations. This decision adds no optimized format variant, fuzz target,
+completion claim, interoperability archive, or schema revision.
+
 ## DD-578: LZ78 tANS CLI admits only the public bounded profile
 
 - Date: 2026-08-04
