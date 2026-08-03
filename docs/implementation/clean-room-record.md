@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS complete-frame validator
+
+- Authoring method: composed marc's strict two-pass tANS block controller with
+  its existing bounded LZ78 token and phrase-graph validator.
+- References used: DD-569, DD-568 bounds, local generic frame parsing, local
+  tANS descriptors and state validation, caller-owned spans, checked
+  arithmetic, and the independent 587-byte vector.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: admit all extents before entropy work; count tANS
+  views and LZ78 phrase records in the aggregate; validate every entropy block
+  before token mutation; decode exactly once into private staging only after
+  complete entropy success; and retain stable layer and position diagnostics.
+- Generated-code task description: implement only the bounded decoder-side
+  validator, exercise token-splitting blocks, truncation, later-block failure,
+  workspace shortages, invalid LZ78 semantics, impossible extents, and update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation directly sequences repository-owned
+  components and checked spans. No external control flow, validation schedule,
+  error taxonomy, test mutation, encoded data, or naming scheme was compared.
+- Local validation: the focused validator suite passed 11/11 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,167/2,167 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS representation and vector reservation
 
 - Authoring method: composed marc's already specified fixed-width LZ78 token

@@ -13,7 +13,11 @@ format versions, and C ABI versions are independent namespaces.
   cover aligned `S <= 8F`, exact `528K` descriptors, and the blockwise 12-bit
   transition ceiling. The fixed payload `6B 04 00` records the independently
   derived `00:3584, 41:512` model, initial-state offset `0x046B`, and four
-  zero transition bits. No combined validator or public profile is added yet.
+  zero transition bits. Its first bounded complete-frame validator admits all
+  serialized and caller-owned token, view, and phrase extents before entropy
+  work, validates every tANS block before token mutation, reconstructs the
+  exact private token region, and applies aligned LZ78 phrase-graph and raw-
+  extent validation. No raw decoder or public profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

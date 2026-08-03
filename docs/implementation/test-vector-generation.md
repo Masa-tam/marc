@@ -3415,6 +3415,22 @@ Serialize one frame with raw size 1, dictionary size 8, payload size 3, one
 header, descriptor, frequency, and payload definition in `docs/format.md`.
 This test fixes the representation before a combined validator exists.
 
+For the first LZ78 plus tANS validator, require the 587-byte hand vector to
+reconstruct the exact Pair token in private staging. Re-encode that token with
+tANS block size three and require three blocks, proving that entropy boundaries
+may split a fixed-width token. Reject every proper frame prefix and one trailing
+byte.
+
+Use one-entry-short view storage, one-byte-short token staging, empty phrase
+storage, and an aggregate workspace limit one byte below descriptor, payload,
+token, view, and phrase bytes; each must fail before token mutation. Corrupt a
+frequency descriptor and the initial state of the last block in the
+three-block schedule independently; the later-block case must report block
+index two while
+preserving the complete staging sentinel. Entropy-code an unknown LZ78 tag and
+require dictionary-layer rejection with token index and input offset. Reject
+misaligned dictionary extent, excessive entropy extent, and another pipeline.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

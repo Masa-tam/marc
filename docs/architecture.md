@@ -2063,7 +2063,15 @@ exact `F` expansion without caller-visible publication.
 The independent raw-`A` boundary fixes one Pair token, normalized frequencies
 `00:3584` and `41:512`, initial-state offset `0x046B`, four zero transition
 bits, payload `6B 04 00`, and a complete 587-byte frame. This is a format and
-vector reservation only; the bounded combined validator is the next boundary.
+vector reservation.
+
+The first bounded validator realizes the validation-first boundary with
+caller-owned tANS views, token staging, and LZ78 phrase records. It admits all
+serialized and workspace extents under one aggregate policy, validates every
+tANS descriptor and state path without token output, and only then performs a
+second entropy pass into private staging. Complete LZ78 token and phrase-graph
+validation follows; raw expansion and caller-visible publication remain
+absent from this boundary.
 
 ### C transform ABI
 

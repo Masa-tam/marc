@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-569: LZ78 tANS validates all entropy before phrase parsing
+
+- Date: 2026-08-04
+- Status: accepted
+
+Implement the first complete-frame validator for DD-568 without raw
+reconstruction or publication. Before entropy work, require the exact frame
+extent, nonzero eight-byte-aligned `S <= 8F`, exact `K` and `528K`, the checked
+blockwise payload ceiling, complete caller token staging, `K` tANS views, and
+the full bounded LZ78 phrase-record workspace.
+
+Count descriptors, payload, token bytes, tANS views, and phrase records under
+`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
+state path before decoding any token byte. Only after all blocks succeed may a
+second pass reconstruct exactly `S` bytes and invoke the ordinary LZ78 token
+and phrase-graph validator. Preserve block index and LZ78 token/input offsets
+where practical. A malformed later block must leave the entire token staging
+unchanged. This decision adds no raw decoder, publisher, encoder, streaming
+transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
+
 ## DD-568: LZ78 tANS entropizes finalized fixed-width tokens
 
 - Date: 2026-08-04

@@ -132,8 +132,12 @@ entropy blocks to split a token without crossing a frame, and requires full
 private entropy reconstruction before phrase-graph validation. Its bounds are
 `S <= 8F`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked sum of
 per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A` frame is
-587 bytes with payload `6B 04 00`. The combined validator and all later
-admission boundaries remain pending.
+587 bytes with payload `6B 04 00`. Its first bounded complete-frame validator
+now preflights exact extents and all token, view, and phrase workspaces,
+validates every tANS block before token mutation, reconstructs the complete
+private token region, and applies LZ78 alignment, phrase-graph, and exact raw-
+extent validation. Private raw reconstruction and all later admission
+boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the
