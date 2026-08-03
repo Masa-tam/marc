@@ -1861,6 +1861,13 @@ header, consecutive fixed descriptors, and consecutive payloads explicitly.
 Every block is replanned over unchanged token bytes and must reproduce the
 same payload extent, preserving one deterministic representation.
 
+The known-size streaming encoder drains the 80-byte prefix first, collects at
+most one raw frame, prepares the entire immutable frame through the writer,
+and drains it before accepting reuse of its storage. One-byte input and output
+are valid. Full frames may drain before finish, `Flush` leaves a partial frame
+open, and a latched `EndInput` survives output starvation until all bytes are
+emitted.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

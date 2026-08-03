@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-559: LZSS tANS streaming encode drains immutable frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-558. Emit the ordinary
+64-byte stream header and 16-byte LZSS parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the exact writer, and drain that immutable
+frame before reusing any workspace.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `2F` token staging, and prefix serialization.
+Before each frame, count raw collection, exact token staging, and exact
+serialized frame under one aggregate limit. Input and output capacities may be
+one byte. `Flush` does not close a partial frame; `EndInput` remains latched
+while prefix or frame bytes drain; full frames may drain before finish.
+`ResetBlock`, unknown flags, premature end, excess input, and insufficient
+workspace are sticky errors. This decision adds no streaming decoder, profile
+calculator, C factory, CLI, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
 ## DD-558: LZSS tANS frame writing follows one complete plan
 
 - Date: 2026-08-03

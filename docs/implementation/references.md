@@ -1595,6 +1595,12 @@ tANS encoder, checked spans, and frozen token staging. No external combined
 encoder, archive writer, serialization layout, source code, encoded corpus, or
 test suite was consulted.
 
+The LZSS plus tANS known-size streaming encoder uses only DD-559, DD-558's
+complete-frame writer, marc's core transform contract, explicit stream and
+parameter serializers, caller-owned spans, and checked aggregate arithmetic.
+No external streaming encoder, buffering state machine, source code, chunking
+suite, or test expression was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

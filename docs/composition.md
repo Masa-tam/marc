@@ -103,8 +103,11 @@ reconstruction. Its write-free encoder planner freezes the complete canonical
 token region and determines exact tANS block and frame extents without a
 serialized output span. Its complete-frame writer admits the entire output
 first, then emits the header, consecutive descriptors, and consecutive
-payloads deterministically. There is no streaming transform, C factory, CLI
-selector, benchmark, fuzzer, completion claim, or interoperability entry yet.
+payloads deterministically. Its bounded known-size streaming encoder drains
+the ordinary prefix and complete prepared frames from caller-owned storage,
+preserving identical bytes under one-byte chunking and nonterminal `Flush`.
+There is no streaming decoder, C factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

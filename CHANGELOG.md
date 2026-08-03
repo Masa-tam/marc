@@ -22,8 +22,10 @@ format versions, and C ABI versions are independent namespaces.
   canonical token sequence and determines exact tANS block and frame extents
   without emitting serialized output. Its complete-frame writer preflights the
   exact destination and emits the generic header, consecutive descriptors, and
-  consecutive payloads deterministically. The reservation adds no combined
-  public codec yet.
+  consecutive payloads deterministically. Its known-size streaming encoder
+  drains the ordinary prefix and bounded complete frames with byte-identical
+  one-byte chunking, latched finish, and nonterminal `Flush`. The reservation
+  adds no combined public codec yet.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

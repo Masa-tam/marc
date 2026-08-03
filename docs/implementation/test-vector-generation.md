@@ -3302,6 +3302,18 @@ Encode six repeated `A` bytes with `B = 3` twice, require byte identity and an
 exact raw input. Supply a 586-byte guarded output for raw `A`; require the
 exact 587-byte planned size and no output mutation.
 
+For the LZSS plus tANS bounded streaming encoder, independently build the
+80-byte prefix and concatenate exact complete-frame encodings for raw `AB`,
+`AB`, and final `X`. Feed input and output one byte at a time and require exact
+byte equality with that reference and stable repeated end status.
+
+Submit one raw byte with nonterminal `Flush`; require only the prefix and keep
+the partial frame open. Then submit the remainder with `EndInput` and require
+the unchanged reference. Exercise empty known-size input, short raw, token, and
+encoded-frame storage, aggregate workspace one byte short, premature end, and
+`ResetBlock`. Every error is sticky and must satisfy the no-zero-progress
+contract.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

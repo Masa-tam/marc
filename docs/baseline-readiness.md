@@ -143,7 +143,9 @@ tables above. The encoder-side write-free planner now freezes the canonical
 LZSS token region, plans every tANS block, and validates exact frame extents;
 the matching writer now admits the complete output before mutation and emits
 the header, consecutive descriptors, and consecutive payloads explicitly.
-Known-size streaming encode is the next boundary.
+The known-size streaming encoder now drains the 80-byte prefix and complete
+prepared frames from bounded caller-owned storage with chunk-independent bytes,
+latched finish, and nonterminal `Flush`. Streaming decode is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete

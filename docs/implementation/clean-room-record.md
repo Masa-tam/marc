@@ -9906,6 +9906,29 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS known-size streaming encoder
+
+- Authoring method: applied marc's core transform state contract above the
+  DD-558 complete-frame writer with caller-owned bounded storage.
+- References used: DD-559, DD-558, local stream and LZSS parameter serializers,
+  checked arithmetic, and existing process-result invariants.
+- Known implementations intentionally not consulted: external streaming
+  encoders, buffering state machines, source code, chunking suites, and tests.
+- Independent decisions: drain prefix first; retain one raw, token, and encoded
+  frame; prepare only complete expected frames; keep Flush nonterminal; latch
+  EndInput through draining; and keep terminal states sticky.
+- Generated-code task description: add a known-size bounded streaming encoder;
+  prove reference-byte identity with one-byte buffers, full-frame and Flush
+  behavior, storage and aggregate failures, empty and premature input,
+  unsupported reset, and repeated end; update build and documentation records.
+- Similarity review: the implementation composes only repository state,
+  framing, writer, and span contracts. No external control flow, storage
+  layout, chunk schedule, or test expression was compared.
+- Local validation: all 4 focused streaming-encoder tests and all 2,134
+  repository tests passed under both MSVC and ClangCL using official CMake
+  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
+  successful.
+
 ## 2026-08-03 - LZSS plus tANS complete-frame writer
 
 - Authoring method: extended DD-557's exact planner with repository-owned

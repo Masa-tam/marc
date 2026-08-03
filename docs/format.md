@@ -4748,6 +4748,13 @@ and then all `K` payloads in the same order. Each block is replanned over the
 unchanged token staging and must reproduce the planned payload size; any
 internal discrepancy is an error rather than an alternate representation.
 
+The internal known-size streaming encoder serializes the ordinary 64-byte
+stream header followed by the ordinary 16-byte LZSS parameter extension, then
+the complete frames above in sequence. It buffers no more than one raw frame,
+one canonical token region, and one encoded frame in caller-owned storage.
+Arbitrary input/output chunking and non-terminal `Flush` do not change encoded
+bytes; `EndInput` remains latched while final prefix or frame output drains.
+
 The matching complete-frame writer runs that plan first and requires output
 capacity for the entire exact serialized extent before writing. It explicitly
 serializes the 56-byte generic header, all `K` 528-byte descriptors in order,
