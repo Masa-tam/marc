@@ -52,7 +52,10 @@ canonical-token, and encoded frame in caller-owned storage, and drains each
 complete immutable frame before reuse. Its matching streaming decoder collects
 the prefix and each exact frame in caller-owned storage, validates tANS and the
 complete LZ78 phrase graph, reconstructs into private raw staging, and only
-then drains caller-visible output. No public profile exists yet.
+then drains caller-visible output. Its internal profile calculator derives all
+encoder and decoder byte regions, encoder-record counts, block-view counts,
+phrase counts, and aligned opaque partitions from checked configuration and
+hard limits. No public C profile exists yet.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS

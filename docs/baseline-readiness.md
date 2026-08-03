@@ -153,7 +153,10 @@ protocol and workspace failures are covered. The matching streaming decoder
 now admits each complete frame and every tANS view, token, phrase, and private-
 raw region before body collection, decodes privately, and drains only after
 success. A malformed later frame cannot expose its output. The profile
-calculator and all later admission boundaries remain pending.
+calculator now derives bounded encoder and decoder regions from validated
+configuration and hard limits, including aligned mixed tANS-view and LZ78-
+phrase storage; its results directly construct the streaming round trip. The C
+factory and all later admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

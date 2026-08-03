@@ -9906,6 +9906,32 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS internal profile calculator
+
+- Authoring method: derived bounded direction-specific workspace formulae from
+  the local streaming constructors, exact-frame ceiling, LZ78 token and record
+  bounds, and tANS block payload ceiling.
+- References used: DD-576, DD-574/DD-575, DD-568, local hard limits, checked
+  arithmetic, and C++ `sizeof`/`alignof` requirements.
+- Known implementations intentionally not consulted: external workspace APIs,
+  profile calculators, allocator layouts, source code, encoded corpora, and
+  test suites.
+- Independent decisions: report exact encoder byte regions and record count;
+  derive conservative decoder regions only from hard limits; lay out tANS views
+  before aligned LZ78 phrases; validate every published typed view; and map all
+  failures to stable profile/core errors.
+- Generated-code task description: add encoder and decoder requirements,
+  aligned opaque partition helpers, error mapping, exact default/short/empty
+  formula tests, limit and layout rejection, and a requirements-constructed
+  streaming round trip; update build and documentation records.
+- Similarity review: the implementation directly evaluates repository-owned
+  bounds and alignment. No external formula organization, storage partition,
+  API naming scheme, control flow, or test expression was compared.
+- Local validation: the focused LZ78+tANS profile suite passed 7/7 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,200/2,200 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS known-size streaming decoder
 
 - Authoring method: applied marc's bounded frame-collection and immutable raw-

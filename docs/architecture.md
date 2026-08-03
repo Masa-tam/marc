@@ -2124,6 +2124,15 @@ private staging before output drain begins. A malformed later frame therefore
 cannot alter earlier committed bytes or publish any raw prefix from the failing
 frame.
 
+The internal profile calculator bridges validated configuration to both
+streaming constructors. Encoder requirements contain the largest raw frame,
+its conservative `8F` token region, LZ78 encoder-record count, and complete
+`56 + 528K + sum(Q(n))` serialized-frame ceiling, where
+`Q(n) = 2 + ceil(12n/8)`. Decoder requirements come only from local hard limits
+and contain encoded-frame, token, private-raw, tANS-view, and LZ78-phrase
+capacities. The mixed view region is explicitly aligned and partitioned into
+typed spans only after size, offset, and alignment validation.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

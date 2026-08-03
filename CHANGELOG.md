@@ -34,7 +34,10 @@ format versions, and C ABI versions are independent namespaces.
   streaming decoder admits each complete encoded frame and all token, tANS-
   view, phrase, and private-raw workspaces before collection, validates and
   reconstructs privately, and drains only successful frames. Later corruption
-  cannot publish bytes from the failing frame. No public profile is added yet.
+  cannot publish bytes from the failing frame. Its internal profile calculator
+  now derives encoder raw/token/frame/record regions and decoder frame/token/
+  raw/view/phrase regions with checked tANS ceilings, and partitions mixed
+  opaque views at their natural alignment. No public C profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

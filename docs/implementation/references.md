@@ -1695,6 +1695,12 @@ decoder, checked arithmetic, caller-owned spans, and marc's process-result
 contract. No external streaming decoder, collection state machine, workspace
 layout, malformed corpus, source code, or test suite was consulted.
 
+The LZ78 plus tANS internal profile calculator uses only DD-576, DD-574 and
+DD-575 constructor requirements, DD-568's `8F` bound, local tANS payload
+ceilings, LZ78 record and phrase rules, checked arithmetic, and C++ alignment
+requirements. No external profile formula, allocator layout, source code,
+workspace API, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

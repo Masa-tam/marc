@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-576: LZ78 tANS profile derives every bounded workspace
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-574 and DD-575.
+For the largest known raw frame `F`, calculate encoder token capacity `8F`,
+LZ78 encoder-record count, `K = ceil(8F/B)`, `528K` descriptor bytes, the
+blockwise tANS payload ceiling, and complete frame capacity with checked
+arithmetic. Count raw, token, serialized frame, and encoder records under the
+same aggregate policy used by the streaming encoder.
+
+Derive decoder encoded-frame, token, private-raw, block-view, and phrase-entry
+capacities only from validated local hard limits. Define one exact aligned
+opaque layout for tANS views followed by LZ78 phrase records; reject short,
+misaligned, or altered requirements before publishing typed spans. Empty
+encoding has zero byte regions and alignment one. Prove the calculated regions
+directly construct the streaming round trip. This decision adds no C
+requirements query, public factory, CLI, benchmark, fuzzer, completion claim,
+or interoperability entry.
+
 ## DD-575: LZ78 tANS streaming decode publishes only complete frames
 
 - Date: 2026-08-04

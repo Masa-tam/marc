@@ -3502,6 +3502,21 @@ unknown flag. Accept the exact empty stream, keep `Flush` under starvation at
 `NeedInput`, and latch a premature `EndInput` while the first decoded frame
 drains before reporting truncation.
 
+For the LZ78 plus tANS internal profile calculator, require the default
+65,536-byte frame to produce 524,288 token bytes, eight tANS blocks, a 790,728-
+byte encoded-frame ceiling, and 65,536 encoder records. Freeze a 17-byte final
+frame with two maximum entries and require 136 token bytes and a 790-byte frame
+ceiling; require empty input to reset every region to zero and alignment one.
+
+Reject one-too-many blocks, a compressed payload limit below the 206-byte
+17-frame ceiling, an aggregate encoder workspace one byte short, a frame above
+the one-MiB profile bound, and invalid LZ78 parameters. Derive decoder regions
+from small explicit hard limits, verify checked overflow rejection, and
+partition encoder records plus aligned tANS-view/phrase storage. Alter counts
+or offsets, shorten storage, and misalign where possible; require rejection
+before typed-span publication. Finally construct both streaming directions
+solely from reported requirements and round-trip exact `ABABX`.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

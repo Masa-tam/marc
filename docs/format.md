@@ -5074,6 +5074,15 @@ token, phrase, and private-raw capacities. It invokes the private complete-frame
 decoder only after the whole frame is present and drains raw output only after
 that transaction succeeds. Final short-frame extent follows the known original
 size. Truncation, trailing bytes, and malformed tANS or LZ78 data are rejected
-without exposing bytes from the failing frame. No profile calculator, C factory,
-CLI selector, benchmark, fuzzer, completion claim, or interoperability entry is
-defined yet.
+without exposing bytes from the failing frame.
+
+The internal profile calculator changes no serialized representation. For the
+largest known raw frame `F`, it reports token capacity `S = 8F`,
+`K = ceil(S/B)` blocks, exact descriptor capacity `528K`, complete encoded-
+frame capacity `56 + 528K + sum(Q(n))`, and at most `min(F, maximum_entries)`
+encoder records, where `Q(n) = 2 + ceil(12n/8)`. Decoder requirements are
+derived only from local hard limits and report encoded-frame, token, private-
+raw, tANS-view, and LZ78-phrase capacities. Typed block and phrase spans are
+formed only after validating the opaque region's exact layout and alignment.
+No C factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry is defined yet.
