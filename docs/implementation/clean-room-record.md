@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS bounded decoder fuzzing
+
+- Authoring method: combined marc's established LZ78/rANS fixed phrase
+  boundary with its LZSS/tANS state-table boundary, using only the already
+  specified LZ78+tANS decoders.
+- References used: DD-580, local private complete-frame and public C streaming
+  decoders, fixed tANS views, LZ78 phrase records, and core progress invariants.
+- Known implementations intentionally not consulted: external LZ78/tANS fuzz
+  harnesses, corpora, crashes, malformed fixtures, source code, or tests.
+- Independent decisions: cap input at 8 KiB, output at 4 KiB, frames at 1 KiB,
+  tokens at 8 KiB, payload at 16 KiB, views at eight, phrases at 1,024, and
+  calls at one fixed expression; derive chunks only from bounded bytes.
+- Generated-code task description: add a dual-decoder libFuzzer entry point,
+  ordinary compiler smoke target, three permanent atomic regressions, and
+  synchronized fuzzing, readiness, format, architecture, decision, reference,
+  vector, changelog, and provenance records.
+- Similarity review: the harness composes only local public and private
+  contracts. No external control flow, storage layout, mutation schedule,
+  corpus byte, or test expression was compared.
+- Local validation: the fuzz compile-smoke and focused three-test regression
+  suite passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,206/2,206 under both compilers using official CMake 4.3.4; all 39 benchmark
+  smokes, documentation layout, and schema-27 compatibility remained
+  successful.
+
 ## 2026-08-04 - LZ78 plus tANS public benchmark
 
 - Authoring method: extended marc's dependency-free benchmark harness by the

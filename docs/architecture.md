@@ -2113,6 +2113,10 @@ query, and publishes files through the existing temporary-path transaction.
 The dependency-free benchmark selects the same public C profile and requires
 an untimed exact round trip before measuring encode/decode throughput,
 compression ratio, and caller-owned workspace.
+The bounded decoder fuzz boundary drives both complete-frame private
+reconstruction and the public C streaming transform. All encoded, token, raw,
+tANS-view, phrase, and output regions have compile-time ceilings; byte-derived
+chunking has a finite process-call guard.
 
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,

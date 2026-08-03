@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-580: LZ78 tANS fuzzing is fixed-memory and dual-boundary
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded decoder fuzz harness only after DD-577's public lifecycle and
+DD-569 through DD-575's private and streaming validation paths are stable.
+Truncate supplied input to 8 KiB; permit at most 4 KiB total raw output, one
+1-KiB raw frame, 8 KiB of canonical LZ78 tokens, 16 KiB of compressed payload,
+eight tANS block views, and 1,024 LZ78 phrases. Include encoded-frame, token,
+private-raw, mixed aligned views, and output storage in fixed compile-time
+ceilings and one aggregate hard limit.
+
+Drive the complete-frame private decoder only after a valid exact profile
+prefix, and independently drive the public C streaming decoder with chunk
+sizes derived solely within the bounded input. Enforce the process-result
+contract and a finite call ceiling; reaching the ceiling is a reproducible
+failure. Permanently test every proper prefix of a canonical stream, impossible
+frame extents, and an invalid tANS descriptor for zero publication and sticky
+error identity. This decision adds no corpus finding, completion claim,
+interoperability archive, or schema revision.
+
 ## DD-579: LZ78 tANS benchmark measures the admitted public profile
 
 - Date: 2026-08-04

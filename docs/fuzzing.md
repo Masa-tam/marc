@@ -1,10 +1,10 @@
 # Fuzzing
 
-The thirty-eight bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The thirty-nine bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
 Dynamic Range, LZ77 plus rANS, LZ77 plus tANS, LZSS plus rANS, LZSS plus tANS,
-LZ78 plus rANS,
+LZ78 plus rANS, LZ78 plus tANS,
 LZSS plus Blocked Huffman,
 LZSS plus Adaptive Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked
 Huffman, LZ78 plus Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus
@@ -204,6 +204,15 @@ staging at 2 KiB, and tANS metadata at eight fixed `TansBlockView` records.
 Complete-frame and incremental paths share those arrays and the finite
 process-call ceiling.
 
+`marc_fuzz_lz78_tans_stream` combines the fixed tANS view/state boundary with
+LZ78 phrase-graph validation. It truncates supplied input to 8 KiB, caps total
+raw output at 4 KiB and one frame at 1 KiB, fixes canonical token staging at
+8 KiB, payload at 16 KiB, metadata at eight `TansBlockView` records, and
+phrases at 1,024 records. The complete-frame private decoder and public C ABI
+streaming decoder share fixed arrays and hard limits. Byte-derived chunks and
+a finite call budget make stalls reproducible without input-controlled
+allocation.
+
 `marc_fuzz_blocked_huffman_stream` covers the standalone dictionary-none
 profile that the combined target cannot select. It uses eight fixed block
 views, 256-symbol blocks, code length 24, a 512-node decode-table cap, and the
@@ -236,6 +245,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz78_adaptive_huffman_stream \
   marc_fuzz_lz78_dynamic_range_stream \
   marc_fuzz_lz78_rans_stream \
+  marc_fuzz_lz78_tans_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzw_rans_stream \
   marc_fuzz_lzd_rans_stream \
@@ -283,6 +293,8 @@ out/build/fuzz/marc_fuzz_lz78_dynamic_range_stream \
   fuzz/corpus/lz78_dynamic_range_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz78_rans_stream \
   fuzz/corpus/lz78_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lz78_tans_stream \
+  fuzz/corpus/lz78_tans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \
   fuzz/corpus/lzw_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_rans_stream \

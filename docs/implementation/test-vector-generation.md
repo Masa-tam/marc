@@ -3544,6 +3544,16 @@ selector, encoded size, ratio, directional throughput, each primary,
 secondary, and views extent, and peak caller-owned workspace. Treat all speed
 values as descriptive and impose no performance threshold.
 
+For bounded LZ78 plus tANS decoder fuzzing, cap supplied input at 8,192 bytes,
+total raw output at 4,096 bytes, raw frames at 1,024 bytes, token staging at
+8,192 bytes, payload at 16,384 bytes, tANS views at eight, and LZ78 phrases at
+1,024. Drive both the private complete-frame decoder and public C streaming
+decoder with fixed storage, byte-derived chunks, and a finite call ceiling.
+As permanent regressions, submit every proper prefix of the canonical `ABABX`
+stream, overwrite all frame extent fields with `FF`, and alter one descriptor
+frequency byte; require zero caller output, intact sentinels, and stable
+repeated errors.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

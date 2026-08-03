@@ -123,7 +123,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | No | No | No |
+| `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | No | No |
 
 ## Composed-profile admission queue
 
@@ -163,7 +163,11 @@ explicit CLI selector now uses only that public lifecycle, fixes the documented
 64-KiB frame/block policy and 4-MiB aggregate bound, and retains transactional
 file publication. Its dependency-free benchmark now verifies one exact public
 C round trip before timing and reports all three directional workspace
-regions. Fuzz, completion, and interoperability admission remain pending.
+regions. Its bounded dual-decoder fuzz target now fixes every byte, tANS-view,
+and LZ78-phrase region, derives chunks only within the capped input, and uses a
+finite call ceiling; permanent regressions cover every canonical truncation,
+impossible frame extents, and an invalid descriptor. Completion and
+interoperability admission remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

@@ -46,7 +46,10 @@ format versions, and C ABI versions are independent namespaces.
   publication and strict trailing-data rejection. Its dependency-free
   benchmark now verifies an exact public-C round trip before measuring
   compression ratio, encode/decode throughput, and all caller-owned workspace
-  regions.
+  regions. Its bounded dual-decoder fuzz target now fixes all byte,
+  `TansBlockView`, and LZ78 phrase storage, uses input-derived chunks under a
+  finite call ceiling, and retains atomic regressions for every canonical
+  truncation, impossible frame extents, and invalid tANS metadata.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

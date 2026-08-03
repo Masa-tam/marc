@@ -1719,6 +1719,13 @@ marc's dependency-free timing and workspace-reporting harness. No external
 benchmark adapter, tool, corpus result, capacity formula, source code, or test
 suite was consulted.
 
+The LZ78 plus tANS bounded decoder fuzzer and permanent regressions use only
+DD-580, marc's private complete-frame decoder, published public C streaming
+lifecycle, local tANS descriptor and state rules, LZ78 phrase validation,
+fixed arrays, and the core progress contract. No external fuzz harness,
+mutation strategy, corpus, crash, malformed fixture, source code, or test suite
+was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
