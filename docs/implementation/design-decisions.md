@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-572: LZ78 tANS planning freezes canonical tokens once
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a no-output exact-frame planner for one nonempty raw frame. Preflight the
+bounded LZ78 encoder-record count and canonical token capacity, then plan and
+materialize the complete eight-byte token sequence exactly once. Reject an
+empty or unexpected raw-frame extent.
+
+Plan every consecutive tANS block over the frozen token staging and accumulate
+exact block count, `528K` descriptor bytes, payload bytes, and complete frame
+extent with checked arithmetic. Count encoder records, tokens, descriptors,
+and payload under `max_internal_buffered_bytes`, enforce block limits, and
+validate the synthesized generic frame header. Accept no serialized output
+span. This decision adds no frame writer, streaming transform, public API,
+CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
 ## DD-571: LZ78 tANS publishes only complete validated frames
 
 - Date: 2026-08-04

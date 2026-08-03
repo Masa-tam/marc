@@ -3453,6 +3453,20 @@ entropy-code an unknown LZ78 tag. Give each case a full private raw span and
 caller output initialized to `A5`; both failures must preserve the caller
 output sentinel.
 
+For LZ78 plus tANS exact-frame planning, pass raw `A`, one encoder record, and
+eight token bytes. Require the canonical Pair token, one block, 528 descriptor
+bytes, three payload bytes, and complete 587-byte frame extent without any
+serialized output span. Repeat with block size three and require three blocks;
+compare the planned payload and complete extent with independently encoded
+component blocks.
+
+Use empty encoder-record storage and seven token bytes independently and
+require rejection before token mutation. Reject empty input and two raw bytes
+under a one-byte frame declaration. With block size one, lower the block limit
+from eight to seven, then restore it and lower the combined eight descriptors,
+sixteen state bytes, token bytes, and encoder-record workspace by one; require
+stable entropy-limit and aggregate-workspace errors respectively.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

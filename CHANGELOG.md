@@ -21,7 +21,10 @@ format versions, and C ABI versions are independent namespaces.
   capacity and aggregate checks and expands validated nested phrases
   iteratively without caller publication. Its transactional wrapper preflights
   caller output before any private mutation and publishes the reconstructed
-  frame with one final copy. No encoder or public profile is added yet.
+  frame with one final copy. Its write-free planner freezes canonical LZ78
+  tokens once, plans all tANS blocks, counts encoder records and byte regions,
+  and validates exact complete-frame extents without serialized output. No
+  frame writer or public profile is added yet.
 - Added interoperability schema 27 as the frozen schema-26 archive order plus
   `lzss-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

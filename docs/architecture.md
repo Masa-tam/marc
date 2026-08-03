@@ -1965,6 +1965,13 @@ internal workspace. It preserves the full validation and private reconstruction
 sequence, then copies exactly `F` bytes once. Every earlier failure leaves the
 caller output unchanged.
 
+The encoder-side planner derives and materializes the complete canonical LZ78
+token region once in caller staging. It then plans each tANS block over those
+immutable bytes and accumulates exact block, descriptor, payload, and complete-
+frame extents. Encoder records, token staging, descriptors, and payload share
+the configured aggregate policy. The synthesized generic header is validated,
+but no serialized byte is emitted.
+
 The encoder-side planner first derives and materializes the complete canonical
 LZ77 token region in caller staging. It then plans each consecutive tANS block
 over those immutable bytes and accumulates exact descriptor, payload, block,

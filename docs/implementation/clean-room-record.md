@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZ78 plus tANS exact-frame planning
+
+- Authoring method: composed marc's bounded LZ78 token planner and encoder with
+  its no-output tANS block planner and generic frame validator.
+- References used: DD-572, DD-568 bounds, local LZ78 encoder records and token
+  staging, local tANS planner, checked arithmetic, and the independent raw-`A`
+  vector.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, storage layouts, encoded corpora, source code,
+  and test suites.
+- Independent decisions: admit encoder records and token capacity before token
+  mutation; materialize canonical tokens once; plan all entropy blocks over
+  immutable staging; count every encoder region; validate the synthesized
+  header; and accept no serialized output.
+- Generated-code task description: add the no-output planner, test exact raw-
+  `A` and token-splitting extents, capacity atomicity, input extent, block and
+  aggregate limits, and synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the planner directly sequences repository-owned
+  components and checked spans. No external planning order, storage schedule,
+  capacity formula, encoded bytes, error taxonomy, or test expression was
+  compared.
+- Local validation: the focused planner suite passed 5/5 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,180/2,180 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZ78 plus tANS transactional publication
 
 - Authoring method: wrapped marc's private LZ78+tANS reconstruction boundary

@@ -5040,6 +5040,14 @@ caller output span of at least `F` bytes before descriptor parsing.
 Publication storage is not internal workspace. It performs the same complete
 validation and private reconstruction, then copies exactly `F` bytes from raw
 staging to output once. Capacity failure and every malformed layer leave caller
-output unchanged. No encoder, streaming transform, profile calculator, C
-factory, CLI selector, benchmark, fuzzer, completion claim, or
-interoperability entry is defined yet.
+output unchanged.
+
+The encoder-side exact-frame planner accepts one nonempty raw frame, computes
+and materializes its complete canonical LZ78 token sequence once, and then
+plans each consecutive tANS block over that frozen staging. It accumulates
+exact `K`, `528K`, `P`, and `56 + 528K + P` extents with checked arithmetic,
+counts encoder records, tokens, descriptors, and payload against the aggregate
+workspace limit, and validates the resulting generic frame header. It writes
+no serialized header, descriptor, or payload byte. No complete-frame writer,
+streaming transform, profile calculator, C factory, CLI selector, benchmark,
+fuzzer, completion claim, or interoperability entry is defined yet.
