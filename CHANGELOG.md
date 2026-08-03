@@ -33,7 +33,10 @@ format versions, and C ABI versions are independent namespaces.
   factory now bind both streaming directions through three opaque caller-owned
   regions. Its public-ABI completion matrix now proves required binary classes,
   deterministic arbitrary chunking, sticky terminals, and atomic rejection of
-  a malformed final frame. The profile is not yet locally ready.
+  a malformed final frame. Its bounded dual-decoder fuzz target uses fixed
+  byte and tANS-view workspaces plus a finite call ceiling; permanent tests
+  retain atomic rejection for every canonical truncation, extreme frame
+  lengths, and an invalid descriptor. The profile is not yet locally ready.
 - Added interoperability schema 26 as the frozen schema-25 archive order plus
   `lz77-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

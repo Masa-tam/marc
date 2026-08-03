@@ -114,8 +114,10 @@ public C requirements query and factory bind those regions to the common
 transform lifecycle without exposing private tANS views. Its public-ABI
 completion matrix proves required data classes, deterministic arbitrary
 chunking, sticky terminals, and malformed-final-frame atomicity. There is no
-CLI selector, benchmark, fuzzer, local readiness claim, or interoperability
-entry yet.
+Its bounded dual-decoder fuzz target fixes every byte and metadata workspace,
+derives chunking from bounded input, and retains atomic truncation, extreme
+length, and invalid-descriptor regressions. There is no CLI selector,
+benchmark, local readiness claim, or interoperability entry yet.
 
 `lz77-rans` is the first rANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; rANS

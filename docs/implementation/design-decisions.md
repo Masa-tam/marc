@@ -9053,6 +9053,23 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-564: LZSS tANS fuzzing is bounded and frame-atomic
+
+- Date: 2026-08-03
+- Status: accepted
+
+Exercise both the complete-frame private decoder and incremental public-frame
+decoder from one libFuzzer entry point. Cap serialized input and payload at
+8 KiB, total output at 4 KiB, one raw frame at 1 KiB, canonical LZSS token
+staging at 2 KiB, and tANS metadata at eight caller-owned views. Derive input
+and output chunks only from the bounded input and stop at a fixed call ceiling.
+
+Retain ordinary regression tests for every truncation of a canonical frame,
+oversized serialized frame lengths, and an invalid tANS descriptor. All such
+failures must publish zero bytes from the frame, preserve the caller sentinel,
+and remain sticky with the same error category and position. This step adds no
+CLI selector, benchmark, local `Ready` claim, or interoperability entry.
+
 ## DD-563: LZSS tANS completion is proven through the public ABI
 
 - Date: 2026-08-03

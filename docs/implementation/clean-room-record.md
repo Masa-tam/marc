@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-03 - LZSS plus tANS bounded decoder fuzzing
+
+- Authoring method: adapted marc's repository-owned fixed-memory composed
+  decoder harness pattern to the already specified LZSS+tANS boundary.
+- References used: DD-564, DD-563, the local complete-frame and incremental
+  decoders, fixed caller-owned workspaces, and the local canonical encoder.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, mutation schedules, malformed archives, codec source, and tests.
+- Independent decisions: exercise both decoder paths; cap every byte region
+  and tANS view count; derive chunks only from bounded bytes; impose a finite
+  process-call ceiling; and preserve atomic failure cases as ordinary tests.
+- Generated-code task description: add a bounded LZSS+tANS dual-decoder fuzz
+  target, reviewed truncated-magic seed, compile-smoke target, atomic malformed
+  regressions, and readiness/provenance documentation.
+- Similarity review: the harness uses only local types, limits, and transform
+  contracts. No external control flow, corpus, mutation, naming, or test
+  expression was compared.
+- Local validation: the harness compile-smoke and focused malformed regressions
+  passed under both MSVC and ClangCL. A bounded 1,000-input Clang
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer campaign completed
+  without a crash, hang, or sanitizer finding at 37 MiB peak RSS. The complete
+  Release CTest suite passed 2,153/2,153 under both compilers using official
+  CMake 4.3.4; all 37 benchmark smokes, documentation layout, and schema-26
+  compatibility remained successful.
+
 ## 2026-08-03 - LZSS plus tANS public-ABI completion matrix
 
 - Authoring method: exercised the published marc C lifecycle as the sole codec

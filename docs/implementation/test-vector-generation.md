@@ -3366,6 +3366,19 @@ byte, and append one trailing byte. Each decode must publish exactly the first
 192 bytes, preserve the final sentinel, and repeat the same terminal error
 position without consuming or producing another byte.
 
+For bounded LZSS plus tANS decoder fuzzing, pass at most 8,192 bytes to both
+the complete-frame staging decoder and the incremental decoder. Fix total raw
+output at 4,096 bytes, one frame at 1,024 bytes, canonical token staging at
+2,048 bytes, encoded payload at 8,192 bytes, and metadata at eight tANS views.
+Derive chunks modulo 17 and 19 from input bytes and abort after the fixed
+input-plus-output call ceiling. Seed only the reviewed truncated `MARC` magic.
+
+Generate the permanent malformed cases from the local `ABABX` encoder. Submit
+every proper prefix, replace generic frame length fields at byte offsets 16
+through 39 with `FF`, and toggle the first serialized tANS frequency. Each
+case must report error, produce no output, preserve an `A5` sentinel, and
+repeat the same sticky error code and byte position.
+
 For the first LZ77 plus tANS validator tests, require the 587-byte hand vector
 to reconstruct the exact Literal token in private staging. Re-encode that same
 token with tANS block size five and require four blocks, deliberately proving

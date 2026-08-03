@@ -1896,6 +1896,15 @@ decode failures. Corruption, truncation, or trailing data in the final frame
 preserves the first three committed frames and exposes no byte from the
 failing frame.
 
+The bounded fuzz boundary drives both the complete-frame private decoder and
+the incremental decoder from one input. Fixed caller-owned arrays cap input
+and payload at 8 KiB, total raw output at 4 KiB, a raw frame at 1 KiB, LZSS
+token staging at 2 KiB, and tANS metadata at eight views. Byte-derived chunks
+and a finite call ceiling prevent input-controlled allocation or unbounded
+state-machine execution. Permanent regressions require every canonical
+truncation, impossible frame lengths, and invalid tANS descriptors to reject
+without publishing any byte from the failing frame.
+
 ### Specified LZ77 plus tANS boundary
 
 The first tANS composition freezes the complete canonical LZ77 token byte

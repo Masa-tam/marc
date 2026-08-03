@@ -1,9 +1,10 @@
 # Fuzzing
 
-The thirty-four bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
+The thirty-eight bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
 LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
 the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
-Dynamic Range, LZ77 plus rANS, LZSS plus rANS, LZ78 plus rANS,
+Dynamic Range, LZ77 plus rANS, LZ77 plus tANS, LZSS plus rANS, LZSS plus tANS,
+LZ78 plus rANS,
 LZSS plus Blocked Huffman,
 LZSS plus Adaptive Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked
 Huffman, LZ78 plus Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus
@@ -196,6 +197,13 @@ output and canonical token staging at 4 KiB, one raw frame at 1 KiB, and tANS
 metadata at eight fixed `TansBlockView` records. Complete-frame and incremental
 paths share those caller-owned arrays and the finite process-call ceiling.
 
+`marc_fuzz_lzss_tans_stream` applies the same dual-decoder boundary to the
+variable-length LZSS token grammar. It caps serialized input and payload at
+8 KiB, total raw output at 4 KiB, one raw frame at 1 KiB, canonical token
+staging at 2 KiB, and tANS metadata at eight fixed `TansBlockView` records.
+Complete-frame and incremental paths share those arrays and the finite
+process-call ceiling.
+
 `marc_fuzz_blocked_huffman_stream` covers the standalone dictionary-none
 profile that the combined target cannot select. It uses eight fixed block
 views, 256-symbol blocks, code length 24, a 512-node decode-table cap, and the
@@ -221,6 +229,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz77_dynamic_range_stream \
   marc_fuzz_lz77_rans_stream \
   marc_fuzz_lz77_tans_stream \
+  marc_fuzz_lzss_tans_stream \
   marc_fuzz_lzss_rans_stream \
   marc_fuzz_lzss_adaptive_huffman_stream \
   marc_fuzz_lzss_dynamic_range_stream \
@@ -260,6 +269,8 @@ out/build/fuzz/marc_fuzz_lz77_rans_stream \
   fuzz/corpus/lz77_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lz77_tans_stream \
   fuzz/corpus/lz77_tans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzss_tans_stream \
+  fuzz/corpus/lzss_tans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_rans_stream \
   fuzz/corpus/lzss_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzss_adaptive_huffman_stream \
@@ -376,6 +387,13 @@ The standalone Blocked Huffman dual-decoder target received the same bounded
 24, and the 512-node table cap, it completed without a crash, hang, or sanitizer
 finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
 corpus.
+
+The composed LZSS plus tANS dual-decoder target received a bounded 1,000-input
+sanitizer smoke on 2026-08-03 with 8 KiB maximum input, a five-second
+per-input timeout, and a 512 MiB RSS limit. It completed without a crash, hang,
+AddressSanitizer finding, or UndefinedBehaviorSanitizer finding and peaked at
+37 MiB RSS. Generated mutations were not written to the source corpus; the
+repository retains only the reviewed five-byte seed.
 
 The standalone LZ77 dual-decoder target received the same bounded 1,000-input
 sanitizer smoke on 2026-07-17. With fixed frame arrays and the documented byte

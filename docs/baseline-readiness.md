@@ -122,7 +122,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzd-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzmw-rans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzss-tans` | Yes | Yes | Yes | No | No | No | Yes | Not included |
+| `lzss-tans` | Yes | Yes | Yes | No | No | Yes | Yes | Not included |
 
 ## Composed-profile admission queue
 
@@ -156,7 +156,10 @@ limits. Its public C requirements query and factory now expose both directions
 through three opaque borrowed regions while keeping tANS view layout private.
 Its public-ABI completion matrix now covers required data classes,
 deterministic chunking, sticky terminals, and malformed-final-frame atomicity.
-Bounded decoder fuzzing is the next boundary.
+Its dual-decoder fuzz target now fixes all byte and tANS-view storage, bounded
+chunk schedules, and a finite call ceiling; permanent regressions cover every
+canonical truncation, impossible frame extents, and an invalid descriptor.
+The CLI selector is the next boundary.
 
 `lzmw-dynamic-range` is the active admission composition. DD-432 fixes the
 complete
