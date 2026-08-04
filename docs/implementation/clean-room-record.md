@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS transactional CLI selector
+
+- Authoring method: bound DD-595 directly to DD-592's public C lifecycle and
+  marc's existing temporary-file command adapter.
+- References used: DD-595, DD-592, the public LZW/tANS configuration,
+  requirements, factory, process, and destroy entry points, checked profile
+  bounds, and the repository-owned generic CLI regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined adapters, private buffer layouts, source code, command syntax,
+  malformed corpora, and test suites.
+- Independent decisions: fix 64-KiB frames and blocks, derive the two-block
+  196,612-byte payload ceiling, keep all typed extents opaque, reject existing
+  output, and publish a file only after the complete transform succeeds.
+- Generated-code task description: add `--codec lzw-tans` through the public C
+  ABI only; cover binary and empty round trips plus atomic existing-output,
+  malformed, and trailing-input rejection; synchronize CLI, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the adapter instantiates only marc's existing public
+  lifecycle and common transactional file path. No external control flow,
+  workspace partition, option naming, capacity formula, or test expression was
+  compared.
+- Local validation: the focused CLI transaction passed under both MSVC and
+  ClangCL Release builds. The complete Release CTest suite passed 2,261/2,261
+  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
+  schemas 1 through 28, and documentation-layout checks remained successful.
+
 ## 2026-08-05 - LZW plus tANS bounded dual-decoder fuzz boundary
 
 - Authoring method: adapted marc's local LZW/rANS bounded harness to DD-594 and

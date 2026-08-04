@@ -48,7 +48,10 @@ format versions, and C ABI versions are independent namespaces.
   or extended final frames. A fixed-storage, bounded-call fuzz harness now
   crosses private and public decoders, with permanent atomic regressions for
   every canonical truncation, extreme frame lengths, and an invalid tANS
-  model.
+  model. The transactional CLI now exposes `--codec lzw-tans` solely through
+  the public C lifecycle, with fixed 64-KiB frame and entropy-block policy,
+  queried opaque workspaces, strict trailing-data rejection, and atomic output
+  publication.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

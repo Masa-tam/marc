@@ -5264,3 +5264,9 @@ The bounded decoder fuzz boundary exercises this unchanged representation
 through both complete-frame and public streaming paths. Its fixed storage and
 call ceilings are validation policy only and add no serialized field, ID, or
 variant.
+
+The explicit `lzw-tans` CLI selector uses this unchanged representation with
+65,536-byte raw frames and tANS blocks, maximum LZW code width 16, and the
+public C ABI's requirements and factory lifecycle. Its 8-MiB aggregate policy
+and transactional temporary-file publication are tool limits only; they add no
+serialized field, algorithm ID, or variant.

@@ -1809,6 +1809,12 @@ process invariants, and deterministic chunk derivation. No external fuzz
 harness, seed corpus, malformed suite, LZW/tANS implementation, source code,
 or test expression was consulted.
 
+The LZW plus tANS CLI selector uses only DD-595, the published
+`marc_lzw_tans_*` lifecycle, independently derived fixed-profile bounds, and
+marc's existing transactional file adapter and regression script. No external
+compression CLI, combined-codec adapter, private workspace layout, source
+code, command syntax, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

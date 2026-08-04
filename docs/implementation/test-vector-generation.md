@@ -3528,6 +3528,13 @@ streams must fail atomically. The live dual-decoder harness accepts at most
 8 KiB, uses only fixed arrays, and stops after at most maximum input plus
 maximum output plus 32 calls.
 
+For `lzw-tans` CLI admission, reuse the repository-standard binary fixture and
+transaction script with the explicit selector. Require an exact round trip,
+existing-destination rejection, malformed-frame rejection without a final or
+temporary destination, strict trailing-byte rejection with the same atomicity,
+and exact empty-stream round trip. Run the identical script against MSVC and
+ClangCL Release executables.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

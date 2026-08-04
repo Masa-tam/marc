@@ -2272,6 +2272,13 @@ packed, phrase, and tANS-view storage is fixed before input is examined, and a
 strict call budget turns any progress failure or hang into an immediate
 invariant violation.
 
+The transactional CLI binds `lzw-tans` only through that public C
+configuration, requirements query, factory, process, and destroy lifecycle.
+It derives conservative byte ceilings but never names or partitions private
+LZW or tANS records. Encoded or decoded output remains temporary until the
+whole operation succeeds, so a malformed final frame or strict trailing data
+cannot publish a destination file.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-595: LZW tANS CLI uses only the public transactional lifecycle
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the explicit `lzw-tans` selector to the transactional CLI. Fix raw frames
+and tANS blocks at 65,536 bytes, maximum LZW code width at 16, packed staging
+at `S <= 131072`, block count at `K <= 2`, complete entropy payload at
+`P <= 196612`, generated dictionary entries at 65,280, and aggregate internal
+storage at 8 MiB. These are public policy limits, not new serialized fields.
+
+Initialize, query, construct, process, and destroy the transform only through
+DD-592's public C ABI. Do not reproduce the private LZW record, phrase, or tANS
+view partition in the command-line layer. Retain the common temporary-output
+transaction: existing destinations are rejected, malformed, truncated, and
+extended input publishes no destination, and a successful close atomically
+renames the temporary file. This step adds no benchmark or interoperability
+entry.
+
 ## DD-594: LZW tANS fuzzing crosses private and public decoders
 
 - Date: 2026-08-05
