@@ -3486,6 +3486,19 @@ byte, `ResetBlock`, and an unknown flag; accept the empty prefix-only stream;
 keep `Flush` non-terminal; and retain premature `EndInput` while draining the
 first valid frame before reporting the missing later frame.
 
+For the LZW plus tANS profile calculator, freeze a ten-byte largest frame with
+maximum width 16 and four-byte entropy blocks. Require 20 packed bytes, five
+blocks, 2,640 descriptor bytes, 40 payload-ceiling bytes, a 2,736-byte complete
+frame region, and nine aligned encoder records. A seven-byte short frame with
+eight-byte blocks requires 14 packed bytes, two descriptors, 25 payload bytes,
+and 1,137 complete-frame bytes. Require canonical zero regions and alignment
+one for empty input. Exercise block, payload, aggregate, frame, parameter, and
+decoder-limit failures. For decoder limits of 64 raw bytes, 128 packed bytes,
+four blocks, and 300 dictionary entries, require 112 conservative LZW phrase
+records after an aligned tANS-view region. Reject altered, short, and
+misaligned typed storage. Finally allocate only the reported regions and
+round-trip `ABABX` through two-byte frames and two-byte tANS blocks.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

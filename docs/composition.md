@@ -53,7 +53,9 @@ Its bounded known-size streaming encoder emits the fixed 80-byte prefix,
 collects at most one raw frame, and drains the completed immutable frame before
 accepting later-frame input. Its bounded streaming decoder collects one exact
 encoded frame, validates and reconstructs privately, and drains only that
-accepted raw frame before reading another header. No public profile exists yet.
+accepted raw frame before reading another header. Its checked internal profile
+now derives all byte regions and partitions one aligned opaque region into tANS
+views and LZW phrases without inspecting input. No public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

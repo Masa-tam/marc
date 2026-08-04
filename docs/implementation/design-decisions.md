@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-591: LZW tANS profiles separate bytes from aligned typed views
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add direction-specific bounded workspace calculators above DD-589 and DD-590.
+Encoding derives the largest raw frame `F`, conservative packed LZW staging
+`S = ceil(FW/8)`, `K = ceil(S/B)` tANS blocks, exact `528K` descriptor bytes,
+the blockwise `2 + ceil(12n/8)` payload ceiling, complete-frame storage, and
+the exact LZW encoder-record count. Count every simultaneously live encoder
+region with checked arithmetic.
+
+Decoding derives encoded-frame, packed, private-raw, tANS-view, and conservative
+LZW phrase regions only from validated local limits. Place tANS views first in
+one opaque aligned region, align upward for phrases, and publish typed spans
+only after checking requirements, capacity, and base alignment. Empty encoding
+has zero regions and alignment one. Prove that the returned extents directly
+construct the existing bounded streaming round trip. This step adds no C ABI,
+public factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-590: LZW tANS streaming decode publishes complete frames
 
 - Date: 2026-08-05

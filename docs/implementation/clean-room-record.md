@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS workspace profile calculation
+
+- Authoring method: derived DD-591 from marc's local LZW/tANS streaming
+  constructors, conservative format ceilings, and checked alignment helpers.
+- References used: DD-591, DD-590, DD-589, the local LZW encoder and validator
+  workspace functions, tANS constants, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  workspace calculators, ABI layouts, allocation schemes, source code, and
+  test suites.
+- Independent decisions: calculate the tANS ceiling block by block; count all
+  encoder byte and typed regions together; derive decoder storage only from
+  local limits; place tANS views before aligned LZW phrases; retain canonical
+  empty alignment one; and validate opaque partitions before publishing views.
+- Generated-code task description: add direction-specific profile and typed
+  partition helpers; freeze independently calculated requirements; exercise
+  limits, altered requirements, short and misaligned storage, stable error
+  mapping, and a streaming round trip built solely from returned extents; then
+  synchronize format, architecture, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: formulas directly express marc's existing format bounds
+  and C++ alignment. No external sizing formula, storage layout, naming scheme,
+  or test expression was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  both streaming transforms, and profile suite passed 43/43 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,253/2,253 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
+  through 28 compatibility, and documentation layout remained successful.
+
 ## 2026-08-05 - LZW plus tANS bounded streaming decoding
 
 - Authoring method: composed DD-590 from marc's local private complete-frame

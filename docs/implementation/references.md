@@ -1786,6 +1786,12 @@ checked arithmetic, and caller-owned spans. No external streaming LZW/tANS
 decoder, buffering schedule, allocation layout, malformed corpus, source code,
 or test suite was consulted.
 
+The LZW plus tANS workspace profile uses only DD-591, DD-589 and DD-590's local
+streaming constructors, the repository's LZW width and record bounds, tANS
+block constants and payload ceiling, checked arithmetic, and C++ object
+alignment. No external combined workspace calculator, ABI layout, allocation
+scheme, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

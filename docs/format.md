@@ -4203,6 +4203,13 @@ the frozen reference bytes, requires identical payload extents, and writes each
 descriptor and payload into its precomputed region. Final reference and payload
 offsets must equal the plan; short destination failure changes no output byte.
 
+The bounded workspace profile uses the same conservative `S`, `K`, descriptor,
+and blockwise payload ceilings without inspecting input bytes. It reports byte
+regions separately from naturally aligned typed records and checks every
+product, sum, alignment adjustment, and conversion to `size_t`. These storage
+requirements are an implementation contract and do not add serialized fields
+or alter the representation above.
+
 The bounded known-size streaming encoder emits the ordinary 64-byte stream
 header followed by the ordinary 16-byte LZMW parameter extension. It then
 collects at most one outer raw frame, invokes the exact-frame planner and

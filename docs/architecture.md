@@ -2248,6 +2248,14 @@ bytes. It computes and validates the synthesized frame and all aggregate
 workspace without accepting serialized output. This prevents descriptor or
 payload emission from observing a partial or differently chunked LZW stream.
 
+The workspace profile turns those fixed bounds into direction-specific caller
+storage. Encoding reports separate raw-frame, packed-code, complete encoded-
+frame, and aligned LZW encoder-record regions. Decoding reports encoded-frame,
+packed-code, private-raw, and one opaque aligned region partitioned into tANS
+block views followed by aligned LZW phrase records. Partitioning is
+transactional: invalid requirements, short storage, or misalignment returns no
+typed view.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
