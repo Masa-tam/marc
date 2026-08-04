@@ -5270,3 +5270,8 @@ The explicit `lzw-tans` CLI selector uses this unchanged representation with
 public C ABI's requirements and factory lifecycle. Its 8-MiB aggregate policy
 and transactional temporary-file publication are tool limits only; they add no
 serialized field, algorithm ID, or variant.
+
+The dependency-free `lzw-tans` benchmark uses the same selector profile and
+public C lifecycle. Its checked `80 + 3N + 1116K` complete-stream allocation,
+untimed verification pass, iteration count, and workspace reporting are host
+measurement policy only and do not alter encoded bytes.

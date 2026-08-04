@@ -516,6 +516,11 @@ if(MARC_BUILD_BENCHMARKS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzw_rans_smoke
             PROPERTIES LABELS benchmark-smoke)
+        add_test(NAME marc_benchmark_lzw_tans_smoke
+            COMMAND marc_benchmark lzw-tans
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_benchmark_lzw_tans_smoke
+            PROPERTIES LABELS benchmark-smoke)
         add_test(NAME marc_benchmark_lzd_smoke
             COMMAND marc_benchmark lzd ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
         set_tests_properties(marc_benchmark_lzd_smoke

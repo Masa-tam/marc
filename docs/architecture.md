@@ -2279,6 +2279,12 @@ LZW or tANS records. Encoded or decoded output remains temporary until the
 whole operation succeeds, so a malformed final frame or strict trailing data
 cannot publish a destination file.
 
+The benchmark adapter selects the identical `lzw-tans` public profile. It
+queries fresh caller-owned workspaces for each direction, proves one complete
+byte-exact round trip before timing, then measures encode and decode
+independently. The runner reports every queried region and peak reservation;
+it does not inspect the opaque typed partition or enforce a performance floor.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

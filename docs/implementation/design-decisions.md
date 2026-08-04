@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-596: LZW tANS benchmark verifies before measuring
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add `lzw-tans` to the dependency-free benchmark runner using DD-595's exact
+public profile. Construct both directions only through DD-592's C
+configuration, requirements query, factory, process, and destroy lifecycle.
+Before any timing, require one byte-exact encode/decode round trip.
+
+For input extent `N` and nonempty frame count `K`, reserve the checked complete
+stream ceiling `80 + 3N + 1116K`: `3N` bounds tANS coding of at most `2N`
+packed LZW bytes, while each frame adds one 56-byte header, two 528-byte
+descriptors, and two two-byte initial states. Report all three queried regions
+for each direction and their peak sum. Add a one-iteration smoke test over the
+repository README, but impose no throughput or compression-ratio threshold.
+This step adds no format variant or interoperability entry.
+
 ## DD-595: LZW tANS CLI uses only the public transactional lifecycle
 
 - Date: 2026-08-05

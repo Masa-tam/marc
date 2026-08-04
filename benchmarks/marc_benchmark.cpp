@@ -36,6 +36,7 @@ constexpr std::uint64_t lz78_tans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzw_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzw_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzw_rans_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lzw_tans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzd_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzd_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzd_rans_frame_size = UINT64_C(1) << 16;
@@ -90,6 +91,12 @@ constexpr std::uint64_t lzw_rans_block_count =
     (lzw_rans_dictionary_size + entropy_block_size - 1)
     / entropy_block_size;
 constexpr std::uint64_t lzw_rans_buffered_size = UINT64_C(8) << 20;
+constexpr std::uint64_t lzw_tans_dictionary_size =
+    lzw_tans_frame_size * UINT64_C(2);
+constexpr std::uint64_t lzw_tans_block_count =
+    (lzw_tans_dictionary_size + entropy_block_size - 1)
+    / entropy_block_size;
+constexpr std::uint64_t lzw_tans_buffered_size = UINT64_C(8) << 20;
 constexpr std::uint64_t lzd_rans_dictionary_size =
     lzd_rans_frame_size * UINT64_C(4);
 constexpr std::uint64_t lzd_rans_block_count =
@@ -133,6 +140,7 @@ enum class Codec {
     lzw_adaptive_huffman,
     lzw_dynamic_range,
     lzw_rans,
+    lzw_tans,
     lzd,
     lzd_blocked_huffman,
     lzd_adaptive_huffman,
@@ -184,6 +192,7 @@ struct CodecConfig {
     marc_lzw_adaptive_huffman_config lzw_adaptive_huffman{};
     marc_lzw_dynamic_range_config lzw_dynamic_range{};
     marc_lzw_rans_config lzw_rans{};
+    marc_lzw_tans_config lzw_tans{};
     marc_lzd_config lzd{};
     marc_lzd_blocked_huffman_config lzd_blocked_huffman{};
     marc_lzd_adaptive_huffman_config lzd_adaptive_huffman{};
@@ -251,6 +260,7 @@ struct Measurement {
     if (codec == Codec::lzw_dynamic_range)
         return "lzw-dynamic-range";
     if (codec == Codec::lzw_rans) return "lzw-rans";
+    if (codec == Codec::lzw_tans) return "lzw-tans";
     if (codec == Codec::lzd) return "lzd";
     if (codec == Codec::lzd_blocked_huffman)
         return "lzd-blocked-huffman";
@@ -313,6 +323,7 @@ struct Measurement {
     if (codec == Codec::lzw_dynamic_range)
         return UINT64_C(4);
     if (codec == Codec::lzw_rans) return UINT64_C(2);
+    if (codec == Codec::lzw_tans) return UINT64_C(3);
     if (codec == Codec::lzd_adaptive_huffman)
         return UINT64_C(4) * adaptive_payload_bytes_per_symbol;
     if (codec == Codec::lzd_dynamic_range)
@@ -370,6 +381,10 @@ struct Measurement {
     if (codec == Codec::lzw_rans) {
         return lzw_rans_block_count
             * (rans_descriptor_size + rans_state_size);
+    }
+    if (codec == Codec::lzw_tans) {
+        return lzw_tans_block_count
+            * (tans_descriptor_size + tans_state_size);
     }
     if (codec == Codec::lzd_rans) {
         return lzd_rans_block_count
@@ -445,6 +460,8 @@ struct Measurement {
                     ? lzw_dynamic_range_frame_size
                 : codec == Codec::lzw_rans
                     ? lzw_rans_frame_size
+                : codec == Codec::lzw_tans
+                    ? lzw_tans_frame_size
                     : codec == Codec::lzd_adaptive_huffman
                         ? lzd_adaptive_frame_size
                         : codec == Codec::lzd_dynamic_range
@@ -489,6 +506,8 @@ struct Measurement {
             ? lzss_tans_block_count * tans_state_size
         : codec == Codec::lz78_tans
             ? lz78_tans_block_count * tans_state_size
+        : codec == Codec::lzw_tans
+            ? lzw_tans_block_count * tans_state_size
             : UINT64_C(0));
     std::uint64_t maximum_buffered{};
     if (codec == Codec::checksum_raw) {
@@ -562,6 +581,8 @@ struct Measurement {
         maximum_buffered = UINT64_C(8) << 20;
     } else if (codec == Codec::lzw_rans) {
         maximum_buffered = lzw_rans_buffered_size;
+    } else if (codec == Codec::lzw_tans) {
+        maximum_buffered = lzw_tans_buffered_size;
     } else if (codec == Codec::lzd_adaptive_huffman) {
         maximum_buffered = UINT64_C(16) << 20;
     } else if (codec == Codec::lzd_dynamic_range) {
@@ -1015,6 +1036,24 @@ struct Measurement {
             (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
         config.max_blocks_per_frame =
             static_cast<std::uint32_t>(lzw_rans_block_count);
+    } else if (codec == Codec::lzw_tans) {
+        auto& config = result.lzw_tans;
+        if (marc_lzw_tans_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size = static_cast<std::uint32_t>(lzw_tans_frame_size);
+        config.entropy_block_size =
+            static_cast<std::uint32_t>(entropy_block_size);
+        config.max_frame_size = lzw_tans_frame_size;
+        config.max_block_size = entropy_block_size;
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_dictionary_serialized_size = lzw_tans_dictionary_size;
+        config.max_internal_buffered_bytes = maximum_buffered;
+        config.max_dictionary_entries =
+            (UINT64_C(1) << config.maximum_code_width) - UINT64_C(256);
+        config.max_blocks_per_frame =
+            static_cast<std::uint32_t>(lzw_tans_block_count);
     } else if (codec == Codec::lzd) {
         if (marc_lzd_config_init(direction, &result.lzd) != MARC_STATUS_OK)
             return false;
@@ -1249,6 +1288,9 @@ struct Measurement {
     if (config.codec == Codec::lzw_rans)
         return marc_lzw_rans_workspace_requirements(
             &config.lzw_rans, &requirements);
+    if (config.codec == Codec::lzw_tans)
+        return marc_lzw_tans_workspace_requirements(
+            &config.lzw_tans, &requirements);
     if (config.codec == Codec::lzd)
         return marc_lzd_workspace_requirements(&config.lzd, &requirements);
     if (config.codec == Codec::lzd_blocked_huffman)
@@ -1378,6 +1420,9 @@ struct Measurement {
     if (config.codec == Codec::lzw_rans)
         return marc_lzw_rans_create(
             &config.lzw_rans, primary, secondary, views, transform);
+    if (config.codec == Codec::lzw_tans)
+        return marc_lzw_tans_create(
+            &config.lzw_tans, primary, secondary, views, transform);
     if (config.codec == Codec::lzd)
         return marc_lzd_create(
             &config.lzd, primary, secondary, views, transform);
@@ -1477,6 +1522,8 @@ struct Measurement {
                     ? lzw_dynamic_range_frame_size
                 : codec == Codec::lzw_rans
                     ? lzw_rans_frame_size
+                : codec == Codec::lzw_tans
+                    ? lzw_tans_frame_size
                     : codec == Codec::lzd_adaptive_huffman
                         ? lzd_adaptive_frame_size
                         : codec == Codec::lzd_dynamic_range
@@ -1702,7 +1749,7 @@ void print_usage() {
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
                  "lzw, lzw-blocked-huffman, lzw-adaptive-huffman, "
-                 "lzw-dynamic-range, lzw-rans, "
+                 "lzw-dynamic-range, lzw-rans, lzw-tans, "
                  "lzd, lzd-blocked-huffman, lzd-adaptive-huffman, "
                  "lzd-dynamic-range, lzd-rans, lzmw, "
                  "lzmw-blocked-huffman, lzmw-adaptive-huffman, "
@@ -1857,6 +1904,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzw_dynamic_range;
     else if (name == "lzw-rans")
         codec = Codec::lzw_rans;
+    else if (name == "lzw-tans")
+        codec = Codec::lzw_tans;
     else if (name == "lzd") codec = Codec::lzd;
     else if (name == "lzd-blocked-huffman")
         codec = Codec::lzd_blocked_huffman;

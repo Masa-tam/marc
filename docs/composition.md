@@ -66,8 +66,11 @@ length, and invalid-model regressions now cover its private and public decode
 boundaries without fuzz-controlled allocation. Its transactional CLI selector
 now reaches the profile only through the public C lifecycle, fixes the 64-KiB
 frame and block policy, and publishes no destination for malformed, truncated,
-extended, or pre-existing output cases. Benchmark and interoperability
-evidence remain pending.
+extended, or pre-existing output cases. Its dependency-free benchmark uses
+the same public profile, verifies an exact round trip before timing, and
+reports all queried workspace regions under the checked
+`80 + 3N + 1116K` stream ceiling.
+Interoperability evidence remains pending.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

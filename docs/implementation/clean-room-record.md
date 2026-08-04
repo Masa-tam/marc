@@ -9906,6 +9906,31 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS verification-first benchmark
+
+- Authoring method: instantiated marc's common public-C benchmark runner with
+  DD-596 and the fixed DD-595 `lzw-tans` profile.
+- References used: DD-596, DD-595, DD-592, the public C lifecycle, checked
+  complete-stream arithmetic, and the repository-owned measurement runner and
+  smoke-test convention.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined adapters, allocation formulas, performance results,
+  source code, corpora, and test suites.
+- Independent decisions: reserve `80 + 3N + 1116K`, verify an exact round trip
+  before timing, report all directional workspaces and peak sum, use README as
+  the smoke corpus, and impose no throughput or ratio floor.
+- Generated-code task description: add `lzw-tans` to the dependency-free
+  runner and one-iteration smoke; use only the public lifecycle; synchronize
+  benchmark, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter reuses only marc's local runner and published
+  profile. No external control flow, capacity arithmetic, output schema,
+  performance threshold, or test expression was compared.
+- Local validation: the one-iteration smoke passed under both MSVC and ClangCL
+  Release builds. The complete Release CTest suite passed 2,262/2,262 under
+  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas
+  1 through 28, and documentation-layout checks remained successful.
+
 ## 2026-08-05 - LZW plus tANS transactional CLI selector
 
 - Authoring method: bound DD-595 directly to DD-592's public C lifecycle and

@@ -3535,6 +3535,12 @@ temporary destination, strict trailing-byte rejection with the same atomicity,
 and exact empty-stream round trip. Run the identical script against MSVC and
 ClangCL Release executables.
 
+For the LZW plus tANS benchmark smoke, select `lzw-tans`, use `README.md`, and
+run one iteration. Require successful public-C configuration and workspace
+queries in both directions, an untimed byte-exact round trip before timing,
+finite encode/decode measurements, and reported primary, secondary, views,
+and peak workspace bytes. Do not assert a throughput or compression threshold.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries
