@@ -100,9 +100,8 @@ retention settings; regenerate them by running CI for the required commit.
 
 Schema 28 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 27
-compatibility evidence. External cross-platform verification remains pending.
-The completed schema-27 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
-26.04/Clang four-direction cross-check is recorded below.
+compatibility evidence. Its completed Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang four-direction cross-check is recorded below.
 
 ## Recorded external cross-checks
 
@@ -387,6 +386,20 @@ executable verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-27
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+Revision `3d5001ce7536c425328a597240244551605e8935` received the schema-28
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty-
+nine archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu
+24.04 default-compiler/Ninja artifacts. It then generated and self-verified
+an `ubuntu-26.04-ninja-x64` thirty-nine-archive bundle. The Windows/MSVC
+executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-28
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 

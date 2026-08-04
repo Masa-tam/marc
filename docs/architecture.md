@@ -2130,6 +2130,10 @@ recording their extents and SHA-256 values. Verification enforces exact order,
 foreign decode equality, and byte-identical local re-encoding. The compatibility
 regression rejects reordered schema-28 manifests and removes only `lz78-tans`
 to recover schema 27 before checking every earlier schema.
+The four-direction artifact exchange at revision
+`3d5001ce7536c425328a597240244551605e8935` verifies all 39 archives from
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers, including
+byte-identical re-encoding in both platform directions.
 
 The bounded known-size streaming encoder adds only collection and immutable
 drain state above that writer. It emits the ordinary 80-byte stream prefix,

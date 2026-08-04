@@ -171,7 +171,11 @@ impossible frame extents, and an invalid descriptor. Its public-ABI completion
 matrix now covers required binary classes, repeat determinism, one-byte and
 mixed chunking, stable repeated terminals, and transactional rejection of a
 corrupt, truncated, or trailing final frame. Schema 28 appends its unchanged
-CLI archive once after schema 27 and preserves schemas 1 through 27.
+CLI archive once after schema 27 and preserves schemas 1 through 27. Its
+four-direction external exchange at revision
+`3d5001ce7536c425328a597240244551605e8935` verifies canonical output across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers.
 
 `lzw-tans` is the next candidate admission composition. Its representation,
 bounds, validator-first decode order, and independent vectors must be fixed

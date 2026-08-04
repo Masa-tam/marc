@@ -9928,7 +9928,13 @@ discarded and the reviewed seed retained.
   through 27 compatibility passed under MSVC and ClangCL. The complete Release
   CTest suite passed 2,209/2,209 under both compilers using official CMake
   4.3.4; all 39 benchmark smokes and documentation layout remained
-  successful. External verification remains pending.
+  successful.
+- External validation: revision
+  `3d5001ce7536c425328a597240244551605e8935` completed all four schema-28
+  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
+  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
+  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and byte-
+  identically re-encoded all 39 archives.
 
 ## 2026-08-04 - LZ78 plus tANS public-ABI completion
 

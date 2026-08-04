@@ -73,7 +73,10 @@ repeated terminal results, and frame-transactional malformed-input rejection.
 Interoperability schema 28 appends its unchanged CLI archive once after the
 frozen schema-27 order and passes local generation, exact-order verification,
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-through 27 compatibility.
+through 27 compatibility. Four-direction external verification at revision
+`3d5001ce7536c425328a597240244551605e8935` establishes canonical archives
+across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+x86-64 producers.
 
 `lz77-tans` is the first tANS composition to receive a reserved
 representation. LZ77 first completes its canonical 16-byte token stream; tANS
