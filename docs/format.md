@@ -5342,3 +5342,12 @@ region is zero except descriptor offsets 16..17 (`00 06`), 146..147
 (`00 02`), and 526..527 (`00 08`). The four payload bytes immediately follow
 the descriptor. This sparse notation uniquely fixes every frame byte. The
 independent vector invokes only standalone components.
+
+The first internal complete-frame validator implements the decoder-visible
+admission order above without adding serialized fields. It validates the
+generic header, exact `S`, `K`, `528K`, and payload bounds and all caller-owned
+workspace before entropy output. It then parses and validates every tANS block
+before decoding any of them into the private token region. Only after all `S`
+bytes exist does it run the ordinary LZD phrase-graph validator. On every
+failure, entropy views, token staging, and phrase records are discard-only;
+raw reconstruction and publication are not part of this boundary.

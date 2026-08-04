@@ -3216,6 +3216,16 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the first LZD plus tANS complete-frame validator, admit the independently
+frozen 588-byte raw-`A` frame and require reconstruction of token bytes
+`41 00 00 00 FF FF FF FF` into private staging with no phrase records. Repeat
+with three-byte tANS blocks so block boundaries split both references and the
+token. Corrupt a later descriptor and require the untouched token sentinel;
+encode an invalid forward reference through valid tANS and require the LZD
+error only after complete entropy reconstruction. Reject each caller-owned
+workspace one entry short, the aggregate allowance one byte short, a truncated
+frame, trailing data, and a non-tANS stream declaration.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

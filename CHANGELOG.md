@@ -7,13 +7,18 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the first bounded `lzd-tans` complete-frame validator. It preflights
+  the complete serialized extent and all caller-owned workspace, validates
+  every tANS block before reconstructing private token bytes, and only then
+  applies the existing LZD phrase-graph validator. Later-block entropy failure
+  cannot expose a partially reconstructed token stream.
 - Reserved the `lzd-tans` composition and independent 588-byte raw-`A` frame.
   Canonical eight-byte LZD reference pairs are finalized before tANS coding;
   entropy blocks may split references and tokens but not bytes or outer frames.
   Checked bounds cover aligned `S <= 8*ceil(F/2)`, exact `528K` descriptors,
   and the blockwise 12-bit transition ceiling. The fixed payload `08 03 9B 00`
   records the independently derived `00:1536, 41:512, FF:2048` model and three
-  final valid bits. No combined validator or public profile is added yet.
+  final valid bits. No public profile is added yet.
 - Added interoperability schema 29 as the frozen schema-28 archive order plus
   `lzw-tans` exactly once. Local generation, strict-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

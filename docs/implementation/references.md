@@ -1833,6 +1833,13 @@ encoder, descriptor serializer, generic frame serializer, and checked bounds.
 No external combined implementation, FSE format, source code, encoded corpus,
 or test suite was consulted.
 
+The first LZD plus tANS complete-frame validator uses only DD-599, DD-598's
+fixed representation and bounds, marc's generic frame parser, local tANS
+descriptor controller and strict decoder, existing LZD validator,
+caller-owned spans, and checked aggregate arithmetic. No external combined
+decoder, validation order, workspace layout, malformed corpus, source code,
+or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

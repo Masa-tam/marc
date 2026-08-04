@@ -9085,6 +9085,32 @@ LZD encoder, tANS encoder, and generic serializers. This decision publishes no
 combined validator, streaming transform, C factory, CLI, benchmark, fuzz
 target, completion claim, or interoperability entry.
 
+## DD-599: LZD tANS validation is entropy-first and discard-only
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the first internal `lzd-tans` complete-frame component as a bounded
+validator only. Admit the exact generic frame extent, aligned nonempty token
+extent, derived block count, exact `528K` descriptor bytes, checked tANS
+payload ceiling, caller-owned block views, complete token staging, LZD phrase
+records, and their aggregate bytes before entropy output can begin.
+
+Parse all descriptors and strictly validate every tANS table, transition,
+initial state, final padding, and payload exhaustion before decoding any block
+into token staging. Then reconstruct exactly the declared token extent and
+apply the existing LZD validator to the complete private span. Preserve stable
+entropy block and LZD token positions. On any error, every workspace is
+discard-only and no raw output exists at this boundary.
+
+Prove the independent 588-byte raw-`A` frame, blocks that split both reference
+fields and tokens, later-descriptor failure before token mutation, invalid LZD
+references after entropy reconstruction, each short workspace, aggregate
+workspace one byte short, truncation, trailing bytes, and wrong-pipeline
+rejection under MSVC and ClangCL. This decision adds no raw decoder, encoder,
+streaming transform, C factory, CLI, benchmark, fuzz target, completion claim,
+or interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

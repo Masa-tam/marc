@@ -9933,6 +9933,35 @@ discarded and the reviewed seed retained.
   using official CMake 4.3.4; all 40 benchmark smokes, schema 1 through 29
   compatibility, and documentation-layout checks remained successful.
 
+## 2026-08-05 - LZD plus tANS bounded complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, local tANS
+  controller and strict block decoder, and existing allocation-free LZD graph
+  validator under DD-599's explicit admission order.
+- References used: DD-599, DD-598, the local LZD and tANS format contracts,
+  caller-owned workspaces, and checked arithmetic.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, validation orders, workspace layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight all serialized and workspace extents;
+  validate every entropy block before token mutation; reconstruct the complete
+  private token span before LZD semantics; preserve stable block and token
+  positions; and make all workspace discard-only after failure.
+- Generated-code task description: add only a bounded complete-frame
+  validator; prove the independent vector, field-splitting blocks, later-block
+  atomicity, post-entropy reference rejection, short and aggregate workspace
+  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the code directly composes repository-local parsers,
+  validators, and explicit spans. No external control flow, error taxonomy,
+  buffer layout, malformed vector, or test expression was compared.
+- Local validation: the seven focused validator tests passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,270/2,270 under both
+  compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
+  through 29 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

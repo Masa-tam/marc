@@ -2313,7 +2313,10 @@ before the corresponding mutation. All tANS blocks must validate before token
 reconstruction, and the complete private token span must pass LZD alignment,
 reference, phrase-growth, terminal, and raw-extent checks before any raw byte is
 reconstructed or published. The initial reservation fixes representation and
-bounds only; it adds no combined transform or public surface.
+bounds. The first internal combined component now implements that complete-
+frame validation boundary with caller-owned views, token staging, and phrase
+records. It deliberately stops before raw reconstruction and adds no streaming
+transform or public surface.
 
 ### C transform ABI
 

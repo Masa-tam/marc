@@ -35,7 +35,10 @@ the checked sum of per-block `2 + ceil(12n/8)` payload ceilings. Decoding must
 validate all tANS blocks before reconstructing private tokens and applying LZD
 reference, phrase-growth, and exact-raw-extent checks. The independent raw-`A`
 vector fixes token bytes `41 00 00 00 FF FF FF FF`, payload `08 03 9B 00`,
-and a complete 588-byte frame. No combined validator or public API exists yet.
+and a complete 588-byte frame. The first internal complete-frame validator now
+preflights all caller-owned regions, validates every tANS block before token
+reconstruction, and applies LZD graph validation only to the complete private
+token span. Raw reconstruction and every public surface remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high
