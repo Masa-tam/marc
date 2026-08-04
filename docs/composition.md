@@ -45,7 +45,9 @@ the validated graph iteratively without caller-visible publication. Its
 transactional wrapper admits the complete caller destination before private
 mutation and copies exactly the declared raw extent only after every layer
 succeeds. Short output and malformed entropy or dictionary data publish
-nothing. No public profile exists yet.
+nothing. Its write-free planner freezes canonical packed codes and plans all
+tANS blocks and the exact complete-frame extent without serialized output. No
+frame encoder or public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

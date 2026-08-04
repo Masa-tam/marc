@@ -347,6 +347,119 @@ TEST(LzwTansFrameDecoder, MalformedLayersNeverPublishOutput) {
     EXPECT_EQ(output[0], std::byte{0x7c});
 }
 
+TEST(LzwTansFramePlanner, PlansExactIndependentVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, packed_code_a.size()> staging{};
+    const auto result = marc::frame::plan_lzw_tans_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging);
+    ASSERT_EQ(result.error, LzwTansFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, raw.size());
+    EXPECT_EQ(result.dictionary_size, packed_code_a.size());
+    EXPECT_EQ(result.encoder_entries, 0U);
+    EXPECT_EQ(result.code_count, 1U);
+    EXPECT_EQ(result.block_count, 1U);
+    EXPECT_EQ(result.block_index, 1U);
+    EXPECT_EQ(result.descriptor_size, 528U);
+    EXPECT_EQ(result.payload_size, 3U);
+    EXPECT_EQ(result.serialized_size, single_code_frame().size());
+    EXPECT_EQ(staging, packed_code_a);
+}
+
+TEST(LzwTansFramePlanner, PlansPackedCodesAndBlocksDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}};
+    constexpr std::array packed{
+        std::byte{0x41}, std::byte{0x84}, std::byte{0x00},
+        std::byte{0x14}, std::byte{0x08}};
+    constexpr std::uint32_t block_size = 2;
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> workspace(
+        marc::dictionary::internal::lzw_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 2> first{};
+    std::array<std::byte, raw.size() * 2> second{};
+    const auto stream = stream_for(raw.size(), block_size);
+    const auto first_plan = marc::frame::plan_lzw_tans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, first);
+    ASSERT_EQ(first_plan.error, LzwTansFrameValidationError::none);
+    const auto second_plan = marc::frame::plan_lzw_tans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, second);
+    ASSERT_EQ(second_plan.error, LzwTansFrameValidationError::none);
+    const auto reference = frame_for_codes(
+        packed, static_cast<std::uint32_t>(raw.size()), block_size);
+    EXPECT_EQ(first_plan.dictionary_size, packed.size());
+    EXPECT_EQ(first_plan.code_count, 4U);
+    EXPECT_EQ(first_plan.block_count, 3U);
+    EXPECT_EQ(first_plan.descriptor_size, 3U * 528U);
+    EXPECT_EQ(first_plan.serialized_size, reference.size());
+    EXPECT_EQ(first_plan.payload_size,
+              reference.size() - marc::frame::frame_header_size
+                  - first_plan.descriptor_size);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{first}.first(packed.size()), packed));
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{first}.first(first_plan.dictionary_size),
+        std::span<const std::byte>{second}.first(second_plan.dictionary_size)));
+    EXPECT_EQ(first_plan.payload_size, second_plan.payload_size);
+    EXPECT_EQ(first_plan.serialized_size, second_plan.serialized_size);
+}
+
+TEST(LzwTansFramePlanner, RejectsCapacitiesBeforePackedMutation) {
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    const auto entries =
+        marc::dictionary::internal::lzw_encoder_workspace_entries(
+            raw.size(), {});
+    ASSERT_GT(entries, 0U);
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> short_workspace(
+        entries - 1);
+    std::array staging{
+        std::byte{0x5a}, std::byte{0x5a}, std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw,
+                  short_workspace, staging).error,
+              LzwTansFrameValidationError::encoder_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+
+    std::vector<marc::dictionary::internal::LzwEncoderEntry> workspace(entries);
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, workspace,
+                  std::span<std::byte>{staging}.first(2)).error,
+              LzwTansFrameValidationError::dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}
+
+TEST(LzwTansFramePlanner, EnforcesAggregateBlockAndFrameExtents) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, packed_code_a.size()> staging{};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    limits.max_blocks_per_frame = 1;
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(raw.size(), 1), {}, limits, 0, 0, raw, {},
+                  staging).error,
+              LzwTansFrameValidationError::entropy_encode_error);
+
+    limits.max_blocks_per_frame = 2;
+    limits.max_block_size = packed_code_a.size();
+    limits.max_internal_buffered_bytes = 532;
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(raw.size(), packed_code_a.size()), {}, limits,
+                  0, 0, raw, {}, staging).error,
+              LzwTansFrameValidationError::workspace_limit);
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(1), {}, {}, 0, 0, {}, {}, staging).error,
+              LzwTansFrameValidationError::input_size_mismatch);
+    EXPECT_EQ(marc::frame::plan_lzw_tans_frame(
+                  stream_for(2), {}, {}, 0, 0, raw, {}, staging).error,
+              LzwTansFrameValidationError::input_size_mismatch);
+}
+
 TEST(LzwTansFrameValidator, RejectsEveryTruncationAndTrailingData) {
     const auto frame = single_code_frame();
     std::array<marc::entropy::internal::TansBlockView, 1> views{};

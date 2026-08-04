@@ -3449,6 +3449,17 @@ records, private raw staging, and caller output all to remain unchanged.
 Independently corrupt a later tANS block and entropy-code LZW bytes `41 80`
 with invalid high padding; neither failure may publish any caller byte.
 
+For exact LZW plus tANS planning, feed raw `A` to the standalone LZW planner
+and encoder, require packed bytes `41 00`, then independently plan its one tANS
+block and require descriptor extent 528, payload extent 3, and complete frame
+extent 587 without serialized output. For raw `ABABABA`, require codes 65, 66,
+256, 258 packed as `41 84 00 14 08`; with `B=2`, require three blocks, 1,584
+descriptor bytes, and deterministic repeated payload and complete-frame
+extents matching independent block plans. Reject a short encoder workspace and
+packed span before packed mutation, excessive block count, aggregate storage
+one byte short, empty input, and a raw extent inconsistent with the stream
+header.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

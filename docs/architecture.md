@@ -2216,6 +2216,12 @@ validation, and private raw reconstruction all succeed, one final copy
 publishes exactly the declared raw bytes. Short output and either-layer
 malformation leave the complete caller output unchanged.
 
+The encoding-side planning boundary first fixes the complete canonical packed
+LZW region in caller-owned staging, then plans each tANS block over those exact
+bytes. It computes and validates the synthesized frame and all aggregate
+workspace without accepting serialized output. This prevents descriptor or
+payload emission from observing a partial or differently chunked LZW stream.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

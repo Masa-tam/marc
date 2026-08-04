@@ -24,7 +24,10 @@ format versions, and C ABI versions are independent namespaces.
   transactional wrapper preflights caller output before any private mutation
   and publishes exactly the declared raw extent with one final copy only after
   every tANS and LZW check and private reconstruction succeeds. No public
-  profile is added yet.
+  profile is added yet. Its write-free exact-frame planner now freezes
+  canonical packed LZW bytes, plans every tANS block deterministically, counts
+  encoder storage in the aggregate, validates the synthesized header, and
+  reports the exact complete-frame extent without serialized output.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

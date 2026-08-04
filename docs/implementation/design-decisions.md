@@ -9053,6 +9053,28 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-587: LZW tANS planning freezes packed codes before entropy
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded write-free exact-frame planner above DD-586. Complete
+deterministic LZW parsing using caller-owned encoder records, admit the exact
+packed extent, and serialize the full canonical LSB-first code stream including
+final zero padding into separate staging. Only those immutable packed bytes may
+be divided into tANS blocks; block boundaries remain independent of code
+boundaries.
+
+Plan every tANS block without emitting descriptors or payloads, sum exact
+payload and `528K` descriptor extents with checked arithmetic, and count
+encoder records, packed staging, descriptors, and payload in one aggregate
+workspace total. Validate the synthesized generic header and return the exact
+complete-frame extent without accepting serialized output. Prove the frozen
+587-byte raw-`A` extent, deterministic `ABABABA` codes across three blocks,
+capacity atomicity, block and aggregate rejection, and raw-frame mismatch.
+This step adds no frame encoder, streaming transform, profile calculator, C
+ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-586: LZW tANS publishes one fully validated frame atomically
 
 - Date: 2026-08-04

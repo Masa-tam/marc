@@ -1762,6 +1762,12 @@ and one bounded final copy. No external combined decoder, commit protocol,
 buffer ownership model, malformed corpus, source code, or test suite was
 consulted.
 
+The LZW plus tANS exact-frame planner uses only DD-587, marc's deterministic
+LZW planner and encoder, local tANS block planner, generic frame validation,
+checked arithmetic, and caller-owned staging. No external LZW/tANS encoder,
+planning algorithm, capacity formula, allocation layout, source code, encoded
+corpus, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

@@ -194,8 +194,11 @@ complete raw staging extent, then expands the validated LZW graph iteratively
 without caller publication. Its transactional wrapper now admits caller
 output before private mutation and publishes the declared raw extent once only
 after the complete private decode succeeds; short output and malformed tANS or
-LZW input leave it unchanged. Encoder and all later admission boundaries
-remain pending.
+LZW input leave it unchanged. Its write-free exact-frame planner now freezes
+canonical packed LZW bytes, plans every tANS block deterministically, and
+reports the validated complete-frame extent while counting encoder records in
+aggregate storage. Frame emission and all later admission boundaries remain
+pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

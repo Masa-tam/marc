@@ -5205,3 +5205,12 @@ and private raw reconstruction succeed, it copies exactly `F` bytes once from
 raw staging to the caller destination. No prefix is published on short output,
 malformed entropy, invalid LZW codes or padding, or private reconstruction
 failure. Bytes after the declared output extent are not modified.
+
+The exact-frame planner completes deterministic LZW parsing and writes the
+entire canonical packed-code region, including final zero padding, into
+caller-owned staging before planning entropy. It then plans every tANS block
+over those immutable bytes and returns exact `S`, `K`, descriptor, payload,
+and complete-frame extents without accepting or writing a serialized frame
+destination. Encoder records, packed staging, descriptors, and payload all
+count toward aggregate internal storage. The synthesized generic frame header
+must validate before planning succeeds.

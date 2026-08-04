@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZW plus tANS exact-frame planning
+
+- Authoring method: composed DD-587 from marc's local deterministic LZW
+  planner and encoder, tANS block planner, and generic frame validator.
+- References used: DD-587, DD-583's representation, the local LZW encoder
+  contract, tANS planner, checked arithmetic, generic frame bounds, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  encoders, combined planners, capacity formulas, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: freeze the complete packed stream before entropy
+  planning; plan all blocks without serialized output; count encoder records,
+  packed bytes, descriptors, and payload in one aggregate; and validate the
+  synthesized frame header before success.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and cross-block `ABABABA` determinism,
+  guarded workspace and staging shortages, block, aggregate, and frame-size
+  rejection, and synchronized format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the planner directly sequences local independently
+  specified components and checked spans. No external planning order, storage
+  organization, capacity formula, encoded bytes, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZW/tANS planner, validator, and decoder suite
+  passed 23/23 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 2,233/2,233 under both compilers using official CMake 4.3.4; all 39
+  benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
+
 ## 2026-08-04 - LZW plus tANS transactional publication
 
 - Authoring method: applied DD-586 above marc's DD-585 private decoder and
