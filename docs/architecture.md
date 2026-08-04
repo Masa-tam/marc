@@ -2261,6 +2261,11 @@ query, and factory. The public structure carries only fixed-width values and
 hard limits; the aligned tANS and LZW object layouts remain private. Factory
 failure leaves the opaque transform handle null.
 
+The public completion matrix constructs both directions only through that C
+factory. It fixes 64-byte frame and block boundaries, proves deterministic
+archives across arbitrary chunking, and verifies that a malformed fourth frame
+cannot publish its final raw byte or destabilize the repeated terminal error.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

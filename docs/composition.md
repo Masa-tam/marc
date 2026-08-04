@@ -58,7 +58,10 @@ now derives all byte regions and partitions one aligned opaque region into tANS
 views and LZW phrases without inspecting input. Its versioned public C
 requirements query and factory now bind those three
 caller-owned regions while keeping every typed layout private. CLI and later
-admission evidence remain pending.
+admission evidence remain pending. Its public-ABI completion matrix now proves
+required binary classes, byte-identical repeated and arbitrarily chunked
+encoding, stable terminal calls, and frame-atomic rejection of malformed final
+frames.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

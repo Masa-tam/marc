@@ -1303,6 +1303,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_rans_frame_streaming_decoder_tests.cpp
         tests/lzw_rans_profile_tests.cpp
         tests/lzw_tans_profile_tests.cpp
+        tests/lzw_tans_completion_tests.cpp
         tests/lzw_rans_completion_tests.cpp
         tests/lzw_rans_fuzz_regression_tests.cpp
         tests/lz78_rans_frame_tests.cpp

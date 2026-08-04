@@ -1797,6 +1797,12 @@ marc's existing three-region transform lifecycle, stable status mapping, and
 the completed local streaming pair. No external combined C API, ABI layout,
 factory ownership model, source code, or test suite was consulted.
 
+The LZW plus tANS public completion matrix uses only DD-593, DD-592's public C
+lifecycle, the local generic frame extent, deterministic generator, and
+process-result contract. No external LZW/tANS corpus, completion suite,
+chunking schedule, malformed vector, source code, or test expression was
+consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

@@ -335,7 +335,10 @@ then packed bytes and private raw staging in secondary storage; aligned views
 hold tANS block views followed by LZW phrase entries. Call
 `marc_lzw_tans_workspace_requirements()` again after changing direction,
 sizes, width, block settings, or any hard limit. All typed layouts remain
-private to the factory.
+private to the factory. The public completion matrix uses only this lifecycle
+with 64-byte frames and blocks and covers required binary classes, repeat
+determinism, arbitrary chunking, stable terminal calls, and frame-atomic
+rejection of corrupted, truncated, and extended fourth frames.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS public-ABI completion matrix
+
+- Authoring method: instantiated marc's common LZW public-ABI audit through
+  DD-592 and replaced only the local tANS storage ceiling and public symbols.
+- References used: DD-593, DD-592, the local C lifecycle, generic frame fields,
+  deterministic test generator, process contract, and sticky terminal policy.
+- Known implementations intentionally not consulted: external LZW/tANS test
+  corpora, completion matrices, malformed schedules, source code, and suites.
+- Independent decisions: keep data, chunk, terminal, and malformed schedules
+  identical across LZW entropy compositions; use the blockwise tANS ceiling;
+  corrupt the generic fourth-frame sequence; and require frame-granular output
+  commitment plus stable repeated errors.
+- Generated-code task description: add the public-only completion matrix for
+  required data classes, repeat determinism, three chunk schedules, terminal
+  repetition, and corrupted, truncated, and trailing final frames; synchronize
+  format, architecture, C API, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the matrix reuses only repository-local test structure and
+  public functions. No external encoded bytes, data schedule, corruption
+  location, control flow, naming scheme, or assertion was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  streaming transforms, profile, C factory, and completion suite passed 47/47
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,257/2,257 under both compilers using official CMake 4.3.4; all 39 benchmark
+  smokes, schema 1 through 28 compatibility, and documentation layout remained
+  successful.
+
 ## 2026-08-05 - LZW plus tANS public C workspace factory
 
 - Authoring method: bound DD-592 directly to DD-591's local profile and the

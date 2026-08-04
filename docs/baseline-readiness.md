@@ -126,6 +126,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
+| `lzw-tans` | Yes | Yes | Yes | No | No | No | Yes | Pending |
 
 ## Composed-profile admission queue
 
@@ -206,8 +207,10 @@ accepting the next. Its bounded streaming decoder now collects one complete
 encoded frame, admits every private region from its header, and publishes only
 a fully validated raw frame. Its versioned C requirements query and factory
 now expose the completed streaming pair while retaining all record layouts
-inside the implementation. CLI, benchmark, fuzzing, completion, and
-interoperability evidence remain pending.
+inside the implementation. Its public-only completion matrix covers required
+binary classes, deterministic chunking, stable terminals, and malformed final-
+frame atomicity. CLI, benchmark, fuzzing, and interoperability evidence remain
+pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

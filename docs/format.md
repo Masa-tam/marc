@@ -4203,18 +4203,6 @@ the frozen reference bytes, requires identical payload extents, and writes each
 descriptor and payload into its precomputed region. Final reference and payload
 offsets must equal the plan; short destination failure changes no output byte.
 
-The bounded workspace profile uses the same conservative `S`, `K`, descriptor,
-and blockwise payload ceilings without inspecting input bytes. It reports byte
-regions separately from naturally aligned typed records and checks every
-product, sum, alignment adjustment, and conversion to `size_t`. These storage
-requirements are an implementation contract and do not add serialized fields
-or alter the representation above.
-
-The C entry points `marc_lzw_tans_config_init()`,
-`marc_lzw_tans_workspace_requirements()`, and `marc_lzw_tans_create()` bind
-this exact representation. Their caller-owned storage layout is not serialized
-and private C++ record definitions do not cross the ABI.
-
 The bounded known-size streaming encoder emits the ordinary 64-byte stream
 header followed by the ordinary 16-byte LZMW parameter extension. It then
 collects at most one outer raw frame, invokes the exact-frame planner and
@@ -5217,9 +5205,8 @@ any block. A second pass reconstructs exactly `S` private bytes only after the
 complete entropy region succeeds. The ordinary LZW validator then checks the
 first literal, width transitions, backward and `KwKwK` references, bounded
 dictionary growth and phrase lengths, exact `F` expansion, packed exhaustion,
-and zero high padding without reconstructing raw bytes. No decoder, encoder,
-streaming transform, profile calculator, C factory, CLI selector, benchmark,
-fuzzer, completion claim, or interoperability entry is defined yet.
+and zero high padding without reconstructing raw bytes. This validation stage
+itself reconstructs no raw bytes and publishes no output.
 
 The bounded private decoder additionally admits the complete declared raw
 extent before descriptor parsing and counts it in aggregate storage. After the
@@ -5253,3 +5240,22 @@ serializes the generic header explicitly, repeats every tANS block plan over
 the frozen packed bytes, requires identical payload extents, and writes each
 descriptor and payload into its precomputed region. Final packed and payload
 offsets must equal the plan; short destination failure changes no output byte.
+
+The bounded workspace profile uses the same conservative `S`, `K`, descriptor,
+and blockwise payload ceilings without inspecting input bytes. It reports byte
+regions separately from naturally aligned typed records and checks every
+product, sum, alignment adjustment, and conversion to `size_t`. These storage
+requirements are an implementation contract and do not add serialized fields
+or alter the representation above.
+
+The C entry points `marc_lzw_tans_config_init()`,
+`marc_lzw_tans_workspace_requirements()`, and `marc_lzw_tans_create()` bind
+this exact representation. Their caller-owned storage layout is not serialized
+and private C++ record definitions do not cross the ABI.
+
+The public completion audit fixes 64-byte frames and blocks and proves
+byte-identical archives across unchunked, one-byte, and mixed chunking. For a
+four-frame stream it also proves that sequence corruption, final-byte
+truncation, and trailing data in the fourth frame publish exactly the first
+three frames and preserve a sticky terminal error. These tests add no new
+serialized field or variant.
