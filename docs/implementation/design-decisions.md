@@ -9053,6 +9053,24 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-597: Interoperability schema 29 appends LZW tANS
+
+- Date: 2026-08-05
+- Status: accepted
+
+Freeze the exact thirty-nine-entry schema-28 order and append `lzw-tans` once
+as entry 40. Name the new codec set `marc-cli-v29`; retain the deterministic
+8,193-byte binary fixture, full source revision, platform/compiler metadata,
+and SHA-256 for the CLI, input, and every archive.
+
+Generation must decode and compare every archive before recording it. The
+verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
+decode, and byte-identical local re-encoding. The compatibility regression
+rejects a reordered schema-29 manifest, derives schema 28 by removing only
+`lzw-tans`, and verifies the unchanged schemas 28 through 1. This admission
+changes no codec representation. External cross-platform evidence remains a
+post-push release check.
+
 ## DD-596: LZW tANS benchmark verifies before measuring
 
 - Date: 2026-08-05

@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
+
+- Authoring method: extended marc's repository-owned schema-28 manifest and
+  compatibility chain by one already-published CLI profile.
+- References used: DD-597, the frozen schema-28 profile order, local bundle
+  scripts, deterministic 8,193-byte fixture, and `lzw-tans`.
+- Known implementations intentionally not consulted: external archive suites,
+  manifests, interoperability harnesses, encoded corpora, source code, and
+  test suites.
+- Independent decisions: name `marc-cli-v29`; append `lzw-tans` only as entry
+  40; require local round trip before recording; preserve exact order, hashes,
+  foreign decode, and byte-identical re-encoding; derive schema 28 by removing
+  only the new archive; and reject reordered manifests.
+- Generated-code task description: advance generator and verifier to schema
+  29, add reordered-manifest and schemas 1 through 28 compatibility checks,
+  and synchronize interoperability, format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the change appends one local public profile to marc's own
+  frozen schema machinery. No external ordering, manifest design, fixture,
+  hash convention, compatibility strategy, or test expression was compared.
+- Local validation: schema-29 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 28 compatibility passed under both MSVC and ClangCL Release builds.
+  The complete Release CTest suite passed 2,262/2,262 under both compilers
+  using official CMake 4.3.4; all 40 benchmark smokes and documentation-layout
+  checks remained successful. External four-direction evidence remains pending
+  CI artifacts.
+
 ## 2026-08-05 - LZW plus tANS verification-first benchmark
 
 - Authoring method: instantiated marc's common public-C benchmark runner with

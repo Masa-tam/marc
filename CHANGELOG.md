@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added interoperability schema 29 as the frozen schema-28 archive order plus
+  `lzw-tans` exactly once. Local generation, strict-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 28 compatibility now pass for all 40 archives. External
+  four-direction verification remains pending CI artifacts.
 - Reserved the `lzw-tans` composition and independent 587-byte raw-`A` frame.
   Canonical LSB-first packed LZW bytes, including final zero padding, are
   finalized before tANS coding; entropy blocks may split codes but not bytes or

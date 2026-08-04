@@ -65,16 +65,16 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-tans` | First tANS composition | Ready | Included |
 | `lzss-tans` | Second tANS composition | Ready | Included |
 | `lz78-tans` | Third tANS composition | Ready | Included |
-| `lzw-tans` | Fourth tANS composition | In progress | Pending |
+| `lzw-tans` | Fourth tANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-Schema 28 contains thirty-nine archives: the frozen thirty-eight-entry
-schema-27 set followed by the LZ78 tANS profile. Schemas 1 through 27
+Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
+followed by the LZW tANS profile. Schemas 1 through 28
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
 thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, thirty-six,
-thirty-seven, and thirty-eight profiles;
+thirty-seven, thirty-eight, and thirty-nine profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -85,7 +85,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 27 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 29 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -126,7 +126,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz77-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Pending |
+| `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -214,7 +214,9 @@ regressions cover private and public decode boundaries. Its transactional CLI
 selector uses only the public lifecycle and retains atomic output publication.
 Its dependency-free benchmark verifies a byte-exact public-C round trip before
 measurement and reports every queried workspace. Interoperability evidence
-remains pending.
+now includes schema-29 local generation, strict order and reorder rejection,
+byte-identical re-encoding, and schemas 1 through 28 compatibility. External
+four-direction confirmation remains pending CI artifacts.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

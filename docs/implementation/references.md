@@ -1821,6 +1821,12 @@ capacity arithmetic, and marc's existing verification-first measurement
 runner. No external benchmark framework, combined adapter, capacity formula,
 performance result, source code, or test suite was consulted.
 
+Interoperability schema 29 uses only DD-597, the frozen local schema-28 order,
+marc's deterministic 8,193-byte fixture, the published `lzw-tans` CLI profile,
+and the repository-owned generator, verifier, and compatibility conversion.
+No external interoperability schema, manifest, archive corpus, source code, or
+test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

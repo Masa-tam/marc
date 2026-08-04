@@ -3541,6 +3541,15 @@ queries in both directions, an untimed byte-exact round trip before timing,
 finite encode/decode measurements, and reported primary, secondary, views,
 and peak workspace bytes. Do not assert a throughput or compression threshold.
 
+For interoperability schema 29, retain the exact schema-28 archive order and
+append one `lzw-tans` archive as entry 40. Set `schema_version` to 29 and
+`codec_set` to `marc-cli-v29`; record an archive only after its local decode
+matches the deterministic 8,193-byte fixture. Verify exact count, order,
+leaf-only names, sizes, SHA-256 values, fixture decode, and byte-identical
+re-encoding. Reject a manifest with its first two archives swapped. Derive
+schema 28 by removing only `lzw-tans.marc` and changing only version and codec
+set, then verify schemas 28 through 1 unchanged.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

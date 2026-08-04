@@ -672,6 +672,9 @@ the frozen thirty-seven-profile schema-26 order. Schema 28 names
 `marc-cli-v28` and appends LZ78 plus tANS to the frozen thirty-eight-profile
 schema-27 order. Schemas 1 through 27 retain
 their exact versioned profile sets.
+Schema 29 names `marc-cli-v29` and appends LZW plus tANS to the frozen
+thirty-nine-profile schema-28 order. Schemas 1 through 28 retain their exact
+versioned profile sets.
 
 The checksum profile's public-ABI completion matrix is the consolidated local
 audit above the component, streaming, C, CLI, fuzz, benchmark, and
@@ -2284,6 +2287,13 @@ queries fresh caller-owned workspaces for each direction, proves one complete
 byte-exact round trip before timing, then measures encode and decode
 independently. The runner reports every queried region and peak reservation;
 it does not inspect the opaque typed partition or enforce a performance floor.
+
+Interoperability schema 29 appends the identical `lzw-tans` CLI archive once
+after the frozen schema-28 order. Generation validates all 40 local archives
+before writing the manifest; verification requires exact order, hashes,
+foreign decode, and byte-identical local re-encoding. Compatibility derives
+schema 28 by removing only `lzw-tans`, rejects reordered schema-29 manifests,
+and then verifies every unchanged schema through version 1.
 
 ### C transform ABI
 

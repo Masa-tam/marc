@@ -5275,3 +5275,8 @@ The dependency-free `lzw-tans` benchmark uses the same selector profile and
 public C lifecycle. Its checked `80 + 3N + 1116K` complete-stream allocation,
 untimed verification pass, iteration count, and workspace reporting are host
 measurement policy only and do not alter encoded bytes.
+
+Interoperability schema 29 emits this unchanged profile as `lzw-tans` after
+the frozen thirty-nine-entry schema-28 order. Manifest version and codec-set
+selection, archive hashes, verification output, and compatibility derivation
+are external test metadata and do not change the stream representation.

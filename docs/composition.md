@@ -70,7 +70,11 @@ extended, or pre-existing output cases. Its dependency-free benchmark uses
 the same public profile, verifies an exact round trip before timing, and
 reports all queried workspace regions under the checked
 `80 + 3N + 1116K` stream ceiling.
-Interoperability evidence remains pending.
+Interoperability schema 29 appends the unchanged CLI archive once after the
+frozen schema-28 order. Local generation, exact-order verification,
+byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+through 28 compatibility pass; external four-direction evidence remains
+pending CI artifacts.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS
