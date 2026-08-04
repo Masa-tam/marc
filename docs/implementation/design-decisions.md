@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-589: LZW tANS streaming encode buffers one exact frame
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the first bounded known-size streaming encoder above DD-588. Emit the
+canonical 64-byte stream header and 16-byte LZW parameter extension, collect at
+most one raw frame, plan and encode that complete frame into private immutable
+storage, and drain it fully before accepting input for a later frame.
+
+Construction validates the fixed variant-1 profile, declared original size,
+largest raw frame, conservative `ceil(FW/8)` packed capacity, and required LZW
+encoder records. Per-frame aggregate accounting includes raw staging, actual
+packed staging, the exact serialized frame, and encoder records. Arbitrary
+input/output chunking must preserve canonical bytes; `Flush` leaves a partial
+frame open; retained `EndInput` drains all pending bytes; and `ResetBlock`,
+unknown flags, premature end, or excess input fail stably. This step adds no
+streaming decoder, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
 ## DD-588: LZW tANS encoding emits only a completed plan
 
 - Date: 2026-08-04

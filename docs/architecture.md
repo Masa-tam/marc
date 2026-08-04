@@ -1450,6 +1450,16 @@ the immutable packed staging while placing descriptors and payloads at their
 fixed offsets. Extent disagreement is an internal error, and insufficient
 destination capacity is detected before serialized output mutation.
 
+The bounded known-size streaming encoder owns caller-supplied storage for one
+raw frame, its conservative packed-code ceiling, one exact serialized frame,
+and the LZW encoder records. It emits the canonical stream header and LZW
+parameters first, collects no more than one raw frame, completes planning and
+encoding into the private frame region, and drains that immutable region
+before accepting input belonging to a later frame. Consequently arbitrary
+input and output chunking cannot change serialized bytes. `Flush` leaves a
+partial frame open, while retained `EndInput` finishes and drains the final
+short frame before reporting end of stream.
+
 The complete-frame encoder accepts only a fully successful plan and a complete
 destination. It writes the generic header, then reproduces every rANS plan over
 the immutable packed staging while placing descriptors and payloads at their

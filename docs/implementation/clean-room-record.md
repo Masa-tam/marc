@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS bounded streaming encoding
+
+- Authoring method: composed DD-589 directly above marc's local exact-frame
+  planner and encoder and the repository's established transform contract.
+- References used: DD-589, DD-588, the local LZW/tANS frame encoder, explicit
+  stream and LZW parameter serializers, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external streaming
+  LZW/tANS implementations, buffering schedules, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: buffer exactly one raw frame; retain separate packed
+  and immutable serialized-frame regions; drain a frame before accepting later
+  input; count raw, actual packed, exact frame, and records per aggregate
+  limit; retain `EndInput`; and keep `Flush` non-terminal.
+- Generated-code task description: add a bounded known-size streaming encoder;
+  prove one-byte chunk identity, non-terminal flush, retained finish, workspace
+  and aggregate bounds, empty input, and protocol errors; synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the transform directly composes repository-local
+  contracts and independently specified frame encoding. No external control
+  flow, storage organization, naming scheme, encoded bytes, or test expression
+  was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  and streaming-encoder suite passed 31/31 under both MSVC and ClangCL. The
+  complete Release CTest suite passed 2,241/2,241 under both compilers using
+  official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
+  compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZW plus tANS deterministic frame encoding
 
 - Authoring method: placed explicit frame serialization above DD-587's exact

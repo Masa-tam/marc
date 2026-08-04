@@ -31,7 +31,10 @@ format versions, and C ABI versions are independent namespaces.
   bounded complete-frame encoder now admits the full destination before
   writing, serializes explicit headers and descriptors, requires repeated
   tANS plans to match frozen extents, and reproduces the independent vector
-  exactly.
+  exactly. Its bounded known-size streaming encoder now emits the canonical
+  80-byte stream prefix, buffers at most one raw frame, prepares one immutable
+  exact frame, and drains that frame completely before accepting later-frame
+  input.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

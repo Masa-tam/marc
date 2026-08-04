@@ -46,10 +46,12 @@ transactional wrapper admits the complete caller destination before private
 mutation and copies exactly the declared raw extent only after every layer
 succeeds. Short output and malformed entropy or dictionary data publish
 nothing. Its write-free planner freezes canonical packed codes and plans all
-tANS blocks and the exact complete-frame extent without serialized output. No
+tANS blocks and the exact complete-frame extent without serialized output.
 Its complete-frame encoder now serializes only after a complete plan and
 reproduces the independent vector and multi-block streams deterministically.
-No streaming transform or public profile exists yet.
+Its bounded known-size streaming encoder emits the fixed 80-byte prefix,
+collects at most one raw frame, and drains the completed immutable frame before
+accepting later-frame input. No streaming decoder or public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

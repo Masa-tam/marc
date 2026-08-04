@@ -4254,6 +4254,16 @@ LZW encoder records. `Flush` does not close a partial frame. `EndInput` is
 retained while the final frame and all pending prefix bytes drain; premature
 end, excess input, `ResetBlock`, and unknown process flags are errors.
 
+The bounded known-size streaming encoder emits the ordinary 64-byte stream
+header followed by the ordinary 16-byte LZW parameter extension. It then
+collects at most one declared raw frame, completes the exact-frame plan and
+encoding in caller-owned private storage, and drains the resulting immutable
+frame before accepting bytes for a later frame. Per-frame aggregate storage
+counts the raw staging, actual packed-code staging, exact serialized frame, and
+LZW encoder records. `Flush` does not close a partial frame. `EndInput` is
+retained while the final frame and all pending prefix bytes drain; premature
+end, excess input, `ResetBlock`, and unknown process flags are errors.
+
 The bounded streaming decoder first collects the same 80-byte prefix. For each
 frame it collects the 56-byte generic header, validates `S`, `K`, descriptor,
 payload, raw, view, phrase-record, serialized-frame, and aggregate extents,

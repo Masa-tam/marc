@@ -3467,6 +3467,15 @@ frames, then decode one through the transactional combined decoder and require
 the original seven bytes. Give the raw-`A` encoder a 586-byte destination
 filled with `A5` and require every byte to remain unchanged.
 
+For bounded LZW plus tANS streaming encoding, use raw `ABABX`, outer frames of
+two bytes, and tANS blocks of two bytes. Independently serialize the ordinary
+80-byte prefix and append each exact frame from the complete-frame planner and
+encoder. Require identical output when both input and output capacities are
+one byte. Verify that `Flush` leaves a partial frame open, `EndInput` retained
+while every region drains produces the same stream, workspace and aggregate
+shortages fail stably, empty input emits only the prefix, and premature end,
+excess input, `ResetBlock`, and unknown flags are rejected.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries
