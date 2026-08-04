@@ -201,8 +201,10 @@ aggregate storage. Deterministic frame emission now reproduces the independent
 vector, replans each block against the frozen extents, and preserves short
 output. Its first bounded known-size streaming encoder emits the fixed prefix,
 buffers at most one raw frame, and drains each immutable encoded frame before
-accepting the next. Streaming decode and all later admission boundaries remain
-pending.
+accepting the next. Its bounded streaming decoder now collects one complete
+encoded frame, admits every private region from its header, and publishes only
+a fully validated raw frame. Public API and all later admission boundaries
+remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

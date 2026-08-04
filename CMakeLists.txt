@@ -146,6 +146,7 @@ set(MARC_SOURCES
     src/frame/lzw_rans_frame.cpp
     src/frame/lzw_rans_frame_streaming_encoder.cpp
     src/frame/lzw_tans_frame_streaming_encoder.cpp
+    src/frame/lzw_tans_frame_streaming_decoder.cpp
     src/frame/lzw_rans_frame_streaming_decoder.cpp
     src/frame/lzw_rans_profile.cpp
     src/frame/lzd_rans_frame.cpp
@@ -1297,6 +1298,7 @@ if(MARC_BUILD_TESTS)
         tests/lzw_rans_frame_tests.cpp
         tests/lzw_rans_frame_streaming_encoder_tests.cpp
         tests/lzw_tans_frame_streaming_encoder_tests.cpp
+        tests/lzw_tans_frame_streaming_decoder_tests.cpp
         tests/lzw_rans_frame_streaming_decoder_tests.cpp
         tests/lzw_rans_profile_tests.cpp
         tests/lzw_rans_completion_tests.cpp

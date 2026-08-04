@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS bounded streaming decoding
+
+- Authoring method: composed DD-590 from marc's local private complete-frame
+  decoder and established frame-stream collection contract.
+- References used: DD-590, DD-589, the local LZW/tANS private decoder,
+  explicit stream and frame parsers, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external streaming
+  LZW/tANS decoders, buffering schedules, allocation layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: parse the fixed prefix and frame header separately;
+  admit serialized frame, views, packed staging, raw staging, and phrase
+  records before body collection; decode only a complete frame; drain it
+  before collecting another header; and retain `EndInput` while draining.
+- Generated-code task description: add the bounded streaming decoder; prove
+  one-byte chunking, frame-granular publication under later corruption, every
+  workspace and aggregate bound, truncation and trailing rejection, empty and
+  flush behavior, retained premature end, and unsupported flags; synchronize
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the decoder directly composes repository-local contracts
+  and independently specified frame validation. No external control flow,
+  storage organization, naming scheme, malformed vector, or test expression
+  was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  and both streaming-transform suite passed 36/36 under both MSVC and ClangCL.
+  The complete Release CTest suite passed 2,246/2,246 under both compilers
+  using official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
+  compatibility, and documentation layout remained successful.
+
 ## 2026-08-05 - LZW plus tANS bounded streaming encoding
 
 - Authoring method: composed DD-589 directly above marc's local exact-frame

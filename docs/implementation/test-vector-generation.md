@@ -3476,6 +3476,16 @@ while every region drains produces the same stream, workspace and aggregate
 shortages fail stably, empty input emits only the prefix, and premature end,
 excess input, `ResetBlock`, and unknown flags are rejected.
 
+For bounded LZW plus tANS streaming decoding, feed that canonical multi-frame
+stream with one-byte input and output capacities and require raw `ABABX`.
+Corrupt the second frame's tANS model and require only first-frame raw `AB` to
+be published. Make each serialized-frame, view, packed, raw, and phrase region
+one entry short in turn, then set aggregate storage one byte below the exact
+sum and require early failure. Reject every final-byte truncation, one trailing
+byte, `ResetBlock`, and an unknown flag; accept the empty prefix-only stream;
+keep `Flush` non-terminal; and retain premature `EndInput` while draining the
+first valid frame before reporting the missing later frame.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

@@ -34,7 +34,9 @@ format versions, and C ABI versions are independent namespaces.
   exactly. Its bounded known-size streaming encoder now emits the canonical
   80-byte stream prefix, buffers at most one raw frame, prepares one immutable
   exact frame, and drains that frame completely before accepting later-frame
-  input.
+  input. Its bounded streaming decoder now collects and preflights one complete
+  encoded frame, validates and reconstructs it privately, and drains only the
+  fully accepted raw frame before collecting the next.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

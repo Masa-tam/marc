@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-590: LZW tANS streaming decode publishes complete frames
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the bounded known-size streaming decoder opposite DD-589. Collect and
+parse the canonical 80-byte prefix, then collect one 56-byte frame header.
+Before accepting its body, derive and validate the packed-code ceiling, tANS
+block count and extents, exact serialized-frame size, raw staging, tANS views,
+LZW phrase records, and aggregate internal storage.
+
+Decode only after the entire declared frame is present. Reuse the private
+complete-frame decoder, drain only the fully validated raw frame, and do not
+collect a later header until draining finishes. Retain `EndInput` during the
+drain and reject truncation, trailing bytes, `ResetBlock`, and unknown flags.
+Corruption in a later frame may leave earlier committed frames visible but
+must publish none of the malformed frame. This step adds no profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-589: LZW tANS streaming encode buffers one exact frame
 
 - Date: 2026-08-05

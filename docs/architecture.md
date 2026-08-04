@@ -1460,6 +1460,16 @@ input and output chunking cannot change serialized bytes. `Flush` leaves a
 partial frame open, while retained `EndInput` finishes and drains the final
 short frame before reporting end of stream.
 
+The bounded streaming decoder owns caller-supplied regions for one serialized
+frame, its tANS block views, reconstructed packed codes, decoded raw bytes, and
+LZW phrase records. It collects the fixed prefix and one frame header before
+accepting the declared body extent, so every capacity and aggregate limit is
+checked before entropy decoding. A complete frame is validated and expanded
+only into private storage, then its raw bytes are drained before the next frame
+header is collected. Later corruption therefore cannot retract or partially
+publish the current frame, while malformed current-frame data publishes none
+of that frame.
+
 The complete-frame encoder accepts only a fully successful plan and a complete
 destination. It writes the generic header, then reproduces every rANS plan over
 the immutable packed staging while placing descriptors and payloads at their
