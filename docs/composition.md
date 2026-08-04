@@ -73,8 +73,10 @@ reports all queried workspace regions under the checked
 Interoperability schema 29 appends the unchanged CLI archive once after the
 frozen schema-28 order. Local generation, exact-order verification,
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-through 28 compatibility pass; external four-direction evidence remains
-pending CI artifacts.
+through 28 compatibility pass. Four-direction verification at revision
+`2dcc17c09477958c1f8777a266ecfefbb75217d2` establishes canonical output
+across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

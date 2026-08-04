@@ -216,7 +216,10 @@ Its dependency-free benchmark verifies a byte-exact public-C round trip before
 measurement and reports every queried workspace. Interoperability evidence
 now includes schema-29 local generation, strict order and reorder rejection,
 byte-identical re-encoding, and schemas 1 through 28 compatibility. External
-four-direction confirmation remains pending CI artifacts.
+four-direction confirmation at revision
+`2dcc17c09477958c1f8777a266ecfefbb75217d2` verifies all 40 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

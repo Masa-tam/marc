@@ -2294,6 +2294,10 @@ before writing the manifest; verification requires exact order, hashes,
 foreign decode, and byte-identical local re-encoding. Compatibility derives
 schema 28 by removing only `lzw-tans`, rejects reordered schema-29 manifests,
 and then verifies every unchanged schema through version 1.
+External four-direction verification at revision
+`2dcc17c09477958c1f8777a266ecfefbb75217d2` confirms all 40 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers, including byte-identical re-encoding in both platform directions.
 
 ### C transform ABI
 

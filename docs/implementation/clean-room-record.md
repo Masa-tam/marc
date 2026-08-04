@@ -9931,8 +9931,11 @@ discarded and the reviewed seed retained.
   through 28 compatibility passed under both MSVC and ClangCL Release builds.
   The complete Release CTest suite passed 2,262/2,262 under both compilers
   using official CMake 4.3.4; all 40 benchmark smokes and documentation-layout
-  checks remained successful. External four-direction evidence remains pending
-  CI artifacts.
+  checks remained successful. External four-direction verification at revision
+  `2dcc17c09477958c1f8777a266ecfefbb75217d2` completed all schema-29 paths:
+  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
+  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
+  re-encoded identically on Windows/MSVC. Every pass verified all 40 archives.
 
 ## 2026-08-05 - LZW plus tANS verification-first benchmark
 
