@@ -2191,8 +2191,15 @@ padding without caller-visible publication.
 The independent raw-`A` boundary fixes packed bytes `41 00`, normalized
 frequencies `00:2048` and `41:2048`, initial-state offset `0x000C`, two zero
 transition bits, payload `0C 00 00`, and a complete 587-byte frame. This is a
-format and vector reservation only; the bounded combined validator is the next
-boundary.
+format and vector reservation.
+
+The first bounded validator realizes the validation-first boundary with
+caller-owned tANS views, packed staging, and LZW phrase records. It admits all
+serialized and workspace extents under one aggregate policy, validates every
+tANS descriptor and state path without packed output, and only then performs a
+second entropy pass into private staging. Complete LZW code-width, reference,
+dictionary-growth, raw-extent, packed-exhaustion, and padding validation
+follows; raw expansion and caller-visible publication remain absent.
 
 ### C transform ABI
 

@@ -5173,6 +5173,18 @@ The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 08`) and 146..147 (`00 08`). The three payload bytes immediately follow
 the descriptor. This sparse notation uniquely defines all 587 bytes.
 
-This reservation defines no combined validator, decoder, encoder, streaming
-transform, profile calculator, C factory, CLI selector, benchmark, fuzzer,
-completion claim, or interoperability entry.
+The first combined validator implements this decoder-facing boundary without
+raw reconstruction. It preflights the complete serialized extent, packed-byte
+bound, exact block and descriptor counts, caller-owned packed staging, phrase
+records, and `K * sizeof(TansBlockView)` view storage. Descriptor, payload,
+packed, view, and phrase-record bytes share the configured aggregate internal-
+workspace limit.
+
+It parses all descriptors and validates all `K` tANS automata before decoding
+any block. A second pass reconstructs exactly `S` private bytes only after the
+complete entropy region succeeds. The ordinary LZW validator then checks the
+first literal, width transitions, backward and `KwKwK` references, bounded
+dictionary growth and phrase lengths, exact `F` expansion, packed exhaustion,
+and zero high padding without reconstructing raw bytes. No decoder, encoder,
+streaming transform, profile calculator, C factory, CLI selector, benchmark,
+fuzzer, completion claim, or interoperability entry is defined yet.

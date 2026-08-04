@@ -3415,6 +3415,22 @@ Serialize one frame with raw size 1, dictionary size 8, payload size 3, one
 header, descriptor, frequency, and payload definition in `docs/format.md`.
 This test fixes the representation before a combined validator exists.
 
+For the first LZW plus tANS validator, require the 587-byte hand vector to
+reconstruct exact packed bytes `41 00` in private staging. Re-encode those
+bytes with tANS block size one and require two blocks, proving that entropy
+boundaries may split one nine-bit code while preserving byte boundaries.
+Reject every proper frame prefix and one trailing byte.
+
+Use one-entry-short view storage, one-byte-short packed staging, one-entry-
+short phrase storage for packed `AB`, and an aggregate workspace limit one
+byte below descriptor, payload, packed, view, and phrase bytes; each must fail
+before packed mutation. Corrupt a frequency descriptor and the initial state
+of the second one-byte block independently; the later-block case must report
+block index one while preserving complete staging. Entropy-code packed
+`41 80` and require LZW-layer rejection of nonzero final padding. Reject an
+excessive packed extent, an excessive tANS payload extent, and another
+pipeline.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

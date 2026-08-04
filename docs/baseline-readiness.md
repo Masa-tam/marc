@@ -184,8 +184,13 @@ frame, and requires complete private entropy reconstruction before LZW
 validation. For maximum code width `W`, its bounds are
 `S <= ceil(FW/8)`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked
 sum of per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A`
-frame is 587 bytes with packed bytes `41 00` and payload `0C 00 00`. The
-combined validator and all later admission boundaries remain pending.
+frame is 587 bytes with packed bytes `41 00` and payload `0C 00 00`. Its first
+bounded complete-frame validator now preflights exact extents and all packed,
+view, and phrase workspaces, validates every tANS block before packed mutation,
+reconstructs the complete private packed region, and applies LZW code-width,
+reference, dictionary-growth, raw-extent, packed-exhaustion, and padding
+validation. Private raw reconstruction and all later admission boundaries
+remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

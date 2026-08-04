@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZW plus tANS complete-frame validator
+
+- Authoring method: composed marc's strict two-pass tANS block controller with
+  its existing bounded LZW code-stream and phrase validator.
+- References used: DD-584, DD-583 bounds, local generic frame parsing, local
+  tANS descriptors and state validation, caller-owned spans, checked
+  arithmetic, and the independent 587-byte vector.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: admit all extents before entropy work; count tANS
+  views and LZW phrase records in the aggregate; validate every entropy block
+  before packed mutation; decode exactly once into private staging only after
+  complete entropy success; and retain stable layer and position diagnostics.
+- Generated-code task description: implement only the bounded decoder-side
+  validator; exercise code-splitting blocks, truncation, later-block failure,
+  workspace shortages, invalid LZW padding, impossible extents, and update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation directly sequences repository-owned
+  components and checked spans. No external control flow, validation schedule,
+  error taxonomy, test mutation, encoded data, or naming scheme was compared.
+- Local validation: the focused validator suite passed 9/9 under MSVC and
+  ClangCL. The complete Release CTest suite passed 2,219/2,219 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
+  through 28 compatibility, and documentation layout remained successful.
+
 ## 2026-08-04 - LZW plus tANS representation and vector reservation
 
 - Authoring method: composed marc's already specified packed LZW code format

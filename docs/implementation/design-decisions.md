@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-584: LZW tANS validates all entropy before code parsing
+
+- Date: 2026-08-04
+- Status: accepted
+
+Implement the first complete-frame validator for DD-583 without raw
+reconstruction or publication. Before entropy work, require the exact frame
+extent, nonzero `S <= ceil(FW/8)`, exact `K` and `528K`, the checked blockwise
+payload ceiling, complete caller packed staging, `K` tANS views, and the full
+bounded LZW phrase-record workspace.
+
+Count descriptors, payload, packed bytes, tANS views, and phrase records under
+`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
+state path before decoding any packed byte. Only after all blocks succeed may
+a second pass reconstruct exactly `S` bytes and invoke the ordinary LZW code-
+stream validator. Preserve block index and LZW code, byte, and bit offsets
+where practical. A malformed later block must leave the entire packed staging
+unchanged. This decision adds no raw decoder, publisher, encoder, streaming
+transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
+
 ## DD-583: LZW tANS entropizes finalized packed code bytes
 
 - Date: 2026-08-04

@@ -13,8 +13,12 @@ format versions, and C ABI versions are independent namespaces.
   outer frames. Checked bounds cover `S <= ceil(FW/8)`, exact `528K`
   descriptors, and the blockwise 12-bit transition ceiling. The fixed payload
   `0C 00 00` records the independently derived `00:2048, 41:2048` model,
-  initial-state offset `0x000C`, and two zero transition bits. No combined
-  validator or public profile is added yet.
+  initial-state offset `0x000C`, and two zero transition bits. Its first
+  bounded complete-frame validator admits all serialized and caller-owned
+  packed, view, and phrase extents before entropy work, validates every tANS
+  block before packed-byte mutation, reconstructs the exact private packed
+  region, and applies LZW code, dictionary, raw-extent, and padding validation.
+  No raw decoder or public profile is added yet.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

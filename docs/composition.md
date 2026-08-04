@@ -36,8 +36,11 @@ checked sum of per-block `2 + ceil(12n/8)` payload ceilings. Decoding must
 validate and reconstruct every tANS block privately before checking LZW width
 transitions, references, `KwKwK`, exact raw extent, and final packed padding.
 The independent raw-`A` vector fixes packed bytes `41 00`, payload `0C 00 00`,
-and a complete 587-byte frame. No combined validator or public profile exists
-yet.
+and a complete 587-byte frame. Its first bounded validator now admits all
+serialized and caller-owned extents, validates every tANS block before packed
+mutation, reconstructs the complete private packed region, and applies LZW
+code, dictionary, exact raw-extent, and padding validation. No raw decoder or
+public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS
