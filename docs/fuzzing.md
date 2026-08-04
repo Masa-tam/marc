@@ -248,6 +248,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lz78_tans_stream \
   marc_fuzz_lzw_adaptive_huffman_stream \
   marc_fuzz_lzw_rans_stream \
+  marc_fuzz_lzw_tans_stream \
   marc_fuzz_lzd_rans_stream \
   marc_fuzz_lzmw_rans_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
@@ -298,6 +299,8 @@ out/build/fuzz/marc_fuzz_lz78_tans_stream \
 out/build/fuzz/marc_fuzz_lzw_adaptive_huffman_stream \
   fuzz/corpus/lzw_adaptive_huffman_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzw_rans_stream \
+  fuzz/corpus/lzw_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzw_tans_stream \
   fuzz/corpus/lzw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_rans_stream \
   fuzz/corpus/lzd_rans_stream -max_len=8192
@@ -481,6 +484,16 @@ UndefinedBehaviorSanitizer finding; peak RSS was 38 MiB. The Visual Studio
 Clang 22 sanitizer runtime directory was added only to that process's `PATH`;
 no machine-specific path was committed. Generated mutations remained only in
 memory; the repository retains the reviewed five-byte truncated-magic seed.
+
+The composed LZW plus tANS target retains the same 8 KiB input, 4 KiB raw,
+1 KiB frame, eight-view, fixed packed/phrase storage, aggregate, and finite
+call ceilings while substituting the local tANS complete-frame and public C
+decoders. Ordinary builds compile it warning-clean as an object target. Its
+initial Ubuntu 26.04 Clang 21 libFuzzer/AddressSanitizer/
+UndefinedBehaviorSanitizer smoke on 2026-08-05 completed 1,000 inputs with an
+8 KiB maximum input, five-second per-input timeout, and 512 MiB RSS limit with
+no crash, hang, or sanitizer finding; peak RSS was 39 MiB. Generated corpus
+changes and artifacts remained under WSL `/tmp`; the repository was unchanged.
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest

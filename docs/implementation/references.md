@@ -1803,6 +1803,12 @@ process-result contract. No external LZW/tANS corpus, completion suite,
 chunking schedule, malformed vector, source code, or test expression was
 consulted.
 
+The LZW plus tANS bounded fuzz boundary uses only DD-594, DD-592's public
+decoder, the local complete-frame decoder, fixed caller-owned arrays, stable
+process invariants, and deterministic chunk derivation. No external fuzz
+harness, seed corpus, malformed suite, LZW/tANS implementation, source code,
+or test expression was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

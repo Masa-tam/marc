@@ -3519,6 +3519,15 @@ fourth frame sequence, remove the final byte, and append one zero independently;
 each must publish exactly the first 192 bytes, preserve the final sentinel, and
 repeat identical terminal status and error positions.
 
+For LZW plus tANS fuzz regressions, generate canonical `ABABX` with one
+five-byte frame and a 16-byte tANS block. Give every strict stream prefix to a
+fresh decoder and require zero publication plus one stable repeated error.
+Separately overwrite generic-frame extent fields at offsets 16 through 39 with
+`ff`, and toggle the first model frequency at descriptor offset 16; both full
+streams must fail atomically. The live dual-decoder harness accepts at most
+8 KiB, uses only fixed arrays, and stops after at most maximum input plus
+maximum output plus 32 calls.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

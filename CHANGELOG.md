@@ -45,7 +45,10 @@ format versions, and C ABI versions are independent namespaces.
   publishing a transform handle. Its public-ABI completion matrix now covers
   required binary inputs, repeat determinism, one-byte and mixed chunking,
   stable terminal calls, and frame-atomic rejection of corrupted, truncated,
-  or extended final frames.
+  or extended final frames. A fixed-storage, bounded-call fuzz harness now
+  crosses private and public decoders, with permanent atomic regressions for
+  every canonical truncation, extreme frame lengths, and an invalid tANS
+  model.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

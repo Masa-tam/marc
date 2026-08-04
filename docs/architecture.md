@@ -2266,6 +2266,12 @@ factory. It fixes 64-byte frame and block boundaries, proves deterministic
 archives across arbitrary chunking, and verifies that a malformed fourth frame
 cannot publish its final raw byte or destabilize the repeated terminal error.
 
+The bounded fuzz harness feeds each at-most-8-KiB input to both the private
+complete-frame boundary and public C streaming decoder. All raw, encoded,
+packed, phrase, and tANS-view storage is fixed before input is examined, and a
+strict call budget turns any progress failure or hang into an immediate
+invariant violation.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

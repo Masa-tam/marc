@@ -9906,6 +9906,36 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS bounded dual-decoder fuzz boundary
+
+- Authoring method: adapted marc's local LZW/rANS bounded harness to DD-594 and
+  replaced only the entropy view, profile, decoder, and descriptor corruption
+  boundary with repository-local tANS equivalents.
+- References used: DD-594, DD-592, local LZW/tANS frame and C decoders, fixed
+  workspace ceilings, process invariants, and canonical `ABABX` generation.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, mutation dictionaries, malformed suites, source code, and test
+  expressions.
+- Independent decisions: exercise private and public boundaries per input;
+  allocate no fuzz-controlled extent; derive chunks deterministically; cap the
+  call count; treat malformed input as ordinary; and retain truncation, extreme
+  length, and invalid tANS-model regressions with atomic output checks.
+- Generated-code task description: add the bounded dual-decoder harness,
+  sanitizer target, portable warning-clean compile-smoke, and permanent
+  regression tests; synchronize format, architecture, C API, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the harness composes only marc's own decoders and fixed
+  limits. No external fuzz control flow, allocation policy, chunk schedule,
+  mutation position, naming scheme, or assertion was compared.
+- Local validation: the focused LZW/tANS suite passed 50/50 under both MSVC
+  and ClangCL, including all three permanent malformed regressions; the
+  warning-clean fuzz compile-smoke passed under both compilers. The complete
+  Release CTest suite passed 2,260/2,260 under both compilers using official
+  CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28 compatibility, and
+  documentation layout remained successful. Ubuntu 26.04 Clang 21
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
+  inputs with no crash, hang, or sanitizer finding and 39 MiB peak RSS.
+
 ## 2026-08-05 - LZW plus tANS public-ABI completion matrix
 
 - Authoring method: instantiated marc's common LZW public-ABI audit through

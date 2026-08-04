@@ -339,6 +339,9 @@ private to the factory. The public completion matrix uses only this lifecycle
 with 64-byte frames and blocks and covers required binary classes, repeat
 determinism, arbitrary chunking, stable terminal calls, and frame-atomic
 rejection of corrupted, truncated, and extended fourth frames.
+The bounded fuzz harness also drives this public decoder with deterministic
+chunks under fixed 8-KiB input, 4-KiB output, storage, and call ceilings while
+independently exercising the private complete-frame boundary.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

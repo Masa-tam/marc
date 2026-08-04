@@ -5259,3 +5259,8 @@ four-frame stream it also proves that sequence corruption, final-byte
 truncation, and trailing data in the fourth frame publish exactly the first
 three frames and preserve a sticky terminal error. These tests add no new
 serialized field or variant.
+
+The bounded decoder fuzz boundary exercises this unchanged representation
+through both complete-frame and public streaming paths. Its fixed storage and
+call ceilings are validation policy only and add no serialized field, ID, or
+variant.

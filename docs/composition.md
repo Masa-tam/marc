@@ -61,7 +61,9 @@ caller-owned regions while keeping every typed layout private. CLI and later
 admission evidence remain pending. Its public-ABI completion matrix now proves
 required binary classes, byte-identical repeated and arbitrarily chunked
 encoding, stable terminal calls, and frame-atomic rejection of malformed final
-frames.
+frames. A bounded dual-decoder fuzz harness and permanent truncation, extreme-
+length, and invalid-model regressions now cover its private and public decode
+boundaries without fuzz-controlled allocation.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

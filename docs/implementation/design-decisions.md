@@ -9053,6 +9053,27 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-594: LZW tANS fuzzing crosses private and public decoders
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add one bounded decoder fuzz target that presents every input to both the
+complete-frame decoder-visible boundary and DD-592's public C streaming
+decoder. Cap input at 8 KiB, raw publication at 4 KiB, a frame at 1 KiB,
+packed staging at 4 KiB, tANS views at eight, phrases from the conservative
+packed-code count, and every storage array at compile time. No fuzz-controlled
+extent may allocate memory.
+
+Drive the public decoder with deterministic variable chunks and at most input
+bytes plus output bytes plus 32 calls. Abort only on process-accounting,
+progress, workspace, or call-budget invariant violations; ordinary malformed
+input is a successful iteration. Retain regressions for every strict prefix of
+canonical `ABABX`, saturated generic-frame lengths, and an invalid tANS
+frequency descriptor. Each must publish nothing and retain a stable repeated
+error. This step adds no CLI, benchmark, whole-profile completion claim, or
+interoperability entry.
+
 ## DD-593: LZW tANS completion is proven only through the public ABI
 
 - Date: 2026-08-05
