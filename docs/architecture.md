@@ -2171,6 +2171,29 @@ region into tANS block views and LZ78 phrase records. Construction revalidates
 the profile and publishes no handle on any configuration, capacity, reserved-
 field, or alignment failure.
 
+### Specified LZW plus tANS boundary
+
+The fourth tANS composition freezes the complete canonical LZW packed byte
+stream before entropy processing. The packed region includes zero high padding
+through the final byte. tANS remains an untyped byte transform, so a block may
+split a variable-width LZW code but may not split a byte or cross the outer
+frame where the LZW dictionary and tANS tables both reset.
+
+For raw size `F`, configured maximum code width `W`, packed size `S`, entropy
+block size `B`, and `K = ceil(S/B)`, require nonzero
+`S <= ceil(FW/8)`, exact `528K` descriptor bytes, and the checked blockwise
+tANS payload ceiling. The decoder must validate all entropy descriptors and
+state paths before reconstructing exactly `S` private bytes, then validate
+LZW width transitions, first-literal and backward-reference rules, `KwKwK`,
+dictionary growth, exact `F` expansion, exact packed exhaustion, and zero high
+padding without caller-visible publication.
+
+The independent raw-`A` boundary fixes packed bytes `41 00`, normalized
+frequencies `00:2048` and `41:2048`, initial-state offset `0x000C`, two zero
+transition bits, payload `0C 00 00`, and a complete 587-byte frame. This is a
+format and vector reservation only; the bounded combined validator is the next
+boundary.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -22,9 +22,22 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Candidate |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Specified |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
+
+`lzw-tans` is the fourth tANS composition with a reserved representation.
+LZW finalizes its complete LSB-first packed code bytes, including zero high
+padding in the final byte, before tANS block coding. A block may split a
+variable-width code but cannot split a byte or cross an outer frame. For raw
+frame size `F` and maximum code width `W`, require
+`S <= ceil(FW/8)`, `K = ceil(S/B)`, exact `528K` descriptor bytes, and the
+checked sum of per-block `2 + ceil(12n/8)` payload ceilings. Decoding must
+validate and reconstruct every tANS block privately before checking LZW width
+transitions, references, `KwKwK`, exact raw extent, and final packed padding.
+The independent raw-`A` vector fixes packed bytes `41 00`, payload `0C 00 00`,
+and a complete 587-byte frame. No combined validator or public profile exists
+yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

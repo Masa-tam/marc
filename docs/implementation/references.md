@@ -1737,6 +1737,12 @@ marc's deterministic 8,193-byte fixture, the published `lz78-tans` CLI
 profile, and repository-owned bundle scripts. No external archive, manifest,
 implementation, compatibility suite, or result was consulted.
 
+The LZW plus tANS representation reservation uses only DD-583, marc's
+canonical packed LZW code format and hand vectors, the local tANS
+normalization, spread, reverse-state recurrence, descriptor format, and
+generic frame serializer. No external combined codec, encoded corpus, source
+code, format, test vector, or implementation result was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

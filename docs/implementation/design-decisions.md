@@ -9053,6 +9053,33 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-583: LZW tANS entropizes finalized packed code bytes
+
+- Date: 2026-08-04
+- Status: accepted
+
+Reserve `lzw-tans` for LZW variant 1 followed by tabled tANS variant 1. LZW
+must first finalize its complete canonical LSB-first packed code region,
+including zero high padding through the last byte, for one outer frame. tANS
+consumes that region as untyped bytes; therefore an entropy block may split a
+variable-width code but may not split a byte or cross the frame boundary where
+both algorithms reset.
+
+For raw size `F`, configured maximum code width `W`, packed size `S`, nonzero
+block size `B`, and `K = ceil(S/B)`, require
+`0 < S <= ceil(FW/8)`, exact descriptor extent `528K`, and the checked sum of
+per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`.
+Decode all tANS blocks into private staging before validating LZW code-width
+transitions, references, `KwKwK`, dictionary growth, exact raw expansion,
+packed exhaustion, or high padding bits.
+
+Independently fix raw `A` as packed bytes `41 00`, normalized frequencies
+`00:2048` and `41:2048`, tANS initial-state offset `0x000C`, two zero
+transition bits, payload `0C 00 00`, and one complete 587-byte frame. This
+decision reserves the representation and vector only; it adds no combined
+validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
 ## DD-582: Interoperability schema 28 appends LZ78 tANS
 
 - Date: 2026-08-04

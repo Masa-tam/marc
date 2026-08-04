@@ -7,6 +7,14 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Reserved the `lzw-tans` composition and independent 587-byte raw-`A` frame.
+  Canonical LSB-first packed LZW bytes, including final zero padding, are
+  finalized before tANS coding; entropy blocks may split codes but not bytes or
+  outer frames. Checked bounds cover `S <= ceil(FW/8)`, exact `528K`
+  descriptors, and the blockwise 12-bit transition ceiling. The fixed payload
+  `0C 00 00` records the independently derived `00:2048, 41:2048` model,
+  initial-state offset `0x000C`, and two zero transition bits. No combined
+  validator or public profile is added yet.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

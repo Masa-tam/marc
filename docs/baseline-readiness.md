@@ -177,9 +177,15 @@ four-direction external exchange at revision
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers.
 
-`lzw-tans` is the next candidate admission composition. Its representation,
-bounds, validator-first decode order, and independent vectors must be fixed
-before any public profile is claimed.
+`lzw-tans` is the current admission composition. Its reserved boundary fixes
+the complete LSB-first packed LZW byte region before tANS, permits entropy
+blocks to split a variable-width code without splitting a byte or crossing a
+frame, and requires complete private entropy reconstruction before LZW
+validation. For maximum code width `W`, its bounds are
+`S <= ceil(FW/8)`, `K = ceil(S/B)`, exact `528K` descriptors, and the checked
+sum of per-block `2 + ceil(12n/8)` payload ceilings. The independent raw-`A`
+frame is 587 bytes with packed bytes `41 00` and payload `0C 00 00`. The
+combined validator and all later admission boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the
