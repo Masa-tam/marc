@@ -2199,7 +2199,14 @@ serialized and workspace extents under one aggregate policy, validates every
 tANS descriptor and state path without packed output, and only then performs a
 second entropy pass into private staging. Complete LZW code-width, reference,
 dictionary-growth, raw-extent, packed-exhaustion, and padding validation
-follows; raw expansion and caller-visible publication remain absent.
+follows; caller-visible publication remains absent.
+
+The matching private decoder adds the complete raw extent to preflight and the
+aggregate workspace calculation. After the same two-pass entropy validation
+and complete LZW graph validation, the existing allocation-free LZW decoder
+expands phrases iteratively into exactly the declared raw extent. There is
+still no caller-visible output span, so every workspace remains disposable on
+failure.
 
 ### C transform ABI
 

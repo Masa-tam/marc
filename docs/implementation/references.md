@@ -1750,6 +1750,12 @@ caller-owned spans, and checked aggregate arithmetic. No external combined
 decoder, validation order, workspace layout, malformed corpus, source code, or
 test suite was consulted.
 
+The LZW plus tANS private raw decoder uses only DD-585, DD-584's complete
+validation boundary, marc's local iterative LZW decoder, checked workspace
+accounting, and caller-owned spans. No external combined decoder, phrase
+expansion implementation, allocation layout, malformed corpus, source code,
+or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

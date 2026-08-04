@@ -150,6 +150,106 @@ TEST(LzwTansFrameValidator, AcceptsBlocksThatSplitOnePackedCode) {
     EXPECT_EQ(staging, packed_code_a);
 }
 
+TEST(LzwTansFrameDecoder, ReconstructsIndependentVectorPrivately) {
+    const auto frame = single_code_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, packed_code_a.size()> staging{};
+    std::array raw{std::byte{0x5a}};
+    const auto result = marc::frame::decode_lzw_tans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, raw);
+    ASSERT_EQ(result.error, LzwTansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::LzwDecodeError::none);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+}
+
+TEST(LzwTansFrameDecoder, ReconstructsAcrossEntropyBlockAndPhraseEdges) {
+    constexpr std::array packed_abababa{
+        std::byte{0x41}, std::byte{0x84}, std::byte{0x00},
+        std::byte{0x14}, std::byte{0x08}};
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}};
+    constexpr std::uint32_t block_size = 2;
+    const auto frame = frame_for_codes(
+        packed_abababa, static_cast<std::uint32_t>(expected.size()),
+        block_size);
+    std::array<marc::entropy::internal::TansBlockView, 3> views{};
+    std::array<std::byte, packed_abababa.size()> staging{};
+    std::array<marc::dictionary::internal::LzwPhraseEntry, 3> phrases{};
+    std::array<std::byte, expected.size()> raw{};
+    const auto result = marc::frame::decode_lzw_tans_frame_to_staging(
+        stream_for(expected.size(), block_size), {}, {}, 0, 0, frame,
+        views, staging, phrases, raw);
+    ASSERT_EQ(result.error, LzwTansFrameValidationError::none);
+    EXPECT_EQ(raw, expected);
+}
+
+TEST(LzwTansFrameDecoder, RejectsRawCapacityBeforePackedMutation) {
+    const auto frame = single_code_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array staging{std::byte{0x5a}, std::byte{0x5a}};
+    std::array raw{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame_to_staging(
+                  stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, {})
+                  .error,
+              LzwTansFrameValidationError::raw_staging_too_small);
+    EXPECT_EQ(staging[0], std::byte{0x5a});
+    EXPECT_EQ(staging[1], std::byte{0x5a});
+    EXPECT_EQ(raw[0], std::byte{0x5a});
+}
+
+TEST(LzwTansFrameDecoder, AccountsForRawStagingBeforePackedMutation) {
+    const auto frame = single_code_frame();
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = packed_code_a.size();
+    limits.max_internal_buffered_bytes =
+        frame.size() - marc::frame::frame_header_size
+        + packed_code_a.size()
+        + sizeof(marc::entropy::internal::TansBlockView) + 1 - 1;
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array staging{std::byte{0x5a}, std::byte{0x5a}};
+    std::array raw{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame_to_staging(
+                  stream_for(1, packed_code_a.size()), {}, limits, 0, 0,
+                  frame, views, staging, {}, raw).error,
+              LzwTansFrameValidationError::workspace_limit);
+    EXPECT_EQ(staging[0], std::byte{0x5a});
+    EXPECT_EQ(staging[1], std::byte{0x5a});
+    EXPECT_EQ(raw[0], std::byte{0x5a});
+}
+
+TEST(LzwTansFrameDecoder, LeavesRawStagingUntouchedOnInvalidCodes) {
+    constexpr std::array invalid{
+        std::byte{0x41}, std::byte{0x80}};
+    const auto frame = frame_for_codes(invalid);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, invalid.size()> staging{};
+    std::array raw{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame_to_staging(
+                  stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, raw)
+                  .error,
+              LzwTansFrameValidationError::dictionary_validation_error);
+    EXPECT_EQ(raw[0], std::byte{0x5a});
+}
+
+TEST(LzwTansFrameDecoder, LeavesRawStagingUntouchedOnMalformedEntropy) {
+    constexpr std::uint32_t block_size = 1;
+    auto frame = frame_for_codes(packed_code_a, 1, block_size);
+    frame[frame.size() - 2] = std::byte{0xff};
+    frame[frame.size() - 1] = std::byte{0xff};
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array staging{std::byte{0x5a}, std::byte{0x5a}};
+    std::array raw{std::byte{0x5a}};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame_to_staging(
+                  stream_for(1, block_size), {}, {}, 0, 0, frame, views,
+                  staging, {}, raw).error,
+              LzwTansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(staging[0], std::byte{0x5a});
+    EXPECT_EQ(staging[1], std::byte{0x5a});
+    EXPECT_EQ(raw[0], std::byte{0x5a});
+}
+
 TEST(LzwTansFrameValidator, RejectsEveryTruncationAndTrailingData) {
     const auto frame = single_code_frame();
     std::array<marc::entropy::internal::TansBlockView, 1> views{};

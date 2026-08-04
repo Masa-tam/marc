@@ -3431,6 +3431,15 @@ block index one while preserving complete staging. Entropy-code packed
 excessive packed extent, an excessive tANS payload extent, and another
 pipeline.
 
+For private LZW plus tANS reconstruction, decode the frozen raw-`A` frame into
+a one-byte sentinel and require `41`. Separately pack codes 65, 66, 256, and
+258 as `41 84 00 14 08`, divide those bytes into tANS blocks of at most two
+symbols, and require raw `ABABABA`; this crosses both packed-code and phrase
+edges and exercises `KwKwK`. Reject missing raw capacity and aggregate storage
+one byte short before packed mutation. Entropy-code invalid padded bytes
+`41 80` and corrupt a later tANS block independently; each must preserve the
+complete raw sentinel.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

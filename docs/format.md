@@ -5188,3 +5188,10 @@ dictionary growth and phrase lengths, exact `F` expansion, packed exhaustion,
 and zero high padding without reconstructing raw bytes. No decoder, encoder,
 streaming transform, profile calculator, C factory, CLI selector, benchmark,
 fuzzer, completion claim, or interoperability entry is defined yet.
+
+The bounded private decoder additionally admits the complete declared raw
+extent before descriptor parsing and counts it in aggregate storage. After the
+entire tANS and LZW validation sequence succeeds, it invokes the ordinary
+iterative LZW decoder over the validated packed bytes and writes exactly the
+declared raw extent into separate private staging. It publishes no caller-
+visible bytes, and callers discard every workspace on error.

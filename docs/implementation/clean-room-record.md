@@ -9906,6 +9906,34 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZW plus tANS private raw reconstruction
+
+- Authoring method: applied DD-585 above marc's DD-584 complete-frame
+  validator and ordinary iterative LZW decoder.
+- References used: DD-585, DD-584, the local tANS controller and decoder, LZW
+  validator and decoder, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  compositions, combined decoders, phrase expansion implementations,
+  allocation layouts, malformed corpora, source code, and test suites.
+- Independent decisions: admit raw capacity and aggregate storage before
+  entropy output; retain all-block tANS validation and complete LZW validation;
+  reconstruct only into separate private staging; and publish no raw bytes.
+- Generated-code task description: add a bounded private decoder and stable
+  raw-capacity and dictionary-decode errors; prove raw-`A`, phrase and `KwKwK`
+  reconstruction across tANS block boundaries, preflight atomicity, and
+  invalid-code raw preservation; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation directly composes marc's existing
+  independently specified validator, decoder, checked spans, and error
+  records. No external validation order, expansion control flow, storage
+  organization, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/tANS vector, validator, and private-decoder
+  suite passed 15/15 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 2,225/2,225 under both compilers using official CMake 4.3.4;
+  all 39 benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
+
 ## 2026-08-04 - LZW plus tANS complete-frame validator
 
 - Authoring method: composed marc's strict two-pass tANS block controller with

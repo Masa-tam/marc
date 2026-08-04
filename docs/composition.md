@@ -39,8 +39,10 @@ The independent raw-`A` vector fixes packed bytes `41 00`, payload `0C 00 00`,
 and a complete 587-byte frame. Its first bounded validator now admits all
 serialized and caller-owned extents, validates every tANS block before packed
 mutation, reconstructs the complete private packed region, and applies LZW
-code, dictionary, exact raw-extent, and padding validation. No raw decoder or
-public profile exists yet.
+code, dictionary, exact raw-extent, and padding validation. Its private decoder
+now admits and counts the complete raw extent before entropy work, then expands
+the validated graph iteratively without caller-visible publication. No
+transactional publisher or public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

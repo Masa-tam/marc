@@ -18,7 +18,10 @@ format versions, and C ABI versions are independent namespaces.
   packed, view, and phrase extents before entropy work, validates every tANS
   block before packed-byte mutation, reconstructs the exact private packed
   region, and applies LZW code, dictionary, raw-extent, and padding validation.
-  No raw decoder or public profile is added yet.
+  Its bounded private decoder additionally admits and aggregate-counts the
+  complete raw staging extent before entropy work, then reconstructs the fully
+  validated LZW graph iteratively without publishing caller-visible bytes. No
+  transactional publisher or public profile is added yet.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

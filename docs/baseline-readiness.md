@@ -189,8 +189,10 @@ bounded complete-frame validator now preflights exact extents and all packed,
 view, and phrase workspaces, validates every tANS block before packed mutation,
 reconstructs the complete private packed region, and applies LZW code-width,
 reference, dictionary-growth, raw-extent, packed-exhaustion, and padding
-validation. Private raw reconstruction and all later admission boundaries
-remain pending.
+validation. Its private decoder now preflights and aggregate-counts the
+complete raw staging extent, then expands the validated LZW graph iteratively
+without caller publication. Transactional publication and all later admission
+boundaries remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-585: LZW tANS reconstructs only after complete validation
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded private-raw decoder above DD-584. Require complete raw staging
+capacity and count that extent in the aggregate workspace before descriptor
+parsing or entropy output. Reuse DD-584 unchanged to validate every tANS block,
+reconstruct the complete packed LZW region, and validate the complete code
+graph. Only then invoke the existing iterative LZW decoder into the admitted
+raw staging span.
+
+Publish no caller-visible bytes. On any error the caller discards all private
+workspaces; insufficient raw capacity or aggregate memory must leave packed
+and raw staging unchanged. Prove the independent raw-`A` frame, phrase and
+`KwKwK` reconstruction across tANS block boundaries, preflight failures, and
+invalid-code raw atomicity. This step adds no transactional public output,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-584: LZW tANS validates all entropy before code parsing
 
 - Date: 2026-08-04
