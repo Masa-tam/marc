@@ -9053,6 +9053,26 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-592: LZW tANS C ABI keeps all typed storage opaque
+
+- Date: 2026-08-05
+- Status: accepted
+
+Expose the DD-591 profile through a versioned, size-tagged C configuration,
+requirements query, and factory. Reuse the established three-region transform
+contract: primary holds raw input or encoded-frame collection; secondary holds
+packed LZW staging followed by encoded-frame or private-raw storage; aligned
+views hold encoder records or tANS views followed by LZW phrases. No private
+C++ record type or offset enters the public structure.
+
+The requirements query must be repeated after changing direction, sizes,
+maximum code width, block count, or any hard limit. The factory revalidates the
+query, capacity, and alignment, publishes no handle on failure, and allocates
+only the small transform implementation with non-throwing allocation. Prove a
+pure-C11 `ABABX` round trip and reject each one-byte-short region, misalignment,
+null handle output, and nonzero reserved metadata. This step adds no CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-591: LZW tANS profiles separate bytes from aligned typed views
 
 - Date: 2026-08-05

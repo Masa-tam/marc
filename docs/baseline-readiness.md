@@ -65,6 +65,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz77-tans` | First tANS composition | Ready | Included |
 | `lzss-tans` | Second tANS composition | Ready | Included |
 | `lz78-tans` | Third tANS composition | Ready | Included |
+| `lzw-tans` | Fourth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 28 contains thirty-nine archives: the frozen thirty-eight-entry
@@ -203,8 +204,10 @@ output. Its first bounded known-size streaming encoder emits the fixed prefix,
 buffers at most one raw frame, and drains each immutable encoded frame before
 accepting the next. Its bounded streaming decoder now collects one complete
 encoded frame, admits every private region from its header, and publishes only
-a fully validated raw frame. Public API and all later admission boundaries
-remain pending.
+a fully validated raw frame. Its versioned C requirements query and factory
+now expose the completed streaming pair while retaining all record layouts
+inside the implementation. CLI, benchmark, fuzzing, completion, and
+interoperability evidence remain pending.
 
 `lzss-tans` is the completed preceding admission composition. DD-553 fixes
 complete LZSS token serialization before tANS, permits entropy blocks to split the

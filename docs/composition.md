@@ -22,7 +22,7 @@ public format or API guarantee yet.
 | LZ77 | `lz77` | `lz77-blocked-huffman` | `lz77-adaptive-huffman` | `lz77-dynamic-range` | `lz77-rans` | `lz77-tans` |
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
-| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | Specified |
+| LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | C ABI |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
 
@@ -55,7 +55,10 @@ accepting later-frame input. Its bounded streaming decoder collects one exact
 encoded frame, validates and reconstructs privately, and drains only that
 accepted raw frame before reading another header. Its checked internal profile
 now derives all byte regions and partitions one aligned opaque region into tANS
-views and LZW phrases without inspecting input. No public profile exists yet.
+views and LZW phrases without inspecting input. Its versioned public C
+requirements query and factory now bind those three
+caller-owned regions while keeping every typed layout private. CLI and later
+admission evidence remain pending.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

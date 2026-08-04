@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZW plus tANS public C workspace factory
+
+- Authoring method: bound DD-592 directly to DD-591's local profile and the
+  repository's established opaque transform lifecycle.
+- References used: DD-592, DD-591, the local LZW/tANS streaming pair, stable
+  C status mapping, checked region addition, and caller-owned buffers.
+- Known implementations intentionally not consulted: external compression C
+  APIs, LZW/tANS factories, ABI layouts, source code, and test suites.
+- Independent decisions: mirror the existing fixed-width configuration shape
+  under a distinct type; keep typed layouts private; revalidate requirements in
+  the factory; publish no handle until allocation succeeds; and test the public
+  lifecycle from a C11 translation unit.
+- Generated-code task description: add config initialization, requirements
+  query, factory, C declarations, and pure-C round trip; reject short,
+  misaligned, null, and reserved-field cases; synchronize C API, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation composes marc's own profile and common
+  C transform contract. No external ABI structure, factory flow, storage
+  partition, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  streaming transforms, profile, and pure-C factory suite passed 44/44 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,254/2,254
+  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
+  schema 1 through 28 compatibility, and documentation layout remained
+  successful.
+
 ## 2026-08-05 - LZW plus tANS workspace profile calculation
 
 - Authoring method: derived DD-591 from marc's local LZW/tANS streaming

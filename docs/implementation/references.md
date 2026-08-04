@@ -1792,6 +1792,11 @@ block constants and payload ceiling, checked arithmetic, and C++ object
 alignment. No external combined workspace calculator, ABI layout, allocation
 scheme, source code, or test suite was consulted.
 
+The LZW plus tANS C ABI uses only DD-592, DD-591's local workspace profile,
+marc's existing three-region transform lifecycle, stable status mapping, and
+the completed local streaming pair. No external combined C API, ABI layout,
+factory ownership model, source code, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

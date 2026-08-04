@@ -2256,6 +2256,11 @@ block views followed by aligned LZW phrase records. Partitioning is
 transactional: invalid requirements, short storage, or misalignment returns no
 typed view.
 
+The C ABI binds that profile through `marc_lzw_tans_config`, its requirements
+query, and factory. The public structure carries only fixed-width values and
+hard limits; the aligned tANS and LZW object layouts remain private. Factory
+failure leaves the opaque transform handle null.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

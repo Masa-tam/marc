@@ -326,6 +326,16 @@ completion matrix uses only this lifecycle with 64-byte frames and blocks and
 covers required binary classes, deterministic one-byte and mixed chunking,
 repeatable terminal states, and frame-atomic rejection of corrupted,
 truncated, and extended fourth frames.
+
+The LZW plus tANS factory uses the same three-region ownership and explicit
+block controls. Encoding places one raw frame in primary storage, then packed
+LZW bytes and one complete tANS frame in secondary storage; aligned views hold
+LZW encoder entries. Decoding places one encoded frame in primary storage,
+then packed bytes and private raw staging in secondary storage; aligned views
+hold tANS block views followed by LZW phrase entries. Call
+`marc_lzw_tans_workspace_requirements()` again after changing direction,
+sizes, width, block settings, or any hard limit. All typed layouts remain
+private to the factory.
 LZD also uses one opaque aligned views workspace. Encoding uses it for the
 input-backed phrase table. Decoding partitions it internally into the phrase
 records and bounded iterative expansion stack; the partition and both private

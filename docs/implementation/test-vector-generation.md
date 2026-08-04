@@ -3499,6 +3499,15 @@ records after an aligned tANS-view region. Reject altered, short, and
 misaligned typed storage. Finally allocate only the reported regions and
 round-trip `ABABX` through two-byte frames and two-byte tANS blocks.
 
+For the first LZW plus tANS pure-C vector, initialize encode configuration for
+raw `41 42 41 42 58`, two-byte frames and entropy blocks, width 16, and bounded
+local limits. Require primary bytes 2, secondary bytes 1,126, and nonempty
+aligned opaque storage. Encode through only the C11 lifecycle. Reinitialize for
+decode, require primary bytes 8,248 and secondary bytes 20, then reproduce all
+five bytes. Reject every one-byte-short region, deliberately misaligned views,
+a null transform output pointer, and a nonzero reserved field; every failed
+factory call must leave the handle null.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

@@ -39,7 +39,10 @@ format versions, and C ABI versions are independent namespaces.
   fully accepted raw frame before collecting the next. Its internal workspace
   profile now derives conservative encoder and decoder byte regions, counts
   the blockwise tANS payload ceiling, and safely partitions naturally aligned
-  tANS-view and LZW-record storage.
+  tANS-view and LZW-record storage. A versioned C11 requirements query and
+  factory now expose the streaming pair through three caller-owned regions,
+  keep all typed layouts opaque, and reject short or misaligned storage before
+  publishing a transform handle.
 - Added interoperability schema 28 as the frozen schema-27 archive order plus
   `lz78-tans` exactly once. Local generation, exact-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1

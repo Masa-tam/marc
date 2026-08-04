@@ -4210,6 +4210,11 @@ product, sum, alignment adjustment, and conversion to `size_t`. These storage
 requirements are an implementation contract and do not add serialized fields
 or alter the representation above.
 
+The C entry points `marc_lzw_tans_config_init()`,
+`marc_lzw_tans_workspace_requirements()`, and `marc_lzw_tans_create()` bind
+this exact representation. Their caller-owned storage layout is not serialized
+and private C++ record definitions do not cross the ABI.
+
 The bounded known-size streaming encoder emits the ordinary 64-byte stream
 header followed by the ordinary 16-byte LZMW parameter extension. It then
 collects at most one outer raw frame, invokes the exact-frame planner and
