@@ -9906,6 +9906,35 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-04 - LZW plus tANS transactional publication
+
+- Authoring method: applied DD-586 above marc's DD-585 private decoder and
+  DD-584 validation boundary.
+- References used: DD-586, DD-585, the local two-pass tANS validator, iterative
+  LZW decoder, caller-owned spans, checked preflight, and bounded copy.
+- Known implementations intentionally not consulted: external LZW/tANS
+  compositions, transactional decoders, commit protocols, buffer ownership
+  models, malformed corpora, source code, and test suites.
+- Independent decisions: admit caller output before private mutation; keep it
+  outside internal-workspace accounting; reconstruct into disposable raw
+  staging; and publish the exact declared extent with one final copy only after
+  all layer checks succeed.
+- Generated-code task description: add a stable short-output error and
+  complete-frame transactional wrapper; prove raw-`A` prefix publication,
+  cross-block `KwKwK`, short-output total immutability, and no publication on
+  malformed tANS or LZW padding; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation follows marc's already independently
+  specified private decoder and established transactional composition
+  boundary. No external validation order, publication control flow, storage
+  organization, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/tANS validator and decoder suite passed
+  19/19 under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,229/2,229 under both compilers using official CMake 4.3.4; all 39
+  benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
+
 ## 2026-08-04 - LZW plus tANS private raw reconstruction
 
 - Authoring method: applied DD-585 above marc's DD-584 complete-frame

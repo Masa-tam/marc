@@ -3440,6 +3440,15 @@ one byte short before packed mutation. Entropy-code invalid padded bytes
 `41 80` and corrupt a later tANS block independently; each must preserve the
 complete raw sentinel.
 
+For transactional LZW plus tANS publication, decode the frozen raw-`A` frame
+through a one-byte private raw sentinel into a two-byte caller sentinel. Require
+only the declared first byte to become `41`. Repeat the block-size-two
+`ABABABA` and `KwKwK` case and require equal private and published output.
+Provide caller output one byte short and require packed staging, phrase
+records, private raw staging, and caller output all to remain unchanged.
+Independently corrupt a later tANS block and entropy-code LZW bytes `41 80`
+with invalid high padding; neither failure may publish any caller byte.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

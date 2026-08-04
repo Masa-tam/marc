@@ -2208,6 +2208,14 @@ expands phrases iteratively into exactly the declared raw extent. There is
 still no caller-visible output span, so every workspace remains disposable on
 failure.
 
+The transactional complete-frame wrapper additionally admits the full caller
+output extent before descriptor parsing or any private mutation. Caller output
+is not internal workspace and is therefore not charged to the aggregate
+buffer limit. After entropy validation, packed reconstruction, complete LZW
+validation, and private raw reconstruction all succeed, one final copy
+publishes exactly the declared raw bytes. Short output and either-layer
+malformation leave the complete caller output unchanged.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

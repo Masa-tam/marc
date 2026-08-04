@@ -250,6 +250,103 @@ TEST(LzwTansFrameDecoder, LeavesRawStagingUntouchedOnMalformedEntropy) {
     EXPECT_EQ(raw[0], std::byte{0x5a});
 }
 
+TEST(LzwTansFrameDecoder, PublishesOnlyAfterPrivateReconstruction) {
+    const auto frame = single_code_frame();
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, packed_code_a.size()> staging{};
+    std::array raw{std::byte{0x5a}};
+    std::array output{std::byte{0x7c}, std::byte{0x7c}};
+    const auto result = marc::frame::decode_lzw_tans_frame(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, raw,
+        output);
+    ASSERT_EQ(result.error, LzwTansFrameValidationError::none);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x7c});
+}
+
+TEST(LzwTansFrameDecoder, PublishesKwKwKAcrossEntropyBlocks) {
+    constexpr std::array packed_abababa{
+        std::byte{0x41}, std::byte{0x84}, std::byte{0x00},
+        std::byte{0x14}, std::byte{0x08}};
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}};
+    constexpr std::uint32_t block_size = 2;
+    const auto frame = frame_for_codes(
+        packed_abababa, static_cast<std::uint32_t>(expected.size()),
+        block_size);
+    std::array<marc::entropy::internal::TansBlockView, 3> views{};
+    std::array<std::byte, packed_abababa.size()> staging{};
+    std::array<marc::dictionary::internal::LzwPhraseEntry, 3> phrases{};
+    std::array<std::byte, expected.size()> raw{};
+    std::array<std::byte, expected.size()> output{};
+    const auto result = marc::frame::decode_lzw_tans_frame(
+        stream_for(expected.size(), block_size), {}, {}, 0, 0, frame,
+        views, staging, phrases, raw, output);
+    ASSERT_EQ(result.error, LzwTansFrameValidationError::none);
+    EXPECT_EQ(raw, expected);
+    EXPECT_EQ(output, expected);
+}
+
+TEST(LzwTansFrameDecoder, RejectsShortOutputBeforePrivateMutation) {
+    constexpr std::array packed_ab{
+        std::byte{0x41}, std::byte{0x84}, std::byte{0x00}};
+    const auto frame = frame_for_codes(packed_ab, 2);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array staging{
+        std::byte{0x5a}, std::byte{0x5a}, std::byte{0x5a}};
+    std::array phrases{marc::dictionary::internal::LzwPhraseEntry{
+        7, 0xa5, 0x5a, 9}};
+    std::array raw{std::byte{0xa5}, std::byte{0xa5}};
+    std::array output{std::byte{0x7c}};
+    const auto result = marc::frame::decode_lzw_tans_frame(
+        stream_for(2), {}, {}, 0, 0, frame, views, staging, phrases, raw,
+        output);
+    EXPECT_EQ(result.error,
+              LzwTansFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        staging, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+    EXPECT_TRUE(std::ranges::all_of(
+        raw, [](const std::byte value) {
+            return value == std::byte{0xa5};
+        }));
+    EXPECT_EQ(phrases[0].prefix_code, 7U);
+    EXPECT_EQ(phrases[0].trailing_byte, 0xa5U);
+    EXPECT_EQ(phrases[0].first_byte, 0x5aU);
+    EXPECT_EQ(phrases[0].length, 9U);
+    EXPECT_EQ(output[0], std::byte{0x7c});
+}
+
+TEST(LzwTansFrameDecoder, MalformedLayersNeverPublishOutput) {
+    constexpr std::uint32_t block_size = 1;
+    auto malformed_entropy = frame_for_codes(
+        packed_code_a, 1, block_size);
+    malformed_entropy[malformed_entropy.size() - 2] = std::byte{0xff};
+    malformed_entropy[malformed_entropy.size() - 1] = std::byte{0xff};
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array<std::byte, packed_code_a.size()> staging{};
+    std::array raw{std::byte{0xa5}};
+    std::array output{std::byte{0x7c}};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame(
+                  stream_for(1, block_size), {}, {}, 0, 0,
+                  malformed_entropy, views, staging, {}, raw, output).error,
+              LzwTansFrameValidationError::entropy_decode_error);
+    EXPECT_EQ(output[0], std::byte{0x7c});
+
+    constexpr std::array invalid{
+        std::byte{0x41}, std::byte{0x80}};
+    const auto malformed_dictionary = frame_for_codes(invalid);
+    std::array<marc::entropy::internal::TansBlockView, 1> single_view{};
+    EXPECT_EQ(marc::frame::decode_lzw_tans_frame(
+                  stream_for(1), {}, {}, 0, 0, malformed_dictionary,
+                  single_view, staging, {}, raw, output).error,
+              LzwTansFrameValidationError::dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0x7c});
+}
+
 TEST(LzwTansFrameValidator, RejectsEveryTruncationAndTrailingData) {
     const auto frame = single_code_frame();
     std::array<marc::entropy::internal::TansBlockView, 1> views{};

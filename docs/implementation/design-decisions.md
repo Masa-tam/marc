@@ -9053,6 +9053,25 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-586: LZW tANS publishes one fully validated frame atomically
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a transactional complete-frame wrapper above DD-585. Before descriptor
+parsing or any private mutation, require caller output capacity for the entire
+declared raw extent in addition to the disposable packed, phrase, view, and raw
+staging regions. Caller output is not internal workspace and does not count
+against `max_internal_buffered_bytes`.
+
+Run DD-584 validation and DD-585 private reconstruction unchanged. Only after
+every tANS block, the complete LZW code graph, and private raw reconstruction
+succeed may one final copy publish exactly the declared raw extent. Short
+output, malformed entropy, and invalid LZW codes or padding must leave the
+complete caller destination unchanged. This step adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-585: LZW tANS reconstructs only after complete validation
 
 - Date: 2026-08-04

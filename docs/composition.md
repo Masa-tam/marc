@@ -41,8 +41,11 @@ serialized and caller-owned extents, validates every tANS block before packed
 mutation, reconstructs the complete private packed region, and applies LZW
 code, dictionary, exact raw-extent, and padding validation. Its private decoder
 now admits and counts the complete raw extent before entropy work, then expands
-the validated graph iteratively without caller-visible publication. No
-transactional publisher or public profile exists yet.
+the validated graph iteratively without caller-visible publication. Its
+transactional wrapper admits the complete caller destination before private
+mutation and copies exactly the declared raw extent only after every layer
+succeeds. Short output and malformed entropy or dictionary data publish
+nothing. No public profile exists yet.
 
 `lz78-tans` is the third tANS composition with a reserved representation.
 LZ78 finalizes its fixed eight-byte Pair or FinalIndex records before tANS

@@ -5195,3 +5195,13 @@ entire tANS and LZW validation sequence succeeds, it invokes the ordinary
 iterative LZW decoder over the validated packed bytes and writes exactly the
 declared raw extent into separate private staging. It publishes no caller-
 visible bytes, and callers discard every workspace on error.
+
+The transactional complete-frame decoder additionally requires caller output
+capacity for the entire declared raw extent before descriptor parsing and any
+private mutation. This destination is caller-visible storage rather than
+internal workspace and is not included in `max_internal_buffered_bytes`.
+After complete tANS validation, packed reconstruction, LZW graph validation,
+and private raw reconstruction succeed, it copies exactly `F` bytes once from
+raw staging to the caller destination. No prefix is published on short output,
+malformed entropy, invalid LZW codes or padding, or private reconstruction
+failure. Bytes after the declared output extent are not modified.
