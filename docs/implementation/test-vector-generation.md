@@ -3460,6 +3460,13 @@ packed span before packed mutation, excessive block count, aggregate storage
 one byte short, empty input, and a raw extent inconsistent with the stream
 header.
 
+For deterministic LZW plus tANS frame encoding, encode raw `A` through the
+combined encoder and compare all 587 bytes with the independently assembled
+vector. Encode raw `ABABABA` twice with `B=2`, require byte-identical complete
+frames, then decode one through the transactional combined decoder and require
+the original seven bytes. Give the raw-`A` encoder a 586-byte destination
+filled with `A5` and require every byte to remain unchanged.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

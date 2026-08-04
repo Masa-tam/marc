@@ -1768,6 +1768,12 @@ checked arithmetic, and caller-owned staging. No external LZW/tANS encoder,
 planning algorithm, capacity formula, allocation layout, source code, encoded
 corpus, or test suite was consulted.
 
+The LZW plus tANS deterministic frame encoder uses only DD-588, DD-587's exact
+plan, marc's generic header and tANS descriptor serializers, local tANS
+encoder, checked spans, and the independent local vector. No external LZW/tANS
+frame encoder, serialization schedule, archive format, source code, encoded
+corpus, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

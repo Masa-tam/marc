@@ -1445,6 +1445,12 @@ workspace without accepting serialized output. This prevents descriptor or
 payload emission from observing a partial or differently chunked LZW stream.
 
 The complete-frame encoder accepts only a fully successful plan and a complete
+destination. It writes the generic header, then reproduces every tANS plan over
+the immutable packed staging while placing descriptors and payloads at their
+fixed offsets. Extent disagreement is an internal error, and insufficient
+destination capacity is detected before serialized output mutation.
+
+The complete-frame encoder accepts only a fully successful plan and a complete
 destination. It writes the generic header, then reproduces every rANS plan over
 the immutable packed staging while placing descriptors and payloads at their
 fixed offsets. Extent disagreement is an internal error, and insufficient
