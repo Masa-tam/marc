@@ -5280,3 +5280,65 @@ Interoperability schema 29 emits this unchanged profile as `lzw-tans` after
 the frozen thirty-nine-entry schema-28 order. Manifest version and codec-set
 selection, archive hashes, verification output, and compatibility derivation
 are external test metadata and do not change the stream representation.
+
+## LZD variant 1 plus tANS variant 1
+
+The reserved composition name is `lzd-tans`. Format version 1.0 uses
+dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 5,
+entropy variant 1, the ordinary 16-byte LZD parameter extension, and no
+entropy parameter bytes. Both algorithms reset at every outer frame.
+
+LZD first completes its canonical sequence of eight-byte little-endian
+reference pairs. Tabled tANS then divides those finalized bytes into blocks
+without interpreting token, reference-field, or terminal-marker boundaries.
+A tANS block may split a four-byte reference or eight-byte token but cannot
+split a byte or cross an outer frame.
+
+For nonempty raw frame size `F`, actual token extent `S`, nonzero tANS block
+size `B`, block count `K`, and per-block token extents `n_i`, require checked
+arithmetic for:
+
+```text
+0 < S <= 8 * ceil(F / 2)
+S mod 8 = 0
+K = ceil(S / B)
+descriptor bytes = 528K
+2K <= P <= sum(i = 0..K-1, 2 + ceil(12n_i / 8))
+```
+
+At most `floor(F / 2)` right-present tokens create phrase entries. The phrase-
+record count is the lesser of that value and the configured LZD maximum;
+iterative expansion requires at most that phrase count plus one reference. The
+format-level raw-frame cap remains 2^20 bytes. Empty known-size streams contain
+only the ordinary 80-byte stream prefix and no frame.
+
+Decoding validates the generic frame extents and every tANS descriptor, table,
+transition, initial state, final padding, and exact payload exhaustion before
+reconstructing exactly `S` private token bytes. Only then may it validate
+eight-byte alignment, left and right references, terminal absence, checked
+phrase lengths, dictionary growth, and exact declared raw extent. Raw
+reconstruction and publication are later transactional steps.
+
+For raw `A`, standalone LZD emits:
+
+```text
+41 00 00 00 FF FF FF FF
+```
+
+With `B = 65,536`, tANS normalizes frequencies to `00:1536`, `41:512`, and
+`FF:2048`. Its four-byte payload is `08 03 9B 00`, with three valid bits in the
+final payload byte. The complete frame is 588 bytes. Its generic header is:
+
+```text
+4D 52 46 31 38 00 00 00 00 00 00 00 00 00 00 00
+01 00 00 00 08 00 00 00 04 00 00 00 01 00 00 00
+10 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+```
+
+Descriptor bytes 0 through 15 are
+`08 00 00 00 04 00 00 00 0C 03 00 00 00 00 00 00`. The 512-byte frequency
+region is zero except descriptor offsets 16..17 (`00 06`), 146..147
+(`00 02`), and 526..527 (`00 08`). The four payload bytes immediately follow
+the descriptor. This sparse notation uniquely fixes every frame byte. The
+independent vector invokes only standalone components.

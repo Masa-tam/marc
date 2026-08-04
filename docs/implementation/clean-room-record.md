@@ -9906,6 +9906,33 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
+## 2026-08-05 - LZD plus tANS reserved representation
+
+- Authoring method: composed marc's documented LZD variant-1 token grammar and
+  standalone encoder with its independently implemented tabled tANS planner,
+  encoder, descriptor serializer, and generic frame serializer.
+- References used: DD-598, local LZD and tANS specifications and code, checked
+  frame bounds, and explicit little-endian serialization helpers.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  implementations, source code, combined formats, encoded corpora, vectors,
+  and test suites.
+- Independent decisions: finalize all eight-byte reference pairs before
+  entropy coding; permit blocks to split fields but not bytes or frames; bound
+  tokens by `8*ceil(F/2)`; validate all entropy blocks before LZD semantics; and
+  freeze raw-`A` payload `08 03 9B 00` and complete extent 588.
+- Generated-code task description: reserve `lzd-tans`, derive its bounds and
+  exact raw-`A` vector solely from standalone components, add a byte-exact
+  vector test, and update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the representation directly composes two local canonical
+  boundaries and explicit serializers. No external format structure,
+  normalization table, payload bytes, control flow, or test expression was
+  compared.
+- Local validation: the byte-exact vector passed under both MSVC and ClangCL.
+  The complete Release CTest suite passed 2,263/2,263 under both compilers
+  using official CMake 4.3.4; all 40 benchmark smokes, schema 1 through 29
+  compatibility, and documentation-layout checks remained successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

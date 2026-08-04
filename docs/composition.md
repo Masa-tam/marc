@@ -23,8 +23,19 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | `lzw-tans` |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Candidate |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Specified |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
+
+`lzd-tans` is the fifth tANS composition with a reserved representation. LZD
+finalizes canonical eight-byte reference pairs before tANS block coding. A
+block may split a four-byte reference or eight-byte token but cannot split a
+byte or cross a frame. For raw extent `F`, require aligned token extent
+`0 < S <= 8*ceil(F/2)`, `K = ceil(S/B)`, exact `528K` descriptor bytes, and
+the checked sum of per-block `2 + ceil(12n/8)` payload ceilings. Decoding must
+validate all tANS blocks before reconstructing private tokens and applying LZD
+reference, phrase-growth, and exact-raw-extent checks. The independent raw-`A`
+vector fixes token bytes `41 00 00 00 FF FF FF FF`, payload `08 03 9B 00`,
+and a complete 588-byte frame. No combined validator or public API exists yet.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

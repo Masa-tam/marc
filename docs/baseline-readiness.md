@@ -66,6 +66,7 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-tans` | Second tANS composition | Ready | Included |
 | `lz78-tans` | Third tANS composition | Ready | Included |
 | `lzw-tans` | Fourth tANS composition | Ready | Included |
+| `lzd-tans` | Fifth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set

@@ -2299,6 +2299,22 @@ External four-direction verification at revision
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers, including byte-identical re-encoding in both platform directions.
 
+### LZD plus tANS boundary
+
+The reserved `lzd-tans` profile places tabled tANS after the complete canonical
+LZD reference-pair byte stream. LZD produces aligned eight-byte token records;
+tANS consumes only bytes and may place a block boundary inside either
+four-byte reference field or between fields, but never inside a byte or across
+an outer frame. Both layers reset with the frame controller.
+
+Decoder construction must admit every descriptor, payload, private token byte,
+tANS block view, LZD phrase record, expansion reference, and raw staging region
+before the corresponding mutation. All tANS blocks must validate before token
+reconstruction, and the complete private token span must pass LZD alignment,
+reference, phrase-growth, terminal, and raw-extent checks before any raw byte is
+reconstructed or published. The initial reservation fixes representation and
+bounds only; it adds no combined transform or public surface.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -3550,6 +3550,18 @@ re-encoding. Reject a manifest with its first two archives swapped. Derive
 schema 28 by removing only `lzw-tans.marc` and changing only version and codec
 set, then verify schemas 28 through 1 unchanged.
 
+For the first LZD plus tANS vector, begin with raw byte `41` and independently
+derive canonical terminal-token bytes `41 00 00 00 FF FF FF FF`. Feed exactly
+those eight finalized bytes to standalone tANS planning. Require normalized
+frequencies `00:1536`, `41:512`, and `FF:2048`, final valid-bit count 3, and
+payload `08 03 9B 00`.
+
+Independently serialize a generic header declaring raw extent 1, dictionary
+extent 8, payload extent 4, one entropy block, and 528 descriptor bytes.
+Serialize the sparse tANS descriptor and append the payload; compare all 588
+bytes with the separately recorded frame representation. Do not invoke any
+future combined LZD/tANS implementation in this vector.
+
 For the first LZ78 plus tANS validator, require the 587-byte hand vector to
 reconstruct the exact Pair token in private staging. Re-encode that token with
 tANS block size three and require three blocks, proving that entropy boundaries

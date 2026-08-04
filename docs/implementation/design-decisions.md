@@ -9053,6 +9053,38 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-598: LZD tANS preserves finalized reference pairs
+
+- Date: 2026-08-05
+- Status: accepted
+
+Reserve `lzd-tans` for LZD variant 1 followed by tabled tANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZD parameter extension,
+empty entropy parameters, and canonical eight-byte little-endian reference
+pairs. Complete the token byte stream before entropy processing. A tANS block
+may split a four-byte reference or eight-byte token but cannot split a byte or
+cross an outer frame. Reset both layers at every frame.
+
+For nonempty raw frame extent `F`, require actual token extent
+`0 < S <= 8 * ceil(F/2)` with `S mod 8 = 0`, `K = ceil(S/B)` for nonzero tANS
+block size `B`, exact descriptor extent `528K`, and the checked sum of
+per-block `2 + ceil(12n/8)` payload ceilings. Bound phrase records by the
+lesser of `floor(F/2)` and the configured entry limit, expansion references by
+that phrase count plus one, and raw frames by 2^20 bytes.
+
+Decoding must validate every tANS descriptor, table, transition, initial
+state, padding, and exact payload exhaustion before reconstructing exactly `S`
+private token bytes. Only then validate alignment, references, terminal
+absence, checked phrase lengths, dictionary growth, and exact raw extent.
+
+For raw `A`, independently freeze LZD token bytes
+`41 00 00 00 FF FF FF FF`. Their normalized tANS model is
+`00:1536, 41:512, FF:2048`, payload is `08 03 9B 00` with three final valid
+bits, and the complete frame is 588 bytes. Prove this only with the standalone
+LZD encoder, tANS encoder, and generic serializers. This decision publishes no
+combined validator, streaming transform, C factory, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

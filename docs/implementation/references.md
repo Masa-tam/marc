@@ -1827,6 +1827,12 @@ and the repository-owned generator, verifier, and compatibility conversion.
 No external interoperability schema, manifest, archive corpus, source code, or
 test suite was consulted.
 
+The LZD plus tANS reserved representation uses only DD-598, marc's documented
+LZD variant-1 reference grammar and encoder, the local tabled tANS planner,
+encoder, descriptor serializer, generic frame serializer, and checked bounds.
+No external combined implementation, FSE format, source code, encoded corpus,
+or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
