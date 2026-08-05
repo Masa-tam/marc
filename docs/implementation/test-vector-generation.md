@@ -3331,6 +3331,14 @@ The CLI profile fixes `F = 65,536`, `S = 262,144`, `K = 4`, `D = 2,112`, and
 aligned opaque-view workspace requirements must come only from the public C
 query.
 
+For `lzd-tans` benchmark smoke, run
+`marc_benchmark lzd-tans README.md 1`. Require a complete verified round trip
+before timing and the standard codec name, input and encoded byte counts,
+ratio, encode/decode seconds and MiB/s, all six direction-specific workspace
+extents, and peak caller reservation. Bound output with the checked
+`80 + 12*ceil(N/2) + 2176K` expression. Treat every measured value as a local
+observation rather than a frozen threshold.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

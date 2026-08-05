@@ -9395,6 +9395,25 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-611: LZD tANS benchmark verifies before measuring
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add `lzd-tans` to the dependency-free benchmark runner using DD-610's exact
+public profile. Construct both directions only through DD-607's C
+configuration, requirements query, factory, process, and destroy lifecycle.
+Before any timing, require one byte-exact encode/decode round trip.
+
+For input extent `N` and nonempty frame count `K`, reserve the checked complete
+stream ceiling `80 + 12*ceil(N/2) + 2176K`. Twelve bytes bound tANS coding of
+each possible eight-byte LZD reference pair; each frame adds one 56-byte header
+plus four 528-byte descriptors and four two-byte initial states. Report ratio,
+encode and decode throughput, all three queried workspace regions for each
+direction, and their larger sum. Add a one-iteration README smoke without a
+performance or compression threshold. This decision adds no interoperability
+entry, format variant, or `Ready` claim.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

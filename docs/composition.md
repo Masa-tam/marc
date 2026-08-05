@@ -65,8 +65,10 @@ and the public streaming lifecycle. Permanent regressions retain atomic failure
 for every proper canonical truncation, saturated generic-frame extents, and a
 nonzero tANS descriptor flag. The transactional CLI now exposes `lzd-tans`
 solely through its public requirements, factory, process, and destroy lifecycle,
-with output publication deferred until complete success. Benchmark and
-interoperability surfaces remain pending.
+with output publication deferred until complete success. Its dependency-free
+benchmark verifies an untimed exact round trip before reporting compression
+ratio, directional throughput, and all queried workspace regions.
+Interoperability remains pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

@@ -5420,6 +5420,11 @@ ceiling, four 528-byte descriptors, a 393,224-byte payload ceiling, the public
 LZD maximum-entry default, and a 16-MiB aggregate internal policy. These are
 application limits and add no stream field or format variant.
 
+The dependency-free `lzd-tans` benchmark uses the same public selector profile
+and checked `80 + 12*ceil(N/2) + 2176K` complete-stream ceiling. Its untimed
+round-trip verification, timing, ratio, throughput, and workspace reporting
+add no stream field or format variant.
+
 The public completion audit fixes 64-byte frames and tANS blocks and proves
 byte-identical archives across unchunked, one-byte, and mixed chunking. For a
 four-frame stream it also proves that sequence corruption, final-byte

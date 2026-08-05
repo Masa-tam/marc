@@ -2362,6 +2362,10 @@ and tANS blocks, checked 262,144-byte token and 393,224-byte payload ceilings,
 four blocks, the public LZD entry bound, and a 16-MiB aggregate policy. It
 allocates only the three queried workspace regions and publishes the output
 file only after the complete transform succeeds.
+The benchmark adapter reuses that exact public policy independently in each
+direction. It admits a checked complete-stream destination, verifies one
+byte-exact untimed round trip, then measures encode and decode separately while
+reporting every queried region and the larger directional reservation.
 
 ### C transform ABI
 

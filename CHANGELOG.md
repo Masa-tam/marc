@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the `lzd-tans` dependency-free benchmark adapter. It verifies a
+  byte-exact public-ABI round trip before timing and reports ratio, directional
+  throughput, and every queried workspace region.
 - Added the transactional `--codec lzd-tans` CLI selector. It uses only the
   public C requirements query and transform lifecycle with checked 64-KiB
   frame/block policy, opaque aligned workspaces, overwrite refusal, and atomic

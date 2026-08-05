@@ -10265,6 +10265,32 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-06 - LZD plus tANS verification-first benchmark
+
+- Authoring method: extended marc's dependency-free public-ABI benchmark with
+  DD-611 and the already admitted DD-610 CLI policy.
+- References used: DD-611, DD-610, the public `marc_lzd_tans_*` lifecycle,
+  checked capacity helpers, common measurement runner, and workspace reporter.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  source code, and test suites.
+- Independent decisions: reserve `80 + 12*ceil(N/2) + 2176K`; verify a complete
+  byte-exact round trip before timing; measure directions independently; report
+  all queried regions and their peak; and impose no performance threshold.
+- Generated-code task description: add configuration, query, factory, capacity,
+  name and selector routing; register a one-iteration smoke; and synchronize
+  benchmarks, C API, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter composes only marc's local benchmark lifecycle
+  and published public functions. No external control flow, capacity expression,
+  output schema, measurement schedule, naming, or assertion was compared.
+- Local validation: the focused benchmark smoke and direct one-iteration README
+  run passed under both MSVC and ClangCL. The MSVC observation encoded 4,581
+  bytes to 4,433 bytes at ratio 0.968 and reported 17,762,428 bytes of peak
+  caller reservation. The complete Release suite then passed 2,312/2,312 under
+  both compilers using official CMake 4.3.4, including all forty-one labeled
+  benchmark smokes, schema-1-through-29 compatibility, and documentation layout.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

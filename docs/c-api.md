@@ -412,6 +412,9 @@ truncated, and extended fourth frames.
 The `lzd-tans` CLI selector uses this lifecycle exclusively, allocating the
 three returned regions with the reported alignment and retaining the common
 transactional file-publication boundary.
+The benchmark adapter constructs fresh transforms through the same public
+lifecycle, verifies one complete round trip before timing, and reports all
+three requirements for each direction.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are
