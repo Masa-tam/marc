@@ -69,12 +69,11 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-tans` | Fifth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-`lzd-tans` now has bounded complete-frame validation, private raw decoding, and
-transactional caller-output publication. Streaming transforms, the public
-profile, completion audit, and interoperability entry remain pending.
-An exact write-free complete-frame planner and deterministic serialized encoder
-are also present. A bounded streaming encoder is now present; the matching
-streaming decoder and public profile remain pending, so the readiness
+`lzd-tans` now has bounded complete-frame validation, private raw decoding,
+transactional caller-output publication, an exact write-free planner, a
+deterministic serialized encoder, and bounded streaming transforms. The
+streaming decoder commits only completely validated frames. The public profile,
+completion audit, and interoperability entry remain pending, so the readiness
 classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set

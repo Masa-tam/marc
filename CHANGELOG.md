@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the bounded `lzd-tans` streaming decoder. It admits and collects one
+  complete frame, validates tANS and the LZD phrase graph into private
+  caller-owned staging, and publishes only completely validated raw bytes.
 - Added the bounded `lzd-tans` streaming encoder. It emits the canonical prefix,
   collects one raw frame, plans and encodes it into caller-owned storage, and
   drains immutable bytes under arbitrary partial I/O while retaining finish.

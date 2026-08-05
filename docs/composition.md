@@ -52,8 +52,10 @@ admits the complete destination, and writes the generic header, every tANS
 descriptor, and every payload explicitly. Streaming and all public surfaces
 were initially pending at that layer. The bounded streaming encoder now
 collects at most one raw frame, invokes that exact planner/encoder pair, and
-drains only complete immutable frames. The streaming decoder and all public
-surfaces remain pending.
+drains only complete immutable frames. The matching bounded streaming decoder
+collects one complete serialized frame, validates tANS and the LZD phrase graph
+into private caller-owned staging, then publishes only the complete raw frame.
+All public surfaces remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

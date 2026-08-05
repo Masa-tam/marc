@@ -9243,6 +9243,36 @@ sticky failure. This decision adds no streaming decoder, profile calculator,
 C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
 entry.
 
+## DD-605: LZD tANS streaming decoding publishes complete frames
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add a bounded immutable-direction streaming decoder above DD-600/DD-601. Read
+the ordinary 80-byte prefix and each 56-byte frame header incrementally. Admit
+the declared complete serialized frame, tANS block views, canonical LZD token
+staging, private raw staging, LZD phrase records, and expansion stack before
+collecting its body. Count all active extents against the aggregate buffered-
+byte limit with checked arithmetic.
+
+After the complete frame body arrives, validate every tANS descriptor and
+payload, decode the complete private token region, validate the LZD phrase
+graph, and reconstruct the declared raw extent into private staging. Publish
+raw bytes only after every layer succeeds. Arbitrary output chunking therefore
+changes only delivery. A later malformed frame may not modify output beyond
+earlier committed frames.
+
+Retain `EndInput` while validated raw bytes drain. Reject truncated prefix,
+header, or frame body; trailing bytes after the declared original size;
+`ResetBlock`; and unknown flags with stable sticky errors. Nonterminal `Flush`
+does not change parsing. Empty known-size input accepts exactly the prefix and
+ends after finish. Prove one-byte input/output, transactional later-frame
+corruption, each short workspace, aggregate limit one byte short, truncation,
+trailing data, reset, unknown flags, empty input, flush starvation, premature
+finish, repeated end, and sticky failure. This decision adds no public profile,
+C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

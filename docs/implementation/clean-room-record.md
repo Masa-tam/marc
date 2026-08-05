@@ -10100,6 +10100,34 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4, including all forty benchmark smokes
   and the schema-1-through-29 interoperability compatibility chain.
 
+## 2026-08-06 - LZD plus tANS bounded streaming decoder
+
+- Authoring method: combined marc's local LZD private reconstruction with its
+  local tANS complete-frame controller under the immutable transform contract.
+- References used: DD-605, DD-600/DD-601's local validator and decoder, stream
+  and frame parsers, checked tANS payload ceilings, and LZD workspace formulas.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  streaming decoders, state machines, buffering strategies, source code,
+  malformed corpora, encoded corpora, and test suites.
+- Independent decisions: admit every declared region before body collection;
+  reconstruct into private raw staging; publish only a completely validated
+  frame; retain finish while draining; reject reset, truncation, and trailing
+  data; and keep terminal errors sticky.
+- Generated-code task description: add the bounded streaming decoder and prove
+  one-byte I/O, transactional later-frame corruption, each short workspace,
+  aggregate limit one byte short, truncation, trailing input, reset, unknown
+  flags, empty input, flush starvation, premature finish, repeated end, and
+  sticky failure; update architecture, format, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing stream
+  contract and local complete-frame operations. No external state transition,
+  buffering layout, error taxonomy, malformed input, encoded corpus, or test
+  expression was compared.
+- Local validation: the five focused streaming-decoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,296/2,296 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

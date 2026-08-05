@@ -5394,3 +5394,14 @@ drain. Partial output therefore changes only delivery, never serialization.
 `Flush` does not shorten a partial raw frame; `ResetBlock` is unsupported.
 Empty known-size input emits only the prefix. These state rules add no
 serialized field or variant.
+
+The bounded streaming decoder collects the same 80-byte prefix and one complete
+serialized frame in caller-owned storage. It admits the declared encoded frame,
+tANS block views, decoded canonical token bytes, LZD phrase and expansion
+records, and private raw extent before collecting the frame body. Only after
+strict tANS and LZD validation succeeds may the private raw bytes drain to the
+caller. Thus a malformed later frame cannot expose any byte from that frame.
+`EndInput` remains latched while validated bytes drain; nonterminal `Flush`
+does not alter parsing; `ResetBlock` is unsupported; and bytes after the
+declared original size are trailing-data errors. These rules add no serialized
+field or variant.

@@ -3268,6 +3268,17 @@ after one raw byte and require canonical frames after the rest arrives. Reject
 each short storage region, aggregate workspace one byte short, premature and
 excess input, `ResetBlock`, and unknown flags; accept the exact empty prefix.
 
+For LZD plus tANS bounded streaming decoding, generate the canonical `ABABX`
+stream with two-byte raw frames and two-byte entropy blocks. Decode with
+one-byte input and output and require exact raw equality plus stable repeated
+end. Corrupt the second frame's first tANS descriptor and require only the
+first raw `AB` frame to be published while every later output sentinel remains
+unchanged. Reject each encoded, view, token, raw, phrase, and expansion region
+one entry or byte short; reject the aggregate bound one byte short, final-byte
+truncation, one trailing byte, reset, unknown flags, and premature finish after
+one valid frame. Accept the exact empty prefix and treat flush without input as
+starvation rather than termination.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

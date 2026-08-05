@@ -2336,6 +2336,11 @@ collects one raw frame in caller memory, invokes the exact planner and encoder,
 then drains the immutable result with independent input consumption and output
 production. Finish is retained until all pending bytes drain, while flush does
 not alter frame boundaries.
+The matching bounded streaming decoder incrementally collects the prefix and
+one serialized frame, admits all tANS and LZD workspaces from trusted header
+bounds, validates and reconstructs privately, then drains only the committed
+raw frame. A later malformed frame cannot expose partial output from that
+frame; retained finish survives draining of an earlier valid frame.
 
 ### C transform ABI
 
