@@ -69,10 +69,10 @@ by component tests and exercised through Blocked Huffman.
 | `lzd-tans` | Fifth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-`lzd-tans` now has its first bounded complete-frame validator. The decoder,
-encoder, streaming transforms, public profile, completion audit, and
-interoperability entry remain pending, so its readiness classification does
-not change.
+`lzd-tans` now has a bounded complete-frame validator and private raw decoder.
+Transactional publication, the encoder, streaming transforms, public profile,
+completion audit, and interoperability entry remain pending, so its readiness
+classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
 followed by the LZW tANS profile. Schemas 1 through 28

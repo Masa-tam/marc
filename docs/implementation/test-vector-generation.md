@@ -3226,6 +3226,15 @@ error only after complete entropy reconstruction. Reject each caller-owned
 workspace one entry short, the aggregate allowance one byte short, a truncated
 frame, trailing data, and a non-tANS stream declaration.
 
+For LZD plus tANS private reconstruction, decode the independent raw-`A` frame
+into a one-byte sentinel and require `41`. Independently serialize the valid
+reference pairs `(A,B)` and `(256,256)`, tANS-code them in five-byte blocks,
+and require non-recursive reconstruction of `ABABAB` across four entropy
+blocks. Reject raw staging and the expansion stack one entry short before
+token mutation, lower their aggregate allowance by one byte, and preserve the
+raw sentinel after a later descriptor failure or entropy-decoded invalid LZD
+reference.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

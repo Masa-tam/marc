@@ -38,7 +38,12 @@ vector fixes token bytes `41 00 00 00 FF FF FF FF`, payload `08 03 9B 00`,
 and a complete 588-byte frame. The first internal complete-frame validator now
 preflights all caller-owned regions, validates every tANS block before token
 reconstruction, and applies LZD graph validation only to the complete private
-token span. Raw reconstruction and every public surface remain pending.
+token span. Caller-visible raw publication and every public surface remain
+pending.
+The internal private decoder now also preflights raw staging and the iterative
+expansion stack, counts them in the aggregate workspace limit, and reconstructs
+validated references without recursion. Transactional caller-visible
+publication and every public surface remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

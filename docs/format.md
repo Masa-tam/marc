@@ -5351,3 +5351,12 @@ before decoding any of them into the private token region. Only after all `S`
 bytes exist does it run the ordinary LZD phrase-graph validator. On every
 failure, entropy views, token staging, and phrase records are discard-only;
 raw reconstruction and publication are not part of this boundary.
+
+The private complete-frame decoder preserves that admission order and also
+requires the full declared raw extent plus an iterative expansion stack of at
+most the admitted phrase count plus one reference before entropy mutation.
+Their checked byte extents participate in `max_internal_buffered_bytes`.
+After strict tANS and complete LZD validation succeed, the existing
+allocation-free LZD decoder expands the graph iteratively into caller-owned
+raw staging. Every workspace remains discard-only after failure; this step
+does not publish a raw byte or alter the serialized representation.

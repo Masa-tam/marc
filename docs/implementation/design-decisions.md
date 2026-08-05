@@ -9111,6 +9111,32 @@ rejection under MSVC and ClangCL. This decision adds no raw decoder, encoder,
 streaming transform, C factory, CLI, benchmark, fuzz target, completion claim,
 or interoperability entry.
 
+## DD-600: LZD tANS reconstruction remains private
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add a bounded complete-frame decoder that retains DD-599's exact validation
+order and reconstructs only into caller-owned private raw staging. Before any
+entropy output, require the complete declared raw capacity and the conservative
+iterative expansion stack derived from admitted phrase capacity. Count both
+regions with descriptors, payload, token staging, tANS views, and phrase
+records against `max_internal_buffered_bytes` using checked arithmetic.
+
+After all tANS blocks and the complete LZD graph validate, invoke the existing
+allocation-free, non-recursive LZD decoder over only those admitted spans.
+Propagate its stable token position, format, validation, and decode errors.
+All views, tokens, phrase records, expansion references, and raw bytes are
+discard-only after any failure; no caller-visible output span exists.
+
+Prove the independent raw-`A` frame and a phrase-bearing `ABABAB` frame whose
+tANS blocks split reference and token boundaries. Reject raw and expansion
+storage one entry short before token mutation, count both regions in an
+aggregate limit one byte short, and preserve raw sentinels after entropy or LZD
+failure. This decision adds no transactional publication, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

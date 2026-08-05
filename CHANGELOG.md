@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added bounded private raw reconstruction for complete `lzd-tans` frames.
+  Raw and iterative expansion storage are preflighted and included in the
+  aggregate limit before entropy mutation; validated reference pairs are then
+  expanded without recursion into caller-owned discard-only staging. No
+  caller-visible publication boundary is added yet.
 - Added the first bounded `lzd-tans` complete-frame validator. It preflights
   the complete serialized extent and all caller-owned workspace, validates
   every tANS block before reconstructing private token bytes, and only then

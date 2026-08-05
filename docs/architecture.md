@@ -2315,8 +2315,11 @@ reference, phrase-growth, terminal, and raw-extent checks before any raw byte is
 reconstructed or published. The initial reservation fixes representation and
 bounds. The first internal combined component now implements that complete-
 frame validation boundary with caller-owned views, token staging, and phrase
-records. It deliberately stops before raw reconstruction and adds no streaming
-transform or public surface.
+records. The private complete-frame decoder additionally admits the declared
+raw extent and iterative expansion stack before entropy mutation, then invokes
+the existing non-recursive LZD decoder only after complete graph validation.
+Raw staging remains discard-only; no transactional publication, streaming
+transform, or public surface exists yet.
 
 ### C transform ABI
 

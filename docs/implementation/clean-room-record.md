@@ -9962,6 +9962,34 @@ discarded and the reviewed seed retained.
   through 29 compatibility, and documentation-layout checks remained
   successful.
 
+## 2026-08-05 - LZD plus tANS private raw decoder
+
+- Authoring method: extended DD-599's internal validator with marc's existing
+  allocation-free, non-recursive LZD reconstruction over caller-owned spans.
+- References used: DD-600, DD-599, the local LZD decoder contract, checked
+  aggregate arithmetic, and discard-only staging conventions.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, phrase expansion algorithms, recursion schemes, buffer layouts,
+  source code, malformed corpora, and test suites.
+- Independent decisions: preflight raw and expansion capacities before entropy
+  mutation; include both in the aggregate workspace limit; reconstruct only
+  after complete entropy and graph validation; and expose no raw publication
+  span at this boundary.
+- Generated-code task description: add private complete-frame reconstruction;
+  prove raw `A`, phrase-bearing `ABABAB` across split blocks, short raw and
+  expansion storage, aggregate limit one byte short, and unchanged raw guards
+  after entropy or dictionary failure; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation calls only the repository-local LZD
+  decoder after DD-599's validator and uses explicit bounded spans. No external
+  reconstruction control flow, workspace formula, error taxonomy, malformed
+  vector, or test expression was compared.
+- Local validation: the twelve focused validator/private-decoder tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,275/2,275 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and
