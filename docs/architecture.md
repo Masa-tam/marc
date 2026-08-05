@@ -2349,6 +2349,10 @@ The public C adapter preserves the common three-region ownership model and
 delegates all sizing and typed partitioning to that calculator. It adds only a
 size-tagged fixed-width configuration and new symbols, leaving the established
 ABI version and every existing structure layout unchanged.
+The public completion matrix constructs both directions only through that C
+factory. It fixes 64-byte frame and block boundaries, proves deterministic
+archives across arbitrary chunking, and verifies that a malformed fourth frame
+cannot publish its final raw byte or destabilize the repeated terminal error.
 
 ### C transform ABI
 

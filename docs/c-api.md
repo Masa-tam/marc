@@ -405,6 +405,10 @@ opaque views. Call `marc_lzd_tans_workspace_requirements()` again after
 changing direction, original size, either block dimension, maximum entries, or
 any hard limit. The public header exposes only fixed-width configuration,
 byte counts, and alignment; no C++ record or partition offset crosses the ABI.
+The public completion matrix uses only this lifecycle with 64-byte frames and
+blocks and covers required binary classes, repeat determinism, arbitrary
+chunking, stable terminal calls, and frame-atomic rejection of corrupted,
+truncated, and extended fourth frames.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

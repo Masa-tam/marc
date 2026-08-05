@@ -9328,6 +9328,30 @@ output handle, and non-zero reserved fields. This decision adds no CLI,
 benchmark, fuzz target, completion claim, serialized variant, or
 interoperability entry.
 
+## DD-608: LZD tANS completion uses only the public ABI
+
+- Date: 2026-08-06
+- Status: accepted
+
+Admit the DD-607 factory through the same public-only LZD completion schedule
+used by the earlier entropy compositions. Keep 64-byte outer frames and
+64-byte tANS blocks. Bound the largest 256-byte canonical token region by four
+528-byte descriptors plus twelve bits per token byte and two final-state bytes
+per entropy block.
+
+Through only `marc_lzd_tans_*`, the common process function, and destruction,
+round-trip empty input, every one-byte value, all byte values in sequence,
+long zero repetition, a repeated binary pattern, deterministic generated data,
+and lengths 63, 64, and 65. Re-encode a 193-byte four-frame stream under
+one-byte, mixed prime-size, and whole-buffer input/output schedules and require
+one exact byte stream. Repeated calls after successful completion remain ended.
+
+Corrupt the final frame header, truncate its final byte, and append one trailing
+byte independently. Each decode must publish exactly the first three complete
+64-byte frames, leave the final output sentinel unchanged, and return the same
+sticky error position on repetition. This decision adds no fuzz target, CLI,
+benchmark, interoperability entry, or `Ready` claim.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

@@ -5409,3 +5409,10 @@ field or variant.
 The public `marc_lzd_tans_*` C requirements query and factory select this exact
 unchanged representation. Workspace byte counts, alignment, pointer ownership,
 and transform handles are API concerns and serialize no additional field.
+
+The public completion audit fixes 64-byte frames and tANS blocks and proves
+byte-identical archives across unchunked, one-byte, and mixed chunking. For a
+four-frame stream it also proves that sequence corruption, final-byte
+truncation, and trailing data in the fourth frame publish exactly the first
+three frames and preserve a sticky terminal error. These tests add no new
+serialized field or variant.

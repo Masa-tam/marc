@@ -1889,6 +1889,12 @@ checked byte-span partitioning, and common transform lifecycle. No external C
 API, factory design, allocation scheme, source code, generated corpus, or test
 suite was consulted.
 
+The LZD plus tANS public-ABI completion matrix uses only DD-608, DD-607's local
+C functions, marc's existing LZD public admission schedules, deterministic
+local byte generation, and the documented tANS block ceiling. No external
+vector, corpus, completion suite, implementation behavior, or test expression
+was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

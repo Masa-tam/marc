@@ -10182,6 +10182,32 @@ discarded and the reviewed seed retained.
   using official CMake 4.3.4, including all forty benchmark smokes and the
   schema-1-through-29 interoperability compatibility chain.
 
+## 2026-08-06 - LZD plus tANS public-ABI completion matrix
+
+- Authoring method: reused marc's public-only LZD admission schedules with the
+  independently documented tANS block ceiling and DD-607 symbol family.
+- References used: DD-608, DD-607, the local LZD completion harness, tANS
+  descriptor and payload bounds, deterministic generator, and C lifecycle.
+- Known implementations intentionally not consulted: external completion
+  suites, vectors, corpora, tANS/FSE implementations, source code, and tests.
+- Independent decisions: keep every data and chunk schedule identical to prior
+  LZD admission; fix 64-byte frames and blocks; compare exact archives; and
+  require corrupt, truncated, and extended fourth frames to commit only the
+  first three frames with sticky error positions.
+- Generated-code task description: add the public-ABI completion matrix and
+  prove required binary classes, boundary sizes, repeat determinism, arbitrary
+  chunking, repeated end, and transactional malformed-final-frame rejection;
+  update format, architecture, readiness, composition, C API, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the thin substitution layer and all schedules use only
+  marc's local public APIs and repository-authored evidence. No external
+  harness organization, data corpus, mutation, expected stream, or test
+  expression was compared.
+- Local validation: the three focused completion tests passed under both MSVC
+  and ClangCL. The complete Release suite passed 2,307/2,307 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

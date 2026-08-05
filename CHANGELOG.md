@@ -9,7 +9,10 @@ format versions, and C ABI versions are independent namespaces.
 
 - Added the public `marc_lzd_tans_*` C ABI. Its direction-specific workspace
   query and factory expose the bounded profile without leaking C++ types or
-  changing the existing ABI version.
+  changing the existing ABI version. Its public-ABI completion matrix covers
+  required binary inputs, repeat determinism, one-byte and mixed chunking,
+  stable terminal calls, and frame-atomic rejection of corrupted, truncated,
+  or extended final frames.
 - Added the internal `lzd-tans` profile calculator and aligned opaque-storage
   partitioners. They derive coupled worst-case encoder and decoder workspaces
   and directly construct the bounded streaming transforms.
