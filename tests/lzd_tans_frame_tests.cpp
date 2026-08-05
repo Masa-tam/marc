@@ -487,3 +487,98 @@ TEST(LzdTansFrameDecoder, LayerFailuresPreserveCompleteCallerOutput) {
     EXPECT_EQ(output[0], std::byte{0x5a});
     EXPECT_EQ(output[1], std::byte{0x5a});
 }
+
+TEST(LzdTansFramePlanner, PlansExactIndependentVectorExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    const auto result = marc::frame::plan_lzd_tans_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging);
+    ASSERT_EQ(result.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(result.raw_size, raw.size());
+    EXPECT_EQ(result.dictionary_size, terminal_token_a.size());
+    EXPECT_EQ(result.encoder_entries, 0U);
+    EXPECT_EQ(result.token_count, 1U);
+    EXPECT_EQ(result.dictionary_entries, 0U);
+    EXPECT_EQ(result.block_count, 1U);
+    EXPECT_EQ(result.block_index, 1U);
+    EXPECT_EQ(result.descriptor_size, 528U);
+    EXPECT_EQ(result.payload_size, 4U);
+    EXPECT_EQ(result.serialized_size, 588U);
+    EXPECT_EQ(staging, terminal_token_a);
+}
+
+TEST(LzdTansFramePlanner, PlansPhraseBlocksDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> workspace(
+        marc::dictionary::internal::lzd_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> first{};
+    std::array<std::byte, raw.size() * 4> second{};
+    const auto stream = stream_for(raw.size(), 5);
+    const auto first_plan = marc::frame::plan_lzd_tans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, first);
+    ASSERT_EQ(first_plan.error, LzdTansFrameValidationError::none);
+    const auto second_plan = marc::frame::plan_lzd_tans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, second);
+    ASSERT_EQ(second_plan.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(first_plan.dictionary_size, 16U);
+    EXPECT_EQ(first_plan.block_count, 4U);
+    EXPECT_EQ(first_plan.dictionary_size, second_plan.dictionary_size);
+    EXPECT_EQ(first_plan.payload_size, second_plan.payload_size);
+    EXPECT_EQ(first_plan.serialized_size, second_plan.serialized_size);
+    EXPECT_EQ(first_plan.token_count, second_plan.token_count);
+    EXPECT_EQ(first_plan.dictionary_entries,
+              second_plan.dictionary_entries);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span<const std::byte>{first}.first(first_plan.dictionary_size),
+        std::span<const std::byte>{second}.first(
+            second_plan.dictionary_size)));
+}
+
+TEST(LzdTansFramePlanner, RejectsCapacitiesBeforeTokenMutation) {
+    constexpr std::array raw{std::byte{'A'}, std::byte{'B'}};
+    const auto entries =
+        marc::dictionary::internal::lzd_encoder_workspace_entries(
+            raw.size(), {});
+    ASSERT_GT(entries, 0U);
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> short_workspace(
+        entries - 1);
+    std::array<std::byte, 8> staging{};
+    staging.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::plan_lzd_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw,
+                  short_workspace, staging).error,
+              LzdTansFrameValidationError::encoder_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> workspace(entries);
+    EXPECT_EQ(marc::frame::plan_lzd_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, workspace,
+                  std::span<std::byte>{staging}.first(7)).error,
+              LzdTansFrameValidationError::dictionary_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+}
+
+TEST(LzdTansFramePlanner, EnforcesAggregateAndFrameExtent) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 8;
+    limits.max_internal_buffered_bytes = 539;
+    EXPECT_EQ(marc::frame::plan_lzd_tans_frame(
+                  stream_for(raw.size(), 8), {}, limits, 0, 0, raw, {},
+                  staging).error,
+              LzdTansFrameValidationError::workspace_limit);
+    EXPECT_EQ(marc::frame::plan_lzd_tans_frame(
+                  stream_for(1), {}, {}, 0, 0, {}, {}, staging).error,
+              LzdTansFrameValidationError::input_size_mismatch);
+    EXPECT_EQ(marc::frame::plan_lzd_tans_frame(
+                  stream_for(2), {}, {}, 0, 0, raw, {}, staging).error,
+              LzdTansFrameValidationError::input_size_mismatch);
+}

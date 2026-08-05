@@ -3243,6 +3243,15 @@ with distinct sentinels and require every region unchanged. Corrupt a later
 tANS descriptor and separately entropy-code an invalid LZD reference; both
 must preserve the complete caller-output sentinel.
 
+For LZD plus tANS exact-frame planning, submit raw `A` and require canonical
+tokens `41 00 00 00 FF FF FF FF`, zero encoder records, one tANS block, 528
+descriptor bytes, four payload bytes, and a 588-byte complete extent. Plan raw
+`ABABAB` twice with five-byte entropy blocks and require identical sixteen-byte
+token staging, four blocks, payload extent, token/phrase counts, and complete
+extent. Reject encoder records and token staging one entry short without
+changing the token sentinel, then lower aggregate workspace by one byte and
+reject empty or mismatched raw extents.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

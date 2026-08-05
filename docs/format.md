@@ -5368,3 +5368,12 @@ private decoding succeed, it copies exactly `F` bytes from raw staging to the
 caller span once. A short destination or any header, descriptor, payload,
 reference, phrase, limit, or reconstruction failure leaves every caller-output
 byte unchanged. This publication rule adds no serialized field or variant.
+
+The internal write-free planner first completes the deterministic LZD parse,
+requires the exact aligned token staging extent, and serializes all canonical
+reference pairs there. It then plans each tANS block over only that immutable
+span, sums exact payload sizes, derives exact `528K` descriptor bytes, checks
+the blockwise payload ceiling, counts encoder records and token/entropy regions
+against the aggregate limit, and validates the synthesized generic header.
+The returned `56 + 528K + P` frame extent is exact, but no serialized output
+span exists at this boundary.

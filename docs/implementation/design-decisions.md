@@ -9162,6 +9162,33 @@ output after entropy or LZD failure. This decision adds no encoder, streaming
 transform, C factory, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-602: LZD tANS planning freezes reference bytes
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add an internal exact-frame planner for the inverse of DD-599 through DD-601.
+Validate the exact stream profile, LZD parameters, nonempty input extent, and
+frame-local bounds. Determine and require the bounded LZD encoder-record
+capacity before token staging can change. Plan the deterministic parse, require
+the exact checked aligned token extent, then serialize all canonical eight-byte
+reference pairs into caller-owned staging.
+
+Plan tabled tANS only over that frozen token span. Require the derived block
+count within limits, exact `528K` descriptors, the exact sum of planned payload
+sizes within the blockwise `2 + ceil(12n/8)` ceiling, and 32-bit generic frame
+fields. Count encoder records, token staging, descriptors, and exact payload
+against `max_internal_buffered_bytes`, validate the synthesized generic header,
+and return the checked complete frame extent without a serialized output span.
+
+Prove the exact raw-`A` token, 528-byte descriptor extent, four-byte payload,
+and 588-byte frame; repeat a phrase-bearing multi-block plan byte-identically;
+reject encoder records and token staging one entry short without staging
+mutation; and reject aggregate workspace one byte short, empty input, and a
+frame-size mismatch. This decision adds no serialized encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

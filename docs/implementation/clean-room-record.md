@@ -10018,6 +10018,35 @@ discarded and the reviewed seed retained.
   smokes, schemas 1 through 29 compatibility, and documentation-layout checks
   remained successful.
 
+## 2026-08-06 - LZD plus tANS exact-frame planner
+
+- Authoring method: composed marc's deterministic LZD planner/encoder, tabled
+  tANS block planner, generic frame validator, and checked arithmetic into a
+  write-free complete-frame sizing boundary.
+- References used: DD-602, DD-598's fixed bounds, the local LZD and tANS
+  encoder contracts, caller-owned staging, and explicit frame fields.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  encoders, combined planners, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: admit encoder records before token mutation; freeze
+  all canonical reference pairs before entropy planning; check exact tANS
+  extents and aggregate workspace; validate the synthesized header; and expose
+  no serialized output span.
+- Generated-code task description: add exact-frame planning; prove raw `A`,
+  repeatable phrase-bearing multi-block planning, guarded encoder/token
+  shortages, aggregate limit one byte short, empty input, and frame mismatch;
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the planner directly composes repository-local plans,
+  serializers, and checked spans. No external planning control flow, workspace
+  formula, normalization data, encoded vector, or test expression was
+  compared.
+- Local validation: the twenty focused validator/decoder/planner tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,283/2,283 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

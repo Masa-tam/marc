@@ -2322,6 +2322,11 @@ Raw staging remains discard-only. The internal transactional decoder places a
 distinct caller-output preflight around that private operation and copies the
 complete raw extent once after success. This publication boundary remains
 below any streaming or public API.
+The inverse planning boundary completes the LZD parse and canonical token
+serialization before tANS planning. It keeps raw input, aligned encoder
+records, and token staging caller-owned, validates the synthesized frame
+header, and reports exact block and frame extents without accepting a final
+serialized destination.
 
 ### C transform ABI
 

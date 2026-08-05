@@ -46,6 +46,10 @@ validated references without recursion. The transactional complete-frame
 decoder now also admits the complete caller output before private mutation and
 copies exactly the declared raw extent once after every layer succeeds. The
 encoder and every streaming/public surface remain pending.
+The internal planner now fixes the complete canonical LZD token region before
+planning each tANS block and reports the exact complete-frame extent without a
+serialized destination. A serialized frame encoder and all streaming/public
+surfaces remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

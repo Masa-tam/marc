@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added exact write-free planning for complete `lzd-tans` frames. The planner
+  fixes canonical LZD token bytes first, plans every tANS block over that
+  immutable span, checks aggregate workspace and generic frame fields, and
+  reports exact descriptor, payload, and serialized extents.
 - Added transactional caller-output publication for complete `lzd-tans`
   frames. The entire output extent is admitted before private mutation, and
   exactly the declared raw bytes are copied once only after entropy validation,
