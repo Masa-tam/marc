@@ -10047,6 +10047,33 @@ discarded and the reviewed seed retained.
   smokes, schemas 1 through 29 compatibility, and documentation-layout checks
   remained successful.
 
+## 2026-08-06 - LZD plus tANS deterministic frame encoder
+
+- Authoring method: placed explicit frame serialization above DD-602's exact
+  plan and reused marc's generic-header, tANS descriptor, and payload writers.
+- References used: DD-603, DD-602, the independent 588-byte raw-`A` vector,
+  local explicit serializers, and caller-owned output conventions.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  encoders, frame writers, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: finish planning before output admission; repeat each
+  tANS plan over frozen tokens; require exact planned extents; write explicit
+  non-overlapping regions; and preserve all output on planner or capacity
+  failure.
+- Generated-code task description: add the deterministic complete-frame
+  encoder; reproduce the independent vector; prove phrase-bearing multi-block
+  determinism and transactional round trip; preserve short-output and planner-
+  failure sentinels; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-local plans
+  and serializers. No external frame-writing control flow, mutation schedule,
+  error taxonomy, encoded vector, or test expression was compared.
+- Local validation: the twenty-three focused frame tests passed under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,286/2,286 under
+  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
+  through 29 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

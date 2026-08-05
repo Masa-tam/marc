@@ -2327,6 +2327,10 @@ serialization before tANS planning. It keeps raw input, aligned encoder
 records, and token staging caller-owned, validates the synthesized frame
 header, and reports exact block and frame extents without accepting a final
 serialized destination.
+The complete-frame encoder invokes that plan before destination admission,
+then writes explicit generic-header, descriptor, and payload regions. A short
+destination cannot expose a partial frame; repeated encoding over the frozen
+tokens must reproduce the same bytes.
 
 ### C transform ABI
 

@@ -5377,3 +5377,11 @@ the blockwise payload ceiling, counts encoder records and token/entropy regions
 against the aggregate limit, and validates the synthesized generic header.
 The returned `56 + 528K + P` frame extent is exact, but no serialized output
 span exists at this boundary.
+
+The deterministic complete-frame encoder invokes that planner first and
+requires the complete `56 + 528K + P` destination before writing any serialized
+byte. It then writes the generic header explicitly, repeats each tANS plan over
+the frozen token subspan, serializes the corresponding 528-byte descriptor,
+and writes exactly the planned payload region. Repeated encoding with identical
+input and configuration is byte-identical. Planner or capacity failure leaves
+the entire serialized destination unchanged and adds no format variant.

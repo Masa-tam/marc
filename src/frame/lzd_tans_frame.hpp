@@ -42,6 +42,7 @@ enum class LzdTansFrameValidationError : std::uint8_t {
     encoder_workspace_too_small,
     dictionary_encode_error,
     entropy_encode_error,
+    serialized_output_too_small,
 };
 
 struct LzdTansFrameValidationResult {
@@ -64,6 +65,8 @@ struct LzdTansFrameValidationResult {
         entropy::internal::TansControllerError::none};
     entropy::internal::TansDecodeError entropy_error{
         entropy::internal::TansDecodeError::none};
+    entropy::internal::TansFormatError descriptor_error{
+        entropy::internal::TansFormatError::none};
     dictionary::internal::LzdValidationError dictionary_error{
         dictionary::internal::LzdValidationError::none};
     dictionary::internal::LzdFormatError dictionary_format_error{
@@ -89,6 +92,19 @@ struct LzdTansFrameValidationResult {
     std::span<const std::byte> input,
     std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
     std::span<std::byte> dictionary_staging) noexcept;
+
+// Plans completely before writing the generic header, tANS descriptors, or
+// payloads. All caller-owned regions must be mutually non-overlapping.
+[[nodiscard]] LzdTansFrameValidationResult encode_lzd_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzdParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<dictionary::internal::LzdEncoderEntry> encoder_workspace,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
 
 // Validates every serialized tANS block before reconstructing the private
 // canonical LZD token region, then validates the complete phrase graph without

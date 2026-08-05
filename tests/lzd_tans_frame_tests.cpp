@@ -582,3 +582,78 @@ TEST(LzdTansFramePlanner, EnforcesAggregateAndFrameExtent) {
                   stream_for(2), {}, {}, 0, 0, raw, {}, staging).error,
               LzdTansFrameValidationError::input_size_mismatch);
 }
+
+TEST(LzdTansFrameEncoder, EmitsExactIndependentVector) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::byte, 588> output{};
+    const auto result = marc::frame::encode_lzd_tans_frame(
+        stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging, output);
+    ASSERT_EQ(result.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(result.serialized_size, output.size());
+    EXPECT_TRUE(std::ranges::equal(
+        output, frame_for_tokens(terminal_token_a)));
+}
+
+TEST(LzdTansFrameEncoder, RoundTripsPhraseBlocksDeterministically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    const auto stream = stream_for(raw.size(), block_size);
+    std::vector<marc::dictionary::internal::LzdEncoderEntry> workspace(
+        marc::dictionary::internal::lzd_encoder_workspace_entries(
+            raw.size(), {}));
+    std::array<std::byte, raw.size() * 4> encode_staging{};
+    const auto plan = marc::frame::plan_lzd_tans_frame(
+        stream, {}, {}, 0, 0, raw, workspace, encode_staging);
+    ASSERT_EQ(plan.error, LzdTansFrameValidationError::none);
+    std::vector<std::byte> first(plan.serialized_size, std::byte{0xa5});
+    std::vector<std::byte> second(plan.serialized_size, std::byte{0x5a});
+    ASSERT_EQ(marc::frame::encode_lzd_tans_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  first).error,
+              LzdTansFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzd_tans_frame(
+                  stream, {}, {}, 0, 0, raw, workspace, encode_staging,
+                  second).error,
+              LzdTansFrameValidationError::none);
+    EXPECT_EQ(first, second);
+
+    std::array<marc::entropy::internal::TansBlockView, 4> views{};
+    std::array<std::byte, raw.size() * 4> decode_staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 2> phrases{};
+    std::array<std::uint32_t, 3> expansion{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto result = marc::frame::decode_lzd_tans_frame(
+        stream, {}, {}, 0, 0, first, views, decode_staging, phrases,
+        expansion, raw_staging, decoded);
+    ASSERT_EQ(result.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzdTansFrameEncoder, ShortOutputAndPlannerFailureAreAtomic) {
+    constexpr std::array raw{std::byte{'A'}};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::byte, 587> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::encode_lzd_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, raw, {}, staging,
+                  output).error,
+              LzdTansFrameValidationError::serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+
+    std::array<std::byte, 588> planner_failure_output{};
+    planner_failure_output.fill(std::byte{0x5a});
+    EXPECT_EQ(marc::frame::encode_lzd_tans_frame(
+                  stream_for(raw.size()), {}, {}, 0, 0, {}, {}, staging,
+                  planner_failure_output).error,
+              LzdTansFrameValidationError::input_size_mismatch);
+    EXPECT_TRUE(std::ranges::all_of(
+        planner_failure_output, [](const std::byte value) {
+            return value == std::byte{0x5a};
+        }));
+}

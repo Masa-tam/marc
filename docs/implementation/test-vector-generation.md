@@ -3252,6 +3252,13 @@ extent. Reject encoder records and token staging one entry short without
 changing the token sentinel, then lower aggregate workspace by one byte and
 reject empty or mismatched raw extents.
 
+For LZD plus tANS deterministic frame encoding, encode raw `A` and require all
+588 bytes to equal the independently assembled frame. Encode raw `ABABAB` with
+five-byte tANS blocks twice into differently initialized destinations and
+require byte identity, then decode transactionally to the original. Provide a
+587-byte destination for raw `A` and separately an empty input that fails in
+planning; both complete output sentinels must remain unchanged.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

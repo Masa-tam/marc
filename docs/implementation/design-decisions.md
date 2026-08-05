@@ -9189,6 +9189,31 @@ frame-size mismatch. This decision adds no serialized encoder, streaming
 transform, C factory, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-603: LZD tANS encoding is plan-first and deterministic
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-602. Invoke the exact
+planner first so canonical LZD tokens, every tANS block model and payload
+extent, generic frame fields, and aggregate workspace are fixed before a
+serialized destination is considered. Require capacity for the complete
+planned extent before writing any byte.
+
+Serialize the generic frame header explicitly. For each frozen token subspan,
+repeat tANS planning, require the payload extent to remain within the exact
+DD-602 sum, serialize the 528-byte descriptor, and encode only its planned
+payload region. Require final token and payload offsets to match the plan. Any
+unexpected post-admission mismatch is an internal error; ordinary planner and
+capacity failures leave the complete destination unchanged.
+
+Prove byte-exact reproduction of the independent 588-byte raw-`A` frame;
+encode a phrase-bearing four-block input twice and require byte identity plus
+transactional round trip; and preserve every output byte after a one-byte-short
+destination or planner failure. This decision adds no streaming transform,
+C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

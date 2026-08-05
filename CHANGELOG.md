@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added deterministic complete-frame encoding for `lzd-tans`. Encoding is
+  plan-first, admits the entire destination before writing, serializes all
+  fields explicitly, and reproduces the independent 588-byte raw-`A` frame.
 - Added exact write-free planning for complete `lzd-tans` frames. The planner
   fixes canonical LZD token bytes first, plans every tANS block over that
   immutable span, checks aggregate workspace and generic frame fields, and
