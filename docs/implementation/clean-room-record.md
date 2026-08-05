@@ -10290,8 +10290,11 @@ discarded and the reviewed seed retained.
   through 29 compatibility passed under both MSVC and ClangCL Release builds.
   The complete Release suite passed 2,312/2,312 under both compilers using
   official CMake 4.3.4; all forty-one benchmark smokes and documentation-layout
-  checks remained successful. External four-direction verification remains
-  pending.
+  checks remained successful. External four-direction verification at revision
+  `827ddf085efb40c7d8f9bc27628977053179d84c` completed all schema-30 paths:
+  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
+  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
+  re-encoded identically on Windows/MSVC. Every pass verified all 41 archives.
 
 ## 2026-08-06 - LZD plus tANS verification-first benchmark
 

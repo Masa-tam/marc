@@ -10,7 +10,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added interoperability schema 30 as the frozen schema-29 archive order plus
   `lzd-tans` exactly once. Local generation, strict-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 29 compatibility pass for all 41 archives.
+  through 29 compatibility pass for all 41 archives. Four-direction exchange
+  at revision `827ddf085efb40c7d8f9bc27628977053179d84c` proves canonical
+  output across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+  x86-64 producers.
 - Added the `lzd-tans` dependency-free benchmark adapter. It verifies a
   byte-exact public-ABI round trip before timing and reports ratio, directional
   throughput, and every queried workspace region.

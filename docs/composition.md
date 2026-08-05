@@ -70,8 +70,10 @@ ratio, directional throughput, and all queried workspace regions.
 Interoperability schema 30 appends the unchanged CLI archive once after the
 frozen schema-29 order. Local generation, exact-order verification,
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-through 29 compatibility pass. External four-direction verification remains
-pending.
+through 29 compatibility pass. Four-direction verification at revision
+`827ddf085efb40c7d8f9bc27628977053179d84c` establishes canonical output for
+all 41 archives across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang producers.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

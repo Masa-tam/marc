@@ -86,7 +86,10 @@ verifies a complete public-ABI round trip before reporting ratio, throughput,
 and all workspace regions. Schema 30 now supplies local generation, exact-order
 verification, byte-identical re-encoding, reordered-manifest rejection, and
 schemas 1 through 29 compatibility. External cross-platform exchange remains
-release evidence rather than a local readiness requirement.
+release evidence rather than a local readiness requirement. That exchange has
+now passed in all four directions at revision
+`827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
+recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 Schema 30 contains forty-one archives: the frozen forty-entry schema-29 set
 followed by the LZD tANS profile. Schemas 1 through 29

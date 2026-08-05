@@ -9413,6 +9413,12 @@ rejects a reordered schema-30 manifest, derives schema 29 by removing only
 changes no codec representation. External cross-platform evidence remains a
 post-push release check.
 
+That release check completed at revision
+`827ddf085efb40c7d8f9bc27628977053179d84c`: the Windows/MSVC and Ubuntu
+24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+bundle verified locally and on Windows/MSVC. Every pass decoded and
+byte-identically re-encoded all 41 archives.
+
 ## DD-611: LZD tANS benchmark verifies before measuring
 
 - Date: 2026-08-06
