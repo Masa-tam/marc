@@ -3279,6 +3279,17 @@ truncation, one trailing byte, reset, unknown flags, and premature finish after
 one valid frame. Accept the exact empty prefix and treat flush without input as
 starvation rather than termination.
 
+For the LZD plus tANS profile calculator, freeze a ten-byte active frame from a
+17-byte stream. Require 40 worst-case token bytes, five encoder entries, ten
+four-byte tANS blocks, and a 5,416-byte complete serialized-frame capacity.
+Freeze a seven-byte short frame with two retained entries and require 32 token
+bytes and 2,224 serialized bytes; require empty input to report zero storage
+and alignment one. Exercise block-count, payload, aggregate, frame, and
+arithmetic limits. Recompute the decoder's block/phrase/expansion offsets,
+partition aligned opaque allocations, and reject altered, short, or misaligned
+layouts. Finally construct both streaming directions exclusively from the
+reported requirements and round-trip binary `ABABX`.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

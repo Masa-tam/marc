@@ -1877,6 +1877,12 @@ tANS payload ceilings, LZD workspace calculators, immutable-direction
 decoder, state machine, buffering strategy, malformed corpus, source code, or
 test suite was consulted.
 
+The LZD plus tANS profile calculator uses only DD-606, the local LZD token and
+workspace formulas, local tANS descriptor and payload ceilings, checked
+arithmetic helpers, decoder limits, and the DD-604/DD-605 transform
+constructors. No external profile API, allocator layout, workspace formula,
+source code, generated corpus, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

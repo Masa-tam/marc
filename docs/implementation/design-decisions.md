@@ -9273,6 +9273,34 @@ finish, repeated end, and sticky failure. This decision adds no public profile,
 C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
 entry.
 
+## DD-606: LZD tANS profile computes coupled worst-case storage
+
+- Date: 2026-08-06
+- Status: accepted
+
+Publish one internal profile calculator for constructing the DD-604/DD-605
+streaming transforms without duplicating workspace arithmetic at later public
+boundaries. Freeze the largest active raw frame to
+`min(original_size, frame_size)`. Bound its canonical LZD token extent by
+`ceil(raw_bytes / 2) * 8`, its encoder records by
+`min(floor(raw_bytes / 2), maximum_entries)`, and its tANS block count by the
+configured byte block size. Bound each tANS payload by
+`ceil(12 * block_symbols / 8) + 2` bytes and count every 528-byte descriptor.
+
+The encoder aggregate is the simultaneous raw frame, canonical token staging,
+complete encoded frame, and LZD encoder records. The decoder calculator derives
+conservative encoded, token, raw, block-view, phrase, and expansion extents
+from decoder limits. Pack typed views into one opaque byte allocation with
+checked offsets and the maximum required alignment. Partitioners reject altered
+requirements, short or misaligned storage, and arithmetic overflow before
+forming a typed span.
+
+Empty known-size streams require no frame workspace and use alignment one.
+Map stable profile errors to the core error vocabulary and prove that calculated
+requirements construct the actual streaming encoder and decoder for a complete
+round trip. This decision adds no C ABI, public factory, CLI, benchmark, fuzz
+target, completion claim, serialized variant, or interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

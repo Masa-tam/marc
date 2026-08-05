@@ -2341,6 +2341,10 @@ one serialized frame, admits all tANS and LZD workspaces from trusted header
 bounds, validates and reconstructs privately, then drains only the committed
 raw frame. A later malformed frame cannot expose partial output from that
 frame; retained finish survives draining of an earlier valid frame.
+The profile calculator derives the coupled worst-case raw, token, serialized,
+typed-view, phrase, and expansion extents with checked arithmetic. Its opaque
+storage partitioners validate exact size metadata and alignment before forming
+typed spans, so a later ABI adapter need not duplicate layout arithmetic.
 
 ### C transform ABI
 

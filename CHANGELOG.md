@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the internal `lzd-tans` profile calculator and aligned opaque-storage
+  partitioners. They derive coupled worst-case encoder and decoder workspaces
+  and directly construct the bounded streaming transforms.
 - Added the bounded `lzd-tans` streaming decoder. It admits and collects one
   complete frame, validates tANS and the LZD phrase graph into private
   caller-owned staging, and publishes only completely validated raw bytes.

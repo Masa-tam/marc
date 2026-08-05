@@ -72,9 +72,10 @@ by component tests and exercised through Blocked Huffman.
 `lzd-tans` now has bounded complete-frame validation, private raw decoding,
 transactional caller-output publication, an exact write-free planner, a
 deterministic serialized encoder, and bounded streaming transforms. The
-streaming decoder commits only completely validated frames. The public profile,
-completion audit, and interoperability entry remain pending, so the readiness
-classification does not change.
+streaming decoder commits only completely validated frames, and an internal
+profile calculator supplies their coupled workspace requirements. The public C
+profile, completion audit, and interoperability entry remain pending, so the
+readiness classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
 followed by the LZW tANS profile. Schemas 1 through 28

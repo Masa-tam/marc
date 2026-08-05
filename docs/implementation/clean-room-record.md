@@ -10128,6 +10128,33 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4, including all forty benchmark smokes
   and the schema-1-through-29 interoperability compatibility chain.
 
+## 2026-08-06 - LZD plus tANS coupled profile calculator
+
+- Authoring method: combined marc's local LZD workspace formulas and local tANS
+  payload ceilings into the existing bounded profile-calculation contract.
+- References used: DD-606, DD-604/DD-605 constructors, checked arithmetic,
+  decoder limits, local typed records, and opaque-storage alignment helpers.
+- Known implementations intentionally not consulted: external compression
+  profiles, allocator layouts, workspace formulas, source code, generated
+  corpora, and test suites.
+- Independent decisions: freeze the largest active frame; calculate coupled
+  simultaneous storage; keep empty views alignment one; conservatively derive
+  decoder extents from hard limits; and validate exact opaque layouts before
+  forming typed spans.
+- Generated-code task description: add the internal profile calculator and
+  partitioners; prove canonical and short-frame sizes, empty input, each hard
+  limit, overflow clearing, exact offsets and alignment, altered/short/
+  misaligned rejection, stable error mapping, and a calculated-workspace
+  streaming round trip; update architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: formulas and layout follow only marc's existing local
+  contracts. No external profile structure, allocator scheme, workspace
+  expression, naming convention, corpus, or test expression was compared.
+- Local validation: the seven focused profile tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,303/2,303 under both compilers
+  using official CMake 4.3.4, including all forty benchmark smokes and the
+  schema-1-through-29 interoperability compatibility chain.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and
