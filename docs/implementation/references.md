@@ -1895,6 +1895,12 @@ local byte generation, and the documented tANS block ceiling. No external
 vector, corpus, completion suite, implementation behavior, or test expression
 was consulted.
 
+The LZD plus tANS bounded fuzz boundary uses only DD-609, DD-607's public
+decoder, the local complete-frame decoder, fixed caller-owned arrays, checked
+workspace formulas, and marc's process invariants. No external fuzz harness,
+seed corpus, mutation dictionary, malformed suite, implementation source, or
+test expression was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

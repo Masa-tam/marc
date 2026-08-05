@@ -3310,6 +3310,14 @@ corrupt the fourth sequence number, truncate its final byte, and append one
 byte; require exactly 192 committed raw bytes, an unchanged final sentinel,
 and an identical repeated terminal error position.
 
+For permanent LZD plus tANS fuzz regressions, encode the single-frame raw input
+`ABABX`. Submit every proper prefix and require failure without changing the
+five-byte `a5` output sentinel. Independently fill the generic frame's six
+four-byte extent fields with `ff`, then set the tANS descriptor flags byte to
+one; both complete mutations must fail atomically and retain the same sticky
+error category and byte position. Seed the bounded sanitizer target only with
+the reviewed five-byte `MARC\n` truncated magic.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

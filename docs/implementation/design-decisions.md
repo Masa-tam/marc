@@ -9352,6 +9352,28 @@ byte independently. Each decode must publish exactly the first three complete
 sticky error position on repetition. This decision adds no fuzz target, CLI,
 benchmark, interoperability entry, or `Ready` claim.
 
+## DD-609: LZD tANS fuzzing fixes both decoder boundaries
+
+- Date: 2026-08-06
+- Status: accepted
+
+Drive the internal complete-frame validator and the DD-607 public incremental
+decoder from each input. Cap input at 8,192 bytes, total output at 4,096 bytes,
+one raw frame at 1,024 bytes, canonical LZD staging at 4,096 bytes, compressed
+payload at 16,384 bytes, dictionary entries at 512, and tANS blocks at eight.
+Fix every typed view, phrase, expansion reference, staging region, and output
+array before inspecting input. Derive input and output chunks from input bytes,
+validate every process-result bound and no-progress state, and impose a finite
+call budget.
+
+Persist the canonical `ABABX` stream as three atomic malformed families: every
+proper truncation, all generic frame extent fields saturated to `ff`, and a
+nonzero tANS descriptor flag. Each must publish no failing-frame byte, preserve
+the caller sentinel, and repeat the same terminal error code and position. Seed
+sanitizer runs only with repository-reviewed truncated magic. This decision
+adds no CLI, benchmark, interoperability entry, format variant, or `Ready`
+claim.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

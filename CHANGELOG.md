@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added a fixed-memory dual-decoder fuzz target for `lzd-tans`, together with
+  permanent atomic regressions for every canonical truncation, saturated frame
+  extents, and invalid tANS descriptor flags.
 - Added the public `marc_lzd_tans_*` C ABI. Its direction-specific workspace
   query and factory expose the bounded profile without leaking C++ types or
   changing the existing ABI version. Its public-ABI completion matrix covers

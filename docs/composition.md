@@ -60,7 +60,11 @@ partitions aligned typed views. The public C ABI now exposes the profile through
 the common three-workspace lifecycle. Its public-ABI completion matrix now
 proves required binary classes, byte-identical repeated and arbitrarily chunked
 encoding, stable terminal calls, and frame-atomic rejection of malformed final
-frames. Fuzz, CLI, benchmark, and interoperability surfaces remain pending.
+frames. Its fixed-memory fuzz harness now drives both complete-frame validation
+and the public streaming lifecycle. Permanent regressions retain atomic failure
+for every proper canonical truncation, saturated generic-frame extents, and a
+nonzero tANS descriptor flag. CLI, benchmark, and interoperability surfaces
+remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

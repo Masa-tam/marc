@@ -250,6 +250,7 @@ cmake --build out/build/fuzz --target \
   marc_fuzz_lzw_rans_stream \
   marc_fuzz_lzw_tans_stream \
   marc_fuzz_lzd_rans_stream \
+  marc_fuzz_lzd_tans_stream \
   marc_fuzz_lzmw_rans_stream \
   marc_fuzz_lzd_adaptive_huffman_stream \
   marc_fuzz_lzd_dynamic_range_stream \
@@ -304,6 +305,8 @@ out/build/fuzz/marc_fuzz_lzw_tans_stream \
   fuzz/corpus/lzw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_rans_stream \
   fuzz/corpus/lzd_rans_stream -max_len=8192
+out/build/fuzz/marc_fuzz_lzd_tans_stream \
+  fuzz/corpus/lzd_tans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzmw_rans_stream \
   fuzz/corpus/lzmw_rans_stream -max_len=8192
 out/build/fuzz/marc_fuzz_lzd_adaptive_huffman_stream \

@@ -76,9 +76,11 @@ streaming decoder commits only completely validated frames, and an internal
 profile calculator supplies their coupled workspace requirements. A pure C11
 query and factory now expose both directions through the shared library. The
 public-only completion matrix proves required binary classes, deterministic
-chunking, stable terminals, and malformed-final-frame atomicity. Fuzz, CLI,
-benchmark, and interoperability evidence remain pending, so the readiness
-classification does not change.
+chunking, stable terminals, and malformed-final-frame atomicity. A fixed-memory
+dual-decoder fuzz target now covers complete-frame and public incremental
+parsing, with permanent atomic regressions for truncation, saturated frame
+extents, and invalid tANS metadata. CLI, benchmark, and interoperability
+evidence remain pending, so the readiness classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
 followed by the LZW tANS profile. Schemas 1 through 28
@@ -139,7 +141,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-tans` | Yes | Yes | Yes | No | No | No | Yes | Pending |
+| `lzd-tans` | Yes | Yes | Yes | No | No | Yes | Yes | Pending |
 
 ## Composed-profile admission queue
 

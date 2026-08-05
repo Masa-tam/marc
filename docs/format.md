@@ -5410,6 +5410,10 @@ The public `marc_lzd_tans_*` C requirements query and factory select this exact
 unchanged representation. Workspace byte counts, alignment, pointer ownership,
 and transform handles are API concerns and serialize no additional field.
 
+The bounded dual-decoder fuzz boundary and its truncation, saturated-length,
+and invalid-descriptor regressions add no stream field, algorithm variant, or
+accepted malformed representation.
+
 The public completion audit fixes 64-byte frames and tANS blocks and proves
 byte-identical archives across unchunked, one-byte, and mixed chunking. For a
 four-frame stream it also proves that sequence corruption, final-byte

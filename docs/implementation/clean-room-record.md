@@ -10208,6 +10208,36 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4, including all forty benchmark smokes
   and the schema-1-through-29 interoperability compatibility chain.
 
+## 2026-08-06 - LZD plus tANS bounded dual-decoder fuzz boundary
+
+- Authoring method: combined marc's local LZD/rANS fixed-memory harness shape
+  with the repository's LZW/tANS entropy boundary under DD-609.
+- References used: DD-609, DD-607, local LZD/tANS frame and C decoders, checked
+  workspace ceilings, process invariants, and canonical `ABABX` generation.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, mutation dictionaries, malformed suites, source code, and test
+  expressions.
+- Independent decisions: exercise private and public boundaries for each
+  input; allocate no fuzz-controlled extent; derive chunks deterministically;
+  cap calls and output; treat malformed input as ordinary; and preserve three
+  atomic malformed families as permanent tests.
+- Generated-code task description: add the bounded dual-decoder harness,
+  sanitizer target, portable warning-clean compile-smoke, reviewed seed, and
+  truncation, saturated-length, and invalid-descriptor regressions; synchronize
+  fuzzing, format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the thin substitution adapters compose only marc's own
+  decoder types, public symbols, fixed limits, and local tests. No external
+  fuzz control flow, allocation policy, chunk schedule, mutation location,
+  naming, or assertion was compared.
+- Local validation: the three focused regressions and warning-clean fuzz
+  compile-smoke passed under both MSVC and ClangCL. Windows Clang 22
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
+  seed-derived inputs without a crash, hang, or sanitizer finding at 39 MiB
+  peak RSS. The complete Release CTest suite passed 2,310/2,310 under both
+  compilers using official CMake 4.3.4; all forty benchmark smokes, schemas 1
+  through 29 compatibility, and documentation layout remained successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and
