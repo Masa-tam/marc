@@ -2268,12 +2268,6 @@ The public completion matrix constructs both directions only through that C
 factory. It fixes 64-byte frame and block boundaries, proves deterministic
 archives across arbitrary chunking, and verifies that a malformed fourth frame
 cannot publish its final raw byte or destabilize the repeated terminal error.
-The bounded fuzz boundary drives both the internal complete-frame validator and
-the public incremental decoder from the same at-most-8,192-byte input. All raw,
-token, tANS-view, phrase, expansion, and output storage is fixed before input is
-examined; byte-derived chunk sizes and a finite call budget prevent a malformed
-stream from creating unbounded storage or execution.
-
 The bounded fuzz harness feeds each at-most-8-KiB input to both the private
 complete-frame boundary and public C streaming decoder. All raw, encoded,
 packed, phrase, and tANS-view storage is fixed before input is examined, and a
@@ -2358,6 +2352,16 @@ The public completion matrix constructs both directions only through that C
 factory. It fixes 64-byte frame and block boundaries, proves deterministic
 archives across arbitrary chunking, and verifies that a malformed fourth frame
 cannot publish its final raw byte or destabilize the repeated terminal error.
+The bounded fuzz boundary drives both the internal complete-frame validator and
+the public incremental decoder from the same at-most-8,192-byte input. All raw,
+token, tANS-view, phrase, expansion, and output storage is fixed before input is
+examined; byte-derived chunk sizes and a finite call budget prevent a malformed
+stream from creating unbounded storage or execution.
+The transactional CLI selects this public profile with 65,536-byte raw frames
+and tANS blocks, checked 262,144-byte token and 393,224-byte payload ceilings,
+four blocks, the public LZD entry bound, and a 16-MiB aggregate policy. It
+allocates only the three queried workspace regions and publishes the output
+file only after the complete transform succeeds.
 
 ### C transform ABI
 

@@ -23,7 +23,7 @@ public format or API guarantee yet.
 | LZSS | `lzss` | `lzss-blocked-huffman` | `lzss-adaptive-huffman` | `lzss-dynamic-range` | `lzss-rans` | `lzss-tans` |
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | `lzw-tans` |
-| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | Specified |
+| LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | `lzd-tans` |
 | LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
@@ -63,8 +63,10 @@ encoding, stable terminal calls, and frame-atomic rejection of malformed final
 frames. Its fixed-memory fuzz harness now drives both complete-frame validation
 and the public streaming lifecycle. Permanent regressions retain atomic failure
 for every proper canonical truncation, saturated generic-frame extents, and a
-nonzero tANS descriptor flag. CLI, benchmark, and interoperability surfaces
-remain pending.
+nonzero tANS descriptor flag. The transactional CLI now exposes `lzd-tans`
+solely through its public requirements, factory, process, and destroy lifecycle,
+with output publication deferred until complete success. Benchmark and
+interoperability surfaces remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

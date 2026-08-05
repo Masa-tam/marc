@@ -135,6 +135,16 @@ constexpr std::uint64_t lzd_rans_block_count =
 constexpr std::uint64_t lzd_rans_payload_size =
     lzd_rans_dictionary_size + lzd_rans_block_count * rans_state_size;
 constexpr std::uint64_t lzd_rans_buffered_size = UINT64_C(16) << 20;
+constexpr std::uint64_t lzd_tans_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lzd_tans_dictionary_size =
+    lzd_tans_frame_size * UINT64_C(4);
+constexpr std::uint64_t lzd_tans_block_count =
+    (lzd_tans_dictionary_size + entropy_block_size - 1)
+    / entropy_block_size;
+constexpr std::uint64_t lzd_tans_payload_size =
+    lzd_tans_dictionary_size * UINT64_C(12) / UINT64_C(8)
+    + lzd_tans_block_count * tans_state_size;
+constexpr std::uint64_t lzd_tans_buffered_size = UINT64_C(16) << 20;
 constexpr std::uint64_t lzmw_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzmw_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzmw_rans_frame_size = UINT64_C(1) << 16;
@@ -183,6 +193,7 @@ enum class Codec {
     lzd_adaptive_huffman,
     lzd_dynamic_range,
     lzd_rans,
+    lzd_tans,
     lzmw,
     lzmw_blocked_huffman,
     lzmw_adaptive_huffman,
@@ -252,6 +263,7 @@ constexpr std::uint64_t maximum_frame_payload(const Codec codec) noexcept {
         return lzd_dynamic_range_frame_size * UINT64_C(4) * UINT64_C(2)
             + UINT64_C(5);
     if (codec == Codec::lzd_rans) return lzd_rans_payload_size;
+    if (codec == Codec::lzd_tans) return lzd_tans_payload_size;
     if (codec == Codec::lzmw_adaptive_huffman)
         return lzmw_adaptive_frame_size * UINT64_C(4) * UINT64_C(33);
     if (codec == Codec::lzmw_dynamic_range)
@@ -350,6 +362,7 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
         return UINT64_C(16) << 20;
     }
     if (codec == Codec::lzd_rans) return lzd_rans_buffered_size;
+    if (codec == Codec::lzd_tans) return lzd_tans_buffered_size;
     if (codec == Codec::lzmw_adaptive_huffman) {
         return UINT64_C(16) << 20;
     }
@@ -1253,6 +1266,31 @@ bool configure(
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
+    marc_lzd_tans_config& config) {
+    const auto status = marc_lzd_tans_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(lzd_tans_frame_size);
+    config.entropy_block_size =
+        static_cast<std::uint32_t>(entropy_block_size);
+    config.max_frame_size = lzd_tans_frame_size;
+    config.max_block_size = entropy_block_size;
+    config.max_compressed_payload_size =
+        maximum_frame_payload(Codec::lzd_tans);
+    config.max_dictionary_serialized_size = lzd_tans_dictionary_size;
+    config.max_internal_buffered_bytes =
+        maximum_buffered_bytes(Codec::lzd_tans);
+    config.max_dictionary_entries = config.maximum_entries;
+    config.max_blocks_per_frame =
+        static_cast<std::uint32_t>(lzd_tans_block_count);
+    return true;
+}
+
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
     marc_lzmw_blocked_huffman_config& config) {
     const auto status =
         marc_lzmw_blocked_huffman_config_init(direction, &config);
@@ -1391,6 +1429,7 @@ bool process_file(const marc_direction direction,
     marc_lzd_adaptive_huffman_config lzd_adaptive_combined_config{};
     marc_lzd_dynamic_range_config lzd_range_combined_config{};
     marc_lzd_rans_config lzd_rans_combined_config{};
+    marc_lzd_tans_config lzd_tans_combined_config{};
     marc_lzmw_config lzmw_config{};
     marc_lzmw_blocked_huffman_config lzmw_combined_config{};
     marc_lzmw_adaptive_huffman_config lzmw_adaptive_combined_config{};
@@ -1491,6 +1530,9 @@ bool process_file(const marc_direction direction,
             return false;
     } else if (codec == Codec::lzd_rans) {
         if (!configure(direction, source_size, lzd_rans_combined_config))
+            return false;
+    } else if (codec == Codec::lzd_tans) {
+        if (!configure(direction, source_size, lzd_tans_combined_config))
             return false;
     } else if (codec == Codec::lzmw) {
         if (!configure(direction, source_size, lzmw_config)) return false;
@@ -1607,6 +1649,9 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzd_rans)
         status = marc_lzd_rans_workspace_requirements(
             &lzd_rans_combined_config, &needed);
+    else if (codec == Codec::lzd_tans)
+        status = marc_lzd_tans_workspace_requirements(
+            &lzd_tans_combined_config, &needed);
     else if (codec == Codec::lzmw)
         status = marc_lzmw_workspace_requirements(&lzmw_config, &needed);
     else if (codec == Codec::lzmw_blocked_huffman)
@@ -1784,6 +1829,10 @@ bool process_file(const marc_direction direction,
         status = marc_lzd_rans_create(
             &lzd_rans_combined_config, primary_buffer, secondary_buffer,
             views_buffer, &raw_transform);
+    else if (codec == Codec::lzd_tans)
+        status = marc_lzd_tans_create(
+            &lzd_tans_combined_config, primary_buffer, secondary_buffer,
+            views_buffer, &raw_transform);
     else if (codec == Codec::lzmw)
         status = marc_lzmw_create(
             &lzmw_config, primary_buffer, secondary_buffer, views_buffer,
@@ -1953,7 +2002,7 @@ void usage() {
                  "lzw, lzw-blocked-huffman, lzw-adaptive-huffman, "
                  "lzw-dynamic-range, lzw-rans, lzw-tans, "
                  "lzd, lzd-blocked-huffman, lzd-adaptive-huffman, "
-                 "lzd-dynamic-range, lzd-rans, lzmw, "
+                 "lzd-dynamic-range, lzd-rans, lzd-tans, lzmw, "
                  "lzmw-blocked-huffman, lzmw-adaptive-huffman, "
                  "lzmw-dynamic-range, lzmw-rans\n";
 }
@@ -2040,6 +2089,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzd_dynamic_range;
         else if (name == "lzd-rans")
             codec = Codec::lzd_rans;
+        else if (name == "lzd-tans")
+            codec = Codec::lzd_tans;
         else if (name == "lzmw") codec = Codec::lzmw;
         else if (name == "lzmw-blocked-huffman")
             codec = Codec::lzmw_blocked_huffman;

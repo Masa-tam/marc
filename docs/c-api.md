@@ -409,6 +409,9 @@ The public completion matrix uses only this lifecycle with 64-byte frames and
 blocks and covers required binary classes, repeat determinism, arbitrary
 chunking, stable terminal calls, and frame-atomic rejection of corrupted,
 truncated, and extended fourth frames.
+The `lzd-tans` CLI selector uses this lifecycle exclusively, allocating the
+three returned regions with the reported alignment and retaining the common
+transactional file-publication boundary.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

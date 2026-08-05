@@ -10238,6 +10238,33 @@ discarded and the reviewed seed retained.
   compilers using official CMake 4.3.4; all forty benchmark smokes, schemas 1
   through 29 compatibility, and documentation layout remained successful.
 
+## 2026-08-06 - LZD plus tANS transactional CLI selector
+
+- Authoring method: instantiated marc's common transactional CLI adapter with
+  DD-610's fixed public LZD/tANS policy and symbol family.
+- References used: DD-610, the published `marc_lzd_tans_*` lifecycle, checked
+  local capacity formulas, aligned-buffer helper, and repository CLI regression
+  script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, command syntax,
+  source code, malformed corpora, and test suites.
+- Independent decisions: use 64-KiB frames and blocks; admit the exact
+  262,144-byte LZD token and 393,224-byte tANS payload ceilings; retain four
+  blocks and 16-MiB aggregate policy; obtain all regions from the public query;
+  and preserve the shared publish-on-success file transaction.
+- Generated-code task description: add the selector, public-only configuration,
+  query and factory routing, usage text, binary/empty/malformed/trailing CLI
+  regression, and synchronized CLI, C API, format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the adapter adds only one local enum path and public symbol
+  family to marc's existing CLI lifecycle. No external control flow, allocation
+  scheme, capacity expression, naming, or assertion was compared.
+- Local validation: the focused transactional CLI regression passed under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,311/2,311 under
+  both compilers using official CMake 4.3.4; all forty benchmark smokes,
+  schemas 1 through 29 compatibility, and documentation layout remained
+  successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

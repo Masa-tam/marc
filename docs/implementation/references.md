@@ -1901,6 +1901,12 @@ workspace formulas, and marc's process invariants. No external fuzz harness,
 seed corpus, mutation dictionary, malformed suite, implementation source, or
 test expression was consulted.
 
+The LZD plus tANS CLI selector uses only DD-610, the published
+`marc_lzd_tans_*` lifecycle, independently derived fixed-profile bounds, and
+marc's existing transactional file adapter and regression script. No external
+compression CLI, combined-codec adapter, private workspace layout, source code,
+command syntax, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

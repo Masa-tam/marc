@@ -3318,6 +3318,19 @@ one; both complete mutations must fail atomically and retain the same sticky
 error category and byte position. Seed the bounded sanitizer target only with
 the reviewed five-byte `MARC\n` truncated magic.
 
+For `lzd-tans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and decode
+with the explicit selector and compare the restored file byte for byte. Repeat
+encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 262,144`, `K = 4`, `D = 2,112`, and
+`P = 393,224` under a 16-MiB aggregate policy. Actual primary, secondary, and
+aligned opaque-view workspace requirements must come only from the public C
+query.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

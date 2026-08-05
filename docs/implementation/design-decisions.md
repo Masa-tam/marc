@@ -9374,6 +9374,27 @@ sanitizer runs only with repository-reviewed truncated magic. This decision
 adds no CLI, benchmark, interoperability entry, format variant, or `Ready`
 claim.
 
+## DD-610: LZD tANS CLI uses only the public transactional lifecycle
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add `lzd-tans` as an explicit selector in the existing transactional CLI. Fix
+outer frames and tANS blocks at 65,536 bytes. Admit the exact LZD ceiling of
+262,144 canonical token bytes, at most four entropy blocks, 2,112 descriptor
+bytes, and at most 393,224 payload bytes. Retain the public LZD maximum-entry
+default and a conservative 16-MiB aggregate internal-buffer policy.
+
+Initialize, query, create, process, and destroy only through the public
+`marc_lzd_tans_*` lifecycle. Allocate the exact primary, secondary, and aligned
+opaque-view regions returned for each immutable direction; do not reproduce
+private tANS views, LZD encoder entries, phrases, expansion references, or
+partition offsets. Preserve the common file adapter's overwrite refusal and
+publish-on-success behavior. Prove binary and empty round trips plus atomic
+rejection of malformed and trailing input without destination or `.tmp`
+residue. This decision adds no benchmark, interoperability entry, format
+variant, or `Ready` claim.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

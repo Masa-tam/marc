@@ -62,6 +62,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzd-adaptive-huffman` | Lempel-Ziv Double | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzd-dynamic-range` | Lempel-Ziv Double | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lzd-rans` | Lempel-Ziv Double | rANS | Scalar rANS model rebuilt per entropy block |
+| `lzd-tans` | Lempel-Ziv Double | tANS | Tabled model rebuilt per entropy block |
 | `lzmw` | LZMW | None | Variant 1 |
 | `lzmw-blocked-huffman` | LZMW | Blocked Huffman | Composed dictionary and entropy pipeline |
 | `lzmw-adaptive-huffman` | LZMW | Adaptive Huffman | FGK tree reset per outer frame |
@@ -224,6 +225,14 @@ configured dictionary entries under a conservative 16-MiB aggregate policy.
 Every direction-specific workspace extent and opaque alignment comes from the
 public C requirements query; the CLI does not reproduce private rANS-view,
 encoder-entry, phrase, or expansion-stack layouts.
+
+The `lzd-tans` adapter uses the same 65,536-byte raw-frame and entropy-block
+policy. Its 262,144-byte canonical LZD token ceiling produces at most four
+tANS blocks, 2,112 descriptor bytes, and a 393,224-byte payload. It retains the
+public maximum-entry default and a conservative 16-MiB aggregate policy. Every
+direction-specific extent and opaque alignment comes from the public
+requirements query; the CLI does not reproduce tANS-view, encoder-entry,
+phrase, expansion-stack, or partition layouts.
 
 The `lzmw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the exact four-byte-per-raw-byte fixed-reference bound, at most

@@ -79,7 +79,8 @@ public-only completion matrix proves required binary classes, deterministic
 chunking, stable terminals, and malformed-final-frame atomicity. A fixed-memory
 dual-decoder fuzz target now covers complete-frame and public incremental
 parsing, with permanent atomic regressions for truncation, saturated frame
-extents, and invalid tANS metadata. CLI, benchmark, and interoperability
+extents, and invalid tANS metadata. A transactional CLI selector now uses only
+the public requirements query and lifecycle. Benchmark and interoperability
 evidence remain pending, so the readiness classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
@@ -141,7 +142,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-tans` | Yes | Yes | Yes | No | No | Yes | Yes | Pending |
+| `lzd-tans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Pending |
 
 ## Composed-profile admission queue
 

@@ -5414,6 +5414,12 @@ The bounded dual-decoder fuzz boundary and its truncation, saturated-length,
 and invalid-descriptor regressions add no stream field, algorithm variant, or
 accepted malformed representation.
 
+The explicit `lzd-tans` CLI selector uses this unchanged representation with
+65,536-byte outer frames and tANS blocks, a 262,144-byte canonical-token
+ceiling, four 528-byte descriptors, a 393,224-byte payload ceiling, the public
+LZD maximum-entry default, and a 16-MiB aggregate internal policy. These are
+application limits and add no stream field or format variant.
+
 The public completion audit fixes 64-byte frames and tANS blocks and proves
 byte-identical archives across unchunked, one-byte, and mixed chunking. For a
 four-frame stream it also proves that sequence corruption, final-byte
