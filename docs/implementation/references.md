@@ -1846,6 +1846,12 @@ caller-owned raw and expansion spans, and checked aggregate arithmetic. No
 external combined decoder, reconstruction strategy, recursion scheme, buffer
 layout, malformed corpus, source code, or test suite was consulted.
 
+The LZD plus tANS transactional frame decoder uses only DD-601, DD-600's
+private raw decoder, caller-owned spans, exact output preflight, and bounded
+byte copying. No external publication protocol, combined decoder, mutation
+schedule, buffer layout, malformed corpus, source code, or test suite was
+consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

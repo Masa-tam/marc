@@ -9137,6 +9137,31 @@ failure. This decision adds no transactional publication, encoder, streaming
 transform, C factory, CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-601: LZD tANS frame publication is transactional
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add an internal complete-frame decoder with a distinct caller-visible output
+span. Retain DD-599 and DD-600's admission and validation order and require
+capacity for the complete declared raw extent before entropy views, token
+staging, phrase records, expansion references, or private raw staging can
+change. Output capacity is not internal workspace and does not alter the
+aggregate allocation bound.
+
+After strict tANS validation, complete LZD graph validation, and successful
+non-recursive reconstruction into private raw staging, copy exactly `raw_size`
+bytes to caller output once. Preserve bytes beyond that extent. A short output
+or any header, descriptor, payload, reference, phrase, limit, or reconstruction
+failure leaves caller output completely unchanged.
+
+Prove transactional publication for the independent raw-`A` vector and the
+phrase-bearing `ABABAB` frame, exact preservation beyond a short logical
+extent, one-byte-short output before private mutation, and unchanged complete
+output after entropy or LZD failure. This decision adds no encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

@@ -383,3 +383,107 @@ TEST(LzdTansFrameDecoder, MalformedLayersNeverTouchRawStaging) {
               LzdTansFrameValidationError::dictionary_validation_error);
     EXPECT_EQ(raw[0], std::byte{0xa5});
 }
+
+TEST(LzdTansFrameDecoder, PublishesIndependentVectorOnceAfterSuccess) {
+    const auto frame = frame_for_tokens(terminal_token_a);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0xa5}};
+    std::array output{
+        std::byte{0x5a}, std::byte{0x5a}, std::byte{0x5a}};
+    const auto result = marc::frame::decode_lzd_tans_frame(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, expansion,
+        raw, output);
+    ASSERT_EQ(result.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(LzdTansFrameDecoder, PublishesGeneratedPhraseFrameTransactionally) {
+    constexpr std::array tokens_ababab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    const auto frame = frame_for_tokens(
+        tokens_ababab, static_cast<std::uint32_t>(expected.size()),
+        block_size);
+    std::array<marc::entropy::internal::TansBlockView, 4> views{};
+    std::array<std::byte, tokens_ababab.size()> staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 2> phrases{};
+    std::array<std::uint32_t, 3> expansion{};
+    std::array<std::byte, expected.size()> raw{};
+    std::array<std::byte, expected.size()> output{};
+    output.fill(std::byte{0x5a});
+    const auto result = marc::frame::decode_lzd_tans_frame(
+        stream_for(static_cast<std::uint32_t>(expected.size()), block_size),
+        {}, {}, 0, 0, frame, views, staging, phrases, expansion, raw, output);
+    ASSERT_EQ(result.error, LzdTansFrameValidationError::none);
+    EXPECT_EQ(output, expected);
+}
+
+TEST(LzdTansFrameDecoder, OutputCapacityFailsBeforePrivateMutation) {
+    constexpr std::array token_ab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    const auto frame = frame_for_tokens(token_ab, 2);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, token_ab.size()> staging{};
+    std::array<marc::dictionary::internal::LzdPhraseEntry, 1> phrases{};
+    std::array<std::uint32_t, 2> expansion{};
+    std::array<std::byte, 2> raw{};
+    std::array output{std::byte{0x5a}};
+    staging.fill(std::byte{0xa5});
+    raw.fill(std::byte{0xa6});
+    const auto result = marc::frame::decode_lzd_tans_frame(
+        stream_for(2), {}, {}, 0, 0, frame, views, staging, phrases,
+        expansion, raw, output);
+    EXPECT_EQ(result.error, LzdTansFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xa6};
+    }));
+    EXPECT_EQ(output[0], std::byte{0x5a});
+}
+
+TEST(LzdTansFrameDecoder, LayerFailuresPreserveCompleteCallerOutput) {
+    constexpr std::uint32_t block_size = 4;
+    auto malformed_entropy =
+        frame_for_tokens(terminal_token_a, 1, block_size);
+    const auto second_descriptor = marc::frame::frame_header_size
+        + marc::entropy::internal::tans_descriptor_size;
+    malformed_entropy[second_descriptor + 9] = std::byte{0x01};
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array<std::byte, terminal_token_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0xa5}};
+    std::array output{std::byte{0x5a}, std::byte{0x5a}};
+    auto result = marc::frame::decode_lzd_tans_frame(
+        stream_for(1, block_size), {}, {}, 0, 0, malformed_entropy, views,
+        staging, {}, expansion, raw, output);
+    EXPECT_EQ(result.error, LzdTansFrameValidationError::controller_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+
+    constexpr std::array invalid_reference{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    const auto malformed_dictionary = frame_for_tokens(invalid_reference);
+    std::array<marc::entropy::internal::TansBlockView, 1> single_view{};
+    result = marc::frame::decode_lzd_tans_frame(
+        stream_for(1), {}, {}, 0, 0, malformed_dictionary, single_view,
+        staging, {}, expansion, raw, output);
+    EXPECT_EQ(result.error,
+              LzdTansFrameValidationError::dictionary_validation_error);
+    EXPECT_EQ(output[0], std::byte{0x5a});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+}

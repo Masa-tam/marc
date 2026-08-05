@@ -3235,6 +3235,14 @@ token mutation, lower their aggregate allowance by one byte, and preserve the
 raw sentinel after a later descriptor failure or entropy-decoded invalid LZD
 reference.
 
+For LZD plus tANS transactional publication, decode the independent raw-`A`
+frame into a three-byte sentinel and require only its first byte to become
+`41`. Publish the phrase-bearing `ABABAB` frame and require all six bytes at
+once. Supply a one-byte-short output while pre-filling token and raw staging
+with distinct sentinels and require every region unchanged. Corrupt a later
+tANS descriptor and separately entropy-code an invalid LZD reference; both
+must preserve the complete caller-output sentinel.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

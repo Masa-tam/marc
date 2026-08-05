@@ -42,8 +42,10 @@ token span. Caller-visible raw publication and every public surface remain
 pending.
 The internal private decoder now also preflights raw staging and the iterative
 expansion stack, counts them in the aggregate workspace limit, and reconstructs
-validated references without recursion. Transactional caller-visible
-publication and every public surface remain pending.
+validated references without recursion. The transactional complete-frame
+decoder now also admits the complete caller output before private mutation and
+copies exactly the declared raw extent once after every layer succeeds. The
+encoder and every streaming/public surface remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

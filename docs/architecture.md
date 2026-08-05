@@ -2318,8 +2318,10 @@ frame validation boundary with caller-owned views, token staging, and phrase
 records. The private complete-frame decoder additionally admits the declared
 raw extent and iterative expansion stack before entropy mutation, then invokes
 the existing non-recursive LZD decoder only after complete graph validation.
-Raw staging remains discard-only; no transactional publication, streaming
-transform, or public surface exists yet.
+Raw staging remains discard-only. The internal transactional decoder places a
+distinct caller-output preflight around that private operation and copies the
+complete raw extent once after success. This publication boundary remains
+below any streaming or public API.
 
 ### C transform ABI
 

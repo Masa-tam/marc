@@ -5360,3 +5360,11 @@ After strict tANS and complete LZD validation succeed, the existing
 allocation-free LZD decoder expands the graph iteratively into caller-owned
 raw staging. Every workspace remains discard-only after failure; this step
 does not publish a raw byte or alter the serialized representation.
+
+The transactional complete-frame decoder additionally requires a distinct
+caller output span of at least the complete declared raw extent before any
+entropy or private reconstruction mutation. After all prior validation and
+private decoding succeed, it copies exactly `F` bytes from raw staging to the
+caller span once. A short destination or any header, descriptor, payload,
+reference, phrase, limit, or reconstruction failure leaves every caller-output
+byte unchanged. This publication rule adds no serialized field or variant.

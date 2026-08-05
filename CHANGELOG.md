@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added transactional caller-output publication for complete `lzd-tans`
+  frames. The entire output extent is admitted before private mutation, and
+  exactly the declared raw bytes are copied once only after entropy validation,
+  LZD graph validation, and private reconstruction all succeed.
 - Added bounded private raw reconstruction for complete `lzd-tans` frames.
   Raw and iterative expansion storage are preflighted and included in the
   aggregate limit before entropy mutation; validated reference pairs are then

@@ -9990,6 +9990,34 @@ discarded and the reviewed seed retained.
   smokes, schemas 1 through 29 compatibility, and documentation-layout checks
   remained successful.
 
+## 2026-08-06 - LZD plus tANS transactional frame decoder
+
+- Authoring method: wrapped DD-600's private reconstruction with a distinct
+  caller-output span and marc's established validate-then-copy boundary.
+- References used: DD-601, DD-600, the local complete-frame validator and
+  private decoder, exact capacity preflight, and bounded span copying.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, publication protocols, mutation schedules, buffer layouts, source
+  code, malformed corpora, and test suites.
+- Independent decisions: require the full output before private mutation;
+  reconstruct only in private staging; copy exactly the declared extent once;
+  preserve trailing caller bytes; and leave all caller output unchanged after
+  every failure.
+- Generated-code task description: add caller-visible transactional decoding;
+  prove raw `A` and phrase publication, preservation beyond the declared
+  extent, one-byte-short preflight atomicity, and entropy/LZD failure
+  atomicity; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation reuses only marc's local private
+  decoder and standard bounded-span copying. No external publication control
+  flow, buffer layout, error taxonomy, malformed vector, or test expression
+  was compared.
+- Local validation: the sixteen focused validator/private/transactional tests
+  passed under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,279/2,279 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and
