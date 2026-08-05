@@ -2366,6 +2366,12 @@ The benchmark adapter reuses that exact public policy independently in each
 direction. It admits a checked complete-stream destination, verifies one
 byte-exact untimed round trip, then measures encode and decode separately while
 reporting every queried region and the larger directional reservation.
+Interoperability schema 30 appends the identical `lzd-tans` CLI archive once
+after the frozen schema-29 order. Generation validates all 41 local archives
+before recording the manifest; verification requires exact order, hashes,
+foreign decode, and byte-identical local re-encoding. Compatibility rejects a
+reordered schema-30 manifest, derives schema 29 by removing only `lzd-tans`,
+and then verifies every unchanged schema through version 1.
 
 ### C transform ABI
 

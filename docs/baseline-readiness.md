@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 25 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 30 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 25 |
+| Profile | Purpose | Local status | Interoperability schema 30 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -66,10 +66,11 @@ by component tests and exercised through Blocked Huffman.
 | `lzss-tans` | Second tANS composition | Ready | Included |
 | `lz78-tans` | Third tANS composition | Ready | Included |
 | `lzw-tans` | Fourth tANS composition | Ready | Included |
-| `lzd-tans` | Fifth tANS composition | In progress | Pending |
+| `lzd-tans` | Fifth tANS composition | Ready | Included |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
-`lzd-tans` now has bounded complete-frame validation, private raw decoding,
+`lzd-tans` is the current admission composition. It has bounded complete-frame
+validation, private raw decoding,
 transactional caller-output publication, an exact write-free planner, a
 deterministic serialized encoder, and bounded streaming transforms. The
 streaming decoder commits only completely validated frames, and an internal
@@ -82,16 +83,18 @@ parsing, with permanent atomic regressions for truncation, saturated frame
 extents, and invalid tANS metadata. A transactional CLI selector now uses only
 the public requirements query and lifecycle. A dependency-free benchmark now
 verifies a complete public-ABI round trip before reporting ratio, throughput,
-and all workspace regions. Interoperability evidence remains pending, so the
-readiness classification does not change.
+and all workspace regions. Schema 30 now supplies local generation, exact-order
+verification, byte-identical re-encoding, reordered-manifest rejection, and
+schemas 1 through 29 compatibility. External cross-platform exchange remains
+release evidence rather than a local readiness requirement.
 
-Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
-followed by the LZW tANS profile. Schemas 1 through 28
+Schema 30 contains forty-one archives: the frozen forty-entry schema-29 set
+followed by the LZD tANS profile. Schemas 1 through 29
 remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
 nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
 twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
 thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, thirty-six,
-thirty-seven, thirty-eight, and thirty-nine profiles;
+thirty-seven, thirty-eight, thirty-nine, and forty profiles;
 their meanings are fixed by their version and codec-set rules.
 
 ## Public-profile evidence matrix
@@ -102,7 +105,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 29 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 30 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -144,7 +147,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lzss-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzd-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Pending |
+| `lzd-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 
 ## Composed-profile admission queue
 
@@ -197,7 +200,8 @@ four-direction external exchange at revision
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers.
 
-`lzw-tans` is the current admission composition. Its reserved boundary fixes
+`lzw-tans` is the completed preceding admission composition. Its reserved
+boundary fixes
 the complete LSB-first packed LZW byte region before tANS, permits entropy
 blocks to split a variable-width code without splitting a byte or crossing a
 frame, and requires complete private entropy reconstruction before LZW

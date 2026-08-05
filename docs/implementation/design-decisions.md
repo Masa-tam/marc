@@ -9395,6 +9395,24 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-612: Interoperability schema 30 appends LZD tANS
+
+- Date: 2026-08-06
+- Status: accepted
+
+Freeze the exact forty-entry schema-29 order and append `lzd-tans` once as
+entry 41. Name the new codec set `marc-cli-v30`; retain the deterministic
+8,193-byte binary fixture, full source revision, platform/compiler metadata,
+and SHA-256 for the CLI, input, and every archive.
+
+Generation must decode and compare every archive before recording it. The
+verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
+decode, and byte-identical local re-encoding. The compatibility regression
+rejects a reordered schema-30 manifest, derives schema 29 by removing only
+`lzd-tans`, and verifies the unchanged schemas 29 through 1. This admission
+changes no codec representation. External cross-platform evidence remains a
+post-push release check.
+
 ## DD-611: LZD tANS benchmark verifies before measuring
 
 - Date: 2026-08-06

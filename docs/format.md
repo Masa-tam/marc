@@ -5425,6 +5425,11 @@ and checked `80 + 12*ceil(N/2) + 2176K` complete-stream ceiling. Its untimed
 round-trip verification, timing, ratio, throughput, and workspace reporting
 add no stream field or format variant.
 
+Interoperability schema 30 emits this unchanged profile as `lzd-tans` after
+the frozen forty-entry schema-29 order. Manifest version and codec-set
+selection, archive hashes, verification output, and compatibility derivation
+are external test metadata and do not change the stream representation.
+
 The public completion audit fixes 64-byte frames and tANS blocks and proves
 byte-identical archives across unchunked, one-byte, and mixed chunking. For a
 four-frame stream it also proves that sequence corruption, final-byte

@@ -10265,6 +10265,34 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-06 - Interoperability schema 30 appends LZD plus tANS
+
+- Authoring method: extended marc's versioned schema-29 manifest and
+  compatibility chain by one already-published CLI profile.
+- References used: DD-612, the frozen schema-29 profile order, local bundle
+  scripts, deterministic 8,193-byte fixture, and `lzd-tans`.
+- Known implementations intentionally not consulted: external archive suites,
+  manifests, interoperability harnesses, encoded corpora, source code, and
+  test suites.
+- Independent decisions: name `marc-cli-v30`; append `lzd-tans` only as entry
+  41; require local round trip before recording; preserve exact order, hashes,
+  foreign decode, and byte-identical re-encoding; derive schema 29 by removing
+  only the new archive; and reject reordered manifests.
+- Generated-code task description: add LZD plus tANS to the current bundle,
+  teach the verifier schema 30, extend the complete compatibility chain, and
+  synchronize interoperability, architecture, readiness, composition, format,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the change appends one local public profile to marc's own
+  frozen schema machinery. No external ordering, manifest design, fixture,
+  hash convention, compatibility strategy, or test expression was compared.
+- Local validation: schema-30 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 29 compatibility passed under both MSVC and ClangCL Release builds.
+  The complete Release suite passed 2,312/2,312 under both compilers using
+  official CMake 4.3.4; all forty-one benchmark smokes and documentation-layout
+  checks remained successful. External four-direction verification remains
+  pending.
+
 ## 2026-08-06 - LZD plus tANS verification-first benchmark
 
 - Authoring method: extended marc's dependency-free public-ABI benchmark with

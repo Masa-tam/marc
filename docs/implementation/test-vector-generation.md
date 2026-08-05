@@ -3339,6 +3339,15 @@ extents, and peak caller reservation. Bound output with the checked
 `80 + 12*ceil(N/2) + 2176K` expression. Treat every measured value as a local
 observation rather than a frozen threshold.
 
+For interoperability schema 30, retain the exact schema-29 archive order and
+append one `lzd-tans` archive as entry 41. Set `schema_version` to 30 and
+`codec_set` to `marc-cli-v30`; record an archive only after its local decode
+matches the deterministic 8,193-byte fixture. Verify exact count, order,
+leaf-only names, sizes, SHA-256 values, fixture decode, and byte-identical
+re-encoding. Reject a manifest with its first two archives swapped. Derive
+schema 29 by removing only `lzd-tans.marc` and changing only version and codec
+set, then verify schemas 29 through 1 unchanged.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte
