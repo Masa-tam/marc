@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the bounded `lzd-tans` streaming encoder. It emits the canonical prefix,
+  collects one raw frame, plans and encodes it into caller-owned storage, and
+  drains immutable bytes under arbitrary partial I/O while retaining finish.
 - Added deterministic complete-frame encoding for `lzd-tans`. Encoding is
   plan-first, admits the entire destination before writing, serializes all
   fields explicitly, and reproduces the independent 588-byte raw-`A` frame.

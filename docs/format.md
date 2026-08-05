@@ -5385,3 +5385,12 @@ the frozen token subspan, serializes the corresponding 528-byte descriptor,
 and writes exactly the planned payload region. Repeated encoding with identical
 input and configuration is byte-identical. Planner or capacity failure leaves
 the entire serialized destination unchanged and adds no format variant.
+
+The bounded streaming encoder writes the ordinary 80-byte stream prefix, then
+collects exactly one configured raw frame in caller-owned storage. A full frame
+is planned and encoded through the complete-frame path before any of its bytes
+drain. Partial output therefore changes only delivery, never serialization.
+`EndInput` remains latched while prefix and frame bytes drain; nonterminal
+`Flush` does not shorten a partial raw frame; `ResetBlock` is unsupported.
+Empty known-size input emits only the prefix. These state rules add no
+serialized field or variant.

@@ -10074,6 +10074,32 @@ discarded and the reviewed seed retained.
   through 29 compatibility, and documentation-layout checks remained
   successful.
 
+## 2026-08-06 - LZD plus tANS bounded streaming encoder
+
+- Authoring method: wrapped DD-602/DD-603's local planner and encoder in marc's
+  immutable-direction transform contract with caller-owned frame storage.
+- References used: DD-604, the local stream and LZD parameter serializers,
+  checked aggregate arithmetic, and complete-frame encoder contract.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  streaming encoders, state machines, buffering strategies, source code,
+  encoded corpora, and test suites.
+- Independent decisions: emit a fixed prefix; collect one complete raw frame;
+  encode before draining; retain finish across all pending output; leave flush
+  nonterminal; reject reset; and keep terminal errors sticky.
+- Generated-code task description: add the bounded streaming encoder and prove
+  byte-identical one-byte I/O, retained finish, canonical flush behavior,
+  empty input, short and aggregate workspaces, protocol errors, repeated end,
+  and sticky failure; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing stream
+  contract and local complete-frame operations. No external state transition,
+  buffering layout, error taxonomy, encoded corpus, or test expression was
+  compared.
+- Local validation: the five focused streaming-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,291/2,291 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

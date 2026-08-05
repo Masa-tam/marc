@@ -73,8 +73,9 @@ by component tests and exercised through Blocked Huffman.
 transactional caller-output publication. Streaming transforms, the public
 profile, completion audit, and interoperability entry remain pending.
 An exact write-free complete-frame planner and deterministic serialized encoder
-are also present. Streaming transforms and the public profile remain pending,
-so the readiness classification does not change.
+are also present. A bounded streaming encoder is now present; the matching
+streaming decoder and public profile remain pending, so the readiness
+classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set
 followed by the LZW tANS profile. Schemas 1 through 28

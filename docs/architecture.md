@@ -2331,6 +2331,11 @@ The complete-frame encoder invokes that plan before destination admission,
 then writes explicit generic-header, descriptor, and payload regions. A short
 destination cannot expose a partial frame; repeated encoding over the frozen
 tokens must reproduce the same bytes.
+The bounded streaming encoder owns no storage. It serializes the fixed prefix,
+collects one raw frame in caller memory, invokes the exact planner and encoder,
+then drains the immutable result with independent input consumption and output
+production. Finish is retained until all pending bytes drain, while flush does
+not alter frame boundaries.
 
 ### C transform ABI
 

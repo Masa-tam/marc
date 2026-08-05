@@ -3259,6 +3259,15 @@ require byte identity, then decode transactionally to the original. Provide a
 587-byte destination for raw `A` and separately an empty input that fails in
 planning; both complete output sentinels must remain unchanged.
 
+For LZD plus tANS bounded streaming encoding, independently concatenate the
+80-byte prefix and exact complete-frame encodings of raw `AB`, `AB`, and final
+`X`. Feed the streaming encoder one input byte and one output byte at a time and
+require exact equality. Repeat with all input and `EndInput` on the first call
+while one byte drains per call, and require finish to remain latched. Flush
+after one raw byte and require canonical frames after the rest arrives. Reject
+each short storage region, aggregate workspace one byte short, premature and
+excess input, `ResetBlock`, and unknown flags; accept the exact empty prefix.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

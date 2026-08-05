@@ -9214,6 +9214,35 @@ destination or planner failure. This decision adds no streaming transform,
 C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
 entry.
 
+## DD-604: LZD tANS streaming encoding drains complete frames
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add a bounded immutable-direction streaming encoder above DD-602 and DD-603.
+Serialize the ordinary stream header and 16-byte LZD parameters into a fixed
+prefix. Keep raw-frame input, canonical token staging, complete encoded-frame
+storage, and aligned LZD encoder records caller-owned. Validate their largest
+configured extents at construction and count the active frame, exact token
+span, exact serialized frame, and encoder records against the aggregate limit
+before frame preparation.
+
+Collect exactly one outer raw frame, invoke the exact planner and deterministic
+encoder, then drain only the completed immutable frame. Input consumption and
+output production remain independent. Retain `EndInput` across prefix and
+frame draining without requiring the flag again. A nonterminal `Flush` does not
+close a partial frame; reject `ResetBlock`, unknown flags, premature finish,
+and excess input with stable sticky errors. Empty known-size input emits only
+the prefix and ends after finish.
+
+Prove byte identity with independently concatenated complete frames using
+one-byte input and output; retained finish while all regions drain; nonterminal
+flush without shortened framing; every caller-owned region short; aggregate
+workspace one byte short; empty input; protocol errors; repeated end state; and
+sticky failure. This decision adds no streaming decoder, profile calculator,
+C factory, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05
