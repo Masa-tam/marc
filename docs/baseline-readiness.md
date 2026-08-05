@@ -73,8 +73,9 @@ by component tests and exercised through Blocked Huffman.
 transactional caller-output publication, an exact write-free planner, a
 deterministic serialized encoder, and bounded streaming transforms. The
 streaming decoder commits only completely validated frames, and an internal
-profile calculator supplies their coupled workspace requirements. The public C
-profile, completion audit, and interoperability entry remain pending, so the
+profile calculator supplies their coupled workspace requirements. A pure C11
+query and factory now expose both directions through the shared library. The
+public completion audit and interoperability entry remain pending, so the
 readiness classification does not change.
 
 Schema 29 contains forty archives: the frozen thirty-nine-entry schema-28 set

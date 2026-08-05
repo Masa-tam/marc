@@ -10155,6 +10155,33 @@ discarded and the reviewed seed retained.
   using official CMake 4.3.4, including all forty benchmark smokes and the
   schema-1-through-29 interoperability compatibility chain.
 
+## 2026-08-06 - LZD plus tANS public C factory
+
+- Authoring method: exposed DD-606 through marc's established size-tagged,
+  fixed-width, three-workspace C transform lifecycle.
+- References used: DD-607, DD-606 profile and partitioners, DD-604/DD-605
+  transforms, checked byte spans, `std::nothrow`, and common status mapping.
+- Known implementations intentionally not consulted: external C compression
+  APIs, factory designs, workspace ownership schemes, source code, generated
+  corpora, and test suites.
+- Independent decisions: add symbols without changing the ABI version; keep
+  every typed record private; repeat the requirements query during creation;
+  reject short or misaligned storage before construction; and leave the output
+  handle null on every failure.
+- Generated-code task description: add the fixed-size config, requirements
+  query, factory, shared-library exports, and pure C11 test; prove defaults,
+  exact direction-specific workspaces, binary round trip, each short region,
+  misalignment, null output, reserved-field rejection, and failure atomicity;
+  update C API, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows only marc's local ABI and transform
+  conventions. No external structure layout, function naming, lifecycle,
+  allocator model, source code, corpus, or test expression was compared.
+- Local validation: the pure C11 shared-library test passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,304/2,304 under both compilers
+  using official CMake 4.3.4, including all forty benchmark smokes and the
+  schema-1-through-29 interoperability compatibility chain.
+
 ## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
 
 - Authoring method: extended marc's repository-owned schema-28 manifest and

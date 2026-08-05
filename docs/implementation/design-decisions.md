@@ -9301,6 +9301,33 @@ requirements construct the actual streaming encoder and decoder for a complete
 round trip. This decision adds no C ABI, public factory, CLI, benchmark, fuzz
 target, completion claim, serialized variant, or interoperability entry.
 
+## DD-607: LZD tANS C ABI preserves the three-region contract
+
+- Date: 2026-08-06
+- Status: accepted
+
+Expose LZD plus tANS through a new fixed-size configuration structure and three
+new C functions: configuration initialization, direction-specific workspace
+query, and transform creation. Add symbols without changing existing structure
+layouts or `MARC_ABI_VERSION`.
+
+For encoding, primary storage holds one raw frame; secondary storage is
+partitioned into canonical LZD token staging followed by one complete serialized
+tANS frame; aligned opaque views hold LZD encoder entries. For decoding,
+primary storage holds one serialized frame; secondary storage is partitioned
+into private canonical token bytes followed by private raw bytes; aligned opaque
+views hold tANS block views, LZD phrase entries, and the bounded expansion stack.
+
+The workspace query delegates all formulas to DD-606. Creation repeats the
+query, rejects null, short, or misaligned caller storage, re-partitions opaque
+views through the checked local partitioner, constructs the immutable transform
+with `std::nothrow`, and leaves the output handle null on every failure. A pure
+C11 shared-library test must initialize defaults, query both directions,
+round-trip binary input, and reject each short region, misalignment, a null
+output handle, and non-zero reserved fields. This decision adds no CLI,
+benchmark, fuzz target, completion claim, serialized variant, or
+interoperability entry.
+
 ## DD-597: Interoperability schema 29 appends LZW tANS
 
 - Date: 2026-08-05

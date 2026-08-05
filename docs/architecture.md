@@ -2345,6 +2345,10 @@ The profile calculator derives the coupled worst-case raw, token, serialized,
 typed-view, phrase, and expansion extents with checked arithmetic. Its opaque
 storage partitioners validate exact size metadata and alignment before forming
 typed spans, so a later ABI adapter need not duplicate layout arithmetic.
+The public C adapter preserves the common three-region ownership model and
+delegates all sizing and typed partitioning to that calculator. It adds only a
+size-tagged fixed-width configuration and new symbols, leaving the established
+ABI version and every existing structure layout unchanged.
 
 ### C transform ABI
 

@@ -3290,6 +3290,15 @@ partition aligned opaque allocations, and reject altered, short, or misaligned
 layouts. Finally construct both streaming directions exclusively from the
 reported requirements and round-trip binary `ABABX`.
 
+For the first LZD plus tANS pure-C vector, initialize the public encode config,
+set two-byte raw and entropy blocks, query exactly 2 primary and 2,196 secondary
+bytes, construct through the shared library, and encode binary `ABABX`. Reuse
+the fixed local limits with a decode config, query exactly 8,248 primary and 10
+secondary bytes, decode, and compare all five bytes. Reject primary, secondary,
+and views storage one byte short, a deliberately misaligned views pointer when
+alignment exceeds one, a null transform output, and a non-zero reserved field;
+require the transform pointer to remain null after every factory failure.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

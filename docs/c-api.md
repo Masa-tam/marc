@@ -12,12 +12,11 @@ variant 1, the LZW
 plus Blocked Huffman,
 LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, LZD plus Dynamic
-Range, and LZD plus rANS profiles, and LZMW variant 1 and the LZMW plus
-Blocked Huffman, LZMW plus Adaptive Huffman, and LZMW plus Dynamic Range
-profiles with
-known-size encoding and bounded caller-owned workspace. All functions are
-`noexcept` in C++ translation units,
-and no C++ type appears in the ABI.
+Range, LZD plus rANS, and LZD plus tANS profiles, and LZMW variant 1 and the
+LZMW plus Blocked Huffman, LZMW plus Adaptive Huffman, and LZMW plus Dynamic
+Range profiles with known-size encoding and bounded caller-owned workspace.
+All functions are `noexcept` in C++ translation units, and no C++ type appears
+in the ABI.
 
 ## Profiles and composition
 
@@ -39,7 +38,7 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lzw_blocked_huffman_*`, `marc_lzw_adaptive_huffman_*`,
 `marc_lzw_dynamic_range_*`, `marc_lzw_rans_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
-`marc_lzd_dynamic_range_*`, `marc_lzd_rans_*`, and
+`marc_lzd_dynamic_range_*`, `marc_lzd_rans_*`, `marc_lzd_tans_*`, and
 `marc_lzmw_blocked_huffman_*`, `marc_lzmw_adaptive_huffman_*`, and
 `marc_lzmw_dynamic_range_*` are the currently public
 dictionary-plus-entropy factories.
@@ -85,7 +84,7 @@ cross-product pairings as callable C ABI features.
    `marc_lzd_config_init()`, `marc_lzd_blocked_huffman_config_init()`,
    `marc_lzd_adaptive_huffman_config_init()`,
    `marc_lzd_dynamic_range_config_init()`,
-   `marc_lzd_rans_config_init()`, or
+   `marc_lzd_rans_config_init()`, `marc_lzd_tans_config_init()`, or
    `marc_lzmw_config_init()`, `marc_lzmw_blocked_huffman_config_init()`,
    `marc_lzmw_adaptive_huffman_config_init()`, or
    `marc_lzmw_dynamic_range_config_init()` for encode or decode direction.
@@ -396,6 +395,16 @@ uses the same lifecycle independently in each direction and reports those
 queried regions after an untimed verified round trip. Interoperability schema
 24 serializes the unchanged CLI-selected C profile and introduces no ABI or
 stream-format change.
+The LZD plus tANS factory preserves the same three-region contract with tANS
+block metadata. Encoding stores one raw frame in primary storage, canonical
+eight-byte LZD tokens followed by one complete tANS frame in secondary storage,
+and LZD encoder entries in aligned opaque views. Decoding stores one serialized
+frame in primary storage, private token and raw staging in secondary storage,
+and tANS block views followed by aligned LZD phrase and expansion regions in
+opaque views. Call `marc_lzd_tans_workspace_requirements()` again after
+changing direction, original size, either block dimension, maximum entries, or
+any hard limit. The public header exposes only fixed-width configuration,
+byte counts, and alignment; no C++ record or partition offset crosses the ABI.
 LZMW follows the same opaque aligned-workspace ownership model. Its encoder
 stores input-backed phrase spans; its decoder partitions the region into fixed
 reference phrase records and an iterative expansion stack. All extents are

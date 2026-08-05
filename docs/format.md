@@ -5405,3 +5405,7 @@ caller. Thus a malformed later frame cannot expose any byte from that frame.
 does not alter parsing; `ResetBlock` is unsupported; and bytes after the
 declared original size are trailing-data errors. These rules add no serialized
 field or variant.
+
+The public `marc_lzd_tans_*` C requirements query and factory select this exact
+unchanged representation. Workspace byte counts, alignment, pointer ownership,
+and transform handles are API concerns and serialize no additional field.

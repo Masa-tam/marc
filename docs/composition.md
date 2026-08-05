@@ -56,7 +56,9 @@ drains only complete immutable frames. The matching bounded streaming decoder
 collects one complete serialized frame, validates tANS and the LZD phrase graph
 into private caller-owned staging, then publishes only the complete raw frame.
 The internal profile calculator derives direction-specific storage and safely
-partitions aligned typed views. All public surfaces remain pending.
+partitions aligned typed views. The public C ABI now exposes the profile through
+the common three-workspace lifecycle; completion, fuzz, CLI, benchmark, and
+interoperability surfaces remain pending.
 
 `lzw-tans` is the fourth tANS composition with a reserved representation.
 LZW finalizes its complete LSB-first packed code bytes, including zero high

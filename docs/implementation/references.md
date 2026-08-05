@@ -1883,6 +1883,12 @@ arithmetic helpers, decoder limits, and the DD-604/DD-605 transform
 constructors. No external profile API, allocator layout, workspace formula,
 source code, generated corpus, or test suite was consulted.
 
+The LZD plus tANS public C adapter uses only DD-607, DD-606's local profile and
+partitioners, DD-604/DD-605 transforms, marc's fixed-width ABI conventions,
+checked byte-span partitioning, and common transform lifecycle. No external C
+API, factory design, allocation scheme, source code, generated corpus, or test
+suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
