@@ -10265,6 +10265,33 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-07 - LZMW plus tANS bounded streaming encoder
+
+- Authoring method: wrapped DD-616 and DD-617's local planner and deterministic
+  frame encoder in marc's caller-owned transform state model under DD-618.
+- References used: DD-618, DD-617, DD-616, local stream serializers, core
+  process/status invariants, checked arithmetic, and bounded caller-owned
+  storage.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE stream encoders, state machines, buffering policies, source code,
+  encoded corpora, and test suites.
+- Independent decisions: serialize the prefix at construction; buffer one raw
+  outer frame; prepare an immutable complete frame before commit; account all
+  live regions together; retain final intent while draining; and keep flush
+  nonterminal.
+- Generated-code task description: add only the bounded streaming encoder;
+  prove exact one-byte chunking, flush invariance, sticky finish, workspace and
+  aggregate failures, empty stream, and protocol rejection; update all affected
+  records.
+- Similarity review: the class follows marc's existing Transform contract and
+  calls only repository-local LZMW/tANS components. No external control flow,
+  naming, state layout, capacity formula, or assertion was compared.
+- Local validation: the five focused streaming-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,338/2,338 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-07 - LZMW plus tANS deterministic frame encoder
 
 - Authoring method: layered explicit generic-header serialization and the

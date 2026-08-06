@@ -1950,6 +1950,12 @@ the local tANS encoder, and checked span arithmetic. No external combined
 encoder, serialization order, transactional write protocol, source code,
 encoded corpus, or test suite was consulted.
 
+The LZMW plus tANS bounded streaming encoder uses only DD-618, the local exact
+planner and deterministic frame encoder, marc's core process/status contract,
+explicit stream serializers, caller-owned spans, and checked aggregate
+arithmetic. No external streaming implementation, buffering policy, state
+machine, source code, encoded corpus, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,

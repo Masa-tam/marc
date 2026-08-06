@@ -2413,6 +2413,14 @@ descriptor and payload over the frozen reference span. It rechecks all planned
 block extents and leaves serialized output untouched on any planner or capacity
 failure.
 
+The bounded streaming encoder owns caller-supplied storage for one raw outer
+frame, its maximum canonical reference region, one complete serialized frame,
+and the LZMW encoder table. It first drains the immutable stream prefix, then
+collects exactly one outer frame, invokes the exact planner and encoder, and
+drains the complete serialized frame without mutation. One-byte input and
+output are valid. `EndInput` remains sticky while pending bytes drain; `Flush`
+does not close a partial frame, and `ResetBlock` is unsupported.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

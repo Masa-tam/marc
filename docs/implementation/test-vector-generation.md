@@ -3400,6 +3400,15 @@ combined transactional decoder. Give output capacity 586 for raw `A` and
 require every sentinel unchanged; repeat with empty planner input and a full-
 size guarded destination.
 
+For bounded LZMW plus tANS streaming encoding, use raw `ABABX`, outer frames of
+two bytes, and tANS blocks of two reference bytes. Independently concatenate
+the stream prefix and each complete-frame encoder result. Feed and drain one
+byte at a time and require exact equality. Repeat by giving `EndInput` once
+before the prefix drains, and by issuing `Flush` after the first raw byte.
+Reject raw, reference, encoded, and encoder-table storage one entry short,
+aggregate workspace one byte short, premature final input, excess input,
+`ResetBlock`, and an unknown flag. Verify the prefix-only empty stream.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

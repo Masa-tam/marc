@@ -5493,6 +5493,13 @@ payload over the frozen reference bytes. It requires every repeated block plan
 and final aggregate extent to match the first plan. Planner failure or short
 output leaves the complete serialized destination unchanged.
 
+The internal streaming encoder emits the ordinary stream header followed by
+the 16-byte LZMW parameter extension, buffers at most one configured raw outer
+frame, and invokes the exact planner and deterministic encoder for each frame.
+It drains only complete immutable serialized frames, so input and output may be
+split at arbitrary byte boundaries without changing encoded bytes. `Flush`
+does not alter framing; `EndInput` is retained until all pending bytes drain.
+
 For raw `A`, standalone LZMW emits:
 
 ```text

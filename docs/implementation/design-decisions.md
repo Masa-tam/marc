@@ -9395,6 +9395,33 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-618: LZMW tANS streaming encoding drains immutable frames
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add a bounded internal streaming encoder above DD-616 and DD-617. Require
+caller-owned storage for the largest outer raw frame, its `4F` canonical LZMW
+reference ceiling, one complete encoded frame, and the bounded LZMW encoder
+table. Validate and serialize the ordinary stream header plus 16-byte LZMW
+parameters during construction without allocation.
+
+Drain the immutable prefix first. Collect exactly one outer frame, invoke the
+exact planner and deterministic encoder into private serialized staging, commit
+its input extent and sequence only after complete success, then drain that
+immutable frame under arbitrary output capacities. Count raw, reference,
+serialized, and encoder-table bytes together against
+`max_internal_buffered_bytes` before publishing the frame.
+
+Retain `EndInput` while prefix or frame output drains. Nonterminal `Flush` must
+not close a partial frame. Reject `ResetBlock`, unknown flags, premature final
+input, excess input, short construction storage, and aggregate workspace
+overflow with stable terminal errors. Prove exact reference equality with
+one-byte input/output, flush invariance, sticky finish, empty streams, and all
+workspace and protocol failures. This decision adds no streaming decoder, C
+factory, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
 ## DD-617: LZMW tANS frame encoding is plan-first and deterministic
 
 - Date: 2026-08-07

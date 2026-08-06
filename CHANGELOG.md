@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the bounded `lzmw-tans` streaming encoder. It buffers at most one raw
+  outer frame, invokes the exact planner and deterministic encoder, drains only
+  immutable complete frames under arbitrary output chunking, and preserves
+  `EndInput` until the stream prefix and every frame have drained.
 - Added the deterministic complete-frame encoder for `lzmw-tans`. It invokes
   the exact planner before considering serialized output, reproduces the
   independent 587-byte raw-`A` frame, and leaves the entire destination

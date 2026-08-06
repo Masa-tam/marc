@@ -47,6 +47,12 @@ descriptor, payload, and complete-frame extents without writing serialized
 output. The deterministic encoder runs that planner first, then serializes the
 generic header, every descriptor, and every payload into an already admitted
 complete destination.
+The bounded streaming encoder adds the canonical stream prefix, collects no
+more than one configured raw frame, constructs that frame completely in
+private staging, and drains it under arbitrary output chunking. Nonterminal
+`Flush` preserves the partial raw frame and `EndInput` remains sticky through
+all pending output. The streaming decoder and every public surface remain
+pending.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A
