@@ -2390,13 +2390,16 @@ Decoder construction must admit every serialized and caller-owned extent
 before parsing model data. Every tANS block must validate before private
 reference reconstruction, and the complete reference span must pass ordinary
 LZMW literal, generated-reference, adjacent-pair growth, dictionary-limit, and
-exact-raw-extent validation before any future raw reconstruction or
-publication. The independent raw-`A` vector composes standalone LZMW and tANS
+exact-raw-extent validation before raw reconstruction or publication. The
+independent raw-`A` vector composes standalone LZMW and tANS
 components into a 587-byte frame with payload `FB 02 07`; no combined runtime
 path or public profile existed at the specification step. The first internal
 combined component now implements this complete-frame validation boundary with
-caller-owned views, reference staging, and phrase records. It stops before raw
-reconstruction and adds no streaming transform or public surface.
+caller-owned views, reference staging, and phrase records. Its private decoder
+additionally admits the declared raw extent and iterative expansion stack
+before entropy mutation, reconstructs only the validated LZMW graph into
+disposable raw staging, and publishes exactly once only after every layer
+succeeds. It adds no streaming transform or public surface.
 
 ### C transform ABI
 

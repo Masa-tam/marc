@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -57,9 +58,7 @@ inline constexpr std::uint64_t max_raw_frame_size = UINT64_C(1) << 20;
     return core::checked_add(full_payloads, final_payload, payload_size);
 }
 
-} // namespace
-
-LzmwTansFrameValidationResult validate_lzmw_tans_frame(
+[[nodiscard]] LzmwTansFrameValidationResult validate_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzmwParameters& parameters,
     const core::DecoderLimits& limits,
@@ -69,7 +68,12 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
     const std::span<entropy::internal::TansBlockView> views,
     const std::span<std::byte> dictionary_staging,
     const std::span<dictionary::internal::LzmwPhraseEntry>
-        phrase_workspace) noexcept {
+        phrase_workspace,
+    const bool require_raw_staging,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging,
+    const bool require_output,
+    const std::span<std::byte> output) noexcept {
     LzmwTansFrameValidationResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)
@@ -162,6 +166,9 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
     result.phrase_entries =
         dictionary::internal::lzmw_validation_workspace_entries(
             result.dictionary_size, parameters);
+    result.expansion_entries =
+        dictionary::internal::lzmw_expansion_workspace_entries(
+            result.phrase_entries, result.raw_size != 0);
     if (views.size() < result.block_count) {
         result.error = LzmwTansFrameValidationError::views_too_small;
         return result;
@@ -176,9 +183,24 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
             LzmwTansFrameValidationError::phrase_workspace_too_small;
         return result;
     }
+    if (require_raw_staging && raw_staging.size() < result.raw_size) {
+        result.error = LzmwTansFrameValidationError::raw_staging_too_small;
+        return result;
+    }
+    if (require_raw_staging
+        && expansion_workspace.size() < result.expansion_entries) {
+        result.error =
+            LzmwTansFrameValidationError::expansion_workspace_too_small;
+        return result;
+    }
+    if (require_output && output.size() < result.raw_size) {
+        result.error = LzmwTansFrameValidationError::raw_output_too_small;
+        return result;
+    }
 
     std::uint64_t view_bytes{};
     std::uint64_t phrase_bytes{};
+    std::uint64_t expansion_bytes{};
     std::uint64_t workspace_bytes{};
     if (!core::checked_multiply(
             static_cast<std::uint64_t>(result.block_count),
@@ -190,6 +212,10 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
             static_cast<std::uint64_t>(
                 sizeof(dictionary::internal::LzmwPhraseEntry)),
             phrase_bytes)
+        || !core::checked_multiply(
+            static_cast<std::uint64_t>(result.expansion_entries),
+            static_cast<std::uint64_t>(sizeof(std::uint32_t)),
+            expansion_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(result.descriptor_size),
             static_cast<std::uint64_t>(result.payload_size), workspace_bytes)
@@ -199,7 +225,14 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
             workspace_bytes)
         || !core::checked_add(workspace_bytes, view_bytes, workspace_bytes)
         || !core::checked_add(workspace_bytes, phrase_bytes,
-                              workspace_bytes)) {
+                              workspace_bytes)
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, expansion_bytes, workspace_bytes))
+        || (require_raw_staging
+            && !core::checked_add(
+                workspace_bytes, static_cast<std::uint64_t>(result.raw_size),
+                workspace_bytes))) {
         result.error = LzmwTansFrameValidationError::arithmetic_overflow;
         return result;
     }
@@ -277,7 +310,106 @@ LzmwTansFrameValidationResult validate_lzmw_tans_frame(
         != dictionary::internal::LzmwValidationError::none) {
         result.error =
             LzmwTansFrameValidationError::dictionary_validation_error;
+        return result;
     }
+    result.expansion_entries =
+        dictionary::internal::lzmw_expansion_workspace_entries(
+            result.dictionary_entries, result.raw_size != 0);
+    return result;
+}
+
+[[nodiscard]] bool reconstruct_validated_references(
+    LzmwTansFrameValidationResult& result,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    const auto decoded = dictionary::internal::decode_lzmw_token_stream(
+        dictionary_staging.first(result.dictionary_size), parameters,
+        result.raw_size, limits, phrase_workspace.first(result.phrase_entries),
+        expansion_workspace.first(result.expansion_entries),
+        raw_staging.first(result.raw_size));
+    result.dictionary_decode_error = decoded.error;
+    if (decoded.error == dictionary::internal::LzmwDecodeError::none) {
+        return true;
+    }
+    result.token_index = decoded.token_index;
+    result.dictionary_input_offset = decoded.input_offset;
+    result.dictionary_error = decoded.validation_error;
+    result.dictionary_format_error = decoded.format_error;
+    result.error = LzmwTansFrameValidationError::dictionary_decode_error;
+    return false;
+}
+
+} // namespace
+
+LzmwTansFrameValidationResult validate_lzmw_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::TansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzmwPhraseEntry>
+        phrase_workspace) noexcept {
+    return validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, false, {}, {}, false, {});
+}
+
+LzmwTansFrameValidationResult decode_lzmw_tans_frame_to_staging(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::TansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, true, expansion_workspace, raw_staging, false, {});
+    if (result.error != LzmwTansFrameValidationError::none) return result;
+    (void)reconstruct_validated_references(
+        result, parameters, limits, dictionary_staging, phrase_workspace,
+        expansion_workspace, raw_staging);
+    return result;
+}
+
+LzmwTansFrameValidationResult decode_lzmw_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t expected_sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<entropy::internal::TansBlockView> views,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<dictionary::internal::LzmwPhraseEntry> phrase_workspace,
+    const std::span<std::uint32_t> expansion_workspace,
+    const std::span<std::byte> raw_staging,
+    const std::span<std::byte> output) noexcept {
+    auto result = validate_frame(
+        stream, parameters, limits, expected_sequence,
+        output_already_committed, input, views, dictionary_staging,
+        phrase_workspace, true, expansion_workspace, raw_staging, true,
+        output);
+    if (result.error != LzmwTansFrameValidationError::none) return result;
+    if (!reconstruct_validated_references(
+            result, parameters, limits, dictionary_staging, phrase_workspace,
+            expansion_workspace, raw_staging)) {
+        return result;
+    }
+    std::ranges::copy(raw_staging.first(result.raw_size), output.begin());
     return result;
 }
 

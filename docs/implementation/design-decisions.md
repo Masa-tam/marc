@@ -9395,6 +9395,32 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-615: LZMW tANS reconstruction and publication are transactional
+
+- Date: 2026-08-06
+- Status: accepted
+
+Extend DD-614 with a bounded private raw decoder. Before descriptor parsing or
+entropy output, require the complete declared raw staging extent and the
+conservative iterative LZMW expansion stack derived from phrase capacity.
+Count both with descriptors, payload, reference staging, block views, and
+phrase records against `max_internal_buffered_bytes`.
+
+After every tANS block validates, the complete reference region is rebuilt,
+and the full LZMW graph validates, reduce the active expansion span to the
+actual generated-entry count plus one for a nonempty frame. Invoke only the
+existing allocation-free, nonrecursive LZMW decoder into disposable raw
+staging. Propagate its stable token, format, validation, and decode details.
+
+The transactional form additionally admits the entire caller destination
+before any private mutation and copies exactly the declared raw extent once,
+only after reconstruction succeeds. Prove the independent literal vector,
+phrase expansion across entropy-block and phrase edges, one-entry-short raw
+and expansion storage before entropy mutation, malformed entropy preserving
+raw staging, successful one-time publication, and short output preserving all
+caller regions. This decision adds no encoder, streaming transform, C factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-614: LZMW tANS validation is entropy-first and discard-only
 
 - Date: 2026-08-06

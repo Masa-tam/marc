@@ -245,3 +245,139 @@ TEST(LzmwTansFrameValidator, RejectsTruncationTrailingAndWrongPipeline) {
                   .error,
               LzmwTansFrameValidationError::unsupported_pipeline);
 }
+
+TEST(LzmwTansFrameDecoder, ReconstructsIndependentVectorPrivately) {
+    const auto frame = frame_for_references(reference_a);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0x5a}};
+    const auto result = marc::frame::decode_lzmw_tans_frame_to_staging(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, expansion,
+        raw);
+    ASSERT_EQ(result.error, LzmwTansFrameValidationError::none);
+    EXPECT_EQ(result.dictionary_decode_error,
+              marc::dictionary::internal::LzmwDecodeError::none);
+    EXPECT_EQ(result.expansion_entries, 1U);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+}
+
+TEST(LzmwTansFrameDecoder, ReconstructsAcrossBlockAndPhraseEdges) {
+    constexpr std::array references_ababab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x01}, std::byte{0x00}, std::byte{0x00}};
+    constexpr std::array expected{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'},
+        std::byte{'B'}, std::byte{'A'}, std::byte{'B'}};
+    constexpr std::uint32_t block_size = 5;
+    const auto frame = frame_for_references(
+        references_ababab, static_cast<std::uint32_t>(expected.size()),
+        block_size);
+    std::array<marc::entropy::internal::TansBlockView, 4> views{};
+    std::array<std::byte, references_ababab.size()> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 3> phrases{};
+    std::array<std::uint32_t, 4> expansion{};
+    std::array<std::byte, expected.size()> raw{};
+    const auto result = marc::frame::decode_lzmw_tans_frame_to_staging(
+        stream_for(static_cast<std::uint32_t>(expected.size()), block_size),
+        {}, {}, 0, 0, frame, views, staging, phrases, expansion, raw);
+    ASSERT_EQ(result.error, LzmwTansFrameValidationError::none);
+    EXPECT_EQ(result.block_count, 4U);
+    EXPECT_EQ(result.dictionary_entries, 3U);
+    EXPECT_EQ(result.expansion_entries, 4U);
+    EXPECT_EQ(raw, expected);
+}
+
+TEST(LzmwTansFrameDecoder, RejectsPrivateRegionsBeforeEntropyMutation) {
+    constexpr std::array references_ab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    const auto frame = frame_for_references(references_ab, 2, 5);
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array<std::byte, references_ab.size()> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 1> phrases{};
+    std::array<std::uint32_t, 2> expansion{};
+    std::array<std::byte, 2> raw{};
+    staging.fill(std::byte{0xa5});
+    EXPECT_EQ(marc::frame::decode_lzmw_tans_frame_to_staging(
+                  stream_for(2, 5), {}, {}, 0, 0, frame, views, staging,
+                  phrases, expansion,
+                  std::span<std::byte>{raw}.first(raw.size() - 1))
+                  .error,
+              LzmwTansFrameValidationError::raw_staging_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+    EXPECT_EQ(marc::frame::decode_lzmw_tans_frame_to_staging(
+                  stream_for(2, 5), {}, {}, 0, 0, frame, views, staging,
+                  phrases, std::span<std::uint32_t>{expansion}.first(1), raw)
+                  .error,
+              LzmwTansFrameValidationError::expansion_workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+}
+
+TEST(LzmwTansFrameDecoder, MalformedEntropyDoesNotPublishRawStaging) {
+    constexpr std::uint32_t block_size = 2;
+    auto frame = frame_for_references(reference_a, 1, block_size);
+    const auto second_descriptor = marc::frame::frame_header_size
+        + marc::entropy::internal::tans_descriptor_size;
+    frame[second_descriptor + 10] = std::byte{0x01};
+    std::array<marc::entropy::internal::TansBlockView, 2> views{};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0xa5}};
+    const auto result = marc::frame::decode_lzmw_tans_frame_to_staging(
+        stream_for(1, block_size), {}, {}, 0, 0, frame, views, staging, {},
+        expansion, raw);
+    EXPECT_EQ(result.error, LzmwTansFrameValidationError::controller_error);
+    EXPECT_EQ(raw[0], std::byte{0xa5});
+}
+
+TEST(LzmwTansFrameDecoder, PublishesOnlyAfterCompleteSuccess) {
+    const auto frame = frame_for_references(reference_a);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, reference_a.size()> staging{};
+    std::array<std::uint32_t, 1> expansion{};
+    std::array raw{std::byte{0xa5}};
+    std::array output{
+        std::byte{0x5a}, std::byte{0x5a}, std::byte{0x5a}};
+    const auto result = marc::frame::decode_lzmw_tans_frame(
+        stream_for(1), {}, {}, 0, 0, frame, views, staging, {}, expansion,
+        raw, output);
+    ASSERT_EQ(result.error, LzmwTansFrameValidationError::none);
+    EXPECT_EQ(raw[0], std::byte{'A'});
+    EXPECT_EQ(output[0], std::byte{'A'});
+    EXPECT_EQ(output[1], std::byte{0x5a});
+    EXPECT_EQ(output[2], std::byte{0x5a});
+}
+
+TEST(LzmwTansFrameDecoder, OutputCapacityFailsBeforePrivateMutation) {
+    constexpr std::array references_ab{
+        std::byte{0x41}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x42}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    const auto frame = frame_for_references(references_ab, 2);
+    std::array<marc::entropy::internal::TansBlockView, 1> views{};
+    std::array<std::byte, references_ab.size()> staging{};
+    std::array<marc::dictionary::internal::LzmwPhraseEntry, 1> phrases{};
+    std::array<std::uint32_t, 2> expansion{};
+    std::array<std::byte, 2> raw{};
+    std::array output{std::byte{0x5a}};
+    staging.fill(std::byte{0xa5});
+    raw.fill(std::byte{0xa6});
+    const auto result = marc::frame::decode_lzmw_tans_frame(
+        stream_for(2), {}, {}, 0, 0, frame, views, staging, phrases,
+        expansion, raw, output);
+    EXPECT_EQ(result.error,
+              LzmwTansFrameValidationError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(staging, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xa6};
+    }));
+    EXPECT_EQ(output[0], std::byte{0x5a});
+}

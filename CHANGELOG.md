@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added bounded private raw reconstruction and transactional complete-frame
+  publication for `lzmw-tans`. Raw and iterative-expansion capacity are
+  admitted before entropy mutation, reconstruction uses only the completely
+  validated LZMW graph, and caller output changes only after all layers
+  succeed. The profile remains internal and unpublished.
 - Added the first bounded `lzmw-tans` complete-frame validator. It preflights
   the complete serialized extent and all caller-owned workspace, validates
   every tANS block before reconstructing private reference bytes, and only then

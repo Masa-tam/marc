@@ -3369,6 +3369,19 @@ after complete entropy reconstruction. Reject each caller-owned workspace one
 entry short, the aggregate allowance one byte short, a truncated frame,
 trailing data, and a non-tANS stream declaration.
 
+For private LZMW plus tANS reconstruction, decode the independently frozen
+raw-`A` frame into guarded raw staging and require `41`. Build references for
+raw `ABABAB`, divide them into five-byte tANS blocks so entropy boundaries cut
+through references, and require iterative phrase expansion to the exact six
+bytes. Reject raw staging and the conservative expansion stack one entry short
+before reference staging changes; corrupt a later descriptor and require the
+raw sentinel unchanged.
+
+For transactional publication, decode raw `A` into a larger guarded caller
+span and require only its declared first byte to change. Repeat a two-literal
+frame with caller capacity one byte short and require reference staging,
+private raw staging, and caller output all unchanged.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

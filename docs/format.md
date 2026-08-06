@@ -5472,8 +5472,12 @@ transition, initial state, final padding, and exact payload exhaustion before
 reconstructing exactly `S` private reference bytes. Only then may it validate
 four-byte alignment, literal or previously generated references, checked
 adjacent-phrase growth, dictionary limits, and the exact declared raw extent.
-Raw reconstruction and caller-visible publication are later transactional
-steps and are not part of this initial reserved representation.
+The internal complete-frame decoder admits raw staging, an iterative expansion
+stack, and (when requested) the entire caller destination before entropy
+mutation. It reconstructs only after complete tANS and LZMW validation and
+copies exactly the declared raw extent to caller output once after success.
+These transactional implementation steps do not change the reserved bytes or
+publish the composition as a stream profile.
 
 For raw `A`, standalone LZMW emits:
 

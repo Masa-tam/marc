@@ -10265,6 +10265,37 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-06 - LZMW plus tANS private reconstruction and publication
+
+- Authoring method: extended DD-614's local complete-frame validator with the
+  repository's existing allocation-free LZMW decoder, caller-owned iterative
+  expansion storage, private raw staging, and a final guarded copy under
+  DD-615.
+- References used: DD-615, DD-614, local LZMW validation and decoding
+  contracts, checked aggregate arithmetic, and the independent 587-byte
+  raw-`A` frame.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE decoders, raw reconstruction layouts, transactional publication code,
+  malformed corpora, source code, and test suites.
+- Independent decisions: admit conservative expansion and raw capacity before
+  entropy mutation; shrink the active expansion span only after the actual
+  graph validates; reconstruct into disposable staging; and publish the exact
+  declared extent once only after complete success.
+- Generated-code task description: add only private raw reconstruction and
+  transactional complete-frame publication; prove literal and phrase paths,
+  block/reference crossings, short workspaces before mutation, malformed
+  entropy preserving raw staging, successful guarded publication, and short
+  output preserving every caller region; update all affected records.
+- Similarity review: the implementation composes repository-local span APIs,
+  the existing LZMW decoder, and a final range copy. No external control flow,
+  error taxonomy, workspace layout, test expression, or encoded corpus was
+  compared.
+- Local validation: the thirteen focused validator/decoder tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 2,326/2,326 under
+  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-06 - LZMW plus tANS bounded complete-frame validator
 
 - Authoring method: composed marc's generic frame parser, local tANS controller

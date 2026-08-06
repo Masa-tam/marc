@@ -1932,6 +1932,12 @@ caller-owned spans, and checked aggregate arithmetic. No external combined
 decoder, validation order, workspace layout, malformed corpus, source code, or
 test suite was consulted.
 
+The LZMW plus tANS private reconstruction and transactional publication use
+only DD-615, DD-614's complete validator, marc's existing allocation-free LZMW
+decoder and iterative expansion rules, separate caller-owned staging, and
+checked aggregate arithmetic. No external decoder, publication protocol,
+workspace layout, source code, malformed corpus, or test suite was consulted.
+
 The first LZ77 plus tANS complete-frame validator uses only DD-538, DD-537's
 fixed byte-stream boundary and bounds, marc's generic frame parser, tANS
 descriptor controller and strict decoder, existing LZ77 validator,
