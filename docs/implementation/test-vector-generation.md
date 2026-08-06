@@ -3409,6 +3409,15 @@ Reject raw, reference, encoded, and encoder-table storage one entry short,
 aggregate workspace one byte short, premature final input, excess input,
 `ResetBlock`, and an unknown flag. Verify the prefix-only empty stream.
 
+For bounded LZMW plus tANS streaming decoding, generate canonical `ABABX`
+through the local streaming encoder with two-byte outer frames and two-byte
+tANS blocks. Feed encoded input and raw output one byte at a time and require
+exact recovery. Corrupt a descriptor in the second frame and require only the
+first raw frame to be published. Reject serialized storage, tANS views,
+reference staging, private raw staging, and aggregate live bytes one unit
+short. Reject truncation, trailing bytes, and `ResetBlock`; accept the empty
+prefix-only stream and treat `Flush` during input starvation as `NeedInput`.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

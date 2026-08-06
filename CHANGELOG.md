@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the bounded `lzmw-tans` streaming decoder. It validates prefix and
+  frame extents before buffering, transactionally reconstructs one complete
+  frame into private raw staging, and exposes no byte from a malformed frame;
+  previously completed frames remain committed.
 - Added the bounded `lzmw-tans` streaming encoder. It buffers at most one raw
   outer frame, invokes the exact planner and deterministic encoder, drains only
   immutable complete frames under arbitrary output chunking, and preserves

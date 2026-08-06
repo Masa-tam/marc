@@ -2421,6 +2421,14 @@ drains the complete serialized frame without mutation. One-byte input and
 output are valid. `EndInput` remains sticky while pending bytes drain; `Flush`
 does not close a partial frame, and `ResetBlock` is unsupported.
 
+The matching streaming decoder incrementally collects the fixed prefix and one
+complete serialized frame. It validates header-derived tANS views, reference
+staging, phrase records, expansion stack, raw staging, and aggregate live bytes
+before accepting the frame body. Only the transactional complete-frame decoder
+may populate private raw staging; that successful immutable frame then drains
+under arbitrary output chunking. A later malformed frame cannot expose any of
+its raw bytes or roll back earlier completed frames.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

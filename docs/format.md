@@ -5500,6 +5500,14 @@ It drains only complete immutable serialized frames, so input and output may be
 split at arbitrary byte boundaries without changing encoded bytes. `Flush`
 does not alter framing; `EndInput` is retained until all pending bytes drain.
 
+The internal streaming decoder incrementally parses the same prefix and each
+generic frame header. Before buffering a frame body it admits the complete
+serialized frame, tANS block views, canonical reference staging, LZMW phrase
+records and iterative expansion storage, private raw staging, and aggregate
+live bytes. Only a completely collected and transactionally decoded frame may
+enter the output-drain state. Malformed later frames cannot publish partial raw
+bytes or affect already completed frames.
+
 For raw `A`, standalone LZMW emits:
 
 ```text

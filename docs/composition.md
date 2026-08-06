@@ -51,8 +51,10 @@ The bounded streaming encoder adds the canonical stream prefix, collects no
 more than one configured raw frame, constructs that frame completely in
 private staging, and drains it under arbitrary output chunking. Nonterminal
 `Flush` preserves the partial raw frame and `EndInput` remains sticky through
-all pending output. The streaming decoder and every public surface remain
-pending.
+all pending output. The matching streaming decoder collects one complete
+serialized frame, validates and reconstructs it transactionally into private
+raw staging, and drains only that successful frame. Every public surface
+remains pending.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A

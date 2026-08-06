@@ -9395,6 +9395,32 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-619: LZMW tANS streaming decoding commits complete frames only
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add the bounded internal streaming decoder paired with DD-618. Incrementally
+collect and validate the fixed stream prefix, then one generic frame header.
+Before accepting its body, derive and admit the complete serialized extent,
+tANS block views, canonical reference staging, LZMW phrase records, iterative
+expansion stack, private raw staging, and their aggregate live bytes.
+
+Collect exactly one complete frame and invoke DD-615's private transactional
+decoder. Enter raw-output draining only after every tANS block, the full LZMW
+graph, and iterative reconstruction succeed. Drain the immutable private raw
+frame under arbitrary output capacity. Commit sequence and output extent per
+successful frame; a later malformed frame may not expose any of its raw bytes
+or undo earlier frames.
+
+Retain final-input intent while raw output drains. Reject truncation of prefix,
+header, or body, trailing serialized bytes, invalid tables and references,
+short caller-owned regions, aggregate overflow, `ResetBlock`, and unknown
+flags with a sticky terminal error. Prove one-byte input/output, later-frame
+corruption atomicity, every workspace class, aggregate limit, empty stream, and
+nonterminal `Flush`. This decision adds no C factory, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
 ## DD-618: LZMW tANS streaming encoding drains immutable frames
 
 - Date: 2026-08-07
