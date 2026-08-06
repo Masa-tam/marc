@@ -72,9 +72,9 @@ by component tests and exercised through Blocked Huffman.
 
 `lzmw-tans` now has bounded complete-frame validation, private raw decoding,
 transactional complete-frame publication, and a write-free exact-frame
-planner. Serialized encoding, streaming transforms, public C ABI, CLI,
-benchmark, completion audit, fuzz boundary, and interoperability entry remain
-pending, so its readiness classification does not change.
+planner plus deterministic serialized encoder. Streaming transforms, public C
+ABI, CLI, benchmark, completion audit, fuzz boundary, and interoperability
+entry remain pending, so its readiness classification does not change.
 
 `lzd-tans` is the current admission composition. It has bounded complete-frame
 validation, private raw decoding,

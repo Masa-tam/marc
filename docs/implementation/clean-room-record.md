@@ -10265,6 +10265,33 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-07 - LZMW plus tANS deterministic frame encoder
+
+- Authoring method: layered explicit generic-header serialization and the
+  local tabled-tANS serializer/encoder over DD-616's frozen LZMW reference span
+  and exact plan under DD-617.
+- References used: DD-617, DD-616, repository-local LZMW/tANS components,
+  checked span arithmetic, and the independent 587-byte raw-`A` frame.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE encoders, combined formats, transactional serialization code, encoded
+  corpora, source code, and test suites.
+- Independent decisions: plan completely before destination admission; require
+  whole-frame capacity before the first write; repeat and compare every tANS
+  block plan; serialize explicit fields; and treat any divergence as an
+  internal error.
+- Generated-code task description: add only deterministic complete-frame
+  serialization; prove exact raw-`A` bytes, repeated phrase/block determinism
+  and combined round trip, short-output atomicity, and planner-failure
+  atomicity; update all affected records.
+- Similarity review: the implementation sequences repository-local planner,
+  serializer, and encoder APIs. No external control flow, naming, table layout,
+  error taxonomy, test expression, or byte corpus was compared.
+- Local validation: the three focused frame-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,333/2,333 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-07 - LZMW plus tANS exact-frame planner
 
 - Authoring method: composed the repository's deterministic LZMW planner and

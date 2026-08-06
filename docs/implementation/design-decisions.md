@@ -9395,6 +9395,30 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-617: LZMW tANS frame encoding is plan-first and deterministic
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-616. Invoke the exact
+planner first so canonical LZMW references, every tANS model and payload size,
+generic frame fields, aggregate workspace, and complete serialized extent are
+fixed before destination capacity is considered. Require capacity for the
+complete frame before writing any serialized byte.
+
+Serialize the generic header explicitly, then repeat tANS planning over each
+block of the frozen reference span. Require every repeated plan and cumulative
+payload extent to match DD-616. Serialize each 528-byte descriptor and encode
+its exact payload into the preplanned region. Treat any post-plan divergence as
+an internal invariant failure.
+
+Prove byte-for-byte equality with the independent 587-byte raw-`A` frame,
+deterministic repeated encoding and round trip for a phrase stream whose tANS
+blocks split references, complete output preservation with capacity one byte
+short, and complete output preservation after planner rejection. This decision
+adds no streaming transform, C factory, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
 ## DD-616: LZMW tANS planning freezes the reference stream
 
 - Date: 2026-08-07

@@ -5486,6 +5486,13 @@ validates the synthesized generic header, and reports exact descriptor,
 payload, and complete-frame sizes. Planning emits no serialized frame and does
 not alter the reserved representation.
 
+The internal deterministic encoder invokes the exact planner before inspecting
+serialized destination capacity. After complete capacity is admitted, it
+serializes the generic frame header and each planned tANS descriptor and
+payload over the frozen reference bytes. It requires every repeated block plan
+and final aggregate extent to match the first plan. Planner failure or short
+output leaves the complete serialized destination unchanged.
+
 For raw `A`, standalone LZMW emits:
 
 ```text

@@ -2407,6 +2407,11 @@ sequence is divided into tANS blocks. It plans every normalized table and
 transition payload, checks their exact aggregate extent and complete generic
 header, and reports the exact frame size without writing serialized output.
 Short encoder records or reference staging fail before reference mutation.
+The deterministic frame encoder invokes that planner first, requires complete
+serialized capacity, writes the generic header, then emits every tANS
+descriptor and payload over the frozen reference span. It rechecks all planned
+block extents and leaves serialized output untouched on any planner or capacity
+failure.
 
 ### C transform ABI
 

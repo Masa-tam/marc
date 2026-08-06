@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the deterministic complete-frame encoder for `lzmw-tans`. It invokes
+  the exact planner before considering serialized output, reproduces the
+  independent 587-byte raw-`A` frame, and leaves the entire destination
+  unchanged on planning failure or insufficient capacity.
 - Added the write-free exact-frame planner for `lzmw-tans`. It materializes
   the complete canonical LZMW reference stream in caller-owned staging before
   planning any tANS block, reports exact descriptor, payload, and serialized

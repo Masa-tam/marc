@@ -3391,6 +3391,15 @@ reference bytes and exact extents. Reject encoder records and reference staging
 one entry short before staging mutation, aggregate workspace one byte short,
 empty input, and mismatched declared frame size.
 
+For deterministic LZMW plus tANS frame encoding, pass raw `41` through the
+exact planner and encoder and compare all 587 output bytes with the independent
+composition of standalone LZMW, standalone tANS, and generic serializers. For
+raw `ABABAB` with five-byte entropy blocks, encode twice from differently
+initialized destinations, require byte identity, and decode through the
+combined transactional decoder. Give output capacity 586 for raw `A` and
+require every sentinel unchanged; repeat with empty planner input and a full-
+size guarded destination.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte
