@@ -3359,6 +3359,16 @@ Serialize the sparse tANS descriptor and append the payload; compare all 587
 bytes with the separately recorded frame representation. Do not invoke any
 future combined LZMW/tANS implementation in this vector.
 
+For the first LZMW plus tANS complete-frame validator, admit the independently
+frozen 587-byte raw-`A` frame and require reconstruction of reference bytes
+`41 00 00 00` into private staging with no phrase records. Repeat with
+three-byte tANS blocks so a block boundary splits the reference. Corrupt a
+later descriptor flag and require the untouched reference sentinel; encode an
+invalid forward reference through valid tANS and require the LZMW error only
+after complete entropy reconstruction. Reject each caller-owned workspace one
+entry short, the aggregate allowance one byte short, a truncated frame,
+trailing data, and a non-tANS stream declaration.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

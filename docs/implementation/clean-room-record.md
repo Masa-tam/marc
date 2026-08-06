@@ -10265,6 +10265,35 @@ discarded and the reviewed seed retained.
   schemas 1 through 29 compatibility, and documentation layout remained
   successful.
 
+## 2026-08-06 - LZMW plus tANS bounded complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, local tANS controller
+  and strict block decoder, and existing allocation-free LZMW graph validator
+  under DD-614's explicit admission order.
+- References used: DD-614, DD-613, the local LZMW and tANS format contracts,
+  caller-owned workspaces, and checked arithmetic.
+- Known implementations intentionally not consulted: external LZMW/tANS or FSE
+  decoders, validation orders, workspace layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight all serialized and workspace extents;
+  validate every entropy block before reference mutation; reconstruct the
+  complete private reference span before LZMW semantics; preserve stable block
+  and token positions; and make all workspace discard-only after failure.
+- Generated-code task description: add only a bounded complete-frame validator;
+  prove the independent vector, reference-splitting blocks, later-block
+  atomicity, post-entropy reference rejection, short and aggregate workspace
+  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
+  format, architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the code directly composes repository-local parsers,
+  validators, and explicit spans. No external control flow, error taxonomy,
+  buffer layout, malformed vector, or test expression was compared.
+- Local validation: the seven focused validator tests passed under both MSVC
+  and ClangCL. The complete Release suite passed 2,320/2,320 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-06 - LZMW plus tANS reserved representation
 
 - Authoring method: composed marc's documented LZMW variant-1 reference

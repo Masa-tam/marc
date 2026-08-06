@@ -35,7 +35,11 @@ exact `528K` descriptor bytes, and the checked sum of per-block
 before reconstructing private references and applying LZMW literal, generated-
 phrase, adjacent-pair growth, and exact-raw-extent checks. The independent
 raw-`A` vector fixes reference bytes `41 00 00 00`, payload `FB 02 07`, and a
-complete 587-byte frame. No combined validator or public API exists yet.
+complete 587-byte frame. The first internal complete-frame validator now
+preflights every caller-owned region, validates every tANS block before
+reference reconstruction, and applies LZMW graph validation only to the
+complete private reference span. Raw reconstruction and every public surface
+remain pending.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A

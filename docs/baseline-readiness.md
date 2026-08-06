@@ -70,6 +70,11 @@ by component tests and exercised through Blocked Huffman.
 | `lzmw-tans` | Sixth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
+`lzmw-tans` now has its first bounded complete-frame validator. Raw decoding,
+encoding, streaming transforms, public C ABI, CLI, benchmark, completion audit,
+fuzz boundary, and interoperability entry remain pending, so its readiness
+classification does not change.
+
 `lzd-tans` is the current admission composition. It has bounded complete-frame
 validation, private raw decoding,
 transactional caller-output publication, an exact write-free planner, a

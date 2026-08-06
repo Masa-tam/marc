@@ -2393,7 +2393,10 @@ LZMW literal, generated-reference, adjacent-pair growth, dictionary-limit, and
 exact-raw-extent validation before any future raw reconstruction or
 publication. The independent raw-`A` vector composes standalone LZMW and tANS
 components into a 587-byte frame with payload `FB 02 07`; no combined runtime
-path or public profile exists at this specification step.
+path or public profile existed at the specification step. The first internal
+combined component now implements this complete-frame validation boundary with
+caller-owned views, reference staging, and phrase records. It stops before raw
+reconstruction and adds no streaming transform or public surface.
 
 ### C transform ABI
 

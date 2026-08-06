@@ -5501,3 +5501,12 @@ invokes only standalone components. This section reserves representation and
 name only; it publishes no combined validator, decoder, encoder, streaming
 transform, C factory, CLI selector, benchmark, fuzz target, completion claim,
 or interoperability entry.
+
+The first internal complete-frame validator implements the decoder-visible
+admission order above without adding serialized fields. It validates the
+generic header, exact `S`, `K`, `528K`, and payload bounds and all caller-owned
+workspace before entropy output. It then parses and validates every tANS block
+before decoding any of them into the private reference region. Only after all
+`S` bytes exist does it run the ordinary LZMW phrase-graph validator. On every
+failure, entropy views, reference staging, and phrase records are discard-only;
+raw reconstruction and publication are not part of this boundary.

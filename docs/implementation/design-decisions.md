@@ -9395,6 +9395,32 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-614: LZMW tANS validation is entropy-first and discard-only
+
+- Date: 2026-08-06
+- Status: accepted
+
+Add the first internal `lzmw-tans` complete-frame component as a bounded
+validator only. Admit the exact generic frame extent, aligned nonempty
+reference extent, derived block count, exact `528K` descriptor bytes, checked
+tANS payload ceiling, caller-owned block views, complete reference staging,
+LZMW phrase records, and their aggregate bytes before entropy output can begin.
+
+Parse all descriptors and strictly validate every tANS table, transition,
+initial state, final padding, and payload exhaustion before decoding any block
+into reference staging. Then reconstruct exactly the declared reference extent
+and apply the existing LZMW validator to the complete private span. Preserve
+stable entropy block and LZMW token positions. On any error, every workspace is
+discard-only and no raw output exists at this boundary.
+
+Prove the independent 587-byte raw-`A` frame, blocks that split references,
+later-descriptor failure before reference mutation, invalid LZMW references
+after entropy reconstruction, each short workspace, aggregate workspace one
+byte short, truncation, trailing bytes, and wrong-pipeline rejection under
+MSVC and ClangCL. This decision adds no raw decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-613: LZMW tANS preserves finalized phrase references
 
 - Date: 2026-08-06
