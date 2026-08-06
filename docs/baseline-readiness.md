@@ -67,6 +67,7 @@ by component tests and exercised through Blocked Huffman.
 | `lz78-tans` | Third tANS composition | Ready | Included |
 | `lzw-tans` | Fourth tANS composition | Ready | Included |
 | `lzd-tans` | Fifth tANS composition | Ready | Included |
+| `lzmw-tans` | Sixth tANS composition | In progress | Pending |
 | `checksum-raw` | Version 1.1 per-frame CRC-32C framing profile | Ready | Included |
 
 `lzd-tans` is the current admission composition. It has bounded complete-frame
@@ -566,9 +567,9 @@ schema-10 generation/verification coverage. The pushed Windows/MSVC and Ubuntu
 now passed the complete bidirectional external verification contract, so this
 profile is `Ready`.
 
-Candidate pairings remain
-listed in `docs/composition.md`; they enter the queue only after their exact
-decoder-visible representation and reserved public name are specified.
+No Candidate cell remains in `docs/composition.md`. The final unpublished
+pairing, `lzmw-tans`, is now Specified by DD-613 and enters implementation only
+through that exact decoder-visible representation and reserved name.
 `lzss-rans` is now the active admission composition. DD-462 fixes the complete
 variable-length LZSS token boundary before scalar rANS, checked `S <= 2F`,
 `K = ceil(S/B)`, `8K <= P <= S + 8K`, exact `528K` descriptor bytes,

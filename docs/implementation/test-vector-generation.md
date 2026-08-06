@@ -3348,6 +3348,17 @@ re-encoding. Reject a manifest with its first two archives swapped. Derive
 schema 29 by removing only `lzd-tans.marc` and changing only version and codec
 set, then verify schemas 29 through 1 unchanged.
 
+For the first LZMW plus tANS vector, begin with raw byte `41` and independently
+derive canonical reference bytes `41 00 00 00`. Feed exactly those four
+finalized bytes to standalone tANS planning. Require normalized frequencies
+`00:3072` and `41:1024`, final valid-bit count 3, and payload `FB 02 07`.
+
+Independently serialize a generic header declaring raw extent 1, dictionary
+extent 4, payload extent 3, one entropy block, and 528 descriptor bytes.
+Serialize the sparse tANS descriptor and append the payload; compare all 587
+bytes with the separately recorded frame representation. Do not invoke any
+future combined LZMW/tANS implementation in this vector.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

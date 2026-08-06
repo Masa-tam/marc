@@ -2377,6 +2377,24 @@ External four-direction verification at revision
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers, including byte-identical re-encoding in both platform directions.
 
+### LZMW plus tANS boundary
+
+The reserved composition first freezes the canonical little-endian four-byte
+LZMW reference region, then divides those bytes into independently reset tANS
+blocks. A block may split a reference but cannot split a byte or cross the
+outer frame. Checked bounds require `0 < S <= 4F`, four-byte alignment,
+`K = ceil(S/B)`, exact `528K` descriptors, and the sum of per-block
+`2 + ceil(12n/8)` payload ceilings.
+
+Decoder construction must admit every serialized and caller-owned extent
+before parsing model data. Every tANS block must validate before private
+reference reconstruction, and the complete reference span must pass ordinary
+LZMW literal, generated-reference, adjacent-pair growth, dictionary-limit, and
+exact-raw-extent validation before any future raw reconstruction or
+publication. The independent raw-`A` vector composes standalone LZMW and tANS
+components into a 587-byte frame with payload `FB 02 07`; no combined runtime
+path or public profile exists at this specification step.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus

@@ -24,7 +24,18 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | `lzw-tans` |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | `lzd-tans` |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Candidate |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Specified |
+
+`lzmw-tans` is the sixth tANS composition with a reserved representation. LZMW
+finalizes canonical four-byte phrase references before tANS block coding. A
+block may split a reference but cannot split a byte or cross a frame. For raw
+extent `F`, require aligned reference extent `0 < S <= 4F`, `K = ceil(S/B)`,
+exact `528K` descriptor bytes, and the checked sum of per-block
+`2 + ceil(12n/8)` payload ceilings. Decoding must validate all tANS blocks
+before reconstructing private references and applying LZMW literal, generated-
+phrase, adjacent-pair growth, and exact-raw-extent checks. The independent
+raw-`A` vector fixes reference bytes `41 00 00 00`, payload `FB 02 07`, and a
+complete 587-byte frame. No combined validator or public API exists yet.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A
