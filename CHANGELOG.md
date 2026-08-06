@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the write-free exact-frame planner for `lzmw-tans`. It materializes
+  the complete canonical LZMW reference stream in caller-owned staging before
+  planning any tANS block, reports exact descriptor, payload, and serialized
+  extents, and enforces aggregate workspace without writing a frame.
 - Added bounded private raw reconstruction and transactional complete-frame
   publication for `lzmw-tans`. Raw and iterative-expansion capacity are
   admitted before entropy mutation, reconstruction uses only the completely

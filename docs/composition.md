@@ -40,8 +40,11 @@ preflights every caller-owned region, validates every tANS block before
 reference reconstruction, and applies LZMW graph validation only to the
 complete private reference span. The private decoder then reconstructs into
 disposable raw staging, while the transactional form copies the declared raw
-extent only after complete success. Encoding and every public surface remain
-pending.
+extent only after complete success. Serialized encoding and every public
+surface remain pending. The encoder-side planner now freezes the complete LZMW
+reference span, plans every tANS block over only those bytes, and reports exact
+descriptor, payload, and complete-frame extents without writing serialized
+output.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A

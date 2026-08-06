@@ -9395,6 +9395,33 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
+## DD-616: LZMW tANS planning freezes the reference stream
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add a write-free exact-frame planner as the inverse of DD-614 and DD-615.
+Validate the exact stream profile, LZMW parameters, nonempty input extent, and
+frame-local limits. Determine and require the bounded LZMW encoder-record
+capacity before reference staging can change. Plan the deterministic LZMW
+parse, require the exact checked `0 < S <= 4F` aligned reference extent and
+staging capacity, then serialize all canonical four-byte references.
+
+Only after the complete reference span is fixed may the planner divide it by
+the configured tANS block size. Plan every block independently, sum exact
+payload extents with checked arithmetic, require exact `528K` descriptors and
+the DD-613 payload ceiling, and count encoder records, reference staging,
+descriptors, and exact payload against `max_internal_buffered_bytes`.
+Validate the synthesized generic frame header with sequence and committed-
+output context and report the exact complete-frame extent without writing it.
+
+Prove the independent raw-`A` reference and exact 587-byte extent, repeated
+byte-identical phrase/block planning, encoder records and reference staging one
+entry short before staging mutation, aggregate workspace one byte short,
+empty input, and frame-size mismatch. This decision adds no serialized frame
+encoder, streaming transform, C factory, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
 ## DD-615: LZMW tANS reconstruction and publication are transactional
 
 - Date: 2026-08-06

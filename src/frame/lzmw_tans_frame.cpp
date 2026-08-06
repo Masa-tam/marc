@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 
 namespace marc::frame {
 namespace {
@@ -344,6 +345,214 @@ inline constexpr std::uint64_t max_raw_frame_size = UINT64_C(1) << 20;
 }
 
 } // namespace
+
+LzmwTansFrameValidationResult plan_lzmw_tans_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzmwParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<dictionary::internal::LzmwEncoderEntry> encoder_workspace,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    LzmwTansFrameValidationResult result{};
+    result.raw_size = input.size();
+    if (validate_stream_header(stream, limits) != StreamHeaderError::none
+        || !supported_pipeline(stream)
+        || dictionary::internal::validate_lzmw_parameters(parameters, limits)
+               != dictionary::internal::LzmwFormatError::none) {
+        result.error = LzmwTansFrameValidationError::unsupported_pipeline;
+        return result;
+    }
+    if (input.empty()
+        || input.size() > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzmwTansFrameValidationError::input_size_mismatch;
+        return result;
+    }
+
+    result.encoder_entries =
+        dictionary::internal::lzmw_encoder_workspace_entries(
+            input.size(), parameters);
+    if (encoder_workspace.size() < result.encoder_entries) {
+        result.error =
+            LzmwTansFrameValidationError::encoder_workspace_too_small;
+        return result;
+    }
+    const auto used_encoder_workspace =
+        encoder_workspace.first(result.encoder_entries);
+    const auto dictionary_plan =
+        dictionary::internal::plan_lzmw_token_stream(
+            input, parameters, limits, used_encoder_workspace);
+    result.dictionary_size = dictionary_plan.output_size;
+    result.token_count = dictionary_plan.token_count;
+    result.dictionary_entries = dictionary_plan.dictionary_entries;
+    result.dictionary_encode_error = dictionary_plan.error;
+    result.dictionary_format_error = dictionary_plan.format_error;
+    if (dictionary_plan.error != dictionary::internal::LzmwEncodeError::none) {
+        result.error = LzmwTansFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+
+    std::size_t maximum_dictionary_size{};
+    if (!dictionary::internal::lzmw_maximum_token_stream_size(
+            input.size(), maximum_dictionary_size)) {
+        result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (result.dictionary_size == 0
+        || result.dictionary_size % dictionary::internal::lzmw_token_size != 0
+        || result.dictionary_size > maximum_dictionary_size
+        || result.dictionary_size
+               > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzmwTansFrameValidationError::invalid_dictionary_extent;
+        return result;
+    }
+    if (dictionary_staging.size() < result.dictionary_size) {
+        result.error =
+            LzmwTansFrameValidationError::dictionary_staging_too_small;
+        return result;
+    }
+
+    const auto dictionary_encoded =
+        dictionary::internal::encode_lzmw_token_stream(
+            input, parameters, limits, used_encoder_workspace,
+            dictionary_staging.first(result.dictionary_size));
+    result.dictionary_encode_error = dictionary_encoded.error;
+    result.dictionary_format_error = dictionary_encoded.format_error;
+    if (dictionary_encoded.error
+            != dictionary::internal::LzmwEncodeError::none
+        || dictionary_encoded.token_count != result.token_count
+        || dictionary_encoded.dictionary_entries
+               != result.dictionary_entries) {
+        result.error = dictionary_encoded.error
+                == dictionary::internal::LzmwEncodeError::none
+            ? LzmwTansFrameValidationError::internal_error
+            : LzmwTansFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+
+    const auto block_count_u64 =
+        UINT64_C(1)
+        + (static_cast<std::uint64_t>(result.dictionary_size) - 1)
+              / stream.entropy_block_size;
+    if (block_count_u64 > limits.max_blocks_per_frame
+        || block_count_u64 > std::numeric_limits<std::uint32_t>::max()) {
+        result.entropy_encode_error =
+            entropy::internal::TansEncodeError::limit_exceeded;
+        result.error = LzmwTansFrameValidationError::entropy_encode_error;
+        return result;
+    }
+    result.block_count = static_cast<std::size_t>(block_count_u64);
+
+    std::size_t dictionary_offset{};
+    for (std::size_t block = 0; block < result.block_count; ++block) {
+        const auto block_size = std::min<std::size_t>(
+            stream.entropy_block_size,
+            result.dictionary_size - dictionary_offset);
+        entropy::internal::TansDescriptor descriptor{};
+        const auto entropy_plan = entropy::internal::plan_tans_block(
+            dictionary_staging.subspan(dictionary_offset, block_size),
+            limits, descriptor);
+        result.entropy_encode_error = entropy_plan.error;
+        if (entropy_plan.error != entropy::internal::TansEncodeError::none) {
+            result.block_index = block;
+            result.error = LzmwTansFrameValidationError::entropy_encode_error;
+            return result;
+        }
+        if (!core::checked_add(
+                result.payload_size, entropy_plan.payload_size,
+                result.payload_size)) {
+            result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+            return result;
+        }
+        dictionary_offset += block_size;
+    }
+    result.block_index = result.block_count;
+
+    if (!core::checked_multiply(
+            result.block_count, entropy::internal::tans_descriptor_size,
+            result.descriptor_size)
+        || result.descriptor_size
+               > std::numeric_limits<std::uint32_t>::max()
+        || result.payload_size
+               > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+
+    std::uint64_t state_bytes{};
+    std::uint64_t maximum_payload_size{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(result.block_count),
+            static_cast<std::uint64_t>(
+                entropy::internal::tans_min_payload_size),
+            state_bytes)
+        || !payload_ceiling(
+            static_cast<std::uint64_t>(result.dictionary_size),
+            stream.entropy_block_size, maximum_payload_size)) {
+        result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (result.payload_size < state_bytes
+        || result.payload_size > maximum_payload_size) {
+        result.error = LzmwTansFrameValidationError::invalid_entropy_extent;
+        return result;
+    }
+
+    std::uint64_t encoder_bytes{};
+    std::uint64_t workspace_bytes{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(result.encoder_entries),
+            static_cast<std::uint64_t>(
+                sizeof(dictionary::internal::LzmwEncoderEntry)),
+            encoder_bytes)
+        || !core::checked_add(
+            static_cast<std::uint64_t>(result.descriptor_size),
+            static_cast<std::uint64_t>(result.payload_size), workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes,
+            static_cast<std::uint64_t>(result.dictionary_size),
+            workspace_bytes)
+        || !core::checked_add(
+            workspace_bytes, encoder_bytes, workspace_bytes)) {
+        result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+        return result;
+    }
+    if (workspace_bytes > limits.max_internal_buffered_bytes) {
+        result.error = LzmwTansFrameValidationError::workspace_limit;
+        return result;
+    }
+
+    FrameHeader header{};
+    header.sequence = sequence;
+    header.uncompressed_size = static_cast<std::uint32_t>(input.size());
+    header.dictionary_serialized_size =
+        static_cast<std::uint32_t>(result.dictionary_size);
+    header.compressed_payload_size =
+        static_cast<std::uint32_t>(result.payload_size);
+    header.entropy_block_count =
+        static_cast<std::uint32_t>(result.block_count);
+    header.block_descriptors_size =
+        static_cast<std::uint32_t>(result.descriptor_size);
+    result.header_error = validate_frame_header(
+        header, {stream, limits, sequence, output_already_committed});
+    if (result.header_error != FrameHeaderError::none) {
+        result.error = result.header_error
+                == FrameHeaderError::unexpected_frame_size
+            ? LzmwTansFrameValidationError::input_size_mismatch
+            : LzmwTansFrameValidationError::header_error;
+        return result;
+    }
+    if (!core::checked_add(
+            frame_header_size, result.descriptor_size,
+            result.serialized_size)
+        || !core::checked_add(
+            result.serialized_size, result.payload_size,
+            result.serialized_size)) {
+        result.error = LzmwTansFrameValidationError::arithmetic_overflow;
+    }
+    return result;
+}
 
 LzmwTansFrameValidationResult validate_lzmw_tans_frame(
     const StreamHeader& stream,

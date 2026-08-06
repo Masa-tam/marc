@@ -5479,6 +5479,13 @@ copies exactly the declared raw extent to caller output once after success.
 These transactional implementation steps do not change the reserved bytes or
 publish the composition as a stream profile.
 
+The internal write-free planner first completes the ordinary deterministic
+LZMW parse and canonical reference serialization in caller-owned staging. It
+then plans each independently reset tANS block over that immutable span,
+validates the synthesized generic header, and reports exact descriptor,
+payload, and complete-frame sizes. Planning emits no serialized frame and does
+not alter the reserved representation.
+
 For raw `A`, standalone LZMW emits:
 
 ```text

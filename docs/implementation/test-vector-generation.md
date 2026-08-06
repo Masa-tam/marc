@@ -3382,6 +3382,15 @@ span and require only its declared first byte to change. Repeat a two-literal
 frame with caller capacity one byte short and require reference staging,
 private raw staging, and caller output all unchanged.
 
+For LZMW plus tANS exact-frame planning, begin with raw `41`, zero encoder
+records, and four-byte reference staging. Require canonical reference
+`41 00 00 00`, one tANS block, 528 descriptor bytes, three payload bytes, and
+the exact 587-byte complete-frame extent without serialized output. For raw
+`ABABAB`, use five-byte blocks and require two plans to produce identical
+reference bytes and exact extents. Reject encoder records and reference staging
+one entry short before staging mutation, aggregate workspace one byte short,
+empty input, and mismatched declared frame size.
+
 For the first LZ77 plus tANS vector, begin with raw byte `41` and independently
 require the canonical 16-byte Literal token
 `00 00 00 00 00 00 00 00 00 00 00 00 41 00 00 00`. Normalize its byte

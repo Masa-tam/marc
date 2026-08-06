@@ -2401,6 +2401,13 @@ before entropy mutation, reconstructs only the validated LZMW graph into
 disposable raw staging, and publishes exactly once only after every layer
 succeeds. It adds no streaming transform or public surface.
 
+The encoder-side exact-frame planner first plans and materializes the complete
+canonical LZMW reference region in caller-owned staging. Only that frozen byte
+sequence is divided into tANS blocks. It plans every normalized table and
+transition payload, checks their exact aggregate extent and complete generic
+header, and reports the exact frame size without writing serialized output.
+Short encoder records or reference staging fail before reference mutation.
+
 ### C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
