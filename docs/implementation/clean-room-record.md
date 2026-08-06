@@ -8546,6 +8546,33 @@ discarded and the reviewed seed retained.
   serializers. No external frame-writing control flow, error taxonomy, naming
   scheme, output mutation schedule, or test expression was compared.
 
+## 2026-08-07 - LZMW plus tANS profile and workspace layout
+
+- Authoring method: combined marc's independently specified LZMW reference
+  ceiling and tANS block ceiling under DD-620, using checked local layout
+  primitives and caller-owned storage.
+- References used: DD-620, DD-618, DD-619, local LZMW and tANS format bounds,
+  existing checked arithmetic, and repository-owned profile conventions.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE profile calculators, allocator layouts, ABI definitions, source code,
+  encoded corpora, and test suites.
+- Independent decisions: retain distinct direction-specific requirements;
+  count all concurrently live encoder regions; derive decoder capacity only
+  from local limits; align three typed decoder regions independently; and
+  validate the opaque layout again when partitioning it.
+- Generated-code task description: add the internal profile calculator,
+  checked encoder and decoder view partitioning, stable error mapping, boundary
+  tests, and a requirement-constructed streaming round trip; synchronize the
+  affected design, format, architecture, composition, readiness, changelog,
+  reference, vector, and provenance records.
+- Similarity review: the formulas directly compose repository-local bounds and
+  record types. No external allocation order, naming, arithmetic structure,
+  capacity value, or assertion was compared.
+- Local validation: the four focused profile tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,346/2,346 under both compilers
+  using official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through
+  30 compatibility, and documentation-layout checks remained successful.
+
 ## 2026-07-28 - LZ77 plus rANS reserved representation
 
 - Authoring method: composed marc's independently documented canonical LZ77

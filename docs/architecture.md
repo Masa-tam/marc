@@ -3780,3 +3780,13 @@ decoding separately, and reports complete-stream ratio plus direction-specific
 primary, secondary, and aligned views extents. Peak workspace is the larger
 queried three-region sum; benchmark inputs and output buffers remain outside
 that metric.
+
+### LZMW plus tANS profile workspace
+
+The internal LZMW plus tANS profile calculator connects the bounded streaming
+pair to caller-owned storage without exposing its layout as an ABI. Encoding
+uses separate raw-frame, canonical-reference, complete-frame, and aligned
+LZMW-entry regions. Decoding uses complete-frame, canonical-reference,
+private-raw, and one aligned region partitioned into tANS block views, LZMW
+phrases, and iterative expansion indices. All offsets and aggregate extents
+are checked before a typed span is formed.

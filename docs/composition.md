@@ -1049,3 +1049,10 @@ A safe adoption sequence is:
 
 No candidate cell is a release commitment. This roadmap records architectural
 possibility and the evidence required to turn it into a supported profile.
+
+For `lzmw-tans`, callers should obtain every direction-specific byte extent
+from the internal profile calculator while the C ABI is not yet present. The
+calculator owns the conservative formulas and typed-region alignment; callers
+must not duplicate private LZMW entry, phrase, expansion, or tANS-view layouts.
+The returned regions directly construct the existing bounded streaming encoder
+and decoder and do not select a new stream variant.

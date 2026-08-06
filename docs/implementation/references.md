@@ -1465,6 +1465,12 @@ repository's dependency-free measurement runner. No external benchmark
 framework, combined-codec adapter, capacity formula, performance result,
 source code, or test suite was consulted.
 
+The LZMW plus tANS internal profile calculator uses only DD-620, DD-618,
+DD-619, marc's local LZMW token and phrase bounds, the local tANS descriptor
+and payload limits, checked arithmetic, and existing workspace-partition
+patterns. No external profile calculator, combined-codec allocation layout,
+ABI definition, source code, encoded corpus, or test suite was consulted.
+
 The LZ78 plus rANS reserved representation uses only DD-477, marc's documented
 LZ78 variant-1 fixed token grammar, scalar rANS variant 1, generic frame
 serialization, and the existing independent standalone encoders. No external

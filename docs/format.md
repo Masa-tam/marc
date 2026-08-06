@@ -5352,6 +5352,14 @@ bytes exist does it run the ordinary LZD phrase-graph validator. On every
 failure, entropy views, token staging, and phrase records are discard-only;
 raw reconstruction and publication are not part of this boundary.
 
+The internal LZMW plus tANS profile calculator changes no serialized byte.
+For largest raw frame `F`, canonical reference capacity is `S = 4F`, block
+count is `K = ceil(S/B)`, descriptor capacity is `528K`, and each tANS payload
+is bounded by `Q(n) = 2 + ceil(12n/8)`. Encoder complete-frame capacity is
+`56 + 528K + sum(Q(n))`. Decoder storage is derived from local hard limits;
+opaque tANS views, LZMW phrases, and expansion indices receive independently
+aligned, checked offsets.
+
 The private complete-frame decoder preserves that admission order and also
 requires the full declared raw extent plus an iterative expansion stack of at
 most the admitted phrase count plus one reference before entropy mutation.

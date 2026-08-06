@@ -1089,3 +1089,10 @@ adds Windows/MSVC and Ubuntu 24.04/Ninja coverage plus installed-package
 evidence. The established four-direction exchange additionally verifies all
 37 archives across those producers and Ubuntu 26.04/Clang 21.1.8. The
 remaining release-evidence limits are stated above.
+
+The LZMW plus tANS cell now has a checked internal profile calculator in
+addition to complete-frame and bounded streaming transforms. It derives all
+caller-owned storage and proves that those requirements construct a real
+streaming round trip. Public C lifecycle, CLI, benchmark, fuzz regression,
+completion matrix, and interoperability evidence remain outstanding, so the
+cell is not yet marked complete.

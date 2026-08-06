@@ -8015,6 +8015,26 @@ output unchanged. This step adds no streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
 entry.
 
+## DD-620: LZMW tANS profile couples conservative storage
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-618 and DD-619.
+For known-size encoding derive the canonical LZMW/tANS stream header, largest
+raw frame `F`, reference ceiling `4F`, `K = ceil(4F/B)` tANS blocks, exact
+`528K` descriptor bytes, blockwise `2 + ceil(12n/8)` payload ceilings, at most
+`min(F - 1, maximum_entries)` encoder records, and the checked aggregate live
+workspace. Empty input requires no active-frame storage.
+
+For decoding derive conservative encoded-frame, reference, private-raw, block-
+view, phrase, and expansion capacities only from validated local limits.
+Partition the opaque typed region only after recomputing and matching every
+offset, total byte count, and alignment. Map profile failures to stable core
+errors and prove the returned regions by constructing the existing streaming
+pair. This changes no serialized representation and adds no C factory, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
 ## DD-444: LZMW Dynamic Range receives a transactional CLI selector
 
 - Date: 2026-07-28

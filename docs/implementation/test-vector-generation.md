@@ -3216,6 +3216,14 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the LZMW plus tANS profile calculator, freeze original size 17, frame size
+10, and entropy block size 4. The largest frame has a 40-byte canonical LZMW
+ceiling, ten tANS blocks, 5,280 descriptor bytes, 80 worst-case payload bytes,
+and therefore a 5,416-byte complete-frame region. Require nine encoder entries.
+Separately derive an aligned decoder layout from small explicit limits, reject
+an altered offset and overflowing encoded capacity, and construct a five-byte
+multi-frame streaming round trip solely from returned requirements.
+
 For the first LZD plus tANS complete-frame validator, admit the independently
 frozen 588-byte raw-`A` frame and require reconstruction of token bytes
 `41 00 00 00 FF FF FF FF` into private staging with no phrase records. Repeat

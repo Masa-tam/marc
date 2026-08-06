@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the internal `lzmw-tans` profile calculator. It derives the canonical
+  known-size header, conservative encoder and decoder byte regions, and aligned
+  opaque LZMW/tANS views using checked arithmetic and local hard limits.
 - Added the bounded `lzmw-tans` streaming decoder. It validates prefix and
   frame extents before buffering, transactionally reconstructs one complete
   frame into private raw staging, and exposes no byte from a malformed frame;
