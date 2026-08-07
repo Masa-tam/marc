@@ -66,6 +66,32 @@ foreach(relative_path IN LISTS legacy_record_paths)
     endif()
 endforeach()
 
+set(design_decisions
+    "${source_dir}/docs/implementation/design-decisions.md")
+file(STRINGS "${design_decisions}" decision_headings
+    REGEX "^## DD-[0-9]+:")
+if(NOT decision_headings)
+    message(FATAL_ERROR "No design-decision headings were found")
+endif()
+set(expected_decision 1)
+foreach(heading IN LISTS decision_headings)
+    if(NOT heading MATCHES "^## DD-([0-9]+):")
+        message(FATAL_ERROR "Invalid design-decision heading: ${heading}")
+    endif()
+    set(decision_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" decision_number "${decision_number}")
+    if(decision_number STREQUAL "")
+        set(decision_number 0)
+    endif()
+    if(NOT decision_number EQUAL expected_decision)
+        message(FATAL_ERROR
+            "Design decisions must be contiguous and ordered: expected "
+            "DD-${expected_decision}, found ${heading}")
+    endif()
+    math(EXPR expected_decision "${expected_decision} + 1")
+endforeach()
+list(LENGTH decision_headings decision_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -117,4 +143,5 @@ endforeach()
 
 list(LENGTH documentation_files document_count)
 message(STATUS
-    "Verified ${relative_link_count} relative links in ${document_count} documents")
+    "Verified ${relative_link_count} relative links in ${document_count} "
+    "documents and ${decision_count} ordered design decisions")

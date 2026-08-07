@@ -7777,127 +7777,6 @@ decision specifies bytes and a reserved name only; it does not publish a
 combined validator, decoder, encoder, streaming transform, factory, CLI,
 benchmark, fuzz target, completion matrix, or interoperability entry.
 
-## DD-440: LZMW Dynamic Range profiles separate byte and typed storage
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-438 and DD-439.
-For encoding, derive the largest raw frame, conservative `S = 4F` reference
-staging, `2S + 5` Dynamic Range payload, complete serialized-frame storage,
-and the exact LZMW encoder-record count. Count every region in one checked
-aggregate before returning any requirement.
-
-For decoding, derive complete encoded-frame collection, bounded reference
-staging, private raw staging, conservative phrase records, and phrase expansion
-references solely from validated local limits. Keep byte storage separate from
-caller-allocated, properly aligned typed storage. Partition helpers must verify
-the reported record counts, byte extent, expansion offset, and alignment before
-producing typed spans; empty encoder-record storage uses zero bytes and neutral
-alignment one.
-
-This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
-completion matrix, or interoperability entry.
-
-## DD-441: LZMW Dynamic Range C ABI borrows all workspace
-
-- Date: 2026-07-28
-- Status: accepted
-
-Publish `marc_lzmw_dynamic_range_config` with fixed-width fields and matching
-configuration initialization, direction-specific workspace requirements, and
-opaque-transform factory functions. Retain C ABI version 1 and the existing
-status, process, end-state, and destroy contracts.
-
-Map encoding to DD-440's raw-frame primary region, reference-plus-encoded-frame
-secondary region, and aligned encoder records. Map decoding to its encoded-
-frame primary region, reference-plus-private-raw secondary region, and aligned
-phrase-plus-expansion records. Recalculate the complete profile during factory
-creation, validate all pointers, capacities, reserved fields, and alignment,
-partition typed records privately, and borrow every region until transform
-destruction. No allocator callback or C++ record type crosses the ABI.
-
-Prove the lifecycle from pure C11 with raw `ABABX` and two-byte frames. Require
-exact queried small-limit regions, a complete round trip, a null output handle
-on every failed creation, and rejection of every one-byte-short region,
-misaligned views, null transform output, and nonzero reserved state. This
-decision adds no completion matrix, fuzz target, CLI selector, benchmark, or
-interoperability entry.
-
-## DD-442: LZMW Dynamic Range completion is public-ABI only
-
-- Date: 2026-07-28
-- Status: accepted
-
-Audit only the published C configuration, requirements query, factory,
-process, and destroy functions. Use 64-byte raw frames, the checked 256-byte
-canonical-reference ceiling, the `2S + 5` Dynamic Range payload bound, 63
-dictionary entries, and a 65,536-byte aggregate limit. Allocate both
-direction-specific opaque views from queried byte counts and alignment;
-encoding zero or one raw byte requires no generated LZMW entry and therefore
-no views bytes.
-
-Cover empty input, every one-byte value, the ordered byte alphabet, repeated
-data, binary patterns, deterministic pseudo-random bytes, and lengths 63, 64,
-and 65. Require repeated encoding to be byte-identical and terminal success to
-be sticky. For a 193-byte four-frame stream, require exact bytes and round
-trips under unchunked, one-byte, and mixed chunk schedules.
-
-Independently corrupt the final frame sequence, truncate its final byte, and
-append trailing data. Every error must be sticky, preserve byte and bit
-positions, publish exactly the first 192 validated bytes, and leave the final
-output sentinel unchanged. This completes public-ABI evidence only; it adds no
-fuzz target, CLI selector, benchmark, or interoperability entry.
-
-## DD-443: LZMW Dynamic Range fuzzing fixes every decoder region
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add one bounded decoder fuzz entry point that truncates supplied input to
-8,192 bytes and exercises both the exact complete-frame private decoder after
-a valid 80-byte prefix and the incremental stream decoder for every case.
-Fix total raw output at 4,096 bytes, one raw frame at 1,024 bytes, canonical
-LZMW reference staging at 4,096 bytes, compressed payload at 8,192 bytes, the
-phrase table at 1,023 records, and the iterative expansion stack at 1,024
-references. Include every byte and typed region in one fixed aggregate limit
-before processing metadata.
-
-Derive partial input and output chunks only from current bytes, cap processing
-at `8,192 + 4,096 + 32` calls, and abort only for an invalid process result or
-impossible stall. Retain one repository-authored truncated-magic seed and keep
-generated mutations outside the source tree.
-
-Add permanent ordinary-test regressions requiring every proper truncation of
-the canonical `ABABX` stream, saturated generic frame extents, and a nonzero
-final reserved byte in the 16-byte Dynamic Range descriptor to fail
-atomically with sticky category and position. This step adds no CLI selector,
-benchmark, or interoperability entry.
-
-## DD-409: LZW Dynamic Range streaming decode validates before draining
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder. Incrementally collect
-and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
-Before admitting the frame body, enforce `S <= ceil(FW/8)`,
-`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
-complete encoded frame, packed staging, private raw staging, and aligned LZW
-phrase records, plus their checked aggregate workspace.
-
-Collect exactly the admitted descriptor and payload, invoke DD-405's
-transactional complete-frame decoder into private raw storage, and only then
-drain that immutable raw frame. Do not collect a later frame while validated
-raw bytes remain pending. Earlier complete frames may be published, but a
-malformed later frame must publish none of its own bytes.
-
-Require exact known-size completion and reject every prefix, header, or body
-truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
-unknown flag. Retain `EndInput` while a validated frame drains and make ended
-and error states sticky. This step adds no profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
 ## DD-403: LZW Dynamic Range validation stops at the packed-byte boundary
 
 - Date: 2026-07-25
@@ -8015,154 +7894,892 @@ output unchanged. This step adds no streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
 entry.
 
-## DD-621: LZMW tANS C factory keeps typed layouts opaque
+## DD-408: LZW Dynamic Range streaming encode buffers one bounded frame
 
-- Date: 2026-08-08
+- Date: 2026-07-26
 - Status: accepted
 
-Expose a size-tagged `marc_lzmw_tans_config` with fixed-width fields matching
-DD-620's known-size configuration and local decoder limits. Provide one
-requirements query and one immutable-direction factory through the common
-opaque transform lifecycle. Encoding maps primary storage to raw collection,
-secondary storage to canonical references followed by the complete frame, and
-aligned views storage to LZMW encoder entries. Decoding maps primary storage to
-encoded-frame collection, secondary storage to canonical references followed
-by private raw output, and aligned views storage to tANS block views, LZMW
-phrases, and expansion indices.
+Add a bounded known-size streaming encoder above DD-407. Emit the ordinary
+64-byte stream header and 16-byte LZW parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the deterministic exact-frame encoder, and
+drain that immutable frame under arbitrary output starvation before accepting
+bytes for the next frame.
 
-The query is the sole authority for byte counts and alignment. The factory must
-reject wrong structure size or ABI version, nonzero reserved fields, invalid
-direction or limits, null-with-size buffers, short or misaligned regions, and a
-null result pointer before constructing anything. Prove the declarations from
-a pure C11 translation unit with round trip and negative workspace cases. This
-changes no format and adds no CLI, benchmark, fuzz target, completion claim, or
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `ceil(FW/8)` packed staging, and LZW encoder
+records. Before encoding each collected frame, count raw collection, exact
+packed staging, exact serialized frame, and encoder records in one checked
+aggregate and require complete encoded-frame storage.
+
+Input and output chunking alone must not change serialized bytes. `Flush` keeps
+the logical stream open and does not shorten a frame. Retain `EndInput` while
+the prefix or a frame drains, require its input to complete the declared known
+size, reject `ResetBlock` and unknown flags, and make ended and error results
+sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-409: LZW Dynamic Range streaming decode validates before draining
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= ceil(FW/8)`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, packed staging, private raw staging, and aligned LZW
+phrase records, plus their checked aggregate workspace.
+
+Collect exactly the admitted descriptor and payload, invoke DD-405's
+transactional complete-frame decoder into private raw storage, and only then
+drain that immutable raw frame. Do not collect a later frame while validated
+raw bytes remain pending. Earlier complete frames may be published, but a
+malformed later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-410: LZW Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-408 and DD-409.
+For encoding, derive the largest raw frame, conservative
+`S = ceil(FW/8)` packed staging, `2S + 5` Dynamic Range payload, complete
+serialized-frame storage, and the exact LZW encoder-record count. Count every
+region in one checked aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded packed staging,
+private raw staging, and the conservative phrase-record count solely from
+validated local limits. Keep byte storage separate from caller-allocated,
+properly aligned record storage. Partition helpers must verify the reported
+record byte count and alignment before producing typed spans; empty record
+storage uses zero bytes and neutral alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.
+
+## DD-411: LZW Dynamic Range enters the C ABI with opaque typed views
+
+- Date: 2026-07-26
+- Status: accepted
+
+Expose the fixed LZW variant 1 plus Dynamic Range variant 1 profile through a
+size-tagged `marc_lzw_dynamic_range_config`, direction-specific requirements
+query, and immutable-direction factory without changing C ABI version 1.
+
+Retain the common three caller-owned workspaces. Encoding uses raw primary
+storage, packed-plus-serialized secondary storage, and aligned opaque encoder
+records. Decoding uses serialized primary storage, packed-plus-private-raw
+secondary storage, and aligned opaque phrase records. Creation reruns DD-410
+and its checked partition helpers instead of trusting caller-supplied extents.
+
+Require a strict C11 round trip, exact small-limit requirements, one-byte-short
+and misaligned workspace rejection, reserved-field rejection, and a null
+transform on every factory failure. This step adds no CLI selector, benchmark,
+fuzz target, completion matrix, or interoperability entry.
+
+## DD-412: LZW Dynamic Range completion is audited through the public C ABI
+
+- Date: 2026-07-26
+- Status: accepted
+
+Audit only `marc_lzw_dynamic_range_config_init`, its requirements query,
+factory, the common process function, and transform destruction. Use 64-byte
+frames and the checked `S = ceil(FW/8)`, `P = 2S + 5` workspace policy.
+
+Cover empty input, every one-byte value, the full byte alphabet, repetitive
+and generated binary inputs, and lengths 63, 64, and 65. Require deterministic
+re-encoding and identical streams under `(1,1)`, `(7,5)`, and `(13,17)`
+input/output chunk schedules, with repeatable EndOfStream.
+
+For a 193-byte four-frame stream, independently corrupt, truncate, and extend
+the fourth frame. Each decoder must commit exactly the first 192 bytes, leave
+the failing frame's destination sentinel unchanged, and repeat the same stable
+terminal error. Reuse the LZW public-ABI test body across entropy profiles with
+only the fixed factory family and payload ceiling parameterized, preventing
+evidence drift. This step adds no CLI, benchmark, fuzz, or interoperability
+entry.
+
+## DD-413: LZW Dynamic Range fuzzing is fixed-memory and dual-path
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add one bounded decoder fuzz entry that exercises both the private complete-
+frame decoder and the outer frame-committing streaming decoder. Cap accepted
+input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
+bytes, packed LZW staging at 4,096 bytes, and dictionary entries at 4,096.
+Allocate every byte and phrase region as a fixed local array before inspecting
+input.
+
+Derive chunk sizes only within those arrays and stop after
+`input_bound + output_bound + 32` calls. Abort on an invalid process result,
+zero progress reported as Progress, impossible NeedInput after final input, or
+the finite-call ceiling. Reuse the established bounded LZW harness with only
+the entropy identity and combined entry points parameterized.
+
+Permanent regressions must reject every proper prefix of a canonical stream,
+saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
+All failures preserve the raw output sentinel and remain sticky. This step adds
+no CLI, benchmark, or interoperability entry.
+
+## DD-414: LZW Dynamic Range CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add the explicit `lzw-dynamic-range` selector to the existing transactional
+CLI without changing the default codec. Use a 65,536-byte raw frame, the
+canonical `S = 2F = 131,072` packed-code ceiling, the
+`P = 2S + 5 = 262,149` Dynamic Range payload ceiling, at most 65,280 generated
+LZW entries, and an 8-MiB aggregate buffered-byte policy.
+
+The CLI must initialize the public size-tagged config, set only public format
+parameters and hard limits, query all three direction-specific workspace
+regions and views alignment, and construct the transform through
+`marc_lzw_dynamic_range_create()`. It must not name private record types,
+recalculate opaque record sizes, or invoke a private C++ frame API.
+
+Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
+decoding failure, malformed input, strict trailing data, write failure, close
+failure, or rename failure must leave no requested destination or temporary
+file. Test binary and empty round trips, overwrite refusal, malformed input,
+and a valid stream with trailing data. This step adds no benchmark or
 interoperability entry.
 
-## DD-622: LZMW tANS public completion reuses equivalent bounds
+## DD-415: LZW Dynamic Range benchmark measures the public CLI profile
 
-- Date: 2026-08-08
+- Date: 2026-07-26
 - Status: accepted
 
-Apply the reviewed public-ABI completion matrix through only the DD-621 symbol
-family. Fix raw frames and tANS blocks to 64 bytes. At that frame size LZMW's
-`4F` reference ceiling and LZD's `8 * ceil(F/2)` ceiling are both exactly 256
-bytes, so the existing tANS capacity, data, chunking, terminal, and malformed
-schedules can be reused without weakening or approximating a bound.
+Add `lzw-dynamic-range` to the dependency-free benchmark with the exact DD-414
+public profile: 65,536-byte raw frames, 131,072 packed LZW bytes, 262,149
+range-payload bytes, maximum code width 16, 65,280 generated entries, and an
+8-MiB aggregate policy.
 
-Prove empty input, every one-byte value, all byte values, repetitive and
-patterned inputs, deterministic generated data, and lengths 63, 64, and 65.
-Require repeated encoding and `(1,1)`, `(7,5)`, and `(13,17)` schedules to
-produce identical streams and raw output. Corrupt the fourth frame sequence,
-truncate its final byte, and append trailing data independently; each failure
-must commit exactly the first three frames, preserve the final output sentinel,
-and repeat the same sticky status and positions. This adds no format, CLI,
-benchmark, fuzz target, `Ready` claim, or interoperability entry.
+For input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `80 + 4N + 77K`. The `4N` term covers the conservative
+`S <= 2N` and `P <= 2S + 5` payload relation; each frame contributes its
+56-byte header, 16-byte descriptor, and five termination bytes. Overflow must
+fail before allocating the encoded buffer.
 
-## DD-623: LZMW tANS fuzzing is bounded before parsing
+Construct both directions only through the public config initializer,
+requirements query, factory, process, and destroy lifecycle. Require one
+untimed byte-exact round trip before timing fresh transforms. Report encoded
+ratio, encode/decode throughput, all six queried workspace extents, and the
+larger three-region sum as descriptive peak workspace. Add a one-iteration
+smoke test with no performance threshold. This step adds no interoperability
+entry.
 
-- Date: 2026-08-08
+## DD-416: Interoperability schema 17 appends LZW Dynamic Range once
+
+- Date: 2026-07-26
 - Status: accepted
 
-Add a dual-path decoder fuzz entry above DD-615, DD-619, and DD-621. Cap the
-supplied input at 8,192 bytes. Exercise the complete-frame private decoder only
-after the ordinary prefix and LZMW parameter parsers accept the fixed profile.
-Exercise the public incremental decoder with input-derived chunks, at most
-4,096 published raw bytes, and a call ceiling of bounded input plus bounded
-output plus 32. Allocate all encoded, canonical-reference, raw, tANS-view,
-phrase, and expansion regions as fixed arrays before parsing.
+Define interoperability schema 17 and codec set `marc-cli-v17` as the exact
+twenty-seven-entry schema-16 order followed by `lzw-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must locally decode every archive before publishing the manifest.
+The verifier must require exactly twenty-eight archives in canonical order,
+validate all declared extents and SHA-256 values, decode every foreign archive,
+and reproduce every archive byte for byte with the local encoder.
 
-Abort the harness only for violated API invariants, impossible queried extents,
-construction failure under the fixed valid configuration, progress without
-counts, renewed input demand after final input, or exhaustion of the call
-ceiling. Treat ordinary malformed-stream status as expected. Add deterministic
-regressions for every truncation of a canonical stream, saturated generic frame
-lengths, and invalid tANS descriptor metadata; each must publish no raw byte and
-remain sticky. This changes no format, API, CLI, benchmark, `Ready` claim, or
+The compatibility test must generate and verify schema 17, reject a reordered
+schema-17 manifest before archive decoding, remove only archive 28 to derive
+schema 16, and continue the complete frozen conversion chain through schema 1.
+No previous schema, archive order, codec set, stream representation, fixture,
+or manifest field changes. Cross-platform interoperability remains unproven
+until one pushed revision passes the established Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.
+
+## DD-417: LZD Dynamic Range entropizes finalized reference-pair bytes
+
+- Date: 2026-07-26
+- Status: accepted
+
+Reserve `lzd-dynamic-range` for LZD variant 1 followed by Dynamic Range Coder
+variant 1 under format version 1.0. Preserve the standalone 16-byte LZD
+parameters, empty entropy parameters, fixed eight-byte little-endian reference
+pairs, and terminal absent-right value. Complete the token byte stream before
+entropy processing; Dynamic Range consumes every resulting byte without
+interpreting token, reference-field, or terminal-marker boundaries. Reset both
+the LZD phrase dictionary and adaptive order-0 range model at every outer
+frame.
+
+For raw frame size `F`, use checked token staging bound
+`S = 8 * ceil(F / 2)` and Dynamic Range payload bound `P = 2S + 5`. Bound
+generated phrases by `min(floor(F / 2), configured_maximum)` and the iterative
+expansion stack by that phrase count plus one. Retain the LZD composition
+format cap `F <= 2^20`. The reference profile uses `F = 65,536`, giving
+`S = 262,144`, `P = 524,293`, at most 32,768 generated phrases, and at most
+32,769 expansion references.
+
+Encoding freezes the canonical LZD token bytes before range planning. Decoding
+range-decodes exactly the declared token-byte count into private staging, then
+applies the ordinary LZD multiple-of-eight, backward-reference, terminal-
+absence, phrase-length, and exact-raw-extent validation before iterative
+private reconstruction and any raw publication. Error precedence is generic
+header and extent validation, workspace admission, range descriptor and
+payload validation, LZD validation, then private reconstruction and
+publication.
+
+Freeze raw `A` independently: LZD emits terminal token
+`41 00 00 00 FF FF FF FF`; Dynamic Range variant 1 over those eight bytes
+produces payload `00 40 FF FF C4 DC 92 F3 69 BC 8B 00` and descriptor
+`(8, 12, 0)`. Record the complete 84-byte frame in the format document and
+prove it by composing only the existing standalone LZD encoder, Dynamic Range
+encoder, and generic serializers. This decision specifies bytes and a reserved
+name only; it does not publish a combined validator, decoder, encoder,
+streaming transform, factory, CLI, benchmark, fuzz target, completion matrix,
+or interoperability entry.
+
+## DD-418: LZD Dynamic Range validation stops at the token boundary
+
+- Date: 2026-07-26
+- Status: accepted
+
+Admit the first combined `lzd-dynamic-range` implementation as a strict bounded
+complete-frame validator only. Validate the stream profile, LZD parameters,
+sequence, generic frame header, exact complete-frame extent, checked
+`S = 8 * ceil(F/2)` token bound, token-width divisibility, one 16-byte Dynamic
+Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
+aligned phrase bytes, and the aggregate workspace limit before entropy output.
+
+Parse the descriptor only after that admission succeeds. Range-decode exactly
+the declared token-byte count into private caller-owned staging with exact
+payload exhaustion, then invoke the existing LZD validator over the complete
+span. Preserve LZD's backward-reference, terminal-absence, checked phrase-
+length, exact declared raw extent, token count, dictionary-entry count, format
+error, and phrase-table requirements.
+
+Use stable error precedence: unsupported profile, truncated header, generic
+header, complete-frame extent, token and entropy extents, caller workspace,
+aggregate workspace, descriptor, range payload, then LZD token stream. On
+every error the caller must discard staging and phrase contents; no raw byte is
+reconstructed or published. Report the future iterative expansion requirement
+as a diagnostic, but do not include unrequested expansion or raw staging in
+this validator's workspace total. This step adds no private raw decoder,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion matrix, or interoperability entry.
+
+## DD-419: LZD Dynamic Range reconstructs only into private raw staging
+
+- Date: 2026-07-26
+- Status: accepted
+
+Extend DD-418 with a bounded complete-frame decoder that reconstructs the
+already validated LZD token stream into caller-owned private raw staging.
+Require raw capacity for the complete declared frame and expansion-stack
+capacity for the checked phrase-count-plus-one requirement. Add both full
+extents to aggregate workspace accounting before parsing the Dynamic Range
+descriptor or producing token bytes.
+
+Reuse the DD-418 validator without weakening or duplicating its header,
+`S`/`P`, workspace, descriptor, payload-exhaustion, reference, terminal,
+phrase-length, and exact-raw-extent checks. Only after all validation succeeds
+may the existing iterative LZD decoder expand the staged token graph through
+the validated phrase table and explicit `uint32_t` stack into private raw
+storage. Preserve detailed LZD validation, format, and decode diagnostics.
+
+On every failure the caller must discard token staging, phrase records,
+expansion stack, and raw staging. No caller-visible raw output is accepted by
+this API, so no byte is published at this boundary. This step adds no
+transactional publication wrapper, encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
 interoperability entry.
 
-## DD-624: LZMW tANS CLI is a public-only transaction
+## DD-420: LZD Dynamic Range publishes only a complete successful frame
 
-- Date: 2026-08-08
+- Date: 2026-07-26
 - Status: accepted
 
-Add `lzmw-tans` as an explicit selector in the existing transactional CLI.
-Fix 65,536-byte raw frames and entropy blocks, `S = 4F = 262,144` canonical
-reference bytes, four tANS blocks, `528K = 2,112` descriptor bytes,
-`P = 12S/8 + 2K = 393,224` payload bytes, at most 65,536 generated entries,
-and a conservative 16-MiB aggregate policy.
+Add an internal caller-visible complete-frame decoder above DD-419. Require
+destination capacity for the complete declared raw frame together with token
+staging, aligned phrase records, explicit expansion-stack storage, and private
+raw staging before parsing the Dynamic Range descriptor or producing entropy
+output. Caller-visible output is not scratch and therefore is not counted in
+aggregate internal workspace.
 
-Initialize configuration, query all direction-specific byte extents and
-alignment, create the transform, process the file, and destroy the transform
-only through DD-621's C lifecycle. Do not reproduce private tANS-view,
-encoder-entry, phrase, expansion, or partition layouts. Retain destination
-overwrite refusal, strict trailing-data rejection, bounded 64-KiB I/O, sibling
-`.tmp` staging, deletion on failure, and rename only after complete success.
-Prove binary and empty round trips plus atomic malformed and trailing rejection.
-This changes no default selector, format, benchmark, `Ready` claim, or
+Run the unchanged DD-418 validation order and DD-419 private reconstruction.
+Only after every generic-frame, range, LZD, capacity, bounds, graph, and exact-
+extent check succeeds may the decoder copy the complete private raw span once
+into the destination.
+
+Preserve every existing combined error value and append a distinct output-
+capacity error. On every failure, publish no destination byte. This step adds
+no encoder, streaming transform, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion matrix, or interoperability entry.
+
+## DD-421: LZD Dynamic Range planning freezes tokens before range output
+
+- Date: 2026-07-26
+- Status: accepted
+
+Add an exact-frame planner for `lzd-dynamic-range`. Require one nonempty raw
+frame, validate the selected profile and caller-owned LZD encoder workspace,
+and run the deterministic LZD plan. Require token staging for the exact planned
+extent, then encode the complete canonical eight-byte reference-pair stream
+before invoking Dynamic Range planning.
+
+Plan Dynamic Range over that immutable token-byte extent and require the exact
+payload to satisfy `P <= 2S + 5`. Count LZD encoder records, token staging, the
+16-byte descriptor, and exact payload in one checked internal-workspace sum.
+Construct and validate the complete generic frame header and report its exact
+serialized extent without writing any serialized-frame byte.
+
+Preserve every existing combined error value and append distinct input-size,
+encoder-workspace, dictionary-encode, entropy-encode, and internal-consistency
+errors. This step adds no serialized encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
 interoperability entry.
 
-## DD-625: LZMW tANS benchmark verifies before measuring
+## DD-422: LZD Dynamic Range encoding is plan-first and deterministic
 
-- Date: 2026-08-08
+- Date: 2026-07-27
 - Status: accepted
 
-Add `lzmw-tans` to the dependency-free benchmark runner using DD-624's exact
-65,536-byte frame/block profile and only DD-621's public C lifecycle. Query,
-allocate, construct, process, and destroy encode and decode directions
-independently. Require one byte-exact untimed round trip before any result is
-reported, then measure encode and decode separately and report all three
-queried workspace regions, their alignments, and the larger directional sum.
+Add the deterministic complete-frame encoder above DD-421. Invoke the exact
+planner first so canonical LZD token bytes, exact range payload size, generic
+frame fields, and aggregate workspace are fixed before serialized output is
+considered. Require destination capacity for the complete planned extent before
+writing any serialized byte.
 
-For input extent `N` and nonempty outer-frame count `K`, admit output with the
-checked ceiling `80 + 6N + 2176K`. The payload term follows `S <= 4N` and the
-tANS ceiling `ceil(12S/8) + 2` per block. The per-frame term is one 56-byte
-generic header, four 528-byte descriptors, and four two-byte final states.
-This benchmark changes no default selector, stream representation, API,
-`Ready` claim, or interoperability schema.
+Repeat Dynamic Range planning over the frozen token span and require its
+payload extent to match DD-421. Serialize the generic frame header and 16-byte
+descriptor explicitly, then encode the exact payload into its planned region.
+The independent raw-`A` input must reproduce the complete 84-byte vector.
 
-## DD-626: Interoperability schema 31 appends LZMW tANS
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Capacity and all planner failures leave serialized
+output unchanged. This step adds no streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
+entry.
 
-- Date: 2026-08-08
+## DD-423: LZD Dynamic Range streaming encode buffers one bounded frame
+
+- Date: 2026-07-27
 - Status: accepted
 
-Freeze the exact forty-one-entry schema-30 order and append `lzmw-tans` once
-as entry 42. Name the new codec set `marc-cli-v31`; retain the deterministic
-8,193-byte binary fixture, full source revision, platform/compiler metadata,
-and SHA-256 for the CLI, input, and every archive.
+Add a bounded known-size streaming encoder above DD-422. Emit the ordinary
+64-byte stream header and 16-byte LZD parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the deterministic exact-frame encoder, and
+drain that immutable frame under arbitrary output starvation before accepting
+bytes for the next frame.
 
-Generation must decode and compare every archive before recording it. The
-verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
-decode, and byte-identical local re-encoding. The compatibility regression
-rejects a reordered schema-31 manifest, derives schema 30 by removing only
-`lzmw-tans`, and verifies the unchanged schemas 30 through 1. This admission
-changes no codec representation. External cross-platform evidence remains a
-post-push release check.
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `8 * ceil(F/2)` token staging, and LZD encoder
+records. Before encoding each collected frame, count raw collection, exact
+token staging, exact serialized frame, and encoder records in one checked
+aggregate and require complete encoded-frame storage.
 
-That release check completed at revision
-`903181080556c3bb511ad4a2e5275837ebda48e7`: the Windows/MSVC and Ubuntu
-24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
-bundle verified locally and on Windows/MSVC. Every pass decoded and
-byte-identically re-encoded all 42 archives.
+Input and output chunking alone must not change serialized bytes. `Flush` keeps
+the logical stream open and does not shorten a frame. Retain `EndInput` while
+the prefix or a frame drains, require its input to complete the declared known
+size, reject `ResetBlock` and unknown flags, and make ended and error results
+sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
 
-## DD-620: LZMW tANS profile couples conservative storage
+## DD-424: LZD Dynamic Range streaming decode validates before draining
 
-- Date: 2026-08-07
+- Date: 2026-07-27
 - Status: accepted
 
-Add an internal direction-specific profile calculator above DD-618 and DD-619.
-For known-size encoding derive the canonical LZMW/tANS stream header, largest
-raw frame `F`, reference ceiling `4F`, `K = ceil(4F/B)` tANS blocks, exact
-`528K` descriptor bytes, blockwise `2 + ceil(12n/8)` payload ceilings, at most
-`min(F - 1, maximum_entries)` encoder records, and the checked aggregate live
-workspace. Empty input requires no active-frame storage.
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= 8 * ceil(F/2)`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, token staging, private raw staging, aligned LZD phrase
+records, and expansion references, plus their checked aggregate workspace.
 
-For decoding derive conservative encoded-frame, reference, private-raw, block-
-view, phrase, and expansion capacities only from validated local limits.
-Partition the opaque typed region only after recomputing and matching every
-offset, total byte count, and alignment. Map profile failures to stable core
-errors and prove the returned regions by constructing the existing streaming
-pair. This changes no serialized representation and adds no C factory, CLI,
+Collect exactly the admitted descriptor and payload, invoke DD-420's
+transactional complete-frame decoder into private raw storage, and only then
+drain that immutable raw frame. Do not collect a later frame while validated
+raw bytes remain pending. Earlier complete frames may be published, but a
+malformed later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-425: LZD Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-27
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-423 and DD-424.
+For encoding, derive the largest raw frame, conservative
+`S = 8 * ceil(F/2)` token staging, `2S + 5` Dynamic Range payload, complete
+serialized-frame storage, and the exact LZD encoder-record count. Count every
+region in one checked aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded token staging,
+private raw staging, conservative phrase records, and phrase expansion
+references solely from validated local limits. Keep byte storage separate from
+caller-allocated, properly aligned typed storage. Partition helpers must verify
+the reported record counts, byte extent, expansion offset, and alignment before
+producing typed spans; empty encoder-record storage uses zero bytes and neutral
+alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.
+
+## DD-426: LZD Dynamic Range C ABI owns no caller storage
+
+- Date: 2026-07-27
+- Status: accepted
+
+Publish a fixed-width `marc_lzd_dynamic_range_config` and three functions:
+configuration initialization, direction-specific workspace requirements, and
+transform creation. Retain ABI version 1 because this adds new symbols and a
+new independently size-tagged structure without changing any existing layout
+or behavior.
+
+Map the C fields to DD-425 and return primary byte storage, combined secondary
+byte storage, and one separately aligned opaque views region. On creation,
+recompute the requirements, validate all pointers, capacities, reserved fields,
+and alignment, partition typed LZD records internally, and construct exactly
+the DD-423 encoder or DD-424 decoder. The transform borrows every workspace;
+no allocator callback or private record layout crosses the ABI.
+
+Add a pure C11 shared-library test that queries both directions, round-trips
+`ABABX`, and rejects each short region, misaligned views, null output handle,
+and nonzero reserved field. This step adds no CLI selector, benchmark, fuzz
+target, completion matrix, or interoperability entry.
+
+## DD-427: LZD Dynamic Range completion evidence is public-ABI only
+
+- Date: 2026-07-27
+- Status: accepted
+
+Reuse the LZD plus Adaptive Huffman public completion schedules through only
+the `marc_lzd_dynamic_range_*` configuration, requirements, factory, process,
+and destroy lifecycle. Change only the entropy payload ceiling to `2S + 5` and
+the public symbol family so evidence for the two LZD compositions cannot drift.
+
+Cover empty input, every one-byte value, all byte values, repetitive and
+patterned binary data, deterministic generated data, and lengths immediately
+around the 64-byte frame boundary. Require byte-identical repeated encoding,
+unchunked, one-byte, and mixed chunk schedules, round trip, and sticky
+`EndOfStream`.
+
+For a four-frame stream, independently corrupt the final sequence, truncate
+the final payload, and append trailing data. Each failure may publish exactly
+the first three validated frames, must preserve the final raw sentinel, and
+must repeat its terminal status and error positions. This step adds no CLI
+selector, benchmark, fuzz target, or interoperability entry.
+
+## DD-428: LZD Dynamic Range fuzzing is fixed-memory and dual-path
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add one bounded decoder fuzz entry that exercises both the private complete-
+frame decoder and the outer frame-committing streaming decoder. Cap accepted
+input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
+bytes, canonical LZD token staging at 4,096 bytes, range payload at 8,192
+bytes, phrase records at 512, and iterative expansion references at 513.
+Allocate every byte, phrase, and expansion region as a fixed local array before
+inspecting input.
+
+Derive chunk sizes only within those arrays and stop after
+`input_bound + output_bound + 32` calls. Abort on an invalid process result,
+zero progress reported as Progress, impossible NeedInput after final input, or
+the finite-call ceiling. Reuse the established bounded LZD harness with only
+the entropy identity and combined entry points parameterized.
+
+Permanent regressions must reject every proper prefix of a canonical stream,
+saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
+All failures preserve the raw output sentinel and remain sticky. This step adds
+no CLI, benchmark, or interoperability entry.
+
+## DD-429: LZD Dynamic Range CLI is a fixed public-ABI adapter
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the explicit `lzd-dynamic-range` selector to the existing transactional CLI
+without changing the default codec. Use a 65,536-byte raw frame, the canonical
+`S = 8 * ceil(F/2) = 262,144` LZD token ceiling, the
+`P = 2S + 5 = 524,293` Dynamic Range payload ceiling, at most 65,536 dictionary
+entries, and a 16-MiB aggregate buffered-byte policy.
+
+The CLI must initialize the public size-tagged config, set only public format
+parameters and hard limits, query all three direction-specific workspace
+regions and views alignment, and construct the transform through
+`marc_lzd_dynamic_range_create()`. It must not name private record types,
+recalculate opaque record sizes, or invoke a private C++ frame API.
+
+Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
+decoding failure, malformed input, strict trailing data, write failure, close
+failure, or rename failure must leave no requested destination or temporary
+file. Test binary and empty round trips, overwrite refusal, malformed input,
+and a valid stream with trailing data. This step adds no benchmark or
+interoperability entry.
+
+## DD-430: LZD Dynamic Range benchmark measures the public CLI profile
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add `lzd-dynamic-range` to the dependency-free benchmark with the exact DD-429
+public profile: 65,536-byte raw frames, 262,144 canonical LZD token bytes,
+524,293 range-payload bytes, 65,536 dictionary entries, and a 16-MiB aggregate
+policy.
+
+For input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `80 + 16*ceil(N/2) + 77K`. The pair term covers
+`S = 8*ceil(N/2)` and `P <= 2S + 5`; each frame contributes its 56-byte header,
+16-byte descriptor, and five termination bytes. Overflow must fail before
+allocating the encoded buffer.
+
+Construct both directions only through the public config initializer,
+requirements query, factory, process, and destroy lifecycle. Require one
+untimed byte-exact round trip before timing fresh transforms. Report encoded
+ratio, encode/decode throughput, all six queried workspace extents, and the
+larger three-region sum as descriptive peak workspace. Add a one-iteration
+smoke test with no performance threshold. This step adds no interoperability
+entry.
+
+## DD-431: Interoperability schema 18 appends LZD Dynamic Range once
+
+- Date: 2026-07-28
+- Status: accepted
+
+Define interoperability schema 18 and codec set `marc-cli-v18` as the exact
+twenty-eight-entry schema-17 order followed by `lzd-dynamic-range`. Retain the
+deterministic 8,193-byte fixture and all existing manifest fields. The
+generator must locally decode every archive before publishing the manifest.
+
+The verifier must require exactly twenty-nine archives in canonical order,
+validate all sizes and SHA-256 values, decode each foreign archive, and require
+byte-identical local re-encoding. Unknown, duplicate, missing, reordered, or
+extra profiles remain errors.
+
+Keep schemas 1 through 17 as explicit frozen codec sets. The compatibility test
+must generate schema 18, reject a reordered schema-18 manifest, derive and
+verify schema 17, then continue the existing schema-16-through-1 chain. This
+step records local admission only; external cross-platform evidence requires
+artifacts produced after push.
+
+## DD-432: LZMW Dynamic Range entropizes finalized reference bytes
+
+- Date: 2026-07-28
+- Status: accepted
+
+Reserve `lzmw-dynamic-range` for LZMW variant 1 followed by Dynamic Range
+Coder variant 1 under format version 1.0. Preserve the standalone 16-byte LZMW
+parameters, empty entropy parameters, and fixed four-byte little-endian
+references. Complete the reference byte stream before entropy processing;
+Dynamic Range consumes every byte without interpreting reference boundaries.
+Reset both the LZMW phrase dictionary and adaptive order-0 range model at every
+outer frame.
+
+For raw frame size `F`, use checked reference staging bound `S = 4F` and
+Dynamic Range payload bound `P = 2S + 5 = 8F + 5`. Bound generated phrases by
+the lesser of `max(F - 1, 0)`, the configured LZMW maximum, and the local
+decoder limit; bound the iterative expansion stack by that phrase count plus
+one for a nonempty frame. Retain the LZMW composition format cap
+`F <= 2^20`. The reference profile uses `F = 65,536`, giving `S = 262,144`,
+`P = 524,293`, at most 65,535 generated phrases, and at most 65,536 expansion
+references.
+
+Encoding freezes canonical LZMW reference bytes before range planning.
+Decoding range-decodes exactly the declared reference-byte count into private
+staging, then applies ordinary LZMW reference alignment, prior-reference,
+adjacent-phrase graph, and exact-raw-extent validation before iterative private
+reconstruction and any raw publication. Error precedence is generic header and
+extent validation, workspace admission, range descriptor and payload
+validation, LZMW validation, then private reconstruction and publication.
+
+For raw `A`, independently freeze LZMW reference `41 00 00 00`; Dynamic Range
+variant 1 over those four bytes produces payload
+`00 40 FF FF BF 00 00 00` and descriptor `(4, 8, 0)`. Record the complete
+80-byte frame in the format document and prove it by composing only the
+existing standalone LZMW encoder, Dynamic Range encoder, and generic
+serializers. This decision specifies bytes and a reserved name only; it does
+not publish a combined implementation or interoperability entry.
+
+## DD-433: LZMW Dynamic Range validation stops at the reference boundary
+
+- Date: 2026-07-28
+- Status: accepted
+
+Admit the first combined `lzmw-dynamic-range` implementation as a strict
+bounded complete-frame validator only. Validate the exact stream profile,
+LZMW parameters, sequence, generic frame header, exact complete-frame extent,
+checked `S = 4F` reference bound, four-byte alignment, one 16-byte Dynamic
+Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
+aligned phrase bytes, and aggregate validation workspace before entropy
+output.
+
+Parse the descriptor only after admission succeeds. Range-decode exactly the
+declared reference-byte count into private caller-owned staging with exact
+payload exhaustion, then invoke the existing LZMW validator over that complete
+span. Preserve LZMW's literal/prior-reference validation, bounded adjacent-
+phrase construction, checked phrase lengths, exact declared raw extent, token
+and dictionary-entry counts, stable format error, and phrase-table
+requirements.
+
+On success, reduce the reported expansion-stack ceiling from the conservative
+phrase capacity to the actual generated-phrase count plus one for a nonempty
+frame. Reconstruct and publish no raw byte. On every failure, the caller must
+discard reference and phrase workspace. This decision adds no private raw
+decoder, transactional publication, encoder, stream transform, public factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-434: LZMW Dynamic Range reconstruction remains private
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add a bounded complete-frame decoder that retains DD-433's exact validation
+order and reconstructs only into caller-owned private raw staging. Before
+entropy output, require the complete raw extent and the conservative expansion
+stack derived from phrase capacity and count their bytes with the descriptor,
+payload, reference staging, and aligned phrase records against
+`max_internal_buffered_bytes`.
+
+After strict range exhaustion and complete LZMW validation succeed, reduce the
+active expansion span to the actual generated-phrase count plus one for a
+nonempty frame. Invoke the existing iterative LZMW decoder over only that
+validated graph. Propagate its stable validation, format, and decode errors;
+an unexpected reconstruction failure is a distinct combined-frame error.
+
+No caller-visible output span exists at this boundary. On every failure, the
+caller discards reference, phrase, expansion, and raw staging. Prove a literal
+frame and a phrase-reference frame, one-entry-short raw and expansion storage,
+aggregate workspace one byte short, and unchanged raw guards after descriptor
+or reference failure. This decision adds no publication boundary, encoder,
+streaming transform, public factory, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-435: LZMW Dynamic Range frame publication is transactional
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal complete-frame decoder that accepts a distinct caller-visible
+output span. Before descriptor parsing or entropy output, retain all DD-433 and
+DD-434 admission checks and additionally require capacity for the complete
+declared raw frame. A one-byte-short output must leave reference staging,
+phrase records, expansion stack, private raw staging, and caller output
+unmodified.
+
+After strict range exhaustion, complete LZMW graph validation, and successful
+iterative private reconstruction, copy exactly `raw_size` bytes from private
+raw staging to caller output once. Never expose partially reconstructed raw
+bytes. Descriptor, payload, reference, phrase, workspace, limit, or
+reconstruction failure leaves caller output unchanged.
+
+Prove publication for the single-literal vector and a generated-phrase frame.
+Prove preflight atomicity with short output and post-admission atomicity with
+descriptor and forward-reference failures. This decision adds no frame
+encoder, streaming transform, public factory, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-436: LZMW Dynamic Range planning freezes reference bytes
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal exact-frame planner for the inverse of DD-433 through DD-435.
+Validate the exact stream profile, LZMW parameters, nonempty input extent, and
+frame-local bounds. Determine and require the bounded LZMW encoder-record
+capacity before reference staging can change. Plan the deterministic parse,
+require the exact checked `S <= 4F` reference extent and staging capacity, then
+serialize all canonical four-byte references into caller-owned staging.
+
+Plan Dynamic Range only over that frozen reference span. Require its exact
+payload to fit `P <= 2S + 5` and 32-bit frame fields. Count encoder records,
+reference staging, the 16-byte descriptor, and exact payload against
+`max_internal_buffered_bytes`. Validate the synthesized generic frame header
+with sequence and already-committed output context, and report the checked
+complete frame extent without writing serialized output.
+
+Prove the exact raw-`A` reference, descriptor, payload and 80-byte extent;
+repeat a generated-phrase plan byte-identically; reject encoder records and
+reference staging one entry short before staging mutation; and reject aggregate
+workspace one byte short, empty input, and a frame-size mismatch. This decision
+adds no serialized frame encoder, streaming transform, public factory, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-437: LZMW Dynamic Range encoding is plan-first and deterministic
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-436. Invoke the exact
+planner first so canonical LZMW reference bytes, exact range payload size,
+generic frame fields, and aggregate workspace are fixed before serialized
+output is considered. Require destination capacity for the complete planned
+extent before writing any serialized byte.
+
+Repeat Dynamic Range planning over the frozen reference span and require its
+payload extent to match DD-436. Serialize the generic frame header and 16-byte
+descriptor explicitly, then encode the exact payload into its planned region.
+The independent raw-`A` input must reproduce the complete 80-byte vector.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Capacity and all planner failures leave serialized
+output unchanged. This step adds no streaming transform, profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
+entry.
+
+## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-437. Emit the ordinary
+64-byte stream header and 16-byte LZMW parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the deterministic exact-frame encoder, and
+drain that immutable frame under arbitrary output starvation before accepting
+bytes for the next frame.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `4F` reference staging, and LZMW encoder
+records. Before encoding each collected frame, count raw collection, exact
+reference staging, exact serialized frame, and encoder records in one checked
+aggregate and require complete encoded-frame storage.
+
+Input and output chunking alone must not change serialized bytes. `Flush` keeps
+the logical stream open and does not shorten a frame. Retain `EndInput` while
+the prefix or a frame drains, require its input to complete the declared known
+size, reject `ResetBlock` and unknown flags, and make ended and error results
+sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-439: LZMW Dynamic Range streaming decode validates before draining
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder. Incrementally collect
+and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
+Before admitting the frame body, enforce `S <= 4F`,
+`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
+complete encoded frame, reference staging, private raw staging, aligned LZMW
+phrase records, and expansion references, plus their checked aggregate
+workspace.
+
+Collect exactly the admitted descriptor and payload, invoke DD-434's private
+complete-frame decoder into private raw storage, and only then drain that
+immutable raw frame. Do not collect a later frame while validated raw bytes
+remain pending. Earlier complete frames may be published, but a malformed
+later frame must publish none of its own bytes.
+
+Require exact known-size completion and reject every prefix, header, or body
+truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
+unknown flag. Retain `EndInput` while a validated frame drains and make ended
+and error states sticky. This step adds no profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion matrix, or interoperability entry.
+
+## DD-440: LZMW Dynamic Range profiles separate byte and typed storage
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-438 and DD-439.
+For encoding, derive the largest raw frame, conservative `S = 4F` reference
+staging, `2S + 5` Dynamic Range payload, complete serialized-frame storage,
+and the exact LZMW encoder-record count. Count every region in one checked
+aggregate before returning any requirement.
+
+For decoding, derive complete encoded-frame collection, bounded reference
+staging, private raw staging, conservative phrase records, and phrase expansion
+references solely from validated local limits. Keep byte storage separate from
+caller-allocated, properly aligned typed storage. Partition helpers must verify
+the reported record counts, byte extent, expansion offset, and alignment before
+producing typed spans; empty encoder-record storage uses zero bytes and neutral
+alignment one.
+
+This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
+completion matrix, or interoperability entry.
+
+## DD-441: LZMW Dynamic Range C ABI borrows all workspace
+
+- Date: 2026-07-28
+- Status: accepted
+
+Publish `marc_lzmw_dynamic_range_config` with fixed-width fields and matching
+configuration initialization, direction-specific workspace requirements, and
+opaque-transform factory functions. Retain C ABI version 1 and the existing
+status, process, end-state, and destroy contracts.
+
+Map encoding to DD-440's raw-frame primary region, reference-plus-encoded-frame
+secondary region, and aligned encoder records. Map decoding to its encoded-
+frame primary region, reference-plus-private-raw secondary region, and aligned
+phrase-plus-expansion records. Recalculate the complete profile during factory
+creation, validate all pointers, capacities, reserved fields, and alignment,
+partition typed records privately, and borrow every region until transform
+destruction. No allocator callback or C++ record type crosses the ABI.
+
+Prove the lifecycle from pure C11 with raw `ABABX` and two-byte frames. Require
+exact queried small-limit regions, a complete round trip, a null output handle
+on every failed creation, and rejection of every one-byte-short region,
+misaligned views, null transform output, and nonzero reserved state. This
+decision adds no completion matrix, fuzz target, CLI selector, benchmark, or
+interoperability entry.
+
+## DD-442: LZMW Dynamic Range completion is public-ABI only
+
+- Date: 2026-07-28
+- Status: accepted
+
+Audit only the published C configuration, requirements query, factory,
+process, and destroy functions. Use 64-byte raw frames, the checked 256-byte
+canonical-reference ceiling, the `2S + 5` Dynamic Range payload bound, 63
+dictionary entries, and a 65,536-byte aggregate limit. Allocate both
+direction-specific opaque views from queried byte counts and alignment;
+encoding zero or one raw byte requires no generated LZMW entry and therefore
+no views bytes.
+
+Cover empty input, every one-byte value, the ordered byte alphabet, repeated
+data, binary patterns, deterministic pseudo-random bytes, and lengths 63, 64,
+and 65. Require repeated encoding to be byte-identical and terminal success to
+be sticky. For a 193-byte four-frame stream, require exact bytes and round
+trips under unchunked, one-byte, and mixed chunk schedules.
+
+Independently corrupt the final frame sequence, truncate its final byte, and
+append trailing data. Every error must be sticky, preserve byte and bit
+positions, publish exactly the first 192 validated bytes, and leave the final
+output sentinel unchanged. This completes public-ABI evidence only; it adds no
+fuzz target, CLI selector, benchmark, or interoperability entry.
+
+## DD-443: LZMW Dynamic Range fuzzing fixes every decoder region
+
+- Date: 2026-07-28
+- Status: accepted
+
+Add one bounded decoder fuzz entry point that truncates supplied input to
+8,192 bytes and exercises both the exact complete-frame private decoder after
+a valid 80-byte prefix and the incremental stream decoder for every case.
+Fix total raw output at 4,096 bytes, one raw frame at 1,024 bytes, canonical
+LZMW reference staging at 4,096 bytes, compressed payload at 8,192 bytes, the
+phrase table at 1,023 records, and the iterative expansion stack at 1,024
+references. Include every byte and typed region in one fixed aggregate limit
+before processing metadata.
+
+Derive partial input and output chunks only from current bytes, cap processing
+at `8,192 + 4,096 + 32` calls, and abort only for an invalid process result or
+impossible stall. Retain one repository-authored truncated-magic seed and keep
+generated mutations outside the source tree.
+
+Add permanent ordinary-test regressions requiring every proper truncation of
+the canonical `ABABX` stream, saturated generic frame extents, and a nonzero
+final reserved byte in the 16-byte Dynamic Range descriptor to fail
+atomically with sticky category and position. This step adds no CLI selector,
+benchmark, or interoperability entry.
 
 ## DD-444: LZMW Dynamic Range receives a transactional CLI selector
 
@@ -9202,6 +9819,2527 @@ streaming round trip. This decision adds no C requirements query, public
 factory, CLI selector, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-485: LZ78 rANS C factory exposes only opaque workspace bytes
+
+- Date: 2026-07-31
+- Status: accepted
+
+Expose size-tagged `marc_lz78_rans_config`, initializer, workspace query, and
+factory under ABI version 1. Retain the common three-region lifecycle. Encode
+reports raw-frame collection as primary, token staging plus complete frame as
+secondary, and aligned LZ78 encoder records as opaque views. Decode reports
+encoded-frame collection as primary, token plus private raw staging as
+secondary, and the checked rANS-view/padding/LZ78-phrase layout as opaque
+views.
+
+The query must map DD-484 errors stably. The factory first invokes that public
+query, rejects null, short, or misaligned regions, repeats the profile
+calculation, rederives the opaque layout, constructs only with `nothrow`, and
+leaves the handle null on every failure. Direction remains immutable. Because
+the common rANS validator applies `max_frame_size` to its own decoded byte
+block, require local policy to admit the larger of the raw outer-frame extent
+and configured entropy-block extent.
+
+Prove the complete pure-C11 lifecycle with two-byte raw frames and five-byte
+rANS blocks, queried workspaces, three-frame round trip, every one-byte-short
+region, misalignment, null handle output, and reserved-field rejection. This
+decision adds no completion matrix, fuzz target, CLI selector, benchmark,
+completion claim, or interoperability entry.
+
+## DD-486: LZ78 rANS completion is proved through the public ABI
+
+- Date: 2026-07-31
+- Status: accepted
+
+Exercise the published `marc_lz78_rans_*` lifecycle rather than private C++
+constructors. Use 64-byte raw frames, 64-byte entropy blocks, the conservative
+`S=8F`, `K=ceil(S/B)`, exact `528K` descriptor, and `S+8K` payload bounds,
+with all primary, secondary, and aligned opaque-view regions obtained only
+from the requirements query.
+
+Require deterministic round trips for empty input, all 256 one-byte values,
+`00..FF`, repeated zeros, a four-symbol binary pattern, generated binary data,
+and sizes immediately below, equal to, and above the frame boundary. For a
+193-byte multi-frame stream, require byte-identical encoding and exact decode
+under `(1,1)`, `(7,5)`, and `(13,17)` input/output chunk schedules. Repeated
+calls after completion must remain `EndOfStream` with zero progress.
+
+Locate the fourth frame through checked generic-frame extents. Independently
+corrupt its sequence, truncate its final byte, and append trailing data. Each
+decoder must publish exactly the first three verified frames, preserve the
+sentinel for the failing final byte, and repeat the same terminal status and
+error position without progress. This decision adds no fuzz target, CLI
+selector, benchmark, or interoperability entry.
+
+## DD-487: LZ78 rANS fuzzing fixes both decoder boundaries
+
+- Date: 2026-07-31
+- Status: accepted
+
+Submit at most 8,192 arbitrary serialized bytes independently to the private
+complete-frame staging decoder after a valid 80-byte profile prefix and to the
+published C streaming decoder. Fix total output at 4,096 bytes, one raw frame
+at 1,024 bytes, canonical token staging at 8,192 bytes, rANS payload at 16,384
+bytes, entropy metadata at eight views, and LZ78 state at 1,024 phrase records.
+Count encoded-frame, token, raw, views, and phrase extents into one conservative
+local policy before parsing input.
+
+The public path must obtain its exact three-region sizes and alignment from
+`marc_lz78_rans_workspace_requirements()`, but may bind them only when they fit
+compile-time fixed arrays. Derive partial input and output chunks from bounded
+input bytes and impose a fixed call ceiling. Abort on invalid process results,
+zero-progress protocol violations, input exhaustion reported as `NeedInput`,
+or call-budget exhaustion; ordinary decoder rejection is a successful fuzz
+case.
+
+Persist repository-authored regressions for every proper truncation of the
+canonical `ABABX` stream, saturated generic-frame extent fields, and a nonzero
+rANS descriptor reserved byte. Each must publish no raw byte, preserve the
+caller sentinel, and repeat its stable terminal error. This decision changes
+no stream representation, public ABI, CLI, benchmark, or interoperability
+entry.
+
+## DD-488: LZ78 rANS CLI binds one fixed public profile
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add explicit selector `lz78-rans` to the transactional CLI and reach the codec
+only through `marc_lz78_rans_config_init()`, its public requirements query,
+factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
+65,536 bytes. The canonical LZ78 token ceiling is 524,288 bytes, producing at
+most eight rANS blocks, 4,224 descriptor bytes, and a 524,352-byte payload.
+Permit at most 65,536 generated phrase entries and use a conservative 4-MiB
+aggregate internal-buffer policy.
+
+The CLI may state these public format bounds but must not reproduce encoder,
+rANS-view, or phrase-record layouts. Allocate primary, secondary, and aligned
+opaque views only from the direction-specific public query. Retain known-size
+input, immutable direction, overwrite refusal, temporary-output cleanup,
+strict malformed and trailing-data rejection, and atomic destination rename.
+
+Prove a multi-frame binary round trip, overwrite refusal, malformed-input
+cleanup, later trailing-data cleanup, and empty input through the existing
+generic CLI regression. This decision adds no benchmark adapter or
+interoperability entry.
+
+## DD-489: LZ78 rANS benchmark verifies before measuring
+
+- Date: 2026-07-31
+- Status: accepted
+
+Add `lz78-rans` to the dependency-free benchmark runner using exactly DD-488's
+fixed public profile. For raw input extent `N` and nonempty 65,536-byte frame
+count `K`, reserve checked complete-stream capacity
+`80 + 8N + 4344K`. The per-frame term consists of the 56-byte generic header,
+eight 528-byte rANS descriptors, and eight eight-byte final states. Short
+frames may use fewer bytes; the bound remains deterministic and conservative.
+
+Initialize encoder and decoder configurations independently, query all three
+workspace regions and opaque alignment through the public C ABI, encode once,
+decode the exact encoded extent once, and require byte equality before timing.
+Each timed sample constructs a fresh transform and invokes only the common
+one-shot process boundary while the clock is active. Report complete-stream
+ratio, directional throughput, every queried region, and the larger
+directional workspace sum. Impose no performance threshold. This decision
+adds no interoperability entry.
+
+## DD-490: Interoperability schema 22 appends LZ78 rANS
+
+- Date: 2026-07-31
+- Status: accepted
+
+Define interoperability schema 22 and codec set `marc-cli-v22` as the exact
+frozen schema-21 profile order followed once by `lz78-rans`. The unchanged
+transactional CLI profile becomes archive 33 over the existing deterministic
+8,193-byte fixture. Do not add, remove, reorder, or reinterpret any earlier
+schema entry.
+
+The generator must locally decode every archive before publishing its size and
+SHA-256. The verifier must require exactly thirty-three archives in canonical
+order, validate leaf names, extents, and hashes, decode each foreign archive,
+and require byte-identical local re-encoding. The compatibility test must
+reject a reordered schema-22 manifest, convert schema 22 to the frozen schema
+21 set by removing only `lz78-rans`, and continue verifying schemas 21 through
+1 unchanged. Cross-platform interoperability remains unproven until external
+artifacts produced at one complete revision pass the established four
+directions.
+
+## DD-491: LZW rANS preserves finalized packed codes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Reserve `lzw-rans` for LZW variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZW parameter extension,
+empty entropy parameters, and canonical LSB-first variable-width codes.
+Complete the packed byte stream, including final zero padding, before entropy
+processing. An rANS block may split a packed code but cannot split a byte or
+cross an outer frame. Reset the LZW dictionary and every rANS model and state
+at each frame.
+
+For raw frame extent `F` and maximum code width `W`, require packed extent
+`0 < S <= ceil(FW/8)`, `K = ceil(S/B)` for nonzero rANS block size `B`,
+`8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
+dictionary entries by `F - 1`, `2^W - 256`, the configured entry limit, and
+the local decoder limit. Preserve the existing 2^20-byte LZW composition
+frame cap.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly
+`S` private packed bytes. Only then validate width transitions, the first
+literal, ordinary and `KwKwK` references, checked phrase lengths, dictionary
+growth, exact packed and raw extents, and zero high padding before any raw
+reconstruction or publication.
+
+For raw `A`, independently freeze LZW packed bytes `41 00`. Their normalized
+rANS model is `00:2048, 41:2048`, final-state payload is
+`00 08 00 00 02 00 00 00`, and the complete frame is 592 bytes. Prove this
+by composing only the existing standalone LZW encoder, scalar rANS encoder,
+and generic serializers. This decision specifies bytes and a reserved name
+only; it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-492: LZW rANS validates all entropy before packed codes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Implement the first `lzw-rans` combined component as an internal bounded
+complete-frame validator. Admit the exact serialized frame, one
+`RansBlockView` per declared block, complete packed-byte staging, and the
+conservative LZW phrase-record count before parsing any descriptor or
+producing entropy output. Count descriptors, payload, packed staging, views,
+and phrase records in one checked aggregate workspace bound.
+
+Require the exact DD-491 packed ceiling, block count, descriptor extent, and
+payload interval. Parse the full descriptor region, then validate every block
+state path and exact payload exhaustion without output. If any block fails,
+leave the entire packed staging region unchanged. Only after all blocks
+validate may the component reconstruct all packed bytes in order and invoke
+the existing LZW validator for width transitions, first literal, ordinary and
+`KwKwK` references, dictionary growth, exact raw extent, trailing bits, and
+zero high padding.
+
+Report stable frame, block, and LZW error context. Reconstruct and publish no
+raw bytes. Prove the independent 592-byte vector, a block boundary inside its
+nine-bit code, every truncation, trailing data, short workspaces, aggregate
+rejection before mutation, malformed later-block atomicity, invalid LZW
+padding after successful entropy decode, impossible extents, and unsupported
+pipeline rejection. This step adds no raw decoder, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-493: LZW rANS reconstructs only after complete validation
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a bounded private-raw decoder above DD-492. Require complete raw staging
+capacity and count that extent in the aggregate workspace before descriptor
+parsing or entropy output. Reuse DD-492 unchanged to validate every rANS block,
+reconstruct the complete packed LZW region, and validate the complete code
+graph. Only then invoke the existing iterative LZW decoder into the admitted
+raw staging span.
+
+Publish no caller-visible bytes. On any error the caller discards all private
+workspaces; insufficient raw capacity or aggregate memory must leave packed
+and raw staging unchanged. Prove the independent raw-`A` frame, phrase and
+`KwKwK` reconstruction across rANS block boundaries, preflight failures, and
+invalid-code raw atomicity. This step adds no transactional public output,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-494: LZW rANS publication is one post-success copy
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add an internal transactional complete-frame decoder above DD-493. Require a
+caller-visible output span at least as large as the declared raw frame and
+check it with all private capacities before parsing a descriptor or mutating
+any workspace. Caller output is destination storage and does not count toward
+the internal-buffer aggregate.
+
+Run the unchanged DD-492 validation and DD-493 private reconstruction. Only
+after both succeed, copy exactly the declared raw extent from private staging
+to output once, leaving excess output capacity untouched. Every frame,
+entropy, LZW, capacity, aggregate, or reconstruction error must preserve all
+caller output. This step adds no encoder, streaming transform, profile
+calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-495: LZW rANS planning freezes packed codes before entropy
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a bounded write-free exact-frame planner above DD-494. Complete
+deterministic LZW parsing using caller-owned encoder records, admit the exact
+packed extent, and serialize the full canonical LSB-first code stream including
+final zero padding into separate staging. Only those immutable packed bytes may
+be divided into scalar rANS blocks; block boundaries remain independent of
+code boundaries.
+
+Plan every rANS block without emitting descriptors or payloads, sum exact
+payload and `528K` descriptor extents with checked arithmetic, and count
+encoder records, packed staging, descriptors, and payload in one aggregate
+workspace total. Validate the synthesized generic header and return the exact
+complete-frame extent without accepting serialized output. Prove the frozen
+592-byte raw-`A` extent, deterministic `ABABABA` codes across three blocks,
+capacity atomicity, aggregate rejection, and raw-frame mismatch. This step
+adds no frame encoder, streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-496: LZW rANS encoding emits only a completed plan
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the bounded complete-frame encoder above DD-495. Run the exact planner to
+completion and admit the full serialized destination before writing any frame
+byte. Serialize the generic header explicitly, then repeat each deterministic
+rANS block plan over the frozen packed LZW staging and require every payload
+extent to match the previously summed plan.
+
+Serialize each fixed descriptor and exact payload into its precomputed region,
+then require final packed and payload offsets to match the plan. Raw `A` must
+reproduce the independent 592-byte frame exactly. A multi-block `ABABABA`
+frame must be byte-identical across runs and decode transactionally to the
+source. A one-byte-short output must remain wholly unchanged. This step adds
+no streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-497: LZW rANS streaming encode buffers one exact frame
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the first bounded known-size streaming encoder above DD-496. Emit the
+canonical 64-byte stream header and 16-byte LZW parameter extension, collect at
+most one raw frame, plan and encode that complete frame into private immutable
+storage, and drain it fully before accepting input for a later frame.
+
+Construction validates the fixed variant-1 profile, declared original size,
+largest raw frame, conservative `ceil(FW/8)` packed capacity, and required LZW
+encoder records. Per-frame aggregate accounting includes raw staging, actual
+packed staging, the exact serialized frame, and encoder records. Arbitrary
+input/output chunking must preserve canonical bytes; `Flush` leaves a partial
+frame open; retained `EndInput` drains all pending bytes; and `ResetBlock`,
+unknown flags, premature end, or excess input fail stably. This step adds no
+streaming decoder, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-498: LZW rANS streaming decode publishes complete frames
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the bounded known-size streaming decoder opposite DD-497. Collect and
+parse the canonical 80-byte prefix, then collect one 56-byte frame header.
+Before accepting its body, derive and validate the packed-code ceiling, rANS
+block count and extents, exact serialized-frame size, raw staging, rANS views,
+LZW phrase records, and aggregate internal storage.
+
+Decode only after the entire declared frame is present. Reuse the private
+complete-frame decoder, drain only the fully validated raw frame, and do not
+collect a later header until draining finishes. Retain `EndInput` during the
+drain and reject truncation, trailing bytes, `ResetBlock`, and unknown flags.
+Corruption in a later frame may leave earlier committed frames visible but
+must publish none of the malformed frame. This step adds no profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
+## DD-499: LZW rANS profiles separate byte and typed storage
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add an internal direction-specific workspace calculator above DD-497 and
+DD-498. Encoding derives largest raw frame `F`, conservative packed staging
+`S = ceil(FW/8)`, `K = ceil(S/B)` rANS blocks, the complete
+`56 + 528K + S + 8K` frame ceiling, and the exact LZW encoder-record count.
+Count raw, packed, complete-frame, and record bytes in one checked aggregate.
+
+Decoding derives serialized-frame, packed, and private-raw byte regions from
+validated local limits. Place the maximum rANS view count first in one aligned
+opaque region, align upward, then place the conservative LZW phrase count.
+Partition helpers must reject altered requirements, insufficient storage, and
+misalignment. Empty encoding has zero regions and alignment one. Prove that the
+returned requirements directly construct the bounded streaming round trip.
+This step adds no C requirements query, public factory, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-500: LZW rANS C ABI retains three opaque workspaces
+
+- Date: 2026-08-01
+- Status: accepted
+
+Expose the fixed LZW variant-1 plus scalar-rANS variant-1 profile through a
+size-tagged `marc_lzw_rans_config`, a direction-specific workspace query, and
+an immutable-direction factory. Include known original size, outer frame size,
+entropy block size, maximum LZW width, block-count limit, and the existing hard
+limits. Retain ABI version 1 because this is an additive symbol and type set.
+
+Use the common three-workspace ABI. Primary is raw-frame or serialized-frame
+storage. Secondary is packed staging followed by encoded-frame or private-raw
+storage. Aligned opaque views contain encoder entries or the decoder's rANS
+views, padding, and LZW phrases. The query and factory must both use DD-499,
+reject wrong metadata, reserved fields, short regions, and misalignment, and
+publish a null handle on every construction failure. Prove a pure-C five-byte,
+three-frame round trip and all three short-region failures. This step adds no
+completion matrix, fuzz target, CLI, benchmark, or interoperability entry.
+
+## DD-501: LZW rANS completion evidence stays on the C ABI
+
+- Date: 2026-08-01
+- Status: accepted
+
+Establish the initial public-ABI completion matrix using only DD-500's config,
+requirements query, factory, process, and destroy lifecycle. Reuse the common
+LZW evidence schedules while supplying the scalar-rANS payload and descriptor
+ceiling plus 64-byte entropy-block configuration. This keeps input classes,
+chunk schedules, terminal assertions, and malformed-frame publication checks
+identical across admitted LZW compositions.
+
+Cover empty input, all 256 one-byte values, all byte values in sequence,
+repeated bytes, repeated multi-byte patterns, deterministic pseudo-random data,
+and lengths 63, 64, and 65. Require byte-identical multi-frame encoding under
+one-byte and mixed input/output chunking, exact decode, sticky ended state, and
+sticky malformed state. Corrupt, truncate, and extend the fourth frame of a
+193-byte stream; require exactly the first 192 bytes to remain committed and
+the final byte untouched. This step adds no fuzz target, CLI, benchmark,
+completion claim beyond the public-ABI matrix, or interoperability entry.
+
+## DD-502: LZW rANS fuzzing crosses private and public boundaries
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add one bounded decoder fuzz target that presents each input to both the
+complete-frame decoder-visible boundary and DD-500's public C streaming
+decoder. Fix input at 8 KiB, total raw publication at 4 KiB, frame size at
+1 KiB, packed LZW staging at 4 KiB, rANS views at eight, phrase records from
+the packed-code ceiling, and all aggregate storage before accepting input.
+Never allocate from a fuzz-controlled extent.
+
+Drive the public decoder with deterministic variable chunks and a call budget
+bounded by maximum input plus maximum output plus constant protocol overhead.
+Abort on invalid process accounting, a zero-progress `Progress`, post-end
+input starvation, workspace-calculation disagreement, or call-budget
+exhaustion. Ordinary malformed input remains a successful fuzz iteration.
+Retain permanent GoogleTest regressions for every truncation of a canonical
+stream, saturated generic-frame extents, and nonzero rANS descriptor reserved
+metadata; every case must publish zero bytes and retain one stable sticky
+error. This step adds no CLI selector, benchmark, completion claim beyond the
+fuzz boundary, or interoperability entry.
+
+## DD-503: LZW rANS CLI binds one fixed public profile
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add explicit selector `lzw-rans` to the transactional CLI and reach the codec
+only through `marc_lzw_rans_config_init()`, its public requirements query,
+factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
+65,536 bytes and maximum code width at 16. The packed-code ceiling is 131,072
+bytes, producing at most two rANS blocks, 1,056 descriptor bytes, and a
+131,088-byte payload. Admit at most 65,280 generated dictionary entries and
+use a conservative 8-MiB aggregate internal-buffer policy.
+
+The CLI may supply these public bounds but must not reproduce LZW encoder,
+phrase, or rANS-view layouts. Allocate primary, secondary, and aligned opaque
+views only from the direction-specific public query. Retain known-size input,
+immutable direction, overwrite refusal, sibling `.tmp` cleanup, strict
+malformed and trailing-data rejection, and atomic destination rename.
+
+Prove a multi-frame binary round trip, overwrite refusal, malformed-input
+cleanup, trailing-data cleanup, and empty input through the common CLI
+regression under both supported Windows compilers. This step adds no benchmark
+adapter or interoperability entry.
+
+## DD-504: LZW rANS benchmark verifies before timing
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add `lzw-rans` to the dependency-free benchmark runner using exactly DD-503's
+public profile. For input extent `N` and nonempty frame count `K`, allocate
+checked encoded capacity `80 + 2N + 1128K`: two packed LZW bytes per raw byte,
+one 56-byte generic header, two 528-byte rANS descriptors, and two eight-byte
+final states per frame.
+
+Query encoder and decoder primary, secondary, and aligned opaque views
+independently through the public C ABI. Encode once, decode the exact encoded
+extent once, and require byte equality before timing. Each timed sample creates
+a fresh transform, measures only one complete process call, and destroys the
+transform after stopping the clock. Report complete-stream ratio, directional
+throughput, every queried region, and the larger directional workspace sum.
+Impose no performance threshold. This decision adds no interoperability entry.
+
+## DD-505: Interoperability schema 23 appends LZW rANS
+
+- Date: 2026-08-01
+- Status: accepted
+
+Define interoperability schema 23 and codec set `marc-cli-v23` as the exact
+frozen schema-22 profile order followed once by `lzw-rans`. The unchanged
+transactional CLI profile becomes archive 34 over the existing deterministic
+8,193-byte fixture. Do not add, remove, reorder, or reinterpret an earlier
+schema entry.
+
+The generator must locally decode every archive before publishing its size and
+SHA-256. The verifier must require exactly thirty-four archives in canonical
+order, validate leaf names, extents, and hashes, decode each foreign archive,
+and require byte-identical local re-encoding. The compatibility test must
+reject a reordered schema-23 manifest, convert schema 23 to the frozen schema
+22 set by removing only `lzw-rans`, and continue verifying schemas 22 through
+1 unchanged. Cross-platform interoperability remains unproven until external
+artifacts produced at one complete revision pass the established four
+directions.
+
+## DD-506: LZD rANS preserves finalized reference pairs
+
+- Date: 2026-08-01
+- Status: accepted
+
+Reserve `lzd-rans` for LZD variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZD parameter extension,
+empty entropy parameters, and canonical eight-byte little-endian reference
+pairs. Complete the token byte stream before entropy processing. An rANS block
+may split a four-byte reference or eight-byte token but cannot split a byte or
+cross an outer frame. Reset the LZD dictionary and every rANS model and state
+at each frame.
+
+For nonempty raw frame extent `F`, require actual token extent
+`0 < S <= 8 * ceil(F/2)` with `S mod 8 = 0`, `K = ceil(S/B)` for nonzero rANS
+block size `B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`.
+Bound generated phrase records by the lesser of `floor(F/2)` and the configured
+entry limit, expansion references by that phrase count plus one, and raw frames
+by 2^20 bytes.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly `S`
+private token bytes. Only then validate eight-byte alignment, left and right
+references, terminal absence, checked phrase lengths, dictionary growth, and
+exact raw extent before any raw reconstruction or publication.
+
+For raw `A`, independently freeze LZD token bytes
+`41 00 00 00 FF FF FF FF`. Their normalized rANS model is
+`00:1536, 41:512, FF:2048`, payload is
+`82 27 A1 BD 04 00 00 00 00`, and the complete frame is 593 bytes. Prove this
+by composing only the existing standalone LZD encoder, scalar rANS encoder,
+and generic serializers. This decision specifies bytes and a reserved name
+only; it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-507: LZD rANS validates all entropy before the phrase graph
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the first complete-frame validator for DD-506 without reconstructing or
+publishing raw bytes. Admit the complete serialized extent, exact rANS view
+count, full token staging, bounded LZD phrase records, and their checked
+aggregate workspace before parsing descriptors or producing entropy output.
+Require DD-506's exact token ceiling and alignment, block count, descriptor
+extent, payload interval, pipeline, parameter, sequence, and frame bounds.
+
+Parse the complete descriptor region, then validate every block state path,
+terminal state, and exact payload exhaustion without output. If any block
+fails, leave the entire token staging region unchanged. Only after all blocks
+validate may the implementation decode each block into its predetermined
+private token slice. Require the slices to fill exactly the declared token
+extent, then invoke the ordinary LZD validator over the complete span.
+
+Report stable outer, controller, entropy, and LZD validation categories plus
+the failing block, token, and byte positions where available. Prove the
+independent 593-byte vector, blocks that split references and tokens, later-
+descriptor rejection before staging mutation, valid entropy carrying an
+invalid forward LZD reference, short typed and byte workspaces, truncation,
+trailing bytes, and unsupported pipelines. This step adds no raw decoder,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-508: LZD rANS reconstructs raw bytes only in private staging
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add private raw reconstruction above DD-507 without a caller-visible output
+boundary. Before descriptor parsing or entropy output, require the complete
+declared raw staging extent and the ordinary LZD iterative expansion extent of
+`phrase_count + 1` references. Count raw bytes and expansion records together
+with descriptors, payload, token staging, rANS views, and phrase records in
+one checked aggregate workspace bound.
+
+After DD-507 validates every entropy block and the complete LZD phrase graph,
+invoke the existing nonrecursive LZD decoder over exactly the validated token
+and phrase regions. Reconstruct exactly the declared raw extent into separate
+private staging. On any error, callers must discard token, phrase, expansion,
+and raw workspaces; this step promises no transaction over an external output
+span.
+
+Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
+four rANS blocks split references while LZD expands generated phrase 256.
+Reject raw and expansion workspaces one entry short before token mutation, and
+retain private raw bytes on malformed entropy. This step adds no public
+transactional decoder, encoder, streaming transform, profile calculator, C
+ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-509: LZD rANS publishes one complete frame transactionally
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-508. Before descriptor
+parsing, entropy output, token mutation, or private raw mutation, require output
+capacity for the complete declared raw extent. Output is not internal workspace
+and must not be included in the aggregate-buffer limit.
+
+Retain DD-507's complete entropy and phrase-graph validation and DD-508's
+private iterative reconstruction unchanged. Only after both succeed, copy
+exactly the declared raw extent once from private staging to caller output.
+Leave excess output capacity untouched. Any capacity, header, entropy,
+dictionary, workspace, or reconstruction failure must preserve the entire
+caller output.
+
+Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
+`ABABAB` publication, output capacity one byte short before private mutation,
+and complete output preservation for malformed later entropy and valid entropy
+carrying an invalid LZD forward reference. This step adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-510: LZD rANS planning freezes canonical token bytes
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add a bounded write-free exact-frame planner as the inverse of DD-507 through
+DD-509. Validate the exact stream profile, LZD parameters, nonempty input, and
+frame-local limits. Determine and require the LZD encoder-record count before
+token staging can change. Plan the deterministic LZD parse, require its exact
+nonzero eight-byte-aligned extent within `S <= 8 * ceil(F/2)`, and serialize
+the complete canonical token sequence into caller-owned staging.
+
+Divide only that frozen token span into `K = ceil(S/B)` rANS blocks. Plan each
+block independently, accumulate exact payload bytes, require exact descriptor
+extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-field
+bounds. Count encoder records, token staging, all descriptors, and exact
+payload bytes against `max_internal_buffered_bytes`. Validate the synthesized
+generic frame header with sequence and already-committed-output context, then
+report the checked complete serialized extent without accepting or mutating a
+serialized output span.
+
+Prove the raw-`A` token bytes, one block, 528 descriptor bytes, nine payload
+bytes, and 593-byte extent. Repeat a phrase-generating multi-block plan byte
+identically. Reject encoder records and token staging one entry short before
+token mutation, and reject aggregate workspace one byte short, empty input,
+and a frame-size mismatch. This step adds no frame encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-511: LZD rANS encoding is plan-first and deterministic
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-510. Invoke the exact
+planner first so canonical LZD token bytes, exact rANS block count, descriptor
+extent, payload extent, generic frame fields, and aggregate workspace are fixed
+before serialized output is considered. Require destination capacity for the
+complete planned extent before writing any serialized byte.
+
+Serialize the generic frame header explicitly. Replan each rANS block over the
+unchanged token staging, require every payload extent and final aggregate
+offset to match DD-510, serialize every 528-byte descriptor into the complete
+descriptor region, and encode each payload into its exact planned region. The
+raw-`A` input must reproduce the independent 593-byte frame exactly.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Every planner failure and short destination must leave
+the whole serialized destination unchanged. Prove deterministic byte identity
+and transactional decode for a phrase-generating frame split across rANS block
+boundaries. This step adds no streaming transform, profile calculator, C ABI,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-512: LZD rANS streaming encoding retains complete exact frames
+
+- Date: 2026-08-01
+- Status: accepted
+
+Wrap DD-510 and DD-511 in a bounded known-size streaming encoder without
+defining another byte representation. Serialize the ordinary 80-byte stream
+prefix once. Collect at most one declared raw frame in caller-owned storage,
+invoke the exact planner and encoder only when that full or final-short frame
+is complete, then retain the complete immutable serialized frame while
+draining it to arbitrary caller output chunks. Accept no new raw frame bytes
+while a serialized frame is pending.
+
+For the largest possible local frame `L = min(original_size, frame_size)`,
+require raw capacity `L`, checked token capacity `8 * ceil(L/2)`, and
+`lzd_encoder_workspace_entries(L)` records at construction. At frame
+preparation, require complete serialized-frame capacity and count raw input,
+exact token staging, exact serialized frame, and active encoder records against
+`max_internal_buffered_bytes`. Preserve DD-510's inner aggregate check.
+
+Known-size `EndInput` is valid only when the supplied call completes the exact
+declared original extent and remains effective while prefix or frame bytes
+drain. A full frame may be prepared before whole-stream `EndInput`; after the
+declared extent is committed, await the terminal flag if it has not arrived.
+Nonterminal `Flush` does not close a short frame or alter bytes. Reject
+`ResetBlock`, unknown flags, premature `EndInput`, and excess input with stable
+terminal errors. Repeated calls after success return `EndOfStream`.
+
+Prove equality with concatenated one-shot frames under one-byte input and
+output, unchanged bytes under `Flush`, sticky `EndInput` across every drain,
+empty known-size input, workspace and aggregate failures, and protocol errors.
+This step adds no streaming decoder, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
+## DD-513: LZD rANS streaming decoding admits complete frames before raw drain
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder without changing DD-506
+bytes. Collect and parse the fixed 80-byte stream prefix first. For each frame,
+collect the 56-byte generic header separately and validate sequence, committed
+raw offset, exact LZD token alignment and ceiling, rANS block count,
+`528K` descriptor extent, `8K <= P <= S + 8K`, every caller-owned capacity,
+the checked complete serialized extent, and simultaneous aggregate workspace
+before copying that header into frame storage or accepting body bytes.
+
+After collecting exactly one admitted complete frame, invoke DD-508's private
+decoder through all rANS block validation, token reconstruction, LZD graph
+validation, and iterative raw reconstruction. Retain the complete raw frame in
+private caller-owned storage and drain it to arbitrary output chunks only after
+success. Count encoded frame, rANS views, token staging, raw staging, aligned
+phrase records, and expansion references together. A malformed later frame may
+not publish any byte from that frame; earlier completely drained frames remain
+committed.
+
+Preserve `EndInput` while a validated raw frame drains. Reject truncation at
+prefix, frame header, or body; trailing bytes after the declared original
+extent; malformed descriptors, payload, or LZD graph; `ResetBlock`; and unknown
+flags. Nonterminal `Flush` only exposes current starvation. Repeated calls after
+success return `EndOfStream`, and errors remain sticky with a stable serialized
+byte position.
+
+Prove one-byte input/output, atomic later-frame corruption, every typed and byte
+workspace one entry short, aggregate storage one byte short, canonical
+truncation and trailing data, empty input, flush starvation, premature end, and
+protocol errors. This step adds no profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
+## DD-514: LZD rANS profiles align three decoder record regions
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add an internal direction-specific workspace calculator above DD-512 and
+DD-513 without changing their byte representation. For encoding, derive the
+largest raw frame `F`, conservative token staging `S = 8 * ceil(F/2)`, rANS
+block count `K = ceil(S/B)`, complete frame ceiling
+`56 + 528K + S + 8K`, and bounded LZD encoder records. Count all four regions
+under checked aggregate arithmetic.
+
+For decoding, derive complete encoded, token, and private-raw byte regions from
+validated local limits. Place rANS block views first in opaque storage, align
+and place LZD phrase records second, then align and place the iterative
+`uint32_t` expansion references. Partition helpers must recompute and validate
+both offsets, total bytes, alignment, capacity, and base alignment before
+publishing typed spans. Empty encoding uses zero regions and alignment one.
+Prove that the returned requirements directly construct the existing bounded
+streaming round trip. This step adds no public C requirements query, factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-515: LZD rANS public C factory preserves opaque record layout
+
+- Date: 2026-08-01
+- Status: accepted
+
+Expose DD-514 through a size-tagged fixed-width `marc_lzd_rans_config`, a
+direction-specific workspace query, and an immutable-direction transform
+factory. The config carries known original size, raw frame size, entropy block
+size, LZD entry ceiling, rANS block ceiling, and the common hard limits.
+Reserved fields must remain zero.
+
+Keep three caller-owned regions. Encoding maps primary storage to one raw frame,
+secondary storage to canonical LZD token staging followed by one complete rANS
+frame, and aligned opaque views to LZD encoder entries. Decoding maps primary
+storage to one complete encoded frame, secondary storage to token staging
+followed by private raw staging, and aligned opaque views to DD-514's rANS
+block, LZD phrase, and iterative expansion spans. The requirements query is the
+only allocation authority; the factory repeats calculation and checked
+partitioning before construction. Prove the pure-C lifecycle, short-region and
+misalignment rejection, null-output rejection, reserved-field rejection, and
+binary round trip. This publishes no CLI, completion, fuzz, benchmark, or
+interoperability claim.
+
+## DD-516: LZD rANS completion reuses one public-ABI schedule
+
+- Date: 2026-08-01
+- Status: accepted
+
+Apply the established LZD public-ABI completion matrix to DD-515 with 64-byte
+outer frames, 64-byte rANS blocks, at most four entropy blocks per frame, and
+maximum token extent `S = 8 * ceil(64/2) = 256`. Bound each rANS payload by
+`S + 8K` and the complete frame by `56 + 528K + S + 8K`.
+
+Keep the data classes, deterministic repeated encode, one-byte and mixed chunk
+schedules, repeated terminal calls, and malformed fourth-frame schedule
+identical to the already reviewed LZD matrix. Add only representation-neutral
+test hooks for alternate payload/frame capacity and profile configuration; the
+default Adaptive and Dynamic Range instantiations must remain unchanged. The
+matrix must use only public C configuration, requirements, factory, process,
+and destroy functions. A corrupt, truncated, or extended final frame may
+publish the first three complete 64-byte frames but must leave the final raw
+byte untouched and return a stable repeated error. This step adds no fuzz,
+CLI, benchmark, interoperability entry, or `Ready` claim.
+
+## DD-517: LZD rANS fuzzing fixes both decoder allocation boundaries
+
+- Date: 2026-08-01
+- Status: accepted
+
+Add one bounded fuzz entry that presents each input first to the private
+complete-frame decoder after strict prefix and parameter admission, then to the
+public C streaming decoder created only through DD-515. Cap consumed fuzz bytes
+at 8,192, total raw output at 4,096, one raw frame at 1,024, token staging at
+4,096, compressed payload at 16,384, dictionary records at 512 phrases plus
+513 iterative expansion references, and rANS views at eight blocks. Derive
+fixed byte arrays and aligned opaque storage conservatively from those bounds;
+abort if the public requirements query exceeds them.
+
+Choose input and output chunks from bounded bytes, but cap total process calls
+independently at input cap plus output cap plus 32. Abort on invalid accounting,
+zero-progress `Progress`, impossible starvation after all input, or exhaustion
+of the finite call budget. Treat an ordinary decoder error, successful end, or
+full bounded output as a valid fuzz outcome.
+
+Freeze permanent regressions for every strict prefix of one canonical `ABABX`
+stream, saturated generic frame extents, and a nonzero rANS descriptor reserved
+byte. Each must publish zero bytes from its only frame, preserve raw sentinels,
+and return the same error code and byte position on repetition. This step adds
+no CLI, benchmark, interoperability entry, or `Ready` claim.
+
+## DD-518: LZD rANS CLI delegates all storage to the public ABI
+
+- Date: 2026-08-02
+- Status: accepted
+
+Publish `lzd-rans` as an explicit selector in the existing transactional CLI.
+Use 65,536-byte outer frames and 65,536-byte rANS blocks. The exact LZD bound is
+262,144 canonical token bytes, which permits four entropy blocks, 2,112
+descriptor bytes, and at most 262,176 payload bytes. Retain the public LZD
+maximum-entry default and a conservative 16-MiB aggregate internal-buffer
+policy.
+
+Initialize, query, create, process, and destroy the codec only through
+`marc_lzd_rans_*` and the common transform lifecycle. Allocate the three
+direction-specific workspace regions from the returned requirements, including
+the returned opaque alignment; do not reproduce any rANS-view, encoder-entry,
+phrase, expansion-stack, or partition layout in the CLI. Reuse the existing
+temporary-file transaction so configuration, allocation, codec, truncation,
+trailing-data, and destination-collision failures publish no requested output
+and leave no sibling temporary file. This step adds no benchmark,
+interoperability entry, stream field, format variant, or `Ready` claim.
+
+## DD-519: LZD rANS benchmark retains the half-pair ceiling
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add `lzd-rans` to the dependency-free benchmark runner using exactly DD-518's
+65,536-byte frame and entropy-block profile and only the published C lifecycle.
+Before timing, encode once, decode the exact encoded extent once, and require
+byte equality. Then report complete-stream ratio, encode and decode throughput,
+all three direction-specific workspace extents, and the larger caller-owned
+workspace total.
+
+For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
+capacity `80 + 8 * ceil(N / 2) + 2200K`. The token term deliberately retains
+the possible final absent-right reference; do not reduce it to `4N`, which is
+one four-byte half-reference too small for odd `N`. The per-frame term reserves
+the 56-byte generic header plus four complete 528-byte descriptors and four
+eight-byte states. Short final frames may use less. This step adds no stream
+field, format variant, interoperability entry, optimization, or representative
+performance claim.
+
+## DD-520: Interoperability schema 24 appends LZD rANS once
+
+- Date: 2026-08-02
+- Status: accepted
+
+Define interoperability schema 24 as the frozen schema-23 profile order followed
+once by `lzd-rans`. Set `schema_version` to 24 and `codec_set` to
+`marc-cli-v24`; require exactly 35 archives in manifest order. Keep schemas 1
+through 23 explicit and unchanged. No older schema may inherit the new profile.
+
+Generation must round-trip every archive locally before recording its size and
+SHA-256. Verification must require leaf-only names, exact profile count and
+order, recorded sizes and hashes, foreign decode equality, and byte-identical
+local re-encoding. The local compatibility regression must reject a reordered
+schema-24 manifest, derive schema 23 by removing only `lzd-rans` and restoring
+its version and codec set, then continue through every frozen older schema.
+This establishes local format determinism only; external Windows/Linux
+cross-checks remain required release evidence and no result is predicted.
+
+## DD-521: LZMW rANS preserves finalized phrase references
+
+- Date: 2026-08-02
+- Status: accepted
+
+Reserve `lzmw-rans` for LZMW variant 1 followed by scalar rANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZMW parameter extension,
+empty entropy parameters, and canonical four-byte little-endian phrase
+references. Complete the reference byte stream before entropy processing. An
+rANS block may split a reference but cannot split a byte or cross an outer
+frame. Reset the LZMW dictionary and every rANS model and state at each frame.
+
+For nonempty raw frame extent `F`, require actual reference extent
+`0 < S <= 4F` with `S mod 4 = 0`, `K = ceil(S/B)` for nonzero rANS block size
+`B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
+phrase records by the lesser of `max(F - 1, 0)` and the configured entry limit,
+expansion references by that phrase count plus one, and raw frames by 2^20
+bytes.
+
+Decoding must validate generic extents and every rANS descriptor, model, state
+path, terminal state, and payload exhaustion before reconstructing exactly `S`
+private reference bytes. Only then validate four-byte alignment, literal or
+previously generated references, checked adjacent-phrase growth, and exact raw
+extent before any raw reconstruction or publication.
+
+For raw `A`, independently freeze LZMW reference bytes `41 00 00 00`. Their
+normalized rANS model is `00:3072, 41:1024`, payload is
+`00 1C A1 BD 04 00 00 00`, and the complete frame is 592 bytes. Prove this by
+composing only the existing standalone LZMW encoder, scalar rANS encoder, and
+generic serializers. This decision specifies bytes and a reserved name only;
+it does not publish a combined validator, decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-522: LZMW rANS validation stops at the phrase graph
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the first bounded complete-frame validator for DD-521 without reconstructing
+or publishing raw bytes. Before descriptor parsing, validate the exact generic
+frame extent, `0 < S <= 4F`, four-byte alignment, `K = ceil(S/B)`, exact
+`528K` descriptor bytes, `8K <= P <= S + 8K`, caller capacities for rANS block
+views, `S` reference staging, and bounded LZMW phrase records, and the aggregate
+workspace limit.
+
+Parse every descriptor and validate every rANS payload, including terminal
+state and exact byte exhaustion, before writing reference staging. Decode all
+blocks only after that pass succeeds, require exactly `S` reconstructed bytes,
+then invoke the ordinary LZMW validator for four-byte alignment, literal or
+previously generated references, adjacent-phrase growth, configured dictionary
+freeze, and exact declared raw extent.
+
+Report stable generic, controller, entropy, and LZMW validation categories plus
+the failing block, token, and input-byte positions where available. Prove the
+independent 592-byte vector, blocks that split references, later-descriptor
+rejection before staging mutation, valid entropy carrying an invalid forward
+LZMW reference, short typed and byte workspaces, truncation, trailing bytes,
+and unsupported pipelines. This step adds no raw decoder, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-523: LZMW rANS reconstructs raw bytes only in private staging
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add private raw reconstruction above DD-522 without a caller-visible output
+boundary. Before descriptor parsing or entropy output, require the complete
+declared raw staging extent and the conservative ordinary LZMW iterative
+expansion extent derived from the maximum admitted phrase-record count plus one
+reference. Count raw bytes and expansion records together with descriptors,
+payload, reference staging, rANS views, and phrase records in one checked
+aggregate workspace bound.
+
+After DD-522 validates every entropy block and the complete LZMW phrase graph,
+reduce the active expansion span to the actual generated-entry count plus one
+reference and invoke the existing nonrecursive LZMW decoder over exactly the
+validated reference and phrase regions. Reconstruct exactly the declared raw
+extent into separate private staging. On any error, callers must discard
+reference, phrase, expansion, and raw workspaces; this step promises no
+transaction over an external output span.
+
+Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
+four rANS blocks split references while LZMW expands generated phrase 256.
+Reject raw and conservative expansion workspaces one entry short before
+reference mutation, and retain private raw bytes on malformed entropy. This
+step adds no public transactional decoder, encoder, streaming transform,
+profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-524: LZMW rANS publishes one complete frame transactionally
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-523. Before descriptor
+parsing, entropy output, reference mutation, or private raw mutation, require
+output capacity for the complete declared raw extent. Output is not internal
+workspace and must not be included in the aggregate-buffer limit.
+
+Retain DD-522's complete entropy and phrase-graph validation and DD-523's
+private iterative reconstruction unchanged. Only after both succeed, copy
+exactly the declared raw extent once from private staging to caller output.
+Leave excess output capacity untouched. Any capacity, header, entropy,
+dictionary, workspace, or reconstruction failure must preserve the entire
+caller output.
+
+Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
+`ABABAB` publication, output capacity one byte short before private mutation,
+and complete output preservation for malformed later entropy and valid entropy
+carrying an invalid LZMW forward reference. This step adds no encoder,
+streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-525: LZMW rANS planning freezes canonical reference bytes
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a bounded write-free exact-frame planner as the inverse of DD-522 through
+DD-524. Validate the exact stream profile, LZMW parameters, nonempty input, and
+frame-local limits. Determine and require the LZMW encoder-record count before
+reference staging can change. Plan the deterministic LZMW parse, require its
+exact nonzero four-byte-aligned extent within `S <= 4F`, and serialize the
+complete canonical reference sequence into caller-owned staging.
+
+Divide only that frozen reference span into `K = ceil(S/B)` rANS blocks. Plan
+each block independently, accumulate exact payload bytes, require exact
+descriptor extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-
+field bounds. Count encoder records, reference staging, all descriptors, and
+exact payload bytes against `max_internal_buffered_bytes`. Validate the
+synthesized generic frame header with sequence and already-committed-output
+context, then report the checked complete serialized extent without accepting
+or mutating a serialized output span.
+
+Prove the raw-`A` reference bytes, one block, 528 descriptor bytes, eight
+payload bytes, and 592-byte extent. Repeat a phrase-generating multi-block plan
+byte identically. Reject encoder records and reference staging one unit short
+before reference mutation, and reject aggregate workspace one byte short,
+empty input, and a frame-size mismatch. This step adds no frame encoder,
+streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-526: LZMW rANS encoding is plan-first and deterministic
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-525. Invoke the exact
+planner first so canonical LZMW reference bytes, exact rANS block count,
+descriptor extent, payload extent, generic frame fields, and aggregate
+workspace are fixed before serialized output is considered. Require destination
+capacity for the complete planned extent before writing any serialized byte.
+
+Serialize the generic frame header explicitly. Replan each rANS block over the
+unchanged reference staging, require every payload extent and final aggregate
+offset to match DD-525, serialize every 528-byte descriptor into the complete
+descriptor region, and encode each payload into its exact planned region. The
+raw-`A` input must reproduce the independent 592-byte frame exactly.
+
+Preserve every existing combined error value and append a distinct serialized-
+output-capacity error. Every planner failure and short destination must leave
+the whole serialized destination unchanged. Prove deterministic byte identity
+and transactional decode for a phrase-generating frame split across rANS block
+boundaries. This step adds no streaming transform, profile calculator, C ABI,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-527: LZMW rANS streaming encoding retains complete exact frames
+
+- Date: 2026-08-02
+- Status: accepted
+
+Wrap DD-525 and DD-526 in a bounded known-size streaming encoder without
+defining another byte representation. Serialize the ordinary 80-byte stream
+prefix once. Collect at most one declared raw frame in caller-owned storage,
+invoke the exact planner and encoder only when that full or final-short frame
+is complete, then retain the complete immutable serialized frame while
+draining it to arbitrary caller output chunks. Accept no new raw frame bytes
+while a serialized frame is pending.
+
+For the largest possible local frame `L = min(original_size, frame_size)`,
+require raw capacity `L`, checked reference capacity `4L`, and
+`lzmw_encoder_workspace_entries(L)` records at construction. At frame
+preparation, require complete serialized-frame capacity and count raw input,
+exact reference staging, exact serialized frame, and active encoder records
+against `max_internal_buffered_bytes`. Preserve DD-525's inner aggregate check.
+
+Known-size `EndInput` is valid only when the supplied call completes the exact
+declared original extent and remains effective while prefix or frame bytes
+drain. A full frame may be prepared before whole-stream `EndInput`; after the
+declared extent is committed, await the terminal flag if it has not arrived.
+Nonterminal `Flush` does not close a short frame or alter bytes. Reject
+`ResetBlock`, unknown flags, premature `EndInput`, and excess input with stable
+terminal errors. Repeated calls after success return `EndOfStream`.
+
+Prove equality with concatenated one-shot frames under one-byte input and
+output, unchanged bytes under `Flush`, sticky `EndInput` across every drain,
+empty known-size input, workspace and aggregate failures, and protocol errors.
+This step adds no streaming decoder, profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
+## DD-528: LZMW rANS streaming decoding admits complete frames before raw drain
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder without changing DD-521
+bytes. Collect and parse the fixed 80-byte stream prefix first. For each frame,
+collect the 56-byte generic header separately and validate sequence, committed
+raw offset, exact LZMW four-byte reference alignment and `S <= 4F` ceiling,
+rANS block count, `528K` descriptor extent, `8K <= P <= S + 8K`, every caller-
+owned capacity, the checked complete serialized extent, and simultaneous
+aggregate workspace before copying that header into frame storage or accepting
+body bytes.
+
+After collecting exactly one admitted complete frame, invoke DD-523's private
+decoder through all rANS block validation, reference reconstruction, LZMW graph
+validation, and iterative raw reconstruction. Retain the complete raw frame in
+private caller-owned storage and drain it to arbitrary output chunks only after
+success. Count encoded frame, rANS views, reference staging, raw staging,
+phrase records, and expansion references together. A malformed later frame may
+not publish any byte from that frame; earlier completely drained frames remain
+committed.
+
+Preserve `EndInput` while a validated raw frame drains. Reject truncation at
+prefix, frame header, or body; trailing bytes after the declared original
+extent; malformed descriptors, payload, or LZMW graph; `ResetBlock`; and
+unknown flags. Nonterminal `Flush` only exposes current starvation. Repeated
+calls after success return `EndOfStream`, and errors remain sticky with a stable
+serialized byte position.
+
+Prove one-byte input/output, atomic later-frame corruption, every typed and byte
+workspace one entry short, aggregate storage one byte short, canonical
+truncation and trailing data, empty input, flush starvation, premature end, and
+protocol errors. This step adds no profile calculator, C ABI, CLI, benchmark,
+fuzz target, completion claim, or interoperability entry.
+
+## DD-529: LZMW rANS profiles align three decoder record regions
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add an internal direction-specific workspace calculator above DD-527 and
+DD-528 without changing their byte representation. For encoding, derive the
+largest raw frame `F`, conservative reference staging `S = 4F`, rANS block
+count `K = ceil(S/B)`, complete frame ceiling `56 + 528K + S + 8K`, and bounded
+LZMW encoder records. Count all four regions under checked aggregate arithmetic.
+
+For decoding, derive complete encoded, reference, and private-raw byte regions
+from validated local limits. Place rANS block views first in opaque storage,
+align and place LZMW phrase records second, then align and place the iterative
+`uint32_t` expansion references. Partition helpers must recompute and validate
+both offsets, total bytes, alignment, capacity, and base alignment before
+publishing typed spans. Empty encoding uses zero regions and alignment one.
+Prove that the returned requirements directly construct the existing bounded
+streaming round trip. This step adds no public C requirements query, factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-530: LZMW rANS public C factory preserves opaque record layout
+
+- Date: 2026-08-02
+- Status: accepted
+
+Expose DD-529 through a size-tagged fixed-width `marc_lzmw_rans_config`, a
+direction-specific workspace query, and an immutable-direction transform
+factory. The config carries known original size, raw frame size, entropy block
+size, LZMW entry ceiling, rANS block ceiling, and common hard limits. Reserved
+fields must remain zero.
+
+Keep three caller-owned regions. Encoding maps primary storage to one raw frame,
+secondary storage to canonical LZMW reference staging followed by one complete
+rANS frame, and aligned opaque views to LZMW encoder entries. Decoding maps
+primary storage to one complete encoded frame, secondary storage to reference
+staging followed by private raw staging, and aligned opaque views to DD-529's
+rANS block, LZMW phrase, and iterative expansion spans. The requirements query
+is the only allocation authority; the factory repeats calculation and checked
+partitioning before construction. Prove the pure-C lifecycle, short-region and
+misalignment rejection, null-output rejection, reserved-field rejection, and
+binary round trip. This publishes no CLI, completion, fuzz, benchmark, or
+interoperability claim.
+
+## DD-531: LZMW rANS completion reuses the reviewed public schedule
+
+- Date: 2026-08-02
+- Status: accepted
+
+Apply the established public-ABI completion matrix to DD-530 with 64-byte raw
+frames, 64-byte rANS blocks, at most four entropy blocks per frame, and the
+exact LZMW reference ceiling `S = 4 * 64 = 256`. Bound payload by
+`S + 8K = 288` and a complete frame by `56 + 528K + S + 8K = 2,456`.
+
+At this frame size the LZMW ceiling equals the already reviewed LZD completion
+ceiling `8 * ceil(64/2)`, so reuse the same data, deterministic repetition,
+one-byte and mixed chunk schedules, repeated terminal calls, and malformed
+fourth-frame schedule without changing their capacities. Invoke only public C
+configuration, requirements, factory, process, and destroy functions. A
+corrupt, truncated, or extended final frame may publish the first three
+complete 64-byte frames but must leave its final raw byte untouched and return
+a stable repeated error. This step adds no fuzz target, CLI, benchmark,
+interoperability entry, or `Ready` claim.
+
+## DD-532: LZMW rANS fuzzing fixes all three record regions
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add one bounded fuzz entry that presents each input first to the private
+complete-frame decoder after strict prefix and parameter admission, then to the
+public C streaming decoder created only through DD-530. Cap consumed fuzz bytes
+at 8,192, total raw output at 4,096, one raw frame at 1,024, reference staging
+at 4,096, compressed payload at 16,384, LZMW phrase records at 1,023,
+iterative expansion references at 1,024, and rANS views at eight blocks. Derive
+fixed byte arrays and aligned opaque storage conservatively from those bounds;
+abort if the public requirements query exceeds them.
+
+Choose input and output chunks from bounded bytes, but cap total process calls
+independently at input cap plus output cap plus 32. Abort on invalid accounting,
+zero-progress `Progress`, impossible starvation after all input, or exhaustion
+of the finite call budget. Treat an ordinary decoder error, successful end, or
+full bounded output as a valid fuzz outcome.
+
+Freeze permanent regressions for every strict prefix of one canonical `ABABX`
+stream, saturated generic frame extents, and a nonzero rANS descriptor reserved
+byte. Each must publish zero bytes from its only frame, preserve raw sentinels,
+and return the same error code and byte position on repetition. This step adds
+no CLI, benchmark, interoperability entry, or `Ready` claim.
+
+## DD-533: LZMW rANS CLI delegates all storage to the public ABI
+
+- Date: 2026-08-02
+- Status: accepted
+
+Publish `lzmw-rans` as an explicit selector in the existing transactional CLI.
+Use 65,536-byte outer frames and 65,536-byte rANS blocks. The exact LZMW bound
+is 262,144 canonical reference bytes, which permits four entropy blocks, 2,112
+descriptor bytes, and at most 262,176 payload bytes. Retain the public LZMW
+maximum-entry default and a conservative 16-MiB aggregate internal-buffer
+policy.
+
+Initialize, query, create, process, and destroy the codec only through
+`marc_lzmw_rans_*` and the common transform lifecycle. Allocate the three
+direction-specific workspace regions from the returned requirements, including
+the returned opaque alignment; do not reproduce any rANS-view, encoder-entry,
+phrase, expansion-stack, or partition layout in the CLI. Reuse the existing
+temporary-file transaction so configuration, allocation, codec, truncation,
+trailing-data, and destination-collision failures publish no requested output
+and leave no sibling temporary file. This step adds no benchmark,
+interoperability entry, stream field, format variant, or `Ready` claim.
+
+## DD-534: LZMW rANS benchmark retains the exact four-byte reference ceiling
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add `lzmw-rans` to the dependency-free benchmark runner using exactly DD-533's
+65,536-byte frame and entropy-block profile and only the published C lifecycle.
+Before timing, encode once, decode the exact encoded extent once, and require
+byte equality. Then report complete-stream ratio, encode and decode throughput,
+all three direction-specific workspace extents, and the larger caller-owned
+workspace total.
+
+For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
+capacity `80 + 4N + 2200K`. The reference term follows the exact LZMW ceiling
+of one four-byte reference per raw byte. The per-frame term reserves the
+56-byte generic header plus four complete 528-byte descriptors and four
+eight-byte states. Short final frames may use less. This step adds no stream
+field, format variant, interoperability entry, optimization, or representative
+performance claim.
+
+## DD-535: Interoperability schema 25 appends LZMW rANS once
+
+- Date: 2026-08-02
+- Status: accepted
+
+Define interoperability schema 25 as the frozen schema-24 profile order followed
+once by `lzmw-rans`. Set `schema_version` to 25 and `codec_set` to
+`marc-cli-v25`; require exactly 36 archives in manifest order. Keep schemas 1
+through 24 explicit and unchanged. No older schema may inherit the new profile.
+
+Generation must round-trip every archive locally before recording its size and
+SHA-256. Verification must require leaf-only names, exact profile count and
+order, recorded sizes and hashes, foreign decode equality, and byte-identical
+local re-encoding. The local compatibility regression must reject a reordered
+schema-25 manifest, derive schema 24 by removing only `lzmw-rans` and restoring
+its version and codec set, then continue through every frozen older schema.
+This establishes local format determinism only; external Windows/Linux
+cross-checks remain required release evidence and no result is predicted.
+
+## DD-536: Project version 0.1.2 publishes the completed rANS column
+
+- Date: 2026-08-02
+- Status: accepted
+
+Release the completed rANS composition column as project version `0.1.2`.
+Retain C ABI version 1, stream-format versions 1.0 and 1.1, and every existing
+algorithm and variant representation. The six new named dictionary/rANS
+profiles and interoperability schema 25 are additions within the established
+compatibility-preserving `0.1.x` line; no previously published deterministic
+stream byte changes.
+
+Require the complete 2,048-test Release suite under both Windows compilers,
+the pushed Windows/MSVC and Ubuntu 24.04 CI, and the recorded four-direction
+schema-25 exchange with Ubuntu 26.04 before tagging. Preserve the explicitly
+open second-architecture, representative-measurement, and longer sanitizer
+fuzz evidence rather than overstating the release claim. Keep `0.2.0` reserved
+for potentially incompatible API/default work or separately identified format
+variants motivated by performance or compression-ratio changes.
+
+## DD-537: LZ77 tANS entropizes the finalized token byte stream
+
+- Date: 2026-08-02
+- Status: accepted
+
+Reserve `lz77-tans` for LZ77 variant 1 followed by tabled tANS variant 1 under
+format version 1.0. Preserve the standalone 16-byte LZ77 parameter extension,
+empty entropy parameters, canonical 16-byte token serialization, tANS table
+log 12, and deterministic spread step 2563. Complete the token byte stream
+before entropy processing. A tANS block may split a token but cannot cross an
+outer frame. Reset the LZ77 window and every tANS model and automaton at each
+frame.
+
+For raw frame size `F`, require checked token bound `S <= 16F`. For nonzero
+block size `B`, require `K = ceil(S/B)`, exact descriptor extent `528K`, and
+per-block payload ceiling `Q(n) = 2 + ceil(12n/8)`. Bound total payload by the
+checked sum of `Q` over every full and final-short block. Retain `F <= 2^20`.
+Validate generic extents and all tANS descriptors, tables, initial states, bit
+paths, terminal states, padding, and payload exhaustion before reconstructing
+the exact token region in private staging. Only then validate LZ77 alignment,
+references, overlap semantics, and exact raw extent before any raw
+reconstruction or publication.
+
+For raw `A`, independently freeze the 16-byte Literal token. Its tANS model is
+`00:3840, 41:256`; the documented spread and state recurrence produce payload
+`0A 05 03` with five valid transition bits, and the complete frame is 587
+bytes. Prove this by composing only the existing standalone LZ77 encoder, tANS
+encoder, and explicit generic serializers. This decision specifies bytes and
+a reserved name only; it does not publish a combined decoder, encoder, stream
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-538: LZ77 tANS validation stops at the token boundary
+
+- Date: 2026-08-02
+- Status: accepted
+
+Admit the first combined `lz77-tans` implementation as a strict bounded
+complete-frame validator only. Validate the exact stream profile, LZ77
+parameters, sequence, generic frame header, complete frame extent,
+`S <= 16F` token bound and alignment, exact `K = ceil(S/B)` block count,
+exact `528K` descriptor bytes, bounded payload sum from
+`Q(n) = 2 + ceil(12n/8)`, caller-owned token and view capacities, and their
+aggregate workspace before entropy output.
+
+Parse every descriptor only after admission succeeds. Validate every tANS
+block's model, spread, transition table, initial state, bit path, terminal
+state, padding, and exact payload exhaustion before decoding any block. Only
+after that complete validation pass may a second pass reconstruct exactly `S`
+token bytes into private caller-owned staging. Invoke the existing LZ77
+validator over the complete span and preserve its stable token index, format
+error, reference, overlap, and exact raw-extent checks.
+
+No raw staging or output span exists at this boundary. On every failure the
+caller discards token and view workspace. Prove the 587-byte Literal vector, a
+token split across four tANS blocks, every truncation, trailing data, short
+storage, aggregate admission one byte short, malformed descriptors, a
+malformed later block with untouched token staging, invalid reconstructed
+LZ77 tokens, impossible entropy extents, and profile rejection. This decision
+adds no private raw decoder, transactional publication, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-539: LZ77 tANS reconstruction remains private
+
+- Date: 2026-08-02
+- Status: accepted
+
+Extend DD-538 with a bounded complete-frame decoder that reconstructs only
+into caller-owned private raw staging. Require capacity for the complete
+declared raw frame before descriptor parsing or entropy output, and count
+those `F` bytes together with descriptor, payload, token staging, and tANS
+views against `max_internal_buffered_bytes`.
+
+Retain DD-538's all-block validation pass, second token reconstruction pass,
+and complete LZ77 validation. Only after every entropy automaton and every
+token semantic succeeds may the existing allocation-free LZ77 decoder
+reconstruct literals and forward overlapping matches from immutable token
+staging into exactly `F` private raw bytes. Preserve stable validation, format,
+and decode errors; an unexpected failure after successful validation is a
+distinct dictionary-decode error.
+
+No caller-visible output span exists. On every failure the caller discards
+views, token staging, and raw staging. Prove the 587-byte Literal frame, a
+distance-one overlapping terminal match, raw staging one byte short before
+token mutation, aggregate workspace one byte short including raw bytes, and
+unchanged raw sentinels after a malformed later tANS block or invalid decoded
+token. This decision adds no transactional publication, encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-540: LZ77 tANS frame publication is transactional
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a caller-visible complete-frame decoder above DD-539. Require capacity for
+the entire declared raw frame in a distinct output span before descriptor
+parsing, entropy output, token staging mutation, or private raw mutation.
+Output remains publication storage and is not added to DD-539's internal
+workspace total.
+
+Retain DD-538's complete entropy and token validation and DD-539's private
+reconstruction. Copy exactly `F` bytes from private raw staging to caller
+output once, only after the LZ77 decoder succeeds. Preserve all layered error
+details and return without publication on every earlier failure.
+
+Prove the Literal frame publishes only its declared byte while preserving
+guards, a one-byte-short output fails before private mutation, and malformed
+later tANS state or invalid reconstructed token leaves both private raw and
+caller output sentinels unchanged. This decision adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-541: LZ77 tANS planning freezes tokens before counting blocks
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add an encoder-side exact-frame planner for the inverse of DD-537. Require one
+nonempty raw frame and validate the fixed profile and LZ77 parameters. First
+run the deterministic LZ77 plan, admit caller-owned staging for the exact token
+extent `S`, and encode the complete canonical token sequence once. Reject short
+staging before modifying it.
+
+Over the frozen token bytes, plan every consecutive tANS block of at most `B`
+bytes without serialized output. Accumulate exact block count `K`, descriptor
+extent `528K`, payload extent `P`, and complete serialized extent
+`56 + 528K + P` with checked arithmetic. Enforce the block-count ceiling and
+count token staging, planned descriptors, and planned payload against the
+aggregate internal-buffer limit. Validate the resulting generic frame header.
+
+Prove the 587-byte Literal extent and exact token bytes, a block size of five
+splitting one token into four independently planned blocks, short token staging
+without mutation, empty and unexpected raw extents, block-count overflow, and
+aggregate workspace one byte short. This decision writes no serialized bytes
+and adds no frame writer, streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-542: LZ77 tANS writing follows complete planning
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add the complete-frame writer above DD-541. Invoke the exact planner first,
+then require capacity for the complete `56 + 528K + P` output before writing
+the generic frame header or any entropy bytes. Preserve the frozen canonical
+LZ77 token staging produced by planning.
+
+Explicitly serialize the generic header, all `K` fixed tANS descriptors in
+block order, and all `K` payloads in the same order. Replan and encode each
+block over its unchanged token subspan, require every payload extent to match
+the accumulated plan exactly, and reject any internal mismatch rather than
+emitting an alternate stream.
+
+Prove byte-for-byte equality with the independent 587-byte Literal frame,
+deterministic repeated writing and full decoder round trip when block size five
+splits the token, and one-byte-short serialized output without output mutation.
+This decision adds no streaming transform, profile calculator, C ABI, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-543: LZ77 tANS streaming encoding buffers one complete frame
+
+- Date: 2026-08-02
+- Status: accepted
+
+Add a known-size bounded streaming encoder above DD-542. Require caller-owned
+storage for the largest raw frame, its conservative `16F` token staging, and
+one complete serialized frame. Count all three active regions against
+`max_internal_buffered_bytes` before preparing a frame.
+
+Drain the fixed 80-byte stream prefix first. Collect exactly the next expected
+raw frame, plan and write it completely, then drain it before reusing storage.
+Allow completed frames to drain before EndInput, retain final EndInput across
+output starvation, leave a partial frame open on `Flush`, reject ResetBlock,
+and return sticky terminal status or errors without zero-progress `Progress`.
+
+Prove byte identity against independently concatenated exact frames under
+one-byte input and output, full-frame preparation plus nonterminal Flush,
+constructor and aggregate workspace failures, empty input, premature EndInput,
+unsupported reset, and repeated EndOfStream. This decision adds no streaming
+decoder, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-544: LZ77 tANS streaming decoding commits complete frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the matching known-size bounded streaming decoder. Collect and validate the
+80-byte prefix, then each complete 56-byte frame header and declared body in
+caller storage. Preflight encoded frame, tANS views, token staging, private raw
+staging, and their aggregate before body collection.
+
+Invoke DD-539 private reconstruction only after the full frame is present, and
+drain raw bytes only after all tANS and LZ77 validation succeeds. Preserve
+previously committed frames when a later frame fails; expose no bytes from the
+failing frame. Retain EndInput across draining, reject truncation, trailing
+data and ResetBlock, and make ended and error states sticky.
+
+Prove one-byte input/output round trip, later-frame corruption after one commit,
+all caller storage and aggregate limits, truncation, trailing data, reset,
+empty input, nonterminal Flush, and premature final input. This decision adds
+no profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-545: LZ77 tANS profiles derive the blockwise payload ceiling
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-543 and DD-544.
+For known-size encoding, derive the largest raw frame `F`, conservative `16F`
+token staging, `K = ceil(16F/B)` blocks, exact `528K` descriptors, and the sum
+of `Q(n) = 2 + ceil(12n/8)` for every full or final-short tANS block. Count raw,
+token, and complete encoded-frame storage under the aggregate local limit.
+
+For decoding, derive serialized-frame, token, private-raw, and block-view
+requirements solely from validated local limits. Expose a view count rather
+than the private `TansBlockView` layout. Use checked arithmetic throughout,
+return canonical stream-header fields, and prove that the calculated regions
+directly construct the streaming pair. This decision adds no C requirements
+query, public factory, CLI selector, benchmark, fuzz target, completion claim,
+or interoperability entry.
+
+## DD-546: LZ77 tANS C admission preserves three opaque regions
+
+- Date: 2026-08-03
+- Status: accepted
+
+Expose the DD-545 profile through a size-tagged `marc_lz77_tans_config`, a
+direction-specific requirements query, and a factory returning the common
+opaque transform. Retain the established primary/secondary/views ABI: encode
+uses raw primary storage and token-plus-frame secondary storage with no views;
+decode uses serialized primary storage, token-plus-private-raw secondary
+storage, and aligned opaque tANS views.
+
+Repeat profile admission at construction, validate all three buffer contracts,
+and leave the transform pointer null on failure. Expose only view bytes and
+alignment, never `TansBlockView` or another C++ layout. Prove a complete C11
+round trip, exact queried extents, short-view rejection, and reserved-field
+rejection. This step adds no CLI selector, completion matrix, fuzz target,
+benchmark, or interoperability entry.
+
+## DD-547: LZ77 tANS completion is proven through the public ABI
+
+- Date: 2026-08-03
+- Status: accepted
+
+Exercise the completed `marc_lz77_tans_*` lifecycle without constructing any
+private codec object. Cover empty input, every one-byte value, all byte values,
+long zero and patterned inputs, deterministic generated bytes, and lengths 63,
+64, and 65. Require byte-identical repeated encoding and identical streams
+under `(1,1)`, `(7,5)`, and `(13,17)` input/output chunk schedules.
+
+For a 193-byte four-frame stream, corrupt the final frame sequence, truncate
+its last byte, and append one trailing byte independently. Each decode must
+commit exactly the first 192 bytes, preserve the final sentinel, and return the
+same sticky error position on repeated calls. This step adds no fuzz target,
+CLI selector, benchmark, interoperability entry, or local `Ready` claim.
+
+## DD-548: LZ77 tANS fuzzing has two bounded decoder boundaries
+
+- Date: 2026-08-03
+- Status: accepted
+
+For each input of at most 8,192 bytes, exercise both the complete-frame private
+decoder and the incremental stream transform. Bound total raw output to 4,096
+bytes, one frame to 1,024 bytes, entropy payload to 8,192 bytes, dictionary
+staging to 4,096 bytes, and block views to eight. Use only fixed caller-owned
+arrays; derive input and output chunks from the fuzz bytes and abort if a
+process result violates the core contract or exceeds the 12,320-call ceiling.
+
+Seed the corpus with a truncated `MARC` prefix. Retain permanent tests requiring
+write-free, sticky rejection of every proper prefix of a canonical stream,
+saturated frame length fields, and invalid tANS frequency metadata. A Clang
+libFuzzer smoke under AddressSanitizer and UndefinedBehaviorSanitizer must
+complete 1,000 runs. This step adds no CLI selector, benchmark,
+interoperability entry, or local `Ready` claim.
+
+## DD-549: LZ77 tANS CLI admission uses only the public profile
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the explicit selector `lz77-tans` to the transactional file adapter. Fix
+raw frames and tANS blocks at 65,536 bytes. Derive `S = 1,048,576` canonical
+token bytes, `K = 16` blocks, `528K = 8,448` descriptor bytes, per-block
+`Q = 98,306`, aggregate payload `P = 1,572,896`, and encoder workspace
+`F + S + 56 + 528K + P = 2,695,512` bytes.
+
+Configuration initialization, directional requirements, transform creation,
+processing, and destruction use only `marc_lz77_tans_*` and the common public
+C ABI. Do not expose tANS view types or reproduce profile partitions in the
+CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
+overwrite refusal, malformed cleanup, and strict trailing-data rejection. This
+step adds no benchmark, interoperability entry, or local `Ready` claim.
+
+## DD-550: LZ77 tANS benchmark verifies before measuring
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add `lz77-tans` to the dependency-free benchmark through only the public C
+requirements, factory, process, and destroy lifecycle. Reuse DD-549's 64-KiB
+raw frame and entropy block, 1,048,576-byte token ceiling, sixteen-block
+ceiling, 1,572,896-byte payload ceiling, and 2,695,512-byte encoder aggregate.
+
+Reserve complete-stream output with checked `80 + 24N + 8536K` arithmetic,
+where `K` is the nonempty frame count. Query encoder and decoder workspaces
+independently, prove a byte-exact round trip before timing, and create each
+timed transform outside the elapsed interval. Report ratio, direction-specific
+time and throughput, all six workspace extents, and peak caller workspace.
+This changes no format or ABI and adds no interoperability entry or local
+`Ready` claim.
+
+## DD-551: Interoperability schema 26 appends LZ77 tANS
+
+- Date: 2026-08-03
+- Status: accepted
+
+Freeze the exact thirty-six-entry schema-25 order and append `lz77-tans` once
+as entry 37. Name the set `marc-cli-v26`, retain the deterministic 8,193-byte
+fixture, and record complete archive sizes and SHA-256 values only after local
+decode equality succeeds.
+
+The verifier requires exact schema order, hashes, foreign decode equality, and
+byte-identical local re-encoding. The compatibility regression rejects a
+reordered schema-26 manifest, derives schema 25 by removing only `lz77-tans`
+and restoring its version and codec set, then verifies every frozen schema
+through version 1. This is local schema admission; Windows/Linux artifact
+exchange remains a separate release gate and the profile remains `In progress`.
+
+## DD-552: Schema 26 external exchange completes LZ77 tANS admission
+
+- Date: 2026-08-03
+- Status: accepted
+
+Bind external evidence to exact revision
+`5b2aa31ba3333c311ad4086b3438915a6c3ce36d`. Require the Ubuntu 26.04/Clang
+executable to verify the Windows/MSVC and Ubuntu 24.04 CI bundles, generate and
+self-verify its own schema-26 bundle, and require the Windows/MSVC executable
+to verify that Ubuntu-produced bundle.
+
+All four passes must report 37 archives and the exact revision while enforcing
+manifest order, size, SHA-256, fixture equality, and byte-identical local
+re-encoding. Together with DD-551's local chain, this satisfies every current
+admission gate and changes `lz77-tans` from `In progress` to `Ready`. The
+evidence remains x86-64 and does not imply testing on another architecture or
+a non-WSL Ubuntu 26.04 kernel.
+
+## DD-553: LZSS tANS entropizes finalized token bytes
+
+- Date: 2026-08-03
+- Status: accepted
+
+Reserve `lzss-tans` for LZSS variant 1 followed by tabled tANS variant 1.
+LZSS must first finalize its complete canonical variable-width token byte
+sequence for one outer frame. tANS consumes that sequence as untyped bytes;
+therefore an entropy block may split a two-byte Literal or nine-byte Match,
+but may not cross the frame boundary where both algorithms reset.
+
+For raw size `F`, token size `S`, nonzero block size `B`, and
+`K = ceil(S/B)`, require `0 < S <= 2F`, exact descriptor extent `528K`, and
+the checked sum of per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`.
+Retain `F <= 2^20`. Decode all tANS blocks into private staging before parsing
+the variable-length LZSS grammar or publishing raw bytes.
+
+Independently fix raw `A` as token bytes `00 41`, normalized frequencies
+`00:2048` and `41:2048`, tANS payload `06 00 00`, and one complete 587-byte
+frame. This decision reserves the representation and vector only; it adds no
+combined validator, factory, CLI selector, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
+## DD-554: LZSS tANS validation is two-pass and token-atomic
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the first bounded decoder-facing implementation of DD-553. Admit the
+complete generic frame extent, exact `K`, exact `528K` descriptor region,
+blockwise tANS payload ceiling, caller-owned `K` tANS views, complete `S`
+token staging, and their aggregate internal byte count before entropy work.
+
+Parse all descriptors and validate every tANS model, spread, transition table,
+initial state, bit path, terminal state, and padding without writing a token
+byte. Only when all `K` blocks succeed may a second pass reconstruct exactly
+`S` token bytes. Then validate the full variable-length LZSS grammar,
+references, output extent, token index, and input offset without reconstructing
+raw bytes. A malformed later block must leave all token staging untouched.
+This decision adds no raw decoder, transactional publisher, encoder, streaming
+transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
+## DD-555: LZSS tANS raw reconstruction remains private
+
+- Date: 2026-08-03
+- Status: accepted
+
+Extend DD-554 with a caller-owned raw staging span but no caller-visible output
+span. Admit the complete `F` bytes before descriptor parsing or token mutation,
+and include them with descriptors, payload, token staging, and tANS views under
+`max_internal_buffered_bytes`.
+
+After every tANS block and the complete LZSS token grammar have succeeded,
+invoke the existing allocation-free LZSS decoder over the validated token
+region and reconstruct exactly `F` bytes. Preserve overlap-copy semantics and
+the stable LZSS decode, validation, format, token-index, and byte-offset
+diagnostics. Entropy or token failure must leave raw staging untouched. This
+decision adds no transactional caller publication, encoder, streaming
+transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
+## DD-556: LZSS tANS publication is one transactional copy
+
+- Date: 2026-08-03
+- Status: accepted
+
+Wrap DD-555 with a distinct caller output span. Require its complete `F`-byte
+capacity before descriptor parsing, token mutation, or raw reconstruction.
+Publication storage is not internal workspace and is not counted against
+`max_internal_buffered_bytes`.
+
+Preserve the complete validation and private reconstruction sequence, then
+copy exactly `F` bytes from raw staging to caller output once. Output-capacity,
+entropy, token, or reconstruction failure must leave caller output unchanged.
+This decision adds no encoder, streaming transform, profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
+## DD-557: LZSS tANS planning freezes token bytes before sizing
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a write-free exact-frame planner above DD-553's encoder boundary. Plan and
+materialize the complete canonical LZSS token sequence once in caller-owned
+staging. Enforce `0 < S <= 2F`, then plan each consecutive tANS block over that
+frozen sequence and accumulate exact `K`, `528K`, `P`, and
+`56 + 528K + P` extents with checked arithmetic.
+
+Reject block-count, tANS-planning, integer, generic-frame, and aggregate
+descriptor-plus-payload-plus-token limits without accepting a serialized
+output span. Validate the synthesized generic frame header against sequence,
+committed raw extent, configured frame size, and local limits. This decision
+adds no complete-frame writer, streaming transform, profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
+## DD-558: LZSS tANS frame writing follows one complete plan
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the complete-frame writer above DD-557. Run the exact plan first and admit
+the complete serialized output capacity before writing its first byte. Emit the
+56-byte generic header, all `K` consecutive 528-byte descriptors, and all `K`
+consecutive payloads explicitly.
+
+Replan each block over the unchanged canonical token staging and require its
+payload size to equal the accumulated plan. Descriptor serialization or tANS
+encoding disagreement is an internal error, not an alternate representation.
+One-byte-short output must remain entirely unchanged. This decision adds no
+streaming transform, profile calculator, C factory, CLI, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
+## DD-559: LZSS tANS streaming encode drains immutable frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-558. Emit the ordinary
+64-byte stream header and 16-byte LZSS parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete
+serialized representation through the exact writer, and drain that immutable
+frame before reusing any workspace.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `2F` token staging, and prefix serialization.
+Before each frame, count raw collection, exact token staging, and exact
+serialized frame under one aggregate limit. Input and output capacities may be
+one byte. `Flush` does not close a partial frame; `EndInput` remains latched
+while prefix or frame bytes drain; full frames may drain before finish.
+`ResetBlock`, unknown flags, premature end, excess input, and insufficient
+workspace are sticky errors. This decision adds no streaming decoder, profile
+calculator, C factory, CLI, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
+## DD-560: LZSS tANS streaming decode publishes complete frames
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add a bounded known-size streaming decoder above DD-556. Collect and validate
+the ordinary 64-byte stream header and 16-byte LZSS parameter region before
+accepting frames. For each frame, collect its 56-byte generic header first,
+admit the exact declared descriptor-plus-payload body and every caller-owned
+workspace, then collect and decode the complete frame into private raw staging.
+Drain raw bytes only after the complete transactional decode succeeds.
+
+Count encoded frame storage, tANS block views, canonical token staging, and
+private raw staging under one aggregate limit. Input and output capacities may
+be one byte. A malformed later frame cannot alter bytes committed from an
+earlier frame or expose a prefix of the failing frame. Reject truncated and
+trailing data, invalid prefix or frame extents, insufficient workspace,
+`ResetBlock`, and unknown flags with sticky errors. `Flush` remains
+nonterminal, and `EndInput` remains latched while private raw bytes drain.
+This decision adds no profile calculator, C factory, CLI, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
+## DD-561: LZSS tANS profiles derive bounded blockwise storage
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-559 and DD-560.
+For known-size encoding, derive the largest raw frame `F`, conservative `2F`
+token staging, `K = ceil(2F/B)` blocks, exact `528K` descriptors, and the
+sum of `Q(n) = 2 + ceil(12n/8)` for every full or final-short tANS block.
+Count raw, token, and complete encoded-frame storage under the aggregate local
+limit.
+
+For decoding, derive serialized-frame, token, private-raw, and block-view
+requirements solely from validated local limits. Expose a view count rather
+than the private `TansBlockView` layout. Use checked arithmetic throughout,
+return canonical stream-header fields, map stable core errors, and prove that
+the calculated regions directly construct the streaming pair. This decision
+adds no C requirements query, public factory, CLI selector, benchmark, fuzzer,
+completion claim, or interoperability entry.
+
+## DD-562: LZSS tANS C admission preserves opaque tANS views
+
+- Date: 2026-08-03
+- Status: accepted
+
+Expose DD-561 through a size-tagged `marc_lzss_tans_config`, a
+direction-specific requirements query, and a factory returning the common
+opaque transform. Retain the established primary/secondary/views ABI: encode
+uses raw primary storage and token-plus-frame secondary storage with no views;
+decode uses serialized primary storage, token-plus-private-raw secondary
+storage, and aligned opaque tANS views.
+
+Repeat profile admission at construction, validate all three buffer contracts,
+and leave the transform pointer null on failure. Expose only view bytes and
+alignment, never `TansBlockView` or another C++ layout. Prove a complete C11
+round trip, exact queried extents, short-view rejection, and reserved-field
+rejection. This step adds no completion matrix, CLI selector, fuzz target,
+benchmark, completion claim, or interoperability entry.
+
+## DD-563: LZSS tANS completion is proven through the public ABI
+
+- Date: 2026-08-03
+- Status: accepted
+
+Exercise the completed `marc_lzss_tans_*` lifecycle without constructing any
+private codec object. Cover empty input, every one-byte value, all byte values,
+repeated bytes, repeated binary patterns, deterministic generated data, and
+lengths immediately around frame boundaries. Repeated encoding and varied
+input/output chunking must produce identical streams and exact round trips.
+
+For a four-frame stream, corrupt the final frame header, truncate its final
+byte, and append trailing data independently. Decoding must commit exactly the
+first three frames, leave the final output sentinel unchanged, and return the
+same sticky error category and position on repeated calls. This step adds no
+fuzz target, CLI selector, benchmark, local `Ready` claim, or interoperability
+entry.
+
+## DD-564: LZSS tANS fuzzing is bounded and frame-atomic
+
+- Date: 2026-08-03
+- Status: accepted
+
+Exercise both the complete-frame private decoder and incremental public-frame
+decoder from one libFuzzer entry point. Cap serialized input and payload at
+8 KiB, total output at 4 KiB, one raw frame at 1 KiB, canonical LZSS token
+staging at 2 KiB, and tANS metadata at eight caller-owned views. Derive input
+and output chunks only from the bounded input and stop at a fixed call ceiling.
+
+Retain ordinary regression tests for every truncation of a canonical frame,
+oversized serialized frame lengths, and an invalid tANS descriptor. All such
+failures must publish zero bytes from the frame, preserve the caller sentinel,
+and remain sticky with the same error category and position. This step adds no
+CLI selector, benchmark, local `Ready` claim, or interoperability entry.
+
+## DD-565: LZSS tANS CLI admission uses only the public profile
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add the explicit selector `lzss-tans` to the transactional file adapter. Fix
+raw frames and tANS blocks at 65,536 bytes. Derive `S = 131,072` canonical
+token bytes, `K = 2` blocks, `528K = 1,056` descriptor bytes, `P = 196,612`
+payload bytes, and exact encoder aggregate `F + S + 56 + 528K + P = 394,332`
+bytes. Use a conservative 512-KiB internal-buffer policy for both directions.
+
+Configuration initialization, directional requirements, transform creation,
+processing, and destruction use only `marc_lzss_tans_*` and the common public
+C ABI. Opaque tANS views and private workspace partitions remain outside the
+CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
+overwrite refusal, malformed cleanup, and strict trailing-data rejection under
+both supported Windows compilers. This step adds no benchmark,
+interoperability entry, or local `Ready` claim.
+
+## DD-566: LZSS tANS benchmark verifies before measuring
+
+- Date: 2026-08-03
+- Status: accepted
+
+Add `lzss-tans` to the dependency-free benchmark through only the public C
+requirements, factory, process, and destroy lifecycle. Reuse DD-565's 65,536-
+byte raw frame and entropy block, 131,072-byte token ceiling, two tANS blocks,
+1,056 descriptor bytes, 196,612-byte payload ceiling, and conservative
+512-KiB internal policy.
+
+Size the complete encoded destination as the 80-byte prefix plus at most three
+transition bytes per raw byte and, for each nonempty frame, one 56-byte header,
+two 528-byte descriptors, and two two-byte states. Query encoder and decoder
+workspaces independently, prove byte-exact round trip before timing, and create
+each transform outside the elapsed interval. Report ratio, direction-specific
+time and throughput, all six workspace extents, and peak caller workspace.
+This changes no format or ABI and adds no interoperability entry or local
+`Ready` claim.
+
+## DD-567: Interoperability schema 27 appends LZSS tANS
+
+- Date: 2026-08-03
+- Status: accepted
+
+Freeze the exact thirty-seven-entry schema-26 order and append `lzss-tans`
+once as entry 38. Name the new codec set `marc-cli-v27`; retain the existing
+deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
+SHA-256 records.
+
+Generation must round-trip every archive before recording it. Verification
+requires the exact schema order, foreign decode equality, and byte-identical
+local re-encoding. The compatibility regression rejects a reordered schema-27
+manifest, derives schema 26 by removing only `lzss-tans`, then verifies
+schemas 1 through 26 unchanged. This establishes local schema admission but
+does not claim cross-platform completion or promote the profile to `Ready`.
+
+## DD-568: LZ78 tANS entropizes finalized fixed-width tokens
+
+- Date: 2026-08-04
+- Status: accepted
+
+Reserve `lz78-tans` for LZ78 variant 1 followed by tabled tANS variant 1.
+LZ78 must first finalize its complete canonical eight-byte Pair or FinalIndex
+sequence for one outer frame. tANS consumes that sequence as untyped bytes;
+therefore an entropy block may split a token but may not cross the frame
+boundary where both algorithms reset.
+
+For raw size `F`, token size `S`, nonzero block size `B`, and
+`K = ceil(S/B)`, require `0 < S <= 8F`, `S mod 8 = 0`, exact descriptor
+extent `528K`, and the checked sum of per-block payload ceilings
+`Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`. Decode all tANS blocks into
+private staging before validating token tags, reserved fields, phrase
+references, final-token placement, or exact expansion.
+
+Independently fix raw `A` as token bytes `00 41 00 00 00 00 00 00`, normalized
+frequencies `00:3584` and `41:512`, tANS initial-state offset `0x046B`, four
+zero transition bits, payload `6B 04 00`, and one complete 587-byte frame.
+This decision reserves the representation and vector only; it adds no combined
+validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
+## DD-569: LZ78 tANS validates all entropy before phrase parsing
+
+- Date: 2026-08-04
+- Status: accepted
+
+Implement the first complete-frame validator for DD-568 without raw
+reconstruction or publication. Before entropy work, require the exact frame
+extent, nonzero eight-byte-aligned `S <= 8F`, exact `K` and `528K`, the checked
+blockwise payload ceiling, complete caller token staging, `K` tANS views, and
+the full bounded LZ78 phrase-record workspace.
+
+Count descriptors, payload, token bytes, tANS views, and phrase records under
+`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
+state path before decoding any token byte. Only after all blocks succeed may a
+second pass reconstruct exactly `S` bytes and invoke the ordinary LZ78 token
+and phrase-graph validator. Preserve block index and LZ78 token/input offsets
+where practical. A malformed later block must leave the entire token staging
+unchanged. This decision adds no raw decoder, publisher, encoder, streaming
+transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
+
+## DD-570: LZ78 tANS reconstructs only into disposable raw staging
+
+- Date: 2026-08-04
+- Status: accepted
+
+Extend DD-569 only with private raw reconstruction. Require caller-owned raw
+staging of at least the declared `F` bytes before descriptor parsing, token
+mutation, or phrase-record mutation, and count those bytes with descriptors,
+payload, tokens, tANS views, and phrase records under the aggregate internal-
+workspace limit.
+
+Reuse the complete entropy and phrase-graph validation unchanged. Only after
+it succeeds may the allocation-free LZ78 decoder expand Pair and FinalIndex
+phrases iteratively into exactly `F` raw bytes. Retain LZ78 decode, validation,
+format, token-index, and input-offset diagnostics. Expose no caller output span
+and require every caller to discard all workspace on failure. This decision
+adds no transactional publisher, encoder, streaming transform, public API,
+CLI, benchmark, fuzzer, or interoperability entry.
+
+## DD-571: LZ78 tANS publishes only complete validated frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add one transactional wrapper above DD-570. Require a distinct caller output
+span of at least the declared `F` bytes before descriptor parsing or any
+private mutation. Do not count publication storage against the internal
+workspace limit.
+
+Run the same complete entropy validation, phrase-graph validation, and private
+raw reconstruction unchanged. Copy exactly `F` bytes from private raw staging
+to caller output once and only after all layers succeed. Output capacity,
+entropy, dictionary, or reconstruction failure must preserve every caller
+output byte. This decision adds no encoder, streaming transform, public API,
+CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
+## DD-572: LZ78 tANS planning freezes canonical tokens once
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a no-output exact-frame planner for one nonempty raw frame. Preflight the
+bounded LZ78 encoder-record count and canonical token capacity, then plan and
+materialize the complete eight-byte token sequence exactly once. Reject an
+empty or unexpected raw-frame extent.
+
+Plan every consecutive tANS block over the frozen token staging and accumulate
+exact block count, `528K` descriptor bytes, payload bytes, and complete frame
+extent with checked arithmetic. Count encoder records, tokens, descriptors,
+and payload under `max_internal_buffered_bytes`, enforce block limits, and
+validate the synthesized generic frame header. Accept no serialized output
+span. This decision adds no frame writer, streaming transform, public API,
+CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
+## DD-573: LZ78 tANS writes only after exact complete-frame admission
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the deterministic complete-frame writer above DD-572. Invoke the exact
+plan first and require capacity for its entire serialized extent before
+writing any output byte. Then explicitly serialize the generic frame header,
+all fixed-size descriptors contiguously, and all payloads contiguously.
+
+Replan every block only over the frozen canonical token staging and require
+its payload size and the final token and payload offsets to equal the accepted
+plan. Treat any discrepancy as an internal error. Short serialized output is
+therefore rejected without mutation. This decision adds no streaming
+transform, public API, CLI, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
+## DD-574: LZ78 tANS streaming encode drains immutable frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-573. Emit the ordinary
+64-byte stream header and 16-byte LZ78 parameter region first. Collect at most
+one configured raw frame in caller-owned storage, prepare its complete token
+and serialized representation through the exact writer, and drain that
+immutable frame before reusing any workspace.
+
+At construction, validate the fixed pipeline, parameters, known original size,
+largest raw frame, conservative `8F` token staging, encoder records, and prefix
+serialization. Before each frame, count raw collection, exact token staging,
+encoder records, and exact serialized frame under one aggregate limit. Input
+and output capacities may be one byte. `Flush` does not close a partial frame;
+`EndInput` remains latched while prefix or frame bytes drain; full frames may
+drain before finish. `ResetBlock`, unknown flags, premature end, excess input,
+and insufficient workspace are sticky errors. This decision adds no streaming
+decoder, profile calculator, C factory, CLI, benchmark, fuzzer, completion
+claim, or interoperability entry.
+
+## DD-575: LZ78 tANS streaming decode publishes only complete frames
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the matching bounded known-size streaming decoder above DD-569 through
+DD-574. Collect and validate the ordinary 80-byte prefix, then each 56-byte
+frame header. Before collecting a frame body, enforce aligned `S <= 8F`, exact
+block count and `528K` descriptors, the blockwise 12-bit transition ceiling,
+and caller capacity for the complete encoded frame, tANS views, token staging,
+LZ78 phrase records, and private raw staging under one aggregate limit.
+
+Decode a frame only after its entire declared body is collected. Invoke the
+private transactional reconstruction boundary, then drain raw bytes from
+staging before collecting the next frame. One-byte input/output is mandatory;
+`Flush` under starvation remains nonterminal; final `EndInput` survives output
+drain. Reject truncation, trailing bytes, malformed later frames, reset, and
+unknown flags with sticky errors. This decision adds no profile calculator, C
+factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
+
+## DD-576: LZ78 tANS profile derives every bounded workspace
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-574 and DD-575.
+For the largest known raw frame `F`, calculate encoder token capacity `8F`,
+LZ78 encoder-record count, `K = ceil(8F/B)`, `528K` descriptor bytes, the
+blockwise tANS payload ceiling, and complete frame capacity with checked
+arithmetic. Count raw, token, serialized frame, and encoder records under the
+same aggregate policy used by the streaming encoder.
+
+Derive decoder encoded-frame, token, private-raw, block-view, and phrase-entry
+capacities only from validated local hard limits. Define one exact aligned
+opaque layout for tANS views followed by LZ78 phrase records; reject short,
+misaligned, or altered requirements before publishing typed spans. Empty
+encoding has zero byte regions and alignment one. Prove the calculated regions
+directly construct the streaming round trip. This decision adds no C
+requirements query, public factory, CLI, benchmark, fuzzer, completion claim,
+or interoperability entry.
+
+## DD-577: LZ78 tANS C factory preserves exact workspace boundaries
+
+- Date: 2026-08-04
+- Status: accepted
+
+Expose a size-tagged `marc_lz78_tans_config`, initializer, direction-specific
+workspace requirements query, and factory without changing the ABI version or
+any existing structure. The config carries known original size, raw frame and
+entropy block sizes, LZ78 entry bound, and every local hard limit required by
+DD-576.
+
+Map encoder requirements to raw primary storage, token-plus-encoded secondary
+storage, and aligned encoder-record views. Map decoder requirements to encoded-
+frame primary storage, token-plus-private-raw secondary storage, and one aligned
+tANS-view-plus-LZ78-phrase region. Revalidate configuration, exact capacity,
+reserved fields, and alignment before typed partition or allocation; publish no
+handle on failure. Exercise the lifecycle from a C11 translation unit. This
+decision adds no CLI, benchmark, fuzzer, completion claim, or interoperability
+entry.
+
+## DD-578: LZ78 tANS CLI admits only the public bounded profile
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the explicit `lz78-tans` selector only after the size-tagged public C
+configuration, directional requirements query, and transform factory exist.
+Fix raw frames and entropy blocks at 65,536 bytes, canonical LZ78 staging at
+`8F = 524,288` bytes, block count at eight, tANS descriptors at 4,224 bytes,
+payload at most 786,448 bytes, phrase entries at 65,536, and aggregate
+internal storage at 4 MiB.
+
+The adapter must obtain primary, secondary, and aligned opaque-view extents
+from the public requirements query and construct the transform only through
+the public factory. It must retain existing bounded streaming, destination
+non-overwrite, temporary-file transaction, malformed-input cleanup, and strict
+trailing-data rejection. Prove the repository-standard multi-frame binary
+round trip and negative file behaviors through the generic CLI regression.
+This decision adds no benchmark, fuzz target, completion claim, interoperability
+archive, or schema revision.
+
+## DD-579: LZ78 tANS benchmark measures the admitted public profile
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add `lz78-tans` to the dependency-free benchmark only through DD-578's fixed
+public profile and the `marc_lz78_tans_*` lifecycle. Reuse the 65,536-byte raw
+frame and entropy block, 524,288-byte token ceiling, eight tANS blocks,
+786,448-byte payload ceiling, 65,536 phrase entries, and 4-MiB aggregate
+policy. Derive checked complete-stream capacity as `80 + 12N + 4296K` for raw
+input extent `N` and nonempty frame count `K`.
+
+Query and report all three direction-specific caller-owned workspace regions,
+including aligned opaque views. Before timing, require one byte-exact encode
+and decode through independently constructed public transforms. Then report
+compression ratio and encode/decode throughput without imposing a performance
+floor. Add a one-iteration README smoke under both supported Windows compiler
+configurations. This decision adds no optimized format variant, fuzz target,
+completion claim, interoperability archive, or schema revision.
+
+## DD-580: LZ78 tANS fuzzing is fixed-memory and dual-boundary
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded decoder fuzz harness only after DD-577's public lifecycle and
+DD-569 through DD-575's private and streaming validation paths are stable.
+Truncate supplied input to 8 KiB; permit at most 4 KiB total raw output, one
+1-KiB raw frame, 8 KiB of canonical LZ78 tokens, 16 KiB of compressed payload,
+eight tANS block views, and 1,024 LZ78 phrases. Include encoded-frame, token,
+private-raw, mixed aligned views, and output storage in fixed compile-time
+ceilings and one aggregate hard limit.
+
+Drive the complete-frame private decoder only after a valid exact profile
+prefix, and independently drive the public C streaming decoder with chunk
+sizes derived solely within the bounded input. Enforce the process-result
+contract and a finite call ceiling; reaching the ceiling is a reproducible
+failure. Permanently test every proper prefix of a canonical stream, impossible
+frame extents, and an invalid tANS descriptor for zero publication and sticky
+error identity. This decision adds no corpus finding, completion claim,
+interoperability archive, or schema revision.
+
+## DD-581: LZ78 tANS completion is proved through the public ABI
+
+- Date: 2026-08-04
+- Status: accepted
+
+Apply the established public-ABI completion matrix to DD-577 with 64-byte raw
+frames, 64-byte entropy blocks, at most 512 canonical token bytes, eight tANS
+blocks, 64 phrase entries, and a 65,536-byte aggregate policy. Construct every
+encoder and decoder solely through the size-tagged config, directional
+requirements query, aligned three-region workspace, transform factory,
+process function, and destroy function.
+
+Round-trip empty input, every one-byte value, all byte values in sequence,
+long zero runs, repeated binary patterns, deterministic pseudo-random bytes,
+and lengths 63, 64, and 65. Require byte-identical repeated encoding and the
+same multi-frame bytes under one-byte and mixed input/output chunks. Repeated
+calls after success must remain ended with zero progress. For a four-frame
+stream, corrupt and truncate the final frame and append trailing data; retain
+exactly the first three committed frames, leave the final output sentinel
+unchanged, and repeat the same sticky error identity. This decision establishes
+local readiness only and adds no interoperability archive or schema revision.
+
+## DD-582: Interoperability schema 28 appends LZ78 tANS
+
+- Date: 2026-08-04
+- Status: accepted
+
+Freeze the exact thirty-eight-entry schema-27 order and append `lz78-tans`
+once as entry 39. Name the new codec set `marc-cli-v28`; retain the existing
+deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
+SHA-256 records.
+
+Generation must round-trip every archive before recording it. Verification
+requires the exact schema order, foreign decode equality, and byte-identical
+local re-encoding. The compatibility regression rejects a reordered schema-28
+manifest, derives schema 27 by removing only `lz78-tans`, then verifies
+schemas 1 through 27 unchanged. This establishes local schema admission but
+does not claim cross-platform completion.
+
+## DD-583: LZW tANS entropizes finalized packed code bytes
+
+- Date: 2026-08-04
+- Status: accepted
+
+Reserve `lzw-tans` for LZW variant 1 followed by tabled tANS variant 1. LZW
+must first finalize its complete canonical LSB-first packed code region,
+including zero high padding through the last byte, for one outer frame. tANS
+consumes that region as untyped bytes; therefore an entropy block may split a
+variable-width code but may not split a byte or cross the frame boundary where
+both algorithms reset.
+
+For raw size `F`, configured maximum code width `W`, packed size `S`, nonzero
+block size `B`, and `K = ceil(S/B)`, require
+`0 < S <= ceil(FW/8)`, exact descriptor extent `528K`, and the checked sum of
+per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`.
+Decode all tANS blocks into private staging before validating LZW code-width
+transitions, references, `KwKwK`, dictionary growth, exact raw expansion,
+packed exhaustion, or high padding bits.
+
+Independently fix raw `A` as packed bytes `41 00`, normalized frequencies
+`00:2048` and `41:2048`, tANS initial-state offset `0x000C`, two zero
+transition bits, payload `0C 00 00`, and one complete 587-byte frame. This
+decision reserves the representation and vector only; it adds no combined
+validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
+interoperability entry.
+
+## DD-584: LZW tANS validates all entropy before code parsing
+
+- Date: 2026-08-04
+- Status: accepted
+
+Implement the first complete-frame validator for DD-583 without raw
+reconstruction or publication. Before entropy work, require the exact frame
+extent, nonzero `S <= ceil(FW/8)`, exact `K` and `528K`, the checked blockwise
+payload ceiling, complete caller packed staging, `K` tANS views, and the full
+bounded LZW phrase-record workspace.
+
+Count descriptors, payload, packed bytes, tANS views, and phrase records under
+`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
+state path before decoding any packed byte. Only after all blocks succeed may
+a second pass reconstruct exactly `S` bytes and invoke the ordinary LZW code-
+stream validator. Preserve block index and LZW code, byte, and bit offsets
+where practical. A malformed later block must leave the entire packed staging
+unchanged. This decision adds no raw decoder, publisher, encoder, streaming
+transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
+
+## DD-585: LZW tANS reconstructs only after complete validation
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded private-raw decoder above DD-584. Require complete raw staging
+capacity and count that extent in the aggregate workspace before descriptor
+parsing or entropy output. Reuse DD-584 unchanged to validate every tANS block,
+reconstruct the complete packed LZW region, and validate the complete code
+graph. Only then invoke the existing iterative LZW decoder into the admitted
+raw staging span.
+
+Publish no caller-visible bytes. On any error the caller discards all private
+workspaces; insufficient raw capacity or aggregate memory must leave packed
+and raw staging unchanged. Prove the independent raw-`A` frame, phrase and
+`KwKwK` reconstruction across tANS block boundaries, preflight failures, and
+invalid-code raw atomicity. This step adds no transactional public output,
+encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-586: LZW tANS publishes one fully validated frame atomically
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a transactional complete-frame wrapper above DD-585. Before descriptor
+parsing or any private mutation, require caller output capacity for the entire
+declared raw extent in addition to the disposable packed, phrase, view, and raw
+staging regions. Caller output is not internal workspace and does not count
+against `max_internal_buffered_bytes`.
+
+Run DD-584 validation and DD-585 private reconstruction unchanged. Only after
+every tANS block, the complete LZW code graph, and private raw reconstruction
+succeed may one final copy publish exactly the declared raw extent. Short
+output, malformed entropy, and invalid LZW codes or padding must leave the
+complete caller destination unchanged. This step adds no encoder, streaming
+transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-587: LZW tANS planning freezes packed codes before entropy
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add a bounded write-free exact-frame planner above DD-586. Complete
+deterministic LZW parsing using caller-owned encoder records, admit the exact
+packed extent, and serialize the full canonical LSB-first code stream including
+final zero padding into separate staging. Only those immutable packed bytes may
+be divided into tANS blocks; block boundaries remain independent of code
+boundaries.
+
+Plan every tANS block without emitting descriptors or payloads, sum exact
+payload and `528K` descriptor extents with checked arithmetic, and count
+encoder records, packed staging, descriptors, and payload in one aggregate
+workspace total. Validate the synthesized generic header and return the exact
+complete-frame extent without accepting serialized output. Prove the frozen
+587-byte raw-`A` extent, deterministic `ABABABA` codes across three blocks,
+capacity atomicity, block and aggregate rejection, and raw-frame mismatch.
+This step adds no frame encoder, streaming transform, profile calculator, C
+ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-588: LZW tANS encoding emits only a completed plan
+
+- Date: 2026-08-04
+- Status: accepted
+
+Add the bounded complete-frame encoder above DD-587. Run the exact planner to
+completion and admit the full serialized destination before writing any frame
+byte. Serialize the generic header explicitly, then repeat each deterministic
+tANS block plan over the frozen packed LZW staging and require every payload
+extent to match the previously summed plan.
+
+Serialize each fixed descriptor and exact payload into its precomputed region,
+then require final packed and payload offsets to match the plan. Raw `A` must
+reproduce the independent 587-byte frame exactly. A multi-block `ABABABA`
+frame must be byte-identical across runs and decode transactionally to the
+source. A one-byte-short output must remain wholly unchanged. This step adds
+no streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-589: LZW tANS streaming encode buffers one exact frame
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the first bounded known-size streaming encoder above DD-588. Emit the
+canonical 64-byte stream header and 16-byte LZW parameter extension, collect at
+most one raw frame, plan and encode that complete frame into private immutable
+storage, and drain it fully before accepting input for a later frame.
+
+Construction validates the fixed variant-1 profile, declared original size,
+largest raw frame, conservative `ceil(FW/8)` packed capacity, and required LZW
+encoder records. Per-frame aggregate accounting includes raw staging, actual
+packed staging, the exact serialized frame, and encoder records. Arbitrary
+input/output chunking must preserve canonical bytes; `Flush` leaves a partial
+frame open; retained `EndInput` drains all pending bytes; and `ResetBlock`,
+unknown flags, premature end, or excess input fail stably. This step adds no
+streaming decoder, profile calculator, C ABI, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-590: LZW tANS streaming decode publishes complete frames
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the bounded known-size streaming decoder opposite DD-589. Collect and
+parse the canonical 80-byte prefix, then collect one 56-byte frame header.
+Before accepting its body, derive and validate the packed-code ceiling, tANS
+block count and extents, exact serialized-frame size, raw staging, tANS views,
+LZW phrase records, and aggregate internal storage.
+
+Decode only after the entire declared frame is present. Reuse the private
+complete-frame decoder, drain only the fully validated raw frame, and do not
+collect a later header until draining finishes. Retain `EndInput` during the
+drain and reject truncation, trailing bytes, `ResetBlock`, and unknown flags.
+Corruption in a later frame may leave earlier committed frames visible but
+must publish none of the malformed frame. This step adds no profile calculator,
+C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
+## DD-591: LZW tANS profiles separate bytes from aligned typed views
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add direction-specific bounded workspace calculators above DD-589 and DD-590.
+Encoding derives the largest raw frame `F`, conservative packed LZW staging
+`S = ceil(FW/8)`, `K = ceil(S/B)` tANS blocks, exact `528K` descriptor bytes,
+the blockwise `2 + ceil(12n/8)` payload ceiling, complete-frame storage, and
+the exact LZW encoder-record count. Count every simultaneously live encoder
+region with checked arithmetic.
+
+Decoding derives encoded-frame, packed, private-raw, tANS-view, and conservative
+LZW phrase regions only from validated local limits. Place tANS views first in
+one opaque aligned region, align upward for phrases, and publish typed spans
+only after checking requirements, capacity, and base alignment. Empty encoding
+has zero regions and alignment one. Prove that the returned extents directly
+construct the existing bounded streaming round trip. This step adds no C ABI,
+public factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-592: LZW tANS C ABI keeps all typed storage opaque
+
+- Date: 2026-08-05
+- Status: accepted
+
+Expose the DD-591 profile through a versioned, size-tagged C configuration,
+requirements query, and factory. Reuse the established three-region transform
+contract: primary holds raw input or encoded-frame collection; secondary holds
+packed LZW staging followed by encoded-frame or private-raw storage; aligned
+views hold encoder records or tANS views followed by LZW phrases. No private
+C++ record type or offset enters the public structure.
+
+The requirements query must be repeated after changing direction, sizes,
+maximum code width, block count, or any hard limit. The factory revalidates the
+query, capacity, and alignment, publishes no handle on failure, and allocates
+only the small transform implementation with non-throwing allocation. Prove a
+pure-C11 `ABABX` round trip and reject each one-byte-short region, misalignment,
+null handle output, and nonzero reserved metadata. This step adds no CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-593: LZW tANS completion is proven only through the public ABI
+
+- Date: 2026-08-05
+- Status: accepted
+
+Audit DD-592 as the sole construction boundary with 64-byte raw frames and
+tANS blocks. Cover empty input, every one-byte value, all byte values in
+sequence, long zero runs, a repeating binary pattern, deterministic generated
+data, and lengths 63, 64, and 65. Encode every case twice and require identical
+archives and exact round trips.
+
+For 193 generated bytes, require the unchunked archive to match `(1,1)`,
+`(7,5)`, and `(13,17)` encode schedules and decode each schedule exactly.
+Corrupt the fourth frame sequence, truncate its final byte, and append trailing
+data independently. Each failure may publish the first 192 verified bytes but
+must preserve the final sentinel and repeat the same sticky terminal status and
+error positions. This step adds no CLI, benchmark, fuzz target, completion of
+the whole profile, or interoperability entry.
+
+## DD-594: LZW tANS fuzzing crosses private and public decoders
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add one bounded decoder fuzz target that presents every input to both the
+complete-frame decoder-visible boundary and DD-592's public C streaming
+decoder. Cap input at 8 KiB, raw publication at 4 KiB, a frame at 1 KiB,
+packed staging at 4 KiB, tANS views at eight, phrases from the conservative
+packed-code count, and every storage array at compile time. No fuzz-controlled
+extent may allocate memory.
+
+Drive the public decoder with deterministic variable chunks and at most input
+bytes plus output bytes plus 32 calls. Abort only on process-accounting,
+progress, workspace, or call-budget invariant violations; ordinary malformed
+input is a successful iteration. Retain regressions for every strict prefix of
+canonical `ABABX`, saturated generic-frame lengths, and an invalid tANS
+frequency descriptor. Each must publish nothing and retain a stable repeated
+error. This step adds no CLI, benchmark, whole-profile completion claim, or
+interoperability entry.
+
+## DD-595: LZW tANS CLI uses only the public transactional lifecycle
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add the explicit `lzw-tans` selector to the transactional CLI. Fix raw frames
+and tANS blocks at 65,536 bytes, maximum LZW code width at 16, packed staging
+at `S <= 131072`, block count at `K <= 2`, complete entropy payload at
+`P <= 196612`, generated dictionary entries at 65,280, and aggregate internal
+storage at 8 MiB. These are public policy limits, not new serialized fields.
+
+Initialize, query, construct, process, and destroy the transform only through
+DD-592's public C ABI. Do not reproduce the private LZW record, phrase, or tANS
+view partition in the command-line layer. Retain the common temporary-output
+transaction: existing destinations are rejected, malformed, truncated, and
+extended input publishes no destination, and a successful close atomically
+renames the temporary file. This step adds no benchmark or interoperability
+entry.
+
+## DD-596: LZW tANS benchmark verifies before measuring
+
+- Date: 2026-08-05
+- Status: accepted
+
+Add `lzw-tans` to the dependency-free benchmark runner using DD-595's exact
+public profile. Construct both directions only through DD-592's C
+configuration, requirements query, factory, process, and destroy lifecycle.
+Before any timing, require one byte-exact encode/decode round trip.
+
+For input extent `N` and nonempty frame count `K`, reserve the checked complete
+stream ceiling `80 + 3N + 1116K`: `3N` bounds tANS coding of at most `2N`
+packed LZW bytes, while each frame adds one 56-byte header, two 528-byte
+descriptors, and two two-byte initial states. Report all three queried regions
+for each direction and their peak sum. Add a one-iteration smoke test over the
+repository README, but impose no throughput or compression-ratio threshold.
+This step adds no format variant or interoperability entry.
+
+## DD-597: Interoperability schema 29 appends LZW tANS
+
+- Date: 2026-08-05
+- Status: accepted
+
+Freeze the exact thirty-nine-entry schema-28 order and append `lzw-tans` once
+as entry 40. Name the new codec set `marc-cli-v29`; retain the deterministic
+8,193-byte binary fixture, full source revision, platform/compiler metadata,
+and SHA-256 for the CLI, input, and every archive.
+
+Generation must decode and compare every archive before recording it. The
+verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
+decode, and byte-identical local re-encoding. The compatibility regression
+rejects a reordered schema-29 manifest, derives schema 28 by removing only
+`lzw-tans`, and verifies the unchanged schemas 28 through 1. This admission
+changes no codec representation. External cross-platform evidence remains a
+post-push release check.
+
 ## DD-598: LZD tANS preserves finalized reference pairs
 
 - Date: 2026-08-05
@@ -9544,161 +12682,48 @@ rejection of malformed and trailing input without destination or `.tmp`
 residue. This decision adds no benchmark, interoperability entry, format
 variant, or `Ready` claim.
 
-## DD-619: LZMW tANS streaming decoding commits complete frames only
-
-- Date: 2026-08-07
-- Status: accepted
-
-Add the bounded internal streaming decoder paired with DD-618. Incrementally
-collect and validate the fixed stream prefix, then one generic frame header.
-Before accepting its body, derive and admit the complete serialized extent,
-tANS block views, canonical reference staging, LZMW phrase records, iterative
-expansion stack, private raw staging, and their aggregate live bytes.
-
-Collect exactly one complete frame and invoke DD-615's private transactional
-decoder. Enter raw-output draining only after every tANS block, the full LZMW
-graph, and iterative reconstruction succeed. Drain the immutable private raw
-frame under arbitrary output capacity. Commit sequence and output extent per
-successful frame; a later malformed frame may not expose any of its raw bytes
-or undo earlier frames.
-
-Retain final-input intent while raw output drains. Reject truncation of prefix,
-header, or body, trailing serialized bytes, invalid tables and references,
-short caller-owned regions, aggregate overflow, `ResetBlock`, and unknown
-flags with a sticky terminal error. Prove one-byte input/output, later-frame
-corruption atomicity, every workspace class, aggregate limit, empty stream, and
-nonterminal `Flush`. This decision adds no C factory, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-618: LZMW tANS streaming encoding drains immutable frames
-
-- Date: 2026-08-07
-- Status: accepted
-
-Add a bounded internal streaming encoder above DD-616 and DD-617. Require
-caller-owned storage for the largest outer raw frame, its `4F` canonical LZMW
-reference ceiling, one complete encoded frame, and the bounded LZMW encoder
-table. Validate and serialize the ordinary stream header plus 16-byte LZMW
-parameters during construction without allocation.
-
-Drain the immutable prefix first. Collect exactly one outer frame, invoke the
-exact planner and deterministic encoder into private serialized staging, commit
-its input extent and sequence only after complete success, then drain that
-immutable frame under arbitrary output capacities. Count raw, reference,
-serialized, and encoder-table bytes together against
-`max_internal_buffered_bytes` before publishing the frame.
-
-Retain `EndInput` while prefix or frame output drains. Nonterminal `Flush` must
-not close a partial frame. Reject `ResetBlock`, unknown flags, premature final
-input, excess input, short construction storage, and aggregate workspace
-overflow with stable terminal errors. Prove exact reference equality with
-one-byte input/output, flush invariance, sticky finish, empty streams, and all
-workspace and protocol failures. This decision adds no streaming decoder, C
-factory, CLI, benchmark, fuzz target, completion claim, or interoperability
-entry.
-
-## DD-617: LZMW tANS frame encoding is plan-first and deterministic
-
-- Date: 2026-08-07
-- Status: accepted
-
-Add the deterministic complete-frame encoder above DD-616. Invoke the exact
-planner first so canonical LZMW references, every tANS model and payload size,
-generic frame fields, aggregate workspace, and complete serialized extent are
-fixed before destination capacity is considered. Require capacity for the
-complete frame before writing any serialized byte.
-
-Serialize the generic header explicitly, then repeat tANS planning over each
-block of the frozen reference span. Require every repeated plan and cumulative
-payload extent to match DD-616. Serialize each 528-byte descriptor and encode
-its exact payload into the preplanned region. Treat any post-plan divergence as
-an internal invariant failure.
-
-Prove byte-for-byte equality with the independent 587-byte raw-`A` frame,
-deterministic repeated encoding and round trip for a phrase stream whose tANS
-blocks split references, complete output preservation with capacity one byte
-short, and complete output preservation after planner rejection. This decision
-adds no streaming transform, C factory, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-616: LZMW tANS planning freezes the reference stream
-
-- Date: 2026-08-07
-- Status: accepted
-
-Add a write-free exact-frame planner as the inverse of DD-614 and DD-615.
-Validate the exact stream profile, LZMW parameters, nonempty input extent, and
-frame-local limits. Determine and require the bounded LZMW encoder-record
-capacity before reference staging can change. Plan the deterministic LZMW
-parse, require the exact checked `0 < S <= 4F` aligned reference extent and
-staging capacity, then serialize all canonical four-byte references.
-
-Only after the complete reference span is fixed may the planner divide it by
-the configured tANS block size. Plan every block independently, sum exact
-payload extents with checked arithmetic, require exact `528K` descriptors and
-the DD-613 payload ceiling, and count encoder records, reference staging,
-descriptors, and exact payload against `max_internal_buffered_bytes`.
-Validate the synthesized generic frame header with sequence and committed-
-output context and report the exact complete-frame extent without writing it.
-
-Prove the independent raw-`A` reference and exact 587-byte extent, repeated
-byte-identical phrase/block planning, encoder records and reference staging one
-entry short before staging mutation, aggregate workspace one byte short,
-empty input, and frame-size mismatch. This decision adds no serialized frame
-encoder, streaming transform, C factory, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-615: LZMW tANS reconstruction and publication are transactional
+## DD-611: LZD tANS benchmark verifies before measuring
 
 - Date: 2026-08-06
 - Status: accepted
 
-Extend DD-614 with a bounded private raw decoder. Before descriptor parsing or
-entropy output, require the complete declared raw staging extent and the
-conservative iterative LZMW expansion stack derived from phrase capacity.
-Count both with descriptors, payload, reference staging, block views, and
-phrase records against `max_internal_buffered_bytes`.
+Add `lzd-tans` to the dependency-free benchmark runner using DD-610's exact
+public profile. Construct both directions only through DD-607's C
+configuration, requirements query, factory, process, and destroy lifecycle.
+Before any timing, require one byte-exact encode/decode round trip.
 
-After every tANS block validates, the complete reference region is rebuilt,
-and the full LZMW graph validates, reduce the active expansion span to the
-actual generated-entry count plus one for a nonempty frame. Invoke only the
-existing allocation-free, nonrecursive LZMW decoder into disposable raw
-staging. Propagate its stable token, format, validation, and decode details.
+For input extent `N` and nonempty frame count `K`, reserve the checked complete
+stream ceiling `80 + 12*ceil(N/2) + 2176K`. Twelve bytes bound tANS coding of
+each possible eight-byte LZD reference pair; each frame adds one 56-byte header
+plus four 528-byte descriptors and four two-byte initial states. Report ratio,
+encode and decode throughput, all three queried workspace regions for each
+direction, and their larger sum. Add a one-iteration README smoke without a
+performance or compression threshold. This decision adds no interoperability
+entry, format variant, or `Ready` claim.
 
-The transactional form additionally admits the entire caller destination
-before any private mutation and copies exactly the declared raw extent once,
-only after reconstruction succeeds. Prove the independent literal vector,
-phrase expansion across entropy-block and phrase edges, one-entry-short raw
-and expansion storage before entropy mutation, malformed entropy preserving
-raw staging, successful one-time publication, and short output preserving all
-caller regions. This decision adds no encoder, streaming transform, C factory,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-614: LZMW tANS validation is entropy-first and discard-only
+## DD-612: Interoperability schema 30 appends LZD tANS
 
 - Date: 2026-08-06
 - Status: accepted
 
-Add the first internal `lzmw-tans` complete-frame component as a bounded
-validator only. Admit the exact generic frame extent, aligned nonempty
-reference extent, derived block count, exact `528K` descriptor bytes, checked
-tANS payload ceiling, caller-owned block views, complete reference staging,
-LZMW phrase records, and their aggregate bytes before entropy output can begin.
+Freeze the exact forty-entry schema-29 order and append `lzd-tans` once as
+entry 41. Name the new codec set `marc-cli-v30`; retain the deterministic
+8,193-byte binary fixture, full source revision, platform/compiler metadata,
+and SHA-256 for the CLI, input, and every archive.
 
-Parse all descriptors and strictly validate every tANS table, transition,
-initial state, final padding, and payload exhaustion before decoding any block
-into reference staging. Then reconstruct exactly the declared reference extent
-and apply the existing LZMW validator to the complete private span. Preserve
-stable entropy block and LZMW token positions. On any error, every workspace is
-discard-only and no raw output exists at this boundary.
+Generation must decode and compare every archive before recording it. The
+verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
+decode, and byte-identical local re-encoding. The compatibility regression
+rejects a reordered schema-30 manifest, derives schema 29 by removing only
+`lzd-tans`, and verifies the unchanged schemas 29 through 1. This admission
+changes no codec representation. External cross-platform evidence remains a
+post-push release check.
 
-Prove the independent 587-byte raw-`A` frame, blocks that split references,
-later-descriptor failure before reference mutation, invalid LZMW references
-after entropy reconstruction, each short workspace, aggregate workspace one
-byte short, truncation, trailing bytes, and wrong-pipeline rejection under
-MSVC and ClangCL. This decision adds no raw decoder, encoder, streaming
-transform, C factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
+That release check completed at revision
+`827ddf085efb40c7d8f9bc27628977053179d84c`: the Windows/MSVC and Ubuntu
+24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+bundle verified locally and on Windows/MSVC. Every pass decoded and
+byte-identically re-encoded all 41 archives.
 
 ## DD-613: LZMW tANS preserves finalized phrase references
 
@@ -9733,3332 +12758,307 @@ standalone LZMW encoder, tANS encoder, and generic serializers. This decision
 publishes no combined validator, streaming transform, C factory, CLI,
 benchmark, fuzz target, completion claim, or interoperability entry.
 
-## DD-612: Interoperability schema 30 appends LZD tANS
+## DD-614: LZMW tANS validation is entropy-first and discard-only
 
 - Date: 2026-08-06
 - Status: accepted
 
-Freeze the exact forty-entry schema-29 order and append `lzd-tans` once as
-entry 41. Name the new codec set `marc-cli-v30`; retain the deterministic
+Add the first internal `lzmw-tans` complete-frame component as a bounded
+validator only. Admit the exact generic frame extent, aligned nonempty
+reference extent, derived block count, exact `528K` descriptor bytes, checked
+tANS payload ceiling, caller-owned block views, complete reference staging,
+LZMW phrase records, and their aggregate bytes before entropy output can begin.
+
+Parse all descriptors and strictly validate every tANS table, transition,
+initial state, final padding, and payload exhaustion before decoding any block
+into reference staging. Then reconstruct exactly the declared reference extent
+and apply the existing LZMW validator to the complete private span. Preserve
+stable entropy block and LZMW token positions. On any error, every workspace is
+discard-only and no raw output exists at this boundary.
+
+Prove the independent 587-byte raw-`A` frame, blocks that split references,
+later-descriptor failure before reference mutation, invalid LZMW references
+after entropy reconstruction, each short workspace, aggregate workspace one
+byte short, truncation, trailing bytes, and wrong-pipeline rejection under
+MSVC and ClangCL. This decision adds no raw decoder, encoder, streaming
+transform, C factory, CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-615: LZMW tANS reconstruction and publication are transactional
+
+- Date: 2026-08-06
+- Status: accepted
+
+Extend DD-614 with a bounded private raw decoder. Before descriptor parsing or
+entropy output, require the complete declared raw staging extent and the
+conservative iterative LZMW expansion stack derived from phrase capacity.
+Count both with descriptors, payload, reference staging, block views, and
+phrase records against `max_internal_buffered_bytes`.
+
+After every tANS block validates, the complete reference region is rebuilt,
+and the full LZMW graph validates, reduce the active expansion span to the
+actual generated-entry count plus one for a nonempty frame. Invoke only the
+existing allocation-free, nonrecursive LZMW decoder into disposable raw
+staging. Propagate its stable token, format, validation, and decode details.
+
+The transactional form additionally admits the entire caller destination
+before any private mutation and copies exactly the declared raw extent once,
+only after reconstruction succeeds. Prove the independent literal vector,
+phrase expansion across entropy-block and phrase edges, one-entry-short raw
+and expansion storage before entropy mutation, malformed entropy preserving
+raw staging, successful one-time publication, and short output preserving all
+caller regions. This decision adds no encoder, streaming transform, C factory,
+CLI, benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-616: LZMW tANS planning freezes the reference stream
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add a write-free exact-frame planner as the inverse of DD-614 and DD-615.
+Validate the exact stream profile, LZMW parameters, nonempty input extent, and
+frame-local limits. Determine and require the bounded LZMW encoder-record
+capacity before reference staging can change. Plan the deterministic LZMW
+parse, require the exact checked `0 < S <= 4F` aligned reference extent and
+staging capacity, then serialize all canonical four-byte references.
+
+Only after the complete reference span is fixed may the planner divide it by
+the configured tANS block size. Plan every block independently, sum exact
+payload extents with checked arithmetic, require exact `528K` descriptors and
+the DD-613 payload ceiling, and count encoder records, reference staging,
+descriptors, and exact payload against `max_internal_buffered_bytes`.
+Validate the synthesized generic frame header with sequence and committed-
+output context and report the exact complete-frame extent without writing it.
+
+Prove the independent raw-`A` reference and exact 587-byte extent, repeated
+byte-identical phrase/block planning, encoder records and reference staging one
+entry short before staging mutation, aggregate workspace one byte short,
+empty input, and frame-size mismatch. This decision adds no serialized frame
+encoder, streaming transform, C factory, CLI, benchmark, fuzz target,
+completion claim, or interoperability entry.
+
+## DD-617: LZMW tANS frame encoding is plan-first and deterministic
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add the deterministic complete-frame encoder above DD-616. Invoke the exact
+planner first so canonical LZMW references, every tANS model and payload size,
+generic frame fields, aggregate workspace, and complete serialized extent are
+fixed before destination capacity is considered. Require capacity for the
+complete frame before writing any serialized byte.
+
+Serialize the generic header explicitly, then repeat tANS planning over each
+block of the frozen reference span. Require every repeated plan and cumulative
+payload extent to match DD-616. Serialize each 528-byte descriptor and encode
+its exact payload into the preplanned region. Treat any post-plan divergence as
+an internal invariant failure.
+
+Prove byte-for-byte equality with the independent 587-byte raw-`A` frame,
+deterministic repeated encoding and round trip for a phrase stream whose tANS
+blocks split references, complete output preservation with capacity one byte
+short, and complete output preservation after planner rejection. This decision
+adds no streaming transform, C factory, CLI, benchmark, fuzz target, completion
+claim, or interoperability entry.
+
+## DD-618: LZMW tANS streaming encoding drains immutable frames
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add a bounded internal streaming encoder above DD-616 and DD-617. Require
+caller-owned storage for the largest outer raw frame, its `4F` canonical LZMW
+reference ceiling, one complete encoded frame, and the bounded LZMW encoder
+table. Validate and serialize the ordinary stream header plus 16-byte LZMW
+parameters during construction without allocation.
+
+Drain the immutable prefix first. Collect exactly one outer frame, invoke the
+exact planner and deterministic encoder into private serialized staging, commit
+its input extent and sequence only after complete success, then drain that
+immutable frame under arbitrary output capacities. Count raw, reference,
+serialized, and encoder-table bytes together against
+`max_internal_buffered_bytes` before publishing the frame.
+
+Retain `EndInput` while prefix or frame output drains. Nonterminal `Flush` must
+not close a partial frame. Reject `ResetBlock`, unknown flags, premature final
+input, excess input, short construction storage, and aggregate workspace
+overflow with stable terminal errors. Prove exact reference equality with
+one-byte input/output, flush invariance, sticky finish, empty streams, and all
+workspace and protocol failures. This decision adds no streaming decoder, C
+factory, CLI, benchmark, fuzz target, completion claim, or interoperability
+entry.
+
+## DD-619: LZMW tANS streaming decoding commits complete frames only
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add the bounded internal streaming decoder paired with DD-618. Incrementally
+collect and validate the fixed stream prefix, then one generic frame header.
+Before accepting its body, derive and admit the complete serialized extent,
+tANS block views, canonical reference staging, LZMW phrase records, iterative
+expansion stack, private raw staging, and their aggregate live bytes.
+
+Collect exactly one complete frame and invoke DD-615's private transactional
+decoder. Enter raw-output draining only after every tANS block, the full LZMW
+graph, and iterative reconstruction succeed. Drain the immutable private raw
+frame under arbitrary output capacity. Commit sequence and output extent per
+successful frame; a later malformed frame may not expose any of its raw bytes
+or undo earlier frames.
+
+Retain final-input intent while raw output drains. Reject truncation of prefix,
+header, or body, trailing serialized bytes, invalid tables and references,
+short caller-owned regions, aggregate overflow, `ResetBlock`, and unknown
+flags with a sticky terminal error. Prove one-byte input/output, later-frame
+corruption atomicity, every workspace class, aggregate limit, empty stream, and
+nonterminal `Flush`. This decision adds no C factory, CLI, benchmark, fuzz
+target, completion claim, or interoperability entry.
+
+## DD-620: LZMW tANS profile couples conservative storage
+
+- Date: 2026-08-07
+- Status: accepted
+
+Add an internal direction-specific profile calculator above DD-618 and DD-619.
+For known-size encoding derive the canonical LZMW/tANS stream header, largest
+raw frame `F`, reference ceiling `4F`, `K = ceil(4F/B)` tANS blocks, exact
+`528K` descriptor bytes, blockwise `2 + ceil(12n/8)` payload ceilings, at most
+`min(F - 1, maximum_entries)` encoder records, and the checked aggregate live
+workspace. Empty input requires no active-frame storage.
+
+For decoding derive conservative encoded-frame, reference, private-raw, block-
+view, phrase, and expansion capacities only from validated local limits.
+Partition the opaque typed region only after recomputing and matching every
+offset, total byte count, and alignment. Map profile failures to stable core
+errors and prove the returned regions by constructing the existing streaming
+pair. This changes no serialized representation and adds no C factory, CLI,
+benchmark, fuzz target, completion claim, or interoperability entry.
+
+## DD-621: LZMW tANS C factory keeps typed layouts opaque
+
+- Date: 2026-08-08
+- Status: accepted
+
+Expose a size-tagged `marc_lzmw_tans_config` with fixed-width fields matching
+DD-620's known-size configuration and local decoder limits. Provide one
+requirements query and one immutable-direction factory through the common
+opaque transform lifecycle. Encoding maps primary storage to raw collection,
+secondary storage to canonical references followed by the complete frame, and
+aligned views storage to LZMW encoder entries. Decoding maps primary storage to
+encoded-frame collection, secondary storage to canonical references followed
+by private raw output, and aligned views storage to tANS block views, LZMW
+phrases, and expansion indices.
+
+The query is the sole authority for byte counts and alignment. The factory must
+reject wrong structure size or ABI version, nonzero reserved fields, invalid
+direction or limits, null-with-size buffers, short or misaligned regions, and a
+null result pointer before constructing anything. Prove the declarations from
+a pure C11 translation unit with round trip and negative workspace cases. This
+changes no format and adds no CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
+## DD-622: LZMW tANS public completion reuses equivalent bounds
+
+- Date: 2026-08-08
+- Status: accepted
+
+Apply the reviewed public-ABI completion matrix through only the DD-621 symbol
+family. Fix raw frames and tANS blocks to 64 bytes. At that frame size LZMW's
+`4F` reference ceiling and LZD's `8 * ceil(F/2)` ceiling are both exactly 256
+bytes, so the existing tANS capacity, data, chunking, terminal, and malformed
+schedules can be reused without weakening or approximating a bound.
+
+Prove empty input, every one-byte value, all byte values, repetitive and
+patterned inputs, deterministic generated data, and lengths 63, 64, and 65.
+Require repeated encoding and `(1,1)`, `(7,5)`, and `(13,17)` schedules to
+produce identical streams and raw output. Corrupt the fourth frame sequence,
+truncate its final byte, and append trailing data independently; each failure
+must commit exactly the first three frames, preserve the final output sentinel,
+and repeat the same sticky status and positions. This adds no format, CLI,
+benchmark, fuzz target, `Ready` claim, or interoperability entry.
+
+## DD-623: LZMW tANS fuzzing is bounded before parsing
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add a dual-path decoder fuzz entry above DD-615, DD-619, and DD-621. Cap the
+supplied input at 8,192 bytes. Exercise the complete-frame private decoder only
+after the ordinary prefix and LZMW parameter parsers accept the fixed profile.
+Exercise the public incremental decoder with input-derived chunks, at most
+4,096 published raw bytes, and a call ceiling of bounded input plus bounded
+output plus 32. Allocate all encoded, canonical-reference, raw, tANS-view,
+phrase, and expansion regions as fixed arrays before parsing.
+
+Abort the harness only for violated API invariants, impossible queried extents,
+construction failure under the fixed valid configuration, progress without
+counts, renewed input demand after final input, or exhaustion of the call
+ceiling. Treat ordinary malformed-stream status as expected. Add deterministic
+regressions for every truncation of a canonical stream, saturated generic frame
+lengths, and invalid tANS descriptor metadata; each must publish no raw byte and
+remain sticky. This changes no format, API, CLI, benchmark, `Ready` claim, or
+interoperability entry.
+
+## DD-624: LZMW tANS CLI is a public-only transaction
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add `lzmw-tans` as an explicit selector in the existing transactional CLI.
+Fix 65,536-byte raw frames and entropy blocks, `S = 4F = 262,144` canonical
+reference bytes, four tANS blocks, `528K = 2,112` descriptor bytes,
+`P = 12S/8 + 2K = 393,224` payload bytes, at most 65,536 generated entries,
+and a conservative 16-MiB aggregate policy.
+
+Initialize configuration, query all direction-specific byte extents and
+alignment, create the transform, process the file, and destroy the transform
+only through DD-621's C lifecycle. Do not reproduce private tANS-view,
+encoder-entry, phrase, expansion, or partition layouts. Retain destination
+overwrite refusal, strict trailing-data rejection, bounded 64-KiB I/O, sibling
+`.tmp` staging, deletion on failure, and rename only after complete success.
+Prove binary and empty round trips plus atomic malformed and trailing rejection.
+This changes no default selector, format, benchmark, `Ready` claim, or
+interoperability entry.
+
+## DD-625: LZMW tANS benchmark verifies before measuring
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add `lzmw-tans` to the dependency-free benchmark runner using DD-624's exact
+65,536-byte frame/block profile and only DD-621's public C lifecycle. Query,
+allocate, construct, process, and destroy encode and decode directions
+independently. Require one byte-exact untimed round trip before any result is
+reported, then measure encode and decode separately and report all three
+queried workspace regions, their alignments, and the larger directional sum.
+
+For input extent `N` and nonempty outer-frame count `K`, admit output with the
+checked ceiling `80 + 6N + 2176K`. The payload term follows `S <= 4N` and the
+tANS ceiling `ceil(12S/8) + 2` per block. The per-frame term is one 56-byte
+generic header, four 528-byte descriptors, and four two-byte final states.
+This benchmark changes no default selector, stream representation, API,
+`Ready` claim, or interoperability schema.
+
+## DD-626: Interoperability schema 31 appends LZMW tANS
+
+- Date: 2026-08-08
+- Status: accepted
+
+Freeze the exact forty-one-entry schema-30 order and append `lzmw-tans` once
+as entry 42. Name the new codec set `marc-cli-v31`; retain the deterministic
 8,193-byte binary fixture, full source revision, platform/compiler metadata,
 and SHA-256 for the CLI, input, and every archive.
 
 Generation must decode and compare every archive before recording it. The
 verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
 decode, and byte-identical local re-encoding. The compatibility regression
-rejects a reordered schema-30 manifest, derives schema 29 by removing only
-`lzd-tans`, and verifies the unchanged schemas 29 through 1. This admission
+rejects a reordered schema-31 manifest, derives schema 30 by removing only
+`lzmw-tans`, and verifies the unchanged schemas 30 through 1. This admission
 changes no codec representation. External cross-platform evidence remains a
 post-push release check.
 
 That release check completed at revision
-`827ddf085efb40c7d8f9bc27628977053179d84c`: the Windows/MSVC and Ubuntu
+`903181080556c3bb511ad4a2e5275837ebda48e7`: the Windows/MSVC and Ubuntu
 24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 bundle verified locally and on Windows/MSVC. Every pass decoded and
-byte-identically re-encoded all 41 archives.
-
-## DD-611: LZD tANS benchmark verifies before measuring
-
-- Date: 2026-08-06
-- Status: accepted
-
-Add `lzd-tans` to the dependency-free benchmark runner using DD-610's exact
-public profile. Construct both directions only through DD-607's C
-configuration, requirements query, factory, process, and destroy lifecycle.
-Before any timing, require one byte-exact encode/decode round trip.
-
-For input extent `N` and nonempty frame count `K`, reserve the checked complete
-stream ceiling `80 + 12*ceil(N/2) + 2176K`. Twelve bytes bound tANS coding of
-each possible eight-byte LZD reference pair; each frame adds one 56-byte header
-plus four 528-byte descriptors and four two-byte initial states. Report ratio,
-encode and decode throughput, all three queried workspace regions for each
-direction, and their larger sum. Add a one-iteration README smoke without a
-performance or compression threshold. This decision adds no interoperability
-entry, format variant, or `Ready` claim.
-
-## DD-597: Interoperability schema 29 appends LZW tANS
-
-- Date: 2026-08-05
-- Status: accepted
-
-Freeze the exact thirty-nine-entry schema-28 order and append `lzw-tans` once
-as entry 40. Name the new codec set `marc-cli-v29`; retain the deterministic
-8,193-byte binary fixture, full source revision, platform/compiler metadata,
-and SHA-256 for the CLI, input, and every archive.
-
-Generation must decode and compare every archive before recording it. The
-verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
-decode, and byte-identical local re-encoding. The compatibility regression
-rejects a reordered schema-29 manifest, derives schema 28 by removing only
-`lzw-tans`, and verifies the unchanged schemas 28 through 1. This admission
-changes no codec representation. External cross-platform evidence remains a
-post-push release check.
-
-## DD-596: LZW tANS benchmark verifies before measuring
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add `lzw-tans` to the dependency-free benchmark runner using DD-595's exact
-public profile. Construct both directions only through DD-592's C
-configuration, requirements query, factory, process, and destroy lifecycle.
-Before any timing, require one byte-exact encode/decode round trip.
-
-For input extent `N` and nonempty frame count `K`, reserve the checked complete
-stream ceiling `80 + 3N + 1116K`: `3N` bounds tANS coding of at most `2N`
-packed LZW bytes, while each frame adds one 56-byte header, two 528-byte
-descriptors, and two two-byte initial states. Report all three queried regions
-for each direction and their peak sum. Add a one-iteration smoke test over the
-repository README, but impose no throughput or compression-ratio threshold.
-This step adds no format variant or interoperability entry.
-
-## DD-595: LZW tANS CLI uses only the public transactional lifecycle
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add the explicit `lzw-tans` selector to the transactional CLI. Fix raw frames
-and tANS blocks at 65,536 bytes, maximum LZW code width at 16, packed staging
-at `S <= 131072`, block count at `K <= 2`, complete entropy payload at
-`P <= 196612`, generated dictionary entries at 65,280, and aggregate internal
-storage at 8 MiB. These are public policy limits, not new serialized fields.
-
-Initialize, query, construct, process, and destroy the transform only through
-DD-592's public C ABI. Do not reproduce the private LZW record, phrase, or tANS
-view partition in the command-line layer. Retain the common temporary-output
-transaction: existing destinations are rejected, malformed, truncated, and
-extended input publishes no destination, and a successful close atomically
-renames the temporary file. This step adds no benchmark or interoperability
-entry.
-
-## DD-594: LZW tANS fuzzing crosses private and public decoders
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add one bounded decoder fuzz target that presents every input to both the
-complete-frame decoder-visible boundary and DD-592's public C streaming
-decoder. Cap input at 8 KiB, raw publication at 4 KiB, a frame at 1 KiB,
-packed staging at 4 KiB, tANS views at eight, phrases from the conservative
-packed-code count, and every storage array at compile time. No fuzz-controlled
-extent may allocate memory.
-
-Drive the public decoder with deterministic variable chunks and at most input
-bytes plus output bytes plus 32 calls. Abort only on process-accounting,
-progress, workspace, or call-budget invariant violations; ordinary malformed
-input is a successful iteration. Retain regressions for every strict prefix of
-canonical `ABABX`, saturated generic-frame lengths, and an invalid tANS
-frequency descriptor. Each must publish nothing and retain a stable repeated
-error. This step adds no CLI, benchmark, whole-profile completion claim, or
-interoperability entry.
-
-## DD-593: LZW tANS completion is proven only through the public ABI
-
-- Date: 2026-08-05
-- Status: accepted
-
-Audit DD-592 as the sole construction boundary with 64-byte raw frames and
-tANS blocks. Cover empty input, every one-byte value, all byte values in
-sequence, long zero runs, a repeating binary pattern, deterministic generated
-data, and lengths 63, 64, and 65. Encode every case twice and require identical
-archives and exact round trips.
-
-For 193 generated bytes, require the unchunked archive to match `(1,1)`,
-`(7,5)`, and `(13,17)` encode schedules and decode each schedule exactly.
-Corrupt the fourth frame sequence, truncate its final byte, and append trailing
-data independently. Each failure may publish the first 192 verified bytes but
-must preserve the final sentinel and repeat the same sticky terminal status and
-error positions. This step adds no CLI, benchmark, fuzz target, completion of
-the whole profile, or interoperability entry.
-
-## DD-592: LZW tANS C ABI keeps all typed storage opaque
-
-- Date: 2026-08-05
-- Status: accepted
-
-Expose the DD-591 profile through a versioned, size-tagged C configuration,
-requirements query, and factory. Reuse the established three-region transform
-contract: primary holds raw input or encoded-frame collection; secondary holds
-packed LZW staging followed by encoded-frame or private-raw storage; aligned
-views hold encoder records or tANS views followed by LZW phrases. No private
-C++ record type or offset enters the public structure.
-
-The requirements query must be repeated after changing direction, sizes,
-maximum code width, block count, or any hard limit. The factory revalidates the
-query, capacity, and alignment, publishes no handle on failure, and allocates
-only the small transform implementation with non-throwing allocation. Prove a
-pure-C11 `ABABX` round trip and reject each one-byte-short region, misalignment,
-null handle output, and nonzero reserved metadata. This step adds no CLI,
-benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-591: LZW tANS profiles separate bytes from aligned typed views
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add direction-specific bounded workspace calculators above DD-589 and DD-590.
-Encoding derives the largest raw frame `F`, conservative packed LZW staging
-`S = ceil(FW/8)`, `K = ceil(S/B)` tANS blocks, exact `528K` descriptor bytes,
-the blockwise `2 + ceil(12n/8)` payload ceiling, complete-frame storage, and
-the exact LZW encoder-record count. Count every simultaneously live encoder
-region with checked arithmetic.
-
-Decoding derives encoded-frame, packed, private-raw, tANS-view, and conservative
-LZW phrase regions only from validated local limits. Place tANS views first in
-one opaque aligned region, align upward for phrases, and publish typed spans
-only after checking requirements, capacity, and base alignment. Empty encoding
-has zero regions and alignment one. Prove that the returned extents directly
-construct the existing bounded streaming round trip. This step adds no C ABI,
-public factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-590: LZW tANS streaming decode publishes complete frames
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add the bounded known-size streaming decoder opposite DD-589. Collect and
-parse the canonical 80-byte prefix, then collect one 56-byte frame header.
-Before accepting its body, derive and validate the packed-code ceiling, tANS
-block count and extents, exact serialized-frame size, raw staging, tANS views,
-LZW phrase records, and aggregate internal storage.
-
-Decode only after the entire declared frame is present. Reuse the private
-complete-frame decoder, drain only the fully validated raw frame, and do not
-collect a later header until draining finishes. Retain `EndInput` during the
-drain and reject truncation, trailing bytes, `ResetBlock`, and unknown flags.
-Corruption in a later frame may leave earlier committed frames visible but
-must publish none of the malformed frame. This step adds no profile calculator,
-C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
-entry.
-
-## DD-589: LZW tANS streaming encode buffers one exact frame
-
-- Date: 2026-08-05
-- Status: accepted
-
-Add the first bounded known-size streaming encoder above DD-588. Emit the
-canonical 64-byte stream header and 16-byte LZW parameter extension, collect at
-most one raw frame, plan and encode that complete frame into private immutable
-storage, and drain it fully before accepting input for a later frame.
-
-Construction validates the fixed variant-1 profile, declared original size,
-largest raw frame, conservative `ceil(FW/8)` packed capacity, and required LZW
-encoder records. Per-frame aggregate accounting includes raw staging, actual
-packed staging, the exact serialized frame, and encoder records. Arbitrary
-input/output chunking must preserve canonical bytes; `Flush` leaves a partial
-frame open; retained `EndInput` drains all pending bytes; and `ResetBlock`,
-unknown flags, premature end, or excess input fail stably. This step adds no
-streaming decoder, profile calculator, C ABI, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-588: LZW tANS encoding emits only a completed plan
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add the bounded complete-frame encoder above DD-587. Run the exact planner to
-completion and admit the full serialized destination before writing any frame
-byte. Serialize the generic header explicitly, then repeat each deterministic
-tANS block plan over the frozen packed LZW staging and require every payload
-extent to match the previously summed plan.
-
-Serialize each fixed descriptor and exact payload into its precomputed region,
-then require final packed and payload offsets to match the plan. Raw `A` must
-reproduce the independent 587-byte frame exactly. A multi-block `ABABABA`
-frame must be byte-identical across runs and decode transactionally to the
-source. A one-byte-short output must remain wholly unchanged. This step adds
-no streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-587: LZW tANS planning freezes packed codes before entropy
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a bounded write-free exact-frame planner above DD-586. Complete
-deterministic LZW parsing using caller-owned encoder records, admit the exact
-packed extent, and serialize the full canonical LSB-first code stream including
-final zero padding into separate staging. Only those immutable packed bytes may
-be divided into tANS blocks; block boundaries remain independent of code
-boundaries.
-
-Plan every tANS block without emitting descriptors or payloads, sum exact
-payload and `528K` descriptor extents with checked arithmetic, and count
-encoder records, packed staging, descriptors, and payload in one aggregate
-workspace total. Validate the synthesized generic header and return the exact
-complete-frame extent without accepting serialized output. Prove the frozen
-587-byte raw-`A` extent, deterministic `ABABABA` codes across three blocks,
-capacity atomicity, block and aggregate rejection, and raw-frame mismatch.
-This step adds no frame encoder, streaming transform, profile calculator, C
-ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-586: LZW tANS publishes one fully validated frame atomically
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a transactional complete-frame wrapper above DD-585. Before descriptor
-parsing or any private mutation, require caller output capacity for the entire
-declared raw extent in addition to the disposable packed, phrase, view, and raw
-staging regions. Caller output is not internal workspace and does not count
-against `max_internal_buffered_bytes`.
-
-Run DD-584 validation and DD-585 private reconstruction unchanged. Only after
-every tANS block, the complete LZW code graph, and private raw reconstruction
-succeed may one final copy publish exactly the declared raw extent. Short
-output, malformed entropy, and invalid LZW codes or padding must leave the
-complete caller destination unchanged. This step adds no encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-585: LZW tANS reconstructs only after complete validation
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a bounded private-raw decoder above DD-584. Require complete raw staging
-capacity and count that extent in the aggregate workspace before descriptor
-parsing or entropy output. Reuse DD-584 unchanged to validate every tANS block,
-reconstruct the complete packed LZW region, and validate the complete code
-graph. Only then invoke the existing iterative LZW decoder into the admitted
-raw staging span.
-
-Publish no caller-visible bytes. On any error the caller discards all private
-workspaces; insufficient raw capacity or aggregate memory must leave packed
-and raw staging unchanged. Prove the independent raw-`A` frame, phrase and
-`KwKwK` reconstruction across tANS block boundaries, preflight failures, and
-invalid-code raw atomicity. This step adds no transactional public output,
-encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-584: LZW tANS validates all entropy before code parsing
-
-- Date: 2026-08-04
-- Status: accepted
-
-Implement the first complete-frame validator for DD-583 without raw
-reconstruction or publication. Before entropy work, require the exact frame
-extent, nonzero `S <= ceil(FW/8)`, exact `K` and `528K`, the checked blockwise
-payload ceiling, complete caller packed staging, `K` tANS views, and the full
-bounded LZW phrase-record workspace.
-
-Count descriptors, payload, packed bytes, tANS views, and phrase records under
-`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
-state path before decoding any packed byte. Only after all blocks succeed may
-a second pass reconstruct exactly `S` bytes and invoke the ordinary LZW code-
-stream validator. Preserve block index and LZW code, byte, and bit offsets
-where practical. A malformed later block must leave the entire packed staging
-unchanged. This decision adds no raw decoder, publisher, encoder, streaming
-transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
-
-## DD-583: LZW tANS entropizes finalized packed code bytes
-
-- Date: 2026-08-04
-- Status: accepted
-
-Reserve `lzw-tans` for LZW variant 1 followed by tabled tANS variant 1. LZW
-must first finalize its complete canonical LSB-first packed code region,
-including zero high padding through the last byte, for one outer frame. tANS
-consumes that region as untyped bytes; therefore an entropy block may split a
-variable-width code but may not split a byte or cross the frame boundary where
-both algorithms reset.
-
-For raw size `F`, configured maximum code width `W`, packed size `S`, nonzero
-block size `B`, and `K = ceil(S/B)`, require
-`0 < S <= ceil(FW/8)`, exact descriptor extent `528K`, and the checked sum of
-per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`.
-Decode all tANS blocks into private staging before validating LZW code-width
-transitions, references, `KwKwK`, dictionary growth, exact raw expansion,
-packed exhaustion, or high padding bits.
-
-Independently fix raw `A` as packed bytes `41 00`, normalized frequencies
-`00:2048` and `41:2048`, tANS initial-state offset `0x000C`, two zero
-transition bits, payload `0C 00 00`, and one complete 587-byte frame. This
-decision reserves the representation and vector only; it adds no combined
-validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
-interoperability entry.
-
-## DD-582: Interoperability schema 28 appends LZ78 tANS
-
-- Date: 2026-08-04
-- Status: accepted
-
-Freeze the exact thirty-eight-entry schema-27 order and append `lz78-tans`
-once as entry 39. Name the new codec set `marc-cli-v28`; retain the existing
-deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
-SHA-256 records.
-
-Generation must round-trip every archive before recording it. Verification
-requires the exact schema order, foreign decode equality, and byte-identical
-local re-encoding. The compatibility regression rejects a reordered schema-28
-manifest, derives schema 27 by removing only `lz78-tans`, then verifies
-schemas 1 through 27 unchanged. This establishes local schema admission but
-does not claim cross-platform completion.
-
-## DD-581: LZ78 tANS completion is proved through the public ABI
-
-- Date: 2026-08-04
-- Status: accepted
-
-Apply the established public-ABI completion matrix to DD-577 with 64-byte raw
-frames, 64-byte entropy blocks, at most 512 canonical token bytes, eight tANS
-blocks, 64 phrase entries, and a 65,536-byte aggregate policy. Construct every
-encoder and decoder solely through the size-tagged config, directional
-requirements query, aligned three-region workspace, transform factory,
-process function, and destroy function.
-
-Round-trip empty input, every one-byte value, all byte values in sequence,
-long zero runs, repeated binary patterns, deterministic pseudo-random bytes,
-and lengths 63, 64, and 65. Require byte-identical repeated encoding and the
-same multi-frame bytes under one-byte and mixed input/output chunks. Repeated
-calls after success must remain ended with zero progress. For a four-frame
-stream, corrupt and truncate the final frame and append trailing data; retain
-exactly the first three committed frames, leave the final output sentinel
-unchanged, and repeat the same sticky error identity. This decision establishes
-local readiness only and adds no interoperability archive or schema revision.
-
-## DD-580: LZ78 tANS fuzzing is fixed-memory and dual-boundary
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a bounded decoder fuzz harness only after DD-577's public lifecycle and
-DD-569 through DD-575's private and streaming validation paths are stable.
-Truncate supplied input to 8 KiB; permit at most 4 KiB total raw output, one
-1-KiB raw frame, 8 KiB of canonical LZ78 tokens, 16 KiB of compressed payload,
-eight tANS block views, and 1,024 LZ78 phrases. Include encoded-frame, token,
-private-raw, mixed aligned views, and output storage in fixed compile-time
-ceilings and one aggregate hard limit.
-
-Drive the complete-frame private decoder only after a valid exact profile
-prefix, and independently drive the public C streaming decoder with chunk
-sizes derived solely within the bounded input. Enforce the process-result
-contract and a finite call ceiling; reaching the ceiling is a reproducible
-failure. Permanently test every proper prefix of a canonical stream, impossible
-frame extents, and an invalid tANS descriptor for zero publication and sticky
-error identity. This decision adds no corpus finding, completion claim,
-interoperability archive, or schema revision.
-
-## DD-579: LZ78 tANS benchmark measures the admitted public profile
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add `lz78-tans` to the dependency-free benchmark only through DD-578's fixed
-public profile and the `marc_lz78_tans_*` lifecycle. Reuse the 65,536-byte raw
-frame and entropy block, 524,288-byte token ceiling, eight tANS blocks,
-786,448-byte payload ceiling, 65,536 phrase entries, and 4-MiB aggregate
-policy. Derive checked complete-stream capacity as `80 + 12N + 4296K` for raw
-input extent `N` and nonempty frame count `K`.
-
-Query and report all three direction-specific caller-owned workspace regions,
-including aligned opaque views. Before timing, require one byte-exact encode
-and decode through independently constructed public transforms. Then report
-compression ratio and encode/decode throughput without imposing a performance
-floor. Add a one-iteration README smoke under both supported Windows compiler
-configurations. This decision adds no optimized format variant, fuzz target,
-completion claim, interoperability archive, or schema revision.
-
-## DD-578: LZ78 tANS CLI admits only the public bounded profile
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add the explicit `lz78-tans` selector only after the size-tagged public C
-configuration, directional requirements query, and transform factory exist.
-Fix raw frames and entropy blocks at 65,536 bytes, canonical LZ78 staging at
-`8F = 524,288` bytes, block count at eight, tANS descriptors at 4,224 bytes,
-payload at most 786,448 bytes, phrase entries at 65,536, and aggregate
-internal storage at 4 MiB.
-
-The adapter must obtain primary, secondary, and aligned opaque-view extents
-from the public requirements query and construct the transform only through
-the public factory. It must retain existing bounded streaming, destination
-non-overwrite, temporary-file transaction, malformed-input cleanup, and strict
-trailing-data rejection. Prove the repository-standard multi-frame binary
-round trip and negative file behaviors through the generic CLI regression.
-This decision adds no benchmark, fuzz target, completion claim, interoperability
-archive, or schema revision.
-
-## DD-577: LZ78 tANS C factory preserves exact workspace boundaries
-
-- Date: 2026-08-04
-- Status: accepted
-
-Expose a size-tagged `marc_lz78_tans_config`, initializer, direction-specific
-workspace requirements query, and factory without changing the ABI version or
-any existing structure. The config carries known original size, raw frame and
-entropy block sizes, LZ78 entry bound, and every local hard limit required by
-DD-576.
-
-Map encoder requirements to raw primary storage, token-plus-encoded secondary
-storage, and aligned encoder-record views. Map decoder requirements to encoded-
-frame primary storage, token-plus-private-raw secondary storage, and one aligned
-tANS-view-plus-LZ78-phrase region. Revalidate configuration, exact capacity,
-reserved fields, and alignment before typed partition or allocation; publish no
-handle on failure. Exercise the lifecycle from a C11 translation unit. This
-decision adds no CLI, benchmark, fuzzer, completion claim, or interoperability
-entry.
-
-## DD-576: LZ78 tANS profile derives every bounded workspace
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-574 and DD-575.
-For the largest known raw frame `F`, calculate encoder token capacity `8F`,
-LZ78 encoder-record count, `K = ceil(8F/B)`, `528K` descriptor bytes, the
-blockwise tANS payload ceiling, and complete frame capacity with checked
-arithmetic. Count raw, token, serialized frame, and encoder records under the
-same aggregate policy used by the streaming encoder.
-
-Derive decoder encoded-frame, token, private-raw, block-view, and phrase-entry
-capacities only from validated local hard limits. Define one exact aligned
-opaque layout for tANS views followed by LZ78 phrase records; reject short,
-misaligned, or altered requirements before publishing typed spans. Empty
-encoding has zero byte regions and alignment one. Prove the calculated regions
-directly construct the streaming round trip. This decision adds no C
-requirements query, public factory, CLI, benchmark, fuzzer, completion claim,
-or interoperability entry.
-
-## DD-575: LZ78 tANS streaming decode publishes only complete frames
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder above DD-569 through
-DD-574. Collect and validate the ordinary 80-byte prefix, then each 56-byte
-frame header. Before collecting a frame body, enforce aligned `S <= 8F`, exact
-block count and `528K` descriptors, the blockwise 12-bit transition ceiling,
-and caller capacity for the complete encoded frame, tANS views, token staging,
-LZ78 phrase records, and private raw staging under one aggregate limit.
-
-Decode a frame only after its entire declared body is collected. Invoke the
-private transactional reconstruction boundary, then drain raw bytes from
-staging before collecting the next frame. One-byte input/output is mandatory;
-`Flush` under starvation remains nonterminal; final `EndInput` survives output
-drain. Reject truncation, trailing bytes, malformed later frames, reset, and
-unknown flags with sticky errors. This decision adds no profile calculator, C
-factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
-
-## DD-574: LZ78 tANS streaming encode drains immutable frames
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a bounded known-size streaming encoder above DD-573. Emit the ordinary
-64-byte stream header and 16-byte LZ78 parameter region first. Collect at most
-one configured raw frame in caller-owned storage, prepare its complete token
-and serialized representation through the exact writer, and drain that
-immutable frame before reusing any workspace.
-
-At construction, validate the fixed pipeline, parameters, known original size,
-largest raw frame, conservative `8F` token staging, encoder records, and prefix
-serialization. Before each frame, count raw collection, exact token staging,
-encoder records, and exact serialized frame under one aggregate limit. Input
-and output capacities may be one byte. `Flush` does not close a partial frame;
-`EndInput` remains latched while prefix or frame bytes drain; full frames may
-drain before finish. `ResetBlock`, unknown flags, premature end, excess input,
-and insufficient workspace are sticky errors. This decision adds no streaming
-decoder, profile calculator, C factory, CLI, benchmark, fuzzer, completion
-claim, or interoperability entry.
-
-## DD-573: LZ78 tANS writes only after exact complete-frame admission
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add the deterministic complete-frame writer above DD-572. Invoke the exact
-plan first and require capacity for its entire serialized extent before
-writing any output byte. Then explicitly serialize the generic frame header,
-all fixed-size descriptors contiguously, and all payloads contiguously.
-
-Replan every block only over the frozen canonical token staging and require
-its payload size and the final token and payload offsets to equal the accepted
-plan. Treat any discrepancy as an internal error. Short serialized output is
-therefore rejected without mutation. This decision adds no streaming
-transform, public API, CLI, benchmark, fuzzer, completion claim, or
-interoperability entry.
-
-## DD-572: LZ78 tANS planning freezes canonical tokens once
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add a no-output exact-frame planner for one nonempty raw frame. Preflight the
-bounded LZ78 encoder-record count and canonical token capacity, then plan and
-materialize the complete eight-byte token sequence exactly once. Reject an
-empty or unexpected raw-frame extent.
-
-Plan every consecutive tANS block over the frozen token staging and accumulate
-exact block count, `528K` descriptor bytes, payload bytes, and complete frame
-extent with checked arithmetic. Count encoder records, tokens, descriptors,
-and payload under `max_internal_buffered_bytes`, enforce block limits, and
-validate the synthesized generic frame header. Accept no serialized output
-span. This decision adds no frame writer, streaming transform, public API,
-CLI, benchmark, fuzzer, completion claim, or interoperability entry.
-
-## DD-571: LZ78 tANS publishes only complete validated frames
-
-- Date: 2026-08-04
-- Status: accepted
-
-Add one transactional wrapper above DD-570. Require a distinct caller output
-span of at least the declared `F` bytes before descriptor parsing or any
-private mutation. Do not count publication storage against the internal
-workspace limit.
-
-Run the same complete entropy validation, phrase-graph validation, and private
-raw reconstruction unchanged. Copy exactly `F` bytes from private raw staging
-to caller output once and only after all layers succeed. Output capacity,
-entropy, dictionary, or reconstruction failure must preserve every caller
-output byte. This decision adds no encoder, streaming transform, public API,
-CLI, benchmark, fuzzer, completion claim, or interoperability entry.
-
-## DD-570: LZ78 tANS reconstructs only into disposable raw staging
-
-- Date: 2026-08-04
-- Status: accepted
-
-Extend DD-569 only with private raw reconstruction. Require caller-owned raw
-staging of at least the declared `F` bytes before descriptor parsing, token
-mutation, or phrase-record mutation, and count those bytes with descriptors,
-payload, tokens, tANS views, and phrase records under the aggregate internal-
-workspace limit.
-
-Reuse the complete entropy and phrase-graph validation unchanged. Only after
-it succeeds may the allocation-free LZ78 decoder expand Pair and FinalIndex
-phrases iteratively into exactly `F` raw bytes. Retain LZ78 decode, validation,
-format, token-index, and input-offset diagnostics. Expose no caller output span
-and require every caller to discard all workspace on failure. This decision
-adds no transactional publisher, encoder, streaming transform, public API,
-CLI, benchmark, fuzzer, or interoperability entry.
-
-## DD-569: LZ78 tANS validates all entropy before phrase parsing
-
-- Date: 2026-08-04
-- Status: accepted
-
-Implement the first complete-frame validator for DD-568 without raw
-reconstruction or publication. Before entropy work, require the exact frame
-extent, nonzero eight-byte-aligned `S <= 8F`, exact `K` and `528K`, the checked
-blockwise payload ceiling, complete caller token staging, `K` tANS views, and
-the full bounded LZ78 phrase-record workspace.
-
-Count descriptors, payload, token bytes, tANS views, and phrase records under
-`max_internal_buffered_bytes`. Parse every descriptor and validate every tANS
-state path before decoding any token byte. Only after all blocks succeed may a
-second pass reconstruct exactly `S` bytes and invoke the ordinary LZ78 token
-and phrase-graph validator. Preserve block index and LZ78 token/input offsets
-where practical. A malformed later block must leave the entire token staging
-unchanged. This decision adds no raw decoder, publisher, encoder, streaming
-transform, public API, CLI, benchmark, fuzzer, or interoperability entry.
-
-## DD-568: LZ78 tANS entropizes finalized fixed-width tokens
-
-- Date: 2026-08-04
-- Status: accepted
-
-Reserve `lz78-tans` for LZ78 variant 1 followed by tabled tANS variant 1.
-LZ78 must first finalize its complete canonical eight-byte Pair or FinalIndex
-sequence for one outer frame. tANS consumes that sequence as untyped bytes;
-therefore an entropy block may split a token but may not cross the frame
-boundary where both algorithms reset.
-
-For raw size `F`, token size `S`, nonzero block size `B`, and
-`K = ceil(S/B)`, require `0 < S <= 8F`, `S mod 8 = 0`, exact descriptor
-extent `528K`, and the checked sum of per-block payload ceilings
-`Q(n) = 2 + ceil(12n/8)`. Retain `F <= 2^20`. Decode all tANS blocks into
-private staging before validating token tags, reserved fields, phrase
-references, final-token placement, or exact expansion.
-
-Independently fix raw `A` as token bytes `00 41 00 00 00 00 00 00`, normalized
-frequencies `00:3584` and `41:512`, tANS initial-state offset `0x046B`, four
-zero transition bits, payload `6B 04 00`, and one complete 587-byte frame.
-This decision reserves the representation and vector only; it adds no combined
-validator, factory, CLI selector, benchmark, fuzzer, completion claim, or
-interoperability entry.
-
-## DD-567: Interoperability schema 27 appends LZSS tANS
-
-- Date: 2026-08-03
-- Status: accepted
-
-Freeze the exact thirty-seven-entry schema-26 order and append `lzss-tans`
-once as entry 38. Name the new codec set `marc-cli-v27`; retain the existing
-deterministic 8,193-byte binary fixture, full Git object ID, file extents, and
-SHA-256 records.
-
-Generation must round-trip every archive before recording it. Verification
-requires the exact schema order, foreign decode equality, and byte-identical
-local re-encoding. The compatibility regression rejects a reordered schema-27
-manifest, derives schema 26 by removing only `lzss-tans`, then verifies
-schemas 1 through 26 unchanged. This establishes local schema admission but
-does not claim cross-platform completion or promote the profile to `Ready`.
-
-## DD-566: LZSS tANS benchmark verifies before measuring
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add `lzss-tans` to the dependency-free benchmark through only the public C
-requirements, factory, process, and destroy lifecycle. Reuse DD-565's 65,536-
-byte raw frame and entropy block, 131,072-byte token ceiling, two tANS blocks,
-1,056 descriptor bytes, 196,612-byte payload ceiling, and conservative
-512-KiB internal policy.
-
-Size the complete encoded destination as the 80-byte prefix plus at most three
-transition bytes per raw byte and, for each nonempty frame, one 56-byte header,
-two 528-byte descriptors, and two two-byte states. Query encoder and decoder
-workspaces independently, prove byte-exact round trip before timing, and create
-each transform outside the elapsed interval. Report ratio, direction-specific
-time and throughput, all six workspace extents, and peak caller workspace.
-This changes no format or ABI and adds no interoperability entry or local
-`Ready` claim.
-
-## DD-565: LZSS tANS CLI admission uses only the public profile
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add the explicit selector `lzss-tans` to the transactional file adapter. Fix
-raw frames and tANS blocks at 65,536 bytes. Derive `S = 131,072` canonical
-token bytes, `K = 2` blocks, `528K = 1,056` descriptor bytes, `P = 196,612`
-payload bytes, and exact encoder aggregate `F + S + 56 + 528K + P = 394,332`
-bytes. Use a conservative 512-KiB internal-buffer policy for both directions.
-
-Configuration initialization, directional requirements, transform creation,
-processing, and destruction use only `marc_lzss_tans_*` and the common public
-C ABI. Opaque tANS views and private workspace partitions remain outside the
-CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
-overwrite refusal, malformed cleanup, and strict trailing-data rejection under
-both supported Windows compilers. This step adds no benchmark,
-interoperability entry, or local `Ready` claim.
-
-## DD-564: LZSS tANS fuzzing is bounded and frame-atomic
-
-- Date: 2026-08-03
-- Status: accepted
-
-Exercise both the complete-frame private decoder and incremental public-frame
-decoder from one libFuzzer entry point. Cap serialized input and payload at
-8 KiB, total output at 4 KiB, one raw frame at 1 KiB, canonical LZSS token
-staging at 2 KiB, and tANS metadata at eight caller-owned views. Derive input
-and output chunks only from the bounded input and stop at a fixed call ceiling.
-
-Retain ordinary regression tests for every truncation of a canonical frame,
-oversized serialized frame lengths, and an invalid tANS descriptor. All such
-failures must publish zero bytes from the frame, preserve the caller sentinel,
-and remain sticky with the same error category and position. This step adds no
-CLI selector, benchmark, local `Ready` claim, or interoperability entry.
-
-## DD-563: LZSS tANS completion is proven through the public ABI
-
-- Date: 2026-08-03
-- Status: accepted
-
-Exercise the completed `marc_lzss_tans_*` lifecycle without constructing any
-private codec object. Cover empty input, every one-byte value, all byte values,
-repeated bytes, repeated binary patterns, deterministic generated data, and
-lengths immediately around frame boundaries. Repeated encoding and varied
-input/output chunking must produce identical streams and exact round trips.
-
-For a four-frame stream, corrupt the final frame header, truncate its final
-byte, and append trailing data independently. Decoding must commit exactly the
-first three frames, leave the final output sentinel unchanged, and return the
-same sticky error category and position on repeated calls. This step adds no
-fuzz target, CLI selector, benchmark, local `Ready` claim, or interoperability
-entry.
-
-## DD-562: LZSS tANS C admission preserves opaque tANS views
-
-- Date: 2026-08-03
-- Status: accepted
-
-Expose DD-561 through a size-tagged `marc_lzss_tans_config`, a
-direction-specific requirements query, and a factory returning the common
-opaque transform. Retain the established primary/secondary/views ABI: encode
-uses raw primary storage and token-plus-frame secondary storage with no views;
-decode uses serialized primary storage, token-plus-private-raw secondary
-storage, and aligned opaque tANS views.
-
-Repeat profile admission at construction, validate all three buffer contracts,
-and leave the transform pointer null on failure. Expose only view bytes and
-alignment, never `TansBlockView` or another C++ layout. Prove a complete C11
-round trip, exact queried extents, short-view rejection, and reserved-field
-rejection. This step adds no completion matrix, CLI selector, fuzz target,
-benchmark, completion claim, or interoperability entry.
-
-## DD-561: LZSS tANS profiles derive bounded blockwise storage
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-559 and DD-560.
-For known-size encoding, derive the largest raw frame `F`, conservative `2F`
-token staging, `K = ceil(2F/B)` blocks, exact `528K` descriptors, and the
-sum of `Q(n) = 2 + ceil(12n/8)` for every full or final-short tANS block.
-Count raw, token, and complete encoded-frame storage under the aggregate local
-limit.
-
-For decoding, derive serialized-frame, token, private-raw, and block-view
-requirements solely from validated local limits. Expose a view count rather
-than the private `TansBlockView` layout. Use checked arithmetic throughout,
-return canonical stream-header fields, map stable core errors, and prove that
-the calculated regions directly construct the streaming pair. This decision
-adds no C requirements query, public factory, CLI selector, benchmark, fuzzer,
-completion claim, or interoperability entry.
-
-## DD-560: LZSS tANS streaming decode publishes complete frames
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add a bounded known-size streaming decoder above DD-556. Collect and validate
-the ordinary 64-byte stream header and 16-byte LZSS parameter region before
-accepting frames. For each frame, collect its 56-byte generic header first,
-admit the exact declared descriptor-plus-payload body and every caller-owned
-workspace, then collect and decode the complete frame into private raw staging.
-Drain raw bytes only after the complete transactional decode succeeds.
-
-Count encoded frame storage, tANS block views, canonical token staging, and
-private raw staging under one aggregate limit. Input and output capacities may
-be one byte. A malformed later frame cannot alter bytes committed from an
-earlier frame or expose a prefix of the failing frame. Reject truncated and
-trailing data, invalid prefix or frame extents, insufficient workspace,
-`ResetBlock`, and unknown flags with sticky errors. `Flush` remains
-nonterminal, and `EndInput` remains latched while private raw bytes drain.
-This decision adds no profile calculator, C factory, CLI, benchmark, fuzzer,
-completion claim, or interoperability entry.
-
-## DD-559: LZSS tANS streaming encode drains immutable frames
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add a bounded known-size streaming encoder above DD-558. Emit the ordinary
-64-byte stream header and 16-byte LZSS parameter region first. Collect at most
-one configured raw frame in caller-owned storage, prepare its complete
-serialized representation through the exact writer, and drain that immutable
-frame before reusing any workspace.
-
-At construction, validate the fixed pipeline, parameters, known original size,
-largest raw frame, conservative `2F` token staging, and prefix serialization.
-Before each frame, count raw collection, exact token staging, and exact
-serialized frame under one aggregate limit. Input and output capacities may be
-one byte. `Flush` does not close a partial frame; `EndInput` remains latched
-while prefix or frame bytes drain; full frames may drain before finish.
-`ResetBlock`, unknown flags, premature end, excess input, and insufficient
-workspace are sticky errors. This decision adds no streaming decoder, profile
-calculator, C factory, CLI, benchmark, fuzzer, completion claim, or
-interoperability entry.
-
-## DD-558: LZSS tANS frame writing follows one complete plan
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add the complete-frame writer above DD-557. Run the exact plan first and admit
-the complete serialized output capacity before writing its first byte. Emit the
-56-byte generic header, all `K` consecutive 528-byte descriptors, and all `K`
-consecutive payloads explicitly.
-
-Replan each block over the unchanged canonical token staging and require its
-payload size to equal the accumulated plan. Descriptor serialization or tANS
-encoding disagreement is an internal error, not an alternate representation.
-One-byte-short output must remain entirely unchanged. This decision adds no
-streaming transform, profile calculator, C factory, CLI, benchmark, fuzzer,
-completion claim, or interoperability entry.
-
-## DD-557: LZSS tANS planning freezes token bytes before sizing
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add a write-free exact-frame planner above DD-553's encoder boundary. Plan and
-materialize the complete canonical LZSS token sequence once in caller-owned
-staging. Enforce `0 < S <= 2F`, then plan each consecutive tANS block over that
-frozen sequence and accumulate exact `K`, `528K`, `P`, and
-`56 + 528K + P` extents with checked arithmetic.
-
-Reject block-count, tANS-planning, integer, generic-frame, and aggregate
-descriptor-plus-payload-plus-token limits without accepting a serialized
-output span. Validate the synthesized generic frame header against sequence,
-committed raw extent, configured frame size, and local limits. This decision
-adds no complete-frame writer, streaming transform, profile calculator, C
-factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
-
-## DD-556: LZSS tANS publication is one transactional copy
-
-- Date: 2026-08-03
-- Status: accepted
-
-Wrap DD-555 with a distinct caller output span. Require its complete `F`-byte
-capacity before descriptor parsing, token mutation, or raw reconstruction.
-Publication storage is not internal workspace and is not counted against
-`max_internal_buffered_bytes`.
-
-Preserve the complete validation and private reconstruction sequence, then
-copy exactly `F` bytes from raw staging to caller output once. Output-capacity,
-entropy, token, or reconstruction failure must leave caller output unchanged.
-This decision adds no encoder, streaming transform, profile calculator, C
-factory, CLI, benchmark, fuzzer, completion claim, or interoperability entry.
-
-## DD-555: LZSS tANS raw reconstruction remains private
-
-- Date: 2026-08-03
-- Status: accepted
-
-Extend DD-554 with a caller-owned raw staging span but no caller-visible output
-span. Admit the complete `F` bytes before descriptor parsing or token mutation,
-and include them with descriptors, payload, token staging, and tANS views under
-`max_internal_buffered_bytes`.
-
-After every tANS block and the complete LZSS token grammar have succeeded,
-invoke the existing allocation-free LZSS decoder over the validated token
-region and reconstruct exactly `F` bytes. Preserve overlap-copy semantics and
-the stable LZSS decode, validation, format, token-index, and byte-offset
-diagnostics. Entropy or token failure must leave raw staging untouched. This
-decision adds no transactional caller publication, encoder, streaming
-transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
-claim, or interoperability entry.
-
-## DD-554: LZSS tANS validation is two-pass and token-atomic
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add the first bounded decoder-facing implementation of DD-553. Admit the
-complete generic frame extent, exact `K`, exact `528K` descriptor region,
-blockwise tANS payload ceiling, caller-owned `K` tANS views, complete `S`
-token staging, and their aggregate internal byte count before entropy work.
-
-Parse all descriptors and validate every tANS model, spread, transition table,
-initial state, bit path, terminal state, and padding without writing a token
-byte. Only when all `K` blocks succeed may a second pass reconstruct exactly
-`S` token bytes. Then validate the full variable-length LZSS grammar,
-references, output extent, token index, and input offset without reconstructing
-raw bytes. A malformed later block must leave all token staging untouched.
-This decision adds no raw decoder, transactional publisher, encoder, streaming
-transform, profile calculator, C factory, CLI, benchmark, fuzzer, completion
-claim, or interoperability entry.
-
-## DD-553: LZSS tANS entropizes finalized token bytes
-
-- Date: 2026-08-03
-- Status: accepted
-
-Reserve `lzss-tans` for LZSS variant 1 followed by tabled tANS variant 1.
-LZSS must first finalize its complete canonical variable-width token byte
-sequence for one outer frame. tANS consumes that sequence as untyped bytes;
-therefore an entropy block may split a two-byte Literal or nine-byte Match,
-but may not cross the frame boundary where both algorithms reset.
-
-For raw size `F`, token size `S`, nonzero block size `B`, and
-`K = ceil(S/B)`, require `0 < S <= 2F`, exact descriptor extent `528K`, and
-the checked sum of per-block payload ceilings `Q(n) = 2 + ceil(12n/8)`.
-Retain `F <= 2^20`. Decode all tANS blocks into private staging before parsing
-the variable-length LZSS grammar or publishing raw bytes.
-
-Independently fix raw `A` as token bytes `00 41`, normalized frequencies
-`00:2048` and `41:2048`, tANS payload `06 00 00`, and one complete 587-byte
-frame. This decision reserves the representation and vector only; it adds no
-combined validator, factory, CLI selector, benchmark, fuzzer, completion
-claim, or interoperability entry.
-
-## DD-552: Schema 26 external exchange completes LZ77 tANS admission
-
-- Date: 2026-08-03
-- Status: accepted
-
-Bind external evidence to exact revision
-`5b2aa31ba3333c311ad4086b3438915a6c3ce36d`. Require the Ubuntu 26.04/Clang
-executable to verify the Windows/MSVC and Ubuntu 24.04 CI bundles, generate and
-self-verify its own schema-26 bundle, and require the Windows/MSVC executable
-to verify that Ubuntu-produced bundle.
-
-All four passes must report 37 archives and the exact revision while enforcing
-manifest order, size, SHA-256, fixture equality, and byte-identical local
-re-encoding. Together with DD-551's local chain, this satisfies every current
-admission gate and changes `lz77-tans` from `In progress` to `Ready`. The
-evidence remains x86-64 and does not imply testing on another architecture or
-a non-WSL Ubuntu 26.04 kernel.
-
-## DD-551: Interoperability schema 26 appends LZ77 tANS
-
-- Date: 2026-08-03
-- Status: accepted
-
-Freeze the exact thirty-six-entry schema-25 order and append `lz77-tans` once
-as entry 37. Name the set `marc-cli-v26`, retain the deterministic 8,193-byte
-fixture, and record complete archive sizes and SHA-256 values only after local
-decode equality succeeds.
-
-The verifier requires exact schema order, hashes, foreign decode equality, and
-byte-identical local re-encoding. The compatibility regression rejects a
-reordered schema-26 manifest, derives schema 25 by removing only `lz77-tans`
-and restoring its version and codec set, then verifies every frozen schema
-through version 1. This is local schema admission; Windows/Linux artifact
-exchange remains a separate release gate and the profile remains `In progress`.
-
-## DD-550: LZ77 tANS benchmark verifies before measuring
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add `lz77-tans` to the dependency-free benchmark through only the public C
-requirements, factory, process, and destroy lifecycle. Reuse DD-549's 64-KiB
-raw frame and entropy block, 1,048,576-byte token ceiling, sixteen-block
-ceiling, 1,572,896-byte payload ceiling, and 2,695,512-byte encoder aggregate.
-
-Reserve complete-stream output with checked `80 + 24N + 8536K` arithmetic,
-where `K` is the nonempty frame count. Query encoder and decoder workspaces
-independently, prove a byte-exact round trip before timing, and create each
-timed transform outside the elapsed interval. Report ratio, direction-specific
-time and throughput, all six workspace extents, and peak caller workspace.
-This changes no format or ABI and adds no interoperability entry or local
-`Ready` claim.
-
-## DD-549: LZ77 tANS CLI admission uses only the public profile
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add the explicit selector `lz77-tans` to the transactional file adapter. Fix
-raw frames and tANS blocks at 65,536 bytes. Derive `S = 1,048,576` canonical
-token bytes, `K = 16` blocks, `528K = 8,448` descriptor bytes, per-block
-`Q = 98,306`, aggregate payload `P = 1,572,896`, and encoder workspace
-`F + S + 56 + 528K + P = 2,695,512` bytes.
-
-Configuration initialization, directional requirements, transform creation,
-processing, and destruction use only `marc_lz77_tans_*` and the common public
-C ABI. Do not expose tANS view types or reproduce profile partitions in the
-CLI. Reuse temporary-file publication and prove nonempty and empty round trips,
-overwrite refusal, malformed cleanup, and strict trailing-data rejection. This
-step adds no benchmark, interoperability entry, or local `Ready` claim.
-
-## DD-548: LZ77 tANS fuzzing has two bounded decoder boundaries
-
-- Date: 2026-08-03
-- Status: accepted
-
-For each input of at most 8,192 bytes, exercise both the complete-frame private
-decoder and the incremental stream transform. Bound total raw output to 4,096
-bytes, one frame to 1,024 bytes, entropy payload to 8,192 bytes, dictionary
-staging to 4,096 bytes, and block views to eight. Use only fixed caller-owned
-arrays; derive input and output chunks from the fuzz bytes and abort if a
-process result violates the core contract or exceeds the 12,320-call ceiling.
-
-Seed the corpus with a truncated `MARC` prefix. Retain permanent tests requiring
-write-free, sticky rejection of every proper prefix of a canonical stream,
-saturated frame length fields, and invalid tANS frequency metadata. A Clang
-libFuzzer smoke under AddressSanitizer and UndefinedBehaviorSanitizer must
-complete 1,000 runs. This step adds no CLI selector, benchmark,
-interoperability entry, or local `Ready` claim.
-
-## DD-547: LZ77 tANS completion is proven through the public ABI
-
-- Date: 2026-08-03
-- Status: accepted
-
-Exercise the completed `marc_lz77_tans_*` lifecycle without constructing any
-private codec object. Cover empty input, every one-byte value, all byte values,
-long zero and patterned inputs, deterministic generated bytes, and lengths 63,
-64, and 65. Require byte-identical repeated encoding and identical streams
-under `(1,1)`, `(7,5)`, and `(13,17)` input/output chunk schedules.
-
-For a 193-byte four-frame stream, corrupt the final frame sequence, truncate
-its last byte, and append one trailing byte independently. Each decode must
-commit exactly the first 192 bytes, preserve the final sentinel, and return the
-same sticky error position on repeated calls. This step adds no fuzz target,
-CLI selector, benchmark, interoperability entry, or local `Ready` claim.
-
-## DD-546: LZ77 tANS C admission preserves three opaque regions
-
-- Date: 2026-08-03
-- Status: accepted
-
-Expose the DD-545 profile through a size-tagged `marc_lz77_tans_config`, a
-direction-specific requirements query, and a factory returning the common
-opaque transform. Retain the established primary/secondary/views ABI: encode
-uses raw primary storage and token-plus-frame secondary storage with no views;
-decode uses serialized primary storage, token-plus-private-raw secondary
-storage, and aligned opaque tANS views.
-
-Repeat profile admission at construction, validate all three buffer contracts,
-and leave the transform pointer null on failure. Expose only view bytes and
-alignment, never `TansBlockView` or another C++ layout. Prove a complete C11
-round trip, exact queried extents, short-view rejection, and reserved-field
-rejection. This step adds no CLI selector, completion matrix, fuzz target,
-benchmark, or interoperability entry.
-
-## DD-545: LZ77 tANS profiles derive the blockwise payload ceiling
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-543 and DD-544.
-For known-size encoding, derive the largest raw frame `F`, conservative `16F`
-token staging, `K = ceil(16F/B)` blocks, exact `528K` descriptors, and the sum
-of `Q(n) = 2 + ceil(12n/8)` for every full or final-short tANS block. Count raw,
-token, and complete encoded-frame storage under the aggregate local limit.
-
-For decoding, derive serialized-frame, token, private-raw, and block-view
-requirements solely from validated local limits. Expose a view count rather
-than the private `TansBlockView` layout. Use checked arithmetic throughout,
-return canonical stream-header fields, and prove that the calculated regions
-directly construct the streaming pair. This decision adds no C requirements
-query, public factory, CLI selector, benchmark, fuzz target, completion claim,
-or interoperability entry.
-
-## DD-544: LZ77 tANS streaming decoding commits complete frames
-
-- Date: 2026-08-03
-- Status: accepted
-
-Add the matching known-size bounded streaming decoder. Collect and validate the
-80-byte prefix, then each complete 56-byte frame header and declared body in
-caller storage. Preflight encoded frame, tANS views, token staging, private raw
-staging, and their aggregate before body collection.
-
-Invoke DD-539 private reconstruction only after the full frame is present, and
-drain raw bytes only after all tANS and LZ77 validation succeeds. Preserve
-previously committed frames when a later frame fails; expose no bytes from the
-failing frame. Retain EndInput across draining, reject truncation, trailing
-data and ResetBlock, and make ended and error states sticky.
-
-Prove one-byte input/output round trip, later-frame corruption after one commit,
-all caller storage and aggregate limits, truncation, trailing data, reset,
-empty input, nonterminal Flush, and premature final input. This decision adds
-no profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-543: LZ77 tANS streaming encoding buffers one complete frame
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add a known-size bounded streaming encoder above DD-542. Require caller-owned
-storage for the largest raw frame, its conservative `16F` token staging, and
-one complete serialized frame. Count all three active regions against
-`max_internal_buffered_bytes` before preparing a frame.
-
-Drain the fixed 80-byte stream prefix first. Collect exactly the next expected
-raw frame, plan and write it completely, then drain it before reusing storage.
-Allow completed frames to drain before EndInput, retain final EndInput across
-output starvation, leave a partial frame open on `Flush`, reject ResetBlock,
-and return sticky terminal status or errors without zero-progress `Progress`.
-
-Prove byte identity against independently concatenated exact frames under
-one-byte input and output, full-frame preparation plus nonterminal Flush,
-constructor and aggregate workspace failures, empty input, premature EndInput,
-unsupported reset, and repeated EndOfStream. This decision adds no streaming
-decoder, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-542: LZ77 tANS writing follows complete planning
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add the complete-frame writer above DD-541. Invoke the exact planner first,
-then require capacity for the complete `56 + 528K + P` output before writing
-the generic frame header or any entropy bytes. Preserve the frozen canonical
-LZ77 token staging produced by planning.
-
-Explicitly serialize the generic header, all `K` fixed tANS descriptors in
-block order, and all `K` payloads in the same order. Replan and encode each
-block over its unchanged token subspan, require every payload extent to match
-the accumulated plan exactly, and reject any internal mismatch rather than
-emitting an alternate stream.
-
-Prove byte-for-byte equality with the independent 587-byte Literal frame,
-deterministic repeated writing and full decoder round trip when block size five
-splits the token, and one-byte-short serialized output without output mutation.
-This decision adds no streaming transform, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-541: LZ77 tANS planning freezes tokens before counting blocks
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add an encoder-side exact-frame planner for the inverse of DD-537. Require one
-nonempty raw frame and validate the fixed profile and LZ77 parameters. First
-run the deterministic LZ77 plan, admit caller-owned staging for the exact token
-extent `S`, and encode the complete canonical token sequence once. Reject short
-staging before modifying it.
-
-Over the frozen token bytes, plan every consecutive tANS block of at most `B`
-bytes without serialized output. Accumulate exact block count `K`, descriptor
-extent `528K`, payload extent `P`, and complete serialized extent
-`56 + 528K + P` with checked arithmetic. Enforce the block-count ceiling and
-count token staging, planned descriptors, and planned payload against the
-aggregate internal-buffer limit. Validate the resulting generic frame header.
-
-Prove the 587-byte Literal extent and exact token bytes, a block size of five
-splitting one token into four independently planned blocks, short token staging
-without mutation, empty and unexpected raw extents, block-count overflow, and
-aggregate workspace one byte short. This decision writes no serialized bytes
-and adds no frame writer, streaming transform, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-540: LZ77 tANS frame publication is transactional
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add a caller-visible complete-frame decoder above DD-539. Require capacity for
-the entire declared raw frame in a distinct output span before descriptor
-parsing, entropy output, token staging mutation, or private raw mutation.
-Output remains publication storage and is not added to DD-539's internal
-workspace total.
-
-Retain DD-538's complete entropy and token validation and DD-539's private
-reconstruction. Copy exactly `F` bytes from private raw staging to caller
-output once, only after the LZ77 decoder succeeds. Preserve all layered error
-details and return without publication on every earlier failure.
-
-Prove the Literal frame publishes only its declared byte while preserving
-guards, a one-byte-short output fails before private mutation, and malformed
-later tANS state or invalid reconstructed token leaves both private raw and
-caller output sentinels unchanged. This decision adds no encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-539: LZ77 tANS reconstruction remains private
-
-- Date: 2026-08-02
-- Status: accepted
-
-Extend DD-538 with a bounded complete-frame decoder that reconstructs only
-into caller-owned private raw staging. Require capacity for the complete
-declared raw frame before descriptor parsing or entropy output, and count
-those `F` bytes together with descriptor, payload, token staging, and tANS
-views against `max_internal_buffered_bytes`.
-
-Retain DD-538's all-block validation pass, second token reconstruction pass,
-and complete LZ77 validation. Only after every entropy automaton and every
-token semantic succeeds may the existing allocation-free LZ77 decoder
-reconstruct literals and forward overlapping matches from immutable token
-staging into exactly `F` private raw bytes. Preserve stable validation, format,
-and decode errors; an unexpected failure after successful validation is a
-distinct dictionary-decode error.
-
-No caller-visible output span exists. On every failure the caller discards
-views, token staging, and raw staging. Prove the 587-byte Literal frame, a
-distance-one overlapping terminal match, raw staging one byte short before
-token mutation, aggregate workspace one byte short including raw bytes, and
-unchanged raw sentinels after a malformed later tANS block or invalid decoded
-token. This decision adds no transactional publication, encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-538: LZ77 tANS validation stops at the token boundary
-
-- Date: 2026-08-02
-- Status: accepted
-
-Admit the first combined `lz77-tans` implementation as a strict bounded
-complete-frame validator only. Validate the exact stream profile, LZ77
-parameters, sequence, generic frame header, complete frame extent,
-`S <= 16F` token bound and alignment, exact `K = ceil(S/B)` block count,
-exact `528K` descriptor bytes, bounded payload sum from
-`Q(n) = 2 + ceil(12n/8)`, caller-owned token and view capacities, and their
-aggregate workspace before entropy output.
-
-Parse every descriptor only after admission succeeds. Validate every tANS
-block's model, spread, transition table, initial state, bit path, terminal
-state, padding, and exact payload exhaustion before decoding any block. Only
-after that complete validation pass may a second pass reconstruct exactly `S`
-token bytes into private caller-owned staging. Invoke the existing LZ77
-validator over the complete span and preserve its stable token index, format
-error, reference, overlap, and exact raw-extent checks.
-
-No raw staging or output span exists at this boundary. On every failure the
-caller discards token and view workspace. Prove the 587-byte Literal vector, a
-token split across four tANS blocks, every truncation, trailing data, short
-storage, aggregate admission one byte short, malformed descriptors, a
-malformed later block with untouched token staging, invalid reconstructed
-LZ77 tokens, impossible entropy extents, and profile rejection. This decision
-adds no private raw decoder, transactional publication, encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-537: LZ77 tANS entropizes the finalized token byte stream
-
-- Date: 2026-08-02
-- Status: accepted
-
-Reserve `lz77-tans` for LZ77 variant 1 followed by tabled tANS variant 1 under
-format version 1.0. Preserve the standalone 16-byte LZ77 parameter extension,
-empty entropy parameters, canonical 16-byte token serialization, tANS table
-log 12, and deterministic spread step 2563. Complete the token byte stream
-before entropy processing. A tANS block may split a token but cannot cross an
-outer frame. Reset the LZ77 window and every tANS model and automaton at each
-frame.
-
-For raw frame size `F`, require checked token bound `S <= 16F`. For nonzero
-block size `B`, require `K = ceil(S/B)`, exact descriptor extent `528K`, and
-per-block payload ceiling `Q(n) = 2 + ceil(12n/8)`. Bound total payload by the
-checked sum of `Q` over every full and final-short block. Retain `F <= 2^20`.
-Validate generic extents and all tANS descriptors, tables, initial states, bit
-paths, terminal states, padding, and payload exhaustion before reconstructing
-the exact token region in private staging. Only then validate LZ77 alignment,
-references, overlap semantics, and exact raw extent before any raw
-reconstruction or publication.
-
-For raw `A`, independently freeze the 16-byte Literal token. Its tANS model is
-`00:3840, 41:256`; the documented spread and state recurrence produce payload
-`0A 05 03` with five valid transition bits, and the complete frame is 587
-bytes. Prove this by composing only the existing standalone LZ77 encoder, tANS
-encoder, and explicit generic serializers. This decision specifies bytes and
-a reserved name only; it does not publish a combined decoder, encoder, stream
-transform, C factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-536: Project version 0.1.2 publishes the completed rANS column
-
-- Date: 2026-08-02
-- Status: accepted
-
-Release the completed rANS composition column as project version `0.1.2`.
-Retain C ABI version 1, stream-format versions 1.0 and 1.1, and every existing
-algorithm and variant representation. The six new named dictionary/rANS
-profiles and interoperability schema 25 are additions within the established
-compatibility-preserving `0.1.x` line; no previously published deterministic
-stream byte changes.
-
-Require the complete 2,048-test Release suite under both Windows compilers,
-the pushed Windows/MSVC and Ubuntu 24.04 CI, and the recorded four-direction
-schema-25 exchange with Ubuntu 26.04 before tagging. Preserve the explicitly
-open second-architecture, representative-measurement, and longer sanitizer
-fuzz evidence rather than overstating the release claim. Keep `0.2.0` reserved
-for potentially incompatible API/default work or separately identified format
-variants motivated by performance or compression-ratio changes.
-
-## DD-535: Interoperability schema 25 appends LZMW rANS once
-
-- Date: 2026-08-02
-- Status: accepted
-
-Define interoperability schema 25 as the frozen schema-24 profile order followed
-once by `lzmw-rans`. Set `schema_version` to 25 and `codec_set` to
-`marc-cli-v25`; require exactly 36 archives in manifest order. Keep schemas 1
-through 24 explicit and unchanged. No older schema may inherit the new profile.
-
-Generation must round-trip every archive locally before recording its size and
-SHA-256. Verification must require leaf-only names, exact profile count and
-order, recorded sizes and hashes, foreign decode equality, and byte-identical
-local re-encoding. The local compatibility regression must reject a reordered
-schema-25 manifest, derive schema 24 by removing only `lzmw-rans` and restoring
-its version and codec set, then continue through every frozen older schema.
-This establishes local format determinism only; external Windows/Linux
-cross-checks remain required release evidence and no result is predicted.
-
-## DD-534: LZMW rANS benchmark retains the exact four-byte reference ceiling
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add `lzmw-rans` to the dependency-free benchmark runner using exactly DD-533's
-65,536-byte frame and entropy-block profile and only the published C lifecycle.
-Before timing, encode once, decode the exact encoded extent once, and require
-byte equality. Then report complete-stream ratio, encode and decode throughput,
-all three direction-specific workspace extents, and the larger caller-owned
-workspace total.
-
-For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
-capacity `80 + 4N + 2200K`. The reference term follows the exact LZMW ceiling
-of one four-byte reference per raw byte. The per-frame term reserves the
-56-byte generic header plus four complete 528-byte descriptors and four
-eight-byte states. Short final frames may use less. This step adds no stream
-field, format variant, interoperability entry, optimization, or representative
-performance claim.
-
-## DD-533: LZMW rANS CLI delegates all storage to the public ABI
-
-- Date: 2026-08-02
-- Status: accepted
-
-Publish `lzmw-rans` as an explicit selector in the existing transactional CLI.
-Use 65,536-byte outer frames and 65,536-byte rANS blocks. The exact LZMW bound
-is 262,144 canonical reference bytes, which permits four entropy blocks, 2,112
-descriptor bytes, and at most 262,176 payload bytes. Retain the public LZMW
-maximum-entry default and a conservative 16-MiB aggregate internal-buffer
-policy.
-
-Initialize, query, create, process, and destroy the codec only through
-`marc_lzmw_rans_*` and the common transform lifecycle. Allocate the three
-direction-specific workspace regions from the returned requirements, including
-the returned opaque alignment; do not reproduce any rANS-view, encoder-entry,
-phrase, expansion-stack, or partition layout in the CLI. Reuse the existing
-temporary-file transaction so configuration, allocation, codec, truncation,
-trailing-data, and destination-collision failures publish no requested output
-and leave no sibling temporary file. This step adds no benchmark,
-interoperability entry, stream field, format variant, or `Ready` claim.
-
-## DD-532: LZMW rANS fuzzing fixes all three record regions
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add one bounded fuzz entry that presents each input first to the private
-complete-frame decoder after strict prefix and parameter admission, then to the
-public C streaming decoder created only through DD-530. Cap consumed fuzz bytes
-at 8,192, total raw output at 4,096, one raw frame at 1,024, reference staging
-at 4,096, compressed payload at 16,384, LZMW phrase records at 1,023,
-iterative expansion references at 1,024, and rANS views at eight blocks. Derive
-fixed byte arrays and aligned opaque storage conservatively from those bounds;
-abort if the public requirements query exceeds them.
-
-Choose input and output chunks from bounded bytes, but cap total process calls
-independently at input cap plus output cap plus 32. Abort on invalid accounting,
-zero-progress `Progress`, impossible starvation after all input, or exhaustion
-of the finite call budget. Treat an ordinary decoder error, successful end, or
-full bounded output as a valid fuzz outcome.
-
-Freeze permanent regressions for every strict prefix of one canonical `ABABX`
-stream, saturated generic frame extents, and a nonzero rANS descriptor reserved
-byte. Each must publish zero bytes from its only frame, preserve raw sentinels,
-and return the same error code and byte position on repetition. This step adds
-no CLI, benchmark, interoperability entry, or `Ready` claim.
-
-## DD-531: LZMW rANS completion reuses the reviewed public schedule
-
-- Date: 2026-08-02
-- Status: accepted
-
-Apply the established public-ABI completion matrix to DD-530 with 64-byte raw
-frames, 64-byte rANS blocks, at most four entropy blocks per frame, and the
-exact LZMW reference ceiling `S = 4 * 64 = 256`. Bound payload by
-`S + 8K = 288` and a complete frame by `56 + 528K + S + 8K = 2,456`.
-
-At this frame size the LZMW ceiling equals the already reviewed LZD completion
-ceiling `8 * ceil(64/2)`, so reuse the same data, deterministic repetition,
-one-byte and mixed chunk schedules, repeated terminal calls, and malformed
-fourth-frame schedule without changing their capacities. Invoke only public C
-configuration, requirements, factory, process, and destroy functions. A
-corrupt, truncated, or extended final frame may publish the first three
-complete 64-byte frames but must leave its final raw byte untouched and return
-a stable repeated error. This step adds no fuzz target, CLI, benchmark,
-interoperability entry, or `Ready` claim.
-
-## DD-530: LZMW rANS public C factory preserves opaque record layout
-
-- Date: 2026-08-02
-- Status: accepted
-
-Expose DD-529 through a size-tagged fixed-width `marc_lzmw_rans_config`, a
-direction-specific workspace query, and an immutable-direction transform
-factory. The config carries known original size, raw frame size, entropy block
-size, LZMW entry ceiling, rANS block ceiling, and common hard limits. Reserved
-fields must remain zero.
-
-Keep three caller-owned regions. Encoding maps primary storage to one raw frame,
-secondary storage to canonical LZMW reference staging followed by one complete
-rANS frame, and aligned opaque views to LZMW encoder entries. Decoding maps
-primary storage to one complete encoded frame, secondary storage to reference
-staging followed by private raw staging, and aligned opaque views to DD-529's
-rANS block, LZMW phrase, and iterative expansion spans. The requirements query
-is the only allocation authority; the factory repeats calculation and checked
-partitioning before construction. Prove the pure-C lifecycle, short-region and
-misalignment rejection, null-output rejection, reserved-field rejection, and
-binary round trip. This publishes no CLI, completion, fuzz, benchmark, or
-interoperability claim.
-
-## DD-529: LZMW rANS profiles align three decoder record regions
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add an internal direction-specific workspace calculator above DD-527 and
-DD-528 without changing their byte representation. For encoding, derive the
-largest raw frame `F`, conservative reference staging `S = 4F`, rANS block
-count `K = ceil(S/B)`, complete frame ceiling `56 + 528K + S + 8K`, and bounded
-LZMW encoder records. Count all four regions under checked aggregate arithmetic.
-
-For decoding, derive complete encoded, reference, and private-raw byte regions
-from validated local limits. Place rANS block views first in opaque storage,
-align and place LZMW phrase records second, then align and place the iterative
-`uint32_t` expansion references. Partition helpers must recompute and validate
-both offsets, total bytes, alignment, capacity, and base alignment before
-publishing typed spans. Empty encoding uses zero regions and alignment one.
-Prove that the returned requirements directly construct the existing bounded
-streaming round trip. This step adds no public C requirements query, factory,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-528: LZMW rANS streaming decoding admits complete frames before raw drain
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder without changing DD-521
-bytes. Collect and parse the fixed 80-byte stream prefix first. For each frame,
-collect the 56-byte generic header separately and validate sequence, committed
-raw offset, exact LZMW four-byte reference alignment and `S <= 4F` ceiling,
-rANS block count, `528K` descriptor extent, `8K <= P <= S + 8K`, every caller-
-owned capacity, the checked complete serialized extent, and simultaneous
-aggregate workspace before copying that header into frame storage or accepting
-body bytes.
-
-After collecting exactly one admitted complete frame, invoke DD-523's private
-decoder through all rANS block validation, reference reconstruction, LZMW graph
-validation, and iterative raw reconstruction. Retain the complete raw frame in
-private caller-owned storage and drain it to arbitrary output chunks only after
-success. Count encoded frame, rANS views, reference staging, raw staging,
-phrase records, and expansion references together. A malformed later frame may
-not publish any byte from that frame; earlier completely drained frames remain
-committed.
-
-Preserve `EndInput` while a validated raw frame drains. Reject truncation at
-prefix, frame header, or body; trailing bytes after the declared original
-extent; malformed descriptors, payload, or LZMW graph; `ResetBlock`; and
-unknown flags. Nonterminal `Flush` only exposes current starvation. Repeated
-calls after success return `EndOfStream`, and errors remain sticky with a stable
-serialized byte position.
-
-Prove one-byte input/output, atomic later-frame corruption, every typed and byte
-workspace one entry short, aggregate storage one byte short, canonical
-truncation and trailing data, empty input, flush starvation, premature end, and
-protocol errors. This step adds no profile calculator, C ABI, CLI, benchmark,
-fuzz target, completion claim, or interoperability entry.
-
-## DD-527: LZMW rANS streaming encoding retains complete exact frames
-
-- Date: 2026-08-02
-- Status: accepted
-
-Wrap DD-525 and DD-526 in a bounded known-size streaming encoder without
-defining another byte representation. Serialize the ordinary 80-byte stream
-prefix once. Collect at most one declared raw frame in caller-owned storage,
-invoke the exact planner and encoder only when that full or final-short frame
-is complete, then retain the complete immutable serialized frame while
-draining it to arbitrary caller output chunks. Accept no new raw frame bytes
-while a serialized frame is pending.
-
-For the largest possible local frame `L = min(original_size, frame_size)`,
-require raw capacity `L`, checked reference capacity `4L`, and
-`lzmw_encoder_workspace_entries(L)` records at construction. At frame
-preparation, require complete serialized-frame capacity and count raw input,
-exact reference staging, exact serialized frame, and active encoder records
-against `max_internal_buffered_bytes`. Preserve DD-525's inner aggregate check.
-
-Known-size `EndInput` is valid only when the supplied call completes the exact
-declared original extent and remains effective while prefix or frame bytes
-drain. A full frame may be prepared before whole-stream `EndInput`; after the
-declared extent is committed, await the terminal flag if it has not arrived.
-Nonterminal `Flush` does not close a short frame or alter bytes. Reject
-`ResetBlock`, unknown flags, premature `EndInput`, and excess input with stable
-terminal errors. Repeated calls after success return `EndOfStream`.
-
-Prove equality with concatenated one-shot frames under one-byte input and
-output, unchanged bytes under `Flush`, sticky `EndInput` across every drain,
-empty known-size input, workspace and aggregate failures, and protocol errors.
-This step adds no streaming decoder, profile calculator, C ABI, CLI, benchmark,
-fuzz target, completion claim, or interoperability entry.
-
-## DD-526: LZMW rANS encoding is plan-first and deterministic
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add the deterministic complete-frame encoder above DD-525. Invoke the exact
-planner first so canonical LZMW reference bytes, exact rANS block count,
-descriptor extent, payload extent, generic frame fields, and aggregate
-workspace are fixed before serialized output is considered. Require destination
-capacity for the complete planned extent before writing any serialized byte.
-
-Serialize the generic frame header explicitly. Replan each rANS block over the
-unchanged reference staging, require every payload extent and final aggregate
-offset to match DD-525, serialize every 528-byte descriptor into the complete
-descriptor region, and encode each payload into its exact planned region. The
-raw-`A` input must reproduce the independent 592-byte frame exactly.
-
-Preserve every existing combined error value and append a distinct serialized-
-output-capacity error. Every planner failure and short destination must leave
-the whole serialized destination unchanged. Prove deterministic byte identity
-and transactional decode for a phrase-generating frame split across rANS block
-boundaries. This step adds no streaming transform, profile calculator, C ABI,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-525: LZMW rANS planning freezes canonical reference bytes
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add a bounded write-free exact-frame planner as the inverse of DD-522 through
-DD-524. Validate the exact stream profile, LZMW parameters, nonempty input, and
-frame-local limits. Determine and require the LZMW encoder-record count before
-reference staging can change. Plan the deterministic LZMW parse, require its
-exact nonzero four-byte-aligned extent within `S <= 4F`, and serialize the
-complete canonical reference sequence into caller-owned staging.
-
-Divide only that frozen reference span into `K = ceil(S/B)` rANS blocks. Plan
-each block independently, accumulate exact payload bytes, require exact
-descriptor extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-
-field bounds. Count encoder records, reference staging, all descriptors, and
-exact payload bytes against `max_internal_buffered_bytes`. Validate the
-synthesized generic frame header with sequence and already-committed-output
-context, then report the checked complete serialized extent without accepting
-or mutating a serialized output span.
-
-Prove the raw-`A` reference bytes, one block, 528 descriptor bytes, eight
-payload bytes, and 592-byte extent. Repeat a phrase-generating multi-block plan
-byte identically. Reject encoder records and reference staging one unit short
-before reference mutation, and reject aggregate workspace one byte short,
-empty input, and a frame-size mismatch. This step adds no frame encoder,
-streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-524: LZMW rANS publishes one complete frame transactionally
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add a caller-visible complete-frame decoder above DD-523. Before descriptor
-parsing, entropy output, reference mutation, or private raw mutation, require
-output capacity for the complete declared raw extent. Output is not internal
-workspace and must not be included in the aggregate-buffer limit.
-
-Retain DD-522's complete entropy and phrase-graph validation and DD-523's
-private iterative reconstruction unchanged. Only after both succeed, copy
-exactly the declared raw extent once from private staging to caller output.
-Leave excess output capacity untouched. Any capacity, header, entropy,
-dictionary, workspace, or reconstruction failure must preserve the entire
-caller output.
-
-Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
-`ABABAB` publication, output capacity one byte short before private mutation,
-and complete output preservation for malformed later entropy and valid entropy
-carrying an invalid LZMW forward reference. This step adds no encoder,
-streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-523: LZMW rANS reconstructs raw bytes only in private staging
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add private raw reconstruction above DD-522 without a caller-visible output
-boundary. Before descriptor parsing or entropy output, require the complete
-declared raw staging extent and the conservative ordinary LZMW iterative
-expansion extent derived from the maximum admitted phrase-record count plus one
-reference. Count raw bytes and expansion records together with descriptors,
-payload, reference staging, rANS views, and phrase records in one checked
-aggregate workspace bound.
-
-After DD-522 validates every entropy block and the complete LZMW phrase graph,
-reduce the active expansion span to the actual generated-entry count plus one
-reference and invoke the existing nonrecursive LZMW decoder over exactly the
-validated reference and phrase regions. Reconstruct exactly the declared raw
-extent into separate private staging. On any error, callers must discard
-reference, phrase, expansion, and raw workspaces; this step promises no
-transaction over an external output span.
-
-Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
-four rANS blocks split references while LZMW expands generated phrase 256.
-Reject raw and conservative expansion workspaces one entry short before
-reference mutation, and retain private raw bytes on malformed entropy. This
-step adds no public transactional decoder, encoder, streaming transform,
-profile calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-522: LZMW rANS validation stops at the phrase graph
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add the first bounded complete-frame validator for DD-521 without reconstructing
-or publishing raw bytes. Before descriptor parsing, validate the exact generic
-frame extent, `0 < S <= 4F`, four-byte alignment, `K = ceil(S/B)`, exact
-`528K` descriptor bytes, `8K <= P <= S + 8K`, caller capacities for rANS block
-views, `S` reference staging, and bounded LZMW phrase records, and the aggregate
-workspace limit.
-
-Parse every descriptor and validate every rANS payload, including terminal
-state and exact byte exhaustion, before writing reference staging. Decode all
-blocks only after that pass succeeds, require exactly `S` reconstructed bytes,
-then invoke the ordinary LZMW validator for four-byte alignment, literal or
-previously generated references, adjacent-phrase growth, configured dictionary
-freeze, and exact declared raw extent.
-
-Report stable generic, controller, entropy, and LZMW validation categories plus
-the failing block, token, and input-byte positions where available. Prove the
-independent 592-byte vector, blocks that split references, later-descriptor
-rejection before staging mutation, valid entropy carrying an invalid forward
-LZMW reference, short typed and byte workspaces, truncation, trailing bytes,
-and unsupported pipelines. This step adds no raw decoder, encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-521: LZMW rANS preserves finalized phrase references
-
-- Date: 2026-08-02
-- Status: accepted
-
-Reserve `lzmw-rans` for LZMW variant 1 followed by scalar rANS variant 1 under
-format version 1.0. Preserve the standalone 16-byte LZMW parameter extension,
-empty entropy parameters, and canonical four-byte little-endian phrase
-references. Complete the reference byte stream before entropy processing. An
-rANS block may split a reference but cannot split a byte or cross an outer
-frame. Reset the LZMW dictionary and every rANS model and state at each frame.
-
-For nonempty raw frame extent `F`, require actual reference extent
-`0 < S <= 4F` with `S mod 4 = 0`, `K = ceil(S/B)` for nonzero rANS block size
-`B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
-phrase records by the lesser of `max(F - 1, 0)` and the configured entry limit,
-expansion references by that phrase count plus one, and raw frames by 2^20
-bytes.
-
-Decoding must validate generic extents and every rANS descriptor, model, state
-path, terminal state, and payload exhaustion before reconstructing exactly `S`
-private reference bytes. Only then validate four-byte alignment, literal or
-previously generated references, checked adjacent-phrase growth, and exact raw
-extent before any raw reconstruction or publication.
-
-For raw `A`, independently freeze LZMW reference bytes `41 00 00 00`. Their
-normalized rANS model is `00:3072, 41:1024`, payload is
-`00 1C A1 BD 04 00 00 00`, and the complete frame is 592 bytes. Prove this by
-composing only the existing standalone LZMW encoder, scalar rANS encoder, and
-generic serializers. This decision specifies bytes and a reserved name only;
-it does not publish a combined validator, decoder, encoder, streaming
-transform, C factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-520: Interoperability schema 24 appends LZD rANS once
-
-- Date: 2026-08-02
-- Status: accepted
-
-Define interoperability schema 24 as the frozen schema-23 profile order followed
-once by `lzd-rans`. Set `schema_version` to 24 and `codec_set` to
-`marc-cli-v24`; require exactly 35 archives in manifest order. Keep schemas 1
-through 23 explicit and unchanged. No older schema may inherit the new profile.
-
-Generation must round-trip every archive locally before recording its size and
-SHA-256. Verification must require leaf-only names, exact profile count and
-order, recorded sizes and hashes, foreign decode equality, and byte-identical
-local re-encoding. The local compatibility regression must reject a reordered
-schema-24 manifest, derive schema 23 by removing only `lzd-rans` and restoring
-its version and codec set, then continue through every frozen older schema.
-This establishes local format determinism only; external Windows/Linux
-cross-checks remain required release evidence and no result is predicted.
-
-## DD-519: LZD rANS benchmark retains the half-pair ceiling
-
-- Date: 2026-08-02
-- Status: accepted
-
-Add `lzd-rans` to the dependency-free benchmark runner using exactly DD-518's
-65,536-byte frame and entropy-block profile and only the published C lifecycle.
-Before timing, encode once, decode the exact encoded extent once, and require
-byte equality. Then report complete-stream ratio, encode and decode throughput,
-all three direction-specific workspace extents, and the larger caller-owned
-workspace total.
-
-For input extent `N` and nonempty outer-frame count `K`, reserve checked encoded
-capacity `80 + 8 * ceil(N / 2) + 2200K`. The token term deliberately retains
-the possible final absent-right reference; do not reduce it to `4N`, which is
-one four-byte half-reference too small for odd `N`. The per-frame term reserves
-the 56-byte generic header plus four complete 528-byte descriptors and four
-eight-byte states. Short final frames may use less. This step adds no stream
-field, format variant, interoperability entry, optimization, or representative
-performance claim.
-
-## DD-518: LZD rANS CLI delegates all storage to the public ABI
-
-- Date: 2026-08-02
-- Status: accepted
-
-Publish `lzd-rans` as an explicit selector in the existing transactional CLI.
-Use 65,536-byte outer frames and 65,536-byte rANS blocks. The exact LZD bound is
-262,144 canonical token bytes, which permits four entropy blocks, 2,112
-descriptor bytes, and at most 262,176 payload bytes. Retain the public LZD
-maximum-entry default and a conservative 16-MiB aggregate internal-buffer
-policy.
-
-Initialize, query, create, process, and destroy the codec only through
-`marc_lzd_rans_*` and the common transform lifecycle. Allocate the three
-direction-specific workspace regions from the returned requirements, including
-the returned opaque alignment; do not reproduce any rANS-view, encoder-entry,
-phrase, expansion-stack, or partition layout in the CLI. Reuse the existing
-temporary-file transaction so configuration, allocation, codec, truncation,
-trailing-data, and destination-collision failures publish no requested output
-and leave no sibling temporary file. This step adds no benchmark,
-interoperability entry, stream field, format variant, or `Ready` claim.
-
-## DD-517: LZD rANS fuzzing fixes both decoder allocation boundaries
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add one bounded fuzz entry that presents each input first to the private
-complete-frame decoder after strict prefix and parameter admission, then to the
-public C streaming decoder created only through DD-515. Cap consumed fuzz bytes
-at 8,192, total raw output at 4,096, one raw frame at 1,024, token staging at
-4,096, compressed payload at 16,384, dictionary records at 512 phrases plus
-513 iterative expansion references, and rANS views at eight blocks. Derive
-fixed byte arrays and aligned opaque storage conservatively from those bounds;
-abort if the public requirements query exceeds them.
-
-Choose input and output chunks from bounded bytes, but cap total process calls
-independently at input cap plus output cap plus 32. Abort on invalid accounting,
-zero-progress `Progress`, impossible starvation after all input, or exhaustion
-of the finite call budget. Treat an ordinary decoder error, successful end, or
-full bounded output as a valid fuzz outcome.
-
-Freeze permanent regressions for every strict prefix of one canonical `ABABX`
-stream, saturated generic frame extents, and a nonzero rANS descriptor reserved
-byte. Each must publish zero bytes from its only frame, preserve raw sentinels,
-and return the same error code and byte position on repetition. This step adds
-no CLI, benchmark, interoperability entry, or `Ready` claim.
-
-## DD-516: LZD rANS completion reuses one public-ABI schedule
-
-- Date: 2026-08-01
-- Status: accepted
-
-Apply the established LZD public-ABI completion matrix to DD-515 with 64-byte
-outer frames, 64-byte rANS blocks, at most four entropy blocks per frame, and
-maximum token extent `S = 8 * ceil(64/2) = 256`. Bound each rANS payload by
-`S + 8K` and the complete frame by `56 + 528K + S + 8K`.
-
-Keep the data classes, deterministic repeated encode, one-byte and mixed chunk
-schedules, repeated terminal calls, and malformed fourth-frame schedule
-identical to the already reviewed LZD matrix. Add only representation-neutral
-test hooks for alternate payload/frame capacity and profile configuration; the
-default Adaptive and Dynamic Range instantiations must remain unchanged. The
-matrix must use only public C configuration, requirements, factory, process,
-and destroy functions. A corrupt, truncated, or extended final frame may
-publish the first three complete 64-byte frames but must leave the final raw
-byte untouched and return a stable repeated error. This step adds no fuzz,
-CLI, benchmark, interoperability entry, or `Ready` claim.
-
-## DD-515: LZD rANS public C factory preserves opaque record layout
-
-- Date: 2026-08-01
-- Status: accepted
-
-Expose DD-514 through a size-tagged fixed-width `marc_lzd_rans_config`, a
-direction-specific workspace query, and an immutable-direction transform
-factory. The config carries known original size, raw frame size, entropy block
-size, LZD entry ceiling, rANS block ceiling, and the common hard limits.
-Reserved fields must remain zero.
-
-Keep three caller-owned regions. Encoding maps primary storage to one raw frame,
-secondary storage to canonical LZD token staging followed by one complete rANS
-frame, and aligned opaque views to LZD encoder entries. Decoding maps primary
-storage to one complete encoded frame, secondary storage to token staging
-followed by private raw staging, and aligned opaque views to DD-514's rANS
-block, LZD phrase, and iterative expansion spans. The requirements query is the
-only allocation authority; the factory repeats calculation and checked
-partitioning before construction. Prove the pure-C lifecycle, short-region and
-misalignment rejection, null-output rejection, reserved-field rejection, and
-binary round trip. This publishes no CLI, completion, fuzz, benchmark, or
-interoperability claim.
-
-## DD-514: LZD rANS profiles align three decoder record regions
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add an internal direction-specific workspace calculator above DD-512 and
-DD-513 without changing their byte representation. For encoding, derive the
-largest raw frame `F`, conservative token staging `S = 8 * ceil(F/2)`, rANS
-block count `K = ceil(S/B)`, complete frame ceiling
-`56 + 528K + S + 8K`, and bounded LZD encoder records. Count all four regions
-under checked aggregate arithmetic.
-
-For decoding, derive complete encoded, token, and private-raw byte regions from
-validated local limits. Place rANS block views first in opaque storage, align
-and place LZD phrase records second, then align and place the iterative
-`uint32_t` expansion references. Partition helpers must recompute and validate
-both offsets, total bytes, alignment, capacity, and base alignment before
-publishing typed spans. Empty encoding uses zero regions and alignment one.
-Prove that the returned requirements directly construct the existing bounded
-streaming round trip. This step adds no public C requirements query, factory,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-513: LZD rANS streaming decoding admits complete frames before raw drain
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder without changing DD-506
-bytes. Collect and parse the fixed 80-byte stream prefix first. For each frame,
-collect the 56-byte generic header separately and validate sequence, committed
-raw offset, exact LZD token alignment and ceiling, rANS block count,
-`528K` descriptor extent, `8K <= P <= S + 8K`, every caller-owned capacity,
-the checked complete serialized extent, and simultaneous aggregate workspace
-before copying that header into frame storage or accepting body bytes.
-
-After collecting exactly one admitted complete frame, invoke DD-508's private
-decoder through all rANS block validation, token reconstruction, LZD graph
-validation, and iterative raw reconstruction. Retain the complete raw frame in
-private caller-owned storage and drain it to arbitrary output chunks only after
-success. Count encoded frame, rANS views, token staging, raw staging, aligned
-phrase records, and expansion references together. A malformed later frame may
-not publish any byte from that frame; earlier completely drained frames remain
-committed.
-
-Preserve `EndInput` while a validated raw frame drains. Reject truncation at
-prefix, frame header, or body; trailing bytes after the declared original
-extent; malformed descriptors, payload, or LZD graph; `ResetBlock`; and unknown
-flags. Nonterminal `Flush` only exposes current starvation. Repeated calls after
-success return `EndOfStream`, and errors remain sticky with a stable serialized
-byte position.
-
-Prove one-byte input/output, atomic later-frame corruption, every typed and byte
-workspace one entry short, aggregate storage one byte short, canonical
-truncation and trailing data, empty input, flush starvation, premature end, and
-protocol errors. This step adds no profile calculator, C ABI, CLI, benchmark,
-fuzz target, completion claim, or interoperability entry.
-
-## DD-512: LZD rANS streaming encoding retains complete exact frames
-
-- Date: 2026-08-01
-- Status: accepted
-
-Wrap DD-510 and DD-511 in a bounded known-size streaming encoder without
-defining another byte representation. Serialize the ordinary 80-byte stream
-prefix once. Collect at most one declared raw frame in caller-owned storage,
-invoke the exact planner and encoder only when that full or final-short frame
-is complete, then retain the complete immutable serialized frame while
-draining it to arbitrary caller output chunks. Accept no new raw frame bytes
-while a serialized frame is pending.
-
-For the largest possible local frame `L = min(original_size, frame_size)`,
-require raw capacity `L`, checked token capacity `8 * ceil(L/2)`, and
-`lzd_encoder_workspace_entries(L)` records at construction. At frame
-preparation, require complete serialized-frame capacity and count raw input,
-exact token staging, exact serialized frame, and active encoder records against
-`max_internal_buffered_bytes`. Preserve DD-510's inner aggregate check.
-
-Known-size `EndInput` is valid only when the supplied call completes the exact
-declared original extent and remains effective while prefix or frame bytes
-drain. A full frame may be prepared before whole-stream `EndInput`; after the
-declared extent is committed, await the terminal flag if it has not arrived.
-Nonterminal `Flush` does not close a short frame or alter bytes. Reject
-`ResetBlock`, unknown flags, premature `EndInput`, and excess input with stable
-terminal errors. Repeated calls after success return `EndOfStream`.
-
-Prove equality with concatenated one-shot frames under one-byte input and
-output, unchanged bytes under `Flush`, sticky `EndInput` across every drain,
-empty known-size input, workspace and aggregate failures, and protocol errors.
-This step adds no streaming decoder, profile calculator, C ABI, CLI, benchmark,
-fuzz target, completion claim, or interoperability entry.
-
-## DD-511: LZD rANS encoding is plan-first and deterministic
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the deterministic complete-frame encoder above DD-510. Invoke the exact
-planner first so canonical LZD token bytes, exact rANS block count, descriptor
-extent, payload extent, generic frame fields, and aggregate workspace are fixed
-before serialized output is considered. Require destination capacity for the
-complete planned extent before writing any serialized byte.
-
-Serialize the generic frame header explicitly. Replan each rANS block over the
-unchanged token staging, require every payload extent and final aggregate
-offset to match DD-510, serialize every 528-byte descriptor into the complete
-descriptor region, and encode each payload into its exact planned region. The
-raw-`A` input must reproduce the independent 593-byte frame exactly.
-
-Preserve every existing combined error value and append a distinct serialized-
-output-capacity error. Every planner failure and short destination must leave
-the whole serialized destination unchanged. Prove deterministic byte identity
-and transactional decode for a phrase-generating frame split across rANS block
-boundaries. This step adds no streaming transform, profile calculator, C ABI,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-510: LZD rANS planning freezes canonical token bytes
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add a bounded write-free exact-frame planner as the inverse of DD-507 through
-DD-509. Validate the exact stream profile, LZD parameters, nonempty input, and
-frame-local limits. Determine and require the LZD encoder-record count before
-token staging can change. Plan the deterministic LZD parse, require its exact
-nonzero eight-byte-aligned extent within `S <= 8 * ceil(F/2)`, and serialize
-the complete canonical token sequence into caller-owned staging.
-
-Divide only that frozen token span into `K = ceil(S/B)` rANS blocks. Plan each
-block independently, accumulate exact payload bytes, require exact descriptor
-extent `528K`, and retain `8K <= P <= S + 8K` and all 32-bit frame-field
-bounds. Count encoder records, token staging, all descriptors, and exact
-payload bytes against `max_internal_buffered_bytes`. Validate the synthesized
-generic frame header with sequence and already-committed-output context, then
-report the checked complete serialized extent without accepting or mutating a
-serialized output span.
-
-Prove the raw-`A` token bytes, one block, 528 descriptor bytes, nine payload
-bytes, and 593-byte extent. Repeat a phrase-generating multi-block plan byte
-identically. Reject encoder records and token staging one entry short before
-token mutation, and reject aggregate workspace one byte short, empty input,
-and a frame-size mismatch. This step adds no frame encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-509: LZD rANS publishes one complete frame transactionally
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add a caller-visible complete-frame decoder above DD-508. Before descriptor
-parsing, entropy output, token mutation, or private raw mutation, require output
-capacity for the complete declared raw extent. Output is not internal workspace
-and must not be included in the aggregate-buffer limit.
-
-Retain DD-507's complete entropy and phrase-graph validation and DD-508's
-private iterative reconstruction unchanged. Only after both succeed, copy
-exactly the declared raw extent once from private staging to caller output.
-Leave excess output capacity untouched. Any capacity, header, entropy,
-dictionary, workspace, or reconstruction failure must preserve the entire
-caller output.
-
-Prove one-copy raw-`A` publication with excess-capacity guards, generated-phrase
-`ABABAB` publication, output capacity one byte short before private mutation,
-and complete output preservation for malformed later entropy and valid entropy
-carrying an invalid LZD forward reference. This step adds no encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-508: LZD rANS reconstructs raw bytes only in private staging
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add private raw reconstruction above DD-507 without a caller-visible output
-boundary. Before descriptor parsing or entropy output, require the complete
-declared raw staging extent and the ordinary LZD iterative expansion extent of
-`phrase_count + 1` references. Count raw bytes and expansion records together
-with descriptors, payload, token staging, rANS views, and phrase records in
-one checked aggregate workspace bound.
-
-After DD-507 validates every entropy block and the complete LZD phrase graph,
-invoke the existing nonrecursive LZD decoder over exactly the validated token
-and phrase regions. Reconstruct exactly the declared raw extent into separate
-private staging. On any error, callers must discard token, phrase, expansion,
-and raw workspaces; this step promises no transaction over an external output
-span.
-
-Prove the independent raw-`A` frame and a block-size-five `ABABAB` case whose
-four rANS blocks split references while LZD expands generated phrase 256.
-Reject raw and expansion workspaces one entry short before token mutation, and
-retain private raw bytes on malformed entropy. This step adds no public
-transactional decoder, encoder, streaming transform, profile calculator, C
-ABI, CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-507: LZD rANS validates all entropy before the phrase graph
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the first complete-frame validator for DD-506 without reconstructing or
-publishing raw bytes. Admit the complete serialized extent, exact rANS view
-count, full token staging, bounded LZD phrase records, and their checked
-aggregate workspace before parsing descriptors or producing entropy output.
-Require DD-506's exact token ceiling and alignment, block count, descriptor
-extent, payload interval, pipeline, parameter, sequence, and frame bounds.
-
-Parse the complete descriptor region, then validate every block state path,
-terminal state, and exact payload exhaustion without output. If any block
-fails, leave the entire token staging region unchanged. Only after all blocks
-validate may the implementation decode each block into its predetermined
-private token slice. Require the slices to fill exactly the declared token
-extent, then invoke the ordinary LZD validator over the complete span.
-
-Report stable outer, controller, entropy, and LZD validation categories plus
-the failing block, token, and byte positions where available. Prove the
-independent 593-byte vector, blocks that split references and tokens, later-
-descriptor rejection before staging mutation, valid entropy carrying an
-invalid forward LZD reference, short typed and byte workspaces, truncation,
-trailing bytes, and unsupported pipelines. This step adds no raw decoder,
-encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-506: LZD rANS preserves finalized reference pairs
-
-- Date: 2026-08-01
-- Status: accepted
-
-Reserve `lzd-rans` for LZD variant 1 followed by scalar rANS variant 1 under
-format version 1.0. Preserve the standalone 16-byte LZD parameter extension,
-empty entropy parameters, and canonical eight-byte little-endian reference
-pairs. Complete the token byte stream before entropy processing. An rANS block
-may split a four-byte reference or eight-byte token but cannot split a byte or
-cross an outer frame. Reset the LZD dictionary and every rANS model and state
-at each frame.
-
-For nonempty raw frame extent `F`, require actual token extent
-`0 < S <= 8 * ceil(F/2)` with `S mod 8 = 0`, `K = ceil(S/B)` for nonzero rANS
-block size `B`, `8K <= P <= S + 8K`, and exact descriptor extent `528K`.
-Bound generated phrase records by the lesser of `floor(F/2)` and the configured
-entry limit, expansion references by that phrase count plus one, and raw frames
-by 2^20 bytes.
-
-Decoding must validate generic extents and every rANS descriptor, model, state
-path, terminal state, and payload exhaustion before reconstructing exactly `S`
-private token bytes. Only then validate eight-byte alignment, left and right
-references, terminal absence, checked phrase lengths, dictionary growth, and
-exact raw extent before any raw reconstruction or publication.
-
-For raw `A`, independently freeze LZD token bytes
-`41 00 00 00 FF FF FF FF`. Their normalized rANS model is
-`00:1536, 41:512, FF:2048`, payload is
-`82 27 A1 BD 04 00 00 00 00`, and the complete frame is 593 bytes. Prove this
-by composing only the existing standalone LZD encoder, scalar rANS encoder,
-and generic serializers. This decision specifies bytes and a reserved name
-only; it does not publish a combined validator, decoder, encoder, streaming
-transform, C factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-505: Interoperability schema 23 appends LZW rANS
-
-- Date: 2026-08-01
-- Status: accepted
-
-Define interoperability schema 23 and codec set `marc-cli-v23` as the exact
-frozen schema-22 profile order followed once by `lzw-rans`. The unchanged
-transactional CLI profile becomes archive 34 over the existing deterministic
-8,193-byte fixture. Do not add, remove, reorder, or reinterpret an earlier
-schema entry.
-
-The generator must locally decode every archive before publishing its size and
-SHA-256. The verifier must require exactly thirty-four archives in canonical
-order, validate leaf names, extents, and hashes, decode each foreign archive,
-and require byte-identical local re-encoding. The compatibility test must
-reject a reordered schema-23 manifest, convert schema 23 to the frozen schema
-22 set by removing only `lzw-rans`, and continue verifying schemas 22 through
-1 unchanged. Cross-platform interoperability remains unproven until external
-artifacts produced at one complete revision pass the established four
-directions.
-
-## DD-504: LZW rANS benchmark verifies before timing
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add `lzw-rans` to the dependency-free benchmark runner using exactly DD-503's
-public profile. For input extent `N` and nonempty frame count `K`, allocate
-checked encoded capacity `80 + 2N + 1128K`: two packed LZW bytes per raw byte,
-one 56-byte generic header, two 528-byte rANS descriptors, and two eight-byte
-final states per frame.
-
-Query encoder and decoder primary, secondary, and aligned opaque views
-independently through the public C ABI. Encode once, decode the exact encoded
-extent once, and require byte equality before timing. Each timed sample creates
-a fresh transform, measures only one complete process call, and destroys the
-transform after stopping the clock. Report complete-stream ratio, directional
-throughput, every queried region, and the larger directional workspace sum.
-Impose no performance threshold. This decision adds no interoperability entry.
-
-## DD-503: LZW rANS CLI binds one fixed public profile
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add explicit selector `lzw-rans` to the transactional CLI and reach the codec
-only through `marc_lzw_rans_config_init()`, its public requirements query,
-factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
-65,536 bytes and maximum code width at 16. The packed-code ceiling is 131,072
-bytes, producing at most two rANS blocks, 1,056 descriptor bytes, and a
-131,088-byte payload. Admit at most 65,280 generated dictionary entries and
-use a conservative 8-MiB aggregate internal-buffer policy.
-
-The CLI may supply these public bounds but must not reproduce LZW encoder,
-phrase, or rANS-view layouts. Allocate primary, secondary, and aligned opaque
-views only from the direction-specific public query. Retain known-size input,
-immutable direction, overwrite refusal, sibling `.tmp` cleanup, strict
-malformed and trailing-data rejection, and atomic destination rename.
-
-Prove a multi-frame binary round trip, overwrite refusal, malformed-input
-cleanup, trailing-data cleanup, and empty input through the common CLI
-regression under both supported Windows compilers. This step adds no benchmark
-adapter or interoperability entry.
-
-## DD-502: LZW rANS fuzzing crosses private and public boundaries
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add one bounded decoder fuzz target that presents each input to both the
-complete-frame decoder-visible boundary and DD-500's public C streaming
-decoder. Fix input at 8 KiB, total raw publication at 4 KiB, frame size at
-1 KiB, packed LZW staging at 4 KiB, rANS views at eight, phrase records from
-the packed-code ceiling, and all aggregate storage before accepting input.
-Never allocate from a fuzz-controlled extent.
-
-Drive the public decoder with deterministic variable chunks and a call budget
-bounded by maximum input plus maximum output plus constant protocol overhead.
-Abort on invalid process accounting, a zero-progress `Progress`, post-end
-input starvation, workspace-calculation disagreement, or call-budget
-exhaustion. Ordinary malformed input remains a successful fuzz iteration.
-Retain permanent GoogleTest regressions for every truncation of a canonical
-stream, saturated generic-frame extents, and nonzero rANS descriptor reserved
-metadata; every case must publish zero bytes and retain one stable sticky
-error. This step adds no CLI selector, benchmark, completion claim beyond the
-fuzz boundary, or interoperability entry.
-
-## DD-501: LZW rANS completion evidence stays on the C ABI
-
-- Date: 2026-08-01
-- Status: accepted
-
-Establish the initial public-ABI completion matrix using only DD-500's config,
-requirements query, factory, process, and destroy lifecycle. Reuse the common
-LZW evidence schedules while supplying the scalar-rANS payload and descriptor
-ceiling plus 64-byte entropy-block configuration. This keeps input classes,
-chunk schedules, terminal assertions, and malformed-frame publication checks
-identical across admitted LZW compositions.
-
-Cover empty input, all 256 one-byte values, all byte values in sequence,
-repeated bytes, repeated multi-byte patterns, deterministic pseudo-random data,
-and lengths 63, 64, and 65. Require byte-identical multi-frame encoding under
-one-byte and mixed input/output chunking, exact decode, sticky ended state, and
-sticky malformed state. Corrupt, truncate, and extend the fourth frame of a
-193-byte stream; require exactly the first 192 bytes to remain committed and
-the final byte untouched. This step adds no fuzz target, CLI, benchmark,
-completion claim beyond the public-ABI matrix, or interoperability entry.
-
-## DD-500: LZW rANS C ABI retains three opaque workspaces
-
-- Date: 2026-08-01
-- Status: accepted
-
-Expose the fixed LZW variant-1 plus scalar-rANS variant-1 profile through a
-size-tagged `marc_lzw_rans_config`, a direction-specific workspace query, and
-an immutable-direction factory. Include known original size, outer frame size,
-entropy block size, maximum LZW width, block-count limit, and the existing hard
-limits. Retain ABI version 1 because this is an additive symbol and type set.
-
-Use the common three-workspace ABI. Primary is raw-frame or serialized-frame
-storage. Secondary is packed staging followed by encoded-frame or private-raw
-storage. Aligned opaque views contain encoder entries or the decoder's rANS
-views, padding, and LZW phrases. The query and factory must both use DD-499,
-reject wrong metadata, reserved fields, short regions, and misalignment, and
-publish a null handle on every construction failure. Prove a pure-C five-byte,
-three-frame round trip and all three short-region failures. This step adds no
-completion matrix, fuzz target, CLI, benchmark, or interoperability entry.
-
-## DD-499: LZW rANS profiles separate byte and typed storage
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add an internal direction-specific workspace calculator above DD-497 and
-DD-498. Encoding derives largest raw frame `F`, conservative packed staging
-`S = ceil(FW/8)`, `K = ceil(S/B)` rANS blocks, the complete
-`56 + 528K + S + 8K` frame ceiling, and the exact LZW encoder-record count.
-Count raw, packed, complete-frame, and record bytes in one checked aggregate.
-
-Decoding derives serialized-frame, packed, and private-raw byte regions from
-validated local limits. Place the maximum rANS view count first in one aligned
-opaque region, align upward, then place the conservative LZW phrase count.
-Partition helpers must reject altered requirements, insufficient storage, and
-misalignment. Empty encoding has zero regions and alignment one. Prove that the
-returned requirements directly construct the bounded streaming round trip.
-This step adds no C requirements query, public factory, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-498: LZW rANS streaming decode publishes complete frames
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the bounded known-size streaming decoder opposite DD-497. Collect and
-parse the canonical 80-byte prefix, then collect one 56-byte frame header.
-Before accepting its body, derive and validate the packed-code ceiling, rANS
-block count and extents, exact serialized-frame size, raw staging, rANS views,
-LZW phrase records, and aggregate internal storage.
-
-Decode only after the entire declared frame is present. Reuse the private
-complete-frame decoder, drain only the fully validated raw frame, and do not
-collect a later header until draining finishes. Retain `EndInput` during the
-drain and reject truncation, trailing bytes, `ResetBlock`, and unknown flags.
-Corruption in a later frame may leave earlier committed frames visible but
-must publish none of the malformed frame. This step adds no profile calculator,
-C ABI, CLI, benchmark, fuzz target, completion claim, or interoperability
-entry.
-
-## DD-497: LZW rANS streaming encode buffers one exact frame
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the first bounded known-size streaming encoder above DD-496. Emit the
-canonical 64-byte stream header and 16-byte LZW parameter extension, collect at
-most one raw frame, plan and encode that complete frame into private immutable
-storage, and drain it fully before accepting input for a later frame.
-
-Construction validates the fixed variant-1 profile, declared original size,
-largest raw frame, conservative `ceil(FW/8)` packed capacity, and required LZW
-encoder records. Per-frame aggregate accounting includes raw staging, actual
-packed staging, the exact serialized frame, and encoder records. Arbitrary
-input/output chunking must preserve canonical bytes; `Flush` leaves a partial
-frame open; retained `EndInput` drains all pending bytes; and `ResetBlock`,
-unknown flags, premature end, or excess input fail stably. This step adds no
-streaming decoder, profile calculator, C ABI, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-496: LZW rANS encoding emits only a completed plan
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add the bounded complete-frame encoder above DD-495. Run the exact planner to
-completion and admit the full serialized destination before writing any frame
-byte. Serialize the generic header explicitly, then repeat each deterministic
-rANS block plan over the frozen packed LZW staging and require every payload
-extent to match the previously summed plan.
-
-Serialize each fixed descriptor and exact payload into its precomputed region,
-then require final packed and payload offsets to match the plan. Raw `A` must
-reproduce the independent 592-byte frame exactly. A multi-block `ABABABA`
-frame must be byte-identical across runs and decode transactionally to the
-source. A one-byte-short output must remain wholly unchanged. This step adds
-no streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-495: LZW rANS planning freezes packed codes before entropy
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add a bounded write-free exact-frame planner above DD-494. Complete
-deterministic LZW parsing using caller-owned encoder records, admit the exact
-packed extent, and serialize the full canonical LSB-first code stream including
-final zero padding into separate staging. Only those immutable packed bytes may
-be divided into scalar rANS blocks; block boundaries remain independent of
-code boundaries.
-
-Plan every rANS block without emitting descriptors or payloads, sum exact
-payload and `528K` descriptor extents with checked arithmetic, and count
-encoder records, packed staging, descriptors, and payload in one aggregate
-workspace total. Validate the synthesized generic header and return the exact
-complete-frame extent without accepting serialized output. Prove the frozen
-592-byte raw-`A` extent, deterministic `ABABABA` codes across three blocks,
-capacity atomicity, aggregate rejection, and raw-frame mismatch. This step
-adds no frame encoder, streaming transform, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-494: LZW rANS publication is one post-success copy
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add an internal transactional complete-frame decoder above DD-493. Require a
-caller-visible output span at least as large as the declared raw frame and
-check it with all private capacities before parsing a descriptor or mutating
-any workspace. Caller output is destination storage and does not count toward
-the internal-buffer aggregate.
-
-Run the unchanged DD-492 validation and DD-493 private reconstruction. Only
-after both succeed, copy exactly the declared raw extent from private staging
-to output once, leaving excess output capacity untouched. Every frame,
-entropy, LZW, capacity, aggregate, or reconstruction error must preserve all
-caller output. This step adds no encoder, streaming transform, profile
-calculator, C ABI, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-493: LZW rANS reconstructs only after complete validation
-
-- Date: 2026-08-01
-- Status: accepted
-
-Add a bounded private-raw decoder above DD-492. Require complete raw staging
-capacity and count that extent in the aggregate workspace before descriptor
-parsing or entropy output. Reuse DD-492 unchanged to validate every rANS block,
-reconstruct the complete packed LZW region, and validate the complete code
-graph. Only then invoke the existing iterative LZW decoder into the admitted
-raw staging span.
-
-Publish no caller-visible bytes. On any error the caller discards all private
-workspaces; insufficient raw capacity or aggregate memory must leave packed
-and raw staging unchanged. Prove the independent raw-`A` frame, phrase and
-`KwKwK` reconstruction across rANS block boundaries, preflight failures, and
-invalid-code raw atomicity. This step adds no transactional public output,
-encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion claim, or interoperability entry.
-
-## DD-492: LZW rANS validates all entropy before packed codes
-
-- Date: 2026-08-01
-- Status: accepted
-
-Implement the first `lzw-rans` combined component as an internal bounded
-complete-frame validator. Admit the exact serialized frame, one
-`RansBlockView` per declared block, complete packed-byte staging, and the
-conservative LZW phrase-record count before parsing any descriptor or
-producing entropy output. Count descriptors, payload, packed staging, views,
-and phrase records in one checked aggregate workspace bound.
-
-Require the exact DD-491 packed ceiling, block count, descriptor extent, and
-payload interval. Parse the full descriptor region, then validate every block
-state path and exact payload exhaustion without output. If any block fails,
-leave the entire packed staging region unchanged. Only after all blocks
-validate may the component reconstruct all packed bytes in order and invoke
-the existing LZW validator for width transitions, first literal, ordinary and
-`KwKwK` references, dictionary growth, exact raw extent, trailing bits, and
-zero high padding.
-
-Report stable frame, block, and LZW error context. Reconstruct and publish no
-raw bytes. Prove the independent 592-byte vector, a block boundary inside its
-nine-bit code, every truncation, trailing data, short workspaces, aggregate
-rejection before mutation, malformed later-block atomicity, invalid LZW
-padding after successful entropy decode, impossible extents, and unsupported
-pipeline rejection. This step adds no raw decoder, encoder, streaming
-transform, profile calculator, C ABI, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-491: LZW rANS preserves finalized packed codes
-
-- Date: 2026-08-01
-- Status: accepted
-
-Reserve `lzw-rans` for LZW variant 1 followed by scalar rANS variant 1 under
-format version 1.0. Preserve the standalone 16-byte LZW parameter extension,
-empty entropy parameters, and canonical LSB-first variable-width codes.
-Complete the packed byte stream, including final zero padding, before entropy
-processing. An rANS block may split a packed code but cannot split a byte or
-cross an outer frame. Reset the LZW dictionary and every rANS model and state
-at each frame.
-
-For raw frame extent `F` and maximum code width `W`, require packed extent
-`0 < S <= ceil(FW/8)`, `K = ceil(S/B)` for nonzero rANS block size `B`,
-`8K <= P <= S + 8K`, and exact descriptor extent `528K`. Bound generated
-dictionary entries by `F - 1`, `2^W - 256`, the configured entry limit, and
-the local decoder limit. Preserve the existing 2^20-byte LZW composition
-frame cap.
-
-Decoding must validate generic extents and every rANS descriptor, model, state
-path, terminal state, and payload exhaustion before reconstructing exactly
-`S` private packed bytes. Only then validate width transitions, the first
-literal, ordinary and `KwKwK` references, checked phrase lengths, dictionary
-growth, exact packed and raw extents, and zero high padding before any raw
-reconstruction or publication.
-
-For raw `A`, independently freeze LZW packed bytes `41 00`. Their normalized
-rANS model is `00:2048, 41:2048`, final-state payload is
-`00 08 00 00 02 00 00 00`, and the complete frame is 592 bytes. Prove this
-by composing only the existing standalone LZW encoder, scalar rANS encoder,
-and generic serializers. This decision specifies bytes and a reserved name
-only; it does not publish a combined validator, decoder, encoder, streaming
-transform, C factory, CLI, benchmark, fuzz target, completion claim, or
-interoperability entry.
-
-## DD-490: Interoperability schema 22 appends LZ78 rANS
-
-- Date: 2026-07-31
-- Status: accepted
-
-Define interoperability schema 22 and codec set `marc-cli-v22` as the exact
-frozen schema-21 profile order followed once by `lz78-rans`. The unchanged
-transactional CLI profile becomes archive 33 over the existing deterministic
-8,193-byte fixture. Do not add, remove, reorder, or reinterpret any earlier
-schema entry.
-
-The generator must locally decode every archive before publishing its size and
-SHA-256. The verifier must require exactly thirty-three archives in canonical
-order, validate leaf names, extents, and hashes, decode each foreign archive,
-and require byte-identical local re-encoding. The compatibility test must
-reject a reordered schema-22 manifest, convert schema 22 to the frozen schema
-21 set by removing only `lz78-rans`, and continue verifying schemas 21 through
-1 unchanged. Cross-platform interoperability remains unproven until external
-artifacts produced at one complete revision pass the established four
-directions.
-
-## DD-489: LZ78 rANS benchmark verifies before measuring
-
-- Date: 2026-07-31
-- Status: accepted
-
-Add `lz78-rans` to the dependency-free benchmark runner using exactly DD-488's
-fixed public profile. For raw input extent `N` and nonempty 65,536-byte frame
-count `K`, reserve checked complete-stream capacity
-`80 + 8N + 4344K`. The per-frame term consists of the 56-byte generic header,
-eight 528-byte rANS descriptors, and eight eight-byte final states. Short
-frames may use fewer bytes; the bound remains deterministic and conservative.
-
-Initialize encoder and decoder configurations independently, query all three
-workspace regions and opaque alignment through the public C ABI, encode once,
-decode the exact encoded extent once, and require byte equality before timing.
-Each timed sample constructs a fresh transform and invokes only the common
-one-shot process boundary while the clock is active. Report complete-stream
-ratio, directional throughput, every queried region, and the larger
-directional workspace sum. Impose no performance threshold. This decision
-adds no interoperability entry.
-
-## DD-488: LZ78 rANS CLI binds one fixed public profile
-
-- Date: 2026-07-31
-- Status: accepted
-
-Add explicit selector `lz78-rans` to the transactional CLI and reach the codec
-only through `marc_lz78_rans_config_init()`, its public requirements query,
-factory, and generic transform lifecycle. Fix raw frames and entropy blocks at
-65,536 bytes. The canonical LZ78 token ceiling is 524,288 bytes, producing at
-most eight rANS blocks, 4,224 descriptor bytes, and a 524,352-byte payload.
-Permit at most 65,536 generated phrase entries and use a conservative 4-MiB
-aggregate internal-buffer policy.
-
-The CLI may state these public format bounds but must not reproduce encoder,
-rANS-view, or phrase-record layouts. Allocate primary, secondary, and aligned
-opaque views only from the direction-specific public query. Retain known-size
-input, immutable direction, overwrite refusal, temporary-output cleanup,
-strict malformed and trailing-data rejection, and atomic destination rename.
-
-Prove a multi-frame binary round trip, overwrite refusal, malformed-input
-cleanup, later trailing-data cleanup, and empty input through the existing
-generic CLI regression. This decision adds no benchmark adapter or
-interoperability entry.
-
-## DD-487: LZ78 rANS fuzzing fixes both decoder boundaries
-
-- Date: 2026-07-31
-- Status: accepted
-
-Submit at most 8,192 arbitrary serialized bytes independently to the private
-complete-frame staging decoder after a valid 80-byte profile prefix and to the
-published C streaming decoder. Fix total output at 4,096 bytes, one raw frame
-at 1,024 bytes, canonical token staging at 8,192 bytes, rANS payload at 16,384
-bytes, entropy metadata at eight views, and LZ78 state at 1,024 phrase records.
-Count encoded-frame, token, raw, views, and phrase extents into one conservative
-local policy before parsing input.
-
-The public path must obtain its exact three-region sizes and alignment from
-`marc_lz78_rans_workspace_requirements()`, but may bind them only when they fit
-compile-time fixed arrays. Derive partial input and output chunks from bounded
-input bytes and impose a fixed call ceiling. Abort on invalid process results,
-zero-progress protocol violations, input exhaustion reported as `NeedInput`,
-or call-budget exhaustion; ordinary decoder rejection is a successful fuzz
-case.
-
-Persist repository-authored regressions for every proper truncation of the
-canonical `ABABX` stream, saturated generic-frame extent fields, and a nonzero
-rANS descriptor reserved byte. Each must publish no raw byte, preserve the
-caller sentinel, and repeat its stable terminal error. This decision changes
-no stream representation, public ABI, CLI, benchmark, or interoperability
-entry.
-
-## DD-486: LZ78 rANS completion is proved through the public ABI
-
-- Date: 2026-07-31
-- Status: accepted
-
-Exercise the published `marc_lz78_rans_*` lifecycle rather than private C++
-constructors. Use 64-byte raw frames, 64-byte entropy blocks, the conservative
-`S=8F`, `K=ceil(S/B)`, exact `528K` descriptor, and `S+8K` payload bounds,
-with all primary, secondary, and aligned opaque-view regions obtained only
-from the requirements query.
-
-Require deterministic round trips for empty input, all 256 one-byte values,
-`00..FF`, repeated zeros, a four-symbol binary pattern, generated binary data,
-and sizes immediately below, equal to, and above the frame boundary. For a
-193-byte multi-frame stream, require byte-identical encoding and exact decode
-under `(1,1)`, `(7,5)`, and `(13,17)` input/output chunk schedules. Repeated
-calls after completion must remain `EndOfStream` with zero progress.
-
-Locate the fourth frame through checked generic-frame extents. Independently
-corrupt its sequence, truncate its final byte, and append trailing data. Each
-decoder must publish exactly the first three verified frames, preserve the
-sentinel for the failing final byte, and repeat the same terminal status and
-error position without progress. This decision adds no fuzz target, CLI
-selector, benchmark, or interoperability entry.
-
-## DD-485: LZ78 rANS C factory exposes only opaque workspace bytes
-
-- Date: 2026-07-31
-- Status: accepted
-
-Expose size-tagged `marc_lz78_rans_config`, initializer, workspace query, and
-factory under ABI version 1. Retain the common three-region lifecycle. Encode
-reports raw-frame collection as primary, token staging plus complete frame as
-secondary, and aligned LZ78 encoder records as opaque views. Decode reports
-encoded-frame collection as primary, token plus private raw staging as
-secondary, and the checked rANS-view/padding/LZ78-phrase layout as opaque
-views.
-
-The query must map DD-484 errors stably. The factory first invokes that public
-query, rejects null, short, or misaligned regions, repeats the profile
-calculation, rederives the opaque layout, constructs only with `nothrow`, and
-leaves the handle null on every failure. Direction remains immutable. Because
-the common rANS validator applies `max_frame_size` to its own decoded byte
-block, require local policy to admit the larger of the raw outer-frame extent
-and configured entropy-block extent.
-
-Prove the complete pure-C11 lifecycle with two-byte raw frames and five-byte
-rANS blocks, queried workspaces, three-frame round trip, every one-byte-short
-region, misalignment, null handle output, and reserved-field rejection. This
-decision adds no completion matrix, fuzz target, CLI selector, benchmark,
-completion claim, or interoperability entry.
-
-## DD-438: LZMW Dynamic Range streaming encode buffers one bounded frame
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add a bounded known-size streaming encoder above DD-437. Emit the ordinary
-64-byte stream header and 16-byte LZMW parameter region first. Collect at most
-one configured raw frame in caller-owned storage, prepare its complete
-serialized representation through the deterministic exact-frame encoder, and
-drain that immutable frame under arbitrary output starvation before accepting
-bytes for the next frame.
-
-At construction, validate the fixed pipeline, parameters, known original size,
-largest raw frame, conservative `4F` reference staging, and LZMW encoder
-records. Before encoding each collected frame, count raw collection, exact
-reference staging, exact serialized frame, and encoder records in one checked
-aggregate and require complete encoded-frame storage.
-
-Input and output chunking alone must not change serialized bytes. `Flush` keeps
-the logical stream open and does not shorten a frame. Retain `EndInput` while
-the prefix or a frame drains, require its input to complete the declared known
-size, reject `ResetBlock` and unknown flags, and make ended and error results
-sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
-## DD-439: LZMW Dynamic Range streaming decode validates before draining
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder. Incrementally collect
-and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
-Before admitting the frame body, enforce `S <= 4F`,
-`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
-complete encoded frame, reference staging, private raw staging, aligned LZMW
-phrase records, and expansion references, plus their checked aggregate
-workspace.
-
-Collect exactly the admitted descriptor and payload, invoke DD-434's private
-complete-frame decoder into private raw storage, and only then drain that
-immutable raw frame. Do not collect a later frame while validated raw bytes
-remain pending. Earlier complete frames may be published, but a malformed
-later frame must publish none of its own bytes.
-
-Require exact known-size completion and reject every prefix, header, or body
-truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
-unknown flag. Retain `EndInput` while a validated frame drains and make ended
-and error states sticky. This step adds no profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
-## DD-408: LZW Dynamic Range streaming encode buffers one bounded frame
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add a bounded known-size streaming encoder above DD-407. Emit the ordinary
-64-byte stream header and 16-byte LZW parameter region first. Collect at most
-one configured raw frame in caller-owned storage, prepare its complete
-serialized representation through the deterministic exact-frame encoder, and
-drain that immutable frame under arbitrary output starvation before accepting
-bytes for the next frame.
-
-At construction, validate the fixed pipeline, parameters, known original size,
-largest raw frame, conservative `ceil(FW/8)` packed staging, and LZW encoder
-records. Before encoding each collected frame, count raw collection, exact
-packed staging, exact serialized frame, and encoder records in one checked
-aggregate and require complete encoded-frame storage.
-
-Input and output chunking alone must not change serialized bytes. `Flush` keeps
-the logical stream open and does not shorten a frame. Retain `EndInput` while
-the prefix or a frame drains, require its input to complete the declared known
-size, reject `ResetBlock` and unknown flags, and make ended and error results
-sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
-## DD-410: LZW Dynamic Range profiles separate byte and typed storage
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-408 and DD-409.
-For encoding, derive the largest raw frame, conservative
-`S = ceil(FW/8)` packed staging, `2S + 5` Dynamic Range payload, complete
-serialized-frame storage, and the exact LZW encoder-record count. Count every
-region in one checked aggregate before returning any requirement.
-
-For decoding, derive complete encoded-frame collection, bounded packed staging,
-private raw staging, and the conservative phrase-record count solely from
-validated local limits. Keep byte storage separate from caller-allocated,
-properly aligned record storage. Partition helpers must verify the reported
-record byte count and alignment before producing typed spans; empty record
-storage uses zero bytes and neutral alignment one.
-
-This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
-completion matrix, or interoperability entry.
-
-## DD-411: LZW Dynamic Range enters the C ABI with opaque typed views
-
-- Date: 2026-07-26
-- Status: accepted
-
-Expose the fixed LZW variant 1 plus Dynamic Range variant 1 profile through a
-size-tagged `marc_lzw_dynamic_range_config`, direction-specific requirements
-query, and immutable-direction factory without changing C ABI version 1.
-
-Retain the common three caller-owned workspaces. Encoding uses raw primary
-storage, packed-plus-serialized secondary storage, and aligned opaque encoder
-records. Decoding uses serialized primary storage, packed-plus-private-raw
-secondary storage, and aligned opaque phrase records. Creation reruns DD-410
-and its checked partition helpers instead of trusting caller-supplied extents.
-
-Require a strict C11 round trip, exact small-limit requirements, one-byte-short
-and misaligned workspace rejection, reserved-field rejection, and a null
-transform on every factory failure. This step adds no CLI selector, benchmark,
-fuzz target, completion matrix, or interoperability entry.
-
-## DD-412: LZW Dynamic Range completion is audited through the public C ABI
-
-- Date: 2026-07-26
-- Status: accepted
-
-Audit only `marc_lzw_dynamic_range_config_init`, its requirements query,
-factory, the common process function, and transform destruction. Use 64-byte
-frames and the checked `S = ceil(FW/8)`, `P = 2S + 5` workspace policy.
-
-Cover empty input, every one-byte value, the full byte alphabet, repetitive
-and generated binary inputs, and lengths 63, 64, and 65. Require deterministic
-re-encoding and identical streams under `(1,1)`, `(7,5)`, and `(13,17)`
-input/output chunk schedules, with repeatable EndOfStream.
-
-For a 193-byte four-frame stream, independently corrupt, truncate, and extend
-the fourth frame. Each decoder must commit exactly the first 192 bytes, leave
-the failing frame's destination sentinel unchanged, and repeat the same stable
-terminal error. Reuse the LZW public-ABI test body across entropy profiles with
-only the fixed factory family and payload ceiling parameterized, preventing
-evidence drift. This step adds no CLI, benchmark, fuzz, or interoperability
-entry.
-
-## DD-413: LZW Dynamic Range fuzzing is fixed-memory and dual-path
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add one bounded decoder fuzz entry that exercises both the private complete-
-frame decoder and the outer frame-committing streaming decoder. Cap accepted
-input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
-bytes, packed LZW staging at 4,096 bytes, and dictionary entries at 4,096.
-Allocate every byte and phrase region as a fixed local array before inspecting
-input.
-
-Derive chunk sizes only within those arrays and stop after
-`input_bound + output_bound + 32` calls. Abort on an invalid process result,
-zero progress reported as Progress, impossible NeedInput after final input, or
-the finite-call ceiling. Reuse the established bounded LZW harness with only
-the entropy identity and combined entry points parameterized.
-
-Permanent regressions must reject every proper prefix of a canonical stream,
-saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
-All failures preserve the raw output sentinel and remain sticky. This step adds
-no CLI, benchmark, or interoperability entry.
-
-## DD-414: LZW Dynamic Range CLI is a fixed public-ABI adapter
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add the explicit `lzw-dynamic-range` selector to the existing transactional
-CLI without changing the default codec. Use a 65,536-byte raw frame, the
-canonical `S = 2F = 131,072` packed-code ceiling, the
-`P = 2S + 5 = 262,149` Dynamic Range payload ceiling, at most 65,280 generated
-LZW entries, and an 8-MiB aggregate buffered-byte policy.
-
-The CLI must initialize the public size-tagged config, set only public format
-parameters and hard limits, query all three direction-specific workspace
-regions and views alignment, and construct the transform through
-`marc_lzw_dynamic_range_create()`. It must not name private record types,
-recalculate opaque record sizes, or invoke a private C++ frame API.
-
-Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
-decoding failure, malformed input, strict trailing data, write failure, close
-failure, or rename failure must leave no requested destination or temporary
-file. Test binary and empty round trips, overwrite refusal, malformed input,
-and a valid stream with trailing data. This step adds no benchmark or
-interoperability entry.
-
-## DD-415: LZW Dynamic Range benchmark measures the public CLI profile
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add `lzw-dynamic-range` to the dependency-free benchmark with the exact DD-414
-public profile: 65,536-byte raw frames, 131,072 packed LZW bytes, 262,149
-range-payload bytes, maximum code width 16, 65,280 generated entries, and an
-8-MiB aggregate policy.
-
-For input extent `N` and nonempty frame count `K`, reserve checked complete
-stream capacity `80 + 4N + 77K`. The `4N` term covers the conservative
-`S <= 2N` and `P <= 2S + 5` payload relation; each frame contributes its
-56-byte header, 16-byte descriptor, and five termination bytes. Overflow must
-fail before allocating the encoded buffer.
-
-Construct both directions only through the public config initializer,
-requirements query, factory, process, and destroy lifecycle. Require one
-untimed byte-exact round trip before timing fresh transforms. Report encoded
-ratio, encode/decode throughput, all six queried workspace extents, and the
-larger three-region sum as descriptive peak workspace. Add a one-iteration
-smoke test with no performance threshold. This step adds no interoperability
-entry.
-
-## DD-416: Interoperability schema 17 appends LZW Dynamic Range once
-
-- Date: 2026-07-26
-- Status: accepted
-
-Define interoperability schema 17 and codec set `marc-cli-v17` as the exact
-twenty-seven-entry schema-16 order followed by `lzw-dynamic-range`. Retain the
-deterministic 8,193-byte fixture and all existing manifest fields. The
-generator must locally decode every archive before publishing the manifest.
-The verifier must require exactly twenty-eight archives in canonical order,
-validate all declared extents and SHA-256 values, decode every foreign archive,
-and reproduce every archive byte for byte with the local encoder.
-
-The compatibility test must generate and verify schema 17, reject a reordered
-schema-17 manifest before archive decoding, remove only archive 28 to derive
-schema 16, and continue the complete frozen conversion chain through schema 1.
-No previous schema, archive order, codec set, stream representation, fixture,
-or manifest field changes. Cross-platform interoperability remains unproven
-until one pushed revision passes the established Windows/MSVC, Ubuntu
-24.04/Ninja, and Ubuntu 26.04/Clang bidirectional artifact procedure.
-
-## DD-417: LZD Dynamic Range entropizes finalized reference-pair bytes
-
-- Date: 2026-07-26
-- Status: accepted
-
-Reserve `lzd-dynamic-range` for LZD variant 1 followed by Dynamic Range Coder
-variant 1 under format version 1.0. Preserve the standalone 16-byte LZD
-parameters, empty entropy parameters, fixed eight-byte little-endian reference
-pairs, and terminal absent-right value. Complete the token byte stream before
-entropy processing; Dynamic Range consumes every resulting byte without
-interpreting token, reference-field, or terminal-marker boundaries. Reset both
-the LZD phrase dictionary and adaptive order-0 range model at every outer
-frame.
-
-For raw frame size `F`, use checked token staging bound
-`S = 8 * ceil(F / 2)` and Dynamic Range payload bound `P = 2S + 5`. Bound
-generated phrases by `min(floor(F / 2), configured_maximum)` and the iterative
-expansion stack by that phrase count plus one. Retain the LZD composition
-format cap `F <= 2^20`. The reference profile uses `F = 65,536`, giving
-`S = 262,144`, `P = 524,293`, at most 32,768 generated phrases, and at most
-32,769 expansion references.
-
-Encoding freezes the canonical LZD token bytes before range planning. Decoding
-range-decodes exactly the declared token-byte count into private staging, then
-applies the ordinary LZD multiple-of-eight, backward-reference, terminal-
-absence, phrase-length, and exact-raw-extent validation before iterative
-private reconstruction and any raw publication. Error precedence is generic
-header and extent validation, workspace admission, range descriptor and
-payload validation, LZD validation, then private reconstruction and
-publication.
-
-Freeze raw `A` independently: LZD emits terminal token
-`41 00 00 00 FF FF FF FF`; Dynamic Range variant 1 over those eight bytes
-produces payload `00 40 FF FF C4 DC 92 F3 69 BC 8B 00` and descriptor
-`(8, 12, 0)`. Record the complete 84-byte frame in the format document and
-prove it by composing only the existing standalone LZD encoder, Dynamic Range
-encoder, and generic serializers. This decision specifies bytes and a reserved
-name only; it does not publish a combined validator, decoder, encoder,
-streaming transform, factory, CLI, benchmark, fuzz target, completion matrix,
-or interoperability entry.
-
-## DD-418: LZD Dynamic Range validation stops at the token boundary
-
-- Date: 2026-07-26
-- Status: accepted
-
-Admit the first combined `lzd-dynamic-range` implementation as a strict bounded
-complete-frame validator only. Validate the stream profile, LZD parameters,
-sequence, generic frame header, exact complete-frame extent, checked
-`S = 8 * ceil(F/2)` token bound, token-width divisibility, one 16-byte Dynamic
-Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
-aligned phrase bytes, and the aggregate workspace limit before entropy output.
-
-Parse the descriptor only after that admission succeeds. Range-decode exactly
-the declared token-byte count into private caller-owned staging with exact
-payload exhaustion, then invoke the existing LZD validator over the complete
-span. Preserve LZD's backward-reference, terminal-absence, checked phrase-
-length, exact declared raw extent, token count, dictionary-entry count, format
-error, and phrase-table requirements.
-
-Use stable error precedence: unsupported profile, truncated header, generic
-header, complete-frame extent, token and entropy extents, caller workspace,
-aggregate workspace, descriptor, range payload, then LZD token stream. On
-every error the caller must discard staging and phrase contents; no raw byte is
-reconstructed or published. Report the future iterative expansion requirement
-as a diagnostic, but do not include unrequested expansion or raw staging in
-this validator's workspace total. This step adds no private raw decoder,
-encoder, streaming transform, profile calculator, C ABI, CLI, benchmark, fuzz
-target, completion matrix, or interoperability entry.
-
-## DD-419: LZD Dynamic Range reconstructs only into private raw staging
-
-- Date: 2026-07-26
-- Status: accepted
-
-Extend DD-418 with a bounded complete-frame decoder that reconstructs the
-already validated LZD token stream into caller-owned private raw staging.
-Require raw capacity for the complete declared frame and expansion-stack
-capacity for the checked phrase-count-plus-one requirement. Add both full
-extents to aggregate workspace accounting before parsing the Dynamic Range
-descriptor or producing token bytes.
-
-Reuse the DD-418 validator without weakening or duplicating its header,
-`S`/`P`, workspace, descriptor, payload-exhaustion, reference, terminal,
-phrase-length, and exact-raw-extent checks. Only after all validation succeeds
-may the existing iterative LZD decoder expand the staged token graph through
-the validated phrase table and explicit `uint32_t` stack into private raw
-storage. Preserve detailed LZD validation, format, and decode diagnostics.
-
-On every failure the caller must discard token staging, phrase records,
-expansion stack, and raw staging. No caller-visible raw output is accepted by
-this API, so no byte is published at this boundary. This step adds no
-transactional publication wrapper, encoder, streaming transform, profile
-calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
-interoperability entry.
-
-## DD-420: LZD Dynamic Range publishes only a complete successful frame
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add an internal caller-visible complete-frame decoder above DD-419. Require
-destination capacity for the complete declared raw frame together with token
-staging, aligned phrase records, explicit expansion-stack storage, and private
-raw staging before parsing the Dynamic Range descriptor or producing entropy
-output. Caller-visible output is not scratch and therefore is not counted in
-aggregate internal workspace.
-
-Run the unchanged DD-418 validation order and DD-419 private reconstruction.
-Only after every generic-frame, range, LZD, capacity, bounds, graph, and exact-
-extent check succeeds may the decoder copy the complete private raw span once
-into the destination.
-
-Preserve every existing combined error value and append a distinct output-
-capacity error. On every failure, publish no destination byte. This step adds
-no encoder, streaming transform, profile calculator, C ABI, CLI, benchmark,
-fuzz target, completion matrix, or interoperability entry.
-
-## DD-421: LZD Dynamic Range planning freezes tokens before range output
-
-- Date: 2026-07-26
-- Status: accepted
-
-Add an exact-frame planner for `lzd-dynamic-range`. Require one nonempty raw
-frame, validate the selected profile and caller-owned LZD encoder workspace,
-and run the deterministic LZD plan. Require token staging for the exact planned
-extent, then encode the complete canonical eight-byte reference-pair stream
-before invoking Dynamic Range planning.
-
-Plan Dynamic Range over that immutable token-byte extent and require the exact
-payload to satisfy `P <= 2S + 5`. Count LZD encoder records, token staging, the
-16-byte descriptor, and exact payload in one checked internal-workspace sum.
-Construct and validate the complete generic frame header and report its exact
-serialized extent without writing any serialized-frame byte.
-
-Preserve every existing combined error value and append distinct input-size,
-encoder-workspace, dictionary-encode, entropy-encode, and internal-consistency
-errors. This step adds no serialized encoder, streaming transform, profile
-calculator, C ABI, CLI, benchmark, fuzz target, completion matrix, or
-interoperability entry.
-
-## DD-422: LZD Dynamic Range encoding is plan-first and deterministic
-
-- Date: 2026-07-27
-- Status: accepted
-
-Add the deterministic complete-frame encoder above DD-421. Invoke the exact
-planner first so canonical LZD token bytes, exact range payload size, generic
-frame fields, and aggregate workspace are fixed before serialized output is
-considered. Require destination capacity for the complete planned extent before
-writing any serialized byte.
-
-Repeat Dynamic Range planning over the frozen token span and require its
-payload extent to match DD-421. Serialize the generic frame header and 16-byte
-descriptor explicitly, then encode the exact payload into its planned region.
-The independent raw-`A` input must reproduce the complete 84-byte vector.
-
-Preserve every existing combined error value and append a distinct serialized-
-output-capacity error. Capacity and all planner failures leave serialized
-output unchanged. This step adds no streaming transform, profile calculator,
-C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
-entry.
-
-## DD-423: LZD Dynamic Range streaming encode buffers one bounded frame
-
-- Date: 2026-07-27
-- Status: accepted
-
-Add a bounded known-size streaming encoder above DD-422. Emit the ordinary
-64-byte stream header and 16-byte LZD parameter region first. Collect at most
-one configured raw frame in caller-owned storage, prepare its complete
-serialized representation through the deterministic exact-frame encoder, and
-drain that immutable frame under arbitrary output starvation before accepting
-bytes for the next frame.
-
-At construction, validate the fixed pipeline, parameters, known original size,
-largest raw frame, conservative `8 * ceil(F/2)` token staging, and LZD encoder
-records. Before encoding each collected frame, count raw collection, exact
-token staging, exact serialized frame, and encoder records in one checked
-aggregate and require complete encoded-frame storage.
-
-Input and output chunking alone must not change serialized bytes. `Flush` keeps
-the logical stream open and does not shorten a frame. Retain `EndInput` while
-the prefix or a frame drains, require its input to complete the declared known
-size, reject `ResetBlock` and unknown flags, and make ended and error results
-sticky. This step adds no streaming decoder, profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
-## DD-424: LZD Dynamic Range streaming decode validates before draining
-
-- Date: 2026-07-27
-- Status: accepted
-
-Add the matching bounded known-size streaming decoder. Incrementally collect
-and validate the fixed 80-byte stream prefix, then one 56-byte frame header.
-Before admitting the frame body, enforce `S <= 8 * ceil(F/2)`,
-`5 <= P <= 2S + 5`, one 16-byte descriptor, exact caller capacities for the
-complete encoded frame, token staging, private raw staging, aligned LZD phrase
-records, and expansion references, plus their checked aggregate workspace.
-
-Collect exactly the admitted descriptor and payload, invoke DD-420's
-transactional complete-frame decoder into private raw storage, and only then
-drain that immutable raw frame. Do not collect a later frame while validated
-raw bytes remain pending. Earlier complete frames may be published, but a
-malformed later frame must publish none of its own bytes.
-
-Require exact known-size completion and reject every prefix, header, or body
-truncation, trailing byte, wrong pipeline, invalid extent, `ResetBlock`, and
-unknown flag. Retain `EndInput` while a validated frame drains and make ended
-and error states sticky. This step adds no profile calculator, C ABI, CLI,
-benchmark, fuzz target, completion matrix, or interoperability entry.
-
-## DD-425: LZD Dynamic Range profiles separate byte and typed storage
-
-- Date: 2026-07-27
-- Status: accepted
-
-Add an internal direction-specific profile calculator above DD-423 and DD-424.
-For encoding, derive the largest raw frame, conservative
-`S = 8 * ceil(F/2)` token staging, `2S + 5` Dynamic Range payload, complete
-serialized-frame storage, and the exact LZD encoder-record count. Count every
-region in one checked aggregate before returning any requirement.
-
-For decoding, derive complete encoded-frame collection, bounded token staging,
-private raw staging, conservative phrase records, and phrase expansion
-references solely from validated local limits. Keep byte storage separate from
-caller-allocated, properly aligned typed storage. Partition helpers must verify
-the reported record counts, byte extent, expansion offset, and alignment before
-producing typed spans; empty encoder-record storage uses zero bytes and neutral
-alignment one.
-
-This step adds no C ABI factory, CLI selector, benchmark, fuzz target,
-completion matrix, or interoperability entry.
-
-## DD-426: LZD Dynamic Range C ABI owns no caller storage
-
-- Date: 2026-07-27
-- Status: accepted
-
-Publish a fixed-width `marc_lzd_dynamic_range_config` and three functions:
-configuration initialization, direction-specific workspace requirements, and
-transform creation. Retain ABI version 1 because this adds new symbols and a
-new independently size-tagged structure without changing any existing layout
-or behavior.
-
-Map the C fields to DD-425 and return primary byte storage, combined secondary
-byte storage, and one separately aligned opaque views region. On creation,
-recompute the requirements, validate all pointers, capacities, reserved fields,
-and alignment, partition typed LZD records internally, and construct exactly
-the DD-423 encoder or DD-424 decoder. The transform borrows every workspace;
-no allocator callback or private record layout crosses the ABI.
-
-Add a pure C11 shared-library test that queries both directions, round-trips
-`ABABX`, and rejects each short region, misaligned views, null output handle,
-and nonzero reserved field. This step adds no CLI selector, benchmark, fuzz
-target, completion matrix, or interoperability entry.
-
-## DD-427: LZD Dynamic Range completion evidence is public-ABI only
-
-- Date: 2026-07-27
-- Status: accepted
-
-Reuse the LZD plus Adaptive Huffman public completion schedules through only
-the `marc_lzd_dynamic_range_*` configuration, requirements, factory, process,
-and destroy lifecycle. Change only the entropy payload ceiling to `2S + 5` and
-the public symbol family so evidence for the two LZD compositions cannot drift.
-
-Cover empty input, every one-byte value, all byte values, repetitive and
-patterned binary data, deterministic generated data, and lengths immediately
-around the 64-byte frame boundary. Require byte-identical repeated encoding,
-unchunked, one-byte, and mixed chunk schedules, round trip, and sticky
-`EndOfStream`.
-
-For a four-frame stream, independently corrupt the final sequence, truncate
-the final payload, and append trailing data. Each failure may publish exactly
-the first three validated frames, must preserve the final raw sentinel, and
-must repeat its terminal status and error positions. This step adds no CLI
-selector, benchmark, fuzz target, or interoperability entry.
-
-## DD-428: LZD Dynamic Range fuzzing is fixed-memory and dual-path
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add one bounded decoder fuzz entry that exercises both the private complete-
-frame decoder and the outer frame-committing streaming decoder. Cap accepted
-input at 8,192 bytes, total raw output at 4,096 bytes, one raw frame at 1,024
-bytes, canonical LZD token staging at 4,096 bytes, range payload at 8,192
-bytes, phrase records at 512, and iterative expansion references at 513.
-Allocate every byte, phrase, and expansion region as a fixed local array before
-inspecting input.
-
-Derive chunk sizes only within those arrays and stop after
-`input_bound + output_bound + 32` calls. Abort on an invalid process result,
-zero progress reported as Progress, impossible NeedInput after final input, or
-the finite-call ceiling. Reuse the established bounded LZD harness with only
-the entropy identity and combined entry points parameterized.
-
-Permanent regressions must reject every proper prefix of a canonical stream,
-saturated frame extents, and a nonzero reserved Dynamic Range descriptor byte.
-All failures preserve the raw output sentinel and remain sticky. This step adds
-no CLI, benchmark, or interoperability entry.
-
-## DD-429: LZD Dynamic Range CLI is a fixed public-ABI adapter
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add the explicit `lzd-dynamic-range` selector to the existing transactional CLI
-without changing the default codec. Use a 65,536-byte raw frame, the canonical
-`S = 8 * ceil(F/2) = 262,144` LZD token ceiling, the
-`P = 2S + 5 = 524,293` Dynamic Range payload ceiling, at most 65,536 dictionary
-entries, and a 16-MiB aggregate buffered-byte policy.
-
-The CLI must initialize the public size-tagged config, set only public format
-parameters and hard limits, query all three direction-specific workspace
-regions and views alignment, and construct the transform through
-`marc_lzd_dynamic_range_create()`. It must not name private record types,
-recalculate opaque record sizes, or invoke a private C++ frame API.
-
-Retain the existing output refusal and sibling `.tmp` protocol. Encoding or
-decoding failure, malformed input, strict trailing data, write failure, close
-failure, or rename failure must leave no requested destination or temporary
-file. Test binary and empty round trips, overwrite refusal, malformed input,
-and a valid stream with trailing data. This step adds no benchmark or
-interoperability entry.
-
-## DD-430: LZD Dynamic Range benchmark measures the public CLI profile
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add `lzd-dynamic-range` to the dependency-free benchmark with the exact DD-429
-public profile: 65,536-byte raw frames, 262,144 canonical LZD token bytes,
-524,293 range-payload bytes, 65,536 dictionary entries, and a 16-MiB aggregate
-policy.
-
-For input extent `N` and nonempty frame count `K`, reserve checked complete
-stream capacity `80 + 16*ceil(N/2) + 77K`. The pair term covers
-`S = 8*ceil(N/2)` and `P <= 2S + 5`; each frame contributes its 56-byte header,
-16-byte descriptor, and five termination bytes. Overflow must fail before
-allocating the encoded buffer.
-
-Construct both directions only through the public config initializer,
-requirements query, factory, process, and destroy lifecycle. Require one
-untimed byte-exact round trip before timing fresh transforms. Report encoded
-ratio, encode/decode throughput, all six queried workspace extents, and the
-larger three-region sum as descriptive peak workspace. Add a one-iteration
-smoke test with no performance threshold. This step adds no interoperability
-entry.
-
-## DD-431: Interoperability schema 18 appends LZD Dynamic Range once
-
-- Date: 2026-07-28
-- Status: accepted
-
-Define interoperability schema 18 and codec set `marc-cli-v18` as the exact
-twenty-eight-entry schema-17 order followed by `lzd-dynamic-range`. Retain the
-deterministic 8,193-byte fixture and all existing manifest fields. The
-generator must locally decode every archive before publishing the manifest.
-
-The verifier must require exactly twenty-nine archives in canonical order,
-validate all sizes and SHA-256 values, decode each foreign archive, and require
-byte-identical local re-encoding. Unknown, duplicate, missing, reordered, or
-extra profiles remain errors.
-
-Keep schemas 1 through 17 as explicit frozen codec sets. The compatibility test
-must generate schema 18, reject a reordered schema-18 manifest, derive and
-verify schema 17, then continue the existing schema-16-through-1 chain. This
-step records local admission only; external cross-platform evidence requires
-artifacts produced after push.
-
-## DD-432: LZMW Dynamic Range entropizes finalized reference bytes
-
-- Date: 2026-07-28
-- Status: accepted
-
-Reserve `lzmw-dynamic-range` for LZMW variant 1 followed by Dynamic Range
-Coder variant 1 under format version 1.0. Preserve the standalone 16-byte LZMW
-parameters, empty entropy parameters, and fixed four-byte little-endian
-references. Complete the reference byte stream before entropy processing;
-Dynamic Range consumes every byte without interpreting reference boundaries.
-Reset both the LZMW phrase dictionary and adaptive order-0 range model at every
-outer frame.
-
-For raw frame size `F`, use checked reference staging bound `S = 4F` and
-Dynamic Range payload bound `P = 2S + 5 = 8F + 5`. Bound generated phrases by
-the lesser of `max(F - 1, 0)`, the configured LZMW maximum, and the local
-decoder limit; bound the iterative expansion stack by that phrase count plus
-one for a nonempty frame. Retain the LZMW composition format cap
-`F <= 2^20`. The reference profile uses `F = 65,536`, giving `S = 262,144`,
-`P = 524,293`, at most 65,535 generated phrases, and at most 65,536 expansion
-references.
-
-Encoding freezes canonical LZMW reference bytes before range planning.
-Decoding range-decodes exactly the declared reference-byte count into private
-staging, then applies ordinary LZMW reference alignment, prior-reference,
-adjacent-phrase graph, and exact-raw-extent validation before iterative private
-reconstruction and any raw publication. Error precedence is generic header and
-extent validation, workspace admission, range descriptor and payload
-validation, LZMW validation, then private reconstruction and publication.
-
-For raw `A`, independently freeze LZMW reference `41 00 00 00`; Dynamic Range
-variant 1 over those four bytes produces payload
-`00 40 FF FF BF 00 00 00` and descriptor `(4, 8, 0)`. Record the complete
-80-byte frame in the format document and prove it by composing only the
-existing standalone LZMW encoder, Dynamic Range encoder, and generic
-serializers. This decision specifies bytes and a reserved name only; it does
-not publish a combined implementation or interoperability entry.
-
-## DD-433: LZMW Dynamic Range validation stops at the reference boundary
-
-- Date: 2026-07-28
-- Status: accepted
-
-Admit the first combined `lzmw-dynamic-range` implementation as a strict
-bounded complete-frame validator only. Validate the exact stream profile,
-LZMW parameters, sequence, generic frame header, exact complete-frame extent,
-checked `S = 4F` reference bound, four-byte alignment, one 16-byte Dynamic
-Range descriptor, `P = 2S + 5` payload bound, every caller-owned capacity,
-aligned phrase bytes, and aggregate validation workspace before entropy
-output.
-
-Parse the descriptor only after admission succeeds. Range-decode exactly the
-declared reference-byte count into private caller-owned staging with exact
-payload exhaustion, then invoke the existing LZMW validator over that complete
-span. Preserve LZMW's literal/prior-reference validation, bounded adjacent-
-phrase construction, checked phrase lengths, exact declared raw extent, token
-and dictionary-entry counts, stable format error, and phrase-table
-requirements.
-
-On success, reduce the reported expansion-stack ceiling from the conservative
-phrase capacity to the actual generated-phrase count plus one for a nonempty
-frame. Reconstruct and publish no raw byte. On every failure, the caller must
-discard reference and phrase workspace. This decision adds no private raw
-decoder, transactional publication, encoder, stream transform, public factory,
-CLI, benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-434: LZMW Dynamic Range reconstruction remains private
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add a bounded complete-frame decoder that retains DD-433's exact validation
-order and reconstructs only into caller-owned private raw staging. Before
-entropy output, require the complete raw extent and the conservative expansion
-stack derived from phrase capacity and count their bytes with the descriptor,
-payload, reference staging, and aligned phrase records against
-`max_internal_buffered_bytes`.
-
-After strict range exhaustion and complete LZMW validation succeed, reduce the
-active expansion span to the actual generated-phrase count plus one for a
-nonempty frame. Invoke the existing iterative LZMW decoder over only that
-validated graph. Propagate its stable validation, format, and decode errors;
-an unexpected reconstruction failure is a distinct combined-frame error.
-
-No caller-visible output span exists at this boundary. On every failure, the
-caller discards reference, phrase, expansion, and raw staging. Prove a literal
-frame and a phrase-reference frame, one-entry-short raw and expansion storage,
-aggregate workspace one byte short, and unchanged raw guards after descriptor
-or reference failure. This decision adds no publication boundary, encoder,
-streaming transform, public factory, CLI, benchmark, fuzz target, completion
-claim, or interoperability entry.
-
-## DD-435: LZMW Dynamic Range frame publication is transactional
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add an internal complete-frame decoder that accepts a distinct caller-visible
-output span. Before descriptor parsing or entropy output, retain all DD-433 and
-DD-434 admission checks and additionally require capacity for the complete
-declared raw frame. A one-byte-short output must leave reference staging,
-phrase records, expansion stack, private raw staging, and caller output
-unmodified.
-
-After strict range exhaustion, complete LZMW graph validation, and successful
-iterative private reconstruction, copy exactly `raw_size` bytes from private
-raw staging to caller output once. Never expose partially reconstructed raw
-bytes. Descriptor, payload, reference, phrase, workspace, limit, or
-reconstruction failure leaves caller output unchanged.
-
-Prove publication for the single-literal vector and a generated-phrase frame.
-Prove preflight atomicity with short output and post-admission atomicity with
-descriptor and forward-reference failures. This decision adds no frame
-encoder, streaming transform, public factory, CLI, benchmark, fuzz target,
-completion claim, or interoperability entry.
-
-## DD-436: LZMW Dynamic Range planning freezes reference bytes
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add an internal exact-frame planner for the inverse of DD-433 through DD-435.
-Validate the exact stream profile, LZMW parameters, nonempty input extent, and
-frame-local bounds. Determine and require the bounded LZMW encoder-record
-capacity before reference staging can change. Plan the deterministic parse,
-require the exact checked `S <= 4F` reference extent and staging capacity, then
-serialize all canonical four-byte references into caller-owned staging.
-
-Plan Dynamic Range only over that frozen reference span. Require its exact
-payload to fit `P <= 2S + 5` and 32-bit frame fields. Count encoder records,
-reference staging, the 16-byte descriptor, and exact payload against
-`max_internal_buffered_bytes`. Validate the synthesized generic frame header
-with sequence and already-committed output context, and report the checked
-complete frame extent without writing serialized output.
-
-Prove the exact raw-`A` reference, descriptor, payload and 80-byte extent;
-repeat a generated-phrase plan byte-identically; reject encoder records and
-reference staging one entry short before staging mutation; and reject aggregate
-workspace one byte short, empty input, and a frame-size mismatch. This decision
-adds no serialized frame encoder, streaming transform, public factory, CLI,
-benchmark, fuzz target, completion claim, or interoperability entry.
-
-## DD-437: LZMW Dynamic Range encoding is plan-first and deterministic
-
-- Date: 2026-07-28
-- Status: accepted
-
-Add the deterministic complete-frame encoder above DD-436. Invoke the exact
-planner first so canonical LZMW reference bytes, exact range payload size,
-generic frame fields, and aggregate workspace are fixed before serialized
-output is considered. Require destination capacity for the complete planned
-extent before writing any serialized byte.
-
-Repeat Dynamic Range planning over the frozen reference span and require its
-payload extent to match DD-436. Serialize the generic frame header and 16-byte
-descriptor explicitly, then encode the exact payload into its planned region.
-The independent raw-`A` input must reproduce the complete 80-byte vector.
-
-Preserve every existing combined error value and append a distinct serialized-
-output-capacity error. Capacity and all planner failures leave serialized
-output unchanged. This step adds no streaming transform, profile calculator,
-C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
-entry.
+byte-identically re-encoded all 42 archives.
