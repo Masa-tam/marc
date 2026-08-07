@@ -6,11 +6,12 @@ implementation auditing. Library users normally need the documents in the
 parent [documentation index](../README.md) instead.
 
 - [Design decisions](design-decisions.md): accepted variants, invariants, and
-  implementation policies in chronological order.
+  implementation policies in contiguous decision-number order.
 - [Independent implementation record](clean-room-record.md): references used,
   sources intentionally not consulted, task descriptions, and validation
-  results. The documented process is not a legal guarantee.
-- [References](references.md): standards, papers, and other permitted technical
-  sources consulted during implementation.
-- [Test-vector generation](test-vector-generation.md): construction and
-  provenance rules for hand-checkable and generated vectors.
+  results in numbered Git action order. The documented process is not a legal
+  guarantee.
+- [References](references.md): foundational standards and papers followed by a
+  numbered implementation-reference ledger.
+- [Test-vector generation](test-vector-generation.md): generation policy and a
+  numbered development ledger for hand-checkable and generated vectors.

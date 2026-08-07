@@ -7,8 +7,9 @@ navigate chronological development records.
 ## Library and format
 
 - [Command-line tool](cli.md): usage, profiles, and file/error behavior.
-- [Composition status](composition.md): published profiles, component-ready
-  candidates, and the code-generation roadmap.
+- [Composition matrix and admission history](composition.md): the current
+  profile matrix is authoritative; publication criteria, the deferred
+  code-generation path, and numbered admission history follow it.
 - [C API](c-api.md): public ABI, lifecycle, configuration, and errors.
 - [Stream format](format.md): decoder-visible byte and bit representation.
 - [Architecture](architecture.md): component boundaries, streaming contracts,
@@ -21,16 +22,16 @@ navigate chronological development records.
 - [Interoperability](interoperability.md): CI bundles and cross-platform
   verification.
 - [Baseline readiness](baseline-readiness.md): current implementation and
-  release-evidence status.
+  release-evidence status, with historical admission and CI evidence.
 - [Release process](releasing.md): version namespaces, evidence gates, tagging,
   and publication.
 
 ## Implementation records
 
-The chronological decisions, source provenance, and test-vector construction
-records are collected under [implementation records](implementation/README.md).
-They document how marc was produced; they are not additional public API or
-stream-format specifications.
+Numbered design decisions, source provenance, implementation-reference records,
+and test-vector construction records are collected under
+[implementation records](implementation/README.md). They document how marc was
+produced; they are not additional public API or stream-format specifications.
 
 ## Project
 

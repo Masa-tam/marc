@@ -417,6 +417,37 @@ foreach(heading IN LISTS composition_history_headings)
 endforeach()
 list(LENGTH composition_history_headings composition_history_count)
 
+set(documentation_index "${source_dir}/docs/README.md")
+file(READ "${documentation_index}" documentation_index_content)
+foreach(required_index_description IN ITEMS
+        "Composition matrix and admission history"
+        "profile matrix is authoritative"
+        "historical admission and CI evidence"
+        "Numbered design decisions")
+    string(FIND "${documentation_index_content}" "${required_index_description}"
+        index_description_offset)
+    if(index_description_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Documentation index is stale: ${required_index_description}")
+    endif()
+endforeach()
+set(implementation_index
+    "${source_dir}/docs/implementation/README.md")
+file(READ "${implementation_index}" implementation_index_content)
+foreach(required_record_description IN ITEMS
+        "contiguous decision-number order"
+        "numbered Git action order"
+        "numbered implementation-reference ledger"
+        "numbered development ledger")
+    string(FIND "${implementation_index_content}" "${required_record_description}"
+        record_description_offset)
+    if(record_description_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Implementation-record index is stale: "
+            "${required_record_description}")
+    endif()
+endforeach()
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
