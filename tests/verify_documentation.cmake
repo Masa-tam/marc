@@ -322,6 +322,54 @@ foreach(obsolete_readme_status IN ITEMS
     endif()
 endforeach()
 
+set(composition_document "${source_dir}/docs/composition.md")
+file(READ "${composition_document}" composition_content)
+set(previous_composition_section_offset -1)
+foreach(required_composition_section IN ITEMS
+        "## Current matrix"
+        "## Why publication is not automatic"
+        "## Deferred code-generation path"
+        "## Profile admission history")
+    string(FIND "${composition_content}" "${required_composition_section}"
+        composition_section_offset)
+    if(composition_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing composition section: ${required_composition_section}")
+    endif()
+    if(composition_section_offset LESS_EQUAL previous_composition_section_offset)
+        message(FATAL_ERROR
+            "Composition sections are out of order at: "
+            "${required_composition_section}")
+    endif()
+    set(previous_composition_section_offset
+        "${composition_section_offset}")
+endforeach()
+file(STRINGS "${composition_document}" composition_history_headings
+    REGEX "^### CP-[0-9]+$")
+if(NOT composition_history_headings)
+    message(FATAL_ERROR "No composition admission records were found")
+endif()
+set(expected_composition_record 1)
+foreach(heading IN LISTS composition_history_headings)
+    if(NOT heading MATCHES "^### CP-([0-9]+)$")
+        message(FATAL_ERROR "Invalid composition record heading: ${heading}")
+    endif()
+    set(composition_record_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" composition_record_number
+        "${composition_record_number}")
+    if(composition_record_number STREQUAL "")
+        set(composition_record_number 0)
+    endif()
+    if(NOT composition_record_number EQUAL expected_composition_record)
+        message(FATAL_ERROR
+            "Composition records must be contiguous and ordered: expected "
+            "CP-${expected_composition_record}, found ${heading}")
+    endif()
+    math(EXPR expected_composition_record
+        "${expected_composition_record} + 1")
+endforeach()
+list(LENGTH composition_history_headings composition_history_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -377,4 +425,5 @@ message(STATUS
     "documents, ${decision_count} ordered design decisions, and "
     "${clean_room_record_count} chronological clean-room records, and "
     "${implementation_reference_count} ordered implementation references, and "
-    "${test_vector_record_count} ordered test-vector records")
+    "${test_vector_record_count} ordered test-vector records, and "
+    "${composition_history_count} ordered composition records")
