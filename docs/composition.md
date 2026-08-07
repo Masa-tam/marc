@@ -1074,5 +1074,8 @@ tANS descriptor metadata. Its transactional CLI selector now uses only the
 public C lifecycle and preserves atomic file publication. The dependency-free
 benchmark uses that same lifecycle, checks `80 + 6N + 2176K` complete-stream
 capacity, requires an untimed exact round trip, and reports all queried
-workspace regions. Interoperability evidence remains before the cell can be
-marked complete.
+workspace regions. Interoperability schema 31 appends the unchanged CLI
+archive once after the frozen schema-30 order. Local generation, exact-order
+verification, byte-identical re-encoding, reordered-manifest rejection, and
+schemas 1 through 30 compatibility pass. External four-direction verification
+remains pending.

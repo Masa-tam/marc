@@ -5582,3 +5582,8 @@ ceiling is `80 + 6N + 2176K`: 80 prefix bytes, at most `6N` tANS payload
 bytes from `S <= 4N`, and per frame one 56-byte header plus four 528-byte
 descriptors and four two-byte final states. Verification, timing, throughput,
 and workspace reporting add no serialized data or format variant.
+
+Interoperability schema 31 emits this unchanged profile as `lzmw-tans` after
+the frozen forty-one-entry schema-30 order. Manifest version and codec-set
+selection, archive hashes, verification output, and compatibility derivation
+are external test metadata and do not change the stream representation.

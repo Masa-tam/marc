@@ -103,6 +103,7 @@ $schema27Profiles = $schema26Profiles + @('lzss-tans')
 $schema28Profiles = $schema27Profiles + @('lz78-tans')
 $schema29Profiles = $schema28Profiles + @('lzw-tans')
 $schema30Profiles = $schema29Profiles + @('lzd-tans')
+$schema31Profiles = $schema30Profiles + @('lzmw-tans')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -253,6 +254,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema30Profiles
+} elseif ($manifest.schema_version -eq 31) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v31') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema31Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }

@@ -8680,6 +8680,34 @@ discarded and the reviewed seed retained.
   Release suite passed 2,355/2,355 under both compilers using official CMake
   4.3.4; schemas 1 through 30 compatibility remained successful.
 
+## 2026-08-08 - Interoperability schema 31 local admission
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by appending the completed LZMW/tANS CLI profile to the frozen schema-30 set.
+- References used: DD-626, the local schemas 1 through 30, the public
+  `lzmw-tans` selector, PowerShell file/hash APIs, and the deterministic
+  repository fixture.
+- Known implementations intentionally not consulted: external interoperability
+  schemas, bundle tools, archive corpora, verifier scripts, source code, and
+  test suites.
+- Independent decisions: name the new set `marc-cli-v31`; retain all 41 prior
+  entries byte-for-byte and append `lzmw-tans` once; require exactly 42 ordered
+  archives; derive schema 30 by removing only that final profile; and retain
+  external exchange as separate evidence.
+- Generated-code task description: update generation, strict verification, and
+  compatibility scripts for schema 31; add reordered-manifest rejection and
+  schemas 1-through-30 restoration; synchronize interoperability, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: this is a one-entry extension of marc's own frozen
+  manifest protocol. No external schema shape, archive order, conversion
+  procedure, control flow, naming, or assertion was compared.
+- Local validation: schema-31 generation, exact verification, reordered-
+  manifest rejection, and schemas 1 through 30 restoration passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,355/2,355 under both
+  compilers using official CMake 4.3.4; all forty-two benchmark smokes and
+  documentation-layout checks remained successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference

@@ -3265,6 +3265,15 @@ match the verified values. Report primary, secondary, aligned views, and total
 workspace for both directions; do not treat a small-input throughput value as
 a stable performance assertion.
 
+For interoperability schema 31, freeze the exact schema-30 archive order and
+append exactly one `lzmw-tans` archive as entry 42. Set `schema_version` to 31
+and `codec_set` to `marc-cli-v31`; record every archive size and SHA-256 only
+after local round-trip success. Verify exact order, leaf-only names, hashes,
+foreign decoding, and byte-identical local re-encoding. Swap the first two
+manifest entries and require rejection. Derive schema 30 by removing only
+`lzmw-tans`, restoring `marc-cli-v30`, and then verify the unchanged schemas
+30 through 1.
+
 For the LZMW plus tANS C boundary, initialize an encode configuration in a
 pure C11 translation unit, reduce frame and entropy blocks to two bytes, and
 encode bytes `41 42 41 42 58` using only queried workspace. Initialize decode

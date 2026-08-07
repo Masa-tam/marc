@@ -8,9 +8,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-30 bundle contains the same generated `input.bin`, one
+Each current schema-31 bundle contains the same generated `input.bin`, one
 archive for every public CLI profile, and `manifest.json`. The manifest declares
-codec set `marc-cli-v30` and records
+codec set `marc-cli-v31` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -31,7 +31,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all forty-one foreign archives and compares their output byte
+2. decodes all forty-two foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -44,7 +44,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 41 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 42 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 The verifier remains able to validate legacy schema-1 bundles with their exact
@@ -93,18 +93,21 @@ to the frozen schema-26 order. Schema 28 requires `marc-cli-v28` and all
 thirty-nine archives, appending `lz78-tans` to the frozen schema-27 order.
 Schema 29 requires `marc-cli-v29` and all forty archives, appending `lzw-tans`
 to the frozen schema-28 order. Schema 30 requires `marc-cli-v30` and all
-forty-one archives, appending `lzd-tans` to the frozen schema-29 order. No
-schema silently inherits profiles added by a later schema.
+forty-one archives, appending `lzd-tans` to the frozen schema-29 order. Schema
+31 requires `marc-cli-v31` and all forty-two archives, appending
+`lzmw-tans` to the frozen schema-30 order. No schema silently inherits profiles
+added by a later schema.
 
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 30 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 29
-compatibility evidence. Its completed Windows/MSVC, Ubuntu 24.04/Ninja, and
-Ubuntu 26.04/Clang four-direction cross-check is recorded below.
+Schema 31 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 30
+compatibility evidence. Its external Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang four-direction cross-check remains pending. The completed
+schema-30 cross-check remains recorded below as historical evidence.
 
 ## Recorded external cross-checks
 

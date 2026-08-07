@@ -8120,6 +8120,24 @@ generic header, four 528-byte descriptors, and four two-byte final states.
 This benchmark changes no default selector, stream representation, API,
 `Ready` claim, or interoperability schema.
 
+## DD-626: Interoperability schema 31 appends LZMW tANS
+
+- Date: 2026-08-08
+- Status: accepted
+
+Freeze the exact forty-one-entry schema-30 order and append `lzmw-tans` once
+as entry 42. Name the new codec set `marc-cli-v31`; retain the deterministic
+8,193-byte binary fixture, full source revision, platform/compiler metadata,
+and SHA-256 for the CLI, input, and every archive.
+
+Generation must decode and compare every archive before recording it. The
+verifier requires exact order, count, leaf-only names, sizes, hashes, foreign
+decode, and byte-identical local re-encoding. The compatibility regression
+rejects a reordered schema-31 manifest, derives schema 30 by removing only
+`lzmw-tans`, and verifies the unchanged schemas 30 through 1. This admission
+changes no codec representation. External cross-platform evidence remains a
+post-push release check.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

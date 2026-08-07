@@ -157,6 +157,12 @@ and marc's verification-first timing/reporting runner. No external benchmark
 framework, combined-codec adapter, capacity expression, performance result,
 source code, or test suite was consulted.
 
+Interoperability schema 31 uses only DD-626, the frozen local schema-30 order,
+marc's deterministic 8,193-byte fixture, the published `lzmw-tans` CLI
+profile, and the repository-owned generator, verifier, and compatibility
+conversion. No external interoperability schema, manifest, archive corpus,
+source code, or test suite was consulted.
+
 The LZ78 plus Adaptive Huffman profile and typed workspace partition use only
 DD-309, marc's LZ78 entry types and sizing rules, Adaptive worst-case bound,
 checked arithmetic, and existing first-party profile conventions. No external
