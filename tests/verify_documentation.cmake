@@ -207,6 +207,34 @@ foreach(heading IN LISTS test_vector_headings)
 endforeach()
 list(LENGTH test_vector_headings test_vector_record_count)
 
+set(architecture_document "${source_dir}/docs/architecture.md")
+file(READ "${architecture_document}" architecture_content)
+set(previous_architecture_section_offset -1)
+foreach(required_architecture_section IN ITEMS
+        "## Buffered incremental reference encoder"
+        "## Entropy codec foundations"
+        "## rANS composed profiles"
+        "## tANS foundation"
+        "## tANS composed profiles"
+        "## C transform ABI"
+        "## Blocked Huffman, Adaptive Huffman, and Dynamic Range composed profiles"
+        "## Published composed-profile evidence"
+        "## LZMW plus tANS public profile")
+    string(FIND "${architecture_content}" "${required_architecture_section}"
+        architecture_section_offset)
+    if(architecture_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing architecture section: ${required_architecture_section}")
+    endif()
+    if(architecture_section_offset LESS_EQUAL previous_architecture_section_offset)
+        message(FATAL_ERROR
+            "Architecture sections are out of order at: "
+            "${required_architecture_section}")
+    endif()
+    set(previous_architecture_section_offset
+        "${architecture_section_offset}")
+endforeach()
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"

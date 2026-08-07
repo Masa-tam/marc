@@ -773,6 +773,8 @@ frame-atomic rejection of a malformed final frame, truncation, and trailing
 data. This closes local implementation evidence without claiming external
 cross-platform release completion.
 
+## Entropy codec foundations
+
 ### Adaptive Huffman foundation
 
 Adaptive Huffman variant 1 begins with two allocation-free internal pieces. A
@@ -1050,6 +1052,8 @@ deterministic re-encoding, one-byte and mixed chunk schedules, repeatable
 EndOfStream, and frame-atomic rejection of a malformed final frame, truncation,
 and trailing bytes. Queried aligned views are used throughout. This closes the
 local implementation loop without claiming external release evidence.
+
+## rANS composed profiles
 
 ### Specified LZ77 plus rANS boundary
 
@@ -1791,7 +1795,7 @@ four-direction schema-25 cross-check passed at revision
 `bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across the recorded Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
 
-### tANS foundation
+## tANS foundation
 
 tANS variant 1 begins with a transactional fixed-descriptor validator and a
 deterministic table builder. The builder fills all 4096 spread positions,
@@ -1843,6 +1847,8 @@ repeatable EndOfStream, and frame-atomic rejection of a malformed final frame,
 truncation, and trailing bytes. Queried aligned views are used throughout. This
 closes the local implementation loop without claiming external release
 evidence.
+
+## tANS composed profiles
 
 ### Specified LZSS plus tANS boundary
 
@@ -2429,7 +2435,7 @@ may populate private raw staging; that successful immutable frame then drains
 under arbitrary output chunking. A later malformed frame cannot expose any of
 its raw bytes or roll back earlier completed frames.
 
-### C transform ABI
+## C transform ABI
 
 The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
 Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZSS, LZ78,
@@ -2450,6 +2456,8 @@ Only the small opaque handle and its C++ implementation object are allocated by
 the library with non-throwing allocation. Processing uses caller input/output
 spans and maps stable core status and error categories into fixed C constants.
 Every exported function is `noexcept` when compiled as C++.
+
+## Blocked Huffman, Adaptive Huffman, and Dynamic Range composed profiles
 
 ### LZ77 plus Blocked Huffman validation boundary
 
@@ -3709,7 +3717,7 @@ uses that same public profile and reports the queried direction-specific
 regions after verifying a complete round trip. Schema 5 appends the resulting
 CLI representation to the frozen schema-4 profile set.
 
-### Published composed-profile evidence
+## Published composed-profile evidence
 
 The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the
 local implementation loop by driving required binary data classes through
@@ -3810,7 +3818,9 @@ primary, secondary, and aligned views extents. Peak workspace is the larger
 queried three-region sum; benchmark inputs and output buffers remain outside
 that metric.
 
-### LZMW plus tANS profile workspace
+## LZMW plus tANS public profile
+
+### Profile workspace
 
 The internal LZMW plus tANS profile calculator connects the bounded streaming
 pair to caller-owned storage without exposing its layout as an ABI. Encoding
