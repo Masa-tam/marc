@@ -14,7 +14,8 @@ LZW plus Adaptive Huffman, and LZW plus Dynamic Range profiles, LZD variant 1,
 the LZD plus Blocked Huffman, LZD plus Adaptive Huffman, LZD plus Dynamic
 Range, LZD plus rANS, and LZD plus tANS profiles, and LZMW variant 1 and the
 LZMW plus Blocked Huffman, LZMW plus Adaptive Huffman, and LZMW plus Dynamic
-Range profiles with known-size encoding and bounded caller-owned workspace.
+Range, LZMW plus rANS, and LZMW plus tANS profiles with known-size encoding and
+bounded caller-owned workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears
 in the ABI.
 
@@ -40,8 +41,8 @@ binds dictionary `None`. `marc_lz77_blocked_huffman_*`,
 `marc_lzd_blocked_huffman_*`, `marc_lzd_adaptive_huffman_*`,
 `marc_lzd_dynamic_range_*`, `marc_lzd_rans_*`, `marc_lzd_tans_*`, and
 `marc_lzmw_blocked_huffman_*`, `marc_lzmw_adaptive_huffman_*`, and
-`marc_lzmw_dynamic_range_*` are the currently public
-dictionary-plus-entropy factories.
+`marc_lzmw_dynamic_range_*`, `marc_lzmw_rans_*`, and `marc_lzmw_tans_*` are
+the currently public dictionary-plus-entropy factories.
 
 This is a scope and validation decision, not an incompatibility unique to the
 other algorithms. The byte-stream architecture can feed any canonical

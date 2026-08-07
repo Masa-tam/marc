@@ -8015,6 +8015,29 @@ output unchanged. This step adds no streaming transform, profile calculator,
 C ABI, CLI, benchmark, fuzz target, completion matrix, or interoperability
 entry.
 
+## DD-621: LZMW tANS C factory keeps typed layouts opaque
+
+- Date: 2026-08-08
+- Status: accepted
+
+Expose a size-tagged `marc_lzmw_tans_config` with fixed-width fields matching
+DD-620's known-size configuration and local decoder limits. Provide one
+requirements query and one immutable-direction factory through the common
+opaque transform lifecycle. Encoding maps primary storage to raw collection,
+secondary storage to canonical references followed by the complete frame, and
+aligned views storage to LZMW encoder entries. Decoding maps primary storage to
+encoded-frame collection, secondary storage to canonical references followed
+by private raw output, and aligned views storage to tANS block views, LZMW
+phrases, and expansion indices.
+
+The query is the sole authority for byte counts and alignment. The factory must
+reject wrong structure size or ABI version, nonzero reserved fields, invalid
+direction or limits, null-with-size buffers, short or misaligned regions, and a
+null result pointer before constructing anything. Prove the declarations from
+a pure C11 translation unit with round trip and negative workspace cases. This
+changes no format and adds no CLI, benchmark, fuzz target, completion claim, or
+interoperability entry.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

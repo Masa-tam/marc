@@ -5352,6 +5352,11 @@ bytes exist does it run the ordinary LZD phrase-graph validator. On every
 failure, entropy views, token staging, and phrase records are discard-only;
 raw reconstruction and publication are not part of this boundary.
 
+The `marc_lzmw_tans_*` C lifecycle is an API binding only. It selects
+dictionary algorithm LZMW variant 1 and entropy algorithm tANS variant 1 with
+the configured known original size, frame size, entropy block size, and LZMW
+entry limit. It adds no field, alternate representation, or format variant.
+
 The internal LZMW plus tANS profile calculator changes no serialized byte.
 For largest raw frame `F`, canonical reference capacity is `S = 4F`, block
 count is `K = ceil(S/B)`, descriptor capacity is `528K`, and each tANS payload

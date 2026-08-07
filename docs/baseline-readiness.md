@@ -1093,6 +1093,12 @@ remaining release-evidence limits are stated above.
 The LZMW plus tANS cell now has a checked internal profile calculator in
 addition to complete-frame and bounded streaming transforms. It derives all
 caller-owned storage and proves that those requirements construct a real
-streaming round trip. Public C lifecycle, CLI, benchmark, fuzz regression,
-completion matrix, and interoperability evidence remain outstanding, so the
-cell is not yet marked complete.
+streaming round trip. CLI, benchmark, fuzz regression, completion matrix, and
+interoperability evidence remain outstanding, so the cell is not yet marked
+complete.
+
+The public C lifecycle is now present: its C11 test constructs both directions
+from queried storage, proves a binary multi-frame round trip, and rejects short
+or misaligned workspace plus nonzero reserved configuration. CLI, benchmark,
+fuzz regression, completion matrix, and interoperability evidence remain
+outstanding, so this addition alone does not mark the cell complete.

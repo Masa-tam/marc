@@ -8546,6 +8546,33 @@ discarded and the reviewed seed retained.
   serializers. No external frame-writing control flow, error taxonomy, naming
   scheme, output mutation schedule, or test expression was compared.
 
+## 2026-08-08 - LZMW plus tANS public C lifecycle
+
+- Authoring method: bound DD-620's local requirements and DD-618/DD-619's
+  streaming transforms to marc's existing size-tagged C lifecycle under
+  DD-621.
+- References used: DD-621, DD-620, local C ABI conventions, opaque transform
+  adapter, checked workspace partitioning, and the bounded streaming pair.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE C wrappers, public configuration layouts, allocation protocols, source
+  code, encoded corpora, and test suites.
+- Independent decisions: add one profile-specific fixed-width config; retain
+  immutable direction; make the requirements query authoritative; expose only
+  three untyped regions plus alignment; and keep every C++ record private.
+- Generated-code task description: add config initialization, requirements
+  query, factory routing, pure C11 round trip and invalid-workspace tests, and
+  synchronize C API, architecture, composition, format, readiness, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows marc's repository-local lifecycle and
+  delegates all formulas to DD-620. No external symbol family, structure
+  ordering, control flow, allocation layout, or test assertion was compared.
+- Local validation: the focused pure C11 lifecycle test passed under both MSVC
+  and ClangCL. Every target rebuilt successfully with Visual Studio 2026
+  18.8.2, and the complete Release suite passed 2,347/2,347 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference

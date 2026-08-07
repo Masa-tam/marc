@@ -1557,6 +1557,11 @@ profile, and the repository-owned generator, verifier, and compatibility
 conversion. No external interoperability schema, manifest, archive corpus,
 source code, or test suite was consulted.
 
+The LZMW plus tANS public C adapter uses only DD-621, DD-620, marc's existing
+opaque transform lifecycle, fixed-width ABI conventions, and the local bounded
+streaming pair. No external C wrapper, configuration layout, allocation
+protocol, source code, encoded corpus, or test suite was consulted.
+
 The LZ77 plus tANS reserved representation uses only DD-537, marc's already
 documented LZ77 variant 1 token grammar, tabled tANS variant 1, generic frame
 format, checked arithmetic rules, and repository-authored standalone encoders.

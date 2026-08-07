@@ -1056,3 +1056,9 @@ calculator owns the conservative formulas and typed-region alignment; callers
 must not duplicate private LZMW entry, phrase, expansion, or tANS-view layouts.
 The returned regions directly construct the existing bounded streaming encoder
 and decoder and do not select a new stream variant.
+
+The public `marc_lzmw_tans_*` C lifecycle is now the supported construction
+path for this composition. Query requirements separately for the immutable
+direction, allocate the returned primary, secondary, and aligned views
+regions, then create the transform. The views region remains opaque; consumers
+must not derive or persist its internal offsets.

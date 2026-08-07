@@ -2650,6 +2650,19 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_lzmw_rans_c_api_tests
         COMMAND marc_lzmw_rans_c_api_tests)
 
+    add_executable(marc_lzmw_tans_c_api_tests
+        tests/lzmw_tans_c_api_tests.c)
+    target_compile_features(marc_lzmw_tans_c_api_tests PRIVATE c_std_11)
+    if(TARGET marc_shared)
+        target_link_libraries(marc_lzmw_tans_c_api_tests
+            PRIVATE marc::shared)
+    else()
+        target_link_libraries(marc_lzmw_tans_c_api_tests
+            PRIVATE marc::static)
+    endif()
+    add_test(NAME marc_lzmw_tans_c_api_tests
+        COMMAND marc_lzmw_tans_c_api_tests)
+
     add_executable(marc_lzmw_c_api_tests tests/lzmw_c_api_tests.c)
     target_compile_features(marc_lzmw_c_api_tests PRIVATE c_std_11)
     if(TARGET marc_shared)
@@ -2739,6 +2752,7 @@ if(MARC_BUILD_TESTS)
         marc_lzd_rans_c_api_tests
         marc_lzd_tans_c_api_tests
         marc_lzmw_rans_c_api_tests
+        marc_lzmw_tans_c_api_tests
         marc_lzmw_c_api_tests
         marc_lzmw_blocked_huffman_c_api_tests
         marc_lzmw_adaptive_huffman_c_api_tests

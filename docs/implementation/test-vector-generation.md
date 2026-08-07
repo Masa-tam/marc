@@ -3216,6 +3216,14 @@ remove the stream's final byte, and append one trailing zero independently.
 Each case must publish the first 192 raw bytes, preserve the last sentinel, and
 repeat the same terminal status and error positions.
 
+For the LZMW plus tANS C boundary, initialize an encode configuration in a
+pure C11 translation unit, reduce frame and entropy blocks to two bytes, and
+encode bytes `41 42 41 42 58` using only queried workspace. Initialize decode
+independently, reproduce the five bytes, then shorten each workspace class by
+one, offset the aligned region by one where meaningful, pass a null transform
+result, and set `reserved2`. Every negative case must reject before publishing
+a transform.
+
 For the LZMW plus tANS profile calculator, freeze original size 17, frame size
 10, and entropy block size 4. The largest frame has a 40-byte canonical LZMW
 ceiling, ten tANS blocks, 5,280 descriptor bytes, 80 worst-case payload bytes,

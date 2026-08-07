@@ -3790,3 +3790,9 @@ LZMW-entry regions. Decoding uses complete-frame, canonical-reference,
 private-raw, and one aligned region partitioned into tANS block views, LZMW
 phrases, and iterative expansion indices. All offsets and aggregate extents
 are checked before a typed span is formed.
+
+The public LZMW plus tANS C adapter translates one size-tagged fixed-width
+configuration into that profile. Its requirements query returns primary,
+secondary, and aligned opaque-view extents; its factory validates those exact
+regions and constructs one immutable encode or decode transform. No C++ record
+type, constructor, span, exception, or allocation layout crosses the ABI.

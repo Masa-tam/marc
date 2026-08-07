@@ -7,6 +7,8 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the size-tagged `marc_lzmw_tans_*` C configuration, workspace query,
+  and immutable-direction factory over the existing bounded streaming pair.
 - Added the internal `lzmw-tans` profile calculator. It derives the canonical
   known-size header, conservative encoder and decoder byte regions, and aligned
   opaque LZMW/tANS views using checked arithmetic and local hard limits.
