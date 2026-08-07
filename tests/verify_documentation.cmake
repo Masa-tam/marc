@@ -565,6 +565,58 @@ foreach(heading IN LISTS interoperability_headings)
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 
+set(fuzzing_document "${source_dir}/docs/fuzzing.md")
+file(READ "${fuzzing_document}" fuzzing_content)
+set(previous_fuzzing_section_offset -1)
+foreach(required_fuzzing_section IN ITEMS
+        "## Target coverage and fixed bounds"
+        "## Build and execution workflow"
+        "## Recorded bounded campaigns"
+        "## Finding retention policy")
+    string(FIND "${fuzzing_content}" "${required_fuzzing_section}"
+        fuzzing_section_offset)
+    if(fuzzing_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing fuzzing section: ${required_fuzzing_section}")
+    endif()
+    if(fuzzing_section_offset LESS_EQUAL previous_fuzzing_section_offset)
+        message(FATAL_ERROR
+            "Fuzzing sections are out of order at: "
+            "${required_fuzzing_section}")
+    endif()
+    set(previous_fuzzing_section_offset "${fuzzing_section_offset}")
+endforeach()
+string(FIND "${fuzzing_content}" "The forty-two bounded targets"
+    fuzzing_target_count_offset)
+if(fuzzing_target_count_offset EQUAL -1)
+    message(FATAL_ERROR "Fuzzing target count is stale")
+endif()
+file(STRINGS "${fuzzing_document}" fuzzing_campaign_headings
+    REGEX "^### FZ-[0-9]+: .+$")
+if(NOT fuzzing_campaign_headings)
+    message(FATAL_ERROR "No fuzzing campaign records were found")
+endif()
+set(expected_fuzzing_campaign 1)
+foreach(heading IN LISTS fuzzing_campaign_headings)
+    if(NOT heading MATCHES "^### FZ-([0-9]+): .+$")
+        message(FATAL_ERROR "Invalid fuzzing campaign heading: ${heading}")
+    endif()
+    set(fuzzing_campaign_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" fuzzing_campaign_number
+        "${fuzzing_campaign_number}")
+    if(fuzzing_campaign_number STREQUAL "")
+        set(fuzzing_campaign_number 0)
+    endif()
+    if(NOT fuzzing_campaign_number EQUAL expected_fuzzing_campaign)
+        message(FATAL_ERROR
+            "Fuzzing campaign records must be contiguous and ordered: "
+            "expected FZ-${expected_fuzzing_campaign}, found ${heading}")
+    endif()
+    math(EXPR expected_fuzzing_campaign
+        "${expected_fuzzing_campaign} + 1")
+endforeach()
+list(LENGTH fuzzing_campaign_headings fuzzing_campaign_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -623,4 +675,5 @@ message(STATUS
     "${test_vector_record_count} ordered test-vector records, and "
     "${composition_history_count} ordered composition records, and "
     "${readiness_history_count} ordered readiness records, and "
-    "${interoperability_record_count} interoperability records")
+    "${interoperability_record_count} interoperability records, and "
+    "${fuzzing_campaign_count} fuzzing campaign records")

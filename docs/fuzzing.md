@@ -1,18 +1,10 @@
 # Fuzzing
 
-The thirty-nine bounded targets cover standalone LZ77, LZSS, LZ78, LZW, LZD,
-LZMW, Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, and tANS, plus
-the composed LZ77 plus Blocked Huffman, LZ77 plus Adaptive Huffman, LZ77 plus
-Dynamic Range, LZ77 plus rANS, LZ77 plus tANS, LZSS plus rANS, LZSS plus tANS,
-LZ78 plus rANS, LZ78 plus tANS,
-LZSS plus Blocked Huffman,
-LZSS plus Adaptive Huffman, LZSS plus Dynamic Range, LZ78 plus Blocked
-Huffman, LZ78 plus Adaptive Huffman, LZ78 plus Dynamic Range, LZW plus
-Blocked Huffman, LZW plus Adaptive Huffman, LZW plus Dynamic Range,
-LZD plus Adaptive Huffman, LZD plus rANS,
-LZD plus Dynamic Range,
-LZD plus Blocked Huffman, LZMW plus Blocked Huffman, LZMW plus Adaptive
-Huffman, LZMW plus Dynamic Range, and checksum-raw profiles. Targets
+## Target coverage and fixed bounds
+
+The forty-two bounded targets cover the six standalone dictionary profiles,
+the five standalone entropy profiles, the checksum-raw profile, and the full
+six-dictionary by five-entropy composed-profile matrix. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
 input and also use a strict one-shot decoder where that internal helper exists.
 They use small fixed
@@ -219,6 +211,8 @@ views, 256-symbol blocks, code length 24, a 512-node decode-table cap, and the
 same byte, chunking, and call-count limits as the ANS targets. Both canonical
 and raw block paths remain bounded by caller-owned arrays.
 
+## Build and execution workflow
+
 Build fuzzers in a separate Clang build using the GNU-style driver. The fuzz
 option instruments the complete static marc library with libFuzzer, AddressSanitizer,
 and UndefinedBehaviorSanitizer:
@@ -362,11 +356,17 @@ MSVC remains the reference normal-build toolchain, but its native driver is not
 used for this libFuzzer target. Ordinary test builds compile the harness as an
 object target, catching portable C++ errors without requiring a fuzz runtime.
 
+## Recorded bounded campaigns
+
+### FZ-0001: Initial six-target Windows smoke
+
 A bounded Windows smoke campaign on 2026-07-16 ran each of the six targets for
 10,000 inputs with `-max_len=8192`, `-timeout=5`, and `-rss_limit_mb=512`.
 All 60,000 executions completed without a crash, hang, or sanitizer finding;
 each process peaked at 64 MiB RSS. This is execution-path evidence only, not a
 claim of coverage completion.
+
+### FZ-0002: Initial checksum-raw smoke
 
 The raw-checksum target received an initial bounded sanitizer smoke on
 2026-07-16: 1,000 inputs, 8 KiB maximum input, five-second per-input timeout,
@@ -374,9 +374,13 @@ and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer finding
 and peaked at 37 MiB RSS. Automatically generated reductions were discarded;
 only the reviewed hand-authored seed remains in the repository.
 
+### FZ-0003: Checksum-raw dual-path smoke
+
 After adding the incremental decoder path on 2026-07-16, the same bounded
 1,000-input sanitizer smoke again completed without a crash, hang, or sanitizer
 finding at 37 MiB peak RSS. Generated reductions were again discarded.
+
+### FZ-0004: Adaptive Huffman dual-decoder smoke
 
 The Adaptive Huffman dual-decoder target received its initial bounded sanitizer
 smoke on 2026-07-17: 1,000 inputs, 8 KiB maximum input, five-second per-input
@@ -384,21 +388,29 @@ timeout, and 512 MiB RSS limit. It completed without a crash, hang, or sanitizer
 finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
 corpus; the repository retains only the reviewed five-byte seed.
 
+### FZ-0005: Dynamic Range dual-decoder smoke
+
 The Dynamic Range dual-decoder target received the same bounded 1,000-input
 sanitizer smoke on 2026-07-17. With an 8 KiB maximum input, five-second timeout,
 and 512 MiB RSS limit, it completed without a crash, hang, or sanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remained outside the source
 corpus.
 
+### FZ-0006: rANS dual-decoder smoke
+
 The rANS dual-decoder target received the same bounded 1,000-input sanitizer
 smoke on 2026-07-17. With the eight-view and 4,096-entry table caps, it completed
 without a crash, hang, or sanitizer finding and peaked at 37 MiB RSS. Generated
 mutations remained in the disposable build corpus.
 
+### FZ-0007: tANS dual-decoder smoke
+
 The tANS dual-decoder target received the same bounded 1,000-input sanitizer
 smoke on 2026-07-17. With eight fixed views and the 4,096-state table cap, it
 completed without a crash, hang, or sanitizer finding and peaked at 37 MiB RSS.
 Generated mutations remained in the disposable build corpus.
+
+### FZ-0008: Blocked Huffman dual-decoder smoke
 
 The standalone Blocked Huffman dual-decoder target received the same bounded
 1,000-input sanitizer smoke on 2026-07-17. With eight fixed views, code length
@@ -406,17 +418,14 @@ The standalone Blocked Huffman dual-decoder target received the same bounded
 finding and peaked at 37 MiB RSS. Mutations remained in the disposable build
 corpus.
 
-The composed LZSS plus tANS dual-decoder target received a bounded 1,000-input
-sanitizer smoke on 2026-08-03 with 8 KiB maximum input, a five-second
-per-input timeout, and a 512 MiB RSS limit. It completed without a crash, hang,
-AddressSanitizer finding, or UndefinedBehaviorSanitizer finding and peaked at
-37 MiB RSS. Generated mutations were not written to the source corpus; the
-repository retains only the reviewed five-byte seed.
+### FZ-0009: LZ77 dual-decoder smoke
 
 The standalone LZ77 dual-decoder target received the same bounded 1,000-input
 sanitizer smoke on 2026-07-17. With fixed frame arrays and the documented byte
 limits, it completed without a crash, hang, or sanitizer finding and peaked at
 37 MiB RSS. Mutations remained in the disposable build corpus.
+
+### FZ-0010: LZSS plus Blocked Huffman smoke
 
 The composed LZSS plus Blocked Huffman dual-decoder target received a bounded
 10,000-input sanitizer smoke on 2026-07-18 with 8 KiB maximum input, a
@@ -425,12 +434,16 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 64 MiB RSS. Generated mutations remained in the disposable build
 corpus; the repository retains only the reviewed five-byte seed.
 
+### FZ-0011: LZW plus Blocked Huffman smoke
+
 The composed LZW plus Blocked Huffman decoder target received a bounded
 1,000-input sanitizer smoke on 2026-07-18 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remained in the disposable build
 corpus; the repository retains only the reviewed five-byte seed.
+
+### FZ-0012: LZD plus Blocked Huffman smoke
 
 The composed LZD plus Blocked Huffman decoder target received a bounded
 1,000-input sanitizer smoke on 2026-07-18 with 8 KiB maximum input, a
@@ -439,12 +452,16 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
 
+### FZ-0013: LZMW plus Blocked Huffman smoke
+
 The composed LZMW plus Blocked Huffman decoder target received a bounded
 1,000-input sanitizer smoke on 2026-07-18 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
+
+### FZ-0014: LZ77 plus Adaptive Huffman smoke
 
 The composed LZ77 plus Adaptive Huffman frame/stream decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-19 with 8 KiB maximum input, a
@@ -453,12 +470,16 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
 
+### FZ-0015: LZSS plus Adaptive Huffman smoke
+
 The composed LZSS plus Adaptive Huffman frame/stream decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-19 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
 crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
+
+### FZ-0016: LZMW plus Adaptive Huffman smoke
 
 The composed LZMW plus Adaptive Huffman frame/stream decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-22 with 8 KiB maximum input, a
@@ -467,6 +488,8 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 37 MiB RSS. Generated mutations remain only in the ignored build
 workspace; the repository retains the reviewed five-byte truncated-magic seed.
 
+### FZ-0017: LZSS plus rANS smoke
+
 The composed LZSS plus rANS private-frame/public-C decoder target received a
 bounded 1,000-input sanitizer smoke on 2026-07-31 with 8 KiB maximum input, a
 five-second per-input timeout, and a 512 MiB RSS limit. It completed without a
@@ -474,6 +497,8 @@ crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding
 and peaked at 39 MiB RSS. Nine generated corpus changes remain only in the
 ignored build workspace; the repository retains the reviewed five-byte
 truncated-magic seed.
+
+### FZ-0018: LZW plus rANS smoke
 
 The composed LZW plus rANS target fixes an 8 KiB input ceiling, 4 KiB raw
 publication ceiling, 1 KiB frame ceiling, eight rANS views, bounded packed-code
@@ -488,6 +513,17 @@ Clang 22 sanitizer runtime directory was added only to that process's `PATH`;
 no machine-specific path was committed. Generated mutations remained only in
 memory; the repository retains the reviewed five-byte truncated-magic seed.
 
+### FZ-0019: LZSS plus tANS smoke
+
+The composed LZSS plus tANS dual-decoder target received a bounded 1,000-input
+sanitizer smoke on 2026-08-03 with 8 KiB maximum input, a five-second
+per-input timeout, and a 512 MiB RSS limit. It completed without a crash, hang,
+AddressSanitizer finding, or UndefinedBehaviorSanitizer finding and peaked at
+37 MiB RSS. Generated mutations were not written to the source corpus; the
+repository retains only the reviewed five-byte seed.
+
+### FZ-0020: LZW plus tANS smoke
+
 The composed LZW plus tANS target retains the same 8 KiB input, 4 KiB raw,
 1 KiB frame, eight-view, fixed packed/phrase storage, aggregate, and finite
 call ceilings while substituting the local tANS complete-frame and public C
@@ -497,6 +533,8 @@ UndefinedBehaviorSanitizer smoke on 2026-08-05 completed 1,000 inputs with an
 8 KiB maximum input, five-second per-input timeout, and 512 MiB RSS limit with
 no crash, hang, or sanitizer finding; peak RSS was 39 MiB. Generated corpus
 changes and artifacts remained under WSL `/tmp`; the repository was unchanged.
+
+## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
 smallest input or an equivalent explicit assertion to a permanent GoogleTest
