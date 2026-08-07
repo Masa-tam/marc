@@ -565,6 +565,69 @@ foreach(heading IN LISTS interoperability_headings)
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 
+set(benchmark_document "${source_dir}/docs/benchmarks.md")
+file(READ "${benchmark_document}" benchmark_content)
+set(previous_benchmark_section_offset -1)
+foreach(required_benchmark_section IN ITEMS
+        "## Running the benchmark"
+        "## Measurement contract"
+        "## Profile configurations"
+        "### Framing baseline"
+        "### Standalone entropy profiles"
+        "### LZ77 profiles"
+        "### LZSS profiles"
+        "### LZ78 profiles"
+        "### LZW profiles"
+        "### LZD profiles"
+        "### LZMW profiles"
+        "## Recorded smoke measurements"
+        "## Reporting results")
+    string(FIND "${benchmark_content}" "${required_benchmark_section}"
+        benchmark_section_offset)
+    if(benchmark_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing benchmark section: ${required_benchmark_section}")
+    endif()
+    if(benchmark_section_offset LESS_EQUAL previous_benchmark_section_offset)
+        message(FATAL_ERROR
+            "Benchmark sections are out of order at: "
+            "${required_benchmark_section}")
+    endif()
+    set(previous_benchmark_section_offset "${benchmark_section_offset}")
+endforeach()
+file(STRINGS "${benchmark_document}" benchmark_commands
+    REGEX "^marc_benchmark ")
+list(LENGTH benchmark_commands benchmark_command_count)
+if(NOT benchmark_command_count EQUAL 42)
+    message(FATAL_ERROR
+        "Benchmark command matrix must contain 42 profiles, found "
+        "${benchmark_command_count}")
+endif()
+file(STRINGS "${benchmark_document}" benchmark_record_headings
+    REGEX "^### BM-[0-9]+: .+$")
+if(NOT benchmark_record_headings)
+    message(FATAL_ERROR "No benchmark smoke records were found")
+endif()
+set(expected_benchmark_record 1)
+foreach(heading IN LISTS benchmark_record_headings)
+    if(NOT heading MATCHES "^### BM-([0-9]+): .+$")
+        message(FATAL_ERROR "Invalid benchmark record heading: ${heading}")
+    endif()
+    set(benchmark_record_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" benchmark_record_number
+        "${benchmark_record_number}")
+    if(benchmark_record_number STREQUAL "")
+        set(benchmark_record_number 0)
+    endif()
+    if(NOT benchmark_record_number EQUAL expected_benchmark_record)
+        message(FATAL_ERROR
+            "Benchmark records must be contiguous and ordered: expected "
+            "BM-${expected_benchmark_record}, found ${heading}")
+    endif()
+    math(EXPR expected_benchmark_record "${expected_benchmark_record} + 1")
+endforeach()
+list(LENGTH benchmark_record_headings benchmark_record_count)
+
 set(fuzzing_document "${source_dir}/docs/fuzzing.md")
 file(READ "${fuzzing_document}" fuzzing_content)
 set(previous_fuzzing_section_offset -1)
@@ -676,4 +739,5 @@ message(STATUS
     "${composition_history_count} ordered composition records, and "
     "${readiness_history_count} ordered readiness records, and "
     "${interoperability_record_count} interoperability records, and "
+    "${benchmark_record_count} benchmark records, and "
     "${fuzzing_campaign_count} fuzzing campaign records")

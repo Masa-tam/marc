@@ -1,5 +1,7 @@
 # Benchmarks
 
+## Running the benchmark
+
 Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run
 `marc_benchmark` against a representative input file:
 
@@ -52,6 +54,8 @@ The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
 for meaningful throughput results.
 
+## Measurement contract
+
 The tool verifies a complete round trip before timing. Each timed sample creates
 the transform before starting the clock, calls `marc_transform_process()` once
 with full input and sufficient output, stops the clock, and then destroys the
@@ -66,9 +70,15 @@ decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
 it excludes the input, encoded, decoded, executable, and operating-system
 memory. Direction-specific views-workspace bytes are also reported separately.
 
+## Profile configurations
+
+### Framing baseline
+
 `checksum-raw` is the version 1.1 framing and CRC-32C baseline. It intentionally
 does not compress payload bytes; its ratio reflects the 80-byte prefix and each
 frame's 56-byte header plus four-byte checksum trailer.
+
+### Standalone entropy profiles
 
 `blocked-huffman` uses one MiB outer frames and 65,536-symbol blocks. Its
 capacity includes the 64-byte stream header, one 16-byte descriptor per block,
@@ -98,6 +108,8 @@ Capacity planning uses `ceil(3*n/2)` bytes for the strict 12-bit transition
 bound, plus two state bytes and one 528-byte descriptor for each of at most 16
 blocks per frame, each 56-byte frame header, and the 64-byte stream prefix.
 Reported decoder workspace includes the aligned caller-owned block-view region.
+
+### LZ77 profiles
 
 `lz77-blocked-huffman` uses the same 1 MiB outer frame and 65,536-symbol
 entropy block as the CLI profile. Its capacity calculation includes the
@@ -139,6 +151,8 @@ reserves one 56-byte header, sixteen 528-byte descriptors, and sixteen two-byte
 final states. Both direction-specific workspaces come from the public query,
 and a byte-exact round trip succeeds before timing.
 
+### LZSS profiles
+
 `lzss-blocked-huffman` uses the same frame and entropy-block policy. Capacity
 planning substitutes LZSS's two-byte all-Literal token bound, includes one
 16-byte descriptor per worst-case token block, and permits raw entropy fallback
@@ -159,10 +173,7 @@ capacity is `80 + 4N + 77K` for input extent `N` and nonempty frame count `K`,
 covering the `2S + 5` range payload, one 16-byte descriptor, and one 56-byte
 generic header per frame. Both direction-specific workspace extents come from
 the public C ABI, and a complete byte-exact round trip succeeds before either
-direction is timed. A one-iteration MSVC Release smoke over the 4,441-byte
-README encoded 3,390 bytes, ratio 0.763, and reported 655,493 bytes of peak
-caller-reserved workspace; throughput from that small input is descriptive
-only.
+direction is timed.
 
 `lzss-rans` uses the CLI's 65,536-byte raw frame and 65,536-byte entropy
 block. Capacity planning reserves two canonical LZSS token bytes per raw byte
@@ -171,10 +182,7 @@ bounded by `80 + 2N + 1128K`, where `N` is raw input bytes and `K` is the
 nonempty frame count; 1,128 bytes covers one generic header, two 528-byte
 descriptors, and two eight-byte final states. Both direction-specific
 workspaces and the opaque view alignment come from the public C ABI. A
-byte-exact round trip succeeds before either direction is timed. A
-one-iteration MSVC Release smoke over the 4,520-byte README encoded 3,819
-bytes, ratio 0.845, and reported 722,008 bytes of peak caller-reserved
-workspace; throughput from that small input is descriptive only.
+byte-exact round trip succeeds before either direction is timed.
 
 `lzss-tans` uses the CLI's 65,536-byte raw frame and 65,536-byte entropy
 block. Capacity planning reserves at most three tANS transition bytes per raw
@@ -185,6 +193,8 @@ two two-byte final states. Both directional workspaces and opaque view
 alignment come from the public C ABI. A byte-exact round trip succeeds before
 either direction is timed; speed and ratio remain descriptive rather than
 test thresholds.
+
+### LZ78 profiles
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 and at most 65,536 LZ78 phrase entries. Capacity planning uses the exact
@@ -212,9 +222,6 @@ nonempty frame count `K`, covering `S <= 8N`, the `P <= 2S + 5` range payload,
 one 16-byte descriptor, and one 56-byte header per frame. All three
 direction-specific workspace extents and opaque alignment come from the public
 C ABI, and an untimed byte-exact round trip succeeds before measurement.
-A one-iteration MSVC Release smoke over the 4,511-byte README encoded 4,630
-bytes, ratio 1.026, and reported 5,832,760 bytes of peak caller reservation;
-throughput from this small input is descriptive only.
 
 `lz78-rans` uses the CLI's 65,536-byte raw frame and entropy block,
 524,288-byte canonical LZ78 token ceiling, eight rANS blocks, and 4-MiB active
@@ -224,9 +231,7 @@ per-frame term covers one 56-byte generic header, eight 528-byte descriptors,
 and eight eight-byte final states. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI. An untimed
 byte-exact round trip succeeds before measurement, and no throughput floor is
-applied. A one-iteration MSVC Release smoke over the 4,522-byte README encoded
-4,984 bytes, ratio 1.102, and reported 5,836,984 bytes of peak caller
-reservation; throughput from this small input is descriptive only.
+applied.
 
 `lz78-tans` uses the CLI's 65,536-byte raw frame and entropy block,
 524,288-byte canonical LZ78 token ceiling, eight tANS blocks, and 4-MiB active
@@ -236,9 +241,9 @@ per-frame term covers one 56-byte generic header, eight 528-byte descriptors,
 and eight two-byte final states. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI. An untimed
 byte-exact round trip succeeds before measurement, and no throughput floor is
-applied. A one-iteration MSVC Release smoke over the 4,581-byte README encoded
-5,057 bytes, ratio 1.104, and reported 5,836,984 bytes of peak caller
-reservation; throughput from this small input is descriptive only.
+applied.
+
+### LZW profiles
 
 `lzw-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
 the exact two-byte-per-raw-byte packed-code bound, at most 32 entropy blocks,
@@ -265,9 +270,7 @@ typed-record workspaces.
 `S <= 2N`, `P <= 2S + 5`, one 16-byte descriptor, and one 56-byte header per
 frame. Both direction-specific three-region workspaces and opaque alignment
 come from the public C ABI, and an untimed byte-exact round trip succeeds
-before measurement. A one-iteration MSVC Release smoke over the 4,528-byte
-README encoded 2,948 bytes, ratio 0.651, and reported 9,629,752 bytes of peak
-caller reservation; throughput from this small input is descriptive only.
+before measurement.
 
 `lzw-rans` uses the CLI's 65,536-byte raw frame and entropy block, maximum
 code width 16, 131,072-byte packed-code ceiling, two rANS blocks, and 8-MiB
@@ -277,9 +280,7 @@ per-frame term covers one 56-byte generic header, two 528-byte descriptors,
 and two eight-byte final states. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI. An untimed
 byte-exact round trip succeeds before measurement and no throughput floor is
-applied. A one-iteration MSVC Release smoke over the 4,522-byte README encoded
-3,396 bytes, ratio 0.751, and reported 9,630,808 bytes of peak caller
-reservation; throughput from this small input is descriptive only.
+applied.
 
 `lzw-tans` uses the CLI's 65,536-byte raw frame and entropy block, maximum
 code width 16, 131,072-byte packed-code ceiling, two tANS blocks, and 8-MiB
@@ -290,6 +291,8 @@ per-frame term covers one 56-byte header, two 528-byte descriptors, and two
 two-byte initial states. Both direction-specific three-region workspaces and
 opaque alignment come from the public C ABI. An untimed byte-exact round trip
 succeeds before measurement and no throughput floor is applied.
+
+### LZD profiles
 
 `lzd-blocked-huffman` uses the CLI's one-MiB raw frames, 65,536-symbol entropy
 blocks, exact four-MiB token bound, at most 64 entropy blocks, and 65,536-entry
@@ -317,10 +320,7 @@ capacity is `80 + 16*ceil(N/2) + 77K` for input extent `N` and nonempty frame
 count `K`, covering `S = 8*ceil(N/2)`, `P <= 2S + 5`, one 16-byte descriptor,
 and one 56-byte header per frame. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI, and an untimed
-byte-exact round trip succeeds before measurement. A one-iteration MSVC Release
-smoke over the 4,530-byte README encoded 4,021 bytes, ratio 0.888, and reported
-17,760,316 bytes of peak caller reservation; throughput from this small input
-is descriptive only.
+byte-exact round trip succeeds before measurement.
 
 `lzd-rans` uses the CLI's 65,536-byte raw frame and entropy block,
 262,144-byte canonical-token ceiling, four rANS blocks, 2,112 descriptor bytes,
@@ -331,7 +331,6 @@ odd final input byte. Both direction-specific three-region workspaces and
 opaque alignment come from the public C ABI. An untimed byte-exact round trip
 succeeds before measurement; the benchmark then reports complete-stream ratio,
 both throughputs, every workspace region, and the larger caller-owned total.
-Smoke measurements establish wiring and correctness only.
 
 `lzd-tans` uses the CLI's 65,536-byte raw frame and entropy block,
 262,144-byte canonical-token ceiling, four tANS blocks, 2,112 descriptor bytes,
@@ -343,10 +342,9 @@ pair contributes at most twelve tANS transition bytes, and each frame reserves
 one 56-byte header plus four 528-byte descriptors and four two-byte states.
 Every run verifies an untimed byte-exact public-ABI round trip before timing,
 then reports ratio, directional throughput, every queried workspace, and their
-directional peak. No threshold is applied. A one-iteration MSVC Release smoke
-over the 4,581-byte README encoded 4,433 bytes, ratio 0.968, and reported
-17,762,428 bytes of peak caller reservation; throughput from this small input
-is descriptive only.
+directional peak. No threshold is applied.
+
+### LZMW profiles
 
 `lzmw-blocked-huffman` uses the same one-MiB raw frame, 65,536-symbol entropy
 block, four-byte-per-raw-byte reference bound, 64-block cap, 65,536-entry
@@ -376,10 +374,7 @@ capacity is `80 + 8N + 77K` for input extent `N` and nonempty frame count `K`,
 covering `S <= 4N`, `P <= 2S + 5`, one 16-byte descriptor, and one 56-byte
 header per frame. Both direction-specific three-region workspaces and opaque
 alignment come from the public C ABI, and an untimed byte-exact round trip
-succeeds before measurement. A one-iteration MSVC Release smoke over the
-4,520-byte README encoded 3,870 bytes, ratio 0.856, and reported 18,415,656
-bytes of peak caller reservation; throughput from this small input is
-descriptive only.
+succeeds before measurement.
 
 `lzmw-rans` uses the CLI's 65,536-byte raw frame and entropy block,
 262,144-byte canonical-reference ceiling, four rANS blocks, 2,112 descriptor
@@ -389,10 +384,7 @@ bytes, 262,176-byte payload ceiling, 65,536-entry dictionary policy, and
 per-frame term covers one 56-byte generic header, four 528-byte descriptors,
 and four eight-byte final states. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI. An untimed
-byte-exact round trip succeeds before measurement. A one-iteration MSVC
-Release smoke over the 4,530-byte README encoded 4,258 bytes, ratio 0.940,
-and reported 18,417,768 bytes of peak caller reservation; throughput from this
-small input is descriptive only.
+byte-exact round trip succeeds before measurement.
 
 `lzmw-tans` uses the CLI's 65,536-byte raw frame and entropy block,
 262,144-byte canonical-reference ceiling, four tANS blocks, 2,112 descriptor
@@ -403,10 +395,88 @@ per-frame term covers one 56-byte generic header, four 528-byte descriptors,
 and four two-byte final states. Both direction-specific three-region
 workspaces and opaque alignment come from the public C ABI. An untimed
 byte-exact round trip must succeed before encode and decode are timed
-separately. A one-iteration MSVC Release smoke over the 4,581-byte README
-encoded 4,309 bytes, ratio 0.941, and reported 18,417,768 bytes of peak caller
-reservation; throughput from this small input is descriptive only.
+separately.
+
+## Recorded smoke measurements
+
+These implementation-time measurements establish wiring and round-trip
+correctness only. They are retained in Git introduction order and are not
+performance baselines.
+
+### BM-0001: LZSS plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,441-byte README encoded 3,390
+bytes, ratio 0.763, and reported 655,493 bytes of peak caller-reserved
+workspace; throughput from that small input is descriptive only.
+
+### BM-0002: LZ78 plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,511-byte README encoded 4,630
+bytes, ratio 1.026, and reported 5,832,760 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0003: LZW plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,528-byte README encoded 2,948
+bytes, ratio 0.651, and reported 9,629,752 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0004: LZD plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,530-byte README encoded 4,021
+bytes, ratio 0.888, and reported 17,760,316 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0005: LZMW plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,520-byte README encoded 3,870
+bytes, ratio 0.856, and reported 18,415,656 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0006: LZSS plus rANS
+
+A one-iteration MSVC Release smoke over the 4,520-byte README encoded 3,819
+bytes, ratio 0.845, and reported 722,008 bytes of peak caller-reserved
+workspace; throughput from that small input is descriptive only.
+
+### BM-0007: LZ78 plus rANS
+
+A one-iteration MSVC Release smoke over the 4,522-byte README encoded 4,984
+bytes, ratio 1.102, and reported 5,836,984 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0008: LZW plus rANS
+
+A one-iteration MSVC Release smoke over the 4,522-byte README encoded 3,396
+bytes, ratio 0.751, and reported 9,630,808 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0009: LZMW plus rANS
+
+A one-iteration MSVC Release smoke over the 4,530-byte README encoded 4,258
+bytes, ratio 0.940, and reported 18,417,768 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0010: LZ78 plus tANS
+
+A one-iteration MSVC Release smoke over the 4,581-byte README encoded 5,057
+bytes, ratio 1.104, and reported 5,836,984 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0011: LZD plus tANS
+
+A one-iteration MSVC Release smoke over the 4,581-byte README encoded 4,433
+bytes, ratio 0.968, and reported 17,762,428 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+### BM-0012: LZMW plus tANS
+
+A one-iteration MSVC Release smoke over the 4,581-byte README encoded 4,309
+bytes, ratio 0.941, and reported 18,417,768 bytes of peak caller reservation;
+throughput from this small input is descriptive only.
+
+## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when
-publishing results.
+publishing results. Smoke measurements establish wiring and correctness only.
