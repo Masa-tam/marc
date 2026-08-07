@@ -837,181 +837,6 @@ no legal guarantee of non-infringement.
   stream into exact caller storage without exposing malformed partial output.
 - Similarity review: no external decoder control flow was compared.
 
-## 2026-07-14 - LZSS reference encoder
-
-- Authoring method: directly implemented the documented greedy parse and exact
-  two-versus-nine-byte token cost over finite caller input.
-- References used: repository LZSS variant, formatter, decoder, validator, and
-  checked-arithmetic primitives only.
-- Known implementations intentionally not consulted: external LZSS match
-  finders, encoder source, pseudocode, optimization structures, and tests.
-- Independent decisions: exhaustive nearest-first window scan; overlapping raw
-  comparison; strict local cost gate; shared planning/writing token generator;
-  exact size preflight; no output mutation on capacity or policy failure.
-- Generated-code task description: deterministically plan and encode canonical
-  LZSS tokens matching marc's hand vectors and round-trip through its decoder.
-- Similarity review: no external encoder structure or control flow was compared.
-
-## 2026-07-14 - LZSS streaming decoder
-
-- Authoring method: converted marc's specified variable-token inverse transform
-  into the repository process contract and caller-owned history model.
-- References used: repository LZSS format, validator, reference decoder, core
-  status contract, and limits only.
-- Known implementations intentionally not consulted: external LZSS streaming
-  decoder source, state machines, ring buffers, pseudocode, and tests.
-- Independent decisions: tag-first 2/9-byte accumulation; token-atomic
-  validation; caller-owned circular history; direct overlap drain; retained
-  EndInput; stable cumulative serialized limit and terminal error.
-- Generated-code task description: incrementally decode LZSS with one-byte
-  buffers, bounded history, exact malformed detection, and no allocation.
-- Similarity review: no external streaming control flow was compared.
-
-## 2026-07-14 - LZSS streaming encoder
-
-- Authoring method: adapted marc's reference LZSS planning and encoding passes
-  to the repository process contract with caller-owned finite frame storage.
-- References used: repository LZSS reference encoder, process contract, limits,
-  and checked arithmetic only.
-- Known implementations intentionally not consulted: external LZSS streaming
-  encoders, buffering strategies, state machines, source, and tests.
-- Independent decisions: exact known-frame collection; non-shortening Flush;
-  separate raw/token workspaces; aggregate memory preflight; pending-output
-  priority; retained EndInput; reference-identical output.
-- Generated-code task description: buffer and deterministically encode one LZSS
-  frame with arbitrary input/output chunks and no internal allocation.
-- Similarity review: no external streaming encoder structure was compared.
-
-## 2026-07-14 - Complete LZSS frame path with entropy None
-
-- Authoring method: composed marc's generic frame contract with its independently
-  specified and implemented LZSS token codec.
-- References used: repository frame format, validation, LZSS components, and
-  checked arithmetic only.
-- Known implementations intentionally not consulted: external LZSS containers,
-  frame formats, composition source, vectors, and tests.
-- Independent decisions: None entropy binding; exact variable payload extent;
-  no inferred token count; full plan before output; whole-payload validation;
-  frame-atomic decode; canonical 58-byte single-literal vector.
-- Generated-code task description: plan, encode, validate, and atomically decode
-  one generic frame carrying canonical LZSS tokens directly.
-- Similarity review: no external frame composition structure was compared.
-
-## 2026-07-14 - Known-size LZSS reference stream
-
-- Authoring method: composed marc's generic known-size stream and complete LZSS
-  frame contracts using the repository's established strict-reference policy.
-- References used: repository stream header, frame, LZSS parameter, checked
-  arithmetic, and limit specifications only.
-- Known implementations intentionally not consulted: external LZSS stream or
-  archive formats, source, vectors, and tests.
-- Independent decisions: one parameter record; frame-local dictionary resets;
-  empty 80-byte prefix; exact extent scan; validate-all-then-decode atomicity.
-- Generated-code task description: plan, encode, validate, and decode complete
-  known-size streams containing one or more canonical LZSS/None frames.
-- Similarity review: no external stream composition structure was compared.
-
-## 2026-07-14 - LZSS frame-streaming decoder
-
-- Authoring method: composed marc's transform state contract with its LZSS
-  known-size stream, frame validator, and atomic reference decoder.
-- References used: repository specifications and components only.
-- Known implementations intentionally not consulted: external LZSS streaming
-  decoders, buffering structures, source, vectors, and tests.
-- Independent decisions: prefix/header/body collection states; separate encoded
-  and raw caller workspaces; frame-atomic publication; retained EndInput;
-  ResetBlock rejection; combined workspace limit.
-- Generated-code task description: incrementally decode canonical known-size
-  LZSS/None streams with arbitrary input and output chunks.
-- Similarity review: no external streaming decoder structure was compared.
-
-## 2026-07-14 - LZSS frame-streaming encoder
-
-- Authoring method: composed marc's transform contract, known-size LZSS stream,
-  canonical frame planner, and reference encoder.
-- References used: repository specifications and components only.
-- Known implementations intentionally not consulted: external LZSS streaming
-  encoders, buffering structures, source, vectors, and tests.
-- Independent decisions: prefix-first drain; complete raw-frame collection;
-  separate serialized workspace; non-boundary Flush; retained EndInput;
-  ResetBlock rejection; combined workspace limit.
-- Generated-code task description: incrementally encode canonical known-size
-  LZSS/None streams with arbitrary input and output chunks.
-- Similarity review: no external streaming encoder structure was compared.
-
-## 2026-07-14 - LZSS profile and workspace bounds
-
-- Authoring method: derived workspace arithmetic from marc's canonical LZSS
-  Literal/Match cost rule, generic frame size, and local decoder limits.
-- References used: repository specifications and components only.
-- Known implementations intentionally not consulted: external LZSS profile or
-  allocation APIs, workspace formulas, source, and tests.
-- Independent decisions: exact two-byte Literal worst case; largest actual raw
-  frame; header-inclusive encoded workspace; local-only decoder sizing; one-byte
-  decoded reserve in the aggregate decoder bound; stable error mapping.
-- Generated-code task description: normalize LZSS configuration and calculate
-  bounded encoder and decoder caller-owned workspace requirements.
-- Similarity review: no external workspace-query structure was compared.
-
-## 2026-07-14 - LZSS C transform API
-
-- Authoring method: connected marc's independently implemented LZSS profile and
-  streaming transforms to the repository's existing small C ABI contract.
-- References used: repository C ABI, LZSS profile, and transform specifications
-  only.
-- Known implementations intentionally not consulted: external compression C
-  APIs, LZSS bindings, allocation interfaces, source, and tests.
-- Independent decisions: separate size-tagged config; unchanged ABI version 1;
-  no views workspace; explicit LZ limits; non-throwing opaque factory; pure-C
-  214-byte stream round trip.
-- Generated-code task description: expose LZSS workspace query and streaming
-  encoder/decoder factories through the stable C ABI and test from pure C.
-- Similarity review: no external C ABI or adapter structure was compared.
-
-## 2026-07-14 - LZSS CLI profile selection
-
-- Authoring method: extended marc's existing public-C-ABI file driver with a
-  small explicit codec selector and LZSS-specific workspace bounds.
-- References used: repository CLI, public C API, and canonical LZ77/LZSS profile
-  specifications only.
-- Known implementations intentionally not consulted: external archive CLI
-  syntax, codec autodetection, dispatch source, and integration tests.
-- Independent decisions: backward-compatible LZ77 default; explicit `--codec`;
-  same selection on decode; public C factories only; separate LZSS CTest path;
-  retained staged output and cleanup semantics.
-- Generated-code task description: add explicit LZSS selection to the real-file
-  CLI and run the existing overwrite, malformed, empty, and round-trip suite.
-- Similarity review: no external CLI dispatch structure was compared.
-
-## 2026-07-14 - LZ77 and LZSS benchmark driver
-
-- Authoring method: composed marc's public C transform lifecycle, canonical
-  profile workspace queries, and standard C++ steady-clock measurement.
-- References used: repository C API and LZ77/LZSS profile specifications only.
-- Known implementations intentionally not consulted: external compression
-  benchmark harness source, reporting layouts, corpus runners, and tests.
-- Independent decisions: opt-in dependency-free target; caller corpus; verified
-  round trip; process-call-only timing; full-stream ratio; binary MiB/s; explicit
-  codec-workspace metric and exclusions.
-- Generated-code task description: add reproducible LZ77/LZSS ratio,
-  throughput, and caller-workspace measurement through the public C ABI.
-- Similarity review: no external benchmark-driver structure was compared.
-
-## 2026-07-14 - LZSS strict and streaming fuzz harness
-
-- Authoring method: composed marc's bounded decoder APIs, ProcessResult
-  invariants, caller workspaces, and local limits into an independent harness.
-- References used: repository specifications and libFuzzer's conventional entry
-  point only; no external compression fuzz target was consulted.
-- Known implementations intentionally not consulted: external LZSS fuzzers,
-  mutation schedules, corpora, crash inputs, source, and regression suites.
-- Independent decisions: dual strict/streaming exercise; byte-derived chunks;
-  4 KiB total output; 1 KiB frames; fixed storage; call guard; ordinary-build
-  compile smoke; canonical truncation and extreme-length regressions.
-- Generated-code task description: add bounded LZSS decoder fuzzing plus
-  permanent malformed-stream atomicity regressions and corpus policy.
-- Similarity review: no external fuzz-harness structure was compared.
-
 ## 2026-07-13 - tANS frame-streaming encoder and workspace profile
 
 - Authoring method: composed marc's transform contract, complete tANS frame
@@ -1436,6 +1261,181 @@ no legal guarantee of non-infringement.
   known-size multi-frame rANS streams.
 - Similarity review: no external stream composition or scan structure was
   compared.
+
+## 2026-07-14 - LZSS reference encoder
+
+- Authoring method: directly implemented the documented greedy parse and exact
+  two-versus-nine-byte token cost over finite caller input.
+- References used: repository LZSS variant, formatter, decoder, validator, and
+  checked-arithmetic primitives only.
+- Known implementations intentionally not consulted: external LZSS match
+  finders, encoder source, pseudocode, optimization structures, and tests.
+- Independent decisions: exhaustive nearest-first window scan; overlapping raw
+  comparison; strict local cost gate; shared planning/writing token generator;
+  exact size preflight; no output mutation on capacity or policy failure.
+- Generated-code task description: deterministically plan and encode canonical
+  LZSS tokens matching marc's hand vectors and round-trip through its decoder.
+- Similarity review: no external encoder structure or control flow was compared.
+
+## 2026-07-14 - LZSS streaming decoder
+
+- Authoring method: converted marc's specified variable-token inverse transform
+  into the repository process contract and caller-owned history model.
+- References used: repository LZSS format, validator, reference decoder, core
+  status contract, and limits only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  decoder source, state machines, ring buffers, pseudocode, and tests.
+- Independent decisions: tag-first 2/9-byte accumulation; token-atomic
+  validation; caller-owned circular history; direct overlap drain; retained
+  EndInput; stable cumulative serialized limit and terminal error.
+- Generated-code task description: incrementally decode LZSS with one-byte
+  buffers, bounded history, exact malformed detection, and no allocation.
+- Similarity review: no external streaming control flow was compared.
+
+## 2026-07-14 - LZSS streaming encoder
+
+- Authoring method: adapted marc's reference LZSS planning and encoding passes
+  to the repository process contract with caller-owned finite frame storage.
+- References used: repository LZSS reference encoder, process contract, limits,
+  and checked arithmetic only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  encoders, buffering strategies, state machines, source, and tests.
+- Independent decisions: exact known-frame collection; non-shortening Flush;
+  separate raw/token workspaces; aggregate memory preflight; pending-output
+  priority; retained EndInput; reference-identical output.
+- Generated-code task description: buffer and deterministically encode one LZSS
+  frame with arbitrary input/output chunks and no internal allocation.
+- Similarity review: no external streaming encoder structure was compared.
+
+## 2026-07-14 - Complete LZSS frame path with entropy None
+
+- Authoring method: composed marc's generic frame contract with its independently
+  specified and implemented LZSS token codec.
+- References used: repository frame format, validation, LZSS components, and
+  checked arithmetic only.
+- Known implementations intentionally not consulted: external LZSS containers,
+  frame formats, composition source, vectors, and tests.
+- Independent decisions: None entropy binding; exact variable payload extent;
+  no inferred token count; full plan before output; whole-payload validation;
+  frame-atomic decode; canonical 58-byte single-literal vector.
+- Generated-code task description: plan, encode, validate, and atomically decode
+  one generic frame carrying canonical LZSS tokens directly.
+- Similarity review: no external frame composition structure was compared.
+
+## 2026-07-14 - Known-size LZSS reference stream
+
+- Authoring method: composed marc's generic known-size stream and complete LZSS
+  frame contracts using the repository's established strict-reference policy.
+- References used: repository stream header, frame, LZSS parameter, checked
+  arithmetic, and limit specifications only.
+- Known implementations intentionally not consulted: external LZSS stream or
+  archive formats, source, vectors, and tests.
+- Independent decisions: one parameter record; frame-local dictionary resets;
+  empty 80-byte prefix; exact extent scan; validate-all-then-decode atomicity.
+- Generated-code task description: plan, encode, validate, and decode complete
+  known-size streams containing one or more canonical LZSS/None frames.
+- Similarity review: no external stream composition structure was compared.
+
+## 2026-07-14 - LZSS frame-streaming decoder
+
+- Authoring method: composed marc's transform state contract with its LZSS
+  known-size stream, frame validator, and atomic reference decoder.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  decoders, buffering structures, source, vectors, and tests.
+- Independent decisions: prefix/header/body collection states; separate encoded
+  and raw caller workspaces; frame-atomic publication; retained EndInput;
+  ResetBlock rejection; combined workspace limit.
+- Generated-code task description: incrementally decode canonical known-size
+  LZSS/None streams with arbitrary input and output chunks.
+- Similarity review: no external streaming decoder structure was compared.
+
+## 2026-07-14 - LZSS frame-streaming encoder
+
+- Authoring method: composed marc's transform contract, known-size LZSS stream,
+  canonical frame planner, and reference encoder.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS streaming
+  encoders, buffering structures, source, vectors, and tests.
+- Independent decisions: prefix-first drain; complete raw-frame collection;
+  separate serialized workspace; non-boundary Flush; retained EndInput;
+  ResetBlock rejection; combined workspace limit.
+- Generated-code task description: incrementally encode canonical known-size
+  LZSS/None streams with arbitrary input and output chunks.
+- Similarity review: no external streaming encoder structure was compared.
+
+## 2026-07-14 - LZSS profile and workspace bounds
+
+- Authoring method: derived workspace arithmetic from marc's canonical LZSS
+  Literal/Match cost rule, generic frame size, and local decoder limits.
+- References used: repository specifications and components only.
+- Known implementations intentionally not consulted: external LZSS profile or
+  allocation APIs, workspace formulas, source, and tests.
+- Independent decisions: exact two-byte Literal worst case; largest actual raw
+  frame; header-inclusive encoded workspace; local-only decoder sizing; one-byte
+  decoded reserve in the aggregate decoder bound; stable error mapping.
+- Generated-code task description: normalize LZSS configuration and calculate
+  bounded encoder and decoder caller-owned workspace requirements.
+- Similarity review: no external workspace-query structure was compared.
+
+## 2026-07-14 - LZSS C transform API
+
+- Authoring method: connected marc's independently implemented LZSS profile and
+  streaming transforms to the repository's existing small C ABI contract.
+- References used: repository C ABI, LZSS profile, and transform specifications
+  only.
+- Known implementations intentionally not consulted: external compression C
+  APIs, LZSS bindings, allocation interfaces, source, and tests.
+- Independent decisions: separate size-tagged config; unchanged ABI version 1;
+  no views workspace; explicit LZ limits; non-throwing opaque factory; pure-C
+  214-byte stream round trip.
+- Generated-code task description: expose LZSS workspace query and streaming
+  encoder/decoder factories through the stable C ABI and test from pure C.
+- Similarity review: no external C ABI or adapter structure was compared.
+
+## 2026-07-14 - LZSS CLI profile selection
+
+- Authoring method: extended marc's existing public-C-ABI file driver with a
+  small explicit codec selector and LZSS-specific workspace bounds.
+- References used: repository CLI, public C API, and canonical LZ77/LZSS profile
+  specifications only.
+- Known implementations intentionally not consulted: external archive CLI
+  syntax, codec autodetection, dispatch source, and integration tests.
+- Independent decisions: backward-compatible LZ77 default; explicit `--codec`;
+  same selection on decode; public C factories only; separate LZSS CTest path;
+  retained staged output and cleanup semantics.
+- Generated-code task description: add explicit LZSS selection to the real-file
+  CLI and run the existing overwrite, malformed, empty, and round-trip suite.
+- Similarity review: no external CLI dispatch structure was compared.
+
+## 2026-07-14 - LZ77 and LZSS benchmark driver
+
+- Authoring method: composed marc's public C transform lifecycle, canonical
+  profile workspace queries, and standard C++ steady-clock measurement.
+- References used: repository C API and LZ77/LZSS profile specifications only.
+- Known implementations intentionally not consulted: external compression
+  benchmark harness source, reporting layouts, corpus runners, and tests.
+- Independent decisions: opt-in dependency-free target; caller corpus; verified
+  round trip; process-call-only timing; full-stream ratio; binary MiB/s; explicit
+  codec-workspace metric and exclusions.
+- Generated-code task description: add reproducible LZ77/LZSS ratio,
+  throughput, and caller-workspace measurement through the public C ABI.
+- Similarity review: no external benchmark-driver structure was compared.
+
+## 2026-07-14 - LZSS strict and streaming fuzz harness
+
+- Authoring method: composed marc's bounded decoder APIs, ProcessResult
+  invariants, caller workspaces, and local limits into an independent harness.
+- References used: repository specifications and libFuzzer's conventional entry
+  point only; no external compression fuzz target was consulted.
+- Known implementations intentionally not consulted: external LZSS fuzzers,
+  mutation schedules, corpora, crash inputs, source, and regression suites.
+- Independent decisions: dual strict/streaming exercise; byte-derived chunks;
+  4 KiB total output; 1 KiB frames; fixed storage; call guard; ordinary-build
+  compile smoke; canonical truncation and extreme-length regressions.
+- Generated-code task description: add bounded LZSS decoder fuzzing plus
+  permanent malformed-stream atomicity regressions and corpus policy.
+- Similarity review: no external fuzz-harness structure was compared.
 
 ## 2026-07-14 - LZ78 variant 1 specification
 
@@ -8546,199 +8546,585 @@ discarded and the reviewed seed retained.
   serializers. No external frame-writing control flow, error taxonomy, naming
   scheme, output mutation schedule, or test expression was compared.
 
-## 2026-08-08 - LZMW plus tANS public C lifecycle
+## 2026-07-26 - LZW plus Dynamic Range bounded streaming encoding
 
-- Authoring method: bound DD-620's local requirements and DD-618/DD-619's
-  streaming transforms to marc's existing size-tagged C lifecycle under
-  DD-621.
-- References used: DD-621, DD-620, local C ABI conventions, opaque transform
-  adapter, checked workspace partitioning, and the bounded streaming pair.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE C wrappers, public configuration layouts, allocation protocols, source
-  code, encoded corpora, and test suites.
-- Independent decisions: add one profile-specific fixed-width config; retain
-  immutable direction; make the requirements query authoritative; expose only
-  three untyped regions plus alignment; and keep every C++ record private.
-- Generated-code task description: add config initialization, requirements
-  query, factory routing, pure C11 round trip and invalid-workspace tests, and
-  synchronize C API, architecture, composition, format, readiness, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the adapter follows marc's repository-local lifecycle and
-  delegates all formulas to DD-620. No external symbol family, structure
-  ordering, control flow, allocation layout, or test assertion was compared.
-- Local validation: the focused pure C11 lifecycle test passed under both MSVC
-  and ClangCL. Every target rebuilt successfully with Visual Studio 2026
-  18.8.2, and the complete Release suite passed 2,347/2,347 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
-  1 through 30 compatibility, and documentation-layout checks remained
-  successful.
+- Authoring method: placed a known-size frame collection and immutable draining
+  state machine above DD-407's deterministic complete-frame encoder.
+- References used: DD-408, DD-407, the local core process contract, explicit
+  stream-header and LZW-parameter serializers, checked arithmetic, and marc's
+  established caller-owned streaming workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, buffering layouts, source code, corpora, and test
+  suites.
+- Independent decisions: emit the fixed 80-byte prefix first; collect only one
+  bounded raw frame; count raw, packed, serialized-frame, and encoder-record
+  storage before preparation; drain the immutable encoded frame before
+  collecting another; keep `Flush` nonterminal; retain `EndInput` across
+  output starvation; and make error and ended states sticky.
+- Generated-code task description: add the minimal transform and CMake entries;
+  compare one-byte input/output with independently concatenated complete-frame
+  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
+  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
+  case.
+- Similarity review: the state transitions follow only marc's documented
+  process contract and existing independently designed frame ownership model.
+  No external state-machine structure, naming scheme, error mapping, buffering
+  layout, or test expression was compared.
+- Local validation: all twenty-seven focused vector, validator, planner,
+  complete-frame, streaming-encoder, and documentation tests passed, followed
+  by all 1,619 Release tests under both MSVC/Visual Studio 2026 and Clang
+  22.1.3 on Windows x64 using official CMake 4.3.4.
 
-## 2026-08-08 - LZMW plus tANS public-ABI completion matrix
+## 2026-07-26 - LZW plus Dynamic Range bounded streaming decoding
 
-- Authoring method: instantiated marc's repository-owned public completion
-  harness through DD-621 under DD-622 after proving its fixed reference bound
-  equals the reviewed LZD schedule.
-- References used: DD-622, DD-621, local LZMW `4F` ceiling, local tANS block
-  ceiling, and the repository-authored LZD public completion harness.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE conformance suites, encoded corpora, malformed corpora, source code, and
-  test matrices.
-- Independent decisions: keep the complete existing binary, boundary,
-  chunking, terminal, and malformed schedules; change only public symbol names;
-  and document why the fixed 256-byte workspace schedule remains exact.
-- Generated-code task description: add the minimal symbol-family wrapper,
-  prove required data and deterministic chunking, require frame-atomic sticky
-  rejection of corrupt, truncated, and trailing final input, and synchronize
-  all affected evidence records.
-- Similarity review: the wrapper contains only local capacity macros and C
-  symbol substitutions over a repository-owned harness. No external test
-  structure, data schedule, mutation site, naming, or assertion was compared.
-- Local validation: all three focused public-completion groups passed under
-  both MSVC and ClangCL. The complete Release suite passed 2,350/2,350 under
-  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
-  schemas 1 through 30 compatibility, and documentation-layout checks remained
-  successful.
+- Authoring method: placed incremental prefix and frame collection above
+  DD-405's transactional complete-frame decoder and drained only validated
+  private raw frames.
+- References used: DD-409, DD-405, DD-403, the local core process contract,
+  explicit stream/LZW/frame parsers, checked arithmetic, and caller-owned
+  validated-frame workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: validate the fixed prefix before frame collection;
+  admit `S`, `P`, descriptor, encoded-frame, packed, raw, phrase, and aggregate
+  extents from each header; collect exactly one complete frame; transactionally
+  reconstruct before draining; retain `EndInput` across raw starvation; and
+  preserve earlier frames while publishing none of a malformed later frame.
+- Generated-code task description: add the minimal transform and CMake entries;
+  verify one-byte input/output and retained finish; corrupt the second frame
+  and require first-frame-only output; reject every truncation and trailing
+  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
+  flag, and sticky-error cases.
+- Similarity review: the implementation follows only marc's documented frame
+  parser, bounds, and process contract. No external state-machine structure,
+  admission order, naming scheme, error mapping, buffering layout, or test
+  expression was compared.
+- Local validation: all thirty-two focused vector, complete-frame, streaming-
+  encoder, streaming-decoder, and documentation tests passed, followed by all
+  1,624 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
 
-## 2026-08-08 - LZMW plus tANS bounded decoder fuzz boundary
+## 2026-07-26 - LZW plus Dynamic Range direction-specific profile
 
-- Authoring method: adapted marc's local fixed-memory LZMW/rANS dual-decoder
-  harness to the already specified tANS boundary under DD-623, with no external
-  corpus or implementation reference.
-- References used: DD-623, DD-615, DD-619, DD-621, local LZMW/tANS frame and
-  streaming decoders, checked public requirements, and repository-owned fuzz
-  harness conventions.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE fuzz targets, corpora, mutation dictionaries, malformed samples, source
-  code, and test suites.
-- Independent decisions: fix every workspace before parsing; bound input,
-  output, and calls; exercise private complete-frame and public incremental
-  paths; abort only on harness/API invariant violation; and retain every found
-  boundary as an ordinary deterministic regression.
-- Generated-code task description: add the bounded dual-decoder entry,
-  strict-warning compile-smoke, canonical truncation, saturated-length, and
-  invalid-descriptor regressions, and synchronize all affected evidence.
-- Similarity review: only repository-local symbol substitutions and fixed
-  bounds connect the existing local harness to tANS. No external control flow,
-  capacity, mutation schedule, corpus, naming, or assertion was compared.
-- Local validation: the fixed-memory fuzz entry compiled under strict warnings
-  with both MSVC and ClangCL; no open-ended fuzz campaign was run. The three
-  focused deterministic regressions passed under both compilers. The complete
-  Release suite passed 2,353/2,353 under both compilers using official CMake
-  4.3.4; all forty-one benchmark smokes, schemas 1 through 30 compatibility,
-  and documentation-layout checks remained successful.
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-410, the already implemented LZW packed-code ceiling,
+  Dynamic Range payload ceiling, complete-frame ownership, and local record
+  types.
+- References used: DD-410, DD-408, DD-409, marc's local checked arithmetic,
+  LZW workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  packed staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded packed and private raw
+  staging, and a conservative phrase-record count derived only from local
+  limits. Typed records remain in separately aligned caller-owned storage and
+  empty storage uses neutral alignment one.
+- Generated-code task description: add the internal LZW plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZW- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 7/7 under
+  both MSVC and ClangCL. The complete Release suite passed 1,630/1,630 under
+  MSVC and 1,630/1,630 under ClangCL using official CMake 4.3.4.
 
-## 2026-08-08 - LZMW plus tANS transactional CLI selector
+## 2026-07-26 - LZW plus Dynamic Range public C ABI
 
-- Authoring method: added one enum and dispatch path to marc's existing
-  publish-on-success file adapter using only DD-621's public lifecycle under
-  DD-624.
-- References used: DD-624, DD-621, local fixed profile arithmetic, public
-  configuration/query/factory/process/destroy calls, and the repository CLI
-  regression script.
-- Known implementations intentionally not consulted: external compression
-  CLIs, combined-codec adapters, private allocation layouts, command syntax,
-  source code, malformed corpora, and test suites.
-- Independent decisions: fix 64-KiB frames and blocks; admit the exact
-  262,144-byte reference and 393,224-byte tANS payload ceilings; retain the
-  16-MiB aggregate policy; obtain all real regions from the public query; and
-  preserve the shared temporary-file transaction.
-- Generated-code task description: add selector parsing, usage, public-only
-  configuration/query/factory routing, binary/empty/malformed/trailing CLI
-  regression, and synchronize affected design and evidence records.
-- Similarity review: the adapter adds only one local enum path and public
-  symbol family to marc's existing CLI lifecycle. No external control flow,
-  allocation scheme, capacity expression, naming, or assertion was compared.
-- Local validation: the focused transactional CLI regression passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,354/2,354 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
-  schemas 1 through 30 compatibility, and documentation-layout checks remained
-  successful.
+- Authoring method: connected DD-411 directly to DD-410's checked profile and
+  the existing bounded streaming encoder and decoder through marc's established
+  three-workspace transform lifecycle.
+- References used: DD-411, DD-410, the local C ABI version-1 conventions,
+  checked workspace partitions, and first-party streaming transforms.
+- Known implementations intentionally not consulted: external ABI adapters,
+  ownership schemes, source code, corpora, and test suites.
+- Independent decisions: preserve ABI version 1; add a size-tagged
+  direction-specific configuration; expose only byte counts, alignment, opaque
+  buffers, and a transform handle; and rerun all profile and partition checks
+  during creation. C++ record layouts remain private.
+- Generated-code task description: add public declarations and implementation,
+  a strict C11 requirements/round-trip/negative test, CMake registration, and
+  synchronized format, C API, architecture, composition, readiness, changelog,
+  reference, and vector documentation.
+- Similarity review: the adapter follows marc's local lifecycle and the
+  independently documented LZW Dynamic Range ownership roles; no external API
+  expression or test was compared.
+- Local validation: the eight focused profile, C ABI, and documentation tests
+  passed under both MSVC and ClangCL. The complete Release suite passed
+  1,631/1,631 under MSVC and 1,631/1,631 under ClangCL using official
+  CMake 4.3.4.
 
-## 2026-08-08 - LZMW plus tANS verification-first benchmark
+## 2026-07-26 - LZW plus Dynamic Range public completion matrix
 
-- Authoring method: extended marc's dependency-free public-ABI benchmark
-  dispatcher with DD-625 after deriving its complete-stream ceiling from the
-  already fixed DD-624 profile.
-- References used: DD-625, DD-624, DD-621, the public
-  `marc_lzmw_tans_*` lifecycle, local checked arithmetic, and marc's existing
-  verification-first measurement runner.
+- Authoring method: parameterized marc's first-party LZW public-ABI admission
+  matrix only at the entropy payload ceiling and public C symbol family, then
+  instantiated it independently for Dynamic Range under DD-412.
+- References used: DD-412, the published local LZW Dynamic Range C ABI,
+  generic-frame field offsets, and repository-authored deterministic generator
+  and chunk schedules.
+- Known implementations intentionally not consulted: external completion
+  suites, malformed corpora, source code, and encoded vectors.
+- Independent decisions: use 64-byte frames; cover empty input, every one-byte
+  value, full alphabet, repetition, binary patterns, generated data, and frame
+  neighbors; require byte-identical output across three chunk schedules and
+  stable ended/error calls; and verify that corruption, truncation, or trailing
+  data in frame four commits only the first three frames.
+- Generated-code task description: make the existing LZW completion body
+  explicitly parameterizable, instantiate it for the Dynamic Range C symbols
+  and `2S + 5` bound, register it, and synchronize architecture, C API,
+  readiness, composition, changelog, decision, reference, and vector records.
+- Similarity review: all test logic derives from marc's own prior LZW public
+  contract and DD-412; no external test expression was compared.
+- Local validation: the seven focused Dynamic Range completion, reused
+  Adaptive completion, and documentation tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 1,634/1,634 under MSVC and
+  1,634/1,634 under ClangCL using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: parameterized marc's first-party LZW dual-path decoder
+  harness only at the entropy decoder entry points, then instantiated it for
+  Dynamic Range under DD-413.
+- References used: DD-413, DD-412, the local generic-frame layout, LZW Dynamic
+  Range limits, complete-frame decoder, streaming decoder, and existing
+  repository-authored bounded fuzz conventions.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, source code, and encoded vectors.
+- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
+  output, 1,024-byte frame, 8,192-byte payload, and 4,096-entry dictionary
+  ceilings; exercise both complete-frame and streaming decode paths; impose a
+  finite call ceiling; and permanently require atomic rejection of every
+  canonical truncation, extreme frame lengths, and invalid descriptors.
+- Generated-code task description: instantiate the shared bounded LZW decoder
+  fuzz harness and permanent malformed regressions for Dynamic Range, add a
+  compile-smoke target and optional libFuzzer target, and synchronize
+  architecture, readiness, composition, changelog, decision, reference, and
+  vector records.
+- Similarity review: the work reuses only marc's own harness and public format
+  contracts, with entropy-specific substitutions at documented local entry
+  points; no external implementation, harness structure, corpus, or test
+  expression was compared.
+- Local validation: both fuzz compile-smoke targets built under MSVC and
+  ClangCL; the seven focused Dynamic Range regression, reused Adaptive
+  regression, and documentation tests passed under both compilers. The
+  complete Release suite passed 1,637/1,637 under MSVC and 1,637/1,637 under
+  ClangCL using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range transactional CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit-selector and transactional temporary-file loop without calling
+  private C++ frame APIs.
+- References used: DD-414, the public LZW Dynamic Range config, requirements
+  query and factory, the local 64-KiB reference profile, and the repository's
+  existing CLI process and round-trip contracts.
+- Known implementations intentionally not consulted: external archive tools,
+  compression CLIs, combined-codec adapters, workspace policies, source code,
+  command syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lzw-dynamic-range` selector in both directions; fix the public 131,072-byte
+  packed and 262,149-byte range-payload limits; use an 8-MiB aggregate policy;
+  and query actual three-region workspaces and alignment through C.
+- Generated-code task description: add selector parsing, fixed public config,
+  requirements and factory dispatch, usage and profile documentation, and the
+  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
+- Similarity review: the adapter composes only marc's own public ABI and
+  transactional CLI. No external CLI structure, option spelling, workspace
+  layout, or test expression was compared.
+- Local validation: the focused transactional CLI and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,638/1,638 under both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZW plus Dynamic Range public-ABI benchmark adapter
+
+- Authoring method: added the completed public profile to marc's
+  dependency-free measurement runner without invoking private frame APIs or
+  reproducing typed workspace layouts.
+- References used: DD-415, DD-414, the public config, requirements query and
+  factory, the local `2F` and `2S + 5` bounds, checked arithmetic, and the
+  existing untimed round-trip gate.
 - Known implementations intentionally not consulted: external benchmark
-  frameworks, combined-codec adapters, capacity formulas, performance data,
-  source code, and test suites.
-- Independent decisions: reserve `80 + 6N + 2176K`; verify a byte-exact round
-  trip before measurement; time directions separately; and report every
-  queried region plus the larger caller-owned reservation.
-- Generated-code task description: add the benchmark selector, public-only
-  configuration/query/factory dispatch, checked capacity, CTest smoke, and
-  synchronize format, architecture, API, readiness, composition, benchmark,
-  vector, reference, changelog, and provenance records.
-- Similarity review: the adapter mechanically joins one existing local public
-  lifecycle to marc's own benchmark contract. No external control flow,
-  capacity expression, reporting schema, naming, or assertion was compared.
-- Local validation: the focused selector, all forty-two benchmark smokes, and
-  documentation layout passed under both MSVC and ClangCL. The complete
-  Release suite passed 2,355/2,355 under both compilers using official CMake
-  4.3.4; schemas 1 through 30 compatibility remained successful.
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  workspace layouts, source code, and test suites.
+- Independent decisions: reuse the 64-KiB CLI frame and 8-MiB policy; derive
+  checked capacity `80 + 4N + 77K`; query both directional three-region
+  workspaces; report their larger sum; and impose no speed or ratio threshold.
+- Generated-code task description: add benchmark selector, configuration,
+  capacity, requirements and factory dispatch, one labeled smoke, measurement
+  documentation, and readiness evidence.
+- Similarity review: the adapter extends only marc's existing runner with the
+  independently specified public profile. No external runner structure,
+  formula expression, output schema, or test expression was compared.
+- Local validation: the focused one-iteration smoke and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,639/1,639 under both compilers using official CMake 4.3.4. All twenty-eight
+  labeled benchmark smokes passed.
 
-## 2026-08-08 - Interoperability schema 31 local admission
+## 2026-07-26 - Interoperability schema 17 local admission
 
 - Authoring method: extended marc's versioned repository-owned bundle protocol
-  by appending the completed LZMW/tANS CLI profile to the frozen schema-30 set.
-- References used: DD-626, the local schemas 1 through 30, the public
-  `lzmw-tans` selector, PowerShell file/hash APIs, and the deterministic
-  repository fixture.
-- Known implementations intentionally not consulted: external interoperability
-  schemas, bundle tools, archive corpora, verifier scripts, source code, and
-  test suites.
-- Independent decisions: name the new set `marc-cli-v31`; retain all 41 prior
-  entries byte-for-byte and append `lzmw-tans` once; require exactly 42 ordered
-  archives; derive schema 30 by removing only that final profile; and retain
-  external exchange as separate evidence.
-- Generated-code task description: update generation, strict verification, and
-  compatibility scripts for schema 31; add reordered-manifest rejection and
-  schemas 1-through-30 restoration; synchronize interoperability, format,
-  architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: this is a one-entry extension of marc's own frozen
-  manifest protocol. No external schema shape, archive order, conversion
-  procedure, control flow, naming, or assertion was compared.
-- Local validation: schema-31 generation, exact verification, reordered-
-  manifest rejection, and schemas 1 through 30 restoration passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,355/2,355 under both
-  compilers using official CMake 4.3.4; all forty-two benchmark smokes and
-  documentation-layout checks remained successful. External four-direction
-  verification at revision `903181080556c3bb511ad4a2e5275837ebda48e7`
-  completed all schema-31 paths: Windows/MSVC and Ubuntu 24.04 artifacts
-  decoded and re-encoded identically on Ubuntu 26.04/Clang; the Ubuntu 26.04
-  bundle self-verified and decoded and re-encoded identically on Windows/MSVC.
-  Every pass verified all 42 archives.
+  by one append-only public profile and preserved every prior frozen schema.
+- References used: DD-416, the completed `lzw-dynamic-range` CLI profile, the
+  frozen schema-16 order, deterministic 8,193-byte fixture, existing manifest
+  fields, SHA-256 checks, strict verifier, and one-generation compatibility
+  converter.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, combined-codec
+  archives, corpora, source code, test vectors, and verification suites.
+- Independent decisions: append `lzw-dynamic-range` exactly once as archive
+  28; name codec set `marc-cli-v17`; preserve schemas 1 through 16; require a
+  generation-time local round trip, exact order, full revision, sizes,
+  SHA-256, foreign decode, and byte-identical local re-encoding; reject a
+  reordered schema-17 manifest; and derive schema 16 by removing only the new
+  archive.
+- Generated-code task description: update the bundle generator, verifier,
+  compatibility regression, format and architecture descriptions, readiness
+  matrices, interoperability instructions, changelog, and provenance for the
+  append-only schema.
+- Similarity review: the implementation extends only marc's earlier schema
+  chain and public selector. No external manifest field, archive order,
+  conversion algorithm, script structure, or test expression was compared.
+- Local validation: schema 17 generated and verified all 28 archives, rejected
+  the reordered manifest, and verified the frozen 27, 26, 25, 24, 23, 22, 21,
+  20, 19, 18, 17, 16, 15, 13, 8, and 7 archive predecessors through schemas
+  16 to 1. The complete Release suite passed 1,639/1,639 under both MSVC and
+  ClangCL using official CMake 4.3.4. Independently generated MSVC and ClangCL
+  schema-17 bundles cross-verified all 28 archives in both local toolchain
+  directions. Cross-platform schema-17 verification has not yet been claimed.
 
-## 2026-08-07 - LZMW plus tANS profile and workspace layout
+## 2026-07-26 - Interoperability schema 17 external validation record
 
-- Authoring method: combined marc's independently specified LZMW reference
-  ceiling and tANS block ceiling under DD-620, using checked local layout
-  primitives and caller-owned storage.
-- References used: DD-620, DD-618, DD-619, local LZMW and tANS format bounds,
-  existing checked arithmetic, and repository-owned profile conventions.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE profile calculators, allocator layouts, ABI definitions, source code,
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b`.
+- References used: DD-416, marc's schema-17 generator and verifier, the
+  established schema-16 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-eight archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-eight-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 28 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-17 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.
+
+## 2026-07-26 - LZD plus Dynamic Range specification and vector
+
+- Authoring method: composed marc's already frozen LZD reference-pair grammar
+  and Dynamic Range byte-symbol grammar at their documented byte-stream
+  boundary before implementing a combined codec.
+- References used: DD-417, the local LZD variant 1 and Dynamic Range variant 1
+  format sections, generic frame serializers, checked arithmetic rules, and
+  repository-authored standalone encoders.
+- Known implementations intentionally not consulted: external LZD/range
+  compositions, archive formats, codec source, encoded corpora, malformed
+  corpora, and test suites.
+- Independent decisions: reserve `lzd-dynamic-range`; retain format 1.0; make
+  all eight bytes of every reference pair ordinary range symbols; reset both
+  layers per frame; use checked `S = 8 * ceil(F/2)` and `P = 2S + 5` bounds;
+  retain the 2^20-byte format cap; and require exact range exhaustion before
+  LZD graph validation and private iterative reconstruction.
+- Generated-code task description: document the complete decoder-visible
+  composition, bounds, validation and publication order, empty and boundary
+  behavior, and a raw-`A` hand vector; add a test that assembles the frame only
+  from standalone LZD, standalone Dynamic Range, and generic serializers.
+- Similarity review: the specification and test use only marc's local
+  component contracts and direct field composition. No external combined
+  format, implementation structure, byte vector, naming scheme, or test
+  expression was compared.
+- Local validation: the independent terminal-token vector and documentation
+  layout tests passed 2/2 under both MSVC and ClangCL. The complete Release
+  suite passed 1,640/1,640 under both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range complete-frame validator
+
+- Authoring method: connected marc's local generic frame parser, strict Dynamic
+  Range decoder, and existing LZD semantic validator at the byte boundary
+  fixed by DD-417.
+- References used: DD-418, DD-417, the local Dynamic Range descriptor and
+  decoder contracts, LZD token validator and workspace formulas, checked
+  arithmetic, and the independent 84-byte frame.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: validate all generic, token, entropy, capacity,
+  aligned phrase-record, and aggregate extents before entropy output; require
+  exact range payload exhaustion; retain LZD's stable semantic diagnostics;
+  report but do not allocate future expansion storage; and reconstruct or
+  publish no raw bytes at this boundary.
+- Generated-code task description: add a bounded complete-frame validator,
+  result and error types, exact-vector acceptance, exhaustive proper-prefix
+  rejection, capacity and aggregate-limit tests, descriptor and payload
+  corruption tests, malformed LZD reference tests, and profile/extent tests.
+- Similarity review: the implementation composes only existing marc parsers,
+  limits, and validators using the repository's established transactional
+  frame convention. No external combined control flow, format, diagnostic
+  scheme, malformed input, or test expression was compared.
+- Local validation: the eight focused LZD Dynamic Range tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,647/1,647 under
+  both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range private raw reconstruction
+
+- Authoring method: extended marc's DD-418 complete-frame validator with the
+  existing iterative LZD decoder after all encoded-layer checks succeed,
+  retaining caller-owned bounded token, phrase, expansion-stack, and raw
+  workspaces.
+- References used: DD-419, DD-418, the local Dynamic Range decoder, LZD token
+  validator and iterative decoder, checked aggregate arithmetic, and
+  established private-staging conventions from other marc compositions.
+- Known implementations intentionally not consulted: external LZD/range
+  decoders, phrase-expansion implementations, buffering layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: require complete private raw and expansion-stack
+  extents before descriptor parsing or entropy output; count both with the
+  descriptor, payload, token staging, and aligned phrase records; reuse the
+  strict DD-418 order; reconstruct only after full validation; preserve
+  detailed LZD validation, format, and decode diagnostics; and expose no
+  caller-visible output at this boundary.
+- Generated-code task description: add the minimal private decoder and error
+  result fields; verify the independent raw-`A` frame and phrase-bearing
+  `ABABAB` frame; require raw, expansion, and aggregate failures before entropy
+  output; and preserve raw sentinels on encoded-layer failures.
+- Similarity review: the implementation composes only existing marc functions
+  and independently documented workspace rules. No external control flow,
+  phrase-table representation, stack convention, error taxonomy, naming
+  scheme, or test expression was compared.
+- Local validation: all twelve focused LZD Dynamic Range vector, validator,
+  private-decoder, and documentation tests passed under both MSVC and ClangCL.
+  The complete Release suite passed 1,651/1,651 under both compilers using
+  official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range transactional frame publication
+
+- Authoring method: placed a caller-visible complete-frame boundary above the
+  DD-419 private reconstruction path, following marc's independently designed
+  copy-after-success convention.
+- References used: DD-420, DD-419, DD-418, the local combined result contract,
+  caller-owned span semantics, and existing checked-capacity conventions.
+- Known implementations intentionally not consulted: external LZD/range
+  decoders, publication protocols, buffering layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: append a stable output-capacity error; check the
+  complete destination extent before descriptor parsing or entropy output; do
+  not count caller-visible destination storage as internal scratch; reuse the
+  validator and private decoder unchanged; and copy the complete private raw
+  extent once only after every layer succeeds.
+- Generated-code task description: add the minimal internal transactional
+  decoder; publish the independent raw-`A` and phrase-bearing `ABABAB` frames;
+  reject a destination one byte short before staging mutation; and preserve
+  caller output on malformed range payload.
+- Similarity review: the implementation is a direct composition of local marc
+  boundaries and standard bounded-span copying. No external control flow,
+  publication state machine, error taxonomy, naming scheme, or test expression
+  was compared.
+- Local validation: all fifteen focused LZD Dynamic Range vector, validator,
+  private-decoder, transactional-decoder, and documentation tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,654/1,654 under
+  both compilers using official CMake 4.3.4.
+
+## 2026-07-26 - LZD plus Dynamic Range exact-frame planning
+
+- Authoring method: composed marc's existing deterministic LZD planner and
+  encoder with its Dynamic Range planner at the already specified finalized
+  token-byte boundary.
+- References used: DD-421, DD-417, the local LZD variant-1 planner and encoder,
+  Dynamic Range variant-1 planner, generic frame validator, checked arithmetic,
+  and caller-owned workspace conventions.
+- Known implementations intentionally not consulted: external LZD/range
+  encoders, combined planning algorithms, buffering layouts, source code,
   encoded corpora, and test suites.
-- Independent decisions: retain distinct direction-specific requirements;
-  count all concurrently live encoder regions; derive decoder capacity only
-  from local limits; align three typed decoder regions independently; and
-  validate the opaque layout again when partitioning it.
-- Generated-code task description: add the internal profile calculator,
-  checked encoder and decoder view partitioning, stable error mapping, boundary
-  tests, and a requirement-constructed streaming round trip; synchronize the
-  affected design, format, architecture, composition, readiness, changelog,
-  reference, vector, and provenance records.
-- Similarity review: the formulas directly compose repository-local bounds and
-  record types. No external allocation order, naming, arithmetic structure,
-  capacity value, or assertion was compared.
-- Local validation: the four focused profile tests passed under both MSVC and
-  ClangCL. The complete Release suite passed 2,346/2,346 under both compilers
-  using official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through
-  30 compatibility, and documentation-layout checks remained successful.
+- Independent decisions: require one nonempty exact frame; fix complete
+  canonical reference-pair bytes before range planning; enforce
+  `S <= 8 * ceil(F/2)` and `P <= 2S + 5`; count encoder records, token staging,
+  descriptor, and exact payload together; validate the synthesized generic
+  header; and write no serialized frame at this boundary.
+- Generated-code task description: add the minimal planner result fields and
+  errors; require the raw-`A` token bytes and 84-byte extent; repeat a phrase-
+  bearing plan for deterministic equality; reject short encoder and token
+  workspaces; enforce the exact aggregate limit; and reject empty or frame-
+  inconsistent raw input.
+- Similarity review: control flow composes only local marc layer contracts and
+  independently documented bounds. No external planning structure, workspace
+  policy, error taxonomy, naming scheme, or test expression was compared.
+- Local validation: all nineteen focused LZD Dynamic Range vector, validator,
+  planner, decoder, and documentation tests passed under both MSVC and ClangCL.
+  The complete Release suite passed 1,658/1,658 under both compilers using
+  official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range deterministic frame encoding
+
+- Authoring method: placed explicit frame serialization above DD-421's exact
+  plan and reused marc's existing generic-header, Dynamic Range descriptor,
+  and payload writers.
+- References used: DD-422, DD-421, the independent 84-byte raw-`A` vector,
+  local explicit serializers, local Dynamic Range planner and encoder, and
+  caller-owned output conventions.
+- Known implementations intentionally not consulted: external LZD/range
+  encoders, frame writers, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: complete planning before output-capacity admission;
+  require the repeated range plan to match the frozen payload extent; serialize
+  header and descriptor explicitly; encode only the exact payload region; and
+  preserve every output byte on planner or capacity failure.
+- Generated-code task description: add the minimal complete-frame encoder and
+  output-capacity error; reproduce the independent 84-byte frame; encode a
+  phrase-bearing input twice and transactionally decode it; and preserve a
+  one-byte-short destination sentinel.
+- Similarity review: the implementation directly composes local marc plans and
+  serializers. No external frame-writing control flow, error taxonomy, naming
+  scheme, output mutation schedule, or test expression was compared.
+- Local validation: all twenty-two focused LZD Dynamic Range vector,
+  validator, planner, encoder, decoder, and documentation tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,661/1,661 under
+  both compilers using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range bounded streaming encoding
+
+- Authoring method: placed a known-size frame collection and immutable draining
+  state machine above DD-422's deterministic complete-frame encoder.
+- References used: DD-423, DD-422, the local core process contract, explicit
+  stream-header and LZD-parameter serializers, checked arithmetic, and marc's
+  established caller-owned streaming workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, buffering layouts, source code, corpora, and test
+  suites.
+- Independent decisions: emit the fixed 80-byte prefix first; collect only one
+  bounded raw frame; count raw, token, serialized-frame, and encoder-record
+  storage before preparation; drain the immutable encoded frame before
+  collecting another; keep `Flush` nonterminal; retain `EndInput` across
+  output starvation; and make error and ended states sticky.
+- Generated-code task description: add the minimal transform and CMake entries;
+  compare one-byte input/output with independently concatenated complete-frame
+  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
+  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
+  case.
+- Similarity review: the state transitions follow only marc's documented
+  process contract and existing independently designed frame ownership model.
+  No external state-machine structure, naming scheme, error mapping, buffering
+  layout, or test expression was compared.
+- Local validation: all twenty-seven focused vector, validator, planner,
+  complete-frame, streaming-encoder, and documentation tests passed, followed
+  by all 1,666 Release tests under both MSVC/Visual Studio 2026 and Clang
+  22.1.3 on Windows x64 using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range bounded streaming decoding
+
+- Authoring method: placed incremental prefix and frame collection above
+  DD-420's transactional complete-frame decoder and drained only validated
+  private raw frames.
+- References used: DD-424, DD-420, DD-418, the local core process contract,
+  explicit stream/LZD/frame parsers, checked arithmetic, and caller-owned
+  validated-frame workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: validate the fixed prefix before frame collection;
+  admit `S`, `P`, descriptor, encoded-frame, token, raw, phrase, expansion, and
+  aggregate extents from each header; collect exactly one complete frame;
+  transactionally reconstruct before draining; retain `EndInput` across raw
+  starvation; and preserve earlier frames while publishing none of a malformed
+  later frame.
+- Generated-code task description: add the minimal transform and CMake entries;
+  verify one-byte input/output and retained finish; corrupt the second frame
+  and require first-frame-only output; reject every truncation and trailing
+  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
+  flag, and sticky-error cases.
+- Similarity review: the implementation follows only marc's documented frame
+  parser, bounds, and process contract. No external state-machine structure,
+  admission order, naming scheme, error mapping, buffering layout, or test
+  expression was compared.
+- Local validation: all thirty-two focused vector, complete-frame, streaming-
+  encoder, streaming-decoder, and documentation tests passed, followed by all
+  1,671 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
+  Windows x64 using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range direction-specific profile
+
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-425, the already implemented LZD token ceiling, Dynamic Range
+  payload ceiling, complete-frame ownership, and local record types.
+- References used: DD-425, DD-423, DD-424, marc's local checked arithmetic,
+  LZD workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  token staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded token and private raw
+  staging, conservative phrase records, and expansion references derived only
+  from local limits. Typed records remain in separately aligned caller-owned
+  storage and empty encoder storage uses neutral alignment one.
+- Generated-code task description: add the internal LZD plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZD- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 7/7 under
+  both MSVC and ClangCL. The complete Release suite passed 1,678/1,678 under
+  both MSVC and ClangCL using official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range C ABI
+
+- Authoring method: mapped DD-425's calculated regions and partitions directly
+  to marc's fixed-width C transform lifecycle.
+- References used: DD-426, DD-425, DD-423, DD-424, the local C ABI header,
+  status bridge, buffer validation, placement-independent factory pattern, and
+  C11 test harness.
+- Known implementations intentionally not consulted: external compression
+  ABIs, allocator interfaces, wrappers, source code, corpora, and test suites.
+- Independent decisions: add a separately size-tagged config without changing
+  ABI version; expose only byte counts and opaque views alignment; recompute
+  requirements during creation; validate every region and reserved field;
+  partition all typed records internally; and borrow rather than own storage.
+- Generated-code task description: add the minimal public declarations,
+  config loader, requirements query, encoder/decoder factory, pure C11 shared-
+  library round trip, short-region and misalignment rejection, and synchronized
+  public and provenance documentation.
+- Similarity review: the functions compose only marc's local profile,
+  partition, transform, and status contracts. No external ABI layout, naming
+  scheme, ownership policy, factory control flow, or test expression was
+  compared.
+- Local validation: the pure C11 shared-library test passed under both MSVC and
+  ClangCL, followed by all 1,679 Release tests under both compilers using
+  official CMake 4.3.4.
+
+## 2026-07-27 - LZD plus Dynamic Range public completion matrix
+
+- Authoring method: instantiated the existing independently generated LZD
+  public-ABI evidence schedules with the Dynamic Range symbol family and
+  payload ceiling.
+- References used: DD-427, the published local LZD plus Dynamic Range C ABI,
+  deterministic local generators, generic-frame extent fields, and the
+  existing LZD completion criteria.
+- Known implementations intentionally not consulted: external completion
+  suites, malformed corpora, source code, encoded vectors, and test schedules.
+- Independent decisions: keep every data, chunk, terminal, and corruption
+  schedule identical between the two LZD entropy compositions; change only the
+  public symbol family and `2S + 5` payload bound; and require only three
+  earlier frames to publish on final-frame failure.
+- Generated-code task description: factor the LZD payload ceiling, instantiate
+  the matrix for Dynamic Range, run all required binary classes and chunk
+  schedules, and preserve sticky status, error positions, and final sentinel
+  under sequence corruption, truncation, and trailing data.
+- Similarity review: the matrix reuses only repository-authored schedules and
+  public APIs. No external test organization, data corpus, malformed mutation,
+  naming scheme, or expected byte stream was compared.
+- Local validation: all three public completion tests passed under both MSVC
+  and ClangCL, followed by all 1,682 Release tests under both compilers using
+  official CMake 4.3.4.
 
 ## 2026-07-28 - LZ77 plus rANS reserved representation
 
@@ -8876,6 +9262,585 @@ discarded and the reviewed seed retained.
   MSVC and ClangCL. The complete Release suite passed 1,760/1,760 under both
   compilers using official CMake 4.3.4; all thirty benchmark smokes and
   schema-19 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range CLI admission
+
+- Authoring method: extended marc's existing explicit selector table and
+  transactional file-processing adapter by one already published public C
+  profile.
+- References used: DD-444, the local LZMW plus Dynamic Range C configuration,
+  requirements query and factory, fixed profile bounds, and the generic CLI
+  regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, workspace policies, source code, command
+  syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lzmw-dynamic-range` selector in both directions; fix the public 262,144-byte
+  reference and 524,293-byte range-payload limits; use a 16-MiB aggregate
+  policy; and obtain all three workspace regions and alignment through C.
+- Generated-code task description: add selector parsing, fixed public
+  configuration, requirements-query and factory dispatch, multi-frame and
+  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
+  rejection, and public documentation without adding benchmark or
+  interoperability claims.
+- Similarity review: the adapter follows only marc's existing public C
+  lifecycle and file transaction. No external command structure, allocation
+  layout, error behavior, or test expression was compared.
+- Local validation: the focused multi-frame CLI regression passed under MSVC
+  and ClangCL. The complete Release suite passed 1,735/1,735 under both
+  compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range benchmark admission
+
+- Authoring method: extended marc's dependency-free public-C measurement
+  runner by one already published CLI profile.
+- References used: DD-445, DD-444's fixed configuration, the local public
+  requirements query and factory, checked complete-stream capacity arithmetic,
+  and the established untimed verification boundary.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  corpora, source code, and test suites.
+- Independent decisions: reserve `80 + 8N + 77K`; query all three workspace
+  regions and alignment; require exact untimed decode equality; construct a
+  fresh transform for every timed sample; and impose no performance floor.
+- Generated-code task description: register `lzmw-dynamic-range`, extend
+  checked capacity, configuration, query, factory, usage, and selector
+  dispatch, add a one-iteration README smoke, report observed deterministic
+  extents, and update public readiness without claiming interoperability.
+- Similarity review: the adapter reuses only marc's existing benchmark runner
+  and public lifecycle. No external control flow, measurement convention,
+  capacity expression, result, or test expression was compared.
+- Local validation: the focused smoke and all thirty benchmark smokes passed
+  under MSVC and ClangCL. The complete Release suite passed 1,736/1,736 under
+  both compilers using official CMake 4.3.4. Schema-18 compatibility remained
+  successful.
+
+## 2026-07-28 - Interoperability schema 19
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by one append-only public profile while retaining every schema-18 entry and
+  all earlier explicit codec sets.
+- References used: DD-446, the completed `lzmw-dynamic-range` CLI profile,
+  frozen schema-18 order, deterministic fixture generator, manifest verifier,
+  SHA-256 fields, and compatibility conversion helper.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, combined-codec
+  archives, corpora, source code, test vectors, and verification suites.
+- Independent decisions: append `lzmw-dynamic-range` exactly once as archive
+  30; name codec set `marc-cli-v19`; preserve schemas 1 through 18; require
+  local generation-time round trips, exact order, complete revision, sizes,
+  SHA-256, foreign decode equality, and byte-identical local re-encoding; and
+  reject reordered schema-19 manifests.
+- Generated-code task description: extend generator and verifier to schema 19,
+  convert schema 19 to 18 by removing only the new suffix entry, exercise the
+  entire earlier compatibility chain, and update format, interoperability,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records without claiming external results.
+- Similarity review: the work is a mechanical append-only extension of marc's
+  own manifest protocol. No external schema layout, compatibility policy,
+  corpus, archive bytes, or test expression was compared.
+- Local validation: schema-19 generation, thirty-archive self-verification,
+  reordered-manifest rejection, and the schema-18-through-schema-1 conversion
+  chain passed under both MSVC and ClangCL. The complete Release suite passed
+  1,736/1,736 under both compilers using official CMake 4.3.4. External
+  cross-platform artifact verification remains pending.
+
+## 2026-07-28 - Interoperability schema 19 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
+- References used: DD-446, marc's schema-19 generator and verifier, the
+  established schema-18 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the thirty archives from both the Windows/MSVC via Visual
+  Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own thirty-archive bundle, which the Windows/MSVC
+  executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 30 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-19 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.
+- Local validation: all twenty-two focused LZMW Dynamic Range validator,
+  planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
+  complete Release suite passed 1,710/1,710 under both compilers using official
+  CMake 4.3.4. All twenty-nine existing benchmark smokes and schema-18
+  compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range bounded streaming encoding
+
+- Authoring method: placed a known-size frame collection and immutable draining
+  state machine above DD-437's deterministic complete-frame encoder.
+- References used: DD-438, DD-437, the local core process contract, explicit
+  stream-header and LZMW-parameter serializers, checked arithmetic, and marc's
+  established caller-owned streaming workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  encoders, state machines, buffering layouts, source code, corpora, and test
+  suites.
+- Independent decisions: emit the fixed 80-byte prefix first; collect only one
+  bounded raw frame; count raw, reference, serialized-frame, and encoder-record
+  storage before preparation; drain the immutable encoded frame before
+  collecting another; keep `Flush` nonterminal; retain `EndInput` across
+  output starvation; and make error and ended states sticky.
+- Generated-code task description: add the minimal transform and CMake entries;
+  compare one-byte input/output with independently concatenated complete-frame
+  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
+  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
+  case.
+- Similarity review: the state transitions follow only marc's documented
+  process contract and existing independently designed frame ownership model.
+  No external state-machine structure, naming scheme, error mapping, buffering
+  layout, or test expression was compared.
+- Local validation: all twenty-eight focused LZMW Dynamic Range vector,
+  validator, planner, complete-frame, decoder, and streaming-encoder tests
+  passed under both MSVC and ClangCL. The complete Release suite passed
+  1,715/1,715 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range bounded streaming decoding
+
+- Authoring method: placed incremental prefix and frame collection above
+  DD-434's private complete-frame decoder and drained only validated private
+  raw frames.
+- References used: DD-439, DD-434, DD-433, the local core process contract,
+  explicit stream/LZMW/frame parsers, checked arithmetic, and caller-owned
+  validated-frame workspace conventions.
+- Known implementations intentionally not consulted: external streaming
+  decoders, state machines, buffering layouts, source code, malformed corpora,
+  and test suites.
+- Independent decisions: validate the fixed prefix before frame collection;
+  admit `S`, `P`, descriptor, encoded-frame, reference, raw, phrase, expansion,
+  and aggregate extents from each header; collect exactly one complete frame;
+  reconstruct privately before draining; retain `EndInput` across raw
+  starvation; and preserve earlier frames while publishing none of a malformed
+  later frame.
+- Generated-code task description: add the minimal transform and CMake entries;
+  verify one-byte input/output and retained finish; corrupt the second frame
+  and require first-frame-only output; reject every truncation and trailing
+  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
+  flag, and sticky-error cases.
+- Similarity review: the implementation follows only marc's documented frame
+  parser, bounds, and process contract. No external state-machine structure,
+  admission order, naming scheme, error mapping, buffering layout, or test
+  expression was compared.
+- Local validation: all thirty-three focused LZMW Dynamic Range vector,
+  complete-frame, streaming-encoder, and streaming-decoder tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 1,720/1,720 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range direction-specific profile
+
+- Authoring method: independently derived the encoder and decoder storage
+  regions from DD-440, the implemented LZMW reference ceiling, Dynamic Range
+  payload ceiling, complete-frame ownership, and local record types.
+- References used: DD-440, DD-438, DD-439, marc's local checked arithmetic,
+  LZMW workspace formulas, Dynamic Range format limits, and existing internal
+  profile conventions.
+- Known implementations intentionally not consulted: external allocators,
+  combined codecs, workspace layouts, source code, corpora, and test suites.
+- Independent decisions: encoding reports the largest raw frame, conservative
+  reference staging, complete encoded frame, and exact encoder-record count;
+  decoding reports encoded-frame collection, bounded reference and private raw
+  staging, conservative phrase records, and expansion references derived only
+  from local limits. Typed records remain in separately aligned caller-owned
+  storage and empty encoder storage uses neutral alignment one.
+- Generated-code task description: add the internal LZMW plus Dynamic Range
+  profile calculator, checked typed-storage partition helpers, stable error
+  mapping, limit and alignment tests, and synchronized architecture, readiness,
+  composition, changelog, reference, and vector documentation.
+- Similarity review: the implementation uses the repository's established
+  profile shape with LZMW- and Dynamic-Range-specific independently documented
+  formulas; no external implementation or test expression was compared.
+- Local validation: focused profile and documentation tests passed 8/8 under
+  both MSVC and ClangCL. The complete Release suite passed 1,727/1,727 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
+  smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range public C ABI
+
+- Authoring method: bound DD-440's direction-specific profile and the existing
+  streaming transforms to marc's allocation-free three-region C lifecycle.
+- References used: DD-441, DD-440, the established transform adapter, checked
+  arithmetic, private typed-view partitioners, and first-party C11 assertions.
+- Known implementations intentionally not consulted: external combined-codec
+  APIs, factory implementations, allocator interfaces, ABI layouts, source
+  code, corpora, and test suites.
+- Independent decisions: retain C ABI version 1; publish one fixed-width
+  config, query, and factory; place references before frame/raw secondary
+  storage; recalculate requirements at creation; keep typed layouts private;
+  and leave every failed transform output null.
+- Generated-code task description: expose LZMW plus Dynamic Range in the public
+  C header, prove exact two-byte-frame workspace values and a C11 round trip,
+  reject short and misaligned regions, null output, and reserved fields, and
+  update scope documentation without completion or tooling claims.
+- Similarity review: the adapter follows only marc's established public
+  lifecycle and DD-440's independently derived regions. No external API,
+  record layout, implementation flow, or test expression was compared.
+- Local validation: the complete Release suite passed 1,728/1,728 under both
+  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including the
+  new pure-C test, all twenty-nine benchmark smokes, and schema-18
+  compatibility.
+- Local validation: all twenty-two focused vector, validator, planner,
+  encoder, decoder, and documentation tests passed, followed by all 1,614
+  Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
+  x64 using official CMake 4.3.4.
+
+## 2026-07-28 - LZMW plus Dynamic Range public completion matrix
+
+- Authoring method: audited only the published C ABI against the repository's
+  completion requirements using deterministic first-party inputs and bounded
+  caller-owned storage.
+- References used: DD-442, DD-441, the required data classes, deterministic
+  generator, public transform contract, fixed LZMW/Dynamic Range profile,
+  frame atomicity, and strict trailing-data rules.
+- Known implementations intentionally not consulted: external completion
+  suites, compression corpora, combined-codec APIs, source code, and tests.
+- Independent decisions: exercise 64-byte raw frames, the 256-byte reference
+  ceiling, 517-byte range-payload ceiling, 63-entry dictionary limit, and
+  65,536-byte aggregate limit; keep empty and one-byte encoder views empty;
+  use four frames to observe failure after three committed frames.
+- Generated-code task description: reuse the audited LZMW public-ABI schedules
+  with only the entropy profile, payload formula, and public symbol family
+  changed; prove required data classes, deterministic chunking, sticky
+  results, and final-frame non-publication.
+- Similarity review: the wrapper and shared schedules derive only from marc's
+  two established public completion matrices. No external combined-codec test
+  expression or fixture was viewed or compared.
+- Local validation: the complete Release suite passed 1,731/1,731 under both
+  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including
+  all twenty-nine benchmark smokes and schema-18 compatibility.
+
+## 2026-07-28 - LZMW plus Dynamic Range bounded fuzz boundary
+
+- Authoring method: instantiated marc's existing bounded LZMW dual-decoder
+  harness and permanent malformed schedules for the fixed Dynamic Range
+  profile.
+- References used: DD-443, DD-439, local decoder limits, LZMW reference,
+  phrase, and expansion ceilings, core process invariants, and the canonical
+  first-party stream generator.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, mutation dictionaries, source code, and tests.
+- Independent decisions: cap input and range payload at 8 KiB, total output and
+  reference staging at 4 KiB, raw frames at 1 KiB, phrases at 1,023,
+  expansion references at 1,024, and calls at 12,320; keep generated corpus
+  entries under the build tree.
+- Generated-code task description: select the LZMW Dynamic Range symbols in
+  the audited fixed-memory harness, add compile-smoke and sanitizer targets,
+  retain one truncated-magic seed, and persist truncation, saturated-length,
+  and descriptor-reserved regressions.
+- Similarity review: the wrappers alter only marc-local profile identifiers;
+  storage, schedules, and assertions remain repository-authored. No external
+  harness or test expression was compared.
+- Local validation: three focused MSVC Release regressions and the compile-
+  smoke target passed. The ASan/UBSan/libFuzzer target completed 1,000 bounded
+  seed-derived runs without a finding. The complete Release suite passed
+  1,734/1,734 under both MSVC/Visual Studio 2026 and ClangCL using official
+  CMake 4.3.4, including all twenty-nine benchmark smokes and schema-18
+  compatibility.
+
+## 2026-07-28 - LZD plus Dynamic Range bounded decoder fuzz boundary
+
+- Authoring method: parameterized marc's first-party LZD dual-path decoder
+  harness only at the entropy decoder entry points, then instantiated it for
+  Dynamic Range under DD-428.
+- References used: DD-428, DD-427, the local generic-frame layout, LZD Dynamic
+  Range limits, complete-frame decoder, streaming decoder, and existing
+  repository-authored bounded fuzz conventions.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  malformed corpora, source code, and encoded vectors.
+- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
+  output and token staging, 1,024-byte frame, 8,192-byte payload, 512-phrase,
+  and 513-expansion-reference ceilings; exercise both complete-frame and
+  streaming decode paths; impose a finite call ceiling; and permanently require
+  atomic rejection of every canonical truncation, extreme frame lengths, and
+  invalid descriptors.
+- Generated-code task description: instantiate the shared bounded LZD decoder
+  fuzz harness and permanent malformed regressions for Dynamic Range, add a
+  seed corpus, compile-smoke and optional libFuzzer targets, and synchronize
+  architecture, readiness, composition, fuzzing, changelog, decision,
+  reference, and vector records.
+- Similarity review: the work reuses only marc's own harness and public format
+  contracts, with entropy-specific substitutions at documented local entry
+  points; no external implementation, harness structure, corpus, or test
+  expression was compared.
+- Local validation: the fuzz compile-smoke target built under MSVC; the
+  sanitizer target completed a finite 1,000-run smoke under Clang 22.1.3 with
+  libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer; the three focused
+  malformed regressions passed. The complete Release suite passed 1,685/1,685
+  under both MSVC and ClangCL using official CMake 4.3.4.
+
+## 2026-07-28 - LZD plus Dynamic Range transactional CLI adapter
+
+- Authoring method: connected the completed public C profile to marc's existing
+  explicit-selector and transactional temporary-file loop without calling
+  private C++ frame APIs.
+- References used: DD-429, the public LZD Dynamic Range config, requirements
+  query and factory, the local 64-KiB reference profile, and the repository's
+  existing CLI process and round-trip contracts.
+- Known implementations intentionally not consulted: external archive tools,
+  compression CLIs, combined-codec adapters, workspace policies, source code,
+  command syntax, and test suites.
+- Independent decisions: retain LZ77 as the default; require the explicit
+  `lzd-dynamic-range` selector in both directions; fix the public 262,144-byte
+  token and 524,293-byte range-payload limits; use a 16-MiB aggregate policy;
+  and query actual three-region workspaces and alignment through C.
+- Generated-code task description: add selector parsing, fixed public config,
+  requirements and factory dispatch, usage and profile documentation, and the
+  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
+- Similarity review: the adapter composes only marc's own public ABI and
+  transactional CLI. No external CLI structure, option spelling, workspace
+  layout, or test expression was compared.
+- Local validation: the focused transactional CLI and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,686/1,686 under both compilers using official CMake 4.3.4.
+
+## 2026-07-28 - LZD plus Dynamic Range public-ABI benchmark adapter
+
+- Authoring method: added the completed public profile to marc's dependency-
+  free measurement runner without invoking private frame APIs or reproducing
+  typed workspace layouts.
+- References used: DD-430, DD-429, the public config, requirements query and
+  factory, the local `8*ceil(F/2)` and `2S + 5` bounds, checked arithmetic, and
+  the existing untimed round-trip gate.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  workspace layouts, source code, and test suites.
+- Independent decisions: reuse the 64-KiB CLI frame and 16-MiB policy; derive
+  checked capacity `80 + 16*ceil(N/2) + 77K`; query both directional three-
+  region workspaces; report their larger sum; and impose no speed or ratio
+  threshold.
+- Generated-code task description: add benchmark selector, configuration,
+  capacity, requirements and factory dispatch, one labeled smoke, measurement
+  documentation, and readiness evidence.
+- Similarity review: the adapter extends only marc's existing runner with the
+  independently specified public profile. No external runner structure,
+  formula expression, output schema, or test expression was compared.
+- Local validation: the focused one-iteration smoke and documentation tests
+  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
+  1,687/1,687 under both compilers using official CMake 4.3.4. All twenty-nine
+  labeled benchmark smokes passed.
+
+## 2026-07-28 - Interoperability schema 18
+
+- Authoring method: extended marc's repository-authored manifest generator and
+  verifier by one frozen suffix entry while preserving every schema-17 profile
+  and all legacy codec-set definitions.
+- References used: DD-431, the public `lzd-dynamic-range` CLI selector, schema
+  17's canonical order, the local deterministic fixture, SHA-256 manifest
+  fields, exact re-encoding check, and compatibility conversion helper.
+- Known implementations intentionally not consulted: external archive
+  protocols, manifest schemas, interoperability harnesses, encoded archives,
+  corpora, source code, and test suites.
+- Independent decisions: name the new set `marc-cli-v18`; append
+  `lzd-dynamic-range` once as archive 29; keep schemas 1 through 17 explicit;
+  reject reordered schema-18 manifests; and require local decode and exact
+  re-encoding before later external admission.
+- Generated-code task description: extend generator, verifier, reordered-
+  manifest regression, and schema compatibility chain by one profile; update
+  architecture, readiness, composition, format, interoperability, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the work changes only marc's own scripts and documented
+  schema order. No external format, archive bytes, manifest organization,
+  verifier control flow, or test expression was compared.
+- Local validation: the schema compatibility test generated and verified all
+  twenty-nine schema-18 archives, rejected reordered schema 18, and verified
+  the complete schemas 17 through 1 chain under both MSVC and ClangCL. The
+  complete Release suite passed 1,687/1,687 under both compilers using official
+  CMake 4.3.4. A separate local MSVC bundle generation and verification also
+  reported `Verified 29 archives` at revision
+  `2338bdda75f2d8fb2fff86d70d1c47a4de693dca`.
+
+## 2026-07-28 - Interoperability schema 18 external validation record
+
+- Authoring method: recorded the four user-executed external verifier results
+  at exact revision `fd11d1c7ef833873a02694da91f9f6d8d378948b`.
+- References used: DD-431, marc's schema-18 generator and verifier, the
+  established schema-17 cross-check procedure, and the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external codec source,
+  archive formats, interoperability harnesses, corpora, test vectors, and
+  verification suites.
+- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
+  via Ninja verified the twenty-nine archives from both the Windows/MSVC via
+  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
+  generated and verified its own twenty-nine-archive bundle, which the
+  Windows/MSVC executable then verified in the reverse direction.
+- Result: all four invocations reported `Verified 29 archives` and the exact
+  full revision. The verifier checked manifest order, sizes, SHA-256 values,
+  fixture decoding, and byte-identical local re-encoding for every archive.
+  This establishes canonical schema-18 bytes across the three recorded
+  producers and bidirectional decoding between the recorded Windows and WSL2
+  Linux x86-64 environments.
+
+## 2026-07-28 - LZMW plus Dynamic Range specification and vector
+
+- Authoring method: composed marc's already frozen LZMW reference grammar and
+  Dynamic Range byte-symbol grammar at their documented byte-stream boundary
+  before implementing a combined codec.
+- References used: DD-432, the local LZMW variant 1 and Dynamic Range variant
+  1 format sections, generic frame serializers, checked arithmetic rules, and
+  repository-authored standalone encoders.
+- Known implementations intentionally not consulted: external LZMW/range
+  compositions, archive formats, codec source, encoded corpora, malformed
+  corpora, and test suites.
+- Independent decisions: reserve `lzmw-dynamic-range`; retain format 1.0; make
+  all four bytes of every reference ordinary range symbols; reset both layers
+  per frame; use checked `S = 4F` and `P = 2S + 5` bounds; and require strict
+  range exhaustion before LZMW graph validation and private reconstruction.
+- Generated-code task description: specify the complete combined frame,
+  bounds, reset and validation order, publication boundary, raw-`A` vector,
+  roadmap state, reference record, and provenance without implementing a
+  combined decoder or encoder.
+- Similarity review: the representation and vector compose only marc's own
+  independently documented component contracts and direct field
+  serialization. No external combined format, implementation structure, byte
+  stream, naming scheme, or test expression was compared.
+- Local validation: the independent 80-byte vector passed under both MSVC and
+  ClangCL. The complete Release test inventory passed 1,688/1,688 under both
+  compilers using official CMake 4.3.4; the MSVC invocation was split after
+  test 1,684 solely by the command runner's 120-second limit.
+
+## 2026-07-28 - LZMW plus Dynamic Range complete-frame validator
+
+- Authoring method: combined marc's existing generic frame admission, Dynamic
+  Range decode, and LZMW reference validation contracts in the DD-433 order
+  without adding reconstruction or publication.
+- References used: DD-433, DD-432, the local Dynamic Range descriptor and
+  decoder, the LZMW validator and phrase records, checked arithmetic helpers,
+  and caller-owned bounded spans.
+- Known implementations intentionally not consulted: external combined
+  decoders, archive formats, validation sequences, workspace layouts,
+  malformed corpora, source code, and test suites.
+- Independent decisions: preflight the exact frame, reference and payload
+  bounds, all caller capacities, phrase bytes, and aggregate workspace before
+  entropy output; decode references privately; validate the complete LZMW
+  graph; report the actual expansion ceiling; and publish no raw byte.
+- Generated-code task description: add an internal result and stable error
+  taxonomy, exact-frame validator, fixed-vector acceptance, all-prefix and
+  trailing rejection, guarded workspace failures, descriptor/payload errors,
+  invalid references and raw extent, sequence and pipeline regressions, and
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  independently documented frame, Dynamic Range, and LZMW components. No
+  external control flow, error taxonomy, workspace organization, malformed
+  vector, or test expression was compared.
+- Local validation: the focused vector and validator suite passed 8/8 under
+  both MSVC and ClangCL. The complete Release suite passed 1,695/1,695 under
+  both compilers using official CMake 4.3.4. All twenty-nine existing
+  benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range private raw decoder
+
+- Authoring method: extended the DD-433 validation boundary with marc's
+  existing iterative LZMW decoder while retaining caller-owned disposable
+  staging and adding no publication span.
+- References used: DD-434, DD-433, the local LZMW decoder and expansion helper,
+  checked aggregate arithmetic, and the established private-staging contract.
+- Known implementations intentionally not consulted: external combined
+  decoders, phrase-expansion implementations, buffer layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: require conservative expansion and exact raw capacity
+  before entropy output; count both against the aggregate limit; narrow the
+  active expansion span after graph validation; reconstruct iteratively; and
+  require every failure to discard all private workspace.
+- Generated-code task description: add private reconstruction and stable decode
+  reporting; test literal and generated-phrase frames, raw and expansion
+  shortages, aggregate admission, descriptor and forward-reference failures,
+  and guarded raw staging; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the work composes only marc's existing validator,
+  iterative LZMW decoder, and bounded-span contracts. No external control flow,
+  expansion strategy, staging organization, malformed input, or test
+  expression was compared.
+- Local validation: the focused validator and private-decoder suite passed
+  11/11 under both MSVC and ClangCL. The complete Release suite passed
+  1,699/1,699 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range transactional frame decoder
+
+- Authoring method: wrapped DD-434's private reconstruction with a distinct
+  caller output span and marc's established validate-and-copy publication
+  boundary.
+- References used: DD-435, DD-434, the local complete-frame validator and
+  private decoder, checked caller capacity, and bounded span copying.
+- Known implementations intentionally not consulted: external combined
+  decoders, publication protocols, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the entire output before entropy work;
+  reconstruct only in private staging; copy once after complete success; and
+  preserve caller output on every error.
+- Generated-code task description: add caller-visible transactional decoding
+  and a stable short-output error; prove literal and phrase publication, short-
+  output preservation of all guards, and malformed descriptor and reference
+  atomicity; update format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation uses only marc's existing private
+  decoder and standard bounded-span copying. No external publication control
+  flow, buffering scheme, malformed vector, or test expression was compared.
+- Local validation: the focused validator and transactional-decoder suite
+  passed 15/15 under both MSVC and ClangCL. The complete Release suite passed
+  1,703/1,703 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range exact-frame planner
+
+- Authoring method: composed marc's deterministic LZMW planner/encoder,
+  Dynamic Range planner, and generic frame validator into a write-free
+  complete-frame sizing boundary.
+- References used: DD-436, the local LZMW and Dynamic Range encoder contracts,
+  DD-432 bounds, caller-owned staging, and checked arithmetic.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: admit encoder records before reference mutation;
+  freeze complete canonical references before range planning; count exact
+  planner workspace; validate the synthesized header; and return size without
+  accepting a serialized output span.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and generated-phrase determinism tests,
+  guarded encoder/reference shortages, aggregate and frame-size rejection, and
+  update format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing
+  independently specified planners, serializers, generic header checks, and
+  bounded spans. No external control flow, capacity formula, encoded bytes, or
+  test expression was compared.
+- Local validation: the focused validator, planner, and decoder suite passed
+  19/19 under both MSVC and ClangCL. The complete Release suite passed
+  1,707/1,707 under both compilers using official CMake 4.3.4. All twenty-nine
+  existing benchmark smokes and schema-18 compatibility remained successful.
+
+## 2026-07-28 - LZMW plus Dynamic Range deterministic frame encoding
+
+- Authoring method: placed explicit frame serialization above DD-436's exact
+  plan and reused marc's existing generic-header, Dynamic Range descriptor,
+  and payload writers.
+- References used: DD-437, DD-436, the independent 80-byte raw-`A` vector,
+  local explicit serializers, local Dynamic Range planner and encoder, and
+  caller-owned output conventions.
+- Known implementations intentionally not consulted: external LZMW/range
+  encoders, frame writers, buffering layouts, source code, encoded corpora,
+  and test suites.
+- Independent decisions: complete planning before output-capacity admission;
+  require the repeated range plan to match the frozen payload extent; serialize
+  header and descriptor explicitly; encode only the exact payload region; and
+  preserve every output byte on planner or capacity failure.
+- Generated-code task description: add the minimal complete-frame encoder and
+  output-capacity error; reproduce the independent 80-byte frame; encode a
+  phrase-bearing input twice and transactionally decode it; and preserve a
+  one-byte-short destination sentinel.
+- Similarity review: the implementation directly composes local marc plans and
+  serializers. No external frame-writing control flow, error taxonomy, naming
+  scheme, output mutation schedule, or test expression was compared.
 
 ## 2026-07-29 - LZ77 plus rANS complete-frame encoder
 
@@ -9931,6 +10896,116 @@ discarded and the reviewed seed retained.
   CTest suite passed 1,898/1,898 under both compilers using official CMake
   4.3.4; all 33 benchmark smokes remained successful.
 
+## 2026-07-31 - LZ78 plus rANS CLI admission
+
+- Authoring method: applied DD-488 only after format, streaming, C ABI,
+  completion, and bounded fuzz boundaries were present.
+- References used: DD-488, the published `marc_lz78_rans_*` lifecycle, local
+  format bounds, and the existing transactional CLI adapter and regression
+  script only.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, source code,
+  command syntax, and test suites.
+- Independent decisions: expose an explicit selector; fix 65,536-byte raw and
+  entropy boundaries, eight blocks, the 524,352-byte payload ceiling, 65,536
+  phrase entries, and a 4-MiB aggregate policy; and obtain all three workspace
+  regions and alignment from C.
+- Generated-code task description: add selector parsing, fixed public
+  configuration, requirements-query and factory dispatch, multi-frame and
+  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
+  rejection, and synchronized CLI, readiness, composition, changelog,
+  architecture, decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows only marc's existing public C
+  lifecycle and file transaction. No external command structure, allocation
+  layout, error behavior, or test expression was compared.
+- Local validation: the focused multi-frame CLI regression passed under MSVC
+  and ClangCL. The complete Release CTest suite passed 1,897/1,897 under both
+  compilers using official CMake 4.3.4; all 32 benchmark smokes and
+  interoperability schema compatibility remained successful.
+
+## 2026-07-31 - LZ78 plus rANS bounded decoder fuzz boundary
+
+- Authoring method: applied DD-487 after the public completion matrix proved
+  both ordinary chunking and transactional malformed-final-frame behavior.
+- References used: DD-487, DD-486, the local private frame decoder, public C
+  lifecycle, fixed format fields, and repository-authored stream generator
+  only.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, malformed archives, combined-codec fuzzers, source code, and
+  sanitizer findings.
+- Independent decisions: cap input at 8 KiB; fix raw, token, payload, view,
+  and phrase ceilings; query but never dynamically allocate public workspaces;
+  derive chunks from input bytes under a fixed call budget; and retain three
+  hand-authored malformed families.
+- Generated-code task description: add the dual-boundary harness, normal-build
+  compile smoke, truncated-magic corpus seed, canonical truncation, saturated
+  extent, and descriptor-reserved regressions; synchronize fuzzing, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the harness composes only marc's local decoder entry
+  points, public ABI, checked limits, fixed arrays, and process invariants. No
+  external harness structure, corpus, mutation schedule, or failure was
+  compared.
+- Local validation: the harness compile-smoke and three focused permanent
+  regressions passed under both MSVC and ClangCL. The complete Release CTest
+  suite passed 1,896/1,896 under both compilers using official CMake 4.3.4;
+  all 32 benchmark smokes and interoperability schema compatibility remained
+  successful. A sanitizer campaign remains a separate execution step.
+
+## 2026-07-31 - LZ78 plus rANS public-ABI completion
+
+- Authoring method: applied DD-486 to the published C lifecycle after the
+  representation, bounded streaming pair, workspace profile, and C factory
+  were complete.
+- References used: DD-486, DD-485, the generic frame layout, public process
+  contract, repository-authored generators, and existing local completion
+  criteria only.
+- Known implementations intentionally not consulted: external completion
+  suites, compression corpora, malformed archives, combined-codec APIs,
+  source code, and test vectors.
+- Independent decisions: use a 64-byte dual boundary; derive conservative
+  workspace ceilings from the local format; cover every one-byte value and
+  three deterministic chunk schedules; locate the final frame from serialized
+  extents; and require transactional publication plus sticky diagnostics.
+- Generated-code task description: add public-ABI required-data-class,
+  determinism, arbitrary-chunking, post-end, and malformed-final-frame tests;
+  register them in the core suite; and synchronize readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the test composes only marc's published C lifecycle,
+  documented bounds, local deterministic generator, and generic frame fields.
+  No external test structure, corpus, mutation schedule, or expected stream
+  was compared.
+- Local validation: the three focused completion tests passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 1,893/1,893 under both
+  compilers using official CMake 4.3.4; all 32 benchmark smokes and
+  interoperability schema compatibility remained successful.
+
+## 2026-07-31 - LZ78 plus rANS public C requirements and factory
+
+- Authoring method: connected DD-484's exact requirements and opaque
+  partitioners to marc ABI version 1's existing generic transform lifecycle.
+- References used: DD-485, DD-484, the local streaming encoder and decoder,
+  public size-tagging conventions, checked secondary partitioning, and
+  repository-authored pure-C tests only.
+- Known implementations intentionally not consulted: external compression C
+  APIs, allocation models, combined-codec factories, ABI layouts, source code,
+  encoded corpora, and test suites.
+- Independent decisions: expose one dedicated size-tagged configuration;
+  preserve the three-region ABI; return only opaque bytes and alignment;
+  repeat profile and partition validation in factory construction; require
+  `nothrow` publication; and document the shared entropy-layer frame limit.
+- Generated-code task description: add public declarations, config loading,
+  requirements query, immutable-direction factory, pure-C round trip and
+  capacity/alignment rejection, build registration, and synchronized API,
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-authored
+  profile and public-handle conventions. No external function set, struct
+  layout, allocation behavior, control flow, or test expression was compared.
+- Local validation: the pure-C lifecycle passed under both MSVC and ClangCL.
+  The complete Release CTest suite passed 1,890/1,890 under both compilers
+  using official CMake 4.3.4.
+
 ## 2026-08-01 - Interoperability schema 22 external validation record
 
 - Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
@@ -10100,821 +11175,578 @@ discarded and the reviewed seed retained.
   4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
 
-## 2026-08-05 - LZD plus tANS reserved representation
+## 2026-08-01 - LZD plus rANS bounded decoder fuzz boundary
 
-- Authoring method: composed marc's documented LZD variant-1 token grammar and
-  standalone encoder with its independently implemented tabled tANS planner,
-  encoder, descriptor serializer, and generic frame serializer.
-- References used: DD-598, local LZD and tANS specifications and code, checked
-  frame bounds, and explicit little-endian serialization helpers.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  implementations, source code, combined formats, encoded corpora, vectors,
-  and test suites.
-- Independent decisions: finalize all eight-byte reference pairs before
-  entropy coding; permit blocks to split fields but not bytes or frames; bound
-  tokens by `8*ceil(F/2)`; validate all entropy blocks before LZD semantics; and
-  freeze raw-`A` payload `08 03 9B 00` and complete extent 588.
-- Generated-code task description: reserve `lzd-tans`, derive its bounds and
-  exact raw-`A` vector solely from standalone components, add a byte-exact
-  vector test, and update format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the representation directly composes two local canonical
-  boundaries and explicit serializers. No external format structure,
-  normalization table, payload bytes, control flow, or test expression was
-  compared.
-- Local validation: the byte-exact vector passed under both MSVC and ClangCL.
-  The complete Release CTest suite passed 2,263/2,263 under both compilers
-  using official CMake 4.3.4; all 40 benchmark smokes, schema 1 through 29
-  compatibility, and documentation-layout checks remained successful.
-
-## 2026-08-05 - LZD plus tANS bounded complete-frame validator
-
-- Authoring method: composed marc's generic frame parser, local tANS
-  controller and strict block decoder, and existing allocation-free LZD graph
-  validator under DD-599's explicit admission order.
-- References used: DD-599, DD-598, the local LZD and tANS format contracts,
-  caller-owned workspaces, and checked arithmetic.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  decoders, validation orders, workspace layouts, source code, malformed
-  corpora, and test suites.
-- Independent decisions: preflight all serialized and workspace extents;
-  validate every entropy block before token mutation; reconstruct the complete
-  private token span before LZD semantics; preserve stable block and token
-  positions; and make all workspace discard-only after failure.
-- Generated-code task description: add only a bounded complete-frame
-  validator; prove the independent vector, field-splitting blocks, later-block
-  atomicity, post-entropy reference rejection, short and aggregate workspace
-  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the code directly composes repository-local parsers,
-  validators, and explicit spans. No external control flow, error taxonomy,
-  buffer layout, malformed vector, or test expression was compared.
-- Local validation: the seven focused validator tests passed under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,270/2,270 under both
-  compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
-  through 29 compatibility, and documentation-layout checks remained
-  successful.
-
-## 2026-08-05 - LZD plus tANS private raw decoder
-
-- Authoring method: extended DD-599's internal validator with marc's existing
-  allocation-free, non-recursive LZD reconstruction over caller-owned spans.
-- References used: DD-600, DD-599, the local LZD decoder contract, checked
-  aggregate arithmetic, and discard-only staging conventions.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  decoders, phrase expansion algorithms, recursion schemes, buffer layouts,
-  source code, malformed corpora, and test suites.
-- Independent decisions: preflight raw and expansion capacities before entropy
-  mutation; include both in the aggregate workspace limit; reconstruct only
-  after complete entropy and graph validation; and expose no raw publication
-  span at this boundary.
-- Generated-code task description: add private complete-frame reconstruction;
-  prove raw `A`, phrase-bearing `ABABAB` across split blocks, short raw and
-  expansion storage, aggregate limit one byte short, and unchanged raw guards
-  after entropy or dictionary failure; update format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation calls only the repository-local LZD
-  decoder after DD-599's validator and uses explicit bounded spans. No external
-  reconstruction control flow, workspace formula, error taxonomy, malformed
-  vector, or test expression was compared.
-- Local validation: the twelve focused validator/private-decoder tests passed
-  under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,275/2,275 under both compilers using official CMake 4.3.4; all 40 benchmark
-  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
-  remained successful.
-
-## 2026-08-06 - LZD plus tANS transactional frame decoder
-
-- Authoring method: wrapped DD-600's private reconstruction with a distinct
-  caller-output span and marc's established validate-then-copy boundary.
-- References used: DD-601, DD-600, the local complete-frame validator and
-  private decoder, exact capacity preflight, and bounded span copying.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  decoders, publication protocols, mutation schedules, buffer layouts, source
-  code, malformed corpora, and test suites.
-- Independent decisions: require the full output before private mutation;
-  reconstruct only in private staging; copy exactly the declared extent once;
-  preserve trailing caller bytes; and leave all caller output unchanged after
-  every failure.
-- Generated-code task description: add caller-visible transactional decoding;
-  prove raw `A` and phrase publication, preservation beyond the declared
-  extent, one-byte-short preflight atomicity, and entropy/LZD failure
-  atomicity; update format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the implementation reuses only marc's local private
-  decoder and standard bounded-span copying. No external publication control
-  flow, buffer layout, error taxonomy, malformed vector, or test expression
-  was compared.
-- Local validation: the sixteen focused validator/private/transactional tests
-  passed under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,279/2,279 under both compilers using official CMake 4.3.4; all 40 benchmark
-  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
-  remained successful.
-
-## 2026-08-06 - LZD plus tANS exact-frame planner
-
-- Authoring method: composed marc's deterministic LZD planner/encoder, tabled
-  tANS block planner, generic frame validator, and checked arithmetic into a
-  write-free complete-frame sizing boundary.
-- References used: DD-602, DD-598's fixed bounds, the local LZD and tANS
-  encoder contracts, caller-owned staging, and explicit frame fields.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  encoders, combined planners, allocation layouts, source code, encoded
-  corpora, and test suites.
-- Independent decisions: admit encoder records before token mutation; freeze
-  all canonical reference pairs before entropy planning; check exact tANS
-  extents and aggregate workspace; validate the synthesized header; and expose
-  no serialized output span.
-- Generated-code task description: add exact-frame planning; prove raw `A`,
-  repeatable phrase-bearing multi-block planning, guarded encoder/token
-  shortages, aggregate limit one byte short, empty input, and frame mismatch;
-  update format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the planner directly composes repository-local plans,
-  serializers, and checked spans. No external planning control flow, workspace
-  formula, normalization data, encoded vector, or test expression was
-  compared.
-- Local validation: the twenty focused validator/decoder/planner tests passed
-  under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,283/2,283 under both compilers using official CMake 4.3.4; all 40 benchmark
-  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
-  remained successful.
-
-## 2026-08-06 - LZD plus tANS deterministic frame encoder
-
-- Authoring method: placed explicit frame serialization above DD-602's exact
-  plan and reused marc's generic-header, tANS descriptor, and payload writers.
-- References used: DD-603, DD-602, the independent 588-byte raw-`A` vector,
-  local explicit serializers, and caller-owned output conventions.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  encoders, frame writers, buffering layouts, source code, encoded corpora,
-  and test suites.
-- Independent decisions: finish planning before output admission; repeat each
-  tANS plan over frozen tokens; require exact planned extents; write explicit
-  non-overlapping regions; and preserve all output on planner or capacity
-  failure.
-- Generated-code task description: add the deterministic complete-frame
-  encoder; reproduce the independent vector; prove phrase-bearing multi-block
-  determinism and transactional round trip; preserve short-output and planner-
-  failure sentinels; update format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation composes only repository-local plans
-  and serializers. No external frame-writing control flow, mutation schedule,
-  error taxonomy, encoded vector, or test expression was compared.
-- Local validation: the twenty-three focused frame tests passed under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,286/2,286 under
-  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
-  through 29 compatibility, and documentation-layout checks remained
-  successful.
-
-## 2026-08-06 - LZD plus tANS bounded streaming encoder
-
-- Authoring method: wrapped DD-602/DD-603's local planner and encoder in marc's
-  immutable-direction transform contract with caller-owned frame storage.
-- References used: DD-604, the local stream and LZD parameter serializers,
-  checked aggregate arithmetic, and complete-frame encoder contract.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  streaming encoders, state machines, buffering strategies, source code,
-  encoded corpora, and test suites.
-- Independent decisions: emit a fixed prefix; collect one complete raw frame;
-  encode before draining; retain finish across all pending output; leave flush
-  nonterminal; reject reset; and keep terminal errors sticky.
-- Generated-code task description: add the bounded streaming encoder and prove
-  byte-identical one-byte I/O, retained finish, canonical flush behavior,
-  empty input, short and aggregate workspaces, protocol errors, repeated end,
-  and sticky failure; update format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation composes only marc's existing stream
-  contract and local complete-frame operations. No external state transition,
-  buffering layout, error taxonomy, encoded corpus, or test expression was
-  compared.
-- Local validation: the five focused streaming-encoder tests passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,291/2,291 under both
-  compilers using official CMake 4.3.4, including all forty benchmark smokes
-  and the schema-1-through-29 interoperability compatibility chain.
-
-## 2026-08-06 - LZD plus tANS bounded streaming decoder
-
-- Authoring method: combined marc's local LZD private reconstruction with its
-  local tANS complete-frame controller under the immutable transform contract.
-- References used: DD-605, DD-600/DD-601's local validator and decoder, stream
-  and frame parsers, checked tANS payload ceilings, and LZD workspace formulas.
-- Known implementations intentionally not consulted: external LZD/tANS or FSE
-  streaming decoders, state machines, buffering strategies, source code,
-  malformed corpora, encoded corpora, and test suites.
-- Independent decisions: admit every declared region before body collection;
-  reconstruct into private raw staging; publish only a completely validated
-  frame; retain finish while draining; reject reset, truncation, and trailing
-  data; and keep terminal errors sticky.
-- Generated-code task description: add the bounded streaming decoder and prove
-  one-byte I/O, transactional later-frame corruption, each short workspace,
-  aggregate limit one byte short, truncation, trailing input, reset, unknown
-  flags, empty input, flush starvation, premature finish, repeated end, and
-  sticky failure; update architecture, format, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation composes only marc's existing stream
-  contract and local complete-frame operations. No external state transition,
-  buffering layout, error taxonomy, malformed input, encoded corpus, or test
-  expression was compared.
-- Local validation: the five focused streaming-decoder tests passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,296/2,296 under both
-  compilers using official CMake 4.3.4, including all forty benchmark smokes
-  and the schema-1-through-29 interoperability compatibility chain.
-
-## 2026-08-06 - LZD plus tANS coupled profile calculator
-
-- Authoring method: combined marc's local LZD workspace formulas and local tANS
-  payload ceilings into the existing bounded profile-calculation contract.
-- References used: DD-606, DD-604/DD-605 constructors, checked arithmetic,
-  decoder limits, local typed records, and opaque-storage alignment helpers.
-- Known implementations intentionally not consulted: external compression
-  profiles, allocator layouts, workspace formulas, source code, generated
-  corpora, and test suites.
-- Independent decisions: freeze the largest active frame; calculate coupled
-  simultaneous storage; keep empty views alignment one; conservatively derive
-  decoder extents from hard limits; and validate exact opaque layouts before
-  forming typed spans.
-- Generated-code task description: add the internal profile calculator and
-  partitioners; prove canonical and short-frame sizes, empty input, each hard
-  limit, overflow clearing, exact offsets and alignment, altered/short/
-  misaligned rejection, stable error mapping, and a calculated-workspace
-  streaming round trip; update architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: formulas and layout follow only marc's existing local
-  contracts. No external profile structure, allocator scheme, workspace
-  expression, naming convention, corpus, or test expression was compared.
-- Local validation: the seven focused profile tests passed under both MSVC and
-  ClangCL. The complete Release suite passed 2,303/2,303 under both compilers
-  using official CMake 4.3.4, including all forty benchmark smokes and the
-  schema-1-through-29 interoperability compatibility chain.
-
-## 2026-08-06 - LZD plus tANS public C factory
-
-- Authoring method: exposed DD-606 through marc's established size-tagged,
-  fixed-width, three-workspace C transform lifecycle.
-- References used: DD-607, DD-606 profile and partitioners, DD-604/DD-605
-  transforms, checked byte spans, `std::nothrow`, and common status mapping.
-- Known implementations intentionally not consulted: external C compression
-  APIs, factory designs, workspace ownership schemes, source code, generated
-  corpora, and test suites.
-- Independent decisions: add symbols without changing the ABI version; keep
-  every typed record private; repeat the requirements query during creation;
-  reject short or misaligned storage before construction; and leave the output
-  handle null on every failure.
-- Generated-code task description: add the fixed-size config, requirements
-  query, factory, shared-library exports, and pure C11 test; prove defaults,
-  exact direction-specific workspaces, binary round trip, each short region,
-  misalignment, null output, reserved-field rejection, and failure atomicity;
-  update C API, format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the adapter follows only marc's local ABI and transform
-  conventions. No external structure layout, function naming, lifecycle,
-  allocator model, source code, corpus, or test expression was compared.
-- Local validation: the pure C11 shared-library test passed under both MSVC and
-  ClangCL. The complete Release suite passed 2,304/2,304 under both compilers
-  using official CMake 4.3.4, including all forty benchmark smokes and the
-  schema-1-through-29 interoperability compatibility chain.
-
-## 2026-08-06 - LZD plus tANS public-ABI completion matrix
-
-- Authoring method: reused marc's public-only LZD admission schedules with the
-  independently documented tANS block ceiling and DD-607 symbol family.
-- References used: DD-608, DD-607, the local LZD completion harness, tANS
-  descriptor and payload bounds, deterministic generator, and C lifecycle.
-- Known implementations intentionally not consulted: external completion
-  suites, vectors, corpora, tANS/FSE implementations, source code, and tests.
-- Independent decisions: keep every data and chunk schedule identical to prior
-  LZD admission; fix 64-byte frames and blocks; compare exact archives; and
-  require corrupt, truncated, and extended fourth frames to commit only the
-  first three frames with sticky error positions.
-- Generated-code task description: add the public-ABI completion matrix and
-  prove required binary classes, boundary sizes, repeat determinism, arbitrary
-  chunking, repeated end, and transactional malformed-final-frame rejection;
-  update format, architecture, readiness, composition, C API, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the thin substitution layer and all schedules use only
-  marc's local public APIs and repository-authored evidence. No external
-  harness organization, data corpus, mutation, expected stream, or test
-  expression was compared.
-- Local validation: the three focused completion tests passed under both MSVC
-  and ClangCL. The complete Release suite passed 2,307/2,307 under both
-  compilers using official CMake 4.3.4, including all forty benchmark smokes
-  and the schema-1-through-29 interoperability compatibility chain.
-
-## 2026-08-06 - LZD plus tANS bounded dual-decoder fuzz boundary
-
-- Authoring method: combined marc's local LZD/rANS fixed-memory harness shape
-  with the repository's LZW/tANS entropy boundary under DD-609.
-- References used: DD-609, DD-607, local LZD/tANS frame and C decoders, checked
-  workspace ceilings, process invariants, and canonical `ABABX` generation.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  seed corpora, mutation dictionaries, malformed suites, source code, and test
-  expressions.
-- Independent decisions: exercise private and public boundaries for each
-  input; allocate no fuzz-controlled extent; derive chunks deterministically;
-  cap calls and output; treat malformed input as ordinary; and preserve three
-  atomic malformed families as permanent tests.
-- Generated-code task description: add the bounded dual-decoder harness,
-  sanitizer target, portable warning-clean compile-smoke, reviewed seed, and
-  truncation, saturated-length, and invalid-descriptor regressions; synchronize
-  fuzzing, format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the thin substitution adapters compose only marc's own
-  decoder types, public symbols, fixed limits, and local tests. No external
-  fuzz control flow, allocation policy, chunk schedule, mutation location,
-  naming, or assertion was compared.
-- Local validation: the three focused regressions and warning-clean fuzz
-  compile-smoke passed under both MSVC and ClangCL. Windows Clang 22
-  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
-  seed-derived inputs without a crash, hang, or sanitizer finding at 39 MiB
-  peak RSS. The complete Release CTest suite passed 2,310/2,310 under both
-  compilers using official CMake 4.3.4; all forty benchmark smokes, schemas 1
-  through 29 compatibility, and documentation layout remained successful.
-
-## 2026-08-06 - LZD plus tANS transactional CLI selector
-
-- Authoring method: instantiated marc's common transactional CLI adapter with
-  DD-610's fixed public LZD/tANS policy and symbol family.
-- References used: DD-610, the published `marc_lzd_tans_*` lifecycle, checked
-  local capacity formulas, aligned-buffer helper, and repository CLI regression
-  script.
-- Known implementations intentionally not consulted: external compression
-  CLIs, combined-codec adapters, private allocation layouts, command syntax,
-  source code, malformed corpora, and test suites.
-- Independent decisions: use 64-KiB frames and blocks; admit the exact
-  262,144-byte LZD token and 393,224-byte tANS payload ceilings; retain four
-  blocks and 16-MiB aggregate policy; obtain all regions from the public query;
-  and preserve the shared publish-on-success file transaction.
-- Generated-code task description: add the selector, public-only configuration,
-  query and factory routing, usage text, binary/empty/malformed/trailing CLI
-  regression, and synchronized CLI, C API, format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the adapter adds only one local enum path and public symbol
-  family to marc's existing CLI lifecycle. No external control flow, allocation
-  scheme, capacity expression, naming, or assertion was compared.
-- Local validation: the focused transactional CLI regression passed under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,311/2,311 under
-  both compilers using official CMake 4.3.4; all forty benchmark smokes,
-  schemas 1 through 29 compatibility, and documentation layout remained
-  successful.
-
-## 2026-08-07 - LZMW plus tANS bounded streaming decoder
-
-- Authoring method: wrapped DD-615's local transactional frame decoder in
-  marc's incremental prefix/frame collection and immutable raw-drain state
-  model under DD-619.
-- References used: DD-619, DD-615, DD-618, local stream and frame parsers,
-  core process/status invariants, checked arithmetic, and caller-owned storage.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE streaming decoders, state machines, buffering policies, malformed
-  corpora, source code, and test suites.
-- Independent decisions: admit all header-derived regions before body
-  collection; decode only complete frames; publish only successful private raw
-  staging; commit sequence per frame; and retain sticky terminal failure.
-- Generated-code task description: add only the bounded streaming decoder;
-  prove one-byte chunking, later-frame corruption atomicity, workspace and
-  aggregate limits, truncation, trailing bytes, empty stream, flush starvation,
-  and unsupported reset; update all affected records.
-- Similarity review: the class composes repository-local parsers and the
-  existing transactional frame decoder. No external control flow, naming,
-  state layout, payload bound, malformed vector, or assertion was compared.
-- Local validation: the four focused streaming-decoder tests passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,342/2,342 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
-  1 through 30 compatibility, and documentation-layout checks remained
-  successful.
-
-## 2026-08-07 - LZMW plus tANS bounded streaming encoder
-
-- Authoring method: wrapped DD-616 and DD-617's local planner and deterministic
-  frame encoder in marc's caller-owned transform state model under DD-618.
-- References used: DD-618, DD-617, DD-616, local stream serializers, core
-  process/status invariants, checked arithmetic, and bounded caller-owned
-  storage.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE stream encoders, state machines, buffering policies, source code,
-  encoded corpora, and test suites.
-- Independent decisions: serialize the prefix at construction; buffer one raw
-  outer frame; prepare an immutable complete frame before commit; account all
-  live regions together; retain final intent while draining; and keep flush
-  nonterminal.
-- Generated-code task description: add only the bounded streaming encoder;
-  prove exact one-byte chunking, flush invariance, sticky finish, workspace and
-  aggregate failures, empty stream, and protocol rejection; update all affected
+- Authoring method: applied DD-517 independently to marc's local private
+  complete-frame decoder and DD-515 public C lifecycle using fixed
+  caller-owned arrays and the repository's ordinary process invariants.
+- References used: DD-517, DD-515, the local LZD/rANS frame and streaming
+  decoders, checked profile arithmetic, and the repository-generated canonical
+  `ABABX` stream.
+- Known implementations intentionally not consulted: external LZD/rANS
+  fuzzers, corpora, mutation dictionaries, crash reports, sanitizer harnesses,
+  source code, and test suites.
+- Independent decisions: cap arbitrary serialized input at 8 KiB, total raw
+  publication at 4 KiB, one raw frame at 1 KiB, entropy payload at 16 KiB,
+  entropy metadata at eight views, phrases at 512 records, expansion at 513
+  records, chunks modulo 17 and 19, and calls at 12,320; admit the private path
+  only after strict prefix and fixed-parameter checks; keep ordinary local
+  validation to compile-smoke and permanent deterministic regressions.
+- Generated-code task description: add a bounded dual-path decoder harness;
+  compile it in ordinary builds and expose a sanitizer/libFuzzer target where
+  supported; add canonical truncation, saturated frame-extent, and reserved
+  descriptor-byte regressions; synchronize fuzzing, architecture, composition,
+  readiness, C API, changelog, decision, reference, vector, and provenance
   records.
-- Similarity review: the class follows marc's existing Transform contract and
-  calls only repository-local LZMW/tANS components. No external control flow,
-  naming, state layout, capacity formula, or assertion was compared.
-- Local validation: the five focused streaming-encoder tests passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,338/2,338 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
-  1 through 30 compatibility, and documentation-layout checks remained
-  successful.
+- Similarity review: the harness follows marc's existing local ownership and
+  process contracts and uses only repository-authored inputs. No external
+  corpus, harness structure, mutation logic, assertion, naming scheme, or code
+  expression was compared.
+- Local validation: the focused LZD/rANS fuzz-regression, completion, and
+  profile suite passed 13/13 under both MSVC and ClangCL. The compile-smoke
+  harness and complete Release CTest suite passed under both compilers using
+  official CMake 4.3.4, with 1,998/1,998 tests in each suite; all 34 benchmark
+  smokes and schema-23 compatibility remained successful. No sanitizer fuzz
+  campaign was run as part of this ordinary local validation.
 
-## 2026-08-07 - LZMW plus tANS deterministic frame encoder
+## 2026-08-01 - LZD plus rANS public-ABI completion matrix
 
-- Authoring method: layered explicit generic-header serialization and the
-  local tabled-tANS serializer/encoder over DD-616's frozen LZMW reference span
-  and exact plan under DD-617.
-- References used: DD-617, DD-616, repository-local LZMW/tANS components,
-  checked span arithmetic, and the independent 587-byte raw-`A` frame.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE encoders, combined formats, transactional serialization code, encoded
-  corpora, source code, and test suites.
-- Independent decisions: plan completely before destination admission; require
-  whole-frame capacity before the first write; repeat and compare every tANS
-  block plan; serialize explicit fields; and treat any divergence as an
-  internal error.
-- Generated-code task description: add only deterministic complete-frame
-  serialization; prove exact raw-`A` bytes, repeated phrase/block determinism
-  and combined round trip, short-output atomicity, and planner-failure
-  atomicity; update all affected records.
-- Similarity review: the implementation sequences repository-local planner,
-  serializer, and encoder APIs. No external control flow, naming, table layout,
-  error taxonomy, test expression, or byte corpus was compared.
-- Local validation: the three focused frame-encoder tests passed under both
-  MSVC and ClangCL. The complete Release suite passed 2,333/2,333 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
-  1 through 30 compatibility, and documentation-layout checks remained
-  successful.
+- Authoring method: applied DD-516 to marc's local DD-515 C lifecycle and the
+  repository's independently authored common LZD completion schedules.
+- References used: DD-516, DD-515, the public C header, local transform
+  lifecycle, LZD token ceiling, and scalar-rANS block extent formulas.
+- Known implementations intentionally not consulted: external conformance
+  suites, LZD/rANS archives, wrappers, source code, and test expressions.
+- Independent decisions: retain one common LZD data/chunk/error schedule; add
+  representation-neutral capacity and config hooks with unchanged defaults;
+  use 64-byte frames and blocks with four-block admission; and require the
+  fourth malformed frame to preserve its final raw sentinel.
+- Generated-code task description: instantiate the common LZD public-ABI
+  matrix for rANS; cover required binary classes, deterministic repeated and
+  arbitrarily chunked streams, repeated terminal results, and corrupt,
+  truncated, and extended final-frame atomicity; retain existing LZD Adaptive
+  and Dynamic Range behavior; synchronize architecture, readiness, C API,
+  format, composition, changelog, decision, reference, vector, and provenance.
+- Similarity review: the matrix reuses only marc's local independently authored
+  schedules and public ABI. No external vector, corpus, harness, assertion
+  structure, or naming scheme was compared.
+- Local validation: the new LZD/rANS completion matrix and the unchanged LZD
+  Adaptive Huffman and Dynamic Range matrices passed 9/9 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,995/1,995 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful.
 
-## 2026-08-07 - LZMW plus tANS exact-frame planner
+## 2026-08-01 - LZD plus rANS public C factory
 
-- Authoring method: composed the repository's deterministic LZMW planner and
-  canonical reference encoder with the local tabled-tANS block planner and
-  generic frame validator under DD-616.
-- References used: DD-616, DD-613 through DD-615, local LZMW/tANS contracts,
-  checked arithmetic, caller-owned workspaces, and the independent raw-`A`
-  frame.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE encoders, combined planning code, workspace layouts, encoded corpora,
-  source code, and test suites.
-- Independent decisions: admit encoder records before reference mutation;
-  freeze the complete canonical reference span before entropy planning; sum
-  exact per-block payloads; validate a synthesized generic header; and emit no
-  serialized byte at this boundary.
-- Generated-code task description: add only the write-free exact-frame planner;
-  prove raw-`A` extents, repeated phrase/block determinism, short encoder and
-  staging capacity before mutation, aggregate limit, empty input, and frame-
-  extent mismatch; update all affected records.
-- Similarity review: the implementation directly sequences repository-local
-  planner and encoder APIs with checked span arithmetic. No external control
-  flow, naming, capacity formula, table layout, or assertion was compared.
-- Local validation: the four focused planner tests passed under both MSVC and
-  ClangCL. The complete Release suite passed 2,330/2,330 under both compilers
-  using official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through
-  30 compatibility, and documentation-layout checks remained successful.
-
-## 2026-08-06 - LZMW plus tANS private reconstruction and publication
-
-- Authoring method: extended DD-614's local complete-frame validator with the
-  repository's existing allocation-free LZMW decoder, caller-owned iterative
-  expansion storage, private raw staging, and a final guarded copy under
-  DD-615.
-- References used: DD-615, DD-614, local LZMW validation and decoding
-  contracts, checked aggregate arithmetic, and the independent 587-byte
-  raw-`A` frame.
-- Known implementations intentionally not consulted: external LZMW/tANS or
-  FSE decoders, raw reconstruction layouts, transactional publication code,
-  malformed corpora, source code, and test suites.
-- Independent decisions: admit conservative expansion and raw capacity before
-  entropy mutation; shrink the active expansion span only after the actual
-  graph validates; reconstruct into disposable staging; and publish the exact
-  declared extent once only after complete success.
-- Generated-code task description: add only private raw reconstruction and
-  transactional complete-frame publication; prove literal and phrase paths,
-  block/reference crossings, short workspaces before mutation, malformed
-  entropy preserving raw staging, successful guarded publication, and short
-  output preserving every caller region; update all affected records.
-- Similarity review: the implementation composes repository-local span APIs,
-  the existing LZMW decoder, and a final range copy. No external control flow,
-  error taxonomy, workspace layout, test expression, or encoded corpus was
-  compared.
-- Local validation: the thirteen focused validator/decoder tests passed under
-  both MSVC and ClangCL. The complete Release suite passed 2,326/2,326 under
-  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
-  schemas 1 through 30 compatibility, and documentation-layout checks remained
-  successful.
-
-## 2026-08-06 - LZMW plus tANS bounded complete-frame validator
-
-- Authoring method: composed marc's generic frame parser, local tANS controller
-  and strict block decoder, and existing allocation-free LZMW graph validator
-  under DD-614's explicit admission order.
-- References used: DD-614, DD-613, the local LZMW and tANS format contracts,
-  caller-owned workspaces, and checked arithmetic.
-- Known implementations intentionally not consulted: external LZMW/tANS or FSE
-  decoders, validation orders, workspace layouts, source code, malformed
-  corpora, and test suites.
-- Independent decisions: preflight all serialized and workspace extents;
-  validate every entropy block before reference mutation; reconstruct the
-  complete private reference span before LZMW semantics; preserve stable block
-  and token positions; and make all workspace discard-only after failure.
-- Generated-code task description: add only a bounded complete-frame validator;
-  prove the independent vector, reference-splitting blocks, later-block
-  atomicity, post-entropy reference rejection, short and aggregate workspace
-  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
-  format, architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: the code directly composes repository-local parsers,
-  validators, and explicit spans. No external control flow, error taxonomy,
-  buffer layout, malformed vector, or test expression was compared.
-- Local validation: the seven focused validator tests passed under both MSVC
-  and ClangCL. The complete Release suite passed 2,320/2,320 under both
-  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
-  schemas 1 through 30 compatibility, and documentation-layout checks remained
-  successful.
-
-## 2026-08-06 - LZMW plus tANS reserved representation
-
-- Authoring method: composed marc's documented LZMW variant-1 reference
-  grammar and standalone encoder with its independently implemented tabled
-  tANS planner, encoder, descriptor serializer, and generic frame serializer.
-- References used: DD-613, local LZMW and tANS specifications and code, checked
-  frame bounds, and explicit little-endian serialization helpers.
-- Known implementations intentionally not consulted: external LZMW/tANS or FSE
-  implementations, source code, combined formats, encoded corpora, vectors,
-  and test suites.
-- Independent decisions: finalize all four-byte phrase references before
-  entropy coding; permit blocks to split references but not bytes or frames;
-  bound references by `4F`; validate all entropy blocks before LZMW semantics;
-  and freeze raw-`A` payload `FB 02 07` and complete extent 587.
-- Generated-code task description: reserve `lzmw-tans`, derive its bounds and
-  exact raw-`A` vector solely from standalone components, add a byte-exact
-  vector test, and update format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the representation directly composes two local canonical
-  boundaries and explicit serializers. No external format structure,
-  normalization table, payload bytes, control flow, or test expression was
-  compared.
-- Local validation: the byte-exact vector passed under both MSVC and ClangCL.
-  The complete Release suite passed 2,313/2,313 under both compilers using
-  official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through 30
-  compatibility, and documentation-layout checks remained successful.
-
-## 2026-08-06 - Interoperability schema 30 appends LZD plus tANS
-
-- Authoring method: extended marc's versioned schema-29 manifest and
-  compatibility chain by one already-published CLI profile.
-- References used: DD-612, the frozen schema-29 profile order, local bundle
-  scripts, deterministic 8,193-byte fixture, and `lzd-tans`.
-- Known implementations intentionally not consulted: external archive suites,
-  manifests, interoperability harnesses, encoded corpora, source code, and
-  test suites.
-- Independent decisions: name `marc-cli-v30`; append `lzd-tans` only as entry
-  41; require local round trip before recording; preserve exact order, hashes,
-  foreign decode, and byte-identical re-encoding; derive schema 29 by removing
-  only the new archive; and reject reordered manifests.
-- Generated-code task description: add LZD plus tANS to the current bundle,
-  teach the verifier schema 30, extend the complete compatibility chain, and
-  synchronize interoperability, architecture, readiness, composition, format,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the change appends one local public profile to marc's own
-  frozen schema machinery. No external ordering, manifest design, fixture,
-  hash convention, compatibility strategy, or test expression was compared.
-- Local validation: schema-30 generation, exact-order verification,
-  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 29 compatibility passed under both MSVC and ClangCL Release builds.
-  The complete Release suite passed 2,312/2,312 under both compilers using
-  official CMake 4.3.4; all forty-one benchmark smokes and documentation-layout
-  checks remained successful. External four-direction verification at revision
-  `827ddf085efb40c7d8f9bc27628977053179d84c` completed all schema-30 paths:
-  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
-  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
-  re-encoded identically on Windows/MSVC. Every pass verified all 41 archives.
-
-## 2026-08-06 - LZD plus tANS verification-first benchmark
-
-- Authoring method: extended marc's dependency-free public-ABI benchmark with
-  DD-611 and the already admitted DD-610 CLI policy.
-- References used: DD-611, DD-610, the public `marc_lzd_tans_*` lifecycle,
-  checked capacity helpers, common measurement runner, and workspace reporter.
-- Known implementations intentionally not consulted: external benchmark
-  frameworks, combined-codec adapters, capacity formulas, performance results,
-  source code, and test suites.
-- Independent decisions: reserve `80 + 12*ceil(N/2) + 2176K`; verify a complete
-  byte-exact round trip before timing; measure directions independently; report
-  all queried regions and their peak; and impose no performance threshold.
-- Generated-code task description: add configuration, query, factory, capacity,
-  name and selector routing; register a one-iteration smoke; and synchronize
-  benchmarks, C API, format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the adapter composes only marc's local benchmark lifecycle
-  and published public functions. No external control flow, capacity expression,
-  output schema, measurement schedule, naming, or assertion was compared.
-- Local validation: the focused benchmark smoke and direct one-iteration README
-  run passed under both MSVC and ClangCL. The MSVC observation encoded 4,581
-  bytes to 4,433 bytes at ratio 0.968 and reported 17,762,428 bytes of peak
-  caller reservation. The complete Release suite then passed 2,312/2,312 under
-  both compilers using official CMake 4.3.4, including all forty-one labeled
-  benchmark smokes, schema-1-through-29 compatibility, and documentation layout.
-
-## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
-
-- Authoring method: extended marc's repository-owned schema-28 manifest and
-  compatibility chain by one already-published CLI profile.
-- References used: DD-597, the frozen schema-28 profile order, local bundle
-  scripts, deterministic 8,193-byte fixture, and `lzw-tans`.
-- Known implementations intentionally not consulted: external archive suites,
-  manifests, interoperability harnesses, encoded corpora, source code, and
-  test suites.
-- Independent decisions: name `marc-cli-v29`; append `lzw-tans` only as entry
-  40; require local round trip before recording; preserve exact order, hashes,
-  foreign decode, and byte-identical re-encoding; derive schema 28 by removing
-  only the new archive; and reject reordered manifests.
-- Generated-code task description: advance generator and verifier to schema
-  29, add reordered-manifest and schemas 1 through 28 compatibility checks,
-  and synchronize interoperability, format, architecture, readiness,
+- Authoring method: bound DD-515 directly to marc's DD-514 profile, checked
+  typed partition helpers, and established opaque transform lifecycle.
+- References used: DD-515, DD-514, local streaming transforms, fixed-width
+  public C types, common workspace requirements, and standard C allocation.
+- Known implementations intentionally not consulted: external codec ABIs,
+  LZD/rANS wrappers, workspace conventions, source code, and test suites.
+- Independent decisions: add one size-tagged config without changing ABI
+  version; keep all record types and offsets opaque; retain three caller-owned
+  regions; repeat calculation and partitioning inside the factory; and reject
+  every short or misaligned region before allocating the transform handle.
+- Generated-code task description: publish config initialization,
+  direction-specific requirements, and immutable-direction creation; add a
+  pure-C queried-workspace round trip and short-region, misalignment, null, and
+  reserved-field failures; synchronize C API, format, architecture, readiness,
   composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the change appends one local public profile to marc's own
-  frozen schema machinery. No external ordering, manifest design, fixture,
-  hash convention, compatibility strategy, or test expression was compared.
-- Local validation: schema-29 generation, exact-order verification,
-  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 28 compatibility passed under both MSVC and ClangCL Release builds.
-  The complete Release CTest suite passed 2,262/2,262 under both compilers
-  using official CMake 4.3.4; all 40 benchmark smokes and documentation-layout
-  checks remained successful. External four-direction verification at revision
-  `2dcc17c09477958c1f8777a266ecfefbb75217d2` completed all schema-29 paths:
-  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
-  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
-  re-encoded identically on Windows/MSVC. Every pass verified all 40 archives.
-
-## 2026-08-05 - LZW plus tANS verification-first benchmark
-
-- Authoring method: instantiated marc's common public-C benchmark runner with
-  DD-596 and the fixed DD-595 `lzw-tans` profile.
-- References used: DD-596, DD-595, DD-592, the public C lifecycle, checked
-  complete-stream arithmetic, and the repository-owned measurement runner and
-  smoke-test convention.
-- Known implementations intentionally not consulted: external benchmark
-  frameworks, combined adapters, allocation formulas, performance results,
-  source code, corpora, and test suites.
-- Independent decisions: reserve `80 + 3N + 1116K`, verify an exact round trip
-  before timing, report all directional workspaces and peak sum, use README as
-  the smoke corpus, and impose no throughput or ratio floor.
-- Generated-code task description: add `lzw-tans` to the dependency-free
-  runner and one-iteration smoke; use only the public lifecycle; synchronize
-  benchmark, format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the adapter reuses only marc's local runner and published
-  profile. No external control flow, capacity arithmetic, output schema,
-  performance threshold, or test expression was compared.
-- Local validation: the one-iteration smoke passed under both MSVC and ClangCL
-  Release builds. The complete Release CTest suite passed 2,262/2,262 under
-  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas
-  1 through 28, and documentation-layout checks remained successful.
-
-## 2026-08-05 - LZW plus tANS transactional CLI selector
-
-- Authoring method: bound DD-595 directly to DD-592's public C lifecycle and
-  marc's existing temporary-file command adapter.
-- References used: DD-595, DD-592, the public LZW/tANS configuration,
-  requirements, factory, process, and destroy entry points, checked profile
-  bounds, and the repository-owned generic CLI regression script.
-- Known implementations intentionally not consulted: external compression
-  CLIs, combined adapters, private buffer layouts, source code, command syntax,
-  malformed corpora, and test suites.
-- Independent decisions: fix 64-KiB frames and blocks, derive the two-block
-  196,612-byte payload ceiling, keep all typed extents opaque, reject existing
-  output, and publish a file only after the complete transform succeeds.
-- Generated-code task description: add `--codec lzw-tans` through the public C
-  ABI only; cover binary and empty round trips plus atomic existing-output,
-  malformed, and trailing-input rejection; synchronize CLI, format,
-  architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: the adapter instantiates only marc's existing public
-  lifecycle and common transactional file path. No external control flow,
-  workspace partition, option naming, capacity formula, or test expression was
-  compared.
-- Local validation: the focused CLI transaction passed under both MSVC and
-  ClangCL Release builds. The complete Release CTest suite passed 2,261/2,261
-  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
-  schemas 1 through 28, and documentation-layout checks remained successful.
-
-## 2026-08-05 - LZW plus tANS bounded dual-decoder fuzz boundary
-
-- Authoring method: adapted marc's local LZW/rANS bounded harness to DD-594 and
-  replaced only the entropy view, profile, decoder, and descriptor corruption
-  boundary with repository-local tANS equivalents.
-- References used: DD-594, DD-592, local LZW/tANS frame and C decoders, fixed
-  workspace ceilings, process invariants, and canonical `ABABX` generation.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  seed corpora, mutation dictionaries, malformed suites, source code, and test
-  expressions.
-- Independent decisions: exercise private and public boundaries per input;
-  allocate no fuzz-controlled extent; derive chunks deterministically; cap the
-  call count; treat malformed input as ordinary; and retain truncation, extreme
-  length, and invalid tANS-model regressions with atomic output checks.
-- Generated-code task description: add the bounded dual-decoder harness,
-  sanitizer target, portable warning-clean compile-smoke, and permanent
-  regression tests; synchronize format, architecture, C API, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the harness composes only marc's own decoders and fixed
-  limits. No external fuzz control flow, allocation policy, chunk schedule,
-  mutation position, naming scheme, or assertion was compared.
-- Local validation: the focused LZW/tANS suite passed 50/50 under both MSVC
-  and ClangCL, including all three permanent malformed regressions; the
-  warning-clean fuzz compile-smoke passed under both compilers. The complete
-  Release CTest suite passed 2,260/2,260 under both compilers using official
-  CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28 compatibility, and
-  documentation layout remained successful. Ubuntu 26.04 Clang 21
-  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
-  inputs with no crash, hang, or sanitizer finding and 39 MiB peak RSS.
-
-## 2026-08-05 - LZW plus tANS public-ABI completion matrix
-
-- Authoring method: instantiated marc's common LZW public-ABI audit through
-  DD-592 and replaced only the local tANS storage ceiling and public symbols.
-- References used: DD-593, DD-592, the local C lifecycle, generic frame fields,
-  deterministic test generator, process contract, and sticky terminal policy.
-- Known implementations intentionally not consulted: external LZW/tANS test
-  corpora, completion matrices, malformed schedules, source code, and suites.
-- Independent decisions: keep data, chunk, terminal, and malformed schedules
-  identical across LZW entropy compositions; use the blockwise tANS ceiling;
-  corrupt the generic fourth-frame sequence; and require frame-granular output
-  commitment plus stable repeated errors.
-- Generated-code task description: add the public-only completion matrix for
-  required data classes, repeat determinism, three chunk schedules, terminal
-  repetition, and corrupted, truncated, and trailing final frames; synchronize
-  format, architecture, C API, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the matrix reuses only repository-local test structure and
-  public functions. No external encoded bytes, data schedule, corruption
-  location, control flow, naming scheme, or assertion was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
-  streaming transforms, profile, C factory, and completion suite passed 47/47
+- Similarity review: the adapter follows marc's local ABI convention and
+  DD-514 ownership exactly. No external API naming, object layout, allocation
+  scheme, wrapper control flow, or test expression was compared.
+- Local validation: the pure-C lifecycle and focused LZD/rANS validator,
+  decoder, planner, encoder, streaming-transform, and profile suite passed
   under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,257/2,257 under both compilers using official CMake 4.3.4; all 39 benchmark
-  smokes, schema 1 through 28 compatibility, and documentation layout remained
-  successful.
+  1,992/1,992 under both compilers using official CMake 4.3.4; all 34 benchmark
+  smokes and schema-23 compatibility remained successful. Full target builds
+  also recompiled every existing public-header consumer under both compilers.
 
-## 2026-08-05 - LZW plus tANS public C workspace factory
+## 2026-08-01 - LZD plus rANS profile workspace calculation
 
-- Authoring method: bound DD-592 directly to DD-591's local profile and the
-  repository's established opaque transform lifecycle.
-- References used: DD-592, DD-591, the local LZW/tANS streaming pair, stable
-  C status mapping, checked region addition, and caller-owned buffers.
-- Known implementations intentionally not consulted: external compression C
-  APIs, LZW/tANS factories, ABI layouts, source code, and test suites.
-- Independent decisions: mirror the existing fixed-width configuration shape
-  under a distinct type; keep typed layouts private; revalidate requirements in
-  the factory; publish no handle until allocation succeeds; and test the public
-  lifecycle from a C11 translation unit.
-- Generated-code task description: add config initialization, requirements
-  query, factory, C declarations, and pure-C round trip; reject short,
-  misaligned, null, and reserved-field cases; synchronize C API, architecture,
-  readiness, composition, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: the implementation composes marc's own profile and common
-  C transform contract. No external ABI structure, factory flow, storage
-  partition, naming scheme, or test expression was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
-  streaming transforms, profile, and pure-C factory suite passed 44/44 under
-  both MSVC and ClangCL. The complete Release CTest suite passed 2,254/2,254
-  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
-  schema 1 through 28 compatibility, and documentation layout remained
-  successful.
-
-## 2026-08-05 - LZW plus tANS workspace profile calculation
-
-- Authoring method: derived DD-591 from marc's local LZW/tANS streaming
-  constructors, conservative format ceilings, and checked alignment helpers.
-- References used: DD-591, DD-590, DD-589, the local LZW encoder and validator
-  workspace functions, tANS constants, checked arithmetic, and caller-owned
-  spans.
-- Known implementations intentionally not consulted: external LZW/tANS
+- Authoring method: derived DD-514 from marc's local LZD/rANS streaming
+  constructors, LZD token and record bounds, scalar-rANS block bounds, and
+  checked alignment helpers.
+- References used: DD-514, DD-513, DD-512, the local LZD encoder and validator
+  workspace functions, scalar-rANS constants, checked arithmetic, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZD/rANS
   workspace calculators, ABI layouts, allocation schemes, source code, and
   test suites.
-- Independent decisions: calculate the tANS ceiling block by block; count all
-  encoder byte and typed regions together; derive decoder storage only from
-  local limits; place tANS views before aligned LZW phrases; retain canonical
-  empty alignment one; and validate opaque partitions before publishing views.
+- Independent decisions: calculate conservative token and complete-frame
+  encoder regions; aggregate-count every encoder-owned region; derive decoder
+  byte regions only from local limits; place rANS views, aligned LZD phrases,
+  and aligned expansion references in that order; and recompute the complete
+  layout before publishing typed spans.
 - Generated-code task description: add direction-specific profile and typed
-  partition helpers; freeze independently calculated requirements; exercise
-  limits, altered requirements, short and misaligned storage, stable error
-  mapping, and a streaming round trip built solely from returned extents; then
-  synchronize format, architecture, composition, changelog, decision,
+  partition helpers; freeze hand-checkable requirements; exercise limits,
+  altered layouts, short storage, stable error mapping, and a streaming round
+  trip built only from returned extents; synchronize architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: formulas directly express repository-local format bounds
+  and C++ alignment. No external sizing formula, layout, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZD/rANS validator, decoder, planner, encoder,
+  streaming-transform, and profile suite passed 38/38 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,991/1,991 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful. MSBuild required the established
+  out-of-sandbox retry after FileTracker returned `E_ACCESSDENIED`; both
+  compiler builds then completed normally.
+
+## 2026-08-01 - LZD plus rANS bounded streaming decoder
+
+- Authoring method: combined DD-513 from marc's stream/frame parsers, DD-508
+  private complete-frame decoder, and caller-owned raw-drain state.
+- References used: DD-513, DD-508, the local rANS block-view contract, LZD
+  phrase and expansion bounds, known-size process invariants, checked
+  arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  streaming decoders, state machines, buffering layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: admit every complete frame and private region from the
+  fixed header before body collection; decode only into private raw storage;
+  drain only after success; preserve earlier committed frames; and keep errors
+  and terminal success sticky.
+- Generated-code task description: add the known-size streaming decoder and
+  build registration; prove one-byte decode, malformed-later-frame atomicity,
+  all byte and typed workspace shortages, aggregate admission, truncation,
+  trailing data, empty input, flush starvation, premature end, and protocol
+  errors; synchronize documentation and provenance.
+- Similarity review: the implementation composes only local independently
+  specified parsers, bounds, private decoding, and transform conventions. No
+  external state ordering, drain protocol, workspace organization, malformed
+  vector, error mapping, or test expression was compared.
+- Local validation: the focused LZD/rANS frame and streaming-transform suite
+  passed 31/31 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,984/1,984 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
+## 2026-08-01 - LZD plus rANS bounded streaming encoder
+
+- Authoring method: wrapped DD-510 and DD-511 in marc's established immutable-
+  direction transform contract with caller-owned collection and drain storage.
+- References used: DD-512, the local complete-frame planner and encoder,
+  stream-prefix serializers, process/status invariants, checked aggregate
+  arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  streaming encoders, state machines, buffering layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: retain one complete immutable frame while draining;
+  accept no new frame input during that drain; count every simultaneously held
+  region; preserve `EndInput`; leave `Flush` nonterminal; and reject explicit
+  block reset.
+- Generated-code task description: add the known-size streaming encoder and
+  build registration; prove one-byte reference identity, flush invariance,
+  sticky end, empty streams, workspace and aggregate admission, and protocol
+  errors; synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's local transform
+  conventions and exact-frame APIs. No external state ordering, drain protocol,
+  storage organization, encoded bytes, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZD/rANS frame and streaming-encoder suite
+  passed 26/26 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,979/1,979 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
+## 2026-08-01 - LZD plus rANS deterministic frame encoder
+
+- Authoring method: placed DD-511 directly above DD-510's exact plan and used
+  marc's explicit generic-header and scalar-rANS serialization boundaries.
+- References used: DD-511, DD-510, the independent 593-byte vector, local frame
+  and rANS serializers, scalar rANS encoder, checked offsets, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS frame
+  encoders, serialization schedules, buffer layouts, encoded corpora, source
+  code, and test suites.
+- Independent decisions: plan before destination admission; preserve all output
+  on planner or capacity failure; regenerate every rANS block only from frozen
+  token staging; require repeated extents and final offsets to match; and write
+  all integer fields explicitly.
+- Generated-code task description: add deterministic complete-frame encoding,
+  a stable short-output error, independent-vector identity, phrase-generating
+  multi-block determinism and transactional round trip, output-capacity
+  atomicity, and synchronized format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the encoder composes only local independently specified
+  planners, serializers, and bounded spans. No external frame-writing control
+  flow, mutation schedule, capacity formula, encoded bytes, error taxonomy, or
+  test expression was compared.
+- Local validation: the focused LZD/rANS validator, decoder, planner, and
+  encoder suite passed 21/21 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,974/1,974 under both compilers using official CMake
+  4.3.4; all 34 benchmark smokes and schema-23 compatibility remained
+  successful.
+
+## 2026-08-01 - LZD plus rANS exact-frame planner
+
+- Authoring method: composed DD-510 from marc's existing LZD planner and
+  encoder, scalar rANS block planner, generic frame validator, and checked
+  caller-owned staging conventions.
+- References used: DD-510, DD-506 bounds, the local LZD encoder, rANS block
+  planner, generic frame header, checked arithmetic, and bounded spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  encoders, planning protocols, capacity formulas, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: admit encoder records before token staging; freeze the
+  complete canonical token sequence before rANS planning; plan every block
+  without serialized output; count encoder records, tokens, descriptors, and
+  exact payload together; and validate the synthesized header last.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and phrase-block determinism, guarded
+  encoder and staging shortages, aggregate and frame-size rejection, and
+  synchronized format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation directly sequences only local
+  independently specified components and bounded spans. No external planning
+  order, workspace organization, capacity formula, encoded bytes, error
+  taxonomy, or test expression was compared.
+- Local validation: the focused LZD/rANS validator, decoder, publication, and
+  planner suite passed 18/18 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,971/1,971 under both compilers using official CMake
+  4.3.4; all 34 benchmark smokes and schema-23 compatibility remained
+  successful.
+
+## 2026-08-01 - LZD plus rANS transactional publication
+
+- Authoring method: applied DD-509 directly above marc's DD-508 private raw
+  decoder using the repository's established one-copy publication boundary.
+- References used: DD-509, DD-508, the local private decoder, checked caller
+  capacity, bounded spans, and standard copy semantics.
+- Known implementations intentionally not consulted: external LZD/rANS
+  decoders, publication protocols, buffer layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: preflight the complete caller destination before any
+  private mutation; exclude output from aggregate workspace; copy exactly once
+  after private success; preserve excess capacity; and preserve all output on
+  every failure.
+- Generated-code task description: extend shared preflight with output
+  capacity, add transactional complete-frame publication, raw-`A` and generated-
+  phrase success tests, short-output and layered-failure atomicity tests, and
+  synchronize changelog, format, architecture, readiness, composition,
+  decision, reference, vector, and provenance records.
+- Similarity review: the boundary adds only a checked destination and final
+  standard copy above local private decoding. No external transaction flow,
+  publication order, buffer policy, error mapping, or test expression was
+  compared.
+- Local validation: the focused LZD/rANS vector, validator, private-decoder,
+  and transactional-publication suite passed 15/15 under both MSVC and
+  ClangCL. The complete Release suite passed 1,967/1,967 under both compilers
+  using official CMake 4.3.4; all 34 benchmark smokes and schema-23
+  compatibility remained successful.
+
+## 2026-08-01 - LZD plus rANS private raw reconstruction
+
+- Authoring method: applied DD-508 above marc's DD-507 complete-frame validator
+  and ordinary iterative LZD decoder.
+- References used: DD-508, DD-507, the local LZD decoder and expansion bound,
+  rANS/LZD validation ordering, checked aggregate arithmetic, and caller-owned
+  private spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  decoders, phrase expansion implementations, allocation layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: admit raw and expansion storage before entropy work;
+  aggregate-count both; reuse only the completely validated phrase graph;
+  reconstruct iteratively into disposable staging; and add no external output
+  transaction.
+- Generated-code task description: extend the validator preflight and result,
+  add private raw reconstruction, raw-`A` and cross-block `ABABAB` tests, short-
+  private-region and malformed-entropy atomicity tests, and synchronize
+  changelog, format, architecture, readiness, composition, decision, reference,
+  vector, and provenance records.
+- Similarity review: the implementation composes local validator and decoder
+  contracts with checked spans. No external reconstruction order, expansion
+  layout, buffer policy, error mapping, or test expression was compared.
+- Local validation: the focused LZD/rANS vector, validator, and private-decoder
+  suite passed 11/11 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 1,963/1,963 under both compilers using official CMake 4.3.4;
+  all 34 benchmark smokes and schema-23 compatibility remained successful.
+
+## 2026-08-01 - LZD plus rANS complete-frame validator
+
+- Authoring method: composed DD-507 directly from marc's rANS controller and
+  decoder, ordinary LZD token-stream validator, generic frame parser, and
+  checked workspace conventions.
+- References used: DD-507, DD-506, the local rANS descriptor controller and
+  decoder, LZD validator, generic frame bounds, checked arithmetic, and caller-
+  owned spans.
+- Known implementations intentionally not consulted: external LZD/rANS
+  compositions, combined decoders, allocation layouts, error taxonomies,
+  malformed corpora, source code, and test suites.
+- Independent decisions: preflight every encoded and workspace extent;
+  validate all blocks before token mutation; reconstruct exactly one complete
+  private token region; invoke the existing LZD validator only afterward; and
+  publish no raw bytes.
+- Generated-code task description: add a bounded complete-frame result and
+  validator, exact extent and aggregate checks, two-pass entropy validation and
+  reconstruction, LZD graph validation, split-block and failure-atomic tests,
+  and synchronized changelog, format, architecture, readiness, composition,
+  decision, reference, vector, and provenance records.
+- Similarity review: the implementation sequences local independently authored
+  boundaries and checked spans. No external combined control flow, workspace
+  layout, error mapping, malformed vector, or test expression was compared.
+- Local validation: the focused LZD/rANS vector and complete-frame validator
+  suite passed 7/7 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,959/1,959 under both compilers using official CMake 4.3.4; all 34
+  benchmark smokes and schema-23 compatibility remained successful.
+
+## 2026-08-01 - LZD plus rANS reserved representation
+
+- Authoring method: composed marc's already documented LZD reference-pair
+  grammar, scalar rANS block representation, and generic frame serialization
+  without consulting another combined format.
+- References used: DD-506, the local LZD variant-1 specification and encoder,
+  scalar rANS variant-1 specification and encoder, generic frame serializer,
+  checked bounds, and standalone hand vectors.
+- Known implementations intentionally not consulted: external LZD/rANS
+  formats, combined codec source, archive tools, encoded corpora, and test
+  suites.
+- Independent decisions: finalize the complete eight-byte token sequence
+  before rANS; permit blocks to split references and tokens only at byte
+  boundaries; validate all entropy before the LZD graph; retain frame-local
+  reset; and freeze a sparse 593-byte raw-`A` frame.
+- Generated-code task description: specify exact IDs, parameters, token and
+  entropy boundaries, checked `S`, `K`, descriptor, `P`, phrase, expansion,
+  and frame bounds; add the standalone-component vector; and synchronize
+  changelog, format, architecture, readiness, composition, decision,
+  reference, vector-generation, and provenance records.
+- Similarity review: the composition directly sequences existing local byte-
+  stream contracts. No external combined grammar, byte layout, bound,
+  normalization table, encoded frame, naming scheme, or test expression was
+  compared.
+- Local validation: the independent LZD/rANS terminal-token vector passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed 1,953/1,953
+  under both compilers using official CMake 4.3.4; all 34 benchmark smokes and
+  schema-23 compatibility remained successful.
+
+## 2026-08-01 - Interoperability schema 23 appends LZW plus rANS
+
+- Authoring method: applied DD-505 after the fixed `lzw-rans` CLI, completion,
+  fuzz, and benchmark boundaries were locally complete.
+- References used: DD-505, the frozen schema-22 manifest order, marc's
+  deterministic 8,193-byte fixture, and the repository-owned generator,
+  verifier, and compatibility scripts.
+- Known implementations intentionally not consulted: external
+  interoperability schemas, manifests, archive corpora, source code, and test
+  suites.
+- Independent decisions: append exactly one profile; name codec set
+  `marc-cli-v23`; retain every earlier schema exactly; locally round-trip
+  before manifest publication; require canonical order and deterministic
+  re-encoding; and keep external evidence explicitly pending.
+- Generated-code task description: update the generator to schema 23, add
+  `lzw-rans` as archive 34, teach the verifier the exact new set, reject a
+  reordered schema-23 manifest, convert schema 23 to 22, exercise schemas 22
+  through 1, and synchronize interoperability, format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the change extends only marc's existing versioned
+  manifest chain by one local selector. No external schema structure, archive,
+  conversion flow, validation expression, or test data was compared.
+- Local validation: focused schema-23 generation, all 34 deterministic local
+  round trips, reordered-manifest rejection, and the schema-22-through-1
+  compatibility chain passed under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,952/1,952 under both compilers using official CMake
+  4.3.4; all 34 benchmark smokes remained successful.
+
+## 2026-08-01 - Interoperability schema 23 external validation record
+
+- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
+  no non-x86-64 or non-WSL Linux claim is added.
+- References used: DD-505, marc's schema-23 generator and verifier, the
+  successful pushed CI artifacts, and the independently generated Ubuntu
+  26.04 bundle.
+- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
+  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
+  via Ninja under Ubuntu 26.04 WSL2 on x64.
+- Known implementations intentionally not consulted: external codec source,
+  archive implementations, encoded corpora, and test suites.
+- Recorded result: revision
+  `5397f261fa04ee49832d9f72b09960a156232aad` completed all four established
+  verification directions. Ubuntu 26.04 verified the Windows/MSVC and Ubuntu
+  24.04 CI bundles, generated and self-verified its own bundle, and
+  Windows/MSVC verified that Ubuntu bundle. Every invocation reported
+  `Verified 34 archives` and performed exact manifest-order, size, SHA-256,
+  decoded-fixture, and byte-identical local re-encoding checks.
+- Similarity review: this record contains only observed tool outputs and
+  environment labels supplied by the project owner. No external encoded
+  representation or implementation structure was compared.
+
+## 2026-08-01 - LZW plus rANS verified benchmark adapter
+
+- Authoring method: extended marc's dependency-free public-C benchmark runner
+  under DD-504 with the already admitted DD-503 CLI profile.
+- References used: DD-504, DD-503, the public LZW/rANS lifecycle, checked
+  complete-stream arithmetic, and the repository's untimed verification and
+  timed fresh-transform protocol.
+- Known implementations intentionally not consulted: external benchmark
+  suites, LZW/rANS tools, wrappers, encoded corpora, source code, and published
+  performance tables.
+- Independent decisions: use `80 + 2N + 1128K` capacity; query both directions
+  independently; verify exact round trip before measurement; report each
+  workspace and their directional maximum; and impose no speed or ratio floor.
+- Generated-code task description: add codec registration, fixed public
+  configuration, capacity arithmetic, requirements and factory dispatch,
+  verified smoke test, and synchronize changelog, benchmark, format,
+  architecture, readiness, composition, decision, reference, vector, and
+  provenance records.
+- Similarity review: the adapter changes only marc's local enum, dispatch, and
+  checked profile calculations. No external harness structure, capacity
+  formula, timing protocol, output format, or test expression was compared.
+- Local validation: the verified benchmark smoke passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,952/1,952 under both
+  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-22
+  compatibility remained successful.
+
+## 2026-08-01 - LZW plus rANS transactional CLI adapter
+
+- Authoring method: applied DD-503 to marc's existing transactional CLI and
+  the already published `marc_lzw_rans_*` lifecycle.
+- References used: DD-503, DD-500, public fixed-width config and workspace
+  query, local rANS bounds, and the generic CLI round-trip regression.
+- Known implementations intentionally not consulted: external LZW/rANS tools,
+  archive CLIs, wrappers, source code, encoded corpora, and test suites.
+- Independent decisions: fix both frame and entropy block at 65,536 bytes;
+  retain the 8-MiB aggregate policy used by the other admitted LZW entropy
+  profiles; obtain every actual workspace from the public query; and preserve
+  the shared temporary-file transaction without codec-specific file handling.
+- Generated-code task description: add the enum, public-limit configuration,
+  requirements and factory dispatch, selector and usage text, common CLI
+  regression, and synchronize changelog, CLI, format, architecture, readiness,
+  composition, decision, reference, vector, and provenance records.
+- Similarity review: the adapter extends only marc's local switch and public C
+  lifecycle. No external CLI structure, profile constants, error handling,
+  naming scheme, or test expression was compared.
+- Local validation: the dedicated transactional CLI regression passed under
+  both MSVC and ClangCL. The complete Release CTest suite passed 1,951/1,951
+  under both compilers using official CMake 4.3.4; all 33 benchmark smokes and
+  schema-22 compatibility remained successful.
+
+## 2026-08-01 - LZW plus rANS bounded decoder fuzz boundary
+
+- Authoring method: applied DD-502 to marc's local complete-frame decoder and
+  DD-500 public C transform lifecycle using fixed caller-owned arrays.
+- References used: DD-502, DD-500, local LZW/rANS profile arithmetic,
+  process-result invariants, and the repository-generated `ABABX` stream.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed archives, combined codec implementations, source code,
+  and test suites.
+- Independent decisions: exercise private complete-frame and public streaming
+  boundaries with every input; cap all byte and typed storage before parsing;
+  use deterministic small chunks and a finite call budget; treat ordinary
+  decode errors as expected; and retain truncation, saturated extent, and
+  reserved-descriptor atomicity as permanent regressions. Seed the corpus only
+  with the reviewed five-byte truncated magic prefix.
+- Generated-code task description: add the bounded dual-path harness, normal-
+  build compile-smoke target, three atomic malformed regressions, and
+  synchronize changelog, architecture, readiness, composition, fuzzing,
+  decision, reference, vector, and provenance records.
+- Similarity review: the harness and regressions compose only local public and
+  private interfaces and repository-authored vectors. No external mutation
+  strategy, corpus input, control flow, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/rANS suite passed 51/51 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 1,950/1,950 under both
+  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful. The Clang/libFuzzer executable completed
+  a bounded 1,000-input AddressSanitizer/UndefinedBehaviorSanitizer smoke with
+  no crash, hang, or sanitizer finding and 38 MiB peak RSS.
+
+## 2026-08-01 - LZW plus rANS public-ABI completion matrix
+
+- Authoring method: applied DD-501 to marc's local DD-500 C lifecycle and the
+  repository's independently authored common LZW completion schedules.
+- References used: DD-501, DD-500, the public C header, local transform
+  lifecycle, documented rANS block bounds, and deterministic local generators.
+- Known implementations intentionally not consulted: external LZW/rANS test
+  suites, conformance corpora, encoded archives, source code, and wrappers.
+- Independent decisions: keep all evidence on the public C boundary; retain
+  identical LZW input classes and chunk schedules; specialize only the rANS
+  frame ceiling and block configuration; and treat one final-frame byte as the
+  transactional publication unit after three committed 64-byte frames.
+- Generated-code task description: add the public-ABI completion matrix;
+  exercise required data classes, repeat determinism, four encode/decode chunk
+  schedules, sticky end and error states, and corrupted, truncated, and
+  extended fourth-frame atomicity; synchronize C API, format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the matrix reuses only repository-local evidence
+  schedules and public symbols. No external vector, scheduling pattern,
+  malformed corpus, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/rANS internal, pure-C, and public-ABI
+  completion suite passed 49/49 under both MSVC and ClangCL. The complete
+  Release CTest suite passed 1,947/1,947 under both compilers using official
+  CMake 4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
+  successful.
+
+## 2026-08-01 - LZW plus rANS public C factory
+
+- Authoring method: bound DD-500 directly to marc's local DD-499 profile,
+  checked typed partition helpers, and established opaque transform lifecycle.
+- References used: DD-500, DD-499, the local streaming transforms, fixed-width
+  public C types, common workspace requirements, and standard C allocation.
+- Known implementations intentionally not consulted: external codec ABIs,
+  LZW/rANS wrappers, workspace conventions, source code, and test suites.
+- Independent decisions: add one size-tagged config without changing ABI
+  version; retain primary, secondary, and aligned opaque views roles; repeat
+  profile calculation in the factory; keep all record layouts private; and
+  publish a null handle on every failure.
+- Generated-code task description: add public config, requirements query, and
+  factory declarations and definitions; prove a pure-C five-byte three-frame
+  round trip, exact representative workspace extents, every short region,
+  misalignment, null output, and reserved metadata; synchronize C API, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the adapter follows marc's existing independently written
+  lifecycle and the new local profile. No external ABI layout, wrapper control
+  flow, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/rANS internal and pure-C public suite
+  passed 46/46 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 1,944/1,944 under both compilers using official CMake 4.3.4; all 33
+  benchmark smokes and schema-22 compatibility remained successful. MSBuild
+  required the established out-of-sandbox retry after its FileTracker returned
+  `E_ACCESSDENIED`; both compiler builds then completed normally.
+
+## 2026-08-01 - LZW plus rANS profile workspace calculation
+
+- Authoring method: derived DD-499 from marc's local streaming constructors,
+  LZW width and record bounds, scalar rANS block bounds, and checked alignment
+  helpers.
+- References used: DD-499, DD-498, DD-497, the local LZW encoder and validator
+  workspace functions, scalar rANS constants, checked arithmetic, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS
+  workspace calculators, ABI layouts, allocation schemes, source code, and
+  test suites.
+- Independent decisions: calculate conservative packed and complete-frame
+  encoder regions; aggregate-count every encoder-owned region; derive decoder
+  byte regions only from local limits; place rANS views before aligned LZW
+  phrases; use canonical empty alignment one; and validate opaque partitions
+  before publishing typed spans.
+- Generated-code task description: add direction-specific profile and typed
+  partition helpers; freeze hand-checkable requirements; exercise limits,
+  altered requirements, short and misaligned storage, stable error mapping,
+  and a streaming round trip built only from returned extents; synchronize
+  format, architecture, readiness, composition, changelog, decision,
   reference, vector, and provenance records.
-- Similarity review: formulas directly express marc's existing format bounds
-  and C++ alignment. No external sizing formula, storage layout, naming scheme,
-  or test expression was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
-  both streaming transforms, and profile suite passed 43/43 under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,253/2,253 under both
-  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
-  through 28 compatibility, and documentation layout remained successful.
+- Similarity review: formulas directly express repository-local format bounds
+  and C++ alignment. No external sizing formula, layout, naming scheme, or test
+  expression was compared.
+- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
+  streaming-transform, and profile suite passed 45/45 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 1,943/1,943 under both
+  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful.
 
-## 2026-08-05 - LZW plus tANS bounded streaming decoding
+## 2026-08-01 - LZW plus rANS bounded streaming decoding
 
-- Authoring method: composed DD-590 from marc's local private complete-frame
+- Authoring method: composed DD-498 from marc's local private complete-frame
   decoder and established frame-stream collection contract.
-- References used: DD-590, DD-589, the local LZW/tANS private decoder,
+- References used: DD-498, DD-497, the local LZW/rANS private decoder,
   explicit stream and frame parsers, checked arithmetic, and caller-owned
   spans.
 - Known implementations intentionally not consulted: external streaming
-  LZW/tANS decoders, buffering schedules, allocation layouts, malformed
+  LZW/rANS decoders, buffering schedules, allocation layouts, malformed
   corpora, source code, and test suites.
 - Independent decisions: parse the fixed prefix and frame header separately;
   admit serialized frame, views, packed staging, raw staging, and phrase
@@ -10930,21 +11762,21 @@ discarded and the reviewed seed retained.
   and independently specified frame validation. No external control flow,
   storage organization, naming scheme, malformed vector, or test expression
   was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
-  and both streaming-transform suite passed 36/36 under both MSVC and ClangCL.
-  The complete Release CTest suite passed 2,246/2,246 under both compilers
-  using official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
-  compatibility, and documentation layout remained successful.
+- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
+  and both streaming-transform suite passed 38/38 under both MSVC and ClangCL.
+  The complete Release CTest suite passed 1,936/1,936 under both compilers
+  using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+  compatibility remained successful.
 
-## 2026-08-05 - LZW plus tANS bounded streaming encoding
+## 2026-08-01 - LZW plus rANS bounded streaming encoding
 
-- Authoring method: composed DD-589 directly above marc's local exact-frame
+- Authoring method: composed DD-497 directly above marc's local exact-frame
   planner and encoder and the repository's established transform contract.
-- References used: DD-589, DD-588, the local LZW/tANS frame encoder, explicit
+- References used: DD-497, DD-496, the local LZW/rANS frame encoder, explicit
   stream and LZW parameter serializers, checked arithmetic, and caller-owned
   spans.
 - Known implementations intentionally not consulted: external streaming
-  LZW/tANS implementations, buffering schedules, allocation layouts, encoded
+  LZW/rANS implementations, buffering schedules, allocation layouts, encoded
   corpora, source code, and test suites.
 - Independent decisions: buffer exactly one raw frame; retain separate packed
   and immutable serialized-frame regions; drain a frame before accepting later
@@ -10959,20 +11791,20 @@ discarded and the reviewed seed retained.
   contracts and independently specified frame encoding. No external control
   flow, storage organization, naming scheme, encoded bytes, or test expression
   was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
-  and streaming-encoder suite passed 31/31 under both MSVC and ClangCL. The
-  complete Release CTest suite passed 2,241/2,241 under both compilers using
-  official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
-  compatibility, and documentation layout remained successful.
+- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
+  and streaming-encoder suite passed 33/33 under both MSVC and ClangCL. The
+  complete Release CTest suite passed 1,931/1,931 under both compilers using
+  official CMake 4.3.4; all 33 benchmark smokes and schema-22 compatibility
+  remained successful.
 
-## 2026-08-04 - LZW plus tANS deterministic frame encoding
+## 2026-08-01 - LZW plus rANS deterministic frame encoding
 
-- Authoring method: placed explicit frame serialization above DD-587's exact
-  plan and reused marc's local generic-header, tANS descriptor, and tANS
+- Authoring method: placed explicit frame serialization above DD-495's exact
+  plan and reused marc's local generic-header, rANS descriptor, and rANS
   payload writers.
-- References used: DD-588, DD-587, the independent 587-byte vector, explicit
-  local serializers, tANS planner and encoder, and caller-owned spans.
-- Known implementations intentionally not consulted: external LZW/tANS frame
+- References used: DD-496, DD-495, the independent 592-byte vector, explicit
+  local serializers, scalar rANS planner and encoder, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/rANS frame
   encoders, serialization schedules, archive formats, allocation layouts,
   encoded corpora, source code, and test suites.
 - Independent decisions: complete planning and output admission before frame
@@ -10988,1130 +11820,11 @@ discarded and the reviewed seed retained.
   specified plan and serializers. No external serialization order, control
   flow, storage organization, encoded bytes, naming scheme, or test expression
   was compared.
-- Local validation: the focused LZW/tANS validator, decoder, planner, and
-  encoder suite passed 26/26 under both MSVC and ClangCL. The complete Release
-  CTest suite passed 2,236/2,236 under both compilers using official CMake
-  4.3.4; all 39 benchmark smokes, schema 1 through 28 compatibility, and
-  documentation layout remained successful.
-
-## 2026-08-04 - LZW plus tANS exact-frame planning
-
-- Authoring method: composed DD-587 from marc's local deterministic LZW
-  planner and encoder, tANS block planner, and generic frame validator.
-- References used: DD-587, DD-583's representation, the local LZW encoder
-  contract, tANS planner, checked arithmetic, generic frame bounds, and
-  caller-owned spans.
-- Known implementations intentionally not consulted: external LZW/tANS
-  encoders, combined planners, capacity formulas, allocation layouts, encoded
-  corpora, source code, and test suites.
-- Independent decisions: freeze the complete packed stream before entropy
-  planning; plan all blocks without serialized output; count encoder records,
-  packed bytes, descriptors, and payload in one aggregate; and validate the
-  synthesized frame header before success.
-- Generated-code task description: add planner result fields and errors,
-  bounded exact-frame planning, raw-`A` and cross-block `ABABABA` determinism,
-  guarded workspace and staging shortages, block, aggregate, and frame-size
-  rejection, and synchronized format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the planner directly sequences local independently
-  specified components and checked spans. No external planning order, storage
-  organization, capacity formula, encoded bytes, naming scheme, or test
-  expression was compared.
-- Local validation: the focused LZW/tANS planner, validator, and decoder suite
-  passed 23/23 under both MSVC and ClangCL. The complete Release CTest suite
-  passed 2,233/2,233 under both compilers using official CMake 4.3.4; all 39
-  benchmark smokes, schema 1 through 28 compatibility, and documentation
-  layout remained successful.
-
-## 2026-08-04 - LZW plus tANS transactional publication
-
-- Authoring method: applied DD-586 above marc's DD-585 private decoder and
-  DD-584 validation boundary.
-- References used: DD-586, DD-585, the local two-pass tANS validator, iterative
-  LZW decoder, caller-owned spans, checked preflight, and bounded copy.
-- Known implementations intentionally not consulted: external LZW/tANS
-  compositions, transactional decoders, commit protocols, buffer ownership
-  models, malformed corpora, source code, and test suites.
-- Independent decisions: admit caller output before private mutation; keep it
-  outside internal-workspace accounting; reconstruct into disposable raw
-  staging; and publish the exact declared extent with one final copy only after
-  all layer checks succeed.
-- Generated-code task description: add a stable short-output error and
-  complete-frame transactional wrapper; prove raw-`A` prefix publication,
-  cross-block `KwKwK`, short-output total immutability, and no publication on
-  malformed tANS or LZW padding; synchronize format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation follows marc's already independently
-  specified private decoder and established transactional composition
-  boundary. No external validation order, publication control flow, storage
-  organization, malformed vector, naming scheme, or test expression was
-  compared.
-- Local validation: the focused LZW/tANS validator and decoder suite passed
-  19/19 under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,229/2,229 under both compilers using official CMake 4.3.4; all 39
-  benchmark smokes, schema 1 through 28 compatibility, and documentation
-  layout remained successful.
-
-## 2026-08-04 - LZW plus tANS private raw reconstruction
-
-- Authoring method: applied DD-585 above marc's DD-584 complete-frame
-  validator and ordinary iterative LZW decoder.
-- References used: DD-585, DD-584, the local tANS controller and decoder, LZW
-  validator and decoder, checked arithmetic, and caller-owned spans.
-- Known implementations intentionally not consulted: external LZW/tANS
-  compositions, combined decoders, phrase expansion implementations,
-  allocation layouts, malformed corpora, source code, and test suites.
-- Independent decisions: admit raw capacity and aggregate storage before
-  entropy output; retain all-block tANS validation and complete LZW validation;
-  reconstruct only into separate private staging; and publish no raw bytes.
-- Generated-code task description: add a bounded private decoder and stable
-  raw-capacity and dictionary-decode errors; prove raw-`A`, phrase and `KwKwK`
-  reconstruction across tANS block boundaries, preflight atomicity, and
-  invalid-code raw preservation; synchronize format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation directly composes marc's existing
-  independently specified validator, decoder, checked spans, and error
-  records. No external validation order, expansion control flow, storage
-  organization, malformed vector, naming scheme, or test expression was
-  compared.
-- Local validation: the focused LZW/tANS vector, validator, and private-decoder
-  suite passed 15/15 under both MSVC and ClangCL. The complete Release CTest
-  suite passed 2,225/2,225 under both compilers using official CMake 4.3.4;
-  all 39 benchmark smokes, schema 1 through 28 compatibility, and documentation
-  layout remained successful.
-
-## 2026-08-04 - LZW plus tANS complete-frame validator
-
-- Authoring method: composed marc's strict two-pass tANS block controller with
-  its existing bounded LZW code-stream and phrase validator.
-- References used: DD-584, DD-583 bounds, local generic frame parsing, local
-  tANS descriptors and state validation, caller-owned spans, checked
-  arithmetic, and the independent 587-byte vector.
-- Known implementations intentionally not consulted: external combined
-  decoders, validation orders, workspace layouts, malformed corpora, source
-  code, and test suites.
-- Independent decisions: admit all extents before entropy work; count tANS
-  views and LZW phrase records in the aggregate; validate every entropy block
-  before packed mutation; decode exactly once into private staging only after
-  complete entropy success; and retain stable layer and position diagnostics.
-- Generated-code task description: implement only the bounded decoder-side
-  validator; exercise code-splitting blocks, truncation, later-block failure,
-  workspace shortages, invalid LZW padding, impossible extents, and update
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the implementation directly sequences repository-owned
-  components and checked spans. No external control flow, validation schedule,
-  error taxonomy, test mutation, encoded data, or naming scheme was compared.
-- Local validation: the focused validator suite passed 9/9 under MSVC and
-  ClangCL. The complete Release CTest suite passed 2,219/2,219 under both
-  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
-  through 28 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZW plus tANS representation and vector reservation
-
-- Authoring method: composed marc's already specified packed LZW code format
-  with its independently implemented tabled tANS block format.
-- References used: DD-583, the local LZW encoder and hand vectors, local tANS
-  normalization, table construction, reverse recurrence, descriptor
-  serializer, generic frame serializer, and checked block bounds.
-- Known implementations intentionally not consulted: external combined
-  codecs, encoded corpora, source code, stream formats, test vectors, and test
-  suites.
-- Independent decisions: finalize all packed LZW bytes including padding
-  before entropy coding; permit entropy blocks to split codes but not bytes or
-  frames; retain the checked `ceil(FW/8)` bound; and fix raw `A` as a sparse
-  complete-frame vector.
-- Generated-code task description: reserve the exact LZW+tANS representation,
-  derive one hand-checkable raw-`A` vector, add a component-composition test,
-  and synchronize architecture, format, readiness, composition, changelog,
-  decision, reference, vector-generation, and provenance records.
-- Similarity review: the representation is a direct bounded composition of
-  repository-owned formats. No external byte sequence, state table, control
-  flow, capacity formula, naming scheme, or test expression was compared.
-- Local validation: the independent 587-byte vector passed under MSVC and
-  ClangCL. The complete Release CTest suite passed 2,210/2,210 under both
-  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
-  through 28 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - Interoperability schema 28 appends LZ78 plus tANS
-
-- Authoring method: extended marc's append-only local bundle schema by one
-  already admitted CLI profile.
-- References used: DD-582, the frozen schema-27 order, repository-owned bundle
-  scripts, deterministic 8,193-byte fixture, and `lz78-tans`.
-- Known implementations intentionally not consulted: external archives,
-  manifests, interoperability suites, implementations, or test results.
-- Independent decisions: name `marc-cli-v28`; append `lz78-tans` only as entry
-  39; enforce exact order; and recover schema 27 by removing only the new
-  archive before checking every earlier schema.
-- Generated-code task description: advance bundle generation and verification
-  to schema 28, add reordered-manifest and schemas 1 through 27 compatibility
-  coverage, and synchronize format/readiness/interoperability/provenance docs.
-- Similarity review: the change is an append-only application of marc's own
-  manifest rules and fixture. No external ordering, archive bytes, metadata,
-  script structure, or expected result was compared.
-- Local validation: schema-28 generation, exact-order verification,
-  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 27 compatibility passed under MSVC and ClangCL. The complete Release
-  CTest suite passed 2,209/2,209 under both compilers using official CMake
-  4.3.4; all 39 benchmark smokes and documentation layout remained
+- Local validation: the focused LZW/rANS validator, decoder, planner, and
+  encoder suite passed 28/28 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 1,926/1,926 under both compilers using official CMake
+  4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
   successful.
-- External validation: revision
-  `3d5001ce7536c425328a597240244551605e8935` completed all four schema-28
-  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
-  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
-  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and byte-
-  identically re-encoded all 39 archives.
-
-## 2026-08-04 - LZ78 plus tANS public-ABI completion
-
-- Authoring method: applied marc's established public completion categories to
-  the already published LZ78+tANS C lifecycle and fixed format.
-- References used: DD-581, DD-577, local deterministic fixture generation,
-  public process-result semantics, and frame-transactional decode behavior.
-- Known implementations intentionally not consulted: external LZ78/tANS
-  completion suites, encoded vectors, chunk schedules, malformed corpora,
-  source code, or tests.
-- Independent decisions: use 64-byte raw and entropy boundaries; cover every
-  one-byte value and required binary classes; compare whole, `1/1`, `7/5`, and
-  `13/17` schedules; and corrupt, truncate, or extend only the fourth frame.
-- Generated-code task description: add a public-C completion suite for data
-  classes, determinism, chunking, repeated terminal behavior, and atomic final-
-  frame rejection, then synchronize readiness, format, architecture,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the suite uses only marc's C API and repository completion
-  vocabulary. No external fixture bytes, control flow, assertion structure,
-  malformed case, or test expression was compared.
-- Local validation: the focused three-test completion suite passed under MSVC
-  and ClangCL. The complete Release CTest suite passed 2,209/2,209 under both
-  compilers using official CMake 4.3.4; all 39 benchmark smokes, documentation
-  layout, and schema-27 compatibility remained successful.
-
-## 2026-08-04 - LZ78 plus tANS bounded decoder fuzzing
-
-- Authoring method: combined marc's established LZ78/rANS fixed phrase
-  boundary with its LZSS/tANS state-table boundary, using only the already
-  specified LZ78+tANS decoders.
-- References used: DD-580, local private complete-frame and public C streaming
-  decoders, fixed tANS views, LZ78 phrase records, and core progress invariants.
-- Known implementations intentionally not consulted: external LZ78/tANS fuzz
-  harnesses, corpora, crashes, malformed fixtures, source code, or tests.
-- Independent decisions: cap input at 8 KiB, output at 4 KiB, frames at 1 KiB,
-  tokens at 8 KiB, payload at 16 KiB, views at eight, phrases at 1,024, and
-  calls at one fixed expression; derive chunks only from bounded bytes.
-- Generated-code task description: add a dual-decoder libFuzzer entry point,
-  ordinary compiler smoke target, three permanent atomic regressions, and
-  synchronized fuzzing, readiness, format, architecture, decision, reference,
-  vector, changelog, and provenance records.
-- Similarity review: the harness composes only local public and private
-  contracts. No external control flow, storage layout, mutation schedule,
-  corpus byte, or test expression was compared.
-- Local validation: the fuzz compile-smoke and focused three-test regression
-  suite passed under MSVC and ClangCL. The complete Release CTest suite passed
-  2,206/2,206 under both compilers using official CMake 4.3.4; all 39 benchmark
-  smokes, documentation layout, and schema-27 compatibility remained
-  successful.
-
-## 2026-08-04 - LZ78 plus tANS public benchmark
-
-- Authoring method: extended marc's dependency-free benchmark harness by the
-  already admitted fixed LZ78+tANS public profile.
-- References used: DD-579, DD-578's profile, the public
-  `marc_lz78_tans_*` lifecycle, and checked local capacity arithmetic.
-- Known implementations intentionally not consulted: external LZ78/tANS
-  benchmarks, wrappers, corpora, results, capacity formulas, source, or tests.
-- Independent decisions: require an untimed exact public-C round trip before
-  measurement; reserve `80 + 12N + 4296K`; report all directional borrowed
-  regions; and apply no throughput floor.
-- Generated-code task description: register `lz78-tans`, extend checked
-  capacity and dispatch, add a one-iteration smoke, and synchronize benchmark,
-  readiness, format, architecture, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: only marc's existing public-C benchmark contract was
-  extended. No external control flow, formula, output schema, fixture, or test
-  expression was compared.
-- Local validation: the focused benchmark smoke and all 39 benchmark smokes
-  passed under MSVC and ClangCL. The complete Release CTest suite passed
-  2,203/2,203 under both compilers using official CMake 4.3.4; documentation
-  layout and schema-27 compatibility remained successful.
-
-## 2026-08-04 - LZ78 plus tANS CLI selector
-
-- Authoring method: extended marc's existing selector dispatch and
-  transactional file adapter by one already specified public C profile.
-- References used: DD-578, DD-568's fixed bounds, the published
-  `marc_lz78_tans_*` lifecycle, and the repository-standard CLI fixture.
-- Known implementations intentionally not consulted: external LZ78/tANS
-  wrappers, command-line tools, workspace layouts, archives, source, or tests.
-- Independent decisions: use 64-KiB raw frames and tANS blocks; fix the
-  524,288-byte token ceiling, eight blocks, 4,224 descriptor bytes,
-  786,448-byte payload ceiling, 65,536 entries, and 4-MiB aggregate policy;
-  keep typed views private; and reuse strict temporary-file publication.
-- Generated-code task description: add selector parsing and help, public
-  configuration/query/factory dispatch, bounded capacity helpers, one
-  transactional CLI test, and synchronized public and provenance records.
-- Similarity review: the adapter follows only marc's public ABI and established
-  file-processing pattern. No external control flow, naming, bounds, fixture,
-  or test expression was compared.
-- Local validation: the focused transactional CLI integration test passed
-  under MSVC and ClangCL. The complete Release CTest suite passed 2,202/2,202
-  under both compilers using official CMake 4.3.4; all 38 benchmark smokes,
-  documentation layout, and schema-27 compatibility remained successful.
-
-## 2026-08-04 - LZ78 plus tANS public C requirements and factory
-
-- Authoring method: mapped DD-576's internal direction-specific requirements
-  and aligned partitions into marc's existing size-tagged C transform lifecycle.
-- References used: DD-577, DD-576, the local opaque transform adapter, stable C
-  status mapping, non-throwing allocation, and three-region workspace policy.
-- Known implementations intentionally not consulted: external C wrappers, ABI
-  layouts, allocation policies, bindings, source code, and test suites.
-- Independent decisions: add a new structure without altering existing ABI
-  objects; require exact size/version/reserved fields; expose direction-specific
-  capacities and alignment; revalidate before typed partition; and publish no
-  handle on any failure.
-- Generated-code task description: add the public config, initializer,
-  requirements query, factory, C11 round trip, short and misaligned workspace,
-  null output, and reserved-field tests; update CMake and all public and
-  provenance documentation.
-- Similarity review: the adapter follows only repository-owned profile and C
-  ABI conventions. No external symbol set, layout, control flow, naming scheme,
-  or test expression was compared.
-- Local validation: the public C11 lifecycle passed under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,201/2,201 under both
-  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, public-header checks, and documentation layout
-  remained successful.
-
-## 2026-08-04 - LZ78 plus tANS internal profile calculator
-
-- Authoring method: derived bounded direction-specific workspace formulae from
-  the local streaming constructors, exact-frame ceiling, LZ78 token and record
-  bounds, and tANS block payload ceiling.
-- References used: DD-576, DD-574/DD-575, DD-568, local hard limits, checked
-  arithmetic, and C++ `sizeof`/`alignof` requirements.
-- Known implementations intentionally not consulted: external workspace APIs,
-  profile calculators, allocator layouts, source code, encoded corpora, and
-  test suites.
-- Independent decisions: report exact encoder byte regions and record count;
-  derive conservative decoder regions only from hard limits; lay out tANS views
-  before aligned LZ78 phrases; validate every published typed view; and map all
-  failures to stable profile/core errors.
-- Generated-code task description: add encoder and decoder requirements,
-  aligned opaque partition helpers, error mapping, exact default/short/empty
-  formula tests, limit and layout rejection, and a requirements-constructed
-  streaming round trip; update build and documentation records.
-- Similarity review: the implementation directly evaluates repository-owned
-  bounds and alignment. No external formula organization, storage partition,
-  API naming scheme, control flow, or test expression was compared.
-- Local validation: the focused LZ78+tANS profile suite passed 7/7 under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,200/2,200 under
-  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS known-size streaming decoder
-
-- Authoring method: applied marc's bounded frame-collection and immutable raw-
-  drain state contract above the private DD-570 LZ78+tANS reconstruction path.
-- References used: DD-575, DD-569 through DD-574, local generic header parser,
-  tANS extent rules, checked arithmetic, and caller-owned workspace policies.
-- Known implementations intentionally not consulted: external streaming
-  decoders, collection state machines, source code, malformed corpora, chunking
-  suites, and tests.
-- Independent decisions: admit every exact frame and workspace at its header;
-  collect a full body before decode; reconstruct privately; drain only after
-  success; preserve prior-frame publication on later corruption; and keep
-  terminal states sticky.
-- Generated-code task description: add the known-size bounded streaming
-  decoder; prove one-byte round trip, later-frame isolation, all workspace and
-  aggregate failures, truncation, trailing data, empty and starved input,
-  premature final input, unsupported flags, and repeated terminal behavior;
-  update build and documentation records.
-- Similarity review: the implementation composes only repository frame, tANS,
-  LZ78, span, and process contracts. No external control flow, storage layout,
-  malformed vector, chunk schedule, naming scheme, or test expression was
-  compared.
-- Local validation: the focused LZ78+tANS streaming-decoder suite passed 5/5
-  under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,193/2,193 under both compilers using official CMake 4.3.4; all 38 benchmark
-  smokes, schema 1 through 27 compatibility, and documentation layout remained
-  successful.
-
-## 2026-08-04 - LZ78 plus tANS known-size streaming encoder
-
-- Authoring method: applied marc's core transform state contract above the
-  DD-573 complete-frame writer with caller-owned bounded storage.
-- References used: DD-574, DD-573, local stream and LZ78 parameter serializers,
-  checked arithmetic, and existing process-result invariants.
-- Known implementations intentionally not consulted: external streaming
-  encoders, buffering state machines, source code, chunking suites, and tests.
-- Independent decisions: drain prefix first; retain one raw, token, encoder-
-  record, and encoded frame; prepare only complete expected frames; keep Flush
-  nonterminal; latch EndInput through draining; and keep terminal states sticky.
-- Generated-code task description: add a known-size bounded streaming encoder;
-  prove reference-byte identity with one-byte buffers, multi-frame, Flush and
-  latched-EndInput behavior, storage and aggregate failures, empty, premature,
-  and excess input, unsupported flags, and repeated end; update build and
-  documentation records.
-- Similarity review: the implementation composes only repository state,
-  framing, writer, and span contracts. No external control flow, storage
-  layout, chunk schedule, naming scheme, or test expression was compared.
-- Local validation: the focused LZ78+tANS streaming-encoder suite passed 5/5
-  under both MSVC and ClangCL. The complete Release CTest suite passed
-  2,188/2,188 under both compilers using official CMake 4.3.4; all 38 benchmark
-  smokes, schema 1 through 27 compatibility, and documentation layout remained
-  successful.
-
-## 2026-08-04 - LZ78 plus tANS complete-frame writer
-
-- Authoring method: composed the local exact-frame planner, explicit generic
-  frame serializer, tANS descriptor serializer, and tANS block encoder over
-  the planner's frozen canonical LZ78 token staging.
-- References used: DD-573, DD-572, the independent raw-`A` frame, and only
-  repository-owned frame and entropy primitives.
-- Known implementations intentionally not consulted: external combined frame
-  writers, serialization schedules, buffering layouts, encoded corpora, source
-  code, and test suites.
-- Independent decisions: admit the complete destination after exact planning;
-  write header, contiguous descriptors, then contiguous payloads; replan only
-  over frozen tokens; require planned sizes and final offsets to agree; and
-  reject short destinations without mutation.
-- Generated-code task description: add the complete-frame writer, exact-vector,
-  token-splitting deterministic round-trip, and short-output atomicity tests,
-  then synchronize format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the writer directly sequences repository-owned bounded
-  components. No external control flow, region schedule, capacity formula,
-  encoded bytes, naming scheme, or test expression was compared.
-- Local validation: the focused LZ78+tANS encoder suite passed 8/8 under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,183/2,183 under
-  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS exact-frame planning
-
-- Authoring method: composed marc's bounded LZ78 token planner and encoder with
-  its no-output tANS block planner and generic frame validator.
-- References used: DD-572, DD-568 bounds, local LZ78 encoder records and token
-  staging, local tANS planner, checked arithmetic, and the independent raw-`A`
-  vector.
-- Known implementations intentionally not consulted: external combined
-  encoders, planning algorithms, storage layouts, encoded corpora, source code,
-  and test suites.
-- Independent decisions: admit encoder records and token capacity before token
-  mutation; materialize canonical tokens once; plan all entropy blocks over
-  immutable staging; count every encoder region; validate the synthesized
-  header; and accept no serialized output.
-- Generated-code task description: add the no-output planner, test exact raw-
-  `A` and token-splitting extents, capacity atomicity, input extent, block and
-  aggregate limits, and synchronize format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the planner directly sequences repository-owned
-  components and checked spans. No external planning order, storage schedule,
-  capacity formula, encoded bytes, error taxonomy, or test expression was
-  compared.
-- Local validation: the focused planner suite passed 5/5 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,180/2,180 under both
-  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS transactional publication
-
-- Authoring method: wrapped marc's private LZ78+tANS reconstruction boundary
-  with its established preflight-and-copy publication rule.
-- References used: DD-571, DD-570's private decoder, caller-owned output spans,
-  exact raw extents, and repository-local atomic publication conventions.
-- Known implementations intentionally not consulted: external publication
-  protocols, combined decoders, buffer layouts, malformed corpora, source
-  code, and test suites.
-- Independent decisions: admit caller capacity before any private mutation;
-  exclude publication storage from internal workspace; retain complete private
-  validation and reconstruction; and perform exactly one final copy.
-- Generated-code task description: add the minimal transactional wrapper,
-  verify successful raw-`A` publication, short-output preflight, entropy and
-  dictionary failure atomicity, and synchronize format, architecture,
-  readiness, composition, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: the wrapper directly applies repository-owned validation,
-  private reconstruction, and bounded copy rules. No external control flow,
-  publication schedule, error taxonomy, mutation case, or test expression was
-  compared.
-- Local validation: the focused decoder suite passed 8/8 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,175/2,175 under both
-  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS private raw reconstruction
-
-- Authoring method: extended the locally validated LZ78+tANS boundary only
-  with marc's existing allocation-free LZ78 phrase expansion.
-- References used: DD-570, DD-569's validator, local LZ78 decoder, iterative
-  phrase expansion, caller-owned raw staging, and checked aggregate arithmetic.
-- Known implementations intentionally not consulted: external combined
-  decoders, reconstruction strategies, buffer layouts, malformed corpora,
-  source code, and test suites.
-- Independent decisions: preflight and count the complete raw extent before
-  entropy work; retain the two-pass entropy and phrase validation order;
-  reconstruct only after complete success; expose no publication span; and
-  preserve existing layer and position diagnostics.
-- Generated-code task description: add the minimal private raw decoder,
-  exercise raw `A`, nested phrases across entropy splits, raw shortage,
-  aggregate shortage, malformed entropy and dictionary layers, and synchronize
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the implementation calls repository-owned validation and
-  reconstruction components over checked spans. No external control flow,
-  expansion algorithm, storage schedule, error taxonomy, or test expression
-  was compared.
-- Local validation: the focused private-decoder suite passed 5/5 under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,172/2,172 under
-  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS complete-frame validator
-
-- Authoring method: composed marc's strict two-pass tANS block controller with
-  its existing bounded LZ78 token and phrase-graph validator.
-- References used: DD-569, DD-568 bounds, local generic frame parsing, local
-  tANS descriptors and state validation, caller-owned spans, checked
-  arithmetic, and the independent 587-byte vector.
-- Known implementations intentionally not consulted: external combined
-  decoders, validation orders, workspace layouts, malformed corpora, source
-  code, and test suites.
-- Independent decisions: admit all extents before entropy work; count tANS
-  views and LZ78 phrase records in the aggregate; validate every entropy block
-  before token mutation; decode exactly once into private staging only after
-  complete entropy success; and retain stable layer and position diagnostics.
-- Generated-code task description: implement only the bounded decoder-side
-  validator, exercise token-splitting blocks, truncation, later-block failure,
-  workspace shortages, invalid LZ78 semantics, impossible extents, and update
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the implementation directly sequences repository-owned
-  components and checked spans. No external control flow, validation schedule,
-  error taxonomy, test mutation, encoded data, or naming scheme was compared.
-- Local validation: the focused validator suite passed 11/11 under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,167/2,167 under both
-  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-04 - LZ78 plus tANS representation and vector reservation
-
-- Authoring method: composed marc's already specified fixed-width LZ78 token
-  representation with its independently implemented tabled tANS block format.
-- References used: DD-568, the local LZ78 token encoder and vectors, local tANS
-  normalization, table construction, reverse recurrence, descriptor
-  serializer, generic frame serializer, and checked block bounds.
-- Known implementations intentionally not consulted: external combined
-  codecs, encoded corpora, source code, stream formats, test vectors, and test
-  suites.
-- Independent decisions: finalize all LZ78 tokens before entropy coding;
-  permit entropy blocks to split tokens but not frames; require eight-byte
-  alignment before phrase validation; retain the checked `8F` token ceiling;
-  and fix raw `A` as a sparse complete-frame vector.
-- Generated-code task description: reserve the exact LZ78+tANS representation,
-  derive one hand-checkable raw-`A` vector, add a component-composition test,
-  and synchronize architecture, format, readiness, composition, changelog,
-  decision, reference, vector-generation, and provenance records.
-- Similarity review: the representation is a direct bounded composition of
-  repository-owned formats. No external byte sequence, state table, control
-  flow, capacity formula, naming scheme, or test expression was compared.
-- Local validation: the independent 587-byte vector passed under MSVC and
-  ClangCL. The complete Release CTest suite passed 2,156/2,156 under both
-  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
-  through 27 compatibility, and documentation layout remained successful.
-
-## 2026-08-03 - Interoperability schema 27 appends LZSS plus tANS
-
-- Authoring method: extended marc's append-only local bundle schema by one
-  already admitted CLI profile.
-- References used: DD-567, the frozen schema-26 order, repository-owned bundle
-  scripts, deterministic 8,193-byte fixture, and `lzss-tans`.
-- Known implementations intentionally not consulted: external archives,
-  manifests, interoperability suites, implementations, or test results.
-- Independent decisions: name `marc-cli-v27`; append `lzss-tans` only as
-  entry 38; enforce exact order; and recover schema 26 by removing only the new
-  archive before checking every earlier schema.
-- Generated-code task description: advance bundle generation and verification
-  to schema 27, add reordered-manifest and schemas 1 through 26 compatibility
-  coverage, and synchronize format/readiness/interoperability/provenance docs.
-- Similarity review: the change is an append-only application of marc's own
-  manifest rules and fixture. No external ordering, archive bytes, metadata,
-  script structure, or expected result was compared.
-- Local validation: schema-27 generation, exact-order verification,
-  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 26 compatibility passed under MSVC and ClangCL. The complete Release
-  CTest suite passed 2,155/2,155 under both compilers using official CMake
-  4.3.4; all 38 benchmark smokes and documentation layout remained successful.
-- External validation: revision
-  `da376a7223f8a8072531271472f40d58b69e3b7a` completed all four schema-27
-  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
-  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
-  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and
-  byte-identically re-encoded all 38 archives.
-
-## 2026-08-03 - LZSS plus tANS public benchmark
-
-- Authoring method: extended marc's dependency-free verified measurement
-  harness by the admitted fixed LZSS+tANS public profile.
-- References used: DD-566, DD-565's bounds, the public
-  `marc_lzss_tans_*` lifecycle, checked capacity arithmetic, and existing
-  timing/reporting conventions.
-- Known implementations intentionally not consulted: external benchmarks,
-  LZSS/tANS tools, workspace layouts, formulas, fixtures, source, or results.
-- Independent decisions: reuse the CLI profile; prove an untimed exact round
-  trip; keep transform creation outside timing; and report all queried regions
-  and peak caller workspace without performance thresholds.
-- Generated-code task description: add benchmark selection, public config/query
-  and factory dispatch, encoded-capacity bounds, one smoke, and synchronized
-  benchmark/readiness/provenance documentation.
-- Similarity review: the adapter follows only marc's public ABI and local
-  measurement structure. No external control flow, formula, naming, fixture,
-  capacity, or reporting expression was compared.
-- Local validation: the focused benchmark smoke and direct reporting run
-  passed under MSVC and ClangCL. The complete Release CTest suite passed
-  2,155/2,155 under both compilers using official CMake 4.3.4; all 38 benchmark
-  smokes, documentation layout, and schema-26 compatibility remained
-  successful.
-
-## 2026-08-03 - LZSS plus tANS CLI selector
-
-- Authoring method: extended marc's existing selector dispatch and
-  transactional file adapter by one completed public C profile.
-- References used: DD-565, DD-561's bounded arithmetic, the public
-  `marc_lzss_tans_*` lifecycle, and the repository-standard CLI fixture.
-- Known implementations intentionally not consulted: external LZSS/tANS
-  wrappers, command-line tools, workspace layouts, archives, source, and tests.
-- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
-  descriptor, payload, block-count, and aggregate limits from the fixed
-  profile; keep typed views private; and reuse strict temporary publication.
-- Generated-code task description: add selector parsing and help, public
-  configuration/query/factory dispatch, bounded capacity helpers, one
-  transactional CLI test, and synchronized public and provenance records.
-- Similarity review: the adapter follows only marc's public ABI and established
-  file-processing pattern. No external control flow, naming, bound, fixture,
-  or test expression was compared.
-- Local validation: the focused transactional CLI integration test passed
-  under MSVC and ClangCL. The complete Release CTest suite passed 2,154/2,154
-  under both compilers using official CMake 4.3.4; all 37 benchmark smokes,
-  documentation layout, and schema-26 compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS bounded decoder fuzzing
-
-- Authoring method: adapted marc's repository-owned fixed-memory composed
-  decoder harness pattern to the already specified LZSS+tANS boundary.
-- References used: DD-564, DD-563, the local complete-frame and incremental
-  decoders, fixed caller-owned workspaces, and the local canonical encoder.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  corpora, mutation schedules, malformed archives, codec source, and tests.
-- Independent decisions: exercise both decoder paths; cap every byte region
-  and tANS view count; derive chunks only from bounded bytes; impose a finite
-  process-call ceiling; and preserve atomic failure cases as ordinary tests.
-- Generated-code task description: add a bounded LZSS+tANS dual-decoder fuzz
-  target, reviewed truncated-magic seed, compile-smoke target, atomic malformed
-  regressions, and readiness/provenance documentation.
-- Similarity review: the harness uses only local types, limits, and transform
-  contracts. No external control flow, corpus, mutation, naming, or test
-  expression was compared.
-- Local validation: the harness compile-smoke and focused malformed regressions
-  passed under both MSVC and ClangCL. A bounded 1,000-input Clang
-  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer campaign completed
-  without a crash, hang, or sanitizer finding at 37 MiB peak RSS. The complete
-  Release CTest suite passed 2,153/2,153 under both compilers using official
-  CMake 4.3.4; all 37 benchmark smokes, documentation layout, and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS public-ABI completion matrix
-
-- Authoring method: exercised the published marc C lifecycle as the sole codec
-  boundary and derived all inputs and mutations independently.
-- References used: DD-563, DD-562, the public C header, deterministic local
-  byte generator, and generic frame-header offsets.
-- Known implementations intentionally not consulted: external conformance
-  suites, combined codec tests, corpora, malformed archives, source code, and
-  test vectors.
-- Independent decisions: cover required binary classes and frame boundaries;
-  compare repeated and chunked encoding byte-for-byte; corrupt only the final
-  frame after three commits; and require sticky error positions.
-- Generated-code task description: add public-lifecycle determinism,
-  chunk-boundary, round-trip, terminal, malformed-final-frame, truncation, and
-  trailing-data coverage; update readiness and provenance.
-- Similarity review: the suite composes only repository public calls, local
-  generators, and documented parser offsets. No external schedule, mutation,
-  corpus, naming, or test expression was compared.
-- Local validation: the focused public-ABI completion suite passed 3/3 under
-  both MSVC and ClangCL. The complete Release CTest suite passed 2,150/2,150
-  under both compilers using official CMake 4.3.4; all 37 benchmark smokes and
-  schema-26 compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS public C ABI
-
-- Authoring method: connected DD-561's existing bounded streaming pair to
-  marc's repository-owned fixed-width C lifecycle and three-region convention.
-- References used: DD-562, DD-561, the local C transform adapter, checked
-  workspace arithmetic, and private tANS view alignment.
-- Known implementations intentionally not consulted: external C ABIs, factory
-  layouts, allocation APIs, codec source, corpora, and test suites.
-- Independent decisions: use a distinct size-tagged config; preserve borrowed
-  primary/secondary/views storage; expose view byte count and alignment only;
-  repeat admission at construction; and leave failed handles null.
-- Generated-code task description: add public declarations, configuration
-  loading, requirements query, factory, and a pure-C round trip with exact
-  workspace and failure checks; update build and documentation records.
-- Similarity review: the adapter specializes only marc-authored ABI and profile
-  conventions. No external naming, structure layout, lifecycle control flow,
-  or test expression was compared.
-- Local validation: the pure-C ABI round trip passed under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,147/2,147 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS internal profile calculator
-
-- Authoring method: specialized marc's repository-owned directional profile
-  convention to the already specified LZSS+tANS streaming workspaces.
-- References used: DD-561, DD-559/DD-560, local hard limits, checked
-  arithmetic, and the documented tANS block payload ceiling.
-- Known implementations intentionally not consulted: external profile APIs,
-  allocation policies, codec source, encoded corpora, and test suites.
-- Independent decisions: derive encoder storage from known-size configuration;
-  sum the conservative ceiling for full and final-short tANS blocks; derive
-  decoder storage only from local limits; and expose no private view layout.
-- Generated-code task description: add canonical header and directional
-  workspace calculation; test exact default and short capacities, independent
-  limits, stable errors, and direct streaming construction; update build and
-  documentation records.
-- Similarity review: the calculator combines only repository-owned bounds,
-  types, and checked arithmetic. No external structure, capacity formula,
-  naming scheme, or test expression was compared.
-- Local validation: all 7 focused profile tests and all 2,146 repository tests
-  passed under both MSVC and ClangCL using official CMake 4.3.4; all 37
-  benchmark smokes and schema-26 compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS known-size streaming decoder
-
-- Authoring method: specialized marc's repository-owned bounded LZSS/rANS
-  streaming state contract to DD-556's tANS private frame decoder and view
-  type.
-- References used: DD-560, DD-556, local stream and generic-frame parsers,
-  tANS block views, checked arithmetic, and core process-result invariants.
-- Known implementations intentionally not consulted: external streaming
-  decoders, buffering state machines, malformed corpora, source code, chunking
-  suites, and tests.
-- Independent decisions: collect the prefix and frame header separately;
-  preflight all private regions before the body; decode only complete frames;
-  publish after success; preserve earlier commits; and keep terminal states
-  sticky.
-- Generated-code task description: add bounded known-size streaming decoding;
-  prove one-byte round trip, later-corruption atomicity, storage and aggregate
-  limits, truncation, trailing data, empty input, Flush, premature end, reset,
-  and repeated terminal behavior; update build and documentation records.
-- Similarity review: the implementation composes only repository parsing,
-  transactional decode, span, and state contracts. No external control flow,
-  storage layout, malformed vector, chunk schedule, or test expression was
-  compared.
-- Local validation: all 5 focused streaming-decoder tests and all 2,139
-  repository tests passed under both MSVC and ClangCL using official CMake
-  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
-  successful.
-
-## 2026-08-03 - LZSS plus tANS known-size streaming encoder
-
-- Authoring method: applied marc's core transform state contract above the
-  DD-558 complete-frame writer with caller-owned bounded storage.
-- References used: DD-559, DD-558, local stream and LZSS parameter serializers,
-  checked arithmetic, and existing process-result invariants.
-- Known implementations intentionally not consulted: external streaming
-  encoders, buffering state machines, source code, chunking suites, and tests.
-- Independent decisions: drain prefix first; retain one raw, token, and encoded
-  frame; prepare only complete expected frames; keep Flush nonterminal; latch
-  EndInput through draining; and keep terminal states sticky.
-- Generated-code task description: add a known-size bounded streaming encoder;
-  prove reference-byte identity with one-byte buffers, full-frame and Flush
-  behavior, storage and aggregate failures, empty and premature input,
-  unsupported reset, and repeated end; update build and documentation records.
-- Similarity review: the implementation composes only repository state,
-  framing, writer, and span contracts. No external control flow, storage
-  layout, chunk schedule, or test expression was compared.
-- Local validation: all 4 focused streaming-encoder tests and all 2,134
-  repository tests passed under both MSVC and ClangCL using official CMake
-  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
-  successful.
-
-## 2026-08-03 - LZSS plus tANS complete-frame writer
-
-- Authoring method: extended DD-557's exact planner with repository-owned
-  generic-frame and tANS serializers over the frozen token region.
-- References used: DD-558, DD-557, local generic header serializer, tANS
-  descriptor serializer and encoder, checked spans, and deterministic token
-  staging.
-- Known implementations intentionally not consulted: external combined
-  encoders, archive writers, serialization layouts, source code, encoded
-  corpora, and test suites.
-- Independent decisions: admit the complete serialized output after planning
-  and before writing; emit header, descriptor region, and payload region
-  explicitly; replan each immutable block; and require exact payload agreement.
-- Generated-code task description: add deterministic complete-frame writing;
-  prove independent-vector equality, intra-Literal split determinism and round
-  trip, generated-Match determinism and round trip, and one-byte-short output
-  atomicity; update format, architecture, readiness, composition, decisions,
-  references, vectors, changelog, and provenance.
-- Similarity review: implementation structure is composed only from marc's
-  exact planner and explicit serializers. No external control flow, byte
-  layout, vector, or test expression was compared.
-- Local validation: the focused writer suite passed 4/4 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,130/2,130 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS exact-frame planner
-
-- Authoring method: composed marc's deterministic LZSS token planner and
-  encoder with its existing tANS block planner under DD-553's frozen byte
-  boundary.
-- References used: DD-557, local LZSS and tANS encoder primitives, generic
-  frame validation, checked arithmetic, and caller-owned spans.
-- Known implementations intentionally not consulted: external combined
-  encoders, planning algorithms, allocation layouts, source code, encoded
-  corpora, and test suites.
-- Independent decisions: materialize the exact canonical token region once;
-  plan blocks only over frozen bytes; accumulate exact descriptor, payload,
-  and frame extents; count planned serialized storage with token staging;
-  validate the synthesized header; and write no serialized output.
-- Generated-code task description: add a write-free LZSS+tANS exact-frame
-  planner and stable input, dictionary-encode, and entropy-encode errors; prove
-  the independent vector, intra-Literal block split, generated Match
-  determinism, early staging rejection, input extent rejection, block-count
-  limit, and aggregate limit; update all format, architecture, readiness,
-  composition, provenance, reference, vector, decision, and changelog records.
-- Similarity review: the implementation composes only repository-authored
-  planners, encoders, validation, and arithmetic. No external control flow,
-  sizing formula, vector, or test expression was compared.
-- Local validation: the focused planner suite passed 6/6 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,126/2,126 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS transactional publication
-
-- Authoring method: wrapped DD-555's private decoder with marc's established
-  complete-frame preflight and single-copy publication boundary.
-- References used: DD-556, DD-555, caller-owned spans, exact preflight
-  capacity, and the local bounded-copy convention.
-- Known implementations intentionally not consulted: external decompression
-  APIs, publication protocols, buffer designs, source code, malformed corpora,
-  and test suites.
-- Independent decisions: admit the complete caller output before all private
-  mutation; exclude output from internal workspace; retain private decode
-  unchanged; and publish exactly the declared raw extent once.
-- Generated-code task description: add transactional LZSS+tANS frame decode;
-  prove successful guarded publication, overlapping Match publication, early
-  short-output rejection, and unchanged output after entropy or token failure;
-  update architecture, format, readiness, composition, decisions, references,
-  vectors, changelog, and provenance.
-- Similarity review: the wrapper uses only repository-authored admission,
-  private reconstruction, and bounded copying. No external control flow,
-  publication schedule, malformed vector, or test expression was compared.
-- Local validation: the focused publication suite passed 4/4 under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,120/2,120 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS private raw decoder
-
-- Authoring method: extended DD-554's local complete-frame validator with the
-  existing allocation-free LZSS decoder behind a private raw-staging boundary.
-- References used: DD-555, DD-554, caller-owned spans, checked aggregate
-  arithmetic, and marc's local LZSS literal and overlap-copy semantics.
-- Known implementations intentionally not consulted: external combined
-  decoders, reconstruction strategies, buffer layouts, source code, malformed
-  corpora, and test suites.
-- Independent decisions: preflight the full raw extent before entropy work;
-  include it in aggregate workspace; reuse complete entropy and token
-  validation unchanged; reconstruct exactly the declared raw extent only after
-  validation; preserve layered LZSS diagnostics; and expose no caller-visible
-  output span.
-- Generated-code task description: add private LZSS+tANS raw reconstruction
-  and stable raw-capacity and dictionary-decode errors; prove the independent
-  Literal, overlapping Match, early storage and aggregate rejection, and raw
-  sentinel preservation after entropy or token failure; update architecture,
-  format, readiness, composition, decisions, references, vectors, changelog,
-  and provenance.
-- Similarity review: the implementation adds only repository-authored LZSS
-  decoding and bounded-span contracts above the local validator. No external
-  control flow, workspace formula, malformed vector, or test expression was
-  compared.
-- Local validation: the focused private-decoder suite passed 5/5 under both
-  MSVC and ClangCL. The complete Release CTest suite passed 2,116/2,116 under
-  both compilers using official CMake 4.3.4; all 37 benchmark smokes and
-  schema-26 compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS complete-frame validator
-
-- Authoring method: combined marc's generic frame admission, strict two-pass
-  tANS block decoder, and existing LZSS validator at DD-553's private token
-  boundary.
-- References used: DD-554, DD-553, local checked arithmetic, tANS descriptor
-  views, table and state validation, and the canonical LZSS token validator.
-- Known implementations intentionally not consulted: external combined
-  decoders, FSE implementations, validation orders, buffer layouts, source
-  code, malformed corpora, and test suites.
-- Independent decisions: preflight exact extents and all caller-owned storage;
-  calculate the per-block 12-bit payload ceiling; count views in aggregate
-  workspace; validate every entropy block before decoding any; reconstruct
-  only the complete private token region; preserve LZSS diagnostic positions;
-  and stop before raw reconstruction or publication.
-- Generated-code task description: add a bounded complete-frame validator and
-  stable layered errors; test the independent vector, an intra-Literal block
-  split, every truncation, storage and aggregate limits, malformed descriptor
-  and later payload atomicity, invalid reconstructed token, entropy bounds,
-  and pipeline rejection; update format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the implementation composes only repository-authored
-  parsers, validators, decoders, and span contracts. No external control flow,
-  workspace formula, malformed vector, or test expression was compared.
-- Local validation: the focused validator suite passed 10/10 under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,111/2,111 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - LZSS plus tANS reserved representation
-
-- Authoring method: composed marc's independently documented canonical LZSS
-  byte-token grammar with its tabled tANS block format at the neutral
-  byte-stream boundary.
-- References used: DD-553, the local LZSS variant-1 token grammar, local tANS
-  normalization, spread and transition recurrence, generic frame fields, and
-  checked arithmetic.
-- Known implementations intentionally not consulted: external LZSS/tANS or
-  FSE compositions, archive formats, source code, encoded or malformed
-  corpora, and test suites.
-- Independent decisions: freeze all token bytes before entropy work; allow
-  byte-sized tANS boundaries inside variable-length tokens but never across
-  frames; validate every automaton before LZSS grammar; and reserve no public
-  implementation until transactional reconstruction exists.
-- Generated-code task description: specify the LZSS/tANS boundary, exact
-  bounds, reset and validation order; independently calculate the raw-`A`
-  model, spread transitions, payload, descriptor, and complete frame; prove it
-  through standalone components; and update format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: only repository-authored component APIs and mathematical
-  rules were used. No external control flow, table layout, combined vector, or
-  test expression was compared.
-- Local validation: the independent 587-byte vector passed under both MSVC
-  and ClangCL. The complete Release CTest suite passed 2,101/2,101 under both
-  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
-  compatibility remained successful.
-
-## 2026-08-03 - Schema 26 four-direction external admission
-
-- Authoring method: recorded user-executed results from marc's existing
-  repository-owned schema-26 verifier at one exact pushed revision.
-- References used: DD-552, pushed CI for revision
-  `5b2aa31ba3333c311ad4086b3438915a6c3ce36d`, and four successful verifier
-  result lines from the established three producers.
-- Known implementations intentionally not consulted: external codec code,
-  archive corpora, conformance suites, source code, and tests.
-- Independent decisions: require all 37 archives in both artifact-to-Ubuntu
-  checks, Ubuntu self-verification, and Ubuntu-to-Windows verification; bind
-  every result to the same full revision; retain the x86-64/WSL limitation.
-- Generated-code task description: record the exact four-direction evidence,
-  promote `lz77-tans` to `Ready`, and synchronize readiness, composition,
-  architecture, interoperability, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: this entry records only marc verifier outputs and local
-  admission terminology. No external stream bytes, report structure, test
-  expression, or implementation was compared.
-- External validation: all four passes reported `Verified 37 archives` at the
-  exact revision for Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
-  producers. Pushed CI completed successfully before exchange. This completes
-  current admission evidence without extending it beyond the recorded x86-64
-  environments.
-
-## 2026-08-03 - Interoperability schema 26 appends LZ77 plus tANS
-
-- Authoring method: extended marc's repository-owned versioned bundle chain by
-  one already published deterministic CLI profile.
-- References used: DD-551, frozen schema-25 ordering, the deterministic local
-  8,193-byte fixture, and local generator, verifier, and converter scripts.
-- Known implementations intentionally not consulted: external schemas,
-  manifests, archive corpora, interoperability suites, source, and tests.
-- Independent decisions: name `marc-cli-v26`; append `lz77-tans` only as entry
-  37; preserve every earlier order; reject reorder; and reconstruct schema 25
-  by removing only the new entry.
-- Generated-code task description: update bundle generation and verification,
-  add schema-26 reorder rejection and schemas 1 through 25 conversion checks,
-  and synchronize format, architecture, readiness, composition,
-  interoperability, changelog, decision, reference, vector, and provenance.
-- Similarity review: the change applies only marc's existing schema evolution
-  rule and local profile name. No external ordering, manifest shape, fixture,
-  hash record, or test expression was compared.
-- Local validation: schema-26 generation, exact-order verification,
-  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 25 compatibility passed under MSVC and ClangCL. The complete Release
-  suite passed 2,100/2,100 under both compilers using official CMake 4.3.4; all
-  37 benchmark smokes passed. External schema-26 exchange remains pending.
-
-## 2026-08-03 - LZ77 plus tANS public benchmark
-
-- Authoring method: extended marc's dependency-free public-C measurement
-  harness by the admitted fixed LZ77+tANS profile.
-- References used: DD-550, DD-549's bounded CLI profile, the public
-  `marc_lz77_tans_*` lifecycle, and existing checked measurement conventions.
-- Known implementations intentionally not consulted: external LZ77/tANS
-  benchmarks, wrappers, layouts, capacity formulas, results, source, or tests.
-- Independent decisions: reserve `80 + 24N + 8536K`; query both workspaces;
-  verify exact reconstruction before timing; and report observations without a
-  threshold.
-- Generated-code task description: add benchmark selector, fixed configuration,
-  capacity planning, public query/factory dispatch, smoke registration, and
-  synchronized benchmark, readiness, architecture, composition, changelog,
-  decision, reference, vector, C-API, and provenance records.
-- Similarity review: the adapter follows only marc-authored public lifecycle,
-  capacity helpers, reporting fields, and measurement loop. No external
-  benchmark structure, formula, naming, fixture, or result was compared.
-- Local validation: the focused benchmark smoke passed under MSVC and ClangCL.
-  The complete Release suite passed 2,100/2,100 under both compilers using
-  official CMake 4.3.4; all 37 benchmark smokes and schema-25 compatibility
-  remained successful.
-
-## 2026-08-03 - LZ77 plus tANS CLI admission
-
-- Authoring method: extended marc's existing selector dispatch and
-  transactional file adapter by one completed public C profile.
-- References used: DD-549, DD-545's bounded arithmetic, the public
-  `marc_lz77_tans_*` lifecycle, and the repository-standard CLI fixture.
-- Known implementations intentionally not consulted: external LZ77/tANS
-  wrappers, command-line tools, workspace layouts, archives, source, and tests.
-- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
-  descriptor, payload, block-count, and aggregate limits from the fixed
-  profile; keep typed views private; and reuse strict temporary publication.
-- Generated-code task description: add selector parsing and help, public
-  configuration/query/factory dispatch, bounded capacity helpers, one
-  transactional CLI test, and synchronized public and provenance records.
-- Similarity review: the adapter follows only marc's public ABI and established
-  file-processing pattern. No external control flow, naming, bound, fixture,
-  or test expression was compared.
-- Local validation: the focused transactional CLI integration test passed
-  under MSVC and ClangCL. The complete Release suite passed 2,099/2,099 under
-  both compilers using official CMake 4.3.4; all 36 benchmark smokes and
-  schema-25 compatibility remained successful.
-
-## 2026-08-03 - LZ77 plus tANS bounded decoder fuzz boundary
-
-- Authoring method: mechanically specialized marc's repository-owned LZ77+rANS
-  dual-decoder harness to the independently specified LZ77+tANS profile.
-- References used: DD-548, the local complete-frame and streaming decoders,
-  `TansBlockView`, checked process invariants, and fixed caller-owned storage.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  corpora, mutation schedules, combined codecs, source code, and test suites.
-- Independent decisions: cap input at 8,192 bytes; exercise both decoder
-  boundaries; use byte-derived chunks and a finite call ceiling; and retain
-  truncation, saturated-length, and invalid-descriptor atomic regressions.
-- Generated-code task description: add the sanitizer fuzz target, truncated-
-  magic seed, three permanent malformed-stream regressions, build wiring, and
-  synchronized architecture, readiness, composition, fuzzing, decision,
-  reference, vector, changelog, and provenance records.
-- Similarity review: the harness changes only local profile types, bounds, and
-  tANS descriptor rules. No external control flow, corpus bytes, mutation,
-  naming, or test expression was compared.
-- Local validation: the focused regression suite passed 3/3 under both MSVC
-  and ClangCL. Clang libFuzzer with AddressSanitizer and
-  UndefinedBehaviorSanitizer completed 1,000 bounded runs. The complete Release
-  CTest suite passed 2,098/2,098 under both compilers using official CMake
-  4.3.4; all 36 benchmark smokes and schema-25 compatibility remained
-  successful.
-
-## 2026-08-03 - LZ77 plus tANS public-ABI completion matrix
-
-- Authoring method: specialized marc's repository-owned public completion
-  contract to the newly published LZ77+tANS C lifecycle and its fixed format.
-- References used: DD-547, DD-546, the public C header, deterministic local
-  generator, and explicit generic-frame extent fields.
-- Known implementations intentionally not consulted: external conformance
-  suites, corpora, combined codecs, malformed archives, source, and tests.
-- Independent decisions: cover every one-byte symbol and required binary
-  class; repeat encoding byte-identically; vary encode and decode chunks;
-  require sticky termination; and preserve a sentinel after three committed
-  frames when the fourth is corrupt, truncated, or followed by trailing data.
-- Generated-code task description: add a public-C-lifecycle completion matrix
-  for required classes, determinism, chunking, terminal behavior, and final-
-  frame atomicity; update build and documentation records.
-- Similarity review: the matrix reuses only repository-authored fixtures,
-  parser field offsets, and public lifecycle helpers. No external schedule,
-  mutation, corpus, naming, or test expression was compared.
-- Local validation: the focused public-ABI completion suite passed 3/3 under
-  both MSVC and ClangCL. The complete Release CTest suite passed 2,095/2,095
-  under both compilers using official CMake 4.3.4; all 36 benchmark smokes and
-  schema-25 compatibility remained successful.
-
-## 2026-08-03 - LZ77 plus tANS public C ABI
-
-- Authoring method: connected DD-545's existing bounded streaming pair to
-  marc's repository-owned fixed-width C lifecycle and three-region convention.
-- References used: DD-546, DD-545, the local C transform adapter, checked
-  workspace arithmetic, and private tANS view alignment.
-- Known implementations intentionally not consulted: external C ABIs, factory
-  layouts, allocation APIs, codec source, corpora, and test suites.
-- Independent decisions: use a distinct size-tagged config; preserve borrowed
-  primary/secondary/views storage; expose view byte count and alignment only;
-  repeat admission at construction; and leave failed handles null.
-- Generated-code task description: add public declarations, configuration
-  loading, requirements query, factory, and a pure-C round trip with exact
-  workspace and failure checks; update build and documentation records.
-- Similarity review: the adapter specializes only marc-authored ABI and profile
-  conventions. No external naming, structure layout, lifecycle control flow,
-  or test expression was compared.
-- Local validation: the pure-C ABI round trip passed under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,092/2,092 under both
-  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
-  compatibility remained successful.
-
-## 2026-08-03 - LZ77 plus tANS internal profile calculator
-
-- Authoring method: specialized marc's repository-owned directional profile
-  convention to the already specified LZ77+tANS streaming workspaces.
-- References used: DD-545, DD-543/DD-544, local hard limits, checked arithmetic,
-  and the documented tANS block payload ceiling.
-- Known implementations intentionally not consulted: external profile APIs,
-  allocation policies, codec source, encoded corpora, and test suites.
-- Independent decisions: derive encoder storage from known-size configuration;
-  sum the exact conservative ceiling for full and final-short tANS blocks;
-  derive decoder storage only from local limits; and expose no private view
-  layout.
-- Generated-code task description: add canonical header and directional
-  workspace calculation; test exact default and short capacities, independent
-  limits, stable errors, and direct streaming construction; update build and
-  documentation records.
-- Similarity review: the calculator combines only repository-owned bounds,
-  types, and checked arithmetic. No external structure, capacity formula,
-  naming scheme, or test expression was compared.
-- Local validation: the focused profile suite passed 7/7 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,091/2,091 under both
-  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
-  compatibility remained successful.
-
-## 2026-08-03 - LZ77 plus tANS known-size streaming decoder
-
-- Authoring method: specialized marc's repository-owned LZ77/rANS streaming
-  frame state contract to the DD-539 tANS private decoder and tANS view type.
-- References used: DD-544, local prefix and frame parsers, private LZ77+tANS
-  decoder, core status contract, checked arithmetic, and caller-owned spans.
-- Known implementations intentionally not consulted: external streaming
-  decoders, buffering state machines, malformed corpora, source, and tests.
-- Independent decisions: collect complete frames before decode; preflight all
-  storage and aggregate capacity; publish only validated private reconstruction;
-  preserve earlier commits; and keep terminal states sticky.
-- Generated-code task description: add bounded known-size streaming decoding;
-  prove one-byte round trip, later corruption atomicity, storage and aggregate
-  limits, truncation, trailing data, reset, empty, Flush, and premature end;
-  update build and documentation records.
-- Similarity review: only marc-authored state and decode contracts were reused;
-  no external control flow, malformed vector, or test expression was compared.
-- Local validation: the focused decoder suite passed 5/5 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 2,084/2,084 under both
-  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
-  compatibility remained successful.
 
 ## 2026-08-02 - LZ77 plus tANS known-size streaming encoder
 
@@ -12885,636 +12598,606 @@ discarded and the reviewed seed retained.
   under both compilers using official CMake 4.3.4; all 34 benchmark smokes and
   schema-23 compatibility remained successful.
 
-## 2026-08-01 - LZD plus rANS bounded decoder fuzz boundary
+## 2026-08-03 - Interoperability schema 27 appends LZSS plus tANS
 
-- Authoring method: applied DD-517 independently to marc's local private
-  complete-frame decoder and DD-515 public C lifecycle using fixed
-  caller-owned arrays and the repository's ordinary process invariants.
-- References used: DD-517, DD-515, the local LZD/rANS frame and streaming
-  decoders, checked profile arithmetic, and the repository-generated canonical
-  `ABABX` stream.
-- Known implementations intentionally not consulted: external LZD/rANS
-  fuzzers, corpora, mutation dictionaries, crash reports, sanitizer harnesses,
-  source code, and test suites.
-- Independent decisions: cap arbitrary serialized input at 8 KiB, total raw
-  publication at 4 KiB, one raw frame at 1 KiB, entropy payload at 16 KiB,
-  entropy metadata at eight views, phrases at 512 records, expansion at 513
-  records, chunks modulo 17 and 19, and calls at 12,320; admit the private path
-  only after strict prefix and fixed-parameter checks; keep ordinary local
-  validation to compile-smoke and permanent deterministic regressions.
-- Generated-code task description: add a bounded dual-path decoder harness;
-  compile it in ordinary builds and expose a sanitizer/libFuzzer target where
-  supported; add canonical truncation, saturated frame-extent, and reserved
-  descriptor-byte regressions; synchronize fuzzing, architecture, composition,
-  readiness, C API, changelog, decision, reference, vector, and provenance
-  records.
-- Similarity review: the harness follows marc's existing local ownership and
-  process contracts and uses only repository-authored inputs. No external
-  corpus, harness structure, mutation logic, assertion, naming scheme, or code
-  expression was compared.
-- Local validation: the focused LZD/rANS fuzz-regression, completion, and
-  profile suite passed 13/13 under both MSVC and ClangCL. The compile-smoke
-  harness and complete Release CTest suite passed under both compilers using
-  official CMake 4.3.4, with 1,998/1,998 tests in each suite; all 34 benchmark
-  smokes and schema-23 compatibility remained successful. No sanitizer fuzz
-  campaign was run as part of this ordinary local validation.
+- Authoring method: extended marc's append-only local bundle schema by one
+  already admitted CLI profile.
+- References used: DD-567, the frozen schema-26 order, repository-owned bundle
+  scripts, deterministic 8,193-byte fixture, and `lzss-tans`.
+- Known implementations intentionally not consulted: external archives,
+  manifests, interoperability suites, implementations, or test results.
+- Independent decisions: name `marc-cli-v27`; append `lzss-tans` only as
+  entry 38; enforce exact order; and recover schema 26 by removing only the new
+  archive before checking every earlier schema.
+- Generated-code task description: advance bundle generation and verification
+  to schema 27, add reordered-manifest and schemas 1 through 26 compatibility
+  coverage, and synchronize format/readiness/interoperability/provenance docs.
+- Similarity review: the change is an append-only application of marc's own
+  manifest rules and fixture. No external ordering, archive bytes, metadata,
+  script structure, or expected result was compared.
+- Local validation: schema-27 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 26 compatibility passed under MSVC and ClangCL. The complete Release
+  CTest suite passed 2,155/2,155 under both compilers using official CMake
+  4.3.4; all 38 benchmark smokes and documentation layout remained successful.
+- External validation: revision
+  `da376a7223f8a8072531271472f40d58b69e3b7a` completed all four schema-27
+  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
+  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
+  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and
+  byte-identically re-encoded all 38 archives.
 
-## 2026-08-01 - LZD plus rANS public-ABI completion matrix
+## 2026-08-03 - LZSS plus tANS public benchmark
 
-- Authoring method: applied DD-516 to marc's local DD-515 C lifecycle and the
-  repository's independently authored common LZD completion schedules.
-- References used: DD-516, DD-515, the public C header, local transform
-  lifecycle, LZD token ceiling, and scalar-rANS block extent formulas.
-- Known implementations intentionally not consulted: external conformance
-  suites, LZD/rANS archives, wrappers, source code, and test expressions.
-- Independent decisions: retain one common LZD data/chunk/error schedule; add
-  representation-neutral capacity and config hooks with unchanged defaults;
-  use 64-byte frames and blocks with four-block admission; and require the
-  fourth malformed frame to preserve its final raw sentinel.
-- Generated-code task description: instantiate the common LZD public-ABI
-  matrix for rANS; cover required binary classes, deterministic repeated and
-  arbitrarily chunked streams, repeated terminal results, and corrupt,
-  truncated, and extended final-frame atomicity; retain existing LZD Adaptive
-  and Dynamic Range behavior; synchronize architecture, readiness, C API,
-  format, composition, changelog, decision, reference, vector, and provenance.
-- Similarity review: the matrix reuses only marc's local independently authored
-  schedules and public ABI. No external vector, corpus, harness, assertion
-  structure, or naming scheme was compared.
-- Local validation: the new LZD/rANS completion matrix and the unchanged LZD
-  Adaptive Huffman and Dynamic Range matrices passed 9/9 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 1,995/1,995 under both
-  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
-  compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS public C factory
-
-- Authoring method: bound DD-515 directly to marc's DD-514 profile, checked
-  typed partition helpers, and established opaque transform lifecycle.
-- References used: DD-515, DD-514, local streaming transforms, fixed-width
-  public C types, common workspace requirements, and standard C allocation.
-- Known implementations intentionally not consulted: external codec ABIs,
-  LZD/rANS wrappers, workspace conventions, source code, and test suites.
-- Independent decisions: add one size-tagged config without changing ABI
-  version; keep all record types and offsets opaque; retain three caller-owned
-  regions; repeat calculation and partitioning inside the factory; and reject
-  every short or misaligned region before allocating the transform handle.
-- Generated-code task description: publish config initialization,
-  direction-specific requirements, and immutable-direction creation; add a
-  pure-C queried-workspace round trip and short-region, misalignment, null, and
-  reserved-field failures; synchronize C API, format, architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the adapter follows marc's local ABI convention and
-  DD-514 ownership exactly. No external API naming, object layout, allocation
-  scheme, wrapper control flow, or test expression was compared.
-- Local validation: the pure-C lifecycle and focused LZD/rANS validator,
-  decoder, planner, encoder, streaming-transform, and profile suite passed
-  under both MSVC and ClangCL. The complete Release CTest suite passed
-  1,992/1,992 under both compilers using official CMake 4.3.4; all 34 benchmark
-  smokes and schema-23 compatibility remained successful. Full target builds
-  also recompiled every existing public-header consumer under both compilers.
-
-## 2026-08-01 - LZD plus rANS profile workspace calculation
-
-- Authoring method: derived DD-514 from marc's local LZD/rANS streaming
-  constructors, LZD token and record bounds, scalar-rANS block bounds, and
-  checked alignment helpers.
-- References used: DD-514, DD-513, DD-512, the local LZD encoder and validator
-  workspace functions, scalar-rANS constants, checked arithmetic, and
-  caller-owned spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  workspace calculators, ABI layouts, allocation schemes, source code, and
-  test suites.
-- Independent decisions: calculate conservative token and complete-frame
-  encoder regions; aggregate-count every encoder-owned region; derive decoder
-  byte regions only from local limits; place rANS views, aligned LZD phrases,
-  and aligned expansion references in that order; and recompute the complete
-  layout before publishing typed spans.
-- Generated-code task description: add direction-specific profile and typed
-  partition helpers; freeze hand-checkable requirements; exercise limits,
-  altered layouts, short storage, stable error mapping, and a streaming round
-  trip built only from returned extents; synchronize architecture, readiness,
-  composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: formulas directly express repository-local format bounds
-  and C++ alignment. No external sizing formula, layout, naming scheme, or test
-  expression was compared.
-- Local validation: the focused LZD/rANS validator, decoder, planner, encoder,
-  streaming-transform, and profile suite passed 38/38 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 1,991/1,991 under both
-  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-23
-  compatibility remained successful. MSBuild required the established
-  out-of-sandbox retry after FileTracker returned `E_ACCESSDENIED`; both
-  compiler builds then completed normally.
-
-## 2026-08-01 - LZD plus rANS bounded streaming decoder
-
-- Authoring method: combined DD-513 from marc's stream/frame parsers, DD-508
-  private complete-frame decoder, and caller-owned raw-drain state.
-- References used: DD-513, DD-508, the local rANS block-view contract, LZD
-  phrase and expansion bounds, known-size process invariants, checked
-  arithmetic, and bounded spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  streaming decoders, state machines, buffering layouts, malformed corpora,
-  source code, and test suites.
-- Independent decisions: admit every complete frame and private region from the
-  fixed header before body collection; decode only into private raw storage;
-  drain only after success; preserve earlier committed frames; and keep errors
-  and terminal success sticky.
-- Generated-code task description: add the known-size streaming decoder and
-  build registration; prove one-byte decode, malformed-later-frame atomicity,
-  all byte and typed workspace shortages, aggregate admission, truncation,
-  trailing data, empty input, flush starvation, premature end, and protocol
-  errors; synchronize documentation and provenance.
-- Similarity review: the implementation composes only local independently
-  specified parsers, bounds, private decoding, and transform conventions. No
-  external state ordering, drain protocol, workspace organization, malformed
-  vector, error mapping, or test expression was compared.
-- Local validation: the focused LZD/rANS frame and streaming-transform suite
-  passed 31/31 under both MSVC and ClangCL. The complete Release CTest suite
-  passed 1,984/1,984 under both compilers using official CMake 4.3.4; all 34
-  benchmark smokes and schema-23 compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS bounded streaming encoder
-
-- Authoring method: wrapped DD-510 and DD-511 in marc's established immutable-
-  direction transform contract with caller-owned collection and drain storage.
-- References used: DD-512, the local complete-frame planner and encoder,
-  stream-prefix serializers, process/status invariants, checked aggregate
-  arithmetic, and bounded spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  streaming encoders, state machines, buffering layouts, source code, encoded
-  corpora, and test suites.
-- Independent decisions: retain one complete immutable frame while draining;
-  accept no new frame input during that drain; count every simultaneously held
-  region; preserve `EndInput`; leave `Flush` nonterminal; and reject explicit
-  block reset.
-- Generated-code task description: add the known-size streaming encoder and
-  build registration; prove one-byte reference identity, flush invariance,
-  sticky end, empty streams, workspace and aggregate admission, and protocol
-  errors; synchronize format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the implementation composes only marc's local transform
-  conventions and exact-frame APIs. No external state ordering, drain protocol,
-  storage organization, encoded bytes, error mapping, or test expression was
-  compared.
-- Local validation: the focused LZD/rANS frame and streaming-encoder suite
-  passed 26/26 under both MSVC and ClangCL. The complete Release CTest suite
-  passed 1,979/1,979 under both compilers using official CMake 4.3.4; all 34
-  benchmark smokes and schema-23 compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS deterministic frame encoder
-
-- Authoring method: placed DD-511 directly above DD-510's exact plan and used
-  marc's explicit generic-header and scalar-rANS serialization boundaries.
-- References used: DD-511, DD-510, the independent 593-byte vector, local frame
-  and rANS serializers, scalar rANS encoder, checked offsets, and bounded spans.
-- Known implementations intentionally not consulted: external LZD/rANS frame
-  encoders, serialization schedules, buffer layouts, encoded corpora, source
-  code, and test suites.
-- Independent decisions: plan before destination admission; preserve all output
-  on planner or capacity failure; regenerate every rANS block only from frozen
-  token staging; require repeated extents and final offsets to match; and write
-  all integer fields explicitly.
-- Generated-code task description: add deterministic complete-frame encoding,
-  a stable short-output error, independent-vector identity, phrase-generating
-  multi-block determinism and transactional round trip, output-capacity
-  atomicity, and synchronized format, architecture, readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the encoder composes only local independently specified
-  planners, serializers, and bounded spans. No external frame-writing control
-  flow, mutation schedule, capacity formula, encoded bytes, error taxonomy, or
-  test expression was compared.
-- Local validation: the focused LZD/rANS validator, decoder, planner, and
-  encoder suite passed 21/21 under both MSVC and ClangCL. The complete Release
-  CTest suite passed 1,974/1,974 under both compilers using official CMake
-  4.3.4; all 34 benchmark smokes and schema-23 compatibility remained
+- Authoring method: extended marc's dependency-free verified measurement
+  harness by the admitted fixed LZSS+tANS public profile.
+- References used: DD-566, DD-565's bounds, the public
+  `marc_lzss_tans_*` lifecycle, checked capacity arithmetic, and existing
+  timing/reporting conventions.
+- Known implementations intentionally not consulted: external benchmarks,
+  LZSS/tANS tools, workspace layouts, formulas, fixtures, source, or results.
+- Independent decisions: reuse the CLI profile; prove an untimed exact round
+  trip; keep transform creation outside timing; and report all queried regions
+  and peak caller workspace without performance thresholds.
+- Generated-code task description: add benchmark selection, public config/query
+  and factory dispatch, encoded-capacity bounds, one smoke, and synchronized
+  benchmark/readiness/provenance documentation.
+- Similarity review: the adapter follows only marc's public ABI and local
+  measurement structure. No external control flow, formula, naming, fixture,
+  capacity, or reporting expression was compared.
+- Local validation: the focused benchmark smoke and direct reporting run
+  passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,155/2,155 under both compilers using official CMake 4.3.4; all 38 benchmark
+  smokes, documentation layout, and schema-26 compatibility remained
   successful.
 
-## 2026-08-01 - LZD plus rANS exact-frame planner
+## 2026-08-03 - LZSS plus tANS CLI selector
 
-- Authoring method: composed DD-510 from marc's existing LZD planner and
-  encoder, scalar rANS block planner, generic frame validator, and checked
-  caller-owned staging conventions.
-- References used: DD-510, DD-506 bounds, the local LZD encoder, rANS block
-  planner, generic frame header, checked arithmetic, and bounded spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  encoders, planning protocols, capacity formulas, allocation layouts, encoded
-  corpora, source code, and test suites.
-- Independent decisions: admit encoder records before token staging; freeze the
-  complete canonical token sequence before rANS planning; plan every block
-  without serialized output; count encoder records, tokens, descriptors, and
-  exact payload together; and validate the synthesized header last.
-- Generated-code task description: add planner result fields and errors,
-  bounded exact-frame planning, raw-`A` and phrase-block determinism, guarded
-  encoder and staging shortages, aggregate and frame-size rejection, and
-  synchronized format, architecture, readiness, composition, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the implementation directly sequences only local
-  independently specified components and bounded spans. No external planning
-  order, workspace organization, capacity formula, encoded bytes, error
-  taxonomy, or test expression was compared.
-- Local validation: the focused LZD/rANS validator, decoder, publication, and
-  planner suite passed 18/18 under both MSVC and ClangCL. The complete Release
-  CTest suite passed 1,971/1,971 under both compilers using official CMake
-  4.3.4; all 34 benchmark smokes and schema-23 compatibility remained
-  successful.
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one completed public C profile.
+- References used: DD-565, DD-561's bounded arithmetic, the public
+  `marc_lzss_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZSS/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, and tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
+  descriptor, payload, block-count, and aggregate limits from the fixed
+  profile; keep typed views private; and reuse strict temporary publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bound, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release CTest suite passed 2,154/2,154
+  under both compilers using official CMake 4.3.4; all 37 benchmark smokes,
+  documentation layout, and schema-26 compatibility remained successful.
 
-## 2026-08-01 - LZD plus rANS transactional publication
+## 2026-08-03 - LZSS plus tANS bounded decoder fuzzing
 
-- Authoring method: applied DD-509 directly above marc's DD-508 private raw
-  decoder using the repository's established one-copy publication boundary.
-- References used: DD-509, DD-508, the local private decoder, checked caller
-  capacity, bounded spans, and standard copy semantics.
-- Known implementations intentionally not consulted: external LZD/rANS
-  decoders, publication protocols, buffer layouts, malformed corpora, source
-  code, and test suites.
-- Independent decisions: preflight the complete caller destination before any
-  private mutation; exclude output from aggregate workspace; copy exactly once
-  after private success; preserve excess capacity; and preserve all output on
-  every failure.
-- Generated-code task description: extend shared preflight with output
-  capacity, add transactional complete-frame publication, raw-`A` and generated-
-  phrase success tests, short-output and layered-failure atomicity tests, and
-  synchronize changelog, format, architecture, readiness, composition,
-  decision, reference, vector, and provenance records.
-- Similarity review: the boundary adds only a checked destination and final
-  standard copy above local private decoding. No external transaction flow,
-  publication order, buffer policy, error mapping, or test expression was
-  compared.
-- Local validation: the focused LZD/rANS vector, validator, private-decoder,
-  and transactional-publication suite passed 15/15 under both MSVC and
-  ClangCL. The complete Release suite passed 1,967/1,967 under both compilers
-  using official CMake 4.3.4; all 34 benchmark smokes and schema-23
-  compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS private raw reconstruction
-
-- Authoring method: applied DD-508 above marc's DD-507 complete-frame validator
-  and ordinary iterative LZD decoder.
-- References used: DD-508, DD-507, the local LZD decoder and expansion bound,
-  rANS/LZD validation ordering, checked aggregate arithmetic, and caller-owned
-  private spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  decoders, phrase expansion implementations, allocation layouts, malformed
-  corpora, source code, and test suites.
-- Independent decisions: admit raw and expansion storage before entropy work;
-  aggregate-count both; reuse only the completely validated phrase graph;
-  reconstruct iteratively into disposable staging; and add no external output
-  transaction.
-- Generated-code task description: extend the validator preflight and result,
-  add private raw reconstruction, raw-`A` and cross-block `ABABAB` tests, short-
-  private-region and malformed-entropy atomicity tests, and synchronize
-  changelog, format, architecture, readiness, composition, decision, reference,
-  vector, and provenance records.
-- Similarity review: the implementation composes local validator and decoder
-  contracts with checked spans. No external reconstruction order, expansion
-  layout, buffer policy, error mapping, or test expression was compared.
-- Local validation: the focused LZD/rANS vector, validator, and private-decoder
-  suite passed 11/11 under both MSVC and ClangCL. The complete Release CTest
-  suite passed 1,963/1,963 under both compilers using official CMake 4.3.4;
-  all 34 benchmark smokes and schema-23 compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS complete-frame validator
-
-- Authoring method: composed DD-507 directly from marc's rANS controller and
-  decoder, ordinary LZD token-stream validator, generic frame parser, and
-  checked workspace conventions.
-- References used: DD-507, DD-506, the local rANS descriptor controller and
-  decoder, LZD validator, generic frame bounds, checked arithmetic, and caller-
-  owned spans.
-- Known implementations intentionally not consulted: external LZD/rANS
-  compositions, combined decoders, allocation layouts, error taxonomies,
-  malformed corpora, source code, and test suites.
-- Independent decisions: preflight every encoded and workspace extent;
-  validate all blocks before token mutation; reconstruct exactly one complete
-  private token region; invoke the existing LZD validator only afterward; and
-  publish no raw bytes.
-- Generated-code task description: add a bounded complete-frame result and
-  validator, exact extent and aggregate checks, two-pass entropy validation and
-  reconstruction, LZD graph validation, split-block and failure-atomic tests,
-  and synchronized changelog, format, architecture, readiness, composition,
-  decision, reference, vector, and provenance records.
-- Similarity review: the implementation sequences local independently authored
-  boundaries and checked spans. No external combined control flow, workspace
-  layout, error mapping, malformed vector, or test expression was compared.
-- Local validation: the focused LZD/rANS vector and complete-frame validator
-  suite passed 7/7 under both MSVC and ClangCL. The complete Release CTest suite
-  passed 1,959/1,959 under both compilers using official CMake 4.3.4; all 34
-  benchmark smokes and schema-23 compatibility remained successful.
-
-## 2026-08-01 - LZD plus rANS reserved representation
-
-- Authoring method: composed marc's already documented LZD reference-pair
-  grammar, scalar rANS block representation, and generic frame serialization
-  without consulting another combined format.
-- References used: DD-506, the local LZD variant-1 specification and encoder,
-  scalar rANS variant-1 specification and encoder, generic frame serializer,
-  checked bounds, and standalone hand vectors.
-- Known implementations intentionally not consulted: external LZD/rANS
-  formats, combined codec source, archive tools, encoded corpora, and test
-  suites.
-- Independent decisions: finalize the complete eight-byte token sequence
-  before rANS; permit blocks to split references and tokens only at byte
-  boundaries; validate all entropy before the LZD graph; retain frame-local
-  reset; and freeze a sparse 593-byte raw-`A` frame.
-- Generated-code task description: specify exact IDs, parameters, token and
-  entropy boundaries, checked `S`, `K`, descriptor, `P`, phrase, expansion,
-  and frame bounds; add the standalone-component vector; and synchronize
-  changelog, format, architecture, readiness, composition, decision,
-  reference, vector-generation, and provenance records.
-- Similarity review: the composition directly sequences existing local byte-
-  stream contracts. No external combined grammar, byte layout, bound,
-  normalization table, encoded frame, naming scheme, or test expression was
-  compared.
-- Local validation: the independent LZD/rANS terminal-token vector passed under
-  both MSVC and ClangCL. The complete Release CTest suite passed 1,953/1,953
-  under both compilers using official CMake 4.3.4; all 34 benchmark smokes and
-  schema-23 compatibility remained successful.
-
-## 2026-08-01 - Interoperability schema 23 appends LZW plus rANS
-
-- Authoring method: applied DD-505 after the fixed `lzw-rans` CLI, completion,
-  fuzz, and benchmark boundaries were locally complete.
-- References used: DD-505, the frozen schema-22 manifest order, marc's
-  deterministic 8,193-byte fixture, and the repository-owned generator,
-  verifier, and compatibility scripts.
-- Known implementations intentionally not consulted: external
-  interoperability schemas, manifests, archive corpora, source code, and test
-  suites.
-- Independent decisions: append exactly one profile; name codec set
-  `marc-cli-v23`; retain every earlier schema exactly; locally round-trip
-  before manifest publication; require canonical order and deterministic
-  re-encoding; and keep external evidence explicitly pending.
-- Generated-code task description: update the generator to schema 23, add
-  `lzw-rans` as archive 34, teach the verifier the exact new set, reject a
-  reordered schema-23 manifest, convert schema 23 to 22, exercise schemas 22
-  through 1, and synchronize interoperability, format, architecture,
-  readiness, composition, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: the change extends only marc's existing versioned
-  manifest chain by one local selector. No external schema structure, archive,
-  conversion flow, validation expression, or test data was compared.
-- Local validation: focused schema-23 generation, all 34 deterministic local
-  round trips, reordered-manifest rejection, and the schema-22-through-1
-  compatibility chain passed under both MSVC and ClangCL. The complete Release
-  CTest suite passed 1,952/1,952 under both compilers using official CMake
-  4.3.4; all 34 benchmark smokes remained successful.
-
-## 2026-08-01 - Interoperability schema 23 external validation record
-
-- Scope: deterministic x86-64 Windows/WSL2-Linux/compiler interoperability;
-  no non-x86-64 or non-WSL Linux claim is added.
-- References used: DD-505, marc's schema-23 generator and verifier, the
-  successful pushed CI artifacts, and the independently generated Ubuntu
-  26.04 bundle.
-- Producing environments: MSVC via Visual Studio 2026 on Windows x64, the
-  default Ubuntu 24.04 C++ compiler via Ninja on x64, and Ubuntu Clang 21.1.8
-  via Ninja under Ubuntu 26.04 WSL2 on x64.
-- Known implementations intentionally not consulted: external codec source,
-  archive implementations, encoded corpora, and test suites.
-- Recorded result: revision
-  `5397f261fa04ee49832d9f72b09960a156232aad` completed all four established
-  verification directions. Ubuntu 26.04 verified the Windows/MSVC and Ubuntu
-  24.04 CI bundles, generated and self-verified its own bundle, and
-  Windows/MSVC verified that Ubuntu bundle. Every invocation reported
-  `Verified 34 archives` and performed exact manifest-order, size, SHA-256,
-  decoded-fixture, and byte-identical local re-encoding checks.
-- Similarity review: this record contains only observed tool outputs and
-  environment labels supplied by the project owner. No external encoded
-  representation or implementation structure was compared.
-
-## 2026-08-01 - LZW plus rANS verified benchmark adapter
-
-- Authoring method: extended marc's dependency-free public-C benchmark runner
-  under DD-504 with the already admitted DD-503 CLI profile.
-- References used: DD-504, DD-503, the public LZW/rANS lifecycle, checked
-  complete-stream arithmetic, and the repository's untimed verification and
-  timed fresh-transform protocol.
-- Known implementations intentionally not consulted: external benchmark
-  suites, LZW/rANS tools, wrappers, encoded corpora, source code, and published
-  performance tables.
-- Independent decisions: use `80 + 2N + 1128K` capacity; query both directions
-  independently; verify exact round trip before measurement; report each
-  workspace and their directional maximum; and impose no speed or ratio floor.
-- Generated-code task description: add codec registration, fixed public
-  configuration, capacity arithmetic, requirements and factory dispatch,
-  verified smoke test, and synchronize changelog, benchmark, format,
-  architecture, readiness, composition, decision, reference, vector, and
-  provenance records.
-- Similarity review: the adapter changes only marc's local enum, dispatch, and
-  checked profile calculations. No external harness structure, capacity
-  formula, timing protocol, output format, or test expression was compared.
-- Local validation: the verified benchmark smoke passed under both MSVC and
-  ClangCL. The complete Release CTest suite passed 1,952/1,952 under both
-  compilers using official CMake 4.3.4; all 34 benchmark smokes and schema-22
-  compatibility remained successful.
-
-## 2026-08-01 - LZW plus rANS transactional CLI adapter
-
-- Authoring method: applied DD-503 to marc's existing transactional CLI and
-  the already published `marc_lzw_rans_*` lifecycle.
-- References used: DD-503, DD-500, public fixed-width config and workspace
-  query, local rANS bounds, and the generic CLI round-trip regression.
-- Known implementations intentionally not consulted: external LZW/rANS tools,
-  archive CLIs, wrappers, source code, encoded corpora, and test suites.
-- Independent decisions: fix both frame and entropy block at 65,536 bytes;
-  retain the 8-MiB aggregate policy used by the other admitted LZW entropy
-  profiles; obtain every actual workspace from the public query; and preserve
-  the shared temporary-file transaction without codec-specific file handling.
-- Generated-code task description: add the enum, public-limit configuration,
-  requirements and factory dispatch, selector and usage text, common CLI
-  regression, and synchronize changelog, CLI, format, architecture, readiness,
-  composition, decision, reference, vector, and provenance records.
-- Similarity review: the adapter extends only marc's local switch and public C
-  lifecycle. No external CLI structure, profile constants, error handling,
-  naming scheme, or test expression was compared.
-- Local validation: the dedicated transactional CLI regression passed under
-  both MSVC and ClangCL. The complete Release CTest suite passed 1,951/1,951
-  under both compilers using official CMake 4.3.4; all 33 benchmark smokes and
-  schema-22 compatibility remained successful.
-
-## 2026-08-01 - LZW plus rANS bounded decoder fuzz boundary
-
-- Authoring method: applied DD-502 to marc's local complete-frame decoder and
-  DD-500 public C transform lifecycle using fixed caller-owned arrays.
-- References used: DD-502, DD-500, local LZW/rANS profile arithmetic,
-  process-result invariants, and the repository-generated `ABABX` stream.
+- Authoring method: adapted marc's repository-owned fixed-memory composed
+  decoder harness pattern to the already specified LZSS+tANS boundary.
+- References used: DD-564, DD-563, the local complete-frame and incremental
+  decoders, fixed caller-owned workspaces, and the local canonical encoder.
 - Known implementations intentionally not consulted: external fuzz harnesses,
-  corpora, malformed archives, combined codec implementations, source code,
-  and test suites.
-- Independent decisions: exercise private complete-frame and public streaming
-  boundaries with every input; cap all byte and typed storage before parsing;
-  use deterministic small chunks and a finite call budget; treat ordinary
-  decode errors as expected; and retain truncation, saturated extent, and
-  reserved-descriptor atomicity as permanent regressions. Seed the corpus only
-  with the reviewed five-byte truncated magic prefix.
-- Generated-code task description: add the bounded dual-path harness, normal-
-  build compile-smoke target, three atomic malformed regressions, and
-  synchronize changelog, architecture, readiness, composition, fuzzing,
-  decision, reference, vector, and provenance records.
-- Similarity review: the harness and regressions compose only local public and
-  private interfaces and repository-authored vectors. No external mutation
-  strategy, corpus input, control flow, naming scheme, or test expression was
+  corpora, mutation schedules, malformed archives, codec source, and tests.
+- Independent decisions: exercise both decoder paths; cap every byte region
+  and tANS view count; derive chunks only from bounded bytes; impose a finite
+  process-call ceiling; and preserve atomic failure cases as ordinary tests.
+- Generated-code task description: add a bounded LZSS+tANS dual-decoder fuzz
+  target, reviewed truncated-magic seed, compile-smoke target, atomic malformed
+  regressions, and readiness/provenance documentation.
+- Similarity review: the harness uses only local types, limits, and transform
+  contracts. No external control flow, corpus, mutation, naming, or test
+  expression was compared.
+- Local validation: the harness compile-smoke and focused malformed regressions
+  passed under both MSVC and ClangCL. A bounded 1,000-input Clang
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer campaign completed
+  without a crash, hang, or sanitizer finding at 37 MiB peak RSS. The complete
+  Release CTest suite passed 2,153/2,153 under both compilers using official
+  CMake 4.3.4; all 37 benchmark smokes, documentation layout, and schema-26
+  compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS public-ABI completion matrix
+
+- Authoring method: exercised the published marc C lifecycle as the sole codec
+  boundary and derived all inputs and mutations independently.
+- References used: DD-563, DD-562, the public C header, deterministic local
+  byte generator, and generic frame-header offsets.
+- Known implementations intentionally not consulted: external conformance
+  suites, combined codec tests, corpora, malformed archives, source code, and
+  test vectors.
+- Independent decisions: cover required binary classes and frame boundaries;
+  compare repeated and chunked encoding byte-for-byte; corrupt only the final
+  frame after three commits; and require sticky error positions.
+- Generated-code task description: add public-lifecycle determinism,
+  chunk-boundary, round-trip, terminal, malformed-final-frame, truncation, and
+  trailing-data coverage; update readiness and provenance.
+- Similarity review: the suite composes only repository public calls, local
+  generators, and documented parser offsets. No external schedule, mutation,
+  corpus, naming, or test expression was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,150/2,150
+  under both compilers using official CMake 4.3.4; all 37 benchmark smokes and
+  schema-26 compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS public C ABI
+
+- Authoring method: connected DD-561's existing bounded streaming pair to
+  marc's repository-owned fixed-width C lifecycle and three-region convention.
+- References used: DD-562, DD-561, the local C transform adapter, checked
+  workspace arithmetic, and private tANS view alignment.
+- Known implementations intentionally not consulted: external C ABIs, factory
+  layouts, allocation APIs, codec source, corpora, and test suites.
+- Independent decisions: use a distinct size-tagged config; preserve borrowed
+  primary/secondary/views storage; expose view byte count and alignment only;
+  repeat admission at construction; and leave failed handles null.
+- Generated-code task description: add public declarations, configuration
+  loading, requirements query, factory, and a pure-C round trip with exact
+  workspace and failure checks; update build and documentation records.
+- Similarity review: the adapter specializes only marc-authored ABI and profile
+  conventions. No external naming, structure layout, lifecycle control flow,
+  or test expression was compared.
+- Local validation: the pure-C ABI round trip passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,147/2,147 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS internal profile calculator
+
+- Authoring method: specialized marc's repository-owned directional profile
+  convention to the already specified LZSS+tANS streaming workspaces.
+- References used: DD-561, DD-559/DD-560, local hard limits, checked
+  arithmetic, and the documented tANS block payload ceiling.
+- Known implementations intentionally not consulted: external profile APIs,
+  allocation policies, codec source, encoded corpora, and test suites.
+- Independent decisions: derive encoder storage from known-size configuration;
+  sum the conservative ceiling for full and final-short tANS blocks; derive
+  decoder storage only from local limits; and expose no private view layout.
+- Generated-code task description: add canonical header and directional
+  workspace calculation; test exact default and short capacities, independent
+  limits, stable errors, and direct streaming construction; update build and
+  documentation records.
+- Similarity review: the calculator combines only repository-owned bounds,
+  types, and checked arithmetic. No external structure, capacity formula,
+  naming scheme, or test expression was compared.
+- Local validation: all 7 focused profile tests and all 2,146 repository tests
+  passed under both MSVC and ClangCL using official CMake 4.3.4; all 37
+  benchmark smokes and schema-26 compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS known-size streaming decoder
+
+- Authoring method: specialized marc's repository-owned bounded LZSS/rANS
+  streaming state contract to DD-556's tANS private frame decoder and view
+  type.
+- References used: DD-560, DD-556, local stream and generic-frame parsers,
+  tANS block views, checked arithmetic, and core process-result invariants.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, malformed corpora, source code, chunking
+  suites, and tests.
+- Independent decisions: collect the prefix and frame header separately;
+  preflight all private regions before the body; decode only complete frames;
+  publish after success; preserve earlier commits; and keep terminal states
+  sticky.
+- Generated-code task description: add bounded known-size streaming decoding;
+  prove one-byte round trip, later-corruption atomicity, storage and aggregate
+  limits, truncation, trailing data, empty input, Flush, premature end, reset,
+  and repeated terminal behavior; update build and documentation records.
+- Similarity review: the implementation composes only repository parsing,
+  transactional decode, span, and state contracts. No external control flow,
+  storage layout, malformed vector, chunk schedule, or test expression was
   compared.
-- Local validation: the focused LZW/rANS suite passed 51/51 under both MSVC
-  and ClangCL. The complete Release CTest suite passed 1,950/1,950 under both
-  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
-  compatibility remained successful. The Clang/libFuzzer executable completed
-  a bounded 1,000-input AddressSanitizer/UndefinedBehaviorSanitizer smoke with
-  no crash, hang, or sanitizer finding and 38 MiB peak RSS.
-
-## 2026-08-01 - LZW plus rANS public-ABI completion matrix
-
-- Authoring method: applied DD-501 to marc's local DD-500 C lifecycle and the
-  repository's independently authored common LZW completion schedules.
-- References used: DD-501, DD-500, the public C header, local transform
-  lifecycle, documented rANS block bounds, and deterministic local generators.
-- Known implementations intentionally not consulted: external LZW/rANS test
-  suites, conformance corpora, encoded archives, source code, and wrappers.
-- Independent decisions: keep all evidence on the public C boundary; retain
-  identical LZW input classes and chunk schedules; specialize only the rANS
-  frame ceiling and block configuration; and treat one final-frame byte as the
-  transactional publication unit after three committed 64-byte frames.
-- Generated-code task description: add the public-ABI completion matrix;
-  exercise required data classes, repeat determinism, four encode/decode chunk
-  schedules, sticky end and error states, and corrupted, truncated, and
-  extended fourth-frame atomicity; synchronize C API, format, architecture,
-  readiness, composition, changelog, decision, reference, vector, and
-  provenance records.
-- Similarity review: the matrix reuses only repository-local evidence
-  schedules and public symbols. No external vector, scheduling pattern,
-  malformed corpus, naming scheme, or test expression was compared.
-- Local validation: the focused LZW/rANS internal, pure-C, and public-ABI
-  completion suite passed 49/49 under both MSVC and ClangCL. The complete
-  Release CTest suite passed 1,947/1,947 under both compilers using official
-  CMake 4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
+- Local validation: all 5 focused streaming-decoder tests and all 2,139
+  repository tests passed under both MSVC and ClangCL using official CMake
+  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
   successful.
 
-## 2026-08-01 - LZW plus rANS public C factory
+## 2026-08-03 - LZSS plus tANS known-size streaming encoder
 
-- Authoring method: bound DD-500 directly to marc's local DD-499 profile,
-  checked typed partition helpers, and established opaque transform lifecycle.
-- References used: DD-500, DD-499, the local streaming transforms, fixed-width
-  public C types, common workspace requirements, and standard C allocation.
-- Known implementations intentionally not consulted: external codec ABIs,
-  LZW/rANS wrappers, workspace conventions, source code, and test suites.
-- Independent decisions: add one size-tagged config without changing ABI
-  version; retain primary, secondary, and aligned opaque views roles; repeat
-  profile calculation in the factory; keep all record layouts private; and
-  publish a null handle on every failure.
-- Generated-code task description: add public config, requirements query, and
-  factory declarations and definitions; prove a pure-C five-byte three-frame
-  round trip, exact representative workspace extents, every short region,
-  misalignment, null output, and reserved metadata; synchronize C API, format,
-  architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: the adapter follows marc's existing independently written
-  lifecycle and the new local profile. No external ABI layout, wrapper control
-  flow, naming scheme, or test expression was compared.
-- Local validation: the focused LZW/rANS internal and pure-C public suite
-  passed 46/46 under both MSVC and ClangCL. The complete Release CTest suite
-  passed 1,944/1,944 under both compilers using official CMake 4.3.4; all 33
-  benchmark smokes and schema-22 compatibility remained successful. MSBuild
-  required the established out-of-sandbox retry after its FileTracker returned
-  `E_ACCESSDENIED`; both compiler builds then completed normally.
+- Authoring method: applied marc's core transform state contract above the
+  DD-558 complete-frame writer with caller-owned bounded storage.
+- References used: DD-559, DD-558, local stream and LZSS parameter serializers,
+  checked arithmetic, and existing process-result invariants.
+- Known implementations intentionally not consulted: external streaming
+  encoders, buffering state machines, source code, chunking suites, and tests.
+- Independent decisions: drain prefix first; retain one raw, token, and encoded
+  frame; prepare only complete expected frames; keep Flush nonterminal; latch
+  EndInput through draining; and keep terminal states sticky.
+- Generated-code task description: add a known-size bounded streaming encoder;
+  prove reference-byte identity with one-byte buffers, full-frame and Flush
+  behavior, storage and aggregate failures, empty and premature input,
+  unsupported reset, and repeated end; update build and documentation records.
+- Similarity review: the implementation composes only repository state,
+  framing, writer, and span contracts. No external control flow, storage
+  layout, chunk schedule, or test expression was compared.
+- Local validation: all 4 focused streaming-encoder tests and all 2,134
+  repository tests passed under both MSVC and ClangCL using official CMake
+  4.3.4; all 37 benchmark smokes and schema-26 compatibility remained
+  successful.
 
-## 2026-08-01 - LZW plus rANS profile workspace calculation
+## 2026-08-03 - LZSS plus tANS complete-frame writer
 
-- Authoring method: derived DD-499 from marc's local streaming constructors,
-  LZW width and record bounds, scalar rANS block bounds, and checked alignment
-  helpers.
-- References used: DD-499, DD-498, DD-497, the local LZW encoder and validator
-  workspace functions, scalar rANS constants, checked arithmetic, and
-  caller-owned spans.
-- Known implementations intentionally not consulted: external LZW/rANS
-  workspace calculators, ABI layouts, allocation schemes, source code, and
-  test suites.
-- Independent decisions: calculate conservative packed and complete-frame
-  encoder regions; aggregate-count every encoder-owned region; derive decoder
-  byte regions only from local limits; place rANS views before aligned LZW
-  phrases; use canonical empty alignment one; and validate opaque partitions
-  before publishing typed spans.
-- Generated-code task description: add direction-specific profile and typed
-  partition helpers; freeze hand-checkable requirements; exercise limits,
-  altered requirements, short and misaligned storage, stable error mapping,
-  and a streaming round trip built only from returned extents; synchronize
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: formulas directly express repository-local format bounds
-  and C++ alignment. No external sizing formula, layout, naming scheme, or test
-  expression was compared.
-- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
-  streaming-transform, and profile suite passed 45/45 under both MSVC and
-  ClangCL. The complete Release CTest suite passed 1,943/1,943 under both
-  compilers using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+- Authoring method: extended DD-557's exact planner with repository-owned
+  generic-frame and tANS serializers over the frozen token region.
+- References used: DD-558, DD-557, local generic header serializer, tANS
+  descriptor serializer and encoder, checked spans, and deterministic token
+  staging.
+- Known implementations intentionally not consulted: external combined
+  encoders, archive writers, serialization layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: admit the complete serialized output after planning
+  and before writing; emit header, descriptor region, and payload region
+  explicitly; replan each immutable block; and require exact payload agreement.
+- Generated-code task description: add deterministic complete-frame writing;
+  prove independent-vector equality, intra-Literal split determinism and round
+  trip, generated-Match determinism and round trip, and one-byte-short output
+  atomicity; update format, architecture, readiness, composition, decisions,
+  references, vectors, changelog, and provenance.
+- Similarity review: implementation structure is composed only from marc's
+  exact planner and explicit serializers. No external control flow, byte
+  layout, vector, or test expression was compared.
+- Local validation: the focused writer suite passed 4/4 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,130/2,130 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
   compatibility remained successful.
 
-## 2026-08-01 - LZW plus rANS bounded streaming decoding
+## 2026-08-03 - LZSS plus tANS exact-frame planner
 
-- Authoring method: composed DD-498 from marc's local private complete-frame
-  decoder and established frame-stream collection contract.
-- References used: DD-498, DD-497, the local LZW/rANS private decoder,
-  explicit stream and frame parsers, checked arithmetic, and caller-owned
-  spans.
-- Known implementations intentionally not consulted: external streaming
-  LZW/rANS decoders, buffering schedules, allocation layouts, malformed
-  corpora, source code, and test suites.
-- Independent decisions: parse the fixed prefix and frame header separately;
-  admit serialized frame, views, packed staging, raw staging, and phrase
-  records before body collection; decode only a complete frame; drain it
-  before collecting another header; and retain `EndInput` while draining.
-- Generated-code task description: add the bounded streaming decoder; prove
-  one-byte chunking, frame-granular publication under later corruption, every
-  workspace and aggregate bound, truncation and trailing rejection, empty and
-  flush behavior, retained premature end, and unsupported flags; synchronize
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the decoder directly composes repository-local contracts
-  and independently specified frame validation. No external control flow,
-  storage organization, naming scheme, malformed vector, or test expression
-  was compared.
-- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
-  and both streaming-transform suite passed 38/38 under both MSVC and ClangCL.
-  The complete Release CTest suite passed 1,936/1,936 under both compilers
-  using official CMake 4.3.4; all 33 benchmark smokes and schema-22
+- Authoring method: composed marc's deterministic LZSS token planner and
+  encoder with its existing tANS block planner under DD-553's frozen byte
+  boundary.
+- References used: DD-557, local LZSS and tANS encoder primitives, generic
+  frame validation, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external combined
+  encoders, planning algorithms, allocation layouts, source code, encoded
+  corpora, and test suites.
+- Independent decisions: materialize the exact canonical token region once;
+  plan blocks only over frozen bytes; accumulate exact descriptor, payload,
+  and frame extents; count planned serialized storage with token staging;
+  validate the synthesized header; and write no serialized output.
+- Generated-code task description: add a write-free LZSS+tANS exact-frame
+  planner and stable input, dictionary-encode, and entropy-encode errors; prove
+  the independent vector, intra-Literal block split, generated Match
+  determinism, early staging rejection, input extent rejection, block-count
+  limit, and aggregate limit; update all format, architecture, readiness,
+  composition, provenance, reference, vector, decision, and changelog records.
+- Similarity review: the implementation composes only repository-authored
+  planners, encoders, validation, and arithmetic. No external control flow,
+  sizing formula, vector, or test expression was compared.
+- Local validation: the focused planner suite passed 6/6 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,126/2,126 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
   compatibility remained successful.
 
-## 2026-08-01 - LZW plus rANS bounded streaming encoding
+## 2026-08-03 - LZSS plus tANS transactional publication
 
-- Authoring method: composed DD-497 directly above marc's local exact-frame
-  planner and encoder and the repository's established transform contract.
-- References used: DD-497, DD-496, the local LZW/rANS frame encoder, explicit
-  stream and LZW parameter serializers, checked arithmetic, and caller-owned
-  spans.
-- Known implementations intentionally not consulted: external streaming
-  LZW/rANS implementations, buffering schedules, allocation layouts, encoded
-  corpora, source code, and test suites.
-- Independent decisions: buffer exactly one raw frame; retain separate packed
-  and immutable serialized-frame regions; drain a frame before accepting later
-  input; count raw, actual packed, exact frame, and records per aggregate
-  limit; retain `EndInput`; and keep `Flush` non-terminal.
-- Generated-code task description: add a bounded known-size streaming encoder;
-  prove one-byte chunk identity, non-terminal flush, retained finish, workspace
-  and aggregate bounds, empty input, and protocol errors; synchronize format,
-  architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: the transform directly composes repository-local
-  contracts and independently specified frame encoding. No external control
-  flow, storage organization, naming scheme, encoded bytes, or test expression
-  was compared.
-- Local validation: the focused LZW/rANS validator, decoder, planner, encoder,
-  and streaming-encoder suite passed 33/33 under both MSVC and ClangCL. The
-  complete Release CTest suite passed 1,931/1,931 under both compilers using
-  official CMake 4.3.4; all 33 benchmark smokes and schema-22 compatibility
+- Authoring method: wrapped DD-555's private decoder with marc's established
+  complete-frame preflight and single-copy publication boundary.
+- References used: DD-556, DD-555, caller-owned spans, exact preflight
+  capacity, and the local bounded-copy convention.
+- Known implementations intentionally not consulted: external decompression
+  APIs, publication protocols, buffer designs, source code, malformed corpora,
+  and test suites.
+- Independent decisions: admit the complete caller output before all private
+  mutation; exclude output from internal workspace; retain private decode
+  unchanged; and publish exactly the declared raw extent once.
+- Generated-code task description: add transactional LZSS+tANS frame decode;
+  prove successful guarded publication, overlapping Match publication, early
+  short-output rejection, and unchanged output after entropy or token failure;
+  update architecture, format, readiness, composition, decisions, references,
+  vectors, changelog, and provenance.
+- Similarity review: the wrapper uses only repository-authored admission,
+  private reconstruction, and bounded copying. No external control flow,
+  publication schedule, malformed vector, or test expression was compared.
+- Local validation: the focused publication suite passed 4/4 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,120/2,120 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS private raw decoder
+
+- Authoring method: extended DD-554's local complete-frame validator with the
+  existing allocation-free LZSS decoder behind a private raw-staging boundary.
+- References used: DD-555, DD-554, caller-owned spans, checked aggregate
+  arithmetic, and marc's local LZSS literal and overlap-copy semantics.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight the full raw extent before entropy work;
+  include it in aggregate workspace; reuse complete entropy and token
+  validation unchanged; reconstruct exactly the declared raw extent only after
+  validation; preserve layered LZSS diagnostics; and expose no caller-visible
+  output span.
+- Generated-code task description: add private LZSS+tANS raw reconstruction
+  and stable raw-capacity and dictionary-decode errors; prove the independent
+  Literal, overlapping Match, early storage and aggregate rejection, and raw
+  sentinel preservation after entropy or token failure; update architecture,
+  format, readiness, composition, decisions, references, vectors, changelog,
+  and provenance.
+- Similarity review: the implementation adds only repository-authored LZSS
+  decoding and bounded-span contracts above the local validator. No external
+  control flow, workspace formula, malformed vector, or test expression was
+  compared.
+- Local validation: the focused private-decoder suite passed 5/5 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,116/2,116 under
+  both compilers using official CMake 4.3.4; all 37 benchmark smokes and
+  schema-26 compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS complete-frame validator
+
+- Authoring method: combined marc's generic frame admission, strict two-pass
+  tANS block decoder, and existing LZSS validator at DD-553's private token
+  boundary.
+- References used: DD-554, DD-553, local checked arithmetic, tANS descriptor
+  views, table and state validation, and the canonical LZSS token validator.
+- Known implementations intentionally not consulted: external combined
+  decoders, FSE implementations, validation orders, buffer layouts, source
+  code, malformed corpora, and test suites.
+- Independent decisions: preflight exact extents and all caller-owned storage;
+  calculate the per-block 12-bit payload ceiling; count views in aggregate
+  workspace; validate every entropy block before decoding any; reconstruct
+  only the complete private token region; preserve LZSS diagnostic positions;
+  and stop before raw reconstruction or publication.
+- Generated-code task description: add a bounded complete-frame validator and
+  stable layered errors; test the independent vector, an intra-Literal block
+  split, every truncation, storage and aggregate limits, malformed descriptor
+  and later payload atomicity, invalid reconstructed token, entropy bounds,
+  and pipeline rejection; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-authored
+  parsers, validators, decoders, and span contracts. No external control flow,
+  workspace formula, malformed vector, or test expression was compared.
+- Local validation: the focused validator suite passed 10/10 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,111/2,111 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
+## 2026-08-03 - LZSS plus tANS reserved representation
+
+- Authoring method: composed marc's independently documented canonical LZSS
+  byte-token grammar with its tabled tANS block format at the neutral
+  byte-stream boundary.
+- References used: DD-553, the local LZSS variant-1 token grammar, local tANS
+  normalization, spread and transition recurrence, generic frame fields, and
+  checked arithmetic.
+- Known implementations intentionally not consulted: external LZSS/tANS or
+  FSE compositions, archive formats, source code, encoded or malformed
+  corpora, and test suites.
+- Independent decisions: freeze all token bytes before entropy work; allow
+  byte-sized tANS boundaries inside variable-length tokens but never across
+  frames; validate every automaton before LZSS grammar; and reserve no public
+  implementation until transactional reconstruction exists.
+- Generated-code task description: specify the LZSS/tANS boundary, exact
+  bounds, reset and validation order; independently calculate the raw-`A`
+  model, spread transitions, payload, descriptor, and complete frame; prove it
+  through standalone components; and update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: only repository-authored component APIs and mathematical
+  rules were used. No external control flow, table layout, combined vector, or
+  test expression was compared.
+- Local validation: the independent 587-byte vector passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,101/2,101 under both
+  compilers using official CMake 4.3.4; all 37 benchmark smokes and schema-26
+  compatibility remained successful.
+
+## 2026-08-03 - Schema 26 four-direction external admission
+
+- Authoring method: recorded user-executed results from marc's existing
+  repository-owned schema-26 verifier at one exact pushed revision.
+- References used: DD-552, pushed CI for revision
+  `5b2aa31ba3333c311ad4086b3438915a6c3ce36d`, and four successful verifier
+  result lines from the established three producers.
+- Known implementations intentionally not consulted: external codec code,
+  archive corpora, conformance suites, source code, and tests.
+- Independent decisions: require all 37 archives in both artifact-to-Ubuntu
+  checks, Ubuntu self-verification, and Ubuntu-to-Windows verification; bind
+  every result to the same full revision; retain the x86-64/WSL limitation.
+- Generated-code task description: record the exact four-direction evidence,
+  promote `lz77-tans` to `Ready`, and synchronize readiness, composition,
+  architecture, interoperability, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: this entry records only marc verifier outputs and local
+  admission terminology. No external stream bytes, report structure, test
+  expression, or implementation was compared.
+- External validation: all four passes reported `Verified 37 archives` at the
+  exact revision for Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+  producers. Pushed CI completed successfully before exchange. This completes
+  current admission evidence without extending it beyond the recorded x86-64
+  environments.
+
+## 2026-08-03 - Interoperability schema 26 appends LZ77 plus tANS
+
+- Authoring method: extended marc's repository-owned versioned bundle chain by
+  one already published deterministic CLI profile.
+- References used: DD-551, frozen schema-25 ordering, the deterministic local
+  8,193-byte fixture, and local generator, verifier, and converter scripts.
+- Known implementations intentionally not consulted: external schemas,
+  manifests, archive corpora, interoperability suites, source, and tests.
+- Independent decisions: name `marc-cli-v26`; append `lz77-tans` only as entry
+  37; preserve every earlier order; reject reorder; and reconstruct schema 25
+  by removing only the new entry.
+- Generated-code task description: update bundle generation and verification,
+  add schema-26 reorder rejection and schemas 1 through 25 conversion checks,
+  and synchronize format, architecture, readiness, composition,
+  interoperability, changelog, decision, reference, vector, and provenance.
+- Similarity review: the change applies only marc's existing schema evolution
+  rule and local profile name. No external ordering, manifest shape, fixture,
+  hash record, or test expression was compared.
+- Local validation: schema-26 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 25 compatibility passed under MSVC and ClangCL. The complete Release
+  suite passed 2,100/2,100 under both compilers using official CMake 4.3.4; all
+  37 benchmark smokes passed. External schema-26 exchange remains pending.
+
+## 2026-08-03 - LZ77 plus tANS public benchmark
+
+- Authoring method: extended marc's dependency-free public-C measurement
+  harness by the admitted fixed LZ77+tANS profile.
+- References used: DD-550, DD-549's bounded CLI profile, the public
+  `marc_lz77_tans_*` lifecycle, and existing checked measurement conventions.
+- Known implementations intentionally not consulted: external LZ77/tANS
+  benchmarks, wrappers, layouts, capacity formulas, results, source, or tests.
+- Independent decisions: reserve `80 + 24N + 8536K`; query both workspaces;
+  verify exact reconstruction before timing; and report observations without a
+  threshold.
+- Generated-code task description: add benchmark selector, fixed configuration,
+  capacity planning, public query/factory dispatch, smoke registration, and
+  synchronized benchmark, readiness, architecture, composition, changelog,
+  decision, reference, vector, C-API, and provenance records.
+- Similarity review: the adapter follows only marc-authored public lifecycle,
+  capacity helpers, reporting fields, and measurement loop. No external
+  benchmark structure, formula, naming, fixture, or result was compared.
+- Local validation: the focused benchmark smoke passed under MSVC and ClangCL.
+  The complete Release suite passed 2,100/2,100 under both compilers using
+  official CMake 4.3.4; all 37 benchmark smokes and schema-25 compatibility
   remained successful.
 
-## 2026-08-01 - LZW plus rANS deterministic frame encoding
+## 2026-08-03 - LZ77 plus tANS CLI admission
 
-- Authoring method: placed explicit frame serialization above DD-495's exact
-  plan and reused marc's local generic-header, rANS descriptor, and rANS
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one completed public C profile.
+- References used: DD-549, DD-545's bounded arithmetic, the public
+  `marc_lz77_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZ77/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, and tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; derive token,
+  descriptor, payload, block-count, and aggregate limits from the fixed
+  profile; keep typed views private; and reuse strict temporary publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bound, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release suite passed 2,099/2,099 under
+  both compilers using official CMake 4.3.4; all 36 benchmark smokes and
+  schema-25 compatibility remained successful.
+
+## 2026-08-03 - LZ77 plus tANS bounded decoder fuzz boundary
+
+- Authoring method: mechanically specialized marc's repository-owned LZ77+rANS
+  dual-decoder harness to the independently specified LZ77+tANS profile.
+- References used: DD-548, the local complete-frame and streaming decoders,
+  `TansBlockView`, checked process invariants, and fixed caller-owned storage.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, mutation schedules, combined codecs, source code, and test suites.
+- Independent decisions: cap input at 8,192 bytes; exercise both decoder
+  boundaries; use byte-derived chunks and a finite call ceiling; and retain
+  truncation, saturated-length, and invalid-descriptor atomic regressions.
+- Generated-code task description: add the sanitizer fuzz target, truncated-
+  magic seed, three permanent malformed-stream regressions, build wiring, and
+  synchronized architecture, readiness, composition, fuzzing, decision,
+  reference, vector, changelog, and provenance records.
+- Similarity review: the harness changes only local profile types, bounds, and
+  tANS descriptor rules. No external control flow, corpus bytes, mutation,
+  naming, or test expression was compared.
+- Local validation: the focused regression suite passed 3/3 under both MSVC
+  and ClangCL. Clang libFuzzer with AddressSanitizer and
+  UndefinedBehaviorSanitizer completed 1,000 bounded runs. The complete Release
+  CTest suite passed 2,098/2,098 under both compilers using official CMake
+  4.3.4; all 36 benchmark smokes and schema-25 compatibility remained
+  successful.
+
+## 2026-08-03 - LZ77 plus tANS public-ABI completion matrix
+
+- Authoring method: specialized marc's repository-owned public completion
+  contract to the newly published LZ77+tANS C lifecycle and its fixed format.
+- References used: DD-547, DD-546, the public C header, deterministic local
+  generator, and explicit generic-frame extent fields.
+- Known implementations intentionally not consulted: external conformance
+  suites, corpora, combined codecs, malformed archives, source, and tests.
+- Independent decisions: cover every one-byte symbol and required binary
+  class; repeat encoding byte-identically; vary encode and decode chunks;
+  require sticky termination; and preserve a sentinel after three committed
+  frames when the fourth is corrupt, truncated, or followed by trailing data.
+- Generated-code task description: add a public-C-lifecycle completion matrix
+  for required classes, determinism, chunking, terminal behavior, and final-
+  frame atomicity; update build and documentation records.
+- Similarity review: the matrix reuses only repository-authored fixtures,
+  parser field offsets, and public lifecycle helpers. No external schedule,
+  mutation, corpus, naming, or test expression was compared.
+- Local validation: the focused public-ABI completion suite passed 3/3 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,095/2,095
+  under both compilers using official CMake 4.3.4; all 36 benchmark smokes and
+  schema-25 compatibility remained successful.
+
+## 2026-08-03 - LZ77 plus tANS public C ABI
+
+- Authoring method: connected DD-545's existing bounded streaming pair to
+  marc's repository-owned fixed-width C lifecycle and three-region convention.
+- References used: DD-546, DD-545, the local C transform adapter, checked
+  workspace arithmetic, and private tANS view alignment.
+- Known implementations intentionally not consulted: external C ABIs, factory
+  layouts, allocation APIs, codec source, corpora, and test suites.
+- Independent decisions: use a distinct size-tagged config; preserve borrowed
+  primary/secondary/views storage; expose view byte count and alignment only;
+  repeat admission at construction; and leave failed handles null.
+- Generated-code task description: add public declarations, configuration
+  loading, requirements query, factory, and a pure-C round trip with exact
+  workspace and failure checks; update build and documentation records.
+- Similarity review: the adapter specializes only marc-authored ABI and profile
+  conventions. No external naming, structure layout, lifecycle control flow,
+  or test expression was compared.
+- Local validation: the pure-C ABI round trip passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,092/2,092 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
+## 2026-08-03 - LZ77 plus tANS internal profile calculator
+
+- Authoring method: specialized marc's repository-owned directional profile
+  convention to the already specified LZ77+tANS streaming workspaces.
+- References used: DD-545, DD-543/DD-544, local hard limits, checked arithmetic,
+  and the documented tANS block payload ceiling.
+- Known implementations intentionally not consulted: external profile APIs,
+  allocation policies, codec source, encoded corpora, and test suites.
+- Independent decisions: derive encoder storage from known-size configuration;
+  sum the exact conservative ceiling for full and final-short tANS blocks;
+  derive decoder storage only from local limits; and expose no private view
+  layout.
+- Generated-code task description: add canonical header and directional
+  workspace calculation; test exact default and short capacities, independent
+  limits, stable errors, and direct streaming construction; update build and
+  documentation records.
+- Similarity review: the calculator combines only repository-owned bounds,
+  types, and checked arithmetic. No external structure, capacity formula,
+  naming scheme, or test expression was compared.
+- Local validation: the focused profile suite passed 7/7 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,091/2,091 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
+## 2026-08-03 - LZ77 plus tANS known-size streaming decoder
+
+- Authoring method: specialized marc's repository-owned LZ77/rANS streaming
+  frame state contract to the DD-539 tANS private decoder and tANS view type.
+- References used: DD-544, local prefix and frame parsers, private LZ77+tANS
+  decoder, core status contract, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external streaming
+  decoders, buffering state machines, malformed corpora, source, and tests.
+- Independent decisions: collect complete frames before decode; preflight all
+  storage and aggregate capacity; publish only validated private reconstruction;
+  preserve earlier commits; and keep terminal states sticky.
+- Generated-code task description: add bounded known-size streaming decoding;
+  prove one-byte round trip, later corruption atomicity, storage and aggregate
+  limits, truncation, trailing data, reset, empty, Flush, and premature end;
+  update build and documentation records.
+- Similarity review: only marc-authored state and decode contracts were reused;
+  no external control flow, malformed vector, or test expression was compared.
+- Local validation: the focused decoder suite passed 5/5 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,084/2,084 under both
+  compilers using official CMake 4.3.4; all 36 benchmark smokes and schema-25
+  compatibility remained successful.
+
+## 2026-08-04 - LZW plus tANS deterministic frame encoding
+
+- Authoring method: placed explicit frame serialization above DD-587's exact
+  plan and reused marc's local generic-header, tANS descriptor, and tANS
   payload writers.
-- References used: DD-496, DD-495, the independent 592-byte vector, explicit
-  local serializers, scalar rANS planner and encoder, and caller-owned spans.
-- Known implementations intentionally not consulted: external LZW/rANS frame
+- References used: DD-588, DD-587, the independent 587-byte vector, explicit
+  local serializers, tANS planner and encoder, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/tANS frame
   encoders, serialization schedules, archive formats, allocation layouts,
   encoded corpora, source code, and test suites.
 - Independent decisions: complete planning and output admission before frame
@@ -13530,1277 +13213,1594 @@ discarded and the reviewed seed retained.
   specified plan and serializers. No external serialization order, control
   flow, storage organization, encoded bytes, naming scheme, or test expression
   was compared.
-- Local validation: the focused LZW/rANS validator, decoder, planner, and
-  encoder suite passed 28/28 under both MSVC and ClangCL. The complete Release
-  CTest suite passed 1,926/1,926 under both compilers using official CMake
-  4.3.4; all 33 benchmark smokes and schema-22 compatibility remained
-  successful.
+- Local validation: the focused LZW/tANS validator, decoder, planner, and
+  encoder suite passed 26/26 under both MSVC and ClangCL. The complete Release
+  CTest suite passed 2,236/2,236 under both compilers using official CMake
+  4.3.4; all 39 benchmark smokes, schema 1 through 28 compatibility, and
+  documentation layout remained successful.
 
-## 2026-07-31 - LZ78 plus rANS CLI admission
+## 2026-08-04 - LZW plus tANS exact-frame planning
 
-- Authoring method: applied DD-488 only after format, streaming, C ABI,
-  completion, and bounded fuzz boundaries were present.
-- References used: DD-488, the published `marc_lz78_rans_*` lifecycle, local
-  format bounds, and the existing transactional CLI adapter and regression
-  script only.
-- Known implementations intentionally not consulted: external compression
-  CLIs, combined-codec adapters, private allocation layouts, source code,
-  command syntax, and test suites.
-- Independent decisions: expose an explicit selector; fix 65,536-byte raw and
-  entropy boundaries, eight blocks, the 524,352-byte payload ceiling, 65,536
-  phrase entries, and a 4-MiB aggregate policy; and obtain all three workspace
-  regions and alignment from C.
-- Generated-code task description: add selector parsing, fixed public
-  configuration, requirements-query and factory dispatch, multi-frame and
-  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
-  rejection, and synchronized CLI, readiness, composition, changelog,
-  architecture, decision, reference, vector, and provenance records.
-- Similarity review: the adapter follows only marc's existing public C
-  lifecycle and file transaction. No external command structure, allocation
-  layout, error behavior, or test expression was compared.
-- Local validation: the focused multi-frame CLI regression passed under MSVC
-  and ClangCL. The complete Release CTest suite passed 1,897/1,897 under both
-  compilers using official CMake 4.3.4; all 32 benchmark smokes and
-  interoperability schema compatibility remained successful.
-
-## 2026-07-31 - LZ78 plus rANS bounded decoder fuzz boundary
-
-- Authoring method: applied DD-487 after the public completion matrix proved
-  both ordinary chunking and transactional malformed-final-frame behavior.
-- References used: DD-487, DD-486, the local private frame decoder, public C
-  lifecycle, fixed format fields, and repository-authored stream generator
-  only.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  seed corpora, malformed archives, combined-codec fuzzers, source code, and
-  sanitizer findings.
-- Independent decisions: cap input at 8 KiB; fix raw, token, payload, view,
-  and phrase ceilings; query but never dynamically allocate public workspaces;
-  derive chunks from input bytes under a fixed call budget; and retain three
-  hand-authored malformed families.
-- Generated-code task description: add the dual-boundary harness, normal-build
-  compile smoke, truncated-magic corpus seed, canonical truncation, saturated
-  extent, and descriptor-reserved regressions; synchronize fuzzing, format,
-  architecture, readiness, composition, changelog, decision, reference,
-  vector, and provenance records.
-- Similarity review: the harness composes only marc's local decoder entry
-  points, public ABI, checked limits, fixed arrays, and process invariants. No
-  external harness structure, corpus, mutation schedule, or failure was
-  compared.
-- Local validation: the harness compile-smoke and three focused permanent
-  regressions passed under both MSVC and ClangCL. The complete Release CTest
-  suite passed 1,896/1,896 under both compilers using official CMake 4.3.4;
-  all 32 benchmark smokes and interoperability schema compatibility remained
-  successful. A sanitizer campaign remains a separate execution step.
-
-## 2026-07-31 - LZ78 plus rANS public-ABI completion
-
-- Authoring method: applied DD-486 to the published C lifecycle after the
-  representation, bounded streaming pair, workspace profile, and C factory
-  were complete.
-- References used: DD-486, DD-485, the generic frame layout, public process
-  contract, repository-authored generators, and existing local completion
-  criteria only.
-- Known implementations intentionally not consulted: external completion
-  suites, compression corpora, malformed archives, combined-codec APIs,
-  source code, and test vectors.
-- Independent decisions: use a 64-byte dual boundary; derive conservative
-  workspace ceilings from the local format; cover every one-byte value and
-  three deterministic chunk schedules; locate the final frame from serialized
-  extents; and require transactional publication plus sticky diagnostics.
-- Generated-code task description: add public-ABI required-data-class,
-  determinism, arbitrary-chunking, post-end, and malformed-final-frame tests;
-  register them in the core suite; and synchronize readiness, composition,
-  changelog, decision, reference, vector, and provenance records.
-- Similarity review: the test composes only marc's published C lifecycle,
-  documented bounds, local deterministic generator, and generic frame fields.
-  No external test structure, corpus, mutation schedule, or expected stream
-  was compared.
-- Local validation: the three focused completion tests passed under both MSVC
-  and ClangCL. The complete Release CTest suite passed 1,893/1,893 under both
-  compilers using official CMake 4.3.4; all 32 benchmark smokes and
-  interoperability schema compatibility remained successful.
-
-## 2026-07-31 - LZ78 plus rANS public C requirements and factory
-
-- Authoring method: connected DD-484's exact requirements and opaque
-  partitioners to marc ABI version 1's existing generic transform lifecycle.
-- References used: DD-485, DD-484, the local streaming encoder and decoder,
-  public size-tagging conventions, checked secondary partitioning, and
-  repository-authored pure-C tests only.
-- Known implementations intentionally not consulted: external compression C
-  APIs, allocation models, combined-codec factories, ABI layouts, source code,
-  encoded corpora, and test suites.
-- Independent decisions: expose one dedicated size-tagged configuration;
-  preserve the three-region ABI; return only opaque bytes and alignment;
-  repeat profile and partition validation in factory construction; require
-  `nothrow` publication; and document the shared entropy-layer frame limit.
-- Generated-code task description: add public declarations, config loading,
-  requirements query, immutable-direction factory, pure-C round trip and
-  capacity/alignment rejection, build registration, and synchronized API,
-  format, architecture, readiness, composition, changelog, decision,
-  reference, vector, and provenance records.
-- Similarity review: the implementation composes only repository-authored
-  profile and public-handle conventions. No external function set, struct
-  layout, allocation behavior, control flow, or test expression was compared.
-- Local validation: the pure-C lifecycle passed under both MSVC and ClangCL.
-  The complete Release CTest suite passed 1,890/1,890 under both compilers
-  using official CMake 4.3.4.
-
-## 2026-07-28 - LZMW plus Dynamic Range CLI admission
-
-- Authoring method: extended marc's existing explicit selector table and
-  transactional file-processing adapter by one already published public C
-  profile.
-- References used: DD-444, the local LZMW plus Dynamic Range C configuration,
-  requirements query and factory, fixed profile bounds, and the generic CLI
-  regression script.
-- Known implementations intentionally not consulted: external compression
-  CLIs, combined-codec adapters, workspace policies, source code, command
-  syntax, and test suites.
-- Independent decisions: retain LZ77 as the default; require the explicit
-  `lzmw-dynamic-range` selector in both directions; fix the public 262,144-byte
-  reference and 524,293-byte range-payload limits; use a 16-MiB aggregate
-  policy; and obtain all three workspace regions and alignment through C.
-- Generated-code task description: add selector parsing, fixed public
-  configuration, requirements-query and factory dispatch, multi-frame and
-  empty round trips, overwrite refusal, malformed-input cleanup, trailing-data
-  rejection, and public documentation without adding benchmark or
-  interoperability claims.
-- Similarity review: the adapter follows only marc's existing public C
-  lifecycle and file transaction. No external command structure, allocation
-  layout, error behavior, or test expression was compared.
-- Local validation: the focused multi-frame CLI regression passed under MSVC
-  and ClangCL. The complete Release suite passed 1,735/1,735 under both
-  compilers using official CMake 4.3.4. All twenty-nine existing benchmark
-  smokes and schema-18 compatibility remained successful.
-
-## 2026-07-28 - LZMW plus Dynamic Range benchmark admission
-
-- Authoring method: extended marc's dependency-free public-C measurement
-  runner by one already published CLI profile.
-- References used: DD-445, DD-444's fixed configuration, the local public
-  requirements query and factory, checked complete-stream capacity arithmetic,
-  and the established untimed verification boundary.
-- Known implementations intentionally not consulted: external benchmark
-  frameworks, combined-codec adapters, capacity formulas, performance results,
+- Authoring method: composed DD-587 from marc's local deterministic LZW
+  planner and encoder, tANS block planner, and generic frame validator.
+- References used: DD-587, DD-583's representation, the local LZW encoder
+  contract, tANS planner, checked arithmetic, generic frame bounds, and
+  caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  encoders, combined planners, capacity formulas, allocation layouts, encoded
   corpora, source code, and test suites.
-- Independent decisions: reserve `80 + 8N + 77K`; query all three workspace
-  regions and alignment; require exact untimed decode equality; construct a
-  fresh transform for every timed sample; and impose no performance floor.
-- Generated-code task description: register `lzmw-dynamic-range`, extend
-  checked capacity, configuration, query, factory, usage, and selector
-  dispatch, add a one-iteration README smoke, report observed deterministic
-  extents, and update public readiness without claiming interoperability.
-- Similarity review: the adapter reuses only marc's existing benchmark runner
-  and public lifecycle. No external control flow, measurement convention,
-  capacity expression, result, or test expression was compared.
-- Local validation: the focused smoke and all thirty benchmark smokes passed
-  under MSVC and ClangCL. The complete Release suite passed 1,736/1,736 under
-  both compilers using official CMake 4.3.4. Schema-18 compatibility remained
-  successful.
-
-## 2026-07-28 - Interoperability schema 19
-
-- Authoring method: extended marc's versioned repository-owned bundle protocol
-  by one append-only public profile while retaining every schema-18 entry and
-  all earlier explicit codec sets.
-- References used: DD-446, the completed `lzmw-dynamic-range` CLI profile,
-  frozen schema-18 order, deterministic fixture generator, manifest verifier,
-  SHA-256 fields, and compatibility conversion helper.
-- Known implementations intentionally not consulted: external archive
-  protocols, manifest schemas, interoperability harnesses, combined-codec
-  archives, corpora, source code, test vectors, and verification suites.
-- Independent decisions: append `lzmw-dynamic-range` exactly once as archive
-  30; name codec set `marc-cli-v19`; preserve schemas 1 through 18; require
-  local generation-time round trips, exact order, complete revision, sizes,
-  SHA-256, foreign decode equality, and byte-identical local re-encoding; and
-  reject reordered schema-19 manifests.
-- Generated-code task description: extend generator and verifier to schema 19,
-  convert schema 19 to 18 by removing only the new suffix entry, exercise the
-  entire earlier compatibility chain, and update format, interoperability,
-  readiness, composition, changelog, decision, reference, vector, and
-  provenance records without claiming external results.
-- Similarity review: the work is a mechanical append-only extension of marc's
-  own manifest protocol. No external schema layout, compatibility policy,
-  corpus, archive bytes, or test expression was compared.
-- Local validation: schema-19 generation, thirty-archive self-verification,
-  reordered-manifest rejection, and the schema-18-through-schema-1 conversion
-  chain passed under both MSVC and ClangCL. The complete Release suite passed
-  1,736/1,736 under both compilers using official CMake 4.3.4. External
-  cross-platform artifact verification remains pending.
-
-## 2026-07-28 - Interoperability schema 19 external validation record
-
-- Authoring method: recorded the four user-executed external verifier results
-  at exact revision `f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
-- References used: DD-446, marc's schema-19 generator and verifier, the
-  established schema-18 cross-check procedure, and the four reported verifier
-  results.
-- Known implementations intentionally not consulted: external codec source,
-  archive formats, interoperability harnesses, corpora, test vectors, and
-  verification suites.
-- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
-  via Ninja verified the thirty archives from both the Windows/MSVC via Visual
-  Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
-  generated and verified its own thirty-archive bundle, which the Windows/MSVC
-  executable then verified in the reverse direction.
-- Result: all four invocations reported `Verified 30 archives` and the exact
-  full revision. The verifier checked manifest order, sizes, SHA-256 values,
-  fixture decoding, and byte-identical local re-encoding for every archive.
-  This establishes canonical schema-19 bytes across the three recorded
-  producers and bidirectional decoding between the recorded Windows and WSL2
-  Linux x86-64 environments.
-- Local validation: all twenty-two focused LZMW Dynamic Range validator,
-  planner, encoder, and decoder tests passed under both MSVC and ClangCL. The
-  complete Release suite passed 1,710/1,710 under both compilers using official
-  CMake 4.3.4. All twenty-nine existing benchmark smokes and schema-18
-  compatibility remained successful.
-
-## 2026-07-28 - LZMW plus Dynamic Range bounded streaming encoding
-
-- Authoring method: placed a known-size frame collection and immutable draining
-  state machine above DD-437's deterministic complete-frame encoder.
-- References used: DD-438, DD-437, the local core process contract, explicit
-  stream-header and LZMW-parameter serializers, checked arithmetic, and marc's
-  established caller-owned streaming workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  encoders, state machines, buffering layouts, source code, corpora, and test
-  suites.
-- Independent decisions: emit the fixed 80-byte prefix first; collect only one
-  bounded raw frame; count raw, reference, serialized-frame, and encoder-record
-  storage before preparation; drain the immutable encoded frame before
-  collecting another; keep `Flush` nonterminal; retain `EndInput` across
-  output starvation; and make error and ended states sticky.
-- Generated-code task description: add the minimal transform and CMake entries;
-  compare one-byte input/output with independently concatenated complete-frame
-  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
-  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
-  case.
-- Similarity review: the state transitions follow only marc's documented
-  process contract and existing independently designed frame ownership model.
-  No external state-machine structure, naming scheme, error mapping, buffering
-  layout, or test expression was compared.
-- Local validation: all twenty-eight focused LZMW Dynamic Range vector,
-  validator, planner, complete-frame, decoder, and streaming-encoder tests
-  passed under both MSVC and ClangCL. The complete Release suite passed
-  1,715/1,715 under both compilers using official CMake 4.3.4. All twenty-nine
-  existing benchmark smokes and schema-18 compatibility remained successful.
-
-## 2026-07-28 - LZMW plus Dynamic Range bounded streaming decoding
-
-- Authoring method: placed incremental prefix and frame collection above
-  DD-434's private complete-frame decoder and drained only validated private
-  raw frames.
-- References used: DD-439, DD-434, DD-433, the local core process contract,
-  explicit stream/LZMW/frame parsers, checked arithmetic, and caller-owned
-  validated-frame workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  decoders, state machines, buffering layouts, source code, malformed corpora,
-  and test suites.
-- Independent decisions: validate the fixed prefix before frame collection;
-  admit `S`, `P`, descriptor, encoded-frame, reference, raw, phrase, expansion,
-  and aggregate extents from each header; collect exactly one complete frame;
-  reconstruct privately before draining; retain `EndInput` across raw
-  starvation; and preserve earlier frames while publishing none of a malformed
-  later frame.
-- Generated-code task description: add the minimal transform and CMake entries;
-  verify one-byte input/output and retained finish; corrupt the second frame
-  and require first-frame-only output; reject every truncation and trailing
-  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
-  flag, and sticky-error cases.
-- Similarity review: the implementation follows only marc's documented frame
-  parser, bounds, and process contract. No external state-machine structure,
-  admission order, naming scheme, error mapping, buffering layout, or test
+- Independent decisions: freeze the complete packed stream before entropy
+  planning; plan all blocks without serialized output; count encoder records,
+  packed bytes, descriptors, and payload in one aggregate; and validate the
+  synthesized frame header before success.
+- Generated-code task description: add planner result fields and errors,
+  bounded exact-frame planning, raw-`A` and cross-block `ABABABA` determinism,
+  guarded workspace and staging shortages, block, aggregate, and frame-size
+  rejection, and synchronized format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the planner directly sequences local independently
+  specified components and checked spans. No external planning order, storage
+  organization, capacity formula, encoded bytes, naming scheme, or test
   expression was compared.
-- Local validation: all thirty-three focused LZMW Dynamic Range vector,
-  complete-frame, streaming-encoder, and streaming-decoder tests passed under
-  both MSVC and ClangCL. The complete Release suite passed 1,720/1,720 under
-  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
-  smokes and schema-18 compatibility remained successful.
+- Local validation: the focused LZW/tANS planner, validator, and decoder suite
+  passed 23/23 under both MSVC and ClangCL. The complete Release CTest suite
+  passed 2,233/2,233 under both compilers using official CMake 4.3.4; all 39
+  benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range direction-specific profile
+## 2026-08-04 - LZW plus tANS transactional publication
 
-- Authoring method: independently derived the encoder and decoder storage
-  regions from DD-440, the implemented LZMW reference ceiling, Dynamic Range
-  payload ceiling, complete-frame ownership, and local record types.
-- References used: DD-440, DD-438, DD-439, marc's local checked arithmetic,
-  LZMW workspace formulas, Dynamic Range format limits, and existing internal
-  profile conventions.
-- Known implementations intentionally not consulted: external allocators,
-  combined codecs, workspace layouts, source code, corpora, and test suites.
-- Independent decisions: encoding reports the largest raw frame, conservative
-  reference staging, complete encoded frame, and exact encoder-record count;
-  decoding reports encoded-frame collection, bounded reference and private raw
-  staging, conservative phrase records, and expansion references derived only
-  from local limits. Typed records remain in separately aligned caller-owned
-  storage and empty encoder storage uses neutral alignment one.
-- Generated-code task description: add the internal LZMW plus Dynamic Range
-  profile calculator, checked typed-storage partition helpers, stable error
-  mapping, limit and alignment tests, and synchronized architecture, readiness,
-  composition, changelog, reference, and vector documentation.
-- Similarity review: the implementation uses the repository's established
-  profile shape with LZMW- and Dynamic-Range-specific independently documented
-  formulas; no external implementation or test expression was compared.
-- Local validation: focused profile and documentation tests passed 8/8 under
-  both MSVC and ClangCL. The complete Release suite passed 1,727/1,727 under
-  both compilers using official CMake 4.3.4. All twenty-nine existing benchmark
-  smokes and schema-18 compatibility remained successful.
+- Authoring method: applied DD-586 above marc's DD-585 private decoder and
+  DD-584 validation boundary.
+- References used: DD-586, DD-585, the local two-pass tANS validator, iterative
+  LZW decoder, caller-owned spans, checked preflight, and bounded copy.
+- Known implementations intentionally not consulted: external LZW/tANS
+  compositions, transactional decoders, commit protocols, buffer ownership
+  models, malformed corpora, source code, and test suites.
+- Independent decisions: admit caller output before private mutation; keep it
+  outside internal-workspace accounting; reconstruct into disposable raw
+  staging; and publish the exact declared extent with one final copy only after
+  all layer checks succeed.
+- Generated-code task description: add a stable short-output error and
+  complete-frame transactional wrapper; prove raw-`A` prefix publication,
+  cross-block `KwKwK`, short-output total immutability, and no publication on
+  malformed tANS or LZW padding; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation follows marc's already independently
+  specified private decoder and established transactional composition
+  boundary. No external validation order, publication control flow, storage
+  organization, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/tANS validator and decoder suite passed
+  19/19 under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,229/2,229 under both compilers using official CMake 4.3.4; all 39
+  benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range public C ABI
+## 2026-08-04 - LZW plus tANS private raw reconstruction
 
-- Authoring method: bound DD-440's direction-specific profile and the existing
-  streaming transforms to marc's allocation-free three-region C lifecycle.
-- References used: DD-441, DD-440, the established transform adapter, checked
-  arithmetic, private typed-view partitioners, and first-party C11 assertions.
-- Known implementations intentionally not consulted: external combined-codec
-  APIs, factory implementations, allocator interfaces, ABI layouts, source
-  code, corpora, and test suites.
-- Independent decisions: retain C ABI version 1; publish one fixed-width
-  config, query, and factory; place references before frame/raw secondary
-  storage; recalculate requirements at creation; keep typed layouts private;
-  and leave every failed transform output null.
-- Generated-code task description: expose LZMW plus Dynamic Range in the public
-  C header, prove exact two-byte-frame workspace values and a C11 round trip,
-  reject short and misaligned regions, null output, and reserved fields, and
-  update scope documentation without completion or tooling claims.
-- Similarity review: the adapter follows only marc's established public
-  lifecycle and DD-440's independently derived regions. No external API,
-  record layout, implementation flow, or test expression was compared.
-- Local validation: the complete Release suite passed 1,728/1,728 under both
-  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including the
-  new pure-C test, all twenty-nine benchmark smokes, and schema-18
-  compatibility.
-- Local validation: all twenty-two focused vector, validator, planner,
-  encoder, decoder, and documentation tests passed, followed by all 1,614
-  Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on Windows
-  x64 using official CMake 4.3.4.
+- Authoring method: applied DD-585 above marc's DD-584 complete-frame
+  validator and ordinary iterative LZW decoder.
+- References used: DD-585, DD-584, the local tANS controller and decoder, LZW
+  validator and decoder, checked arithmetic, and caller-owned spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  compositions, combined decoders, phrase expansion implementations,
+  allocation layouts, malformed corpora, source code, and test suites.
+- Independent decisions: admit raw capacity and aggregate storage before
+  entropy output; retain all-block tANS validation and complete LZW validation;
+  reconstruct only into separate private staging; and publish no raw bytes.
+- Generated-code task description: add a bounded private decoder and stable
+  raw-capacity and dictionary-decode errors; prove raw-`A`, phrase and `KwKwK`
+  reconstruction across tANS block boundaries, preflight atomicity, and
+  invalid-code raw preservation; synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation directly composes marc's existing
+  independently specified validator, decoder, checked spans, and error
+  records. No external validation order, expansion control flow, storage
+  organization, malformed vector, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZW/tANS vector, validator, and private-decoder
+  suite passed 15/15 under both MSVC and ClangCL. The complete Release CTest
+  suite passed 2,225/2,225 under both compilers using official CMake 4.3.4;
+  all 39 benchmark smokes, schema 1 through 28 compatibility, and documentation
+  layout remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range public completion matrix
+## 2026-08-04 - LZW plus tANS complete-frame validator
 
-- Authoring method: audited only the published C ABI against the repository's
-  completion requirements using deterministic first-party inputs and bounded
-  caller-owned storage.
-- References used: DD-442, DD-441, the required data classes, deterministic
-  generator, public transform contract, fixed LZMW/Dynamic Range profile,
-  frame atomicity, and strict trailing-data rules.
-- Known implementations intentionally not consulted: external completion
-  suites, compression corpora, combined-codec APIs, source code, and tests.
-- Independent decisions: exercise 64-byte raw frames, the 256-byte reference
-  ceiling, 517-byte range-payload ceiling, 63-entry dictionary limit, and
-  65,536-byte aggregate limit; keep empty and one-byte encoder views empty;
-  use four frames to observe failure after three committed frames.
-- Generated-code task description: reuse the audited LZMW public-ABI schedules
-  with only the entropy profile, payload formula, and public symbol family
-  changed; prove required data classes, deterministic chunking, sticky
-  results, and final-frame non-publication.
-- Similarity review: the wrapper and shared schedules derive only from marc's
-  two established public completion matrices. No external combined-codec test
-  expression or fixture was viewed or compared.
-- Local validation: the complete Release suite passed 1,731/1,731 under both
-  MSVC/Visual Studio 2026 and ClangCL using official CMake 4.3.4, including
-  all twenty-nine benchmark smokes and schema-18 compatibility.
-
-## 2026-07-28 - LZMW plus Dynamic Range bounded fuzz boundary
-
-- Authoring method: instantiated marc's existing bounded LZMW dual-decoder
-  harness and permanent malformed schedules for the fixed Dynamic Range
-  profile.
-- References used: DD-443, DD-439, local decoder limits, LZMW reference,
-  phrase, and expansion ceilings, core process invariants, and the canonical
-  first-party stream generator.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  corpora, malformed archives, mutation dictionaries, source code, and tests.
-- Independent decisions: cap input and range payload at 8 KiB, total output and
-  reference staging at 4 KiB, raw frames at 1 KiB, phrases at 1,023,
-  expansion references at 1,024, and calls at 12,320; keep generated corpus
-  entries under the build tree.
-- Generated-code task description: select the LZMW Dynamic Range symbols in
-  the audited fixed-memory harness, add compile-smoke and sanitizer targets,
-  retain one truncated-magic seed, and persist truncation, saturated-length,
-  and descriptor-reserved regressions.
-- Similarity review: the wrappers alter only marc-local profile identifiers;
-  storage, schedules, and assertions remain repository-authored. No external
-  harness or test expression was compared.
-- Local validation: three focused MSVC Release regressions and the compile-
-  smoke target passed. The ASan/UBSan/libFuzzer target completed 1,000 bounded
-  seed-derived runs without a finding. The complete Release suite passed
-  1,734/1,734 under both MSVC/Visual Studio 2026 and ClangCL using official
-  CMake 4.3.4, including all twenty-nine benchmark smokes and schema-18
-  compatibility.
-
-## 2026-07-26 - LZW plus Dynamic Range bounded streaming encoding
-
-- Authoring method: placed a known-size frame collection and immutable draining
-  state machine above DD-407's deterministic complete-frame encoder.
-- References used: DD-408, DD-407, the local core process contract, explicit
-  stream-header and LZW-parameter serializers, checked arithmetic, and marc's
-  established caller-owned streaming workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  encoders, state machines, buffering layouts, source code, corpora, and test
-  suites.
-- Independent decisions: emit the fixed 80-byte prefix first; collect only one
-  bounded raw frame; count raw, packed, serialized-frame, and encoder-record
-  storage before preparation; drain the immutable encoded frame before
-  collecting another; keep `Flush` nonterminal; retain `EndInput` across
-  output starvation; and make error and ended states sticky.
-- Generated-code task description: add the minimal transform and CMake entries;
-  compare one-byte input/output with independently concatenated complete-frame
-  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
-  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
-  case.
-- Similarity review: the state transitions follow only marc's documented
-  process contract and existing independently designed frame ownership model.
-  No external state-machine structure, naming scheme, error mapping, buffering
-  layout, or test expression was compared.
-- Local validation: all twenty-seven focused vector, validator, planner,
-  complete-frame, streaming-encoder, and documentation tests passed, followed
-  by all 1,619 Release tests under both MSVC/Visual Studio 2026 and Clang
-  22.1.3 on Windows x64 using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range bounded streaming decoding
-
-- Authoring method: placed incremental prefix and frame collection above
-  DD-405's transactional complete-frame decoder and drained only validated
-  private raw frames.
-- References used: DD-409, DD-405, DD-403, the local core process contract,
-  explicit stream/LZW/frame parsers, checked arithmetic, and caller-owned
-  validated-frame workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  decoders, state machines, buffering layouts, source code, malformed corpora,
-  and test suites.
-- Independent decisions: validate the fixed prefix before frame collection;
-  admit `S`, `P`, descriptor, encoded-frame, packed, raw, phrase, and aggregate
-  extents from each header; collect exactly one complete frame; transactionally
-  reconstruct before draining; retain `EndInput` across raw starvation; and
-  preserve earlier frames while publishing none of a malformed later frame.
-- Generated-code task description: add the minimal transform and CMake entries;
-  verify one-byte input/output and retained finish; corrupt the second frame
-  and require first-frame-only output; reject every truncation and trailing
-  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
-  flag, and sticky-error cases.
-- Similarity review: the implementation follows only marc's documented frame
-  parser, bounds, and process contract. No external state-machine structure,
-  admission order, naming scheme, error mapping, buffering layout, or test
-  expression was compared.
-- Local validation: all thirty-two focused vector, complete-frame, streaming-
-  encoder, streaming-decoder, and documentation tests passed, followed by all
-  1,624 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
-  Windows x64 using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range direction-specific profile
-
-- Authoring method: independently derived the encoder and decoder storage
-  regions from DD-410, the already implemented LZW packed-code ceiling,
-  Dynamic Range payload ceiling, complete-frame ownership, and local record
-  types.
-- References used: DD-410, DD-408, DD-409, marc's local checked arithmetic,
-  LZW workspace formulas, Dynamic Range format limits, and existing internal
-  profile conventions.
-- Known implementations intentionally not consulted: external allocators,
-  combined codecs, workspace layouts, source code, corpora, and test suites.
-- Independent decisions: encoding reports the largest raw frame, conservative
-  packed staging, complete encoded frame, and exact encoder-record count;
-  decoding reports encoded-frame collection, bounded packed and private raw
-  staging, and a conservative phrase-record count derived only from local
-  limits. Typed records remain in separately aligned caller-owned storage and
-  empty storage uses neutral alignment one.
-- Generated-code task description: add the internal LZW plus Dynamic Range
-  profile calculator, checked typed-storage partition helpers, stable error
-  mapping, limit and alignment tests, and synchronized architecture, readiness,
-  composition, changelog, reference, and vector documentation.
-- Similarity review: the implementation uses the repository's established
-  profile shape with LZW- and Dynamic-Range-specific independently documented
-  formulas; no external implementation or test expression was compared.
-- Local validation: focused profile and documentation tests passed 7/7 under
-  both MSVC and ClangCL. The complete Release suite passed 1,630/1,630 under
-  MSVC and 1,630/1,630 under ClangCL using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range public C ABI
-
-- Authoring method: connected DD-411 directly to DD-410's checked profile and
-  the existing bounded streaming encoder and decoder through marc's established
-  three-workspace transform lifecycle.
-- References used: DD-411, DD-410, the local C ABI version-1 conventions,
-  checked workspace partitions, and first-party streaming transforms.
-- Known implementations intentionally not consulted: external ABI adapters,
-  ownership schemes, source code, corpora, and test suites.
-- Independent decisions: preserve ABI version 1; add a size-tagged
-  direction-specific configuration; expose only byte counts, alignment, opaque
-  buffers, and a transform handle; and rerun all profile and partition checks
-  during creation. C++ record layouts remain private.
-- Generated-code task description: add public declarations and implementation,
-  a strict C11 requirements/round-trip/negative test, CMake registration, and
-  synchronized format, C API, architecture, composition, readiness, changelog,
-  reference, and vector documentation.
-- Similarity review: the adapter follows marc's local lifecycle and the
-  independently documented LZW Dynamic Range ownership roles; no external API
-  expression or test was compared.
-- Local validation: the eight focused profile, C ABI, and documentation tests
-  passed under both MSVC and ClangCL. The complete Release suite passed
-  1,631/1,631 under MSVC and 1,631/1,631 under ClangCL using official
-  CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range public completion matrix
-
-- Authoring method: parameterized marc's first-party LZW public-ABI admission
-  matrix only at the entropy payload ceiling and public C symbol family, then
-  instantiated it independently for Dynamic Range under DD-412.
-- References used: DD-412, the published local LZW Dynamic Range C ABI,
-  generic-frame field offsets, and repository-authored deterministic generator
-  and chunk schedules.
-- Known implementations intentionally not consulted: external completion
-  suites, malformed corpora, source code, and encoded vectors.
-- Independent decisions: use 64-byte frames; cover empty input, every one-byte
-  value, full alphabet, repetition, binary patterns, generated data, and frame
-  neighbors; require byte-identical output across three chunk schedules and
-  stable ended/error calls; and verify that corruption, truncation, or trailing
-  data in frame four commits only the first three frames.
-- Generated-code task description: make the existing LZW completion body
-  explicitly parameterizable, instantiate it for the Dynamic Range C symbols
-  and `2S + 5` bound, register it, and synchronize architecture, C API,
-  readiness, composition, changelog, decision, reference, and vector records.
-- Similarity review: all test logic derives from marc's own prior LZW public
-  contract and DD-412; no external test expression was compared.
-- Local validation: the seven focused Dynamic Range completion, reused
-  Adaptive completion, and documentation tests passed under both MSVC and
-  ClangCL. The complete Release suite passed 1,634/1,634 under MSVC and
-  1,634/1,634 under ClangCL using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range bounded decoder fuzz boundary
-
-- Authoring method: parameterized marc's first-party LZW dual-path decoder
-  harness only at the entropy decoder entry points, then instantiated it for
-  Dynamic Range under DD-413.
-- References used: DD-413, DD-412, the local generic-frame layout, LZW Dynamic
-  Range limits, complete-frame decoder, streaming decoder, and existing
-  repository-authored bounded fuzz conventions.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  malformed corpora, source code, and encoded vectors.
-- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
-  output, 1,024-byte frame, 8,192-byte payload, and 4,096-entry dictionary
-  ceilings; exercise both complete-frame and streaming decode paths; impose a
-  finite call ceiling; and permanently require atomic rejection of every
-  canonical truncation, extreme frame lengths, and invalid descriptors.
-- Generated-code task description: instantiate the shared bounded LZW decoder
-  fuzz harness and permanent malformed regressions for Dynamic Range, add a
-  compile-smoke target and optional libFuzzer target, and synchronize
-  architecture, readiness, composition, changelog, decision, reference, and
-  vector records.
-- Similarity review: the work reuses only marc's own harness and public format
-  contracts, with entropy-specific substitutions at documented local entry
-  points; no external implementation, harness structure, corpus, or test
-  expression was compared.
-- Local validation: both fuzz compile-smoke targets built under MSVC and
-  ClangCL; the seven focused Dynamic Range regression, reused Adaptive
-  regression, and documentation tests passed under both compilers. The
-  complete Release suite passed 1,637/1,637 under MSVC and 1,637/1,637 under
-  ClangCL using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range transactional CLI adapter
-
-- Authoring method: connected the completed public C profile to marc's existing
-  explicit-selector and transactional temporary-file loop without calling
-  private C++ frame APIs.
-- References used: DD-414, the public LZW Dynamic Range config, requirements
-  query and factory, the local 64-KiB reference profile, and the repository's
-  existing CLI process and round-trip contracts.
-- Known implementations intentionally not consulted: external archive tools,
-  compression CLIs, combined-codec adapters, workspace policies, source code,
-  command syntax, and test suites.
-- Independent decisions: retain LZ77 as the default; require the explicit
-  `lzw-dynamic-range` selector in both directions; fix the public 131,072-byte
-  packed and 262,149-byte range-payload limits; use an 8-MiB aggregate policy;
-  and query actual three-region workspaces and alignment through C.
-- Generated-code task description: add selector parsing, fixed public config,
-  requirements and factory dispatch, usage and profile documentation, and the
-  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
-- Similarity review: the adapter composes only marc's own public ABI and
-  transactional CLI. No external CLI structure, option spelling, workspace
-  layout, or test expression was compared.
-- Local validation: the focused transactional CLI and documentation tests
-  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
-  1,638/1,638 under both compilers using official CMake 4.3.4.
-
-## 2026-07-26 - LZW plus Dynamic Range public-ABI benchmark adapter
-
-- Authoring method: added the completed public profile to marc's
-  dependency-free measurement runner without invoking private frame APIs or
-  reproducing typed workspace layouts.
-- References used: DD-415, DD-414, the public config, requirements query and
-  factory, the local `2F` and `2S + 5` bounds, checked arithmetic, and the
-  existing untimed round-trip gate.
-- Known implementations intentionally not consulted: external benchmark
-  frameworks, combined-codec adapters, capacity formulas, performance results,
-  workspace layouts, source code, and test suites.
-- Independent decisions: reuse the 64-KiB CLI frame and 8-MiB policy; derive
-  checked capacity `80 + 4N + 77K`; query both directional three-region
-  workspaces; report their larger sum; and impose no speed or ratio threshold.
-- Generated-code task description: add benchmark selector, configuration,
-  capacity, requirements and factory dispatch, one labeled smoke, measurement
-  documentation, and readiness evidence.
-- Similarity review: the adapter extends only marc's existing runner with the
-  independently specified public profile. No external runner structure,
-  formula expression, output schema, or test expression was compared.
-- Local validation: the focused one-iteration smoke and documentation tests
-  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
-  1,639/1,639 under both compilers using official CMake 4.3.4. All twenty-eight
-  labeled benchmark smokes passed.
-
-## 2026-07-26 - Interoperability schema 17 local admission
-
-- Authoring method: extended marc's versioned repository-owned bundle protocol
-  by one append-only public profile and preserved every prior frozen schema.
-- References used: DD-416, the completed `lzw-dynamic-range` CLI profile, the
-  frozen schema-16 order, deterministic 8,193-byte fixture, existing manifest
-  fields, SHA-256 checks, strict verifier, and one-generation compatibility
-  converter.
-- Known implementations intentionally not consulted: external archive
-  protocols, manifest schemas, interoperability harnesses, combined-codec
-  archives, corpora, source code, test vectors, and verification suites.
-- Independent decisions: append `lzw-dynamic-range` exactly once as archive
-  28; name codec set `marc-cli-v17`; preserve schemas 1 through 16; require a
-  generation-time local round trip, exact order, full revision, sizes,
-  SHA-256, foreign decode, and byte-identical local re-encoding; reject a
-  reordered schema-17 manifest; and derive schema 16 by removing only the new
-  archive.
-- Generated-code task description: update the bundle generator, verifier,
-  compatibility regression, format and architecture descriptions, readiness
-  matrices, interoperability instructions, changelog, and provenance for the
-  append-only schema.
-- Similarity review: the implementation extends only marc's earlier schema
-  chain and public selector. No external manifest field, archive order,
-  conversion algorithm, script structure, or test expression was compared.
-- Local validation: schema 17 generated and verified all 28 archives, rejected
-  the reordered manifest, and verified the frozen 27, 26, 25, 24, 23, 22, 21,
-  20, 19, 18, 17, 16, 15, 13, 8, and 7 archive predecessors through schemas
-  16 to 1. The complete Release suite passed 1,639/1,639 under both MSVC and
-  ClangCL using official CMake 4.3.4. Independently generated MSVC and ClangCL
-  schema-17 bundles cross-verified all 28 archives in both local toolchain
-  directions. Cross-platform schema-17 verification has not yet been claimed.
-
-## 2026-07-26 - Interoperability schema 17 external validation record
-
-- Authoring method: recorded the four user-executed external verifier results
-  at exact revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b`.
-- References used: DD-416, marc's schema-17 generator and verifier, the
-  established schema-16 cross-check procedure, and the four reported verifier
-  results.
-- Known implementations intentionally not consulted: external codec source,
-  archive formats, interoperability harnesses, corpora, test vectors, and
-  verification suites.
-- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
-  via Ninja verified the twenty-eight archives from both the Windows/MSVC via
-  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
-  generated and verified its own twenty-eight-archive bundle, which the
-  Windows/MSVC executable then verified in the reverse direction.
-- Result: all four invocations reported `Verified 28 archives` and the exact
-  full revision. The verifier checked manifest order, sizes, SHA-256 values,
-  fixture decoding, and byte-identical local re-encoding for every archive.
-  This establishes canonical schema-17 bytes across the three recorded
-  producers and bidirectional decoding between the recorded Windows and WSL2
-  Linux x86-64 environments.
-
-## 2026-07-26 - LZD plus Dynamic Range specification and vector
-
-- Authoring method: composed marc's already frozen LZD reference-pair grammar
-  and Dynamic Range byte-symbol grammar at their documented byte-stream
-  boundary before implementing a combined codec.
-- References used: DD-417, the local LZD variant 1 and Dynamic Range variant 1
-  format sections, generic frame serializers, checked arithmetic rules, and
-  repository-authored standalone encoders.
-- Known implementations intentionally not consulted: external LZD/range
-  compositions, archive formats, codec source, encoded corpora, malformed
-  corpora, and test suites.
-- Independent decisions: reserve `lzd-dynamic-range`; retain format 1.0; make
-  all eight bytes of every reference pair ordinary range symbols; reset both
-  layers per frame; use checked `S = 8 * ceil(F/2)` and `P = 2S + 5` bounds;
-  retain the 2^20-byte format cap; and require exact range exhaustion before
-  LZD graph validation and private iterative reconstruction.
-- Generated-code task description: document the complete decoder-visible
-  composition, bounds, validation and publication order, empty and boundary
-  behavior, and a raw-`A` hand vector; add a test that assembles the frame only
-  from standalone LZD, standalone Dynamic Range, and generic serializers.
-- Similarity review: the specification and test use only marc's local
-  component contracts and direct field composition. No external combined
-  format, implementation structure, byte vector, naming scheme, or test
-  expression was compared.
-- Local validation: the independent terminal-token vector and documentation
-  layout tests passed 2/2 under both MSVC and ClangCL. The complete Release
-  suite passed 1,640/1,640 under both compilers using official CMake 4.3.4.
-
-## 2026-07-26 - LZD plus Dynamic Range complete-frame validator
-
-- Authoring method: connected marc's local generic frame parser, strict Dynamic
-  Range decoder, and existing LZD semantic validator at the byte boundary
-  fixed by DD-417.
-- References used: DD-418, DD-417, the local Dynamic Range descriptor and
-  decoder contracts, LZD token validator and workspace formulas, checked
-  arithmetic, and the independent 84-byte frame.
+- Authoring method: composed marc's strict two-pass tANS block controller with
+  its existing bounded LZW code-stream and phrase validator.
+- References used: DD-584, DD-583 bounds, local generic frame parsing, local
+  tANS descriptors and state validation, caller-owned spans, checked
+  arithmetic, and the independent 587-byte vector.
 - Known implementations intentionally not consulted: external combined
   decoders, validation orders, workspace layouts, malformed corpora, source
   code, and test suites.
-- Independent decisions: validate all generic, token, entropy, capacity,
-  aligned phrase-record, and aggregate extents before entropy output; require
-  exact range payload exhaustion; retain LZD's stable semantic diagnostics;
-  report but do not allocate future expansion storage; and reconstruct or
-  publish no raw bytes at this boundary.
-- Generated-code task description: add a bounded complete-frame validator,
-  result and error types, exact-vector acceptance, exhaustive proper-prefix
-  rejection, capacity and aggregate-limit tests, descriptor and payload
-  corruption tests, malformed LZD reference tests, and profile/extent tests.
-- Similarity review: the implementation composes only existing marc parsers,
-  limits, and validators using the repository's established transactional
-  frame convention. No external combined control flow, format, diagnostic
-  scheme, malformed input, or test expression was compared.
-- Local validation: the eight focused LZD Dynamic Range tests passed under
-  both MSVC and ClangCL. The complete Release suite passed 1,647/1,647 under
-  both compilers using official CMake 4.3.4.
-
-## 2026-07-26 - LZD plus Dynamic Range private raw reconstruction
-
-- Authoring method: extended marc's DD-418 complete-frame validator with the
-  existing iterative LZD decoder after all encoded-layer checks succeed,
-  retaining caller-owned bounded token, phrase, expansion-stack, and raw
-  workspaces.
-- References used: DD-419, DD-418, the local Dynamic Range decoder, LZD token
-  validator and iterative decoder, checked aggregate arithmetic, and
-  established private-staging conventions from other marc compositions.
-- Known implementations intentionally not consulted: external LZD/range
-  decoders, phrase-expansion implementations, buffering layouts, source code,
-  malformed corpora, and test suites.
-- Independent decisions: require complete private raw and expansion-stack
-  extents before descriptor parsing or entropy output; count both with the
-  descriptor, payload, token staging, and aligned phrase records; reuse the
-  strict DD-418 order; reconstruct only after full validation; preserve
-  detailed LZD validation, format, and decode diagnostics; and expose no
-  caller-visible output at this boundary.
-- Generated-code task description: add the minimal private decoder and error
-  result fields; verify the independent raw-`A` frame and phrase-bearing
-  `ABABAB` frame; require raw, expansion, and aggregate failures before entropy
-  output; and preserve raw sentinels on encoded-layer failures.
-- Similarity review: the implementation composes only existing marc functions
-  and independently documented workspace rules. No external control flow,
-  phrase-table representation, stack convention, error taxonomy, naming
-  scheme, or test expression was compared.
-- Local validation: all twelve focused LZD Dynamic Range vector, validator,
-  private-decoder, and documentation tests passed under both MSVC and ClangCL.
-  The complete Release suite passed 1,651/1,651 under both compilers using
-  official CMake 4.3.4.
-
-## 2026-07-26 - LZD plus Dynamic Range transactional frame publication
-
-- Authoring method: placed a caller-visible complete-frame boundary above the
-  DD-419 private reconstruction path, following marc's independently designed
-  copy-after-success convention.
-- References used: DD-420, DD-419, DD-418, the local combined result contract,
-  caller-owned span semantics, and existing checked-capacity conventions.
-- Known implementations intentionally not consulted: external LZD/range
-  decoders, publication protocols, buffering layouts, source code, malformed
-  corpora, and test suites.
-- Independent decisions: append a stable output-capacity error; check the
-  complete destination extent before descriptor parsing or entropy output; do
-  not count caller-visible destination storage as internal scratch; reuse the
-  validator and private decoder unchanged; and copy the complete private raw
-  extent once only after every layer succeeds.
-- Generated-code task description: add the minimal internal transactional
-  decoder; publish the independent raw-`A` and phrase-bearing `ABABAB` frames;
-  reject a destination one byte short before staging mutation; and preserve
-  caller output on malformed range payload.
-- Similarity review: the implementation is a direct composition of local marc
-  boundaries and standard bounded-span copying. No external control flow,
-  publication state machine, error taxonomy, naming scheme, or test expression
-  was compared.
-- Local validation: all fifteen focused LZD Dynamic Range vector, validator,
-  private-decoder, transactional-decoder, and documentation tests passed under
-  both MSVC and ClangCL. The complete Release suite passed 1,654/1,654 under
-  both compilers using official CMake 4.3.4.
-
-## 2026-07-26 - LZD plus Dynamic Range exact-frame planning
-
-- Authoring method: composed marc's existing deterministic LZD planner and
-  encoder with its Dynamic Range planner at the already specified finalized
-  token-byte boundary.
-- References used: DD-421, DD-417, the local LZD variant-1 planner and encoder,
-  Dynamic Range variant-1 planner, generic frame validator, checked arithmetic,
-  and caller-owned workspace conventions.
-- Known implementations intentionally not consulted: external LZD/range
-  encoders, combined planning algorithms, buffering layouts, source code,
-  encoded corpora, and test suites.
-- Independent decisions: require one nonempty exact frame; fix complete
-  canonical reference-pair bytes before range planning; enforce
-  `S <= 8 * ceil(F/2)` and `P <= 2S + 5`; count encoder records, token staging,
-  descriptor, and exact payload together; validate the synthesized generic
-  header; and write no serialized frame at this boundary.
-- Generated-code task description: add the minimal planner result fields and
-  errors; require the raw-`A` token bytes and 84-byte extent; repeat a phrase-
-  bearing plan for deterministic equality; reject short encoder and token
-  workspaces; enforce the exact aggregate limit; and reject empty or frame-
-  inconsistent raw input.
-- Similarity review: control flow composes only local marc layer contracts and
-  independently documented bounds. No external planning structure, workspace
-  policy, error taxonomy, naming scheme, or test expression was compared.
-- Local validation: all nineteen focused LZD Dynamic Range vector, validator,
-  planner, decoder, and documentation tests passed under both MSVC and ClangCL.
-  The complete Release suite passed 1,658/1,658 under both compilers using
-  official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range deterministic frame encoding
-
-- Authoring method: placed explicit frame serialization above DD-421's exact
-  plan and reused marc's existing generic-header, Dynamic Range descriptor,
-  and payload writers.
-- References used: DD-422, DD-421, the independent 84-byte raw-`A` vector,
-  local explicit serializers, local Dynamic Range planner and encoder, and
-  caller-owned output conventions.
-- Known implementations intentionally not consulted: external LZD/range
-  encoders, frame writers, buffering layouts, source code, encoded corpora,
-  and test suites.
-- Independent decisions: complete planning before output-capacity admission;
-  require the repeated range plan to match the frozen payload extent; serialize
-  header and descriptor explicitly; encode only the exact payload region; and
-  preserve every output byte on planner or capacity failure.
-- Generated-code task description: add the minimal complete-frame encoder and
-  output-capacity error; reproduce the independent 84-byte frame; encode a
-  phrase-bearing input twice and transactionally decode it; and preserve a
-  one-byte-short destination sentinel.
-- Similarity review: the implementation directly composes local marc plans and
-  serializers. No external frame-writing control flow, error taxonomy, naming
-  scheme, output mutation schedule, or test expression was compared.
-- Local validation: all twenty-two focused LZD Dynamic Range vector,
-  validator, planner, encoder, decoder, and documentation tests passed under
-  both MSVC and ClangCL. The complete Release suite passed 1,661/1,661 under
-  both compilers using official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range bounded streaming encoding
-
-- Authoring method: placed a known-size frame collection and immutable draining
-  state machine above DD-422's deterministic complete-frame encoder.
-- References used: DD-423, DD-422, the local core process contract, explicit
-  stream-header and LZD-parameter serializers, checked arithmetic, and marc's
-  established caller-owned streaming workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  encoders, state machines, buffering layouts, source code, corpora, and test
-  suites.
-- Independent decisions: emit the fixed 80-byte prefix first; collect only one
-  bounded raw frame; count raw, token, serialized-frame, and encoder-record
-  storage before preparation; drain the immutable encoded frame before
-  collecting another; keep `Flush` nonterminal; retain `EndInput` across
-  output starvation; and make error and ended states sticky.
-- Generated-code task description: add the minimal transform and CMake entries;
-  compare one-byte input/output with independently concatenated complete-frame
-  output; verify nonterminal `Flush` and retained `EndInput`; and reject every
-  short workspace, aggregate limit, size-protocol, reset, and unknown-flag
-  case.
-- Similarity review: the state transitions follow only marc's documented
-  process contract and existing independently designed frame ownership model.
-  No external state-machine structure, naming scheme, error mapping, buffering
-  layout, or test expression was compared.
-- Local validation: all twenty-seven focused vector, validator, planner,
-  complete-frame, streaming-encoder, and documentation tests passed, followed
-  by all 1,666 Release tests under both MSVC/Visual Studio 2026 and Clang
-  22.1.3 on Windows x64 using official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range bounded streaming decoding
-
-- Authoring method: placed incremental prefix and frame collection above
-  DD-420's transactional complete-frame decoder and drained only validated
-  private raw frames.
-- References used: DD-424, DD-420, DD-418, the local core process contract,
-  explicit stream/LZD/frame parsers, checked arithmetic, and caller-owned
-  validated-frame workspace conventions.
-- Known implementations intentionally not consulted: external streaming
-  decoders, state machines, buffering layouts, source code, malformed corpora,
-  and test suites.
-- Independent decisions: validate the fixed prefix before frame collection;
-  admit `S`, `P`, descriptor, encoded-frame, token, raw, phrase, expansion, and
-  aggregate extents from each header; collect exactly one complete frame;
-  transactionally reconstruct before draining; retain `EndInput` across raw
-  starvation; and preserve earlier frames while publishing none of a malformed
-  later frame.
-- Generated-code task description: add the minimal transform and CMake entries;
-  verify one-byte input/output and retained finish; corrupt the second frame
-  and require first-frame-only output; reject every truncation and trailing
-  byte; accept empty input; and enforce all storage, aggregate, reset, unknown-
-  flag, and sticky-error cases.
-- Similarity review: the implementation follows only marc's documented frame
-  parser, bounds, and process contract. No external state-machine structure,
-  admission order, naming scheme, error mapping, buffering layout, or test
-  expression was compared.
-- Local validation: all thirty-two focused vector, complete-frame, streaming-
-  encoder, streaming-decoder, and documentation tests passed, followed by all
-  1,671 Release tests under both MSVC/Visual Studio 2026 and Clang 22.1.3 on
-  Windows x64 using official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range direction-specific profile
-
-- Authoring method: independently derived the encoder and decoder storage
-  regions from DD-425, the already implemented LZD token ceiling, Dynamic Range
-  payload ceiling, complete-frame ownership, and local record types.
-- References used: DD-425, DD-423, DD-424, marc's local checked arithmetic,
-  LZD workspace formulas, Dynamic Range format limits, and existing internal
-  profile conventions.
-- Known implementations intentionally not consulted: external allocators,
-  combined codecs, workspace layouts, source code, corpora, and test suites.
-- Independent decisions: encoding reports the largest raw frame, conservative
-  token staging, complete encoded frame, and exact encoder-record count;
-  decoding reports encoded-frame collection, bounded token and private raw
-  staging, conservative phrase records, and expansion references derived only
-  from local limits. Typed records remain in separately aligned caller-owned
-  storage and empty encoder storage uses neutral alignment one.
-- Generated-code task description: add the internal LZD plus Dynamic Range
-  profile calculator, checked typed-storage partition helpers, stable error
-  mapping, limit and alignment tests, and synchronized architecture, readiness,
-  composition, changelog, reference, and vector documentation.
-- Similarity review: the implementation uses the repository's established
-  profile shape with LZD- and Dynamic-Range-specific independently documented
-  formulas; no external implementation or test expression was compared.
-- Local validation: focused profile and documentation tests passed 7/7 under
-  both MSVC and ClangCL. The complete Release suite passed 1,678/1,678 under
-  both MSVC and ClangCL using official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range C ABI
-
-- Authoring method: mapped DD-425's calculated regions and partitions directly
-  to marc's fixed-width C transform lifecycle.
-- References used: DD-426, DD-425, DD-423, DD-424, the local C ABI header,
-  status bridge, buffer validation, placement-independent factory pattern, and
-  C11 test harness.
-- Known implementations intentionally not consulted: external compression
-  ABIs, allocator interfaces, wrappers, source code, corpora, and test suites.
-- Independent decisions: add a separately size-tagged config without changing
-  ABI version; expose only byte counts and opaque views alignment; recompute
-  requirements during creation; validate every region and reserved field;
-  partition all typed records internally; and borrow rather than own storage.
-- Generated-code task description: add the minimal public declarations,
-  config loader, requirements query, encoder/decoder factory, pure C11 shared-
-  library round trip, short-region and misalignment rejection, and synchronized
-  public and provenance documentation.
-- Similarity review: the functions compose only marc's local profile,
-  partition, transform, and status contracts. No external ABI layout, naming
-  scheme, ownership policy, factory control flow, or test expression was
-  compared.
-- Local validation: the pure C11 shared-library test passed under both MSVC and
-  ClangCL, followed by all 1,679 Release tests under both compilers using
-  official CMake 4.3.4.
-
-## 2026-07-27 - LZD plus Dynamic Range public completion matrix
-
-- Authoring method: instantiated the existing independently generated LZD
-  public-ABI evidence schedules with the Dynamic Range symbol family and
-  payload ceiling.
-- References used: DD-427, the published local LZD plus Dynamic Range C ABI,
-  deterministic local generators, generic-frame extent fields, and the
-  existing LZD completion criteria.
-- Known implementations intentionally not consulted: external completion
-  suites, malformed corpora, source code, encoded vectors, and test schedules.
-- Independent decisions: keep every data, chunk, terminal, and corruption
-  schedule identical between the two LZD entropy compositions; change only the
-  public symbol family and `2S + 5` payload bound; and require only three
-  earlier frames to publish on final-frame failure.
-- Generated-code task description: factor the LZD payload ceiling, instantiate
-  the matrix for Dynamic Range, run all required binary classes and chunk
-  schedules, and preserve sticky status, error positions, and final sentinel
-  under sequence corruption, truncation, and trailing data.
-- Similarity review: the matrix reuses only repository-authored schedules and
-  public APIs. No external test organization, data corpus, malformed mutation,
-  naming scheme, or expected byte stream was compared.
-- Local validation: all three public completion tests passed under both MSVC
-  and ClangCL, followed by all 1,682 Release tests under both compilers using
-  official CMake 4.3.4.
-
-## 2026-07-28 - LZD plus Dynamic Range bounded decoder fuzz boundary
-
-- Authoring method: parameterized marc's first-party LZD dual-path decoder
-  harness only at the entropy decoder entry points, then instantiated it for
-  Dynamic Range under DD-428.
-- References used: DD-428, DD-427, the local generic-frame layout, LZD Dynamic
-  Range limits, complete-frame decoder, streaming decoder, and existing
-  repository-authored bounded fuzz conventions.
-- Known implementations intentionally not consulted: external fuzz harnesses,
-  malformed corpora, source code, and encoded vectors.
-- Independent decisions: retain fixed 8,192-byte input, 4,096-byte aggregate
-  output and token staging, 1,024-byte frame, 8,192-byte payload, 512-phrase,
-  and 513-expansion-reference ceilings; exercise both complete-frame and
-  streaming decode paths; impose a finite call ceiling; and permanently require
-  atomic rejection of every canonical truncation, extreme frame lengths, and
-  invalid descriptors.
-- Generated-code task description: instantiate the shared bounded LZD decoder
-  fuzz harness and permanent malformed regressions for Dynamic Range, add a
-  seed corpus, compile-smoke and optional libFuzzer targets, and synchronize
-  architecture, readiness, composition, fuzzing, changelog, decision,
-  reference, and vector records.
-- Similarity review: the work reuses only marc's own harness and public format
-  contracts, with entropy-specific substitutions at documented local entry
-  points; no external implementation, harness structure, corpus, or test
-  expression was compared.
-- Local validation: the fuzz compile-smoke target built under MSVC; the
-  sanitizer target completed a finite 1,000-run smoke under Clang 22.1.3 with
-  libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer; the three focused
-  malformed regressions passed. The complete Release suite passed 1,685/1,685
-  under both MSVC and ClangCL using official CMake 4.3.4.
-
-## 2026-07-28 - LZD plus Dynamic Range transactional CLI adapter
-
-- Authoring method: connected the completed public C profile to marc's existing
-  explicit-selector and transactional temporary-file loop without calling
-  private C++ frame APIs.
-- References used: DD-429, the public LZD Dynamic Range config, requirements
-  query and factory, the local 64-KiB reference profile, and the repository's
-  existing CLI process and round-trip contracts.
-- Known implementations intentionally not consulted: external archive tools,
-  compression CLIs, combined-codec adapters, workspace policies, source code,
-  command syntax, and test suites.
-- Independent decisions: retain LZ77 as the default; require the explicit
-  `lzd-dynamic-range` selector in both directions; fix the public 262,144-byte
-  token and 524,293-byte range-payload limits; use a 16-MiB aggregate policy;
-  and query actual three-region workspaces and alignment through C.
-- Generated-code task description: add selector parsing, fixed public config,
-  requirements and factory dispatch, usage and profile documentation, and the
-  common binary/empty, overwrite, malformed, trailing, and `.tmp` regression.
-- Similarity review: the adapter composes only marc's own public ABI and
-  transactional CLI. No external CLI structure, option spelling, workspace
-  layout, or test expression was compared.
-- Local validation: the focused transactional CLI and documentation tests
-  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
-  1,686/1,686 under both compilers using official CMake 4.3.4.
-
-## 2026-07-28 - LZD plus Dynamic Range public-ABI benchmark adapter
-
-- Authoring method: added the completed public profile to marc's dependency-
-  free measurement runner without invoking private frame APIs or reproducing
-  typed workspace layouts.
-- References used: DD-430, DD-429, the public config, requirements query and
-  factory, the local `8*ceil(F/2)` and `2S + 5` bounds, checked arithmetic, and
-  the existing untimed round-trip gate.
-- Known implementations intentionally not consulted: external benchmark
-  frameworks, combined-codec adapters, capacity formulas, performance results,
-  workspace layouts, source code, and test suites.
-- Independent decisions: reuse the 64-KiB CLI frame and 16-MiB policy; derive
-  checked capacity `80 + 16*ceil(N/2) + 77K`; query both directional three-
-  region workspaces; report their larger sum; and impose no speed or ratio
-  threshold.
-- Generated-code task description: add benchmark selector, configuration,
-  capacity, requirements and factory dispatch, one labeled smoke, measurement
-  documentation, and readiness evidence.
-- Similarity review: the adapter extends only marc's existing runner with the
-  independently specified public profile. No external runner structure,
-  formula expression, output schema, or test expression was compared.
-- Local validation: the focused one-iteration smoke and documentation tests
-  passed 2/2 under both MSVC and ClangCL. The complete Release suite passed
-  1,687/1,687 under both compilers using official CMake 4.3.4. All twenty-nine
-  labeled benchmark smokes passed.
-
-## 2026-07-28 - Interoperability schema 18
-
-- Authoring method: extended marc's repository-authored manifest generator and
-  verifier by one frozen suffix entry while preserving every schema-17 profile
-  and all legacy codec-set definitions.
-- References used: DD-431, the public `lzd-dynamic-range` CLI selector, schema
-  17's canonical order, the local deterministic fixture, SHA-256 manifest
-  fields, exact re-encoding check, and compatibility conversion helper.
-- Known implementations intentionally not consulted: external archive
-  protocols, manifest schemas, interoperability harnesses, encoded archives,
-  corpora, source code, and test suites.
-- Independent decisions: name the new set `marc-cli-v18`; append
-  `lzd-dynamic-range` once as archive 29; keep schemas 1 through 17 explicit;
-  reject reordered schema-18 manifests; and require local decode and exact
-  re-encoding before later external admission.
-- Generated-code task description: extend generator, verifier, reordered-
-  manifest regression, and schema compatibility chain by one profile; update
-  architecture, readiness, composition, format, interoperability, changelog,
-  decision, reference, vector, and provenance records.
-- Similarity review: the work changes only marc's own scripts and documented
-  schema order. No external format, archive bytes, manifest organization,
-  verifier control flow, or test expression was compared.
-- Local validation: the schema compatibility test generated and verified all
-  twenty-nine schema-18 archives, rejected reordered schema 18, and verified
-  the complete schemas 17 through 1 chain under both MSVC and ClangCL. The
-  complete Release suite passed 1,687/1,687 under both compilers using official
-  CMake 4.3.4. A separate local MSVC bundle generation and verification also
-  reported `Verified 29 archives` at revision
-  `2338bdda75f2d8fb2fff86d70d1c47a4de693dca`.
-
-## 2026-07-28 - Interoperability schema 18 external validation record
-
-- Authoring method: recorded the four user-executed external verifier results
-  at exact revision `fd11d1c7ef833873a02694da91f9f6d8d378948b`.
-- References used: DD-431, marc's schema-18 generator and verifier, the
-  established schema-17 cross-check procedure, and the four reported verifier
-  results.
-- Known implementations intentionally not consulted: external codec source,
-  archive formats, interoperability harnesses, corpora, test vectors, and
-  verification suites.
-- Independent validation: Ubuntu 26.04 WSL2 x86-64 with Ubuntu Clang 21.1.8
-  via Ninja verified the twenty-nine archives from both the Windows/MSVC via
-  Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja CI artifacts. It
-  generated and verified its own twenty-nine-archive bundle, which the
-  Windows/MSVC executable then verified in the reverse direction.
-- Result: all four invocations reported `Verified 29 archives` and the exact
-  full revision. The verifier checked manifest order, sizes, SHA-256 values,
-  fixture decoding, and byte-identical local re-encoding for every archive.
-  This establishes canonical schema-18 bytes across the three recorded
-  producers and bidirectional decoding between the recorded Windows and WSL2
-  Linux x86-64 environments.
-
-## 2026-07-28 - LZMW plus Dynamic Range specification and vector
-
-- Authoring method: composed marc's already frozen LZMW reference grammar and
-  Dynamic Range byte-symbol grammar at their documented byte-stream boundary
-  before implementing a combined codec.
-- References used: DD-432, the local LZMW variant 1 and Dynamic Range variant
-  1 format sections, generic frame serializers, checked arithmetic rules, and
-  repository-authored standalone encoders.
-- Known implementations intentionally not consulted: external LZMW/range
-  compositions, archive formats, codec source, encoded corpora, malformed
-  corpora, and test suites.
-- Independent decisions: reserve `lzmw-dynamic-range`; retain format 1.0; make
-  all four bytes of every reference ordinary range symbols; reset both layers
-  per frame; use checked `S = 4F` and `P = 2S + 5` bounds; and require strict
-  range exhaustion before LZMW graph validation and private reconstruction.
-- Generated-code task description: specify the complete combined frame,
-  bounds, reset and validation order, publication boundary, raw-`A` vector,
-  roadmap state, reference record, and provenance without implementing a
-  combined decoder or encoder.
-- Similarity review: the representation and vector compose only marc's own
-  independently documented component contracts and direct field
-  serialization. No external combined format, implementation structure, byte
-  stream, naming scheme, or test expression was compared.
-- Local validation: the independent 80-byte vector passed under both MSVC and
-  ClangCL. The complete Release test inventory passed 1,688/1,688 under both
-  compilers using official CMake 4.3.4; the MSVC invocation was split after
-  test 1,684 solely by the command runner's 120-second limit.
-
-## 2026-07-28 - LZMW plus Dynamic Range complete-frame validator
-
-- Authoring method: combined marc's existing generic frame admission, Dynamic
-  Range decode, and LZMW reference validation contracts in the DD-433 order
-  without adding reconstruction or publication.
-- References used: DD-433, DD-432, the local Dynamic Range descriptor and
-  decoder, the LZMW validator and phrase records, checked arithmetic helpers,
-  and caller-owned bounded spans.
-- Known implementations intentionally not consulted: external combined
-  decoders, archive formats, validation sequences, workspace layouts,
-  malformed corpora, source code, and test suites.
-- Independent decisions: preflight the exact frame, reference and payload
-  bounds, all caller capacities, phrase bytes, and aggregate workspace before
-  entropy output; decode references privately; validate the complete LZMW
-  graph; report the actual expansion ceiling; and publish no raw byte.
-- Generated-code task description: add an internal result and stable error
-  taxonomy, exact-frame validator, fixed-vector acceptance, all-prefix and
-  trailing rejection, guarded workspace failures, descriptor/payload errors,
-  invalid references and raw extent, sequence and pipeline regressions, and
-  update format, architecture, readiness, composition, changelog, decision,
+- Independent decisions: admit all extents before entropy work; count tANS
+  views and LZW phrase records in the aggregate; validate every entropy block
+  before packed mutation; decode exactly once into private staging only after
+  complete entropy success; and retain stable layer and position diagnostics.
+- Generated-code task description: implement only the bounded decoder-side
+  validator; exercise code-splitting blocks, truncation, later-block failure,
+  workspace shortages, invalid LZW padding, impossible extents, and update
+  format, architecture, readiness, composition, changelog, decision,
   reference, vector, and provenance records.
-- Similarity review: the implementation composes only marc's existing
-  independently documented frame, Dynamic Range, and LZMW components. No
-  external control flow, error taxonomy, workspace organization, malformed
-  vector, or test expression was compared.
-- Local validation: the focused vector and validator suite passed 8/8 under
-  both MSVC and ClangCL. The complete Release suite passed 1,695/1,695 under
-  both compilers using official CMake 4.3.4. All twenty-nine existing
-  benchmark smokes and schema-18 compatibility remained successful.
+- Similarity review: the implementation directly sequences repository-owned
+  components and checked spans. No external control flow, validation schedule,
+  error taxonomy, test mutation, encoded data, or naming scheme was compared.
+- Local validation: the focused validator suite passed 9/9 under MSVC and
+  ClangCL. The complete Release CTest suite passed 2,219/2,219 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
+  through 28 compatibility, and documentation layout remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range private raw decoder
+## 2026-08-04 - LZW plus tANS representation and vector reservation
 
-- Authoring method: extended the DD-433 validation boundary with marc's
-  existing iterative LZMW decoder while retaining caller-owned disposable
-  staging and adding no publication span.
-- References used: DD-434, DD-433, the local LZMW decoder and expansion helper,
-  checked aggregate arithmetic, and the established private-staging contract.
+- Authoring method: composed marc's already specified packed LZW code format
+  with its independently implemented tabled tANS block format.
+- References used: DD-583, the local LZW encoder and hand vectors, local tANS
+  normalization, table construction, reverse recurrence, descriptor
+  serializer, generic frame serializer, and checked block bounds.
 - Known implementations intentionally not consulted: external combined
-  decoders, phrase-expansion implementations, buffer layouts, source code,
-  malformed corpora, and test suites.
-- Independent decisions: require conservative expansion and exact raw capacity
-  before entropy output; count both against the aggregate limit; narrow the
-  active expansion span after graph validation; reconstruct iteratively; and
-  require every failure to discard all private workspace.
-- Generated-code task description: add private reconstruction and stable decode
-  reporting; test literal and generated-phrase frames, raw and expansion
-  shortages, aggregate admission, descriptor and forward-reference failures,
-  and guarded raw staging; update format, architecture, readiness,
+  codecs, encoded corpora, source code, stream formats, test vectors, and test
+  suites.
+- Independent decisions: finalize all packed LZW bytes including padding
+  before entropy coding; permit entropy blocks to split codes but not bytes or
+  frames; retain the checked `ceil(FW/8)` bound; and fix raw `A` as a sparse
+  complete-frame vector.
+- Generated-code task description: reserve the exact LZW+tANS representation,
+  derive one hand-checkable raw-`A` vector, add a component-composition test,
+  and synchronize architecture, format, readiness, composition, changelog,
+  decision, reference, vector-generation, and provenance records.
+- Similarity review: the representation is a direct bounded composition of
+  repository-owned formats. No external byte sequence, state table, control
+  flow, capacity formula, naming scheme, or test expression was compared.
+- Local validation: the independent 587-byte vector passed under MSVC and
+  ClangCL. The complete Release CTest suite passed 2,210/2,210 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
+  through 28 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - Interoperability schema 28 appends LZ78 plus tANS
+
+- Authoring method: extended marc's append-only local bundle schema by one
+  already admitted CLI profile.
+- References used: DD-582, the frozen schema-27 order, repository-owned bundle
+  scripts, deterministic 8,193-byte fixture, and `lz78-tans`.
+- Known implementations intentionally not consulted: external archives,
+  manifests, interoperability suites, implementations, or test results.
+- Independent decisions: name `marc-cli-v28`; append `lz78-tans` only as entry
+  39; enforce exact order; and recover schema 27 by removing only the new
+  archive before checking every earlier schema.
+- Generated-code task description: advance bundle generation and verification
+  to schema 28, add reordered-manifest and schemas 1 through 27 compatibility
+  coverage, and synchronize format/readiness/interoperability/provenance docs.
+- Similarity review: the change is an append-only application of marc's own
+  manifest rules and fixture. No external ordering, archive bytes, metadata,
+  script structure, or expected result was compared.
+- Local validation: schema-28 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 27 compatibility passed under MSVC and ClangCL. The complete Release
+  CTest suite passed 2,209/2,209 under both compilers using official CMake
+  4.3.4; all 39 benchmark smokes and documentation layout remained
+  successful.
+- External validation: revision
+  `3d5001ce7536c425328a597240244551605e8935` completed all four schema-28
+  verifier directions. Ubuntu 26.04/Clang 21.1.8 verified the Windows/MSVC and
+  Ubuntu 24.04/Ninja CI artifacts, generated and self-verified its own bundle,
+  and Windows/MSVC verified that Ubuntu bundle. Every pass decoded and byte-
+  identically re-encoded all 39 archives.
+
+## 2026-08-04 - LZ78 plus tANS public-ABI completion
+
+- Authoring method: applied marc's established public completion categories to
+  the already published LZ78+tANS C lifecycle and fixed format.
+- References used: DD-581, DD-577, local deterministic fixture generation,
+  public process-result semantics, and frame-transactional decode behavior.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  completion suites, encoded vectors, chunk schedules, malformed corpora,
+  source code, or tests.
+- Independent decisions: use 64-byte raw and entropy boundaries; cover every
+  one-byte value and required binary classes; compare whole, `1/1`, `7/5`, and
+  `13/17` schedules; and corrupt, truncate, or extend only the fourth frame.
+- Generated-code task description: add a public-C completion suite for data
+  classes, determinism, chunking, repeated terminal behavior, and atomic final-
+  frame rejection, then synchronize readiness, format, architecture,
   composition, changelog, decision, reference, vector, and provenance records.
-- Similarity review: the work composes only marc's existing validator,
-  iterative LZMW decoder, and bounded-span contracts. No external control flow,
-  expansion strategy, staging organization, malformed input, or test
+- Similarity review: the suite uses only marc's C API and repository completion
+  vocabulary. No external fixture bytes, control flow, assertion structure,
+  malformed case, or test expression was compared.
+- Local validation: the focused three-test completion suite passed under MSVC
+  and ClangCL. The complete Release CTest suite passed 2,209/2,209 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, documentation
+  layout, and schema-27 compatibility remained successful.
+
+## 2026-08-04 - LZ78 plus tANS bounded decoder fuzzing
+
+- Authoring method: combined marc's established LZ78/rANS fixed phrase
+  boundary with its LZSS/tANS state-table boundary, using only the already
+  specified LZ78+tANS decoders.
+- References used: DD-580, local private complete-frame and public C streaming
+  decoders, fixed tANS views, LZ78 phrase records, and core progress invariants.
+- Known implementations intentionally not consulted: external LZ78/tANS fuzz
+  harnesses, corpora, crashes, malformed fixtures, source code, or tests.
+- Independent decisions: cap input at 8 KiB, output at 4 KiB, frames at 1 KiB,
+  tokens at 8 KiB, payload at 16 KiB, views at eight, phrases at 1,024, and
+  calls at one fixed expression; derive chunks only from bounded bytes.
+- Generated-code task description: add a dual-decoder libFuzzer entry point,
+  ordinary compiler smoke target, three permanent atomic regressions, and
+  synchronized fuzzing, readiness, format, architecture, decision, reference,
+  vector, changelog, and provenance records.
+- Similarity review: the harness composes only local public and private
+  contracts. No external control flow, storage layout, mutation schedule,
+  corpus byte, or test expression was compared.
+- Local validation: the fuzz compile-smoke and focused three-test regression
+  suite passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,206/2,206 under both compilers using official CMake 4.3.4; all 39 benchmark
+  smokes, documentation layout, and schema-27 compatibility remained
+  successful.
+
+## 2026-08-04 - LZ78 plus tANS public benchmark
+
+- Authoring method: extended marc's dependency-free benchmark harness by the
+  already admitted fixed LZ78+tANS public profile.
+- References used: DD-579, DD-578's profile, the public
+  `marc_lz78_tans_*` lifecycle, and checked local capacity arithmetic.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  benchmarks, wrappers, corpora, results, capacity formulas, source, or tests.
+- Independent decisions: require an untimed exact public-C round trip before
+  measurement; reserve `80 + 12N + 4296K`; report all directional borrowed
+  regions; and apply no throughput floor.
+- Generated-code task description: register `lz78-tans`, extend checked
+  capacity and dispatch, add a one-iteration smoke, and synchronize benchmark,
+  readiness, format, architecture, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: only marc's existing public-C benchmark contract was
+  extended. No external control flow, formula, output schema, fixture, or test
   expression was compared.
-- Local validation: the focused validator and private-decoder suite passed
-  11/11 under both MSVC and ClangCL. The complete Release suite passed
-  1,699/1,699 under both compilers using official CMake 4.3.4. All twenty-nine
-  existing benchmark smokes and schema-18 compatibility remained successful.
+- Local validation: the focused benchmark smoke and all 39 benchmark smokes
+  passed under MSVC and ClangCL. The complete Release CTest suite passed
+  2,203/2,203 under both compilers using official CMake 4.3.4; documentation
+  layout and schema-27 compatibility remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range transactional frame decoder
+## 2026-08-04 - LZ78 plus tANS CLI selector
 
-- Authoring method: wrapped DD-434's private reconstruction with a distinct
-  caller output span and marc's established validate-and-copy publication
-  boundary.
-- References used: DD-435, DD-434, the local complete-frame validator and
-  private decoder, checked caller capacity, and bounded span copying.
+- Authoring method: extended marc's existing selector dispatch and
+  transactional file adapter by one already specified public C profile.
+- References used: DD-578, DD-568's fixed bounds, the published
+  `marc_lz78_tans_*` lifecycle, and the repository-standard CLI fixture.
+- Known implementations intentionally not consulted: external LZ78/tANS
+  wrappers, command-line tools, workspace layouts, archives, source, or tests.
+- Independent decisions: use 64-KiB raw frames and tANS blocks; fix the
+  524,288-byte token ceiling, eight blocks, 4,224 descriptor bytes,
+  786,448-byte payload ceiling, 65,536 entries, and 4-MiB aggregate policy;
+  keep typed views private; and reuse strict temporary-file publication.
+- Generated-code task description: add selector parsing and help, public
+  configuration/query/factory dispatch, bounded capacity helpers, one
+  transactional CLI test, and synchronized public and provenance records.
+- Similarity review: the adapter follows only marc's public ABI and established
+  file-processing pattern. No external control flow, naming, bounds, fixture,
+  or test expression was compared.
+- Local validation: the focused transactional CLI integration test passed
+  under MSVC and ClangCL. The complete Release CTest suite passed 2,202/2,202
+  under both compilers using official CMake 4.3.4; all 38 benchmark smokes,
+  documentation layout, and schema-27 compatibility remained successful.
+
+## 2026-08-04 - LZ78 plus tANS public C requirements and factory
+
+- Authoring method: mapped DD-576's internal direction-specific requirements
+  and aligned partitions into marc's existing size-tagged C transform lifecycle.
+- References used: DD-577, DD-576, the local opaque transform adapter, stable C
+  status mapping, non-throwing allocation, and three-region workspace policy.
+- Known implementations intentionally not consulted: external C wrappers, ABI
+  layouts, allocation policies, bindings, source code, and test suites.
+- Independent decisions: add a new structure without altering existing ABI
+  objects; require exact size/version/reserved fields; expose direction-specific
+  capacities and alignment; revalidate before typed partition; and publish no
+  handle on any failure.
+- Generated-code task description: add the public config, initializer,
+  requirements query, factory, C11 round trip, short and misaligned workspace,
+  null output, and reserved-field tests; update CMake and all public and
+  provenance documentation.
+- Similarity review: the adapter follows only repository-owned profile and C
+  ABI conventions. No external symbol set, layout, control flow, naming scheme,
+  or test expression was compared.
+- Local validation: the public C11 lifecycle passed under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,201/2,201 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, public-header checks, and documentation layout
+  remained successful.
+
+## 2026-08-04 - LZ78 plus tANS internal profile calculator
+
+- Authoring method: derived bounded direction-specific workspace formulae from
+  the local streaming constructors, exact-frame ceiling, LZ78 token and record
+  bounds, and tANS block payload ceiling.
+- References used: DD-576, DD-574/DD-575, DD-568, local hard limits, checked
+  arithmetic, and C++ `sizeof`/`alignof` requirements.
+- Known implementations intentionally not consulted: external workspace APIs,
+  profile calculators, allocator layouts, source code, encoded corpora, and
+  test suites.
+- Independent decisions: report exact encoder byte regions and record count;
+  derive conservative decoder regions only from hard limits; lay out tANS views
+  before aligned LZ78 phrases; validate every published typed view; and map all
+  failures to stable profile/core errors.
+- Generated-code task description: add encoder and decoder requirements,
+  aligned opaque partition helpers, error mapping, exact default/short/empty
+  formula tests, limit and layout rejection, and a requirements-constructed
+  streaming round trip; update build and documentation records.
+- Similarity review: the implementation directly evaluates repository-owned
+  bounds and alignment. No external formula organization, storage partition,
+  API naming scheme, control flow, or test expression was compared.
+- Local validation: the focused LZ78+tANS profile suite passed 7/7 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,200/2,200 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS known-size streaming decoder
+
+- Authoring method: applied marc's bounded frame-collection and immutable raw-
+  drain state contract above the private DD-570 LZ78+tANS reconstruction path.
+- References used: DD-575, DD-569 through DD-574, local generic header parser,
+  tANS extent rules, checked arithmetic, and caller-owned workspace policies.
+- Known implementations intentionally not consulted: external streaming
+  decoders, collection state machines, source code, malformed corpora, chunking
+  suites, and tests.
+- Independent decisions: admit every exact frame and workspace at its header;
+  collect a full body before decode; reconstruct privately; drain only after
+  success; preserve prior-frame publication on later corruption; and keep
+  terminal states sticky.
+- Generated-code task description: add the known-size bounded streaming
+  decoder; prove one-byte round trip, later-frame isolation, all workspace and
+  aggregate failures, truncation, trailing data, empty and starved input,
+  premature final input, unsupported flags, and repeated terminal behavior;
+  update build and documentation records.
+- Similarity review: the implementation composes only repository frame, tANS,
+  LZ78, span, and process contracts. No external control flow, storage layout,
+  malformed vector, chunk schedule, naming scheme, or test expression was
+  compared.
+- Local validation: the focused LZ78+tANS streaming-decoder suite passed 5/5
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,193/2,193 under both compilers using official CMake 4.3.4; all 38 benchmark
+  smokes, schema 1 through 27 compatibility, and documentation layout remained
+  successful.
+
+## 2026-08-04 - LZ78 plus tANS known-size streaming encoder
+
+- Authoring method: applied marc's core transform state contract above the
+  DD-573 complete-frame writer with caller-owned bounded storage.
+- References used: DD-574, DD-573, local stream and LZ78 parameter serializers,
+  checked arithmetic, and existing process-result invariants.
+- Known implementations intentionally not consulted: external streaming
+  encoders, buffering state machines, source code, chunking suites, and tests.
+- Independent decisions: drain prefix first; retain one raw, token, encoder-
+  record, and encoded frame; prepare only complete expected frames; keep Flush
+  nonterminal; latch EndInput through draining; and keep terminal states sticky.
+- Generated-code task description: add a known-size bounded streaming encoder;
+  prove reference-byte identity with one-byte buffers, multi-frame, Flush and
+  latched-EndInput behavior, storage and aggregate failures, empty, premature,
+  and excess input, unsupported flags, and repeated end; update build and
+  documentation records.
+- Similarity review: the implementation composes only repository state,
+  framing, writer, and span contracts. No external control flow, storage
+  layout, chunk schedule, naming scheme, or test expression was compared.
+- Local validation: the focused LZ78+tANS streaming-encoder suite passed 5/5
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,188/2,188 under both compilers using official CMake 4.3.4; all 38 benchmark
+  smokes, schema 1 through 27 compatibility, and documentation layout remained
+  successful.
+
+## 2026-08-04 - LZ78 plus tANS complete-frame writer
+
+- Authoring method: composed the local exact-frame planner, explicit generic
+  frame serializer, tANS descriptor serializer, and tANS block encoder over
+  the planner's frozen canonical LZ78 token staging.
+- References used: DD-573, DD-572, the independent raw-`A` frame, and only
+  repository-owned frame and entropy primitives.
+- Known implementations intentionally not consulted: external combined frame
+  writers, serialization schedules, buffering layouts, encoded corpora, source
+  code, and test suites.
+- Independent decisions: admit the complete destination after exact planning;
+  write header, contiguous descriptors, then contiguous payloads; replan only
+  over frozen tokens; require planned sizes and final offsets to agree; and
+  reject short destinations without mutation.
+- Generated-code task description: add the complete-frame writer, exact-vector,
+  token-splitting deterministic round-trip, and short-output atomicity tests,
+  then synchronize format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the writer directly sequences repository-owned bounded
+  components. No external control flow, region schedule, capacity formula,
+  encoded bytes, naming scheme, or test expression was compared.
+- Local validation: the focused LZ78+tANS encoder suite passed 8/8 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,183/2,183 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS exact-frame planning
+
+- Authoring method: composed marc's bounded LZ78 token planner and encoder with
+  its no-output tANS block planner and generic frame validator.
+- References used: DD-572, DD-568 bounds, local LZ78 encoder records and token
+  staging, local tANS planner, checked arithmetic, and the independent raw-`A`
+  vector.
 - Known implementations intentionally not consulted: external combined
-  decoders, publication protocols, buffer layouts, source code, malformed
+  encoders, planning algorithms, storage layouts, encoded corpora, source code,
+  and test suites.
+- Independent decisions: admit encoder records and token capacity before token
+  mutation; materialize canonical tokens once; plan all entropy blocks over
+  immutable staging; count every encoder region; validate the synthesized
+  header; and accept no serialized output.
+- Generated-code task description: add the no-output planner, test exact raw-
+  `A` and token-splitting extents, capacity atomicity, input extent, block and
+  aggregate limits, and synchronize format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the planner directly sequences repository-owned
+  components and checked spans. No external planning order, storage schedule,
+  capacity formula, encoded bytes, error taxonomy, or test expression was
+  compared.
+- Local validation: the focused planner suite passed 5/5 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,180/2,180 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS transactional publication
+
+- Authoring method: wrapped marc's private LZ78+tANS reconstruction boundary
+  with its established preflight-and-copy publication rule.
+- References used: DD-571, DD-570's private decoder, caller-owned output spans,
+  exact raw extents, and repository-local atomic publication conventions.
+- Known implementations intentionally not consulted: external publication
+  protocols, combined decoders, buffer layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: admit caller capacity before any private mutation;
+  exclude publication storage from internal workspace; retain complete private
+  validation and reconstruction; and perform exactly one final copy.
+- Generated-code task description: add the minimal transactional wrapper,
+  verify successful raw-`A` publication, short-output preflight, entropy and
+  dictionary failure atomicity, and synchronize format, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the wrapper directly applies repository-owned validation,
+  private reconstruction, and bounded copy rules. No external control flow,
+  publication schedule, error taxonomy, mutation case, or test expression was
+  compared.
+- Local validation: the focused decoder suite passed 8/8 under both MSVC and
+  ClangCL. The complete Release CTest suite passed 2,175/2,175 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS private raw reconstruction
+
+- Authoring method: extended the locally validated LZ78+tANS boundary only
+  with marc's existing allocation-free LZ78 phrase expansion.
+- References used: DD-570, DD-569's validator, local LZ78 decoder, iterative
+  phrase expansion, caller-owned raw staging, and checked aggregate arithmetic.
+- Known implementations intentionally not consulted: external combined
+  decoders, reconstruction strategies, buffer layouts, malformed corpora,
+  source code, and test suites.
+- Independent decisions: preflight and count the complete raw extent before
+  entropy work; retain the two-pass entropy and phrase validation order;
+  reconstruct only after complete success; expose no publication span; and
+  preserve existing layer and position diagnostics.
+- Generated-code task description: add the minimal private raw decoder,
+  exercise raw `A`, nested phrases across entropy splits, raw shortage,
+  aggregate shortage, malformed entropy and dictionary layers, and synchronize
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation calls repository-owned validation and
+  reconstruction components over checked spans. No external control flow,
+  expansion algorithm, storage schedule, error taxonomy, or test expression
+  was compared.
+- Local validation: the focused private-decoder suite passed 5/5 under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,172/2,172 under
+  both compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS complete-frame validator
+
+- Authoring method: composed marc's strict two-pass tANS block controller with
+  its existing bounded LZ78 token and phrase-graph validator.
+- References used: DD-569, DD-568 bounds, local generic frame parsing, local
+  tANS descriptors and state validation, caller-owned spans, checked
+  arithmetic, and the independent 587-byte vector.
+- Known implementations intentionally not consulted: external combined
+  decoders, validation orders, workspace layouts, malformed corpora, source
+  code, and test suites.
+- Independent decisions: admit all extents before entropy work; count tANS
+  views and LZ78 phrase records in the aggregate; validate every entropy block
+  before token mutation; decode exactly once into private staging only after
+  complete entropy success; and retain stable layer and position diagnostics.
+- Generated-code task description: implement only the bounded decoder-side
+  validator, exercise token-splitting blocks, truncation, later-block failure,
+  workspace shortages, invalid LZ78 semantics, impossible extents, and update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the implementation directly sequences repository-owned
+  components and checked spans. No external control flow, validation schedule,
+  error taxonomy, test mutation, encoded data, or naming scheme was compared.
+- Local validation: the focused validator suite passed 11/11 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,167/2,167 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-04 - LZ78 plus tANS representation and vector reservation
+
+- Authoring method: composed marc's already specified fixed-width LZ78 token
+  representation with its independently implemented tabled tANS block format.
+- References used: DD-568, the local LZ78 token encoder and vectors, local tANS
+  normalization, table construction, reverse recurrence, descriptor
+  serializer, generic frame serializer, and checked block bounds.
+- Known implementations intentionally not consulted: external combined
+  codecs, encoded corpora, source code, stream formats, test vectors, and test
+  suites.
+- Independent decisions: finalize all LZ78 tokens before entropy coding;
+  permit entropy blocks to split tokens but not frames; require eight-byte
+  alignment before phrase validation; retain the checked `8F` token ceiling;
+  and fix raw `A` as a sparse complete-frame vector.
+- Generated-code task description: reserve the exact LZ78+tANS representation,
+  derive one hand-checkable raw-`A` vector, add a component-composition test,
+  and synchronize architecture, format, readiness, composition, changelog,
+  decision, reference, vector-generation, and provenance records.
+- Similarity review: the representation is a direct bounded composition of
+  repository-owned formats. No external byte sequence, state table, control
+  flow, capacity formula, naming scheme, or test expression was compared.
+- Local validation: the independent 587-byte vector passed under MSVC and
+  ClangCL. The complete Release CTest suite passed 2,156/2,156 under both
+  compilers using official CMake 4.3.4; all 38 benchmark smokes, schema 1
+  through 27 compatibility, and documentation layout remained successful.
+
+## 2026-08-05 - LZD plus tANS reserved representation
+
+- Authoring method: composed marc's documented LZD variant-1 token grammar and
+  standalone encoder with its independently implemented tabled tANS planner,
+  encoder, descriptor serializer, and generic frame serializer.
+- References used: DD-598, local LZD and tANS specifications and code, checked
+  frame bounds, and explicit little-endian serialization helpers.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  implementations, source code, combined formats, encoded corpora, vectors,
+  and test suites.
+- Independent decisions: finalize all eight-byte reference pairs before
+  entropy coding; permit blocks to split fields but not bytes or frames; bound
+  tokens by `8*ceil(F/2)`; validate all entropy blocks before LZD semantics; and
+  freeze raw-`A` payload `08 03 9B 00` and complete extent 588.
+- Generated-code task description: reserve `lzd-tans`, derive its bounds and
+  exact raw-`A` vector solely from standalone components, add a byte-exact
+  vector test, and update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the representation directly composes two local canonical
+  boundaries and explicit serializers. No external format structure,
+  normalization table, payload bytes, control flow, or test expression was
+  compared.
+- Local validation: the byte-exact vector passed under both MSVC and ClangCL.
+  The complete Release CTest suite passed 2,263/2,263 under both compilers
+  using official CMake 4.3.4; all 40 benchmark smokes, schema 1 through 29
+  compatibility, and documentation-layout checks remained successful.
+
+## 2026-08-05 - LZD plus tANS bounded complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, local tANS
+  controller and strict block decoder, and existing allocation-free LZD graph
+  validator under DD-599's explicit admission order.
+- References used: DD-599, DD-598, the local LZD and tANS format contracts,
+  caller-owned workspaces, and checked arithmetic.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, validation orders, workspace layouts, source code, malformed
   corpora, and test suites.
-- Independent decisions: preflight the entire output before entropy work;
-  reconstruct only in private staging; copy once after complete success; and
-  preserve caller output on every error.
-- Generated-code task description: add caller-visible transactional decoding
-  and a stable short-output error; prove literal and phrase publication, short-
-  output preservation of all guards, and malformed descriptor and reference
+- Independent decisions: preflight all serialized and workspace extents;
+  validate every entropy block before token mutation; reconstruct the complete
+  private token span before LZD semantics; preserve stable block and token
+  positions; and make all workspace discard-only after failure.
+- Generated-code task description: add only a bounded complete-frame
+  validator; prove the independent vector, field-splitting blocks, later-block
+  atomicity, post-entropy reference rejection, short and aggregate workspace
+  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the code directly composes repository-local parsers,
+  validators, and explicit spans. No external control flow, error taxonomy,
+  buffer layout, malformed vector, or test expression was compared.
+- Local validation: the seven focused validator tests passed under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,270/2,270 under both
+  compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
+  through 29 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-05 - LZD plus tANS private raw decoder
+
+- Authoring method: extended DD-599's internal validator with marc's existing
+  allocation-free, non-recursive LZD reconstruction over caller-owned spans.
+- References used: DD-600, DD-599, the local LZD decoder contract, checked
+  aggregate arithmetic, and discard-only staging conventions.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, phrase expansion algorithms, recursion schemes, buffer layouts,
+  source code, malformed corpora, and test suites.
+- Independent decisions: preflight raw and expansion capacities before entropy
+  mutation; include both in the aggregate workspace limit; reconstruct only
+  after complete entropy and graph validation; and expose no raw publication
+  span at this boundary.
+- Generated-code task description: add private complete-frame reconstruction;
+  prove raw `A`, phrase-bearing `ABABAB` across split blocks, short raw and
+  expansion storage, aggregate limit one byte short, and unchanged raw guards
+  after entropy or dictionary failure; update format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation calls only the repository-local LZD
+  decoder after DD-599's validator and uses explicit bounded spans. No external
+  reconstruction control flow, workspace formula, error taxonomy, malformed
+  vector, or test expression was compared.
+- Local validation: the twelve focused validator/private-decoder tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,275/2,275 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
+
+## 2026-08-05 - Interoperability schema 29 appends LZW plus tANS
+
+- Authoring method: extended marc's repository-owned schema-28 manifest and
+  compatibility chain by one already-published CLI profile.
+- References used: DD-597, the frozen schema-28 profile order, local bundle
+  scripts, deterministic 8,193-byte fixture, and `lzw-tans`.
+- Known implementations intentionally not consulted: external archive suites,
+  manifests, interoperability harnesses, encoded corpora, source code, and
+  test suites.
+- Independent decisions: name `marc-cli-v29`; append `lzw-tans` only as entry
+  40; require local round trip before recording; preserve exact order, hashes,
+  foreign decode, and byte-identical re-encoding; derive schema 28 by removing
+  only the new archive; and reject reordered manifests.
+- Generated-code task description: advance generator and verifier to schema
+  29, add reordered-manifest and schemas 1 through 28 compatibility checks,
+  and synchronize interoperability, format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the change appends one local public profile to marc's own
+  frozen schema machinery. No external ordering, manifest design, fixture,
+  hash convention, compatibility strategy, or test expression was compared.
+- Local validation: schema-29 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 28 compatibility passed under both MSVC and ClangCL Release builds.
+  The complete Release CTest suite passed 2,262/2,262 under both compilers
+  using official CMake 4.3.4; all 40 benchmark smokes and documentation-layout
+  checks remained successful. External four-direction verification at revision
+  `2dcc17c09477958c1f8777a266ecfefbb75217d2` completed all schema-29 paths:
+  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
+  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
+  re-encoded identically on Windows/MSVC. Every pass verified all 40 archives.
+
+## 2026-08-05 - LZW plus tANS verification-first benchmark
+
+- Authoring method: instantiated marc's common public-C benchmark runner with
+  DD-596 and the fixed DD-595 `lzw-tans` profile.
+- References used: DD-596, DD-595, DD-592, the public C lifecycle, checked
+  complete-stream arithmetic, and the repository-owned measurement runner and
+  smoke-test convention.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined adapters, allocation formulas, performance results,
+  source code, corpora, and test suites.
+- Independent decisions: reserve `80 + 3N + 1116K`, verify an exact round trip
+  before timing, report all directional workspaces and peak sum, use README as
+  the smoke corpus, and impose no throughput or ratio floor.
+- Generated-code task description: add `lzw-tans` to the dependency-free
+  runner and one-iteration smoke; use only the public lifecycle; synchronize
+  benchmark, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter reuses only marc's local runner and published
+  profile. No external control flow, capacity arithmetic, output schema,
+  performance threshold, or test expression was compared.
+- Local validation: the one-iteration smoke passed under both MSVC and ClangCL
+  Release builds. The complete Release CTest suite passed 2,262/2,262 under
+  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas
+  1 through 28, and documentation-layout checks remained successful.
+
+## 2026-08-05 - LZW plus tANS transactional CLI selector
+
+- Authoring method: bound DD-595 directly to DD-592's public C lifecycle and
+  marc's existing temporary-file command adapter.
+- References used: DD-595, DD-592, the public LZW/tANS configuration,
+  requirements, factory, process, and destroy entry points, checked profile
+  bounds, and the repository-owned generic CLI regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined adapters, private buffer layouts, source code, command syntax,
+  malformed corpora, and test suites.
+- Independent decisions: fix 64-KiB frames and blocks, derive the two-block
+  196,612-byte payload ceiling, keep all typed extents opaque, reject existing
+  output, and publish a file only after the complete transform succeeds.
+- Generated-code task description: add `--codec lzw-tans` through the public C
+  ABI only; cover binary and empty round trips plus atomic existing-output,
+  malformed, and trailing-input rejection; synchronize CLI, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the adapter instantiates only marc's existing public
+  lifecycle and common transactional file path. No external control flow,
+  workspace partition, option naming, capacity formula, or test expression was
+  compared.
+- Local validation: the focused CLI transaction passed under both MSVC and
+  ClangCL Release builds. The complete Release CTest suite passed 2,261/2,261
+  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
+  schemas 1 through 28, and documentation-layout checks remained successful.
+
+## 2026-08-05 - LZW plus tANS bounded dual-decoder fuzz boundary
+
+- Authoring method: adapted marc's local LZW/rANS bounded harness to DD-594 and
+  replaced only the entropy view, profile, decoder, and descriptor corruption
+  boundary with repository-local tANS equivalents.
+- References used: DD-594, DD-592, local LZW/tANS frame and C decoders, fixed
+  workspace ceilings, process invariants, and canonical `ABABX` generation.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, mutation dictionaries, malformed suites, source code, and test
+  expressions.
+- Independent decisions: exercise private and public boundaries per input;
+  allocate no fuzz-controlled extent; derive chunks deterministically; cap the
+  call count; treat malformed input as ordinary; and retain truncation, extreme
+  length, and invalid tANS-model regressions with atomic output checks.
+- Generated-code task description: add the bounded dual-decoder harness,
+  sanitizer target, portable warning-clean compile-smoke, and permanent
+  regression tests; synchronize format, architecture, C API, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the harness composes only marc's own decoders and fixed
+  limits. No external fuzz control flow, allocation policy, chunk schedule,
+  mutation position, naming scheme, or assertion was compared.
+- Local validation: the focused LZW/tANS suite passed 50/50 under both MSVC
+  and ClangCL, including all three permanent malformed regressions; the
+  warning-clean fuzz compile-smoke passed under both compilers. The complete
+  Release CTest suite passed 2,260/2,260 under both compilers using official
+  CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28 compatibility, and
+  documentation layout remained successful. Ubuntu 26.04 Clang 21
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
+  inputs with no crash, hang, or sanitizer finding and 39 MiB peak RSS.
+
+## 2026-08-05 - LZW plus tANS public-ABI completion matrix
+
+- Authoring method: instantiated marc's common LZW public-ABI audit through
+  DD-592 and replaced only the local tANS storage ceiling and public symbols.
+- References used: DD-593, DD-592, the local C lifecycle, generic frame fields,
+  deterministic test generator, process contract, and sticky terminal policy.
+- Known implementations intentionally not consulted: external LZW/tANS test
+  corpora, completion matrices, malformed schedules, source code, and suites.
+- Independent decisions: keep data, chunk, terminal, and malformed schedules
+  identical across LZW entropy compositions; use the blockwise tANS ceiling;
+  corrupt the generic fourth-frame sequence; and require frame-granular output
+  commitment plus stable repeated errors.
+- Generated-code task description: add the public-only completion matrix for
+  required data classes, repeat determinism, three chunk schedules, terminal
+  repetition, and corrupted, truncated, and trailing final frames; synchronize
+  format, architecture, C API, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the matrix reuses only repository-local test structure and
+  public functions. No external encoded bytes, data schedule, corruption
+  location, control flow, naming scheme, or assertion was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  streaming transforms, profile, C factory, and completion suite passed 47/47
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,257/2,257 under both compilers using official CMake 4.3.4; all 39 benchmark
+  smokes, schema 1 through 28 compatibility, and documentation layout remained
+  successful.
+
+## 2026-08-05 - LZW plus tANS public C workspace factory
+
+- Authoring method: bound DD-592 directly to DD-591's local profile and the
+  repository's established opaque transform lifecycle.
+- References used: DD-592, DD-591, the local LZW/tANS streaming pair, stable
+  C status mapping, checked region addition, and caller-owned buffers.
+- Known implementations intentionally not consulted: external compression C
+  APIs, LZW/tANS factories, ABI layouts, source code, and test suites.
+- Independent decisions: mirror the existing fixed-width configuration shape
+  under a distinct type; keep typed layouts private; revalidate requirements in
+  the factory; publish no handle until allocation succeeds; and test the public
+  lifecycle from a C11 translation unit.
+- Generated-code task description: add config initialization, requirements
+  query, factory, C declarations, and pure-C round trip; reject short,
+  misaligned, null, and reserved-field cases; synchronize C API, architecture,
+  readiness, composition, changelog, decision, reference, vector, and
+  provenance records.
+- Similarity review: the implementation composes marc's own profile and common
+  C transform contract. No external ABI structure, factory flow, storage
+  partition, naming scheme, or test expression was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  streaming transforms, profile, and pure-C factory suite passed 44/44 under
+  both MSVC and ClangCL. The complete Release CTest suite passed 2,254/2,254
+  under both compilers using official CMake 4.3.4; all 39 benchmark smokes,
+  schema 1 through 28 compatibility, and documentation layout remained
+  successful.
+
+## 2026-08-05 - LZW plus tANS workspace profile calculation
+
+- Authoring method: derived DD-591 from marc's local LZW/tANS streaming
+  constructors, conservative format ceilings, and checked alignment helpers.
+- References used: DD-591, DD-590, DD-589, the local LZW encoder and validator
+  workspace functions, tANS constants, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external LZW/tANS
+  workspace calculators, ABI layouts, allocation schemes, source code, and
+  test suites.
+- Independent decisions: calculate the tANS ceiling block by block; count all
+  encoder byte and typed regions together; derive decoder storage only from
+  local limits; place tANS views before aligned LZW phrases; retain canonical
+  empty alignment one; and validate opaque partitions before publishing views.
+- Generated-code task description: add direction-specific profile and typed
+  partition helpers; freeze independently calculated requirements; exercise
+  limits, altered requirements, short and misaligned storage, stable error
+  mapping, and a streaming round trip built solely from returned extents; then
+  synchronize format, architecture, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: formulas directly express marc's existing format bounds
+  and C++ alignment. No external sizing formula, storage layout, naming scheme,
+  or test expression was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  both streaming transforms, and profile suite passed 43/43 under both MSVC
+  and ClangCL. The complete Release CTest suite passed 2,253/2,253 under both
+  compilers using official CMake 4.3.4; all 39 benchmark smokes, schema 1
+  through 28 compatibility, and documentation layout remained successful.
+
+## 2026-08-05 - LZW plus tANS bounded streaming decoding
+
+- Authoring method: composed DD-590 from marc's local private complete-frame
+  decoder and established frame-stream collection contract.
+- References used: DD-590, DD-589, the local LZW/tANS private decoder,
+  explicit stream and frame parsers, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external streaming
+  LZW/tANS decoders, buffering schedules, allocation layouts, malformed
+  corpora, source code, and test suites.
+- Independent decisions: parse the fixed prefix and frame header separately;
+  admit serialized frame, views, packed staging, raw staging, and phrase
+  records before body collection; decode only a complete frame; drain it
+  before collecting another header; and retain `EndInput` while draining.
+- Generated-code task description: add the bounded streaming decoder; prove
+  one-byte chunking, frame-granular publication under later corruption, every
+  workspace and aggregate bound, truncation and trailing rejection, empty and
+  flush behavior, retained premature end, and unsupported flags; synchronize
+  format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the decoder directly composes repository-local contracts
+  and independently specified frame validation. No external control flow,
+  storage organization, naming scheme, malformed vector, or test expression
+  was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  and both streaming-transform suite passed 36/36 under both MSVC and ClangCL.
+  The complete Release CTest suite passed 2,246/2,246 under both compilers
+  using official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
+  compatibility, and documentation layout remained successful.
+
+## 2026-08-05 - LZW plus tANS bounded streaming encoding
+
+- Authoring method: composed DD-589 directly above marc's local exact-frame
+  planner and encoder and the repository's established transform contract.
+- References used: DD-589, DD-588, the local LZW/tANS frame encoder, explicit
+  stream and LZW parameter serializers, checked arithmetic, and caller-owned
+  spans.
+- Known implementations intentionally not consulted: external streaming
+  LZW/tANS implementations, buffering schedules, allocation layouts, encoded
+  corpora, source code, and test suites.
+- Independent decisions: buffer exactly one raw frame; retain separate packed
+  and immutable serialized-frame regions; drain a frame before accepting later
+  input; count raw, actual packed, exact frame, and records per aggregate
+  limit; retain `EndInput`; and keep `Flush` non-terminal.
+- Generated-code task description: add a bounded known-size streaming encoder;
+  prove one-byte chunk identity, non-terminal flush, retained finish, workspace
+  and aggregate bounds, empty input, and protocol errors; synchronize format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the transform directly composes repository-local
+  contracts and independently specified frame encoding. No external control
+  flow, storage organization, naming scheme, encoded bytes, or test expression
+  was compared.
+- Local validation: the focused LZW/tANS validator, decoder, planner, encoder,
+  and streaming-encoder suite passed 31/31 under both MSVC and ClangCL. The
+  complete Release CTest suite passed 2,241/2,241 under both compilers using
+  official CMake 4.3.4; all 39 benchmark smokes, schema 1 through 28
+  compatibility, and documentation layout remained successful.
+
+## 2026-08-06 - LZD plus tANS transactional frame decoder
+
+- Authoring method: wrapped DD-600's private reconstruction with a distinct
+  caller-output span and marc's established validate-then-copy boundary.
+- References used: DD-601, DD-600, the local complete-frame validator and
+  private decoder, exact capacity preflight, and bounded span copying.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  decoders, publication protocols, mutation schedules, buffer layouts, source
+  code, malformed corpora, and test suites.
+- Independent decisions: require the full output before private mutation;
+  reconstruct only in private staging; copy exactly the declared extent once;
+  preserve trailing caller bytes; and leave all caller output unchanged after
+  every failure.
+- Generated-code task description: add caller-visible transactional decoding;
+  prove raw `A` and phrase publication, preservation beyond the declared
+  extent, one-byte-short preflight atomicity, and entropy/LZD failure
   atomicity; update format, architecture, readiness, composition, changelog,
   decision, reference, vector, and provenance records.
-- Similarity review: the implementation uses only marc's existing private
+- Similarity review: the implementation reuses only marc's local private
   decoder and standard bounded-span copying. No external publication control
-  flow, buffering scheme, malformed vector, or test expression was compared.
-- Local validation: the focused validator and transactional-decoder suite
-  passed 15/15 under both MSVC and ClangCL. The complete Release suite passed
-  1,703/1,703 under both compilers using official CMake 4.3.4. All twenty-nine
-  existing benchmark smokes and schema-18 compatibility remained successful.
+  flow, buffer layout, error taxonomy, malformed vector, or test expression
+  was compared.
+- Local validation: the sixteen focused validator/private/transactional tests
+  passed under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,279/2,279 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range exact-frame planner
+## 2026-08-06 - LZD plus tANS exact-frame planner
 
-- Authoring method: composed marc's deterministic LZMW planner/encoder,
-  Dynamic Range planner, and generic frame validator into a write-free
-  complete-frame sizing boundary.
-- References used: DD-436, the local LZMW and Dynamic Range encoder contracts,
-  DD-432 bounds, caller-owned staging, and checked arithmetic.
-- Known implementations intentionally not consulted: external combined
-  encoders, planning algorithms, allocation layouts, source code, encoded
+- Authoring method: composed marc's deterministic LZD planner/encoder, tabled
+  tANS block planner, generic frame validator, and checked arithmetic into a
+  write-free complete-frame sizing boundary.
+- References used: DD-602, DD-598's fixed bounds, the local LZD and tANS
+  encoder contracts, caller-owned staging, and explicit frame fields.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  encoders, combined planners, allocation layouts, source code, encoded
   corpora, and test suites.
-- Independent decisions: admit encoder records before reference mutation;
-  freeze complete canonical references before range planning; count exact
-  planner workspace; validate the synthesized header; and return size without
-  accepting a serialized output span.
-- Generated-code task description: add planner result fields and errors,
-  bounded exact-frame planning, raw-`A` and generated-phrase determinism tests,
-  guarded encoder/reference shortages, aggregate and frame-size rejection, and
+- Independent decisions: admit encoder records before token mutation; freeze
+  all canonical reference pairs before entropy planning; check exact tANS
+  extents and aggregate workspace; validate the synthesized header; and expose
+  no serialized output span.
+- Generated-code task description: add exact-frame planning; prove raw `A`,
+  repeatable phrase-bearing multi-block planning, guarded encoder/token
+  shortages, aggregate limit one byte short, empty input, and frame mismatch;
   update format, architecture, readiness, composition, changelog, decision,
   reference, vector, and provenance records.
-- Similarity review: the implementation composes only marc's existing
-  independently specified planners, serializers, generic header checks, and
-  bounded spans. No external control flow, capacity formula, encoded bytes, or
-  test expression was compared.
-- Local validation: the focused validator, planner, and decoder suite passed
-  19/19 under both MSVC and ClangCL. The complete Release suite passed
-  1,707/1,707 under both compilers using official CMake 4.3.4. All twenty-nine
-  existing benchmark smokes and schema-18 compatibility remained successful.
+- Similarity review: the planner directly composes repository-local plans,
+  serializers, and checked spans. No external planning control flow, workspace
+  formula, normalization data, encoded vector, or test expression was
+  compared.
+- Local validation: the twenty focused validator/decoder/planner tests passed
+  under both MSVC and ClangCL. The complete Release CTest suite passed
+  2,283/2,283 under both compilers using official CMake 4.3.4; all 40 benchmark
+  smokes, schemas 1 through 29 compatibility, and documentation-layout checks
+  remained successful.
 
-## 2026-07-28 - LZMW plus Dynamic Range deterministic frame encoding
+## 2026-08-06 - LZD plus tANS deterministic frame encoder
 
-- Authoring method: placed explicit frame serialization above DD-436's exact
-  plan and reused marc's existing generic-header, Dynamic Range descriptor,
-  and payload writers.
-- References used: DD-437, DD-436, the independent 80-byte raw-`A` vector,
-  local explicit serializers, local Dynamic Range planner and encoder, and
-  caller-owned output conventions.
-- Known implementations intentionally not consulted: external LZMW/range
+- Authoring method: placed explicit frame serialization above DD-602's exact
+  plan and reused marc's generic-header, tANS descriptor, and payload writers.
+- References used: DD-603, DD-602, the independent 588-byte raw-`A` vector,
+  local explicit serializers, and caller-owned output conventions.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
   encoders, frame writers, buffering layouts, source code, encoded corpora,
   and test suites.
-- Independent decisions: complete planning before output-capacity admission;
-  require the repeated range plan to match the frozen payload extent; serialize
-  header and descriptor explicitly; encode only the exact payload region; and
-  preserve every output byte on planner or capacity failure.
-- Generated-code task description: add the minimal complete-frame encoder and
-  output-capacity error; reproduce the independent 80-byte frame; encode a
-  phrase-bearing input twice and transactionally decode it; and preserve a
-  one-byte-short destination sentinel.
-- Similarity review: the implementation directly composes local marc plans and
-  serializers. No external frame-writing control flow, error taxonomy, naming
-  scheme, output mutation schedule, or test expression was compared.
+- Independent decisions: finish planning before output admission; repeat each
+  tANS plan over frozen tokens; require exact planned extents; write explicit
+  non-overlapping regions; and preserve all output on planner or capacity
+  failure.
+- Generated-code task description: add the deterministic complete-frame
+  encoder; reproduce the independent vector; prove phrase-bearing multi-block
+  determinism and transactional round trip; preserve short-output and planner-
+  failure sentinels; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only repository-local plans
+  and serializers. No external frame-writing control flow, mutation schedule,
+  error taxonomy, encoded vector, or test expression was compared.
+- Local validation: the twenty-three focused frame tests passed under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,286/2,286 under
+  both compilers using official CMake 4.3.4; all 40 benchmark smokes, schemas 1
+  through 29 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-06 - LZD plus tANS bounded streaming encoder
+
+- Authoring method: wrapped DD-602/DD-603's local planner and encoder in marc's
+  immutable-direction transform contract with caller-owned frame storage.
+- References used: DD-604, the local stream and LZD parameter serializers,
+  checked aggregate arithmetic, and complete-frame encoder contract.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  streaming encoders, state machines, buffering strategies, source code,
+  encoded corpora, and test suites.
+- Independent decisions: emit a fixed prefix; collect one complete raw frame;
+  encode before draining; retain finish across all pending output; leave flush
+  nonterminal; reject reset; and keep terminal errors sticky.
+- Generated-code task description: add the bounded streaming encoder and prove
+  byte-identical one-byte I/O, retained finish, canonical flush behavior,
+  empty input, short and aggregate workspaces, protocol errors, repeated end,
+  and sticky failure; update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing stream
+  contract and local complete-frame operations. No external state transition,
+  buffering layout, error taxonomy, encoded corpus, or test expression was
+  compared.
+- Local validation: the five focused streaming-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,291/2,291 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
+## 2026-08-06 - LZD plus tANS bounded streaming decoder
+
+- Authoring method: combined marc's local LZD private reconstruction with its
+  local tANS complete-frame controller under the immutable transform contract.
+- References used: DD-605, DD-600/DD-601's local validator and decoder, stream
+  and frame parsers, checked tANS payload ceilings, and LZD workspace formulas.
+- Known implementations intentionally not consulted: external LZD/tANS or FSE
+  streaming decoders, state machines, buffering strategies, source code,
+  malformed corpora, encoded corpora, and test suites.
+- Independent decisions: admit every declared region before body collection;
+  reconstruct into private raw staging; publish only a completely validated
+  frame; retain finish while draining; reject reset, truncation, and trailing
+  data; and keep terminal errors sticky.
+- Generated-code task description: add the bounded streaming decoder and prove
+  one-byte I/O, transactional later-frame corruption, each short workspace,
+  aggregate limit one byte short, truncation, trailing input, reset, unknown
+  flags, empty input, flush starvation, premature finish, repeated end, and
+  sticky failure; update architecture, format, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the implementation composes only marc's existing stream
+  contract and local complete-frame operations. No external state transition,
+  buffering layout, error taxonomy, malformed input, encoded corpus, or test
+  expression was compared.
+- Local validation: the five focused streaming-decoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,296/2,296 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
+## 2026-08-06 - LZD plus tANS coupled profile calculator
+
+- Authoring method: combined marc's local LZD workspace formulas and local tANS
+  payload ceilings into the existing bounded profile-calculation contract.
+- References used: DD-606, DD-604/DD-605 constructors, checked arithmetic,
+  decoder limits, local typed records, and opaque-storage alignment helpers.
+- Known implementations intentionally not consulted: external compression
+  profiles, allocator layouts, workspace formulas, source code, generated
+  corpora, and test suites.
+- Independent decisions: freeze the largest active frame; calculate coupled
+  simultaneous storage; keep empty views alignment one; conservatively derive
+  decoder extents from hard limits; and validate exact opaque layouts before
+  forming typed spans.
+- Generated-code task description: add the internal profile calculator and
+  partitioners; prove canonical and short-frame sizes, empty input, each hard
+  limit, overflow clearing, exact offsets and alignment, altered/short/
+  misaligned rejection, stable error mapping, and a calculated-workspace
+  streaming round trip; update architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: formulas and layout follow only marc's existing local
+  contracts. No external profile structure, allocator scheme, workspace
+  expression, naming convention, corpus, or test expression was compared.
+- Local validation: the seven focused profile tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,303/2,303 under both compilers
+  using official CMake 4.3.4, including all forty benchmark smokes and the
+  schema-1-through-29 interoperability compatibility chain.
+
+## 2026-08-06 - LZD plus tANS public C factory
+
+- Authoring method: exposed DD-606 through marc's established size-tagged,
+  fixed-width, three-workspace C transform lifecycle.
+- References used: DD-607, DD-606 profile and partitioners, DD-604/DD-605
+  transforms, checked byte spans, `std::nothrow`, and common status mapping.
+- Known implementations intentionally not consulted: external C compression
+  APIs, factory designs, workspace ownership schemes, source code, generated
+  corpora, and test suites.
+- Independent decisions: add symbols without changing the ABI version; keep
+  every typed record private; repeat the requirements query during creation;
+  reject short or misaligned storage before construction; and leave the output
+  handle null on every failure.
+- Generated-code task description: add the fixed-size config, requirements
+  query, factory, shared-library exports, and pure C11 test; prove defaults,
+  exact direction-specific workspaces, binary round trip, each short region,
+  misalignment, null output, reserved-field rejection, and failure atomicity;
+  update C API, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows only marc's local ABI and transform
+  conventions. No external structure layout, function naming, lifecycle,
+  allocator model, source code, corpus, or test expression was compared.
+- Local validation: the pure C11 shared-library test passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,304/2,304 under both compilers
+  using official CMake 4.3.4, including all forty benchmark smokes and the
+  schema-1-through-29 interoperability compatibility chain.
+
+## 2026-08-06 - LZD plus tANS public-ABI completion matrix
+
+- Authoring method: reused marc's public-only LZD admission schedules with the
+  independently documented tANS block ceiling and DD-607 symbol family.
+- References used: DD-608, DD-607, the local LZD completion harness, tANS
+  descriptor and payload bounds, deterministic generator, and C lifecycle.
+- Known implementations intentionally not consulted: external completion
+  suites, vectors, corpora, tANS/FSE implementations, source code, and tests.
+- Independent decisions: keep every data and chunk schedule identical to prior
+  LZD admission; fix 64-byte frames and blocks; compare exact archives; and
+  require corrupt, truncated, and extended fourth frames to commit only the
+  first three frames with sticky error positions.
+- Generated-code task description: add the public-ABI completion matrix and
+  prove required binary classes, boundary sizes, repeat determinism, arbitrary
+  chunking, repeated end, and transactional malformed-final-frame rejection;
+  update format, architecture, readiness, composition, C API, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the thin substitution layer and all schedules use only
+  marc's local public APIs and repository-authored evidence. No external
+  harness organization, data corpus, mutation, expected stream, or test
+  expression was compared.
+- Local validation: the three focused completion tests passed under both MSVC
+  and ClangCL. The complete Release suite passed 2,307/2,307 under both
+  compilers using official CMake 4.3.4, including all forty benchmark smokes
+  and the schema-1-through-29 interoperability compatibility chain.
+
+## 2026-08-06 - LZD plus tANS bounded dual-decoder fuzz boundary
+
+- Authoring method: combined marc's local LZD/rANS fixed-memory harness shape
+  with the repository's LZW/tANS entropy boundary under DD-609.
+- References used: DD-609, DD-607, local LZD/tANS frame and C decoders, checked
+  workspace ceilings, process invariants, and canonical `ABABX` generation.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  seed corpora, mutation dictionaries, malformed suites, source code, and test
+  expressions.
+- Independent decisions: exercise private and public boundaries for each
+  input; allocate no fuzz-controlled extent; derive chunks deterministically;
+  cap calls and output; treat malformed input as ordinary; and preserve three
+  atomic malformed families as permanent tests.
+- Generated-code task description: add the bounded dual-decoder harness,
+  sanitizer target, portable warning-clean compile-smoke, reviewed seed, and
+  truncation, saturated-length, and invalid-descriptor regressions; synchronize
+  fuzzing, format, architecture, readiness, composition, changelog, decision,
+  reference, vector, and provenance records.
+- Similarity review: the thin substitution adapters compose only marc's own
+  decoder types, public symbols, fixed limits, and local tests. No external
+  fuzz control flow, allocation policy, chunk schedule, mutation location,
+  naming, or assertion was compared.
+- Local validation: the three focused regressions and warning-clean fuzz
+  compile-smoke passed under both MSVC and ClangCL. Windows Clang 22
+  libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer completed 1,000 bounded
+  seed-derived inputs without a crash, hang, or sanitizer finding at 39 MiB
+  peak RSS. The complete Release CTest suite passed 2,310/2,310 under both
+  compilers using official CMake 4.3.4; all forty benchmark smokes, schemas 1
+  through 29 compatibility, and documentation layout remained successful.
+
+## 2026-08-06 - LZD plus tANS transactional CLI selector
+
+- Authoring method: instantiated marc's common transactional CLI adapter with
+  DD-610's fixed public LZD/tANS policy and symbol family.
+- References used: DD-610, the published `marc_lzd_tans_*` lifecycle, checked
+  local capacity formulas, aligned-buffer helper, and repository CLI regression
+  script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, command syntax,
+  source code, malformed corpora, and test suites.
+- Independent decisions: use 64-KiB frames and blocks; admit the exact
+  262,144-byte LZD token and 393,224-byte tANS payload ceilings; retain four
+  blocks and 16-MiB aggregate policy; obtain all regions from the public query;
+  and preserve the shared publish-on-success file transaction.
+- Generated-code task description: add the selector, public-only configuration,
+  query and factory routing, usage text, binary/empty/malformed/trailing CLI
+  regression, and synchronized CLI, C API, format, architecture, readiness,
+  composition, changelog, decision, reference, vector, and provenance records.
+- Similarity review: the adapter adds only one local enum path and public symbol
+  family to marc's existing CLI lifecycle. No external control flow, allocation
+  scheme, capacity expression, naming, or assertion was compared.
+- Local validation: the focused transactional CLI regression passed under both
+  MSVC and ClangCL. The complete Release CTest suite passed 2,311/2,311 under
+  both compilers using official CMake 4.3.4; all forty benchmark smokes,
+  schemas 1 through 29 compatibility, and documentation layout remained
+  successful.
+
+## 2026-08-06 - LZMW plus tANS private reconstruction and publication
+
+- Authoring method: extended DD-614's local complete-frame validator with the
+  repository's existing allocation-free LZMW decoder, caller-owned iterative
+  expansion storage, private raw staging, and a final guarded copy under
+  DD-615.
+- References used: DD-615, DD-614, local LZMW validation and decoding
+  contracts, checked aggregate arithmetic, and the independent 587-byte
+  raw-`A` frame.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE decoders, raw reconstruction layouts, transactional publication code,
+  malformed corpora, source code, and test suites.
+- Independent decisions: admit conservative expansion and raw capacity before
+  entropy mutation; shrink the active expansion span only after the actual
+  graph validates; reconstruct into disposable staging; and publish the exact
+  declared extent once only after complete success.
+- Generated-code task description: add only private raw reconstruction and
+  transactional complete-frame publication; prove literal and phrase paths,
+  block/reference crossings, short workspaces before mutation, malformed
+  entropy preserving raw staging, successful guarded publication, and short
+  output preserving every caller region; update all affected records.
+- Similarity review: the implementation composes repository-local span APIs,
+  the existing LZMW decoder, and a final range copy. No external control flow,
+  error taxonomy, workspace layout, test expression, or encoded corpus was
+  compared.
+- Local validation: the thirteen focused validator/decoder tests passed under
+  both MSVC and ClangCL. The complete Release suite passed 2,326/2,326 under
+  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-06 - LZMW plus tANS bounded complete-frame validator
+
+- Authoring method: composed marc's generic frame parser, local tANS controller
+  and strict block decoder, and existing allocation-free LZMW graph validator
+  under DD-614's explicit admission order.
+- References used: DD-614, DD-613, the local LZMW and tANS format contracts,
+  caller-owned workspaces, and checked arithmetic.
+- Known implementations intentionally not consulted: external LZMW/tANS or FSE
+  decoders, validation orders, workspace layouts, source code, malformed
+  corpora, and test suites.
+- Independent decisions: preflight all serialized and workspace extents;
+  validate every entropy block before reference mutation; reconstruct the
+  complete private reference span before LZMW semantics; preserve stable block
+  and token positions; and make all workspace discard-only after failure.
+- Generated-code task description: add only a bounded complete-frame validator;
+  prove the independent vector, reference-splitting blocks, later-block
+  atomicity, post-entropy reference rejection, short and aggregate workspace
+  limits, truncation, trailing bytes, and wrong-pipeline rejection; update
+  format, architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: the code directly composes repository-local parsers,
+  validators, and explicit spans. No external control flow, error taxonomy,
+  buffer layout, malformed vector, or test expression was compared.
+- Local validation: the seven focused validator tests passed under both MSVC
+  and ClangCL. The complete Release suite passed 2,320/2,320 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-06 - LZMW plus tANS reserved representation
+
+- Authoring method: composed marc's documented LZMW variant-1 reference
+  grammar and standalone encoder with its independently implemented tabled
+  tANS planner, encoder, descriptor serializer, and generic frame serializer.
+- References used: DD-613, local LZMW and tANS specifications and code, checked
+  frame bounds, and explicit little-endian serialization helpers.
+- Known implementations intentionally not consulted: external LZMW/tANS or FSE
+  implementations, source code, combined formats, encoded corpora, vectors,
+  and test suites.
+- Independent decisions: finalize all four-byte phrase references before
+  entropy coding; permit blocks to split references but not bytes or frames;
+  bound references by `4F`; validate all entropy blocks before LZMW semantics;
+  and freeze raw-`A` payload `FB 02 07` and complete extent 587.
+- Generated-code task description: reserve `lzmw-tans`, derive its bounds and
+  exact raw-`A` vector solely from standalone components, add a byte-exact
+  vector test, and update format, architecture, readiness, composition,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the representation directly composes two local canonical
+  boundaries and explicit serializers. No external format structure,
+  normalization table, payload bytes, control flow, or test expression was
+  compared.
+- Local validation: the byte-exact vector passed under both MSVC and ClangCL.
+  The complete Release suite passed 2,313/2,313 under both compilers using
+  official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through 30
+  compatibility, and documentation-layout checks remained successful.
+
+## 2026-08-06 - Interoperability schema 30 appends LZD plus tANS
+
+- Authoring method: extended marc's versioned schema-29 manifest and
+  compatibility chain by one already-published CLI profile.
+- References used: DD-612, the frozen schema-29 profile order, local bundle
+  scripts, deterministic 8,193-byte fixture, and `lzd-tans`.
+- Known implementations intentionally not consulted: external archive suites,
+  manifests, interoperability harnesses, encoded corpora, source code, and
+  test suites.
+- Independent decisions: name `marc-cli-v30`; append `lzd-tans` only as entry
+  41; require local round trip before recording; preserve exact order, hashes,
+  foreign decode, and byte-identical re-encoding; derive schema 29 by removing
+  only the new archive; and reject reordered manifests.
+- Generated-code task description: add LZD plus tANS to the current bundle,
+  teach the verifier schema 30, extend the complete compatibility chain, and
+  synchronize interoperability, architecture, readiness, composition, format,
+  changelog, decision, reference, vector, and provenance records.
+- Similarity review: the change appends one local public profile to marc's own
+  frozen schema machinery. No external ordering, manifest design, fixture,
+  hash convention, compatibility strategy, or test expression was compared.
+- Local validation: schema-30 generation, exact-order verification,
+  byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+  through 29 compatibility passed under both MSVC and ClangCL Release builds.
+  The complete Release suite passed 2,312/2,312 under both compilers using
+  official CMake 4.3.4; all forty-one benchmark smokes and documentation-layout
+  checks remained successful. External four-direction verification at revision
+  `827ddf085efb40c7d8f9bc27628977053179d84c` completed all schema-30 paths:
+  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically on
+  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
+  re-encoded identically on Windows/MSVC. Every pass verified all 41 archives.
+
+## 2026-08-06 - LZD plus tANS verification-first benchmark
+
+- Authoring method: extended marc's dependency-free public-ABI benchmark with
+  DD-611 and the already admitted DD-610 CLI policy.
+- References used: DD-611, DD-610, the public `marc_lzd_tans_*` lifecycle,
+  checked capacity helpers, common measurement runner, and workspace reporter.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance results,
+  source code, and test suites.
+- Independent decisions: reserve `80 + 12*ceil(N/2) + 2176K`; verify a complete
+  byte-exact round trip before timing; measure directions independently; report
+  all queried regions and their peak; and impose no performance threshold.
+- Generated-code task description: add configuration, query, factory, capacity,
+  name and selector routing; register a one-iteration smoke; and synchronize
+  benchmarks, C API, format, architecture, readiness, composition, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter composes only marc's local benchmark lifecycle
+  and published public functions. No external control flow, capacity expression,
+  output schema, measurement schedule, naming, or assertion was compared.
+- Local validation: the focused benchmark smoke and direct one-iteration README
+  run passed under both MSVC and ClangCL. The MSVC observation encoded 4,581
+  bytes to 4,433 bytes at ratio 0.968 and reported 17,762,428 bytes of peak
+  caller reservation. The complete Release suite then passed 2,312/2,312 under
+  both compilers using official CMake 4.3.4, including all forty-one labeled
+  benchmark smokes, schema-1-through-29 compatibility, and documentation layout.
+
+## 2026-08-07 - LZMW plus tANS profile and workspace layout
+
+- Authoring method: combined marc's independently specified LZMW reference
+  ceiling and tANS block ceiling under DD-620, using checked local layout
+  primitives and caller-owned storage.
+- References used: DD-620, DD-618, DD-619, local LZMW and tANS format bounds,
+  existing checked arithmetic, and repository-owned profile conventions.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE profile calculators, allocator layouts, ABI definitions, source code,
+  encoded corpora, and test suites.
+- Independent decisions: retain distinct direction-specific requirements;
+  count all concurrently live encoder regions; derive decoder capacity only
+  from local limits; align three typed decoder regions independently; and
+  validate the opaque layout again when partitioning it.
+- Generated-code task description: add the internal profile calculator,
+  checked encoder and decoder view partitioning, stable error mapping, boundary
+  tests, and a requirement-constructed streaming round trip; synchronize the
+  affected design, format, architecture, composition, readiness, changelog,
+  reference, vector, and provenance records.
+- Similarity review: the formulas directly compose repository-local bounds and
+  record types. No external allocation order, naming, arithmetic structure,
+  capacity value, or assertion was compared.
+- Local validation: the four focused profile tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,346/2,346 under both compilers
+  using official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through
+  30 compatibility, and documentation-layout checks remained successful.
+
+## 2026-08-07 - LZMW plus tANS bounded streaming decoder
+
+- Authoring method: wrapped DD-615's local transactional frame decoder in
+  marc's incremental prefix/frame collection and immutable raw-drain state
+  model under DD-619.
+- References used: DD-619, DD-615, DD-618, local stream and frame parsers,
+  core process/status invariants, checked arithmetic, and caller-owned storage.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE streaming decoders, state machines, buffering policies, malformed
+  corpora, source code, and test suites.
+- Independent decisions: admit all header-derived regions before body
+  collection; decode only complete frames; publish only successful private raw
+  staging; commit sequence per frame; and retain sticky terminal failure.
+- Generated-code task description: add only the bounded streaming decoder;
+  prove one-byte chunking, later-frame corruption atomicity, workspace and
+  aggregate limits, truncation, trailing bytes, empty stream, flush starvation,
+  and unsupported reset; update all affected records.
+- Similarity review: the class composes repository-local parsers and the
+  existing transactional frame decoder. No external control flow, naming,
+  state layout, payload bound, malformed vector, or assertion was compared.
+- Local validation: the four focused streaming-decoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,342/2,342 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-07 - LZMW plus tANS bounded streaming encoder
+
+- Authoring method: wrapped DD-616 and DD-617's local planner and deterministic
+  frame encoder in marc's caller-owned transform state model under DD-618.
+- References used: DD-618, DD-617, DD-616, local stream serializers, core
+  process/status invariants, checked arithmetic, and bounded caller-owned
+  storage.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE stream encoders, state machines, buffering policies, source code,
+  encoded corpora, and test suites.
+- Independent decisions: serialize the prefix at construction; buffer one raw
+  outer frame; prepare an immutable complete frame before commit; account all
+  live regions together; retain final intent while draining; and keep flush
+  nonterminal.
+- Generated-code task description: add only the bounded streaming encoder;
+  prove exact one-byte chunking, flush invariance, sticky finish, workspace and
+  aggregate failures, empty stream, and protocol rejection; update all affected
+  records.
+- Similarity review: the class follows marc's existing Transform contract and
+  calls only repository-local LZMW/tANS components. No external control flow,
+  naming, state layout, capacity formula, or assertion was compared.
+- Local validation: the five focused streaming-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,338/2,338 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-07 - LZMW plus tANS deterministic frame encoder
+
+- Authoring method: layered explicit generic-header serialization and the
+  local tabled-tANS serializer/encoder over DD-616's frozen LZMW reference span
+  and exact plan under DD-617.
+- References used: DD-617, DD-616, repository-local LZMW/tANS components,
+  checked span arithmetic, and the independent 587-byte raw-`A` frame.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE encoders, combined formats, transactional serialization code, encoded
+  corpora, source code, and test suites.
+- Independent decisions: plan completely before destination admission; require
+  whole-frame capacity before the first write; repeat and compare every tANS
+  block plan; serialize explicit fields; and treat any divergence as an
+  internal error.
+- Generated-code task description: add only deterministic complete-frame
+  serialization; prove exact raw-`A` bytes, repeated phrase/block determinism
+  and combined round trip, short-output atomicity, and planner-failure
+  atomicity; update all affected records.
+- Similarity review: the implementation sequences repository-local planner,
+  serializer, and encoder APIs. No external control flow, naming, table layout,
+  error taxonomy, test expression, or byte corpus was compared.
+- Local validation: the three focused frame-encoder tests passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,333/2,333 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-07 - LZMW plus tANS exact-frame planner
+
+- Authoring method: composed the repository's deterministic LZMW planner and
+  canonical reference encoder with the local tabled-tANS block planner and
+  generic frame validator under DD-616.
+- References used: DD-616, DD-613 through DD-615, local LZMW/tANS contracts,
+  checked arithmetic, caller-owned workspaces, and the independent raw-`A`
+  frame.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE encoders, combined planning code, workspace layouts, encoded corpora,
+  source code, and test suites.
+- Independent decisions: admit encoder records before reference mutation;
+  freeze the complete canonical reference span before entropy planning; sum
+  exact per-block payloads; validate a synthesized generic header; and emit no
+  serialized byte at this boundary.
+- Generated-code task description: add only the write-free exact-frame planner;
+  prove raw-`A` extents, repeated phrase/block determinism, short encoder and
+  staging capacity before mutation, aggregate limit, empty input, and frame-
+  extent mismatch; update all affected records.
+- Similarity review: the implementation directly sequences repository-local
+  planner and encoder APIs with checked span arithmetic. No external control
+  flow, naming, capacity formula, table layout, or assertion was compared.
+- Local validation: the four focused planner tests passed under both MSVC and
+  ClangCL. The complete Release suite passed 2,330/2,330 under both compilers
+  using official CMake 4.3.4; all forty-one benchmark smokes, schemas 1 through
+  30 compatibility, and documentation-layout checks remained successful.
+
+## 2026-08-08 - LZMW plus tANS public C lifecycle
+
+- Authoring method: bound DD-620's local requirements and DD-618/DD-619's
+  streaming transforms to marc's existing size-tagged C lifecycle under
+  DD-621.
+- References used: DD-621, DD-620, local C ABI conventions, opaque transform
+  adapter, checked workspace partitioning, and the bounded streaming pair.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE C wrappers, public configuration layouts, allocation protocols, source
+  code, encoded corpora, and test suites.
+- Independent decisions: add one profile-specific fixed-width config; retain
+  immutable direction; make the requirements query authoritative; expose only
+  three untyped regions plus alignment; and keep every C++ record private.
+- Generated-code task description: add config initialization, requirements
+  query, factory routing, pure C11 round trip and invalid-workspace tests, and
+  synchronize C API, architecture, composition, format, readiness, changelog,
+  decision, reference, vector, and provenance records.
+- Similarity review: the adapter follows marc's repository-local lifecycle and
+  delegates all formulas to DD-620. No external symbol family, structure
+  ordering, control flow, allocation layout, or test assertion was compared.
+- Local validation: the focused pure C11 lifecycle test passed under both MSVC
+  and ClangCL. Every target rebuilt successfully with Visual Studio 2026
+  18.8.2, and the complete Release suite passed 2,347/2,347 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes, schemas
+  1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-08 - LZMW plus tANS public-ABI completion matrix
+
+- Authoring method: instantiated marc's repository-owned public completion
+  harness through DD-621 under DD-622 after proving its fixed reference bound
+  equals the reviewed LZD schedule.
+- References used: DD-622, DD-621, local LZMW `4F` ceiling, local tANS block
+  ceiling, and the repository-authored LZD public completion harness.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE conformance suites, encoded corpora, malformed corpora, source code, and
+  test matrices.
+- Independent decisions: keep the complete existing binary, boundary,
+  chunking, terminal, and malformed schedules; change only public symbol names;
+  and document why the fixed 256-byte workspace schedule remains exact.
+- Generated-code task description: add the minimal symbol-family wrapper,
+  prove required data and deterministic chunking, require frame-atomic sticky
+  rejection of corrupt, truncated, and trailing final input, and synchronize
+  all affected evidence records.
+- Similarity review: the wrapper contains only local capacity macros and C
+  symbol substitutions over a repository-owned harness. No external test
+  structure, data schedule, mutation site, naming, or assertion was compared.
+- Local validation: all three focused public-completion groups passed under
+  both MSVC and ClangCL. The complete Release suite passed 2,350/2,350 under
+  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-08 - LZMW plus tANS bounded decoder fuzz boundary
+
+- Authoring method: adapted marc's local fixed-memory LZMW/rANS dual-decoder
+  harness to the already specified tANS boundary under DD-623, with no external
+  corpus or implementation reference.
+- References used: DD-623, DD-615, DD-619, DD-621, local LZMW/tANS frame and
+  streaming decoders, checked public requirements, and repository-owned fuzz
+  harness conventions.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE fuzz targets, corpora, mutation dictionaries, malformed samples, source
+  code, and test suites.
+- Independent decisions: fix every workspace before parsing; bound input,
+  output, and calls; exercise private complete-frame and public incremental
+  paths; abort only on harness/API invariant violation; and retain every found
+  boundary as an ordinary deterministic regression.
+- Generated-code task description: add the bounded dual-decoder entry,
+  strict-warning compile-smoke, canonical truncation, saturated-length, and
+  invalid-descriptor regressions, and synchronize all affected evidence.
+- Similarity review: only repository-local symbol substitutions and fixed
+  bounds connect the existing local harness to tANS. No external control flow,
+  capacity, mutation schedule, corpus, naming, or assertion was compared.
+- Local validation: the fixed-memory fuzz entry compiled under strict warnings
+  with both MSVC and ClangCL; no open-ended fuzz campaign was run. The three
+  focused deterministic regressions passed under both compilers. The complete
+  Release suite passed 2,353/2,353 under both compilers using official CMake
+  4.3.4; all forty-one benchmark smokes, schemas 1 through 30 compatibility,
+  and documentation-layout checks remained successful.
+
+## 2026-08-08 - LZMW plus tANS transactional CLI selector
+
+- Authoring method: added one enum and dispatch path to marc's existing
+  publish-on-success file adapter using only DD-621's public lifecycle under
+  DD-624.
+- References used: DD-624, DD-621, local fixed profile arithmetic, public
+  configuration/query/factory/process/destroy calls, and the repository CLI
+  regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, command syntax,
+  source code, malformed corpora, and test suites.
+- Independent decisions: fix 64-KiB frames and blocks; admit the exact
+  262,144-byte reference and 393,224-byte tANS payload ceilings; retain the
+  16-MiB aggregate policy; obtain all real regions from the public query; and
+  preserve the shared temporary-file transaction.
+- Generated-code task description: add selector parsing, usage, public-only
+  configuration/query/factory routing, binary/empty/malformed/trailing CLI
+  regression, and synchronize affected design and evidence records.
+- Similarity review: the adapter adds only one local enum path and public
+  symbol family to marc's existing CLI lifecycle. No external control flow,
+  allocation scheme, capacity expression, naming, or assertion was compared.
+- Local validation: the focused transactional CLI regression passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,354/2,354 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
+## 2026-08-08 - LZMW plus tANS verification-first benchmark
+
+- Authoring method: extended marc's dependency-free public-ABI benchmark
+  dispatcher with DD-625 after deriving its complete-stream ceiling from the
+  already fixed DD-624 profile.
+- References used: DD-625, DD-624, DD-621, the public
+  `marc_lzmw_tans_*` lifecycle, local checked arithmetic, and marc's existing
+  verification-first measurement runner.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance data,
+  source code, and test suites.
+- Independent decisions: reserve `80 + 6N + 2176K`; verify a byte-exact round
+  trip before measurement; time directions separately; and report every
+  queried region plus the larger caller-owned reservation.
+- Generated-code task description: add the benchmark selector, public-only
+  configuration/query/factory dispatch, checked capacity, CTest smoke, and
+  synchronize format, architecture, API, readiness, composition, benchmark,
+  vector, reference, changelog, and provenance records.
+- Similarity review: the adapter mechanically joins one existing local public
+  lifecycle to marc's own benchmark contract. No external control flow,
+  capacity expression, reporting schema, naming, or assertion was compared.
+- Local validation: the focused selector, all forty-two benchmark smokes, and
+  documentation layout passed under both MSVC and ClangCL. The complete
+  Release suite passed 2,355/2,355 under both compilers using official CMake
+  4.3.4; schemas 1 through 30 compatibility remained successful.
+
+## 2026-08-08 - Interoperability schema 31 local admission
+
+- Authoring method: extended marc's versioned repository-owned bundle protocol
+  by appending the completed LZMW/tANS CLI profile to the frozen schema-30 set.
+- References used: DD-626, the local schemas 1 through 30, the public
+  `lzmw-tans` selector, PowerShell file/hash APIs, and the deterministic
+  repository fixture.
+- Known implementations intentionally not consulted: external interoperability
+  schemas, bundle tools, archive corpora, verifier scripts, source code, and
+  test suites.
+- Independent decisions: name the new set `marc-cli-v31`; retain all 41 prior
+  entries byte-for-byte and append `lzmw-tans` once; require exactly 42 ordered
+  archives; derive schema 30 by removing only that final profile; and retain
+  external exchange as separate evidence.
+- Generated-code task description: update generation, strict verification, and
+  compatibility scripts for schema 31; add reordered-manifest rejection and
+  schemas 1-through-30 restoration; synchronize interoperability, format,
+  architecture, readiness, composition, changelog, decision, reference,
+  vector, and provenance records.
+- Similarity review: this is a one-entry extension of marc's own frozen
+  manifest protocol. No external schema shape, archive order, conversion
+  procedure, control flow, naming, or assertion was compared.
+- Local validation: schema-31 generation, exact verification, reordered-
+  manifest rejection, and schemas 1 through 30 restoration passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,355/2,355 under both
+  compilers using official CMake 4.3.4; all forty-two benchmark smokes and
+  documentation-layout checks remained successful. External four-direction
+  verification at revision `903181080556c3bb511ad4a2e5275837ebda48e7`
+  completed all schema-31 paths: Windows/MSVC and Ubuntu 24.04 artifacts
+  decoded and re-encoded identically on Ubuntu 26.04/Clang; the Ubuntu 26.04
+  bundle self-verified and decoded and re-encoded identically on Windows/MSVC.
+  Every pass verified all 42 archives.
