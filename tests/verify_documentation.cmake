@@ -263,6 +263,41 @@ foreach(required_format_section IN ITEMS
     set(previous_format_section_offset "${format_section_offset}")
 endforeach()
 
+set(format_entropy_names
+    "Blocked Huffman variant 1"
+    "Adaptive Huffman FGK variant 1"
+    "Dynamic Range Coder variant 1"
+    "rANS variant 1"
+    "tANS variant 1")
+set(format_dictionary_names LZ77 LZSS LZ78 LZW LZD LZMW)
+set(expected_format_profiles ${format_entropy_names})
+foreach(dictionary_name IN LISTS format_dictionary_names)
+    foreach(entropy_name IN LISTS format_entropy_names)
+        list(APPEND expected_format_profiles
+            "${dictionary_name} variant 1 plus ${entropy_name}")
+    endforeach()
+endforeach()
+list(LENGTH expected_format_profiles expected_format_profile_count)
+if(NOT expected_format_profile_count EQUAL 35)
+    message(FATAL_ERROR "Internal format-profile expectation is incomplete")
+endif()
+set(previous_format_profile_offset -1)
+foreach(format_profile IN LISTS expected_format_profiles)
+    set(format_profile_heading "### ${format_profile}")
+    string(FIND "${format_content}" "${format_profile_heading}"
+        format_profile_offset)
+    if(format_profile_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing stream-format profile: ${format_profile_heading}")
+    endif()
+    if(format_profile_offset LESS_EQUAL previous_format_profile_offset)
+        message(FATAL_ERROR
+            "Stream-format profiles are out of matrix order at: "
+            "${format_profile_heading}")
+    endif()
+    set(previous_format_profile_offset "${format_profile_offset}")
+endforeach()
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
