@@ -31,11 +31,12 @@ compatibility while the project remains below version 1.0.
 
 ## Release scope
 
-The initial `0.1.0` release is source-oriented. GitHub's tag archives and the
-repository are the source distribution; the project does not yet promise
+Pre-1.0 releases are source-oriented. The repository and GitHub's tag archives
+are the source distribution; the project does not yet promise
 maintainer-built or signed binary packages. Building marc itself does not need
 GoogleTest. Building the test suite from a Git clone requires the pinned
-submodule.
+submodule. A change to this distribution policy must be stated explicitly in
+the changelog and release notes.
 
 ## Pre-tag checklist
 
@@ -43,8 +44,9 @@ submodule.
    but uncommitted work.
 2. Reconcile the public profile inventory, limitations, and remaining evidence
    in `baseline-readiness.md` with the intended release claim.
-3. Replace `Unreleased` beside the target version in `CHANGELOG.md` with the
-   release date. Confirm that it matches the CMake project version.
+3. Rename the top `## Unreleased` heading in `CHANGELOG.md` to
+   `## X.Y.Z - YYYY-MM-DD`. Confirm that `X.Y.Z` exactly matches the CMake
+   project version and that all entries belong in this release.
 4. Review `LICENSE`, `THIRD_PARTY_NOTICES.md`, the independent-implementation
    records, all public API/format documentation, and the similarity review.
 5. From a fresh clone, initialize submodules and run the complete Release suite
@@ -73,11 +75,20 @@ submodule.
 ## Tag and publication
 
 After every gate is satisfied, create an annotated tag whose version exactly
-matches CMake and the changelog:
+matches CMake and the changelog. Substitute the actual release version for
+`X.Y.Z`:
 
 ```console
-git tag -a v0.1.2 -m "marc 0.1.2"
-git push origin v0.1.2
+git tag -a vX.Y.Z -m "marc X.Y.Z"
+git push origin vX.Y.Z
+```
+
+Confirm that the tag resolves to the release commit before publication:
+
+```console
+git rev-parse HEAD
+git rev-list -n 1 vX.Y.Z
+git show --no-patch vX.Y.Z
 ```
 
 Create the GitHub Release from that tag. Use the matching changelog section as
@@ -87,7 +98,7 @@ as though it were an installable library package.
 
 ## Post-release
 
-Add a new `Unreleased` section to `CHANGELOG.md`, verify the published tag and
-source archives, and record any release-only problem as a tracked issue. A
-stream incompatibility is never repaired by silently replacing an existing tag
-or format definition.
+Add a new top-level `## Unreleased` section to `CHANGELOG.md`, verify the
+published tag and source archives, and record any release-only problem as a
+tracked issue. A stream incompatibility is never repaired by silently replacing
+an existing tag or format definition.

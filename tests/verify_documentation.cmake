@@ -565,6 +565,60 @@ foreach(heading IN LISTS interoperability_headings)
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 
+set(releasing_document "${source_dir}/docs/releasing.md")
+file(READ "${releasing_document}" releasing_content)
+set(previous_releasing_section_offset -1)
+foreach(required_releasing_section IN ITEMS
+        "## Version namespaces"
+        "## Release scope"
+        "## Pre-tag checklist"
+        "## Tag and publication"
+        "## Post-release")
+    string(FIND "${releasing_content}" "${required_releasing_section}"
+        releasing_section_offset)
+    if(releasing_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing release-process section: ${required_releasing_section}")
+    endif()
+    if(releasing_section_offset LESS_EQUAL previous_releasing_section_offset)
+        message(FATAL_ERROR
+            "Release-process sections are out of order at: "
+            "${required_releasing_section}")
+    endif()
+    set(previous_releasing_section_offset "${releasing_section_offset}")
+endforeach()
+foreach(required_release_instruction IN ITEMS
+        "## X.Y.Z - YYYY-MM-DD"
+        "git tag -a vX.Y.Z -m \"marc X.Y.Z\""
+        "git rev-list -n 1 vX.Y.Z"
+        "new top-level `## Unreleased` section")
+    string(FIND "${releasing_content}" "${required_release_instruction}"
+        release_instruction_offset)
+    if(release_instruction_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing generic release instruction: "
+            "${required_release_instruction}")
+    endif()
+endforeach()
+
+file(READ "${source_dir}/CMakeLists.txt" root_cmake_content)
+if(NOT root_cmake_content MATCHES
+   "project\\(marc VERSION ([0-9]+\\.[0-9]+\\.[0-9]+)")
+    message(FATAL_ERROR "Could not read the marc project version")
+endif()
+set(project_release_version "${CMAKE_MATCH_1}")
+file(READ "${source_dir}/CHANGELOG.md" changelog_content)
+if(NOT changelog_content MATCHES
+   "## ([0-9]+\\.[0-9]+\\.[0-9]+) - [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")
+    message(FATAL_ERROR "Could not read the latest changelog release")
+endif()
+set(changelog_release_version "${CMAKE_MATCH_1}")
+if(NOT project_release_version VERSION_EQUAL changelog_release_version)
+    message(FATAL_ERROR
+        "CMake project version ${project_release_version} does not match "
+        "latest changelog release ${changelog_release_version}")
+endif()
+
 set(benchmark_document "${source_dir}/docs/benchmarks.md")
 file(READ "${benchmark_document}" benchmark_content)
 set(previous_benchmark_section_offset -1)
