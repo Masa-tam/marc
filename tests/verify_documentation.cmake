@@ -168,6 +168,45 @@ endforeach()
 list(LENGTH implementation_reference_headings
     implementation_reference_count)
 
+set(test_vector_record
+    "${source_dir}/docs/implementation/test-vector-generation.md")
+file(READ "${test_vector_record}" test_vector_content)
+foreach(required_test_vector_section IN ITEMS
+        "## Generation policy"
+        "## Vector development ledger")
+    string(FIND "${test_vector_content}" "${required_test_vector_section}"
+        test_vector_section_offset)
+    if(test_vector_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing test-vector section: ${required_test_vector_section}")
+    endif()
+endforeach()
+file(STRINGS "${test_vector_record}" test_vector_headings
+    REGEX "^### TVG-[0-9]+$")
+if(NOT test_vector_headings)
+    message(FATAL_ERROR "No test-vector record headings were found")
+endif()
+set(expected_test_vector_record 1)
+foreach(heading IN LISTS test_vector_headings)
+    if(NOT heading MATCHES "^### TVG-([0-9]+)$")
+        message(FATAL_ERROR "Invalid test-vector record heading: ${heading}")
+    endif()
+    set(test_vector_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" test_vector_number
+        "${test_vector_number}")
+    if(test_vector_number STREQUAL "")
+        set(test_vector_number 0)
+    endif()
+    if(NOT test_vector_number EQUAL expected_test_vector_record)
+        message(FATAL_ERROR
+            "Test-vector records must be contiguous and ordered: expected "
+            "TVG-${expected_test_vector_record}, found ${heading}")
+    endif()
+    math(EXPR expected_test_vector_record
+        "${expected_test_vector_record} + 1")
+endforeach()
+list(LENGTH test_vector_headings test_vector_record_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -222,4 +261,5 @@ message(STATUS
     "Verified ${relative_link_count} relative links in ${document_count} "
     "documents, ${decision_count} ordered design decisions, and "
     "${clean_room_record_count} chronological clean-room records, and "
-    "${implementation_reference_count} ordered implementation references")
+    "${implementation_reference_count} ordered implementation references, and "
+    "${test_vector_record_count} ordered test-vector records")
