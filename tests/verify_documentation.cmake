@@ -235,6 +235,34 @@ foreach(required_architecture_section IN ITEMS
         "${architecture_section_offset}")
 endforeach()
 
+set(format_document "${source_dir}/docs/format.md")
+file(READ "${format_document}" format_content)
+file(STRINGS "${format_document}" format_top_sections REGEX "^## ")
+list(LENGTH format_top_sections format_top_section_count)
+if(NOT format_top_section_count EQUAL 3)
+    message(FATAL_ERROR
+        "Stream format must have exactly three top-level sections; found "
+        "${format_top_section_count}")
+endif()
+set(previous_format_section_offset -1)
+foreach(required_format_section IN ITEMS
+        "## Stream framing and shared records"
+        "## Dictionary representations and common vectors"
+        "## Entropy representations and composed profiles")
+    string(FIND "${format_content}" "${required_format_section}"
+        format_section_offset)
+    if(format_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing stream-format section: ${required_format_section}")
+    endif()
+    if(format_section_offset LESS_EQUAL previous_format_section_offset)
+        message(FATAL_ERROR
+            "Stream-format sections are out of order at: "
+            "${required_format_section}")
+    endif()
+    set(previous_format_section_offset "${format_section_offset}")
+endforeach()
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"

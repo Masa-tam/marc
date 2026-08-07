@@ -18,7 +18,9 @@ Accepted baseline constraints:
 ABI version 1 does not imply stream-format version 1. These namespaces evolve
 independently.
 
-## Version 1.0 stream header prefix
+## Stream framing and shared records
+
+### Version 1.0 stream header prefix
 
 Every stream begins with this fixed 64-byte prefix. All integers are unsigned
 little-endian values. The prefix is collected completely before semantic
@@ -54,7 +56,7 @@ Entropy block size is nonzero only for Blocked Huffman, rANS, and tANS. It is
 zero for None, Adaptive Huffman, and Dynamic Range Coder. The declared frame,
 block, and original sizes must not exceed local decoder limits.
 
-### Algorithm IDs
+#### Algorithm IDs
 
 | Dictionary ID | Algorithm | Variant 1 |
 |---:|---|---|
@@ -78,7 +80,7 @@ block, and original sizes must not exceed local decoder limits.
 Static Huffman has no public algorithm ID. IDs outside these tables and variant
 IDs other than those listed are rejected.
 
-### Hash algorithm IDs and digest bytes
+#### Hash algorithm IDs and digest bytes
 
 The hash interface reserves algorithm ID `1` for CRC-32C (Castagnoli). This ID
 does not enable a version 1.0 stream field: stream hash descriptor size and
@@ -97,7 +99,7 @@ standard ordered 32-byte string produced by concatenating `H(0)` through
 as a repository integer and therefore are not reversed. For ASCII `abc`, the
 digest begins `BA 78 16 BF` and ends `F2 00 15 AD`.
 
-### Hash descriptor record reserved for a later stream version
+#### Hash descriptor record reserved for a later stream version
 
 A hash descriptor has the following canonical 16-byte representation. This
 record definition permits allocation-free parsing and validation before stream
@@ -131,7 +133,7 @@ An out-of-order region is noncanonical. Region parsing must validate every
 record and the complete ordering before publishing any caller-owned descriptor
 output. These region rules remain inactive in version 1.0 streams.
 
-### Version 1.1 hash-prefix gate
+#### Version 1.1 hash-prefix gate
 
 Version 1.1 retains the 64-byte prefix layout and all version 1.0 field rules,
 except that minor version is `1` and the hash-descriptor byte count may be
@@ -166,7 +168,7 @@ SHA-256, UncompressedBytes, WholeStream:
 02 00 00 00 01 01 20 00 00 00 00 00 00 00 00 00
 ```
 
-### Version 1.1 per-frame checksum component
+#### Version 1.1 per-frame checksum component
 
 The descriptor set used by the current version 1.1 stream composition contains
 exactly one record: CRC-32C, target UncompressedBytes, scope PerFrame,
@@ -193,7 +195,7 @@ its trailer. The complete `checksum-raw` profile below wires it to the version
 1.1 prefix and frame-header gates. All other currently public codec profiles
 remain on version 1.0.
 
-### Version 1.1 frame-header gate
+#### Version 1.1 frame-header gate
 
 The version 1.1 frame header retains the version 1.0 56-byte layout and
 `MRF1` magic. Under the checksum component, `checksum trailer bytes` at
@@ -213,7 +215,7 @@ the frame header is the version 1.0 raw vector below except bytes 36 through 39
 are `04 00 00 00`. Its body is payload `61 62 63`, followed by CRC-32C trailer
 `B7 3F 4B 36`.
 
-### Complete version 1.1 raw-checksum reference profile
+#### Complete version 1.1 raw-checksum reference profile
 
 The first complete version 1.1 stream profile selects dictionary None and
 entropy None, has no algorithm parameter regions, and contains exactly the
@@ -252,7 +254,7 @@ For raw input `61 62 63` in one frame, serialized size is 143 bytes: the
 80-byte prefix and descriptor, the 56-byte checksum frame header, three payload
 bytes, and trailer `B7 3F 4B 36`.
 
-### Empty framing-only header vector
+#### Empty framing-only header vector
 
 This vector selects no dictionary or entropy transform, a 1 MiB frame size,
 and an original size of zero. Spaces separate bytes; line breaks have no format
@@ -265,7 +267,7 @@ meaning.
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ```
 
-## Version 1.0 frame header
+### Version 1.0 frame header
 
 After the stream-level parameter regions, the stream contains frames until the
 sum of frame uncompressed sizes equals the stream header's original size. An
@@ -301,7 +303,7 @@ require nonzero block count and descriptor size. Adaptive Huffman and Dynamic
 Range Coder variant 1 use exactly one descriptor and one entropy block per
 nonempty frame.
 
-### Raw three-byte frame vector
+#### Raw three-byte frame vector
 
 For a stream selecting no transforms, original size 3, frame size 1 MiB, and raw
 bytes `61 62 63`, the frame header and body are:
@@ -317,7 +319,9 @@ bytes `61 62 63`, the frame header and body are:
 The first 56 bytes are the frame header; the final three bytes are its raw
 compressed payload.
 
-## LZ77 variant 1
+## Dictionary representations and common vectors
+
+### LZ77 variant 1
 
 LZ77 variant 1 is a frame-local byte dictionary transform. Its stream dictionary
 parameter region is exactly 16 bytes:
@@ -380,7 +384,7 @@ size and the frame body contains these tokens directly. The worst-case reference
 expansion is 16 serialized bytes per raw byte and must fit local buffered and
 payload limits before allocation.
 
-### Hand-checkable LZ77 token vectors
+#### Hand-checkable LZ77 token vectors
 
 With default parameters, spaces divide fields only for readability:
 
@@ -407,7 +411,7 @@ Input `ABCABCX`:
 `AAAA` explicitly exercises overlapping distance-1 copying. `ABCABCX`
 exercises MatchThenLiteral rather than TerminalMatch.
 
-### Hand-checkable LZ77 plus None frame vector
+#### Hand-checkable LZ77 plus None frame vector
 
 For a stream selecting LZ77 variant 1 and entropy None, with original size and
 frame size both permitting the one-byte raw input `A`, the complete frame is 72
@@ -425,7 +429,7 @@ token; entropy block and descriptor fields are zero:
 The 16-byte LZ77 parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
 
-## LZSS variant 1
+### LZSS variant 1
 
 LZSS variant 1 is a frame-local byte dictionary transform with explicit
 Literal and Match tokens. Its stream dictionary parameter region is exactly
@@ -490,7 +494,7 @@ serialized size and the frame body contains these tokens directly. The
 worst-case reference expansion is 2 serialized bytes per raw byte and must fit
 local buffered and payload limits before allocation.
 
-### Hand-checkable LZSS token vectors
+#### Hand-checkable LZSS token vectors
 
 With default parameters:
 
@@ -516,7 +520,7 @@ Input `ABCABCABCX`:
 ends a frame without a separate terminal form. `ABCABCABCX` shows that a Match
 does not absorb the following Literal.
 
-### Hand-checkable LZSS plus None frame vector
+#### Hand-checkable LZSS plus None frame vector
 
 For a stream selecting LZSS variant 1 and entropy None, with one raw byte `A`,
 the complete frame is 58 bytes. Its header declares one raw byte and one 2-byte
@@ -533,7 +537,7 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 The 16-byte LZSS parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
 
-## LZ78 variant 1
+### LZ78 variant 1
 
 LZ78 variant 1 is a frame-local phrase dictionary transform. Its stream
 dictionary parameter region is exactly 16 bytes:
@@ -600,7 +604,7 @@ one raw byte, so the input-independent serialized upper bound is 8 bytes per raw
 frame byte. Token count, dictionary growth, phrase lengths, and this bound must
 be checked before allocation.
 
-### Hand-checkable LZ78 token vectors
+#### Hand-checkable LZ78 token vectors
 
 With default parameters:
 
@@ -626,7 +630,7 @@ Input `ABAB`:
 `AA` and `ABA` exercise the otherwise ambiguous final existing phrase.
 `ABAB` inserts phrase `AB` from Pair `(1, 'B')` and needs no FinalIndex.
 
-### Hand-checkable LZ78 plus None frame vector
+#### Hand-checkable LZ78 plus None frame vector
 
 For a stream selecting LZ78 variant 1 and entropy None, with one raw byte `A`,
 the complete frame is 64 bytes. Its header declares one raw byte and one 8-byte
@@ -643,7 +647,7 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 The 16-byte LZ78 parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame.
 
-## LZW variant 1
+### LZW variant 1
 
 LZW variant 1 is a frame-local byte-string dictionary transform. Its stream
 dictionary parameter region is exactly 16 bytes:
@@ -711,7 +715,7 @@ those bytes directly. A nonempty raw byte contributes at most one code, so the
 input-independent bound is
 `ceil(raw_frame_size * maximum_code_width / 8)` bytes, with checked arithmetic.
 
-### Hand-checkable LZW code vectors
+#### Hand-checkable LZW code vectors
 
 With default parameters, every code in these short vectors is nine bits:
 
@@ -737,7 +741,7 @@ code is a valid `KwKwK` expansion, producing two bytes, so the decoded result is
 decoder that changes width one code late because the `08` data bit then appears
 in padding.
 
-### Hand-checkable LZW plus None frame vector
+#### Hand-checkable LZW plus None frame vector
 
 For a stream selecting LZW variant 1 and entropy None, with one raw byte `A`,
 the complete frame is 58 bytes. Its header declares one raw byte and two
@@ -754,7 +758,7 @@ dictionary/payload bytes; entropy block and descriptor fields are zero:
 The 16-byte LZW parameter region belongs after the stream prefix and before the
 first frame; it is not repeated inside this frame.
 
-## LZD variant 1
+### LZD variant 1
 
 LZD means Lempel-Ziv Double. Variant 1 is a frame-local phrase grammar in which
 each ordinary phrase is the concatenation of two longest dictionary matches.
@@ -825,7 +829,7 @@ at least two raw bytes and an optional final absent-right token consumes at
 least one, so the input-independent serialized bound is
 `8 * ceil(raw_frame_size / 2)` bytes, with checked arithmetic.
 
-### Hand-checkable LZD token vectors
+#### Hand-checkable LZD token vectors
 
 With default parameters:
 
@@ -857,7 +861,7 @@ For comparison with the published factorization example but without its
 theoretical sentinel, `abbaababaaba` parses as `ab | ba | abab | aab | a` and
 serializes as `(a,b), (b,a), (256,256), (a,256), (a,absent)`.
 
-### Hand-checkable LZD plus None frame vector
+#### Hand-checkable LZD plus None frame vector
 
 For a stream selecting LZD variant 1 and entropy None, with one raw byte `A`,
 the complete frame is 64 bytes. Its header declares one raw byte and one 8-byte
@@ -874,7 +878,7 @@ dictionary/payload token; entropy block and descriptor fields are zero:
 The 16-byte LZD parameter region belongs after the stream prefix and before the
 first frame; it is not repeated inside this frame.
 
-### Hand-checkable LZD plus None stream vector
+#### Hand-checkable LZD plus None stream vector
 
 The complete known-size stream consists of the 64-byte stream prefix, one
 16-byte LZD parameter region, and then zero or more complete frames. Empty input
@@ -902,7 +906,7 @@ frames. Both payloads are the independently reset token `(A,B)`:
 00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
 ```
 
-## Foundational hand-checkable vectors
+### Foundational hand-checkable vectors
 
 These vectors define primitives used by every later format variant.
 
@@ -917,7 +921,7 @@ These vectors define primitives used by every later format variant.
 For the final vector, bits 3 through 7 are padding and must be zero. Strict
 alignment rejects, for example, byte `FD` after consuming its low three bits.
 
-## Limits versus format fields
+### Limits versus format fields
 
 Decoder limits are local policy and are not serialized. Stream and future frame
 headers declare the sizes required to validate one frame. Header
@@ -947,7 +951,7 @@ These values bound what the implementation accepts; they do not select codec
 parameters. For example, the later Blocked Huffman format may specify a maximum
 code length lower than the policy ceiling.
 
-## LZMW variant 1
+### LZMW variant 1
 
 LZMW variant 1 is a frame-local byte dictionary transform. Its stream
 dictionary parameter region is exactly 16 bytes:
@@ -998,7 +1002,7 @@ size is `4 * token_count`, at most four bytes per raw input byte. With entropy
 None, compressed payload size equals dictionary serialized size and the frame
 body contains these token references directly.
 
-### Hand-checkable LZMW token vectors
+#### Hand-checkable LZMW token vectors
 
 The empty input produces no token bytes. `A` emits reference 65:
 
@@ -1029,7 +1033,7 @@ created after the second phrase and the dictionary then freezes:
 41 00 00 00  42 00 00 00  00 01 00 00  00 01 00 00
 ```
 
-### Hand-checkable LZMW plus None frame vector
+#### Hand-checkable LZMW plus None frame vector
 
 For a stream selecting LZMW variant 1 and entropy None, with one raw byte `A`,
 the complete frame is 60 bytes. Its header declares one raw byte and one
@@ -1048,7 +1052,7 @@ The 16-byte LZMW parameter region belongs after the stream prefix and before
 the first frame; it is not repeated inside this frame. Every frame resets the
 LZMW phrase dictionary.
 
-### Hand-checkable LZMW plus None stream vector
+#### Hand-checkable LZMW plus None stream vector
 
 The complete known-size stream consists of the 64-byte stream prefix, one
 16-byte LZMW parameter region, and zero or more complete frames. Empty input is
@@ -1072,7 +1076,9 @@ and entropy None, the stream is 208 bytes. Offsets 80 and 144 begin independent
 00 00 00 00 00 00 00 00  41 00 00 00 42 00 00 00
 ```
 
-## Blocked Huffman variant 1
+## Entropy representations and composed profiles
+
+### Blocked Huffman variant 1
 
 Blocked Huffman consumes the dictionary-serialized byte stream in consecutive
 blocks of the stream header's entropy block size. No block crosses a frame.
@@ -1086,7 +1092,7 @@ The entropy-parameter region is empty for variant 1. Each block contributes one
 its descriptor immediately. Descriptors and models occur in block order; the
 payload region then contains each corresponding payload in the same order.
 
-### Block descriptor
+#### Block descriptor
 
 | Offset | Size | Field | Rule |
 |---:|---:|---|---|
@@ -1114,7 +1120,7 @@ representation is selected only when
 `256 + ceil(payload_bits / 8) < symbol_count`; ties select raw. This choice is
 mandatory, not an encoder heuristic.
 
-### Hand-checkable raw block
+#### Hand-checkable raw block
 
 Four bytes `41 41 41 41` select raw representation because the Huffman model
 overhead exceeds the input size. The descriptor and payload are:
@@ -1129,7 +1135,7 @@ The corresponding internal one-symbol Huffman model has length 1 for symbol
 byte `00`, and four valid bits. It remains a primitive test vector even though
 the mandatory stored-size rule selects raw for this block.
 
-## LZ77 variant 1 plus Blocked Huffman variant 1
+### LZ77 variant 1 plus Blocked Huffman variant 1
 
 This combined profile uses dictionary algorithm ID 1, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. The stream parameter regions are
@@ -1154,7 +1160,7 @@ exactly `dictionary serialized size` bytes. The LZ77 validator then consumes
 that complete staged region and must derive exactly `uncompressed size` raw
 bytes before raw publication begins.
 
-### Hand-checkable combined raw-block frame
+#### Hand-checkable combined raw-block frame
 
 For raw input `A`, LZ77 emits the documented 16-byte Literal token. With an
 entropy block size at least 16, Blocked Huffman selects raw representation. The
@@ -1174,7 +1180,7 @@ Blocked Huffman descriptor, and the final 16 bytes are the unchanged LZ77 token.
 The 16-byte LZ77 parameter region remains stream-level and is not repeated in
 this frame.
 
-## LZ77 variant 1 plus Adaptive Huffman FGK variant 1
+### LZ77 variant 1 plus Adaptive Huffman FGK variant 1
 
 The profile name is `lz77-adaptive-huffman`. This composition uses
 dictionary algorithm ID 1, dictionary variant 1, entropy algorithm ID 1, and
@@ -1252,7 +1258,7 @@ matrix cover deterministic
 round-trips, arbitrary chunking, stable termination, and transactional final
 frame rejection.
 
-### Hand-checkable single-Literal frame
+#### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical Literal token:
 
@@ -1283,7 +1289,7 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Adaptive descriptor, and the final four bytes are the FGK payload. This vector
 contains no separately stored LZ77 token bytes.
 
-## LZ77 variant 1 plus Dynamic Range Coder variant 1
+### LZ77 variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lz77-dynamic-range`. This composition uses
 dictionary algorithm ID 1, dictionary variant 1, entropy algorithm ID 3, and
@@ -1401,7 +1407,7 @@ matching benchmark uses the same factory and changes no representation.
 Interoperability schema 14 emits and accepts this exact profile as archive 25
 without changing the version-1.0 stream representation.
 
-### Hand-checkable single-Literal frame
+#### Hand-checkable single-Literal frame
 
 For raw input `A`, LZ77 emits one canonical 16-byte Literal token. Independently
 applying Dynamic Range variant 1 to those fixed bytes produces this 16-byte
@@ -1432,7 +1438,7 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the final 16 bytes are the payload. The stream-
 level LZ77 parameter region is not repeated in the frame.
 
-## LZSS variant 1 plus Dynamic Range Coder variant 1
+### LZSS variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lzss-dynamic-range`. This composition uses
 dictionary algorithm ID 2, dictionary variant 1, entropy algorithm ID 3, and
@@ -1572,7 +1578,7 @@ Interoperability schema 15 emits and accepts this exact profile as archive 26
 after the frozen twenty-five-entry schema-14 order. This changes no format
 version or profile representation.
 
-### Hand-checkable single-Literal frame
+#### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token `00 41`.
 Independently applying Dynamic Range variant 1 to those bytes produces:
@@ -1602,7 +1608,7 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the last seven bytes are the payload. The
 stream-level LZSS parameter region is not repeated in the frame.
 
-## LZ78 variant 1 plus Dynamic Range Coder variant 1
+### LZ78 variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lz78-dynamic-range`. This composition uses
 dictionary algorithm ID 3, dictionary variant 1, entropy algorithm ID 3, and
@@ -1745,7 +1751,7 @@ Interoperability schema 16 emits and accepts this exact profile as archive 27
 after the frozen twenty-six-entry schema-15 order. This changes no format
 version or profile representation.
 
-### Hand-checkable single-Pair frame
+#### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical eight-byte Pair token:
 
@@ -1780,7 +1786,7 @@ The first 56 bytes are the generic frame header, the next 16 bytes are the
 Dynamic Range descriptor, and the last eleven bytes are the payload. The
 stream-level LZ78 parameter region is not repeated in the frame.
 
-## LZSS variant 1 plus Adaptive Huffman FGK variant 1
+### LZSS variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lzss-adaptive-huffman`. This composition uses
 dictionary algorithm ID 2, dictionary variant 1, entropy algorithm ID 1, and
@@ -1887,7 +1893,7 @@ The public C entry points are
 `marc_lzss_adaptive_huffman_create()`; they select exactly this representation
 and introduce no runtime algorithm substitution.
 
-### Hand-checkable single-Literal frame
+#### Hand-checkable single-Literal frame
 
 For raw input `A`, LZSS emits the canonical two-byte Literal token:
 
@@ -1923,7 +1929,7 @@ This representation is published through the bounded C factory, CLI, and
 benchmark profile. Interoperability schema 9 appends it as the twentieth
 archive without changing any earlier schema or stream byte.
 
-## LZSS variant 1 plus Blocked Huffman variant 1
+### LZSS variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 2, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
@@ -1949,7 +1955,7 @@ validator must consume the complete staged token region and derive exactly
 `uncompressed size` bytes. This rule is significant because LZSS Literal
 tokens occupy two bytes while Match tokens occupy nine bytes.
 
-### Hand-checkable LZSS combined raw-block frame
+#### Hand-checkable LZSS combined raw-block frame
 
 For raw input `A`, LZSS emits the two-byte Literal token `00 41`. With entropy
 block size two, Blocked Huffman selects raw representation. The complete
@@ -2016,7 +2022,7 @@ The CLI name `lzss-blocked-huffman` selects this exact representation with
 one-MiB raw frames and 65,536-symbol entropy blocks. The name and fixed local
 policy do not add format fields.
 
-## LZ78 variant 1 plus Adaptive Huffman FGK variant 1
+### LZ78 variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lz78-adaptive-huffman`. This composition uses
 dictionary algorithm ID 3, dictionary variant 1, entropy algorithm ID 1, and
@@ -2091,7 +2097,7 @@ phrase records while decoding. Its required byte count and alignment must be
 queried again after changing direction, frame size, entry limit, original
 size, or any decoder limit.
 
-### Hand-checkable single-Pair frame
+#### Hand-checkable single-Pair frame
 
 For raw input `A`, LZ78 emits the canonical Pair token:
 
@@ -2130,7 +2136,7 @@ the required decode order. The frame decoder then expands the validated phrase
 graph iteratively into separate private raw staging and copies to caller output
 only after exact reconstruction succeeds.
 
-## LZ78 variant 1 plus Blocked Huffman variant 1
+### LZ78 variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 3, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
@@ -2164,7 +2170,7 @@ LZ78 maximum. For entropy block size `E`, the block-count bound is
 aligned phrase-table extent, and aggregate workspace sum must be checked before
 allocation or output.
 
-### Hand-checkable LZ78 combined raw-block frame
+#### Hand-checkable LZ78 combined raw-block frame
 
 For raw input `A`, LZ78 emits the eight-byte Pair token
 `00 41 00 00 00 00 00 00`. With entropy block size eight, Blocked Huffman
@@ -2220,7 +2226,7 @@ before exposing either typed span. The public C factory, CLI selector,
 benchmark adapter, and interoperability schema-4 tools emit and accept this
 representation.
 
-## LZW variant 1 plus Dynamic Range Coder variant 1
+### LZW variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lzw-dynamic-range`. This composition uses
 dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 3, and
@@ -2311,7 +2317,7 @@ collecting the next frame. The matching streaming decoder parses and bounds one
 complete encoded frame, transactionally reconstructs it into private raw
 staging, and drains that immutable raw extent before collecting another frame.
 
-### Hand-checkable single-code frame
+#### Hand-checkable single-code frame
 
 For raw input `A`, standalone LZW variant 1 emits code 65 at width nine and
 therefore produces the finalized packed bytes:
@@ -2371,7 +2377,7 @@ Interoperability schema 17 emits and accepts this exact profile as archive 28
 after the frozen twenty-seven-entry schema-16 order. This changes no format
 version or profile representation.
 
-## LZW variant 1 plus Adaptive Huffman FGK variant 1
+### LZW variant 1 plus Adaptive Huffman FGK variant 1
 
 The profile name is `lzw-adaptive-huffman`. This composition uses
 dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 1, and
@@ -2454,7 +2460,7 @@ the encode direction and decoder phrase entries in the decode direction.
 Requirements must be queried again after changing direction, known original
 size, frame size, maximum code width, or any local limit.
 
-### Hand-checkable single-code frame
+#### Hand-checkable single-code frame
 
 For raw input `A`, LZW emits code 65 at width nine, producing packed bytes:
 
@@ -2525,7 +2531,7 @@ any earlier schema or stream byte. The recorded schema-11 artifacts passed the
 complete bidirectional x86-64 verification contract; that evidence does not
 change the representation.
 
-## LZW variant 1 plus Blocked Huffman variant 1
+### LZW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 4, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
@@ -2562,7 +2568,7 @@ is `ceil(S / E)`. Every multiplication, ceiling division,
 descriptor extent, aligned typed-workspace extent, and aggregate sum must be
 checked before allocation or serialized output.
 
-### Hand-checkable LZW combined raw-block frame
+#### Hand-checkable LZW combined raw-block frame
 
 For raw input `A`, default LZW parameters emit one nine-bit code with packed
 bytes `41 00`. With entropy block size two, Blocked Huffman selects raw
@@ -2620,7 +2626,7 @@ layout before exposing either typed span. The CLI selector uses that public C
 factory and does not define another format variant. Interoperability schema 5
 emits and accepts this exact profile as its sixteenth archive.
 
-## LZD variant 1 plus Dynamic Range Coder variant 1
+### LZD variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lzd-dynamic-range`. This composition uses
 dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 3, and
@@ -2732,7 +2738,7 @@ Interoperability schema 18 emits and accepts this exact profile as archive 29
 after the frozen twenty-eight-entry schema-17 order. The schema adds no stream
 field or codec variant.
 
-### Hand-checkable terminal-token frame
+#### Hand-checkable terminal-token frame
 
 For raw input `A`, standalone LZD variant 1 emits:
 
@@ -2778,7 +2784,7 @@ terminal absence, phrase lengths, and declared raw extent. This boundary
 reconstructs and publishes no raw bytes; later decoding and streaming work
 must retain the same validation order.
 
-## LZD variant 1 plus Adaptive Huffman FGK variant 1
+### LZD variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lzd-adaptive-huffman`. This composition uses
 dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 1, and
@@ -2843,7 +2849,7 @@ this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and input/output
 chunking alone must not change serialized bytes.
 
-### Hand-checkable terminal-token frame
+#### Hand-checkable terminal-token frame
 
 For raw input `A`, LZD emits the terminal token:
 
@@ -2921,7 +2927,7 @@ third archive without changing the version-1.0 stream representation. The
 recorded schema-12 bundles passed the complete bidirectional x86-64 verification
 contract; that evidence does not change the representation.
 
-## LZD variant 1 plus Blocked Huffman variant 1
+### LZD variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 5, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
@@ -2960,7 +2966,7 @@ the block-count bound is `ceil(S/E)`. All ceiling divisions, products,
 descriptor extents, typed workspace extents, padding, and aggregate sums must
 use checked arithmetic before allocation or output.
 
-### Hand-checkable LZD combined raw-block frame
+#### Hand-checkable LZD combined raw-block frame
 
 For raw input `A`, LZD emits the eight-byte terminal token
 `41 00 00 00 FF FF FF FF`. With entropy block size eight, Blocked Huffman
@@ -3003,7 +3009,7 @@ private. The CLI and benchmark use that public factory without defining another
 format variant. Interoperability schema 6 emits and accepts this exact profile
 as its seventeenth archive.
 
-## LZMW variant 1 plus Dynamic Range Coder variant 1
+### LZMW variant 1 plus Dynamic Range Coder variant 1
 
 The reserved profile name is `lzmw-dynamic-range`. This composition uses
 dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 3, and
@@ -3072,7 +3078,7 @@ collecting the next frame. The matching streaming decoder parses and bounds one
 complete encoded frame, transactionally reconstructs it into private raw
 staging, and drains that immutable raw extent before collecting another frame.
 
-### Hand-checkable single-reference frame
+#### Hand-checkable single-reference frame
 
 For raw input `A`, standalone LZMW variant 1 emits:
 
@@ -3157,7 +3163,7 @@ format field or variant. Interoperability schema 19 emits and accepts this
 exact profile as archive 30 after the frozen twenty-nine-entry schema-18 order.
 The schema adds no stream field or codec variant.
 
-## LZMW variant 1 plus Adaptive Huffman FGK variant 1
+### LZMW variant 1 plus Adaptive Huffman FGK variant 1
 
 The reserved profile name is `lzmw-adaptive-huffman`. This composition uses
 dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 1, and
@@ -3207,7 +3213,7 @@ exactly this 80-byte prefix. Nonterminal `Flush` does not shorten a frame,
 `ResetBlock` is unsupported at this composition boundary, and ordinary input
 or output chunking cannot change serialized bytes.
 
-### Hand-checkable single-reference frame
+#### Hand-checkable single-reference frame
 
 For raw input `A`, LZMW emits reference `41 00 00 00`. Feeding those four
 bytes to one fresh FGK tree yields an empty path for `41`, path `0` plus an
@@ -3284,7 +3290,7 @@ format variant.
 Interoperability schema 13 emits and accepts this exact profile as its twenty-
 fourth archive without changing the version-1.0 stream representation.
 
-## LZMW variant 1 plus Blocked Huffman variant 1
+### LZMW variant 1 plus Blocked Huffman variant 1
 
 This composition uses dictionary algorithm ID 6, dictionary variant 1,
 entropy algorithm ID 2, and entropy variant 1. Its stream parameter regions
@@ -3323,7 +3329,7 @@ count plus one reference. For entropy block size `E`, the block-count bound is
 workspace extents, padding, and aggregate sums must use checked arithmetic
 before allocation or output.
 
-### Hand-checkable LZMW combined raw-block frame
+#### Hand-checkable LZMW combined raw-block frame
 
 For raw input `A`, LZMW emits the four-byte literal reference
 `41 00 00 00`. With entropy block size four, Blocked Huffman selects raw
@@ -3364,7 +3370,7 @@ The three-region C ABI, CLI selector, and benchmark use this representation
 without defining another format variant. Interoperability schema 7 emits and
 accepts it as the eighteenth archive.
 
-## Adaptive Huffman FGK variant 1
+### Adaptive Huffman FGK variant 1
 
 Adaptive Huffman variant 1 accepts byte symbols `0..255`, has no entropy
 parameter region, and requires stream entropy block size zero. Every nonempty
@@ -3382,7 +3388,7 @@ encode a new symbol, emit the current NYT path followed by the symbol's numeric
 8-bit value least-significant bit first. The decoder rejects a literal following
 NYT if that symbol is already present.
 
-### Tree insertion and update
+#### Tree insertion and update
 
 Splitting NYT number `n` replaces it with an internal node retaining number
 `n`. Its left child is the new NYT with number `n-2` and weight 0. Its right
@@ -3408,7 +3414,7 @@ symbols occur before the mandatory reset, overflow is impossible. This full
 frame reset is variant 1's frequency-rescaling rule; there is no mid-frame
 halving. A different reset or rescale policy requires another variant ID.
 
-### Adaptive descriptor
+#### Adaptive descriptor
 
 Exactly one 16-byte descriptor precedes each frame payload:
 
@@ -3426,7 +3432,7 @@ Unused high bits of the final byte are zero. Truncation, a duplicate NYT
 literal, an invalid tree relationship, excess valid bits, trailing payload
 bytes, or nonzero padding is malformed.
 
-### Hand-checkable payload vectors
+#### Hand-checkable payload vectors
 
 These vectors begin from a fresh frame. ASCII `A` is `0x41`, and `B` is
 `0x42`.
@@ -3473,7 +3479,7 @@ The first 56 bytes are the frame header, the next 16 are the Adaptive
 descriptor, and the final 3 are the payload. Sequence is zero, entropy block
 count is one, and descriptor byte count is 16.
 
-## Dynamic Range Coder variant 1
+### Dynamic Range Coder variant 1
 
 Dynamic Range Coder variant 1 is a byte-oriented integer range coder with an
 adaptive order-0 model over symbols `0..255`. It has no entropy parameter region
@@ -3488,7 +3494,7 @@ every frequency `f` with `(f + 1) / 2`, using integer division, then recompute
 the total. Thus every symbol remains active. Encoder and decoder update only
 after completing the same symbol.
 
-### Interval update and byte normalization
+#### Interval update and byte normalization
 
 Coder state is unsigned `low` (64 bits) and `range` (32 bits), initialized to 0
 and `0xFFFFFFFF`. For cumulative frequency `c`, symbol frequency `f`, and model
@@ -3547,7 +3553,7 @@ failure, or any payload bytes left after the declared symbol count. Model update
 then follows the encoder rule. All shifts and wraparound of `code` are unsigned
 32-bit operations.
 
-### Range descriptor and vectors
+#### Range descriptor and vectors
 
 Exactly one 16-byte descriptor precedes each frame payload:
 
@@ -3588,7 +3594,7 @@ complete encoded `ABA` frame is 79 bytes:
 The first 56 bytes are the generic frame header, the next 16 are the range
 descriptor, and the final 7 are the payload.
 
-## rANS variant 1
+### rANS variant 1
 
 rANS variant 1 is scalar, block buffered, and byte renormalized. The alphabet is
 `0..255`, `table_log` is exactly 12, normalized total `M` is 4096, internal state
@@ -3596,7 +3602,7 @@ is unsigned 64-bit, and lower normalization bound `L` is 2^31. Stream entropy
 block size is nonzero and defaults to 65,536 input symbols. Every block rebuilds
 its static model independently; the final short block is valid.
 
-### Deterministic frequency normalization
+#### Deterministic frequency normalization
 
 Count one finite block. Absent symbols receive normalized frequency zero. For a
 nonempty block of size `N`, initialize each present symbol `s` to
@@ -3617,7 +3623,7 @@ sum to 4096. A one-symbol block therefore assigns that symbol 4096.
 Cumulative frequency is the sum of normalized frequencies for numerically
 smaller symbols. All normalization arithmetic uses exact integers.
 
-### State update and byte layout
+#### State update and byte layout
 
 Initialize encoder state `x = L` and process block symbols in reverse logical
 order. For a symbol with frequency `f` and cumulative `c`:
@@ -3653,7 +3659,7 @@ it before the next boundary. Exact terminal state and byte consumption make the
 payload canonical. Symbols appear in forward order even though encoding
 traverses them in reverse.
 
-### rANS descriptor and frame layout
+#### rANS descriptor and frame layout
 
 Each block has one 528-byte descriptor. All frame descriptors occur first in
 logical block order, followed by all block payloads in the same order.
@@ -3677,7 +3683,7 @@ Frame entropy block count is exactly
 is exactly block count times 528. Frame compressed payload size is the checked
 sum of descriptor-declared payload sizes. No rANS block crosses an outer frame.
 
-### Hand-checkable rANS vectors
+#### Hand-checkable rANS vectors
 
 Fresh-block normalized models and payloads are:
 
@@ -3702,7 +3708,7 @@ and two 8-byte payloads. The serialized frame size is
 `56 + 2*528 + 16 = 1128` bytes. Its first payload is the `AB` vector and its
 second payload is the one-symbol `A` vector above.
 
-## LZ77 variant 1 plus rANS variant 1
+### LZ77 variant 1 plus rANS variant 1
 
 The reserved composition name is `lz77-rans`. Format version 1.0 uses the
 ordinary 16-byte LZ77 variant-1 parameter extension, no entropy-parameter
@@ -3874,7 +3880,7 @@ The 512-byte frequency region is zero except descriptor offsets 16..17
 follow the descriptor. This sparse notation uniquely defines all 592 bytes
 without listing the remaining 254 zero-frequency entries.
 
-## LZSS variant 1 plus rANS variant 1
+### LZSS variant 1 plus rANS variant 1
 
 The reserved composition name is `lzss-rans`. Format version 1.0 uses the
 ordinary 16-byte LZSS variant-1 parameter extension, no entropy-parameter
@@ -3965,7 +3971,7 @@ Interoperability schema 21 emits this unchanged profile as `lzss-rans` after
 the frozen thirty-one-entry schema-20 set. The schema changes only the
 external manifest profile set; it adds no stream field or variant.
 
-## LZ78 variant 1 plus rANS variant 1
+### LZ78 variant 1 plus rANS variant 1
 
 The reserved composition name is `lz78-rans`. Format version 1.0 uses the
 ordinary 16-byte LZ78 parameter extension, entropy parameter size zero, and
@@ -4094,7 +4100,7 @@ Interoperability schema 22 emits this unchanged profile as `lz78-rans` after
 the frozen thirty-two-entry schema-21 set. The schema changes only the
 external manifest profile set; it adds no stream field or variant.
 
-## LZW variant 1 plus rANS variant 1
+### LZW variant 1 plus rANS variant 1
 
 The reserved composition name is `lzw-rans`. Format version 1.0 uses
 dictionary algorithm ID 4, dictionary variant 1, entropy algorithm ID 4,
@@ -4328,7 +4334,7 @@ Interoperability schema 23 emits this unchanged profile as `lzw-rans` after
 the frozen thirty-three-entry schema-22 set. The schema changes only the
 external manifest profile set; it adds no stream field or variant.
 
-## LZD variant 1 plus rANS variant 1
+### LZD variant 1 plus rANS variant 1
 
 The reserved composition name is `lzd-rans`. Format version 1.0 uses
 dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 4,
@@ -4478,7 +4484,7 @@ Interoperability schema 24 emits this unchanged profile as `lzd-rans` after the
 frozen thirty-four-entry schema-23 set. The schema changes only the external
 manifest profile set; it adds no stream field or format variant.
 
-## LZMW variant 1 plus rANS variant 1
+### LZMW variant 1 plus rANS variant 1
 
 The reserved composition name is `lzmw-rans`. Format version 1.0 uses
 dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 4,
@@ -4598,7 +4604,7 @@ Interoperability schema 25 emits the unchanged profile as `lzmw-rans` after the
 frozen thirty-five-entry schema-24 set. The manifest change introduces no
 stream field or format variant.
 
-## tANS variant 1
+### tANS variant 1
 
 tANS variant 1 is block buffered and table based. The alphabet is `0..255`,
 `table_log` is exactly 12, table size `L` is 4096, and live states occupy
@@ -4647,7 +4653,7 @@ reads `bit_count` bits as an LSB-first numeric value, and sets
 missing bits, extra declared valid bits, nonzero high padding, or a terminal
 state other than exactly L.
 
-### tANS descriptor and frame layout
+#### tANS descriptor and frame layout
 
 Each block has one 528-byte descriptor. All descriptors precede all payloads in
 logical block order, matching the rANS frame-region convention.
@@ -4668,7 +4674,7 @@ last byte; unused high bits are zero. Frequencies sum to 4096 and are nonzero
 for at least one symbol. Frame block count, descriptor extent, payload sum, and
 outer-frame boundary rules are identical to rANS.
 
-### Hand-checkable tANS vectors
+#### Hand-checkable tANS vectors
 
 Using the deterministic spread above:
 
@@ -4688,7 +4694,7 @@ For `A`, descriptor bytes 0 through 15 are:
 All frequency entries are zero except symbol `41` at descriptor offset 146,
 whose little-endian uint16 value is `00 10`.
 
-## LZ77 variant 1 plus tANS variant 1
+### LZ77 variant 1 plus tANS variant 1
 
 The reserved composition name is `lz77-tans`. Format version 1.0 uses the
 ordinary 16-byte LZ77 variant-1 parameter extension, no entropy-parameter
@@ -4827,7 +4833,7 @@ The 512-byte frequency region is zero except descriptor offsets 16..17
 (`00 0F`) and 146..147 (`00 01`). The three payload bytes immediately follow
 the descriptor. This sparse notation uniquely defines all 587 bytes.
 
-## LZSS variant 1 plus tANS variant 1
+### LZSS variant 1 plus tANS variant 1
 
 The reserved composition name is `lzss-tans`. Format version 1.0 uses the
 ordinary 16-byte LZSS variant-1 parameter extension, no entropy-parameter
@@ -4966,7 +4972,7 @@ Interoperability schema 27 emits this unchanged profile as `lzss-tans` after
 the frozen thirty-seven-entry schema-26 order. The schema changes only bundle
 membership and does not define a new stream representation.
 
-## LZ78 variant 1 plus tANS variant 1
+### LZ78 variant 1 plus tANS variant 1
 
 The reserved composition name is `lz78-tans`. Format version 1.0 uses the
 ordinary 16-byte LZ78 variant-1 parameter extension, no entropy-parameter
@@ -5124,7 +5130,7 @@ unchanged profile as `lz78-tans` after the frozen thirty-eight-entry schema-27
 order. The schema changes only bundle membership and defines no new stream
 representation.
 
-## LZW variant 1 plus tANS variant 1
+### LZW variant 1 plus tANS variant 1
 
 The reserved composition name is `lzw-tans`. Format version 1.0 uses the
 ordinary 16-byte LZW variant-1 parameter extension, no entropy-parameter
@@ -5281,7 +5287,7 @@ the frozen thirty-nine-entry schema-28 order. Manifest version and codec-set
 selection, archive hashes, verification output, and compatibility derivation
 are external test metadata and do not change the stream representation.
 
-## LZD variant 1 plus tANS variant 1
+### LZD variant 1 plus tANS variant 1
 
 The reserved composition name is `lzd-tans`. Format version 1.0 uses
 dictionary algorithm ID 5, dictionary variant 1, entropy algorithm ID 5,
@@ -5464,7 +5470,7 @@ truncation, and trailing data in the fourth frame publish exactly the first
 three frames and preserve a sticky terminal error. These tests add no new
 serialized field or variant.
 
-## LZMW variant 1 plus tANS variant 1
+### LZMW variant 1 plus tANS variant 1
 
 The reserved composition name is `lzmw-tans`. Format version 1.0 uses
 dictionary algorithm ID 6, dictionary variant 1, entropy algorithm ID 5,
