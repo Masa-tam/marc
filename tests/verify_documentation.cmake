@@ -95,17 +95,28 @@ list(LENGTH decision_headings decision_count)
 set(clean_room_record
     "${source_dir}/docs/implementation/clean-room-record.md")
 file(STRINGS "${clean_room_record}" clean_room_headings
-    REGEX "^## [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")
+    REGEX "^## CR-[0-9]+: [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]")
 if(NOT clean_room_headings)
     message(FATAL_ERROR "No dated clean-room headings were found")
 endif()
 set(previous_record_date "")
+set(expected_clean_room_record 1)
 foreach(heading IN LISTS clean_room_headings)
     if(NOT heading MATCHES
-       "^## ([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])")
+       "^## CR-([0-9]+): ([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])")
         message(FATAL_ERROR "Invalid clean-room heading: ${heading}")
     endif()
-    set(record_date "${CMAKE_MATCH_1}")
+    set(record_number "${CMAKE_MATCH_1}")
+    set(record_date "${CMAKE_MATCH_2}")
+    string(REGEX REPLACE "^0+" "" record_number "${record_number}")
+    if(record_number STREQUAL "")
+        set(record_number 0)
+    endif()
+    if(NOT record_number EQUAL expected_clean_room_record)
+        message(FATAL_ERROR
+            "Clean-room records must be contiguous and ordered: expected "
+            "CR-${expected_clean_room_record}, found ${heading}")
+    endif()
     if(NOT previous_record_date STREQUAL ""
        AND record_date STRLESS previous_record_date)
         message(FATAL_ERROR
@@ -113,6 +124,8 @@ foreach(heading IN LISTS clean_room_headings)
             "follows ${previous_record_date} at ${heading}")
     endif()
     set(previous_record_date "${record_date}")
+    math(EXPR expected_clean_room_record
+        "${expected_clean_room_record} + 1")
 endforeach()
 list(LENGTH clean_room_headings clean_room_record_count)
 
