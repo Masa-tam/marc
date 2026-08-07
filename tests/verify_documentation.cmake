@@ -448,6 +448,65 @@ foreach(required_record_description IN ITEMS
     endif()
 endforeach()
 
+set(readiness_document "${source_dir}/docs/baseline-readiness.md")
+file(READ "${readiness_document}" readiness_content)
+set(previous_readiness_section_offset -1)
+foreach(required_readiness_section IN ITEMS
+        "## Local implementation matrix"
+        "## Additional public profiles"
+        "## Public-profile evidence matrix"
+        "## Current validation baseline"
+        "## Remaining release evidence"
+        "## Readiness evidence history")
+    string(FIND "${readiness_content}" "${required_readiness_section}"
+        readiness_section_offset)
+    if(readiness_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing readiness section: ${required_readiness_section}")
+    endif()
+    if(readiness_section_offset LESS_EQUAL previous_readiness_section_offset)
+        message(FATAL_ERROR
+            "Readiness sections are out of order at: "
+            "${required_readiness_section}")
+    endif()
+    set(previous_readiness_section_offset "${readiness_section_offset}")
+endforeach()
+foreach(required_current_baseline IN ITEMS
+        "All forty-two profiles"
+        "currently enumerates 2,355 tests"
+        "four-direction schema-31 exchange")
+    string(FIND "${readiness_content}" "${required_current_baseline}"
+        current_baseline_offset)
+    if(current_baseline_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Readiness baseline is stale: ${required_current_baseline}")
+    endif()
+endforeach()
+file(STRINGS "${readiness_document}" readiness_history_headings
+    REGEX "^### BR-[0-9]+$")
+if(NOT readiness_history_headings)
+    message(FATAL_ERROR "No readiness evidence records were found")
+endif()
+set(expected_readiness_record 1)
+foreach(heading IN LISTS readiness_history_headings)
+    if(NOT heading MATCHES "^### BR-([0-9]+)$")
+        message(FATAL_ERROR "Invalid readiness record heading: ${heading}")
+    endif()
+    set(readiness_record_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" readiness_record_number
+        "${readiness_record_number}")
+    if(readiness_record_number STREQUAL "")
+        set(readiness_record_number 0)
+    endif()
+    if(NOT readiness_record_number EQUAL expected_readiness_record)
+        message(FATAL_ERROR
+            "Readiness records must be contiguous and ordered: expected "
+            "BR-${expected_readiness_record}, found ${heading}")
+    endif()
+    math(EXPR expected_readiness_record "${expected_readiness_record} + 1")
+endforeach()
+list(LENGTH readiness_history_headings readiness_history_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -504,4 +563,5 @@ message(STATUS
     "${clean_room_record_count} chronological clean-room records, and "
     "${implementation_reference_count} ordered implementation references, and "
     "${test_vector_record_count} ordered test-vector records, and "
-    "${composition_history_count} ordered composition records")
+    "${composition_history_count} ordered composition records, and "
+    "${readiness_history_count} ordered readiness records")
