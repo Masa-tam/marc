@@ -129,6 +129,45 @@ foreach(heading IN LISTS clean_room_headings)
 endforeach()
 list(LENGTH clean_room_headings clean_room_record_count)
 
+set(reference_record
+    "${source_dir}/docs/implementation/references.md")
+file(READ "${reference_record}" reference_content)
+foreach(required_reference_section IN ITEMS
+        "## Foundational and project references"
+        "## Implementation reference ledger")
+    string(FIND "${reference_content}" "${required_reference_section}"
+        reference_section_offset)
+    if(reference_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing reference section: ${required_reference_section}")
+    endif()
+endforeach()
+file(STRINGS "${reference_record}" implementation_reference_headings
+    REGEX "^### IR-[0-9]+$")
+if(NOT implementation_reference_headings)
+    message(FATAL_ERROR "No implementation-reference headings were found")
+endif()
+set(expected_implementation_reference 1)
+foreach(heading IN LISTS implementation_reference_headings)
+    if(NOT heading MATCHES "^### IR-([0-9]+)$")
+        message(FATAL_ERROR "Invalid implementation-reference heading: ${heading}")
+    endif()
+    set(reference_number "${CMAKE_MATCH_1}")
+    string(REGEX REPLACE "^0+" "" reference_number "${reference_number}")
+    if(reference_number STREQUAL "")
+        set(reference_number 0)
+    endif()
+    if(NOT reference_number EQUAL expected_implementation_reference)
+        message(FATAL_ERROR
+            "Implementation references must be contiguous and ordered: expected "
+            "IR-${expected_implementation_reference}, found ${heading}")
+    endif()
+    math(EXPR expected_implementation_reference
+        "${expected_implementation_reference} + 1")
+endforeach()
+list(LENGTH implementation_reference_headings
+    implementation_reference_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -182,4 +221,5 @@ list(LENGTH documentation_files document_count)
 message(STATUS
     "Verified ${relative_link_count} relative links in ${document_count} "
     "documents, ${decision_count} ordered design decisions, and "
-    "${clean_room_record_count} chronological clean-room records")
+    "${clean_room_record_count} chronological clean-room records, and "
+    "${implementation_reference_count} ordered implementation references")
