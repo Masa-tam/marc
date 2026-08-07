@@ -8101,6 +8101,25 @@ Prove binary and empty round trips plus atomic malformed and trailing rejection.
 This changes no default selector, format, benchmark, `Ready` claim, or
 interoperability entry.
 
+## DD-625: LZMW tANS benchmark verifies before measuring
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add `lzmw-tans` to the dependency-free benchmark runner using DD-624's exact
+65,536-byte frame/block profile and only DD-621's public C lifecycle. Query,
+allocate, construct, process, and destroy encode and decode directions
+independently. Require one byte-exact untimed round trip before any result is
+reported, then measure encode and decode separately and report all three
+queried workspace regions, their alignments, and the larger directional sum.
+
+For input extent `N` and nonempty outer-frame count `K`, admit output with the
+checked ceiling `80 + 6N + 2176K`. The payload term follows `S <= 4N` and the
+tANS ceiling `ceil(12S/8) + 2` per block. The per-frame term is one 56-byte
+generic header, four 528-byte descriptors, and four two-byte final states.
+This benchmark changes no default selector, stream representation, API,
+`Ready` claim, or interoperability schema.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

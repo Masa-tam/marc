@@ -8654,6 +8654,32 @@ discarded and the reviewed seed retained.
   schemas 1 through 30 compatibility, and documentation-layout checks remained
   successful.
 
+## 2026-08-08 - LZMW plus tANS verification-first benchmark
+
+- Authoring method: extended marc's dependency-free public-ABI benchmark
+  dispatcher with DD-625 after deriving its complete-stream ceiling from the
+  already fixed DD-624 profile.
+- References used: DD-625, DD-624, DD-621, the public
+  `marc_lzmw_tans_*` lifecycle, local checked arithmetic, and marc's existing
+  verification-first measurement runner.
+- Known implementations intentionally not consulted: external benchmark
+  frameworks, combined-codec adapters, capacity formulas, performance data,
+  source code, and test suites.
+- Independent decisions: reserve `80 + 6N + 2176K`; verify a byte-exact round
+  trip before measurement; time directions separately; and report every
+  queried region plus the larger caller-owned reservation.
+- Generated-code task description: add the benchmark selector, public-only
+  configuration/query/factory dispatch, checked capacity, CTest smoke, and
+  synchronize format, architecture, API, readiness, composition, benchmark,
+  vector, reference, changelog, and provenance records.
+- Similarity review: the adapter mechanically joins one existing local public
+  lifecycle to marc's own benchmark contract. No external control flow,
+  capacity expression, reporting schema, naming, or assertion was compared.
+- Local validation: the focused selector, all forty-two benchmark smokes, and
+  documentation layout passed under both MSVC and ClangCL. The complete
+  Release suite passed 2,355/2,355 under both compilers using official CMake
+  4.3.4; schemas 1 through 30 compatibility remained successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference

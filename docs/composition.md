@@ -40,21 +40,19 @@ preflights every caller-owned region, validates every tANS block before
 reference reconstruction, and applies LZMW graph validation only to the
 complete private reference span. The private decoder then reconstructs into
 disposable raw staging, while the transactional form copies the declared raw
-extent only after complete success. Every public surface remains pending. The
-encoder-side planner now freezes the complete LZMW
-reference span, plans every tANS block over only those bytes, and reports exact
-descriptor, payload, and complete-frame extents without writing serialized
-output. The deterministic encoder runs that planner first, then serializes the
-generic header, every descriptor, and every payload into an already admitted
-complete destination.
+extent only after complete success. The encoder-side planner now freezes the
+complete LZMW reference span, plans every tANS block over only those bytes, and
+reports exact descriptor, payload, and complete-frame extents without writing
+serialized output. The deterministic encoder runs that planner first, then
+serializes the generic header, every descriptor, and every payload into an
+already admitted complete destination.
 The bounded streaming encoder adds the canonical stream prefix, collects no
 more than one configured raw frame, constructs that frame completely in
 private staging, and drains it under arbitrary output chunking. Nonterminal
 `Flush` preserves the partial raw frame and `EndInput` remains sticky through
 all pending output. The matching streaming decoder collects one complete
 serialized frame, validates and reconstructs it transactionally into private
-raw staging, and drains only that successful frame. Every public surface
-remains pending.
+raw staging, and drains only that successful frame.
 
 `lzd-tans` is the fifth tANS composition with a reserved representation. LZD
 finalizes canonical eight-byte reference pairs before tANS block coding. A
@@ -1050,12 +1048,12 @@ A safe adoption sequence is:
 No candidate cell is a release commitment. This roadmap records architectural
 possibility and the evidence required to turn it into a supported profile.
 
-For `lzmw-tans`, callers should obtain every direction-specific byte extent
-from the internal profile calculator while the C ABI is not yet present. The
-calculator owns the conservative formulas and typed-region alignment; callers
-must not duplicate private LZMW entry, phrase, expansion, or tANS-view layouts.
-The returned regions directly construct the existing bounded streaming encoder
-and decoder and do not select a new stream variant.
+For `lzmw-tans`, callers obtain every direction-specific byte extent from the
+public requirements query. Its internal profile calculator owns the
+conservative formulas and typed-region alignment; callers must not duplicate
+private LZMW entry, phrase, expansion, or tANS-view layouts. The returned
+regions directly construct the bounded streaming encoder and decoder and do
+not select a new stream variant.
 
 The public `marc_lzmw_tans_*` C lifecycle is now the supported construction
 path for this composition. Query requirements separately for the immutable
@@ -1067,10 +1065,14 @@ The LZMW plus tANS public lifecycle now has completion evidence for required
 binary classes, repeat determinism, one-byte and mixed chunk schedules, sticky
 end/error states, and frame-atomic rejection of a corrupt, truncated, or
 extended final frame. Later paragraphs record the completed fuzz and CLI
-boundaries; benchmark and interoperability evidence remain separate steps.
+boundaries and the verification-first benchmark; interoperability remains a
+separate step.
 
 The cell now also has a fixed-memory dual-decoder fuzz target and deterministic
 regressions for all canonical truncations, saturated frame lengths, and invalid
 tANS descriptor metadata. Its transactional CLI selector now uses only the
-public C lifecycle and preserves atomic file publication. Benchmark and
-interoperability evidence remain before the cell can be marked complete.
+public C lifecycle and preserves atomic file publication. The dependency-free
+benchmark uses that same lifecycle, checks `80 + 6N + 2176K` complete-stream
+capacity, requires an untimed exact round trip, and reports all queried
+workspace regions. Interoperability evidence remains before the cell can be
+marked complete.

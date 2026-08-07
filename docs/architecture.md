@@ -3419,6 +3419,13 @@ blocks, the 262,144-byte canonical-reference ceiling, four block views, the
 393,224-byte payload ceiling, and a 16-MiB aggregate policy. It obtains every
 actual region from the public requirements query and preserves the shared
 write-temporary, rename-on-success protocol.
+The dependency-free benchmark fixes the same application profile and creates
+both directions only through that public lifecycle. For input extent `N` and
+nonempty frame count `K`, it admits the checked complete-stream ceiling
+`80 + 6N + 2176K`, verifies one untimed byte-exact round trip, then measures
+encode and decode separately and reports every queried workspace region plus
+the larger directional reservation. Input and result buffers are not included
+in the workspace metric.
 The bounded fuzz boundary exercises both complete-frame private decoding and
 incremental stream decoding with fixed caller-owned arrays, input-derived
 finite chunk sizes, and a checked call ceiling. Serialized metadata can never

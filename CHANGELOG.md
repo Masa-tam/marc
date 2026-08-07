@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the dependency-free `lzmw-tans` benchmark adapter. It uses only the
+  public C lifecycle, checks `80 + 6N + 2176K` complete-stream capacity,
+  requires a byte-exact round trip before timing, and reports ratio,
+  directional throughput, and all queried workspace regions.
 - Added the transactional `lzmw-tans` CLI selector. It obtains every workspace
   extent from the public C lifecycle and leaves no destination or temporary
   file after malformed or trailing input.

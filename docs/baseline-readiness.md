@@ -73,8 +73,9 @@ by component tests and exercised through Blocked Huffman.
 `lzmw-tans` now has bounded complete-frame validation and decoding, exact
 planning and deterministic encoding, bounded streaming transforms, a public C
 lifecycle, completion matrix, fixed-memory fuzz boundary with permanent
-regressions, and a transactional CLI selector. Benchmark and interoperability
-entry remain pending, so the readiness classification does not change.
+regressions, a transactional CLI selector, and a verification-first benchmark.
+The interoperability entry remains pending, so the readiness classification
+does not change.
 
 `lzd-tans` is the current admission composition. It has bounded complete-frame
 validation, private raw decoding,
@@ -158,7 +159,7 @@ kept separate because it requires artifacts produced outside the local build.
 | `lz78-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzd-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
-| `lzmw-tans` | Yes | Yes | Yes | Yes | No | Yes | Yes | Pending |
+| `lzmw-tans` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Pending |
 
 ## Composed-profile admission queue
 
@@ -1094,7 +1095,7 @@ The LZMW plus tANS cell now has a checked internal profile calculator in
 addition to complete-frame and bounded streaming transforms. It derives all
 caller-owned storage and proves that those requirements construct a real
 streaming round trip. Later paragraphs record the public lifecycle, completion,
-fuzz, and CLI evidence; benchmark and interoperability evidence remain before
+fuzz, CLI, and benchmark evidence; interoperability evidence remains before
 the cell is marked complete.
 
 The public C lifecycle is now present: its C11 test constructs both directions
@@ -1114,6 +1115,10 @@ typed workspace, and total process calls before parsing arbitrary data. Its
 compile-smoke passes under both local compilers, while permanent ordinary tests
 prove atomic rejection of every canonical truncation, saturated frame extents,
 and an invalid tANS descriptor. No open-ended fuzz run is release evidence by
-itself; benchmark and interoperability remain outstanding. The transactional
+itself; interoperability remains outstanding. The transactional
 CLI selector is present and its binary, empty, malformed, trailing-data,
 overwrite, and temporary-file regression passes under both local compilers.
+The dependency-free benchmark now uses the same public-only profile, verifies
+an exact round trip before timing, checks `80 + 6N + 2176K` complete-stream
+capacity, and reports both directional three-region workspaces. The remaining
+admission step is interoperability schema registration and external exchange.

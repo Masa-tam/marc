@@ -151,6 +151,12 @@ marc's existing transactional file adapter and regression script. No external
 compression CLI, combined-codec adapter, private workspace layout, command
 syntax, source code, or test suite was consulted.
 
+The `lzmw-tans` benchmark adapter uses only DD-625, DD-624's public profile,
+the `marc_lzmw_tans_*` lifecycle, locally derived checked capacity arithmetic,
+and marc's verification-first timing/reporting runner. No external benchmark
+framework, combined-codec adapter, capacity expression, performance result,
+source code, or test suite was consulted.
+
 The LZ78 plus Adaptive Huffman profile and typed workspace partition use only
 DD-309, marc's LZ78 entry types and sizing rules, Adaptive worst-case bound,
 checked arithmetic, and existing first-party profile conventions. No external

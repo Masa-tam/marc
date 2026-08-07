@@ -3255,6 +3255,16 @@ The CLI profile fixes `F = 65,536`, `S = 262,144`, `K = 4`, descriptor bytes
 generated entries, and a 16-MiB aggregate policy. Actual primary, secondary,
 and aligned opaque-view requirements must come only from the public C query.
 
+For the `lzmw-tans` benchmark smoke, use the same public configuration and
+requirements profile as the CLI. For input extent `N`, derive nonempty outer
+frame count `K = ceil(N/65536)` and require checked destination capacity
+`80 + 6N + 2176K`. Construct fresh public transforms, encode once, decode the
+exact produced extent once, and compare every byte before timing. Thereafter
+measure encode and decode separately and require their produced extents to
+match the verified values. Report primary, secondary, aligned views, and total
+workspace for both directions; do not treat a small-input throughput value as
+a stable performance assertion.
+
 For the LZMW plus tANS C boundary, initialize an encode configuration in a
 pure C11 translation unit, reduce frame and entropy blocks to two bytes, and
 encode bytes `41 42 41 42 58` using only queried workspace. Initialize decode

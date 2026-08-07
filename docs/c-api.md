@@ -471,6 +471,11 @@ public lifecycle. The `lzmw-rans` CLI selector likewise allocates all regions
 and their alignment from that query and adds no private layout dependency. The
 benchmark adapter independently queries the same three regions in each
 direction and verifies an exact round trip before timing.
+The LZMW plus tANS factory has the same ownership contract with tANS block
+views in its aligned opaque region. Its CLI and benchmark adapters allocate
+only the requirements returned for the selected immutable direction. The
+benchmark verifies a complete public-lifecycle round trip before separately
+timing encode and decode and reports all three region sizes and alignments.
 
 ## Processing contract
 
