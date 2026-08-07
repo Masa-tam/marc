@@ -1,5 +1,7 @@
 # Interoperability bundles
 
+## Current bundle and verification
+
 Successful Windows/MSVC and Ubuntu/Ninja CI jobs publish these workflow
 artifacts:
 
@@ -46,6 +48,8 @@ local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
 result: Verified 42 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
+
+## Schema compatibility
 
 The verifier remains able to validate legacy schema-1 bundles with their exact
 seven-profile set, schema-2 bundles with `marc-cli-v2` and exactly eight
@@ -98,6 +102,8 @@ forty-one archives, appending `lzd-tans` to the frozen schema-29 order. Schema
 `lzmw-tans` to the frozen schema-30 order. No schema silently inherits profiles
 added by a later schema.
 
+## Integrity and current evidence
+
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
@@ -108,7 +114,15 @@ re-encoding, reordered-manifest rejection, and schemas 1 through 30
 compatibility evidence. Its external Windows/MSVC, Ubuntu 24.04/Ninja, and
 Ubuntu 26.04/Clang four-direction cross-check is recorded below.
 
+## Work-product policy
+
+Interoperability work products are kept outside the source repository; only
+the resulting environment and verifier evidence are recorded here. These
+checks remain x86-64 evidence and do not cover a non-WSL Linux kernel.
+
 ## Recorded external cross-checks
+
+### IX-0001: Schema 7
 
 Revision `c4f831917a43f75ca5c698d19d3674f12803f40b` received its first external
 schema-7 cross-check on 2026-07-18. The external environment was Ubuntu 26.04
@@ -126,6 +140,8 @@ This establishes deterministic x86-64 stream generation across MSVC and Clang
 and bidirectional decoding between Windows and the stated WSL2 Linux userland.
 It is historical schema-7 evidence.
 
+### IX-0002: Schema 8
+
 Revision `a4e3d1a5acb7bfc393aca4f2195188cfe0421817` received the corresponding
 schema-8 cross-check on 2026-07-19. The external environment remained Ubuntu
 26.04 under WSL2 on x86-64 with Linux kernel
@@ -137,6 +153,8 @@ bundle, and verified all nineteen of its archives locally. The Windows/MSVC
 executable then verified that Ubuntu 26.04 bundle in the reverse direction.
 Every verification included exact local re-encoding, so the three producers
 generated the same canonical archive bytes for every schema-8 profile.
+
+### IX-0003: Schema 9
 
 Revision `8a854eaf9c7c6c36cc2d444cc8e1a135935887b2` received the schema-9
 cross-check after its pushed CI completed successfully. The same Ubuntu 26.04
@@ -150,6 +168,8 @@ byte-identical local re-encoding for every archive. This establishes canonical
 schema-9 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0004: Schema 10
+
 Revision `bc8faba3043db78a953f18876f153abc847f814d` received the schema-10
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8, verified all twenty-one archives
@@ -161,6 +181,8 @@ Each of the four verifier passes required complete decode equality and
 byte-identical local re-encoding for every archive. This establishes canonical
 schema-10 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0005: Schema 11
 
 Revision `163948c61dd8b90359882bee122f16ab3794787c` received the schema-11
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -174,6 +196,8 @@ byte-identical local re-encoding for every archive. This establishes canonical
 schema-11 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0006: Schema 12
+
 Revision `7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa` received the schema-12
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8, verified all twenty-three
@@ -186,6 +210,8 @@ byte-identical local re-encoding for every archive. This establishes canonical
 schema-12 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0007: Schema 13
+
 Revision `77f16eaecfae20897f5d5f3e700584eb453fa3f1` received the schema-13
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8, verified all twenty-four
@@ -197,6 +223,8 @@ Each of the four verifier passes required complete decode equality and
 byte-identical local re-encoding for every archive. This establishes canonical
 schema-13 bytes across the three producers and bidirectional decoding between
 the recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0008: Schema 14
 
 Revision `802c7a1ab913b07ee79a04fa5b3390c061c88966` received the schema-14
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -212,6 +240,8 @@ re-encoding checks for every archive. This establishes canonical schema-14
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0009: Schema 15
+
 Revision `504af4f6942aee7662bcb51abf9b55289c957d6c` received the schema-15
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all
@@ -225,6 +255,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-15
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0010: Schema 16
 
 Revision `01f746a5bef2225a0b8fa34f3ff9d52b42f13f40` received the schema-16
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -240,6 +272,8 @@ re-encoding checks for every archive. This establishes canonical schema-16
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0011: Schema 17
+
 Revision `b4c700aca87fc925aab642cfb6a6b72f3a29c86b` received the schema-17
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all
@@ -253,6 +287,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-17
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0012: Schema 18
 
 Revision `fd11d1c7ef833873a02694da91f9f6d8d378948b` received the schema-18
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -268,6 +304,8 @@ re-encoding checks for every archive. This establishes canonical schema-18
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0013: Schema 19
+
 Revision `f8d51680a0ef827fa09f5782ad4ced4c335d346e` received the schema-19
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty
@@ -281,6 +319,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-19
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0014: Schema 20
 
 Revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad` received the schema-20
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -296,6 +336,8 @@ re-encoding checks for every archive. This establishes canonical schema-20
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0015: Schema 21
+
 Revision `110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` received the schema-21
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all
@@ -309,6 +351,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-21
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0016: Schema 22
 
 Revision `2aa51ded63bdeacb0e5b2ec28a21075a867bb353` received the schema-22
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -324,6 +368,8 @@ re-encoding checks for every archive. This establishes canonical schema-22
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0017: Schema 23
+
 Revision `5397f261fa04ee49832d9f72b09960a156232aad` received the schema-23
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty-
@@ -337,6 +383,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-23
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0018: Schema 24
 
 Revision `dad3638da2acb449afca969176194bf8323309f5` received the schema-24
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -352,6 +400,8 @@ re-encoding checks for every archive. This establishes canonical schema-24
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0019: Schema 25
+
 Revision `bc4cfa45fc8787d5ec9277894bda0b10df0ef638` received the schema-25
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty-
@@ -365,6 +415,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-25
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0020: Schema 26
 
 Revision `5b2aa31ba3333c311ad4086b3438915a6c3ce36d` received the schema-26
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -380,6 +432,8 @@ re-encoding checks for every archive. This establishes canonical schema-26
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0021: Schema 27
+
 Revision `da376a7223f8a8072531271472f40d58b69e3b7a` received the schema-27
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all thirty-
@@ -393,6 +447,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-27
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0022: Schema 28
 
 Revision `3d5001ce7536c425328a597240244551605e8935` received the schema-28
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -408,6 +464,8 @@ re-encoding checks for every archive. This establishes canonical schema-28
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0023: Schema 29
+
 Revision `2dcc17c09477958c1f8777a266ecfefbb75217d2` received the schema-29
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all forty
@@ -421,6 +479,8 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-29
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0024: Schema 30
 
 Revision `827ddf085efb40c7d8f9bc27628977053179d84c` received the schema-30
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
@@ -436,6 +496,8 @@ re-encoding checks for every archive. This establishes canonical schema-30
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
 
+### IX-0025: Schema 31
+
 Revision `903181080556c3bb511ad4a2e5275837ebda48e7` received the schema-31
 cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
 x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all forty-two
@@ -449,7 +511,3 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-31
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
-
-Interoperability work products are kept outside the source repository; only
-the resulting environment and verifier evidence are recorded here. These
-checks remain x86-64 evidence and do not cover a non-WSL Linux kernel.

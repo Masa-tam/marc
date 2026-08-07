@@ -507,6 +507,64 @@ foreach(heading IN LISTS readiness_history_headings)
 endforeach()
 list(LENGTH readiness_history_headings readiness_history_count)
 
+set(interoperability_document "${source_dir}/docs/interoperability.md")
+file(READ "${interoperability_document}" interoperability_content)
+set(previous_interoperability_section_offset -1)
+foreach(required_interoperability_section IN ITEMS
+        "## Current bundle and verification"
+        "## Schema compatibility"
+        "## Integrity and current evidence"
+        "## Work-product policy"
+        "## Recorded external cross-checks")
+    string(FIND "${interoperability_content}"
+        "${required_interoperability_section}" interoperability_section_offset)
+    if(interoperability_section_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing interoperability section: "
+            "${required_interoperability_section}")
+    endif()
+    if(interoperability_section_offset LESS_EQUAL
+       previous_interoperability_section_offset)
+        message(FATAL_ERROR
+            "Interoperability sections are out of order at: "
+            "${required_interoperability_section}")
+    endif()
+    set(previous_interoperability_section_offset
+        "${interoperability_section_offset}")
+endforeach()
+file(STRINGS "${interoperability_document}" interoperability_headings
+    REGEX "^### IX-[0-9]+: Schema [0-9]+$")
+if(NOT interoperability_headings)
+    message(FATAL_ERROR "No interoperability evidence records were found")
+endif()
+set(expected_interoperability_record 1)
+set(expected_interoperability_schema 7)
+foreach(heading IN LISTS interoperability_headings)
+    if(NOT heading MATCHES "^### IX-([0-9]+): Schema ([0-9]+)$")
+        message(FATAL_ERROR "Invalid interoperability heading: ${heading}")
+    endif()
+    set(interoperability_record_number "${CMAKE_MATCH_1}")
+    set(interoperability_schema_number "${CMAKE_MATCH_2}")
+    string(REGEX REPLACE "^0+" "" interoperability_record_number
+        "${interoperability_record_number}")
+    if(interoperability_record_number STREQUAL "")
+        set(interoperability_record_number 0)
+    endif()
+    if(NOT interoperability_record_number EQUAL
+       expected_interoperability_record OR
+       NOT interoperability_schema_number EQUAL
+       expected_interoperability_schema)
+        message(FATAL_ERROR
+            "Interoperability records must be contiguous from schema 7: "
+            "${heading}")
+    endif()
+    math(EXPR expected_interoperability_record
+        "${expected_interoperability_record} + 1")
+    math(EXPR expected_interoperability_schema
+        "${expected_interoperability_schema} + 1")
+endforeach()
+list(LENGTH interoperability_headings interoperability_record_count)
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"
@@ -564,4 +622,5 @@ message(STATUS
     "${implementation_reference_count} ordered implementation references, and "
     "${test_vector_record_count} ordered test-vector records, and "
     "${composition_history_count} ordered composition records, and "
-    "${readiness_history_count} ordered readiness records")
+    "${readiness_history_count} ordered readiness records, and "
+    "${interoperability_record_count} interoperability records")
