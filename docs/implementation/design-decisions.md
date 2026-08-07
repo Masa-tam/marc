@@ -8080,6 +8080,27 @@ lengths, and invalid tANS descriptor metadata; each must publish no raw byte and
 remain sticky. This changes no format, API, CLI, benchmark, `Ready` claim, or
 interoperability entry.
 
+## DD-624: LZMW tANS CLI is a public-only transaction
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add `lzmw-tans` as an explicit selector in the existing transactional CLI.
+Fix 65,536-byte raw frames and entropy blocks, `S = 4F = 262,144` canonical
+reference bytes, four tANS blocks, `528K = 2,112` descriptor bytes,
+`P = 12S/8 + 2K = 393,224` payload bytes, at most 65,536 generated entries,
+and a conservative 16-MiB aggregate policy.
+
+Initialize configuration, query all direction-specific byte extents and
+alignment, create the transform, process the file, and destroy the transform
+only through DD-621's C lifecycle. Do not reproduce private tANS-view,
+encoder-entry, phrase, expansion, or partition layouts. Retain destination
+overwrite refusal, strict trailing-data rejection, bounded 64-KiB I/O, sibling
+`.tmp` staging, deletion on failure, and rename only after complete success.
+Prove binary and empty round trips plus atomic malformed and trailing rejection.
+This changes no default selector, format, benchmark, `Ready` claim, or
+interoperability entry.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

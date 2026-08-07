@@ -3414,6 +3414,11 @@ has a compile-time ceiling, arbitrary input is truncated to 8,192 bytes,
 decoded output is capped at 4,096 bytes, and a checked call ceiling prevents
 nontermination. Input-derived chunks may vary scheduling but cannot resize any
 region.
+The transactional `lzmw-tans` CLI selector fixes 64-KiB raw frames and tANS
+blocks, the 262,144-byte canonical-reference ceiling, four block views, the
+393,224-byte payload ceiling, and a 16-MiB aggregate policy. It obtains every
+actual region from the public requirements query and preserves the shared
+write-temporary, rename-on-success protocol.
 The bounded fuzz boundary exercises both complete-frame private decoding and
 incremental stream decoding with fixed caller-owned arrays, input-derived
 finite chunk sizes, and a checked call ceiling. Serialized metadata can never

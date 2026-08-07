@@ -63,6 +63,11 @@ input-derived chunks and checks the public process invariants on every call.
 All storage still comes from the requirements query and is fixed before any
 untrusted stream byte is parsed.
 
+The `lzmw-tans` CLI selector uses this lifecycle exclusively. It queries and
+allocates all three regions for the chosen immutable direction, creates the
+opaque transform, processes the file, and destroys the transform without any
+private layout dependency.
+
 The [public-profile evidence matrix](baseline-readiness.md#public-profile-evidence-matrix)
 records which complete factories have format, streaming, tooling, fuzz, and
 completion coverage. It deliberately does not represent unpublished

@@ -24,7 +24,7 @@ public format or API guarantee yet.
 | LZ78 | `lz78` | `lz78-blocked-huffman` | `lz78-adaptive-huffman` | `lz78-dynamic-range` | `lz78-rans` | `lz78-tans` |
 | LZW | `lzw` | `lzw-blocked-huffman` | `lzw-adaptive-huffman` | `lzw-dynamic-range` | `lzw-rans` | `lzw-tans` |
 | LZD | `lzd` | `lzd-blocked-huffman` | `lzd-adaptive-huffman` | `lzd-dynamic-range` | `lzd-rans` | `lzd-tans` |
-| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | Specified |
+| LZMW | `lzmw` | `lzmw-blocked-huffman` | `lzmw-adaptive-huffman` | `lzmw-dynamic-range` | `lzmw-rans` | `lzmw-tans` |
 
 `lzmw-tans` is the sixth tANS composition with a reserved representation. LZMW
 finalizes canonical four-byte phrase references before tANS block coding. A
@@ -1066,10 +1066,11 @@ must not derive or persist its internal offsets.
 The LZMW plus tANS public lifecycle now has completion evidence for required
 binary classes, repeat determinism, one-byte and mixed chunk schedules, sticky
 end/error states, and frame-atomic rejection of a corrupt, truncated, or
-extended final frame. Fuzz, CLI, benchmark, and interoperability evidence are
-still separate required steps.
+extended final frame. Later paragraphs record the completed fuzz and CLI
+boundaries; benchmark and interoperability evidence remain separate steps.
 
 The cell now also has a fixed-memory dual-decoder fuzz target and deterministic
 regressions for all canonical truncations, saturated frame lengths, and invalid
-tANS descriptor metadata. CLI, benchmark, and interoperability evidence remain
-separate before the cell can be marked complete.
+tANS descriptor metadata. Its transactional CLI selector now uses only the
+public C lifecycle and preserves atomic file publication. Benchmark and
+interoperability evidence remain before the cell can be marked complete.

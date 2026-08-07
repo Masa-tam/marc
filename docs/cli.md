@@ -68,6 +68,7 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzmw-adaptive-huffman` | LZMW | Adaptive Huffman | FGK tree reset per outer frame |
 | `lzmw-dynamic-range` | LZMW | Dynamic Range | Adaptive order-0 model reset per outer frame |
 | `lzmw-rans` | LZMW | rANS | Scalar rANS model rebuilt per entropy block |
+| `lzmw-tans` | LZMW | tANS | Tabled model rebuilt per entropy block |
 
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
@@ -264,6 +265,14 @@ blocks, 2,112 descriptor bytes, and a 262,176-byte payload. It admits at most
 policy. Every direction-specific workspace extent and opaque alignment comes
 from the public C requirements query; the CLI does not reproduce private
 rANS-view, encoder-entry, phrase, or expansion-stack layouts.
+
+The `lzmw-tans` adapter uses 65,536-byte raw frames and entropy blocks. Its
+262,144-byte canonical LZMW reference ceiling produces at most four tANS
+blocks, 2,112 descriptor bytes, and a 393,224-byte payload. It admits at most
+65,536 configured dictionary entries under a conservative 16-MiB aggregate
+policy. Every direction-specific workspace extent and opaque alignment comes
+from the public C requirements query; the CLI does not reproduce private
+tANS-view, encoder-entry, phrase, or expansion-stack layouts.
 
 ## File and error behavior
 

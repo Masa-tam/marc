@@ -3242,6 +3242,19 @@ open-ended campaign. The entry caps arbitrary input at 8,192 bytes, output at
 4,096 bytes, frame size at 1,024 bytes, entropy views at eight blocks, and
 process calls at input plus output plus 32.
 
+For `lzmw-tans` CLI admission, reuse the repository-standard binary fixture
+formed by repeating `ABRACADABRA-0123456789\n` 320 times. Encode and decode
+with the explicit selector and compare the restored file byte for byte. Repeat
+encode to the same destination and require refusal. Decode
+`not-a-marc-stream` and a valid archive with one appended `x`; both must fail
+and leave neither the requested destination nor its sibling `.tmp`. Finally
+round-trip an empty file.
+
+The CLI profile fixes `F = 65,536`, `S = 262,144`, `K = 4`, descriptor bytes
+`528K = 2,112`, payload ceiling `12S/8 + 2K = 393,224`, at most 65,536
+generated entries, and a 16-MiB aggregate policy. Actual primary, secondary,
+and aligned opaque-view requirements must come only from the public C query.
+
 For the LZMW plus tANS C boundary, initialize an encode configuration in a
 pure C11 translation unit, reduce frame and entropy blocks to two bytes, and
 encode bytes `41 42 41 42 58` using only queried workspace. Initialize decode

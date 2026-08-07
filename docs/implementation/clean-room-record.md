@@ -8627,6 +8627,33 @@ discarded and the reviewed seed retained.
   4.3.4; all forty-one benchmark smokes, schemas 1 through 30 compatibility,
   and documentation-layout checks remained successful.
 
+## 2026-08-08 - LZMW plus tANS transactional CLI selector
+
+- Authoring method: added one enum and dispatch path to marc's existing
+  publish-on-success file adapter using only DD-621's public lifecycle under
+  DD-624.
+- References used: DD-624, DD-621, local fixed profile arithmetic, public
+  configuration/query/factory/process/destroy calls, and the repository CLI
+  regression script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, combined-codec adapters, private allocation layouts, command syntax,
+  source code, malformed corpora, and test suites.
+- Independent decisions: fix 64-KiB frames and blocks; admit the exact
+  262,144-byte reference and 393,224-byte tANS payload ceilings; retain the
+  16-MiB aggregate policy; obtain all real regions from the public query; and
+  preserve the shared temporary-file transaction.
+- Generated-code task description: add selector parsing, usage, public-only
+  configuration/query/factory routing, binary/empty/malformed/trailing CLI
+  regression, and synchronize affected design and evidence records.
+- Similarity review: the adapter adds only one local enum path and public
+  symbol family to marc's existing CLI lifecycle. No external control flow,
+  allocation scheme, capacity expression, naming, or assertion was compared.
+- Local validation: the focused transactional CLI regression passed under both
+  MSVC and ClangCL. The complete Release suite passed 2,354/2,354 under both
+  compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference

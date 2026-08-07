@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the transactional `lzmw-tans` CLI selector. It obtains every workspace
+  extent from the public C lifecycle and leaves no destination or temporary
+  file after malformed or trailing input.
 - Added the fixed-memory dual-decoder `lzmw-tans` fuzz boundary and permanent
   atomic regressions for every canonical truncation, saturated frame extents,
   and invalid tANS descriptor metadata.

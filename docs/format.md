@@ -5365,6 +5365,12 @@ The LZMW plus tANS fuzz boundary changes no representation. Arbitrary bytes are
 interpreted only by the ordinary strict prefix, frame, tANS, and LZMW parsers
 under fixed local limits; rejected bytes do not define an alternate format.
 
+The explicit `lzmw-tans` CLI selector uses this unchanged representation with
+65,536-byte outer frames and tANS blocks, a 262,144-byte canonical-reference
+ceiling, four 528-byte descriptors, a 393,224-byte payload ceiling, the public
+LZMW maximum-entry default, and a 16-MiB aggregate internal policy. These are
+application limits and add no stream field or variant.
+
 The internal LZMW plus tANS profile calculator changes no serialized byte.
 For largest raw frame `F`, canonical reference capacity is `S = 4F`, block
 count is `K = ceil(S/B)`, descriptor capacity is `528K`, and each tANS payload
