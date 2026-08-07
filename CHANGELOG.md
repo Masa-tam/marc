@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the `lzmw-tans` public-ABI completion matrix covering required binary
+  classes, deterministic chunk-independent streams, sticky terminal states,
+  and frame-atomic rejection of corruption, truncation, and trailing data.
 - Added the size-tagged `marc_lzmw_tans_*` C configuration, workspace query,
   and immutable-direction factory over the existing bounded streaming pair.
 - Added the internal `lzmw-tans` profile calculator. It derives the canonical

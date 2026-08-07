@@ -53,6 +53,11 @@ C ABI configuration, and complete test surface to be fixed together. A
 standalone factory therefore does not imply that every cross-product pairing is
 already a supported public profile.
 
+`marc_lzmw_tans_*` has public-lifecycle completion evidence for deterministic
+known-size encoding, arbitrary input/output chunking, sticky terminal status,
+and frame-atomic malformed-stream rejection. The evidence uses only the public
+requirements, create, process, and destroy calls.
+
 The [public-profile evidence matrix](baseline-readiness.md#public-profile-evidence-matrix)
 records which complete factories have format, streaming, tooling, fuzz, and
 completion coverage. It deliberately does not represent unpublished

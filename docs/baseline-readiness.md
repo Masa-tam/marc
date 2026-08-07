@@ -1102,3 +1102,9 @@ from queried storage, proves a binary multi-frame round trip, and rejects short
 or misaligned workspace plus nonzero reserved configuration. CLI, benchmark,
 fuzz regression, completion matrix, and interoperability evidence remain
 outstanding, so this addition alone does not mark the cell complete.
+
+The public-ABI completion matrix is also present. It covers empty and binary
+classes, every one-byte value, frame-boundary lengths, deterministic repeated
+encoding, one-byte and mixed chunking, sticky terminal results, and a malformed
+fourth frame that cannot publish bytes beyond three completed frames. Fuzz,
+CLI, benchmark, and interoperability evidence remain before `Ready`.

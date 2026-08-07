@@ -3796,3 +3796,8 @@ configuration into that profile. Its requirements query returns primary,
 secondary, and aligned opaque-view extents; its factory validates those exact
 regions and constructs one immutable encode or decode transform. No C++ record
 type, constructor, span, exception, or allocation layout crosses the ABI.
+
+The public-ABI completion boundary exercises only that adapter. It fixes
+64-byte raw and entropy blocks, proves byte-identical output across repeated
+and arbitrarily chunked calls, and verifies that a malformed fourth frame
+cannot publish its final raw byte after three valid frames have committed.

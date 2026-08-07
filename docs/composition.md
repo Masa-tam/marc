@@ -1062,3 +1062,9 @@ path for this composition. Query requirements separately for the immutable
 direction, allocate the returned primary, secondary, and aligned views
 regions, then create the transform. The views region remains opaque; consumers
 must not derive or persist its internal offsets.
+
+The LZMW plus tANS public lifecycle now has completion evidence for required
+binary classes, repeat determinism, one-byte and mixed chunk schedules, sticky
+end/error states, and frame-atomic rejection of a corrupt, truncated, or
+extended final frame. Fuzz, CLI, benchmark, and interoperability evidence are
+still separate required steps.

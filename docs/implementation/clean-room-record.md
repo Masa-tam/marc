@@ -8573,6 +8573,32 @@ discarded and the reviewed seed retained.
   1 through 30 compatibility, and documentation-layout checks remained
   successful.
 
+## 2026-08-08 - LZMW plus tANS public-ABI completion matrix
+
+- Authoring method: instantiated marc's repository-owned public completion
+  harness through DD-621 under DD-622 after proving its fixed reference bound
+  equals the reviewed LZD schedule.
+- References used: DD-622, DD-621, local LZMW `4F` ceiling, local tANS block
+  ceiling, and the repository-authored LZD public completion harness.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE conformance suites, encoded corpora, malformed corpora, source code, and
+  test matrices.
+- Independent decisions: keep the complete existing binary, boundary,
+  chunking, terminal, and malformed schedules; change only public symbol names;
+  and document why the fixed 256-byte workspace schedule remains exact.
+- Generated-code task description: add the minimal symbol-family wrapper,
+  prove required data and deterministic chunking, require frame-atomic sticky
+  rejection of corrupt, truncated, and trailing final input, and synchronize
+  all affected evidence records.
+- Similarity review: the wrapper contains only local capacity macros and C
+  symbol substitutions over a repository-owned harness. No external test
+  structure, data schedule, mutation site, naming, or assertion was compared.
+- Local validation: all three focused public-completion groups passed under
+  both MSVC and ClangCL. The complete Release suite passed 2,350/2,350 under
+  both compilers using official CMake 4.3.4; all forty-one benchmark smokes,
+  schemas 1 through 30 compatibility, and documentation-layout checks remained
+  successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference

@@ -1344,6 +1344,7 @@ if(MARC_BUILD_TESTS)
         tests/lzmw_tans_frame_streaming_encoder_tests.cpp
         tests/lzmw_tans_frame_streaming_decoder_tests.cpp
         tests/lzmw_tans_profile_tests.cpp
+        tests/lzmw_tans_completion_tests.cpp
         tests/lzmw_rans_frame_streaming_decoder_tests.cpp
         tests/lzmw_rans_profile_tests.cpp
         tests/lzmw_rans_completion_tests.cpp

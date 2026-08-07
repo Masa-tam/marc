@@ -5357,6 +5357,10 @@ dictionary algorithm LZMW variant 1 and entropy algorithm tANS variant 1 with
 the configured known original size, frame size, entropy block size, and LZMW
 entry limit. It adds no field, alternate representation, or format variant.
 
+The public completion matrix changes no bytes. Its fixed 64-byte profile uses
+the existing `S <= 4F`, `K = ceil(S/64)`, `528K` descriptor, and blockwise
+`2 + ceil(12n/8)` tANS payload bounds solely to size test output safely.
+
 The internal LZMW plus tANS profile calculator changes no serialized byte.
 For largest raw frame `F`, canonical reference capacity is `S = 4F`, block
 count is `K = ceil(S/B)`, descriptor capacity is `528K`, and each tANS payload

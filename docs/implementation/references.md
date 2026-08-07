@@ -1562,6 +1562,12 @@ opaque transform lifecycle, fixed-width ABI conventions, and the local bounded
 streaming pair. No external C wrapper, configuration layout, allocation
 protocol, source code, encoded corpus, or test suite was consulted.
 
+The LZMW plus tANS public completion matrix uses only DD-622, DD-621, the
+repository-owned LZD completion harness, and the proven equality of the two
+256-byte reference ceilings at the fixed 64-byte frame. No external corpus,
+combined-codec test matrix, malformed data, source code, or test suite was
+consulted.
+
 The LZ77 plus tANS reserved representation uses only DD-537, marc's already
 documented LZ77 variant 1 token grammar, tabled tANS variant 1, generic frame
 format, checked arithmetic rules, and repository-authored standalone encoders.

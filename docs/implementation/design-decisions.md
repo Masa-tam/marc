@@ -8038,6 +8038,26 @@ a pure C11 translation unit with round trip and negative workspace cases. This
 changes no format and adds no CLI, benchmark, fuzz target, completion claim, or
 interoperability entry.
 
+## DD-622: LZMW tANS public completion reuses equivalent bounds
+
+- Date: 2026-08-08
+- Status: accepted
+
+Apply the reviewed public-ABI completion matrix through only the DD-621 symbol
+family. Fix raw frames and tANS blocks to 64 bytes. At that frame size LZMW's
+`4F` reference ceiling and LZD's `8 * ceil(F/2)` ceiling are both exactly 256
+bytes, so the existing tANS capacity, data, chunking, terminal, and malformed
+schedules can be reused without weakening or approximating a bound.
+
+Prove empty input, every one-byte value, all byte values, repetitive and
+patterned inputs, deterministic generated data, and lengths 63, 64, and 65.
+Require repeated encoding and `(1,1)`, `(7,5)`, and `(13,17)` schedules to
+produce identical streams and raw output. Corrupt the fourth frame sequence,
+truncate its final byte, and append trailing data independently; each failure
+must commit exactly the first three frames, preserve the final output sentinel,
+and repeat the same sticky status and positions. This adds no format, CLI,
+benchmark, fuzz target, `Ready` claim, or interoperability entry.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07
