@@ -10,8 +10,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added interoperability schema 31 as the frozen schema-30 archive order plus
   `lzmw-tans` exactly once. Local generation, strict-order verification,
   byte-identical re-encoding, reordered-manifest rejection, and schemas 1
-  through 30 compatibility pass for all 42 archives; external exchange remains
-  a post-push release check.
+  through 30 compatibility pass for all 42 archives. Four-direction exchange
+  at revision `903181080556c3bb511ad4a2e5275837ebda48e7` proves canonical
+  output across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+  x86-64 producers.
 - Added the dependency-free `lzmw-tans` benchmark adapter. It uses only the
   public C lifecycle, checks `80 + 6N + 2176K` complete-stream capacity,
   requires a byte-exact round trip before timing, and reports ratio,

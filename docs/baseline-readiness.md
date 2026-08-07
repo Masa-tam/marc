@@ -77,7 +77,10 @@ regressions, a transactional CLI selector, and a verification-first benchmark.
 Schema 31 now supplies local generation, exact-order verification,
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1
 through 30 compatibility. External cross-platform exchange remains release
-evidence rather than a local readiness requirement.
+evidence rather than a local readiness requirement. That exchange has now
+passed in all four directions at revision
+`903181080556c3bb511ad4a2e5275837ebda48e7` for all 42 archives across the
+recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
 `lzd-tans` is the completed preceding admission composition. It has bounded
 complete-frame validation, private raw decoding,
@@ -1097,8 +1100,8 @@ The LZMW plus tANS cell now has a checked internal profile calculator in
 addition to complete-frame and bounded streaming transforms. It derives all
 caller-owned storage and proves that those requirements construct a real
 streaming round trip. Later paragraphs record the public lifecycle, completion,
-fuzz, CLI, and benchmark evidence; interoperability evidence remains before
-the cell is marked complete.
+fuzz, CLI, benchmark, and completed schema-31 interoperability evidence; the
+cell is locally Ready with its recorded external x86-64 exchange complete.
 
 The public C lifecycle is now present: its C11 test constructs both directions
 from queried storage, proves a binary multi-frame round trip, and rejects short
@@ -1123,4 +1126,5 @@ overwrite, and temporary-file regression passes under both local compilers.
 The dependency-free benchmark now uses the same public-only profile, verifies
 an exact round trip before timing, checks `80 + 6N + 2176K` complete-stream
 capacity, and reports both directional three-region workspaces. The remaining
-release-evidence step is external interoperability exchange.
+release-evidence step completed in all four directions at revision
+`903181080556c3bb511ad4a2e5275837ebda48e7` for all 42 archives.

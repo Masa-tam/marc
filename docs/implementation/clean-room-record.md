@@ -8706,7 +8706,12 @@ discarded and the reviewed seed retained.
   manifest rejection, and schemas 1 through 30 restoration passed under both
   MSVC and ClangCL. The complete Release suite passed 2,355/2,355 under both
   compilers using official CMake 4.3.4; all forty-two benchmark smokes and
-  documentation-layout checks remained successful.
+  documentation-layout checks remained successful. External four-direction
+  verification at revision `903181080556c3bb511ad4a2e5275837ebda48e7`
+  completed all schema-31 paths: Windows/MSVC and Ubuntu 24.04 artifacts
+  decoded and re-encoded identically on Ubuntu 26.04/Clang; the Ubuntu 26.04
+  bundle self-verified and decoded and re-encoded identically on Windows/MSVC.
+  Every pass verified all 42 archives.
 
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 

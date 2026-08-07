@@ -3432,7 +3432,10 @@ forty-two archives before recording size and SHA-256. Verification requires
 exact order, hashes, foreign decode equality, and byte-identical local
 re-encoding; compatibility rejects reordered schema 31, removes only
 `lzmw-tans` to recover schema 30, and then checks every frozen schema through
-version 1. External four-direction exchange remains a post-push check.
+version 1. External four-direction verification at revision
+`903181080556c3bb511ad4a2e5275837ebda48e7` confirms all 42 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers, including byte-identical re-encoding in both platform directions.
 The bounded fuzz boundary exercises both complete-frame private decoding and
 incremental stream decoding with fixed caller-owned arrays, input-derived
 finite chunk sizes, and a checked call ceiling. Serialized metadata can never

@@ -8138,6 +8138,12 @@ rejects a reordered schema-31 manifest, derives schema 30 by removing only
 changes no codec representation. External cross-platform evidence remains a
 post-push release check.
 
+That release check completed at revision
+`903181080556c3bb511ad4a2e5275837ebda48e7`: the Windows/MSVC and Ubuntu
+24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+bundle verified locally and on Windows/MSVC. Every pass decoded and
+byte-identically re-encoded all 42 archives.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

@@ -1077,5 +1077,7 @@ capacity, requires an untimed exact round trip, and reports all queried
 workspace regions. Interoperability schema 31 appends the unchanged CLI
 archive once after the frozen schema-30 order. Local generation, exact-order
 verification, byte-identical re-encoding, reordered-manifest rejection, and
-schemas 1 through 30 compatibility pass. External four-direction verification
-remains pending.
+schemas 1 through 30 compatibility pass. Four-direction verification at
+revision `903181080556c3bb511ad4a2e5275837ebda48e7` establishes canonical
+output for all 42 archives across the recorded Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
