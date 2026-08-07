@@ -25,6 +25,8 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 
 ## Profiles
 
+### Profile inventory
+
 | CLI name | Dictionary | Entropy | Notes |
 |---|---|---|---|
 | `checksum-raw` | None | None | Version 1.1 raw framing with mandatory per-frame CRC-32C |
@@ -70,8 +72,12 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzmw-rans` | LZMW | rANS | Scalar rANS model rebuilt per entropy block |
 | `lzmw-tans` | LZMW | tANS | Tabled model rebuilt per entropy block |
 
+### Common stream rules
+
 Except for `checksum-raw`, these profiles use the current version 1 stream
 representation described in the [format specification](format.md).
+
+### LZ77 profile parameters
 
 The `lz77-adaptive-huffman` adapter uses 65,536-byte raw frames, at most
 1,048,576 canonical LZ77 token bytes, and the conservative 33-byte-per-token
@@ -97,6 +103,8 @@ tANS blocks, 8,448 descriptor bytes, and a 1,572,896-byte payload. The complete
 encoder-side simultaneous-workspace policy is 2,695,512 bytes. All actual
 workspace extents and opaque decoder-view alignment come from the public C ABI
 requirements query.
+
+### LZSS profile parameters
 
 The `lzss-adaptive-huffman` adapter likewise uses 65,536-byte raw frames. Its
 exact LZSS worst case is 131,072 canonical token bytes and its conservative
@@ -126,6 +134,8 @@ encoder aggregate is 394,332 bytes; the shared configuration uses a
 conservative 512-KiB internal-buffer policy so decoder views remain opaque.
 Every directional extent and alignment comes from the public C ABI
 requirements query.
+
+### LZ78 profile parameters
 
 The `lz78-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the eight-byte-per-raw-byte LZ78 token bound, at most 128
@@ -160,6 +170,8 @@ most 65,536 phrase entries and uses a conservative 4-MiB aggregate policy.
 Every direction-specific workspace extent and opaque alignment comes from the
 public C ABI requirements query; the CLI does not reproduce private tANS-view
 or LZ78 record layouts.
+
+### LZW profile parameters
 
 The `lzw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the two-byte-per-raw-byte packed LZW bound, at most 32 entropy
@@ -196,6 +208,8 @@ At most 65,280 generated entries are admitted under a conservative 8-MiB
 aggregate policy. Every direction-specific byte extent and opaque alignment
 comes from the public C requirements query; the CLI does not reproduce private
 LZW entry, phrase, or tANS-view layouts.
+
+### LZD profile parameters
 
 The `lzd-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the exact four-byte-per-raw-byte worst-case LZD token bound,
@@ -234,6 +248,8 @@ public maximum-entry default and a conservative 16-MiB aggregate policy. Every
 direction-specific extent and opaque alignment comes from the public
 requirements query; the CLI does not reproduce tANS-view, encoder-entry,
 phrase, expansion-stack, or partition layouts.
+
+### LZMW profile parameters
 
 The `lzmw-blocked-huffman` adapter uses one-MiB raw frames, 65,536-symbol
 entropy blocks, the exact four-byte-per-raw-byte fixed-reference bound, at most

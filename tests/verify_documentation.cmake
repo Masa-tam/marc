@@ -565,6 +565,94 @@ foreach(heading IN LISTS interoperability_headings)
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 
+set(cli_document "${source_dir}/docs/cli.md")
+file(READ "${cli_document}" cli_content)
+set(previous_cli_section_offset -1)
+foreach(required_cli_section IN ITEMS
+        "## Usage"
+        "## Profiles"
+        "### Profile inventory"
+        "### Common stream rules"
+        "### LZ77 profile parameters"
+        "### LZSS profile parameters"
+        "### LZ78 profile parameters"
+        "### LZW profile parameters"
+        "### LZD profile parameters"
+        "### LZMW profile parameters"
+        "## File and error behavior")
+    string(FIND "${cli_content}" "${required_cli_section}"
+        cli_section_offset)
+    if(cli_section_offset EQUAL -1)
+        message(FATAL_ERROR "Missing CLI section: ${required_cli_section}")
+    endif()
+    if(cli_section_offset LESS_EQUAL previous_cli_section_offset)
+        message(FATAL_ERROR
+            "CLI sections are out of order at: ${required_cli_section}")
+    endif()
+    set(previous_cli_section_offset "${cli_section_offset}")
+endforeach()
+file(STRINGS "${cli_document}" cli_profile_rows
+    REGEX "^\\| `[a-z0-9-]+` \\|")
+list(LENGTH cli_profile_rows cli_profile_count)
+if(NOT cli_profile_count EQUAL 42)
+    message(FATAL_ERROR
+        "CLI profile inventory must contain 42 profiles, found "
+        "${cli_profile_count}")
+endif()
+
+set(c_api_document "${source_dir}/docs/c-api.md")
+file(READ "${c_api_document}" c_api_content)
+set(previous_c_api_section_offset -1)
+foreach(required_c_api_section IN ITEMS
+        "## Profiles and composition"
+        "## Lifecycle"
+        "### Common lifecycle"
+        "### LZ77 profiles"
+        "### LZSS profiles"
+        "### LZ78 profiles"
+        "### LZW profiles"
+        "### LZD profiles"
+        "### LZMW profiles"
+        "## Processing contract"
+        "## Configuration rules")
+    string(FIND "${c_api_content}" "${required_c_api_section}"
+        c_api_section_offset)
+    if(c_api_section_offset EQUAL -1)
+        message(FATAL_ERROR "Missing C API section: ${required_c_api_section}")
+    endif()
+    if(c_api_section_offset LESS_EQUAL previous_c_api_section_offset)
+        message(FATAL_ERROR
+            "C API sections are out of order at: ${required_c_api_section}")
+    endif()
+    set(previous_c_api_section_offset "${c_api_section_offset}")
+endforeach()
+string(FIND "${c_api_content}" "same forty-two"
+    c_api_profile_count_offset)
+if(c_api_profile_count_offset EQUAL -1)
+    message(FATAL_ERROR "C API profile count is stale")
+endif()
+foreach(prohibited_c_api_history IN ITEMS
+        "completion matrix"
+        "Interoperability schema"
+        "CLI selector"
+        "fuzz harness")
+    string(FIND "${c_api_content}" "${prohibited_c_api_history}"
+        prohibited_c_api_history_offset)
+    if(NOT prohibited_c_api_history_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Historical evidence is mixed into the C API reference: "
+            "${prohibited_c_api_history}")
+    endif()
+endforeach()
+file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
+    REGEX "^MARC_API marc_status marc_.*_config_init\\(")
+list(LENGTH c_api_config_initializers c_api_profile_count)
+if(NOT c_api_profile_count EQUAL cli_profile_count)
+    message(FATAL_ERROR
+        "C API initializer count ${c_api_profile_count} does not match "
+        "CLI profile count ${cli_profile_count}")
+endif()
+
 set(releasing_document "${source_dir}/docs/releasing.md")
 file(READ "${releasing_document}" releasing_content)
 set(previous_releasing_section_offset -1)
