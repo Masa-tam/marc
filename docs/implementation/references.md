@@ -140,6 +140,11 @@ vectors are independently specified. No LZW implementation source,
 source-derived pseudocode, external container format, or test suite was
 consulted.
 
+The LZMW plus tANS bounded fuzz boundary uses only DD-623, DD-615, DD-619,
+DD-621, marc's local fixed-memory LZMW/rANS harness, and the local tANS adapter
+pattern. No external fuzz harness, corpus, mutation dictionary, malformed
+stream, source code, or test suite was consulted.
+
 The LZ78 plus Adaptive Huffman profile and typed workspace partition use only
 DD-309, marc's LZ78 entry types and sizing rules, Adaptive worst-case bound,
 checked arithmetic, and existing first-party profile conventions. No external

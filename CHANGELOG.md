@@ -7,6 +7,9 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the fixed-memory dual-decoder `lzmw-tans` fuzz boundary and permanent
+  atomic regressions for every canonical truncation, saturated frame extents,
+  and invalid tANS descriptor metadata.
 - Added the `lzmw-tans` public-ABI completion matrix covering required binary
   classes, deterministic chunk-independent streams, sticky terminal states,
   and frame-atomic rejection of corruption, truncation, and trailing data.

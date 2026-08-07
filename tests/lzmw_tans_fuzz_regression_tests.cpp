@@ -1,0 +1,22 @@
+#include "frame/lzmw_rans_frame_streaming_decoder.hpp"
+#include "frame/lzmw_rans_frame_streaming_encoder.hpp"
+#include "frame/lzmw_tans_frame_streaming_decoder.hpp"
+#include "frame/lzmw_tans_frame_streaming_encoder.hpp"
+
+#define rans tans
+#define RansBlockView TansBlockView
+#define LzmwRansFrameStreamingEncoder LzmwTansFrameStreamingEncoder
+#define LzmwRansFrameStreamingDecoder LzmwTansFrameStreamingDecoder
+#define lzmw_rans_stream_prefix_size lzmw_tans_stream_prefix_size
+#define LzmwRansFuzzRegression LzmwTansFuzzRegression
+#define NonzeroDescriptorReservedByteIsAtomic InvalidDescriptorIsAtomic
+
+#include "lzmw_rans_fuzz_regression_tests.cpp"
+
+#undef NonzeroDescriptorReservedByteIsAtomic
+#undef LzmwRansFuzzRegression
+#undef lzmw_rans_stream_prefix_size
+#undef LzmwRansFrameStreamingDecoder
+#undef LzmwRansFrameStreamingEncoder
+#undef RansBlockView
+#undef rans

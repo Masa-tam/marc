@@ -3407,6 +3407,13 @@ The completion boundary exercises only that public C lifecycle. It fixes
 64-byte raw frames and proves byte-identical output across repeated and
 arbitrarily chunked calls, then demonstrates that a malformed fourth frame
 cannot publish its final raw byte after three valid frames have committed.
+
+The bounded fuzz boundary exercises both the private complete-frame decoder
+and the public incremental stream decoder. Every byte and typed-record region
+has a compile-time ceiling, arbitrary input is truncated to 8,192 bytes,
+decoded output is capped at 4,096 bytes, and a checked call ceiling prevents
+nontermination. Input-derived chunks may vary scheduling but cannot resize any
+region.
 The bounded fuzz boundary exercises both complete-frame private decoding and
 incremental stream decoding with fixed caller-owned arrays, input-derived
 finite chunk sizes, and a checked call ceiling. Serialized metadata can never

@@ -1068,3 +1068,8 @@ binary classes, repeat determinism, one-byte and mixed chunk schedules, sticky
 end/error states, and frame-atomic rejection of a corrupt, truncated, or
 extended final frame. Fuzz, CLI, benchmark, and interoperability evidence are
 still separate required steps.
+
+The cell now also has a fixed-memory dual-decoder fuzz target and deterministic
+regressions for all canonical truncations, saturated frame lengths, and invalid
+tANS descriptor metadata. CLI, benchmark, and interoperability evidence remain
+separate before the cell can be marked complete.

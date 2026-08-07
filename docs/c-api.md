@@ -58,6 +58,11 @@ known-size encoding, arbitrary input/output chunking, sticky terminal status,
 and frame-atomic malformed-stream rejection. The evidence uses only the public
 requirements, create, process, and destroy calls.
 
+The corresponding fuzz harness drives the same public decoder from bounded,
+input-derived chunks and checks the public process invariants on every call.
+All storage still comes from the requirements query and is fixed before any
+untrusted stream byte is parsed.
+
 The [public-profile evidence matrix](baseline-readiness.md#public-profile-evidence-matrix)
 records which complete factories have format, streaming, tooling, fuzz, and
 completion coverage. It deliberately does not represent unpublished

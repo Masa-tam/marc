@@ -3229,6 +3229,19 @@ stream's final byte, and append one zero independently. Each case must publish
 the first 192 raw bytes, preserve the last sentinel, and repeat the same sticky
 terminal status and error positions.
 
+For LZMW plus tANS fuzz regressions, encode canonical raw bytes
+`41 42 41 42 58` with the repository streaming encoder. Present every strict
+prefix of that stream independently to a fresh bounded decoder and require
+zero output, terminal error, unchanged sentinels, and repeated sticky status
+and position. Independently overwrite generic frame bytes 16 through 39 with
+`FF`, then alter descriptor byte 10; both complete streams must fail with the
+same atomic and sticky guarantees.
+
+Compile the fuzz entry under both strict local toolchains without executing an
+open-ended campaign. The entry caps arbitrary input at 8,192 bytes, output at
+4,096 bytes, frame size at 1,024 bytes, entropy views at eight blocks, and
+process calls at input plus output plus 32.
+
 For the LZMW plus tANS C boundary, initialize an encode configuration in a
 pure C11 translation unit, reduce frame and entropy blocks to two bytes, and
 encode bytes `41 42 41 42 58` using only queried workspace. Initialize decode

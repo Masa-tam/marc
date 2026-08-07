@@ -5361,6 +5361,10 @@ The public completion matrix changes no bytes. Its fixed 64-byte profile uses
 the existing `S <= 4F`, `K = ceil(S/64)`, `528K` descriptor, and blockwise
 `2 + ceil(12n/8)` tANS payload bounds solely to size test output safely.
 
+The LZMW plus tANS fuzz boundary changes no representation. Arbitrary bytes are
+interpreted only by the ordinary strict prefix, frame, tANS, and LZMW parsers
+under fixed local limits; rejected bytes do not define an alternate format.
+
 The internal LZMW plus tANS profile calculator changes no serialized byte.
 For largest raw frame `F`, canonical reference capacity is `S = 4F`, block
 count is `K = ceil(S/B)`, descriptor capacity is `528K`, and each tANS payload

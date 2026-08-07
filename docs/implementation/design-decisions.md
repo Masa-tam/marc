@@ -8058,6 +8058,28 @@ must commit exactly the first three frames, preserve the final output sentinel,
 and repeat the same sticky status and positions. This adds no format, CLI,
 benchmark, fuzz target, `Ready` claim, or interoperability entry.
 
+## DD-623: LZMW tANS fuzzing is bounded before parsing
+
+- Date: 2026-08-08
+- Status: accepted
+
+Add a dual-path decoder fuzz entry above DD-615, DD-619, and DD-621. Cap the
+supplied input at 8,192 bytes. Exercise the complete-frame private decoder only
+after the ordinary prefix and LZMW parameter parsers accept the fixed profile.
+Exercise the public incremental decoder with input-derived chunks, at most
+4,096 published raw bytes, and a call ceiling of bounded input plus bounded
+output plus 32. Allocate all encoded, canonical-reference, raw, tANS-view,
+phrase, and expansion regions as fixed arrays before parsing.
+
+Abort the harness only for violated API invariants, impossible queried extents,
+construction failure under the fixed valid configuration, progress without
+counts, renewed input demand after final input, or exhaustion of the call
+ceiling. Treat ordinary malformed-stream status as expected. Add deterministic
+regressions for every truncation of a canonical stream, saturated generic frame
+lengths, and invalid tANS descriptor metadata; each must publish no raw byte and
+remain sticky. This changes no format, API, CLI, benchmark, `Ready` claim, or
+interoperability entry.
+
 ## DD-620: LZMW tANS profile couples conservative storage
 
 - Date: 2026-08-07

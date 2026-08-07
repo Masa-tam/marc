@@ -1108,3 +1108,10 @@ classes, every one-byte value, frame-boundary lengths, deterministic repeated
 encoding, one-byte and mixed chunking, sticky terminal results, and a malformed
 fourth frame that cannot publish bytes beyond three completed frames. Fuzz,
 CLI, benchmark, and interoperability evidence remain before `Ready`.
+
+The decoder fuzz boundary is now present. It caps input, output, every byte and
+typed workspace, and total process calls before parsing arbitrary data. Its
+compile-smoke passes under both local compilers, while permanent ordinary tests
+prove atomic rejection of every canonical truncation, saturated frame extents,
+and an invalid tANS descriptor. No open-ended fuzz run is release evidence by
+itself; CLI, benchmark, and interoperability remain outstanding.

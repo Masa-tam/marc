@@ -8599,6 +8599,34 @@ discarded and the reviewed seed retained.
   schemas 1 through 30 compatibility, and documentation-layout checks remained
   successful.
 
+## 2026-08-08 - LZMW plus tANS bounded decoder fuzz boundary
+
+- Authoring method: adapted marc's local fixed-memory LZMW/rANS dual-decoder
+  harness to the already specified tANS boundary under DD-623, with no external
+  corpus or implementation reference.
+- References used: DD-623, DD-615, DD-619, DD-621, local LZMW/tANS frame and
+  streaming decoders, checked public requirements, and repository-owned fuzz
+  harness conventions.
+- Known implementations intentionally not consulted: external LZMW/tANS or
+  FSE fuzz targets, corpora, mutation dictionaries, malformed samples, source
+  code, and test suites.
+- Independent decisions: fix every workspace before parsing; bound input,
+  output, and calls; exercise private complete-frame and public incremental
+  paths; abort only on harness/API invariant violation; and retain every found
+  boundary as an ordinary deterministic regression.
+- Generated-code task description: add the bounded dual-decoder entry,
+  strict-warning compile-smoke, canonical truncation, saturated-length, and
+  invalid-descriptor regressions, and synchronize all affected evidence.
+- Similarity review: only repository-local symbol substitutions and fixed
+  bounds connect the existing local harness to tANS. No external control flow,
+  capacity, mutation schedule, corpus, naming, or assertion was compared.
+- Local validation: the fixed-memory fuzz entry compiled under strict warnings
+  with both MSVC and ClangCL; no open-ended fuzz campaign was run. The three
+  focused deterministic regressions passed under both compilers. The complete
+  Release suite passed 2,353/2,353 under both compilers using official CMake
+  4.3.4; all forty-one benchmark smokes, schemas 1 through 30 compatibility,
+  and documentation-layout checks remained successful.
+
 ## 2026-08-07 - LZMW plus tANS profile and workspace layout
 
 - Authoring method: combined marc's independently specified LZMW reference
