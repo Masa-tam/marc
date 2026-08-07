@@ -298,6 +298,30 @@ foreach(format_profile IN LISTS expected_format_profiles)
     set(previous_format_profile_offset "${format_profile_offset}")
 endforeach()
 
+set(readme_document "${source_dir}/README.md")
+file(READ "${readme_document}" readme_content)
+foreach(required_readme_status IN ITEMS
+        "All forty-two profiles are exposed"
+        "all forty-two benchmark-admitted")
+    string(FIND "${readme_content}" "${required_readme_status}"
+        readme_status_offset)
+    if(readme_status_offset EQUAL -1)
+        message(FATAL_ERROR
+            "README current-profile status is missing: ${required_readme_status}")
+    endif()
+endforeach()
+foreach(obsolete_readme_status IN ITEMS
+        "All thirty-nine profiles"
+        "all thirty-nine benchmark-admitted"
+        "LZ77, LZSS, and LZ78 are composed with tANS")
+    string(FIND "${readme_content}" "${obsolete_readme_status}"
+        obsolete_readme_status_offset)
+    if(NOT obsolete_readme_status_offset EQUAL -1)
+        message(FATAL_ERROR
+            "README retains obsolete profile status: ${obsolete_readme_status}")
+    endif()
+endforeach()
+
 file(GLOB_RECURSE documentation_files "${source_dir}/docs/*.md")
 list(APPEND documentation_files
     "${source_dir}/README.md"

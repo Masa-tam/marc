@@ -5,21 +5,18 @@
 [![CI](https://github.com/Masa-tam/marc/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Masa-tam/marc/actions/workflows/ci.yml)
 
 `marc` is a C++20 framework for independently designed, streaming lossless
-compression components. Its public version 1 profiles include five standalone
-entropy codecs, all six required dictionary codecs, and every required
-dictionary codec composed with Blocked Huffman. A version 1.1 raw framing
-profile with mandatory per-frame CRC-32C and all six dictionary codecs composed
-with Adaptive Huffman are also available. All six dictionary codecs are
-additionally composed with Dynamic Range and rANS, and LZ77, LZSS, and LZ78
-are composed with tANS. All thirty-nine profiles are exposed through a small C
-ABI and the command-line tool. The format and API are still under development
-and version 0.x streams are not yet promised long-term compatibility.
+compression components. Its public surface includes five standalone entropy
+codecs, all six required standalone dictionary codecs, every one of the thirty
+dictionary/entropy pairings, and a version 1.1 `checksum-raw` framing profile
+with mandatory per-frame CRC-32C. All forty-two profiles are exposed through a
+small C ABI and the command-line tool. The format and API are still under
+development and version 0.x streams are not yet promised long-term
+compatibility.
 
 The [documentation index](docs/README.md) separates library and format guides
 from validation material and chronological implementation records.
-The [composition matrix](docs/composition.md) distinguishes currently published
-profiles from byte-stream pairings whose components exist but whose public
-contracts are not yet defined.
+The [composition matrix](docs/composition.md) records the current published
+pairings and the staged development history behind their admission.
 User-visible release contents are recorded in the
 [changelog](CHANGELOG.md); maintainer release gates are defined in the
 [release process](docs/releasing.md).
@@ -75,7 +72,7 @@ target_link_libraries(my_program PRIVATE marc::shared) # or marc::static
 
 Set `MARC_BUILD_BENCHMARKS=ON` in an optimized build to produce
 `marc_benchmark`. It reports canonical compression ratio, encode/decode MiB/s,
-and peak caller-owned codec workspace for all thirty-nine benchmark-admitted
+and peak caller-owned codec workspace for all forty-two benchmark-admitted
 profiles.
 See
 [`docs/benchmarks.md`](docs/benchmarks.md) for the measurement contract.
