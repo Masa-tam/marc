@@ -249,23 +249,6 @@ trailing bytes to the existing deterministic data and chunking matrix. This
 closes current local LZD implementation evidence without treating external
 release gates as locally satisfied.
 
-### Published LZD plus Blocked Huffman boundary
-
-LZD composition remains byte-oriented. The dictionary layer finishes its
-canonical eight-byte reference-pair stream in bounded staging, and Blocked
-Huffman divides those bytes without interpreting token boundaries. Decoding
-reconstructs the exact staged byte region before the ordinary LZD validator
-builds its acyclic phrase records and checks the terminal absent-right form.
-Only a completely validated frame may be expanded to raw output.
-
-For raw frame size `F`, staging is bounded by `8*ceil(F/2)`, generated phrase
-records by `floor(F/2)` and the configured maximum, and the iterative expansion
-stack by the admitted phrase count plus one. The checked opaque workspace
-partition accommodates encoder records, or decoder Blocked Huffman views,
-phrase records, and expansion-stack references without exposing their C++
-layouts. The public factory, CLI, benchmark, fuzz target, completion matrix,
-and schema-6 interoperability entry all retain this validation order.
-
 ### LZMW foundation
 
 LZMW variant 1 begins with a transactional 16-byte parameter codec, fixed
@@ -346,74 +329,6 @@ The command-line tool selects LZMW explicitly through the public C ABI and
 shares the generic bounded streaming loop and transactional output-file policy.
 It never names an internal LZMW C++ type. The integration smoke verifies file
 and empty round trips, overwrite rejection, and malformed-input cleanup.
-
-### Published LZMW plus Blocked Huffman boundary
-
-LZMW composition keeps the canonical four-byte reference stream as the exact
-byte boundary between layers. Blocked Huffman may divide that region without
-regard to reference alignment. Decode reconstructs the complete reference
-region before the existing LZMW validator checks fixed-token alignment,
-backward-only phrase references, adjacent-phrase productions, dictionary
-freeze, and exact raw extent. Expansion and publication occur only after the
-whole frame passes both entropy and dictionary validation.
-
-For raw frame size `F`, reference staging is bounded by `4F`, generated phrase
-records by the lesser of `max(F-1, 0)` and the configured maximum, and the
-iterative expansion stack by the admitted phrase count plus one for a nonempty
-frame. The checked opaque workspace profile now partitions encoder phrase
-spans, or decoder Blocked Huffman views, LZMW phrase records, and expansion-
-stack references without exposing their C++ layouts. Decoder phrase capacity
-is derived from the maximum admitted serialized-token extent rather than only
-the raw frame bound, so token-heavy malformed frames can reach the validator
-and be rejected without an allocation or premature workspace failure. The
-complete-frame validator and decoder now implement the decode half of this
-boundary: header and descriptor extents are fixed first, entropy output is
-staged, the full LZMW grammar is validated, aggregate workspace and raw
-capacity are checked, and only then does iterative expansion publish bytes.
-The matching planner first fixes the complete deterministic LZMW parse in
-caller-owned phrase spans, serializes the exact four-byte references into
-staging, and plans Blocked Huffman only over those bytes. The encoder publishes
-the generic header, descriptors/models, and payload only after exact output
-capacity is known. Complete-frame encode and decode are now implemented; outer
-streaming adapters now reuse one frame input/output region, canonical-reference
-staging, and the profile's typed views. The encoder drains the canonical
-80-byte prefix, collects exactly one contextual raw frame, and drains its
-complete encoded form. The decoder collects and validates one complete encoded
-frame, decodes into raw staging, and only then drains it. One-byte boundaries,
-nonterminal flush, exact finish, sticky malformed errors, and preservation of
-already committed earlier frames are tested.
-
-The public C factory now binds that profile to the common transform lifecycle.
-Its size-tagged configuration fixes the known original size, raw-frame size,
-entropy-block size, LZMW entry limit, and every decoder hard limit. The query
-reports raw or serialized primary storage, a secondary region internally split
-between canonical references and serialized or raw frame storage, and one
-aligned opaque views region. Construction repeats profile validation and the
-complete checked typed partition before publishing a handle; no entropy view,
-phrase record, or expansion-stack representation crosses the ABI.
-The public completion matrix now exercises binary data classes, deterministic
-encoding, dictionary and frame-boundary neighbors, one-byte and mixed
-chunking, repeated terminal calls, and frame-atomic final corruption,
-truncation, and trailing-data rejection exclusively through that C factory.
-A dedicated decoder fuzz boundary fixes every frame, reference, entropy-view,
-phrase-record, expansion-stack, and total-output region before inspecting
-serialized bytes. Byte-derived partial I/O and a fixed call ceiling exercise
-the incremental state machine; permanent regressions retain complete canonical
-truncation, extreme frame lengths, and an unavailable reconstructed reference.
-The explicit `lzmw-blocked-huffman` CLI selector reaches the profile only
-through its public C ABI. It shares the common temporary-file transaction,
-bounded streaming loop, output-overwrite refusal, and cleanup on malformed or
-trailing input. Its fixed one-MiB raw frame, 64-KiB entropy block, four-MiB
-reference cap, 64-block limit, and 64-MiB aggregate policy are local admission
-choices rather than new serialized parameters.
-The dependency-free benchmark selects the same profile through the public C
-ABI, verifies a full round trip before measurement, and reports full-stream
-ratio, encode/decode throughput, each caller-owned workspace region, and their
-directional peak. Reserved workspace totals are reported separately from the
-decoder's active aggregate limit; they are intentionally not presented as the
-same memory quantity.
-Interoperability schema 7 appends this CLI representation to the frozen
-schema-6 profile set as its eighteenth archive.
 
 ### Combined dictionary and entropy pipelines
 
@@ -1053,7 +968,276 @@ EndOfStream, and frame-atomic rejection of a malformed final frame, truncation,
 and trailing bytes. Queried aligned views are used throughout. This closes the
 local implementation loop without claiming external release evidence.
 
-## rANS composed profiles
+### tANS foundation
+
+tANS variant 1 begins with a transactional fixed-descriptor validator and a
+deterministic table builder. The builder fills all 4096 spread positions,
+derives every decode transition, and constructs the exact inverse encode lookup
+in temporary bounded storage before publishing either table. No global mutable
+table or implementation-defined permutation is used.
+
+The tANS reference encoder normalizes and builds the complete tables, then
+performs a count-only reverse traversal before touching caller output. A second
+reverse traversal writes each emitted chunk directly into its precomputed final
+bit position, avoiding block-size-proportional token or chunk storage while
+still producing decoder-consumption order.
+
+The strict tANS decoder builds validated tables and traverses the complete
+declared symbol count without output. It requires an in-range initial offset,
+available bits for every transition, exact terminal state and bit consumption,
+and zero high padding. Only a second identical traversal publishes bytes.
+
+The tANS frame controller validates the exact fixed-descriptor extent, expected
+full and final-short block symbol counts, each descriptor model, checked payload
+offset sums, and local frame limits in a first scan. A second scan publishes
+caller-owned block views only after the whole region is known valid.
+
+The complete tANS frame path plans every block before writing, serializes all
+descriptors before all payloads, and validates every block state and bitstream
+before a second loop writes output. Capacity failure and malformed later blocks
+therefore leave the whole frame output untouched.
+
+The command-line adapter names tabled variant 1 `tans` and uses only the public
+C configuration, workspace query, factory, and process lifecycle. Its one MiB
+frame and 65,536-symbol block policy permits at most 16 blocks. Capacity is
+bounded by 12 transition bits per input symbol, one two-byte state and one
+528-byte descriptor per block; decoder views are allocated from the queried
+count and alignment before parsing input. The shared temporary-file boundary
+prevents failed streams from publishing a destination.
+
+The benchmark adapter uses the same tabled profile and public C lifecycle. Its
+capacity bound includes the 64-byte stream prefix, one 56-byte header per
+frame, `ceil(3*n/2)` transition bytes, and a two-byte state plus 528-byte
+descriptor for each of at most 16 blocks per frame. An untimed complete round
+trip gates measurement; direction and peak workspace totals include the
+queried aligned decoder views region.
+
+The public-ABI completion matrix consolidates tabled tANS local-readiness
+evidence above normalization, spread, and transition-table tests. It covers
+every one-byte symbol, one-symbol and generated data, block and frame
+boundaries, deterministic re-encoding, one-byte and mixed chunk schedules,
+repeatable EndOfStream, and frame-atomic rejection of a malformed final frame,
+truncation, and trailing bytes. Queried aligned views are used throughout. This
+closes the local implementation loop without claiming external release
+evidence.
+
+## C transform ABI
+
+The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
+Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZSS, LZ78,
+LZW, LZD, and LZMW variant 1 through
+separate versioned, size-tagged configuration, workspace-query, and factory
+functions. All profiles construct the same opaque transform type and share its
+process and destroy operations. The raw-checksum profile uses one serialized
+frame workspace in either direction. Other encoder workspaces hold one raw and
+one serialized frame, while decoder workspaces hold one serialized and one
+decoded frame. Blocked Huffman, rANS, and tANS use aligned internal block-view
+arrays. LZ78 and LZW use opaque aligned phrase-table workspaces. LZD and LZMW
+each use one opaque aligned region for input-backed phrase records when encoding
+and partition that region into phrase records plus an iterative expansion stack
+when decoding. Adaptive Huffman, Dynamic Range, LZ77, and LZSS need no views
+workspace. These buffers remain caller-owned and must outlive the handle.
+
+Only the small opaque handle and its C++ implementation object are allocated by
+the library with non-throwing allocation. Processing uses caller input/output
+spans and maps stable core status and error categories into fixed C constants.
+Every exported function is `noexcept` when compiled as C++.
+
+## Composed profile boundaries
+
+### LZ77 plus Blocked Huffman validation boundary
+
+The first combined-pipeline component accepts exactly one serialized frame and
+has no raw-output parameter. It reuses the generic frame parser, transactional
+Blocked Huffman controller and decoder, and canonical LZ77 token validator in
+that order. Entropy output is written only to caller-owned dictionary staging;
+raw-byte reconstruction is deliberately deferred to the later decoder step.
+
+The caller supplies both the block-view array and dictionary staging. Their
+required extents are derived from the validated frame header. Descriptor/model
+bytes, entropy payload bytes, dictionary staging, and the typed view array form
+one checked aggregate workspace bound. This preserves bounded memory while
+keeping all allocation policy outside the validator.
+
+The complete-frame raw decoder is a thin commit stage over this boundary. It
+first runs the same validator, checks raw destination capacity, and then passes
+only the validated dictionary staging to the standalone transactional LZ77
+decoder. Raw output is therefore unreachable from malformed generic headers,
+entropy metadata, entropy payloads, or token streams. The standalone decoder's
+prevalidation also protects the raw destination if its API is used separately.
+
+The matching frame encoder exposes an exact planner because the generic header
+must precede entropy descriptors and payloads. Planning first emits canonical
+LZ77 tokens into caller-owned staging, then computes the Blocked Huffman model
+choice and exact extents for every dictionary-byte block. Encoding repeats only
+the deterministic entropy traversal into already-sized descriptor and payload
+regions. No raw-frame-sized hidden allocation or duplicate token copy is used.
+
+At complete-stream scope, the combined controller places the fixed LZ77
+parameter region immediately after the stream header and reuses frame-local
+staging and views. Encoding plans all frames before emitting the prefix.
+Decoding first validates the full serialized stream without raw publication,
+then decodes it in a second pass. This gives whole-stream atomicity for the
+one-shot API while keeping memory bounded by the largest frame and its entropy
+block count rather than total stream size.
+
+The combined streaming encoder is the incremental counterpart of the one-shot
+planner. It owns no variable-size storage: callers provide raw-frame,
+dictionary-token, and serialized-frame spans. The transform drains the prefix
+and each completed frame through partial output buffers, while frame collection
+continues across non-terminal `Flush`. Dictionary and entropy state are rebuilt
+only when a complete outer frame is prepared.
+
+The combined streaming decoder mirrors this with serialized-frame,
+dictionary-byte, raw-frame, and block-view workspaces. It never drains directly
+from dictionary decode: a complete frame reaches raw staging only after both
+entropy and LZ77 validation succeed. Its source-ended latch is independent of
+output draining, so a terminal input indication survives any number of
+`NeedOutput` calls.
+
+The combined profile layer centralizes workspace arithmetic for callers and the
+public C ABI. Encoder requirements are exact worst-case bounds for the selected
+known-size stream and frame/block configuration. Decoder requirements are
+conservative bounds derived solely from local limits; untrusted serialized
+headers never influence allocation requests before parsing.
+
+### LZ77 plus Blocked Huffman publication evidence
+
+The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the
+local implementation loop by driving required binary data classes through
+queried workspaces and both stream directions. It repeats encoding for byte
+identity and compares
+multi-frame output across one-byte and mixed chunk schedules. This is a local
+readiness assertion, not a substitute for sanitizer campaigns or portability
+evidence on independent toolchains and architectures.
+
+The first independent-toolchain check builds the complete project with Clang's
+GNU-style driver and Ninja on Windows, then runs the same optimized suite used
+by the MSVC build. As a separate representation check, the MSVC and Clang
+command-line tools encode one common input through every public CLI profile;
+all twenty-eight schema-17 archives must compare byte for byte. This establishes
+compiler independence on one architecture, while cross-architecture evidence
+remains a separate gate.
+
+CI turns this check into an externally consumable protocol. Each reference job
+generates the same 8,193-byte binary fixture, validates a local round trip for
+all twenty-eight schema-17 profiles, and uploads the fixture, complete archives,
+and a JSON manifest containing the source revision. The external verifier first
+validates manifest bounds and hashes, then decodes foreign archives and
+independently re-encodes the fixture with the local CLI. Artifact hashes detect
+transfer mistakes but are not authentication.
+
+### LZ77 plus Adaptive Huffman validation boundary
+
+The Adaptive composition preserves the same canonical 16-byte LZ77 token
+boundary but resets one FGK tree for every nonempty outer frame. Complete
+entropy decode and LZ77 token validation occur in caller-owned token staging;
+raw reconstruction then completes in a separate private frame region before
+the incremental decoder may drain any current-frame byte.
+
+The public C factory exposes no entropy-block parameter or aligned views
+workspace. Encoding partitions its secondary byte region into token staging
+and serialized-frame storage; decoding partitions it into token staging and
+private raw storage. The requirements query derives both partitions from the
+known-size encoder profile or trusted local decoder limits before construction.
+
+Outer `max_frame_size` remains a raw-byte limit. The Adaptive primitive receives
+a private limits view sized to the already validated canonical token extent,
+because its standalone symbol unit is a byte at the entropy boundary. This
+unit translation neither enlarges the untrusted outer frame allowance nor
+changes compressed-payload, dictionary, aggregate, or LZ limits.
+
+The public completion matrix fixes 64-byte raw frames and audits all required
+binary data classes through the C ABI. It compares unchunked output with
+one-byte and mixed chunk schedules, repeats successful terminal calls, and
+proves that corruption, truncation, or trailing data in a fourth frame can
+publish only the first three complete frames.
+
+The bounded fuzz boundary fixes serialized input, token staging, raw staging,
+and final output before parsing. A valid profile prefix admits the remaining
+extent to complete-frame private-staging decode, while every input also reaches
+the incremental decoder under byte-derived chunking and a fixed call ceiling.
+
+The transactional CLI selector uses the 64-KiB reference frame through the
+public C ABI. It obtains both workspace extents from the requirements query and
+commits the temporary output path only after complete stream termination.
+
+The benchmark selects that identical fixed profile through the same public C
+lifecycle. Its checked capacity calculation uses the 64-KiB frame cadence and
+the conservative 528-byte Adaptive payload bound for every raw byte. A complete
+round trip precedes separate encode/decode timing; the reported peak workspace
+is the larger queried two-region sum and excludes corpus and result buffers.
+
+Interoperability schema 8 preserves the frozen schema-7 order and appends this
+CLI representation as its nineteenth archive. Generation verifies a local
+round trip; foreign verification checks manifest order and hashes, decodes to
+the common fixture, and requires byte-identical local re-encoding.
+
+### LZ77 plus Dynamic Range staged boundary
+
+The Dynamic Range composition preserves the canonical 16-byte LZ77 token
+boundary and resets both dictionary history and the adaptive order-0 range
+model at every outer frame. Exact encoding owns three caller-supplied byte
+regions: raw frame collection, frozen canonical tokens, and the immutable
+serialized frame. All three are checked against the aggregate internal-buffer
+limit before a completed frame becomes drainable.
+
+The bounded streaming encoder emits the stream prefix, collects exactly one
+configured raw frame, plans and encodes through the complete-frame boundary,
+and drains the retained result before reusing storage. One-byte I/O and output
+starvation therefore cannot alter encoded bytes. `Flush` leaves an incomplete
+frame open, while `EndInput` is retained until the last complete frame has been
+fully emitted. The matching bounded decoder owns serialized-frame, canonical
+token, and private raw regions. It admits a frame to output only after complete
+collection, nested validation, and reconstruction, so malformed later frames
+are atomic. The later public factory preserves this same commit boundary.
+
+The bounded profile exposes only three byte counts per direction. Encoding
+uses raw collection, canonical-token staging, and serialized-frame storage;
+decoding uses serialized-frame storage, canonical-token staging, and private
+raw storage. Encoder extents use the known original size and configured frame
+size, while decoder extents use only trusted local limits and the format cap.
+No private C++ object layout or input-controlled allocation crosses this
+profile boundary.
+
+The public C requirements query combines each direction's token and trailing
+frame/raw extents into one secondary byte region and reports alignment one;
+the primary region remains raw collection for encode and serialized-frame
+storage for decode. Factory creation repeats the profile calculation, validates
+both regions, partitions secondary storage with checked offsets, constructs the
+matching streaming transform, and publishes no handle on failure. ABI version
+1 gains only named config, query, and factory symbols; no existing layout or
+symbol changes.
+
+The public-ABI completion matrix fixes 64-byte frames and exercises required
+binary classes through only the C lifecycle. It compares unchunked output with
+one-byte and mixed schedules, repeats successful and failing terminal calls,
+and proves that a corrupted, truncated, or trailing fourth frame can commit
+only the first three complete frames.
+
+The decoder fuzz boundary is intentionally fixed-memory. It caps each supplied
+input at 8,192 bytes and exercises both the private complete-frame validator
+and the public-style incremental decoder. The streaming path owns fixed arrays
+for serialized frames, canonical tokens, reconstructed raw bytes, and output;
+derives small input and output chunks only from bounded seed bytes; and aborts
+after a fixed call ceiling rather than permitting an input-controlled loop.
+Normal regression tests retain every proper prefix of a canonical frame plus
+extreme frame extents and a malformed range descriptor. Each case must publish
+zero current-frame bytes, preserve the output sentinel, and repeat the same
+sticky error.
+
+The command-line adapter selects this composition only through the public C
+configuration, requirements, factory, process, and destroy lifecycle. It fixes
+65,536-byte raw frames, supplies the documented `16F` token and `2S + 5`
+payload limits, and receives both workspace extents from the requirements
+query. Output remains hidden in a sibling `.tmp` path until the transform ends,
+the file closes successfully, and the final rename commits it.
+
+The dependency-free benchmark uses the same public profile and independently
+queries encoder and decoder workspaces. Its checked complete-stream capacity
+uses 32 payload bytes per raw byte plus one descriptor, five termination bytes,
+and one generic header per frame. It verifies byte-exact decode before timing
+either direction and reports the larger caller-reserved workspace total.
 
 ### Specified LZ77 plus rANS boundary
 
@@ -1175,796 +1359,6 @@ support for schemas 1 through 19.
 The established four-direction exchange verified all thirty-one schema-20
 archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers at revision `01e87fe19f5c9c90edd87c9caeb8acf36b413aad`.
-
-### Specified LZSS plus rANS boundary
-
-The second rANS composition freezes the complete canonical LZSS byte sequence
-before entropy processing. Scalar rANS remains unaware of the variable
-two-byte Literal and nine-byte Match grammar, so a block may split either
-token while the outer frame remains the shared reset boundary.
-
-For raw frame size `F`, token extent `S`, block size `B`, and block count `K`,
-the checked bounds are `S <= 2F`, `K = ceil(S/B)`,
-`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. Decoding must admit
-and validate the complete entropy representation before reconstructing the
-private token region, then validate the whole LZSS grammar and exact raw
-extent before any raw publication.
-
-The first internal complete-frame validator now implements that boundary.
-It admits descriptor views and token staging plus their aggregate workspace
-before entropy work, validates every rANS block without output, reconstructs
-the exact private token extent in a second pass, and invokes the existing LZSS
-validator. It intentionally stops before raw reconstruction.
-
-The matching private decoder extends admission with the complete raw staging
-extent and includes those bytes in the same aggregate workspace calculation.
-Only after entropy and LZSS validation succeed does the existing allocation-
-free LZSS decoder reconstruct Literal and forward-overlap Match tokens into
-that disposable caller-owned span. No caller-visible publication boundary is
-present yet.
-
-The transactional decoder adds a distinct caller-visible output span. It
-preflights capacity for the complete raw frame before descriptor parsing,
-retains the private reconstruction boundary, and copies exactly the validated
-`F` bytes once after success. Output capacity is not internal workspace, and
-every failure leaves the caller-visible span unchanged.
-
-The encoder-side planner first computes and materializes the complete
-canonical LZSS token sequence in caller-owned staging. It then walks immutable
-consecutive rANS blocks, retaining only one temporary descriptor at a time,
-and sums exact payload and descriptor extents with checked arithmetic. The
-planner validates the synthesized generic header and returns the complete
-frame size without accepting or modifying serialized output.
-
-The complete-frame writer invokes that planner first and rejects insufficient
-serialized output before writing the generic header. It then re-plans each
-immutable token block, requires every exact payload extent to match the frozen
-aggregate, explicitly serializes its descriptor, and encodes only the assigned
-payload subspan. The final token and payload offsets must equal the plan.
-
-The known-size streaming encoder owns no allocation. Caller-owned storage
-holds at most one raw frame, its `2F` worst-case LZSS token region, and one
-complete encoded frame. The state machine drains the 80-byte stream prefix,
-collects exactly the next declared frame extent, prepares one immutable frame
-through the deterministic writer, and drains it before accepting the next
-frame. `Flush` does not close a partial frame; `EndInput` must coincide with
-the declared original size.
-
-The bounded streaming decoder incrementally collects the fixed prefix, one
-generic frame header, and then exactly the declared frame body. Header
-admission checks encoded storage, rANS views, `2F` token staging, raw staging,
-and their aggregate before the body is accepted. A complete frame passes the
-private transactional decoder before its raw bytes enter a distinct drain
-state. Earlier frames may be committed; a malformed later frame publishes
-nothing from that frame and makes the error sticky.
-
-The internal profile is the sole sizing authority for this streaming pair.
-For encoding it derives the largest raw frame, conservative `2F` token
-staging, exact worst-case descriptor and payload storage, and the complete
-encoded-frame extent. For decoding it derives encoded-frame, bounded token,
-private raw, and rANS-view capacities only from validated local limits. The
-profile retains the composition's specified 1-MiB raw-frame cap; its `2F`
-token ceiling therefore remains well within the scalar rANS block bound.
-
-The public C ABI binds that profile without exposing any C++ type. Encoding
-uses raw collection as primary and token-plus-frame storage as secondary;
-decoding uses encoded-frame storage as primary, token-plus-raw storage as
-secondary, and an opaque aligned rANS-view region. The requirements query is
-the only public authority for all sizes and view alignment.
-
-The public-ABI completion matrix fixes 64-byte raw frames and entropy blocks.
-It proves every required data class, deterministic output across chunking,
-sticky terminal calls, and frame-atomic rejection of corruption, truncation,
-or trailing data in a final short frame through only the C lifecycle.
-
-The fuzz boundary independently submits bounded input to the private
-complete-frame decoder and to a C-ABI-created streaming decoder. All byte
-regions and rANS views have compile-time ceilings; the public requirements
-query may select only subspans of those arrays. Input-derived chunks are
-bounded, and a finite call ceiling turns non-progress into a reproducible
-failure.
-
-The command-line adapter selects this contract as `lzss-rans` using only the
-public C configuration, workspace query, factory, process, and destroy
-functions. It fixes raw and entropy blocks at 65,536 bytes, supplies a
-conservative 512-KiB aggregate policy that covers both directions, and leaves
-all opaque view sizing and alignment to the public query. File publication
-retains the shared temporary-file transaction.
-
-The dependency-free benchmark selects the same public profile and verifies a
-complete byte-exact round trip before timing. It creates each public transform
-outside the elapsed region and reports ratio, directional throughput, all
-queried workspace regions, and peak caller-reserved workspace. Checked
-complete-stream capacity is `80 + 2N + 1128K` for raw extent `N` and nonempty
-64-KiB frame count `K`.
-
-Interoperability schema 21 names codec set `marc-cli-v21`, preserves the exact
-thirty-one-entry schema-20 order, and appends this unchanged CLI
-representation once. Local generation and verification require exact order,
-count, size, SHA-256, fixture decode equality, and byte-identical local
-re-encoding while retaining explicit support for schemas 1 through 20.
-The established four-direction exchange subsequently verified all thirty-two
-schema-21 archives at revision
-`110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
-24.04/Ninja, and Ubuntu 26.04/Clang producers.
-
-### Validated LZ78 plus rANS boundary
-
-The third rANS composition freezes the complete canonical LZ78 token sequence
-before entropy processing. Scalar rANS remains unaware of the fixed eight-byte
-Pair and FinalIndex grammar, so an entropy block may split a token while the
-outer frame remains the shared dictionary and model reset boundary.
-
-For raw frame extent `F`, token extent `S`, entropy block size `B`, and block
-count `K`, require aligned `0 < S <= 8F`, `K = ceil(S/B)`,
-`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. The decoder must
-validate every rANS block into private token staging before checking LZ78
-alignment, fields, phrase references, phrase lengths, dictionary growth, and
-exact raw extent. Phrase expansion and caller-visible publication remain
-outside this first implementation step.
-
-The first internal complete-frame validator implements that boundary. It
-checks exact serialized extent, block count, descriptor and payload bounds,
-token and phrase workspace capacities, and the aggregate internal-buffer
-limit before token mutation. It validates every descriptor and rANS state
-path before decoding any block, reconstructs exactly `S` private token bytes,
-and runs the bounded LZ78 phrase-graph validator. It deliberately exposes no
-caller-visible output, public factory, or streaming transform.
-
-The next internal boundary adds iterative raw reconstruction only after that
-complete validation succeeds. Raw staging must hold the exact declared frame
-extent and is counted in the aggregate workspace before any entropy output.
-The existing non-recursive LZ78 decoder walks the validated parent links into
-the separate raw region; malformed entropy or token data therefore cannot
-touch raw staging. The result remains private and is not transactionally
-published by that boundary.
-
-The transactional complete-frame decoder adds one caller-visible output span.
-Its exact raw capacity is checked with the other capacities before any private
-mutation, but it is not counted as internal workspace. After complete entropy,
-phrase-graph, and raw reconstruction success, one copy publishes exactly the
-declared frame extent; failure at any earlier layer leaves the complete output
-span unchanged.
-
-Exact encoding first completes deterministic LZ78 parsing into caller-owned
-encoder records and freezes the complete canonical token region. Only then
-does the planner visit each scalar rANS block in forward serialized order,
-accumulate exact descriptor and payload extents, count encoder records,
-tokens, descriptors, and payloads in one checked workspace total, and
-validate the synthesized generic frame header. The encoder repeats those
-deterministic block plans only after serialized output capacity is known,
-then writes the header, all descriptors, and all payloads. The independent
-raw-`A` input reproduces the frozen 592-byte frame exactly.
-
-The known-size streaming encoder emits the ordinary 80-byte stream prefix,
-collects at most one configured raw frame, invokes the exact planner and
-encoder into caller-owned immutable frame storage, and drains that frame
-before accepting bytes for the next one. Raw collection, encoder records,
-canonical tokens, and the complete serialized frame are checked as one
-aggregate before encoding. Arbitrary input and output chunking therefore
-cannot alter frame bytes. `Flush` keeps a partial frame open, while
-`ResetBlock` is unsupported because outer frame boundaries are fixed by the
-configured raw frame size.
-
-The matching streaming decoder incrementally admits the fixed 80-byte prefix,
-then one 56-byte generic frame header before deriving the exact complete frame
-extent. It requires encoded-frame, rANS-view, token, phrase, and private raw
-storage and their checked aggregate before collecting the remaining frame.
-Only a complete frame is passed to the transactional private decoder; its raw
-staging is drained afterward under arbitrary output starvation. Thus a
-malformed later frame cannot publish any byte from that frame, while already
-drained earlier frames remain committed. Known original size determines the
-final frame, and truncation or trailing bytes are rejected.
-
-The internal profile calculator gives those caller-owned regions a stable
-typed layout without exposing record definitions at a future ABI boundary.
-Encoding uses raw-frame bytes, conservative `8F` token bytes, a complete
-`56 + 528K + S + 8K` encoded-frame region, and aligned LZ78 encoder records.
-Decoding derives encoded-frame, token, and private-raw byte regions solely
-from local limits; one aligned opaque region contains rANS block views first
-and LZ78 phrase records at a checked aligned offset. Partitioning rederives
-every count, offset, extent, and alignment before returning typed spans.
-
-The public C adapter preserves that ownership model. Its requirements query
-reports raw or encoded-frame storage as primary, token-plus-frame/raw storage
-as secondary, and only an opaque byte extent plus maximum alignment for typed
-records. Factory construction repeats profile calculation and layout
-partitioning before publishing an immutable-direction handle. A failed query,
-short or misaligned region, or allocation failure leaves the handle null.
-
-The bounded decoder fuzz boundary invokes both the private exact-frame decoder
-and that public C streaming lifecycle. It caps supplied input at 8 KiB, total
-raw output at 4 KiB, one raw frame at 1 KiB, canonical LZ78 tokens at 8 KiB,
-rANS payload at 16 KiB, metadata at eight block views, and phrase state at
-1,024 records. Every byte and typed region has a compile-time ceiling before
-serialized metadata is parsed. Input-derived chunks remain within a fixed
-call budget, so malformed data cannot create allocation or unbounded-progress
-behavior.
-
-The command-line adapter selects this contract explicitly as `lz78-rans`.
-It fixes 65,536-byte raw frames and entropy blocks, the 524,288-byte token
-ceiling, eight rANS blocks, the 524,352-byte payload ceiling, 65,536 phrase
-entries, and a 4-MiB aggregate policy. It obtains all direction-specific byte
-regions and opaque alignment from the public query, and retains the common
-temporary-output transaction so malformed or trailing input cannot leave a
-destination file.
-
-The benchmark adapter uses the identical public profile. Its checked encoded
-capacity is `80 + 8N + 4344K`, where `N` is raw input and `K` is the nonempty
-frame count. It verifies exact decode equality before timing, constructs a
-fresh public transform for every sample, and reports the queried primary,
-secondary, views, and peak directional workspace without imposing a speed
-floor.
-
-Interoperability schema 22 names codec set `marc-cli-v22`, preserves the exact
-thirty-two-entry schema-21 order, and appends this unchanged CLI
-representation once. Local generation and verification require exact order,
-count, size, SHA-256, fixture decode equality, and byte-identical local
-re-encoding while retaining explicit support for schemas 1 through 21.
-The established four-direction exchange subsequently verified all thirty-three
-schema-22 archives at revision
-`2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
-24.04/Ninja, and Ubuntu 26.04/Clang producers.
-
-The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
-rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
-the `00:3584` and `41:512` normalized model, the eight-byte final-state
-payload, and the complete 592-byte frame.
-
-### Specified LZW plus rANS boundary
-
-The fourth rANS composition freezes the complete canonical LZW packed-code
-byte stream before entropy processing. Scalar rANS remains unaware of the
-LSB-first variable-width code grammar and final zero padding, so an entropy
-block may split a packed code while the outer frame remains the shared
-dictionary and model reset boundary.
-
-For raw frame extent `F`, configured maximum code width `W`, packed extent
-`S`, entropy block size `B`, and block count `K`, require
-`0 < S <= ceil(FW/8)`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and exactly
-`528K` descriptor bytes. The decoder must validate every rANS block into
-private packed staging before checking LZW width transitions, references,
-`KwKwK`, final padding, dictionary growth, and exact raw extent.
-
-The first combined validator now admits the complete frame, rANS block views,
-packed staging, and LZW phrase records before entropy processing. It validates
-every rANS state path without output, reconstructs the packed region only
-after all blocks succeed, and then invokes the ordinary LZW validator. No raw
-byte is reconstructed or published, and a malformed later block cannot leave
-partially reconstructed packed bytes.
-
-The next private boundary admits and aggregate-counts the complete raw staging
-region before entropy work. It then reuses the validated packed code graph and
-the ordinary iterative LZW decoder to reconstruct exactly one raw frame.
-Caller-visible publication remains separate, so malformed input and workspace
-failures cannot expose a partial frame.
-
-The caller-visible complete-frame boundary preflights the entire destination
-alongside all private regions, performs the unchanged validation and private
-reconstruction, and publishes exactly the declared raw extent in one final
-copy. Destination bytes are never part of aggregate scratch accounting and
-remain entirely unchanged on failure.
-
-The encoding-side planning boundary first fixes the complete canonical packed
-LZW region in caller-owned staging, then plans each rANS block over those exact
-bytes. It computes and validates the synthesized frame and all aggregate
-workspace without accepting serialized output. This prevents descriptor or
-payload emission from observing a partial or differently chunked LZW stream.
-
-The complete-frame encoder accepts only a fully successful plan and a complete
-destination. It writes the generic header, then reproduces every tANS plan over
-the immutable packed staging while placing descriptors and payloads at their
-fixed offsets. Extent disagreement is an internal error, and insufficient
-destination capacity is detected before serialized output mutation.
-
-The bounded known-size streaming encoder owns caller-supplied storage for one
-raw frame, its conservative packed-code ceiling, one exact serialized frame,
-and the LZW encoder records. It emits the canonical stream header and LZW
-parameters first, collects no more than one raw frame, completes planning and
-encoding into the private frame region, and drains that immutable region
-before accepting input belonging to a later frame. Consequently arbitrary
-input and output chunking cannot change serialized bytes. `Flush` leaves a
-partial frame open, while retained `EndInput` finishes and drains the final
-short frame before reporting end of stream.
-
-The bounded streaming decoder owns caller-supplied regions for one serialized
-frame, its tANS block views, reconstructed packed codes, decoded raw bytes, and
-LZW phrase records. It collects the fixed prefix and one frame header before
-accepting the declared body extent, so every capacity and aggregate limit is
-checked before entropy decoding. A complete frame is validated and expanded
-only into private storage, then its raw bytes are drained before the next frame
-header is collected. Later corruption therefore cannot retract or partially
-publish the current frame, while malformed current-frame data publishes none
-of that frame.
-
-The complete-frame encoder accepts only a fully successful plan and a complete
-destination. It writes the generic header, then reproduces every rANS plan over
-the immutable packed staging while placing descriptors and payloads at their
-fixed offsets. Extent disagreement is an internal error, and insufficient
-destination capacity is detected before serialized output mutation.
-
-The bounded known-size streaming encoder owns caller-supplied storage for one
-raw frame, its conservative packed-code ceiling, one exact serialized frame,
-and the LZW encoder records. It emits the canonical stream header and LZW
-parameters first, collects no more than one raw frame, completes planning and
-encoding into the private frame region, and drains that immutable region
-before accepting input belonging to a later frame. Consequently arbitrary
-input and output chunking cannot change serialized bytes. `Flush` leaves a
-partial frame open, while retained `EndInput` finishes and drains the final
-short frame before reporting end of stream.
-
-The bounded streaming decoder owns caller-supplied regions for one serialized
-frame, its rANS block views, reconstructed packed codes, decoded raw bytes, and
-LZW phrase records. It collects the fixed prefix and one frame header before
-accepting the declared body extent, so every capacity and aggregate limit is
-checked before entropy decoding. A complete frame is validated and expanded
-only into private storage, then its raw bytes are drained before the next frame
-header is collected. Later corruption therefore cannot retract or partially
-publish the current frame, while malformed current-frame data publishes none
-of that frame.
-
-The internal profile calculator bridges validated configuration and limits to
-the streaming constructors. Encoding receives raw-frame bytes, conservative
-`ceil(FW/8)` packed staging, the complete
-`56 + 528K + S + 8K` frame ceiling, and aligned LZW encoder records. Decoding
-receives serialized-frame, packed, and private-raw byte regions plus one
-aligned opaque layout containing rANS block views followed by LZW phrase
-records. Checked partition helpers reject inconsistent counts, offsets,
-storage extents, and alignment before exposing typed spans. The returned
-requirements directly construct a bounded streaming round trip.
-
-The public C adapter retains the common three-workspace ownership model.
-Primary storage is raw-frame input for encoding or complete serialized-frame
-input for decoding. Secondary storage is partitioned into packed LZW staging
-followed by encoded-frame or private-raw storage. One aligned opaque views
-region contains encoder entries, or rANS block views followed by LZW phrase
-records. The requirements query and factory both recalculate the internal
-profile; the factory validates sizes and alignment, partitions typed views
-privately, and publishes a transform handle only after construction succeeds.
-
-Public-ABI completion evidence exercises only that C lifecycle. It spans empty
-input, every one-byte value, all byte values, repeated and patterned input,
-deterministic pseudo-random input, frame-boundary lengths, and multi-frame
-streams under one-byte and mixed chunk schedules. Repeated terminal calls are
-stable. Corruption, truncation, or extension of the final frame leaves every
-byte of that frame unpublished while earlier drained frames remain committed.
-
-The decoder fuzz boundary fixes serialized input at 8 KiB, raw publication at
-4 KiB, frames at 1 KiB, packed-code staging at 4 KiB, rANS views at eight,
-LZW phrase records from the packed-code ceiling, and aggregate storage before
-accepting arbitrary bytes. One path invokes complete-frame parsing directly;
-the other uses only the public C requirements, factory, process, and destroy
-lifecycle under variable small chunks. A fixed call ceiling turns failure to
-terminate into a reproducible harness failure.
-
-The transactional command-line adapter now selects this public profile as
-`lzw-rans`. It fixes raw frames and rANS blocks at 65,536 bytes, supplies only
-public format and hard-limit values, obtains all three direction-specific
-workspace regions from the public C query, and creates the transform through
-the public factory. Existing-output refusal, sibling `.tmp` cleanup, strict
-trailing-data rejection, and final atomic rename remain common CLI policy.
-
-The dependency-free benchmark uses that same public CLI profile. It computes
-checked complete-stream capacity `80 + 2N + 1128K`, queries and allocates each
-direction independently, verifies one byte-exact round trip, and only then
-times fresh public transforms. It reports compression ratio, directional
-throughput, each primary/secondary/views extent, and the larger directional
-workspace sum; performance is descriptive rather than an admission threshold.
-
-Interoperability schema 23 appends this unchanged `lzw-rans` CLI profile once
-after the frozen schema-22 order. The generator self-decodes before recording
-size and SHA-256. The verifier requires all 34 canonical names in exact order,
-decodes every archive, and requires byte-identical local re-encoding. The
-compatibility test rejects a reordered schema-23 manifest, removes only
-`lzw-rans` to derive schema 22, and verifies the unchanged schemas 22 through
-1. Four-direction external validation passed at revision
-`5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC, Ubuntu
-24.04/Ninja, and Ubuntu 26.04/Clang producers.
-
-The independent raw-`A` vector composes only the existing LZW encoder, scalar
-rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
-equal `00:2048` and `41:2048` normalized model, the eight-byte final-state
-payload, and the complete 592-byte frame.
-
-### LZD plus rANS boundary
-
-The next rANS composition freezes the complete canonical LZD eight-byte
-reference-pair sequence before scalar rANS sees any byte. For raw frame extent
-`F`, token bytes are bounded by `S <= 8 * ceil(F/2)` and remain a multiple of
-eight. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
-exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
-A block may split a reference or token but cannot cross an outer frame.
-
-Decoder ordering first validates every entropy block and reconstructs the
-complete private token region, then applies LZD alignment, backward-reference,
-terminal-absence, phrase-graph, and exact raw-extent validation. The initial
-raw-`A` vector independently composes the standalone LZD and rANS encoders with
-generic serializers. It fixes token bytes `41 00 00 00 FF FF FF FF`, normalized
-frequencies `00:1536`, `41:512`, `FF:2048`, the nine-byte rANS payload, and the
-complete 593-byte frame.
-
-The first combined validator admits the complete serialized extent, rANS view
-count, token staging, LZD phrase records, and aggregate workspace before
-entropy processing. It parses and validates every block before reconstructing
-any token byte, then fills the complete private token region and invokes the
-ordinary LZD graph validator without expanding raw bytes. Corruption in a
-later block therefore cannot leave a partially reconstructed token region, and
-valid entropy carrying an invalid LZD graph fails only at the dictionary
-boundary.
-
-The private raw decoder extends that same preflight with the complete declared
-raw extent and `phrase_count + 1` iterative expansion references, counting both
-in the aggregate workspace before descriptor parsing. Only after entropy and
-the complete LZD graph validate does it invoke the ordinary nonrecursive LZD
-decoder into disposable raw staging. It publishes no caller-visible output;
-short raw or expansion regions fail before token staging changes.
-
-The transactional complete-frame boundary additionally admits the entire
-caller destination before descriptor parsing, reuses the same validator and
-private reconstruction, and copies exactly the declared raw extent once only
-after success. Caller output is excluded from internal aggregate accounting;
-short capacity, malformed entropy, and invalid LZD graphs preserve every
-destination byte.
-
-The encoder-side exact-frame planner first fixes the deterministic LZD parse
-and serializes its complete canonical token sequence into caller-owned staging.
-Only that immutable byte span is divided into rANS blocks. Encoder records,
-token staging, every descriptor, and exact planned payload are checked as one
-aggregate workspace before the synthesized frame header and complete extent
-are accepted. The planner has no serialized-output span and therefore cannot
-publish a partial frame.
-
-The matching complete-frame encoder is plan-first. It admits the entire
-serialized destination, writes the generic header explicitly, and regenerates
-each descriptor and payload only from the frozen token staging. Repeated block
-plans and final offsets must equal the exact plan; planner and capacity failure
-therefore occur before any serialized byte is published.
-
-The bounded known-size streaming encoder adds collection and drain state only.
-It serializes the fixed stream prefix, collects at most one raw frame, creates
-one complete immutable DD-511 frame, and drains it before accepting the next
-frame. Raw collection, token staging, complete serialized frame, and aligned
-encoder records remain caller-owned and are checked together at preparation;
-one-byte I/O and `Flush` cannot change framing or encoded bytes.
-
-The matching streaming decoder separates prefix, frame-header, frame-body, and
-raw-drain states. Header admission fixes complete encoded, view, token, phrase,
-expansion, and private-raw extents before body collection. Only the existing
-private complete-frame decoder may transition an admitted body to raw drain,
-so malformed entropy or phrase graphs cannot expose bytes from that frame.
-
-The internal profile turns those constructor contracts into checked allocation
-requirements. Encoding derives the raw, maximum token, complete-frame, and LZD
-encoder-record regions from trusted known-size configuration. Decoding derives
-the complete encoded, token, and private-raw byte regions from local limits and
-partitions one opaque aligned region in rANS-view, LZD-phrase, expansion-stack
-order. Both partition offsets are recomputed before any typed span is exposed.
-
-The public C adapter retains exactly those three ownership regions. Its
-size-tagged fixed-width config carries the known-size encoder parameters or
-trusted decoder limits, and the direction-specific requirements query is the
-only allocation authority. Factory construction repeats profile calculation,
-opaque partition validation, and alignment checks before creating an
-immutable-direction transform; no private record type enters the ABI.
-
-The public-ABI completion matrix fixes 64-byte raw frames and rANS blocks and
-uses only that allocation and transform lifecycle. It covers the required
-binary classes, deterministic repeated encoding, one-byte and mixed chunking,
-sticky terminal states, and frame-atomic rejection of a corrupt, truncated, or
-extended fourth frame. The shared LZD schedule retains its original defaults
-for the Adaptive Huffman and Dynamic Range instantiations.
-
-The bounded decoder fuzz boundary drives both the private complete-frame
-decoder and the public C streaming lifecycle. Fixed caller-owned arrays cap
-serialized input at 8 KiB, total raw output at 4 KiB, one raw frame at 1 KiB,
-rANS payload at 16 KiB, entropy metadata at eight block views, LZD phrase state
-at 512 records, and iterative expansion state at 513 records. Input-derived
-chunk sizes remain modulo bounded, and a fixed call ceiling turns any stalled
-state machine into a reproducible invariant failure. Ordinary builds compile
-the harness without executing a sanitizer campaign; canonical strict-prefix,
-reserved-field, and saturated-frame-extent cases remain permanent tests.
-
-The explicit `lzd-rans` command-line selector fixes 65,536-byte raw frames and
-rANS blocks, supplies the checked 262,144-byte token and 262,176-byte payload
-ceilings plus a 16-MiB aggregate policy, and obtains every direction-specific
-workspace extent and alignment from the public C requirements query. It reuses
-the common temporary-file transaction, so invalid or trailing input, output
-collision, allocation failure, or codec failure cannot publish the requested
-destination or leave its sibling temporary file.
-
-The dependency-free benchmark selects that same public profile. Its checked
-complete-stream capacity retains LZD's absent-right half-reference for odd
-input, verifies a byte-exact public-ABI round trip before timing, and then
-reports encoded ratio, encode/decode throughput, all queried workspace regions,
-and the larger caller-owned total. Smoke measurements establish wiring and
-correctness only, not representative performance.
-
-Interoperability schema 24 appends the unchanged CLI profile once after the
-frozen schema-23 order. The generator round-trips all thirty-five archives
-before recording size and SHA-256; the verifier requires exact order, hashes,
-foreign decode equality, and byte-identical local re-encoding. The compatibility
-regression rejects reordered schema 24, removes only `lzd-rans` to reconstruct
-schema 23, and then verifies every frozen schema through version 1. The
-four-direction schema-24 cross-check passed at revision
-`dad3638da2acb449afca969176194bf8323309f5` across the recorded Windows/MSVC,
-Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
-
-### LZMW plus rANS boundary
-
-The sixth rANS composition freezes the complete canonical LZMW four-byte
-phrase-reference sequence before scalar rANS sees any byte. For raw frame
-extent `F`, reference bytes are bounded by `S <= 4F` and remain a multiple of
-four. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
-exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
-A block may split a reference but cannot cross an outer frame.
-
-Decoder ordering first validates every entropy block and reconstructs the
-complete private reference region, then applies LZMW alignment, literal-or-
-prior-reference, adjacent-phrase-graph, and exact raw-extent validation. The
-initial raw-`A` vector independently composes the standalone LZMW and rANS
-encoders with generic serializers. It fixes reference bytes `41 00 00 00`,
-normalized frequencies `00:3072` and `41:1024`, the eight-byte rANS payload,
-and the complete 592-byte frame.
-
-The first combined validator admits the complete serialized extent, rANS view
-count, reference staging, LZMW phrase records, and aggregate workspace before
-entropy processing. It parses and validates every block before reconstructing
-any reference byte, then fills the complete private reference region and
-invokes the ordinary LZMW graph validator without expanding raw bytes.
-Corruption in a later block therefore cannot leave partially reconstructed
-references, and valid entropy carrying an invalid LZMW graph fails only at the
-dictionary boundary.
-
-The private raw decoder extends that same preflight with the complete declared
-raw extent and conservative iterative expansion references, counting both in
-the aggregate workspace before descriptor parsing. After entropy and the
-complete LZMW graph validate, it reduces the active stack to
-`dictionary_entries + 1` and invokes the ordinary nonrecursive LZMW decoder
-into disposable raw staging. It publishes no caller-visible output; short raw
-or expansion regions fail before reference staging changes. That private
-validation layer itself is not a public entry point.
-
-The transactional complete-frame boundary additionally admits the entire
-caller destination before descriptor parsing, reuses the same validator and
-private reconstruction, and copies exactly the declared raw extent once only
-after success. Caller output is excluded from internal aggregate accounting;
-short capacity, malformed entropy, and invalid LZMW graphs preserve every
-destination byte.
-
-The encoder-side exact-frame planner first plans and then materializes the
-complete canonical LZMW reference region in caller-owned staging. Only that
-frozen byte sequence is divided into rANS blocks. It reports exact descriptor,
-payload, and serialized frame extents without writing a frame, and admits the
-encoder dictionary plus all staged and planned bytes against the aggregate
-workspace limit before a later encoder may publish output.
-
-The deterministic complete-frame encoder invokes that plan before admitting
-the serialized destination, then explicitly writes the generic header and each
-528-byte descriptor and rANS payload into precomputed regions. Every repeated
-block extent and final offset must equal the plan. A planner failure or short
-destination therefore leaves the complete output unchanged.
-
-The known-size streaming encoder adds no representation. It drains the fixed
-80-byte prefix, collects at most one raw frame, prepares one immutable complete
-frame, and drains it before accepting the next frame. `EndInput` remains sticky
-across prefix and frame starvation; `Flush` does not close a partial frame.
-All simultaneously held raw, reference, encoded-frame, and typed-entry storage
-is caller-owned and checked as one aggregate.
-
-The matching streaming decoder admits each generic frame header against all
-encoded, typed, reference, expansion, and raw capacities before accepting the
-body. A complete frame is decoded through rANS validation and LZMW graph
-validation into private raw storage, then drained. Later-frame corruption can
-therefore leave only earlier, fully validated frames committed.
-
-The direction-specific profile calculator derives every caller-owned byte and
-typed-record requirement from the same conservative frame bounds. Decoder
-opaque storage is partitioned into aligned rANS views, LZMW phrase records, and
-iterative expansion references only after its layout is recomputed and
-validated, hiding internal C++ types from the public C ABI.
-The public C factory now consumes only the size-tagged fixed-width config and
-the three regions returned by the requirements query. It repeats profile and
-partition validation before borrowing those regions for an immutable-direction
-transform; construction failure publishes no transform.
-The public-ABI completion matrix now exercises that boundary alone for all
-one-byte values, representative binary and boundary-sized inputs,
-byte-identical mixed chunk schedules, repeated terminal calls, and
-frame-atomic rejection of a malformed final frame.
-A bounded dual-path fuzz harness now drives both the private complete-frame
-decoder and that public streaming lifecycle. Its input, output, encoded frame,
-reference, rANS-view, phrase, expansion, and call counts are fixed before
-untrusted parsing; permanent regressions retain truncation and malformed-field
-atomicity.
-The explicit CLI selector fixes 65,536-byte raw frames and rANS blocks, a
-262,144-byte reference ceiling, four entropy blocks, a 262,176-byte payload
-ceiling, and a 16-MiB aggregate policy. It obtains all direction-specific
-storage and alignment from the public requirements query and retains the
-existing temporary-file publication transaction.
-The dependency-free benchmark reuses that public profile without private
-layout knowledge. Checked complete-stream capacity is `80 + 4N + 2200K` for
-raw extent `N` and nonempty frame count `K`, covering the worst-case reference
-bytes, generic frame header, four descriptors, and four final states. An
-untimed exact round trip gates ratio, throughput, and queried-workspace output.
-Interoperability schema 25 appends the unchanged CLI profile once after the
-frozen schema-24 order. Generation round-trips all thirty-six archives before
-recording size and SHA-256; verification requires exact order, hashes, foreign
-decode equality, and byte-identical local re-encoding. The compatibility
-regression rejects reordered schema 25, removes only `lzmw-rans` to reconstruct
-schema 24, and then verifies every frozen schema through version 1. The
-four-direction schema-25 cross-check passed at revision
-`bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across the recorded Windows/MSVC,
-Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
-
-## tANS foundation
-
-tANS variant 1 begins with a transactional fixed-descriptor validator and a
-deterministic table builder. The builder fills all 4096 spread positions,
-derives every decode transition, and constructs the exact inverse encode lookup
-in temporary bounded storage before publishing either table. No global mutable
-table or implementation-defined permutation is used.
-
-The tANS reference encoder normalizes and builds the complete tables, then
-performs a count-only reverse traversal before touching caller output. A second
-reverse traversal writes each emitted chunk directly into its precomputed final
-bit position, avoiding block-size-proportional token or chunk storage while
-still producing decoder-consumption order.
-
-The strict tANS decoder builds validated tables and traverses the complete
-declared symbol count without output. It requires an in-range initial offset,
-available bits for every transition, exact terminal state and bit consumption,
-and zero high padding. Only a second identical traversal publishes bytes.
-
-The tANS frame controller validates the exact fixed-descriptor extent, expected
-full and final-short block symbol counts, each descriptor model, checked payload
-offset sums, and local frame limits in a first scan. A second scan publishes
-caller-owned block views only after the whole region is known valid.
-
-The complete tANS frame path plans every block before writing, serializes all
-descriptors before all payloads, and validates every block state and bitstream
-before a second loop writes output. Capacity failure and malformed later blocks
-therefore leave the whole frame output untouched.
-
-The command-line adapter names tabled variant 1 `tans` and uses only the public
-C configuration, workspace query, factory, and process lifecycle. Its one MiB
-frame and 65,536-symbol block policy permits at most 16 blocks. Capacity is
-bounded by 12 transition bits per input symbol, one two-byte state and one
-528-byte descriptor per block; decoder views are allocated from the queried
-count and alignment before parsing input. The shared temporary-file boundary
-prevents failed streams from publishing a destination.
-
-The benchmark adapter uses the same tabled profile and public C lifecycle. Its
-capacity bound includes the 64-byte stream prefix, one 56-byte header per
-frame, `ceil(3*n/2)` transition bytes, and a two-byte state plus 528-byte
-descriptor for each of at most 16 blocks per frame. An untimed complete round
-trip gates measurement; direction and peak workspace totals include the
-queried aligned decoder views region.
-
-The public-ABI completion matrix consolidates tabled tANS local-readiness
-evidence above normalization, spread, and transition-table tests. It covers
-every one-byte symbol, one-symbol and generated data, block and frame
-boundaries, deterministic re-encoding, one-byte and mixed chunk schedules,
-repeatable EndOfStream, and frame-atomic rejection of a malformed final frame,
-truncation, and trailing bytes. Queried aligned views are used throughout. This
-closes the local implementation loop without claiming external release
-evidence.
-
-## tANS composed profiles
-
-### Specified LZSS plus tANS boundary
-
-LZSS completes the canonical two-byte Literal and nine-byte Match sequence for
-one frame before tANS sees any symbol. tANS remains an untyped byte transform,
-so its block controller may divide either token form internally; the complete
-private byte sequence is restored before the LZSS parser decides token
-boundaries. The outer controller resets both layers together and forbids an
-entropy block from crossing that frame boundary.
-
-The reserved decoder order is generic extent validation, all tANS model and
-state validation, complete private token reconstruction, then variable-length
-LZSS grammar and semantic validation. Raw reconstruction and publication are
-later admission boundaries. Checked storage follows `S <= 2F`, exact `528K`
-descriptors, and the blockwise `2 + ceil(12n/8)` payload ceiling. The
-independent raw-`A` vector fixes one complete 587-byte frame without creating a
-combined codec entry point.
-
-The first internal validator realizes that order with caller-owned token and
-tANS-view spans. It admits their complete extents and aggregate workspace up
-front, validates every entropy automaton without output, and only then decodes
-all blocks into the private token region. The existing LZSS validator runs
-after exact token reconstruction and preserves token-index and byte-offset
-diagnostics. Raw staging and caller-visible output remain absent.
-
-The private raw decoder adds the exact declared `F`-byte staging extent to the
-same up-front capacity and aggregate checks. Only after the two-pass entropy
-decode and complete LZSS validation succeed does the allocation-free LZSS
-decoder reconstruct literals and overlapping matches. This storage is still
-disposable implementation workspace; no caller-visible output is published.
-
-The transactional wrapper admits a distinct caller output extent before any
-private mutation, without charging publication storage to the internal
-workspace limit. It preserves the same validation and private reconstruction,
-then copies exactly the declared raw frame once. Every earlier error leaves
-caller output byte-for-byte unchanged.
-
-The encoder-side planner first derives and materializes the complete canonical
-LZSS token region in caller staging. It then plans each consecutive tANS block
-over those immutable bytes and accumulates exact descriptor, payload, block,
-and serialized-frame extents with checked arithmetic. The synthesized generic
-header is validated, but no serialized byte is emitted; a later writer must
-consume the same frozen token region.
-
-The complete-frame writer invokes that plan before accepting any output
-mutation. Once the exact complete capacity is available, it emits the generic
-header, consecutive fixed descriptors, and consecutive payloads explicitly.
-Every block is replanned over unchanged token bytes and must reproduce the
-same payload extent, preserving one deterministic representation.
-
-The known-size streaming encoder drains the 80-byte prefix first, collects at
-most one raw frame, prepares the entire immutable frame through the writer,
-and drains it before accepting reuse of its storage. One-byte input and output
-are valid. Full frames may drain before finish, `Flush` leaves a partial frame
-open, and a latched `EndInput` survives output starvation until all bytes are
-emitted.
-
-The matching streaming decoder first collects the fixed prefix, then each
-generic frame header. Header validation fixes and admits the complete encoded
-extent plus tANS views, canonical token staging, and private raw staging before
-the body is collected. A complete frame is decoded privately and only then
-drained to the caller. Thus an invalid later frame preserves all earlier
-commits while publishing no byte from the invalid frame.
-
-The direction-specific profile calculator supplies those caller-owned regions
-without allocating them. Encoder sizing uses the actual largest known frame,
-the `2F` LZSS ceiling, exact descriptor count, and the blockwise 12-bit tANS
-payload ceiling. Decoder sizing depends only on local hard limits and returns a
-view count rather than exposing `TansBlockView`. Checked arithmetic and the
-same aggregate policy guard every derived extent.
-
-The public C adapter preserves that boundary through one size-tagged config,
-one directional requirements query, and one factory. Encoding partitions the
-secondary byte region after token staging; decoding partitions it before
-private raw staging and casts the separately aligned views region only inside
-the C++ implementation. Construction revalidates the profile and publishes no
-handle on any configuration, capacity, or alignment failure.
-
-The public-ABI completion boundary treats that C lifecycle as the system under
-test. It covers required binary classes, repeated deterministic encoding,
-one-byte and mixed chunk schedules, sticky terminal results, and four-frame
-decode failures. Corruption, truncation, or trailing data in the final frame
-preserves the first three committed frames and exposes no byte from the
-failing frame.
-
-The bounded fuzz boundary drives both the complete-frame private decoder and
-the incremental decoder from one input. Fixed caller-owned arrays cap input
-and payload at 8 KiB, total raw output at 4 KiB, a raw frame at 1 KiB, LZSS
-token staging at 2 KiB, and tANS metadata at eight views. Byte-derived chunks
-and a finite call ceiling prevent input-controlled allocation or unbounded
-state-machine execution. Permanent regressions require every canonical
-truncation, impossible frame lengths, and invalid tANS descriptors to reject
-without publishing any byte from the failing frame.
-
-The command-line adapter selects this profile as `lzss-tans` through only the
-public C lifecycle. It fixes raw frames and tANS blocks at 65,536 bytes, uses
-the exact 131,072-byte token, two-block, 1,056-byte descriptor, and
-196,612-byte payload ceilings, and applies a conservative 512-KiB aggregate
-policy. Directional workspace extents and view alignment still come from the
-requirements query. The shared temporary-file transaction prevents malformed
-or trailing input from publishing an output file.
-
-The benchmark adapter uses the same fixed profile and public C lifecycle.
-Encoded-capacity planning includes the 80-byte prefix, three transition bytes
-per raw byte, and a header plus two tANS descriptor/state pairs for every
-nonempty frame. An untimed exact round trip gates measurement; transform
-construction stays outside timed intervals, while direction-specific
-workspace regions and their peak total are reported from the requirements
-queries.
-
-Interoperability schema 27 appends the unchanged `lzss-tans` CLI archive once
-after the frozen schema-26 order. Generation verifies all 38 archives before
-recording their size and SHA-256; verification enforces exact order, foreign
-decode equality, and byte-identical re-encoding. The compatibility regression
-rejects reordered schema-27 manifests and removes only `lzss-tans` to recover
-schema 26 before checking every earlier schema.
 
 ### Specified LZ77 plus tANS boundary
 
@@ -2089,6 +1483,851 @@ The four-direction artifact exchange at revision
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers, including
 byte-identical re-encoding in both platform directions.
 
+### LZSS plus Blocked Huffman validation boundary
+
+The second selected composition begins with the same deliberately narrow
+decoder-side boundary. It accepts one exact frame, entropy-decodes into
+caller-owned dictionary staging, and validates the complete variable-length
+LZSS token stream against the frame's declared raw size. It exposes no raw
+output and performs no input-controlled allocation.
+
+This boundary demonstrates that composition is not coupled to LZ77's fixed
+16-byte tokens. Descriptor/model bytes, payload bytes, staged LZSS bytes, and
+the aligned block-view array are checked as one aggregate workspace.
+
+The matching exact planner first determines the variable LZSS token extent,
+emits those tokens once into caller-owned staging, and then plans Blocked
+Huffman over the actual bytes. Only after the generic header and both entropy
+regions have exact extents does the frame encoder check serialized capacity and
+publish output.
+
+The raw frame decoder is a commit stage over the strict validator. It checks
+raw destination capacity only after the complete entropy output has passed the
+LZSS token validator, then gives that validated staging to the standalone
+transactional LZSS decoder. Neither malformed outer layers nor a short raw
+destination can publish a raw prefix. Stream controllers and public adapters
+continue from these frame boundaries without weakening their commit order.
+
+The known-size complete-stream controller writes the normal 64-byte stream
+header followed by the 16-byte LZSS parameter region and then consecutive
+combined frames. Encoding plans every frame before publishing the prefix.
+Decoding parses configuration into local objects and validates every frame in a
+first pass with no raw output; only a successful complete scan permits the
+second commit pass. A malformed later frame therefore cannot expose an earlier
+raw frame or partially replace caller-visible configuration.
+
+The incremental encoder owns no variable-size allocation. Caller-provided raw
+frame, LZSS-token, and serialized-frame spans bound its state. It drains the
+canonical prefix and each complete encoded frame through arbitrary output
+capacity, including one byte. Nonterminal `Flush` does not close a partial
+frame, and an `EndInput` indication remains latched until the final serialized
+frame has completely drained. Its output is byte-identical to the known-size
+encoder for every input/output chunk schedule.
+
+The incremental decoder collects the fixed prefix, one frame header, and one
+complete frame body into caller-owned storage. It entropy-decodes and validates
+the complete LZSS token stream, reconstructs raw into frame staging, and only
+then drains that frame through partial output capacity. This intentionally
+commits validated earlier frames even if a later frame is malformed, while no
+byte from the malformed frame is exposed. A terminal indication remains
+latched across `NeedOutput` and becomes truncation after a nonfinal frame has
+finished draining without more serialized input.
+
+The internal profile factory fixes the version 1.0 algorithm and variant IDs,
+serializes the canonical 16-byte LZSS parameter record, and calculates exact
+known-size encoder workspace. If `F` is the largest raw frame, the worst-case
+LZSS staging extent is `2F`. For entropy block size `E`, the maximum number of
+blocks is `ceil(2F/E)`, and serialized frame staging is exactly the 56-byte
+generic header, one 16-byte descriptor per block, and the `2F` raw-fallback
+payload. The factory rejects every arithmetic, per-region, block-count, and
+aggregate-workspace limit before returning a configuration.
+
+Decoder workspace calculation deliberately has no serialized configuration
+argument. It derives the serialized-frame, token-staging, raw-frame, and typed
+block-view capacities only from trusted local limits. This makes the query safe
+before an untrusted stream header is parsed and gives the C adapter an
+opaque allocation contract without changing the transform's four distinct
+internal spans.
+
+The dedicated C adapter publishes this configuration through the ordinary
+opaque transform lifecycle. It preserves the three-workspace ABI: encoder
+secondary storage is partitioned into LZSS token staging and serialized-frame
+staging; decoder secondary storage is partitioned into token and raw staging;
+only decode uses the aligned views region. The adapter re-runs the checked
+profile calculation at creation and never exposes private C++ view layout.
+
+The command-line adapter names this profile `lzss-blocked-huffman` and reaches
+it only through the public C ABI. It fixes one-MiB raw frames, 64-KiB entropy
+blocks, and profile-specific limits derived from the two-byte-per-raw-byte LZSS
+worst case. File I/O therefore cannot bypass profile validation or introduce a
+second allocation policy. Failed decode removes the temporary destination even
+when earlier validated frames were already drained internally.
+
+A bounded fuzz boundary, completion matrix, and interoperability entry remain
+separate admission steps and must not be inferred from CLI availability.
+
+The benchmark adapter uses the identical public profile and fixed policy. Its
+encoded destination bound counts the 80-byte prefix, two token bytes per raw
+byte, each generic frame header, and every worst-case entropy descriptor. It
+times only `marc_transform_process`; allocation, transform lifecycle, file I/O,
+and mandatory round-trip verification remain outside the timed interval. Peak
+workspace is the larger queried sum of primary, secondary, and views regions.
+
+The bounded fuzz adapter invokes both the strict two-pass stream decoder and
+the incremental frame-committing decoder. It truncates each supplied case to
+8 KiB, uses fixed stack storage for at most 4 KiB of raw and token data, one
+1-KiB frame, and eight entropy views, and derives partial-I/O chunk sizes from
+the bytes. An independent call ceiling converts any stalled state machine into
+a reproducible failure rather than an unbounded run.
+
+### LZSS plus Adaptive Huffman specified boundary
+
+The next Adaptive composition retains LZSS's variable two-byte Literal and
+nine-byte Match grammar as the exact entropy input. One frame-local FGK tree
+reconstructs the entire token region into private staging before the ordinary
+LZSS validator may interpret any tag or reference. Complete validation and raw
+reconstruction occur before a current-frame byte becomes drainable.
+
+The exact all-Literal bound is two token bytes per raw byte; the conservative
+FGK bound is therefore 66 payload bytes per raw byte. The reference 64-KiB raw
+frame keeps token, payload, serialized-frame, and private raw regions within the
+common bounded policy. No aligned views region is required by either component.
+
+The first implemented boundary accepts one exact frame, checks the `2F` and
+33-byte-per-token extents plus aggregate workspace before entropy decoding,
+decodes into caller-owned private token staging, and validates the complete
+LZSS grammar against the declared raw size. It intentionally stops before raw
+reconstruction.
+
+The following commit boundary requires a second caller-owned staging region,
+reconstructs the validated LZSS sequence there, and copies to caller output
+only after the full raw frame succeeds. The raw extent participates in the
+aggregate workspace check, and capacity failures precede entropy mutation.
+
+The corresponding encoder boundary fixes the variable LZSS extent and writes
+the canonical tokens once before planning Adaptive Huffman over that immutable
+staging. It checks the `2F`, 33-byte-per-token, aggregate-workspace, header, and
+complete serialized-output extents before emitting a frame byte.
+
+The incremental decoder now collects the fixed stream prefix and one exact
+frame at a time, invokes private transactional reconstruction, and drains only
+committed raw staging. It supports one-byte input and output, latches finish
+while draining, and reports later-frame corruption after preserving only output
+from earlier complete frames. Profile-specific token and payload bounds are
+checked from the header before an input-controlled body is collected. The
+incremental encoder likewise completes each exact frame privately before
+draining it, keeps `Flush` nonterminal, and latches finish even across prefix or
+frame output starvation. Public adapters remain separate steps.
+
+The internal profile constructor now fixes the canonical IDs, parameter
+extents, 64-KiB reference cadence, and caller-owned workspace contract. For
+largest raw frame `F`, encoder regions are `F` raw, `2F` token, and
+`56 + 16 + 66F` serialized bytes, with their complete aggregate checked.
+Decoder regions are conservatively capped from validated local limits rather
+than input-controlled extents. The public C factory now exposes those exact
+requirements through the common caller-owned workspace lifecycle, while full
+profile admission remains gated on completion, fuzz, tooling, benchmark, and
+interoperability evidence.
+
+The public-ABI completion matrix now exercises the required binary data classes,
+frame-boundary lengths, deterministic re-encoding, one-byte and mixed chunking,
+repeatable terminal states, and malformed final-frame commit behavior. A
+corrupt fourth frame preserves exactly the first three committed frames and no
+byte from the fourth. Tooling and broader malformed-input admission remain
+separate boundaries.
+
+The bounded fuzz boundary now drives both the exact frame decoder and the
+incremental controller using only fixed arrays. It caps input at 8 KiB, output
+at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB, and payload at
+8 KiB, with byte-derived chunking and a fixed call ceiling. Permanent tests
+retain atomic rejection of every canonical truncation, extreme frame extents,
+and a reserved Adaptive descriptor mutation.
+
+The CLI now selects `lzss-adaptive-huffman` solely through its public C
+factory and requirements query. Its 64-KiB frame policy configures the `2F`
+token and 33-byte-per-token payload bounds without duplicating internal
+workspace partitioning. The common temporary-file transaction prevents an
+existing destination from being replaced and removes both destination and
+staging output after malformed or trailing input.
+
+The dependency-free benchmark selects the identical profile through the public
+C lifecycle. It reserves complete-stream capacity from the 64-KiB cadence and
+conservative `66F` payload bound, verifies a byte-exact round trip before
+timing, then reports encode/decode throughput, ratio, six queried workspace
+extents, and peak caller-reserved workspace without pass/fail performance
+thresholds.
+
+Interoperability schema 9 preserves the exact nineteen-entry schema-8 order
+and appends `lzss-adaptive-huffman`. Bundle verification requires the exact
+twenty-entry order, foreign decode equality, and byte-identical local
+re-encoding; schemas 1 through 8 retain their frozen meanings.
+
+### LZSS plus Dynamic Range specified boundary
+
+The next Dynamic Range composition preserves LZSS's complete variable-length
+token stream as the entropy boundary. The LZSS encoder must finish every
+two-byte Literal or nine-byte Match token before one fresh frame-local adaptive
+order-0 model consumes those bytes. Entropy decoding must reconstruct the
+entire token region into private staging before token tags, reserved fields,
+references, or lengths are interpreted.
+
+The exact all-Literal ceiling is two token bytes per raw byte. Combined with
+Dynamic Range variant 1's `2S + 5` conservative payload bound and 2^24-symbol
+limit, the format raw-frame ceiling is 2^23 bytes; the reference profile
+remains 64 KiB. A decoder validates all declared and aggregate extents before
+entropy output, parses the complete variable-length token stream, reconstructs
+exactly the declared raw extent into separate private storage, and only then
+publishes a frame.
+
+The first implemented boundary stops before reconstruction. It validates the
+exact frame and one range descriptor, checks `2F`, `2S + 5`, caller staging,
+and descriptor-plus-payload-plus-token aggregate bounds before mutation, then
+uses the range decoder's no-output preflight before filling private token
+staging. The ordinary LZSS validator parses that complete variable-length
+region and returns stable token and byte positions. No raw output boundary is
+present in that validator.
+
+The private decoder adds a separately bounded raw region to the aggregate
+before entropy output. After the complete token stream passes validation, it
+invokes the ordinary LZSS reconstruction path, including forward overlap copy,
+against only that private raw span. Short raw storage, aggregate-limit failure,
+and malformed descriptor or token layers therefore cannot mutate raw staging.
+There is still no caller-visible publication boundary in this step.
+
+The transactional complete-frame decoder adds that boundary without changing
+the representation. It rejects short caller output before entropy work,
+reconstructs only into private raw staging, and performs one final exact-extent
+copy after all nested checks succeed. Descriptor, entropy, token, capacity, or
+reconstruction failure therefore leaves caller output byte-for-byte unchanged.
+
+Exact encoding uses separate caller-owned raw input, canonical-token staging,
+and serialized-frame output. The planner completes LZSS parsing first, plans
+the adaptive range payload over those immutable token bytes, validates header
+and aggregate bounds, and returns an exact extent. The encoder refuses a short
+destination before writing and rechecks that the frozen token bytes yield the
+same descriptor and payload extent before serializing.
+
+The first outer streaming encoder owns no allocation. Callers provide one raw
+frame region, a `2F` canonical-token region, and one complete serialized-frame
+region. The transform drains the 80-byte prefix, collects exactly one format-
+declared raw frame, freezes and encodes it through the exact-frame boundary,
+then drains that immutable frame before accepting the next. This preserves
+byte identity across one-byte input and output, retains finalization across
+output starvation, and leaves nonterminal `Flush` unable to alter framing. A
+matching streaming decoder incrementally collects the prefix, one fixed frame
+header, and only the admitted exact frame body. It validates the Dynamic Range
+and LZSS extent ceilings before body collection, reconstructs into caller-owned
+private raw staging through the transactional frame decoder, and drains that
+frame only after complete success. A malformed later frame therefore leaves
+earlier committed output intact and publishes none of the failing frame.
+
+The profile layer now turns these ownership rules into byte-only requirements.
+For the encoder it derives raw, token, and complete serialized-frame regions
+from the actual largest configured frame, so a short stream and empty input do
+not reserve a full default frame. The decoder query depends only on validated
+local limits and the 2^23 raw / 2^24 token format ceilings. No aligned or typed
+view region is needed; later public construction can partition ordinary byte
+storage without exposing a private C++ record layout. The public C boundary
+now performs that partition: primary owns raw input or serialized input;
+secondary owns token staging followed by serialized-frame or private-raw
+staging. The requirements query and factory revalidate the same configuration,
+construct the immutable streaming direction with `nothrow`, use no views
+workspace, and publish no handle on failure.
+
+The public completion audit exercises this construction boundary rather than
+calling internal frame helpers. It spans required binary classes and raw sizes
+immediately around the 64-byte audit frame, compares complete multi-frame
+archives across arbitrary chunk schedules, and repeats both ended and error
+states. A corrupted final one-byte frame demonstrates that C ABI publication
+inherits the same complete-frame commit boundary as the internal decoder.
+
+The bounded fuzz boundary drives both the exact-frame private decoder and the
+incremental controller with fixed storage. It caps supplied input at 8 KiB,
+total output at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB,
+and range payload at 8 KiB. Encoded-frame, token, private-raw, and final-output
+arrays are counted in one aggregate policy before parsing. Input-derived
+partial-I/O schedules and a fixed call ceiling make a stalled state machine
+reproducible. Permanent tests retain frame-atomic rejection of every canonical
+truncation, saturated extent fields, and a malformed range descriptor.
+
+The explicit CLI selector is a thin public-C-ABI adapter. It fixes 64-KiB raw
+frames, the 128-KiB LZSS token ceiling, the 262,149-byte range-payload ceiling,
+and the 458,829-byte aggregate policy, then obtains the actual
+direction-specific regions from the public requirements query. Output remains
+hidden in a sibling `.tmp` path until the transform ends, the file closes, and
+an atomic rename publishes it. Any malformed or trailing input removes the
+temporary output, including after earlier frames were decoded internally.
+
+The dependency-free benchmark selects the identical public profile. Its
+checked complete-stream destination bound is `80 + 4N + 77K`, where four
+payload bytes per raw byte cover the LZSS and range worst cases and each frame
+adds a header, descriptor, and termination extent. An untimed byte-exact round
+trip gates measurement; encode and decode throughput, ratio, all six queried
+workspace extents, and peak caller reservation are descriptive outputs rather
+than performance thresholds.
+
+### Specified LZSS plus rANS boundary
+
+The second rANS composition freezes the complete canonical LZSS byte sequence
+before entropy processing. Scalar rANS remains unaware of the variable
+two-byte Literal and nine-byte Match grammar, so a block may split either
+token while the outer frame remains the shared reset boundary.
+
+For raw frame size `F`, token extent `S`, block size `B`, and block count `K`,
+the checked bounds are `S <= 2F`, `K = ceil(S/B)`,
+`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. Decoding must admit
+and validate the complete entropy representation before reconstructing the
+private token region, then validate the whole LZSS grammar and exact raw
+extent before any raw publication.
+
+The first internal complete-frame validator now implements that boundary.
+It admits descriptor views and token staging plus their aggregate workspace
+before entropy work, validates every rANS block without output, reconstructs
+the exact private token extent in a second pass, and invokes the existing LZSS
+validator. It intentionally stops before raw reconstruction.
+
+The matching private decoder extends admission with the complete raw staging
+extent and includes those bytes in the same aggregate workspace calculation.
+Only after entropy and LZSS validation succeed does the existing allocation-
+free LZSS decoder reconstruct Literal and forward-overlap Match tokens into
+that disposable caller-owned span. No caller-visible publication boundary is
+present yet.
+
+The transactional decoder adds a distinct caller-visible output span. It
+preflights capacity for the complete raw frame before descriptor parsing,
+retains the private reconstruction boundary, and copies exactly the validated
+`F` bytes once after success. Output capacity is not internal workspace, and
+every failure leaves the caller-visible span unchanged.
+
+The encoder-side planner first computes and materializes the complete
+canonical LZSS token sequence in caller-owned staging. It then walks immutable
+consecutive rANS blocks, retaining only one temporary descriptor at a time,
+and sums exact payload and descriptor extents with checked arithmetic. The
+planner validates the synthesized generic header and returns the complete
+frame size without accepting or modifying serialized output.
+
+The complete-frame writer invokes that planner first and rejects insufficient
+serialized output before writing the generic header. It then re-plans each
+immutable token block, requires every exact payload extent to match the frozen
+aggregate, explicitly serializes its descriptor, and encodes only the assigned
+payload subspan. The final token and payload offsets must equal the plan.
+
+The known-size streaming encoder owns no allocation. Caller-owned storage
+holds at most one raw frame, its `2F` worst-case LZSS token region, and one
+complete encoded frame. The state machine drains the 80-byte stream prefix,
+collects exactly the next declared frame extent, prepares one immutable frame
+through the deterministic writer, and drains it before accepting the next
+frame. `Flush` does not close a partial frame; `EndInput` must coincide with
+the declared original size.
+
+The bounded streaming decoder incrementally collects the fixed prefix, one
+generic frame header, and then exactly the declared frame body. Header
+admission checks encoded storage, rANS views, `2F` token staging, raw staging,
+and their aggregate before the body is accepted. A complete frame passes the
+private transactional decoder before its raw bytes enter a distinct drain
+state. Earlier frames may be committed; a malformed later frame publishes
+nothing from that frame and makes the error sticky.
+
+The internal profile is the sole sizing authority for this streaming pair.
+For encoding it derives the largest raw frame, conservative `2F` token
+staging, exact worst-case descriptor and payload storage, and the complete
+encoded-frame extent. For decoding it derives encoded-frame, bounded token,
+private raw, and rANS-view capacities only from validated local limits. The
+profile retains the composition's specified 1-MiB raw-frame cap; its `2F`
+token ceiling therefore remains well within the scalar rANS block bound.
+
+The public C ABI binds that profile without exposing any C++ type. Encoding
+uses raw collection as primary and token-plus-frame storage as secondary;
+decoding uses encoded-frame storage as primary, token-plus-raw storage as
+secondary, and an opaque aligned rANS-view region. The requirements query is
+the only public authority for all sizes and view alignment.
+
+The public-ABI completion matrix fixes 64-byte raw frames and entropy blocks.
+It proves every required data class, deterministic output across chunking,
+sticky terminal calls, and frame-atomic rejection of corruption, truncation,
+or trailing data in a final short frame through only the C lifecycle.
+
+The fuzz boundary independently submits bounded input to the private
+complete-frame decoder and to a C-ABI-created streaming decoder. All byte
+regions and rANS views have compile-time ceilings; the public requirements
+query may select only subspans of those arrays. Input-derived chunks are
+bounded, and a finite call ceiling turns non-progress into a reproducible
+failure.
+
+The command-line adapter selects this contract as `lzss-rans` using only the
+public C configuration, workspace query, factory, process, and destroy
+functions. It fixes raw and entropy blocks at 65,536 bytes, supplies a
+conservative 512-KiB aggregate policy that covers both directions, and leaves
+all opaque view sizing and alignment to the public query. File publication
+retains the shared temporary-file transaction.
+
+The dependency-free benchmark selects the same public profile and verifies a
+complete byte-exact round trip before timing. It creates each public transform
+outside the elapsed region and reports ratio, directional throughput, all
+queried workspace regions, and peak caller-reserved workspace. Checked
+complete-stream capacity is `80 + 2N + 1128K` for raw extent `N` and nonempty
+64-KiB frame count `K`.
+
+Interoperability schema 21 names codec set `marc-cli-v21`, preserves the exact
+thirty-one-entry schema-20 order, and appends this unchanged CLI
+representation once. Local generation and verification require exact order,
+count, size, SHA-256, fixture decode equality, and byte-identical local
+re-encoding while retaining explicit support for schemas 1 through 20.
+The established four-direction exchange subsequently verified all thirty-two
+schema-21 archives at revision
+`110bf3c9f80f5bc3723232c6f027867e4c2e7a2f` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+### Specified LZSS plus tANS boundary
+
+LZSS completes the canonical two-byte Literal and nine-byte Match sequence for
+one frame before tANS sees any symbol. tANS remains an untyped byte transform,
+so its block controller may divide either token form internally; the complete
+private byte sequence is restored before the LZSS parser decides token
+boundaries. The outer controller resets both layers together and forbids an
+entropy block from crossing that frame boundary.
+
+The reserved decoder order is generic extent validation, all tANS model and
+state validation, complete private token reconstruction, then variable-length
+LZSS grammar and semantic validation. Raw reconstruction and publication are
+later admission boundaries. Checked storage follows `S <= 2F`, exact `528K`
+descriptors, and the blockwise `2 + ceil(12n/8)` payload ceiling. The
+independent raw-`A` vector fixes one complete 587-byte frame without creating a
+combined codec entry point.
+
+The first internal validator realizes that order with caller-owned token and
+tANS-view spans. It admits their complete extents and aggregate workspace up
+front, validates every entropy automaton without output, and only then decodes
+all blocks into the private token region. The existing LZSS validator runs
+after exact token reconstruction and preserves token-index and byte-offset
+diagnostics. Raw staging and caller-visible output remain absent.
+
+The private raw decoder adds the exact declared `F`-byte staging extent to the
+same up-front capacity and aggregate checks. Only after the two-pass entropy
+decode and complete LZSS validation succeed does the allocation-free LZSS
+decoder reconstruct literals and overlapping matches. This storage is still
+disposable implementation workspace; no caller-visible output is published.
+
+The transactional wrapper admits a distinct caller output extent before any
+private mutation, without charging publication storage to the internal
+workspace limit. It preserves the same validation and private reconstruction,
+then copies exactly the declared raw frame once. Every earlier error leaves
+caller output byte-for-byte unchanged.
+
+The encoder-side planner first derives and materializes the complete canonical
+LZSS token region in caller staging. It then plans each consecutive tANS block
+over those immutable bytes and accumulates exact descriptor, payload, block,
+and serialized-frame extents with checked arithmetic. The synthesized generic
+header is validated, but no serialized byte is emitted; a later writer must
+consume the same frozen token region.
+
+The complete-frame writer invokes that plan before accepting any output
+mutation. Once the exact complete capacity is available, it emits the generic
+header, consecutive fixed descriptors, and consecutive payloads explicitly.
+Every block is replanned over unchanged token bytes and must reproduce the
+same payload extent, preserving one deterministic representation.
+
+The known-size streaming encoder drains the 80-byte prefix first, collects at
+most one raw frame, prepares the entire immutable frame through the writer,
+and drains it before accepting reuse of its storage. One-byte input and output
+are valid. Full frames may drain before finish, `Flush` leaves a partial frame
+open, and a latched `EndInput` survives output starvation until all bytes are
+emitted.
+
+The matching streaming decoder first collects the fixed prefix, then each
+generic frame header. Header validation fixes and admits the complete encoded
+extent plus tANS views, canonical token staging, and private raw staging before
+the body is collected. A complete frame is decoded privately and only then
+drained to the caller. Thus an invalid later frame preserves all earlier
+commits while publishing no byte from the invalid frame.
+
+The direction-specific profile calculator supplies those caller-owned regions
+without allocating them. Encoder sizing uses the actual largest known frame,
+the `2F` LZSS ceiling, exact descriptor count, and the blockwise 12-bit tANS
+payload ceiling. Decoder sizing depends only on local hard limits and returns a
+view count rather than exposing `TansBlockView`. Checked arithmetic and the
+same aggregate policy guard every derived extent.
+
+The public C adapter preserves that boundary through one size-tagged config,
+one directional requirements query, and one factory. Encoding partitions the
+secondary byte region after token staging; decoding partitions it before
+private raw staging and casts the separately aligned views region only inside
+the C++ implementation. Construction revalidates the profile and publishes no
+handle on any configuration, capacity, or alignment failure.
+
+The public-ABI completion boundary treats that C lifecycle as the system under
+test. It covers required binary classes, repeated deterministic encoding,
+one-byte and mixed chunk schedules, sticky terminal results, and four-frame
+decode failures. Corruption, truncation, or trailing data in the final frame
+preserves the first three committed frames and exposes no byte from the
+failing frame.
+
+The bounded fuzz boundary drives both the complete-frame private decoder and
+the incremental decoder from one input. Fixed caller-owned arrays cap input
+and payload at 8 KiB, total raw output at 4 KiB, a raw frame at 1 KiB, LZSS
+token staging at 2 KiB, and tANS metadata at eight views. Byte-derived chunks
+and a finite call ceiling prevent input-controlled allocation or unbounded
+state-machine execution. Permanent regressions require every canonical
+truncation, impossible frame lengths, and invalid tANS descriptors to reject
+without publishing any byte from the failing frame.
+
+The command-line adapter selects this profile as `lzss-tans` through only the
+public C lifecycle. It fixes raw frames and tANS blocks at 65,536 bytes, uses
+the exact 131,072-byte token, two-block, 1,056-byte descriptor, and
+196,612-byte payload ceilings, and applies a conservative 512-KiB aggregate
+policy. Directional workspace extents and view alignment still come from the
+requirements query. The shared temporary-file transaction prevents malformed
+or trailing input from publishing an output file.
+
+The benchmark adapter uses the same fixed profile and public C lifecycle.
+Encoded-capacity planning includes the 80-byte prefix, three transition bytes
+per raw byte, and a header plus two tANS descriptor/state pairs for every
+nonempty frame. An untimed exact round trip gates measurement; transform
+construction stays outside timed intervals, while direction-specific
+workspace regions and their peak total are reported from the requirements
+queries.
+
+Interoperability schema 27 appends the unchanged `lzss-tans` CLI archive once
+after the frozen schema-26 order. Generation verifies all 38 archives before
+recording their size and SHA-256; verification enforces exact order, foreign
+decode equality, and byte-identical re-encoding. The compatibility regression
+rejects reordered schema-27 manifests and removes only `lzss-tans` to recover
+schema 26 before checking every earlier schema.
+
+### Published LZ78 plus Blocked Huffman frame boundary
+
+The composition now has matching frame planner/encoder and validator/decoder
+boundaries. Encoding fixes the LZ78 parse in token staging before Blocked
+Huffman planning; decoding entropy-decodes a complete frame into staging, then
+validates phrase references and the exact derived raw extent before
+publication. Unlike the first two compositions, both directions require an
+aligned LZ78 phrase table; decoding additionally requires aligned Blocked
+Huffman block views.
+
+This makes typed-workspace composition an explicit admission boundary rather
+than an implementation detail. The public adapter retains the common
+primary/secondary/views C ABI shape, and its opaque views region is partitioned
+with checked alignment and size arithmetic for both private record types. The
+internal frame API accepts separate typed spans so capacity and aggregate-
+memory failures occur before entropy output or serialized output.
+
+### Specified LZ78 plus Adaptive Huffman boundary
+
+The next composition preserves LZ78's fixed eight-byte canonical tokens and
+aligned phrase table while replacing bounded static entropy blocks with one
+fresh FGK tree per outer frame. A raw frame of `F` bytes has at most `8F` token
+bytes and the conservative Adaptive payload ceiling is therefore `264F`.
+Decoding must entropy-decode into token staging, validate the complete phrase
+graph, reconstruct into private raw staging, and only then publish. Encoding
+must freeze the LZ78 parse before Adaptive planning. The representation and
+independent vector are specified. The first internal validator now accepts one
+exact frame, checks all extents and caller capacities, strict-decodes Adaptive
+bytes into token staging, and validates the full LZ78 phrase graph in aligned
+workspace. It exposes neither raw bytes nor a callable public profile.
+The matching private decoder revalidates that token graph, expands each prefix
+chain iteratively into raw staging, and commits the exact frame only after
+reconstruction. Raw staging is counted in the aggregate bound; output and raw
+capacity failures occur before entropy staging is touched.
+The matching exact-frame planner sizes and populates the aligned LZ78 encoder
+table, freezes canonical tokens in private staging, and plans Adaptive Huffman
+over that fixed byte sequence. The encoder validates the complete serialized
+destination before writing its header, descriptor, or payload. Encoder-table,
+token, descriptor, and payload extents participate in the checked aggregate
+workspace bound; streaming and public construction remain separate steps.
+The first bounded streaming encoder owns no allocation: callers provide one
+raw-frame span, token staging, serialized-frame staging, and an aligned encoder
+table. It emits the common 80-byte prefix, collects only complete configured
+frames, delegates each frame to the exact planner and encoder, then drains it
+before accepting another frame. Output starvation retains all pending state;
+`EndInput` remains latched even when prefix drainage consumes no input.
+The matching streaming decoder parses the prefix and each frame header in
+bounded fixed storage, rejects impossible LZ78 and Adaptive extents before body
+collection, and admits the exact frame, token, raw, and phrase-table aggregate
+before decoding. A complete frame is reconstructed into private raw storage;
+only that validated storage enters the drain state. Consequently a malformed
+later frame cannot expose one of its bytes after an earlier frame has drained.
+The internal profile fixes the 65,536-byte reference cadence and derives raw,
+token, conservative encoded-frame, and typed-record extents with checked
+arithmetic. Encoder and decoder opaque regions each contain one record type;
+partitioning rederives their exact size and alignment before producing a span,
+so public adapters need not reproduce C++ layout arithmetic later.
+The public C adapter now binds those pieces without allocation. It exposes the
+usual primary, secondary, and opaque aligned views regions, rederives the
+direction-specific profile at construction, and delegates typed layout
+creation to the profile partition helpers before publishing a transform.
+The public completion matrix then treats that factory as the only construction
+boundary and verifies required binary data classes, deterministic bytes,
+arbitrary chunking, stable terminal states, and transactional rejection of a
+malformed final frame.
+The bounded dual-decoder fuzz boundary adds no allocation surface: exact-frame
+and incremental parsing share fixed local limits, byte arrays, a 1,024-record
+phrase table, and a call ceiling. Ordinary builds compile this boundary while
+permanent malformed regressions exercise its reviewed failure classes.
+The transactional CLI binds this profile only through its public C factory
+and requirements query. Its 64-KiB raw cadence configures the `8F` canonical
+token and `264F` Adaptive payload ceilings while leaving the opaque phrase
+record sizing, alignment, and partitioning inside the checked profile helpers.
+The dependency-free benchmark uses the identical public configuration and
+queries both directional workspace layouts. It verifies a complete byte-exact
+round trip before timing fresh transform instances, then reports ratio,
+throughput, all queried extents, and peak caller-reserved workspace without a
+performance threshold.
+Interoperability schema 10 preserves the exact twenty-entry schema-9 order and
+appends `lz78-adaptive-huffman`. Generation round-trips all twenty-one profiles;
+verification requires the exact manifest order, foreign decode equality, and
+byte-identical local re-encoding while retaining schema 1 through 9 support.
+The pushed Windows/MSVC and Ubuntu 24.04 artifacts and an Ubuntu 26.04/Clang
+bundle subsequently passed that contract in both operating-system directions
+for all twenty-one archives at one full revision.
+Profile sizing fixes the three-region ABI: frame bytes occupy the
+primary and secondary regions, while the aligned opaque views region contains
+an encoder phrase table or a decoder block-view array followed by checked
+padding and the decoder phrase table. Partition helpers rederive and validate
+the complete layout before exposing typed spans. The incremental encoder and
+decoder now consume those spans directly. They preserve the common 80-byte
+prefix and frame state machine under one-byte input and output, and the decoder
+publishes raw bytes only after a whole frame has passed entropy and phrase-graph
+validation. The public C factory exposes only byte counts and alignment, then
+delegates the opaque-region partition back to the checked internal helpers.
+The `lz78-blocked-huffman` profile is therefore callable through the C ABI;
+its completion matrix proves required binary classes, chunk independence,
+determinism, stable terminal behavior, and transactional malformed-final-frame
+rejection through that ABI. Its bounded decoder fuzz target fixes every byte,
+typed-workspace, and call-count limit before processing arbitrary input. The
+CLI and benchmark reach the profile only through the C ABI and obtain all
+three workspace extents from its requirements query. The benchmark verifies a
+round trip before timing and reports complete-stream ratio, directional
+throughput, and the larger caller-owned workspace total. Interoperability
+schema 4 covers the same public profile through deterministic foreign decode
+and local re-encode checks.
+
+### LZ78 plus Dynamic Range specified boundary
+
+The third Dynamic Range composition preserves LZ78's complete fixed-width
+eight-byte token stream as the entropy boundary. The deterministic LZ78 parse
+and token serialization finish before one fresh frame-local adaptive order-0
+model consumes those bytes. Entropy decoding must reconstruct the entire
+private token region before interpreting tags, symbols, reserved bytes, or
+phrase indices.
+
+For raw extent `F`, token extent `S` is a nonzero multiple of eight with
+`S <= 8F`, and the range payload is bounded by `2S + 5`. The 2^24-symbol range
+limit therefore gives this profile a 2^21-byte format frame ceiling; the
+reference profile remains 64 KiB. A decoder validates all declared and
+aggregate extents before entropy output, builds and checks the complete phrase
+graph in bounded aligned workspace, reconstructs exactly the declared raw
+extent without recursion, and only then publishes a frame.
+
+The first validator boundary stops at the validated phrase graph. It checks
+the exact frame, descriptor, `8F`, `2S + 5`, token staging, aligned phrase
+entries, and their aggregate extent before mutation. The strict range decoder
+preflights the complete payload before filling private token staging, after
+which the ordinary LZ78 validator records the complete bounded phrase graph
+and stable token and byte positions.
+
+The next bounded boundary also requires a separate private raw region and
+counts its complete extent in the same pre-entropy aggregate check. Only after
+the phrase graph is valid does the existing non-recursive LZ78 decoder
+iteratively reconstruct exactly the declared raw extent into that region.
+
+The transactional complete-frame decoder adds the caller-visible boundary
+without changing the representation. It rejects short caller output before
+entropy work, reconstructs only into private raw staging, and performs one
+final exact-extent copy after all nested checks succeed. Header, descriptor,
+entropy, token, phrase, capacity, or reconstruction failure therefore leaves
+caller output byte-for-byte unchanged.
+
+The first encoder boundary is a no-serialized-output planner. It requires the
+complete aligned LZ78 encoder-entry region and token staging, performs the
+deterministic phrase parse into canonical eight-byte tokens, and only then
+plans Dynamic Range payload extent from those immutable bytes. Encoder
+entries, tokens, descriptor, and payload participate in one checked aggregate.
+The resulting frame extent is exact. The matching encoder rejects short output
+after that complete plan, replans the unchanged token staging, requires an
+identical payload extent, and serializes header, descriptor, and payload in
+order. Repeated calls with identical input and configuration produce identical
+frame bytes.
+
+The bounded known-size streaming encoder emits the serialized stream prefix,
+collects exactly one configured raw frame, invokes the exact-frame boundary,
+and retains that complete serialized frame while draining arbitrary output
+chunks. `Flush` does not close a partial frame. `EndInput` is accepted only
+with the complete remaining declared input and remains latched until every
+prefix and frame byte drains.
+
+The matching bounded streaming decoder incrementally collects the fixed
+80-byte prefix and one 56-byte frame header. Before accepting the frame body,
+it rejects impossible `S`, `P`, descriptor, caller-workspace, serialized-frame,
+and aggregate extents. It then collects exactly the admitted body, validates
+and reconstructs the complete frame into private raw storage, and only then
+drains raw bytes. A malformed or truncated later frame therefore publishes
+none of that frame while leaving earlier completed frames committed.
+
+The bounded profile owns no storage. For encoding it derives raw-frame, token,
+serialized-frame, and opaque aligned encoder-entry requirements from the
+largest actual known frame. For decoding it derives serialized-frame, token,
+private-raw, and opaque aligned phrase-entry requirements only from local
+limits and the format cap. Partition helpers revalidate record count, byte
+extent, alignment, and capacity before constructing internal typed spans.
+
+The public C factory binds that profile to ABI version 1's size-tagged config,
+requirements query, opaque transform handle, and three caller-owned regions.
+Factory construction repeats profile admission and typed-view partitioning
+before publishing the handle. The C boundary therefore exposes only byte
+extents and alignment while retaining the exact streaming encoder and
+frame-atomic decoder behavior.
+
+The public-ABI completion matrix constructs both directions only through that
+factory. It covers required binary input classes, byte-identical repeated
+encoding, one-byte and mixed chunk schedules, stable repeated success, and a
+four-frame transaction test. Corruption, truncation, or trailing data in the
+fourth frame commits exactly the first three 64-byte frames and no byte from
+the fourth.
+
+The bounded decoder fuzz boundary uses the same exact-frame private decoder
+and incremental stream decoder without changing either public surface. It
+preallocates serialized input, encoded-frame, token, private-raw, final-output,
+and aligned phrase-record storage under fixed local limits. Arbitrary bytes
+may choose only modulo-bounded input and output chunks. A finite call ceiling
+turns a stalled state machine into a reproducible invariant failure rather
+than input-controlled work.
+
+The explicit `lz78-dynamic-range` CLI adapter selects a fixed 65,536-byte raw
+frame, 524,288-byte canonical token ceiling, 1,048,581-byte range payload
+ceiling, and 4-MiB aggregate policy. It obtains all three workspace extents and
+opaque alignment through the public requirements query and creates only the
+public C transform. The common temporary-file transaction prevents malformed
+or trailing input from publishing a destination.
+
+The dependency-free benchmark selects the identical public profile. Its
+checked destination formula is `80 + 16N + 77K`; an untimed byte-exact round
+trip gates all measurement. Fresh C transforms then report encoded ratio,
+directional throughput, all six queried workspace extents, and the larger
+three-region sum without a performance threshold.
+
+### Validated LZ78 plus rANS boundary
+
+The third rANS composition freezes the complete canonical LZ78 token sequence
+before entropy processing. Scalar rANS remains unaware of the fixed eight-byte
+Pair and FinalIndex grammar, so an entropy block may split a token while the
+outer frame remains the shared dictionary and model reset boundary.
+
+For raw frame extent `F`, token extent `S`, entropy block size `B`, and block
+count `K`, require aligned `0 < S <= 8F`, `K = ceil(S/B)`,
+`8K <= P <= S + 8K`, and exactly `528K` descriptor bytes. The decoder must
+validate every rANS block into private token staging before checking LZ78
+alignment, fields, phrase references, phrase lengths, dictionary growth, and
+exact raw extent. Phrase expansion and caller-visible publication remain
+outside this first implementation step.
+
+The first internal complete-frame validator implements that boundary. It
+checks exact serialized extent, block count, descriptor and payload bounds,
+token and phrase workspace capacities, and the aggregate internal-buffer
+limit before token mutation. It validates every descriptor and rANS state
+path before decoding any block, reconstructs exactly `S` private token bytes,
+and runs the bounded LZ78 phrase-graph validator. It deliberately exposes no
+caller-visible output, public factory, or streaming transform.
+
+The next internal boundary adds iterative raw reconstruction only after that
+complete validation succeeds. Raw staging must hold the exact declared frame
+extent and is counted in the aggregate workspace before any entropy output.
+The existing non-recursive LZ78 decoder walks the validated parent links into
+the separate raw region; malformed entropy or token data therefore cannot
+touch raw staging. The result remains private and is not transactionally
+published by that boundary.
+
+The transactional complete-frame decoder adds one caller-visible output span.
+Its exact raw capacity is checked with the other capacities before any private
+mutation, but it is not counted as internal workspace. After complete entropy,
+phrase-graph, and raw reconstruction success, one copy publishes exactly the
+declared frame extent; failure at any earlier layer leaves the complete output
+span unchanged.
+
+Exact encoding first completes deterministic LZ78 parsing into caller-owned
+encoder records and freezes the complete canonical token region. Only then
+does the planner visit each scalar rANS block in forward serialized order,
+accumulate exact descriptor and payload extents, count encoder records,
+tokens, descriptors, and payloads in one checked workspace total, and
+validate the synthesized generic frame header. The encoder repeats those
+deterministic block plans only after serialized output capacity is known,
+then writes the header, all descriptors, and all payloads. The independent
+raw-`A` input reproduces the frozen 592-byte frame exactly.
+
+The known-size streaming encoder emits the ordinary 80-byte stream prefix,
+collects at most one configured raw frame, invokes the exact planner and
+encoder into caller-owned immutable frame storage, and drains that frame
+before accepting bytes for the next one. Raw collection, encoder records,
+canonical tokens, and the complete serialized frame are checked as one
+aggregate before encoding. Arbitrary input and output chunking therefore
+cannot alter frame bytes. `Flush` keeps a partial frame open, while
+`ResetBlock` is unsupported because outer frame boundaries are fixed by the
+configured raw frame size.
+
+The matching streaming decoder incrementally admits the fixed 80-byte prefix,
+then one 56-byte generic frame header before deriving the exact complete frame
+extent. It requires encoded-frame, rANS-view, token, phrase, and private raw
+storage and their checked aggregate before collecting the remaining frame.
+Only a complete frame is passed to the transactional private decoder; its raw
+staging is drained afterward under arbitrary output starvation. Thus a
+malformed later frame cannot publish any byte from that frame, while already
+drained earlier frames remain committed. Known original size determines the
+final frame, and truncation or trailing bytes are rejected.
+
+The internal profile calculator gives those caller-owned regions a stable
+typed layout without exposing record definitions at a future ABI boundary.
+Encoding uses raw-frame bytes, conservative `8F` token bytes, a complete
+`56 + 528K + S + 8K` encoded-frame region, and aligned LZ78 encoder records.
+Decoding derives encoded-frame, token, and private-raw byte regions solely
+from local limits; one aligned opaque region contains rANS block views first
+and LZ78 phrase records at a checked aligned offset. Partitioning rederives
+every count, offset, extent, and alignment before returning typed spans.
+
+The public C adapter preserves that ownership model. Its requirements query
+reports raw or encoded-frame storage as primary, token-plus-frame/raw storage
+as secondary, and only an opaque byte extent plus maximum alignment for typed
+records. Factory construction repeats profile calculation and layout
+partitioning before publishing an immutable-direction handle. A failed query,
+short or misaligned region, or allocation failure leaves the handle null.
+
+The bounded decoder fuzz boundary invokes both the private exact-frame decoder
+and that public C streaming lifecycle. It caps supplied input at 8 KiB, total
+raw output at 4 KiB, one raw frame at 1 KiB, canonical LZ78 tokens at 8 KiB,
+rANS payload at 16 KiB, metadata at eight block views, and phrase state at
+1,024 records. Every byte and typed region has a compile-time ceiling before
+serialized metadata is parsed. Input-derived chunks remain within a fixed
+call budget, so malformed data cannot create allocation or unbounded-progress
+behavior.
+
+The command-line adapter selects this contract explicitly as `lz78-rans`.
+It fixes 65,536-byte raw frames and entropy blocks, the 524,288-byte token
+ceiling, eight rANS blocks, the 524,352-byte payload ceiling, 65,536 phrase
+entries, and a 4-MiB aggregate policy. It obtains all direction-specific byte
+regions and opaque alignment from the public query, and retains the common
+temporary-output transaction so malformed or trailing input cannot leave a
+destination file.
+
+The benchmark adapter uses the identical public profile. Its checked encoded
+capacity is `80 + 8N + 4344K`, where `N` is raw input and `K` is the nonempty
+frame count. It verifies exact decode equality before timing, constructs a
+fresh public transform for every sample, and reports the queried primary,
+secondary, views, and peak directional workspace without imposing a speed
+floor.
+
+Interoperability schema 22 names codec set `marc-cli-v22`, preserves the exact
+thirty-two-entry schema-21 order, and appends this unchanged CLI
+representation once. Local generation and verification require exact order,
+count, size, SHA-256, fixture decode equality, and byte-identical local
+re-encoding while retaining explicit support for schemas 1 through 21.
+The established four-direction exchange subsequently verified all thirty-three
+schema-22 archives at revision
+`2aa51ded63bdeacb0e5b2ec28a21075a867bb353` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+The independent raw-`A` vector composes only the existing LZ78 encoder, scalar
+rANS encoder, and generic serializers. It freezes the eight-byte Pair token,
+the `00:3584` and `41:512` normalized model, the eight-byte final-state
+payload, and the complete 592-byte frame.
+
 ### Specified LZ78 plus tANS boundary
 
 The third tANS composition freezes the complete canonical LZ78 token byte
@@ -2206,920 +2445,59 @@ region into tANS block views and LZ78 phrase records. Construction revalidates
 the profile and publishes no handle on any configuration, capacity, reserved-
 field, or alignment failure.
 
-### Specified LZW plus tANS boundary
-
-The fourth tANS composition freezes the complete canonical LZW packed byte
-stream before entropy processing. The packed region includes zero high padding
-through the final byte. tANS remains an untyped byte transform, so a block may
-split a variable-width LZW code but may not split a byte or cross the outer
-frame where the LZW dictionary and tANS tables both reset.
-
-For raw size `F`, configured maximum code width `W`, packed size `S`, entropy
-block size `B`, and `K = ceil(S/B)`, require nonzero
-`S <= ceil(FW/8)`, exact `528K` descriptor bytes, and the checked blockwise
-tANS payload ceiling. The decoder must validate all entropy descriptors and
-state paths before reconstructing exactly `S` private bytes, then validate
-LZW width transitions, first-literal and backward-reference rules, `KwKwK`,
-dictionary growth, exact `F` expansion, exact packed exhaustion, and zero high
-padding without caller-visible publication.
-
-The independent raw-`A` boundary fixes packed bytes `41 00`, normalized
-frequencies `00:2048` and `41:2048`, initial-state offset `0x000C`, two zero
-transition bits, payload `0C 00 00`, and a complete 587-byte frame. This is a
-format and vector reservation.
-
-The first bounded validator realizes the validation-first boundary with
-caller-owned tANS views, packed staging, and LZW phrase records. It admits all
-serialized and workspace extents under one aggregate policy, validates every
-tANS descriptor and state path without packed output, and only then performs a
-second entropy pass into private staging. Complete LZW code-width, reference,
-dictionary-growth, raw-extent, packed-exhaustion, and padding validation
-follows; caller-visible publication remains absent.
-
-The matching private decoder adds the complete raw extent to preflight and the
-aggregate workspace calculation. After the same two-pass entropy validation
-and complete LZW graph validation, the existing allocation-free LZW decoder
-expands phrases iteratively into exactly the declared raw extent. There is
-still no caller-visible output span, so every workspace remains disposable on
-failure.
-
-The transactional complete-frame wrapper additionally admits the full caller
-output extent before descriptor parsing or any private mutation. Caller output
-is not internal workspace and is therefore not charged to the aggregate
-buffer limit. After entropy validation, packed reconstruction, complete LZW
-validation, and private raw reconstruction all succeed, one final copy
-publishes exactly the declared raw bytes. Short output and either-layer
-malformation leave the complete caller output unchanged.
-
-The encoding-side planning boundary first fixes the complete canonical packed
-LZW region in caller-owned staging, then plans each tANS block over those exact
-bytes. It computes and validates the synthesized frame and all aggregate
-workspace without accepting serialized output. This prevents descriptor or
-payload emission from observing a partial or differently chunked LZW stream.
-
-The workspace profile turns those fixed bounds into direction-specific caller
-storage. Encoding reports separate raw-frame, packed-code, complete encoded-
-frame, and aligned LZW encoder-record regions. Decoding reports encoded-frame,
-packed-code, private-raw, and one opaque aligned region partitioned into tANS
-block views followed by aligned LZW phrase records. Partitioning is
-transactional: invalid requirements, short storage, or misalignment returns no
-typed view.
-
-The C ABI binds that profile through `marc_lzw_tans_config`, its requirements
-query, and factory. The public structure carries only fixed-width values and
-hard limits; the aligned tANS and LZW object layouts remain private. Factory
-failure leaves the opaque transform handle null.
-
-The public completion matrix constructs both directions only through that C
-factory. It fixes 64-byte frame and block boundaries, proves deterministic
-archives across arbitrary chunking, and verifies that a malformed fourth frame
-cannot publish its final raw byte or destabilize the repeated terminal error.
-The bounded fuzz harness feeds each at-most-8-KiB input to both the private
-complete-frame boundary and public C streaming decoder. All raw, encoded,
-packed, phrase, and tANS-view storage is fixed before input is examined, and a
-strict call budget turns any progress failure or hang into an immediate
-invariant violation.
-
-The transactional CLI binds `lzw-tans` only through that public C
-configuration, requirements query, factory, process, and destroy lifecycle.
-It derives conservative byte ceilings but never names or partitions private
-LZW or tANS records. Encoded or decoded output remains temporary until the
-whole operation succeeds, so a malformed final frame or strict trailing data
-cannot publish a destination file.
-
-The benchmark adapter selects the identical `lzw-tans` public profile. It
-queries fresh caller-owned workspaces for each direction, proves one complete
-byte-exact round trip before timing, then measures encode and decode
-independently. The runner reports every queried region and peak reservation;
-it does not inspect the opaque typed partition or enforce a performance floor.
-
-Interoperability schema 29 appends the identical `lzw-tans` CLI archive once
-after the frozen schema-28 order. Generation validates all 40 local archives
-before writing the manifest; verification requires exact order, hashes,
-foreign decode, and byte-identical local re-encoding. Compatibility derives
-schema 28 by removing only `lzw-tans`, rejects reordered schema-29 manifests,
-and then verifies every unchanged schema through version 1.
-External four-direction verification at revision
-`2dcc17c09477958c1f8777a266ecfefbb75217d2` confirms all 40 archives across
-the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
-producers, including byte-identical re-encoding in both platform directions.
-
-### LZD plus tANS boundary
-
-The reserved `lzd-tans` profile places tabled tANS after the complete canonical
-LZD reference-pair byte stream. LZD produces aligned eight-byte token records;
-tANS consumes only bytes and may place a block boundary inside either
-four-byte reference field or between fields, but never inside a byte or across
-an outer frame. Both layers reset with the frame controller.
-
-Decoder construction must admit every descriptor, payload, private token byte,
-tANS block view, LZD phrase record, expansion reference, and raw staging region
-before the corresponding mutation. All tANS blocks must validate before token
-reconstruction, and the complete private token span must pass LZD alignment,
-reference, phrase-growth, terminal, and raw-extent checks before any raw byte is
-reconstructed or published. The initial reservation fixes representation and
-bounds. The first internal combined component now implements that complete-
-frame validation boundary with caller-owned views, token staging, and phrase
-records. The private complete-frame decoder additionally admits the declared
-raw extent and iterative expansion stack before entropy mutation, then invokes
-the existing non-recursive LZD decoder only after complete graph validation.
-Raw staging remains discard-only. The internal transactional decoder places a
-distinct caller-output preflight around that private operation and copies the
-complete raw extent once after success. This publication boundary remains
-below any streaming or public API.
-The inverse planning boundary completes the LZD parse and canonical token
-serialization before tANS planning. It keeps raw input, aligned encoder
-records, and token staging caller-owned, validates the synthesized frame
-header, and reports exact block and frame extents without accepting a final
-serialized destination.
-The complete-frame encoder invokes that plan before destination admission,
-then writes explicit generic-header, descriptor, and payload regions. A short
-destination cannot expose a partial frame; repeated encoding over the frozen
-tokens must reproduce the same bytes.
-The bounded streaming encoder owns no storage. It serializes the fixed prefix,
-collects one raw frame in caller memory, invokes the exact planner and encoder,
-then drains the immutable result with independent input consumption and output
-production. Finish is retained until all pending bytes drain, while flush does
-not alter frame boundaries.
-The matching bounded streaming decoder incrementally collects the prefix and
-one serialized frame, admits all tANS and LZD workspaces from trusted header
-bounds, validates and reconstructs privately, then drains only the committed
-raw frame. A later malformed frame cannot expose partial output from that
-frame; retained finish survives draining of an earlier valid frame.
-The profile calculator derives the coupled worst-case raw, token, serialized,
-typed-view, phrase, and expansion extents with checked arithmetic. Its opaque
-storage partitioners validate exact size metadata and alignment before forming
-typed spans, so a later ABI adapter need not duplicate layout arithmetic.
-The public C adapter preserves the common three-region ownership model and
-delegates all sizing and typed partitioning to that calculator. It adds only a
-size-tagged fixed-width configuration and new symbols, leaving the established
-ABI version and every existing structure layout unchanged.
-The public completion matrix constructs both directions only through that C
-factory. It fixes 64-byte frame and block boundaries, proves deterministic
-archives across arbitrary chunking, and verifies that a malformed fourth frame
-cannot publish its final raw byte or destabilize the repeated terminal error.
-The bounded fuzz boundary drives both the internal complete-frame validator and
-the public incremental decoder from the same at-most-8,192-byte input. All raw,
-token, tANS-view, phrase, expansion, and output storage is fixed before input is
-examined; byte-derived chunk sizes and a finite call budget prevent a malformed
-stream from creating unbounded storage or execution.
-The transactional CLI selects this public profile with 65,536-byte raw frames
-and tANS blocks, checked 262,144-byte token and 393,224-byte payload ceilings,
-four blocks, the public LZD entry bound, and a 16-MiB aggregate policy. It
-allocates only the three queried workspace regions and publishes the output
-file only after the complete transform succeeds.
-The benchmark adapter reuses that exact public policy independently in each
-direction. It admits a checked complete-stream destination, verifies one
-byte-exact untimed round trip, then measures encode and decode separately while
-reporting every queried region and the larger directional reservation.
-Interoperability schema 30 appends the identical `lzd-tans` CLI archive once
-after the frozen schema-29 order. Generation validates all 41 local archives
-before recording the manifest; verification requires exact order, hashes,
-foreign decode, and byte-identical local re-encoding. Compatibility rejects a
-reordered schema-30 manifest, derives schema 29 by removing only `lzd-tans`,
-and then verifies every unchanged schema through version 1.
-External four-direction verification at revision
-`827ddf085efb40c7d8f9bc27628977053179d84c` confirms all 41 archives across
-the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
-producers, including byte-identical re-encoding in both platform directions.
-
-### LZMW plus tANS boundary
-
-The reserved composition first freezes the canonical little-endian four-byte
-LZMW reference region, then divides those bytes into independently reset tANS
-blocks. A block may split a reference but cannot split a byte or cross the
-outer frame. Checked bounds require `0 < S <= 4F`, four-byte alignment,
-`K = ceil(S/B)`, exact `528K` descriptors, and the sum of per-block
-`2 + ceil(12n/8)` payload ceilings.
-
-Decoder construction must admit every serialized and caller-owned extent
-before parsing model data. Every tANS block must validate before private
-reference reconstruction, and the complete reference span must pass ordinary
-LZMW literal, generated-reference, adjacent-pair growth, dictionary-limit, and
-exact-raw-extent validation before raw reconstruction or publication. The
-independent raw-`A` vector composes standalone LZMW and tANS
-components into a 587-byte frame with payload `FB 02 07`; no combined runtime
-path or public profile existed at the specification step. The first internal
-combined component now implements this complete-frame validation boundary with
-caller-owned views, reference staging, and phrase records. Its private decoder
-additionally admits the declared raw extent and iterative expansion stack
-before entropy mutation, reconstructs only the validated LZMW graph into
-disposable raw staging, and publishes exactly once only after every layer
-succeeds. It adds no streaming transform or public surface.
-
-The encoder-side exact-frame planner first plans and materializes the complete
-canonical LZMW reference region in caller-owned staging. Only that frozen byte
-sequence is divided into tANS blocks. It plans every normalized table and
-transition payload, checks their exact aggregate extent and complete generic
-header, and reports the exact frame size without writing serialized output.
-Short encoder records or reference staging fail before reference mutation.
-The deterministic frame encoder invokes that planner first, requires complete
-serialized capacity, writes the generic header, then emits every tANS
-descriptor and payload over the frozen reference span. It rechecks all planned
-block extents and leaves serialized output untouched on any planner or capacity
-failure.
-
-The bounded streaming encoder owns caller-supplied storage for one raw outer
-frame, its maximum canonical reference region, one complete serialized frame,
-and the LZMW encoder table. It first drains the immutable stream prefix, then
-collects exactly one outer frame, invokes the exact planner and encoder, and
-drains the complete serialized frame without mutation. One-byte input and
-output are valid. `EndInput` remains sticky while pending bytes drain; `Flush`
-does not close a partial frame, and `ResetBlock` is unsupported.
-
-The matching streaming decoder incrementally collects the fixed prefix and one
-complete serialized frame. It validates header-derived tANS views, reference
-staging, phrase records, expansion stack, raw staging, and aggregate live bytes
-before accepting the frame body. Only the transactional complete-frame decoder
-may populate private raw staging; that successful immutable frame then drains
-under arbitrary output chunking. A later malformed frame cannot expose any of
-its raw bytes or roll back earlier completed frames.
-
-## C transform ABI
-
-The stateful C ABI exposes the fixed version 1.1 raw-checksum profile plus
-Blocked Huffman, Adaptive Huffman, Dynamic Range, rANS, tANS, LZ77, LZSS, LZ78,
-LZW, LZD, and LZMW variant 1 through
-separate versioned, size-tagged configuration, workspace-query, and factory
-functions. All profiles construct the same opaque transform type and share its
-process and destroy operations. The raw-checksum profile uses one serialized
-frame workspace in either direction. Other encoder workspaces hold one raw and
-one serialized frame, while decoder workspaces hold one serialized and one
-decoded frame. Blocked Huffman, rANS, and tANS use aligned internal block-view
-arrays. LZ78 and LZW use opaque aligned phrase-table workspaces. LZD and LZMW
-each use one opaque aligned region for input-backed phrase records when encoding
-and partition that region into phrase records plus an iterative expansion stack
-when decoding. Adaptive Huffman, Dynamic Range, LZ77, and LZSS need no views
-workspace. These buffers remain caller-owned and must outlive the handle.
-
-Only the small opaque handle and its C++ implementation object are allocated by
-the library with non-throwing allocation. Processing uses caller input/output
-spans and maps stable core status and error categories into fixed C constants.
-Every exported function is `noexcept` when compiled as C++.
-
-## Blocked Huffman, Adaptive Huffman, and Dynamic Range composed profiles
-
-### LZ77 plus Blocked Huffman validation boundary
-
-The first combined-pipeline component accepts exactly one serialized frame and
-has no raw-output parameter. It reuses the generic frame parser, transactional
-Blocked Huffman controller and decoder, and canonical LZ77 token validator in
-that order. Entropy output is written only to caller-owned dictionary staging;
-raw-byte reconstruction is deliberately deferred to the later decoder step.
-
-The caller supplies both the block-view array and dictionary staging. Their
-required extents are derived from the validated frame header. Descriptor/model
-bytes, entropy payload bytes, dictionary staging, and the typed view array form
-one checked aggregate workspace bound. This preserves bounded memory while
-keeping all allocation policy outside the validator.
-
-The complete-frame raw decoder is a thin commit stage over this boundary. It
-first runs the same validator, checks raw destination capacity, and then passes
-only the validated dictionary staging to the standalone transactional LZ77
-decoder. Raw output is therefore unreachable from malformed generic headers,
-entropy metadata, entropy payloads, or token streams. The standalone decoder's
-prevalidation also protects the raw destination if its API is used separately.
-
-The matching frame encoder exposes an exact planner because the generic header
-must precede entropy descriptors and payloads. Planning first emits canonical
-LZ77 tokens into caller-owned staging, then computes the Blocked Huffman model
-choice and exact extents for every dictionary-byte block. Encoding repeats only
-the deterministic entropy traversal into already-sized descriptor and payload
-regions. No raw-frame-sized hidden allocation or duplicate token copy is used.
-
-At complete-stream scope, the combined controller places the fixed LZ77
-parameter region immediately after the stream header and reuses frame-local
-staging and views. Encoding plans all frames before emitting the prefix.
-Decoding first validates the full serialized stream without raw publication,
-then decodes it in a second pass. This gives whole-stream atomicity for the
-one-shot API while keeping memory bounded by the largest frame and its entropy
-block count rather than total stream size.
-
-The combined streaming encoder is the incremental counterpart of the one-shot
-planner. It owns no variable-size storage: callers provide raw-frame,
-dictionary-token, and serialized-frame spans. The transform drains the prefix
-and each completed frame through partial output buffers, while frame collection
-continues across non-terminal `Flush`. Dictionary and entropy state are rebuilt
-only when a complete outer frame is prepared.
-
-The combined streaming decoder mirrors this with serialized-frame,
-dictionary-byte, raw-frame, and block-view workspaces. It never drains directly
-from dictionary decode: a complete frame reaches raw staging only after both
-entropy and LZ77 validation succeed. Its source-ended latch is independent of
-output draining, so a terminal input indication survives any number of
-`NeedOutput` calls.
-
-The combined profile layer centralizes workspace arithmetic for callers and the
-public C ABI. Encoder requirements are exact worst-case bounds for the selected
-known-size stream and frame/block configuration. Decoder requirements are
-conservative bounds derived solely from local limits; untrusted serialized
-headers never influence allocation requests before parsing.
-
-### LZ77 plus Adaptive Huffman validation boundary
-
-The Adaptive composition preserves the same canonical 16-byte LZ77 token
-boundary but resets one FGK tree for every nonempty outer frame. Complete
-entropy decode and LZ77 token validation occur in caller-owned token staging;
-raw reconstruction then completes in a separate private frame region before
-the incremental decoder may drain any current-frame byte.
-
-The public C factory exposes no entropy-block parameter or aligned views
-workspace. Encoding partitions its secondary byte region into token staging
-and serialized-frame storage; decoding partitions it into token staging and
-private raw storage. The requirements query derives both partitions from the
-known-size encoder profile or trusted local decoder limits before construction.
-
-Outer `max_frame_size` remains a raw-byte limit. The Adaptive primitive receives
-a private limits view sized to the already validated canonical token extent,
-because its standalone symbol unit is a byte at the entropy boundary. This
-unit translation neither enlarges the untrusted outer frame allowance nor
-changes compressed-payload, dictionary, aggregate, or LZ limits.
-
-The public completion matrix fixes 64-byte raw frames and audits all required
-binary data classes through the C ABI. It compares unchunked output with
-one-byte and mixed chunk schedules, repeats successful terminal calls, and
-proves that corruption, truncation, or trailing data in a fourth frame can
-publish only the first three complete frames.
-
-The bounded fuzz boundary fixes serialized input, token staging, raw staging,
-and final output before parsing. A valid profile prefix admits the remaining
-extent to complete-frame private-staging decode, while every input also reaches
-the incremental decoder under byte-derived chunking and a fixed call ceiling.
-
-The transactional CLI selector uses the 64-KiB reference frame through the
-public C ABI. It obtains both workspace extents from the requirements query and
-commits the temporary output path only after complete stream termination.
-
-The benchmark selects that identical fixed profile through the same public C
-lifecycle. Its checked capacity calculation uses the 64-KiB frame cadence and
-the conservative 528-byte Adaptive payload bound for every raw byte. A complete
-round trip precedes separate encode/decode timing; the reported peak workspace
-is the larger queried two-region sum and excludes corpus and result buffers.
-
-Interoperability schema 8 preserves the frozen schema-7 order and appends this
-CLI representation as its nineteenth archive. Generation verifies a local
-round trip; foreign verification checks manifest order and hashes, decodes to
-the common fixture, and requires byte-identical local re-encoding.
-
-### LZ77 plus Dynamic Range staged boundary
-
-The Dynamic Range composition preserves the canonical 16-byte LZ77 token
-boundary and resets both dictionary history and the adaptive order-0 range
-model at every outer frame. Exact encoding owns three caller-supplied byte
-regions: raw frame collection, frozen canonical tokens, and the immutable
-serialized frame. All three are checked against the aggregate internal-buffer
-limit before a completed frame becomes drainable.
-
-The bounded streaming encoder emits the stream prefix, collects exactly one
-configured raw frame, plans and encodes through the complete-frame boundary,
-and drains the retained result before reusing storage. One-byte I/O and output
-starvation therefore cannot alter encoded bytes. `Flush` leaves an incomplete
-frame open, while `EndInput` is retained until the last complete frame has been
-fully emitted. The matching bounded decoder owns serialized-frame, canonical
-token, and private raw regions. It admits a frame to output only after complete
-collection, nested validation, and reconstruction, so malformed later frames
-are atomic. The later public factory preserves this same commit boundary.
-
-The bounded profile exposes only three byte counts per direction. Encoding
-uses raw collection, canonical-token staging, and serialized-frame storage;
-decoding uses serialized-frame storage, canonical-token staging, and private
-raw storage. Encoder extents use the known original size and configured frame
-size, while decoder extents use only trusted local limits and the format cap.
-No private C++ object layout or input-controlled allocation crosses this
-profile boundary.
-
-The public C requirements query combines each direction's token and trailing
-frame/raw extents into one secondary byte region and reports alignment one;
-the primary region remains raw collection for encode and serialized-frame
-storage for decode. Factory creation repeats the profile calculation, validates
-both regions, partitions secondary storage with checked offsets, constructs the
-matching streaming transform, and publishes no handle on failure. ABI version
-1 gains only named config, query, and factory symbols; no existing layout or
-symbol changes.
-
-The public-ABI completion matrix fixes 64-byte frames and exercises required
-binary classes through only the C lifecycle. It compares unchunked output with
-one-byte and mixed schedules, repeats successful and failing terminal calls,
-and proves that a corrupted, truncated, or trailing fourth frame can commit
-only the first three complete frames.
-
-The decoder fuzz boundary is intentionally fixed-memory. It caps each supplied
-input at 8,192 bytes and exercises both the private complete-frame validator
-and the public-style incremental decoder. The streaming path owns fixed arrays
-for serialized frames, canonical tokens, reconstructed raw bytes, and output;
-derives small input and output chunks only from bounded seed bytes; and aborts
-after a fixed call ceiling rather than permitting an input-controlled loop.
-Normal regression tests retain every proper prefix of a canonical frame plus
-extreme frame extents and a malformed range descriptor. Each case must publish
-zero current-frame bytes, preserve the output sentinel, and repeat the same
-sticky error.
-
-The command-line adapter selects this composition only through the public C
-configuration, requirements, factory, process, and destroy lifecycle. It fixes
-65,536-byte raw frames, supplies the documented `16F` token and `2S + 5`
-payload limits, and receives both workspace extents from the requirements
-query. Output remains hidden in a sibling `.tmp` path until the transform ends,
-the file closes successfully, and the final rename commits it.
-
-The dependency-free benchmark uses the same public profile and independently
-queries encoder and decoder workspaces. Its checked complete-stream capacity
-uses 32 payload bytes per raw byte plus one descriptor, five termination bytes,
-and one generic header per frame. It verifies byte-exact decode before timing
-either direction and reports the larger caller-reserved workspace total.
-
-### LZSS plus Dynamic Range specified boundary
-
-The next Dynamic Range composition preserves LZSS's complete variable-length
-token stream as the entropy boundary. The LZSS encoder must finish every
-two-byte Literal or nine-byte Match token before one fresh frame-local adaptive
-order-0 model consumes those bytes. Entropy decoding must reconstruct the
-entire token region into private staging before token tags, reserved fields,
-references, or lengths are interpreted.
-
-The exact all-Literal ceiling is two token bytes per raw byte. Combined with
-Dynamic Range variant 1's `2S + 5` conservative payload bound and 2^24-symbol
-limit, the format raw-frame ceiling is 2^23 bytes; the reference profile
-remains 64 KiB. A decoder validates all declared and aggregate extents before
-entropy output, parses the complete variable-length token stream, reconstructs
-exactly the declared raw extent into separate private storage, and only then
-publishes a frame.
-
-The first implemented boundary stops before reconstruction. It validates the
-exact frame and one range descriptor, checks `2F`, `2S + 5`, caller staging,
-and descriptor-plus-payload-plus-token aggregate bounds before mutation, then
-uses the range decoder's no-output preflight before filling private token
-staging. The ordinary LZSS validator parses that complete variable-length
-region and returns stable token and byte positions. No raw output boundary is
-present in that validator.
-
-The private decoder adds a separately bounded raw region to the aggregate
-before entropy output. After the complete token stream passes validation, it
-invokes the ordinary LZSS reconstruction path, including forward overlap copy,
-against only that private raw span. Short raw storage, aggregate-limit failure,
-and malformed descriptor or token layers therefore cannot mutate raw staging.
-There is still no caller-visible publication boundary in this step.
-
-The transactional complete-frame decoder adds that boundary without changing
-the representation. It rejects short caller output before entropy work,
-reconstructs only into private raw staging, and performs one final exact-extent
-copy after all nested checks succeed. Descriptor, entropy, token, capacity, or
-reconstruction failure therefore leaves caller output byte-for-byte unchanged.
-
-Exact encoding uses separate caller-owned raw input, canonical-token staging,
-and serialized-frame output. The planner completes LZSS parsing first, plans
-the adaptive range payload over those immutable token bytes, validates header
-and aggregate bounds, and returns an exact extent. The encoder refuses a short
-destination before writing and rechecks that the frozen token bytes yield the
-same descriptor and payload extent before serializing.
-
-The first outer streaming encoder owns no allocation. Callers provide one raw
-frame region, a `2F` canonical-token region, and one complete serialized-frame
-region. The transform drains the 80-byte prefix, collects exactly one format-
-declared raw frame, freezes and encodes it through the exact-frame boundary,
-then drains that immutable frame before accepting the next. This preserves
-byte identity across one-byte input and output, retains finalization across
-output starvation, and leaves nonterminal `Flush` unable to alter framing. A
-matching streaming decoder incrementally collects the prefix, one fixed frame
-header, and only the admitted exact frame body. It validates the Dynamic Range
-and LZSS extent ceilings before body collection, reconstructs into caller-owned
-private raw staging through the transactional frame decoder, and drains that
-frame only after complete success. A malformed later frame therefore leaves
-earlier committed output intact and publishes none of the failing frame.
-
-The profile layer now turns these ownership rules into byte-only requirements.
-For the encoder it derives raw, token, and complete serialized-frame regions
-from the actual largest configured frame, so a short stream and empty input do
-not reserve a full default frame. The decoder query depends only on validated
-local limits and the 2^23 raw / 2^24 token format ceilings. No aligned or typed
-view region is needed; later public construction can partition ordinary byte
-storage without exposing a private C++ record layout. The public C boundary
-now performs that partition: primary owns raw input or serialized input;
-secondary owns token staging followed by serialized-frame or private-raw
-staging. The requirements query and factory revalidate the same configuration,
-construct the immutable streaming direction with `nothrow`, use no views
-workspace, and publish no handle on failure.
-
-The public completion audit exercises this construction boundary rather than
-calling internal frame helpers. It spans required binary classes and raw sizes
-immediately around the 64-byte audit frame, compares complete multi-frame
-archives across arbitrary chunk schedules, and repeats both ended and error
-states. A corrupted final one-byte frame demonstrates that C ABI publication
-inherits the same complete-frame commit boundary as the internal decoder.
-
-The bounded fuzz boundary drives both the exact-frame private decoder and the
-incremental controller with fixed storage. It caps supplied input at 8 KiB,
-total output at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB,
-and range payload at 8 KiB. Encoded-frame, token, private-raw, and final-output
-arrays are counted in one aggregate policy before parsing. Input-derived
-partial-I/O schedules and a fixed call ceiling make a stalled state machine
-reproducible. Permanent tests retain frame-atomic rejection of every canonical
-truncation, saturated extent fields, and a malformed range descriptor.
-
-The explicit CLI selector is a thin public-C-ABI adapter. It fixes 64-KiB raw
-frames, the 128-KiB LZSS token ceiling, the 262,149-byte range-payload ceiling,
-and the 458,829-byte aggregate policy, then obtains the actual
-direction-specific regions from the public requirements query. Output remains
-hidden in a sibling `.tmp` path until the transform ends, the file closes, and
-an atomic rename publishes it. Any malformed or trailing input removes the
-temporary output, including after earlier frames were decoded internally.
-
-The dependency-free benchmark selects the identical public profile. Its
-checked complete-stream destination bound is `80 + 4N + 77K`, where four
-payload bytes per raw byte cover the LZSS and range worst cases and each frame
-adds a header, descriptor, and termination extent. An untimed byte-exact round
-trip gates measurement; encode and decode throughput, ratio, all six queried
-workspace extents, and peak caller reservation are descriptive outputs rather
-than performance thresholds.
-
-### LZ78 plus Dynamic Range specified boundary
-
-The third Dynamic Range composition preserves LZ78's complete fixed-width
-eight-byte token stream as the entropy boundary. The deterministic LZ78 parse
-and token serialization finish before one fresh frame-local adaptive order-0
-model consumes those bytes. Entropy decoding must reconstruct the entire
-private token region before interpreting tags, symbols, reserved bytes, or
-phrase indices.
-
-For raw extent `F`, token extent `S` is a nonzero multiple of eight with
-`S <= 8F`, and the range payload is bounded by `2S + 5`. The 2^24-symbol range
-limit therefore gives this profile a 2^21-byte format frame ceiling; the
-reference profile remains 64 KiB. A decoder validates all declared and
-aggregate extents before entropy output, builds and checks the complete phrase
-graph in bounded aligned workspace, reconstructs exactly the declared raw
-extent without recursion, and only then publishes a frame.
-
-The first validator boundary stops at the validated phrase graph. It checks
-the exact frame, descriptor, `8F`, `2S + 5`, token staging, aligned phrase
-entries, and their aggregate extent before mutation. The strict range decoder
-preflights the complete payload before filling private token staging, after
-which the ordinary LZ78 validator records the complete bounded phrase graph
-and stable token and byte positions.
-
-The next bounded boundary also requires a separate private raw region and
-counts its complete extent in the same pre-entropy aggregate check. Only after
-the phrase graph is valid does the existing non-recursive LZ78 decoder
-iteratively reconstruct exactly the declared raw extent into that region.
-
-The transactional complete-frame decoder adds the caller-visible boundary
-without changing the representation. It rejects short caller output before
-entropy work, reconstructs only into private raw staging, and performs one
-final exact-extent copy after all nested checks succeed. Header, descriptor,
-entropy, token, phrase, capacity, or reconstruction failure therefore leaves
-caller output byte-for-byte unchanged.
-
-The first encoder boundary is a no-serialized-output planner. It requires the
-complete aligned LZ78 encoder-entry region and token staging, performs the
-deterministic phrase parse into canonical eight-byte tokens, and only then
-plans Dynamic Range payload extent from those immutable bytes. Encoder
-entries, tokens, descriptor, and payload participate in one checked aggregate.
-The resulting frame extent is exact. The matching encoder rejects short output
-after that complete plan, replans the unchanged token staging, requires an
-identical payload extent, and serializes header, descriptor, and payload in
-order. Repeated calls with identical input and configuration produce identical
-frame bytes.
-
-The bounded known-size streaming encoder emits the serialized stream prefix,
-collects exactly one configured raw frame, invokes the exact-frame boundary,
-and retains that complete serialized frame while draining arbitrary output
-chunks. `Flush` does not close a partial frame. `EndInput` is accepted only
-with the complete remaining declared input and remains latched until every
-prefix and frame byte drains.
-
-The matching bounded streaming decoder incrementally collects the fixed
-80-byte prefix and one 56-byte frame header. Before accepting the frame body,
-it rejects impossible `S`, `P`, descriptor, caller-workspace, serialized-frame,
-and aggregate extents. It then collects exactly the admitted body, validates
-and reconstructs the complete frame into private raw storage, and only then
-drains raw bytes. A malformed or truncated later frame therefore publishes
-none of that frame while leaving earlier completed frames committed.
-
-The bounded profile owns no storage. For encoding it derives raw-frame, token,
-serialized-frame, and opaque aligned encoder-entry requirements from the
-largest actual known frame. For decoding it derives serialized-frame, token,
-private-raw, and opaque aligned phrase-entry requirements only from local
-limits and the format cap. Partition helpers revalidate record count, byte
-extent, alignment, and capacity before constructing internal typed spans.
-
-The public C factory binds that profile to ABI version 1's size-tagged config,
-requirements query, opaque transform handle, and three caller-owned regions.
-Factory construction repeats profile admission and typed-view partitioning
-before publishing the handle. The C boundary therefore exposes only byte
-extents and alignment while retaining the exact streaming encoder and
-frame-atomic decoder behavior.
-
-The public-ABI completion matrix constructs both directions only through that
-factory. It covers required binary input classes, byte-identical repeated
-encoding, one-byte and mixed chunk schedules, stable repeated success, and a
-four-frame transaction test. Corruption, truncation, or trailing data in the
-fourth frame commits exactly the first three 64-byte frames and no byte from
-the fourth.
-
-The bounded decoder fuzz boundary uses the same exact-frame private decoder
-and incremental stream decoder without changing either public surface. It
-preallocates serialized input, encoded-frame, token, private-raw, final-output,
-and aligned phrase-record storage under fixed local limits. Arbitrary bytes
-may choose only modulo-bounded input and output chunks. A finite call ceiling
-turns a stalled state machine into a reproducible invariant failure rather
-than input-controlled work.
-
-The explicit `lz78-dynamic-range` CLI adapter selects a fixed 65,536-byte raw
-frame, 524,288-byte canonical token ceiling, 1,048,581-byte range payload
-ceiling, and 4-MiB aggregate policy. It obtains all three workspace extents and
-opaque alignment through the public requirements query and creates only the
-public C transform. The common temporary-file transaction prevents malformed
-or trailing input from publishing a destination.
-
-The dependency-free benchmark selects the identical public profile. Its
-checked destination formula is `80 + 16N + 77K`; an untimed byte-exact round
-trip gates all measurement. Fresh C transforms then report encoded ratio,
-directional throughput, all six queried workspace extents, and the larger
-three-region sum without a performance threshold.
-
-### LZSS plus Adaptive Huffman specified boundary
-
-The next Adaptive composition retains LZSS's variable two-byte Literal and
-nine-byte Match grammar as the exact entropy input. One frame-local FGK tree
-reconstructs the entire token region into private staging before the ordinary
-LZSS validator may interpret any tag or reference. Complete validation and raw
-reconstruction occur before a current-frame byte becomes drainable.
-
-The exact all-Literal bound is two token bytes per raw byte; the conservative
-FGK bound is therefore 66 payload bytes per raw byte. The reference 64-KiB raw
-frame keeps token, payload, serialized-frame, and private raw regions within the
-common bounded policy. No aligned views region is required by either component.
-
-The first implemented boundary accepts one exact frame, checks the `2F` and
-33-byte-per-token extents plus aggregate workspace before entropy decoding,
-decodes into caller-owned private token staging, and validates the complete
-LZSS grammar against the declared raw size. It intentionally stops before raw
-reconstruction.
-
-The following commit boundary requires a second caller-owned staging region,
-reconstructs the validated LZSS sequence there, and copies to caller output
-only after the full raw frame succeeds. The raw extent participates in the
-aggregate workspace check, and capacity failures precede entropy mutation.
-
-The corresponding encoder boundary fixes the variable LZSS extent and writes
-the canonical tokens once before planning Adaptive Huffman over that immutable
-staging. It checks the `2F`, 33-byte-per-token, aggregate-workspace, header, and
-complete serialized-output extents before emitting a frame byte.
-
-The incremental decoder now collects the fixed stream prefix and one exact
-frame at a time, invokes private transactional reconstruction, and drains only
-committed raw staging. It supports one-byte input and output, latches finish
-while draining, and reports later-frame corruption after preserving only output
-from earlier complete frames. Profile-specific token and payload bounds are
-checked from the header before an input-controlled body is collected. The
-incremental encoder likewise completes each exact frame privately before
-draining it, keeps `Flush` nonterminal, and latches finish even across prefix or
-frame output starvation. Public adapters remain separate steps.
-
-The internal profile constructor now fixes the canonical IDs, parameter
-extents, 64-KiB reference cadence, and caller-owned workspace contract. For
-largest raw frame `F`, encoder regions are `F` raw, `2F` token, and
-`56 + 16 + 66F` serialized bytes, with their complete aggregate checked.
-Decoder regions are conservatively capped from validated local limits rather
-than input-controlled extents. The public C factory now exposes those exact
-requirements through the common caller-owned workspace lifecycle, while full
-profile admission remains gated on completion, fuzz, tooling, benchmark, and
-interoperability evidence.
-
-The public-ABI completion matrix now exercises the required binary data classes,
-frame-boundary lengths, deterministic re-encoding, one-byte and mixed chunking,
-repeatable terminal states, and malformed final-frame commit behavior. A
-corrupt fourth frame preserves exactly the first three committed frames and no
-byte from the fourth. Tooling and broader malformed-input admission remain
-separate boundaries.
-
-The bounded fuzz boundary now drives both the exact frame decoder and the
-incremental controller using only fixed arrays. It caps input at 8 KiB, output
-at 4 KiB, a raw frame at 1 KiB, canonical LZSS staging at 2 KiB, and payload at
-8 KiB, with byte-derived chunking and a fixed call ceiling. Permanent tests
-retain atomic rejection of every canonical truncation, extreme frame extents,
-and a reserved Adaptive descriptor mutation.
-
-The CLI now selects `lzss-adaptive-huffman` solely through its public C
-factory and requirements query. Its 64-KiB frame policy configures the `2F`
-token and 33-byte-per-token payload bounds without duplicating internal
-workspace partitioning. The common temporary-file transaction prevents an
-existing destination from being replaced and removes both destination and
-staging output after malformed or trailing input.
-
-The dependency-free benchmark selects the identical profile through the public
-C lifecycle. It reserves complete-stream capacity from the 64-KiB cadence and
-conservative `66F` payload bound, verifies a byte-exact round trip before
-timing, then reports encode/decode throughput, ratio, six queried workspace
-extents, and peak caller-reserved workspace without pass/fail performance
-thresholds.
-
-Interoperability schema 9 preserves the exact nineteen-entry schema-8 order
-and appends `lzss-adaptive-huffman`. Bundle verification requires the exact
-twenty-entry order, foreign decode equality, and byte-identical local
-re-encoding; schemas 1 through 8 retain their frozen meanings.
-
-### LZSS plus Blocked Huffman validation boundary
-
-The second selected composition begins with the same deliberately narrow
-decoder-side boundary. It accepts one exact frame, entropy-decodes into
-caller-owned dictionary staging, and validates the complete variable-length
-LZSS token stream against the frame's declared raw size. It exposes no raw
-output and performs no input-controlled allocation.
-
-This boundary demonstrates that composition is not coupled to LZ77's fixed
-16-byte tokens. Descriptor/model bytes, payload bytes, staged LZSS bytes, and
-the aligned block-view array are checked as one aggregate workspace.
-
-The matching exact planner first determines the variable LZSS token extent,
-emits those tokens once into caller-owned staging, and then plans Blocked
-Huffman over the actual bytes. Only after the generic header and both entropy
-regions have exact extents does the frame encoder check serialized capacity and
-publish output.
-
-The raw frame decoder is a commit stage over the strict validator. It checks
-raw destination capacity only after the complete entropy output has passed the
-LZSS token validator, then gives that validated staging to the standalone
-transactional LZSS decoder. Neither malformed outer layers nor a short raw
-destination can publish a raw prefix. Stream controllers and public adapters
-continue from these frame boundaries without weakening their commit order.
-
-The known-size complete-stream controller writes the normal 64-byte stream
-header followed by the 16-byte LZSS parameter region and then consecutive
-combined frames. Encoding plans every frame before publishing the prefix.
-Decoding parses configuration into local objects and validates every frame in a
-first pass with no raw output; only a successful complete scan permits the
-second commit pass. A malformed later frame therefore cannot expose an earlier
-raw frame or partially replace caller-visible configuration.
-
-The incremental encoder owns no variable-size allocation. Caller-provided raw
-frame, LZSS-token, and serialized-frame spans bound its state. It drains the
-canonical prefix and each complete encoded frame through arbitrary output
-capacity, including one byte. Nonterminal `Flush` does not close a partial
-frame, and an `EndInput` indication remains latched until the final serialized
-frame has completely drained. Its output is byte-identical to the known-size
-encoder for every input/output chunk schedule.
-
-The incremental decoder collects the fixed prefix, one frame header, and one
-complete frame body into caller-owned storage. It entropy-decodes and validates
-the complete LZSS token stream, reconstructs raw into frame staging, and only
-then drains that frame through partial output capacity. This intentionally
-commits validated earlier frames even if a later frame is malformed, while no
-byte from the malformed frame is exposed. A terminal indication remains
-latched across `NeedOutput` and becomes truncation after a nonfinal frame has
-finished draining without more serialized input.
-
-The internal profile factory fixes the version 1.0 algorithm and variant IDs,
-serializes the canonical 16-byte LZSS parameter record, and calculates exact
-known-size encoder workspace. If `F` is the largest raw frame, the worst-case
-LZSS staging extent is `2F`. For entropy block size `E`, the maximum number of
-blocks is `ceil(2F/E)`, and serialized frame staging is exactly the 56-byte
-generic header, one 16-byte descriptor per block, and the `2F` raw-fallback
-payload. The factory rejects every arithmetic, per-region, block-count, and
-aggregate-workspace limit before returning a configuration.
-
-Decoder workspace calculation deliberately has no serialized configuration
-argument. It derives the serialized-frame, token-staging, raw-frame, and typed
-block-view capacities only from trusted local limits. This makes the query safe
-before an untrusted stream header is parsed and gives the C adapter an
-opaque allocation contract without changing the transform's four distinct
-internal spans.
-
-The dedicated C adapter publishes this configuration through the ordinary
-opaque transform lifecycle. It preserves the three-workspace ABI: encoder
-secondary storage is partitioned into LZSS token staging and serialized-frame
-staging; decoder secondary storage is partitioned into token and raw staging;
-only decode uses the aligned views region. The adapter re-runs the checked
-profile calculation at creation and never exposes private C++ view layout.
-
-The command-line adapter names this profile `lzss-blocked-huffman` and reaches
-it only through the public C ABI. It fixes one-MiB raw frames, 64-KiB entropy
-blocks, and profile-specific limits derived from the two-byte-per-raw-byte LZSS
-worst case. File I/O therefore cannot bypass profile validation or introduce a
-second allocation policy. Failed decode removes the temporary destination even
-when earlier validated frames were already drained internally.
-
-A bounded fuzz boundary, completion matrix, and interoperability entry remain
-separate admission steps and must not be inferred from CLI availability.
-
-The benchmark adapter uses the identical public profile and fixed policy. Its
-encoded destination bound counts the 80-byte prefix, two token bytes per raw
-byte, each generic frame header, and every worst-case entropy descriptor. It
-times only `marc_transform_process`; allocation, transform lifecycle, file I/O,
-and mandatory round-trip verification remain outside the timed interval. Peak
-workspace is the larger queried sum of primary, secondary, and views regions.
-
-The bounded fuzz adapter invokes both the strict two-pass stream decoder and
-the incremental frame-committing decoder. It truncates each supplied case to
-8 KiB, uses fixed stack storage for at most 4 KiB of raw and token data, one
-1-KiB frame, and eight entropy views, and derives partial-I/O chunk sizes from
-the bytes. An independent call ceiling converts any stalled state machine into
-a reproducible failure rather than an unbounded run.
-
-### Published LZ78 plus Blocked Huffman frame boundary
-
-The composition now has matching frame planner/encoder and validator/decoder
-boundaries. Encoding fixes the LZ78 parse in token staging before Blocked
-Huffman planning; decoding entropy-decodes a complete frame into staging, then
-validates phrase references and the exact derived raw extent before
-publication. Unlike the first two compositions, both directions require an
-aligned LZ78 phrase table; decoding additionally requires aligned Blocked
-Huffman block views.
-
-This makes typed-workspace composition an explicit admission boundary rather
-than an implementation detail. The public adapter retains the common
-primary/secondary/views C ABI shape, and its opaque views region is partitioned
-with checked alignment and size arithmetic for both private record types. The
-internal frame API accepts separate typed spans so capacity and aggregate-
-memory failures occur before entropy output or serialized output.
-
-### Specified LZ78 plus Adaptive Huffman boundary
-
-The next composition preserves LZ78's fixed eight-byte canonical tokens and
-aligned phrase table while replacing bounded static entropy blocks with one
-fresh FGK tree per outer frame. A raw frame of `F` bytes has at most `8F` token
-bytes and the conservative Adaptive payload ceiling is therefore `264F`.
-Decoding must entropy-decode into token staging, validate the complete phrase
-graph, reconstruct into private raw staging, and only then publish. Encoding
-must freeze the LZ78 parse before Adaptive planning. The representation and
-independent vector are specified. The first internal validator now accepts one
-exact frame, checks all extents and caller capacities, strict-decodes Adaptive
-bytes into token staging, and validates the full LZ78 phrase graph in aligned
-workspace. It exposes neither raw bytes nor a callable public profile.
-The matching private decoder revalidates that token graph, expands each prefix
-chain iteratively into raw staging, and commits the exact frame only after
-reconstruction. Raw staging is counted in the aggregate bound; output and raw
-capacity failures occur before entropy staging is touched.
-The matching exact-frame planner sizes and populates the aligned LZ78 encoder
-table, freezes canonical tokens in private staging, and plans Adaptive Huffman
-over that fixed byte sequence. The encoder validates the complete serialized
-destination before writing its header, descriptor, or payload. Encoder-table,
-token, descriptor, and payload extents participate in the checked aggregate
-workspace bound; streaming and public construction remain separate steps.
-The first bounded streaming encoder owns no allocation: callers provide one
-raw-frame span, token staging, serialized-frame staging, and an aligned encoder
-table. It emits the common 80-byte prefix, collects only complete configured
-frames, delegates each frame to the exact planner and encoder, then drains it
-before accepting another frame. Output starvation retains all pending state;
-`EndInput` remains latched even when prefix drainage consumes no input.
-The matching streaming decoder parses the prefix and each frame header in
-bounded fixed storage, rejects impossible LZ78 and Adaptive extents before body
-collection, and admits the exact frame, token, raw, and phrase-table aggregate
-before decoding. A complete frame is reconstructed into private raw storage;
-only that validated storage enters the drain state. Consequently a malformed
-later frame cannot expose one of its bytes after an earlier frame has drained.
-The internal profile fixes the 65,536-byte reference cadence and derives raw,
-token, conservative encoded-frame, and typed-record extents with checked
-arithmetic. Encoder and decoder opaque regions each contain one record type;
-partitioning rederives their exact size and alignment before producing a span,
-so public adapters need not reproduce C++ layout arithmetic later.
-The public C adapter now binds those pieces without allocation. It exposes the
-usual primary, secondary, and opaque aligned views regions, rederives the
-direction-specific profile at construction, and delegates typed layout
-creation to the profile partition helpers before publishing a transform.
-The public completion matrix then treats that factory as the only construction
-boundary and verifies required binary data classes, deterministic bytes,
-arbitrary chunking, stable terminal states, and transactional rejection of a
-malformed final frame.
-The bounded dual-decoder fuzz boundary adds no allocation surface: exact-frame
-and incremental parsing share fixed local limits, byte arrays, a 1,024-record
-phrase table, and a call ceiling. Ordinary builds compile this boundary while
-permanent malformed regressions exercise its reviewed failure classes.
-The transactional CLI binds this profile only through its public C factory
-and requirements query. Its 64-KiB raw cadence configures the `8F` canonical
-token and `264F` Adaptive payload ceilings while leaving the opaque phrase
-record sizing, alignment, and partitioning inside the checked profile helpers.
-The dependency-free benchmark uses the identical public configuration and
-queries both directional workspace layouts. It verifies a complete byte-exact
-round trip before timing fresh transform instances, then reports ratio,
-throughput, all queried extents, and peak caller-reserved workspace without a
-performance threshold.
-Interoperability schema 10 preserves the exact twenty-entry schema-9 order and
-appends `lz78-adaptive-huffman`. Generation round-trips all twenty-one profiles;
-verification requires the exact manifest order, foreign decode equality, and
-byte-identical local re-encoding while retaining schema 1 through 9 support.
-The pushed Windows/MSVC and Ubuntu 24.04 artifacts and an Ubuntu 26.04/Clang
-bundle subsequently passed that contract in both operating-system directions
-for all twenty-one archives at one full revision.
-Profile sizing fixes the three-region ABI: frame bytes occupy the
-primary and secondary regions, while the aligned opaque views region contains
-an encoder phrase table or a decoder block-view array followed by checked
-padding and the decoder phrase table. Partition helpers rederive and validate
-the complete layout before exposing typed spans. The incremental encoder and
-decoder now consume those spans directly. They preserve the common 80-byte
-prefix and frame state machine under one-byte input and output, and the decoder
-publishes raw bytes only after a whole frame has passed entropy and phrase-graph
-validation. The public C factory exposes only byte counts and alignment, then
-delegates the opaque-region partition back to the checked internal helpers.
-The `lz78-blocked-huffman` profile is therefore callable through the C ABI;
-its completion matrix proves required binary classes, chunk independence,
-determinism, stable terminal behavior, and transactional malformed-final-frame
-rejection through that ABI. Its bounded decoder fuzz target fixes every byte,
-typed-workspace, and call-count limit before processing arbitrary input. The
-CLI and benchmark reach the profile only through the C ABI and obtain all
-three workspace extents from its requirements query. The benchmark verifies a
-round trip before timing and reports complete-stream ratio, directional
-throughput, and the larger caller-owned workspace total. Interoperability
-schema 4 covers the same public profile through deterministic foreign decode
-and local re-encode checks.
+### Published LZW plus Blocked Huffman boundary
+
+LZW's canonical dictionary output is a packed variable-width bitstream rather
+than a fixed-width token array. Composition nevertheless remains byte-oriented:
+the LZW encoder finishes its frame-local code stream, including zero padding to
+the next byte, before Blocked Huffman divides those exact bytes into entropy
+blocks. Entropy block boundaries therefore never split a byte but need not
+coincide with LZW code boundaries.
+
+Decoding reverses this transactionally. Blocked Huffman reconstructs the exact
+packed byte region into staging; the ordinary LZW validator then checks the
+width schedule, dictionary references, `KwKwK`, final padding, and exact raw
+extent before publication. This preserves both layers' existing validators
+instead of teaching either layer the other's token grammar.
+
+The frame boundary now implements this ordering in both directions. Encoding
+first completes the standalone LZW plan and writes the exact packed bytes into
+caller-owned staging; Blocked Huffman planning and generic-header construction
+then consume that immutable span. The frame records the actual packed extent,
+while the conservative format bound remains an allocation admission rule.
+
+Decoding uses separate caller-owned Blocked Huffman views, packed-byte staging,
+and LZW phrase entries. It checks all three capacities and their aggregate
+bytes before entropy output, then validates LZW completely before checking raw
+output capacity. The
+9-to-10-bit width-transition test crosses thirty independent entropy blocks,
+demonstrating that block boundaries do not become code boundaries.
+
+The internal profile now resolves the typed-workspace boundary. Its encoder
+requirements expose an aligned LZW encoder-entry region. Decoder requirements
+combine Blocked Huffman views and a separately aligned LZW phrase table in one
+opaque region, recording the phrase offset, total bytes, and maximum alignment.
+Partition helpers recompute that layout before exposing either span. The format,
+complete frame boundary, sizing, and safe partition feed bounded streaming
+transforms. The encoder buffers one raw frame and its finalized representation;
+the decoder buffers one serialized frame and reconstructs it privately before
+draining raw output. Consequently a malformed later frame cannot publish a
+partial raw frame or alter an earlier committed one. The small C ABI now admits
+that exact implementation through a direction-specific requirements query and
+factory; no second codec construction path or private C++ record layout crosses
+the ABI. Its public completion matrix now covers required binary classes,
+deterministic and chunk-independent streams, stable terminal behavior, and
+transactional malformed-final-frame rejection. Empty and one-byte inputs also
+fix the zero-entry encoder view contract at zero bytes with neutral alignment
+one. A dedicated decoder fuzz target fixes serialized input, raw output,
+frame, packed-code staging, entropy views, LZW phrases, aggregate memory, and
+process-call limits before accepting arbitrary bytes.
+The CLI reaches this composed profile only through the public C ABI. It fixes
+one-MiB raw frames and 65,536-symbol entropy blocks, then obtains all three
+workspace extents and alignment from the requirements query. The benchmark
+uses that same public profile and reports the queried direction-specific
+regions after verifying a complete round trip. Schema 5 appends the resulting
+CLI representation to the frozen schema-4 profile set.
 
 ### Published LZW plus Adaptive Huffman boundary
 
@@ -3285,6 +2663,453 @@ trip gates all measurement. Fresh C transforms then report encoded ratio,
 directional throughput, all six queried workspace extents, and the larger
 three-region sum without a performance threshold.
 
+### Specified LZW plus rANS boundary
+
+The fourth rANS composition freezes the complete canonical LZW packed-code
+byte stream before entropy processing. Scalar rANS remains unaware of the
+LSB-first variable-width code grammar and final zero padding, so an entropy
+block may split a packed code while the outer frame remains the shared
+dictionary and model reset boundary.
+
+For raw frame extent `F`, configured maximum code width `W`, packed extent
+`S`, entropy block size `B`, and block count `K`, require
+`0 < S <= ceil(FW/8)`, `K = ceil(S/B)`, `8K <= P <= S + 8K`, and exactly
+`528K` descriptor bytes. The decoder must validate every rANS block into
+private packed staging before checking LZW width transitions, references,
+`KwKwK`, final padding, dictionary growth, and exact raw extent.
+
+The first combined validator now admits the complete frame, rANS block views,
+packed staging, and LZW phrase records before entropy processing. It validates
+every rANS state path without output, reconstructs the packed region only
+after all blocks succeed, and then invokes the ordinary LZW validator. No raw
+byte is reconstructed or published, and a malformed later block cannot leave
+partially reconstructed packed bytes.
+
+The next private boundary admits and aggregate-counts the complete raw staging
+region before entropy work. It then reuses the validated packed code graph and
+the ordinary iterative LZW decoder to reconstruct exactly one raw frame.
+Caller-visible publication remains separate, so malformed input and workspace
+failures cannot expose a partial frame.
+
+The caller-visible complete-frame boundary preflights the entire destination
+alongside all private regions, performs the unchanged validation and private
+reconstruction, and publishes exactly the declared raw extent in one final
+copy. Destination bytes are never part of aggregate scratch accounting and
+remain entirely unchanged on failure.
+
+The encoding-side planning boundary first fixes the complete canonical packed
+LZW region in caller-owned staging, then plans each rANS block over those exact
+bytes. It computes and validates the synthesized frame and all aggregate
+workspace without accepting serialized output. This prevents descriptor or
+payload emission from observing a partial or differently chunked LZW stream.
+
+The complete-frame encoder accepts only a fully successful plan and a complete
+destination. It writes the generic header, then reproduces every tANS plan over
+the immutable packed staging while placing descriptors and payloads at their
+fixed offsets. Extent disagreement is an internal error, and insufficient
+destination capacity is detected before serialized output mutation.
+
+The bounded known-size streaming encoder owns caller-supplied storage for one
+raw frame, its conservative packed-code ceiling, one exact serialized frame,
+and the LZW encoder records. It emits the canonical stream header and LZW
+parameters first, collects no more than one raw frame, completes planning and
+encoding into the private frame region, and drains that immutable region
+before accepting input belonging to a later frame. Consequently arbitrary
+input and output chunking cannot change serialized bytes. `Flush` leaves a
+partial frame open, while retained `EndInput` finishes and drains the final
+short frame before reporting end of stream.
+
+The bounded streaming decoder owns caller-supplied regions for one serialized
+frame, its tANS block views, reconstructed packed codes, decoded raw bytes, and
+LZW phrase records. It collects the fixed prefix and one frame header before
+accepting the declared body extent, so every capacity and aggregate limit is
+checked before entropy decoding. A complete frame is validated and expanded
+only into private storage, then its raw bytes are drained before the next frame
+header is collected. Later corruption therefore cannot retract or partially
+publish the current frame, while malformed current-frame data publishes none
+of that frame.
+
+The complete-frame encoder accepts only a fully successful plan and a complete
+destination. It writes the generic header, then reproduces every rANS plan over
+the immutable packed staging while placing descriptors and payloads at their
+fixed offsets. Extent disagreement is an internal error, and insufficient
+destination capacity is detected before serialized output mutation.
+
+The bounded known-size streaming encoder owns caller-supplied storage for one
+raw frame, its conservative packed-code ceiling, one exact serialized frame,
+and the LZW encoder records. It emits the canonical stream header and LZW
+parameters first, collects no more than one raw frame, completes planning and
+encoding into the private frame region, and drains that immutable region
+before accepting input belonging to a later frame. Consequently arbitrary
+input and output chunking cannot change serialized bytes. `Flush` leaves a
+partial frame open, while retained `EndInput` finishes and drains the final
+short frame before reporting end of stream.
+
+The bounded streaming decoder owns caller-supplied regions for one serialized
+frame, its rANS block views, reconstructed packed codes, decoded raw bytes, and
+LZW phrase records. It collects the fixed prefix and one frame header before
+accepting the declared body extent, so every capacity and aggregate limit is
+checked before entropy decoding. A complete frame is validated and expanded
+only into private storage, then its raw bytes are drained before the next frame
+header is collected. Later corruption therefore cannot retract or partially
+publish the current frame, while malformed current-frame data publishes none
+of that frame.
+
+The internal profile calculator bridges validated configuration and limits to
+the streaming constructors. Encoding receives raw-frame bytes, conservative
+`ceil(FW/8)` packed staging, the complete
+`56 + 528K + S + 8K` frame ceiling, and aligned LZW encoder records. Decoding
+receives serialized-frame, packed, and private-raw byte regions plus one
+aligned opaque layout containing rANS block views followed by LZW phrase
+records. Checked partition helpers reject inconsistent counts, offsets,
+storage extents, and alignment before exposing typed spans. The returned
+requirements directly construct a bounded streaming round trip.
+
+The public C adapter retains the common three-workspace ownership model.
+Primary storage is raw-frame input for encoding or complete serialized-frame
+input for decoding. Secondary storage is partitioned into packed LZW staging
+followed by encoded-frame or private-raw storage. One aligned opaque views
+region contains encoder entries, or rANS block views followed by LZW phrase
+records. The requirements query and factory both recalculate the internal
+profile; the factory validates sizes and alignment, partitions typed views
+privately, and publishes a transform handle only after construction succeeds.
+
+Public-ABI completion evidence exercises only that C lifecycle. It spans empty
+input, every one-byte value, all byte values, repeated and patterned input,
+deterministic pseudo-random input, frame-boundary lengths, and multi-frame
+streams under one-byte and mixed chunk schedules. Repeated terminal calls are
+stable. Corruption, truncation, or extension of the final frame leaves every
+byte of that frame unpublished while earlier drained frames remain committed.
+
+The decoder fuzz boundary fixes serialized input at 8 KiB, raw publication at
+4 KiB, frames at 1 KiB, packed-code staging at 4 KiB, rANS views at eight,
+LZW phrase records from the packed-code ceiling, and aggregate storage before
+accepting arbitrary bytes. One path invokes complete-frame parsing directly;
+the other uses only the public C requirements, factory, process, and destroy
+lifecycle under variable small chunks. A fixed call ceiling turns failure to
+terminate into a reproducible harness failure.
+
+The transactional command-line adapter now selects this public profile as
+`lzw-rans`. It fixes raw frames and rANS blocks at 65,536 bytes, supplies only
+public format and hard-limit values, obtains all three direction-specific
+workspace regions from the public C query, and creates the transform through
+the public factory. Existing-output refusal, sibling `.tmp` cleanup, strict
+trailing-data rejection, and final atomic rename remain common CLI policy.
+
+The dependency-free benchmark uses that same public CLI profile. It computes
+checked complete-stream capacity `80 + 2N + 1128K`, queries and allocates each
+direction independently, verifies one byte-exact round trip, and only then
+times fresh public transforms. It reports compression ratio, directional
+throughput, each primary/secondary/views extent, and the larger directional
+workspace sum; performance is descriptive rather than an admission threshold.
+
+Interoperability schema 23 appends this unchanged `lzw-rans` CLI profile once
+after the frozen schema-22 order. The generator self-decodes before recording
+size and SHA-256. The verifier requires all 34 canonical names in exact order,
+decodes every archive, and requires byte-identical local re-encoding. The
+compatibility test rejects a reordered schema-23 manifest, removes only
+`lzw-rans` to derive schema 22, and verifies the unchanged schemas 22 through
+1. Four-direction external validation passed at revision
+`5397f261fa04ee49832d9f72b09960a156232aad` across Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang producers.
+
+The independent raw-`A` vector composes only the existing LZW encoder, scalar
+rANS encoder, and generic serializers. It freezes packed bytes `41 00`, the
+equal `00:2048` and `41:2048` normalized model, the eight-byte final-state
+payload, and the complete 592-byte frame.
+
+### Specified LZW plus tANS boundary
+
+The fourth tANS composition freezes the complete canonical LZW packed byte
+stream before entropy processing. The packed region includes zero high padding
+through the final byte. tANS remains an untyped byte transform, so a block may
+split a variable-width LZW code but may not split a byte or cross the outer
+frame where the LZW dictionary and tANS tables both reset.
+
+For raw size `F`, configured maximum code width `W`, packed size `S`, entropy
+block size `B`, and `K = ceil(S/B)`, require nonzero
+`S <= ceil(FW/8)`, exact `528K` descriptor bytes, and the checked blockwise
+tANS payload ceiling. The decoder must validate all entropy descriptors and
+state paths before reconstructing exactly `S` private bytes, then validate
+LZW width transitions, first-literal and backward-reference rules, `KwKwK`,
+dictionary growth, exact `F` expansion, exact packed exhaustion, and zero high
+padding without caller-visible publication.
+
+The independent raw-`A` boundary fixes packed bytes `41 00`, normalized
+frequencies `00:2048` and `41:2048`, initial-state offset `0x000C`, two zero
+transition bits, payload `0C 00 00`, and a complete 587-byte frame. This is a
+format and vector reservation.
+
+The first bounded validator realizes the validation-first boundary with
+caller-owned tANS views, packed staging, and LZW phrase records. It admits all
+serialized and workspace extents under one aggregate policy, validates every
+tANS descriptor and state path without packed output, and only then performs a
+second entropy pass into private staging. Complete LZW code-width, reference,
+dictionary-growth, raw-extent, packed-exhaustion, and padding validation
+follows; caller-visible publication remains absent.
+
+The matching private decoder adds the complete raw extent to preflight and the
+aggregate workspace calculation. After the same two-pass entropy validation
+and complete LZW graph validation, the existing allocation-free LZW decoder
+expands phrases iteratively into exactly the declared raw extent. There is
+still no caller-visible output span, so every workspace remains disposable on
+failure.
+
+The transactional complete-frame wrapper additionally admits the full caller
+output extent before descriptor parsing or any private mutation. Caller output
+is not internal workspace and is therefore not charged to the aggregate
+buffer limit. After entropy validation, packed reconstruction, complete LZW
+validation, and private raw reconstruction all succeed, one final copy
+publishes exactly the declared raw bytes. Short output and either-layer
+malformation leave the complete caller output unchanged.
+
+The encoding-side planning boundary first fixes the complete canonical packed
+LZW region in caller-owned staging, then plans each tANS block over those exact
+bytes. It computes and validates the synthesized frame and all aggregate
+workspace without accepting serialized output. This prevents descriptor or
+payload emission from observing a partial or differently chunked LZW stream.
+
+The workspace profile turns those fixed bounds into direction-specific caller
+storage. Encoding reports separate raw-frame, packed-code, complete encoded-
+frame, and aligned LZW encoder-record regions. Decoding reports encoded-frame,
+packed-code, private-raw, and one opaque aligned region partitioned into tANS
+block views followed by aligned LZW phrase records. Partitioning is
+transactional: invalid requirements, short storage, or misalignment returns no
+typed view.
+
+The C ABI binds that profile through `marc_lzw_tans_config`, its requirements
+query, and factory. The public structure carries only fixed-width values and
+hard limits; the aligned tANS and LZW object layouts remain private. Factory
+failure leaves the opaque transform handle null.
+
+The public completion matrix constructs both directions only through that C
+factory. It fixes 64-byte frame and block boundaries, proves deterministic
+archives across arbitrary chunking, and verifies that a malformed fourth frame
+cannot publish its final raw byte or destabilize the repeated terminal error.
+The bounded fuzz harness feeds each at-most-8-KiB input to both the private
+complete-frame boundary and public C streaming decoder. All raw, encoded,
+packed, phrase, and tANS-view storage is fixed before input is examined, and a
+strict call budget turns any progress failure or hang into an immediate
+invariant violation.
+
+The transactional CLI binds `lzw-tans` only through that public C
+configuration, requirements query, factory, process, and destroy lifecycle.
+It derives conservative byte ceilings but never names or partitions private
+LZW or tANS records. Encoded or decoded output remains temporary until the
+whole operation succeeds, so a malformed final frame or strict trailing data
+cannot publish a destination file.
+
+The benchmark adapter selects the identical `lzw-tans` public profile. It
+queries fresh caller-owned workspaces for each direction, proves one complete
+byte-exact round trip before timing, then measures encode and decode
+independently. The runner reports every queried region and peak reservation;
+it does not inspect the opaque typed partition or enforce a performance floor.
+
+Interoperability schema 29 appends the identical `lzw-tans` CLI archive once
+after the frozen schema-28 order. Generation validates all 40 local archives
+before writing the manifest; verification requires exact order, hashes,
+foreign decode, and byte-identical local re-encoding. Compatibility derives
+schema 28 by removing only `lzw-tans`, rejects reordered schema-29 manifests,
+and then verifies every unchanged schema through version 1.
+External four-direction verification at revision
+`2dcc17c09477958c1f8777a266ecfefbb75217d2` confirms all 40 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers, including byte-identical re-encoding in both platform directions.
+
+### Published LZD plus Blocked Huffman boundary
+
+LZD composition remains byte-oriented. The dictionary layer finishes its
+canonical eight-byte reference-pair stream in bounded staging, and Blocked
+Huffman divides those bytes without interpreting token boundaries. Decoding
+reconstructs the exact staged byte region before the ordinary LZD validator
+builds its acyclic phrase records and checks the terminal absent-right form.
+Only a completely validated frame may be expanded to raw output.
+
+For raw frame size `F`, staging is bounded by `8*ceil(F/2)`, generated phrase
+records by `floor(F/2)` and the configured maximum, and the iterative expansion
+stack by the admitted phrase count plus one. The checked opaque workspace
+partition accommodates encoder records, or decoder Blocked Huffman views,
+phrase records, and expansion-stack references without exposing their C++
+layouts. The public factory, CLI, benchmark, fuzz target, completion matrix,
+and schema-6 interoperability entry all retain this validation order.
+
+### Published LZD plus Blocked Huffman implementation evidence
+
+The LZD composition has a complete-frame validator and
+transactional decoder. Blocked Huffman first reconstructs the entire canonical
+eight-byte LZD token region into bounded caller-owned staging. The ordinary LZD
+validator then checks token extent, reference ordering, terminal form, phrase
+limits, and exact declared raw size before the decoder checks destination and
+iterative expansion-stack capacities or publishes raw bytes.
+
+Phrase workspace is derived from both serialized tokens and the declared raw
+frame size. A terminal one-byte frame stores no phrase record, while a
+right-present pair necessarily accounts for at least two raw bytes. Validation
+and decoding count their distinct caller-owned regions under checked aggregate
+limits. The public decoder retains this transactional boundary before exposing
+raw bytes through the streaming C ABI.
+
+The matching internal planner and encoder now complete the LZD parse and write
+the exact canonical token region before entropy planning. Blocked Huffman sees
+only that immutable byte span, so its blocks may split a token without changing
+dictionary parsing. The planner derives the generic header and final serialized
+extent from the chosen block representations; the encoder refuses a short final
+destination before publishing any frame byte. The streaming transform and
+public factory reuse this exact frame representation.
+
+The internal profile now gives the caller-owned third region a stable typed
+shape. Encoding exposes aligned LZD encoder records. Decoding exposes Blocked
+Huffman views followed by separately aligned LZD phrase records and iterative
+expansion references; both offsets and the complete extent are rederived before
+any span is returned. Primary raw/frame buffers and secondary token staging
+remain byte regions. The streaming adapter and C ABI construction path use
+these requirements without exposing the private layouts.
+
+The bounded incremental transforms now consume those exact profile regions.
+The encoder collects one raw frame and drains only its completed serialized
+representation. The decoder collects and validates one complete serialized
+frame, expands into private raw storage, and then drains it. Consequently a
+malformed later frame cannot partially publish that frame or retract earlier
+output. Chunking down to one byte does not alter the stream, nonterminal flush
+does not shorten a frame, and reset remains an unsupported cross-layer request.
+The public C factory now admits this profile through the common transform
+handle and three caller-owned regions. The requirements query exposes only byte
+extents and maximum alignment. Factory construction repeats profile admission
+and checked opaque partitioning before publishing a handle, so entropy views,
+LZD phrase records, and expansion references never become ABI types. CLI,
+benchmark, decoder fuzzing, completion, and interoperability were admitted
+independently against this same factory.
+
+The public-ABI completion matrix now fixes required binary data classes,
+determinism across one-byte and mixed chunking, stable repeated termination,
+and transactional final-frame rejection. Its 64-byte frame profile derives a
+256-byte maximum LZD token region and 32 phrase entries from the fixed pair
+grammar rather than borrowing another dictionary codec's bounds. The bounded
+decoder fuzz target, CLI, benchmark, and schema-6 entry cover the same profile.
+
+The bounded decoder fuzz boundary preallocates the complete combined working
+set: serialized frame, token staging, raw staging, entropy views, LZD phrase
+records, expansion references, and final output. Serialized input cannot alter
+those capacities. Byte-derived chunk schedules exercise partial I/O, while a
+fixed call ceiling converts any stalled state machine into a reproducible
+failure. This admits fuzzing without changing the public format or ABI.
+
+The CLI selector `lzd-blocked-huffman` is a fixed public-ABI adapter. It uses
+one-MiB raw frames, 64-KiB entropy blocks, the exact four-MiB LZD token bound,
+64 entropy blocks, 65,536 phrase entries, and the common 64-MiB aggregate
+policy. Workspace bytes and alignment come only from the public requirements
+query. The existing temporary-file protocol keeps malformed or trailing input
+from publishing a partial destination.
+
+The benchmark selects the identical fixed profile through the same public C
+ABI. It verifies a complete round trip before timing, measures encoding and
+decoding separately, and reports complete-stream ratio plus direction-specific
+primary, secondary, and aligned views extents. Peak workspace is the larger
+queried three-region sum; benchmark inputs and output buffers remain outside
+that metric.
+
+### Published LZD plus Adaptive Huffman boundary
+
+LZD first freezes its complete canonical eight-byte reference-pair stream.
+Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
+frame, without interpreting reference fields or the terminal absent-right
+marker. For raw frame size `F`, token staging is bounded by
+`S = 8*ceil(F/2)` and the conservative entropy payload by `33S`.
+
+Decoding must reconstruct exactly the declared token extent, validate its
+multiple-of-eight shape, backward phrase graph, checked expansion lengths, and
+unique terminal absent-right rule, then reconstruct into private raw staging
+before publication. Encoding must fix the deterministic LZD parse before
+Adaptive planning. The independent raw-`A` vector fixes terminal token
+`41 00 00 00 FF FF FF FF`, Adaptive payload `41 00 CC 3F 1D`, and a complete
+77-byte frame.
+
+The first combined boundary implements the validation half of that order. It
+checks the complete generic frame, LZD and Adaptive extents, caller-owned token
+and phrase capacities, and aggregate workspace before entropy output. It then
+reconstructs the exact token region and invokes the ordinary LZD validator.
+The next boundary invokes the ordinary iterative LZD decoder only after that
+validation succeeds, writing into a distinct private raw span. Raw capacity,
+the conservative phrase-count-plus-one expansion stack, and their aggregate
+bytes are checked before entropy output. The internal transactional decoder
+additionally checks destination capacity before entropy output and copies
+private raw staging only after every layer succeeds. No failure publishes a
+destination byte.
+
+Encoding applies the inverse ownership order. The exact-frame planner first
+fixes the complete deterministic LZD token stream in private staging, then
+plans Adaptive Huffman over only those bytes. It accounts for the typed LZD
+encoder records, token staging, descriptor, and exact payload before returning
+the serialized extent. The encoder rejects insufficient destination capacity
+before writing and reproduces the independent 77-byte frame. Streaming and
+public adapters must build on these frame transactions rather than bypass them.
+
+The bounded streaming encoder owns four caller-supplied regions: one raw frame,
+the `8*ceil(F/2)` token ceiling, one complete encoded frame, and the typed LZD
+encoder records. It emits the 80-byte stream prefix, collects exactly one
+outer frame, invokes the exact-frame planner and encoder, then drains immutable
+serialized bytes before accepting the next frame. Prefix or frame output
+starvation retains all offsets and an already observed `EndInput`; `Flush`
+does not close a partial frame. The aggregate policy counts raw, token,
+serialized, and typed-record bytes before frame construction.
+
+The bounded streaming decoder first collects and parses the 80-byte prefix,
+then admits only a complete generic frame header whose token, entropy, phrase,
+expansion, serialized, and raw extents fit all caller capacities and the
+aggregate policy. It buffers the full encoded frame, invokes private-staging
+validation and reconstruction, and only then enters raw draining. Therefore a
+later malformed frame may follow already committed earlier output, but no byte
+from the malformed frame is published. End-of-input remains retained while a
+validated raw frame drains; truncation, trailing input, and repeated terminal
+errors are deterministic.
+
+The bounded profile converts a fixed original size, frame size, LZD parameters,
+and decoder limits into direction-specific byte requirements. Encoder storage
+reports raw-frame, token, complete-frame, and opaque typed-entry extents.
+Decoder storage reports complete encoded-frame, token, private raw, phrase,
+and expansion extents. The opaque decoder region places phrase records first,
+aligns the following `uint32_t` expansion stack explicitly, and revalidates all
+counts, offsets, total bytes, and base alignment during partitioning. Public
+adapters can therefore reserve byte buffers without exposing C++ record layouts
+or performing unchecked casts themselves.
+
+The public C adapter preserves that exact ownership model. Its requirements
+query returns direction-specific primary, secondary, and opaque aligned-view
+extents; creation recalculates and repartitions those regions before binding
+the existing streaming encoder or decoder. C callers never name or size an LZD
+entry, phrase record, or expansion-stack element directly.
+The completion boundary drives only this public adapter and verifies required
+binary classes, byte-identical repeated encoding, arbitrary input/output
+chunking, sticky success and failure, and whole-frame publication under final-
+frame corruption, truncation, or trailing input.
+The decoder fuzz boundary uses the same exact-frame and incremental paths with
+compile-time byte arrays, 512 phrase records, 513 expansion references, byte-
+derived chunk schedules, and a finite call budget. Serialized metadata cannot
+increase an allocation or any admitted workspace ceiling.
+
+The transactional CLI adapter selects this public C factory with 65,536-byte
+raw frames, the checked 262,144-byte token ceiling, an 8,650,752-byte Adaptive
+payload ceiling, and a 16-MiB aggregate limit. It obtains all direction-specific
+workspace extents and opaque-view alignment from the public requirements query.
+The command-line layer therefore owns file transaction policy but no private
+LZD record layout or alternate stream representation.
+
+The benchmark adapter uses the same public factory and fixed limits. It reserves
+complete-stream output with checked arithmetic, performs an untimed byte-exact
+round trip, then measures fresh encoder and decoder instances independently.
+It reports queried caller-owned workspace rather than estimating private record
+layouts, and imposes no throughput or compression-ratio pass threshold.
+
+Interoperability schema 12 preserves the exact twenty-two-entry schema-11 order
+and appends `lzd-adaptive-huffman`. Generation round-trips all twenty-three
+profiles; verification requires exact manifest order, foreign decode equality,
+and byte-identical local re-encoding while retaining schemas 1 through 11.
+Local MSVC admission proves the generator, verifier, and compatibility chain;
+the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
+generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
+system directions for all twenty-three archives at revision
+`7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
+
 ### Specified LZD plus Dynamic Range boundary
 
 LZD first completes its fixed-width eight-byte little-endian reference-pair
@@ -3358,6 +3183,372 @@ rejection, and the complete compatibility chain. Revision
 `fd11d1c7ef833873a02694da91f9f6d8d378948b` additionally has four-direction
 external evidence across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang.
+
+### LZD plus rANS boundary
+
+The next rANS composition freezes the complete canonical LZD eight-byte
+reference-pair sequence before scalar rANS sees any byte. For raw frame extent
+`F`, token bytes are bounded by `S <= 8 * ceil(F/2)` and remain a multiple of
+eight. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
+exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
+A block may split a reference or token but cannot cross an outer frame.
+
+Decoder ordering first validates every entropy block and reconstructs the
+complete private token region, then applies LZD alignment, backward-reference,
+terminal-absence, phrase-graph, and exact raw-extent validation. The initial
+raw-`A` vector independently composes the standalone LZD and rANS encoders with
+generic serializers. It fixes token bytes `41 00 00 00 FF FF FF FF`, normalized
+frequencies `00:1536`, `41:512`, `FF:2048`, the nine-byte rANS payload, and the
+complete 593-byte frame.
+
+The first combined validator admits the complete serialized extent, rANS view
+count, token staging, LZD phrase records, and aggregate workspace before
+entropy processing. It parses and validates every block before reconstructing
+any token byte, then fills the complete private token region and invokes the
+ordinary LZD graph validator without expanding raw bytes. Corruption in a
+later block therefore cannot leave a partially reconstructed token region, and
+valid entropy carrying an invalid LZD graph fails only at the dictionary
+boundary.
+
+The private raw decoder extends that same preflight with the complete declared
+raw extent and `phrase_count + 1` iterative expansion references, counting both
+in the aggregate workspace before descriptor parsing. Only after entropy and
+the complete LZD graph validate does it invoke the ordinary nonrecursive LZD
+decoder into disposable raw staging. It publishes no caller-visible output;
+short raw or expansion regions fail before token staging changes.
+
+The transactional complete-frame boundary additionally admits the entire
+caller destination before descriptor parsing, reuses the same validator and
+private reconstruction, and copies exactly the declared raw extent once only
+after success. Caller output is excluded from internal aggregate accounting;
+short capacity, malformed entropy, and invalid LZD graphs preserve every
+destination byte.
+
+The encoder-side exact-frame planner first fixes the deterministic LZD parse
+and serializes its complete canonical token sequence into caller-owned staging.
+Only that immutable byte span is divided into rANS blocks. Encoder records,
+token staging, every descriptor, and exact planned payload are checked as one
+aggregate workspace before the synthesized frame header and complete extent
+are accepted. The planner has no serialized-output span and therefore cannot
+publish a partial frame.
+
+The matching complete-frame encoder is plan-first. It admits the entire
+serialized destination, writes the generic header explicitly, and regenerates
+each descriptor and payload only from the frozen token staging. Repeated block
+plans and final offsets must equal the exact plan; planner and capacity failure
+therefore occur before any serialized byte is published.
+
+The bounded known-size streaming encoder adds collection and drain state only.
+It serializes the fixed stream prefix, collects at most one raw frame, creates
+one complete immutable DD-511 frame, and drains it before accepting the next
+frame. Raw collection, token staging, complete serialized frame, and aligned
+encoder records remain caller-owned and are checked together at preparation;
+one-byte I/O and `Flush` cannot change framing or encoded bytes.
+
+The matching streaming decoder separates prefix, frame-header, frame-body, and
+raw-drain states. Header admission fixes complete encoded, view, token, phrase,
+expansion, and private-raw extents before body collection. Only the existing
+private complete-frame decoder may transition an admitted body to raw drain,
+so malformed entropy or phrase graphs cannot expose bytes from that frame.
+
+The internal profile turns those constructor contracts into checked allocation
+requirements. Encoding derives the raw, maximum token, complete-frame, and LZD
+encoder-record regions from trusted known-size configuration. Decoding derives
+the complete encoded, token, and private-raw byte regions from local limits and
+partitions one opaque aligned region in rANS-view, LZD-phrase, expansion-stack
+order. Both partition offsets are recomputed before any typed span is exposed.
+
+The public C adapter retains exactly those three ownership regions. Its
+size-tagged fixed-width config carries the known-size encoder parameters or
+trusted decoder limits, and the direction-specific requirements query is the
+only allocation authority. Factory construction repeats profile calculation,
+opaque partition validation, and alignment checks before creating an
+immutable-direction transform; no private record type enters the ABI.
+
+The public-ABI completion matrix fixes 64-byte raw frames and rANS blocks and
+uses only that allocation and transform lifecycle. It covers the required
+binary classes, deterministic repeated encoding, one-byte and mixed chunking,
+sticky terminal states, and frame-atomic rejection of a corrupt, truncated, or
+extended fourth frame. The shared LZD schedule retains its original defaults
+for the Adaptive Huffman and Dynamic Range instantiations.
+
+The bounded decoder fuzz boundary drives both the private complete-frame
+decoder and the public C streaming lifecycle. Fixed caller-owned arrays cap
+serialized input at 8 KiB, total raw output at 4 KiB, one raw frame at 1 KiB,
+rANS payload at 16 KiB, entropy metadata at eight block views, LZD phrase state
+at 512 records, and iterative expansion state at 513 records. Input-derived
+chunk sizes remain modulo bounded, and a fixed call ceiling turns any stalled
+state machine into a reproducible invariant failure. Ordinary builds compile
+the harness without executing a sanitizer campaign; canonical strict-prefix,
+reserved-field, and saturated-frame-extent cases remain permanent tests.
+
+The explicit `lzd-rans` command-line selector fixes 65,536-byte raw frames and
+rANS blocks, supplies the checked 262,144-byte token and 262,176-byte payload
+ceilings plus a 16-MiB aggregate policy, and obtains every direction-specific
+workspace extent and alignment from the public C requirements query. It reuses
+the common temporary-file transaction, so invalid or trailing input, output
+collision, allocation failure, or codec failure cannot publish the requested
+destination or leave its sibling temporary file.
+
+The dependency-free benchmark selects that same public profile. Its checked
+complete-stream capacity retains LZD's absent-right half-reference for odd
+input, verifies a byte-exact public-ABI round trip before timing, and then
+reports encoded ratio, encode/decode throughput, all queried workspace regions,
+and the larger caller-owned total. Smoke measurements establish wiring and
+correctness only, not representative performance.
+
+Interoperability schema 24 appends the unchanged CLI profile once after the
+frozen schema-23 order. The generator round-trips all thirty-five archives
+before recording size and SHA-256; the verifier requires exact order, hashes,
+foreign decode equality, and byte-identical local re-encoding. The compatibility
+regression rejects reordered schema 24, removes only `lzd-rans` to reconstruct
+schema 23, and then verifies every frozen schema through version 1. The
+four-direction schema-24 cross-check passed at revision
+`dad3638da2acb449afca969176194bf8323309f5` across the recorded Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
+
+### LZD plus tANS boundary
+
+The reserved `lzd-tans` profile places tabled tANS after the complete canonical
+LZD reference-pair byte stream. LZD produces aligned eight-byte token records;
+tANS consumes only bytes and may place a block boundary inside either
+four-byte reference field or between fields, but never inside a byte or across
+an outer frame. Both layers reset with the frame controller.
+
+Decoder construction must admit every descriptor, payload, private token byte,
+tANS block view, LZD phrase record, expansion reference, and raw staging region
+before the corresponding mutation. All tANS blocks must validate before token
+reconstruction, and the complete private token span must pass LZD alignment,
+reference, phrase-growth, terminal, and raw-extent checks before any raw byte is
+reconstructed or published. The initial reservation fixes representation and
+bounds. The first internal combined component now implements that complete-
+frame validation boundary with caller-owned views, token staging, and phrase
+records. The private complete-frame decoder additionally admits the declared
+raw extent and iterative expansion stack before entropy mutation, then invokes
+the existing non-recursive LZD decoder only after complete graph validation.
+Raw staging remains discard-only. The internal transactional decoder places a
+distinct caller-output preflight around that private operation and copies the
+complete raw extent once after success. This publication boundary remains
+below any streaming or public API.
+The inverse planning boundary completes the LZD parse and canonical token
+serialization before tANS planning. It keeps raw input, aligned encoder
+records, and token staging caller-owned, validates the synthesized frame
+header, and reports exact block and frame extents without accepting a final
+serialized destination.
+The complete-frame encoder invokes that plan before destination admission,
+then writes explicit generic-header, descriptor, and payload regions. A short
+destination cannot expose a partial frame; repeated encoding over the frozen
+tokens must reproduce the same bytes.
+The bounded streaming encoder owns no storage. It serializes the fixed prefix,
+collects one raw frame in caller memory, invokes the exact planner and encoder,
+then drains the immutable result with independent input consumption and output
+production. Finish is retained until all pending bytes drain, while flush does
+not alter frame boundaries.
+The matching bounded streaming decoder incrementally collects the prefix and
+one serialized frame, admits all tANS and LZD workspaces from trusted header
+bounds, validates and reconstructs privately, then drains only the committed
+raw frame. A later malformed frame cannot expose partial output from that
+frame; retained finish survives draining of an earlier valid frame.
+The profile calculator derives the coupled worst-case raw, token, serialized,
+typed-view, phrase, and expansion extents with checked arithmetic. Its opaque
+storage partitioners validate exact size metadata and alignment before forming
+typed spans, so a later ABI adapter need not duplicate layout arithmetic.
+The public C adapter preserves the common three-region ownership model and
+delegates all sizing and typed partitioning to that calculator. It adds only a
+size-tagged fixed-width configuration and new symbols, leaving the established
+ABI version and every existing structure layout unchanged.
+The public completion matrix constructs both directions only through that C
+factory. It fixes 64-byte frame and block boundaries, proves deterministic
+archives across arbitrary chunking, and verifies that a malformed fourth frame
+cannot publish its final raw byte or destabilize the repeated terminal error.
+The bounded fuzz boundary drives both the internal complete-frame validator and
+the public incremental decoder from the same at-most-8,192-byte input. All raw,
+token, tANS-view, phrase, expansion, and output storage is fixed before input is
+examined; byte-derived chunk sizes and a finite call budget prevent a malformed
+stream from creating unbounded storage or execution.
+The transactional CLI selects this public profile with 65,536-byte raw frames
+and tANS blocks, checked 262,144-byte token and 393,224-byte payload ceilings,
+four blocks, the public LZD entry bound, and a 16-MiB aggregate policy. It
+allocates only the three queried workspace regions and publishes the output
+file only after the complete transform succeeds.
+The benchmark adapter reuses that exact public policy independently in each
+direction. It admits a checked complete-stream destination, verifies one
+byte-exact untimed round trip, then measures encode and decode separately while
+reporting every queried region and the larger directional reservation.
+Interoperability schema 30 appends the identical `lzd-tans` CLI archive once
+after the frozen schema-29 order. Generation validates all 41 local archives
+before recording the manifest; verification requires exact order, hashes,
+foreign decode, and byte-identical local re-encoding. Compatibility rejects a
+reordered schema-30 manifest, derives schema 29 by removing only `lzd-tans`,
+and then verifies every unchanged schema through version 1.
+External four-direction verification at revision
+`827ddf085efb40c7d8f9bc27628977053179d84c` confirms all 41 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers, including byte-identical re-encoding in both platform directions.
+
+### Published LZMW plus Blocked Huffman boundary
+
+LZMW composition keeps the canonical four-byte reference stream as the exact
+byte boundary between layers. Blocked Huffman may divide that region without
+regard to reference alignment. Decode reconstructs the complete reference
+region before the existing LZMW validator checks fixed-token alignment,
+backward-only phrase references, adjacent-phrase productions, dictionary
+freeze, and exact raw extent. Expansion and publication occur only after the
+whole frame passes both entropy and dictionary validation.
+
+For raw frame size `F`, reference staging is bounded by `4F`, generated phrase
+records by the lesser of `max(F-1, 0)` and the configured maximum, and the
+iterative expansion stack by the admitted phrase count plus one for a nonempty
+frame. The checked opaque workspace profile now partitions encoder phrase
+spans, or decoder Blocked Huffman views, LZMW phrase records, and expansion-
+stack references without exposing their C++ layouts. Decoder phrase capacity
+is derived from the maximum admitted serialized-token extent rather than only
+the raw frame bound, so token-heavy malformed frames can reach the validator
+and be rejected without an allocation or premature workspace failure. The
+complete-frame validator and decoder now implement the decode half of this
+boundary: header and descriptor extents are fixed first, entropy output is
+staged, the full LZMW grammar is validated, aggregate workspace and raw
+capacity are checked, and only then does iterative expansion publish bytes.
+The matching planner first fixes the complete deterministic LZMW parse in
+caller-owned phrase spans, serializes the exact four-byte references into
+staging, and plans Blocked Huffman only over those bytes. The encoder publishes
+the generic header, descriptors/models, and payload only after exact output
+capacity is known. Complete-frame encode and decode are now implemented; outer
+streaming adapters now reuse one frame input/output region, canonical-reference
+staging, and the profile's typed views. The encoder drains the canonical
+80-byte prefix, collects exactly one contextual raw frame, and drains its
+complete encoded form. The decoder collects and validates one complete encoded
+frame, decodes into raw staging, and only then drains it. One-byte boundaries,
+nonterminal flush, exact finish, sticky malformed errors, and preservation of
+already committed earlier frames are tested.
+
+The public C factory now binds that profile to the common transform lifecycle.
+Its size-tagged configuration fixes the known original size, raw-frame size,
+entropy-block size, LZMW entry limit, and every decoder hard limit. The query
+reports raw or serialized primary storage, a secondary region internally split
+between canonical references and serialized or raw frame storage, and one
+aligned opaque views region. Construction repeats profile validation and the
+complete checked typed partition before publishing a handle; no entropy view,
+phrase record, or expansion-stack representation crosses the ABI.
+The public completion matrix now exercises binary data classes, deterministic
+encoding, dictionary and frame-boundary neighbors, one-byte and mixed
+chunking, repeated terminal calls, and frame-atomic final corruption,
+truncation, and trailing-data rejection exclusively through that C factory.
+A dedicated decoder fuzz boundary fixes every frame, reference, entropy-view,
+phrase-record, expansion-stack, and total-output region before inspecting
+serialized bytes. Byte-derived partial I/O and a fixed call ceiling exercise
+the incremental state machine; permanent regressions retain complete canonical
+truncation, extreme frame lengths, and an unavailable reconstructed reference.
+The explicit `lzmw-blocked-huffman` CLI selector reaches the profile only
+through its public C ABI. It shares the common temporary-file transaction,
+bounded streaming loop, output-overwrite refusal, and cleanup on malformed or
+trailing input. Its fixed one-MiB raw frame, 64-KiB entropy block, four-MiB
+reference cap, 64-block limit, and 64-MiB aggregate policy are local admission
+choices rather than new serialized parameters.
+The dependency-free benchmark selects the same profile through the public C
+ABI, verifies a full round trip before measurement, and reports full-stream
+ratio, encode/decode throughput, each caller-owned workspace region, and their
+directional peak. Reserved workspace totals are reported separately from the
+decoder's active aggregate limit; they are intentionally not presented as the
+same memory quantity.
+Interoperability schema 7 appends this CLI representation to the frozen
+schema-6 profile set as its eighteenth archive.
+
+### Published LZMW plus Adaptive Huffman boundary
+
+LZMW first freezes its complete canonical four-byte reference stream.
+Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
+frame without interpreting reference boundaries. For raw frame size `F`,
+reference staging is bounded by `S = 4F`, the conservative entropy payload by
+`33S`, generated phrases by `min(max(F-1,0), configured maximum, local limit)`,
+and the nonempty expansion stack by that phrase count plus one.
+
+Decoding must reconstruct exactly the declared reference extent, validate its
+multiple-of-four shape, every literal or prior generated reference, the
+adjacent-phrase graph, and exact declared raw extent before private iterative
+reconstruction and publication. Encoding must fix the deterministic LZMW
+parse before Adaptive planning. The independent raw-`A` vector fixes reference
+`41 00 00 00`, Adaptive payload `41 00 0C`, and a complete 75-byte frame.
+
+The first combined boundary implements the validation half of that order. It
+checks the complete generic frame, reference and Adaptive extents, caller-owned
+reference and phrase capacities, and aggregate workspace before entropy output.
+It then reconstructs the exact reference region and invokes the ordinary LZMW
+validator. The returned actual generated-phrase count determines the later
+iterative expansion-stack ceiling. The private reconstruction boundary
+conservatively checks raw and maximum expansion capacities plus aggregate bytes
+before entropy output, then invokes the ordinary iterative LZMW decoder over
+only the validated prefixes. The transactional complete-frame decoder
+additionally checks destination capacity before entropy output and copies the
+private raw span only after every layer succeeds. No failure publishes a
+caller-visible byte.
+
+Encoding applies the inverse ownership order. The exact-frame planner first
+fixes the complete deterministic LZMW reference stream in private staging, then
+plans Adaptive Huffman over only those bytes. It accounts for typed LZMW encoder
+records, reference staging, descriptor, and exact payload before returning the
+serialized extent. The encoder rejects insufficient destination capacity before
+writing and reproduces the independent 75-byte frame.
+
+The first bounded incremental encoder adds only one outer ownership layer. It
+drains the immutable 80-byte prefix, collects at most one raw frame, freezes and
+encodes that frame through the exact transaction, and drains it before accepting
+the next frame. Raw input, complete reference staging, typed LZMW records, and
+the complete serialized frame are caller-owned and checked as one aggregate
+working set. Output starvation retains both prepared bytes and a previously
+observed valid `EndInput`; nonterminal `Flush` never changes a partial frame.
+
+The matching incremental decoder collects the prefix, admits each frame extent
+from its checked generic header, and retains one complete serialized frame. It
+invokes private reconstruction into the caller-owned raw staging only after the
+body is complete, then drains that validated raw span. Consequently a malformed
+later frame cannot publish any part of itself, while raw bytes from already
+completed frames remain committed. Truncation and trailing data are terminal.
+
+The internal profile now couples those transforms to caller-owned storage
+without making private C++ records part of an ABI. Encode requirements expose
+raw, reference, complete-frame, and one opaque typed-region byte extent plus
+alignment. Decode requirements expose complete-frame, reference, private-raw,
+and one opaque region containing separately aligned phrase and expansion spans.
+Partitioning rederives offsets and totals before returning typed internal views.
+
+The public C boundary now binds those requirements and streaming transforms to
+the common allocation-free three-region lifecycle. The query exposes only byte
+extents and alignment. Factory construction repeats profile calculation and
+opaque partitioning before publishing a handle, so encoder entries, phrase
+records, and expansion references remain private implementation types.
+
+The public-ABI completion matrix constructs both directions only through that
+factory. It covers required binary input classes, exact deterministic encoding,
+one-byte and mixed chunk schedules, repeated terminal results, and a four-frame
+transaction test. Corruption, truncation, or trailing data at the last frame
+commits exactly the first three frames and no byte from the fourth.
+
+The decoder fuzz boundary fixes exact-frame and incremental workspaces before
+reading metadata: 1,023 phrase records, 1,024 expansion references, bounded
+byte arrays, byte-derived chunk schedules, and a finite call budget. Serialized
+input cannot enlarge any allocation or admitted workspace ceiling.
+
+The transactional CLI adapter selects the same public C factory with 65,536-
+byte raw frames, a checked 262,144-byte reference ceiling, an 8,650,752-byte
+Adaptive payload ceiling, and a 16-MiB aggregate limit. It obtains every
+direction-specific workspace extent and opaque-view alignment from the public
+requirements query, leaving the command-line layer responsible only for file
+transaction policy.
+
+The benchmark adapter uses the same public factory and fixed limits. It
+reserves complete-stream output with checked arithmetic, performs an untimed
+byte-exact round trip, then measures fresh encoder and decoder instances
+independently. It reports queried caller-owned workspace rather than estimating
+private record layouts, and imposes no throughput or compression-ratio pass
+threshold.
+
+Interoperability schema 13 preserves the exact twenty-three-entry schema-12
+order and appends `lzmw-adaptive-huffman`. Generation round-trips all twenty-
+four profiles; verification requires exact manifest order, foreign decode
+equality, and byte-identical local re-encoding while retaining schemas 1
+through 12. Local MSVC admission proves the generator, verifier, and
+compatibility chain; external artifacts remain a separate evidence step.
 
 ### Published LZMW plus Dynamic Range boundary
 
@@ -3465,362 +3656,167 @@ The established four-direction exchange verified all thirty archives across
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers at revision
 `f8d51680a0ef827fa09f5782ad4ced4c335d346e`.
 
-### Published LZD plus Adaptive Huffman boundary
+### LZMW plus rANS boundary
 
-LZD first freezes its complete canonical eight-byte reference-pair stream.
-Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
-frame, without interpreting reference fields or the terminal absent-right
-marker. For raw frame size `F`, token staging is bounded by
-`S = 8*ceil(F/2)` and the conservative entropy payload by `33S`.
+The sixth rANS composition freezes the complete canonical LZMW four-byte
+phrase-reference sequence before scalar rANS sees any byte. For raw frame
+extent `F`, reference bytes are bounded by `S <= 4F` and remain a multiple of
+four. rANS divides the finalized byte region into `K = ceil(S/B)` blocks with
+exactly `528K` descriptor bytes and payload interval `8K <= P <= S + 8K`.
+A block may split a reference but cannot cross an outer frame.
 
-Decoding must reconstruct exactly the declared token extent, validate its
-multiple-of-eight shape, backward phrase graph, checked expansion lengths, and
-unique terminal absent-right rule, then reconstruct into private raw staging
-before publication. Encoding must fix the deterministic LZD parse before
-Adaptive planning. The independent raw-`A` vector fixes terminal token
-`41 00 00 00 FF FF FF FF`, Adaptive payload `41 00 CC 3F 1D`, and a complete
-77-byte frame.
+Decoder ordering first validates every entropy block and reconstructs the
+complete private reference region, then applies LZMW alignment, literal-or-
+prior-reference, adjacent-phrase-graph, and exact raw-extent validation. The
+initial raw-`A` vector independently composes the standalone LZMW and rANS
+encoders with generic serializers. It fixes reference bytes `41 00 00 00`,
+normalized frequencies `00:3072` and `41:1024`, the eight-byte rANS payload,
+and the complete 592-byte frame.
 
-The first combined boundary implements the validation half of that order. It
-checks the complete generic frame, LZD and Adaptive extents, caller-owned token
-and phrase capacities, and aggregate workspace before entropy output. It then
-reconstructs the exact token region and invokes the ordinary LZD validator.
-The next boundary invokes the ordinary iterative LZD decoder only after that
-validation succeeds, writing into a distinct private raw span. Raw capacity,
-the conservative phrase-count-plus-one expansion stack, and their aggregate
-bytes are checked before entropy output. The internal transactional decoder
-additionally checks destination capacity before entropy output and copies
-private raw staging only after every layer succeeds. No failure publishes a
+The first combined validator admits the complete serialized extent, rANS view
+count, reference staging, LZMW phrase records, and aggregate workspace before
+entropy processing. It parses and validates every block before reconstructing
+any reference byte, then fills the complete private reference region and
+invokes the ordinary LZMW graph validator without expanding raw bytes.
+Corruption in a later block therefore cannot leave partially reconstructed
+references, and valid entropy carrying an invalid LZMW graph fails only at the
+dictionary boundary.
+
+The private raw decoder extends that same preflight with the complete declared
+raw extent and conservative iterative expansion references, counting both in
+the aggregate workspace before descriptor parsing. After entropy and the
+complete LZMW graph validate, it reduces the active stack to
+`dictionary_entries + 1` and invokes the ordinary nonrecursive LZMW decoder
+into disposable raw staging. It publishes no caller-visible output; short raw
+or expansion regions fail before reference staging changes. That private
+validation layer itself is not a public entry point.
+
+The transactional complete-frame boundary additionally admits the entire
+caller destination before descriptor parsing, reuses the same validator and
+private reconstruction, and copies exactly the declared raw extent once only
+after success. Caller output is excluded from internal aggregate accounting;
+short capacity, malformed entropy, and invalid LZMW graphs preserve every
 destination byte.
 
-Encoding applies the inverse ownership order. The exact-frame planner first
-fixes the complete deterministic LZD token stream in private staging, then
-plans Adaptive Huffman over only those bytes. It accounts for the typed LZD
-encoder records, token staging, descriptor, and exact payload before returning
-the serialized extent. The encoder rejects insufficient destination capacity
-before writing and reproduces the independent 77-byte frame. Streaming and
-public adapters must build on these frame transactions rather than bypass them.
+The encoder-side exact-frame planner first plans and then materializes the
+complete canonical LZMW reference region in caller-owned staging. Only that
+frozen byte sequence is divided into rANS blocks. It reports exact descriptor,
+payload, and serialized frame extents without writing a frame, and admits the
+encoder dictionary plus all staged and planned bytes against the aggregate
+workspace limit before a later encoder may publish output.
 
-The bounded streaming encoder owns four caller-supplied regions: one raw frame,
-the `8*ceil(F/2)` token ceiling, one complete encoded frame, and the typed LZD
-encoder records. It emits the 80-byte stream prefix, collects exactly one
-outer frame, invokes the exact-frame planner and encoder, then drains immutable
-serialized bytes before accepting the next frame. Prefix or frame output
-starvation retains all offsets and an already observed `EndInput`; `Flush`
-does not close a partial frame. The aggregate policy counts raw, token,
-serialized, and typed-record bytes before frame construction.
+The deterministic complete-frame encoder invokes that plan before admitting
+the serialized destination, then explicitly writes the generic header and each
+528-byte descriptor and rANS payload into precomputed regions. Every repeated
+block extent and final offset must equal the plan. A planner failure or short
+destination therefore leaves the complete output unchanged.
 
-The bounded streaming decoder first collects and parses the 80-byte prefix,
-then admits only a complete generic frame header whose token, entropy, phrase,
-expansion, serialized, and raw extents fit all caller capacities and the
-aggregate policy. It buffers the full encoded frame, invokes private-staging
-validation and reconstruction, and only then enters raw draining. Therefore a
-later malformed frame may follow already committed earlier output, but no byte
-from the malformed frame is published. End-of-input remains retained while a
-validated raw frame drains; truncation, trailing input, and repeated terminal
-errors are deterministic.
+The known-size streaming encoder adds no representation. It drains the fixed
+80-byte prefix, collects at most one raw frame, prepares one immutable complete
+frame, and drains it before accepting the next frame. `EndInput` remains sticky
+across prefix and frame starvation; `Flush` does not close a partial frame.
+All simultaneously held raw, reference, encoded-frame, and typed-entry storage
+is caller-owned and checked as one aggregate.
 
-The bounded profile converts a fixed original size, frame size, LZD parameters,
-and decoder limits into direction-specific byte requirements. Encoder storage
-reports raw-frame, token, complete-frame, and opaque typed-entry extents.
-Decoder storage reports complete encoded-frame, token, private raw, phrase,
-and expansion extents. The opaque decoder region places phrase records first,
-aligns the following `uint32_t` expansion stack explicitly, and revalidates all
-counts, offsets, total bytes, and base alignment during partitioning. Public
-adapters can therefore reserve byte buffers without exposing C++ record layouts
-or performing unchecked casts themselves.
+The matching streaming decoder admits each generic frame header against all
+encoded, typed, reference, expansion, and raw capacities before accepting the
+body. A complete frame is decoded through rANS validation and LZMW graph
+validation into private raw storage, then drained. Later-frame corruption can
+therefore leave only earlier, fully validated frames committed.
 
-The public C adapter preserves that exact ownership model. Its requirements
-query returns direction-specific primary, secondary, and opaque aligned-view
-extents; creation recalculates and repartitions those regions before binding
-the existing streaming encoder or decoder. C callers never name or size an LZD
-entry, phrase record, or expansion-stack element directly.
-The completion boundary drives only this public adapter and verifies required
-binary classes, byte-identical repeated encoding, arbitrary input/output
-chunking, sticky success and failure, and whole-frame publication under final-
-frame corruption, truncation, or trailing input.
-The decoder fuzz boundary uses the same exact-frame and incremental paths with
-compile-time byte arrays, 512 phrase records, 513 expansion references, byte-
-derived chunk schedules, and a finite call budget. Serialized metadata cannot
-increase an allocation or any admitted workspace ceiling.
+The direction-specific profile calculator derives every caller-owned byte and
+typed-record requirement from the same conservative frame bounds. Decoder
+opaque storage is partitioned into aligned rANS views, LZMW phrase records, and
+iterative expansion references only after its layout is recomputed and
+validated, hiding internal C++ types from the public C ABI.
+The public C factory now consumes only the size-tagged fixed-width config and
+the three regions returned by the requirements query. It repeats profile and
+partition validation before borrowing those regions for an immutable-direction
+transform; construction failure publishes no transform.
+The public-ABI completion matrix now exercises that boundary alone for all
+one-byte values, representative binary and boundary-sized inputs,
+byte-identical mixed chunk schedules, repeated terminal calls, and
+frame-atomic rejection of a malformed final frame.
+A bounded dual-path fuzz harness now drives both the private complete-frame
+decoder and that public streaming lifecycle. Its input, output, encoded frame,
+reference, rANS-view, phrase, expansion, and call counts are fixed before
+untrusted parsing; permanent regressions retain truncation and malformed-field
+atomicity.
+The explicit CLI selector fixes 65,536-byte raw frames and rANS blocks, a
+262,144-byte reference ceiling, four entropy blocks, a 262,176-byte payload
+ceiling, and a 16-MiB aggregate policy. It obtains all direction-specific
+storage and alignment from the public requirements query and retains the
+existing temporary-file publication transaction.
+The dependency-free benchmark reuses that public profile without private
+layout knowledge. Checked complete-stream capacity is `80 + 4N + 2200K` for
+raw extent `N` and nonempty frame count `K`, covering the worst-case reference
+bytes, generic frame header, four descriptors, and four final states. An
+untimed exact round trip gates ratio, throughput, and queried-workspace output.
+Interoperability schema 25 appends the unchanged CLI profile once after the
+frozen schema-24 order. Generation round-trips all thirty-six archives before
+recording size and SHA-256; verification requires exact order, hashes, foreign
+decode equality, and byte-identical local re-encoding. The compatibility
+regression rejects reordered schema 25, removes only `lzmw-rans` to reconstruct
+schema 24, and then verifies every frozen schema through version 1. The
+four-direction schema-25 cross-check passed at revision
+`bc4cfa45fc8787d5ec9277894bda0b10df0ef638` across the recorded Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 environments.
 
-The transactional CLI adapter selects this public C factory with 65,536-byte
-raw frames, the checked 262,144-byte token ceiling, an 8,650,752-byte Adaptive
-payload ceiling, and a 16-MiB aggregate limit. It obtains all direction-specific
-workspace extents and opaque-view alignment from the public requirements query.
-The command-line layer therefore owns file transaction policy but no private
-LZD record layout or alternate stream representation.
+### LZMW plus tANS boundary
 
-The benchmark adapter uses the same public factory and fixed limits. It reserves
-complete-stream output with checked arithmetic, performs an untimed byte-exact
-round trip, then measures fresh encoder and decoder instances independently.
-It reports queried caller-owned workspace rather than estimating private record
-layouts, and imposes no throughput or compression-ratio pass threshold.
+The reserved composition first freezes the canonical little-endian four-byte
+LZMW reference region, then divides those bytes into independently reset tANS
+blocks. A block may split a reference but cannot split a byte or cross the
+outer frame. Checked bounds require `0 < S <= 4F`, four-byte alignment,
+`K = ceil(S/B)`, exact `528K` descriptors, and the sum of per-block
+`2 + ceil(12n/8)` payload ceilings.
 
-Interoperability schema 12 preserves the exact twenty-two-entry schema-11 order
-and appends `lzd-adaptive-huffman`. Generation round-trips all twenty-three
-profiles; verification requires exact manifest order, foreign decode equality,
-and byte-identical local re-encoding while retaining schemas 1 through 11.
-Local MSVC admission proves the generator, verifier, and compatibility chain;
-the pushed Windows/MSVC and Ubuntu 24.04 artifacts and an independently
-generated Ubuntu 26.04/Clang bundle subsequently passed it in both operating-
-system directions for all twenty-three archives at revision
-`7078d0ab20f6e0a1aeaa3c43e480ca866bf8a2fa`.
+Decoder construction must admit every serialized and caller-owned extent
+before parsing model data. Every tANS block must validate before private
+reference reconstruction, and the complete reference span must pass ordinary
+LZMW literal, generated-reference, adjacent-pair growth, dictionary-limit, and
+exact-raw-extent validation before raw reconstruction or publication. The
+independent raw-`A` vector composes standalone LZMW and tANS
+components into a 587-byte frame with payload `FB 02 07`; no combined runtime
+path or public profile existed at the specification step. The first internal
+combined component now implements this complete-frame validation boundary with
+caller-owned views, reference staging, and phrase records. Its private decoder
+additionally admits the declared raw extent and iterative expansion stack
+before entropy mutation, reconstructs only the validated LZMW graph into
+disposable raw staging, and publishes exactly once only after every layer
+succeeds. It adds no streaming transform or public surface.
 
-### Published LZMW plus Adaptive Huffman boundary
+The encoder-side exact-frame planner first plans and materializes the complete
+canonical LZMW reference region in caller-owned staging. Only that frozen byte
+sequence is divided into tANS blocks. It plans every normalized table and
+transition payload, checks their exact aggregate extent and complete generic
+header, and reports the exact frame size without writing serialized output.
+Short encoder records or reference staging fail before reference mutation.
+The deterministic frame encoder invokes that planner first, requires complete
+serialized capacity, writes the generic header, then emits every tANS
+descriptor and payload over the frozen reference span. It rechecks all planned
+block extents and leaves serialized output untouched on any planner or capacity
+failure.
 
-LZMW first freezes its complete canonical four-byte reference stream.
-Adaptive Huffman consumes those bytes through one fresh FGK tree per outer
-frame without interpreting reference boundaries. For raw frame size `F`,
-reference staging is bounded by `S = 4F`, the conservative entropy payload by
-`33S`, generated phrases by `min(max(F-1,0), configured maximum, local limit)`,
-and the nonempty expansion stack by that phrase count plus one.
+The bounded streaming encoder owns caller-supplied storage for one raw outer
+frame, its maximum canonical reference region, one complete serialized frame,
+and the LZMW encoder table. It first drains the immutable stream prefix, then
+collects exactly one outer frame, invokes the exact planner and encoder, and
+drains the complete serialized frame without mutation. One-byte input and
+output are valid. `EndInput` remains sticky while pending bytes drain; `Flush`
+does not close a partial frame, and `ResetBlock` is unsupported.
 
-Decoding must reconstruct exactly the declared reference extent, validate its
-multiple-of-four shape, every literal or prior generated reference, the
-adjacent-phrase graph, and exact declared raw extent before private iterative
-reconstruction and publication. Encoding must fix the deterministic LZMW
-parse before Adaptive planning. The independent raw-`A` vector fixes reference
-`41 00 00 00`, Adaptive payload `41 00 0C`, and a complete 75-byte frame.
+The matching streaming decoder incrementally collects the fixed prefix and one
+complete serialized frame. It validates header-derived tANS views, reference
+staging, phrase records, expansion stack, raw staging, and aggregate live bytes
+before accepting the frame body. Only the transactional complete-frame decoder
+may populate private raw staging; that successful immutable frame then drains
+under arbitrary output chunking. A later malformed frame cannot expose any of
+its raw bytes or roll back earlier completed frames.
 
-The first combined boundary implements the validation half of that order. It
-checks the complete generic frame, reference and Adaptive extents, caller-owned
-reference and phrase capacities, and aggregate workspace before entropy output.
-It then reconstructs the exact reference region and invokes the ordinary LZMW
-validator. The returned actual generated-phrase count determines the later
-iterative expansion-stack ceiling. The private reconstruction boundary
-conservatively checks raw and maximum expansion capacities plus aggregate bytes
-before entropy output, then invokes the ordinary iterative LZMW decoder over
-only the validated prefixes. The transactional complete-frame decoder
-additionally checks destination capacity before entropy output and copies the
-private raw span only after every layer succeeds. No failure publishes a
-caller-visible byte.
+### LZMW plus tANS public profile
 
-Encoding applies the inverse ownership order. The exact-frame planner first
-fixes the complete deterministic LZMW reference stream in private staging, then
-plans Adaptive Huffman over only those bytes. It accounts for typed LZMW encoder
-records, reference staging, descriptor, and exact payload before returning the
-serialized extent. The encoder rejects insufficient destination capacity before
-writing and reproduces the independent 75-byte frame.
-
-The first bounded incremental encoder adds only one outer ownership layer. It
-drains the immutable 80-byte prefix, collects at most one raw frame, freezes and
-encodes that frame through the exact transaction, and drains it before accepting
-the next frame. Raw input, complete reference staging, typed LZMW records, and
-the complete serialized frame are caller-owned and checked as one aggregate
-working set. Output starvation retains both prepared bytes and a previously
-observed valid `EndInput`; nonterminal `Flush` never changes a partial frame.
-
-The matching incremental decoder collects the prefix, admits each frame extent
-from its checked generic header, and retains one complete serialized frame. It
-invokes private reconstruction into the caller-owned raw staging only after the
-body is complete, then drains that validated raw span. Consequently a malformed
-later frame cannot publish any part of itself, while raw bytes from already
-completed frames remain committed. Truncation and trailing data are terminal.
-
-The internal profile now couples those transforms to caller-owned storage
-without making private C++ records part of an ABI. Encode requirements expose
-raw, reference, complete-frame, and one opaque typed-region byte extent plus
-alignment. Decode requirements expose complete-frame, reference, private-raw,
-and one opaque region containing separately aligned phrase and expansion spans.
-Partitioning rederives offsets and totals before returning typed internal views.
-
-The public C boundary now binds those requirements and streaming transforms to
-the common allocation-free three-region lifecycle. The query exposes only byte
-extents and alignment. Factory construction repeats profile calculation and
-opaque partitioning before publishing a handle, so encoder entries, phrase
-records, and expansion references remain private implementation types.
-
-The public-ABI completion matrix constructs both directions only through that
-factory. It covers required binary input classes, exact deterministic encoding,
-one-byte and mixed chunk schedules, repeated terminal results, and a four-frame
-transaction test. Corruption, truncation, or trailing data at the last frame
-commits exactly the first three frames and no byte from the fourth.
-
-The decoder fuzz boundary fixes exact-frame and incremental workspaces before
-reading metadata: 1,023 phrase records, 1,024 expansion references, bounded
-byte arrays, byte-derived chunk schedules, and a finite call budget. Serialized
-input cannot enlarge any allocation or admitted workspace ceiling.
-
-The transactional CLI adapter selects the same public C factory with 65,536-
-byte raw frames, a checked 262,144-byte reference ceiling, an 8,650,752-byte
-Adaptive payload ceiling, and a 16-MiB aggregate limit. It obtains every
-direction-specific workspace extent and opaque-view alignment from the public
-requirements query, leaving the command-line layer responsible only for file
-transaction policy.
-
-The benchmark adapter uses the same public factory and fixed limits. It
-reserves complete-stream output with checked arithmetic, performs an untimed
-byte-exact round trip, then measures fresh encoder and decoder instances
-independently. It reports queried caller-owned workspace rather than estimating
-private record layouts, and imposes no throughput or compression-ratio pass
-threshold.
-
-Interoperability schema 13 preserves the exact twenty-three-entry schema-12
-order and appends `lzmw-adaptive-huffman`. Generation round-trips all twenty-
-four profiles; verification requires exact manifest order, foreign decode
-equality, and byte-identical local re-encoding while retaining schemas 1
-through 12. Local MSVC admission proves the generator, verifier, and
-compatibility chain; external artifacts remain a separate evidence step.
-
-### Published LZW plus Blocked Huffman boundary
-
-LZW's canonical dictionary output is a packed variable-width bitstream rather
-than a fixed-width token array. Composition nevertheless remains byte-oriented:
-the LZW encoder finishes its frame-local code stream, including zero padding to
-the next byte, before Blocked Huffman divides those exact bytes into entropy
-blocks. Entropy block boundaries therefore never split a byte but need not
-coincide with LZW code boundaries.
-
-Decoding reverses this transactionally. Blocked Huffman reconstructs the exact
-packed byte region into staging; the ordinary LZW validator then checks the
-width schedule, dictionary references, `KwKwK`, final padding, and exact raw
-extent before publication. This preserves both layers' existing validators
-instead of teaching either layer the other's token grammar.
-
-The frame boundary now implements this ordering in both directions. Encoding
-first completes the standalone LZW plan and writes the exact packed bytes into
-caller-owned staging; Blocked Huffman planning and generic-header construction
-then consume that immutable span. The frame records the actual packed extent,
-while the conservative format bound remains an allocation admission rule.
-
-Decoding uses separate caller-owned Blocked Huffman views, packed-byte staging,
-and LZW phrase entries. It checks all three capacities and their aggregate
-bytes before entropy output, then validates LZW completely before checking raw
-output capacity. The
-9-to-10-bit width-transition test crosses thirty independent entropy blocks,
-demonstrating that block boundaries do not become code boundaries.
-
-The internal profile now resolves the typed-workspace boundary. Its encoder
-requirements expose an aligned LZW encoder-entry region. Decoder requirements
-combine Blocked Huffman views and a separately aligned LZW phrase table in one
-opaque region, recording the phrase offset, total bytes, and maximum alignment.
-Partition helpers recompute that layout before exposing either span. The format,
-complete frame boundary, sizing, and safe partition feed bounded streaming
-transforms. The encoder buffers one raw frame and its finalized representation;
-the decoder buffers one serialized frame and reconstructs it privately before
-draining raw output. Consequently a malformed later frame cannot publish a
-partial raw frame or alter an earlier committed one. The small C ABI now admits
-that exact implementation through a direction-specific requirements query and
-factory; no second codec construction path or private C++ record layout crosses
-the ABI. Its public completion matrix now covers required binary classes,
-deterministic and chunk-independent streams, stable terminal behavior, and
-transactional malformed-final-frame rejection. Empty and one-byte inputs also
-fix the zero-entry encoder view contract at zero bytes with neutral alignment
-one. A dedicated decoder fuzz target fixes serialized input, raw output,
-frame, packed-code staging, entropy views, LZW phrases, aggregate memory, and
-process-call limits before accepting arbitrary bytes.
-The CLI reaches this composed profile only through the public C ABI. It fixes
-one-MiB raw frames and 65,536-symbol entropy blocks, then obtains all three
-workspace extents and alignment from the requirements query. The benchmark
-uses that same public profile and reports the queried direction-specific
-regions after verifying a complete round trip. Schema 5 appends the resulting
-CLI representation to the frozen schema-4 profile set.
-
-## Published composed-profile evidence
-
-The published LZ77 plus Blocked Huffman public-ABI completion matrix closes the
-local implementation loop by driving required binary data classes through
-queried workspaces and both stream directions. It repeats encoding for byte
-identity and compares
-multi-frame output across one-byte and mixed chunk schedules. This is a local
-readiness assertion, not a substitute for sanitizer campaigns or portability
-evidence on independent toolchains and architectures.
-
-The first independent-toolchain check builds the complete project with Clang's
-GNU-style driver and Ninja on Windows, then runs the same optimized suite used
-by the MSVC build. As a separate representation check, the MSVC and Clang
-command-line tools encode one common input through every public CLI profile;
-all twenty-eight schema-17 archives must compare byte for byte. This establishes
-compiler independence on one architecture, while cross-architecture evidence
-remains a separate gate.
-
-CI turns this check into an externally consumable protocol. Each reference job
-generates the same 8,193-byte binary fixture, validates a local round trip for
-all twenty-eight schema-17 profiles, and uploads the fixture, complete archives,
-and a JSON manifest containing the source revision. The external verifier first
-validates manifest bounds and hashes, then decodes foreign archives and
-independently re-encodes the fixture with the local CLI. Artifact hashes detect
-transfer mistakes but are not authentication.
-
-### Published LZD plus Blocked Huffman implementation evidence
-
-The LZD composition has a complete-frame validator and
-transactional decoder. Blocked Huffman first reconstructs the entire canonical
-eight-byte LZD token region into bounded caller-owned staging. The ordinary LZD
-validator then checks token extent, reference ordering, terminal form, phrase
-limits, and exact declared raw size before the decoder checks destination and
-iterative expansion-stack capacities or publishes raw bytes.
-
-Phrase workspace is derived from both serialized tokens and the declared raw
-frame size. A terminal one-byte frame stores no phrase record, while a
-right-present pair necessarily accounts for at least two raw bytes. Validation
-and decoding count their distinct caller-owned regions under checked aggregate
-limits. The public decoder retains this transactional boundary before exposing
-raw bytes through the streaming C ABI.
-
-The matching internal planner and encoder now complete the LZD parse and write
-the exact canonical token region before entropy planning. Blocked Huffman sees
-only that immutable byte span, so its blocks may split a token without changing
-dictionary parsing. The planner derives the generic header and final serialized
-extent from the chosen block representations; the encoder refuses a short final
-destination before publishing any frame byte. The streaming transform and
-public factory reuse this exact frame representation.
-
-The internal profile now gives the caller-owned third region a stable typed
-shape. Encoding exposes aligned LZD encoder records. Decoding exposes Blocked
-Huffman views followed by separately aligned LZD phrase records and iterative
-expansion references; both offsets and the complete extent are rederived before
-any span is returned. Primary raw/frame buffers and secondary token staging
-remain byte regions. The streaming adapter and C ABI construction path use
-these requirements without exposing the private layouts.
-
-The bounded incremental transforms now consume those exact profile regions.
-The encoder collects one raw frame and drains only its completed serialized
-representation. The decoder collects and validates one complete serialized
-frame, expands into private raw storage, and then drains it. Consequently a
-malformed later frame cannot partially publish that frame or retract earlier
-output. Chunking down to one byte does not alter the stream, nonterminal flush
-does not shorten a frame, and reset remains an unsupported cross-layer request.
-The public C factory now admits this profile through the common transform
-handle and three caller-owned regions. The requirements query exposes only byte
-extents and maximum alignment. Factory construction repeats profile admission
-and checked opaque partitioning before publishing a handle, so entropy views,
-LZD phrase records, and expansion references never become ABI types. CLI,
-benchmark, decoder fuzzing, completion, and interoperability were admitted
-independently against this same factory.
-
-The public-ABI completion matrix now fixes required binary data classes,
-determinism across one-byte and mixed chunking, stable repeated termination,
-and transactional final-frame rejection. Its 64-byte frame profile derives a
-256-byte maximum LZD token region and 32 phrase entries from the fixed pair
-grammar rather than borrowing another dictionary codec's bounds. The bounded
-decoder fuzz target, CLI, benchmark, and schema-6 entry cover the same profile.
-
-The bounded decoder fuzz boundary preallocates the complete combined working
-set: serialized frame, token staging, raw staging, entropy views, LZD phrase
-records, expansion references, and final output. Serialized input cannot alter
-those capacities. Byte-derived chunk schedules exercise partial I/O, while a
-fixed call ceiling converts any stalled state machine into a reproducible
-failure. This admits fuzzing without changing the public format or ABI.
-
-The CLI selector `lzd-blocked-huffman` is a fixed public-ABI adapter. It uses
-one-MiB raw frames, 64-KiB entropy blocks, the exact four-MiB LZD token bound,
-64 entropy blocks, 65,536 phrase entries, and the common 64-MiB aggregate
-policy. Workspace bytes and alignment come only from the public requirements
-query. The existing temporary-file protocol keeps malformed or trailing input
-from publishing a partial destination.
-
-The benchmark selects the identical fixed profile through the same public C
-ABI. It verifies a complete round trip before timing, measures encoding and
-decoding separately, and reports complete-stream ratio plus direction-specific
-primary, secondary, and aligned views extents. Peak workspace is the larger
-queried three-region sum; benchmark inputs and output buffers remain outside
-that metric.
-
-## LZMW plus tANS public profile
-
-### Profile workspace
+#### Profile workspace
 
 The internal LZMW plus tANS profile calculator connects the bounded streaming
 pair to caller-owned storage without exposing its layout as an ABI. Encoding

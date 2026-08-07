@@ -213,13 +213,8 @@ set(previous_architecture_section_offset -1)
 foreach(required_architecture_section IN ITEMS
         "## Buffered incremental reference encoder"
         "## Entropy codec foundations"
-        "## rANS composed profiles"
-        "## tANS foundation"
-        "## tANS composed profiles"
         "## C transform ABI"
-        "## Blocked Huffman, Adaptive Huffman, and Dynamic Range composed profiles"
-        "## Published composed-profile evidence"
-        "## LZMW plus tANS public profile")
+        "## Composed profile boundaries")
     string(FIND "${architecture_content}" "${required_architecture_section}"
         architecture_section_offset)
     if(architecture_section_offset EQUAL -1)
@@ -233,6 +228,58 @@ foreach(required_architecture_section IN ITEMS
     endif()
     set(previous_architecture_section_offset
         "${architecture_section_offset}")
+endforeach()
+
+set(expected_architecture_profiles
+    "LZ77 plus Blocked Huffman validation boundary"
+    "LZ77 plus Blocked Huffman publication evidence"
+    "LZ77 plus Adaptive Huffman validation boundary"
+    "LZ77 plus Dynamic Range staged boundary"
+    "Specified LZ77 plus rANS boundary"
+    "Specified LZ77 plus tANS boundary"
+    "LZSS plus Blocked Huffman validation boundary"
+    "LZSS plus Adaptive Huffman specified boundary"
+    "LZSS plus Dynamic Range specified boundary"
+    "Specified LZSS plus rANS boundary"
+    "Specified LZSS plus tANS boundary"
+    "Published LZ78 plus Blocked Huffman frame boundary"
+    "Specified LZ78 plus Adaptive Huffman boundary"
+    "LZ78 plus Dynamic Range specified boundary"
+    "Validated LZ78 plus rANS boundary"
+    "Specified LZ78 plus tANS boundary"
+    "Published LZW plus Blocked Huffman boundary"
+    "Published LZW plus Adaptive Huffman boundary"
+    "Specified LZW plus Dynamic Range boundary"
+    "Specified LZW plus rANS boundary"
+    "Specified LZW plus tANS boundary"
+    "Published LZD plus Blocked Huffman boundary"
+    "Published LZD plus Blocked Huffman implementation evidence"
+    "Published LZD plus Adaptive Huffman boundary"
+    "Specified LZD plus Dynamic Range boundary"
+    "LZD plus rANS boundary"
+    "LZD plus tANS boundary"
+    "Published LZMW plus Blocked Huffman boundary"
+    "Published LZMW plus Adaptive Huffman boundary"
+    "Published LZMW plus Dynamic Range boundary"
+    "LZMW plus rANS boundary"
+    "LZMW plus tANS boundary"
+    "LZMW plus tANS public profile")
+set(previous_architecture_profile_offset -1)
+foreach(architecture_profile IN LISTS expected_architecture_profiles)
+    set(architecture_profile_heading "### ${architecture_profile}")
+    string(FIND "${architecture_content}" "${architecture_profile_heading}"
+        architecture_profile_offset)
+    if(architecture_profile_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing architecture profile: ${architecture_profile_heading}")
+    endif()
+    if(architecture_profile_offset LESS_EQUAL previous_architecture_profile_offset)
+        message(FATAL_ERROR
+            "Architecture profiles are out of matrix order at: "
+            "${architecture_profile_heading}")
+    endif()
+    set(previous_architecture_profile_offset
+        "${architecture_profile_offset}")
 endforeach()
 
 set(format_document "${source_dir}/docs/format.md")
