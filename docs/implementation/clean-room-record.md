@@ -15022,3 +15022,33 @@ discarded and the reviewed seed retained.
   count, trailing, and policy failures retain stable state and output; MSVC
   and ClangCL builds are warning-free; focused and full regression tests pass
   in both configurations.
+
+## CR-0667: 2026-08-08 - Direct contextual range-to-LZSS bridge
+
+- Authoring method: connected marc's private request-driven entropy decoder to
+  its independently specified typed LZSS and field-context boundaries.
+- References used: AGENTS.md sections 11.2, 12, 14, and 15; DD-637; IR-0415;
+  TVG-0517; marc's local context-model and entropy-backend contracts, typed
+  token validator, checked arithmetic, decoder limits, and atomic staging
+  policy.
+- Known implementations intentionally not consulted: external compression
+  pipelines, context adapters, token decoders, source code, corpora, encoded
+  streams, and test suites.
+- Independent decisions: share only the context-state transition helper;
+  derive each entropy request immediately from accepted state; validate a
+  complete write-free pass; reject payload/output overlap; and repeat the
+  deterministic finite decode only after all pre-write gates succeed.
+- Generated-code task description: implement a private allocation-free bridge
+  from contextual Dynamic Range payload bytes to typed LZSS token staging,
+  preserving exact model/event semantics and atomic failure, with positive,
+  malformed, count, limit, sentinel, and alias tests.
+- Similarity review: all state transitions, entropy requests, token equations,
+  and arithmetic come from marc's local documents and prior private boundaries.
+  The bridge API, validation order, two-pass materialization, error categories,
+  and tests were designed locally without comparing external implementation
+  expression or control flow.
+- Local validation: the one-Literal vector decodes exactly; the bypass vector
+  reaches typed-reference rejection at a stable token index; entropy, count,
+  size, policy, capacity, and alias failures preserve token storage; MSVC and
+  ClangCL builds are warning-free; focused and full regression tests pass in
+  both configurations.

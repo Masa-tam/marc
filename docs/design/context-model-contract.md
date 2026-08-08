@@ -116,3 +116,11 @@ first validates the complete typed-token frame and calculates exact operation
 and decision counts. Only sufficient, bounded, non-aliasing operation staging
 permits deterministic materialization; an invalid token, count mismatch,
 policy failure, or short output leaves the entire operation span unchanged.
+
+The private contextual Dynamic Range decoder may consume this contract
+directly rather than allocating a modeled-operation array. It MUST derive each
+request from the same prior-token state, validate the reconstructed token
+before updating that state, and preserve the exact event and decision counts.
+The reference bridge performs a write-free complete pass before a second
+materialization pass, so entropy, token, count, raw-size, capacity, limit, and
+alias failures publish no partial typed-token sequence.

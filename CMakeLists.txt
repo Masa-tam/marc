@@ -40,6 +40,7 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/context/lzss_contextual_range_decoder.cpp
     src/context/lzss_field_context.cpp
     src/entropy/contextual_dynamic_range_decoder.cpp
     src/dictionary/lz77_decoder.cpp
@@ -1239,6 +1240,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_streaming_encoder_tests.cpp
         tests/lz77_validator_tests.cpp
         tests/contextual_dynamic_range_decoder_tests.cpp
+        tests/lzss_contextual_range_decoder_tests.cpp
         tests/lzss_field_context_tests.cpp
         tests/lzss_format_tests.cpp
         tests/lzss_decoder_tests.cpp

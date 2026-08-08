@@ -6633,3 +6633,18 @@ zero, expected context/alphabet, bypass widths, decision budget, truncation,
 trailing bytes, and local table/model limits. Require unchanged value outputs,
 stable first errors, exact accepted counters/offsets, begin-before-use, and one
 consistent terminal result.
+
+### TVG-0517
+
+Feed TVG-0516's published one-Literal payload `00 20 7F FF BF 00` through the
+direct bridge with one token, two events, two decisions, and one raw byte.
+Require a single `Literal('A')`, exact entropy counters and payload
+consumption, and no write beyond the declared token extent.
+
+Feed the bypass-bearing payload `00 A4 3C 3C 38 00` through the same state
+machine. It reconstructs a first-token Match of length 10 and distance 2;
+require typed-token validation to reject that reference before accepting or
+publishing a token. Independently mutate the entropy interval, event,
+decision, raw, and descriptor counts; exercise invalid parameters, token
+storage, aggregate-output, short-output, and payload/token-alias gates. Snapshot
+all caller token storage and require every pre-write failure to preserve it.

@@ -3652,3 +3652,12 @@ backend contract, the repository's independently specified variant-1 integer
 range arithmetic, the fixed `LzssFieldContext` schema, checked local limits,
 and caller-owned value policy. No external range coder, contextual model,
 decoder state machine, source code, corpus, or test suite was consulted.
+
+### IR-0415
+
+The direct contextual range-to-LZSS bridge uses only DD-637, the local
+context-model and entropy-backend contracts, the private request-driven
+decoder, typed LZSS validator, shared field-context state, checked arithmetic,
+decoder limits, and caller-owned span policy. No external compression
+pipeline, token decoder, context adapter, source code, corpus, encoded stream,
+or test suite was consulted.

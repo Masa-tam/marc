@@ -3968,3 +3968,24 @@ model. Failures are sticky and do not publish the requested value. Finalization
 requires exact event and decision counts, complete payload consumption, and
 valid frequencies in all models before the private values may advance to
 context inversion.
+
+### Direct contextual range-to-LZSS bridge
+
+The private Format 2 decode path connects the contextual Dynamic Range backend
+to typed LZSS token staging without first materializing a
+`ModeledOperation[]`. The bridge owns the same small `LzssFieldContext` state
+machine used by the independently testable operation-level transform. For
+each token it derives the required context, alphabet, and bypass width from
+previously accepted tokens, requests only that shape from the entropy backend,
+reconstructs one local typed value, and validates it against the current raw
+history before advancing state.
+
+Decoding is transactional. A first pass checks parameters, declared counts,
+local limits, every entropy request, every reconstructed token, exact raw
+extent, entropy final state, and payload exhaustion without writing token
+storage. After output capacity and payload/output non-aliasing are established,
+an identical second pass materializes only the declared token extent. The
+operation-level forward and inverse transforms remain as specification and
+test boundaries; omitting their native in-memory representation from this
+runtime path does not alter the canonical modeled-event sequence or Format 2
+bytes.

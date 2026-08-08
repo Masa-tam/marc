@@ -1,4 +1,5 @@
 #include "context/lzss_field_context.hpp"
+#include "context/lzss_field_context_state.hpp"
 
 #include "core/checked_math.hpp"
 
@@ -11,28 +12,6 @@ namespace {
 using dictionary::internal::LzssTypedToken;
 using dictionary::internal::LzssTypedTokenError;
 using dictionary::internal::LzssTypedTokenKind;
-
-enum class PreviousToken : std::uint8_t {
-    start = 0,
-    literal = 1,
-    match = 2,
-};
-
-struct ModelState {
-    PreviousToken previous{PreviousToken::start};
-    bool has_literal{};
-    std::uint8_t literal{};
-};
-
-[[nodiscard]] std::uint16_t state_index(const ModelState& state) noexcept {
-    return static_cast<std::uint16_t>(state.previous);
-}
-
-[[nodiscard]] std::uint16_t literal_context(
-    const ModelState& state) noexcept {
-    if (!state.has_literal) return 3;
-    return static_cast<std::uint16_t>(4 + (state.literal >> 4));
-}
 
 [[nodiscard]] bool add_decisions(const std::uint32_t increment,
                                  LzssFieldContextResult& result) noexcept {
@@ -117,17 +96,17 @@ struct ModelState {
 
 [[nodiscard]] bool read_token(
     const std::span<const ModeledOperation> operations,
-    const ModelState& state,
+    const LzssFieldContextState& state,
     LzssTypedToken& token,
     LzssFieldContextResult& result) noexcept {
     std::uint32_t kind{};
-    if (!read_symbol(operations, state_index(state), 2, kind, result)) {
+    if (!read_symbol(operations, state.token_context(), 2, kind, result)) {
         return false;
     }
     if (kind == 0) {
         std::uint32_t literal{};
         if (!read_symbol(
-                operations, literal_context(state), 256, literal, result)) {
+                operations, state.literal_context(), 256, literal, result)) {
             return false;
         }
         token = {LzssTypedTokenKind::literal,
@@ -137,7 +116,7 @@ struct ModelState {
 
     std::uint32_t length_class{};
     if (!read_symbol(operations,
-                     static_cast<std::uint16_t>(20 + state_index(state)), 8,
+                     state.length_context(), 8,
                      length_class, result)) {
         return false;
     }
@@ -153,7 +132,8 @@ struct ModelState {
 
     std::uint32_t distance_class{};
     if (!read_symbol(
-            operations, static_cast<std::uint16_t>(23 + length_class), 17,
+            operations, LzssFieldContextState::distance_context(length_class),
+            17,
             distance_class, result)) {
         return false;
     }
@@ -167,16 +147,6 @@ struct ModelState {
         (UINT32_C(1) << distance_class) + distance_extra;
     token = {LzssTypedTokenKind::match, 0, distance, length};
     return true;
-}
-
-void update_state(const LzssTypedToken& token, ModelState& state) noexcept {
-    if (token.kind == LzssTypedTokenKind::literal) {
-        state.previous = PreviousToken::literal;
-        state.has_literal = true;
-        state.literal = token.literal;
-    } else {
-        state.previous = PreviousToken::match;
-    }
 }
 
 [[nodiscard]] std::uint8_t value_class(
@@ -309,7 +279,7 @@ void update_state(const LzssTypedToken& token, ModelState& state) noexcept {
         return result;
     }
 
-    ModelState state{};
+    LzssFieldContextState state{};
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
@@ -334,7 +304,7 @@ void update_state(const LzssTypedToken& token, ModelState& state) noexcept {
         }
         result.raw_size = next_raw_size;
         ++result.token_count;
-        update_state(token, state);
+        state.accept(token);
     }
     result.token_index = result.token_count;
     result.operation_index = result.operation_count;
@@ -427,7 +397,7 @@ enum class OverlapCheck : std::uint8_t {
 void materialize_operations(
     const std::span<const LzssTypedToken> tokens,
     const std::span<ModeledOperation> operations) noexcept {
-    ModelState state{};
+    LzssFieldContextState state{};
     std::size_t operation_index{};
     const auto write_symbol = [&](const std::uint16_t context,
                                   const std::uint16_t alphabet,
@@ -442,30 +412,29 @@ void materialize_operations(
     };
     for (const auto& token : tokens) {
         if (token.kind == LzssTypedTokenKind::literal) {
-            write_symbol(state_index(state), 2, 0);
-            write_symbol(literal_context(state), 256, token.literal);
-            update_state(token, state);
+            write_symbol(state.token_context(), 2, 0);
+            write_symbol(state.literal_context(), 256, token.literal);
+            state.accept(token);
             continue;
         }
 
-        write_symbol(state_index(state), 2, 1);
+        write_symbol(state.token_context(), 2, 1);
         const auto length_value = token.length - 4;
         const auto length_class = value_class(length_value);
         const auto length_base = UINT32_C(1) << length_class;
-        write_symbol(static_cast<std::uint16_t>(20 + state_index(state)), 8,
-                     length_class);
+        write_symbol(state.length_context(), 8, length_class);
         if (length_class != 0) {
             write_bypass(length_class, length_value - length_base);
         }
 
         const auto distance_class = value_class(token.distance);
         const auto distance_base = UINT32_C(1) << distance_class;
-        write_symbol(static_cast<std::uint16_t>(23 + length_class), 17,
+        write_symbol(LzssFieldContextState::distance_context(length_class), 17,
                      distance_class);
         if (distance_class != 0) {
             write_bypass(distance_class, token.distance - distance_base);
         }
-        update_state(token, state);
+        state.accept(token);
     }
 }
 

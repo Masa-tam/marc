@@ -13200,3 +13200,18 @@ normalization, rescaling, and five-shift termination arithmetic. Count Symbol
 as one decision and bypass bits individually in LSB-first order. Preserve the
 caller value on failure, retain the first error, and finish only on exact event,
 decision, payload, and model agreement.
+
+## DD-637: Contextual range decoding feeds typed LZSS tokens directly
+
+- Date: 2026-08-08
+- Status: accepted
+
+Connect the private contextual Dynamic Range decoder directly to the
+`LzssFieldContext` state machine and typed LZSS validator. Derive every symbol
+context, alphabet, and bypass width from previously accepted tokens; do not
+let serialized values select model shape. Validate the complete frame in a
+first pass without writes, then require sufficient disjoint token staging and
+repeat the deterministic decode to materialize only the declared token extent.
+Keep the modeled-operation transforms as independent specification/test
+boundaries, but do not allocate their native representation on this runtime
+path. This adds no public API or stream-format change.
