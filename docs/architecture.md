@@ -3904,9 +3904,9 @@ length, overlap semantics, declared token count, exact raw extent, aggregate
 output, and local token-storage limits.
 
 The result retains the first failing token index and the validated raw prefix,
-but no raw byte is published. Typed reconstruction and context-model inversion
-remain later decoder stages and may consume a frame only after this validation
-boundary succeeds.
+but no raw byte is published. Typed reconstruction may consume a frame only
+after this validation boundary succeeds; context-model inversion independently
+reconstructs and validates these same typed values from modeled operations.
 
 ### Typed LZSS private reconstruction
 
@@ -3923,3 +3923,18 @@ the specified overlapping-reference semantics. Only the declared raw extent
 is written; additional staging capacity is untouched. Publication to a public
 downstream buffer remains the responsibility of a later complete Format 2
 decoder stage.
+
+### LZSS field-context inversion
+
+The private inverse context boundary consumes a complete caller-owned modeled-
+operation span. It derives every expected operation kind, context ID, alphabet,
+and bypass width from previously accepted typed-token state; input values
+cannot select another model. Reconstructed Match fields are passed through the
+typed LZSS validator before the next token can affect context state.
+
+Declared event, token, entropy-decision, and raw counts are checked both by
+conservative frame bounds and by the exact walk. Operation storage, frame
+output, and aggregate output are bounded before materialization. Only after the
+full walk succeeds does the inverse write the declared number of typed tokens
+to disjoint private staging. A malformed operation, short output span, or
+aliasing span therefore leaves every caller-owned token unchanged.

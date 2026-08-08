@@ -3628,3 +3628,11 @@ The typed LZSS reconstructor uses only DD-633, the local typed-token validator,
 marc's documented bytewise overlap semantics, checked arithmetic, and
 caller-owned span policy. No external LZSS decoder, reconstruction loop,
 aliasing helper, source code, corpus, or test suite was consulted.
+
+### IR-0412
+
+The `LzssFieldContext` inverse uses only DD-634, the local context-model
+contract, typed LZSS validator, checked arithmetic, decoder limits, and
+caller-owned span policy. No external context-model implementation, field
+coder, token materializer, alias helper, source code, corpus, or test suite was
+consulted.

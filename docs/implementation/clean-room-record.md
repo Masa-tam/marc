@@ -14939,3 +14939,30 @@ discarded and the reviewed seed retained.
   vectors reconstruct exactly; malformed, short-output, policy, and alias
   failures preserve output; MSVC and ClangCL builds are warning-free; focused
   and full regression tests pass in both configurations.
+
+## CR-0664: 2026-08-08 - LZSS field-context inverse
+
+- Authoring method: implemented the private inverse state machine directly
+  from the repository-owned context-model and typed-token contracts.
+- References used: AGENTS.md sections 11.2, 12, 14, and 15; DD-634; IR-0412;
+  TVG-0514; marc's `LzssFieldContext` field mapping, typed-token validator,
+  checked arithmetic, decoder limits, and frame-atomic staging policy.
+- Known implementations intentionally not consulted: external context models,
+  field coders, token transforms, compression source code, malformed corpora,
+  encoded streams, and test suites.
+- Independent decisions: derive every expected operation from already accepted
+  state; validate reconstructed tokens before updating that state; retain exact
+  failure indices and prefixes; and use complete validation followed by a
+  capacity/alias gate and failure-free token materialization.
+- Generated-code task description: implement bounded modeled-operation values,
+  exact LZSS field-context inversion, count and limit validation, atomic private
+  token materialization, and positive, stateful, malformed, limit, and alias
+  tests without exposing a public codec or serializing native records.
+- Similarity review: contexts and field equations come only from marc's local
+  specification. Value types, validation order, errors, two-pass materializer,
+  and tests were designed locally without comparing external expression or
+  control flow.
+- Local validation: the independent one-Literal and stateful four-token vectors
+  invert exactly; malformed operations and all pre-write gates fail atomically;
+  MSVC and ClangCL builds are warning-free; focused and full regression tests
+  pass in both configurations.

@@ -22,6 +22,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private typed LZSS frame reconstructor. It validates the complete
   token frame, output capacity, and non-aliasing storage before performing
   bytewise overlap copies into private raw staging.
+- Added the private `LzssFieldContext` inverse validator and materializer. It
+  reconstructs typed LZSS values only after exact operation, token, decision,
+  raw-size, context, alphabet, bypass-width, limit, and alias checks succeed.
 
 ## 0.1.3 - 2026-08-08
 

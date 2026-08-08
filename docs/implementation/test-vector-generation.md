@@ -6577,3 +6577,20 @@ output span deliberately overlapping the token array. Prefill ordinary output
 with `CC` and snapshot aliased token values. Require every gate failure before
 the first write, preservation of all sentinels/token values, and stable
 validation details for malformed input.
+
+### TVG-0514
+
+Map one fresh-frame `Literal('A')` to symbol operations `(context 0, alphabet
+2, value 0)` and `(context 3, alphabet 256, value 65)`. For state tracking,
+map `Literal('A'), Literal('B'), Match(2,10), Literal('C')`; require the second
+and final Literal to use remembered-literal high-nibble context 8, the Match to
+use previous-Literal contexts 1 and 21, length class 2 with two bypass bits,
+distance context 25, and distance class 1 with one bypass bit. Require eleven
+events, twelve decisions, four tokens, and thirteen reconstructed raw bytes.
+
+Independently mutate operation kind, context, alphabet, symbol range, unused
+fields, bypass width/value, reconstructed length/distance, truncation, trailing
+operations, and every declared count. Exercise operation-storage, frame, and
+aggregate-output limits. For short or deliberately aliased output spans,
+snapshot all typed-token values and require rejection before the first write;
+on success require only the declared token extent to change.

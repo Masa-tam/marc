@@ -13158,3 +13158,17 @@ After those gates, perform Literal stores and Match copies byte by byte so
 overlap semantics are exact and no input-dependent failure remains. Write only
 the declared raw extent and leave excess staging capacity untouched. Public
 downstream publication remains a later complete-decoder transaction.
+
+## DD-634: LZSS field-context inversion validates before materialization
+
+- Date: 2026-08-08
+- Status: accepted
+
+Invert a complete modeled-operation frame in two passes. The validation pass
+derives operation shape exclusively from prior accepted token state, checks
+exact declared event, token, decision, and raw counts, validates reconstructed
+typed tokens incrementally, and enforces local and aggregate limits without
+writing caller output. Only after sufficient disjoint token staging is proven
+does a failure-free materialization pass write the declared token extent.
+Preserve stable failing operation/token indices and accepted prefixes for
+diagnostics; do not expose this private value boundary through the C ABI.

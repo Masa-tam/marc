@@ -103,3 +103,10 @@ Reject an unknown model ID or variant, an unexpected context, a mismatched
 alphabet, an out-of-range class, excess or missing bypass bits, checked-
 arithmetic failure, an operation count mismatch, or a reconstructed token that
 violates the typed-token protocol. Failure is frame atomic.
+
+The reference decoder implements this boundary as a two-pass private inverse.
+The first pass validates the complete modeled-operation frame and reconstructs
+each token only as a local value; the second pass materializes caller-owned
+typed-token staging after capacity and non-aliasing checks. Validation reports
+the first failing operation and token indices plus the accepted decision and
+raw prefixes, while publishing no partial token sequence.
