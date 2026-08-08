@@ -6804,3 +6804,18 @@ Format 2 header extents, then independently change its sequence, remove its
 last payload byte, and append trailing input. Each decoder must report a sticky
 malformed-stream error, publish exactly the first 192 raw bytes, and leave the
 final caller byte unchanged.
+
+### TVG-0527
+
+Encode canonical binary `41 42 41 42 58` through the public Format 2 C
+lifecycle. For every strict prefix, submit the bytes to the public incremental
+decoder and, after a valid 112-byte header, to the private complete-frame
+decoder. Require malformed status, zero public raw publication, unchanged
+private raw staging whenever invoked, and identical status plus byte/bit
+position on a repeated public call.
+
+Independently replace frame-header bytes 16 through 47 with `FF` and set the
+last byte of the 16-byte contextual Dynamic Range descriptor to one. Both
+mutations must fail atomically through both decoder-visible paths. Compile the
+bounded harness as an ordinary warning-clean object under MSVC and ClangCL;
+do not record an FZ campaign until a sanitizer-backed run is actually made.

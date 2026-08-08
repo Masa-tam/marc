@@ -5788,3 +5788,9 @@ payload ceiling is `12F + 5 = 773` bytes and the complete frame ceiling is
 chunking must produce identical streams. A malformed, truncated, or extended
 fourth frame may not publish its final raw byte after three valid 64-byte
 frames; the resulting error and position remain sticky.
+
+The fixed-memory dual-decoder fuzz boundary also changes no representation.
+Arbitrary input reaches the complete-frame decoder only after this section's
+112-byte header is accepted; the public decoder receives every bounded case.
+All serialized, typed-token, raw, and publication extents are fixed before
+parsing, and malformed input is an expected terminal result.

@@ -1227,3 +1227,14 @@ results. A corrupt sequence, truncated payload, or trailing byte at the fourth
 frame publishes only the three preceding frames. This is completion evidence,
 not admission to the baseline matrix, CLI, fuzz, benchmark, or interoperability
 bundle.
+
+### BR-0035
+
+The experimental Format 2 decoder fuzz boundary now caps input, every byte and
+typed workspace, raw publication, and process calls before parsing arbitrary
+data. It drives the private complete-frame decoder after header acceptance and
+the public C decoder for every case. Compile-smoke succeeds under MSVC and
+ClangCL, while ordinary regressions prove atomic rejection of all canonical
+truncations, saturated frame extents, and invalid descriptor reserved data.
+No sanitizer campaign, CLI, benchmark, or interoperability readiness is
+claimed by this milestone.

@@ -15316,3 +15316,27 @@ discarded and the reviewed seed retained.
   vocabulary and Format 2 fields without comparing external test expression.
 - Local validation: all three focused completion cases pass under MSVC and
   ClangCL; all 2,477 regression tests pass in both configurations.
+
+## CR-0677: 2026-08-09 - Experimental Format 2 decoder fuzz boundary
+
+- Authoring method: applied marc's established fixed-memory dual-decoder fuzz
+  policy to its independently specified Format 2 boundaries.
+- References used: AGENTS.md sections 12, 14.4, and 15; DD-647; IR-0425;
+  TVG-0527; marc's local Format 2 parser, complete-frame decoder, public C
+  lifecycle, workspace query, process invariants, and finite-call policy.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  decoders, malformed corpora, crash reports, source code, encoded streams,
+  and test suites.
+- Independent decisions: cap input at 8 KiB, raw output at 4 KiB, frame at
+  1 KiB, payload at 12,293 bytes, and calls at input plus output plus 32;
+  preallocate every typed and byte region; and keep sanitizer execution as
+  separately recorded evidence.
+- Generated-code task description: add a dual private-frame/public-C fuzz
+  entry, ordinary compile-smoke target, and atomic regressions for every
+  canonical truncation, saturated frame extents, and descriptor reserved data.
+- Similarity review: constants, array layout, chunk schedule, abort gates,
+  mutations, and assertions were derived from marc's local contracts and
+  existing repository policy without comparing external harness expression.
+- Local validation: the harness compiles warning-clean and all three focused
+  regressions pass under MSVC and ClangCL; all 2,480 regression tests pass in
+  both configurations. No sanitizer campaign was executed or claimed.

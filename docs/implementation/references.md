@@ -3738,3 +3738,11 @@ Format 2 specification, the already published C lifecycle, established marc
 completion-test data classes and status invariants, and independently seeded
 binary generators. No external compression implementation, completion suite,
 corpus, encoded stream, source code, or malformed-input catalog was consulted.
+
+### IR-0425
+
+The experimental Format 2 fuzz boundary uses only DD-647, the repository's
+private complete-frame decoder, public C lifecycle, fixed profile calculator
+bounds, core process invariants, and established finite-call fuzz policy. No
+external fuzzer harness, compression decoder, malformed corpus, source code,
+crash catalog, encoded stream, or test suite was consulted.

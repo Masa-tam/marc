@@ -1183,3 +1183,12 @@ one-byte and mixed chunking, sticky terminal states, and frame-atomic rejection
 of a corrupt, truncated, or extended fourth frame. It remains outside the
 baseline 42-profile matrix; fuzz, CLI, benchmark, and interoperability
 admission are still separate later steps.
+
+### CP-0041
+
+The experimental `lzss-contextual-dynamic-range` profile now has a bounded
+dual-decoder fuzz entry and permanent regressions for every canonical
+truncation, saturated Format 2 frame extents, and nonzero range-descriptor
+reserved data. Both local compilers build the harness warning-clean. This is
+fuzz-boundary evidence, not a sanitizer campaign, CLI selector, benchmark, or
+interoperability admission.

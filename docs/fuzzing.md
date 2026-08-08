@@ -52,6 +52,14 @@ policy with LZSS's tighter variable-token bound: at most 8 KiB supplied input,
 storage are fixed arrays counted in one aggregate policy. Byte-derived partial
 I/O and a fixed call ceiling make stalls reproducible without accepting
 input-controlled workspace sizes.
+In addition to the forty-two baseline targets, the experimental Format 2 LZSS
+contextual Dynamic Range target bounds supplied input at 8 KiB, published raw
+output at 4 KiB, one raw frame at 1 KiB, contextual payload at 12,293 bytes,
+and native typed-token views at 1,024 fixed records. It exercises the private
+complete-frame decoder only after the 112-byte header is accepted and always
+exercises the public C decoder with byte-derived chunks and a finite call
+budget. Ordinary builds compile this target warning-clean; no sanitizer
+campaign is claimed until one is separately executed and recorded.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,

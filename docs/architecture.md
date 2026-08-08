@@ -4175,3 +4175,17 @@ Decode publication remains one complete raw frame at a time. A malformed,
 truncated, or extended final frame therefore cannot expose any byte from that
 frame, even when earlier frames were already drained. Successful and failed
 terminal states are sticky, and chunk schedules cannot alter encoded bytes.
+
+### Format 2 fuzz boundary
+
+The experimental fuzz entry crosses two decoder-visible boundaries: a private
+complete frame after successful stream-header validation and the public C
+streaming transform for every case. It cannot allocate an input-selected
+workspace. Input, encoded frame, typed views, private raw frame, published raw
+output, and process-call count all have independent compile-time or constant
+ceilings.
+
+Malformed status is normal fuzz completion. The harness aborts only when a
+decoder violates consumption/production bounds, progress semantics, queried
+workspace guarantees, final-input behavior, or its finite call budget. A
+sanitizer campaign remains separate evidence from target construction.

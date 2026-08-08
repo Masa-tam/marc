@@ -13355,3 +13355,25 @@ the fourth frame must leave its one raw byte unpublished after the first three
 complete 64-byte frames have been committed. This evidence advances public
 completion only; it does not admit the experiment to CLI, fuzz, benchmark, or
 interoperability inventories.
+
+## DD-647: Format 2 fuzzing is fixed-memory and dual-path
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add one experimental decoder fuzz entry that truncates every supplied case to
+8,192 bytes. After a valid Format 2 header, exercise the complete-frame private
+decoder with fixed storage. Independently exercise the public C streaming
+decoder for every case with input-derived chunks, at most 4,096 published raw
+bytes, a 1,024-byte raw frame, a `12F + 5 = 12,293` byte payload ceiling, and
+compile-time arrays for serialized frame, typed views, raw staging, and output.
+Limit process calls to bounded input plus bounded output plus 32.
+
+Abort only for API-accounting, queried-workspace, construction, progress, final
+input, or call-budget invariant violations; malformed streams are successful
+iterations. Retain ordinary regressions for every strict prefix of canonical
+`ABABX`, saturated Format 2 frame extents, and nonzero range-descriptor
+reserved data. Require public frame atomicity and sticky errors; require the
+private complete-frame path to preserve raw staging whenever it is applicable.
+This adds no format, CLI, benchmark, interoperability entry, or sanitizer
+campaign claim.
