@@ -14830,3 +14830,31 @@ discarded and the reviewed seed retained.
   The reported 2026-07-28 sequence now begins with LZD plus Dynamic Range fuzz
   hardening before the later LZ77 plus rANS reservation. Documentation-layout
   checks passed under both MSVC and ClangCL before this record was appended.
+
+## CR-0660: 2026-08-08 - LZSS typed-context format reservation
+
+- Authoring method: translated the user-proposed typed dictionary/context/
+  entropy separation into four bounded local contracts before implementation.
+- References used: AGENTS.md section 11.2, DD-627 through DD-630, IR-0405
+  through IR-0408, marc's local LZSS variant-1 semantics, Dynamic Range
+  arithmetic, frame-atomic decoder policy, and explicit serialization helpers.
+- Known implementations intentionally not consulted: external typed-token
+  compressors, context mixers, structured entropy interfaces, contextual range
+  coders, format layouts, source code, corpora, and test suites.
+- Independent decisions: use LZSS as the first experiment; keep native token
+  values out of the ABI and wire; condition fixed field contexts only on prior
+  token state; isolate backend planning from context selection; reuse local
+  range arithmetic with independent models; and reserve format 2.0 rather than
+  altering any published version-1 representation.
+- Generated-code task description: specify the typed-token protocol,
+  context-model contract, entropy-backend contract, exact stream/frame layout,
+  one-Literal vector, bounds, decoder admission order, navigation, and
+  provenance without implementing or publishing a profile.
+- Similarity review: the vocabulary, context IDs, class mapping, interface
+  contracts, format fields, and vector were derived from the user's idea and
+  repository-local specifications. No external expression, control flow,
+  descriptor, or byte layout was compared.
+- Local validation: the independent range calculation reproduced the existing
+  variant-1 `A` payload before producing the contextual payload. Documentation
+  structure, links, ledgers, and both compiler configurations are checked after
+  this record is added.

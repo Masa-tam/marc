@@ -15,6 +15,17 @@ navigate chronological development records.
 - [Architecture](architecture.md): component boundaries, streaming contracts,
   limits, and composition.
 
+## Experimental design
+
+- [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
+  dictionary-to-context value boundary.
+- [Context-model contract](design/context-model-contract.md): invertible field
+  separation and context selection.
+- [Entropy-backend contract](design/entropy-backend-contract.md): bounded
+  planning, coding, and backend substitution.
+- [Experimental format 2.0](format.md#experimental-typed-token-format-20):
+  reserved decoder-visible representation and hand-checkable vector.
+
 ## Validation and project operation
 
 - [Benchmarks](benchmarks.md): measurement contract and benchmark usage.

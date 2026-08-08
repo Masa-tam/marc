@@ -13062,3 +13062,59 @@ That release check completed at revision
 24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 bundle verified locally and on Windows/MSVC. Every pass decoded and
 byte-identically re-encoded all 42 archives.
+
+## DD-627: LZSS is the first typed-token experiment
+
+- Date: 2026-08-08
+- Status: accepted
+
+Develop the optional typed-event architecture first with LZSS. Keep all
+format-version-1 profiles unchanged and assign dictionary variant 2 to the new
+value boundary. Retain LZSS variant 1's greedy longest match, nearest-distance
+tie break, Literal and Match semantics, and frame reset, while narrowing the
+experimental parameter range to minimum length 5, maximum length 258, and
+window 65,536. Typed events are internal values, never native serialization or
+public C structs. Define a canonical diagnostic transcript separately from the
+actual entropy input.
+
+## DD-628: LzssFieldContext variant 1 is invertible from token history
+
+- Date: 2026-08-08
+- Status: accepted
+
+Place an explicit context-model state machine between typed LZSS tokens and
+entropy arithmetic. Context selection may depend only on already accepted
+token state: previous token kind, the high nibble of the most recent Literal,
+and the current Match length class. Split token kind, literal value, length
+class, and distance class into fixed context IDs and encode numeric remainders
+as LSB-first bypass bits. Reset all context state at the outer frame. Record
+token, modeled-event, and entropy-decision counts independently and reject any
+mismatch before raw publication.
+
+## DD-629: Entropy backends consume bounded modeled-event frames
+
+- Date: 2026-08-08
+- Status: accepted
+
+Make entropy substitution independent of the dictionary and context layers.
+The encoder first creates one bounded immutable modeled-event frame, performs a
+write-free exact plan, and then encodes that plan atomically. The decoder is
+driven by the context model's expected operation kind, context ID, alphabet, or
+bypass width; serialized input cannot select allocation or a different model.
+The first backend is Dynamic Range variant 2, reusing variant-1 arithmetic with
+31 independent adaptive context tables and fixed equiprobable bypass bits.
+Every later backend with different bytes receives its own entropy variant.
+
+## DD-630: Typed context streams use isolated format version 2.0
+
+- Date: 2026-08-08
+- Status: accepted
+
+Reserve profile `lzss-field-context-dynamic-range` under format 2.0,
+dictionary ID/variant 2/2, context ID/variant 1/1, and entropy ID/variant 3/2.
+Retain the 64-byte stream-prefix field positions but require feature bit 0,
+sixteen-byte dictionary and entropy parameters, and a sixteen-byte context
+extension. Use a new 64-byte `MRF2` frame header carrying raw, token, event,
+decision, descriptor, and payload extents. Validate and reconstruct the entire
+frame in bounded private staging before publication. This reservation adds no
+public factory, CLI selector, or interoperability entry.

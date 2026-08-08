@@ -214,7 +214,8 @@ foreach(required_architecture_section IN ITEMS
         "## Buffered incremental reference encoder"
         "## Entropy codec foundations"
         "## C transform ABI"
-        "## Composed profile boundaries")
+        "## Composed profile boundaries"
+        "## Experimental typed-token context pipeline")
     string(FIND "${architecture_content}" "${required_architecture_section}"
         architecture_section_offset)
     if(architecture_section_offset EQUAL -1)
@@ -286,16 +287,17 @@ set(format_document "${source_dir}/docs/format.md")
 file(READ "${format_document}" format_content)
 file(STRINGS "${format_document}" format_top_sections REGEX "^## ")
 list(LENGTH format_top_sections format_top_section_count)
-if(NOT format_top_section_count EQUAL 3)
+if(NOT format_top_section_count EQUAL 4)
     message(FATAL_ERROR
-        "Stream format must have exactly three top-level sections; found "
+        "Stream format must have exactly four top-level sections; found "
         "${format_top_section_count}")
 endif()
 set(previous_format_section_offset -1)
 foreach(required_format_section IN ITEMS
         "## Stream framing and shared records"
         "## Dictionary representations and common vectors"
-        "## Entropy representations and composed profiles")
+        "## Entropy representations and composed profiles"
+        "## Experimental typed-token format 2.0")
     string(FIND "${format_content}" "${required_format_section}"
         format_section_offset)
     if(format_section_offset EQUAL -1)
@@ -308,6 +310,31 @@ foreach(required_format_section IN ITEMS
             "${required_format_section}")
     endif()
     set(previous_format_section_offset "${format_section_offset}")
+endforeach()
+
+foreach(experimental_design IN ITEMS
+        "lzss-typed-token-protocol.md"
+        "context-model-contract.md"
+        "entropy-backend-contract.md")
+    set(experimental_design_path
+        "${source_dir}/docs/design/${experimental_design}")
+    if(NOT EXISTS "${experimental_design_path}")
+        message(FATAL_ERROR
+            "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+foreach(required_typed_format_term IN ITEMS
+        "dictionary algorithm ID 2, dictionary variant 2"
+        "context-model algorithm ID 1, context variant 1"
+        "entropy algorithm ID 3, entropy variant 2"
+        "4D 52 46 32 40 00 00 00"
+        "00 20 7F FF BF 00")
+    string(FIND "${format_content}" "${required_typed_format_term}"
+        typed_format_term_offset)
+    if(typed_format_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete typed format reservation: ${required_typed_format_term}")
+    endif()
 endforeach()
 
 set(format_entropy_names

@@ -5,6 +5,13 @@ format versions, and C ABI versions are independent namespaces.
 
 ## Unreleased
 
+### Added
+
+- Reserved the experimental format-2 LZSS typed-token pipeline, including
+  separate token, context-model, entropy-backend, and decoder-visible format
+  contracts plus an independently checked one-Literal vector. Existing
+  format-version-1 profiles and public APIs are unchanged.
+
 ## 0.1.3 - 2026-08-08
 
 ### Added

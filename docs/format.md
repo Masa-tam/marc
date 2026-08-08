@@ -5593,3 +5593,145 @@ Interoperability schema 31 emits this unchanged profile as `lzmw-tans` after
 the frozen forty-one-entry schema-30 order. Manifest version and codec-set
 selection, archive hashes, verification output, and compatibility derivation
 are external test metadata and do not change the stream representation.
+
+## Experimental typed-token format 2.0
+
+Format 2.0 is reserved for the `0.2.x` typed-token experiment. It does not
+reinterpret any version-1 byte. The first profile is named
+`lzss-field-context-dynamic-range` and selects:
+
+- dictionary algorithm ID 2, dictionary variant 2;
+- context-model algorithm ID 1, context variant 1;
+- entropy algorithm ID 3, entropy variant 2.
+
+The internal value protocols are specified in
+[LZSS typed-token protocol](design/lzss-typed-token-protocol.md),
+[context-model contract](design/context-model-contract.md), and
+[entropy-backend contract](design/entropy-backend-contract.md). This section is
+the normative decoder-visible representation.
+
+### Version 2.0 stream header
+
+Version 2.0 retains the 64-byte stream-prefix field positions from version 1.0
+with these exact rules:
+
+| Field | Version 2.0 rule |
+|---|---|
+| major/minor | `2` / `0` |
+| fixed prefix size | `64` |
+| feature flags | bit 0 `TypedContext`; all other bits zero |
+| dictionary algorithm/variant | `2` / `2` |
+| entropy algorithm/variant | `3` / `2` |
+| frame size | uncompressed bytes; nonzero |
+| entropy block size | zero |
+| dictionary parameter bytes | `16` |
+| entropy parameter bytes | `16` |
+| hash descriptor bytes | zero |
+| original size | required known byte count |
+| header extension bytes | `16` |
+| reserved bytes | all zero |
+
+The parameter and extension regions follow the ordinary prefix order. LZSS
+dictionary variant 2 uses the same 16-byte field layout as variant 1 but
+requires minimum match length 5, maximum match length at most 258, and window
+size at most 65,536.
+
+Dynamic Range variant 2 has this 16-byte entropy parameter region:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum model total | `32,768` |
+| 4 | 2 | context count | `31` |
+| 6 | 2 | flags | zero |
+| 8 | 8 | reserved | zero |
+
+The 16-byte header extension identifies the context transform:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 2 | context-model algorithm ID | `1`, `LzssFieldContext` |
+| 2 | 2 | context-model variant ID | `1` |
+| 4 | 4 | flags | zero |
+| 8 | 8 | reserved | zero |
+
+Unknown feature bits, IDs, variants, nonzero reserved fields, contradictory
+sizes, or parameters outside local limits are rejected before frame allocation.
+
+### Version 2.0 frame header
+
+Every nonempty frame begins with this fixed 64-byte header:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | frame magic | ASCII `MRF2`, bytes `4D 52 46 32` |
+| 4 | 2 | fixed frame-header size | `64` |
+| 6 | 2 | frame flags | zero |
+| 8 | 8 | frame sequence | zero-based and contiguous |
+| 16 | 4 | uncompressed size | deterministic frame partition |
+| 20 | 4 | token count | `1..uncompressed_size` |
+| 24 | 4 | modeled event count | at most `2 * uncompressed_size` |
+| 28 | 4 | entropy decision count | at most `6 * uncompressed_size` |
+| 32 | 4 | compressed payload size | exact nonzero byte extent |
+| 36 | 4 | entropy descriptor bytes | `16` |
+| 40 | 4 | context side-data bytes | zero for context variant 1 |
+| 44 | 4 | checksum trailer bytes | zero |
+| 48 | 16 | reserved | zero |
+
+The frame body is the 16-byte Dynamic Range variant-2 descriptor, zero context
+side data, then the exact payload. The descriptor layout is defined in the
+entropy-backend contract: its decision count and payload size must equal the
+frame header, context count is 31, and all flags and reserved bytes are zero.
+
+The context model converts exactly `token count` validated tokens to exactly the
+declared event and decision counts. Dynamic Range decoding must consume the
+payload exactly, including its canonical leading zero and five-shift
+termination. The reconstructed typed tokens must derive exactly the declared
+raw frame. Descriptor validation, entropy decoding, context inversion, token
+validation, and LZSS reconstruction all complete in private bounded staging
+before any byte of the frame is published.
+
+### Hand-checkable one-Literal vector
+
+For one raw byte `A`, the typed token is `Literal(0x41)`. From reset state it
+produces two events and two decisions:
+
+```text
+Symbol(context 0, alphabet 2, value 0)    # Literal after Start
+Symbol(context 3, alphabet 256, value 65) # first Literal value
+```
+
+Dynamic Range variant 2 produces payload `00 20 7F FF BF 00`. The frame header,
+descriptor, and payload are:
+
+```text
+4D 52 46 32 40 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 01 00 00 00  02 00 00 00 02 00 00 00
+06 00 00 00 10 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+02 00 00 00 06 00 00 00  1F 00 00 00 00 00 00 00
+00 20 7F FF BF 00
+```
+
+For a 64-byte configured frame and original size one, the stream regions before
+that frame are:
+
+```text
+# fixed 64-byte stream prefix
+4D 41 52 43 02 00 00 00  40 00 01 00 02 00 02 00
+03 00 02 00 40 00 00 00  00 00 00 00 10 00 00 00
+10 00 00 00 00 00 00 00  01 00 00 00 00 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+# LZSS parameters
+00 00 01 00 05 00 00 00  02 01 00 00 00 00 00 00
+
+# contextual Dynamic Range parameters
+00 80 00 00 1F 00 00 00  00 00 00 00 00 00 00 00
+
+# context-model extension
+01 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00
+```
+
+Empty input contains these 112 stream bytes and no frame. These vectors reserve
+the representation only; they do not claim an implemented public profile.

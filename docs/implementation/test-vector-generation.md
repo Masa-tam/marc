@@ -6511,3 +6511,24 @@ foreign decoding, and byte-identical local re-encoding. Swap the first two
 manifest entries and require rejection. Derive schema 30 by removing only
 `lzmw-tans`, restoring `marc-cli-v30`, and then verify the unchanged schemas
 30 through 1.
+
+### TVG-0510
+
+For the experimental format-2 one-Literal vector, start a fresh
+`LzssFieldContext` frame and map typed `Literal(0x41)` to token-kind context 0,
+alphabet 2, value 0, followed by first-Literal context 3, alphabet 256, value
+65. Feed those two decisions to an independent transcription of the published
+Dynamic Range variant-1 arithmetic with separate fresh models. Before using the
+result, require the same transcription to reproduce variant 1's published
+single-byte `A` payload `00 40 FF FF BF 00`. The contextual pair must then
+produce `00 20 7F FF BF 00`.
+
+Construct the 64-byte `MRF2` header from explicit little-endian stores: raw and
+token counts one, event and decision counts two, payload size six, descriptor
+size sixteen, and every optional or reserved extent zero. Prefix the payload
+with a descriptor declaring two decisions, six payload bytes, 31 contexts, and
+zero flags. Independently construct the 112 pre-frame bytes from the 64-byte
+version-2 prefix, default bounded LZSS parameters, contextual Dynamic Range
+parameters, and context extension. Empty input consists of only those 112
+bytes. No native structure serialization or implemented combined encoder is a
+vector source.

@@ -3572,3 +3572,37 @@ marc's deterministic 8,193-byte fixture, the published `lzmw-tans` CLI
 profile, and the repository-owned generator, verifier, and compatibility
 conversion. No external interoperability schema, manifest, archive corpus,
 source code, or test suite was consulted.
+
+### IR-0405
+
+The LZSS typed-token protocol uses the user-proposed typed dictionary boundary,
+AGENTS.md section 11.2, DD-627, and marc's independently specified LZSS
+variant-1 parse and validation rules. No external typed-token library, LZSS
+implementation, object layout, serialization protocol, source code, or test
+suite was consulted.
+
+### IR-0406
+
+The `LzssFieldContext` model uses the user-proposed context layer, DD-628, the
+local typed-token vocabulary, and independently chosen previous-token,
+previous-Literal-nibble, length-class, and distance-class states. No external
+context mixer, compressor model, context numbering, field split, source code,
+encoded corpus, or test suite was consulted.
+
+### IR-0407
+
+The entropy-backend contract and contextual Dynamic Range variant 2 use
+DD-629, marc's local bounded block contracts, and the already specified
+variant-1 integer range arithmetic. The per-context model ownership and fixed
+bypass-bit rule were designed locally. No external backend abstraction,
+contextual range implementation, descriptor layout, source code, corpus, or
+test suite was consulted.
+
+### IR-0408
+
+Experimental format 2.0 uses DD-630, the three local interface specifications,
+marc's explicit little-endian serializers, and the version-1 frame-atomic
+validation policy. The `A` payload was independently calculated and checked by
+reproducing the published variant-1 `A` vector before substituting the two
+typed-context decisions. No external stream format, typed compression profile,
+payload vector, source code, corpus, or test suite was consulted.

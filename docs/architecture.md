@@ -3836,3 +3836,44 @@ The public-ABI completion boundary exercises only that adapter. It fixes
 64-byte raw and entropy blocks, proves byte-identical output across repeated
 and arbitrarily chunked calls, and verifies that a malformed fourth frame
 cannot publish its final raw byte after three valid frames have committed.
+
+## Experimental typed-token context pipeline
+
+The `0.2.x` design adds an orthogonal internal layer without changing the
+version-1 byte-stream baseline:
+
+```text
+raw bytes
+  -> LZSS parser
+  -> bounded typed-token frame
+  -> context model
+  -> bounded modeled-event frame
+  -> entropy backend
+  -> format-2 frame
+```
+
+Decoding reverses those boundaries and publishes a raw frame only after every
+layer has validated its complete private result. Direction remains immutable,
+frame reset is shared by all layers, and no typed or modeled block crosses an
+outer frame.
+
+The first experiment deliberately uses LZSS rather than expanding the existing
+six-by-five byte-stream matrix. LZSS exposes distinct Literal, Match, length,
+and distance semantics while retaining a small deterministic token vocabulary.
+The initial context model separates those fields and conditions them only on
+already accepted token state. Context selection is independent of entropy
+arithmetic, so later backends can compare speed, ratio, descriptor overhead,
+and workspace over the same modeled-event sequence.
+
+The four controlling specifications are:
+
+- [LZSS typed-token protocol](design/lzss-typed-token-protocol.md);
+- [context-model contract](design/context-model-contract.md);
+- [entropy-backend contract](design/entropy-backend-contract.md);
+- [experimental format 2.0](format.md#experimental-typed-token-format-20).
+
+This is a reserved experimental representation, not a public profile. Public C
+factories, CLI names, interoperability schemas, and completion claims remain
+unchanged until the new decoder validator, vectors, bounded streaming pair,
+negative tests, fuzz boundary, and benchmarks satisfy the normal admission
+sequence.
