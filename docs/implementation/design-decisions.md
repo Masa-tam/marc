@@ -13324,3 +13324,18 @@ typed element counts, an aligned operation offset, total view bytes, and base
 alignment; require dedicated partition functions to rederive and validate the
 layout transactionally. Derive decoder capacities solely from local limits.
 Keep the profile private while making it directly reusable by a later C ABI.
+
+## DD-645: Format 2 receives a distinct additive C lifecycle
+
+- Date: 2026-08-09
+- Status: accepted
+
+Expose the experimental composition as
+`marc_lzss_contextual_dynamic_range_*`, never as a silent change to the
+Format 1 `marc_lzss_dynamic_range_*` lifecycle. Use one size-tagged plain-C
+configuration and the existing primary, secondary, and aligned opaque views
+regions. Map encode to raw/serialized/token-plus-operation storage and decode
+to serialized/raw/token storage. Reuse the private profile and partitioners;
+validate capacity, alignment, pairwise non-overlap, and reserved fields before
+publishing a handle. Keep ABI version 1 because the addition changes no
+existing declaration, structure, symbol, or behavior.

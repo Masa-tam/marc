@@ -57,6 +57,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private Format 2 profile calculator and typed-view partitioners.
   They derive conservative encoder/decoder byte and element requirements with
   checked aggregate bounds and validate alignment before exposing typed spans.
+- Added the experimental `marc_lzss_contextual_dynamic_range_*` C lifecycle.
+  Its size-tagged configuration, direction-specific workspace query, and
+  factory expose Format 2 without leaking C++ record layouts or changing ABI 1.
 
 ## 0.1.3 - 2026-08-08
 

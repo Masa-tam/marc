@@ -6770,3 +6770,20 @@ local limits. Partition encoder and decoder byte storage, reject forged,
 short, and misaligned records with empty output views, then construct both
 streaming directions solely from returned requirements and require exact
 multi-frame round trip.
+
+### TVG-0525
+
+From a C11 translation unit, initialize the experimental contextual LZSS
+encoder, reduce the raw frame to two bytes, and query all three workspaces.
+Encode binary `41 42 41 42 58`, require a Format 2 `MARC` major-version-2
+prefix, then initialize the decoder independently from local limits, query its
+direction-specific regions, and require exact five-byte reconstruction.
+
+Require the query to publish the expected two-byte-frame conservative
+serialized capacities and nonzero opaque-view alignment. Reject primary,
+secondary, and views storage one byte short, a deliberately misaligned views
+base, overlap between primary and views, a null result handle, a nonzero
+reserved field, null configuration output, and an unknown direction. Every
+factory failure must leave the transform pointer null. Require the
+documentation-layout check to retain the 42 CLI-backed initializers and admit
+exactly one additional initializer with the contextual LZSS public name.

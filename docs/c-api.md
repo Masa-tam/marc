@@ -1,10 +1,12 @@
 # C API
 
 The public C ABI is declared by `<marc/marc.h>`. It exposes the same forty-two
-validated profiles as the command-line tool: checksum-raw, six standalone
-dictionary profiles, five standalone entropy profiles, and the complete
-six-dictionary by five-entropy composition matrix. Encoding uses a known input
-size, and every transform uses bounded caller-owned workspace.
+validated baseline profiles as the command-line tool: checksum-raw, six
+standalone dictionary profiles, five standalone entropy profiles, and the
+complete six-dictionary by five-entropy composition matrix. It additionally
+exposes the experimental Format 2 `lzss-contextual-dynamic-range` profile;
+that profile is not yet part of the baseline CLI matrix. Encoding uses a known
+input size, and every transform uses bounded caller-owned workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears
 in the ABI.
 
@@ -123,6 +125,17 @@ has no entropy-block parameter. Call
 `marc_lzss_dynamic_range_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
 Creation failure leaves the caller's transform pointer null.
+The experimental LZSS contextual Dynamic Range factory is a separate Format 2
+lifecycle, not an alias for the preceding byte-oriented profile. Call
+`marc_lzss_contextual_dynamic_range_workspace_requirements()` for the selected
+immutable direction. Encoding uses primary for raw-frame input, secondary for
+the complete serialized frame, and aligned opaque views for typed tokens plus
+modeled operations. Decoding uses primary for serialized input, secondary for
+atomic raw-frame output, and views for typed tokens. The factory validates
+capacity, alignment, and pairwise non-overlap before publishing a handle.
+Encoder sizes and LZSS parameters are read from the size-tagged configuration;
+decoder workspace sizing comes only from its hard limits and validates stream
+parameters later.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

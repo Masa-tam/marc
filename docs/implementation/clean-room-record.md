@@ -15266,3 +15266,30 @@ discarded and the reviewed seed retained.
   and decoder workspaces construct a complete multi-frame round trip; MSVC and
   ClangCL builds are warning-free; focused and full regression tests pass in
   both configurations.
+
+## CR-0675: 2026-08-09 - Experimental Format 2 C ABI
+
+- Authoring method: connected marc's independently specified private Format 2
+  profile and streaming transforms to its existing additive C lifecycle.
+- References used: AGENTS.md sections 3, 11.2, 12, 13, 14, and 15; DD-645;
+  IR-0423; TVG-0525; marc's local C ABI conventions, profile calculator,
+  typed-view partitioners, stable status mapping, and streaming pair.
+- Known implementations intentionally not consulted: external compression
+  ABIs, wrappers, allocator layouts, source code, corpora, encoded streams,
+  and test suites.
+- Independent decisions: give Format 2 a distinct contextual public name;
+  retain additive ABI version 1; expose only byte counts and alignment; map
+  directions without secondary subpartitioning; and reject pairwise workspace
+  overlap before allocating a handle.
+- Generated-code task description: add a size-tagged contextual LZSS Dynamic
+  Range C configuration, requirements query, three-workspace factory, and pure
+  C11 multi-frame round-trip plus short, misaligned, overlapping, reserved,
+  null, and unknown-direction regressions; narrow the public-inventory guard
+  to the 42 CLI-backed profiles plus this one named experiment.
+- Similarity review: declarations, field order, adapter control flow, overlap
+  gate, status mapping, and tests were designed from marc's local ABI patterns
+  without comparing external implementation expression or control flow.
+- Local validation: a pure-C client links through the shared library, emits a
+  Format 2 stream, reconstructs binary input, and rejects all tested invalid
+  configuration and workspace cases under MSVC and ClangCL; focused and full
+  regression tests pass in both configurations.

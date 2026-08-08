@@ -367,6 +367,28 @@ typedef struct marc_lzss_dynamic_range_config {
     uint64_t reserved2;
 } marc_lzss_dynamic_range_config;
 
+typedef struct marc_lzss_contextual_dynamic_range_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t window_size;
+    uint32_t min_match_length;
+    uint32_t max_match_length;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_block_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_internal_buffered_bytes;
+    uint64_t max_lz_distance;
+    uint64_t max_lz_match_length;
+    uint64_t max_entropy_table_entries;
+    uint64_t max_range_model_total;
+    uint64_t reserved2;
+} marc_lzss_contextual_dynamic_range_config;
+
 typedef struct marc_lzss_rans_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -1082,6 +1104,23 @@ MARC_API marc_status marc_lzss_dynamic_range_create(
     const marc_lzss_dynamic_range_config* config,
     marc_buffer primary_workspace,
     marc_buffer secondary_workspace,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_contextual_dynamic_range_config_init(
+    marc_direction direction,
+    marc_lzss_contextual_dynamic_range_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
+    const marc_lzss_contextual_dynamic_range_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+/*
+ * Format 2 keeps primary and secondary byte workspaces direction-specific.
+ * Aligned views_workspace is opaque typed-token/model staging and must remain
+ * caller-owned for the transform lifetime.
+ */
+MARC_API marc_status marc_lzss_contextual_dynamic_range_create(
+    const marc_lzss_contextual_dynamic_range_config* config,
+    marc_buffer primary_workspace,
+    marc_buffer secondary_workspace,
+    marc_buffer views_workspace,
     marc_transform** transform) MARC_NOEXCEPT;
 MARC_API marc_status marc_lzss_rans_config_init(
     marc_direction direction, marc_lzss_rans_config* config) MARC_NOEXCEPT;

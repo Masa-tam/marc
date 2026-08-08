@@ -45,6 +45,9 @@
 #include "frame/lzss_dynamic_range_frame_streaming_decoder.hpp"
 #include "frame/lzss_dynamic_range_frame_streaming_encoder.hpp"
 #include "frame/lzss_dynamic_range_profile.hpp"
+#include "frame/lzss_typed_context_frame_streaming_decoder.hpp"
+#include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
+#include "frame/lzss_typed_context_profile.hpp"
 #include "frame/lzss_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_rans_frame_streaming_encoder.hpp"
 #include "frame/lzss_rans_profile.hpp"
@@ -175,6 +178,22 @@ marc_status status_for(const marc::core::StreamStatus status) noexcept {
 
 bool valid_buffer(const void* data, const std::size_t size) noexcept {
     return size == 0 || data != nullptr;
+}
+
+bool disjoint_buffer_prefixes(
+    const marc_buffer first, const std::size_t first_size,
+    const marc_buffer second, const std::size_t second_size) noexcept {
+    if (first_size == 0 || second_size == 0) return true;
+    const auto first_begin = reinterpret_cast<std::uintptr_t>(first.data);
+    const auto second_begin = reinterpret_cast<std::uintptr_t>(second.data);
+    std::uintptr_t first_end{};
+    std::uintptr_t second_end{};
+    return marc::core::checked_add(
+               first_begin, static_cast<std::uintptr_t>(first_size), first_end)
+        && marc::core::checked_add(
+               second_begin, static_cast<std::uintptr_t>(second_size),
+               second_end)
+        && !(first_begin < second_end && second_begin < first_end);
 }
 
 bool load_config(const marc_checksum_raw_config* config,
@@ -533,6 +552,31 @@ bool load_config(const marc_lzss_dynamic_range_config* config,
     limits.max_lz_match_length = config->max_lz_match_length;
     limits.max_block_size = std::min(
         limits.max_block_size, limits.max_internal_buffered_bytes);
+    return true;
+}
+
+bool load_config(
+    const marc_lzss_contextual_dynamic_range_config* config,
+    marc::core::DecoderLimits& limits) noexcept {
+    if (config == nullptr
+        || config->struct_size
+            != sizeof(marc_lzss_contextual_dynamic_range_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0) {
+        return false;
+    }
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_block_size = config->max_block_size;
+    limits.max_compressed_payload_size =
+        config->max_compressed_payload_size;
+    limits.max_internal_buffered_bytes =
+        config->max_internal_buffered_bytes;
+    limits.max_lz_distance = config->max_lz_distance;
+    limits.max_lz_match_length = config->max_lz_match_length;
+    limits.max_entropy_table_entries =
+        config->max_entropy_table_entries;
+    limits.max_range_model_total = config->max_range_model_total;
     return true;
 }
 
@@ -3589,6 +3633,184 @@ marc_status marc_lzss_dynamic_range_create(
                 {secondary, needed.dictionary_staging_bytes},
                 {secondary + needed.dictionary_staging_bytes,
                  needed.frame_decoded_bytes});
+    }
+    return publish_transform(implementation, transform);
+}
+
+marc_status marc_lzss_contextual_dynamic_range_config_init(
+    const marc_direction direction,
+    marc_lzss_contextual_dynamic_range_config* config) noexcept {
+    if (config == nullptr || (direction != MARC_DIRECTION_ENCODE
+        && direction != MARC_DIRECTION_DECODE)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    *config = {};
+    config->struct_size = sizeof(*config);
+    config->abi_version = MARC_ABI_VERSION;
+    config->direction = direction;
+    config->frame_size = UINT32_C(1) << 16;
+    config->window_size = UINT32_C(1) << 16;
+    config->min_match_length = 5;
+    config->max_match_length = 258;
+    const marc::core::DecoderLimits limits{};
+    config->max_total_output_size = limits.max_total_output_size;
+    config->max_frame_size = limits.max_frame_size;
+    config->max_block_size = limits.max_block_size;
+    config->max_compressed_payload_size =
+        limits.max_compressed_payload_size;
+    config->max_internal_buffered_bytes =
+        limits.max_internal_buffered_bytes;
+    config->max_lz_distance = limits.max_lz_distance;
+    config->max_lz_match_length = limits.max_lz_match_length;
+    config->max_entropy_table_entries =
+        limits.max_entropy_table_entries;
+    config->max_range_model_total = limits.max_range_model_total;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
+    const marc_lzss_contextual_dynamic_range_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {};
+    requirements->struct_size = sizeof(*requirements);
+    requirements->abi_version = MARC_ABI_VERSION;
+    requirements->views_alignment = 1;
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzssParameters dictionary{
+            config->window_size, config->min_match_length,
+            config->max_match_length, 0};
+        marc::frame::internal::TypedContextStreamHeader stream{};
+        marc::frame::internal::
+            LzssTypedContextEncoderWorkspaceRequirements needed{};
+        const auto error =
+            marc::frame::internal::make_lzss_typed_context_profile(
+                {config->original_size, config->frame_size, dictionary},
+                limits, stream, needed);
+        if (error != marc::frame::internal::
+                         LzssTypedContextProfileError::none) {
+            return status_for(
+                marc::frame::internal::
+                    lzss_typed_context_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_input_bytes;
+        requirements->secondary_bytes = needed.frame_encoded_bytes;
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    if (config->direction == MARC_DIRECTION_DECODE) {
+        marc::frame::internal::
+            LzssTypedContextDecoderWorkspaceRequirements needed{};
+        const auto error = marc::frame::internal::
+            calculate_lzss_typed_context_decoder_workspace(limits, needed);
+        if (error != marc::frame::internal::
+                         LzssTypedContextProfileError::none) {
+            return status_for(
+                marc::frame::internal::
+                    lzss_typed_context_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_encoded_bytes;
+        requirements->secondary_bytes = needed.frame_decoded_bytes;
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    return MARC_STATUS_INVALID_ARGUMENT;
+}
+
+marc_status marc_lzss_contextual_dynamic_range_create(
+    const marc_lzss_contextual_dynamic_range_config* config,
+    const marc_buffer primary_workspace,
+    const marc_buffer secondary_workspace,
+    const marc_buffer views_workspace,
+    marc_transform** transform) noexcept {
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *transform = nullptr;
+    marc_workspace_requirements required{};
+    const auto query =
+        marc_lzss_contextual_dynamic_range_workspace_requirements(
+            config, &required);
+    if (query != MARC_STATUS_OK) return query;
+    if (!valid_buffer(primary_workspace.data, primary_workspace.size)
+        || !valid_buffer(secondary_workspace.data, secondary_workspace.size)
+        || !valid_buffer(views_workspace.data, views_workspace.size)
+        || primary_workspace.size < required.primary_bytes
+        || secondary_workspace.size < required.secondary_bytes
+        || views_workspace.size < required.views_bytes
+        || (required.views_bytes != 0
+            && reinterpret_cast<std::uintptr_t>(views_workspace.data)
+                % required.views_alignment != 0)
+        || !disjoint_buffer_prefixes(
+            primary_workspace, required.primary_bytes,
+            secondary_workspace, required.secondary_bytes)
+        || !disjoint_buffer_prefixes(
+            primary_workspace, required.primary_bytes,
+            views_workspace, required.views_bytes)
+        || !disjoint_buffer_prefixes(
+            secondary_workspace, required.secondary_bytes,
+            views_workspace, required.views_bytes)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    const auto primary = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(primary_workspace.data),
+        required.primary_bytes};
+    const auto secondary = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(secondary_workspace.data),
+        required.secondary_bytes};
+    const auto views_storage = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(views_workspace.data),
+        required.views_bytes};
+    marc::core::Transform* implementation{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzssParameters dictionary{
+            config->window_size, config->min_match_length,
+            config->max_match_length, 0};
+        marc::frame::internal::TypedContextStreamHeader stream{};
+        marc::frame::internal::
+            LzssTypedContextEncoderWorkspaceRequirements needed{};
+        if (marc::frame::internal::make_lzss_typed_context_profile(
+                {config->original_size, config->frame_size, dictionary},
+                limits, stream, needed)
+            != marc::frame::internal::
+                   LzssTypedContextProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::internal::LzssTypedContextEncoderViews views{};
+        if (marc::frame::internal::partition_lzss_typed_context_encoder_views(
+                needed, views_storage, views)
+            != marc::frame::internal::
+                   LzssTypedContextWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        implementation = new (std::nothrow)
+            marc::frame::internal::LzssTypedContextFrameStreamingEncoder(
+                stream, limits, primary, views.tokens, views.operations,
+                secondary);
+    } else {
+        marc::frame::internal::
+            LzssTypedContextDecoderWorkspaceRequirements needed{};
+        if (marc::frame::internal::
+                calculate_lzss_typed_context_decoder_workspace(
+                    limits, needed)
+            != marc::frame::internal::
+                   LzssTypedContextProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::internal::LzssTypedContextDecoderViews views{};
+        if (marc::frame::internal::partition_lzss_typed_context_decoder_views(
+                needed, views_storage, views)
+            != marc::frame::internal::
+                   LzssTypedContextWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        implementation = new (std::nothrow)
+            marc::frame::internal::LzssTypedContextFrameStreamingDecoder(
+                limits, primary, views.tokens, secondary);
     }
     return publish_transform(implementation, transform);
 }

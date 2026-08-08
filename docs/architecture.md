@@ -4146,3 +4146,19 @@ and its base address satisfies the strongest required alignment before
 returning typed spans. On every failure the output views remain empty. This
 keeps language-neutral callers on byte storage while preventing them from
 reimplementing native layout arithmetic.
+
+### Format 2 C ABI boundary
+
+The experimental public name is `lzss-contextual-dynamic-range`, distinct from
+the byte-serialized Format 1 `lzss-dynamic-range` profile. Its additive ABI-1
+functions use the `marc_lzss_contextual_dynamic_range_*` prefix and one
+size-tagged plain-C configuration. No context, token, or operation structure
+crosses the ABI.
+
+Encoding assigns primary storage to one raw frame, secondary storage to one
+complete serialized frame, and aligned opaque views storage to token and
+operation staging. Decoding assigns primary to the serialized frame,
+secondary to atomic raw output, and views to private typed tokens. The query
+owns all extents and alignment. The factory validates the exact used prefixes
+for capacity, alignment, pairwise non-overlap, and internal layout before
+publishing a handle; failure leaves the caller handle null.

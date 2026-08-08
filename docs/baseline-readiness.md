@@ -1207,3 +1207,13 @@ an exact round trip before timing, checks `80 + 6N + 2176K` complete-stream
 capacity, and reports both directional three-region workspaces. The remaining
 release-evidence step completed in all four directions at revision
 `903181080556c3bb511ad4a2e5275837ebda48e7` for all 42 archives.
+
+### BR-0033
+
+The experimental Format 2 `lzss-contextual-dynamic-range` profile now has an
+additive size-tagged C ABI configuration, direction-specific workspace query,
+and factory over its bounded streaming pair. A pure-C test constructs both
+directions from queried storage, proves a binary multi-frame round trip, and
+rejects short, misaligned, overlapping, and nonzero-reserved inputs. This is
+public lifecycle evidence only: it does not add a forty-third baseline matrix
+cell or claim CLI, completion, fuzz, benchmark, or interoperability readiness.

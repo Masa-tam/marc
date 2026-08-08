@@ -3721,3 +3721,12 @@ operation definitions, checked arithmetic, decoder limits, and established
 workspace partition policy. No external profile calculator, allocator layout,
 compression bound, source code, corpus, encoded stream, or test suite was
 consulted.
+
+### IR-0423
+
+The experimental Format 2 C lifecycle uses only DD-645, marc's existing
+size-tagged C ABI conventions, private Format 2 profile and partitioners,
+bounded streaming pair, stable status mapping, checked pointer arithmetic,
+and caller-owned workspace policy. No external compression ABI, wrapper,
+allocator layout, source code, corpus, encoded stream, or test suite was
+consulted.

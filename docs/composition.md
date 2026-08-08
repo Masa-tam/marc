@@ -1162,3 +1162,15 @@ conservative formulas and typed-region alignment; callers must not duplicate
 private LZMW entry, phrase, expansion, or tANS-view layouts. The returned
 regions directly construct the bounded streaming encoder and decoder and do
 not select a new stream variant.
+
+### CP-0039
+
+`lzss-contextual-dynamic-range` is the experimental public name for the Format
+2 LZSS typed-token, field-context variant 1, and contextual Dynamic Range
+variant 2 composition. Its additive ABI-1 lifecycle is distinct from the
+Format 1 `lzss-dynamic-range` profile. The public query returns raw/serialized/
+opaque-view regions for encode and serialized/raw/opaque-token regions for
+decode; only the private profile owns typed offsets and alignment. The pure-C
+boundary now proves a multi-frame binary round trip and rejects short,
+misaligned, overlapping, and reserved-field inputs. CLI, benchmark, fuzz,
+completion-matrix, and interoperability admission remain later steps.
