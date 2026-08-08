@@ -19,6 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   token-frame validator, including overlap-reference semantics, stable failing
   token indices, exact declared count/size checks, and bounded caller-owned
   token storage.
+- Added the private typed LZSS frame reconstructor. It validates the complete
+  token frame, output capacity, and non-aliasing storage before performing
+  bytewise overlap copies into private raw staging.
 
 ## 0.1.3 - 2026-08-08
 

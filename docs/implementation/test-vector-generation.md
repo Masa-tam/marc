@@ -6563,3 +6563,17 @@ extent, variant-2 parameters, local LZ distance, token-storage capacity, and
 aggregate output. Require the validator to stop at the first invalid token,
 retain the preceding token/raw counts, categorize policy limits separately,
 and leave a single-token caller output unchanged on failure.
+
+### TVG-0513
+
+Reconstruct an empty frame without changing a sentinel; one Literal as `A`;
+`Literal('A'), Match(1,5)` as `AAAAAA`; and three Literals followed by
+`Match(3,6), Literal('X')` as `ABCABCABCX`. Require bytewise overlap behavior,
+the exact declared output size, and no write beyond that extent.
+
+For atomic negative vectors, use a later invalid distance, an output one byte
+too small, a local LZ-distance policy below the profile requirement, and an
+output span deliberately overlapping the token array. Prefill ordinary output
+with `CC` and snapshot aliased token values. Require every gate failure before
+the first write, preservation of all sentinels/token values, and stable
+validation details for malformed input.

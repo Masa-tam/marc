@@ -3621,3 +3621,10 @@ The typed LZSS value validator uses only DD-632, the local typed-token protocol,
 variant-1 LZSS parameter/reference semantics, checked arithmetic, and decoder
 limits. No external typed-token API, LZSS implementation, validator, object
 layout, source code, malformed corpus, or test suite was consulted.
+
+### IR-0411
+
+The typed LZSS reconstructor uses only DD-633, the local typed-token validator,
+marc's documented bytewise overlap semantics, checked arithmetic, and
+caller-owned span policy. No external LZSS decoder, reconstruction loop,
+aliasing helper, source code, corpus, or test suite was consulted.

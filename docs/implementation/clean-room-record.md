@@ -14913,3 +14913,29 @@ discarded and the reviewed seed retained.
   validate; malformed fields and limits fail at stable indices; MSVC and
   ClangCL builds are warning-free; focused and full regression checks pass in
   both configurations.
+
+## CR-0663: 2026-08-08 - Typed LZSS private reconstructor
+
+- Authoring method: implemented the reconstruction stage directly from the
+  local typed-token contract and validated value semantics.
+- References used: AGENTS.md sections 9.1, 9.3, 11.2, 12, and 15; DD-633;
+  IR-0411; TVG-0513; marc's typed-frame validator, bytewise LZSS overlap rule,
+  checked arithmetic, and caller-owned span policy.
+- Known implementations intentionally not consulted: external LZSS decoders,
+  reconstruction loops, aliasing utilities, source code, corpora, and test
+  suites.
+- Independent decisions: gate all writes behind complete validation and
+  capacity checks; reject token/output aliasing; reconstruct into private
+  staging only; use bytewise overlap copies; and leave excess capacity
+  untouched.
+- Generated-code task description: implement a typed-frame reconstructor with
+  validation propagation, required-size reporting, buffer-alias rejection,
+  Literal and overlapping Match reconstruction, failure-atomic tests, and
+  exact-extent checks without connecting a public decoder.
+- Similarity review: reconstruction semantics and control flow come only from
+  marc's local LZSS and frame-atomic specifications. No external expression,
+  optimization structure, alias helper, or test vector was compared.
+- Local validation: empty, Literal, distance-one overlap, and distance-three
+  vectors reconstruct exactly; malformed, short-output, policy, and alias
+  failures preserve output; MSVC and ClangCL builds are warning-free; focused
+  and full regression tests pass in both configurations.

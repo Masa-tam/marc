@@ -120,3 +120,9 @@ the already validated raw prefix, enforces local limits and variant-2
 parameters, and reports the first failing token index. It performs no
 allocation and publishes no reconstructed raw bytes. The typed producer,
 reconstructor, and context-model bridge are separate later stages.
+
+The private reference reconstructor validates the complete token frame, output
+capacity, and token/output non-aliasing before writing its first raw byte. It
+then applies Literal values and bytewise overlapping Match copies to private
+raw staging only. Validation, capacity, policy, or alias failure leaves that
+staging unchanged, and bytes beyond the declared raw extent are never written.

@@ -13145,3 +13145,16 @@ fields, known kind, variant-2 parameter bounds, references within the already
 validated frame history, checked output growth, aggregate-output policy, and a
 bounded local storage extent. Preserve the first failing token index and raw
 prefix for diagnostics, but publish no raw bytes from validation.
+
+## DD-633: Typed LZSS reconstruction writes only after complete gating
+
+- Date: 2026-08-08
+- Status: accepted
+
+Reconstruct typed LZSS tokens only into private caller-owned raw staging.
+Before the first write, require complete token-frame validation, sufficient
+output capacity, supported output extent, and disjoint token/output storage.
+After those gates, perform Literal stores and Match copies byte by byte so
+overlap semantics are exact and no input-dependent failure remains. Write only
+the declared raw extent and leave excess staging capacity untouched. Public
+downstream publication remains a later complete-decoder transaction.

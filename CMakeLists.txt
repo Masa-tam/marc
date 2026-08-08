@@ -53,6 +53,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_streaming_encoder.cpp
     src/dictionary/lzss_validator.cpp
     src/dictionary/lzss_typed_token.cpp
+    src/dictionary/lzss_typed_reconstructor.cpp
     src/dictionary/lz78_format.cpp
     src/dictionary/lz78_decoder.cpp
     src/dictionary/lz78_encoder.cpp
@@ -1242,6 +1243,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_streaming_encoder_tests.cpp
         tests/lzss_validator_tests.cpp
         tests/lzss_typed_token_tests.cpp
+        tests/lzss_typed_reconstructor_tests.cpp
         tests/lz78_format_tests.cpp
         tests/lz78_decoder_tests.cpp
         tests/lz78_encoder_tests.cpp

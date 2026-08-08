@@ -3907,3 +3907,19 @@ The result retains the first failing token index and the validated raw prefix,
 but no raw byte is published. Typed reconstruction and context-model inversion
 remain later decoder stages and may consume a frame only after this validation
 boundary succeeds.
+
+### Typed LZSS private reconstruction
+
+The typed reconstructor accepts only a complete caller-owned token frame and a
+private raw staging span. It completes token-frame validation, required-output
+capacity checking, and token/output non-aliasing checks before its first write.
+Malformed tokens, local-policy failures, insufficient output, and overlapping
+storage therefore leave the entire output span unchanged.
+
+After those gates succeed, Literal publication and Match reconstruction have
+no input-dependent failure branch. Matches copy one byte at a time from
+`produced - distance`, so newly written bytes are immediately available for
+the specified overlapping-reference semantics. Only the declared raw extent
+is written; additional staging capacity is untouched. Publication to a public
+downstream buffer remains the responsibility of a later complete Format 2
+decoder stage.
