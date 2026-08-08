@@ -2,6 +2,7 @@
 #define MARC_FRAME_TYPED_CONTEXT_FORMAT_HPP
 
 #include "core/limits.hpp"
+#include "context/lzss_field_context_format.hpp"
 #include "dictionary/lzss_format.hpp"
 #include "entropy/contextual_dynamic_range_format.hpp"
 
@@ -18,9 +19,9 @@ inline constexpr std::size_t typed_context_range_descriptor_size = 16;
 inline constexpr std::uint32_t typed_context_model_total =
     marc::entropy::internal::contextual_dynamic_range_model_total_limit;
 inline constexpr std::uint16_t typed_context_count =
-    marc::entropy::internal::contextual_dynamic_range_context_count;
+    marc::context::internal::lzss_field_context_count;
 inline constexpr std::uint64_t typed_context_table_entries =
-    marc::entropy::internal::contextual_dynamic_range_table_entries;
+    marc::context::internal::lzss_field_context_frequency_entries;
 
 struct TypedContextStreamHeader {
     std::uint32_t frame_size{};

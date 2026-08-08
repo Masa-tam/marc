@@ -4236,3 +4236,9 @@ workspace explicit before implementation. A later sparse descriptor is a
 separate entropy variant rather than an invisible alteration. Complete model,
 payload, state, token, and raw validation remains inside one frame-atomic
 publication boundary.
+
+The first implementation boundary stops at descriptor serialization and
+validation. The fixed context alphabets and flattened offsets live in the
+context layer and are referenced directly by both entropy backends. This
+prevents Dynamic Range terminology from becoming an accidental owner or
+compatibility surface for a context-model property.

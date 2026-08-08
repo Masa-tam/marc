@@ -15464,3 +15464,29 @@ discarded and the reviewed seed retained.
   descriptor offsets 16 and 158 correspond to flattened entries 0 and 71;
   checked sizes are 9,052 descriptor bytes and 9,124 complete-frame bytes. No
   encoder, decoder, public profile, or interoperability result is claimed.
+
+## CR-0683: 2026-08-09 - Contextual rANS fixed descriptor boundary
+
+- Authoring method: implemented the locally reserved descriptor with marc's
+  explicit serialization, checked-limit, and transactional-publication
+  conventions, while moving shared schema constants to their context owner.
+- References used: AGENTS.md sections 6, 10.5, 11, 12, 14, and 15; DD-653;
+  IR-0431; TVG-0532; marc's rANS variant-1 format helpers and local
+  `LzssFieldContext` schema.
+- Known implementations intentionally not consulted: external contextual ANS
+  parsers, descriptor layouts, table validators, serializers, source code,
+  malformed corpora, encoded streams, and test suites.
+- Independent decisions: parse into a private 4,518-entry value; validate each
+  context slice independently; precharge all possible decode tables; serialize
+  transactionally; and delete rather than retain misleading Dynamic Range
+  aliases during pre-release development.
+- Generated-code task description: add a private contextual rANS descriptor
+  type, parser, validator, serializer, hand-vector and negative tests, then
+  migrate both entropy backends to a context-owned fixed schema.
+- Similarity review: field handling, error categories, checked bounds, staging,
+  schema naming, and tests derive from marc's existing local conventions.
+- Local validation: six focused contextual rANS format tests pass under MSVC
+  and ClangCL. After alias removal, the combined 36-test contextual rANS,
+  Dynamic Range, and field-context selection and the wider 100-test Format 2
+  selection pass under both compilers. The complete 2,488-test suite then
+  passes under both Release configurations.

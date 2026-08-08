@@ -1,6 +1,7 @@
 #ifndef MARC_ENTROPY_CONTEXTUAL_DYNAMIC_RANGE_DECODER_HPP
 #define MARC_ENTROPY_CONTEXTUAL_DYNAMIC_RANGE_DECODER_HPP
 
+#include "context/lzss_field_context_format.hpp"
 #include "core/limits.hpp"
 #include "entropy/contextual_dynamic_range_format.hpp"
 
@@ -69,9 +70,11 @@ private:
     [[nodiscard]] bool validate_models() const noexcept;
 
     std::span<const std::byte> payload_{};
-    std::array<std::uint16_t, contextual_dynamic_range_table_entries>
+    std::array<std::uint16_t,
+               marc::context::internal::lzss_field_context_frequency_entries>
         frequencies_{};
-    std::array<std::uint32_t, contextual_dynamic_range_context_count> totals_{};
+    std::array<std::uint32_t,
+               marc::context::internal::lzss_field_context_count> totals_{};
     ContextualDynamicRangeDescriptor descriptor_{};
     std::size_t payload_offset_{};
     std::uint32_t code_{};

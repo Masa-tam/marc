@@ -88,26 +88,31 @@ private:
 };
 
 struct ModelState {
-    std::array<std::uint16_t, contextual_dynamic_range_table_entries>
+    std::array<std::uint16_t,
+               marc::context::internal::lzss_field_context_frequency_entries>
         frequencies{};
-    std::array<std::uint32_t, contextual_dynamic_range_context_count> totals{};
+    std::array<std::uint32_t,
+               marc::context::internal::lzss_field_context_count> totals{};
 
     ModelState() noexcept {
         frequencies.fill(1);
         for (std::size_t index = 0; index < totals.size(); ++index) {
-            totals[index] = contextual_dynamic_range_alphabets[index];
+            totals[index] =
+                marc::context::internal::lzss_field_context_alphabets[index];
         }
     }
 
     void update(const std::uint16_t context, const std::uint32_t symbol)
         noexcept {
-        const auto offset = contextual_dynamic_range_offsets[context];
+        const auto offset =
+            marc::context::internal::lzss_field_context_offsets[context];
         ++frequencies[offset + symbol];
         auto& total = totals[context];
         ++total;
         if (total != contextual_dynamic_range_model_total_limit) return;
         total = 0;
-        const auto alphabet = contextual_dynamic_range_alphabets[context];
+        const auto alphabet =
+            marc::context::internal::lzss_field_context_alphabets[context];
         for (std::size_t index = 0; index < alphabet; ++index) {
             auto& frequency = frequencies[offset + index];
             frequency = static_cast<std::uint16_t>(
@@ -152,12 +157,14 @@ struct ModelState {
                             invalid_operation_kind);
         }
         if (operation.kind == context::internal::ModeledOperationKind::symbol) {
-            if (operation.context_id >= contextual_dynamic_range_context_count) {
+            if (operation.context_id
+                >= marc::context::internal::lzss_field_context_count) {
                 return fail(result,
                             ContextualDynamicRangeEncodeError::invalid_context);
             }
             if (operation.alphabet_size
-                != contextual_dynamic_range_alphabets[operation.context_id]) {
+                != marc::context::internal::lzss_field_context_alphabets[
+                    operation.context_id]) {
                 return fail(
                     result, ContextualDynamicRangeEncodeError::invalid_alphabet);
             }
@@ -171,7 +178,8 @@ struct ModelState {
                     ContextualDynamicRangeEncodeError::nonzero_unused_field);
             }
             const auto offset =
-                contextual_dynamic_range_offsets[operation.context_id];
+                marc::context::internal::lzss_field_context_offsets[
+                    operation.context_id];
             std::uint32_t cumulative{};
             for (std::uint32_t symbol = 0; symbol < operation.value; ++symbol) {
                 cumulative += models.frequencies[offset + symbol];
@@ -266,7 +274,7 @@ ContextualDynamicRangeEncodeResult plan_contextual_dynamic_range_operations(
                 ContextualDynamicRangeEncodeError::empty_operations};
     }
     if (core::validate_limits(limits) != core::LimitError::none
-        || contextual_dynamic_range_table_entries
+        || marc::context::internal::lzss_field_context_frequency_entries
                > limits.max_entropy_table_entries
         || contextual_dynamic_range_model_total_limit
                > limits.max_range_model_total) {
@@ -298,7 +306,7 @@ ContextualDynamicRangeEncodeResult plan_contextual_dynamic_range_operations(
     descriptor = {
         result.decision_count,
         static_cast<std::uint32_t>(result.payload_size),
-        contextual_dynamic_range_context_count,
+        marc::context::internal::lzss_field_context_count,
     };
     return result;
 }

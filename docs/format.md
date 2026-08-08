@@ -5861,3 +5861,10 @@ All frequency entries are zero except flattened entry 0 (context 0, symbol 0)
 at descriptor offset 16 and flattened entry 71 (context 3, symbol 65) at
 descriptor offset 158; both contain little-endian frequency `00 10`. The
 payload is `00 00 00 80 00 00 00 00`. Thus the complete frame is 9,124 bytes.
+
+The private descriptor parser and serializer now implement these 9,052 bytes.
+They validate every frequency slice as either zero or exactly 4,096, enforce
+`8 <= payload_size <= 2 * decision_count + 8`, charge the full 126,976-entry
+decode-table ceiling and descriptor-plus-payload buffering before publication,
+and leave caller output unchanged on failure. This milestone does not decode
+the rANS state or admit the reserved profile.

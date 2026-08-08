@@ -212,7 +212,7 @@ TEST(ContextualDynamicRangeDecoder, EnforcesTableAndModelLimits) {
     constexpr auto payload = literal_payload();
     auto limits = marc::core::DecoderLimits{};
     limits.max_entropy_table_entries =
-        contextual_dynamic_range_table_entries - 1;
+        marc::context::internal::lzss_field_context_frequency_entries - 1;
     ContextualDynamicRangeDecoder decoder;
     EXPECT_EQ(decoder.begin({2, 6, 31}, payload, limits).error,
               ContextualDynamicRangeDecodeError::invalid_descriptor);

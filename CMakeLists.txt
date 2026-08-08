@@ -49,6 +49,7 @@ set(MARC_SOURCES
     src/frame/lzss_typed_context_frame_streaming_decoder.cpp
     src/entropy/contextual_dynamic_range_decoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
+    src/entropy/contextual_rans_format.cpp
     src/dictionary/lz77_decoder.cpp
     src/dictionary/lz77_encoder.cpp
     src/dictionary/lz77_format.cpp
@@ -1274,6 +1275,7 @@ if(MARC_BUILD_TESTS)
         tests/lz77_validator_tests.cpp
         tests/contextual_dynamic_range_decoder_tests.cpp
         tests/contextual_dynamic_range_encoder_tests.cpp
+        tests/contextual_rans_format_tests.cpp
         tests/lzss_contextual_range_decoder_tests.cpp
         tests/lzss_typed_context_frame_decoder_tests.cpp
         tests/lzss_typed_context_frame_encoder_tests.cpp

@@ -210,7 +210,7 @@ TEST(ContextualDynamicRangeEncoder, EnforcesEmptyAndLocalLimits) {
     constexpr auto operations = literal_operations();
     auto limits = marc::core::DecoderLimits{};
     limits.max_entropy_table_entries =
-        contextual_dynamic_range_table_entries - 1;
+        marc::context::internal::lzss_field_context_frequency_entries - 1;
     result = plan_contextual_dynamic_range_operations(
         operations, limits, descriptor);
     EXPECT_EQ(result.error,

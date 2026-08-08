@@ -3786,3 +3786,11 @@ independently specified scalar rANS variant 1 arithmetic and normalization,
 the local entropy-backend contract, and the fixed `LzssFieldContext` schema.
 No external contextual ANS implementation, table format, source code, corpus,
 encoded stream, or test vector was consulted.
+
+### IR-0431
+
+The contextual rANS descriptor boundary uses only DD-653, the locally reserved
+variant-2 descriptor, marc's explicit little-endian helpers, checked arithmetic,
+decoder limits, and the repository-owned `LzssFieldContext` schema. No external
+ANS descriptor parser, table validator, serializer, source code, malformed
+corpus, encoded stream, or test suite was consulted.

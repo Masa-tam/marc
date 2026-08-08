@@ -87,6 +87,11 @@ format versions, and C ABI versions are independent namespaces.
   It retains the typed LZSS and field-context variants, uses one scalar state,
   fixed per-context normalized tables, and fixed-probability bypass decisions;
   no implementation or public profile is claimed yet.
+- Added the private contextual rANS fixed-descriptor parser, validator, and
+  serializer with atomic publication, exact per-context frequency validation,
+  payload-derived bounds, and decode-table workspace admission. The shared
+  31-context schema now belongs to `LzssFieldContext` rather than retaining
+  Dynamic Range compatibility aliases.
 
 ## 0.1.3 - 2026-08-08
 

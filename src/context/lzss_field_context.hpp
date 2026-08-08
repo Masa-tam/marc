@@ -1,6 +1,7 @@
 #ifndef MARC_CONTEXT_LZSS_FIELD_CONTEXT_HPP
 #define MARC_CONTEXT_LZSS_FIELD_CONTEXT_HPP
 
+#include "context/lzss_field_context_format.hpp"
 #include "core/limits.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 

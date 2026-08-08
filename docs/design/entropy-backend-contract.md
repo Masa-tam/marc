@@ -187,6 +187,14 @@ Symbol `(context 3, value 65)`. Each used context is a one-symbol model with
 frequency 4,096, so the payload is the eight-byte state
 `00 00 00 80 00 00 00 00`.
 
+The private format boundary now implements this fixed descriptor independently
+of state decoding. Its parser publishes only after all 4,518 entries, slice
+sums, fixed fields, expected counts, payload bound, and caller limits pass.
+Its serializer validates first and commits one complete temporary byte array.
+The alphabet and flattened-offset constants are owned by the shared
+`LzssFieldContext` schema; Dynamic Range and rANS consume that schema directly
+without backend-named compatibility aliases.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

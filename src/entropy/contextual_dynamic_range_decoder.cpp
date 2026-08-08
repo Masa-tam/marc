@@ -29,7 +29,8 @@ ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::fail(
 void ContextualDynamicRangeDecoder::reset_models() noexcept {
     frequencies_.fill(1);
     for (std::size_t index = 0; index < totals_.size(); ++index) {
-        totals_[index] = contextual_dynamic_range_alphabets[index];
+        totals_[index] =
+            marc::context::internal::lzss_field_context_alphabets[index];
     }
 }
 
@@ -51,10 +52,11 @@ ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::begin(
 
     if (core::validate_limits(limits) != core::LimitError::none
         || descriptor.decision_count == 0 || descriptor.payload_size < 5
-        || descriptor.context_count != contextual_dynamic_range_context_count
+        || descriptor.context_count
+            != marc::context::internal::lzss_field_context_count
         || descriptor.payload_size > limits.max_compressed_payload_size
         || descriptor.payload_size > limits.max_internal_buffered_bytes
-        || contextual_dynamic_range_table_entries
+        || marc::context::internal::lzss_field_context_frequency_entries
                > limits.max_entropy_table_entries
         || contextual_dynamic_range_model_total_limit
                > limits.max_range_model_total) {
@@ -119,11 +121,13 @@ ContextualDynamicRangeDecoder::decode_symbol(
     if (finished_) {
         return fail(ContextualDynamicRangeDecodeError::already_finished);
     }
-    if (expected_context >= contextual_dynamic_range_context_count) {
+    if (expected_context
+        >= marc::context::internal::lzss_field_context_count) {
         return fail(ContextualDynamicRangeDecodeError::invalid_context);
     }
     if (expected_alphabet
-        != contextual_dynamic_range_alphabets[expected_context]) {
+        != marc::context::internal::lzss_field_context_alphabets[
+            expected_context]) {
         return fail(ContextualDynamicRangeDecodeError::invalid_alphabet);
     }
     if (decision_count_ >= descriptor_.decision_count) {
@@ -131,7 +135,8 @@ ContextualDynamicRangeDecoder::decode_symbol(
             ContextualDynamicRangeDecodeError::decision_count_exceeded);
     }
 
-    const auto offset = contextual_dynamic_range_offsets[expected_context];
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets[expected_context];
     const auto total = totals_[expected_context];
     const auto unit = range_ / total;
     if (range_ < normalization_threshold || unit == 0) {
@@ -227,7 +232,8 @@ ContextualDynamicRangeDecoder::decode_bypass(
 
 bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
     for (std::size_t context = 0; context < totals_.size(); ++context) {
-        const auto alphabet = contextual_dynamic_range_alphabets[context];
+        const auto alphabet =
+            marc::context::internal::lzss_field_context_alphabets[context];
         if (totals_[context] < alphabet
             || totals_[context] >= contextual_dynamic_range_model_total_limit) {
             return false;
@@ -235,7 +241,8 @@ bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
         std::uint32_t sum{};
         for (std::size_t symbol = 0; symbol < alphabet; ++symbol) {
             const auto frequency =
-                frequencies_[contextual_dynamic_range_offsets[context]
+                frequencies_[marc::context::internal::lzss_field_context_offsets[
+                                 context]
                              + symbol];
             if (frequency == 0) return false;
             sum += frequency;

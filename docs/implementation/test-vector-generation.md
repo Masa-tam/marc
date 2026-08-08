@@ -6866,3 +6866,22 @@ from `L=2^31`, both one-symbol transitions leave the state unchanged, so the
 payload is `00 00 00 80 00 00 00 00`. Require a 64-byte frame header with
 descriptor size 9,052 and an exact complete-frame extent of 9,124 bytes. This
 vector reserves bytes before implementation and changes no public inventory.
+
+### TVG-0532
+
+Materialize TVG-0531's descriptor through the private contextual rANS
+serializer and require its exact 16-byte prefix, frequency bytes at offsets
+16/17 and 158/159, and zero remainder. Parse it back and require identical
+fields and all 4,518 frequencies.
+
+Independently accept zero unused slices and a two-symbol 2,048/2,048 used
+slice. Reject a used slice summing to 4,095 without publishing the parse
+destination. Reject zero decisions, payload below eight or above
+`2 * decisions + 8`, wrong table log, flags, context count, frequency-entry
+count, expected counts, block/payload/table/buffer limits, and invalid
+serialization without changing a sentinel-filled output descriptor.
+
+Compile after deleting every Dynamic Range compatibility alias for the shared
+context count, alphabets, offsets, and frequency-entry extent. Run the existing
+Dynamic Range decoder, encoder, and `LzssFieldContext` suites together with the
+new descriptor suite under both supported Windows compilers.

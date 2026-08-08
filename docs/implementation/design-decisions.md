@@ -13483,3 +13483,23 @@ table representation, state interleaving, or different normalization receives
 a later variant. This decision reserves documentation and a one-Literal vector
 only; it adds no implementation, public API, CLI, benchmark, or readiness
 claim.
+
+## DD-653: Contextual rANS descriptor validation owns no context schema
+
+- Date: 2026-08-09
+- Status: accepted
+
+Implement the fixed 9,052-byte contextual rANS descriptor as a private entropy
+format boundary before state decoding. Parse into private bounded storage and
+publish only after fixed fields, expected decision/payload counts, every
+frequency slice, the two-byte-per-decision payload ceiling, the complete
+126,976-entry decode-table charge, and descriptor-plus-payload limits pass.
+Serialize into a complete temporary byte array after validation and copy only
+on success.
+
+Move the 31 alphabets, 32 flattened offsets, and 4,518 frequency-entry count
+to an `LzssFieldContext` format header. Update Dynamic Range to consume the
+context-owned names directly and remove the backend-named compatibility
+aliases rather than preserving ambiguous internal terminology during
+pre-release development. This adds no rANS state decoder, table builder,
+encoder, frame integration, public API, or format change.
