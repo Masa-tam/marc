@@ -4068,3 +4068,19 @@ materialize that extent. The descriptor remains caller-owned and unchanged on
 failure. This boundary deliberately stops at modeled operations; typed LZSS
 production and complete-frame serialization remain separate composition
 steps.
+
+### Typed LZSS producer boundary
+
+The private typed producer parses one complete bounded raw frame directly into
+`Literal` and `Match` values. It does not construct or parse the canonical
+variant-1 byte transcript. Both byte-token and typed-token encoders call one
+shared match finder, so longest-match selection, nearest-distance tie breaking,
+overlap comparison, maximum length, and the strict match-cost threshold remain
+one policy.
+
+Planning validates the variant-2 parameter subset and raw limits, executes the
+complete deterministic parse without writes, computes the exact native token
+extent, and enforces the checked raw-plus-token aggregate. Materialization
+requires exact capacity and disjoint raw/token regions before repeating the
+parse. It writes only the planned token prefix and leaves excess caller storage
+untouched. Context modeling and entropy coding remain later private boundaries.

@@ -142,3 +142,13 @@ checked aggregate of serialized bytes, native token storage, and raw bytes,
 then drains only a successfully reconstructed raw frame through the ordinary
 partial-output contract. A subsequent malformed frame cannot revoke bytes
 from an earlier completed frame and cannot publish any byte of itself.
+
+The private reference producer implements the complete-frame parsing boundary
+with an exact write-free plan followed by deterministic materialization into
+caller-owned typed-token storage. Variant 1 byte-token encoding and variant 2
+typed-token production share one longest-match finder and beneficial-match
+predicate, preserving the specified greedy parse and nearest-distance tie
+break without routing typed data through serialization. The planner counts at
+most one token per raw byte and checks the aggregate of the raw frame plus the
+exact native token extent. Short, overlapping, invalid, or locally excessive
+output is rejected before the first token write.

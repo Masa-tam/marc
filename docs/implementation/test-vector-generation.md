@@ -6703,3 +6703,20 @@ operation-storage, and payload limits; provide short output and overlapping
 operation/output storage. Require stable failing operation indices, unchanged
 descriptor and output on every pre-write failure, exact writes on success, and
 unchanged excess capacity.
+
+### TVG-0521
+
+Parse empty input and require zero typed tokens. Parse `A` and require exactly
+`Literal(0x41)`. Compare `AAAAA` with `AAAAAA`: the former remains five
+Literals at the strict cost boundary, while the latter becomes `Literal('A')`
+then `Match(distance 1, length 5)` with overlap semantics. Parse
+`ABCDE1ABCDE2ABCDE3`, compare every typed value against the independently
+parsed canonical byte-token transcript, and require the final Match to use the
+nearest equal-length distance six.
+
+Encode all byte values followed by a repeated copy and reconstruct the typed
+frame to the exact input. Independently exercise the variant-2 parameter cap,
+raw block and aggregate workspace limits, one-token-short output, overlapping
+raw/token storage, and excess token capacity. Snapshot all caller storage and
+require every pre-write failure to preserve it and success to write only the
+planned prefix.

@@ -5758,3 +5758,9 @@ bounded modeled-operation sequence. Its one-Literal and bypass-bearing output
 matches the bytes above and in the entropy-backend contract exactly. This
 implementation milestone adds no field, algorithm ID, variant, public profile,
 or C ABI entry.
+
+The private typed LZSS producer now implements the specified variant-2 greedy
+parse directly from a bounded raw frame. Its values feed the context-model
+contract and are not serialized as native objects or as variant-1 token bytes.
+This implementation adds no decoder-visible representation and does not alter
+the vectors above.

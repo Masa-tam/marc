@@ -15141,3 +15141,34 @@ discarded and the reviewed seed retained.
   synchronized across rescaling; malformed, limit, capacity, and alias failures
   preserve caller state; MSVC and ClangCL builds are warning-free; focused and
   full regression tests pass in both configurations.
+
+## CR-0671: 2026-08-08 - Typed LZSS producer
+
+- Authoring method: implemented marc's independently specified typed-token
+  producer and factored its existing local deterministic match policy into a
+  shared private component.
+- References used: AGENTS.md sections 3, 9.3, 11.2, 12, 14, and 15; DD-641;
+  IR-0419; TVG-0521; marc's local typed-token protocol, variant-1 LZSS parser,
+  typed validator and reconstructor, checked arithmetic, decoder limits, and
+  caller-owned staging policy.
+- Known implementations intentionally not consulted: external LZSS parsers,
+  match finders, typed-token APIs, source code, corpora, encoded streams, and
+  test suites.
+- Independent decisions: share only match search and cost selection between
+  byte and typed encoders; plan a complete raw frame without writes; count the
+  raw-plus-native-token aggregate; and reject capacity and overlap before
+  materializing typed values.
+- Generated-code task description: implement a private bounded raw-to-typed
+  LZSS producer preserving the established parse, with empty, golden, cost-
+  boundary, nearest-distance, byte-token equivalence, reconstruction, limit,
+  sentinel, excess-capacity, and alias tests.
+- Similarity review: parsing semantics come only from marc's local documents
+  and existing independent implementation. The typed API, aggregate gate,
+  exact planning, atomic materialization, shared helper boundary, error
+  categories, and tests were designed locally without comparing external
+  implementation expression or control flow.
+- Local validation: typed values match the canonical byte-token parser, binary
+  input reconstructs exactly, strict cost and nearest-distance vectors remain
+  stable, and parameter, limit, capacity, and alias failures preserve caller
+  storage; MSVC and ClangCL builds are warning-free; focused and full
+  regression tests pass in both configurations.

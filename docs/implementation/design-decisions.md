@@ -13264,3 +13264,18 @@ payload storage. Publish the descriptor only after materialization reproduces
 the plan exactly, and leave all caller output unchanged on every pre-write
 failure. Keep this operation-level boundary private and do not change Format 2
 or the C ABI.
+
+## DD-641: Typed LZSS production shares the deterministic match policy
+
+- Date: 2026-08-08
+- Status: accepted
+
+Produce variant-2 `Literal` and `Match` values directly from one complete
+bounded raw frame while retaining variant 1's greedy longest-match parse,
+nearest-distance tie break, overlap comparison, and strict beneficial-match
+threshold. Move only match search and cost selection into one shared private
+component used by both encoders; do not serialize and reparse bytes to create
+typed values. Plan the entire parse without writes, enforce the checked raw and
+native-token aggregate, then require sufficient disjoint output before exact
+materialization. Keep empty input valid at this component boundary and leave
+Format 2 and the C ABI unchanged.

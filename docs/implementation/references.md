@@ -3686,3 +3686,11 @@ range arithmetic, the fixed `LzssFieldContext` schema, checked arithmetic,
 decoder limits, and caller-owned span policy. No external range encoder,
 contextual model, compression pipeline, source code, corpus, encoded stream,
 or test suite was consulted.
+
+### IR-0419
+
+The typed LZSS producer uses only DD-641, the local typed-token protocol,
+variant-1 LZSS parse rules already specified by marc, the typed-token validator
+and reconstructor, checked arithmetic, decoder limits, and caller-owned span
+policy. No external LZSS parser, match finder, typed-token API, source code,
+corpus, encoded stream, or test suite was consulted.

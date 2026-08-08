@@ -1,46 +1,10 @@
 #include "dictionary/lzss_encoder.hpp"
 
 #include "core/checked_math.hpp"
-
-#include <algorithm>
+#include "dictionary/lzss_match_finder.hpp"
 
 namespace marc::dictionary::internal {
 namespace {
-
-struct Match {
-    std::uint32_t distance{};
-    std::uint32_t length{};
-};
-
-[[nodiscard]] Match find_match(
-    const std::span<const std::byte> input, const std::size_t position,
-    const LzssParameters& parameters) noexcept {
-    Match best{};
-    const auto maximum_distance = std::min<std::size_t>(
-        position, static_cast<std::size_t>(parameters.window_size));
-    const auto maximum_length = std::min<std::size_t>(
-        input.size() - position,
-        static_cast<std::size_t>(parameters.max_match_length));
-    for (std::size_t distance = 1; distance <= maximum_distance; ++distance) {
-        std::size_t length{};
-        while (length < maximum_length
-               && input[position + length]
-                      == input[position - distance + length]) {
-            ++length;
-        }
-        if (length >= parameters.min_match_length
-            && length > best.length) {
-            best.distance = static_cast<std::uint32_t>(distance);
-            best.length = static_cast<std::uint32_t>(length);
-        }
-    }
-    return best;
-}
-
-[[nodiscard]] bool beneficial(const Match match) noexcept {
-    return static_cast<std::size_t>(match.length)
-        > lzss_match_size / lzss_literal_size;
-}
 
 template <typename Consumer>
 [[nodiscard]] LzssEncodeResult run(
@@ -50,11 +14,11 @@ template <typename Consumer>
     std::size_t output_size{};
     std::size_t token_count{};
     while (position < input.size()) {
-        const auto match = find_match(input, position, parameters);
+        const auto match = find_lzss_match(input, position, parameters);
         LzssToken token{};
         std::size_t advance{1};
         std::size_t token_size{lzss_literal_size};
-        if (match.length != 0 && beneficial(match)) {
+        if (match.length != 0 && lzss_match_is_beneficial(match)) {
             token = {LzssTokenTag::match, match.distance, match.length, 0};
             advance = match.length;
             token_size = lzss_match_size;
