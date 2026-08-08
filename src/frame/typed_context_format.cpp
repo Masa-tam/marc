@@ -196,6 +196,58 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     return error;
 }
 
+TypedContextStreamHeaderError serialize_typed_context_stream_header(
+    const TypedContextStreamHeader& header,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, typed_context_stream_header_size> output)
+    noexcept {
+    const auto error = validate_typed_context_stream_header(header, limits);
+    if (error != TypedContextStreamHeaderError::none) return error;
+    std::array<std::byte, typed_context_stream_header_size> encoded{};
+    std::ranges::copy(stream_magic, encoded.begin());
+    const std::span<std::byte> bytes{encoded};
+    if (!core::store_le(bytes, 4, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 6, static_cast<std::uint16_t>(0))
+        || !core::store_le(
+            bytes, 8,
+            static_cast<std::uint16_t>(typed_context_stream_prefix_size))
+        || !core::store_le(bytes, 10, static_cast<std::uint16_t>(1))
+        || !core::store_le(bytes, 12, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 14, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 16, static_cast<std::uint16_t>(3))
+        || !core::store_le(bytes, 18, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 20, header.frame_size)
+        || !core::store_le(bytes, 24, std::uint32_t{0})
+        || !core::store_le(bytes, 28, std::uint32_t{16})
+        || !core::store_le(bytes, 32, std::uint32_t{16})
+        || !core::store_le(bytes, 36, std::uint32_t{0})
+        || !core::store_le(bytes, 40, header.original_size)
+        || !core::store_le(bytes, 48, std::uint32_t{16})) {
+        return TypedContextStreamHeaderError::arithmetic_overflow;
+    }
+    const auto dictionary_error = dictionary::internal::serialize_lzss_parameters(
+        header.dictionary, limits,
+        std::span<std::byte, dictionary::internal::lzss_parameter_size>{
+            encoded.data() + typed_context_stream_prefix_size,
+            dictionary::internal::lzss_parameter_size});
+    if (dictionary_error != dictionary::internal::LzssFormatError::none) {
+        return dictionary_error
+                == dictionary::internal::LzssFormatError::limit_exceeded
+            ? TypedContextStreamHeaderError::limit_exceeded
+            : TypedContextStreamHeaderError::invalid_dictionary_parameters;
+    }
+    if (!core::store_le(bytes, 80, header.range_model_total)
+        || !core::store_le(bytes, 84, header.context_count)
+        || !core::store_le(bytes, 86, static_cast<std::uint16_t>(0))
+        || !core::store_le(bytes, 96, static_cast<std::uint16_t>(1))
+        || !core::store_le(bytes, 98, static_cast<std::uint16_t>(1))
+        || !core::store_le(bytes, 100, std::uint32_t{0})) {
+        return TypedContextStreamHeaderError::arithmetic_overflow;
+    }
+    std::ranges::copy(encoded, output.begin());
+    return TypedContextStreamHeaderError::none;
+}
+
 TypedContextFrameHeaderError validate_typed_context_frame_header(
     const TypedContextFrameHeader& header,
     const TypedContextFrameValidationContext& context) noexcept {

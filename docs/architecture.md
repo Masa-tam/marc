@@ -4102,3 +4102,28 @@ The checked aggregate includes the exact raw frame, native token prefix,
 native operation prefix, and serialized frame. Only an exact plan with a valid
 frame header and descriptor may encode the payload and publish their canonical
 headers. Excess serialized capacity remains untouched.
+
+### Format 2 streaming encode lifecycle
+
+The private streaming encoder accepts the known-size raw stream and emits the
+canonical 112-byte Format 2 header followed by independently prepared frames:
+
+```text
+DrainStreamHeader -> CollectRawFrame -> PrepareCompleteFrame
+                  -> DrainFrame -> CollectRawFrame | AwaitEnd -> Ended
+```
+
+Raw input is committed to one bounded caller-owned frame workspace. A complete
+frame is parsed to typed LZSS values, modeled, entropy-coded, and serialized
+before any byte from that frame reaches caller output. Token, operation,
+serialized-frame, and raw-frame workspaces must be mutually disjoint, and
+caller output may not alias any of them. Once prepared, a frame can drain one
+byte at a time without accepting the following raw frame, so its sequence and
+raw offset remain fixed until all serialized bytes are committed.
+
+`Flush` publishes only bytes already representable and does not close a short
+raw frame or alter Format 2 bytes. `ResetBlock` and unknown flags are rejected.
+`EndInput` must coincide with the declared original-size boundary and is
+remembered while the final header or frame drains. Empty input consists only
+of the stream header. Repeated calls after completion return `EndOfStream`,
+and construction or processing failures remain sticky.

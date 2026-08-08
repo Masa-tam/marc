@@ -13295,3 +13295,17 @@ native operation, and serialized extents; require context and entropy decision
 counts to agree; validate header and descriptor before materialization; and
 write only the exact serialized prefix. Keep all interfaces private and retain
 the existing Format 2 bytes and C ABI.
+
+## DD-643: Format 2 streaming encoding prepares one atomic frame at a time
+
+- Date: 2026-08-08
+- Status: accepted
+
+Emit the canonical stream header from a validated known-size configuration,
+then collect at most one raw frame before invoking the complete private frame
+encoder. Keep raw, typed-token, modeled-operation, and serialized-frame
+workspaces mutually disjoint and reject caller output that aliases any of
+them. Publish no frame byte until its complete representation exists; drain it
+fully before consuming the following frame. Treat `Flush` as nonstructural,
+reject `ResetBlock`, retain `EndInput` across final draining, and make terminal
+states sticky. Keep the lifecycle private and preserve Format 2 and the C ABI.

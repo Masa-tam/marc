@@ -3703,3 +3703,12 @@ Format 2 frame contract, explicit endian helpers, checked arithmetic, decoder
 limits, and caller-owned workspace policy. No external compression pipeline,
 frame encoder, serializer, source code, corpus, encoded stream, or test suite
 was consulted.
+
+### IR-0421
+
+The private Format 2 streaming encoder uses only DD-643, marc's local stream
+header and complete-frame encoder contracts, the established Transform status
+model, explicit serialization helpers, checked arithmetic, decoder limits,
+and caller-owned disjoint workspace policy. No external streaming compressor,
+frame controller, source code, corpus, encoded stream, or test suite was
+consulted.

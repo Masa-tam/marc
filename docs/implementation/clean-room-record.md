@@ -15207,3 +15207,33 @@ discarded and the reviewed seed retained.
   capacity, aggregate, and alias failures preserve caller output; MSVC and
   ClangCL builds are warning-free; focused and full regression tests pass in
   both configurations.
+
+## CR-0673: 2026-08-08 - Private Format 2 streaming encoder
+
+- Authoring method: composed marc's independently specified stream-header and
+  complete-frame encoder boundaries under its existing Transform lifecycle.
+- References used: AGENTS.md sections 3, 4, 5, 7, 11.2, 12, 14, and 15;
+  DD-643; IR-0421; TVG-0523; marc's local Format 2 specification, complete
+  frame encoder, checked arithmetic, decoder limits, and disjoint caller-owned
+  workspace policy.
+- Known implementations intentionally not consulted: external streaming
+  compressors, frame controllers, source code, corpora, encoded streams, and
+  test suites.
+- Independent decisions: prepare one whole frame before publication; prohibit
+  overlap across every construction workspace and caller output; drain before
+  accepting the next frame; retain known-size termination while draining; and
+  keep `Flush` nonstructural.
+- Generated-code task description: implement a private bounded Format 2
+  streaming encoder and transactional stream-header serializer with exact
+  one-byte split vectors, multi-frame sequence, early frame publication,
+  flush, empty, final-drain, limit, capacity, alias, flag, and sticky-state
+  tests.
+- Similarity review: lifecycle and bytes come only from marc's local contracts
+  and independently implemented components. State transitions, workspace
+  gates, serializer, error mapping, and tests were designed locally without
+  comparing external implementation expression or control flow.
+- Local validation: one-byte input/output reproduces the stream header and two
+  published one-Literal frames exactly; partial flush, early frame emission,
+  empty and final drains behave deterministically; capacity, limit, end, alias,
+  and flag failures are stable; MSVC and ClangCL builds are warning-free;
+  focused and full regression tests pass in both configurations.

@@ -6737,3 +6737,20 @@ incorrect initial and final frame extents, short token, operation, and
 serialized storage, one-byte-short aggregate workspace, raw/output aliasing,
 token/output aliasing, and excess serialized capacity. Snapshot serialized or
 aliased caller storage and require every pre-write failure to preserve it.
+
+### TVG-0523
+
+Serialize a known-size two-byte stream as two one-byte frames while supplying
+and accepting one byte per call. Require the exact documented 112-byte Format
+2 stream header followed by the published 86-byte one-Literal frame twice,
+with frame sequences zero and one, and require repeated completion to remain
+`EndOfStream`.
+
+Independently prove that a full frame is emitted before whole-stream end,
+`Flush` does not close a partial frame, `EndInput` survives zero-capacity final
+drain, and empty input emits only the header. Exercise short token, operation,
+and serialized workspaces, payload limits, premature declared end, constructor
+workspace overlap, output aliasing, unknown flags, and `ResetBlock`; require
+stable error categories and sticky failures. Serialize the stream header
+against its existing vector and require invalid configuration to leave the
+destination unchanged.

@@ -55,6 +55,11 @@ enum class TypedContextStreamHeaderError : std::uint8_t {
     const TypedContextStreamHeader& header,
     const core::DecoderLimits& limits) noexcept;
 
+[[nodiscard]] TypedContextStreamHeaderError serialize_typed_context_stream_header(
+    const TypedContextStreamHeader& header,
+    const core::DecoderLimits& limits,
+    std::span<std::byte, typed_context_stream_header_size> output) noexcept;
+
 [[nodiscard]] TypedContextStreamHeaderError parse_typed_context_stream_header(
     std::span<const std::byte> input,
     const core::DecoderLimits& limits,

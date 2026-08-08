@@ -5773,3 +5773,10 @@ output as well. Header and descriptor serializers validate into zeroed local
 fixed arrays before copying, so reserved bytes remain canonical and validation
 failure leaves caller output unchanged. No new field, ID, variant, profile, or
 C ABI entry is introduced.
+
+The private streaming encoder now emits the same 112-byte stream header and
+concatenates complete-frame encoder results in zero-based sequence order. It
+uses `frame size` raw bytes for every nonfinal frame and the exact remaining
+`original size` for the final frame; empty input emits no frame. Arbitrary
+input/output splits and `Flush` do not change the resulting bytes. This
+lifecycle adds no field, ID, variant, public profile, or C ABI entry.

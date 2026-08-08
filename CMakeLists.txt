@@ -44,6 +44,7 @@ set(MARC_SOURCES
     src/context/lzss_field_context.cpp
     src/frame/lzss_typed_context_frame_decoder.cpp
     src/frame/lzss_typed_context_frame_encoder.cpp
+    src/frame/lzss_typed_context_frame_streaming_encoder.cpp
     src/frame/lzss_typed_context_frame_streaming_decoder.cpp
     src/entropy/contextual_dynamic_range_decoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
@@ -1251,6 +1252,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_typed_context_frame_decoder_tests.cpp
         tests/lzss_typed_context_frame_encoder_tests.cpp
         tests/lzss_typed_context_frame_streaming_decoder_tests.cpp
+        tests/lzss_typed_context_frame_streaming_encoder_tests.cpp
         tests/lzss_field_context_tests.cpp
         tests/lzss_format_tests.cpp
         tests/lzss_decoder_tests.cpp

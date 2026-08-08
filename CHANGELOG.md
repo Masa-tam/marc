@@ -50,6 +50,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private Format 2 streaming decoder lifecycle for split 112-byte
   headers, multiple bounded frames, one-byte input/output, atomic frame drain,
   sticky errors, exact termination, and aggregate workspace enforcement.
+- Added the matching private Format 2 streaming encoder lifecycle. It emits
+  the canonical stream header, buffers one bounded raw frame, atomically
+  prepares complete typed/context/range frames, and drains with arbitrary
+  output capacity without changing bytes on `Flush`.
 
 ## 0.1.3 - 2026-08-08
 

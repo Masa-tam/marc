@@ -102,6 +102,24 @@ TEST(TypedContextStreamFormat, ParsesSpecifiedOneLiteralHeader) {
     EXPECT_EQ(parsed.context_count, 31U);
 }
 
+TEST(TypedContextStreamFormat, SerializesSpecifiedHeaderTransactionally) {
+    const auto expected = stream_vector();
+    const auto stream = stream_config();
+    std::array<std::byte, typed_context_stream_header_size> output{};
+    ASSERT_EQ(serialize_typed_context_stream_header(stream, {}, output),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(output, expected);
+
+    output.fill(std::byte{0xCC});
+    auto invalid = stream;
+    invalid.context_count = 30;
+    EXPECT_EQ(serialize_typed_context_stream_header(invalid, {}, output),
+              TypedContextStreamHeaderError::invalid_entropy_parameters);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xCC};
+    }));
+}
+
 TEST(TypedContextStreamFormat, RejectsEveryTruncatedHeaderAtomically) {
     const auto bytes = stream_vector();
     for (std::size_t size = 0; size < bytes.size(); ++size) {
