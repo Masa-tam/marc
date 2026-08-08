@@ -3730,3 +3730,11 @@ bounded streaming pair, stable status mapping, checked pointer arithmetic,
 and caller-owned workspace policy. No external compression ABI, wrapper,
 allocator layout, source code, corpus, encoded stream, or test suite was
 consulted.
+
+### IR-0424
+
+The experimental Format 2 public-completion audit uses only DD-646, the local
+Format 2 specification, the already published C lifecycle, established marc
+completion-test data classes and status invariants, and independently seeded
+binary generators. No external compression implementation, completion suite,
+corpus, encoded stream, source code, or malformed-input catalog was consulted.

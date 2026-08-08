@@ -15293,3 +15293,26 @@ discarded and the reviewed seed retained.
   Format 2 stream, reconstructs binary input, and rejects all tested invalid
   configuration and workspace cases under MSVC and ClangCL; focused and full
   regression tests pass in both configurations.
+
+## CR-0676: 2026-08-09 - Experimental Format 2 public completion
+
+- Authoring method: applied marc's established public-ABI completion criteria
+  to the independently specified Format 2 C lifecycle.
+- References used: AGENTS.md sections 3.3, 3.4, 12, 14.1 through 14.4, and 16;
+  DD-646; IR-0424; TVG-0526; marc's local Format 2 frame layout, C workspace
+  query, status contract, deterministic generator, and completion conventions.
+- Known implementations intentionally not consulted: external compression
+  implementations, completion suites, corpora, encoded streams, malformed
+  samples, source code, and test catalogs.
+- Independent decisions: use 64-byte frames; allocate opaque views through
+  `max_align_t` backing without interpreting them; parse only public frame
+  extents; and require the fourth frame to remain wholly unpublished for
+  corruption, truncation, and trailing input.
+- Generated-code task description: add a public-only Format 2 completion matrix
+  for required binary classes, repeated determinism, boundary sizes, one-byte
+  and mixed chunk schedules, sticky end/error states, and final-frame atomicity.
+- Similarity review: helper layout, generated data, chunk schedules, mutation
+  sites, and assertions were derived from marc's own established completion
+  vocabulary and Format 2 fields without comparing external test expression.
+- Local validation: all three focused completion cases pass under MSVC and
+  ClangCL; all 2,477 regression tests pass in both configurations.

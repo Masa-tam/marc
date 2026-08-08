@@ -1174,3 +1174,12 @@ decode; only the private profile owns typed offsets and alignment. The pure-C
 boundary now proves a multi-frame binary round trip and rejects short,
 misaligned, overlapping, and reserved-field inputs. CLI, benchmark, fuzz,
 completion-matrix, and interoperability admission remain later steps.
+
+### CP-0040
+
+The experimental `lzss-contextual-dynamic-range` C lifecycle now has public
+completion evidence for required binary classes, repeat determinism,
+one-byte and mixed chunking, sticky terminal states, and frame-atomic rejection
+of a corrupt, truncated, or extended fourth frame. It remains outside the
+baseline 42-profile matrix; fuzz, CLI, benchmark, and interoperability
+admission are still separate later steps.

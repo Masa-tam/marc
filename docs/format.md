@@ -5780,3 +5780,11 @@ uses `frame size` raw bytes for every nonfinal frame and the exact remaining
 `original size` for the final frame; empty input emits no frame. Arbitrary
 input/output splits and `Flush` do not change the resulting bytes. This
 lifecycle adds no field, ID, variant, public profile, or C ABI entry.
+
+The experimental public-completion audit changes no byte of this
+representation. It fixes 64-byte raw frames, for which the conservative
+payload ceiling is `12F + 5 = 773` bytes and the complete frame ceiling is
+`64 + 16 + 773 = 853` bytes. Repeated encoding and arbitrary input/output
+chunking must produce identical streams. A malformed, truncated, or extended
+fourth frame may not publish its final raw byte after three valid 64-byte
+frames; the resulting error and position remain sticky.

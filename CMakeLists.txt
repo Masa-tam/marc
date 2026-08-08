@@ -1255,6 +1255,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_typed_context_profile_tests.cpp
         tests/lzss_typed_context_frame_streaming_decoder_tests.cpp
         tests/lzss_typed_context_frame_streaming_encoder_tests.cpp
+        tests/lzss_contextual_dynamic_range_completion_tests.cpp
         tests/lzss_field_context_tests.cpp
         tests/lzss_format_tests.cpp
         tests/lzss_decoder_tests.cpp

@@ -60,6 +60,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the experimental `marc_lzss_contextual_dynamic_range_*` C lifecycle.
   Its size-tagged configuration, direction-specific workspace query, and
   factory expose Format 2 without leaking C++ record layouts or changing ABI 1.
+- Added its public-ABI completion matrix for required binary classes,
+  deterministic arbitrary chunking, sticky terminal states, and frame-atomic
+  rejection of corrupt, truncated, and trailing final-frame input.
 
 ## 0.1.3 - 2026-08-08
 

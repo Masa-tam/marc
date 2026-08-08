@@ -1217,3 +1217,13 @@ directions from queried storage, proves a binary multi-frame round trip, and
 rejects short, misaligned, overlapping, and nonzero-reserved inputs. This is
 public lifecycle evidence only: it does not add a forty-third baseline matrix
 cell or claim CLI, completion, fuzz, benchmark, or interoperability readiness.
+
+### BR-0034
+
+The experimental Format 2 public lifecycle now has a completion matrix over
+empty and binary classes, all one-byte values, 63/64/65-byte boundaries,
+repeat determinism, one-byte and mixed chunk schedules, and sticky terminal
+results. A corrupt sequence, truncated payload, or trailing byte at the fourth
+frame publishes only the three preceding frames. This is completion evidence,
+not admission to the baseline matrix, CLI, fuzz, benchmark, or interoperability
+bundle.

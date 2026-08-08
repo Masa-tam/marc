@@ -13339,3 +13339,19 @@ to serialized/raw/token storage. Reuse the private profile and partitioners;
 validate capacity, alignment, pairwise non-overlap, and reserved fields before
 publishing a handle. Keep ABI version 1 because the addition changes no
 existing declaration, structure, symbol, or behavior.
+
+## DD-646: Format 2 public completion is frame-atomic
+
+- Date: 2026-08-09
+- Status: accepted
+
+Audit the experimental public lifecycle with 64-byte raw frames and only the
+three workspaces returned by its C requirements query. Reserve at most
+`12F + 5` payload bytes and `12F + 85` complete frame bytes without changing
+the encoded representation. Require deterministic output across repeated and
+arbitrarily chunked execution, sticky terminal results, and exact recovery of
+all required binary data classes. Corruption, truncation, or trailing data at
+the fourth frame must leave its one raw byte unpublished after the first three
+complete 64-byte frames have been committed. This evidence advances public
+completion only; it does not admit the experiment to CLI, fuzz, benchmark, or
+interoperability inventories.

@@ -135,7 +135,8 @@ atomic raw-frame output, and views for typed tokens. The factory validates
 capacity, alignment, and pairwise non-overlap before publishing a handle.
 Encoder sizes and LZSS parameters are read from the size-tagged configuration;
 decoder workspace sizing comes only from its hard limits and validates stream
-parameters later.
+parameters later. The profile remains experimental and outside the baseline
+CLI inventory.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

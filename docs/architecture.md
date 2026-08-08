@@ -4162,3 +4162,16 @@ secondary to atomic raw output, and views to private typed tokens. The query
 owns all extents and alignment. The factory validates the exact used prefixes
 for capacity, alignment, pairwise non-overlap, and internal layout before
 publishing a handle; failure leaves the caller handle null.
+
+### Format 2 public completion boundary
+
+The public completion matrix constructs both directions exclusively through
+the C requirements query and factory. Aligned storage is owned by the caller;
+tests do not reproduce private token or operation offsets. The matrix fixes
+64-byte frames to cover exact frame transitions cheaply, while the profile
+calculator remains authoritative for every capacity.
+
+Decode publication remains one complete raw frame at a time. A malformed,
+truncated, or extended final frame therefore cannot expose any byte from that
+frame, even when earlier frames were already drained. Successful and failed
+terminal states are sticky, and chunk schedules cannot alter encoded bytes.
