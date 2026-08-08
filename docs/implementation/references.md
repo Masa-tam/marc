@@ -3770,3 +3770,11 @@ the experimental public CLI profile, marc's existing manifest contract,
 PowerShell bundle scripts, and SHA-256/file-equality helpers. No external
 bundle format, interoperability suite, compressor, corpus, archive, source
 code, or manifest was consulted.
+
+### IR-0429
+
+The paired contextual LZSS baseline uses only DD-651, marc's dependency-free
+benchmark executable, the repository's current `README.md`, and the already
+implemented public Format 1 and experimental Format 2 lifecycles. No external
+benchmark harness, compressor, corpus, result table, source code, or encoded
+stream was consulted.

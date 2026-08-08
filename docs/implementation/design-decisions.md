@@ -13440,3 +13440,21 @@ That release check completed at revision
 24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 bundle verified locally and on Windows/MSVC. Every pass decoded and
 byte-identically re-encoded all 43 archives.
+
+## DD-651: Contextual evolution begins from a paired empirical baseline
+
+- Date: 2026-08-09
+- Status: accepted
+
+Before selecting a second context-model or entropy-backend variant, compare
+the existing Format 1 `lzss-dynamic-range` and Format 2
+`lzss-contextual-dynamic-range` profiles with the same input, revision, build
+type, frame policy, and iteration count. Treat encoded extent and queried peak
+caller-owned workspace as the reliable outputs of this small smoke; do not
+infer throughput from a 4,326-byte input and one rounded timed iteration.
+
+Require both local compilers to agree on each encoded extent. Record the
+Format 2 reduction relative to the Format 1 encoded extent, together with its
+workspace increase, so later variants have an explicit point of comparison.
+This measurement selects no future backend, changes no format or API, and does
+not substitute for a representative fixed corpus.

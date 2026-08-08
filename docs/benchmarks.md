@@ -497,6 +497,23 @@ workspace. The encoder reported primary/secondary/views extents of
 786,517/65,536/786,432 bytes. Throughput from this small input is descriptive
 only, and the result does not join the stable 42-profile comparison matrix.
 
+### BM-0014: Paired byte-stream and contextual LZSS comparison
+
+At revision `6b1fd9b`, the existing MSVC and ClangCL Release benchmark
+binaries each ran one iteration of `lzss-dynamic-range` and
+`lzss-contextual-dynamic-range` over the same 4,326-byte `README.md`. Both
+compilers produced exactly 3,355 bytes at ratio 0.776 for the Format 1
+byte-stream profile and 2,389 bytes at ratio 0.552 for the Format 2 contextual
+profile. Relative to the encoded Format 1 extent, the contextual result is
+966 bytes, or approximately 28.8%, smaller.
+
+The paired run also reports the cost of the experimental staging policy. Peak
+caller-owned workspace rises from 655,493 bytes to 1,638,485 bytes. The input
+is too small and the single timed iteration too coarse for a throughput claim;
+this result establishes only deterministic same-input size and workspace
+evidence. It is not a representative corpus result or a stable performance
+baseline.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

@@ -1270,3 +1270,14 @@ four-direction external exchange at revision
 `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` verifies all 43 archives across
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers.
+
+### BR-0039
+
+A controlled same-input smoke comparison now establishes the first empirical
+tradeoff for the experimental architecture. At revision `6b1fd9b`, both MSVC
+and ClangCL encode the 4,326-byte README to 3,355 bytes with the Format 1 LZSS
+Dynamic Range profile and 2,389 bytes with the Format 2 contextual profile.
+The approximately 28.8% reduction in encoded extent is accompanied by a rise
+in peak caller-owned workspace from 655,493 to 1,638,485 bytes. This justifies
+continued context/backend experiments but is not corpus-wide compression or
+throughput evidence.

@@ -15418,3 +15418,26 @@ discarded and the reviewed seed retained.
   Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically
   on Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
   re-encoded identically on Windows/MSVC. Every pass verified all 43 archives.
+
+## CR-0681: 2026-08-09 - Paired contextual LZSS baseline
+
+- Authoring method: measured marc's two existing public LZSS Dynamic Range
+  lifecycles through its local dependency-free benchmark at one common Git
+  state and input extent.
+- References used: AGENTS.md sections 11, 13, 15, and 16; DD-651; IR-0429;
+  marc's benchmark measurement contract and current `README.md`.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, compressors, corpora, result tables, source code, and encoded
+  streams.
+- Independent decisions: compare encoded extent and peak caller-owned
+  workspace; require MSVC and ClangCL size agreement; and exclude the rounded
+  one-iteration timings from design conclusions.
+- Generated-code task description: run the existing byte-stream and contextual
+  LZSS Dynamic Range benchmarks over one identical input under both local
+  Release configurations and record the bounded empirical tradeoff.
+- Similarity review: command selection, arithmetic, and reporting terminology
+  come solely from marc's local profile names and benchmark output.
+- Local validation: both compilers encode the 4,326-byte README to 3,355 bytes
+  with Format 1 and 2,389 bytes with Format 2. The latter is 966 bytes, about
+  28.8%, smaller; peak caller workspace rises from 655,493 to 1,638,485 bytes.
+  No representative-corpus or throughput claim is made.

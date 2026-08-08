@@ -78,6 +78,11 @@ format versions, and C ABI versions are independent namespaces.
   Four-direction exchange at revision
   `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` verifies all 43 archives across
   Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 producers.
+- Recorded a same-input, same-build paired smoke comparison between the
+  byte-stream and contextual LZSS Dynamic Range profiles. Both MSVC and
+  ClangCL produced 3,355 versus 2,389 bytes from the 4,326-byte README, while
+  the contextual profile increased peak caller-owned workspace from 655,493
+  to 1,638,485 bytes.
 
 ## 0.1.3 - 2026-08-08
 
