@@ -3892,3 +3892,18 @@ serialized-frame bounds are checked before entropy decoding or token
 allocation. The returned layout becomes visible only when the complete
 declared frame is present and every header/descriptor check succeeds. Bytes
 following that exact extent remain available for the next frame.
+
+### Typed LZSS frame validation
+
+The private dictionary/context boundary now has a value-only `Literal` and
+`Match` representation independent of native layout and canonical transcript
+bytes. A complete-frame validator walks caller-owned tokens without allocating
+or reconstructing raw output. It validates variant-2 parameters, unused
+fields, token kind, match distance against already produced history, match
+length, overlap semantics, declared token count, exact raw extent, aggregate
+output, and local token-storage limits.
+
+The result retains the first failing token index and the validated raw prefix,
+but no raw byte is published. Typed reconstruction and context-model inversion
+remain later decoder stages and may consume a frame only after this validation
+boundary succeeds.

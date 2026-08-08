@@ -13132,3 +13132,16 @@ before accepting the complete payload extent. Do not allocate token, event, or
 entropy state and do not publish parsed output until the declared frame is
 fully present. Return the exact accepted frame extent so following-frame bytes
 remain untouched.
+
+## DD-632: Typed LZSS validation precedes reconstruction
+
+- Date: 2026-08-08
+- Status: accepted
+
+Represent Format 2 LZSS tokens as private value records, not serialized or ABI
+objects. Validate a caller-owned complete token span before reconstruction or
+context conversion. Require exact declared token and raw counts, zero unused
+fields, known kind, variant-2 parameter bounds, references within the already
+validated frame history, checked output growth, aggregate-output policy, and a
+bounded local storage extent. Preserve the first failing token index and raw
+prefix for diagnostics, but publish no raw bytes from validation.

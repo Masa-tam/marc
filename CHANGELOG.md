@@ -15,6 +15,10 @@ format versions, and C ABI versions are independent namespaces.
   parses the complete 112-byte stream header, rejects malformed identities,
   parameters, counts, descriptors, reserved fields, and local-limit excesses,
   and publishes no parsed state on failure.
+- Added the private typed LZSS `Literal`/`Match` value boundary and complete
+  token-frame validator, including overlap-reference semantics, stable failing
+  token indices, exact declared count/size checks, and bounded caller-owned
+  token storage.
 
 ## 0.1.3 - 2026-08-08
 

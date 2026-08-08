@@ -6549,3 +6549,17 @@ optional extents, descriptor counts/flags/reserved bytes, and representative
 local limits. Require stable categorized rejection before layout publication.
 Append one byte after the canonical frame and require the reported extent to
 remain 86 so the next frame is not consumed.
+
+### TVG-0512
+
+Define typed tokens directly as values rather than deriving them from a byte
+serialization. Validate empty input; `Literal('A'), Match(1,5)` as a six-byte
+overlap frame; and five Literals followed by `Match(5,10), Literal('X')` as a
+sixteen-byte frame. Require exact final token and raw counts.
+
+For negative vectors, alter a later distance beyond produced history, lengths
+to 4 and 259, unused fields, the token kind, declared token count, declared raw
+extent, variant-2 parameters, local LZ distance, token-storage capacity, and
+aggregate output. Require the validator to stop at the first invalid token,
+retain the preceding token/raw counts, categorize policy limits separately,
+and leave a single-token caller output unchanged on failure.

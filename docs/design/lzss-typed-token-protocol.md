@@ -110,3 +110,13 @@ Token and parser state reset only at an outer-frame boundary. `Flush` does not
 close a partial frame. A typed-token block cannot cross a frame. All token
 arrays, parser tables, raw staging, and reconstruction staging are bounded and
 caller owned or transform owned at construction; input cannot resize them.
+
+## Reference validation boundary
+
+The private reference implementation defines value-only `Literal` and `Match`
+records plus single-token and complete-frame validators. Complete validation
+requires exact declared token and raw counts, checks every reference against
+the already validated raw prefix, enforces local limits and variant-2
+parameters, and reports the first failing token index. It performs no
+allocation and publishes no reconstructed raw bytes. The typed producer,
+reconstructor, and context-model bridge are separate later stages.

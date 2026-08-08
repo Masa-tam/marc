@@ -14887,3 +14887,29 @@ discarded and the reviewed seed retained.
   every proper prefix and representative malformed field is rejected; MSVC
   and ClangCL builds are warning-free; focused checks and all 2,368 tests pass
   in both configurations.
+
+## CR-0662: 2026-08-08 - Typed LZSS complete-frame validator
+
+- Authoring method: implemented private typed token values and validation
+  directly from the repository-owned LZSS typed-token protocol.
+- References used: AGENTS.md sections 9.1, 9.3, 11.2, 12, and 15; DD-632;
+  IR-0410; TVG-0512; marc's local LZSS parameter/reference rules, checked
+  arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external typed-token
+  APIs, LZSS encoders or decoders, validators, object layouts, source code,
+  malformed corpora, and test suites.
+- Independent decisions: use a distinct value type rather than aliasing the
+  serialized-token type; validate complete caller-owned spans without
+  allocation; retain the first failing index and validated raw prefix for
+  diagnostics; and defer reconstruction and context conversion.
+- Generated-code task description: implement typed Literal/Match values,
+  variant-2 parameter validation, single-token validation, complete-frame
+  count/reference/limit validation, and positive, overlap, malformed,
+  policy-limit, and failure-atomicity tests.
+- Similarity review: token semantics come only from marc's local LZSS
+  specification. Type layout, error categories, validation order, and tests
+  were designed locally without comparing external expression or control flow.
+- Local validation: empty, Literal/Match overlap, and Match-then-Literal frames
+  validate; malformed fields and limits fail at stable indices; MSVC and
+  ClangCL builds are warning-free; focused and full regression checks pass in
+  both configurations.

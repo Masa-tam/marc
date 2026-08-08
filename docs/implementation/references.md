@@ -3614,3 +3614,10 @@ marc's checked arithmetic, explicit little-endian helpers, decoder limits, and
 transactional Format 1 header-validation policy. No external parser, format
 validator, compression container, source code, malformed corpus, or test suite
 was consulted.
+
+### IR-0410
+
+The typed LZSS value validator uses only DD-632, the local typed-token protocol,
+variant-1 LZSS parameter/reference semantics, checked arithmetic, and decoder
+limits. No external typed-token API, LZSS implementation, validator, object
+layout, source code, malformed corpus, or test suite was consulted.
