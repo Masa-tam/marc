@@ -3669,3 +3669,11 @@ Format 2 preflight, direct contextual range-to-LZSS bridge, typed reconstructor,
 checked arithmetic, decoder limits, and caller-owned staging contracts. No
 external archive decoder, compression pipeline, workspace allocator, source
 code, corpus, encoded stream, or test suite was consulted.
+
+### IR-0417
+
+The private Format 2 streaming decoder uses only DD-639, marc's core process
+contract, local Format 2 header parsers and complete-frame decoder, checked
+arithmetic, decoder limits, and existing frame-atomic streaming policy. No
+external streaming decompressor, archive reader, buffer coordinator, source
+code, corpus, encoded stream, or test suite was consulted.

@@ -13226,7 +13226,25 @@ LZSS reconstruction as one private bounded frame operation. After preflight
 but before either staging write, require representable declared extents,
 sufficient token and raw capacity, and checked pairwise non-overlap of the
 serialized frame, exact token region, and exact raw region. Decode tokens only
-into private staging, independently
-revalidate them during reconstruction, and report serialized consumption only
+into private staging, independently revalidate them during reconstruction, and
+report serialized consumption only
 after exact raw completion. Preserve zero consumption and unchanged raw output
 on every failure. Add no public API, stream field, or format variant.
+
+## DD-639: Format 2 streaming decode buffers and commits one frame
+
+- Date: 2026-08-08
+- Status: accepted
+
+Implement the first private Format 2 streaming decoder as an immutable decode
+state machine with caller-owned serialized-frame, typed-token, and raw-frame
+workspaces. Require those construction spans to be pairwise disjoint. After
+each frame header, enforce exact workspace capacities and the checked aggregate
+of serialized bytes, native token bytes, and raw bytes before collecting the
+body. Decode and reconstruct a complete frame privately, then drain it with
+arbitrary output capacity before accepting another frame. Preserve prior-frame
+publication on later failure, reject output/raw aliasing, truncation, trailing
+bytes, reset, and unknown flags, and make end/error terminal behavior sticky.
+Preserve `limit_exceeded` from valid stream/frame headers instead of collapsing
+local policy rejection into malformed input.
+Keep the lifecycle private without changing Format 2 or the C ABI.

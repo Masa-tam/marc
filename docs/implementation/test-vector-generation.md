@@ -6665,3 +6665,23 @@ token staging, short raw staging, and deliberately overlapping token/raw,
 serialized/token, and serialized/raw object storage. Require all gates to fail
 before the first token write and to report the exact required extents after
 successful preflight.
+
+### TVG-0519
+
+Build a two-frame stream from the published 112-byte Format 2 header and two
+copies of TVG-0518's one-Literal frame. Set stream frame size to one, original
+size to two, and frame sequences to zero and one. Feed every serialized byte
+and accept every raw byte individually; require two `A` bytes, valid process
+results on every call, exact input consumption, terminal `EndOfStream`, and
+the same terminal result on repetition.
+
+Corrupt only the second frame's canonical range prefix and require the first
+`A` to be published before a sticky malformed-stream error while the second is
+never published. Independently exercise serialized, token, and raw workspace
+shortage; a valid-limit configuration whose per-frame serialized/token/raw sum
+exceeds the aggregate ceiling; stream-level and frame-level local limit
+rejection; final-byte truncation; trailing final
+data; reset and unknown flags; flush starvation; premature EndInput after frame
+one; EndInput retained across a zero-capacity final drain; overlapping
+construction workspaces; and output aliasing raw staging. Include a header-only
+empty stream and require immediate clean termination.

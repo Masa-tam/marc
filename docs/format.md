@@ -5743,3 +5743,11 @@ directly to typed tokens, and reconstruct the declared raw extent. This adds no
 field or representation. Frame consumption is committed only after the full
 private raw frame exists; public streaming lifecycle, publication, and profile
 admission remain future work.
+
+The private streaming reference decoder accepts this unchanged representation
+with arbitrary input and output splits. It buffers at most one bounded frame,
+resets dictionary/context/entropy state at each specified frame boundary, and
+does not begin the next frame until the prior raw frame is drained. Empty input
+ends after the 112-byte stream header; nonempty streams require contiguous
+zero-based frame sequences whose raw sizes sum exactly to `original size`.
+This lifecycle is still private and adds no public profile or C ABI entry.

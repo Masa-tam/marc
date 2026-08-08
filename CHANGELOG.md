@@ -38,6 +38,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private complete Format 2 frame decoder boundary. It preflights the
   serialized frame and all caller-owned workspace before decoding typed tokens
   and reconstructing raw bytes, while publishing no partial frame on failure.
+- Added the private Format 2 streaming decoder lifecycle for split 112-byte
+  headers, multiple bounded frames, one-byte input/output, atomic frame drain,
+  sticky errors, exact termination, and aggregate workspace enforcement.
 
 ## 0.1.3 - 2026-08-08
 

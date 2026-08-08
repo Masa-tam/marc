@@ -135,3 +135,10 @@ decoding with this reconstructor. Serialized-frame consumption becomes visible
 only after exact entropy finalization and raw reconstruction both succeed;
 malformed or locally rejected frames publish neither partial raw output nor a
 consumed-frame extent. This reference boundary does not define in-place decode.
+
+The private streaming lifecycle supplies those three bounded staging regions
+at construction. It buffers one complete serialized frame, enforces the
+checked aggregate of serialized bytes, native token storage, and raw bytes,
+then drains only a successfully reconstructed raw frame through the ordinary
+partial-output contract. A subsequent malformed frame cannot revoke bytes
+from an earlier completed frame and cannot publish any byte of itself.

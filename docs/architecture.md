@@ -4012,3 +4012,41 @@ The independently validating reconstructor then writes only private raw
 staging. A preflight, entropy, context, token, size, capacity, limit, or alias
 failure returns zero serialized consumption and publishes no raw byte. Public
 stream state and downstream publication remain a later transaction boundary.
+
+### Private Format 2 streaming decode lifecycle
+
+The private streaming decoder owns no dynamic allocation. Construction accepts
+three caller-owned, pairwise-disjoint workspaces for one serialized frame, its
+typed tokens, and its reconstructed raw bytes. It retains fixed inline arrays
+for the 112-byte stream header and 64-byte frame header. Invalid limits or
+overlapping construction workspaces enter a sticky `invalid_argument` state.
+
+Its immutable decode state advances through:
+
+```text
+CollectStreamHeader -> CollectFrameHeader -> CollectFrameBody
+                    -> DecodePrivateFrame -> DrainRawFrame
+                    -> CollectFrameHeader | AwaitEnd -> Ended
+```
+
+The stream and frame headers may arrive one byte at a time. Once a complete
+frame header is validated, the decoder computes and checks the exact serialized
+frame, native token-storage, and raw-frame extents. Their checked sum must fit
+`max_internal_buffered_bytes` before the frame body is accepted. The complete
+private frame decoder runs only after all declared bytes have arrived.
+
+No byte from a frame reaches caller output until that entire frame has decoded
+and reconstructed successfully. Draining supports one-byte output and does not
+accept the next frame until the current raw staging has been drained. Later
+corruption therefore preserves already completed frames while publishing none
+of the failing frame. Output may not alias raw staging because an overlapping
+drain could corrupt bytes that remain pending.
+
+`Flush` does not alter framing. `ResetBlock` and unknown flags are unsupported.
+`EndInput` is remembered while draining, rejects every truncated intermediate
+state, and reaches `EndOfStream` only after the declared original size is fully
+drained with no trailing input. Repeated calls after end return
+`EndOfStream`; the first error and byte position remain sticky.
+Header syntax violations map to `malformed_stream`, while otherwise valid
+stream or frame headers rejected by configured limits retain
+`limit_exceeded`.

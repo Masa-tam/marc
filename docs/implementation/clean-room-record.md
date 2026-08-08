@@ -15081,3 +15081,33 @@ discarded and the reviewed seed retained.
   capacity, and alias failures preserve token/raw storage; MSVC and ClangCL
   builds are warning-free; focused and full regression tests pass in both
   configurations.
+
+## CR-0669: 2026-08-08 - Private Format 2 streaming decoder
+
+- Authoring method: composed marc's independently specified process contract,
+  Format 2 parsers, complete-frame decoder, and frame-atomic drain policy.
+- References used: AGENTS.md sections 3, 4, 5, 11.2, 12, 14, and 15; DD-639;
+  IR-0417; TVG-0519; marc's core status contract, checked arithmetic, decoder
+  limits, and private Format 2 component boundaries.
+- Known implementations intentionally not consulted: external streaming or
+  archive decompressors, buffer coordinators, source code, corpora, encoded
+  streams, and test suites.
+- Independent decisions: retain fixed inline header arrays; buffer exactly one
+  frame; validate pairwise construction-workspace separation; enforce the
+  three-region aggregate before body collection; delay next-frame input until
+  raw drain; reject output/raw aliasing; and retain EndInput while draining.
+- Generated-code task description: implement a no-allocation private streaming
+  decoder over the complete Format 2 frame boundary with arbitrary input/output
+  splits, multi-frame and empty streams, exact terminal behavior, workspace
+  limits, atomic later corruption, sticky diagnostics, and alias tests.
+- Similarity review: state names follow marc's documented lifecycle and all
+  parsing/decoding behavior comes from local private components. Transition
+  order, workspace accounting, alias policy, error mapping, and tests were
+  designed locally without comparing external implementation expression or
+  control flow.
+- Local validation: one-byte input/output reconstructs two frames; later
+  corruption commits only the prior frame; workspace, aggregate, stream/frame
+  limit, truncation, trailing, premature-end, retained-end, flag,
+  construction-alias, and drain-alias behavior is stable; MSVC and ClangCL
+  builds are warning-free; focused and full regression tests pass in both
+  configurations.
