@@ -1220,3 +1220,7 @@ Interoperability schema 32 appends the experimental
 byte-identical re-encoding, reordered-manifest rejection, and schemas 1
 through 31 compatibility are required before external exchange. The new
 bundle entry does not promote the experiment into the stable Format 1 matrix.
+Four-direction verification at revision
+`e9cf0c7d649cf32c9bc3a49bf3db9150370db381` establishes canonical output for
+all 43 archives across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang producers.

@@ -75,6 +75,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added interoperability schema 32 as the frozen 42-entry schema-31 order plus
   the experimental Format 2 archive, with exact-order verification and the
   unchanged schemas 1 through 31 compatibility chain.
+  Four-direction exchange at revision
+  `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` verifies all 43 archives across
+  Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 producers.
 
 ## 0.1.3 - 2026-08-08
 

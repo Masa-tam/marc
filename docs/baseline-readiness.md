@@ -1265,5 +1265,8 @@ The experimental Format 2 profile is locally admitted as archive 43 in
 interoperability schema 32 after the frozen 42-entry schema-31 order. Bundle
 generation round-trips every archive; verification enforces exact order,
 hashes, foreign decode equality, and byte-identical re-encoding; compatibility
-rejects reordered schema 32 and reconstructs schemas 31 through 1. External
-four-direction schema-32 exchange remains pending and is not claimed here.
+rejects reordered schema 32 and reconstructs schemas 31 through 1. Its
+four-direction external exchange at revision
+`e9cf0c7d649cf32c9bc3a49bf3db9150370db381` verifies all 43 archives across
+the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+producers.

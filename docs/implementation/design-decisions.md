@@ -13434,3 +13434,9 @@ schema-32 manifest. Derive schema 31 by removing only the new final archive
 and restoring `marc-cli-v31`, then continue the unchanged compatibility chain
 through schema 1. This is local admission evidence; cross-platform schema-32
 artifacts remain external evidence and must be recorded only after execution.
+
+That release check completed at revision
+`e9cf0c7d649cf32c9bc3a49bf3db9150370db381`: the Windows/MSVC and Ubuntu
+24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+bundle verified locally and on Windows/MSVC. Every pass decoded and
+byte-identically re-encoded all 43 archives.

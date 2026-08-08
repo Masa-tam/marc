@@ -15413,3 +15413,8 @@ discarded and the reviewed seed retained.
 - Local validation: schema-32 generation, exact verification, reorder
   rejection, and schemas 1 through 31 compatibility pass under both local
   compilers; all 2,482 regression tests pass in both Release configurations.
+  External four-direction verification at revision
+  `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` completed all schema-32 paths:
+  Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded identically
+  on Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and decoded and
+  re-encoded identically on Windows/MSVC. Every pass verified all 43 archives.

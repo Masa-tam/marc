@@ -4217,3 +4217,6 @@ verification continue to treat the archive as opaque serialized bytes:
 manifest order, size, SHA-256, foreign decoding, and byte-identical local
 re-encoding are mandatory. Compatibility derives schema 31 by removing only
 that final entry before traversing the existing chain to schema 1.
+The recorded four-direction exchange at revision
+`e9cf0c7d649cf32c9bc3a49bf3db9150370db381` confirms identical schema-32
+bytes and decoding across the three x86-64 producers.
