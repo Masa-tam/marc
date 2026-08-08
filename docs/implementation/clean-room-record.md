@@ -15052,3 +15052,32 @@ discarded and the reviewed seed retained.
   size, policy, capacity, and alias failures preserve token storage; MSVC and
   ClangCL builds are warning-free; focused and full regression tests pass in
   both configurations.
+
+## CR-0668: 2026-08-08 - Complete private Format 2 frame decoder
+
+- Authoring method: composed marc's existing independently specified private
+  frame, entropy/context, typed-token, and reconstruction boundaries.
+- References used: AGENTS.md sections 3, 7, 11.2, 12, 14, and 15; DD-638;
+  IR-0416; TVG-0518; marc's Format 2 specification, preflight parser, direct
+  contextual decoder, typed reconstructor, checked arithmetic, decoder limits,
+  and atomic staging policy.
+- Known implementations intentionally not consulted: external archive or
+  compression decoders, pipeline coordinators, workspace allocators, source
+  code, corpora, encoded streams, and test suites.
+- Independent decisions: copy preflighted metadata locally; gate token/raw
+  capacity and pairwise serialized/token/raw overlap before token writes;
+  retain duplicate token validation at the reconstruction boundary; and
+  publish serialized consumption only after exact raw completion.
+- Generated-code task description: implement a private bounded complete-frame
+  decoder that composes the existing Format 2 stages, preserves raw atomicity,
+  reports nested diagnostics, and tests canonical, trailing, truncated,
+  malformed, capacity, sentinel, and alias cases.
+- Similarity review: frame layout and component behavior come only from marc's
+  local specifications and prior private boundaries. Composition order, result
+  API, early workspace gate, error categories, and tests were designed locally
+  without comparing external implementation expression or control flow.
+- Local validation: the canonical 86-byte one-Literal frame reconstructs `A`
+  and leaves trailing input and excess staging untouched; preflight, entropy,
+  capacity, and alias failures preserve token/raw storage; MSVC and ClangCL
+  builds are warning-free; focused and full regression tests pass in both
+  configurations.

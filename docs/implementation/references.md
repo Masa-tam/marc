@@ -3661,3 +3661,11 @@ decoder, typed LZSS validator, shared field-context state, checked arithmetic,
 decoder limits, and caller-owned span policy. No external compression
 pipeline, token decoder, context adapter, source code, corpus, encoded stream,
 or test suite was consulted.
+
+### IR-0416
+
+The complete private Format 2 frame decoder uses only DD-638, marc's local
+Format 2 preflight, direct contextual range-to-LZSS bridge, typed reconstructor,
+checked arithmetic, decoder limits, and caller-owned staging contracts. No
+external archive decoder, compression pipeline, workspace allocator, source
+code, corpus, encoded stream, or test suite was consulted.

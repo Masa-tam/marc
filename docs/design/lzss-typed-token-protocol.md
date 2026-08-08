@@ -126,3 +126,12 @@ capacity, and token/output non-aliasing before writing its first raw byte. It
 then applies Literal values and bytewise overlapping Match copies to private
 raw staging only. Validation, capacity, policy, or alias failure leaves that
 staging unchanged, and bytes beyond the declared raw extent are never written.
+
+The private complete Format 2 frame decoder validates both token and raw
+workspace capacity and requires the serialized frame, exact token staging, and
+exact raw staging regions to be pairwise disjoint before contextual entropy
+decoding performs its first token write. It then composes direct typed-token
+decoding with this reconstructor. Serialized-frame consumption becomes visible
+only after exact entropy finalization and raw reconstruction both succeed;
+malformed or locally rejected frames publish neither partial raw output nor a
+consumed-frame extent. This reference boundary does not define in-place decode.

@@ -13215,3 +13215,18 @@ repeat the deterministic decode to materialize only the declared token extent.
 Keep the modeled-operation transforms as independent specification/test
 boundaries, but do not allocate their native representation on this runtime
 path. This adds no public API or stream-format change.
+
+## DD-638: Complete Format 2 frame decode gates all workspace first
+
+- Date: 2026-08-08
+- Status: accepted
+
+Compose frame preflight, direct contextual range-to-token decoding, and typed
+LZSS reconstruction as one private bounded frame operation. After preflight
+but before either staging write, require representable declared extents,
+sufficient token and raw capacity, and checked pairwise non-overlap of the
+serialized frame, exact token region, and exact raw region. Decode tokens only
+into private staging, independently
+revalidate them during reconstruction, and report serialized consumption only
+after exact raw completion. Preserve zero consumption and unchanged raw output
+on every failure. Add no public API, stream field, or format variant.

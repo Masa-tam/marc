@@ -3989,3 +3989,26 @@ operation-level forward and inverse transforms remain as specification and
 test boundaries; omitting their native in-memory representation from this
 runtime path does not alter the canonical modeled-event sequence or Format 2
 bytes.
+
+### Complete private Format 2 frame decode
+
+The first complete private frame boundary composes Format 2 preflight, direct
+contextual range-to-token decoding, typed-token validation, and LZSS raw
+reconstruction. It reports the exact serialized frame extent only after all
+four stages succeed; following bytes remain input for the next frame.
+
+Preflight copies the validated header and descriptor into local values. Before
+token decoding can write, the boundary converts declared token and raw extents
+to host sizes, requires sufficient caller-owned staging, and proves the exact
+serialized-frame, token, and raw regions pairwise disjoint with checked address
+arithmetic.
+This early alias gate is necessary because a later reconstructor-only check
+would occur after token materialization and could already have changed an
+overlapping raw region. In-place frame decoding is not part of this private
+reference boundary.
+
+After those gates, contextual decoding writes only private typed-token staging.
+The independently validating reconstructor then writes only private raw
+staging. A preflight, entropy, context, token, size, capacity, limit, or alias
+failure returns zero serialized consumption and publishes no raw byte. Public
+stream state and downstream publication remain a later transaction boundary.

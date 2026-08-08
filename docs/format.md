@@ -5735,3 +5735,11 @@ that frame are:
 
 Empty input contains these 112 stream bytes and no frame. These vectors reserve
 the representation only; they do not claim an implemented public profile.
+
+The private complete-frame reference decoder now implements the specified
+admission order for one bounded frame: preflight the 64-byte header and 16-byte
+descriptor, validate caller-owned token/raw workspace, decode the exact payload
+directly to typed tokens, and reconstruct the declared raw extent. This adds no
+field or representation. Frame consumption is committed only after the full
+private raw frame exists; public streaming lifecycle, publication, and profile
+admission remain future work.

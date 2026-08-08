@@ -35,6 +35,9 @@ format versions, and C ABI versions are independent namespaces.
   two-pass bridge derives every entropy request from prior accepted token
   state, validates the complete frame before writing, and avoids materializing
   an intermediate modeled-operation array.
+- Added the private complete Format 2 frame decoder boundary. It preflights the
+  serialized frame and all caller-owned workspace before decoding typed tokens
+  and reconstructing raw bytes, while publishing no partial frame on failure.
 
 ## 0.1.3 - 2026-08-08
 

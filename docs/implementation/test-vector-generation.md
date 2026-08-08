@@ -6648,3 +6648,20 @@ publishing a token. Independently mutate the entropy interval, event,
 decision, raw, and descriptor counts; exercise invalid parameters, token
 storage, aggregate-output, short-output, and payload/token-alias gates. Snapshot
 all caller token storage and require every pre-write failure to preserve it.
+
+### TVG-0518
+
+Concatenate the published Format 2 one-Literal frame header, descriptor, and
+payload from `docs/format.md` into its exact 86-byte frame. Preflight and decode
+it with the specified 64-byte stream frame size and require one typed
+`Literal('A')`, one raw byte `A`, exact six-byte entropy payload consumption,
+and exactly 86 serialized bytes committed. Append a sentinel next-frame byte
+and require it to remain outside the consumed extent.
+
+Truncate the payload and mutate its canonical leading zero; prefill token and
+raw staging with sentinels and require preflight or entropy rejection with zero
+serialized consumption and no changed workspace. Independently provide short
+token staging, short raw staging, and deliberately overlapping token/raw,
+serialized/token, and serialized/raw object storage. Require all gates to fail
+before the first token write and to report the exact required extents after
+successful preflight.
