@@ -1,0 +1,279 @@
+#include "frame/lzss_typed_context_frame_streaming_decoder.hpp"
+#include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
+#include "frame/lzss_typed_context_profile.hpp"
+
+#include <gtest/gtest.h>
+
+#include <array>
+#include <cstddef>
+#include <span>
+#include <vector>
+
+namespace {
+
+using namespace marc::frame::internal;
+
+[[nodiscard]] std::span<std::byte> aligned_storage(
+    std::vector<std::max_align_t>& storage,
+    const std::size_t bytes) {
+    storage.resize(
+        (bytes + sizeof(std::max_align_t) - 1) / sizeof(std::max_align_t));
+    return std::as_writable_bytes(std::span{storage}).first(bytes);
+}
+
+TEST(LzssTypedContextProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  {2'500'000}, {}, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(stream.frame_size, 65'536U);
+    EXPECT_EQ(stream.original_size, 2'500'000U);
+    EXPECT_EQ(stream.range_model_total, typed_context_model_total);
+    EXPECT_EQ(stream.context_count, typed_context_count);
+    EXPECT_EQ(workspace.frame_input_bytes, 65'536U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 786'517U);
+    EXPECT_EQ(workspace.token_count, 65'536U);
+    EXPECT_EQ(workspace.operation_count, 131'072U);
+    EXPECT_EQ(workspace.operation_offset,
+              65'536U * sizeof(marc::dictionary::internal::LzssTypedToken));
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.operation_offset
+                  + 131'072U
+                      * sizeof(marc::context::internal::ModeledOperation));
+    EXPECT_EQ(workspace.views_alignment,
+              std::max(
+                  alignof(marc::dictionary::internal::LzssTypedToken),
+                  alignof(marc::context::internal::ModeledOperation)));
+}
+
+TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  {17}, {}, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(workspace.frame_input_bytes, 17U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 289U);
+    EXPECT_EQ(workspace.token_count, 17U);
+    EXPECT_EQ(workspace.operation_count, 34U);
+
+    workspace = {1, 1, 1, 1, 1, 1, 8};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  {}, {}, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(workspace.frame_input_bytes, 0U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+    EXPECT_EQ(workspace.views_alignment, 1U);
+    LzssTypedContextEncoderViews empty_views{};
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  workspace, {}, empty_views),
+              LzssTypedContextWorkspaceError::none);
+    EXPECT_TRUE(empty_views.tokens.empty());
+    EXPECT_TRUE(empty_views.operations.empty());
+}
+
+TEST(LzssTypedContextProfile, RejectsUnsupportedAndBoundedConfigurations) {
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+    LzssTypedContextProfileConfig unsupported{};
+    unsupported.dictionary.max_match_length = 259;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  unsupported, {}, stream, workspace),
+              LzssTypedContextProfileError::unsupported);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_compressed_payload_size = 208;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  {17}, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+
+    limits = {};
+    limits.max_block_size = 16;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  {17}, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+
+    limits = {};
+    limits.max_block_size = 100;
+    limits.max_internal_buffered_bytes = 5'784;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  {100}, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+}
+
+TEST(LzssTypedContextProfile, CalculatesDecoderWorkspaceFromLimits) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 4096;
+    limits.max_block_size = 1024;
+    limits.max_compressed_payload_size = 2000;
+    limits.max_internal_buffered_bytes = 8192;
+    LzssTypedContextDecoderWorkspaceRequirements workspace{};
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 2080U);
+    EXPECT_EQ(workspace.frame_decoded_bytes, 1024U);
+    EXPECT_EQ(workspace.token_count, 1024U);
+    EXPECT_EQ(workspace.views_bytes,
+              1024U * sizeof(marc::dictionary::internal::LzssTypedToken));
+    EXPECT_EQ(workspace.views_alignment,
+              alignof(marc::dictionary::internal::LzssTypedToken));
+
+    limits.max_entropy_table_entries = typed_context_table_entries - 1;
+    EXPECT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+}
+
+TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements requirements{};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  {17}, {}, stream, requirements),
+              LzssTypedContextProfileError::none);
+    std::vector<std::max_align_t> backing;
+    auto storage = aligned_storage(backing, requirements.views_bytes);
+    LzssTypedContextEncoderViews views{};
+    ASSERT_EQ(partition_lzss_typed_context_encoder_views(
+                  requirements, storage, views),
+              LzssTypedContextWorkspaceError::none);
+    EXPECT_EQ(views.tokens.size(), requirements.token_count);
+    EXPECT_EQ(views.operations.size(), requirements.operation_count);
+
+    auto forged = requirements;
+    ++forged.operation_offset;
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  forged, storage, views),
+              LzssTypedContextWorkspaceError::invalid_requirements);
+    EXPECT_TRUE(views.tokens.empty());
+    EXPECT_TRUE(views.operations.empty());
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  requirements, storage.first(storage.size() - 1), views),
+              LzssTypedContextWorkspaceError::too_small);
+
+    alignas(64) std::array<std::byte, 1024> misaligned{};
+    auto small_requirements = requirements;
+    small_requirements.token_count = 1;
+    small_requirements.operation_count = 2;
+    small_requirements.operation_offset =
+        sizeof(marc::dictionary::internal::LzssTypedToken);
+    small_requirements.views_bytes = small_requirements.operation_offset
+        + 2 * sizeof(marc::context::internal::ModeledOperation);
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  small_requirements,
+                  std::span<std::byte>{misaligned}.subspan(
+                      1, small_requirements.views_bytes),
+                  views),
+              LzssTypedContextWorkspaceError::misaligned);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 32;
+    limits.max_block_size = 32;
+    limits.max_compressed_payload_size = 64;
+    limits.max_internal_buffered_bytes = 256;
+    LzssTypedContextDecoderWorkspaceRequirements decoder_requirements{};
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder_requirements),
+              LzssTypedContextProfileError::none);
+    std::vector<std::max_align_t> decoder_backing;
+    auto decoder_storage = aligned_storage(
+        decoder_backing, decoder_requirements.views_bytes);
+    LzssTypedContextDecoderViews decoder_views{};
+    ASSERT_EQ(partition_lzss_typed_context_decoder_views(
+                  decoder_requirements, decoder_storage, decoder_views),
+              LzssTypedContextWorkspaceError::none);
+    EXPECT_EQ(decoder_views.tokens.size(), decoder_requirements.token_count);
+    ++decoder_requirements.views_bytes;
+    EXPECT_EQ(partition_lzss_typed_context_decoder_views(
+                  decoder_requirements, decoder_storage, decoder_views),
+              LzssTypedContextWorkspaceError::invalid_requirements);
+    EXPECT_TRUE(decoder_views.tokens.empty());
+}
+
+TEST(LzssTypedContextProfile, RequirementsConstructStreamingRoundTrip) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'X'}};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 4096;
+    limits.max_block_size = 4096;
+    limits.max_compressed_payload_size = 8192;
+    limits.max_internal_buffered_bytes = 65'536;
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements encoder_requirements{};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  {raw.size(), 2, {}}, limits, stream,
+                  encoder_requirements),
+              LzssTypedContextProfileError::none);
+    std::vector<std::byte> frame_input(
+        encoder_requirements.frame_input_bytes);
+    std::vector<std::byte> frame_encoded(
+        encoder_requirements.frame_encoded_bytes);
+    std::vector<std::max_align_t> encode_backing;
+    auto encode_storage = aligned_storage(
+        encode_backing, encoder_requirements.views_bytes);
+    LzssTypedContextEncoderViews encode_views{};
+    ASSERT_EQ(partition_lzss_typed_context_encoder_views(
+                  encoder_requirements, encode_storage, encode_views),
+              LzssTypedContextWorkspaceError::none);
+    LzssTypedContextFrameStreamingEncoder encoder{
+        stream, limits, frame_input, encode_views.tokens,
+        encode_views.operations, frame_encoded};
+    std::vector<std::byte> encoded(4096);
+    const auto encoded_result = encoder.process(
+        raw, encoded,
+        marc::core::flag_value(marc::core::ProcessFlags::end_input));
+    ASSERT_EQ(encoded_result.status, marc::core::StreamStatus::end_of_stream);
+    encoded.resize(encoded_result.output_produced);
+
+    LzssTypedContextDecoderWorkspaceRequirements decoder_requirements{};
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder_requirements),
+              LzssTypedContextProfileError::none);
+    std::vector<std::byte> decode_encoded(
+        decoder_requirements.frame_encoded_bytes);
+    std::vector<std::byte> frame_decoded(
+        decoder_requirements.frame_decoded_bytes);
+    std::vector<std::max_align_t> decode_backing;
+    auto decode_storage = aligned_storage(
+        decode_backing, decoder_requirements.views_bytes);
+    LzssTypedContextDecoderViews decode_views{};
+    ASSERT_EQ(partition_lzss_typed_context_decoder_views(
+                  decoder_requirements, decode_storage, decode_views),
+              LzssTypedContextWorkspaceError::none);
+    LzssTypedContextFrameStreamingDecoder decoder{
+        limits, decode_encoded, decode_views.tokens, frame_decoded};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto decoded_result = decoder.process(
+        encoded, decoded,
+        marc::core::flag_value(marc::core::ProcessFlags::end_input));
+    EXPECT_EQ(decoded_result.status, marc::core::StreamStatus::end_of_stream);
+    EXPECT_EQ(decoded_result.input_consumed, encoded.size());
+    EXPECT_EQ(decoded_result.output_produced, raw.size());
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssTypedContextProfile, MapsStableCoreErrors) {
+    using marc::core::ErrorCode;
+    EXPECT_EQ(lzss_typed_context_profile_error_code(
+                  LzssTypedContextProfileError::none),
+              ErrorCode::none);
+    EXPECT_EQ(lzss_typed_context_profile_error_code(
+                  LzssTypedContextProfileError::invalid_configuration),
+              ErrorCode::invalid_argument);
+    EXPECT_EQ(lzss_typed_context_profile_error_code(
+                  LzssTypedContextProfileError::unsupported),
+              ErrorCode::unsupported);
+    EXPECT_EQ(lzss_typed_context_profile_error_code(
+                  LzssTypedContextProfileError::limit_exceeded),
+              ErrorCode::limit_exceeded);
+    EXPECT_EQ(lzss_typed_context_profile_error_code(
+                  LzssTypedContextProfileError::arithmetic_overflow),
+              ErrorCode::limit_exceeded);
+}
+
+} // namespace

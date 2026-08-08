@@ -4127,3 +4127,22 @@ raw frame or alter Format 2 bytes. `ResetBlock` and unknown flags are rejected.
 remembered while the final header or frame drains. Empty input consists only
 of the stream header. Repeated calls after completion return `EndOfStream`,
 and construction or processing failures remain sticky.
+
+### Format 2 profile and workspace layout
+
+The private profile calculator converts a known-size LZSS configuration into
+the canonical Format 2 stream header plus conservative requirements for the
+streaming encoder. For `N` raw bytes in the largest frame it reserves at most
+`N` typed tokens, `2N` modeled operations, `6N` arithmetic decisions, and
+`12N + 5` payload bytes. The payload ceiling follows from the Format 2 count
+bounds and at most two range-normalization bytes per decision, followed by the
+five-byte termination. All products, aligned offsets, serialized extents, and
+their aggregate are checked before requirements are published.
+
+The decoder calculator derives serialized-frame, raw-frame, and typed-token
+capacities only from local hard limits. Separate partition functions verify
+that requirement records are internally consistent, storage is large enough,
+and its base address satisfies the strongest required alignment before
+returning typed spans. On every failure the output views remain empty. This
+keeps language-neutral callers on byte storage while preventing them from
+reimplementing native layout arithmetic.

@@ -6754,3 +6754,19 @@ workspace overlap, output aliasing, unknown flags, and `ResetBlock`; require
 stable error categories and sticky failures. Serialize the stream header
 against its existing vector and require invalid configuration to leave the
 destination unchanged.
+
+### TVG-0524
+
+For the default 65,536-byte largest frame, require the profile to publish the
+canonical Format 2 stream configuration, 65,536 token slots, 131,072 operation
+slots, and the independently calculated `12N + 85` complete serialized-frame
+ceiling. Verify native byte counts from `sizeof`, aligned operation placement,
+and strongest base alignment. Repeat with a 17-byte final frame and empty input.
+
+Reject a common-valid but Format-2-unsupported match length, a one-byte-short
+payload limit, a one-byte-short block limit, and a one-byte-short aggregate
+limit without publishing requirements. Derive decoder capacities from reduced
+local limits. Partition encoder and decoder byte storage, reject forged,
+short, and misaligned records with empty output views, then construct both
+streaming directions solely from returned requirements and require exact
+multi-frame round trip.

@@ -15237,3 +15237,32 @@ discarded and the reviewed seed retained.
   empty and final drains behave deterministically; capacity, limit, end, alias,
   and flag failures are stable; MSVC and ClangCL builds are warning-free;
   focused and full regression tests pass in both configurations.
+
+## CR-0674: 2026-08-09 - Private Format 2 profile calculator
+
+- Authoring method: derived conservative workspace equations and typed-view
+  layout from marc's independently specified Format 2 invariants and local
+  native record definitions.
+- References used: AGENTS.md sections 5, 10.4, 11.2, 12, 13, 14, and 15;
+  DD-644; IR-0422; TVG-0524; marc's local Format 2 frame count bounds, range
+  coder normalization, streaming pair, checked arithmetic, decoder limits,
+  and established partition policy.
+- Known implementations intentionally not consulted: external profile
+  calculators, allocator layouts, compression bounds, source code, corpora,
+  encoded streams, and test suites.
+- Independent decisions: reserve one token, two operations, and six decisions
+  per raw byte; prove a two-byte-per-decision range ceiling; include aligned
+  padding in aggregate limits; rederive layouts during partition; and publish
+  no views or requirements on failure.
+- Generated-code task description: implement a private Format 2 profile and
+  encoder/decoder typed-view partitioners with default, short, empty, payload,
+  block, aggregate, unsupported-variant, forged-layout, short-storage,
+  misalignment, error-map, and requirements-driven round-trip tests.
+- Similarity review: equations, record layout, result types, partition gates,
+  and tests were derived solely from marc's local contracts without comparing
+  external implementation expression or control flow.
+- Local validation: default and short ceilings match hand calculations;
+  invalid settings and forged storage fail transactionally; returned encoder
+  and decoder workspaces construct a complete multi-frame round trip; MSVC and
+  ClangCL builds are warning-free; focused and full regression tests pass in
+  both configurations.

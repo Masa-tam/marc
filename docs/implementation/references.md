@@ -3712,3 +3712,12 @@ model, explicit serialization helpers, checked arithmetic, decoder limits,
 and caller-owned disjoint workspace policy. No external streaming compressor,
 frame controller, source code, corpus, encoded stream, or test suite was
 consulted.
+
+### IR-0422
+
+The private Format 2 profile calculator uses only DD-644, marc's local typed
+stream and frame count bounds, range-normalization invariant, native token and
+operation definitions, checked arithmetic, decoder limits, and established
+workspace partition policy. No external profile calculator, allocator layout,
+compression bound, source code, corpus, encoded stream, or test suite was
+consulted.

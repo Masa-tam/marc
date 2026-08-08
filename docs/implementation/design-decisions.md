@@ -13309,3 +13309,18 @@ them. Publish no frame byte until its complete representation exists; drain it
 fully before consuming the following frame. Treat `Flush` as nonstructural,
 reject `ResetBlock`, retain `EndInput` across final draining, and make terminal
 states sticky. Keep the lifecycle private and preserve Format 2 and the C ABI.
+
+## DD-644: Format 2 profiles own native typed-view layout
+
+- Date: 2026-08-09
+- Status: accepted
+
+Calculate the canonical known-size stream configuration together with a
+conservative complete-frame capacity: at most one token, two modeled
+operations, six decisions, and twelve payload bytes per raw byte, plus the
+five-byte range termination. Enforce all format-field, local-limit, payload,
+native-view, and total-workspace bounds before publishing requirements. Return
+typed element counts, an aligned operation offset, total view bytes, and base
+alignment; require dedicated partition functions to rederive and validate the
+layout transactionally. Derive decoder capacities solely from local limits.
+Keep the profile private while making it directly reusable by a later C ABI.

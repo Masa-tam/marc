@@ -54,6 +54,9 @@ format versions, and C ABI versions are independent namespaces.
   the canonical stream header, buffers one bounded raw frame, atomically
   prepares complete typed/context/range frames, and drains with arbitrary
   output capacity without changing bytes on `Flush`.
+- Added the private Format 2 profile calculator and typed-view partitioners.
+  They derive conservative encoder/decoder byte and element requirements with
+  checked aggregate bounds and validate alignment before exposing typed spans.
 
 ## 0.1.3 - 2026-08-08
 
