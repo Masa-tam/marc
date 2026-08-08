@@ -15172,3 +15172,38 @@ discarded and the reviewed seed retained.
   stable, and parameter, limit, capacity, and alias failures preserve caller
   storage; MSVC and ClangCL builds are warning-free; focused and full
   regression tests pass in both configurations.
+
+## CR-0672: 2026-08-08 - Complete private Format 2 frame encoder
+
+- Authoring method: composed marc's independently specified private typed,
+  context, entropy, and framing boundaries and added inverse serializers for
+  its existing parser-defined fields.
+- References used: AGENTS.md sections 3, 5, 6, 7, 11.2, 12, 14, and 15;
+  DD-642; IR-0420; TVG-0522; marc's local Format 2 specification, typed LZSS
+  producer, field-context planner, contextual Dynamic Range encoder, checked
+  arithmetic, explicit endian helpers, decoder limits, and atomic workspace
+  policy.
+- Known implementations intentionally not consulted: external compression
+  pipelines, frame encoders, serializers, source code, corpora, encoded
+  streams, and test suites.
+- Independent decisions: allow planning to populate only private intermediate
+  staging; gate all staging capacities against each other before writes; gate
+  serialized output before planning; count the four exact regions together;
+  require cross-layer decision agreement; and build headers in fixed local
+  zeroed arrays before copying.
+- Generated-code task description: implement a private complete Format 2 frame
+  encoder over existing typed/context/range components, exact transactional
+  header and descriptor serializers, full workspace and alias gates, golden
+  vector, Match round-trip, capacity, limit, sequence, sentinel, and alias
+  tests.
+- Similarity review: composition and bytes come only from marc's local
+  specifications, parsers, and independently implemented components. Result
+  API, planning order, aggregate and overlap policy, serializers, diagnostic
+  mapping, and tests were designed locally without comparing external
+  implementation expression or control flow.
+- Local validation: raw `A` reproduces the published 86-byte frame exactly;
+  the existing decoder reconstructs a Match-bearing frame; serializers match
+  known header/descriptor bytes and reject transactionally; stream, extent,
+  capacity, aggregate, and alias failures preserve caller output; MSVC and
+  ClangCL builds are warning-free; focused and full regression tests pass in
+  both configurations.

@@ -314,6 +314,35 @@ TypedContextFrameHeaderError parse_typed_context_frame_header(
     return error;
 }
 
+TypedContextFrameHeaderError serialize_typed_context_frame_header(
+    const TypedContextFrameHeader& header,
+    const TypedContextFrameValidationContext& context,
+    const std::span<std::byte, typed_context_frame_header_size> output)
+    noexcept {
+    const auto error = validate_typed_context_frame_header(header, context);
+    if (error != TypedContextFrameHeaderError::none) return error;
+    std::array<std::byte, typed_context_frame_header_size> encoded{};
+    std::ranges::copy(frame_magic, encoded.begin());
+    const std::span<std::byte> bytes{encoded};
+    if (!core::store_le(bytes, 4,
+                        static_cast<std::uint16_t>(
+                            typed_context_frame_header_size))
+        || !core::store_le(bytes, 6, header.flags)
+        || !core::store_le(bytes, 8, header.sequence)
+        || !core::store_le(bytes, 16, header.uncompressed_size)
+        || !core::store_le(bytes, 20, header.token_count)
+        || !core::store_le(bytes, 24, header.event_count)
+        || !core::store_le(bytes, 28, header.decision_count)
+        || !core::store_le(bytes, 32, header.payload_size)
+        || !core::store_le(bytes, 36, header.descriptor_size)
+        || !core::store_le(bytes, 40, header.context_side_data_size)
+        || !core::store_le(bytes, 44, header.checksum_trailer_size)) {
+        return TypedContextFrameHeaderError::arithmetic_overflow;
+    }
+    std::ranges::copy(encoded, output.begin());
+    return TypedContextFrameHeaderError::none;
+}
+
 TypedContextRangeDescriptorError validate_typed_context_range_descriptor(
     const TypedContextRangeDescriptor& descriptor,
     const TypedContextFrameHeader& frame,
@@ -362,6 +391,26 @@ TypedContextRangeDescriptorError parse_typed_context_range_descriptor(
         bytes_consumed = typed_context_range_descriptor_size;
     }
     return error;
+}
+
+TypedContextRangeDescriptorError serialize_typed_context_range_descriptor(
+    const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameHeader& frame,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, typed_context_range_descriptor_size> output)
+    noexcept {
+    const auto error =
+        validate_typed_context_range_descriptor(descriptor, frame, limits);
+    if (error != TypedContextRangeDescriptorError::none) return error;
+    std::array<std::byte, typed_context_range_descriptor_size> encoded{};
+    const std::span<std::byte> bytes{encoded};
+    if (!core::store_le(bytes, 0, descriptor.decision_count)
+        || !core::store_le(bytes, 4, descriptor.payload_size)
+        || !core::store_le(bytes, 8, descriptor.context_count)) {
+        return TypedContextRangeDescriptorError::arithmetic_overflow;
+    }
+    std::ranges::copy(encoded, output.begin());
+    return TypedContextRangeDescriptorError::none;
 }
 
 TypedContextFramePreflightResult preflight_typed_context_frame(

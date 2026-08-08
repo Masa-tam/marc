@@ -4084,3 +4084,21 @@ extent, and enforces the checked raw-plus-token aggregate. Materialization
 requires exact capacity and disjoint raw/token regions before repeating the
 parse. It writes only the planned token prefix and leaves excess caller storage
 untouched. Context modeling and entropy coding remain later private boundaries.
+
+### Complete private Format 2 frame encode
+
+The private complete-frame encoder composes raw-to-typed LZSS parsing,
+`LzssFieldContext` forward modeling, contextual Dynamic Range planning, and
+explicit little-endian frame serialization. Its planner materializes only the
+caller-owned token and modeled-operation staging needed to determine exact
+event, decision, payload, and serialized extents; it never writes serialized
+output.
+
+Raw, token, operation, and serialized regions are distinct workspaces. The
+planner rejects overlapping raw/token/operation capacities before the first
+staging write. The encoder additionally rejects the complete serialized-output
+capacity when it overlaps any of those regions before invoking the planner.
+The checked aggregate includes the exact raw frame, native token prefix,
+native operation prefix, and serialized frame. Only an exact plan with a valid
+frame header and descriptor may encode the payload and publish their canonical
+headers. Excess serialized capacity remains untouched.

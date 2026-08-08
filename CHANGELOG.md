@@ -44,6 +44,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private complete Format 2 frame decoder boundary. It preflights the
   serialized frame and all caller-owned workspace before decoding typed tokens
   and reconstructing raw bytes, while publishing no partial frame on failure.
+- Added the matching private complete Format 2 frame encoder. It composes typed
+  LZSS parsing, field-context modeling, contextual Dynamic Range coding, and
+  transactional header/descriptor serialization with complete workspace gates.
 - Added the private Format 2 streaming decoder lifecycle for split 112-byte
   headers, multiple bounded frames, one-byte input/output, atomic frame drain,
   sticky errors, exact termination, and aggregate workspace enforcement.

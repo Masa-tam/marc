@@ -140,3 +140,10 @@ workspace limits, and frame-atomic validation are specified first.
 Backend substitution never changes the dictionary variant or context-model
 variant. Compression ratio, encode throughput, decode throughput, descriptor
 overhead, and peak workspace can therefore be compared along one explicit axis.
+
+The first complete Format 2 encoder composes the operation-level reference
+encoder without weakening this boundary. It obtains exact event and decision
+counts from `LzssFieldContext`, requires the entropy plan to reproduce the
+decision count, and serializes the 16-byte descriptor only after the frame
+header validates against the stream context. No native operation or token
+representation enters the stream.

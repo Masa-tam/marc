@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -222,6 +223,54 @@ TEST(TypedContextFrameFormat, PreflightsSpecifiedOneLiteralFrame) {
     EXPECT_EQ(layout.header.decision_count, 2U);
     EXPECT_EQ(layout.header.payload_size, 6U);
     EXPECT_EQ(layout.descriptor.context_count, 31U);
+}
+
+TEST(TypedContextFrameFormat, SerializesHeaderAndDescriptorTransactionally) {
+    const auto stream = stream_config();
+    const auto limits = marc::core::DecoderLimits{};
+    const TypedContextFrameHeader header{
+        0, 0, 1, 1, 2, 2, 6, 16, 0, 0};
+    const TypedContextRangeDescriptor descriptor{2, 6, 31};
+    std::array<std::byte, typed_context_frame_header_size> header_output{};
+    std::array<std::byte, typed_context_range_descriptor_size>
+        descriptor_output{};
+    ASSERT_EQ(serialize_typed_context_frame_header(
+                  header, frame_context(stream, limits), header_output),
+              TypedContextFrameHeaderError::none);
+    ASSERT_EQ(serialize_typed_context_range_descriptor(
+                  descriptor, header, limits, descriptor_output),
+              TypedContextRangeDescriptorError::none);
+    const auto expected = frame_vector();
+    EXPECT_TRUE(std::ranges::equal(
+        header_output,
+        std::span<const std::byte>{expected}.first(header_output.size())));
+    EXPECT_TRUE(std::ranges::equal(
+        descriptor_output,
+        std::span<const std::byte>{expected}.subspan(
+            typed_context_frame_header_size, descriptor_output.size())));
+
+    header_output.fill(std::byte{0xCC});
+    auto invalid_header = header;
+    invalid_header.token_count = 0;
+    EXPECT_EQ(serialize_typed_context_frame_header(
+                  invalid_header, frame_context(stream, limits),
+                  header_output),
+              TypedContextFrameHeaderError::contradictory_counts);
+    EXPECT_TRUE(std::ranges::all_of(
+        header_output, [](const std::byte value) {
+            return value == std::byte{0xCC};
+        }));
+
+    descriptor_output.fill(std::byte{0xCC});
+    auto invalid_descriptor = descriptor;
+    invalid_descriptor.decision_count = 3;
+    EXPECT_EQ(serialize_typed_context_range_descriptor(
+                  invalid_descriptor, header, limits, descriptor_output),
+              TypedContextRangeDescriptorError::contradictory_counts);
+    EXPECT_TRUE(std::ranges::all_of(
+        descriptor_output, [](const std::byte value) {
+            return value == std::byte{0xCC};
+        }));
 }
 
 TEST(TypedContextFrameFormat, AcceptsTrailingNextFrameBytesByExtent) {

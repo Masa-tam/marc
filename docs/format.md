@@ -5764,3 +5764,12 @@ parse directly from a bounded raw frame. Its values feed the context-model
 contract and are not serialized as native objects or as variant-1 token bytes.
 This implementation adds no decoder-visible representation and does not alter
 the vectors above.
+
+The private complete-frame encoder now emits the unchanged 64-byte frame
+header, 16-byte descriptor, and exact contextual Dynamic Range payload. For
+raw byte `A` it reproduces the documented 86-byte one-Literal frame exactly;
+the existing private complete-frame decoder reconstructs match-bearing encoder
+output as well. Header and descriptor serializers validate into zeroed local
+fixed arrays before copying, so reserved bytes remain canonical and validation
+failure leaves caller output unchanged. No new field, ID, variant, profile, or
+C ABI entry is introduced.

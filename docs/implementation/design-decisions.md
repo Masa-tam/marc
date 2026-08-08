@@ -13279,3 +13279,19 @@ typed values. Plan the entire parse without writes, enforce the checked raw and
 native-token aggregate, then require sufficient disjoint output before exact
 materialization. Keep empty input valid at this component boundary and leave
 Format 2 and the C ABI unchanged.
+
+## DD-642: Complete Format 2 frame encoding uses explicit staged composition
+
+- Date: 2026-08-08
+- Status: accepted
+
+Compose the private typed LZSS producer, forward `LzssFieldContext`, contextual
+Dynamic Range encoder, and explicit Format 2 serializers for one complete
+nonempty frame. Permit planning to materialize caller-owned token and operation
+staging, but never serialized output. Reject raw/token/operation workspace
+overlap before the first staging write and reject serialized-output overlap
+before planning. Enforce the checked aggregate of exact raw, native token,
+native operation, and serialized extents; require context and entropy decision
+counts to agree; validate header and descriptor before materialization; and
+write only the exact serialized prefix. Keep all interfaces private and retain
+the existing Format 2 bytes and C ABI.

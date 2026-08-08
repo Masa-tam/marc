@@ -6720,3 +6720,20 @@ raw block and aggregate workspace limits, one-token-short output, overlapping
 raw/token storage, and excess token capacity. Snapshot all caller storage and
 require every pre-write failure to preserve it and success to write only the
 planned prefix.
+
+### TVG-0522
+
+Compose the one-byte raw input `A` through typed LZSS production, field-context
+modeling, and contextual Dynamic Range encoding. Require one token, two events,
+two decisions, six payload bytes, 86 serialized bytes, and exact equality with
+the published Format 2 one-Literal frame. Independently serialize its 64-byte
+header and 16-byte descriptor, compare both regions to that vector, mutate a
+count in each value, and require transactional rejection with unchanged output.
+
+Encode `ABCABCABCX` to exercise a Match and decode the resulting complete frame
+through the existing independent private decoder; require exact serialized
+consumption and raw reconstruction. Exercise invalid stream parameters,
+incorrect initial and final frame extents, short token, operation, and
+serialized storage, one-byte-short aggregate workspace, raw/output aliasing,
+token/output aliasing, and excess serialized capacity. Snapshot serialized or
+aliased caller storage and require every pre-write failure to preserve it.

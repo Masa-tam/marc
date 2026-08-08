@@ -101,6 +101,11 @@ enum class TypedContextFrameHeaderError : std::uint8_t {
     const TypedContextFrameHeader& header,
     const TypedContextFrameValidationContext& context) noexcept;
 
+[[nodiscard]] TypedContextFrameHeaderError serialize_typed_context_frame_header(
+    const TypedContextFrameHeader& header,
+    const TypedContextFrameValidationContext& context,
+    std::span<std::byte, typed_context_frame_header_size> output) noexcept;
+
 [[nodiscard]] TypedContextFrameHeaderError parse_typed_context_frame_header(
     std::span<const std::byte> input,
     const TypedContextFrameValidationContext& context,
@@ -125,6 +130,13 @@ validate_typed_context_range_descriptor(
     const TypedContextRangeDescriptor& descriptor,
     const TypedContextFrameHeader& frame,
     const core::DecoderLimits& limits) noexcept;
+
+[[nodiscard]] TypedContextRangeDescriptorError
+serialize_typed_context_range_descriptor(
+    const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameHeader& frame,
+    const core::DecoderLimits& limits,
+    std::span<std::byte, typed_context_range_descriptor_size> output) noexcept;
 
 [[nodiscard]] TypedContextRangeDescriptorError
 parse_typed_context_range_descriptor(

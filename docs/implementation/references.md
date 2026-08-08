@@ -3694,3 +3694,12 @@ variant-1 LZSS parse rules already specified by marc, the typed-token validator
 and reconstructor, checked arithmetic, decoder limits, and caller-owned span
 policy. No external LZSS parser, match finder, typed-token API, source code,
 corpus, encoded stream, or test suite was consulted.
+
+### IR-0420
+
+The complete private Format 2 frame encoder uses only DD-642, marc's local
+typed LZSS producer, forward context model, contextual Dynamic Range encoder,
+Format 2 frame contract, explicit endian helpers, checked arithmetic, decoder
+limits, and caller-owned workspace policy. No external compression pipeline,
+frame encoder, serializer, source code, corpus, encoded stream, or test suite
+was consulted.
