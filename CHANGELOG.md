@@ -72,6 +72,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added its separately inventoried dependency-free benchmark adapter with
   checked Format 2 capacity, pre-timing round-trip verification, directional
   throughput, ratio, and queried three-region workspace reporting.
+- Added interoperability schema 32 as the frozen 42-entry schema-31 order plus
+  the experimental Format 2 archive, with exact-order verification and the
+  unchanged schemas 1 through 31 compatibility chain.
 
 ## 0.1.3 - 2026-08-08
 

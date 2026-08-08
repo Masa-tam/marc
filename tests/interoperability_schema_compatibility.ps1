@@ -40,8 +40,9 @@ function Convert-Bundle(
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema32 = Join-Path $root 'schema32'
+$schema32Reordered = Join-Path $root 'schema32-reordered'
 $schema31 = Join-Path $root 'schema31'
-$schema31Reordered = Join-Path $root 'schema31-reordered'
 $schema30 = Join-Path $root 'schema30'
 $schema29 = Join-Path $root 'schema29'
 $schema28 = Join-Path $root 'schema28'
@@ -120,22 +121,23 @@ $schema27Profiles = $schema26Profiles + @('lzss-tans')
 $schema28Profiles = $schema27Profiles + @('lz78-tans')
 $schema29Profiles = $schema28Profiles + @('lzw-tans')
 $schema30Profiles = $schema29Profiles + @('lzd-tans')
+$schema31Profiles = $schema30Profiles + @('lzmw-tans')
 
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema31 `
+        -OutputDirectory $schema32 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -BundleDirectory $schema31 `
-        -OutputDirectory (Join-Path $root 'verified31')
+        -BundleDirectory $schema32 `
+        -OutputDirectory (Join-Path $root 'verified32')
 
-    Copy-Item -LiteralPath $schema31 -Destination $schema31Reordered -Recurse
-    $reorderedManifestPath = Join-Path $schema31Reordered 'manifest.json'
+    Copy-Item -LiteralPath $schema32 -Destination $schema32Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema32Reordered 'manifest.json'
     $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
         ConvertFrom-Json
     $firstArchive = $reorderedManifest.archives[0]
@@ -146,8 +148,8 @@ try {
     try {
         & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
             -MarcCli $resolvedCli `
-            -BundleDirectory $schema31Reordered `
-            -OutputDirectory (Join-Path $root 'verified31-reordered')
+            -BundleDirectory $schema32Reordered `
+            -OutputDirectory (Join-Path $root 'verified32-reordered')
     } catch {
         if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
             throw
@@ -155,8 +157,14 @@ try {
         $reorderedRejected = $true
     }
     if (-not $reorderedRejected) {
-        throw 'Verifier accepted a reordered schema-31 manifest'
+        throw 'Verifier accepted a reordered schema-32 manifest'
     }
+
+    Convert-Bundle $schema32 $schema31 31 'marc-cli-v31' $schema31Profiles
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema31 `
+        -OutputDirectory (Join-Path $root 'verified31')
 
     Convert-Bundle $schema31 $schema30 30 'marc-cli-v30' $schema30Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
@@ -338,7 +346,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 31'
+    Write-Host 'Verified interoperability schemas 1 through 32'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

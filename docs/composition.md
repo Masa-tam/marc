@@ -1211,3 +1211,12 @@ complete byte-exact round trip before timing and reports ratio, directional
 throughput, all queried workspace regions, and peak caller reservation. The
 adapter remains separate from the stable 42-profile benchmark and
 interoperability inventories.
+
+### CP-0044
+
+Interoperability schema 32 appends the experimental
+`lzss-contextual-dynamic-range` composition exactly once after the frozen
+42-entry schema-31 order. Local generation, exact-order verification,
+byte-identical re-encoding, reordered-manifest rejection, and schemas 1
+through 31 compatibility are required before external exchange. The new
+bundle entry does not promote the experiment into the stable Format 1 matrix.

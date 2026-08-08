@@ -15390,3 +15390,26 @@ discarded and the reviewed seed retained.
   at ratio 0.552 and reports 1,638,485 bytes of peak caller workspace; full
   target graphs build and all 2,482 regression tests pass under both Release
   configurations.
+
+## CR-0680: 2026-08-09 - Interoperability schema 32 local admission
+
+- Authoring method: extended marc's append-only interoperability manifest
+  sequence with its independently specified experimental Format 2 CLI output.
+- References used: AGENTS.md sections 6, 7, 14.3, 14.6, and 15; DD-650;
+  IR-0428; TVG-0530; marc's frozen schema-31 order, deterministic binary
+  fixture, CLI transaction, manifest verifier, and SHA-256 helpers.
+- Known implementations intentionally not consulted: external bundle formats,
+  interoperability suites, compressors, corpora, archives, source code,
+  manifests, and conformance vectors.
+- Independent decisions: name the set `marc-cli-v32`; append Format 2 once as
+  entry 43; reject reordered schema 32; and recover schema 31 by deleting only
+  that final entry before traversing the frozen compatibility chain.
+- Generated-code task description: update bundle generation and verification
+  for schema 32, add exact-order and reordered-manifest checks, preserve
+  schemas 1 through 31, and document external cross-platform work as pending.
+- Similarity review: manifest evolution, array order, compatibility conversion,
+  mutation, and verification reuse marc's own prior-schema vocabulary without
+  comparing an external bundle or test implementation.
+- Local validation: schema-32 generation, exact verification, reorder
+  rejection, and schemas 1 through 31 compatibility pass under both local
+  compilers; all 2,482 regression tests pass in both Release configurations.

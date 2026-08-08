@@ -13416,3 +13416,21 @@ outside timed intervals, and report ratio, directional throughput, each
 queried primary/secondary/views extent, and peak caller-owned workspace. Add a
 separately labeled smoke test and record descriptive local results without
 claiming stable performance or interoperability admission.
+
+## DD-650: Interoperability schema 32 appends experimental Format 2 once
+
+- Date: 2026-08-09
+- Status: accepted
+
+Freeze the exact 42-entry schema-31 order and append one
+`lzss-contextual-dynamic-range` archive as entry 43. Set `schema_version` to
+32 and `codec_set` to `marc-cli-v32`. Preserve the deterministic 8,193-byte
+binary fixture and record the complete Git object ID, producer identity, CLI
+SHA-256, and every input/archive size and SHA-256.
+
+Require exact manifest order, one instance of every expected codec, foreign
+decode equality, and byte-identical local re-encoding. Reject a reordered
+schema-32 manifest. Derive schema 31 by removing only the new final archive
+and restoring `marc-cli-v31`, then continue the unchanged compatibility chain
+through schema 1. This is local admission evidence; cross-platform schema-32
+artifacts remain external evidence and must be recorded only after execution.

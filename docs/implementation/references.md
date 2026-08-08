@@ -3762,3 +3762,11 @@ local Format 2 capacity specification, public C lifecycle, existing benchmark
 measurement contract, and bounded workspace reporting policy. No external
 benchmark harness, compressor, capacity formula, corpus, source code, encoded
 stream, or result table was consulted.
+
+### IR-0428
+
+Interoperability schema 32 uses only DD-650, the frozen local schema-31 order,
+the experimental public CLI profile, marc's existing manifest contract,
+PowerShell bundle scripts, and SHA-256/file-equality helpers. No external
+bundle format, interoperability suite, compressor, corpus, archive, source
+code, or manifest was consulted.

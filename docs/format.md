@@ -5800,3 +5800,8 @@ of Format 2. It binds this representation to 65,536-byte raw frames, the
 documented `12F + 5 = 786,437` payload ceiling, and strict whole-input
 termination. Its temporary-file transaction is an application publication
 rule, not a serialized field.
+
+Interoperability schema 32 emits this unchanged Format 2 representation as the
+final `lzss-contextual-dynamic-range` archive after the frozen schema-31 list.
+The schema changes only bundle inventory and manifest identity; it does not
+alter any stream header, frame, descriptor, payload, or padding byte.

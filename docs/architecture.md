@@ -4208,3 +4208,12 @@ direction's requirements query and treats opaque views solely as aligned
 bytes. Complete-stream capacity uses serialized Format 2 fields, while native
 token and operation layouts remain confined to the library. Verification is
 complete before the timed process call begins.
+
+### Format 2 interoperability boundary
+
+Interoperability schema 32 freezes schema 31's 42-entry order and appends the
+experimental `lzss-contextual-dynamic-range` CLI archive once. Generation and
+verification continue to treat the archive as opaque serialized bytes:
+manifest order, size, SHA-256, foreign decoding, and byte-identical local
+re-encoding are mandatory. Compatibility derives schema 31 by removing only
+that final entry before traversing the existing chain to schema 1.

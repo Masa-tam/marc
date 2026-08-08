@@ -6839,3 +6839,14 @@ workspace regions from the public requirements query, encode, decode, and
 compare the complete bytes before either timed sample. Require successful
 ratio, encode/decode throughput, all six workspace extents, and peak-workspace
 reporting. Keep the command outside the stable 42-profile documentation count.
+
+### TVG-0530
+
+For interoperability schema 32, preserve the exact schema-31 archive order and
+append exactly one `lzss-contextual-dynamic-range` archive as entry 43. Use the
+unchanged deterministic 8,193-byte binary fixture, set `schema_version=32` and
+`codec_set=marc-cli-v32`, and record full source revision plus every size and
+SHA-256. Require generation-time round trip, exact-order verification, foreign
+decode equality, and byte-identical re-encoding. Swap the first two manifest
+entries and require rejection. Remove only entry 43 to reconstruct schema 31,
+then verify the unchanged schema-31-through-schema-1 compatibility chain.
