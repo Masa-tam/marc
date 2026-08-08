@@ -3644,3 +3644,11 @@ local context-model contract, typed LZSS frame validator, C++20 integer bit
 width, checked arithmetic, decoder limits, and caller-owned span policy. No
 external context-model encoder, field coder, token transform, source code,
 corpus, or test suite was consulted.
+
+### IR-0414
+
+The contextual Dynamic Range decoder uses only DD-636, the local entropy-
+backend contract, the repository's independently specified variant-1 integer
+range arithmetic, the fixed `LzssFieldContext` schema, checked local limits,
+and caller-owned value policy. No external range coder, contextual model,
+decoder state machine, source code, corpus, or test suite was consulted.

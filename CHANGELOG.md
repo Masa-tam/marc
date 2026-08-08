@@ -28,6 +28,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the matching private `LzssFieldContext` exact planner and forward
   materializer. Valid typed LZSS frames now produce deterministic modeled
   operations atomically without changing the format or public ABI.
+- Added the private contextual Dynamic Range variant-2 decoder boundary with
+  31 fixed independent models, LSB-first fixed-probability bypass decoding,
+  sticky failures, exact decision accounting, and payload finalization.
 
 ## 0.1.3 - 2026-08-08
 

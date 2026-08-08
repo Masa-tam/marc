@@ -3,6 +3,7 @@
 
 #include "core/limits.hpp"
 #include "dictionary/lzss_format.hpp"
+#include "entropy/contextual_dynamic_range_format.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -14,9 +15,12 @@ inline constexpr std::size_t typed_context_stream_prefix_size = 64;
 inline constexpr std::size_t typed_context_stream_header_size = 112;
 inline constexpr std::size_t typed_context_frame_header_size = 64;
 inline constexpr std::size_t typed_context_range_descriptor_size = 16;
-inline constexpr std::uint32_t typed_context_model_total = UINT32_C(1) << 15;
-inline constexpr std::uint16_t typed_context_count = 31;
-inline constexpr std::uint64_t typed_context_table_entries = 4518;
+inline constexpr std::uint32_t typed_context_model_total =
+    marc::entropy::internal::contextual_dynamic_range_model_total_limit;
+inline constexpr std::uint16_t typed_context_count =
+    marc::entropy::internal::contextual_dynamic_range_context_count;
+inline constexpr std::uint64_t typed_context_table_entries =
+    marc::entropy::internal::contextual_dynamic_range_table_entries;
 
 struct TypedContextStreamHeader {
     std::uint32_t frame_size{};
@@ -103,11 +107,8 @@ enum class TypedContextFrameHeaderError : std::uint8_t {
     TypedContextFrameHeader& header,
     std::size_t& bytes_consumed) noexcept;
 
-struct TypedContextRangeDescriptor {
-    std::uint32_t decision_count{};
-    std::uint32_t payload_size{};
-    std::uint16_t context_count{};
-};
+using TypedContextRangeDescriptor =
+    marc::entropy::internal::ContextualDynamicRangeDescriptor;
 
 enum class TypedContextRangeDescriptorError : std::uint8_t {
     none,

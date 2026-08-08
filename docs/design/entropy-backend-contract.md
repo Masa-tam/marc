@@ -97,6 +97,29 @@ Variant 2 uses one 16-byte descriptor:
 | 10 | 2 | flags | zero |
 | 12 | 4 | reserved | zero |
 
+The reference decoder owns fixed storage for the 4,518 frequency entries and
+31 totals. After `begin`, every request is checked against the fixed context
+schema and the descriptor decision budget before arithmetic state advances.
+Any setup, request, arithmetic, truncation, or finalization error is sticky;
+the requested value remains unchanged.
+
+The Format 2 preflight and backend share one internal descriptor and constants
+definition, so context count, table entries, and model-total limits cannot
+drift between framing and arithmetic validation.
+
+The decoder bring-up bypass vector uses these six decisions:
+
+```text
+Symbol(context 0, alphabet 2, value 1)
+Symbol(context 20, alphabet 8, value 2)
+BypassBits(bit_count 2, value 2)       # physical bits 0, 1
+Symbol(context 25, alphabet 17, value 1)
+BypassBits(bit_count 1, value 0)
+```
+
+From reset models, variant-1 arithmetic and termination produce payload
+`00 A4 3C 3C 38 00`. This is five modeled events and six entropy decisions.
+
 ## Backend substitution
 
 A later rANS, tANS, or Huffman backend may consume the same operation sequence,

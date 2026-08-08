@@ -6611,3 +6611,25 @@ premature-raw-end, trailing-token, parameter, and limit failures. Prefill short
 and excess operation spans with sentinels and construct a deliberately aliased
 token/operation span; require every failed gate to preserve all storage and a
 successful call to write only the exact planned extent.
+
+### TVG-0516
+
+First decode TVG-0510's published one-Literal payload `00 20 7F FF BF 00`
+through requests `(context 0, alphabet 2)` and `(context 3, alphabet 256)`;
+require values 0 and 65, two events, two decisions, and exact six-byte payload
+consumption.
+
+For a bypass-bearing vector, independently transcribe variant-1 unsigned
+interval, delayed-carry, normalization, and five-shift termination arithmetic.
+Encode `(cumulative, frequency, total)` decisions `(1,1,2)`, `(2,1,8)`,
+`(0,1,2)`, `(1,1,2)`, `(1,1,17)`, `(0,1,2)`, corresponding to values 1, 2,
+two LSB-first bypass bits `0,1`, value 1, and bypass bit 0. Require payload
+`00 A4 3C 3C 38 00`, five events, and six decisions. The reviewed generator
+must truncate the shifted low word to 32 bits exactly as specified; discard an
+earlier calculation that retained those discarded high bits.
+
+Mutate descriptor counts, context count, payload extent, canonical leading
+zero, expected context/alphabet, bypass widths, decision budget, truncation,
+trailing bytes, and local table/model limits. Require unchanged value outputs,
+stable first errors, exact accepted counters/offsets, begin-before-use, and one
+consistent terminal result.

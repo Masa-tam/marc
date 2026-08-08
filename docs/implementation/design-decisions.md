@@ -13186,3 +13186,17 @@ non-aliasing before the first write. Materialize the fixed state machine in a
 failure-free pass, write only the planned extent, and require exact inversion
 to the original typed values in tests. Keep the boundary private and allocation
 free.
+
+## DD-636: Contextual range decoding is request driven and sticky
+
+- Date: 2026-08-08
+- Status: accepted
+
+Implement Dynamic Range variant 2 as a private stateful backend whose caller
+supplies each expected Symbol context/alphabet or nonzero bypass width. Fix all
+31 alphabets and 4,518 frequency entries at construction; serialized input
+cannot select table shape or allocation. Reuse variant-1 interval,
+normalization, rescaling, and five-shift termination arithmetic. Count Symbol
+as one decision and bypass bits individually in LSB-first order. Preserve the
+caller value on failure, retain the first error, and finish only on exact event,
+decision, payload, and model agreement.

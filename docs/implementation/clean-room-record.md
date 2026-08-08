@@ -14993,3 +14993,32 @@ discarded and the reviewed seed retained.
   produce exact operations and invert exactly; malformed inputs and pre-write
   gates preserve output; MSVC and ClangCL builds are warning-free; focused and
   full regression tests pass in both configurations.
+
+## CR-0666: 2026-08-08 - Contextual Dynamic Range decoder boundary
+
+- Authoring method: implemented the request-driven private decoder directly
+  from marc's entropy-backend contract and independently specified variant-1
+  arithmetic.
+- References used: AGENTS.md sections 10.4, 11.2, 12, 14, and 15; DD-636;
+  IR-0414; TVG-0516; marc's fixed 31-context schema, model rescaling rule,
+  decoder limits, and documented one-Literal payload.
+- Known implementations intentionally not consulted: external range coders,
+  contextual entropy models, decoder state machines, source code, corpora,
+  malformed streams, and test suites.
+- Independent decisions: store all 4,518 frequencies in one fixed array; use
+  compile-time alphabet offsets; accept only caller-selected fixed-schema
+  requests; decode bypass bits LSB first without adaptation; preserve outputs
+  and make the first error sticky; and validate every model at finalization.
+- Generated-code task description: implement a no-allocation contextual range
+  decoder with descriptor preflight, Symbol and BypassBits requests, exact
+  counters, payload exhaustion, terminal state, and positive and malformed
+  tests without connecting a public Format 2 decoder.
+- Similarity review: arithmetic comes from marc's own variant-1 specification
+  and context layout from its Format 2 design. Storage, request API, error
+  categories, validation order, and tests were designed locally without
+  comparing external implementation expression or control flow.
+- Local validation: the published one-Literal payload and independently
+  calculated bypass vector decode exactly; malformed requests, truncation,
+  count, trailing, and policy failures retain stable state and output; MSVC
+  and ClangCL builds are warning-free; focused and full regression tests pass
+  in both configurations.

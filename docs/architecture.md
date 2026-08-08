@@ -3952,3 +3952,19 @@ disjoint from the input token span. It then emits the fixed contexts,
 alphabets, values, and nonzero-width bypass operations in one failure-free
 pass. Empty frames write nothing, excess caller capacity remains untouched,
 and applying the inverse boundary reconstructs the original typed tokens.
+
+### Contextual Dynamic Range decoder boundary
+
+The private variant-2 backend decoder owns one fixed table for each of the 31
+`LzssFieldContext` symbol contexts. Construction allocates no dynamic memory;
+`begin` resets every frequency to one and validates the fixed schema,
+descriptor, payload extent, and local table/model limits before reading the
+canonical five-byte arithmetic prefix.
+
+Only the context layer can request a symbol context and alphabet or a bypass
+width. Each accepted Symbol updates exactly one selected model, while bypass
+bits use fixed total two, decode least-significant bit first, and update no
+model. Failures are sticky and do not publish the requested value. Finalization
+requires exact event and decision counts, complete payload consumption, and
+valid frequencies in all models before the private values may advance to
+context inversion.
