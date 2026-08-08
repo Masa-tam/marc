@@ -5,8 +5,9 @@ validated baseline profiles as the command-line tool: checksum-raw, six
 standalone dictionary profiles, five standalone entropy profiles, and the
 complete six-dictionary by five-entropy composition matrix. It additionally
 exposes the experimental Format 2 `lzss-contextual-dynamic-range` profile;
-that profile is not yet part of the baseline CLI matrix. Encoding uses a known
-input size, and every transform uses bounded caller-owned workspace.
+that profile has an explicit experimental command-line option but is not part
+of the baseline 42-profile matrix. Encoding uses a known input size, and every
+transform uses bounded caller-owned workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears
 in the ABI.
 
@@ -136,7 +137,8 @@ capacity, alignment, and pairwise non-overlap before publishing a handle.
 Encoder sizes and LZSS parameters are read from the size-tagged configuration;
 decoder workspace sizing comes only from its hard limits and validates stream
 parameters later. The profile remains experimental and outside the baseline
-CLI inventory.
+CLI inventory, though the same public lifecycle is reachable through the
+explicit experimental command-line option.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

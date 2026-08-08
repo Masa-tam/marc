@@ -4189,3 +4189,13 @@ Malformed status is normal fuzz completion. The harness aborts only when a
 decoder violates consumption/production bounds, progress semantics, queried
 workspace guarantees, final-input behavior, or its finite call budget. A
 sanitizer campaign remains separate evidence from target construction.
+
+### Format 2 CLI boundary
+
+The transactional CLI admits Format 2 only through the explicit experimental
+selector `lzss-contextual-dynamic-range`. It fixes a 65,536-byte frame policy,
+then obtains primary, secondary, and aligned opaque-view requirements from the
+public C lifecycle separately for encode and decode. The adapter neither
+includes private Format 2 headers nor reproduces typed-token, modeled-operation,
+or context-table layout. Existing temporary-file publication ensures that a
+failed decode never replaces or leaves the requested destination.

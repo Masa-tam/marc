@@ -1238,3 +1238,14 @@ ClangCL, while ordinary regressions prove atomic rejection of all canonical
 truncations, saturated frame extents, and invalid descriptor reserved data.
 No sanitizer campaign, CLI, benchmark, or interoperability readiness is
 claimed by this milestone.
+
+### BR-0036
+
+The experimental Format 2 lifecycle now has an explicit
+`lzss-contextual-dynamic-range` CLI selector. The command-line adapter uses
+only the public configuration, requirements, factory, process, and destroy
+surface and preserves atomic temporary-file publication. Its generic
+regression covers nonempty and empty round trips, overwrite refusal, malformed
+input, strict trailing data, and failure cleanup under both local compilers.
+It remains outside the stable 42-profile, benchmark, and interoperability
+inventories.

@@ -1192,3 +1192,13 @@ truncation, saturated Format 2 frame extents, and nonzero range-descriptor
 reserved data. Both local compilers build the harness warning-clean. This is
 fuzz-boundary evidence, not a sanitizer campaign, CLI selector, benchmark, or
 interoperability admission.
+
+### CP-0042
+
+The experimental `lzss-contextual-dynamic-range` composition is now reachable
+through an explicit transactional CLI selector. The adapter fixes its public
+65,536-byte profile policy but delegates all three direction-specific
+workspace extents and opaque alignment to the public C requirements query.
+Binary, empty, malformed, trailing-data, overwrite, and temporary-file
+behavior are covered without admitting a forty-third stable matrix profile,
+benchmark command, or interoperability archive.

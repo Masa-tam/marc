@@ -3746,3 +3746,11 @@ private complete-frame decoder, public C lifecycle, fixed profile calculator
 bounds, core process invariants, and established finite-call fuzz policy. No
 external fuzzer harness, compression decoder, malformed corpus, source code,
 crash catalog, encoded stream, or test suite was consulted.
+
+### IR-0426
+
+The experimental Format 2 CLI adapter uses only DD-648, the repository's local
+Format 2 specification, public C lifecycle, established transactional CLI,
+generic CLI regression, and bounded file-adapter policy. No external command-
+line compressor, wrapper, workspace layout, corpus, encoded stream, source
+code, or test suite was consulted.

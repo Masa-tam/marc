@@ -13377,3 +13377,23 @@ reserved data. Require public frame atomicity and sticky errors; require the
 private complete-frame path to preserve raw staging whenever it is applicable.
 This adds no format, CLI, benchmark, interoperability entry, or sanitizer
 campaign claim.
+
+## DD-648: Format 2 CLI admission is public-only and experimental
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range` as an explicit experimental selector in
+the transactional CLI without changing the stable 42-profile inventory or
+the default `lz77` selector. Fix raw frames and context blocks at 65,536 bytes,
+use the public `12F + 5 = 786,437` payload ceiling, and apply an 8-MiB
+internal-buffer policy. Obtain primary, secondary, and aligned opaque-view
+extents separately for each direction from the public C requirements query.
+
+Construct, process, and destroy the transform only through the public C ABI.
+Do not include private Format 2 headers or reproduce token, operation, model,
+partition, element-size, or alignment formulas in the command-line layer.
+Retain the existing temporary-output transaction and prove nonempty and empty
+round trips, overwrite refusal, malformed-input cleanup, and strict trailing
+data rejection through the generic CLI regression. This changes no stream
+byte, ABI version, stable matrix count, benchmark, or interoperability schema.

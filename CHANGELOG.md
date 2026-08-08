@@ -66,6 +66,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added its fixed-memory dual-decoder fuzz boundary and permanent atomic
   regressions for canonical truncation, saturated Format 2 frame extents, and
   nonzero contextual Dynamic Range descriptor reserved data.
+- Added the explicit experimental `lzss-contextual-dynamic-range` selector to
+  the transactional CLI. It uses only the public C lifecycle and queried
+  three-region workspace while retaining the stable 42-profile inventory.
 
 ## 0.1.3 - 2026-08-08
 

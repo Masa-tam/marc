@@ -5794,3 +5794,9 @@ Arbitrary input reaches the complete-frame decoder only after this section's
 112-byte header is accepted; the public decoder receives every bounded case.
 All serialized, typed-token, raw, and publication extents are fixed before
 parsing, and malformed input is an expected terminal result.
+
+The experimental CLI selector `lzss-contextual-dynamic-range` changes no byte
+of Format 2. It binds this representation to 65,536-byte raw frames, the
+documented `12F + 5 = 786,437` payload ceiling, and strict whole-input
+termination. Its temporary-file transaction is an application publication
+rule, not a serialized field.

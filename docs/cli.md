@@ -72,10 +72,18 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 | `lzmw-rans` | LZMW | rANS | Scalar rANS model rebuilt per entropy block |
 | `lzmw-tans` | LZMW | tANS | Tabled model rebuilt per entropy block |
 
+### Experimental profile
+
+`lzss-contextual-dynamic-range` selects the Format 2 LZSS typed-token,
+field-context, contextual Dynamic Range pipeline. It is intentionally outside
+the stable 42-profile Format 1 inventory above. Encode and decode must use the
+same explicit selector.
+
 ### Common stream rules
 
-Except for `checksum-raw`, these profiles use the current version 1 stream
-representation described in the [format specification](format.md).
+Except for `checksum-raw` and the explicitly experimental Format 2 selector,
+the profiles above use the current version 1 stream representation described
+in the [format specification](format.md).
 
 ### LZ77 profile parameters
 
@@ -134,6 +142,14 @@ encoder aggregate is 394,332 bytes; the shared configuration uses a
 conservative 512-KiB internal-buffer policy so decoder views remain opaque.
 Every directional extent and alignment comes from the public C ABI
 requirements query.
+
+The experimental `lzss-contextual-dynamic-range` adapter fixes raw frames and
+context blocks at 65,536 bytes. Its public Format 2 conservative payload bound
+is `12F + 5`, or 786,437 bytes, and its CLI internal-buffer policy is 8 MiB.
+The command-line layer calls only the public configuration initializer,
+direction-specific requirements query, factory, process, and destroy
+functions. All three workspace extents and the opaque views alignment come
+from the query; no private token, operation, or model layout is reproduced.
 
 ### LZ78 profile parameters
 

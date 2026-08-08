@@ -15340,3 +15340,27 @@ discarded and the reviewed seed retained.
 - Local validation: the harness compiles warning-clean and all three focused
   regressions pass under MSVC and ClangCL; all 2,480 regression tests pass in
   both configurations. No sanitizer campaign was executed or claimed.
+
+## CR-0678: 2026-08-09 - Experimental Format 2 transactional CLI
+
+- Authoring method: applied marc's established public-only transactional file
+  adapter to its independently specified Format 2 lifecycle.
+- References used: AGENTS.md sections 3, 5, 11, 12, 14, and 15; DD-648;
+  IR-0426; TVG-0528; marc's local Format 2 specification, public C workspace
+  query, bounded process contract, and generic CLI regression.
+- Known implementations intentionally not consulted: external CLI tools,
+  compression wrappers, workspace layouts, corpora, encoded streams, source
+  code, and test suites.
+- Independent decisions: retain the stable 42-profile inventory; use an
+  explicit experimental selector, 65,536-byte frames, the public `12F + 5`
+  payload ceiling, and an 8-MiB internal-buffer policy; and obtain every
+  actual workspace extent and alignment from the C requirements query.
+- Generated-code task description: expose the public Format 2 lifecycle in the
+  transactional CLI and cover round-trip, overwrite, malformed, trailing, and
+  cleanup behavior with the existing generic regression.
+- Similarity review: selector routing, policy constants, allocation flow, and
+  test registration reuse marc's own CLI conventions without comparing an
+  external tool or adapter implementation.
+- Local validation: the focused transactional CLI regression and all 2,481
+  tests pass under both MSVC and ClangCL Release configurations; both complete
+  target graphs build successfully.

@@ -6819,3 +6819,13 @@ last byte of the 16-byte contextual Dynamic Range descriptor to one. Both
 mutations must fail atomically through both decoder-visible paths. Compile the
 bounded harness as an ordinary warning-clean object under MSVC and ClangCL;
 do not record an FZ campaign until a sanitizer-backed run is actually made.
+
+### TVG-0528
+
+Select `lzss-contextual-dynamic-range` explicitly through the common CLI
+regression. Encode and decode the deterministic repeated binary-text payload
+with 65,536-byte frames, then require exact file equality. Repeat with empty
+input. Require a second encode to refuse overwriting the existing archive.
+Decode an unrelated malformed byte sequence and a valid archive with one
+trailing byte; both must fail without retaining either the requested output or
+its temporary file. Exercise only the public C lifecycle reached by the CLI.
