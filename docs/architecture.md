@@ -3877,3 +3877,18 @@ factories, CLI names, interoperability schemas, and completion claims remain
 unchanged until the new decoder validator, vectors, bounded streaming pair,
 negative tests, fuzz boundary, and benchmarks satisfy the normal admission
 sequence.
+
+### Format 2 header preflight
+
+The first private decoder boundary parses all 112 stream-header bytes before
+publishing configuration. It validates the fixed prefix, LZSS parameters,
+contextual Dynamic Range parameters, context-model extension, local limits,
+and every reserved field as one transaction.
+
+For each nonempty frame, preflight validates the 64-byte `MRF2` header and the
+available 16-byte entropy descriptor before accepting the declared payload
+extent. Raw, token, modeled-event, entropy-decision, table, payload, and
+serialized-frame bounds are checked before entropy decoding or token
+allocation. The returned layout becomes visible only when the complete
+declared frame is present and every header/descriptor check succeeds. Bytes
+following that exact extent remain available for the next frame.

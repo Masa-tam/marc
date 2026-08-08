@@ -3606,3 +3606,11 @@ validation policy. The `A` payload was independently calculated and checked by
 reproducing the published variant-1 `A` vector before substituting the two
 typed-context decisions. No external stream format, typed compression profile,
 payload vector, source code, corpus, or test suite was consulted.
+
+### IR-0409
+
+The Format 2 header preflight uses only DD-631, the local Format 2 reservation,
+marc's checked arithmetic, explicit little-endian helpers, decoder limits, and
+transactional Format 1 header-validation policy. No external parser, format
+validator, compression container, source code, malformed corpus, or test suite
+was consulted.

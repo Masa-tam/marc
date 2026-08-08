@@ -6532,3 +6532,20 @@ version-2 prefix, default bounded LZSS parameters, contextual Dynamic Range
 parameters, and context extension. Empty input consists of only those 112
 bytes. No native structure serialization or implemented combined encoder is a
 vector source.
+
+### TVG-0511
+
+Use TVG-0510's explicit 112-byte stream header and 86-byte one-Literal frame as
+the first Format 2 parser vectors. Independently set each nonzero byte at its
+documented offset in zero-filled fixed arrays. Require the stream parser to
+recover frame size 64, original size one, LZSS `(65536, 5, 258)`, model total
+32768, and 31 contexts. Require frame preflight to recover raw/token counts one,
+event/decision counts two, payload extent six, and total extent 86.
+
+For every proper prefix, require truncation and unchanged caller output. Mutate
+magic, versions, fixed sizes, flags, every algorithm/variant identity, all
+three reserved regions, LZSS bounds, context count, sequence, frame counts,
+optional extents, descriptor counts/flags/reserved bytes, and representative
+local limits. Require stable categorized rejection before layout publication.
+Append one byte after the canonical frame and require the reported extent to
+remain 86 so the next frame is not consumed.

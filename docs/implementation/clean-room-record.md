@@ -14858,3 +14858,32 @@ discarded and the reviewed seed retained.
   variant-1 `A` payload before producing the contextual payload. Documentation
   structure, links, ledgers, and both compiler configurations are checked after
   this record is added.
+
+## CR-0661: 2026-08-08 - Format 2 transactional header preflight
+
+- Authoring method: implemented the decoder-first boundary directly from the
+  repository-owned Format 2 contract and one-Literal vector.
+- References used: AGENTS.md sections 7, 12, and 15; DD-631; IR-0409;
+  TVG-0511; `docs/format.md`; marc's checked arithmetic, explicit little-endian
+  helpers, LZSS parameter validator, limits, and transactional header policy.
+- Known implementations intentionally not consulted: external compression
+  formats, typed-token parsers, container validators, source code, malformed
+  corpora, and test suites.
+- Independent decisions: isolate Format 2 from version-1 header types; parse
+  all fixed stream regions transactionally; validate available descriptor
+  bytes before waiting for payload; bound the complete declared extent before
+  entropy work; and report the exact frame extent without consuming following
+  bytes.
+- Generated-code task description: implement private Format 2 stream, frame,
+  descriptor, and complete-frame preflight types; reject truncation, unknown
+  identity, nonzero reserved data, contradictory counts, unsupported optional
+  regions, arithmetic errors, and local-limit violations without publishing
+  partial results; add independent positive and negative tests.
+- Similarity review: field offsets and constants come only from marc's Format
+  2 reservation. Error categories and control flow were designed against the
+  local process, limit, and frame-atomic contracts; no external expression or
+  parser structure was compared.
+- Local validation: the documented one-Literal stream and frame parse exactly;
+  every proper prefix and representative malformed field is rejected; MSVC
+  and ClangCL builds are warning-free; focused checks and all 2,368 tests pass
+  in both configurations.

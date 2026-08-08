@@ -13118,3 +13118,17 @@ extension. Use a new 64-byte `MRF2` frame header carrying raw, token, event,
 decision, descriptor, and payload extents. Validate and reconstruct the entire
 frame in bounded private staging before publication. This reservation adds no
 public factory, CLI selector, or interoperability entry.
+
+## DD-631: Format 2 preflight is complete-frame and transactional
+
+- Date: 2026-08-08
+- Status: accepted
+
+Keep Format 2 parsing private and isolated from the version-1 `StreamHeader`
+types. Parse the 64-byte prefix and all three fixed parameter/extension regions
+as one 112-byte transaction. For every nonempty frame, validate `MRF2`, counts,
+local limits, the fixed contextual table extent, and the available descriptor
+before accepting the complete payload extent. Do not allocate token, event, or
+entropy state and do not publish parsed output until the declared frame is
+fully present. Return the exact accepted frame extent so following-frame bytes
+remain untouched.

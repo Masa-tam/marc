@@ -11,6 +11,10 @@ format versions, and C ABI versions are independent namespaces.
   separate token, context-model, entropy-backend, and decoder-visible format
   contracts plus an independently checked one-Literal vector. Existing
   format-version-1 profiles and public APIs are unchanged.
+- Added the private bounded Format 2 stream/frame preflight validator. It
+  parses the complete 112-byte stream header, rejects malformed identities,
+  parameters, counts, descriptors, reserved fields, and local-limit excesses,
+  and publishes no parsed state on failure.
 
 ## 0.1.3 - 2026-08-08
 
