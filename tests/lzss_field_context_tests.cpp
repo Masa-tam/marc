@@ -38,11 +38,207 @@ using marc::dictionary::internal::LzssTypedTokenKind;
         symbol(2, 2, 0), symbol(8, 256, 'C')};
 }
 
+[[nodiscard]] constexpr auto stateful_tokens() {
+    return std::array{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::literal, 'B', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::match, 0, 2, 10},
+        LzssTypedToken{LzssTypedTokenKind::literal, 'C', 0, 0}};
+}
+
 [[nodiscard]] constexpr LzssFieldContextValidationContext literal_context() {
     return {1, 2, 2, 1, 0};
 }
 
 } // namespace
+
+TEST(LzssFieldContextModel, PlansAndMaterializesSpecifiedStatefulVector) {
+    constexpr auto tokens = stateful_tokens();
+    constexpr auto expected = stateful_sequence();
+    constexpr marc::dictionary::internal::LzssTypedFrameValidationContext
+        context{4, 13, 0};
+    const auto plan = plan_lzss_field_context_operations(
+        tokens, {}, context, marc::core::DecoderLimits{});
+    ASSERT_EQ(plan.error, LzssFieldContextError::none);
+    EXPECT_EQ(plan.operation_count, expected.size());
+    EXPECT_EQ(plan.decision_count, 12U);
+    EXPECT_EQ(plan.token_count, tokens.size());
+    EXPECT_EQ(plan.raw_size, 13U);
+
+    std::array<ModeledOperation, expected.size()> operations{};
+    const auto result = model_lzss_field_context_tokens(
+        tokens, {}, context, marc::core::DecoderLimits{}, operations);
+    ASSERT_EQ(result.error, LzssFieldContextError::none);
+    for (std::size_t index = 0; index < operations.size(); ++index) {
+        EXPECT_EQ(operations[index].kind, expected[index].kind) << index;
+        EXPECT_EQ(operations[index].context_id, expected[index].context_id)
+            << index;
+        EXPECT_EQ(operations[index].alphabet_size,
+                  expected[index].alphabet_size) << index;
+        EXPECT_EQ(operations[index].value, expected[index].value) << index;
+        EXPECT_EQ(operations[index].bit_count, expected[index].bit_count)
+            << index;
+    }
+
+    std::array<LzssTypedToken, tokens.size()> reconstructed{};
+    const auto inverse = invert_lzss_field_context_operations(
+        operations, {}, {4, 11, 12, 13, 0},
+        marc::core::DecoderLimits{}, reconstructed);
+    ASSERT_EQ(inverse.error, LzssFieldContextError::none);
+    for (std::size_t index = 0; index < tokens.size(); ++index) {
+        EXPECT_EQ(reconstructed[index].kind, tokens[index].kind) << index;
+        EXPECT_EQ(reconstructed[index].literal, tokens[index].literal)
+            << index;
+        EXPECT_EQ(reconstructed[index].distance, tokens[index].distance)
+            << index;
+        EXPECT_EQ(reconstructed[index].length, tokens[index].length) << index;
+    }
+}
+
+TEST(LzssFieldContextModel, AcceptsEmptyFrameWithoutWritingOutput) {
+    std::array<ModeledOperation, 1> output{
+        symbol(30, 17, 16)};
+    const auto before = output;
+    const auto result = model_lzss_field_context_tokens(
+        {}, {}, {}, marc::core::DecoderLimits{}, output);
+    EXPECT_EQ(result.error, LzssFieldContextError::none);
+    EXPECT_EQ(result.operation_count, 0U);
+    EXPECT_EQ(output[0].context_id, before[0].context_id);
+    EXPECT_EQ(output[0].value, before[0].value);
+}
+
+TEST(LzssFieldContextModel, OmitsZeroWidthBypassOperations) {
+    constexpr std::array tokens{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::match, 0, 1, 5}};
+    constexpr std::array expected{
+        symbol(0, 2, 0), symbol(3, 256, 'A'),
+        symbol(1, 2, 1), symbol(21, 8, 0), symbol(23, 17, 0)};
+    std::array<ModeledOperation, expected.size()> output{};
+    const auto result = model_lzss_field_context_tokens(
+        tokens, {}, {2, 6, 0}, marc::core::DecoderLimits{}, output);
+    ASSERT_EQ(result.error, LzssFieldContextError::none);
+    EXPECT_EQ(result.operation_count, 5U);
+    EXPECT_EQ(result.decision_count, 5U);
+    for (std::size_t index = 0; index < output.size(); ++index) {
+        EXPECT_EQ(output[index].kind, expected[index].kind) << index;
+        EXPECT_EQ(output[index].context_id, expected[index].context_id)
+            << index;
+        EXPECT_EQ(output[index].alphabet_size,
+                  expected[index].alphabet_size) << index;
+        EXPECT_EQ(output[index].value, expected[index].value) << index;
+        EXPECT_EQ(output[index].bit_count, expected[index].bit_count) << index;
+    }
+}
+
+TEST(LzssFieldContextModel, EncodesMaximumLengthClassExactly) {
+    constexpr std::array tokens{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::match, 0, 1, 258}};
+    std::array<ModeledOperation, 6> output{};
+    const auto result = model_lzss_field_context_tokens(
+        tokens, {}, {2, 259, 0}, marc::core::DecoderLimits{}, output);
+    ASSERT_EQ(result.error, LzssFieldContextError::none);
+    EXPECT_EQ(result.operation_count, 6U);
+    EXPECT_EQ(result.decision_count, 12U);
+    EXPECT_EQ(output[3].context_id, 21U);
+    EXPECT_EQ(output[3].value, 7U);
+    EXPECT_EQ(output[4].kind, ModeledOperationKind::bypass_bits);
+    EXPECT_EQ(output[4].bit_count, 7U);
+    EXPECT_EQ(output[4].value, 126U);
+    EXPECT_EQ(output[5].context_id, 30U);
+    EXPECT_EQ(output[5].value, 0U);
+}
+
+TEST(LzssFieldContextModel, PropagatesTypedFrameFailures) {
+    constexpr std::array invalid{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::match, 0, 2, 5}};
+    auto result = plan_lzss_field_context_operations(
+        invalid, {}, {2, 6, 0}, marc::core::DecoderLimits{});
+    EXPECT_EQ(result.error, LzssFieldContextError::invalid_token);
+    EXPECT_EQ(result.token_error, LzssTypedTokenError::invalid_distance);
+    EXPECT_EQ(result.token_index, 1U);
+    EXPECT_EQ(result.raw_size, 1U);
+
+    constexpr std::array literals{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0},
+        LzssTypedToken{LzssTypedTokenKind::literal, 'B', 0, 0}};
+    result = plan_lzss_field_context_operations(
+        literals, {}, {1, 2, 0}, marc::core::DecoderLimits{});
+    EXPECT_EQ(result.error, LzssFieldContextError::token_count_mismatch);
+
+    result = plan_lzss_field_context_operations(
+        literals, {}, {2, 3, 0}, marc::core::DecoderLimits{});
+    EXPECT_EQ(result.error, LzssFieldContextError::raw_size_mismatch);
+
+    result = plan_lzss_field_context_operations(
+        literals, {}, {2, 1, 0}, marc::core::DecoderLimits{});
+    EXPECT_EQ(result.error, LzssFieldContextError::trailing_tokens);
+
+    auto invalid_parameters =
+        marc::dictionary::internal::LzssParameters{};
+    invalid_parameters.min_match_length = 4;
+    result = plan_lzss_field_context_operations(
+        literals, invalid_parameters, {2, 2, 0},
+        marc::core::DecoderLimits{});
+    EXPECT_EQ(result.error, LzssFieldContextError::invalid_parameters);
+}
+
+TEST(LzssFieldContextModel, ShortOutputLeavesEveryOperationUnchanged) {
+    constexpr auto tokens = stateful_tokens();
+    std::array<ModeledOperation, 11> output{};
+    for (auto& operation : output) operation.value = 0xCCCCCCCCU;
+    const auto result = model_lzss_field_context_tokens(
+        tokens, {}, {4, 13, 0}, marc::core::DecoderLimits{},
+        std::span<ModeledOperation>{output}.first(10));
+    EXPECT_EQ(result.error, LzssFieldContextError::output_too_small);
+    for (const auto& operation : output) {
+        EXPECT_EQ(operation.value, 0xCCCCCCCCU);
+    }
+}
+
+TEST(LzssFieldContextModel, WritesOnlyPlannedOperationExtent) {
+    constexpr std::array tokens{
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0}};
+    std::array<ModeledOperation, 3> output{};
+    output[2].value = 0xCCCCCCCCU;
+    const auto result = model_lzss_field_context_tokens(
+        tokens, {}, {1, 1, 0}, marc::core::DecoderLimits{}, output);
+    EXPECT_EQ(result.error, LzssFieldContextError::none);
+    EXPECT_EQ(output[0].value, 0U);
+    EXPECT_EQ(output[1].value, static_cast<std::uint32_t>('A'));
+    EXPECT_EQ(output[2].value, 0xCCCCCCCCU);
+}
+
+TEST(LzssFieldContextModel, RejectsTokenOperationAliasingAtomically) {
+    std::array<LzssTypedToken, 3> tokens{};
+    tokens[0] = {LzssTypedTokenKind::literal, 'A', 0, 0};
+    const auto original = tokens;
+    auto* operation_pointer =
+        reinterpret_cast<ModeledOperation*>(tokens.data());
+    const std::span<ModeledOperation> aliased_output{operation_pointer, 2};
+    const auto result = model_lzss_field_context_tokens(
+        std::span<const LzssTypedToken>{tokens}.first(1), {}, {1, 1, 0},
+        marc::core::DecoderLimits{}, aliased_output);
+    EXPECT_EQ(result.error, LzssFieldContextError::overlapping_buffers);
+    EXPECT_EQ(tokens[0].kind, original[0].kind);
+    EXPECT_EQ(tokens[0].literal, original[0].literal);
+    EXPECT_EQ(tokens[0].distance, original[0].distance);
+    EXPECT_EQ(tokens[0].length, original[0].length);
+}
+
+TEST(LzssFieldContextModel, EnforcesPlannedOperationStorageLimit) {
+    constexpr auto tokens = stateful_tokens();
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_internal_buffered_bytes =
+        11 * sizeof(ModeledOperation) - 1;
+    limits.max_block_size = 13;
+    const auto result = plan_lzss_field_context_operations(
+        tokens, {}, {4, 13, 0}, limits);
+    EXPECT_EQ(result.error, LzssFieldContextError::limit_exceeded);
+    EXPECT_EQ(result.operation_count, 11U);
+}
 
 TEST(LzssFieldContext, AcceptsEmptyFrameWithoutWritingOutput) {
     std::array<LzssTypedToken, 1> tokens{

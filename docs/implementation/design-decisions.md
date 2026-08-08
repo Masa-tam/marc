@@ -13172,3 +13172,17 @@ writing caller output. Only after sufficient disjoint token staging is proven
 does a failure-free materialization pass write the declared token extent.
 Preserve stable failing operation/token indices and accepted prefixes for
 diagnostics; do not expose this private value boundary through the C ABI.
+
+## DD-635: LZSS field-context forward modeling uses an exact plan
+
+- Date: 2026-08-08
+- Status: accepted
+
+Validate a complete typed LZSS frame before calculating its modeled-operation
+plan. Count each symbol as one entropy decision and each nonzero-width bypass
+operation by its exact bit width; omit zero-width bypass operations. Enforce
+the planned operation-storage extent, output capacity, and token/output
+non-aliasing before the first write. Materialize the fixed state machine in a
+failure-free pass, write only the planned extent, and require exact inversion
+to the original typed values in tests. Keep the boundary private and allocation
+free.

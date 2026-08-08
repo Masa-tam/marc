@@ -3938,3 +3938,17 @@ output, and aggregate output are bounded before materialization. Only after the
 full walk succeeds does the inverse write the declared number of typed tokens
 to disjoint private staging. A malformed operation, short output span, or
 aliasing span therefore leaves every caller-owned token unchanged.
+
+### LZSS field-context forward modeling
+
+The matching private encoder boundary first validates the complete typed-token
+frame and then calculates exact modeled-event and entropy-decision counts
+without writing output. Literal and Match classes are derived only after token
+validity, reference history, raw extent, local storage, and aggregate-output
+policy have succeeded.
+
+Materialization requires the exact planned operation capacity and storage
+disjoint from the input token span. It then emits the fixed contexts,
+alphabets, values, and nonzero-width bypass operations in one failure-free
+pass. Empty frames write nothing, excess caller capacity remains untouched,
+and applying the inverse boundary reconstructs the original typed tokens.

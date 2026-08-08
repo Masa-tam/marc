@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 
+#include <bit>
 #include <cstdint>
 
 namespace marc::context::internal {
@@ -178,6 +179,81 @@ void update_state(const LzssTypedToken& token, ModelState& state) noexcept {
     }
 }
 
+[[nodiscard]] std::uint8_t value_class(
+    const std::uint32_t value) noexcept {
+    return static_cast<std::uint8_t>(std::bit_width(value) - 1U);
+}
+
+[[nodiscard]] LzssFieldContextError map_typed_frame_error(
+    const dictionary::internal::LzssTypedFrameValidationError error) noexcept {
+    using Error = dictionary::internal::LzssTypedFrameValidationError;
+    switch (error) {
+    case Error::none:
+        return LzssFieldContextError::none;
+    case Error::invalid_parameters:
+        return LzssFieldContextError::invalid_parameters;
+    case Error::token_count_mismatch:
+        return LzssFieldContextError::token_count_mismatch;
+    case Error::token_error:
+        return LzssFieldContextError::invalid_token;
+    case Error::premature_end:
+        return LzssFieldContextError::raw_size_mismatch;
+    case Error::trailing_tokens:
+        return LzssFieldContextError::trailing_tokens;
+    case Error::limit_exceeded:
+        return LzssFieldContextError::limit_exceeded;
+    case Error::arithmetic_overflow:
+        return LzssFieldContextError::arithmetic_overflow;
+    }
+    return LzssFieldContextError::invalid_token;
+}
+
+[[nodiscard]] LzssFieldContextResult run_plan(
+    const std::span<const LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    LzssFieldContextResult result{};
+    const auto validation = dictionary::internal::validate_lzss_typed_frame(
+        tokens, parameters, context, limits);
+    result.token_count = validation.token_count;
+    result.token_index = validation.token_index;
+    result.raw_size = validation.raw_size;
+    result.token_error = validation.token_error;
+    result.error = map_typed_frame_error(validation.error);
+    if (result.error != LzssFieldContextError::none) return result;
+
+    for (const auto& token : tokens) {
+        std::size_t event_increment{2};
+        std::uint32_t decision_increment{2};
+        if (token.kind == LzssTypedTokenKind::match) {
+            const auto length_class = value_class(token.length - 4);
+            const auto distance_class = value_class(token.distance);
+            event_increment = static_cast<std::size_t>(
+                3U + (length_class != 0 ? 1U : 0U)
+                + (distance_class != 0 ? 1U : 0U));
+            decision_increment = static_cast<std::uint32_t>(
+                3U + length_class + distance_class);
+        }
+        if (!core::checked_add(result.operation_count, event_increment,
+                               result.operation_count)
+            || !core::checked_add(result.decision_count, decision_increment,
+                                  result.decision_count)) {
+            result.error = LzssFieldContextError::arithmetic_overflow;
+            return result;
+        }
+    }
+    result.operation_index = result.operation_count;
+    std::size_t operation_bytes{};
+    if (!core::checked_multiply(result.operation_count,
+                                sizeof(ModeledOperation), operation_bytes)) {
+        result.error = LzssFieldContextError::arithmetic_overflow;
+    } else if (operation_bytes > limits.max_internal_buffered_bytes) {
+        result.error = LzssFieldContextError::limit_exceeded;
+    }
+    return result;
+}
+
 [[nodiscard]] LzssFieldContextResult run_validation(
     const std::span<const ModeledOperation> operations,
     const dictionary::internal::LzssParameters& parameters,
@@ -318,6 +394,81 @@ enum class OverlapCheck : std::uint8_t {
         : OverlapCheck::disjoint;
 }
 
+[[nodiscard]] OverlapCheck token_operation_overlap(
+    const std::span<const LzssTypedToken> tokens,
+    const std::span<ModeledOperation> operations) noexcept {
+    if (tokens.empty() || operations.empty()) return OverlapCheck::disjoint;
+    std::size_t token_bytes{};
+    std::size_t operation_bytes{};
+    if (!core::checked_multiply(tokens.size(), sizeof(LzssTypedToken),
+                                token_bytes)
+        || !core::checked_multiply(operations.size(),
+                                   sizeof(ModeledOperation),
+                                   operation_bytes)) {
+        return OverlapCheck::arithmetic_overflow;
+    }
+    const auto token_begin = reinterpret_cast<std::uintptr_t>(tokens.data());
+    const auto operation_begin =
+        reinterpret_cast<std::uintptr_t>(operations.data());
+    std::uintptr_t token_end{};
+    std::uintptr_t operation_end{};
+    if (!core::checked_add(token_begin,
+                           static_cast<std::uintptr_t>(token_bytes), token_end)
+        || !core::checked_add(operation_begin,
+                              static_cast<std::uintptr_t>(operation_bytes),
+                              operation_end)) {
+        return OverlapCheck::arithmetic_overflow;
+    }
+    return token_begin < operation_end && operation_begin < token_end
+        ? OverlapCheck::overlap
+        : OverlapCheck::disjoint;
+}
+
+void materialize_operations(
+    const std::span<const LzssTypedToken> tokens,
+    const std::span<ModeledOperation> operations) noexcept {
+    ModelState state{};
+    std::size_t operation_index{};
+    const auto write_symbol = [&](const std::uint16_t context,
+                                  const std::uint16_t alphabet,
+                                  const std::uint32_t value) {
+        operations[operation_index++] = {
+            ModeledOperationKind::symbol, context, alphabet, value, 0};
+    };
+    const auto write_bypass = [&](const std::uint8_t bits,
+                                  const std::uint32_t value) {
+        operations[operation_index++] = {
+            ModeledOperationKind::bypass_bits, 0, 0, value, bits};
+    };
+    for (const auto& token : tokens) {
+        if (token.kind == LzssTypedTokenKind::literal) {
+            write_symbol(state_index(state), 2, 0);
+            write_symbol(literal_context(state), 256, token.literal);
+            update_state(token, state);
+            continue;
+        }
+
+        write_symbol(state_index(state), 2, 1);
+        const auto length_value = token.length - 4;
+        const auto length_class = value_class(length_value);
+        const auto length_base = UINT32_C(1) << length_class;
+        write_symbol(static_cast<std::uint16_t>(20 + state_index(state)), 8,
+                     length_class);
+        if (length_class != 0) {
+            write_bypass(length_class, length_value - length_base);
+        }
+
+        const auto distance_class = value_class(token.distance);
+        const auto distance_base = UINT32_C(1) << distance_class;
+        write_symbol(static_cast<std::uint16_t>(23 + length_class), 17,
+                     distance_class);
+        if (distance_class != 0) {
+            write_bypass(distance_class, token.distance - distance_base);
+        }
+        update_state(token, state);
+    }
+}
+
 void materialize(const std::span<const ModeledOperation> operations,
                  const std::span<LzssTypedToken> tokens) noexcept {
     std::size_t operation_index{};
@@ -349,6 +500,40 @@ void materialize(const std::span<const ModeledOperation> operations,
 }
 
 } // namespace
+
+LzssFieldContextResult plan_lzss_field_context_operations(
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return run_plan(tokens, parameters, context, limits);
+}
+
+LzssFieldContextResult model_lzss_field_context_tokens(
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<ModeledOperation> private_operations) noexcept {
+    auto result = run_plan(tokens, parameters, context, limits);
+    if (result.error != LzssFieldContextError::none) return result;
+    if (private_operations.size() < result.operation_count) {
+        result.error = LzssFieldContextError::output_too_small;
+        return result;
+    }
+    const auto output = private_operations.first(result.operation_count);
+    const auto overlap = token_operation_overlap(tokens, output);
+    if (overlap == OverlapCheck::arithmetic_overflow) {
+        result.error = LzssFieldContextError::arithmetic_overflow;
+        return result;
+    }
+    if (overlap == OverlapCheck::overlap) {
+        result.error = LzssFieldContextError::overlapping_buffers;
+        return result;
+    }
+    materialize_operations(tokens, output);
+    return result;
+}
 
 LzssFieldContextResult validate_lzss_field_context_operations(
     const std::span<const ModeledOperation> operations,

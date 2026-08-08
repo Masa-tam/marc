@@ -14966,3 +14966,30 @@ discarded and the reviewed seed retained.
   invert exactly; malformed operations and all pre-write gates fail atomically;
   MSVC and ClangCL builds are warning-free; focused and full regression tests
   pass in both configurations.
+
+## CR-0665: 2026-08-08 - LZSS field-context forward model
+
+- Authoring method: implemented the private forward state machine directly
+  from the repository-owned typed-token and context-model contracts.
+- References used: AGENTS.md sections 11.2, 12, 14, and 15; DD-635; IR-0413;
+  TVG-0515; marc's typed-frame validator, field-context inverse, checked
+  arithmetic, decoder limits, and atomic caller-owned staging policy.
+- Known implementations intentionally not consulted: external context models,
+  field encoders, token transforms, compression source code, corpora, encoded
+  streams, and test suites.
+- Independent decisions: separate exact planning from materialization; derive
+  classes with C++20 integer bit width; count bypass decisions by bit width;
+  omit zero-width operations; and gate all writes on capacity, storage limits,
+  and non-aliasing.
+- Generated-code task description: implement a write-free modeled-operation
+  planner and atomic forward materializer for complete typed LZSS frames; add
+  exact, inverse-round-trip, boundary, malformed, limit, sentinel, and alias
+  tests without adding serialization or a public codec.
+- Similarity review: field equations and contexts come only from marc's local
+  specification. Planning, error translation, materialization, and test
+  structure were designed locally without comparing external implementation
+  expression or control flow.
+- Local validation: empty, minimum-Match, maximum-length, and stateful vectors
+  produce exact operations and invert exactly; malformed inputs and pre-write
+  gates preserve output; MSVC and ClangCL builds are warning-free; focused and
+  full regression tests pass in both configurations.

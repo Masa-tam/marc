@@ -6594,3 +6594,20 @@ operations, and every declared count. Exercise operation-storage, frame, and
 aggregate-output limits. For short or deliberately aliased output spans,
 snapshot all typed-token values and require rejection before the first write;
 on success require only the declared token extent to change.
+
+### TVG-0515
+
+Use TVG-0514's four typed tokens as independent forward input and require an
+exact plan of eleven operations, twelve decisions, four tokens, and thirteen
+raw bytes. Materialize the documented operation sequence field by field, feed
+it to the inverse validator, and require exact recovery of every typed-token
+field. Separately require `Literal('A'), Match(1,5)` to omit both zero-width
+bypass operations, and `Literal('A'), Match(1,258)` to emit length class 7,
+seven bypass bits with value 126, distance context 30, and twelve total
+decisions.
+
+Validate empty input and propagate malformed typed-token, declared-token,
+premature-raw-end, trailing-token, parameter, and limit failures. Prefill short
+and excess operation spans with sentinels and construct a deliberately aliased
+token/operation span; require every failed gate to preserve all storage and a
+successful call to write only the exact planned extent.

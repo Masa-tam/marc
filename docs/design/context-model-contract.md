@@ -110,3 +110,9 @@ each token only as a local value; the second pass materializes caller-owned
 typed-token staging after capacity and non-aliasing checks. Validation reports
 the first failing operation and token indices plus the accepted decision and
 raw prefixes, while publishing no partial token sequence.
+
+The reference encoder uses the symmetric two-stage policy. Its write-free plan
+first validates the complete typed-token frame and calculates exact operation
+and decision counts. Only sufficient, bounded, non-aliasing operation staging
+permits deterministic materialization; an invalid token, count mismatch,
+policy failure, or short output leaves the entire operation span unchanged.

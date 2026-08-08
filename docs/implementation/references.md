@@ -3636,3 +3636,11 @@ contract, typed LZSS validator, checked arithmetic, decoder limits, and
 caller-owned span policy. No external context-model implementation, field
 coder, token materializer, alias helper, source code, corpus, or test suite was
 consulted.
+
+### IR-0413
+
+The `LzssFieldContext` forward planner and materializer use only DD-635, the
+local context-model contract, typed LZSS frame validator, C++20 integer bit
+width, checked arithmetic, decoder limits, and caller-owned span policy. No
+external context-model encoder, field coder, token transform, source code,
+corpus, or test suite was consulted.

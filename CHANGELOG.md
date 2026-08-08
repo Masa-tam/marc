@@ -25,6 +25,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private `LzssFieldContext` inverse validator and materializer. It
   reconstructs typed LZSS values only after exact operation, token, decision,
   raw-size, context, alphabet, bypass-width, limit, and alias checks succeed.
+- Added the matching private `LzssFieldContext` exact planner and forward
+  materializer. Valid typed LZSS frames now produce deterministic modeled
+  operations atomically without changing the format or public ABI.
 
 ## 0.1.3 - 2026-08-08
 

@@ -47,6 +47,7 @@ enum class LzssFieldContextError : std::uint8_t {
     invalid_bypass_width,
     nonzero_unused_field,
     invalid_token,
+    trailing_tokens,
     output_too_small,
     overlapping_buffers,
     limit_exceeded,
@@ -64,6 +65,19 @@ struct LzssFieldContextResult {
         dictionary::internal::LzssTypedTokenError::none};
     LzssFieldContextError error{LzssFieldContextError::none};
 };
+
+[[nodiscard]] LzssFieldContextResult plan_lzss_field_context_operations(
+    std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits) noexcept;
+
+[[nodiscard]] LzssFieldContextResult model_lzss_field_context_tokens(
+    std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    std::span<ModeledOperation> private_operations) noexcept;
 
 [[nodiscard]] LzssFieldContextResult validate_lzss_field_context_operations(
     std::span<const ModeledOperation> operations,
