@@ -6685,3 +6685,21 @@ data; reset and unknown flags; flush starvation; premature EndInput after frame
 one; EndInput retained across a zero-capacity final drain; overlapping
 construction workspaces; and output aliasing raw staging. Include a header-only
 empty stream and require immediate clean termination.
+
+### TVG-0520
+
+Feed the two one-Literal modeled operations from TVG-0510 to the private
+contextual Dynamic Range encoder and require descriptor `(2, 6, 31)` and exact
+payload `00 20 7F FF BF 00`. Feed TVG-0516's five bypass-bearing operations
+and require six decisions plus exact payload `00 A4 3C 3C 38 00`. Decode both
+encoder outputs through the independently implemented request-driven decoder
+and require every original operation value and exact final consumption.
+
+Drive context zero past its total-32,768 rescale boundary with 32,770
+alternating binary symbols and require the decoder to remain synchronized
+through finalization. Independently mutate operation kind, context, alphabet,
+symbol, bypass width, and unused fields; constrain table, model-total,
+operation-storage, and payload limits; provide short output and overlapping
+operation/output storage. Require stable failing operation indices, unchanged
+descriptor and output on every pre-write failure, exact writes on success, and
+unchanged excess capacity.

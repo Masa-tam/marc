@@ -1,7 +1,6 @@
 #include "entropy/contextual_dynamic_range_decoder.hpp"
 
 #include <algorithm>
-#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -9,27 +8,6 @@ namespace marc::entropy::internal {
 namespace {
 
 inline constexpr std::uint32_t normalization_threshold = UINT32_C(1) << 24;
-
-inline constexpr auto context_alphabets = [] {
-    std::array<std::uint16_t, contextual_dynamic_range_context_count> values{};
-    values[0] = values[1] = values[2] = 2;
-    for (std::size_t index = 3; index <= 19; ++index) values[index] = 256;
-    values[20] = values[21] = values[22] = 8;
-    for (std::size_t index = 23; index <= 30; ++index) values[index] = 17;
-    return values;
-}();
-
-inline constexpr auto context_offsets = [] {
-    std::array<std::size_t, contextual_dynamic_range_context_count + 1>
-        values{};
-    for (std::size_t index = 0; index < context_alphabets.size(); ++index) {
-        values[index + 1] = values[index] + context_alphabets[index];
-    }
-    return values;
-}();
-
-static_assert(context_offsets.back()
-              == contextual_dynamic_range_table_entries);
 
 } // namespace
 
@@ -51,7 +29,7 @@ ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::fail(
 void ContextualDynamicRangeDecoder::reset_models() noexcept {
     frequencies_.fill(1);
     for (std::size_t index = 0; index < totals_.size(); ++index) {
-        totals_[index] = context_alphabets[index];
+        totals_[index] = contextual_dynamic_range_alphabets[index];
     }
 }
 
@@ -144,7 +122,8 @@ ContextualDynamicRangeDecoder::decode_symbol(
     if (expected_context >= contextual_dynamic_range_context_count) {
         return fail(ContextualDynamicRangeDecodeError::invalid_context);
     }
-    if (expected_alphabet != context_alphabets[expected_context]) {
+    if (expected_alphabet
+        != contextual_dynamic_range_alphabets[expected_context]) {
         return fail(ContextualDynamicRangeDecodeError::invalid_alphabet);
     }
     if (decision_count_ >= descriptor_.decision_count) {
@@ -152,7 +131,7 @@ ContextualDynamicRangeDecoder::decode_symbol(
             ContextualDynamicRangeDecodeError::decision_count_exceeded);
     }
 
-    const auto offset = context_offsets[expected_context];
+    const auto offset = contextual_dynamic_range_offsets[expected_context];
     const auto total = totals_[expected_context];
     const auto unit = range_ / total;
     if (range_ < normalization_threshold || unit == 0) {
@@ -248,7 +227,7 @@ ContextualDynamicRangeDecoder::decode_bypass(
 
 bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
     for (std::size_t context = 0; context < totals_.size(); ++context) {
-        const auto alphabet = context_alphabets[context];
+        const auto alphabet = contextual_dynamic_range_alphabets[context];
         if (totals_[context] < alphabet
             || totals_[context] >= contextual_dynamic_range_model_total_limit) {
             return false;
@@ -256,7 +235,8 @@ bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
         std::uint32_t sum{};
         for (std::size_t symbol = 0; symbol < alphabet; ++symbol) {
             const auto frequency =
-                frequencies_[context_offsets[context] + symbol];
+                frequencies_[contextual_dynamic_range_offsets[context]
+                             + symbol];
             if (frequency == 0) return false;
             sum += frequency;
         }

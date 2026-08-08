@@ -13248,3 +13248,19 @@ bytes, reset, and unknown flags, and make end/error terminal behavior sticky.
 Preserve `limit_exceeded` from valid stream/frame headers instead of collapsing
 local policy rejection into malformed input.
 Keep the lifecycle private without changing Format 2 or the C ABI.
+
+## DD-640: Contextual range encoding uses an exact two-pass plan
+
+- Date: 2026-08-08
+- Status: accepted
+
+Encode a complete bounded `ModeledOperation` sequence with the same fixed
+31-context schema, adaptive update/rescale rules, LSB-first bypass decisions,
+and variant-1 arithmetic used by the private decoder. First run the complete
+coder without writes to validate every operation and determine exact decision
+and payload counts. Enforce local limits, exact capacity, and operation/output
+non-aliasing before repeating the deterministic computation into caller-owned
+payload storage. Publish the descriptor only after materialization reproduces
+the plan exactly, and leave all caller output unchanged on every pre-write
+failure. Keep this operation-level boundary private and do not change Format 2
+or the C ABI.

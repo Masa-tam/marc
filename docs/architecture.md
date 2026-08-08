@@ -4050,3 +4050,21 @@ drained with no trailing input. Repeated calls after end return
 Header syntax violations map to `malformed_stream`, while otherwise valid
 stream or frame headers rejected by configured limits retain
 `limit_exceeded`.
+
+### Contextual Dynamic Range operation encoder boundary
+
+The private variant-2 reference encoder consumes the complete bounded
+`ModeledOperation` sequence produced by the forward `LzssFieldContext`
+boundary. It shares the decoder's fixed 31-context schema, starts every model
+with frequency one, codes bypass bits least-significant bit first with fixed
+probability one-half, and uses the unchanged variant-1 interval and delayed-
+carry termination arithmetic.
+
+Encoding is an exact two-pass transaction. The planning pass writes nothing
+while validating the entire operation sequence, counting decisions, enforcing
+native operation-storage and payload limits, and determining the exact payload
+extent. Only after sufficient disjoint output is proven does an identical pass
+materialize that extent. The descriptor remains caller-owned and unchanged on
+failure. This boundary deliberately stops at modeled operations; typed LZSS
+production and complete-frame serialization remain separate composition
+steps.

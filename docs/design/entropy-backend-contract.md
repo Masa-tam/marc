@@ -107,6 +107,15 @@ The Format 2 preflight and backend share one internal descriptor and constants
 definition, so context count, table entries, and model-total limits cannot
 drift between framing and arithmetic validation.
 
+The private reference encoder accepts a complete bounded
+`ModeledOperation` sequence. A write-free planning pass validates every fixed
+context, alphabet, symbol, bypass width, unused field, decision count, local
+limit, and final payload extent while running the exact arithmetic coder. The
+materialization pass repeats that deterministic finite computation only after
+exact output capacity and operation/output non-aliasing are established. It
+writes only the planned payload extent and publishes the descriptor only after
+the second pass reproduces the plan exactly.
+
 The decoder bring-up bypass vector uses these six decisions:
 
 ```text

@@ -31,6 +31,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private contextual Dynamic Range variant-2 decoder boundary with
   31 fixed independent models, LSB-first fixed-probability bypass decoding,
   sticky failures, exact decision accounting, and payload finalization.
+- Added the matching private contextual Dynamic Range operation encoder. Its
+  write-free exact plan validates fixed contexts and limits before atomically
+  materializing the unchanged variant-2 payload and descriptor.
 - Connected that backend directly to private typed LZSS token staging. The
   two-pass bridge derives every entropy request from prior accepted token
   state, validates the complete frame before writing, and avoids materializing

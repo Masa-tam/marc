@@ -5751,3 +5751,10 @@ does not begin the next frame until the prior raw frame is drained. Empty input
 ends after the 112-byte stream header; nonempty streams require contiguous
 zero-based frame sequences whose raw sizes sum exactly to `original size`.
 This lifecycle is still private and adds no public profile or C ABI entry.
+
+The private contextual Dynamic Range operation encoder now produces this
+unchanged variant-2 descriptor and payload representation from a complete
+bounded modeled-operation sequence. Its one-Literal and bypass-bearing output
+matches the bytes above and in the entropy-backend contract exactly. This
+implementation milestone adds no field, algorithm ID, variant, public profile,
+or C ABI entry.

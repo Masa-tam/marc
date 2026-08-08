@@ -3677,3 +3677,12 @@ contract, local Format 2 header parsers and complete-frame decoder, checked
 arithmetic, decoder limits, and existing frame-atomic streaming policy. No
 external streaming decompressor, archive reader, buffer coordinator, source
 code, corpus, encoded stream, or test suite was consulted.
+
+### IR-0418
+
+The contextual Dynamic Range operation encoder uses only DD-640, the local
+entropy-backend contract, marc's independently specified variant-1 integer
+range arithmetic, the fixed `LzssFieldContext` schema, checked arithmetic,
+decoder limits, and caller-owned span policy. No external range encoder,
+contextual model, compression pipeline, source code, corpus, encoded stream,
+or test suite was consulted.

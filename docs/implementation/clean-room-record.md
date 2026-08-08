@@ -15111,3 +15111,33 @@ discarded and the reviewed seed retained.
   construction-alias, and drain-alias behavior is stable; MSVC and ClangCL
   builds are warning-free; focused and full regression tests pass in both
   configurations.
+
+## CR-0670: 2026-08-08 - Contextual Dynamic Range operation encoder
+
+- Authoring method: implemented the inverse of marc's independently specified
+  private request-driven entropy decoder and modeled-operation contract.
+- References used: AGENTS.md sections 3, 6, 10.4, 11.2, 12, 14, and 15;
+  DD-640; IR-0418; TVG-0520; marc's local entropy-backend contract, fixed
+  context schema, variant-1 arithmetic, checked arithmetic, decoder limits,
+  and atomic caller-owned staging policy.
+- Known implementations intentionally not consulted: external range encoders,
+  contextual models, compression pipelines, source code, corpora, encoded
+  streams, and test suites.
+- Independent decisions: share only fixed schema constants with the decoder;
+  plan by running the complete arithmetic coder without writes; reject every
+  malformed operation, local-limit excess, short output, and alias before
+  materialization; and publish the descriptor only after exact reproduction.
+- Generated-code task description: implement a private bounded contextual
+  Dynamic Range encoder from modeled operations, with exact payload planning,
+  atomic caller-owned output, fixed-model validation, round-trip, golden-vector,
+  malformed-operation, limit, alias, and rescale-boundary tests.
+- Similarity review: model shape and arithmetic derive only from marc's local
+  documents and independently implemented decoder. Encoder API, two-pass
+  transaction, validation order, error categories, and tests were designed
+  locally without comparing external implementation expression or control
+  flow.
+- Local validation: the one-Literal and bypass golden payloads match the
+  documented bytes; the existing decoder recovers every operation and remains
+  synchronized across rescaling; malformed, limit, capacity, and alias failures
+  preserve caller state; MSVC and ClangCL builds are warning-free; focused and
+  full regression tests pass in both configurations.
