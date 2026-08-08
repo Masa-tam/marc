@@ -13458,3 +13458,28 @@ Format 2 reduction relative to the Format 1 encoded extent, together with its
 workspace increase, so later variants have an explicit point of comparison.
 This measurement selects no future backend, changes no format or API, and does
 not substitute for a representative fixed corpus.
+
+## DD-652: Contextual rANS is the second Format 2 entropy backend
+
+- Date: 2026-08-09
+- Status: accepted
+
+Retain typed LZSS variant 2 and `LzssFieldContext` variant 1, and reserve rANS
+algorithm ID 4 variant 2 so the next experiment changes only the entropy axis.
+Reuse variant 1's scalar 64-bit state, table log 12, total 4,096, lower bound
+`2^31`, byte renormalization, deterministic normalization, numeric tie breaks,
+and final-state-first payload.
+
+Give each of the 31 Symbol contexts its own frame-static normalized model. Lay
+all 4,518 uint16 frequencies out by ascending context and symbol in one fixed
+9,052-byte descriptor; unused contexts are zero. Code bypass bits in the same
+state with fixed frequencies 2,048/2,048, reversing their per-operation walk
+on encode so decode remains LSB first. Charge at most 31 separate 4,096-slot
+decode tables before construction, conservatively bound payload by two bytes
+per decision plus eight, and preserve frame-atomic publication.
+
+Accept the fixed model overhead as a clear reference-format cost. Any sparse
+table representation, state interleaving, or different normalization receives
+a later variant. This decision reserves documentation and a one-Literal vector
+only; it adds no implementation, public API, CLI, benchmark, or readiness
+claim.

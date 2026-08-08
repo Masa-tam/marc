@@ -15441,3 +15441,26 @@ discarded and the reviewed seed retained.
   with Format 1 and 2,389 bytes with Format 2. The latter is 966 bytes, about
   28.8%, smaller; peak caller workspace rises from 655,493 to 1,638,485 bytes.
   No representative-corpus or throughput claim is made.
+
+## CR-0682: 2026-08-09 - Contextual rANS variant-2 reservation
+
+- Authoring method: composed marc's local scalar rANS arithmetic with its
+  independently designed modeled-operation and field-context contracts.
+- References used: AGENTS.md sections 5, 6, 7, 10.5, 11, 12, and 15; DD-652;
+  IR-0430; TVG-0531; marc's scalar rANS variant 1 and Format 2 documents.
+- Known implementations intentionally not consulted: external contextual ANS
+  coders, model serializers, source code, corpora, encoded streams, and test
+  vectors.
+- Independent decisions: use one state for all decisions; assign one static
+  normalized model per Symbol context; code bypass bits with a fixed binary
+  model in the same state; serialize all 4,518 frequencies; and reserve sparse
+  tables or interleaving for distinct later variants.
+- Generated-code task description: specify decoder-visible contextual rANS
+  parameters, descriptor, payload order, bounds, strict finalization, and an
+  independently calculated one-Literal vector without implementing the codec.
+- Similarity review: identifiers, field order, fixed-table layout, bypass rule,
+  bounds, and vector derive solely from marc's existing local contracts.
+- Local validation: the two one-symbol transitions leave `L=2^31` unchanged;
+  descriptor offsets 16 and 158 correspond to flattened entries 0 and 71;
+  checked sizes are 9,052 descriptor bytes and 9,124 complete-frame bytes. No
+  encoder, decoder, public profile, or interoperability result is claimed.

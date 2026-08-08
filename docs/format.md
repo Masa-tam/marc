@@ -5805,3 +5805,59 @@ Interoperability schema 32 emits this unchanged Format 2 representation as the
 final `lzss-contextual-dynamic-range` archive after the frozen schema-31 list.
 The schema changes only bundle inventory and manifest identity; it does not
 alter any stream header, frame, descriptor, payload, or padding byte.
+
+### Reserved LZSS field-context plus rANS profile
+
+The second Format 2 profile is named `lzss-field-context-rans` and retains
+dictionary algorithm/variant `2/2` plus context-model algorithm/variant `1/1`.
+It selects entropy algorithm/variant `4/2`. This is a reserved representation;
+it does not yet claim an encoder, decoder, C lifecycle, CLI selector, or
+interoperability archive.
+
+The 16-byte entropy parameter region is:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 1 | table log | exactly 12 |
+| 1 | 1 | state count | exactly 1 |
+| 2 | 2 | context count | exactly 31 |
+| 4 | 4 | frequency entry count | exactly 4,518 |
+| 8 | 4 | flags | zero |
+| 12 | 4 | reserved | zero |
+
+The stream entropy-block-size field remains zero because the complete modeled
+frame is one contextual rANS block. All other 112-byte stream-header rules,
+including LZSS parameters and the context-model extension, are unchanged.
+
+The 64-byte frame header retains the common Format 2 fields. Entropy
+descriptor bytes is exactly 9,052. Compressed payload size is at least eight
+and at most `2 * decision_count + 8`. The frame body is the contextual rANS
+descriptor followed immediately by its payload; context side data and checksum
+trailer sizes remain zero.
+
+The descriptor, per-context normalization, fixed bypass model, reverse encode
+order, forward decode order, state arithmetic, and strict finalization are
+defined by the entropy-backend contract. A decoder validates all 4,518
+frequency entries, the checked 126,976-entry decode-table ceiling, payload
+extent, and caller limits before decoding. Typed-token reconstruction and raw
+publication retain the existing complete-frame transaction.
+
+For the one-byte raw input `A`, the frame header begins:
+
+```text
+4D 52 46 32 40 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 01 00 00 00  02 00 00 00 02 00 00 00
+08 00 00 00 5C 23 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+```
+
+The descriptor prefix is:
+
+```text
+02 00 00 00 08 00 00 00  0C 00 1F 00 A6 11 00 00
+```
+
+All frequency entries are zero except flattened entry 0 (context 0, symbol 0)
+at descriptor offset 16 and flattened entry 71 (context 3, symbol 65) at
+descriptor offset 158; both contain little-endian frequency `00 10`. The
+payload is `00 00 00 80 00 00 00 00`. Thus the complete frame is 9,124 bytes.

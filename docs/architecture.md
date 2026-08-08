@@ -4220,3 +4220,19 @@ that final entry before traversing the existing chain to schema 1.
 The recorded four-direction exchange at revision
 `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` confirms identical schema-32
 bytes and decoding across the three x86-64 producers.
+
+### Reserved Format 2 contextual rANS boundary
+
+The next entropy-backend experiment retains typed LZSS variant 2 and
+`LzssFieldContext` variant 1 while selecting rANS variant 2. One scalar state
+codes the entire bounded modeled frame. Symbol decisions select one of 31
+static frame-local models; bypass decisions use a fixed binary model in the
+same state. Encoding walks the modeled decisions backward and decoding obtains
+each expected context from already accepted token state while walking forward.
+
+The fixed descriptor deliberately serializes all 4,518 normalized frequencies.
+This makes the 9,052-byte model cost and the 126,976-entry worst-case decode
+workspace explicit before implementation. A later sparse descriptor is a
+separate entropy variant rather than an invisible alteration. Complete model,
+payload, state, token, and raw validation remains inside one frame-atomic
+publication boundary.

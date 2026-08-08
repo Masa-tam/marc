@@ -1224,3 +1224,12 @@ Four-direction verification at revision
 `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` establishes canonical output for
 all 43 archives across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and
 Ubuntu 26.04/Clang producers.
+
+### CP-0045
+
+The reserved `lzss-field-context-rans` composition changes only the entropy
+axis of the first Format 2 profile: typed LZSS remains variant 2 and
+`LzssFieldContext` remains variant 1, while entropy becomes scalar contextual
+rANS variant 2. The fixed model descriptor and one-state payload are specified
+before implementation. This reservation adds no public lifecycle, CLI,
+benchmark, stable matrix cell, or interoperability entry.

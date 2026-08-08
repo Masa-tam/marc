@@ -6850,3 +6850,19 @@ SHA-256. Require generation-time round trip, exact-order verification, foreign
 decode equality, and byte-identical re-encoding. Swap the first two manifest
 entries and require rejection. Remove only entry 43 to reconstruct schema 31,
 then verify the unchanged schema-31-through-schema-1 compatibility chain.
+
+### TVG-0531
+
+Reserve contextual rANS variant 2 with one raw byte `A`. Require typed token
+`Literal(0x41)` and the two Symbol decisions `(context 0, value 0)` and
+`(context 3, value 65)`. Normalize each used one-symbol context to frequency
+4,096 and leave all other context slices zero. Require flattened frequency
+entries 0 and 71 to contain little-endian `00 10`, with every other one of the
+4,518 entries zero.
+
+Require decision count two, payload size eight, table log 12, context count 31,
+and frequency-entry count 4,518 in the fixed 9,052-byte descriptor. Starting
+from `L=2^31`, both one-symbol transitions leave the state unchanged, so the
+payload is `00 00 00 80 00 00 00 00`. Require a 64-byte frame header with
+descriptor size 9,052 and an exact complete-frame extent of 9,124 bytes. This
+vector reserves bytes before implementation and changes no public inventory.

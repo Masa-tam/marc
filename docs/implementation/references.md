@@ -3778,3 +3778,11 @@ benchmark executable, the repository's current `README.md`, and the already
 implemented public Format 1 and experimental Format 2 lifecycles. No external
 benchmark harness, compressor, corpus, result table, source code, or encoded
 stream was consulted.
+
+### IR-0430
+
+The contextual rANS variant-2 reservation uses only DD-652, marc's
+independently specified scalar rANS variant 1 arithmetic and normalization,
+the local entropy-backend contract, and the fixed `LzssFieldContext` schema.
+No external contextual ANS implementation, table format, source code, corpus,
+encoded stream, or test vector was consulted.

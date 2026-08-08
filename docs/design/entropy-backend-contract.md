@@ -129,9 +129,67 @@ BypassBits(bit_count 1, value 0)
 From reset models, variant-1 arithmetic and termination produce payload
 `00 A4 3C 3C 38 00`. This is five modeled events and six entropy decisions.
 
+## Contextual rANS variant 2
+
+Entropy algorithm ID 4, variant 2 retains variant 1's scalar unsigned 64-bit
+state, `table_log=12`, normalized total 4,096, lower bound `L=2^31`, byte
+renormalization, and final-state-first payload layout. It changes model
+ownership and the coded alphabet:
+
+- every one of the 31 Symbol contexts owns one independent static normalized
+  model over that context's fixed alphabet;
+- a context used by the frame is normalized from only its Symbol operations,
+  using variant 1's exact integer rule and numeric-symbol tie breaks;
+- an unused context has all normalized frequencies zero;
+- each bypass bit is a decision in the same rANS state under the fixed binary
+  model `0:2048, 1:2048` and contributes no serialized frequency;
+- one state covers the complete frame and resets to `L` at every outer-frame
+  boundary.
+
+The encoder counts and normalizes all Symbol contexts before coding. It then
+traverses modeled operations in reverse order. Symbol operations use their
+context table. Bypass operations traverse their significant bits from the
+highest index down to zero, so the decoder recovers each value least-
+significant bit first while walking operations forward. Zero-bit bypass
+operations remain omitted by the context model.
+
+Variant 2 uses one fixed 9,052-byte descriptor:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | Symbol operations plus individual bypass bits |
+| 4 | 4 | payload size | exact payload bytes; at least 8 |
+| 8 | 1 | table log | exactly 12 |
+| 9 | 1 | flags | zero |
+| 10 | 2 | context count | exactly 31 |
+| 12 | 4 | frequency entry count | exactly 4,518 |
+| 16 | 9,036 | normalized frequencies | 4,518 little-endian uint16 values |
+
+Frequency slices occur in ascending context order and symbols occur in
+ascending numeric order within each fixed alphabet. Each slice must either be
+all zero or sum exactly to 4,096. The canonical encoder assigns nonzero
+frequencies only to symbols observed in that context. A decoder request must
+select a nonzero slice and a nonzero symbol. Finalization rejects a nonzero
+context slice that was never requested, an unused zero slice that was
+requested, an invalid or trailing renormalization byte, or a terminal state
+other than exactly `L`.
+
+The payload begins with final state `x` as little-endian uint64 and continues
+with the completed renormalization region, exactly as variant 1. Planning is
+write free and uses the conservative bound of two bytes per entropy decision
+plus eight state bytes; exact planning may produce less. A reference decoder
+may build 31 separate 4,096-slot tables, but must charge the complete
+126,976-entry maximum to its entropy-table limit before exposing any table or
+decoded value.
+
+For raw byte `A`, `LzssFieldContext` emits Symbol `(context 0, value 0)` and
+Symbol `(context 3, value 65)`. Each used context is a one-symbol model with
+frequency 4,096, so the payload is the eight-byte state
+`00 00 00 80 00 00 00 00`.
+
 ## Backend substitution
 
-A later rANS, tANS, or Huffman backend may consume the same operation sequence,
+A later tANS or Huffman backend may consume the same operation sequence,
 but it receives a distinct entropy variant and decoder-visible descriptor
 layout whenever its bytes differ. It may serialize per-context tables and a
 separate bypass-bit region, provided exact order, normalization, padding,

@@ -83,6 +83,10 @@ format versions, and C ABI versions are independent namespaces.
   ClangCL produced 3,355 versus 2,389 bytes from the 4,326-byte README, while
   the contextual profile increased peak caller-owned workspace from 655,493
   to 1,638,485 bytes.
+- Reserved contextual rANS variant 2 as the second Format 2 entropy backend.
+  It retains the typed LZSS and field-context variants, uses one scalar state,
+  fixed per-context normalized tables, and fixed-probability bypass decisions;
+  no implementation or public profile is claimed yet.
 
 ## 0.1.3 - 2026-08-08
 
