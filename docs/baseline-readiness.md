@@ -1249,3 +1249,12 @@ regression covers nonempty and empty round trips, overwrite refusal, malformed
 input, strict trailing data, and failure cleanup under both local compilers.
 It remains outside the stable 42-profile, benchmark, and interoperability
 inventories.
+
+### BR-0037
+
+The experimental Format 2 profile now has dependency-free benchmark wiring.
+Its checked `112 + 12N + 85K` capacity, public-only construction, pre-timing
+round trip, directional throughput, compression ratio, and three-region
+workspace reporting are covered by a separately labeled smoke test under both
+local compilers. This is descriptive benchmark evidence, not admission to the
+stable 42-profile benchmark matrix or interoperability schema.

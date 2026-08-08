@@ -6829,3 +6829,13 @@ input. Require a second encode to refuse overwriting the existing archive.
 Decode an unrelated malformed byte sequence and a valid archive with one
 trailing byte; both must fail without retaining either the requested output or
 its temporary file. Exercise only the public C lifecycle reached by the CLI.
+
+### TVG-0529
+
+Run one Release iteration of `lzss-contextual-dynamic-range` over the repository
+README through the dependency-free benchmark. Require the benchmark to compute
+the checked `112 + 12N + 85K` output capacity, obtain three direction-specific
+workspace regions from the public requirements query, encode, decode, and
+compare the complete bytes before either timed sample. Require successful
+ratio, encode/decode throughput, all six workspace extents, and peak-workspace
+reporting. Keep the command outside the stable 42-profile documentation count.

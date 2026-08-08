@@ -50,6 +50,10 @@ marc_benchmark lzmw-rans corpus.bin 5
 marc_benchmark lzmw-tans corpus.bin 5
 ```
 
+The experimental Format 2 profile is deliberately outside that stable
+42-command matrix. Invoke it explicitly as
+`marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`.
+
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
 for meaningful throughput results.
@@ -193,6 +197,15 @@ two two-byte final states. Both directional workspaces and opaque view
 alignment come from the public C ABI. A byte-exact round trip succeeds before
 either direction is timed; speed and ratio remain descriptive rather than
 test thresholds.
+
+The experimental `lzss-contextual-dynamic-range` benchmark uses 65,536-byte
+raw frames, the `12F + 5` per-frame payload ceiling, and an 8-MiB internal
+limit. For input extent `N` and nonempty frame count `K`, checked output
+capacity is `112 + 12N + 85K`, including the Format 2 stream prefix, frame
+headers, range descriptors, and termination bytes. Both directions are
+constructed only through the public C lifecycle. Their primary, secondary,
+and opaque views workspace extents come from separate requirements queries,
+and a byte-exact round trip succeeds before timing.
 
 ### LZ78 profiles
 
@@ -474,6 +487,15 @@ throughput from this small input is descriptive only.
 A one-iteration MSVC Release smoke over the 4,581-byte README encoded 4,309
 bytes, ratio 0.941, and reported 18,417,768 bytes of peak caller reservation;
 throughput from this small input is descriptive only.
+
+### BM-0013: Experimental contextual LZSS plus Dynamic Range
+
+A one-iteration MSVC Release smoke over the 4,326-byte README encoded 2,389
+bytes, ratio 0.552, and reported 1,638,485 bytes of peak caller-reserved
+workspace. The encoder reported primary/secondary/views extents of
+4,326/51,997/190,344 bytes; the decoder reported
+786,517/65,536/786,432 bytes. Throughput from this small input is descriptive
+only, and the result does not join the stable 42-profile comparison matrix.
 
 ## Reporting results
 

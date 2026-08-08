@@ -1202,3 +1202,12 @@ workspace extents and opaque alignment to the public C requirements query.
 Binary, empty, malformed, trailing-data, overwrite, and temporary-file
 behavior are covered without admitting a forty-third stable matrix profile,
 benchmark command, or interoperability archive.
+
+### CP-0043
+
+The experimental `lzss-contextual-dynamic-range` composition now has a
+dependency-free benchmark adapter over its public C lifecycle. It verifies a
+complete byte-exact round trip before timing and reports ratio, directional
+throughput, all queried workspace regions, and peak caller reservation. The
+adapter remains separate from the stable 42-profile benchmark and
+interoperability inventories.

@@ -4199,3 +4199,12 @@ public C lifecycle separately for encode and decode. The adapter neither
 includes private Format 2 headers nor reproduces typed-token, modeled-operation,
 or context-table layout. Existing temporary-file publication ensures that a
 failed decode never replaces or leaves the requested destination.
+
+### Format 2 benchmark boundary
+
+The dependency-free benchmark reaches the experimental profile through the
+same public-only lifecycle as the CLI. It owns caller storage returned by each
+direction's requirements query and treats opaque views solely as aligned
+bytes. Complete-stream capacity uses serialized Format 2 fields, while native
+token and operation layouts remain confined to the library. Verification is
+complete before the timed process call begins.

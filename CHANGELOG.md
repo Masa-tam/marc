@@ -69,6 +69,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the explicit experimental `lzss-contextual-dynamic-range` selector to
   the transactional CLI. It uses only the public C lifecycle and queried
   three-region workspace while retaining the stable 42-profile inventory.
+- Added its separately inventoried dependency-free benchmark adapter with
+  checked Format 2 capacity, pre-timing round-trip verification, directional
+  throughput, ratio, and queried three-region workspace reporting.
 
 ## 0.1.3 - 2026-08-08
 

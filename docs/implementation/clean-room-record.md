@@ -15364,3 +15364,29 @@ discarded and the reviewed seed retained.
 - Local validation: the focused transactional CLI regression and all 2,481
   tests pass under both MSVC and ClangCL Release configurations; both complete
   target graphs build successfully.
+
+## CR-0679: 2026-08-09 - Experimental Format 2 benchmark adapter
+
+- Authoring method: applied marc's established dependency-free measurement
+  contract to its independently specified Format 2 public lifecycle.
+- References used: AGENTS.md sections 11, 12, 13, 15, and 16; DD-649;
+  IR-0427; TVG-0529; marc's local Format 2 capacity rule, public C workspace
+  query, benchmark timing boundary, and checked arithmetic conventions.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, compression tools, capacity formulas, corpora, encoded streams,
+  source code, and result tables.
+- Independent decisions: keep the stable 42-command inventory unchanged;
+  calculate complete capacity as `112 + 12N + 85K`; label smoke evidence as
+  experimental; and report every queried region plus the larger directional
+  caller reservation.
+- Generated-code task description: add a public-only experimental benchmark
+  adapter, checked output planning, one-iteration smoke test, documentation,
+  and descriptive local result after a mandatory untimed round trip.
+- Similarity review: routing, checked capacity arithmetic, timing exclusions,
+  output fields, and smoke registration reuse marc's own benchmark vocabulary
+  without comparing external implementation expression.
+- Local validation: both local compilers build the benchmark and pass its
+  focused smoke. MSVC Release over the 4,326-byte README produces 2,389 bytes
+  at ratio 0.552 and reports 1,638,485 bytes of peak caller workspace; full
+  target graphs build and all 2,482 regression tests pass under both Release
+  configurations.
