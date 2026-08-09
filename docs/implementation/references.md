@@ -3977,3 +3977,11 @@ existing fixed contextual-rANS frame admission and typed-LZSS reconstruction
 contracts, and the private compact token bridge. No external frame decoder,
 ANS implementation, source code, archive, corpus, malformed sample, or test
 suite was consulted.
+
+### IR-0454
+
+The compact contextual-rANS stream-header boundary uses only DD-670, DD-672
+through DD-676, TVG-0549 through TVG-0555, the normative Format 2 header
+layout, and marc's existing contextual-rANS header value validation and
+transactional serialization. No external stream parser, container format,
+source code, archive, corpus, or test suite was consulted.

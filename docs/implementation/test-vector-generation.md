@@ -7217,3 +7217,15 @@ record with a noncanonical dense record, shorten each caller workspace, and
 alias serialized input with writable storage. Require precise preflight or
 workspace errors, zero serialized consumption, and unchanged token/raw
 sentinels for every failure before publication.
+
+### TVG-0555
+
+Copy the specified 112-byte contextual-rANS variant-2 stream header and change
+only entropy variant at offset 18 from little-endian 2 to 3. Require compact
+parse and serialize to reproduce those exact bytes and retain frame size 64,
+original size one, table log 12, context count 31, and 4,518 frequency entries.
+
+Require the variant-2 parser to reject this header and the compact parser to
+reject the variant-2 header. For every strict prefix, invalid parameters, and
+insufficient limits, preserve the caller header, consumed count, and serialized
+output sentinels.

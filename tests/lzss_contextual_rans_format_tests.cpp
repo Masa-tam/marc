@@ -32,6 +32,13 @@ stream_vector() {
     return bytes;
 }
 
+[[nodiscard]] std::array<std::byte, lzss_contextual_rans_stream_header_size>
+compact_stream_vector() {
+    auto bytes = stream_vector();
+    bytes[18] = std::byte{0x03};
+    return bytes;
+}
+
 [[nodiscard]] LzssContextualRansStreamHeader stream_config() {
     LzssContextualRansStreamHeader stream{};
     stream.frame_size = 64;
@@ -122,6 +129,77 @@ TEST(LzssContextualRansStreamFormat, SerializesTransactionallyAndEnforcesLimits)
     auto limits = marc::core::DecoderLimits{};
     limits.max_entropy_table_entries = 126975;
     EXPECT_EQ(validate_lzss_contextual_rans_stream_header(
+                  stream_config(), limits),
+              LzssContextualRansStreamHeaderError::limit_exceeded);
+}
+
+TEST(LzssContextualRansCompactStreamFormat,
+     ParsesAndSerializesSpecifiedHeader) {
+    const auto expected = compact_stream_vector();
+    LzssContextualRansStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_rans_compact_stream_header(
+                  expected, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(consumed, expected.size());
+    EXPECT_EQ(parsed.frame_size, 64U);
+    EXPECT_EQ(parsed.original_size, 1U);
+    EXPECT_EQ(parsed.table_log, 12U);
+    EXPECT_EQ(parsed.context_count, 31U);
+    EXPECT_EQ(parsed.frequency_entry_count, 4518U);
+
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> output{};
+    ASSERT_EQ(serialize_lzss_contextual_rans_compact_stream_header(
+                  stream_config(), {}, output),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(output, expected);
+}
+
+TEST(LzssContextualRansCompactStreamFormat,
+     FixedAndCompactParsersRejectTheOtherVariant) {
+    const auto fixed = stream_vector();
+    const auto compact = compact_stream_vector();
+    LzssContextualRansStreamHeader parsed{};
+    std::size_t consumed{};
+    EXPECT_EQ(parse_lzss_contextual_rans_stream_header(
+                  compact, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::unsupported_entropy_variant);
+    EXPECT_EQ(parse_lzss_contextual_rans_compact_stream_header(
+                  fixed, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::unsupported_entropy_variant);
+    EXPECT_EQ(consumed, 0U);
+}
+
+TEST(LzssContextualRansCompactStreamFormat,
+     FailuresPreserveCallerStateAndOutput) {
+    const auto canonical = compact_stream_vector();
+    for (std::size_t size = 0; size < canonical.size(); ++size) {
+        LzssContextualRansStreamHeader parsed{};
+        parsed.original_size = 123;
+        std::size_t consumed = 7;
+        EXPECT_EQ(parse_lzss_contextual_rans_compact_stream_header(
+                      std::span<const std::byte>{canonical}.first(size), {},
+                      parsed, consumed),
+                  LzssContextualRansStreamHeaderError::truncated_header)
+            << "size=" << size;
+        EXPECT_EQ(parsed.original_size, 123U);
+        EXPECT_EQ(consumed, 7U);
+    }
+
+    auto stream = stream_config();
+    stream.context_count = 30;
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> output{};
+    output.fill(std::byte{0xcc});
+    EXPECT_EQ(serialize_lzss_contextual_rans_compact_stream_header(
+                  stream, {}, output),
+              LzssContextualRansStreamHeaderError::invalid_entropy_parameters);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const auto value) {
+        return value == std::byte{0xcc};
+    }));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_entropy_table_entries = 126975;
+    EXPECT_EQ(validate_lzss_contextual_rans_compact_stream_header(
                   stream_config(), limits),
               LzssContextualRansStreamHeaderError::limit_exceeded);
 }

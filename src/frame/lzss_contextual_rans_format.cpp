@@ -74,10 +74,11 @@ validate_lzss_contextual_rans_stream_header(
     return LzssContextualRansStreamHeaderError::none;
 }
 
-LzssContextualRansStreamHeaderError
-parse_lzss_contextual_rans_stream_header(
+static LzssContextualRansStreamHeaderError
+parse_lzss_contextual_rans_stream_header_impl(
     const std::span<const std::byte> input,
     const core::DecoderLimits& limits,
+    const std::uint16_t expected_entropy_variant,
     LzssContextualRansStreamHeader& header,
     std::size_t& bytes_consumed) noexcept {
     if (input.size() < lzss_contextual_rans_stream_header_size) {
@@ -136,7 +137,7 @@ parse_lzss_contextual_rans_stream_header(
     if (entropy_algorithm != 4) {
         return LzssContextualRansStreamHeaderError::unknown_entropy_algorithm;
     }
-    if (entropy_variant != 2) {
+    if (entropy_variant != expected_entropy_variant) {
         return LzssContextualRansStreamHeaderError::unsupported_entropy_variant;
     }
     if (entropy_block_size != 0 || dictionary_parameter_size != 16
@@ -210,10 +211,11 @@ parse_lzss_contextual_rans_stream_header(
     return error;
 }
 
-LzssContextualRansStreamHeaderError
-serialize_lzss_contextual_rans_stream_header(
+static LzssContextualRansStreamHeaderError
+serialize_lzss_contextual_rans_stream_header_impl(
     const LzssContextualRansStreamHeader& header,
     const core::DecoderLimits& limits,
+    const std::uint16_t entropy_variant,
     const std::span<std::byte, lzss_contextual_rans_stream_header_size> output)
     noexcept {
     const auto error = validate_lzss_contextual_rans_stream_header(
@@ -232,7 +234,7 @@ serialize_lzss_contextual_rans_stream_header(
         || !core::store_le(bytes, 12, static_cast<std::uint16_t>(2))
         || !core::store_le(bytes, 14, static_cast<std::uint16_t>(2))
         || !core::store_le(bytes, 16, static_cast<std::uint16_t>(4))
-        || !core::store_le(bytes, 18, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 18, entropy_variant)
         || !core::store_le(bytes, 20, header.frame_size)
         || !core::store_le(bytes, 24, std::uint32_t{0})
         || !core::store_le(bytes, 28, std::uint32_t{16})
@@ -268,6 +270,53 @@ serialize_lzss_contextual_rans_stream_header(
     }
     std::ranges::copy(encoded, output.begin());
     return LzssContextualRansStreamHeaderError::none;
+}
+
+LzssContextualRansStreamHeaderError
+validate_lzss_contextual_rans_compact_stream_header(
+    const LzssContextualRansStreamHeader& header,
+    const core::DecoderLimits& limits) noexcept {
+    return validate_lzss_contextual_rans_stream_header(header, limits);
+}
+
+LzssContextualRansStreamHeaderError
+parse_lzss_contextual_rans_stream_header(
+    const std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    LzssContextualRansStreamHeader& header,
+    std::size_t& bytes_consumed) noexcept {
+    return parse_lzss_contextual_rans_stream_header_impl(
+        input, limits, 2, header, bytes_consumed);
+}
+
+LzssContextualRansStreamHeaderError
+parse_lzss_contextual_rans_compact_stream_header(
+    const std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    LzssContextualRansStreamHeader& header,
+    std::size_t& bytes_consumed) noexcept {
+    return parse_lzss_contextual_rans_stream_header_impl(
+        input, limits, 3, header, bytes_consumed);
+}
+
+LzssContextualRansStreamHeaderError
+serialize_lzss_contextual_rans_stream_header(
+    const LzssContextualRansStreamHeader& header,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, lzss_contextual_rans_stream_header_size> output)
+    noexcept {
+    return serialize_lzss_contextual_rans_stream_header_impl(
+        header, limits, 2, output);
+}
+
+LzssContextualRansStreamHeaderError
+serialize_lzss_contextual_rans_compact_stream_header(
+    const LzssContextualRansStreamHeader& header,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte, lzss_contextual_rans_stream_header_size> output)
+    noexcept {
+    return serialize_lzss_contextual_rans_stream_header_impl(
+        header, limits, 3, output);
 }
 
 LzssContextualRansFrameHeaderError

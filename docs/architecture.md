@@ -4440,6 +4440,13 @@ LZSS reconstructor. Serialized input, decode tables, tokens, and private raw
 output must all be pairwise disjoint before table construction. Frame
 consumption is committed only after reconstruction succeeds.
 
+The compact stream-header boundary uses the same fixed in-memory configuration
+as contextual-rANS variant 2 while keeping wire identity explicit. A shared
+private field core accepts an expected entropy variant, but named variant-2 and
+variant-3 parse/serialize entries remain distinct. This prevents a later
+streaming factory from treating the compact descriptor as an incidental
+decoder preference rather than a decoder-visible format choice.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

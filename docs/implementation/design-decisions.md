@@ -13979,3 +13979,22 @@ descriptor, truncation, capacity, overlap, entropy, token, or reconstruction
 failure reports zero serialized consumption and preserves raw output. This
 milestone adds no stream-header parser, encoder selection, streaming lifecycle,
 public API, CLI selector, benchmark, or interoperability archive.
+
+## DD-676: Compact contextual rANS has an explicit stream identity
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add distinct private compact stream-header parse, serialize, and validation
+entries. They share the same 112-byte Format 2 fields and in-memory parameter
+structure as contextual-rANS variant 2, but require and emit entropy variant 3.
+Variant 2 and variant 3 parsers must reject one another's canonical header as
+`unsupported_entropy_variant`; neither entry is a compatibility alias.
+
+Factor only the common field parser and transactional serializer internally.
+Keep the public-named variant entries explicit so later streaming factories
+cannot silently choose the wrong representation. Parsing publishes neither
+the header nor consumed count until all fields and limits pass. Serialization
+builds the complete header in a zeroed local array before copying. This
+milestone adds no frame-streaming lifecycle, encoder selection, public API,
+CLI selector, benchmark, or interoperability archive.

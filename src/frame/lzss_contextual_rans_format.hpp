@@ -69,6 +69,25 @@ parse_lzss_contextual_rans_stream_header(
     LzssContextualRansStreamHeader& header,
     std::size_t& bytes_consumed) noexcept;
 
+[[nodiscard]] LzssContextualRansStreamHeaderError
+validate_lzss_contextual_rans_compact_stream_header(
+    const LzssContextualRansStreamHeader& header,
+    const core::DecoderLimits& limits) noexcept;
+
+[[nodiscard]] LzssContextualRansStreamHeaderError
+serialize_lzss_contextual_rans_compact_stream_header(
+    const LzssContextualRansStreamHeader& header,
+    const core::DecoderLimits& limits,
+    std::span<std::byte, lzss_contextual_rans_stream_header_size> output)
+    noexcept;
+
+[[nodiscard]] LzssContextualRansStreamHeaderError
+parse_lzss_contextual_rans_compact_stream_header(
+    std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    LzssContextualRansStreamHeader& header,
+    std::size_t& bytes_consumed) noexcept;
+
 struct LzssContextualRansFrameHeader {
     std::uint16_t flags{};
     std::uint64_t sequence{};

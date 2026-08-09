@@ -6046,3 +6046,10 @@ variant 2. It validates the header-carried descriptor extent exactly and
 commits frame consumption only after the private raw byte exists. Stream-header
 parsing, streaming lifecycle, encoder selection, and public selector
 integration are not yet implemented.
+
+The private compact stream-header parser and serializer now implement the
+specified entropy-variant-3 identity. They otherwise retain every common
+112-byte field and parameter rule above. Variant-2 and variant-3 parsers reject
+one another's canonical header, and failed parsing or serialization publishes
+no partial result. Frame streaming, encoder selection, and public selector
+integration remain future work.

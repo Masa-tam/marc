@@ -16113,3 +16113,33 @@ discarded and the reviewed seed retained.
   Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target, whose bounded 1,000-run
   smoke completed without a crash, hang, or sanitizer finding and peaked at
   43 MiB RSS.
+
+## CR-0706: 2026-08-09 - Compact contextual rANS stream identity
+
+- Authoring method: specified a distinct entropy-variant-3 stream identity,
+  then factored marc's existing 112-byte contextual-rANS field parser and
+  transactional serializer behind explicit variant-2 and variant-3 entries.
+- References used: AGENTS.md sections 3.3, 6, 7, 10.5, 11.2, 12, 14, and 15;
+  DD-670; DD-672 through DD-676; IR-0454; TVG-0549 through TVG-0555; and the
+  repository's Format 2 header layout, LZSS parameter parser, checked
+  little-endian helpers, and decoder-limit validation.
+- Known implementations intentionally not consulted: external stream parsers,
+  container formats, ANS implementations, source code, archives, corpora,
+  malformed samples, test suites, and optimization descriptions.
+- Independent decisions: share only the private field core; retain named
+  variant entries; require exact entropy variants 2 or 3; publish parsed state
+  only after complete validation; and serialize into a zeroed local array
+  before copying.
+- Generated-code task description: reproduce the variant-3 112-byte vector,
+  reject cross-variant parsing, preserve header and consumed-count sentinels
+  for every strict prefix, preserve serialized output on invalid parameters,
+  and compile the shared path through the sanitizer-instrumented library.
+- Similarity review: the refactoring and tests use only marc's existing header
+  fields and newly specified variant identity; no external control flow,
+  constants, or representation was used.
+- Local validation: all 12 focused contextual-rANS stream and compact-frame
+  tests pass under MSVC 19.51.36252. All 2,551 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 73.57 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
+  whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
+  finding and peaked at 43 MiB RSS.
