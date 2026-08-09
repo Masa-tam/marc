@@ -149,6 +149,9 @@ primary for serialized input, secondary for atomic raw output, and views for
 the fixed contextual-rANS tables followed by typed tokens. The factory checks
 capacity, alignment, pairwise non-overlap, and the private partition before
 publishing a handle. No token or rANS table structure is exposed in the C ABI.
+Its public completion audit covers all required binary classes, deterministic
+one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
+malformed final-frame rejection without promoting it into the baseline matrix.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

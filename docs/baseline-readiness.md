@@ -1281,3 +1281,13 @@ The approximately 28.8% reduction in encoded extent is accompanied by a rise
 in peak caller-owned workspace from 655,493 to 1,638,485 bytes. This justifies
 continued context/backend experiments but is not corpus-wide compression or
 throughput evidence.
+
+### BR-0040
+
+The experimental contextual-rANS Format 2 lifecycle now has a public
+completion matrix over empty and binary classes, all one-byte values,
+63/64/65-byte boundaries, repeat determinism, one-byte and mixed chunk
+schedules, and sticky terminal results. A corrupt sequence, truncated payload,
+or trailing byte at the fourth frame publishes only the three preceding raw
+frames. This is completion evidence, not baseline-matrix, CLI, fuzz,
+benchmark, or interoperability admission.

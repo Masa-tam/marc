@@ -135,6 +135,9 @@ format versions, and C ABI versions are independent namespaces.
   factory lifecycle. Its distinct C configuration exposes no native token or
   rANS table layout and constructs both streaming directions from three
   caller-owned regions.
+- Added its public-ABI completion matrix for required binary classes,
+  deterministic arbitrary chunking, sticky terminal states, and frame-atomic
+  rejection of corrupt, truncated, and trailing final-frame input.
 
 ## 0.1.3 - 2026-08-08
 

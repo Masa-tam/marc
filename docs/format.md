@@ -5978,3 +5978,11 @@ therefore bounds its rANS payload by `12N + 8` bytes and its complete serialized
 extent by `9,116 + 12N + 8` bytes. These are allocation ceilings, not new
 serialized fields; actual frame headers continue to carry their exact counts
 and payload size.
+
+The public-completion audit changes no contextual-rANS byte. It fixes 64-byte
+raw frames, whose conservative decision ceiling is 384, payload ceiling is
+`12F + 8 = 776` bytes, and complete-frame ceiling is
+`64 + 9,052 + 776 = 9,892` bytes. Repeated and arbitrarily chunked encoding
+must remain byte-identical. A malformed, truncated, or extended fourth frame
+may not publish its final raw byte after three valid 64-byte frames; the
+resulting error and position remain sticky.

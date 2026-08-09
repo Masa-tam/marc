@@ -4341,3 +4341,16 @@ according to immutable direction, while the factory validates the exact three
 used prefixes and recomputes their private partitions. Neither
 `LzssTypedToken` nor `RansDecodeEntry` crosses the public header, and no
 contextual Dynamic Range name serves as a compatibility alias.
+
+### Contextual rANS public completion boundary
+
+The public completion matrix constructs both contextual-rANS directions only
+through the C requirements query and factory. Caller-owned aligned storage is
+treated as opaque, and the test never reproduces private token or table
+offsets. A 64-byte raw frame bounds modeled decisions at 384, payload at 776
+bytes, and the complete serialized frame at 9,892 bytes.
+
+Decode publication remains atomic at one complete raw frame. Corrupting,
+truncating, or extending the fourth frame cannot publish its final byte after
+the first three frames have drained. Successful and failed terminal results
+are sticky, and input/output chunk schedules cannot change encoded bytes.

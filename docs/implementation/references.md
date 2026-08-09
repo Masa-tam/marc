@@ -3888,3 +3888,11 @@ contract, workspace requirement record, buffer-prefix validation helpers, and
 the independently implemented profile and streaming transforms. No external C
 binding, ABI wrapper, allocator API, source code, encoded stream, corpus, or
 test suite was consulted.
+
+### IR-0443
+
+The contextual-rANS public-completion audit uses only DD-665, the local Format
+2 specification, the ABI-1 lifecycle from DD-664, marc's established
+completion data classes and process invariants, and independently seeded binary
+generators. No external compression implementation, completion suite, corpus,
+encoded stream, source code, or malformed-input catalog was consulted.

@@ -1299,6 +1299,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_rans_frame_encoder_tests.cpp
         tests/lzss_contextual_rans_frame_streaming_encoder_tests.cpp
         tests/lzss_contextual_rans_profile_tests.cpp
+        tests/lzss_contextual_rans_completion_tests.cpp
         tests/lzss_contextual_range_decoder_tests.cpp
         tests/lzss_typed_context_frame_decoder_tests.cpp
         tests/lzss_typed_context_frame_encoder_tests.cpp

@@ -1233,3 +1233,12 @@ axis of the first Format 2 profile: typed LZSS remains variant 2 and
 rANS variant 2. The fixed model descriptor and one-state payload are specified
 before implementation. This reservation adds no public lifecycle, CLI,
 benchmark, stable matrix cell, or interoperability entry.
+
+### CP-0046
+
+The experimental `lzss-field-context-rans` public C lifecycle now has
+completion evidence for required binary classes, repeat determinism,
+one-byte and mixed chunking, sticky terminal states, and frame-atomic rejection
+of a corrupt, truncated, or extended fourth frame. It remains outside the
+baseline 42-profile matrix; fuzz, CLI, benchmark, and interoperability
+admission remain independent later steps.

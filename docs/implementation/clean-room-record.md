@@ -15787,3 +15787,31 @@ discarded and the reviewed seed retained.
   and each historical schema down through 28 archives verify successfully;
   the exhaustive historical loop exceeds this sandbox's 180-second CTest and
   600-second direct-execution limits without reporting a content failure.
+
+## CR-0695: 2026-08-09 - Contextual rANS public completion
+
+- Authoring method: applied marc's repository-owned public C completion
+  categories to the distinct contextual-rANS ABI-1 lifecycle and its already
+  specified Format 2 frame boundary.
+- References used: AGENTS.md sections 3.3, 3.4, 10.5, 11.2, 12, 14, and 16;
+  DD-665; IR-0443; TVG-0544; local contextual-rANS format, C requirements and
+  factory, streaming transforms, deterministic generator, and completion
+  conventions.
+- Known implementations intentionally not consulted: external compression
+  implementations, completion suites, corpora, encoded streams, malformed
+  samples, source code, and test catalogs.
+- Independent decisions: use 64-byte raw frames and a 384-decision limit;
+  allocate every opaque view only from queried requirements; parse only public
+  frame extents; and require the fourth frame to remain wholly unpublished for
+  corruption, truncation, and trailing input.
+- Generated-code task description: add a public-only contextual-rANS completion
+  matrix for required binary classes, repeat determinism, boundary lengths,
+  one-byte and mixed chunking, sticky success/error states, and final-frame
+  atomicity.
+- Similarity review: helper structure, binary generators, chunk schedules,
+  mutation sites, and assertions derive from marc's established completion
+  vocabulary and its independently specified contextual-rANS fields.
+- Local validation: all three focused completion cases pass under MSVC
+  19.51.36252 and ClangCL 22.1.3 with Ninja. All 2,519 registered tests other
+  than the separately audited exhaustive interoperability-schema loop pass in
+  both clean Windows build trees.

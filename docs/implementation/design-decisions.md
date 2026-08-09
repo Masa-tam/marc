@@ -13736,3 +13736,19 @@ unit, requirements-driven multi-frame round trip, Format 2 rANS identity,
 direction-specific sizing, and all public validation failures. This changes no
 existing function, structure, ABI version, stream byte, CLI selector, benchmark,
 fuzz target, archive, or interoperability schema.
+
+## DD-665: Contextual rANS public completion is frame-atomic
+
+- Date: 2026-08-09
+- Status: accepted
+
+Audit the experimental contextual-rANS C lifecycle with 64-byte raw frames and
+only the three workspaces returned by its requirements query. Admit at most
+`6F = 384` modeled decisions, `12F + 8 = 776` payload bytes, and
+`64 + 9,052 + 776 = 9,892` complete-frame bytes without changing the format.
+Require deterministic output across repeated and arbitrarily chunked calls,
+sticky terminal results, and exact recovery of all required binary classes.
+Corruption, truncation, or trailing data in the fourth frame must leave its one
+raw byte unpublished after three complete 64-byte frames have committed. This
+adds completion evidence only, with no CLI, fuzz, benchmark, archive, or
+interoperability admission.
