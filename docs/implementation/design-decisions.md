@@ -14111,3 +14111,23 @@ direction-specific exact sizes, reserved/size/version validation, and every
 short, misaligned, overlapping, null, and invalid-direction case. This step adds
 no CLI selector, benchmark, new fuzz target, completion claim, or
 interoperability archive.
+
+## DD-682: Fixed and compact contextual rANS share one completion matrix
+
+- Date: 2026-08-10
+- Status: accepted
+
+Turn the existing public contextual-rANS completion suite into a typed
+fixed/compact parameter matrix. Each case must initialize, query, construct,
+and process through its own distinct ABI-1 symbol family; the test must not
+cast or alias either public configuration type. Use each representation's
+exact descriptor ceiling when sizing encoded output.
+
+Require both representations to cover empty input, every one-byte value,
+binary patterns, deterministic random bytes, 63/64/65-byte frame boundaries,
+repeat determinism, one-byte and mixed input/output schedules, sticky
+EndOfStream, and atomic publication across a corrupt, truncated, or trailing
+fourth frame. Require fixed streams to identify entropy variant 2 and compact
+streams to identify variant 3. This is public completion evidence only; it
+does not add a CLI selector, benchmark, compact fuzz target, or
+interoperability archive.

@@ -15,8 +15,17 @@ namespace {
 
 constexpr std::size_t test_frame_size = 64;
 constexpr std::size_t maximum_payload_size = test_frame_size * 12 + 8;
-constexpr std::size_t maximum_frame_size = 64 + 9052 + maximum_payload_size;
 constexpr std::size_t maximum_buffered_bytes = 2U << 20;
+
+enum class Representation { fixed, compact };
+
+[[nodiscard]] constexpr std::size_t maximum_frame_size(
+    const Representation representation) noexcept {
+    const auto descriptor_size = representation == Representation::fixed
+        ? std::size_t{9052}
+        : std::size_t{9025};
+    return 64 + descriptor_size + maximum_payload_size;
+}
 
 struct TransformDeleter {
     void operator()(marc_transform* value) const noexcept {
@@ -37,12 +46,14 @@ struct Workspace {
     }
 };
 
-[[nodiscard]] marc_lzss_contextual_rans_config config(
-    const marc_direction direction, const std::size_t original_size) {
-    marc_lzss_contextual_rans_config result{};
-    EXPECT_EQ(marc_lzss_contextual_rans_config_init(
-                  direction, &result),
-              MARC_STATUS_OK);
+struct Config {
+    Representation representation{};
+    marc_lzss_contextual_rans_config fixed{};
+    marc_lzss_contextual_rans_compact_config compact{};
+};
+
+template <class T>
+void configure_fields(T& result, const std::size_t original_size) {
     result.original_size = original_size;
     result.frame_size = test_frame_size;
     result.max_total_output_size = 4096;
@@ -53,15 +64,35 @@ struct Workspace {
     result.max_lz_distance = UINT64_C(1) << 16;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries = UINT64_C(1) << 20;
+}
+
+[[nodiscard]] Config config(const Representation representation,
+                            const marc_direction direction,
+                            const std::size_t original_size) {
+    Config result{};
+    result.representation = representation;
+    if (representation == Representation::fixed) {
+        EXPECT_EQ(marc_lzss_contextual_rans_config_init(
+                      direction, &result.fixed),
+                  MARC_STATUS_OK);
+        configure_fields(result.fixed, original_size);
+    } else {
+        EXPECT_EQ(marc_lzss_contextual_rans_compact_config_init(
+                      direction, &result.compact),
+                  MARC_STATUS_OK);
+        configure_fields(result.compact, original_size);
+    }
     return result;
 }
 
-[[nodiscard]] Workspace workspace_for(
-    const marc_lzss_contextual_rans_config& settings) {
+[[nodiscard]] Workspace workspace_for(const Config& settings) {
     Workspace result{};
-    EXPECT_EQ(marc_lzss_contextual_rans_workspace_requirements(
-                  &settings, &result.requirements),
-              MARC_STATUS_OK);
+    const auto status = settings.representation == Representation::fixed
+        ? marc_lzss_contextual_rans_workspace_requirements(
+              &settings.fixed, &result.requirements)
+        : marc_lzss_contextual_rans_compact_workspace_requirements(
+              &settings.compact, &result.requirements);
+    EXPECT_EQ(status, MARC_STATUS_OK);
     EXPECT_LE(result.requirements.views_alignment,
               alignof(std::max_align_t));
     result.primary.resize(result.requirements.primary_bytes);
@@ -73,27 +104,31 @@ struct Workspace {
     return result;
 }
 
-[[nodiscard]] Transform create(
-    const marc_lzss_contextual_rans_config& settings,
-    Workspace& workspace) {
+[[nodiscard]] Transform create(const Config& settings, Workspace& workspace) {
     marc_transform* raw{};
-    EXPECT_EQ(marc_lzss_contextual_rans_create(
-                  &settings,
-                  {workspace.primary.data(), workspace.primary.size()},
-                  {workspace.secondary.data(), workspace.secondary.size()},
-                  workspace.views_buffer(), &raw),
-              MARC_STATUS_OK);
+    const marc_buffer primary{workspace.primary.data(),
+                              workspace.primary.size()};
+    const marc_buffer secondary{workspace.secondary.data(),
+                                workspace.secondary.size()};
+    const auto views = workspace.views_buffer();
+    const auto status = settings.representation == Representation::fixed
+        ? marc_lzss_contextual_rans_create(
+              &settings.fixed, primary, secondary, views, &raw)
+        : marc_lzss_contextual_rans_compact_create(
+              &settings.compact, primary, secondary, views, &raw);
+    EXPECT_EQ(status, MARC_STATUS_OK);
     return Transform{raw};
 }
 
 [[nodiscard]] std::vector<std::uint8_t> process_all(
+    const Representation representation,
     const marc_direction direction,
     const std::span<const std::uint8_t> input,
     const std::size_t original_size,
     const std::size_t input_chunk,
     const std::size_t output_chunk,
     const std::size_t output_capacity) {
-    auto settings = config(direction, original_size);
+    auto settings = config(representation, direction, original_size);
     auto workspace = workspace_for(settings);
     auto transform = create(settings, workspace);
     std::vector<std::uint8_t> output(output_capacity);
@@ -157,22 +192,28 @@ struct Workspace {
 }
 
 [[nodiscard]] std::vector<std::uint8_t> encode(
+    const Representation representation,
     const std::span<const std::uint8_t> input,
     const std::size_t input_chunk = SIZE_MAX,
     const std::size_t output_chunk = SIZE_MAX) {
     const auto frames = input.empty() ? std::size_t{0}
         : std::size_t{1} + (input.size() - 1) / test_frame_size;
     return process_all(
-        MARC_DIRECTION_ENCODE, input, input.size(), input_chunk, output_chunk,
-        112 + frames * maximum_frame_size);
+        representation, MARC_DIRECTION_ENCODE, input, input.size(),
+        input_chunk, output_chunk,
+        112 + frames * maximum_frame_size(representation));
 }
 
-void expect_round_trip(const std::span<const std::uint8_t> input) {
-    const auto first = encode(input);
-    EXPECT_EQ(encode(input), first);
+void expect_round_trip(const Representation representation,
+                       const std::span<const std::uint8_t> input) {
+    const auto first = encode(representation, input);
+    EXPECT_EQ(encode(representation, input), first);
+    ASSERT_GE(first.size(), 19U);
+    EXPECT_EQ(first[16], 4U);
+    EXPECT_EQ(first[18], representation == Representation::fixed ? 2U : 3U);
     const auto decoded = process_all(
-        MARC_DIRECTION_DECODE, first, input.size(), SIZE_MAX, SIZE_MAX,
-        input.size());
+        representation, MARC_DIRECTION_DECODE, first, input.size(), SIZE_MAX,
+        SIZE_MAX, input.size());
     EXPECT_TRUE(std::ranges::equal(decoded, input));
 }
 
@@ -193,11 +234,13 @@ void expect_round_trip(const std::span<const std::uint8_t> input) {
 }
 
 [[nodiscard]] marc_process_result decode_once(
+    const Representation representation,
     const std::span<const std::uint8_t> input,
     const std::size_t original_size,
     const std::span<std::uint8_t> output,
     marc_process_result& repeated) {
-    auto settings = config(MARC_DIRECTION_DECODE, original_size);
+    auto settings = config(
+        representation, MARC_DIRECTION_DECODE, original_size);
     auto workspace = workspace_for(settings);
     auto transform = create(settings, workspace);
     const auto result = marc_transform_process(
@@ -217,48 +260,56 @@ void expect_sticky_error(const marc_process_result& first,
     EXPECT_EQ(repeated.output_produced, 0U);
 }
 
-TEST(LzssContextualRansCompletion,
-     RequiredDataClassesRoundTripDeterministically) {
-    expect_round_trip({});
+class LzssContextualRansCompletion
+    : public testing::TestWithParam<Representation> {};
+
+TEST_P(LzssContextualRansCompletion,
+       RequiredDataClassesRoundTripDeterministically) {
+    const auto representation = GetParam();
+    expect_round_trip(representation, {});
     for (std::uint32_t value = 0; value < 256; ++value) {
         const std::array one{static_cast<std::uint8_t>(value)};
-        expect_round_trip(one);
+        expect_round_trip(representation, one);
     }
     std::vector<std::uint8_t> all_values(256);
     for (std::size_t value = 0; value < all_values.size(); ++value)
         all_values[value] = static_cast<std::uint8_t>(value);
-    expect_round_trip(all_values);
-    expect_round_trip(std::vector<std::uint8_t>(257, 0));
+    expect_round_trip(representation, all_values);
+    expect_round_trip(representation, std::vector<std::uint8_t>(257, 0));
     std::vector<std::uint8_t> pattern(259);
     constexpr std::array bytes{UINT8_C(0), UINT8_C(255), UINT8_C(0x55),
                                UINT8_C(0xaa)};
     for (std::size_t index = 0; index < pattern.size(); ++index)
         pattern[index] = bytes[index % bytes.size()];
-    expect_round_trip(pattern);
-    expect_round_trip(generated_bytes(513, UINT32_C(0xc001d00d)));
+    expect_round_trip(representation, pattern);
+    expect_round_trip(
+        representation, generated_bytes(513, UINT32_C(0xc001d00d)));
     for (const auto size : {63U, 64U, 65U})
-        expect_round_trip(generated_bytes(size, 1));
+        expect_round_trip(representation, generated_bytes(size, 1));
 }
 
-TEST(LzssContextualRansCompletion,
-     MultiFrameStreamIsIndependentOfChunking) {
+TEST_P(LzssContextualRansCompletion,
+       MultiFrameStreamIsIndependentOfChunking) {
+    const auto representation = GetParam();
     const auto input = generated_bytes(193, UINT32_C(0x6d617263));
-    const auto expected = encode(input);
+    const auto expected = encode(representation, input);
     for (const auto chunks : {std::pair{1U, 1U}, std::pair{7U, 5U},
                               std::pair{13U, 17U}}) {
-        const auto encoded = encode(input, chunks.first, chunks.second);
+        const auto encoded = encode(
+            representation, input, chunks.first, chunks.second);
         EXPECT_EQ(encoded, expected);
         const auto decoded = process_all(
-            MARC_DIRECTION_DECODE, encoded, input.size(), chunks.first,
-            chunks.second, input.size());
+            representation, MARC_DIRECTION_DECODE, encoded, input.size(),
+            chunks.first, chunks.second, input.size());
         EXPECT_EQ(decoded, input);
     }
 }
 
-TEST(LzssContextualRansCompletion,
-     MalformedFinalFrameIsNeverCommitted) {
+TEST_P(LzssContextualRansCompletion,
+       MalformedFinalFrameIsNeverCommitted) {
+    const auto representation = GetParam();
     const auto input = generated_bytes(193, UINT32_C(0x13579bdf));
-    const auto encoded = encode(input);
+    const auto encoded = encode(representation, input);
     auto final_frame = std::size_t{112};
     for (std::size_t frame = 0; frame < 3; ++frame)
         final_frame += frame_extent(encoded, final_frame);
@@ -269,7 +320,7 @@ TEST(LzssContextualRansCompletion,
     corrupted[final_frame + 8] ^= 1;
     marc_process_result repeated{};
     const auto corrupt_result = decode_once(
-        corrupted, input.size(), output, repeated);
+        representation, corrupted, input.size(), output, repeated);
     EXPECT_EQ(corrupt_result.status, MARC_STATUS_MALFORMED_STREAM);
     EXPECT_EQ(corrupt_result.output_produced, 192U);
     EXPECT_TRUE(std::ranges::equal(
@@ -280,7 +331,7 @@ TEST(LzssContextualRansCompletion,
     output.assign(input.size(), UINT8_C(0xa5));
     const auto truncated = std::span{encoded}.first(encoded.size() - 1);
     const auto truncate_result = decode_once(
-        truncated, input.size(), output, repeated);
+        representation, truncated, input.size(), output, repeated);
     EXPECT_EQ(truncate_result.status, MARC_STATUS_MALFORMED_STREAM);
     EXPECT_EQ(truncate_result.output_produced, 192U);
     EXPECT_EQ(output.back(), UINT8_C(0xa5));
@@ -290,7 +341,7 @@ TEST(LzssContextualRansCompletion,
     trailing.push_back(0);
     output.assign(input.size(), UINT8_C(0xa5));
     const auto trailing_result = decode_once(
-        trailing, input.size(), output, repeated);
+        representation, trailing, input.size(), output, repeated);
     EXPECT_EQ(trailing_result.status, MARC_STATUS_MALFORMED_STREAM);
     EXPECT_EQ(trailing_result.output_produced, 192U);
     EXPECT_TRUE(std::ranges::equal(
@@ -298,5 +349,12 @@ TEST(LzssContextualRansCompletion,
     EXPECT_EQ(output.back(), UINT8_C(0xa5));
     expect_sticky_error(trailing_result, repeated);
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    FixedAndCompact, LzssContextualRansCompletion,
+    testing::Values(Representation::fixed, Representation::compact),
+    [](const testing::TestParamInfo<Representation>& info) {
+        return info.param == Representation::fixed ? "Fixed" : "Compact";
+    });
 
 } // namespace

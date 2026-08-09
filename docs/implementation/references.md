@@ -4026,3 +4026,11 @@ through DD-681, TVG-0557 through TVG-0560, marc's ABI-1 conventions, compact
 private profile, compact streaming transform types, and existing public buffer
 validation. No external C API, factory, ANS implementation, source code,
 archive, corpus, or test suite was consulted.
+
+### IR-0460
+
+The compact contextual-rANS public completion matrix uses only DD-681 and
+DD-682, TVG-0560 and TVG-0561, marc's existing fixed contextual-rANS
+completion matrix, the compact ABI-1 lifecycle, and the core process contract.
+No external completion suite, C API, ANS implementation, source code, archive,
+corpus, malformed sample, or test suite was consulted.

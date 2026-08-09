@@ -16311,3 +16311,31 @@ discarded and the reviewed seed retained.
   limit in 71.99 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
   whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
   finding and peaked at 43 MiB RSS.
+
+## CR-0712: 2026-08-10 - Compact contextual rANS public completion matrix
+
+- Authoring method: generalized marc's existing fixed contextual-rANS public
+  completion tests into a typed two-representation matrix after specifying
+  the shared requirements and distinct ABI calls.
+- References used: AGENTS.md sections 3, 4, 7, 11.2, 12, 14, and 16; DD-681
+  and DD-682; IR-0460; TVG-0560 and TVG-0561; marc's fixed completion matrix,
+  compact ABI-1 lifecycle, and Format 2 entropy-variant fields.
+- Known implementations intentionally not consulted: external completion
+  suites, C APIs, ANS implementations, source code, archives, corpora,
+  malformed samples, test vectors, and optimization descriptions.
+- Independent decisions: retain distinct configuration types and factory
+  calls behind a test-only representation discriminator; calculate encoded
+  capacity from each representation's exact descriptor ceiling; and require
+  the wire identity in every deterministic round trip.
+- Generated-code task description: apply the same public lifecycle tests to
+  fixed variant 2 and compact variant 3, including required data classes,
+  frame boundaries, deterministic and adversarial chunking, repeated terminal
+  calls, and atomic rejection of corrupt, truncated, and trailing final-frame
+  input.
+- Similarity review: the change factors only repository-owned public tests and
+  calls only marc's documented ABI-1 entry points; no external test structure,
+  fixture, vector, or implementation expression was used.
+- Local validation: all six focused fixed/compact completion cases pass under
+  MSVC 19.51.36252. All 2,577 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 69.81 seconds.

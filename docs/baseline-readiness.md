@@ -1377,3 +1377,15 @@ internal-buffer ceiling that correctly rejects variant 2's fixed descriptor.
 Seven compact state tests plus the existing table, decoder, and format suites
 pass under both local compilers. Typed-token, frame, streaming, encoder format,
 public API, benchmark, and interoperability admission remain future work.
+
+### BR-0049
+
+The compact contextual-rANS Format 2 lifecycle now shares one typed public
+completion matrix with fixed variant 2. Both distinct ABI-1 families cover
+empty and binary classes, all one-byte values, 63/64/65-byte boundaries,
+repeat determinism, one-byte and mixed chunk schedules, their exact entropy
+variant identities, and sticky terminal results. A corrupt sequence,
+truncated payload, or trailing byte at the fourth frame publishes only the
+three preceding frames. All 2,577 registered tests, including interoperability
+schema compatibility, pass under MSVC. This is completion evidence, not CLI,
+compact-fuzz, benchmark, stable-matrix, or interoperability admission.
