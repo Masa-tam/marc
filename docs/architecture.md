@@ -4306,4 +4306,15 @@ header, descriptor, and aggregate raw-plus-token-plus-serialized workspace.
 Encoding additionally excludes serialized output from both caller regions,
 admits exact capacity, emits payload, and commits the validated header and
 descriptor. The resulting frame is accepted directly by the complete-frame
-decoder; streaming and public workspace partitioning remain later layers.
+decoder; at that milestone, streaming and public workspace partitioning
+remained later layers.
+
+The private contextual-rANS streaming encoder now owns the next lifecycle
+boundary. It drains the dedicated 112-byte stream header, collects one exact
+raw frame, prepares the complete header/descriptor/payload representation in
+private caller-owned staging, and drains that immutable frame before accepting
+more raw input. Raw, typed-token, serialized-frame, and caller-output regions
+remain disjoint; the frame encoder's exact three-region aggregate is retained.
+`Flush` does not close partial input, while `EndInput` is latched across output
+starvation. Streaming decoding and public workspace calculation remain later
+boundaries.

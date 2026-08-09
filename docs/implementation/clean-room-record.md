@@ -15674,3 +15674,31 @@ discarded and the reviewed seed retained.
   and three-region admission. The complete 2,539-test Release suite, including
   documentation layout and interoperability-schema compatibility, also passes
   under both supported Windows compilers.
+
+## CR-0691: 2026-08-09 - Contextual rANS streaming encode
+
+- Authoring method: composed marc's immutable contextual-rANS complete-frame
+  encoder with the repository's core transform contract and independently
+  established Format 2 streaming lifecycle.
+- References used: AGENTS.md sections 3, 4, 5, 11.2, 12, 14, and 15; DD-661;
+  IR-0439; TVG-0540; local stream serializer, complete-frame encoder, and core
+  process-result validator.
+- Known implementations intentionally not consulted: external streaming
+  compressors, ANS integrations, source code, buffer state machines, encoded
+  streams, corpora, and test suites.
+- Independent decisions: retain only raw/token/serialized staging; serialize
+  the prefix at construction; prepare and commit one complete frame before
+  drain; latch finish across output starvation; and preserve the existing
+  Format 2 flush and sticky-terminal contracts.
+- Generated-code task description: add the private known-size streaming
+  encoder with exact one-byte-chunk oracle equality, immutable frame drain,
+  flush invariance, empty/final lifecycle coverage, and capacity, aggregate,
+  protocol, alias, and unsupported-flag rejection.
+- Similarity review: state names follow marc's local transform vocabulary;
+  buffer ownership, error mapping, and exact-byte tests derive solely from
+  repository-owned frame and stream contracts.
+- Local validation: all five dedicated streaming-encoder test groups pass
+  under MSVC and ClangCL, including the 18,360-byte two-frame one-byte oracle.
+  The complete 2,544-test Release suite, including documentation layout and
+  interoperability-schema compatibility, also passes under both supported
+  Windows compilers.

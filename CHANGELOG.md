@@ -120,6 +120,10 @@ format versions, and C ABI versions are independent namespaces.
   LZSS parsing and direct token entropy coding into the reserved header,
   descriptor, and payload bytes with exact planning, deterministic output, and
   three-region workspace admission.
+- Added the private contextual rANS streaming encoder lifecycle. It emits the
+  dedicated stream header, prepares one complete bounded frame in caller-owned
+  staging, and preserves exact bytes across arbitrary input/output chunking and
+  `Flush` without adding operation staging.
 
 ## 0.1.3 - 2026-08-08
 

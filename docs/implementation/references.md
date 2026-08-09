@@ -3855,3 +3855,12 @@ to-typed LZSS producer, direct contextual rANS token encoder, reserved frame
 format, checked arithmetic, decoder limits, and repository-owned frame-atomic
 workspace conventions. No external compressor, ANS frame encoder, source code,
 workspace layout, encoded stream, corpus, or test suite was consulted.
+
+### IR-0439
+
+The contextual rANS streaming encoder uses only DD-661, the repository's
+immutable complete-frame encoder, core transform contract, dedicated stream
+serializer, checked arithmetic, and independently established Format 2
+streaming lifecycle. No external streaming compressor, ANS integration, source
+code, buffer state machine, encoded stream, corpus, or test suite was
+consulted.

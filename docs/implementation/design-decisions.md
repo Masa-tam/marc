@@ -13643,3 +13643,26 @@ After a successful plan, report the required serialized extent even when the
 supplied output is short; only successful encoding commits serialized bytes.
 Leave surplus output untouched. This adds no streaming lifecycle, workspace
 calculator, public API, CLI profile, benchmark, archive, or format change.
+
+## DD-661: Contextual rANS streaming encode drains immutable frames
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add a bounded known-size streaming encoder above DD-660. Serialize the
+dedicated 112-byte contextual-rANS stream header during construction, collect
+exactly one raw frame in caller-owned storage, prepare its complete canonical
+frame in separate caller-owned serialized staging, and drain only immutable
+bytes. Commit the raw extent and sequence only after complete preparation, and
+do not accept the next frame until the current frame has drained.
+
+Require raw, typed-token, and serialized-frame workspaces to be pairwise
+disjoint and reject caller output that aliases any of them. Reuse DD-660's
+checked aggregate over the exact raw frame, used token prefix, and complete
+serialized frame; no modeled-operation region is introduced. Retain
+`EndInput` while the stream header or final frame drains. Nonterminal `Flush`
+does not close a partial frame; reject `ResetBlock`, unknown flags, premature
+finish, excess input, short storage, and limit failure with sticky terminal
+errors. Empty input emits only the stream header, and calls after completion
+return `EndOfStream`. This adds no streaming decoder, workspace calculator,
+public API, CLI profile, benchmark, fuzz target, archive, or format change.

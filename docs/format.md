@@ -5953,4 +5953,14 @@ encoding writes the rANS payload first into admitted private output, then the
 already validated 64-byte header and 9,052-byte descriptor. Raw input, used
 typed-token storage, and exact serialized output must be pairwise disjoint.
 The resulting one-byte `A` frame is exactly the documented 9,124-byte vector.
-This admits neither a streaming lifecycle nor a public profile.
+That complete-frame milestone admitted neither a streaming lifecycle nor a
+public profile.
+
+The private streaming encoder emits the already specified 112-byte contextual-
+rANS stream header and the exact complete-frame bytes without defining another
+representation. It buffers at most one declared raw frame and one fully
+serialized frame, so arbitrary input/output chunking and nonterminal `Flush`
+cannot alter frame boundaries or bytes. `EndInput` is valid only at the known
+`original_size` boundary and completion occurs only after all staged bytes have
+drained. No additional marker, trailer, padding, or reset representation is
+introduced.

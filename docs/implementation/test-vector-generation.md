@@ -7000,3 +7000,19 @@ frame size, short token and serialized spans, aggregate workspace limit, and
 all raw/token/serialized overlaps before affected writes. Preserve serialized
 sentinels on every prewrite failure and require repeated encoding with separate
 storage to produce byte-identical complete frames.
+
+### TVG-0540
+
+Stream two raw `A` bytes as two one-byte frames through one-byte input and
+output spans. Require the exact documented 112-byte contextual-rANS stream
+header followed by two 9,124-byte one-Literal frames with sequences zero and
+one. Compare the complete output with independently assembled format vectors,
+then require repeated calls after final drain to remain `EndOfStream`.
+
+Require a full frame to prepare before `EndInput`, while `Flush` leaves a
+partial frame open. Retain `EndInput` across zero-capacity frame drain and emit
+only the stream header for empty input. Reject short token or serialized
+staging, aggregate limits, premature finish, excess input, construction and
+caller-output aliases, `ResetBlock`, and unknown flags. Require every terminal
+failure to remain sticky and every reported process result to satisfy the core
+consumption/production invariant.
