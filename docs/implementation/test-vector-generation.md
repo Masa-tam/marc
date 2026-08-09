@@ -7287,3 +7287,20 @@ and decoder, and round-trip a multi-frame mixed literal/match input. Require
 entropy variant 3 in the encoded stream. Independently reject unsupported
 dictionary parameters, payload, block, aggregate, and table limits one unit
 past their admitted boundaries without publishing partial requirements.
+
+### TVG-0560
+
+From a pure C11 translation unit, initialize the compact contextual-rANS
+configuration in each direction. With five raw bytes, two-byte frames, and the
+small public test limits, require encoder workspaces `(2, 9,121, typed views)`
+and decoder workspaces `(9,121, 2, table-plus-token views)`. Construct only from
+those returned extents, encode through the compact public factory, require
+Format 2 entropy algorithm/variant `4/3`, and decode the complete multi-frame
+stream back to the original bytes.
+
+Shorten each workspace independently, overlap used prefixes, misalign views,
+pass null output/config/requirements pointers, alter reserved fields,
+structure size, ABI version, and direction, and call initialization with an
+invalid direction or null destination. Require stable public statuses, a null
+transform on every creation failure, and no change to the fixed contextual-rANS
+C lifecycle or ABI version.

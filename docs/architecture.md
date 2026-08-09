@@ -4474,6 +4474,12 @@ maximum in both direction-specific serialized-frame calculations. Explicit
 compact query names return requirements suitable for the distinct compact
 streaming transform types; the existing variant-2 profile remains unchanged.
 
+The compact C boundary is an additive ABI-1 lifecycle with its own size-tagged
+configuration type and explicit function family. It exposes only byte counts,
+alignment, opaque transform handles, and process results. Private typed tokens,
+rANS tables, representation selection, and descriptor layout remain hidden;
+factory validation completes before publishing a handle.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

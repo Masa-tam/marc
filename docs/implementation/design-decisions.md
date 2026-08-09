@@ -14085,3 +14085,29 @@ known-size input requires no frame workspace and alignment one. Returned
 requirements must construct the distinct compact streaming encoder and decoder
 and complete a byte-exact round trip. This milestone adds no public C/C++ API,
 CLI selector, benchmark, fuzz entry, or interoperability archive.
+
+## DD-681: Compact contextual rANS receives an explicit additive C lifecycle
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add `marc_lzss_contextual_rans_compact_config` and the three ABI-1 symbols
+`marc_lzss_contextual_rans_compact_config_init`,
+`marc_lzss_contextual_rans_compact_workspace_requirements`, and
+`marc_lzss_contextual_rans_compact_create`. The new configuration has the same
+field contract and limits as the fixed contextual-rANS configuration but is a
+distinct C type; do not accept one type through the other lifecycle or create
+compatibility aliases. This additive symbol set does not change
+`MARC_ABI_VERSION` or any existing structure, function, or stream.
+
+Delegate workspace arithmetic to DD-680. Map encoder raw, compact complete-frame,
+and typed-token requirements to primary, secondary, and aligned views; map
+decoder compact serialized-frame, atomic raw-frame, and table-plus-token views
+to the same public regions. Creation repeats the query, validates capacity,
+alignment, pairwise non-overlap, and private partitions before allocating the
+small transform handle. Failure leaves the handle null. Prove the public header
+from C11, requirements-driven multi-frame round trip, entropy variant 3,
+direction-specific exact sizes, reserved/size/version validation, and every
+short, misaligned, overlapping, null, and invalid-direction case. This step adds
+no CLI selector, benchmark, new fuzz target, completion claim, or
+interoperability archive.

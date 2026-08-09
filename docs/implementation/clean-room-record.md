@@ -16275,3 +16275,39 @@ discarded and the reviewed seed retained.
   limit in 73.06 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
   whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
   finding and peaked at 43 MiB RSS.
+
+## CR-0711: 2026-08-09 - Compact contextual rANS C lifecycle
+
+- Authoring method: specified the additive public boundary first, then factored
+  marc's existing fixed contextual-rANS C validation and factory through an
+  immutable representation selector while adding a distinct compact
+  configuration and symbol family.
+- References used: AGENTS.md sections 3, 5, 7, 10.5, 11.2, and 12 through 15;
+  DD-664, DD-675, DD-678 through DD-681; IR-0459; TVG-0557 through TVG-0560;
+  marc's ABI-1 conventions, compact private profile and transforms, public
+  buffer validation, and documentation inventory guard.
+- Known implementations intentionally not consulted: external C APIs,
+  factories, workspace layouts, LZSS or ANS implementations, source code,
+  archives, corpora, malformed samples, test suites, and optimization
+  descriptions.
+- Independent decisions: add a distinct size-tagged C configuration rather
+  than an alias; preserve ABI version 1 and every old symbol and structure;
+  share configuration defaults, workspace mapping, validation, partitioning,
+  and handle publication; and select variant 3 only at private profile and
+  transform construction boundaries.
+- Generated-code task description: compile a pure C11 client against the shared
+  library, prove exact `(2, 9,121)` and `(9,121, 2)` direction-specific byte
+  workspaces, aligned opaque views, multi-frame variant-3 round trip, every
+  short/overlap/misalignment/null/configuration failure, and unchanged fixed
+  contextual-rANS lifecycle. Update the inventory guard from 42 plus two to 42
+  plus three experimental initializers and require the compact family by name.
+- Similarity review: the templated C boundary uses only marc's existing public
+  validation and newly specified private compact entries; no external ABI,
+  factory flow, or layout was used.
+- Local validation: all 13 focused fixed/compact profile and C-ABI tests pass
+  under MSVC 19.51.36252, with each C client linked through the shared library.
+  All 2,574 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 71.99 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
+  whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
+  finding and peaked at 43 MiB RSS.

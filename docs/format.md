@@ -6085,3 +6085,9 @@ For raw frame extent `N`, encoder serialized staging is bounded by
 `64 + 9,025 + 12N + 8`; decoder staging uses the same header and descriptor
 ceiling plus its admitted payload bound. These are allocation bounds only and
 do not alter the exact descriptor-size field or serialized representation.
+
+The public compact C lifecycle selects only this entropy variant 3 identity.
+Its configuration and workspace functions do not serialize new fields: they
+construct the same 112-byte stream header and variable compact frames defined
+above. The fixed `marc_lzss_contextual_rans_*` family continues to select
+variant 2 and cannot decode or emit this representation.

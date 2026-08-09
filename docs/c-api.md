@@ -154,7 +154,14 @@ one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
 malformed final-frame rejection without promoting it into the baseline matrix.
 This lifecycle emits fixed-descriptor entropy variant 2 and is retained for
 diagnosis and compatibility testing, not recommended compression. Reserved
-compact variant 3 will require a distinct public lifecycle when admitted.
+compact variant 3 is exposed through the distinct
+`marc_lzss_contextual_rans_compact_*` lifecycle and its own size-tagged
+configuration type. Its three workspace regions have the same ownership and
+alignment rules, but encoder and decoder serialized-frame bounds use the
+compact 9,025-byte maximum descriptor. It emits only entropy variant 3; the
+fixed and compact factories reject one another's streams. Call the matching
+compact requirements function whenever direction, known size, frame/LZSS
+parameters, or hard limits change.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

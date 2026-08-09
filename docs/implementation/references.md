@@ -4018,3 +4018,11 @@ DD-678 through DD-680, TVG-0554, TVG-0557 through TVG-0559, marc's fixed
 profile arithmetic, compact descriptor bounds, and compact streaming transform
 types. No external profile, workspace calculator, ANS implementation, source
 code, archive, corpus, or test suite was consulted.
+
+### IR-0459
+
+The compact contextual-rANS C lifecycle uses only DD-664, DD-675, DD-678
+through DD-681, TVG-0557 through TVG-0560, marc's ABI-1 conventions, compact
+private profile, compact streaming transform types, and existing public buffer
+validation. No external C API, factory, ANS implementation, source code,
+archive, corpus, or test suite was consulted.
