@@ -13559,3 +13559,22 @@ both passes. Before either table write reject payload/table overlap; before
 token publication also reject payload/token and table/token overlap. Preserve
 token output on all prewrite failures. This adds no raw reconstruction, frame
 decoder, encoder, public API, CLI profile, or format change.
+
+## DD-657: Contextual rANS frame decoding is one four-region transaction
+
+- Date: 2026-08-09
+- Status: accepted
+
+Define dedicated contextual-rANS stream, frame, layout, and error types rather
+than reusing the Dynamic Range Format 2 names. Accept only the already reserved
+dictionary `2/2`, entropy `4/2`, and context `1/1` identity, fixed 9,052-byte
+descriptor, and exact descriptor-plus-payload frame extent. Validate all
+headers, counts, limits, and descriptor frequencies before exposing layout.
+
+Require caller-owned decode tables, typed tokens, and raw output. Admit their
+exact extents, calculate their byte sizes, and reject all six pairwise overlaps
+with serialized input and each other before any table write. Then run the
+two-pass direct token inversion and typed LZSS reconstruction in order; report
+serialized consumption only after raw reconstruction succeeds. This adds no
+encoder, streaming lifecycle, public API, CLI profile, benchmark, archive, or
+format change.

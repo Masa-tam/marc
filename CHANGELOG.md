@@ -104,6 +104,10 @@ format versions, and C ABI versions are independent namespaces.
   modeling. A validation pass proves the complete typed-token frame before a
   second deterministic pass writes caller-owned tokens, with explicit payload,
   decode-table, and token workspace separation.
+- Added the private complete contextual rANS frame decoder. It validates the
+  dedicated Format 2 stream and frame identities, descriptor and exact payload
+  extent, then reconstructs typed LZSS tokens and raw bytes behind one
+  serialized/table/token/raw non-aliasing transaction.
 
 ## 0.1.3 - 2026-08-08
 

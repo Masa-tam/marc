@@ -5903,3 +5903,20 @@ second byte-identical pass alone materializes tokens, after proving table and
 token capacities and disjoint payload/table/token ranges. No wire byte changes,
 raw-byte reconstruction, frame integration, or public admission occurs at
 this milestone.
+
+The private complete-frame decoder now implements that next boundary without
+changing any reserved byte. Its distinct contextual-rANS stream parser accepts
+only dictionary/variant `2/2`, entropy/variant `4/2`, and context/variant `1/1`;
+the corresponding frame parser requires the common 64-byte header, descriptor
+size 9,052, zero side-data and checksum extents, and an exact descriptor plus
+payload body before publishing a layout.
+
+Before table construction, the decoder admits exact caller-owned extents for
+126,976 table entries, the declared token count, and the declared raw size,
+then rejects every overlap among serialized input, tables, tokens, and raw
+output. It runs the direct inverse-model bridge and only then performs typed
+LZSS reconstruction. Therefore a preflight, capacity, overlap, entropy, token,
+or reconstruction failure reports zero serialized consumption and cannot
+publish raw bytes. This is still a private frame primitive: no encoder,
+streaming lifecycle, public algorithm, CLI selector, benchmark, or archive is
+admitted by this milestone.

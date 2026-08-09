@@ -15565,3 +15565,29 @@ discarded and the reviewed seed retained.
   tests pass under MSVC and ClangCL. The complete 2,507-test Release suite,
   including documentation layout and interoperability-schema compatibility,
   also passes under both supported Windows compilers.
+
+## CR-0687: 2026-08-09 - Contextual rANS complete-frame decode
+
+- Authoring method: composed marc's reserved contextual-rANS frame bytes,
+  local direct token inversion, and typed LZSS reconstruction behind the
+  repository's established complete-frame transaction.
+- References used: AGENTS.md sections 3, 5, 7, 10.5, 11.2, 12, 14, and 15;
+  DD-657; IR-0435; TVG-0536; the local contextual rANS descriptor/decoder and
+  typed LZSS reconstructor.
+- Known implementations intentionally not consulted: external contextual
+  compressors, ANS frame formats, source code, parser structures, malformed
+  corpora, encoded streams, and test suites.
+- Independent decisions: use rANS-specific types rather than aliases; preflight
+  the complete frame extent; require caller-owned fixed tables, tokens, and raw
+  output; reject all six pairwise region overlaps before writes; and publish
+  serialized consumption only after raw reconstruction.
+- Generated-code task description: add a private contextual rANS stream/frame
+  parser and complete decoder with exact hand vector, transactional workspace
+  gates, malformed/capacity/alias tests, and no public admission.
+- Similarity review: byte fields follow marc's reserved format; staging, error
+  mapping, overlap arithmetic, and raw publication follow repository-owned
+  frame conventions rather than an external implementation.
+- Local validation: all 14 dedicated contextual rANS stream, frame-format, and
+  complete-frame decoder tests pass under MSVC and ClangCL. The complete
+  2,521-test Release suite, including documentation layout and interoperability-
+  schema compatibility, also passes under both supported Windows compilers.

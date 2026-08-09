@@ -6934,3 +6934,20 @@ the payload legally inside the object representation of the table or token
 storage and require overlap rejection before either region changes. Also
 reject invalid LZSS parameters, token-buffer limits, and aggregate output
 limits using the same fixed one-Literal vector.
+
+### TVG-0536
+
+Wrap TVG-0531 in its exact 64-byte frame header and require the complete 9,124-
+byte frame to preflight, decode one typed literal `A`, reconstruct one raw byte
+`A`, consume exactly 9,124 bytes, and leave surplus token and raw output
+untouched. Append one unrelated byte and require only the first frame extent
+to be consumed.
+
+Reject representative truncations before the header, descriptor, and payload
+ends without changing a sentinel layout. Reject Dynamic Range entropy identity,
+malformed descriptor frequency, insufficient table/token/raw capacities, and
+an all-zero invalid initial state. Place serialized input legally inside table
+storage and raw output inside token storage, and independently alias serialized
+input with raw output; require rejection before any affected workspace changes.
+Run all 14 dedicated format/frame tests under MSVC and ClangCL, then run both
+complete Release suites.

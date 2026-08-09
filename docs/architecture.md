@@ -4269,3 +4269,14 @@ private typed tokens only after all three storage regions are proven disjoint.
 This keeps entropy-table construction, token publication, and eventual raw
 publication as explicit nested transactions without an intermediate modeled-
 operation buffer.
+
+The complete-frame decoder closes that raw-publication boundary. Separate
+contextual-rANS stream and frame types prevent Dynamic Range fields or names
+from becoming accidental compatibility aliases. Preflight validates the
+64-byte frame header, complete 9,052-byte descriptor, exact payload extent,
+frame sequence, declared sizes, and all configured limits before any caller
+workspace changes. It then requires disjoint serialized, 126,976-entry table,
+typed-token, and raw-output regions, performs the two-pass token inversion,
+and reconstructs raw bytes only after token validation succeeds. This remains
+a private one-frame primitive; streaming, encoding, public C lifecycle, CLI,
+benchmark, and interoperability admission are later boundaries.

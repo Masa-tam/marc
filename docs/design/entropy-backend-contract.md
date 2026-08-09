@@ -233,6 +233,14 @@ Thus entropy workspace writes cannot corrupt bytes or tokens still needed by
 the pass, and a validation or capacity failure leaves all token output
 unchanged. Raw reconstruction and frame publication remain later boundaries.
 
+The private frame composition now places this bridge behind an rANS-specific
+Format 2 header and descriptor preflight. The caller owns four independent
+regions: serialized frame input, 126,976 decode entries, typed tokens, and raw
+output. Capacity and all six pairwise overlap checks complete before the first
+table write. After strict two-pass token inversion, the existing typed LZSS
+reconstructor alone may publish raw bytes. Any failure keeps serialized
+consumption at zero. The composition adds no encoder or public profile.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

@@ -3820,3 +3820,12 @@ checked arithmetic, and the existing Dynamic Range bridge's repository-owned
 two-pass publication contract. No external contextual compressor, ANS/LZSS
 composition, source code, token grammar, malformed corpus, encoded stream, or
 test suite was consulted.
+
+### IR-0435
+
+The contextual rANS complete-frame decoder uses only DD-657, the repository's
+reserved Format 2 bytes, local descriptor and direct token decoder, typed LZSS
+reconstructor, checked arithmetic, decoder limits, and existing frame-atomic
+workspace conventions. No external contextual compressor, ANS frame format,
+source code, parser structure, malformed corpus, encoded stream, or test suite
+was consulted.
