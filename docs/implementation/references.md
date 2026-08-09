@@ -3847,3 +3847,11 @@ contextual rANS operation encoder, checked arithmetic, and repository-owned
 transactional workspace conventions. No external ANS/LZSS composition, source
 code, reverse-context algorithm, encoded stream, corpus, or test suite was
 consulted.
+
+### IR-0438
+
+The contextual rANS complete-frame encoder uses only DD-660, marc's local raw-
+to-typed LZSS producer, direct contextual rANS token encoder, reserved frame
+format, checked arithmetic, decoder limits, and repository-owned frame-atomic
+workspace conventions. No external compressor, ANS frame encoder, source code,
+workspace layout, encoded stream, corpus, or test suite was consulted.

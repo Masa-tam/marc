@@ -15647,3 +15647,30 @@ discarded and the reviewed seed retained.
   decode. The complete 2,533-test Release suite, including documentation layout
   and interoperability-schema compatibility, also passes under both supported
   Windows compilers.
+
+## CR-0690: 2026-08-09 - Contextual rANS complete-frame encode
+
+- Authoring method: composed marc's raw-to-typed LZSS producer, direct
+  contextual rANS token encoder, and dedicated reserved frame serializers under
+  the repository's complete-frame transaction.
+- References used: AGENTS.md sections 3, 5, 7, 9.3, 10.5, 11.2, 12, 14, and
+  15; DD-660; IR-0438; TVG-0539; local typed producer, direct entropy bridge,
+  frame format, and complete-frame decoder.
+- Known implementations intentionally not consulted: external compressors,
+  ANS frame encoders, source code, workspace layouts, encoded streams, corpora,
+  and test suites.
+- Independent decisions: retain only raw/token/serialized regions; plan by
+  materializing private tokens; validate exact header and descriptor before
+  serialized output; charge used token bytes in the aggregate; and serialize
+  header/descriptor only after exact payload emission.
+- Generated-code task description: add a private raw-to-complete-frame planner
+  and encoder with the exact 9,124-byte hand vector, complete decoder round
+  trips, determinism, capacity/alias/limit tests, and no operation staging.
+- Similarity review: composition order, workspace arithmetic, error staging,
+  and sentinels derive from marc's existing local frame contracts; rANS bytes
+  are produced solely by the independently written direct bridge.
+- Local validation: all six dedicated complete-frame encoder tests pass under
+  MSVC and ClangCL, including exact vector, deterministic mixed-data round trip,
+  and three-region admission. The complete 2,539-test Release suite, including
+  documentation layout and interoperability-schema compatibility, also passes
+  under both supported Windows compilers.

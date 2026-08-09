@@ -5945,3 +5945,12 @@ it supplies fields in reverse modeled order to the same entropy writer used by
 the operation reference. Direct and materialized-operation encodings are
 required to match in descriptor, payload extent, and payload bytes. This
 changes no stream or frame field and still provides no complete frame encoder.
+
+The private complete-frame encoder now composes raw LZSS parsing and the direct
+token bridge into this reserved representation. Its plan fixes token, event,
+decision, payload, and serialized extents before any serialized write. Exact
+encoding writes the rANS payload first into admitted private output, then the
+already validated 64-byte header and 9,052-byte descriptor. Raw input, used
+typed-token storage, and exact serialized output must be pairwise disjoint.
+The resulting one-byte `A` frame is exactly the documented 9,124-byte vector.
+This admits neither a streaming lifecycle nor a public profile.

@@ -13622,3 +13622,24 @@ each token emit fields in reverse modeled order, leaving bypass bit reversal to
 the shared writer. Reject token/payload overlap before output. This adds no raw
 dictionary parsing, frame encoder, streaming lifecycle, public API, CLI
 profile, or format change.
+
+## DD-660: Contextual rANS frame encoding is a three-region transaction
+
+- Date: 2026-08-09
+- Status: accepted
+
+Compose raw-to-typed LZSS parsing, the DD-659 direct contextual rANS bridge,
+and the dedicated DD-657 frame serializer without modeled-operation staging.
+Planning validates the rANS-specific stream identity and exact raw-frame size,
+proves disjoint raw/token regions, materializes typed tokens, obtains exact
+event, decision, descriptor, and payload values, validates the complete frame
+header, and charges raw plus used token bytes plus exact serialized bytes.
+
+Encoding additionally requires the serialized output to be disjoint from raw
+input and the caller-owned token region before planning can write tokens. Admit
+the exact output capacity before entropy output, then serialize the already
+validated 64-byte header and fixed 9,052-byte descriptor around the payload.
+After a successful plan, report the required serialized extent even when the
+supplied output is short; only successful encoding commits serialized bytes.
+Leave surplus output untouched. This adds no streaming lifecycle, workspace
+calculator, public API, CLI profile, benchmark, archive, or format change.

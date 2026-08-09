@@ -116,6 +116,10 @@ format versions, and C ABI versions are independent namespaces.
   modeled-operation staging. A shared private model builder and reverse writer
   keep this path byte-identical to the operation-level reference encoder while
   deriving prior-token contexts in one backward pass.
+- Added the private complete contextual rANS frame encoder. It composes raw
+  LZSS parsing and direct token entropy coding into the reserved header,
+  descriptor, and payload bytes with exact planning, deterministic output, and
+  three-region workspace admission.
 
 ## 0.1.3 - 2026-08-08
 

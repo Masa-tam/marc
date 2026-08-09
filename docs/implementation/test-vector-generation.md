@@ -6984,3 +6984,19 @@ invalid typed frame, short payload, token/payload overlap, token-buffer and
 entropy limits, and preserve descriptor/output sentinels on every prewrite
 failure. Re-run all operation encoder tests to prove shared-core refactoring
 does not change their bytes.
+
+### TVG-0539
+
+Encode raw byte `A` as one complete contextual rANS frame and require planning
+and exact output size 9,124, one token, two events, two decisions, payload size
+eight, the documented 64-byte header, descriptor frequencies at flattened
+entries 0 and 71 only, and the lower-bound payload. Decode that frame through
+the complete-frame decoder and require raw `A` with exact consumption. Leave
+one surplus serialized and token element untouched.
+
+Encode a mixed repetitive raw frame and require planning/encoding agreement,
+then complete-frame decode equality. Reject invalid stream identity, wrong raw
+frame size, short token and serialized spans, aggregate workspace limit, and
+all raw/token/serialized overlaps before affected writes. Preserve serialized
+sentinels on every prewrite failure and require repeated encoding with separate
+storage to produce byte-identical complete frames.

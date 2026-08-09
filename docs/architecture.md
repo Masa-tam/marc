@@ -4298,3 +4298,12 @@ though Literal context depends on earlier values. Both this bridge and the
 materialized-operation reference use the same private entropy model builder
 and reverse writer, and tests require identical descriptors and payloads. Raw
 LZSS parsing and complete frame serialization remain separate outer steps.
+
+The complete-frame encoder supplies those outer steps without reintroducing an
+operation region. Planning validates the dedicated stream, exact raw-frame
+extent, raw/token separation, typed parsing, direct entropy result, frame
+header, descriptor, and aggregate raw-plus-token-plus-serialized workspace.
+Encoding additionally excludes serialized output from both caller regions,
+admits exact capacity, emits payload, and commits the validated header and
+descriptor. The resulting frame is accepted directly by the complete-frame
+decoder; streaming and public workspace partitioning remain later layers.
