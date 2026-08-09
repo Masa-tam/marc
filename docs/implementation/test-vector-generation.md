@@ -7351,3 +7351,16 @@ input, and append one strict trailing byte to an otherwise valid compact
 stream. Require nonzero command status and no destination or temporary-file
 publication after each failure. Keep the fixed `lzss-contextual-rans`
 selector bound to entropy variant 2.
+
+### TVG-0564
+
+Run `marc_benchmark lzss-contextual-rans-compact README.md 1`. Require checked
+capacity `112 + 12N + 9,097K`, public compact construction in each direction,
+an exact pre-timing round trip, and a successful timed encode and decode.
+Require the report to identify `lzss-contextual-rans-compact`, the complete
+encoded byte count and ratio, both throughputs, peak caller-owned workspace,
+and encoder/decoder primary, secondary, and views extents.
+
+Run the fixed `lzss-contextual-rans` smoke independently and retain its
+`112 + 12N + 9,124K` capacity and public symbol family. Treat measured speed
+and ratio as descriptive output, never as a pass threshold.

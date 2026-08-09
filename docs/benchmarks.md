@@ -52,7 +52,9 @@ marc_benchmark lzmw-tans corpus.bin 5
 
 The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
-`marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`.
+`marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
+`marc_benchmark lzss-contextual-rans corpus.bin 5`, or
+`marc_benchmark lzss-contextual-rans-compact corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -216,6 +218,16 @@ descriptors, and final-state allowance. Both directions are constructed only
 through the public C lifecycle; all three workspace extents and opaque
 alignment come from separate requirements queries, and exact round trip is
 verified before timing.
+
+The experimental `lzss-contextual-rans-compact` benchmark holds those frame,
+decision, payload, and 8-MiB aggregate policies constant while selecting the
+canonical variable-size descriptor of entropy variant 3. Checked capacity is
+`112 + 12N + 9,097K`: each nonempty frame reserves one 64-byte common header,
+at most 9,025 descriptor bytes, and eight final-state bytes. Both directions
+are constructed only through the distinct compact public C lifecycle. The
+report includes complete-stream ratio, both throughputs, peak caller-owned
+workspace, and all three directional workspace extents after an exact
+pre-timing round trip.
 
 ### LZ78 profiles
 
@@ -561,6 +573,23 @@ bytes immediately before and after rebuilding the change: README SHA-256
 and format-specification SHA-256
 `9DE67249AC75D8C8E3BEC1AF130B47799B06FFC813A8C21F5078F1B89E0B9F15`
 remain unchanged.
+
+### BM-0017: Compact contextual rANS descriptor result
+
+One MSVC Release iteration over the 4,326-byte `README.md` confirms BM-0015's
+descriptor projection exactly. Fixed contextual-rANS variant 2 encodes 11,081
+bytes at ratio 2.561, while compact variant 3 encodes 3,006 bytes at ratio
+0.695. The compact stream is 8,075 bytes, or approximately 72.9%, smaller than
+the fixed stream. Contextual Dynamic Range remains smaller on the same input
+at 2,389 bytes and ratio 0.552.
+
+Peak caller-owned workspace changes only by the descriptor-bound difference:
+2,409,380 bytes for fixed variant 2 and 2,409,353 bytes for compact variant 3.
+The compact encoder reports primary/secondary/views extents of
+4,326/61,009/51,912 bytes; its decoder reports
+795,529/65,536/1,548,288 bytes. One small-input iteration reports encode
+throughput 0.412 MiB/s and decode throughput 10.984 MiB/s, but those timings
+are descriptive and are not a performance baseline or pass threshold.
 
 ## Reporting results
 

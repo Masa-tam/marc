@@ -802,6 +802,18 @@ foreach(required_benchmark_section IN ITEMS
     endif()
     set(previous_benchmark_section_offset "${benchmark_section_offset}")
 endforeach()
+foreach(required_experimental_benchmark IN ITEMS
+        "`lzss-contextual-dynamic-range`"
+        "`lzss-contextual-rans`"
+        "`lzss-contextual-rans-compact`")
+    string(FIND "${benchmark_content}" "${required_experimental_benchmark}"
+        experimental_benchmark_offset)
+    if(experimental_benchmark_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing experimental benchmark profile: "
+            "${required_experimental_benchmark}")
+    endif()
+endforeach()
 file(STRINGS "${benchmark_document}" benchmark_commands
     REGEX "^marc_benchmark ")
 list(LENGTH benchmark_commands benchmark_command_count)

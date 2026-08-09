@@ -4051,3 +4051,11 @@ TVG-0560 through TVG-0563, marc's existing transactional CLI adapter, compact
 ABI-1 lifecycle, and generic CLI round-trip script. No external command-line
 interface, C API, ANS implementation, source code, archive, corpus, malformed
 sample, or test suite was consulted.
+
+### IR-0463
+
+The compact contextual-rANS benchmark uses only DD-681 through DD-685,
+TVG-0560 through TVG-0564, marc's dependency-free public-C benchmark adapter,
+compact workspace/profile bounds, and checked complete-stream arithmetic. No
+external benchmark harness, C API, ANS implementation, source code, archive,
+corpus, performance result, or test suite was consulted.

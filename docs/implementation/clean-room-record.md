@@ -16397,3 +16397,34 @@ discarded and the reviewed seed retained.
   pass under MSVC 19.51.36252. All 2,581 registered tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
   limit in 70.28 seconds.
+
+## CR-0715: 2026-08-10 - Compact contextual rANS benchmark profile
+
+- Authoring method: specified the compact complete-stream capacity, then
+  extended marc's dependency-free public-C benchmark at every explicit codec
+  dispatch point without changing the fixed profile.
+- References used: AGENTS.md sections 5.5, 10.5, 13, 15, and 16; DD-681
+  through DD-685; IR-0463; TVG-0560 through TVG-0564; marc's existing
+  benchmark adapter, compact public lifecycle, profile bounds, and checked
+  capacity arithmetic.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, C APIs, ANS implementations, source code, archives, corpora,
+  performance results, test suites, and optimization descriptions.
+- Independent decisions: retain fixed variant 2 as a separate diagnostic;
+  hold frame, decision, payload, and aggregate limits constant; calculate
+  compact capacity as `112 + 12N + 9,097K`; and add no ratio or throughput
+  threshold.
+- Generated-code task description: construct both compact directions only
+  through the public ABI, verify exact round trip before timing, report all
+  directional storage and performance fields, smoke the fixed and compact
+  selectors independently, and preserve the stable 42-command inventory.
+- Similarity review: the new branches use only marc's existing benchmark
+  structure and compact public symbols; no external capacity formula,
+  benchmark control flow, corpus, or performance result was used.
+- Local validation: fixed and compact focused smoke tests pass under MSVC
+  19.51.36252. With benchmarks enabled, all 2,626 registered tests, including
+  `marc_interoperability_schema_compatibility`, 42 stable benchmark smokes,
+  and three experimental benchmark smokes, pass with a 240-second per-test
+  limit in 73.23 seconds. A descriptive one-iteration README run records
+  11,081 fixed-rANS bytes, 3,006 compact-rANS bytes, and 2,389 contextual-
+  range bytes from 4,326 input bytes.

@@ -14176,3 +14176,24 @@ transactional file adapter so overwrite refusal, malformed input, strict
 trailing data, and later failure never publish a destination. This remains an
 experimental Format 2 selector outside the stable 42-profile inventory and
 adds no benchmark or interoperability archive.
+
+## DD-685: Compact contextual rANS receives a distinct benchmark profile
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add `lzss-contextual-rans-compact` to the dependency-free benchmark as an
+experimental profile beside, not in place of, fixed
+`lzss-contextual-rans`. Use the same 65,536-byte raw frame, `6F` decision,
+`12F + 8` payload, and 8 MiB aggregate-buffer policies so descriptor
+representation is the controlled difference. Construct each direction only
+through the compact public configuration, requirements, and factory calls.
+
+For raw input extent `N` and nonempty frame count `K`, reserve checked complete
+stream capacity `112 + 12N + 9,097K`: 112 stream-header bytes, at most 12
+payload bytes per raw byte, and per frame 64 common-header bytes, at most 9,025
+compact descriptor bytes, and eight final-state bytes. Verify exact round trip
+before timing and report encode/decode throughput, complete-stream ratio, peak
+caller-owned workspace, and both direction-specific three-region workspaces.
+The smoke test is descriptive evidence only; no performance threshold,
+stable-matrix entry, or interoperability archive is added.

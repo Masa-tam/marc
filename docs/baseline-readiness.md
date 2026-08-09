@@ -1414,3 +1414,16 @@ nonempty and empty round trips, overwrite refusal, malformed input, strict
 trailing data, and failure cleanup. All 2,581 ordinary tests pass under MSVC.
 This is CLI evidence, not benchmark, stable-matrix, or interoperability
 admission.
+
+### BR-0052
+
+The compact contextual-rANS profile now has dependency-free benchmark wiring.
+Its checked `112 + 12N + 9,097K` capacity, compact-public-only construction,
+pre-timing round trip, directional throughput, complete-stream ratio, and
+three-region workspace reporting are covered by a separately labeled smoke.
+On the 4,326-byte README it produces 3,006 bytes versus fixed variant 2's
+11,081 and contextual Dynamic Range's 2,389; the compact result exactly
+confirms the earlier descriptor projection. All 2,626 tests in the benchmark-
+enabled configuration pass under MSVC, including 42 stable and three
+experimental benchmark smokes. This is descriptive benchmark evidence, not
+stable-matrix or interoperability admission.
