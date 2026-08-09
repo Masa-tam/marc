@@ -16080,3 +16080,36 @@ discarded and the reviewed seed retained.
   loop pass in 46.86 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer
   target, whose bounded 1,000-run smoke completed without a crash, hang, or
   sanitizer finding and peaked at 43 MiB RSS.
+
+## CR-0705: 2026-08-09 - Compact contextual rANS complete-frame decoder
+
+- Authoring method: specified the variable-descriptor frame boundary first,
+  then connected marc's compact token bridge to its existing Format 2 frame
+  fields, caller-workspace admission, and typed-LZSS raw reconstructor.
+- References used: AGENTS.md sections 3.3, 5, 7, 9.3, 10.5, 11.2, 12, 14,
+  and 15; DD-653 through DD-655; DD-670; DD-672 through DD-675; IR-0453;
+  TVG-0549 through TVG-0554; and the repository's fixed contextual-rANS frame
+  decoder, compact descriptor parser, compact token bridge, checked arithmetic,
+  overlap checks, and typed-frame reconstructor.
+- Known implementations intentionally not consulted: external frame decoders,
+  ANS implementations, source code, archives, corpora, malformed samples, test
+  suites, and optimization descriptions.
+- Independent decisions: retain the common frame fields but add distinct
+  compact validation; charge and slice the exact 23-through-9,025-byte
+  descriptor; parse before workspace writes; require serialized/table/token/raw
+  disjointness; and commit frame consumption only after raw reconstruction.
+- Generated-code task description: decode the documented 98-byte one-Literal
+  frame, preserve trailing input, reject noncanonical and truncated bodies,
+  reject short or aliased workspaces before writes, and compile the boundary
+  through the sanitizer-instrumented static library.
+- Similarity review: frame admission follows marc's established private
+  transaction and error vocabulary while compact extent handling follows only
+  the new local specification; no external control flow or representation was
+  used.
+- Local validation: all 24 focused compact format, scalar, token, and frame
+  tests pass under MSVC 19.51.36252. All 2,548 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 71.98 seconds. The schema test also passes alone in 56.44 seconds.
+  Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target, whose bounded 1,000-run
+  smoke completed without a crash, hang, or sanitizer finding and peaked at
+  43 MiB RSS.

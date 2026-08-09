@@ -47,6 +47,7 @@ set(MARC_SOURCES
     src/frame/lzss_typed_context_frame_decoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
     src/frame/lzss_contextual_rans_frame_decoder.cpp
+    src/frame/lzss_contextual_rans_compact_frame_decoder.cpp
     src/frame/lzss_contextual_rans_frame_streaming_decoder.cpp
     src/frame/lzss_contextual_rans_frame_encoder.cpp
     src/frame/lzss_contextual_rans_frame_streaming_encoder.cpp
@@ -1324,6 +1325,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_rans_encoder_tests.cpp
         tests/lzss_contextual_rans_format_tests.cpp
         tests/lzss_contextual_rans_frame_decoder_tests.cpp
+        tests/lzss_contextual_rans_compact_frame_decoder_tests.cpp
         tests/lzss_contextual_rans_frame_streaming_decoder_tests.cpp
         tests/lzss_contextual_rans_frame_encoder_tests.cpp
         tests/lzss_contextual_rans_frame_streaming_encoder_tests.cpp

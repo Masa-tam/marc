@@ -3968,3 +3968,12 @@ through DD-655, DD-670, DD-672 through DD-674, TVG-0549 through TVG-0553,
 marc's existing LZSS field-context state machine, typed-token validator, and
 two-pass transactional decoder. No external token codec, ANS adapter, source
 code, archive, corpus, malformed sample, or test suite was consulted.
+
+### IR-0453
+
+The compact contextual-rANS complete-frame decoder uses only DD-653 through
+DD-655, DD-670, DD-672 through DD-675, TVG-0549 through TVG-0554, marc's
+existing fixed contextual-rANS frame admission and typed-LZSS reconstruction
+contracts, and the private compact token bridge. No external frame decoder,
+ANS implementation, source code, archive, corpus, malformed sample, or test
+suite was consulted.

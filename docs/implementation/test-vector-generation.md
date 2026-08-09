@@ -7203,3 +7203,17 @@ form, supply zero token capacity, alias payload and token storage, and shorten
 the fixed table workspace. Require compact format errors to remain distinct
 from token/state/workspace errors, every prewrite failure to preserve token
 sentinels, and validation-only decoding to publish no token.
+
+### TVG-0554
+
+Prefix TVG-0549's exact 26-byte compact descriptor and eight-byte payload with
+the common 64-byte Format 2 frame header for sequence zero, raw/token/event/
+decision counts `1/1/2/2`, payload size eight, and descriptor size 26. Require
+the private compact complete-frame decoder to consume exactly 98 bytes and
+publish raw byte `A`, with the same typed literal and accounting as TVG-0553.
+
+Independently truncate the descriptor or payload, replace its final sparse
+record with a noncanonical dense record, shorten each caller workspace, and
+alias serialized input with writable storage. Require precise preflight or
+workspace errors, zero serialized consumption, and unchanged token/raw
+sentinels for every failure before publication.

@@ -393,6 +393,130 @@ parse_lzss_contextual_rans_frame_header(
 }
 
 LzssContextualRansFrameHeaderError
+validate_lzss_contextual_rans_compact_frame_header(
+    const LzssContextualRansFrameHeader& header,
+    const LzssContextualRansFrameValidationContext& context) noexcept {
+    if (validate_lzss_contextual_rans_stream_header(
+            context.stream, context.limits)
+        != LzssContextualRansStreamHeaderError::none) {
+        return LzssContextualRansFrameHeaderError::invalid_stream_header;
+    }
+    if (header.flags != 0) {
+        return LzssContextualRansFrameHeaderError::unknown_flags;
+    }
+    if (header.sequence != context.expected_sequence) {
+        return LzssContextualRansFrameHeaderError::unexpected_sequence;
+    }
+    if (context.output_already_committed >= context.stream.original_size) {
+        return LzssContextualRansFrameHeaderError::unexpected_frame_size;
+    }
+    const auto remaining =
+        context.stream.original_size - context.output_already_committed;
+    const auto expected = std::min<std::uint64_t>(
+        context.stream.frame_size, remaining);
+    if (header.uncompressed_size != expected) {
+        return LzssContextualRansFrameHeaderError::unexpected_frame_size;
+    }
+    if (header.token_count == 0
+        || header.token_count > header.uncompressed_size
+        || header.event_count < header.token_count
+        || header.decision_count < header.event_count
+        || !checked_product_at_most(
+            2, header.uncompressed_size, header.event_count)
+        || !checked_product_at_most(
+            5, header.token_count, header.event_count)
+        || !checked_product_at_most(
+            6, header.uncompressed_size, header.decision_count)
+        || !checked_product_at_most(
+            26, header.token_count, header.decision_count)) {
+        return LzssContextualRansFrameHeaderError::contradictory_counts;
+    }
+    std::uint64_t minimum_events{};
+    if (!core::checked_multiply(
+            static_cast<std::uint64_t>(header.token_count), UINT64_C(2),
+            minimum_events)) {
+        return LzssContextualRansFrameHeaderError::arithmetic_overflow;
+    }
+    if (header.event_count < minimum_events || header.payload_size < 8
+        || header.descriptor_size
+               < entropy::internal::contextual_rans_compact_min_descriptor_size
+        || header.descriptor_size
+               > entropy::internal::contextual_rans_compact_max_descriptor_size) {
+        return LzssContextualRansFrameHeaderError::contradictory_counts;
+    }
+    if (header.context_side_data_size != 0
+        || header.checksum_trailer_size != 0) {
+        return LzssContextualRansFrameHeaderError::unsupported_feature;
+    }
+    const core::FrameBounds bounds{
+        header.uncompressed_size,
+        0,
+        header.payload_size,
+        header.uncompressed_size,
+        0,
+        context.stream.dictionary.window_size,
+        context.stream.dictionary.max_match_length,
+        0,
+        entropy::internal::contextual_rans_decode_table_entries,
+        0,
+        header.descriptor_size,
+        header.payload_size,
+        1};
+    const auto limit_error = core::validate_frame_bounds(
+        context.limits, bounds, context.output_already_committed);
+    if (limit_error == core::LimitError::arithmetic_overflow) {
+        return LzssContextualRansFrameHeaderError::arithmetic_overflow;
+    }
+    if (limit_error != core::LimitError::none) {
+        return LzssContextualRansFrameHeaderError::limit_exceeded;
+    }
+    return LzssContextualRansFrameHeaderError::none;
+}
+
+LzssContextualRansFrameHeaderError
+parse_lzss_contextual_rans_compact_frame_header(
+    const std::span<const std::byte> input,
+    const LzssContextualRansFrameValidationContext& context,
+    LzssContextualRansFrameHeader& header,
+    std::size_t& bytes_consumed) noexcept {
+    if (input.size() < lzss_contextual_rans_frame_header_size) {
+        return LzssContextualRansFrameHeaderError::truncated_header;
+    }
+    const auto bytes = input.first(lzss_contextual_rans_frame_header_size);
+    if (!std::ranges::equal(bytes.first(frame_magic.size()), frame_magic)) {
+        return LzssContextualRansFrameHeaderError::invalid_magic;
+    }
+    std::uint16_t encoded_size{};
+    LzssContextualRansFrameHeader parsed{};
+    if (!core::load_le(bytes, 4, encoded_size)
+        || !core::load_le(bytes, 6, parsed.flags)
+        || !core::load_le(bytes, 8, parsed.sequence)
+        || !core::load_le(bytes, 16, parsed.uncompressed_size)
+        || !core::load_le(bytes, 20, parsed.token_count)
+        || !core::load_le(bytes, 24, parsed.event_count)
+        || !core::load_le(bytes, 28, parsed.decision_count)
+        || !core::load_le(bytes, 32, parsed.payload_size)
+        || !core::load_le(bytes, 36, parsed.descriptor_size)
+        || !core::load_le(bytes, 40, parsed.context_side_data_size)
+        || !core::load_le(bytes, 44, parsed.checksum_trailer_size)) {
+        return LzssContextualRansFrameHeaderError::arithmetic_overflow;
+    }
+    if (encoded_size != lzss_contextual_rans_frame_header_size) {
+        return LzssContextualRansFrameHeaderError::invalid_header_size;
+    }
+    if (!all_zero(bytes.subspan(48, 16))) {
+        return LzssContextualRansFrameHeaderError::nonzero_reserved;
+    }
+    const auto error =
+        validate_lzss_contextual_rans_compact_frame_header(parsed, context);
+    if (error == LzssContextualRansFrameHeaderError::none) {
+        header = parsed;
+        bytes_consumed = lzss_contextual_rans_frame_header_size;
+    }
+    return error;
+}
+
+LzssContextualRansFrameHeaderError
 serialize_lzss_contextual_rans_frame_header(
     const LzssContextualRansFrameHeader& header,
     const LzssContextualRansFrameValidationContext& context,
@@ -472,6 +596,68 @@ preflight_lzss_contextual_rans_frame(
     }
     if (input.size() < serialized_size) {
         return {LzssContextualRansFramePreflightError::truncated_frame};
+    }
+    parsed.serialized_size = serialized_size;
+    layout = parsed;
+    return {};
+}
+
+LzssContextualRansCompactFramePreflightResult
+preflight_lzss_contextual_rans_compact_frame(
+    const std::span<const std::byte> input,
+    const LzssContextualRansFrameValidationContext& context,
+    LzssContextualRansCompactFrameLayout& layout) noexcept {
+    LzssContextualRansCompactFrameLayout parsed{};
+    std::size_t header_bytes{};
+    const auto header_error =
+        parse_lzss_contextual_rans_compact_frame_header(
+            input, context, parsed.header, header_bytes);
+    if (header_error != LzssContextualRansFrameHeaderError::none) {
+        return {LzssContextualRansCompactFramePreflightError::header_error,
+                header_error};
+    }
+    if (!std::in_range<std::size_t>(parsed.header.descriptor_size)) {
+        return {
+            LzssContextualRansCompactFramePreflightError::arithmetic_overflow};
+    }
+    std::size_t payload_offset{};
+    if (!core::checked_add(
+            header_bytes,
+            static_cast<std::size_t>(parsed.header.descriptor_size),
+            payload_offset)) {
+        return {
+            LzssContextualRansCompactFramePreflightError::arithmetic_overflow};
+    }
+    if (input.size() < payload_offset) {
+        return {LzssContextualRansCompactFramePreflightError::truncated_frame};
+    }
+    entropy::internal::ContextualRansDescriptor descriptor{};
+    const auto descriptor_input = input.subspan(
+        header_bytes, static_cast<std::size_t>(parsed.header.descriptor_size));
+    const auto descriptor_error =
+        entropy::internal::parse_contextual_rans_compact_descriptor(
+            descriptor_input, parsed.header.decision_count,
+            parsed.header.payload_size, context.limits, descriptor);
+    if (descriptor_error
+        != entropy::internal::ContextualRansCompactFormatError::none) {
+        return {
+            LzssContextualRansCompactFramePreflightError::descriptor_error,
+            LzssContextualRansFrameHeaderError::none, descriptor_error};
+    }
+    std::size_t serialized_size{};
+    if (!std::in_range<std::size_t>(parsed.header.payload_size)
+        || !core::checked_add(
+            payload_offset,
+            static_cast<std::size_t>(parsed.header.payload_size),
+            serialized_size)) {
+        return {
+            LzssContextualRansCompactFramePreflightError::arithmetic_overflow};
+    }
+    if (serialized_size > context.limits.max_internal_buffered_bytes) {
+        return {LzssContextualRansCompactFramePreflightError::limit_exceeded};
+    }
+    if (input.size() < serialized_size) {
+        return {LzssContextualRansCompactFramePreflightError::truncated_frame};
     }
     parsed.serialized_size = serialized_size;
     layout = parsed;

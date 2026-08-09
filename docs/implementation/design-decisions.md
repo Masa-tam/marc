@@ -13958,3 +13958,24 @@ accounting as variant 2, and that malformed compact records, short token
 storage, and aliased buffers preserve caller token bytes. This milestone adds
 no frame parser, stream-header admission, encoder selection, public API, CLI,
 benchmark, or interoperability profile.
+
+## DD-675: Compact contextual rANS frames admit exact variable descriptors
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add a distinct private compact-frame preflight and complete decoder while
+retaining the common 64-byte Format 2 frame-header fields. The compact header
+validator accepts descriptor sizes only from 23 through 9,025 bytes, charges
+the exact descriptor plus payload extent against the internal-buffer limit,
+and passes precisely that descriptor span to the compact parser. It must not
+reconstruct or charge the fixed 9,052-byte variant-2 representation.
+
+After complete preflight, require exact caller-owned table, token, and raw
+capacities and reject every overlap among the admitted serialized frame and
+the three workspaces before any write. Decode typed tokens through the compact
+bridge and reconstruct raw bytes only after token success. Any header,
+descriptor, truncation, capacity, overlap, entropy, token, or reconstruction
+failure reports zero serialized consumption and preserves raw output. This
+milestone adds no stream-header parser, encoder selection, streaming lifecycle,
+public API, CLI selector, benchmark, or interoperability archive.

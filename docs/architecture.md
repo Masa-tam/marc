@@ -4432,6 +4432,14 @@ write-free token pass; publication repeats the same bounded pass only after
 token capacity and all descriptor/payload/table/token disjointness checks
 succeed.
 
+The compact complete-frame boundary retains the common Format 2 frame header
+but preflights the header-carried variable descriptor extent rather than the
+fixed variant-2 size. The exact compact descriptor span and payload then feed
+the compact token bridge; successful typed tokens feed the existing bounded
+LZSS reconstructor. Serialized input, decode tables, tokens, and private raw
+output must all be pairwise disjoint before table construction. Frame
+consumption is committed only after reconstruction succeeds.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

@@ -6039,7 +6039,10 @@ the canonical tie rule selects dense. Context 3 is the one-symbol sparse
 record `(mode=1, K-1=0, symbol=65)`, whose omitted frequency infers to 4,096.
 The complete frame is 98 bytes and the complete one-byte stream is 210 bytes,
 compared with variant 2's 9,124-byte frame and 9,236-byte stream. This is a
-descriptor-level vector: the private parser and serializer admit these exact
-26 bytes, and the private scalar decoder consumes them through the same fixed
-table and state path as variant 2. Frame, streaming, encoder-selection, and
-public selector integration are not yet implemented.
+complete-frame vector: the private parser and serializer admit these exact 26
+bytes, and the private complete-frame decoder consumes the 98-byte frame
+through the same fixed table, typed-token, and raw reconstruction paths as
+variant 2. It validates the header-carried descriptor extent exactly and
+commits frame consumption only after the private raw byte exists. Stream-header
+parsing, streaming lifecycle, encoder selection, and public selector
+integration are not yet implemented.

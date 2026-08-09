@@ -3,6 +3,7 @@
 
 #include "core/limits.hpp"
 #include "dictionary/lzss_format.hpp"
+#include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <cstddef>
@@ -152,6 +153,47 @@ preflight_lzss_contextual_rans_frame(
     std::span<const std::byte> input,
     const LzssContextualRansFrameValidationContext& context,
     LzssContextualRansFrameLayout& layout) noexcept;
+
+[[nodiscard]] LzssContextualRansFrameHeaderError
+validate_lzss_contextual_rans_compact_frame_header(
+    const LzssContextualRansFrameHeader& header,
+    const LzssContextualRansFrameValidationContext& context) noexcept;
+
+[[nodiscard]] LzssContextualRansFrameHeaderError
+parse_lzss_contextual_rans_compact_frame_header(
+    std::span<const std::byte> input,
+    const LzssContextualRansFrameValidationContext& context,
+    LzssContextualRansFrameHeader& header,
+    std::size_t& bytes_consumed) noexcept;
+
+struct LzssContextualRansCompactFrameLayout {
+    LzssContextualRansFrameHeader header{};
+    std::size_t serialized_size{};
+};
+
+enum class LzssContextualRansCompactFramePreflightError : std::uint8_t {
+    none,
+    header_error,
+    descriptor_error,
+    truncated_frame,
+    arithmetic_overflow,
+    limit_exceeded,
+};
+
+struct LzssContextualRansCompactFramePreflightResult {
+    LzssContextualRansCompactFramePreflightError error{
+        LzssContextualRansCompactFramePreflightError::none};
+    LzssContextualRansFrameHeaderError header_error{
+        LzssContextualRansFrameHeaderError::none};
+    entropy::internal::ContextualRansCompactFormatError descriptor_error{
+        entropy::internal::ContextualRansCompactFormatError::none};
+};
+
+[[nodiscard]] LzssContextualRansCompactFramePreflightResult
+preflight_lzss_contextual_rans_compact_frame(
+    std::span<const std::byte> input,
+    const LzssContextualRansFrameValidationContext& context,
+    LzssContextualRansCompactFrameLayout& layout) noexcept;
 
 } // namespace marc::frame::internal
 
