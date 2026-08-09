@@ -14065,3 +14065,23 @@ unsupported. Constructor, workspace, capacity, limit, input-extent, alias,
 unknown-flag, and reset failures become stable terminal errors. This milestone
 adds no public API, CLI selector, benchmark, new fuzz entry, or interoperability
 archive.
+
+## DD-680: Compact profile derives workspace from variant 3 bounds
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add explicit private compact profile and decoder-workspace query names. Retain
+the existing configuration, requirements, typed-view layout, payload ceiling,
+decode-table count, checked arithmetic, and partition functions. Do not turn
+the existing variant-2 function names into ambiguous aliases.
+
+The compact encoder validates the synthesized stream through variant 3 and
+reserves `64 + 9,025 + (12N + 8)` serialized-frame bytes for largest raw frame
+extent `N`; the compact decoder applies the same 9,025-byte descriptor ceiling
+to its bounded payload capacity. Continue charging raw, token, table, and
+serialized regions against the same aggregate internal-memory limit. Empty
+known-size input requires no frame workspace and alignment one. Returned
+requirements must construct the distinct compact streaming encoder and decoder
+and complete a byte-exact round trip. This milestone adds no public C/C++ API,
+CLI selector, benchmark, fuzz entry, or interoperability archive.

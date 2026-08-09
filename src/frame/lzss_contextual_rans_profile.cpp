@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_rans_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "entropy/contextual_rans_compact_format.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -8,6 +9,11 @@
 
 namespace marc::frame::internal {
 namespace {
+
+enum class ProfileRepresentation : std::uint8_t {
+    fixed,
+    compact,
+};
 
 inline constexpr std::uint64_t decisions_per_raw_byte = 6;
 inline constexpr std::uint64_t payload_bytes_per_decision = 2;
@@ -85,11 +91,12 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
 
 } // namespace
 
-LzssContextualRansProfileError make_lzss_contextual_rans_profile(
+static LzssContextualRansProfileError make_profile(
     const LzssContextualRansProfileConfig& config,
     const core::DecoderLimits& limits,
     LzssContextualRansStreamHeader& stream,
-    LzssContextualRansEncoderWorkspaceRequirements& workspace) noexcept {
+    LzssContextualRansEncoderWorkspaceRequirements& workspace,
+    const ProfileRepresentation representation) noexcept {
     stream = {};
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none
@@ -118,8 +125,9 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     stream.frame_size = config.frame_size;
     stream.original_size = config.original_size;
     stream.dictionary = config.dictionary;
-    const auto stream_error =
-        validate_lzss_contextual_rans_stream_header(stream, limits);
+    const auto stream_error = representation == ProfileRepresentation::compact
+        ? validate_lzss_contextual_rans_compact_stream_header(stream, limits)
+        : validate_lzss_contextual_rans_stream_header(stream, limits);
     if (stream_error != LzssContextualRansStreamHeaderError::none) {
         return stream_error
                    == LzssContextualRansStreamHeaderError::limit_exceeded
@@ -135,6 +143,9 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     }
 
     const std::uint64_t token_count{largest_frame};
+    const auto descriptor_size = representation == ProfileRepresentation::compact
+        ? entropy::internal::contextual_rans_compact_max_descriptor_size
+        : entropy::internal::contextual_rans_descriptor_size;
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t views_bytes{};
@@ -143,8 +154,7 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
         || !core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_rans_frame_header_size),
-            static_cast<std::uint64_t>(
-                entropy::internal::contextual_rans_descriptor_size),
+            static_cast<std::uint64_t>(descriptor_size),
             frame_encoded_bytes)
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
@@ -175,10 +185,28 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     return LzssContextualRansProfileError::none;
 }
 
-LzssContextualRansProfileError
-calculate_lzss_contextual_rans_decoder_workspace(
+LzssContextualRansProfileError make_lzss_contextual_rans_profile(
+    const LzssContextualRansProfileConfig& config,
     const core::DecoderLimits& limits,
-    LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept {
+    LzssContextualRansStreamHeader& stream,
+    LzssContextualRansEncoderWorkspaceRequirements& workspace) noexcept {
+    return make_profile(
+        config, limits, stream, workspace, ProfileRepresentation::fixed);
+}
+
+LzssContextualRansProfileError make_lzss_contextual_rans_compact_profile(
+    const LzssContextualRansProfileConfig& config,
+    const core::DecoderLimits& limits,
+    LzssContextualRansStreamHeader& stream,
+    LzssContextualRansEncoderWorkspaceRequirements& workspace) noexcept {
+    return make_profile(
+        config, limits, stream, workspace, ProfileRepresentation::compact);
+}
+
+static LzssContextualRansProfileError calculate_decoder_workspace(
+    const core::DecoderLimits& limits,
+    LzssContextualRansDecoderWorkspaceRequirements& workspace,
+    const ProfileRepresentation representation) noexcept {
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssContextualRansProfileError::invalid_configuration;
@@ -206,11 +234,13 @@ calculate_lzss_contextual_rans_decoder_workspace(
     std::uint64_t token_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    const auto descriptor_size = representation == ProfileRepresentation::compact
+        ? entropy::internal::contextual_rans_compact_max_descriptor_size
+        : entropy::internal::contextual_rans_descriptor_size;
     if (!core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_rans_frame_header_size),
-            static_cast<std::uint64_t>(
-                entropy::internal::contextual_rans_descriptor_size),
+            static_cast<std::uint64_t>(descriptor_size),
             encoded_bytes)
         || !core::checked_add(encoded_bytes, payload_bytes, encoded_bytes)
         || !decoder_view_layout(
@@ -237,6 +267,22 @@ calculate_lzss_contextual_rans_decoder_workspace(
     }
     workspace.views_alignment = decoder_views_alignment();
     return LzssContextualRansProfileError::none;
+}
+
+LzssContextualRansProfileError
+calculate_lzss_contextual_rans_decoder_workspace(
+    const core::DecoderLimits& limits,
+    LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept {
+    return calculate_decoder_workspace(
+        limits, workspace, ProfileRepresentation::fixed);
+}
+
+LzssContextualRansProfileError
+calculate_lzss_contextual_rans_compact_decoder_workspace(
+    const core::DecoderLimits& limits,
+    LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept {
+    return calculate_decoder_workspace(
+        limits, workspace, ProfileRepresentation::compact);
 }
 
 LzssContextualRansWorkspaceError

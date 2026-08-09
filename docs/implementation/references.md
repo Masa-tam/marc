@@ -4010,3 +4010,11 @@ DD-678, DD-679, TVG-0554, TVG-0556, TVG-0557, TVG-0558, marc's fixed
 contextual-rANS streaming lifecycle, compact stream-header serializer, and
 compact complete-frame encoder. No external streaming encoder, ANS
 implementation, source code, archive, corpus, or test suite was consulted.
+
+### IR-0458
+
+The compact contextual-rANS private profile uses only DD-663, DD-675,
+DD-678 through DD-680, TVG-0554, TVG-0557 through TVG-0559, marc's fixed
+profile arithmetic, compact descriptor bounds, and compact streaming transform
+types. No external profile, workspace calculator, ANS implementation, source
+code, archive, corpus, or test suite was consulted.

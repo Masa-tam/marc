@@ -4468,6 +4468,12 @@ contextual-rANS encoder. Its private representation choice selects the variant
 reinterpret variant 2 bytes. One raw frame, typed-token staging, and one exact
 serialized compact frame remain caller-owned and mutually disjoint.
 
+The compact private profile retains the fixed contextual-rANS typed-view
+layout and payload ceiling but substitutes the 9,025-byte variant-3 descriptor
+maximum in both direction-specific serialized-frame calculations. Explicit
+compact query names return requirements suitable for the distinct compact
+streaming transform types; the existing variant-2 profile remains unchanged.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

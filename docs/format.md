@@ -6078,3 +6078,10 @@ frame before collecting another. Arbitrary input/output chunking is
 representation-neutral; Flush does not close a partial frame, and EndInput is
 retained until all final bytes are drained. Public selector integration remains
 future work.
+
+The private compact profile now calculates worst-case caller workspace from
+the variant-3 descriptor maximum rather than the fixed 9,052-byte descriptor.
+For raw frame extent `N`, encoder serialized staging is bounded by
+`64 + 9,025 + 12N + 8`; decoder staging uses the same header and descriptor
+ceiling plus its admitted payload bound. These are allocation bounds only and
+do not alter the exact descriptor-size field or serialized representation.

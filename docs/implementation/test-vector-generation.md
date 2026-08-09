@@ -7272,3 +7272,18 @@ frame without closing it, and reject short token/frame workspaces, aggregate
 limits, premature or excess input, overlapping construction/output storage,
 unknown flags, and ResetBlock. Require stable terminal errors and validate
 every ProcessResult count/status combination.
+
+### TVG-0559
+
+Query the compact profile for default 65,536-byte frames and require maximum
+serialized-frame storage 795,529 bytes. Query a 17-byte stream and require
+9,301 bytes; query empty input and require zero frame/token/view storage with
+alignment one. Under decoder limits of 1,024 raw bytes and 2,000 payload bytes,
+require 11,089 serialized bytes while retaining the fixed contextual-rANS
+decode-table and typed-token view layout.
+
+Partition the returned views, construct the distinct compact streaming encoder
+and decoder, and round-trip a multi-frame mixed literal/match input. Require
+entropy variant 3 in the encoded stream. Independently reject unsupported
+dictionary parameters, payload, block, aggregate, and table limits one unit
+past their admitted boundaries without publishing partial requirements.
