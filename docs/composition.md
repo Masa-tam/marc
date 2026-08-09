@@ -1227,7 +1227,7 @@ Ubuntu 26.04/Clang producers.
 
 ### CP-0045
 
-The reserved `lzss-field-context-rans` composition changes only the entropy
+The reserved `lzss-contextual-rans` composition changes only the entropy
 axis of the first Format 2 profile: typed LZSS remains variant 2 and
 `LzssFieldContext` remains variant 1, while entropy becomes scalar contextual
 rANS variant 2. The fixed model descriptor and one-state payload are specified
@@ -1236,7 +1236,7 @@ benchmark, stable matrix cell, or interoperability entry.
 
 ### CP-0046
 
-The experimental `lzss-field-context-rans` public C lifecycle now has
+The experimental `lzss-contextual-rans` public C lifecycle now has
 completion evidence for required binary classes, repeat determinism,
 one-byte and mixed chunking, sticky terminal states, and frame-atomic rejection
 of a corrupt, truncated, or extended fourth frame. It remains outside the
@@ -1245,9 +1245,19 @@ admission remain independent later steps.
 
 ### CP-0047
 
-The experimental `lzss-field-context-rans` composition now has a bounded
+The experimental `lzss-contextual-rans` composition now has a bounded
 dual-decoder fuzz entry and permanent regressions for every canonical
 truncation, saturated Format 2 frame extents, and nonzero contextual-rANS
 descriptor flags. Its fixed decode-table cost is admitted before parsing and
 does not become input-controlled. This milestone claims neither a sanitizer
 campaign nor CLI, benchmark, stable-matrix, or interoperability admission.
+
+### CP-0048
+
+The experimental `lzss-contextual-rans` composition is now reachable through
+an explicit transactional CLI selector. The adapter fixes its public
+65,536-byte profile policy but delegates all three direction-specific
+workspace extents and opaque alignment to the public C requirements query.
+Binary, empty, malformed, trailing-data, overwrite, and temporary-file
+behavior are covered without admitting a stable matrix profile, benchmark
+command, or interoperability archive.

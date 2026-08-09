@@ -5,8 +5,8 @@ validated baseline profiles as the command-line tool: checksum-raw, six
 standalone dictionary profiles, five standalone entropy profiles, and the
 complete six-dictionary by five-entropy composition matrix. It additionally
 exposes the experimental Format 2 `lzss-contextual-dynamic-range` and
-`lzss-contextual-rans` profiles. The first has an explicit experimental
-command-line option; neither is part of the baseline 42-profile matrix.
+`lzss-contextual-rans` profiles. Both have explicit experimental command-line
+options; neither is part of the baseline 42-profile matrix.
 Encoding uses a known input size, and every transform uses bounded caller-owned
 workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears

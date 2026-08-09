@@ -5808,7 +5808,7 @@ alter any stream header, frame, descriptor, payload, or padding byte.
 
 ### Reserved LZSS field-context plus rANS profile
 
-The second Format 2 profile is named `lzss-field-context-rans` and retains
+The second Format 2 profile is named `lzss-contextual-rans` and retains
 dictionary algorithm/variant `2/2` plus context-model algorithm/variant `1/1`.
 It selects entropy algorithm/variant `4/2`. This is a reserved representation;
 it does not yet claim an encoder, decoder, C lifecycle, CLI selector, or
@@ -5993,3 +5993,8 @@ Arbitrary bounded input reaches the complete-frame decoder only after the
 The encoded frame, 126,976 decode entries, typed tokens, private raw staging,
 and public output are all capped independently of parsed fields; malformed
 input is an expected terminal result.
+
+The `lzss-contextual-rans` CLI selector changes no representation either. It
+selects this exact Format 2 identity through the public C lifecycle and fixes
+only caller-side limits and workspace policy. CLI admission does not define a
+new header, frame, descriptor, payload, padding, or reset rule.

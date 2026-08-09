@@ -13776,3 +13776,24 @@ progress, final-input, or call-budget invariant failure. Retain ordinary
 atomic regressions for every strict canonical `ABABX` prefix, saturated frame
 extents, and nonzero descriptor flags. This changes no format or admission
 inventory and does not claim a sanitizer campaign.
+
+## DD-667: Contextual rANS CLI admission is public-only and experimental
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add `lzss-contextual-rans` as an explicit experimental selector in the
+transactional CLI without changing the stable 42-profile inventory or default
+`lz77` selector. Fix raw frames at 65,536 bytes, admit at most `6F = 393,216`
+modeled decisions and `12F + 8 = 786,440` payload bytes, and apply an 8-MiB
+internal-buffer policy. Obtain primary, secondary, and aligned opaque-view
+extents separately for each direction from the public C requirements query.
+
+Construct, process, and destroy the transform only through the public
+`marc_lzss_contextual_rans_*` lifecycle. Do not include private Format 2
+headers or reproduce token, operation, table, partition, element-size, or
+alignment formulas in the command-line layer. Retain temporary-output
+transactionality and prove nonempty and empty round trips, overwrite refusal,
+malformed-input cleanup, and strict trailing-data rejection through the common
+CLI regression. This changes no stream byte, ABI version, stable matrix count,
+benchmark inventory, or interoperability schema.

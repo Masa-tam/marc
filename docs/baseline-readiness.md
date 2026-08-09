@@ -1301,3 +1301,13 @@ input. Ordinary regressions require atomic rejection of every strict canonical
 prefix, saturated frame extents, and nonzero descriptor flags. This is target
 construction and compile-smoke evidence, not a sanitizer campaign or CLI,
 benchmark, stable-matrix, or interoperability admission.
+
+### BR-0042
+
+The experimental contextual-rANS Format 2 lifecycle now has an explicit
+`lzss-contextual-rans` CLI selector. The command-line adapter uses only the
+public configuration, requirements, factory, process, and destroy surface and
+preserves atomic temporary-file publication. Its common regression covers
+nonempty and empty round trips, overwrite refusal, malformed input, strict
+trailing data, and failure cleanup under both local compilers. It remains
+outside the stable 42-profile, benchmark, and interoperability inventories.

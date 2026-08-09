@@ -76,8 +76,10 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 
 `lzss-contextual-dynamic-range` selects the Format 2 LZSS typed-token,
 field-context, contextual Dynamic Range pipeline. It is intentionally outside
-the stable 42-profile Format 1 inventory above. Encode and decode must use the
-same explicit selector.
+the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
+the corresponding Format 2 typed-token and field-context pipeline with the
+scalar contextual rANS backend. Encode and decode must use the same explicit
+selector.
 
 ### Common stream rules
 
@@ -150,6 +152,14 @@ The command-line layer calls only the public configuration initializer,
 direction-specific requirements query, factory, process, and destroy
 functions. All three workspace extents and the opaque views alignment come
 from the query; no private token, operation, or model layout is reproduced.
+
+The experimental `lzss-contextual-rans` adapter also fixes raw frames at
+65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its
+payload ceiling is `12F + 8 = 786,440` bytes, and its internal-buffer policy
+is 8 MiB. The CLI calls only the public configuration initializer,
+direction-specific requirements query, factory, process, and destroy
+functions. All byte regions and the opaque fixed-table/token views alignment
+come from the query; the command-line layer reproduces no private layout.
 
 ### LZ78 profile parameters
 

@@ -66,6 +66,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the contextual-rANS profile's fixed-memory dual-decoder fuzz boundary
   and permanent atomic regressions for every canonical truncation, saturated
   Format 2 frame extents, and nonzero contextual-rANS descriptor flags.
+- Added the explicit experimental `lzss-contextual-rans` selector to the
+  transactional CLI. It uses only the public C lifecycle and queried
+  three-region workspace while retaining the stable 42-profile inventory.
 - Added its fixed-memory dual-decoder fuzz boundary and permanent atomic
   regressions for canonical truncation, saturated Format 2 frame extents, and
   nonzero contextual Dynamic Range descriptor reserved data.

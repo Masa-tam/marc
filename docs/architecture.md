@@ -4371,3 +4371,14 @@ status is normal completion; abort is reserved for workspace-query,
 construction, accounting, progress, final-input, or call-budget invariant
 violations. Compile-smoke and deterministic regressions are distinct from a
 sanitizer campaign.
+
+### Contextual rANS CLI boundary
+
+The transactional CLI admits the second Format 2 profile only through the
+explicit experimental selector `lzss-contextual-rans`. It fixes a 65,536-byte
+frame and conservative decision/payload limits, then obtains primary,
+secondary, and aligned opaque-view requirements from the public C lifecycle
+separately for encode and decode. The adapter includes no private Format 2
+header and reproduces no typed-token, modeled-operation, or rANS-table layout.
+Existing temporary-file publication ensures that failed decoding leaves no
+requested destination or temporary artifact.

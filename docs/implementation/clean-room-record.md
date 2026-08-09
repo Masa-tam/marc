@@ -15845,3 +15845,31 @@ discarded and the reviewed seed retained.
   registered tests other than the separately audited exhaustive
   interoperability-schema loop pass with two CTest workers under both
   supported Windows compilers, within the 240-second ordinary-suite limit.
+
+## CR-0697: 2026-08-09 - Contextual rANS CLI selector
+
+- Authoring method: connected marc's established transactional file adapter to
+  the completed contextual-rANS public C lifecycle without importing private
+  Format 2 types or workspace arithmetic.
+- References used: AGENTS.md sections 3, 5, 10.5, 11.2, 12, 13, 14, and 15;
+  DD-667; IR-0445; TVG-0546; local public C API, CLI transaction policy, and
+  common CLI round-trip regression.
+- Known implementations intentionally not consulted: external command-line
+  compressors, wrapper libraries, workspace layouts, source code, encoded
+  streams, corpora, and test suites.
+- Independent decisions: expose only `lzss-contextual-rans`; use 65,536-byte
+  frames, `6F` decisions, `12F + 8` payload, and an 8-MiB internal policy;
+  obtain every actual region and alignment from the direction-specific public
+  query; and retain the existing temporary-output commit boundary.
+- Generated-code task description: add the explicit experimental selector,
+  public-only configuration/query/factory dispatch, usage and CLI docs, and a
+  generic nonempty, empty, overwrite, malformed, trailing-data, and cleanup
+  regression under both supported compilers.
+- Similarity review: selector dispatch and file transaction reuse marc's own
+  CLI structure; limits follow the independently specified contextual-rANS
+  frame bounds, and no external wrapper expression was reproduced.
+- Local validation: the focused transactional CLI regression passes under
+  MSVC 19.51.36231 and ClangCL 22.1.3 with Ninja. All 2,523 registered tests
+  other than the separately audited exhaustive interoperability-schema loop
+  pass with two CTest workers under both supported Windows compilers within
+  the 240-second ordinary-suite limit.
