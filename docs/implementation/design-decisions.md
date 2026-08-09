@@ -14197,3 +14197,25 @@ before timing and report encode/decode throughput, complete-stream ratio, peak
 caller-owned workspace, and both direction-specific three-region workspaces.
 The smoke test is descriptive evidence only; no performance threshold,
 stable-matrix entry, or interoperability archive is added.
+
+## DD-686: Schema 33 appends compact contextual rANS once
+
+- Date: 2026-08-10
+- Status: accepted
+
+Freeze schema 32's exact 43-entry order and append only
+`lzss-contextual-rans-compact` as archive 44. Set `schema_version` to 33 and
+`codec_set` to `marc-cli-v33`. Do not add fixed-descriptor
+`lzss-contextual-rans`, reorder a stable profile, or alter the shared 8,193-byte
+binary fixture. The archive remains experimental and does not enter the stable
+42-profile matrix.
+
+The verifier must accept schemas 1 through 33 with their exact historical
+codec sets and orders, enforce leaf names, sizes, hashes, unique codecs,
+foreign decode equality, and byte-identical local re-encoding, and reject a
+reordered schema-33 manifest. Compatibility testing must generate schema 33,
+derive schema 32 by deleting only archive 44 and changing only manifest
+identity, then traverse the unchanged schema-32-through-1 chain. Local
+admission is not external interoperability evidence; the four-direction
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang exchange remains a
+post-push requirement.

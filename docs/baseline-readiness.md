@@ -1427,3 +1427,16 @@ confirms the earlier descriptor projection. All 2,626 tests in the benchmark-
 enabled configuration pass under MSVC, including 42 stable and three
 experimental benchmark smokes. This is descriptive benchmark evidence, not
 stable-matrix or interoperability admission.
+
+### BR-0053
+
+The compact contextual-rANS profile is locally admitted as archive 44 in
+interoperability schema 33. The schema freezes schema 32's exact 43-entry
+order and appends only `lzss-contextual-rans-compact`; fixed-descriptor
+variant 2 remains outside the interoperability inventory. Local generation,
+exact-order and hash verification, decode/re-encode verification, reordered-
+manifest rejection, and reconstruction of every historical schema from 32
+through 1 pass. All 2,626 registered tests pass under MSVC in 73.84 seconds,
+including `marc_interoperability_schema_compatibility`. External four-
+direction exchange remains pending and is not claimed by this local
+admission.

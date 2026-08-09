@@ -16428,3 +16428,32 @@ discarded and the reviewed seed retained.
   limit in 73.23 seconds. A descriptive one-iteration README run records
   11,081 fixed-rANS bytes, 3,006 compact-rANS bytes, and 2,389 contextual-
   range bytes from 4,326 input bytes.
+
+## CR-0716: 2026-08-10 - Compact contextual rANS interoperability schema
+
+- Authoring method: extended marc's append-only interoperability inventory
+  by one explicitly named experimental profile after freezing every schema-32
+  entry and deriving all historical manifests from the new current schema.
+- References used: AGENTS.md sections 7, 10.5, 11.2, 14.3, 14.6, 15, and 16;
+  DD-650 and DD-675 through DD-686; IR-0464; TVG-0524 and TVG-0560 through
+  TVG-0565; marc's schema-32 generator, verifier, compatibility derivation,
+  compact CLI selector, and repository-owned canonical fixture.
+- Known implementations intentionally not consulted: external archive
+  formats, ANS implementations, source code, interoperability bundles,
+  corpora, manifests, test suites, and compatibility scripts.
+- Independent decisions: assign compact variant 3 archive position 44;
+  preserve all 43 schema-32 positions byte-for-byte; keep fixed variant 2
+  absent; use schema version 33 and codec set `marc-cli-v33`; and retain the
+  existing fixture bytes and hash rules.
+- Generated-code task description: generate and verify schema 33, reject a
+  reordered schema-33 manifest, derive and verify schemas 32 through 1, and
+  update current documentation without rewriting historical exchange
+  evidence.
+- Similarity review: the changes extend only marc's repository-owned schema
+  tables, PowerShell test flow, and independently specified CLI profile; no
+  external manifest layout, archive, vector, or test expression was used.
+- Local validation: focused schema compatibility passes under MSVC
+  19.51.36252 in 57.33 seconds. All 2,626 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second
+  per-test limit in 73.84 seconds. External four-direction exchange of the
+  44-archive bundle remains pending.

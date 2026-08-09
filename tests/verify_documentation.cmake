@@ -676,10 +676,16 @@ if(c_api_experimental_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API experimental profile inventory is stale")
 endif()
 string(FIND "${c_api_content}"
-    "`lzss-contextual-rans` profiles"
+    "fixed-descriptor `lzss-contextual-rans`"
     c_api_contextual_rans_profile_offset)
 if(c_api_contextual_rans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual rANS inventory is stale")
+endif()
+string(FIND "${c_api_content}"
+    "`lzss-contextual-rans-compact`"
+    c_api_compact_contextual_rans_name_offset)
+if(c_api_compact_contextual_rans_name_offset EQUAL -1)
+    message(FATAL_ERROR "C API compact contextual rANS name is stale")
 endif()
 string(FIND "${c_api_content}"
     "`marc_lzss_contextual_rans_compact_*`"

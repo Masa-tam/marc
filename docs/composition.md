@@ -1269,3 +1269,39 @@ benchmark adapter over its public C lifecycle. It verifies a complete byte-
 exact round trip before timing and reports ratio, directional throughput, all
 queried workspace regions, and peak caller reservation. The adapter remains
 separate from the stable 42-profile benchmark and interoperability inventories.
+
+### CP-0050
+
+The compact contextual-rANS variant has a distinct additive C lifecycle and
+shares the fixed/compact public completion matrix without aliasing either
+configuration type. Its variable descriptor changes wire identity to entropy
+variant 3 while retaining the same typed LZSS and context-model axes.
+
+### CP-0051
+
+The compact composition has a format-specific fixed-memory fuzz executable
+and shares permanent private/public malformed regressions with fixed variant
+2. Input, serialized frame, table, token, raw staging, publication, and call
+counts are capped before parsing.
+
+### CP-0052
+
+The compact composition is reachable as the explicit transactional
+`lzss-contextual-rans-compact` CLI selector. It obtains every directional
+workspace extent from its distinct public query, emits only entropy variant 3,
+and does not auto-detect the fixed variant.
+
+### CP-0053
+
+The compact composition has a dependency-free benchmark adapter with checked
+capacity `112 + 12N + 9,097K`, pre-timing exact round trip, complete-stream
+ratio, directional throughput, and three-region workspace reporting. It
+remains outside the stable benchmark matrix.
+
+### CP-0054
+
+Interoperability schema 33 appends `lzss-contextual-rans-compact` exactly once
+after the frozen 43-entry schema-32 order. Local admission requires exact
+generation, verification, byte-identical re-encoding, reordered-manifest
+rejection, and schemas 1 through 32 compatibility. Fixed variant 2 remains
+outside the bundle, and external four-direction exchange remains pending.

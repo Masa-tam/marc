@@ -7364,3 +7364,17 @@ and encoder/decoder primary, secondary, and views extents.
 Run the fixed `lzss-contextual-rans` smoke independently and retain its
 `112 + 12N + 9,124K` capacity and public symbol family. Treat measured speed
 and ratio as descriptive output, never as a pass threshold.
+
+### TVG-0565
+
+Generate interoperability schema 33 from the existing 8,193-byte binary
+fixture. Preserve all 43 schema-32 archives byte-for-byte and in exact order,
+then append `lzss-contextual-rans-compact.marc` as entry 44. Require manifest
+identity `33` / `marc-cli-v33`, exact file sizes and SHA-256 values, successful
+local decode equality, and byte-identical local re-encoding for every entry.
+
+Swap the first two schema-33 manifest records without changing files and
+require order rejection. Derive schema 32 by removing only archive 44 and
+changing the manifest identity to `32` / `marc-cli-v32`; verify it, then derive
+and verify each existing schema down through schema 1. Keep fixed
+`lzss-contextual-rans` absent from every interoperability inventory.

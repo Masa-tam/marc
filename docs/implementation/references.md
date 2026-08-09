@@ -4059,3 +4059,11 @@ TVG-0560 through TVG-0564, marc's dependency-free public-C benchmark adapter,
 compact workspace/profile bounds, and checked complete-stream arithmetic. No
 external benchmark harness, C API, ANS implementation, source code, archive,
 corpus, performance result, or test suite was consulted.
+
+### IR-0464
+
+Interoperability schema 33 uses only DD-650, DD-675 through DD-686, TVG-0524,
+TVG-0560 through TVG-0565, the frozen local schema-32 order, compact CLI
+selector, and repository-owned bundle generator, verifier, and compatibility
+scripts. No external archive, manifest, corpus, encoder, decoder, source code,
+test suite, or interoperability fixture was consulted.

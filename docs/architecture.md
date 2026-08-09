@@ -4221,6 +4221,14 @@ The recorded four-direction exchange at revision
 `e9cf0c7d649cf32c9bc3a49bf3db9150370db381` confirms identical schema-32
 bytes and decoding across the three x86-64 producers.
 
+Schema 33 preserves that complete 43-entry order and appends only the compact
+contextual-rANS CLI archive. The bundle identity becomes `marc-cli-v33`, while
+the archive remains the unchanged Format 2 entropy-variant-3 stream already
+selected by the compact public lifecycle. Verification treats all 44 archives
+as opaque bytes and derives schema 32 by removing only the final compact entry
+before traversing the historical compatibility chain. The fixed-descriptor
+variant-2 diagnostic is deliberately absent.
+
 ### Reserved Format 2 contextual rANS boundary
 
 The next entropy-backend experiment retains typed LZSS variant 2 and

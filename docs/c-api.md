@@ -4,9 +4,10 @@ The public C ABI is declared by `<marc/marc.h>`. It exposes the same forty-two
 validated baseline profiles as the command-line tool: checksum-raw, six
 standalone dictionary profiles, five standalone entropy profiles, and the
 complete six-dictionary by five-entropy composition matrix. It additionally
-exposes the experimental Format 2 `lzss-contextual-dynamic-range` and
-`lzss-contextual-rans` profiles. Both have explicit experimental command-line
-options; neither is part of the baseline 42-profile matrix.
+exposes the experimental Format 2 `lzss-contextual-dynamic-range`,
+fixed-descriptor `lzss-contextual-rans`, and compact-descriptor
+`lzss-contextual-rans-compact` profiles. All three have explicit experimental
+command-line options; none is part of the baseline 42-profile matrix.
 Encoding uses a known input size, and every transform uses bounded caller-owned
 workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears

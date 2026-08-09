@@ -6091,3 +6091,11 @@ Its configuration and workspace functions do not serialize new fields: they
 construct the same 112-byte stream header and variable compact frames defined
 above. The fixed `marc_lzss_contextual_rans_*` family continues to select
 variant 2 and cannot decode or emit this representation.
+
+The `lzss-contextual-rans-compact` CLI and benchmark selectors change no byte
+of this representation; they only fix caller-side limits and select the
+compact public lifecycle. Interoperability schema 33 appends the resulting
+archive once after the frozen schema-32 order. Its manifest version and codec
+set change bundle inventory only and do not alter a stream header, frame,
+descriptor, payload, final state, or padding byte. Fixed-descriptor variant 2
+is not included in schema 33.
