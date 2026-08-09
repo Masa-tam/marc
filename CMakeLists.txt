@@ -809,6 +809,28 @@ if(MARC_BUILD_FUZZERS)
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_contextual_rans_stream
         PRIVATE marc::static)
+    add_executable(marc_fuzz_lzss_contextual_rans_compact_stream
+        fuzz/lzss_contextual_rans_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_contextual_rans_compact_stream
+        PRIVATE cxx_std_20)
+    target_compile_definitions(
+        marc_fuzz_lzss_contextual_rans_compact_stream
+        PRIVATE MARC_CONTEXTUAL_RANS_COMPACT_FUZZ=1)
+    target_include_directories(
+        marc_fuzz_lzss_contextual_rans_compact_stream
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(
+        marc_fuzz_lzss_contextual_rans_compact_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined
+        -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(
+        marc_fuzz_lzss_contextual_rans_compact_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_contextual_rans_compact_stream
+        PRIVATE marc::static)
     add_executable(marc_fuzz_lzss_adaptive_huffman_stream
         fuzz/lzss_adaptive_huffman_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_adaptive_huffman_stream
@@ -1874,6 +1896,29 @@ if(MARC_BUILD_TESTS)
     else()
         target_compile_options(
             marc_lzss_contextual_rans_fuzz_compile_smoke
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    add_library(marc_lzss_contextual_rans_compact_fuzz_compile_smoke OBJECT
+        fuzz/lzss_contextual_rans_stream_fuzz.cpp)
+    target_compile_features(
+        marc_lzss_contextual_rans_compact_fuzz_compile_smoke
+        PRIVATE cxx_std_20)
+    target_compile_definitions(
+        marc_lzss_contextual_rans_compact_fuzz_compile_smoke
+        PRIVATE MARC_CONTEXTUAL_RANS_COMPACT_FUZZ=1)
+    target_include_directories(
+        marc_lzss_contextual_rans_compact_fuzz_compile_smoke
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(
+            marc_lzss_contextual_rans_compact_fuzz_compile_smoke
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(
+            marc_lzss_contextual_rans_compact_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 

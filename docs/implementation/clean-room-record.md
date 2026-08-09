@@ -16339,3 +16339,34 @@ discarded and the reviewed seed retained.
   MSVC 19.51.36252. All 2,577 registered tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
   limit in 69.81 seconds.
+
+## CR-0713: 2026-08-10 - Compact contextual rANS fixed-memory fuzz boundary
+
+- Authoring method: generalized marc's existing contextual-rANS fuzz harness
+  and permanent malformed regressions through an explicit compile-time or
+  typed representation selection after specifying identical resource caps.
+- References used: AGENTS.md sections 5.5, 10.5, 12, 14.4, and 15; DD-675
+  through DD-683; IR-0461; TVG-0556 and TVG-0560 through TVG-0562; marc's
+  fixed dual-path harness, compact complete-frame decoder, compact public
+  lifecycle, and local malformed regression vectors.
+- Known implementations intentionally not consulted: external fuzzer
+  harnesses, ANS implementations, source code, archives, corpora, malformed
+  samples, test suites, dictionaries, and optimization descriptions.
+- Independent decisions: keep fixed and compact fuzz executables format-
+  specific; share only bounded driving logic; derive serialized capacity from
+  the selected descriptor ceiling; and parameterize ordinary dual-path
+  regressions without aliasing either public configuration type.
+- Generated-code task description: compile-smoke both harness variants under
+  MSVC, prove atomic private/public rejection of every canonical truncation,
+  saturated frame extents, and nonzero descriptor flags, then build compact
+  variant 3 with ClangCL ASan/UBSan/libFuzzer and execute exactly 1,000 bounded
+  cases.
+- Similarity review: the changes factor only repository-owned harness and test
+  structure and call only marc's independently specified variant-3 parser,
+  decoder, and ABI; no external fuzz flow or malformed input was used.
+- Local validation: both compile-smoke objects and all six fixed/compact
+  malformed regressions pass under MSVC 19.51.36252. All 2,580 registered
+  tests, including `marc_interoperability_schema_compatibility`, pass with a
+  240-second per-test limit in 174.24 seconds. Clang 22.1.3 builds the compact
+  ASan/UBSan/libFuzzer target; its 1,000-run finite smoke completes without a
+  crash, hang, or sanitizer finding and peaks at 44 MiB RSS.

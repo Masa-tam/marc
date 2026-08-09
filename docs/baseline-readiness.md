@@ -1389,3 +1389,16 @@ truncated payload, or trailing byte at the fourth frame publishes only the
 three preceding frames. All 2,577 registered tests, including interoperability
 schema compatibility, pass under MSVC. This is completion evidence, not CLI,
 compact-fuzz, benchmark, stable-matrix, or interoperability admission.
+
+### BR-0050
+
+The compact contextual-rANS Format 2 decoder now has its own compile-time
+selected fixed-memory dual-path fuzz executable. It caps input, every byte and
+native table/token workspace, raw publication, and process calls before
+driving the variant-3 private complete-frame decoder and compact public C
+decoder. The shared permanent matrix requires both variants to reject every
+canonical truncation, saturated frame extents, and nonzero descriptor flags
+without publication. MSVC compile-smoke and all 2,580 ordinary tests pass; a
+ClangCL ASan/UBSan/libFuzzer smoke completed 1,000 bounded cases without a
+crash, hang, or sanitizer finding at 44 MiB peak RSS. This is local fuzz
+evidence, not CLI, benchmark, stable-matrix, or interoperability admission.

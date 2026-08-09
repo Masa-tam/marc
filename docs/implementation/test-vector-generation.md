@@ -7321,3 +7321,20 @@ decoder to publish exactly the first 192 raw bytes, leave the final output
 sentinel unchanged, and repeat the same stable terminal error without further
 consumption or production. Repeated calls after successful finish must return
 stable EndOfStream.
+
+### TVG-0562
+
+Compile the contextual-rANS fixed-memory decoder harness once for fixed
+variant 2 and once for compact variant 3. Bound arbitrary input to 32,768
+bytes, raw publication to 4,096 bytes, one decoded frame to 1,024 bytes,
+decisions to 6,144, payload to 12,296 bytes, and process calls to the sum of
+the bounded input/output extents plus 32. Before construction, require every
+public workspace requirement to fit the aligned static arrays.
+
+For both representations, generate one canonical five-byte stream and feed
+every strict prefix to the private complete-frame and public streaming paths.
+Independently saturate all frame extent fields and set descriptor flags
+nonzero. Require no private raw publication, no public output publication, and
+a stable public malformed-stream result. Build the compact target with
+ASan/UBSan/libFuzzer and run exactly 1,000 bounded cases with maximum input
+8,192, five-second per-case timeout, and 512 MiB RSS limit.

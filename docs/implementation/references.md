@@ -4034,3 +4034,12 @@ DD-682, TVG-0560 and TVG-0561, marc's existing fixed contextual-rANS
 completion matrix, the compact ABI-1 lifecycle, and the core process contract.
 No external completion suite, C API, ANS implementation, source code, archive,
 corpus, malformed sample, or test suite was consulted.
+
+### IR-0461
+
+The compact contextual-rANS fuzz boundary uses only DD-675 through DD-683,
+TVG-0556, TVG-0560 through TVG-0562, marc's existing fixed-memory
+contextual-rANS dual-path harness, compact complete-frame decoder, compact
+ABI-1 lifecycle, and repository-owned canonical malformed regressions. No
+external fuzzer harness, ANS implementation, source code, archive, corpus,
+malformed sample, or test suite was consulted.

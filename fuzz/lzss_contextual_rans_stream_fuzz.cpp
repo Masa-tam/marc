@@ -3,7 +3,9 @@
 #include "core/status.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_rans_format.hpp"
+#include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/rans_decode_table.hpp"
+#include "frame/lzss_contextual_rans_compact_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_format.hpp"
 
@@ -19,6 +21,12 @@ namespace {
 using RansDecodeEntry = marc::entropy::internal::RansDecodeEntry;
 using Token = marc::dictionary::internal::LzssTypedToken;
 
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+using PublicConfig = marc_lzss_contextual_rans_compact_config;
+#else
+using PublicConfig = marc_lzss_contextual_rans_config;
+#endif
+
 constexpr std::size_t maximum_fuzz_input = 32768;
 constexpr std::size_t maximum_total_output = 4096;
 constexpr std::size_t maximum_frame = 1024;
@@ -26,7 +34,11 @@ constexpr std::size_t maximum_decisions = maximum_frame * 6;
 constexpr std::size_t maximum_payload = maximum_frame * 12 + 8;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::lzss_contextual_rans_frame_header_size
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    + marc::entropy::internal::contextual_rans_compact_max_descriptor_size
+#else
     + marc::entropy::internal::contextual_rans_descriptor_size
+#endif
     + maximum_payload;
 constexpr std::size_t table_entries =
     marc::entropy::internal::contextual_rans_decode_table_entries;
@@ -63,6 +75,77 @@ thread_local FuzzWorkspace workspace{};
     return limits;
 }
 
+[[nodiscard]] bool parse_stream_header(
+    const std::span<const std::byte> input,
+    const marc::core::DecoderLimits& limits,
+    marc::frame::internal::LzssContextualRansStreamHeader& stream,
+    std::size_t& consumed) noexcept {
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    return marc::frame::internal::
+               parse_lzss_contextual_rans_compact_stream_header(
+                   input, limits, stream, consumed)
+        == marc::frame::internal::LzssContextualRansStreamHeaderError::none;
+#else
+    return marc::frame::internal::parse_lzss_contextual_rans_stream_header(
+               input, limits, stream, consumed)
+        == marc::frame::internal::LzssContextualRansStreamHeaderError::none;
+#endif
+}
+
+void decode_complete_frame(
+    const std::span<const std::byte> input,
+    const marc::frame::internal::LzssContextualRansFrameValidationContext&
+        context) noexcept {
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    static_cast<void>(
+        marc::frame::internal::decode_lzss_contextual_rans_compact_frame(
+            input, context, workspace.private_tables,
+            workspace.private_tokens, workspace.private_raw));
+#else
+    static_cast<void>(marc::frame::internal::decode_lzss_contextual_rans_frame(
+        input, context, workspace.private_tables, workspace.private_tokens,
+        workspace.private_raw));
+#endif
+}
+
+[[nodiscard]] marc_status initialize_public_config(
+    PublicConfig& config) noexcept {
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    return marc_lzss_contextual_rans_compact_config_init(
+        MARC_DIRECTION_DECODE, &config);
+#else
+    return marc_lzss_contextual_rans_config_init(
+        MARC_DIRECTION_DECODE, &config);
+#endif
+}
+
+[[nodiscard]] marc_status public_workspace_requirements(
+    const PublicConfig& config,
+    marc_workspace_requirements& requirements) noexcept {
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    return marc_lzss_contextual_rans_compact_workspace_requirements(
+        &config, &requirements);
+#else
+    return marc_lzss_contextual_rans_workspace_requirements(
+        &config, &requirements);
+#endif
+}
+
+[[nodiscard]] marc_status create_public_decoder(
+    const PublicConfig& config,
+    const marc_buffer primary,
+    const marc_buffer secondary,
+    const marc_buffer views,
+    marc_transform** decoder) noexcept {
+#if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
+    return marc_lzss_contextual_rans_compact_create(
+        &config, primary, secondary, views, decoder);
+#else
+    return marc_lzss_contextual_rans_create(
+        &config, primary, secondary, views, decoder);
+#endif
+}
+
 void exercise_complete_frame(const std::span<const std::byte> input) noexcept {
     if (input.size()
         < marc::frame::internal::lzss_contextual_rans_stream_header_size) {
@@ -71,26 +154,20 @@ void exercise_complete_frame(const std::span<const std::byte> input) noexcept {
     const auto limits = fuzz_limits();
     marc::frame::internal::LzssContextualRansStreamHeader stream{};
     std::size_t consumed{};
-    if (marc::frame::internal::parse_lzss_contextual_rans_stream_header(
-            input, limits, stream, consumed)
-            != marc::frame::internal::LzssContextualRansStreamHeaderError::none
+    if (!parse_stream_header(input, limits, stream, consumed)
         || consumed
             != marc::frame::internal::lzss_contextual_rans_stream_header_size) {
         return;
     }
     const marc::frame::internal::LzssContextualRansFrameValidationContext
         context{stream, limits, 0, 0};
-    static_cast<void>(marc::frame::internal::decode_lzss_contextual_rans_frame(
-        input.subspan(consumed), context, workspace.private_tables,
-        workspace.private_tokens, workspace.private_raw));
+    decode_complete_frame(input.subspan(consumed), context);
 }
 
 void exercise_public_streaming(
     const std::span<const std::byte> input) noexcept {
-    marc_lzss_contextual_rans_config config{};
-    if (marc_lzss_contextual_rans_config_init(
-            MARC_DIRECTION_DECODE, &config)
-        != MARC_STATUS_OK) {
+    PublicConfig config{};
+    if (initialize_public_config(config) != MARC_STATUS_OK) {
         std::abort();
     }
     config.max_total_output_size = maximum_total_output;
@@ -103,9 +180,7 @@ void exercise_public_streaming(
     config.max_entropy_table_entries = table_entries;
 
     marc_workspace_requirements requirements{};
-    if (marc_lzss_contextual_rans_workspace_requirements(
-            &config, &requirements)
-            != MARC_STATUS_OK
+    if (public_workspace_requirements(config, requirements) != MARC_STATUS_OK
         || requirements.primary_bytes > workspace.primary.size()
         || requirements.secondary_bytes > workspace.secondary.size()
         || requirements.views_bytes > workspace.views.size()
@@ -114,8 +189,8 @@ void exercise_public_streaming(
     }
 
     marc_transform* decoder{};
-    if (marc_lzss_contextual_rans_create(
-            &config,
+    if (create_public_decoder(
+            config,
             {workspace.primary.data(), requirements.primary_bytes},
             {workspace.secondary.data(), requirements.secondary_bytes},
             {workspace.views.data(), requirements.views_bytes}, &decoder)

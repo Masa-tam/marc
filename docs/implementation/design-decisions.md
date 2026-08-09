@@ -14131,3 +14131,27 @@ fourth frame. Require fixed streams to identify entropy variant 2 and compact
 streams to identify variant 3. This is public completion evidence only; it
 does not add a CLI selector, benchmark, compact fuzz target, or
 interoperability archive.
+
+## DD-683: Compact contextual rANS has a fixed-memory dual-path fuzz boundary
+
+- Date: 2026-08-10
+- Status: accepted
+
+Compile the repository-owned contextual-rANS decoder harness as two distinct
+fuzzer executables. The fixed executable selects entropy variant 2; the new
+compact executable selects variant 3 at compile time. Both feed the same
+bounded input independently to the private complete-frame decoder after
+strict stream-header acceptance and to the corresponding public streaming C
+decoder. Do not auto-detect or cross-dispatch representations inside either
+target.
+
+Retain the 32,768-byte input cap, 4,096-byte aggregate output cap, 1,024-byte
+frame cap, exact table/token/raw/serialized workspace arrays, and finite call
+budget. Derive the compact serialized extent from its 9,025-byte descriptor
+ceiling and require its public workspace query to fit every static region
+before construction. Abort only on an internal contract violation; malformed
+input is an ordinary terminal outcome. Generalize the permanent truncation,
+saturated-length, and nonzero-descriptor-flags regressions over both public and
+private representations. This milestone proves target construction and a
+bounded sanitizer smoke, not CLI, benchmark, stable-matrix, or
+interoperability admission.
