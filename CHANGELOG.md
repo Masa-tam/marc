@@ -92,6 +92,10 @@ format versions, and C ABI versions are independent namespaces.
   payload-derived bounds, and decode-table workspace admission. The shared
   31-context schema now belongs to `LzssFieldContext` rather than retaining
   Dynamic Range compatibility aliases.
+- Added the private contextual rANS fixed decode-table builder. It validates
+  and privately snapshots the complete descriptor before transactionally
+  filling caller-owned storage, uses one stable 4,096-slot region per context,
+  and publishes no table view on prewrite failure.
 
 ## 0.1.3 - 2026-08-08
 

@@ -3794,3 +3794,11 @@ variant-2 descriptor, marc's explicit little-endian helpers, checked arithmetic,
 decoder limits, and the repository-owned `LzssFieldContext` schema. No external
 ANS descriptor parser, table validator, serializer, source code, malformed
 corpus, encoded stream, or test suite was consulted.
+
+### IR-0432
+
+The contextual rANS decode-table builder uses only DD-654, the repository's
+accepted contextual descriptor, its existing scalar rANS decode-entry shape,
+caller-owned workspace conventions, and fixed `LzssFieldContext` schema. No
+external ANS table builder, contextual implementation, source code, lookup
+layout, malformed corpus, encoded stream, or test suite was consulted.

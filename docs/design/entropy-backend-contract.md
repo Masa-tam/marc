@@ -195,6 +195,16 @@ The alphabet and flattened-offset constants are owned by the shared
 `LzssFieldContext` schema; Dynamic Range and rANS consume that schema directly
 without backend-named compatibility aliases.
 
+The private decode-table boundary now materializes the reference layout. Its
+caller supplies at least 126,976 `RansDecodeEntry` elements. Context `c` always
+owns entries `[c * 4096, (c + 1) * 4096)`, including inactive contexts, whose
+entries remain zero. Each active range entry records the selected symbol and
+that symbol's cumulative start and frequency. The builder validates and takes
+a private copy of all descriptor frequencies before touching output, so a
+malformed descriptor, insufficient table limit, insufficient output, or
+descriptor/output alias cannot expose a partial table. The completed span and
+31 active-context flags are published together only after construction.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

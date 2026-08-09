@@ -13503,3 +13503,21 @@ context-owned names directly and remove the backend-named compatibility
 aliases rather than preserving ambiguous internal terminology during
 pre-release development. This adds no rANS state decoder, table builder,
 encoder, frame integration, public API, or format change.
+
+## DD-654: Contextual rANS decode tables are fixed and transactional
+
+- Date: 2026-08-09
+- Status: accepted
+
+Materialize every accepted contextual rANS descriptor into a caller-owned
+31-by-4,096 `RansDecodeEntry` array. Give context `c` the fixed region starting
+at `c * 4096`; fill inactive regions with zero and active regions with the
+canonical cumulative start, normalized frequency, and symbol. This favors a
+simple checked state-decoder lookup over a compact reference allocation.
+
+Validate the descriptor and complete table charge, check caller capacity, and
+copy all 4,518 frequencies before any output write. Publish the complete table
+span and active-context flags only after construction, leaving prior storage
+and views unchanged on every prewrite failure. This makes descriptor/output
+aliasing harmless and adds no state decoder, frame integration, public API, or
+format change.

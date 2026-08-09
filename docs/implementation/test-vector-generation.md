@@ -6885,3 +6885,18 @@ Compile after deleting every Dynamic Range compatibility alias for the shared
 context count, alphabets, offsets, and frequency-entry extent. Run the existing
 Dynamic Range decoder, encoder, and `LzssFieldContext` suites together with the
 new descriptor suite under both supported Windows compilers.
+
+### TVG-0533
+
+Build fixed contextual rANS tables from TVG-0531. Require contexts 0 and 3 to
+be active, every one of their 4,096 slots to select symbols 0 and 65
+respectively with frequency 4,096, and an inactive context's complete region
+to remain zero. Replace context 0 with frequencies 2,731 and 1,365 and require
+the symbol transition exactly between slots 2,730 and 2,731, with cumulative
+start 2,731 for symbol 1.
+
+Fill caller storage and a preexisting published view with sentinels. Require
+an invalid 4,095-total slice, a table-entry limit one below 126,976, and an
+output span one entry short to preserve all sentinels and the prior view.
+Provide three surplus entries on success and require them to remain unchanged,
+proving that only the fixed charged extent is written.

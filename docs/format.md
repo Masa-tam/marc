@@ -5868,3 +5868,11 @@ They validate every frequency slice as either zero or exactly 4,096, enforce
 decode-table ceiling and descriptor-plus-payload buffering before publication,
 and leave caller output unchanged on failure. This milestone does not decode
 the rANS state or admit the reserved profile.
+
+The private reference table builder now realizes that charged ceiling as 31
+fixed consecutive 4,096-entry regions in caller-owned storage. Inactive
+regions contain zero entries; active entries store the canonical numeric
+symbol range's cumulative start and frequency. Descriptor validation and a
+private frequency snapshot precede every output write, and the completed table
+view is published atomically. This remains an internal parsing structure: no
+rANS state is decoded and the reserved profile is not publicly admitted.

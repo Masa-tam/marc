@@ -4242,3 +4242,12 @@ validation. The fixed context alphabets and flattened offsets live in the
 context layer and are referenced directly by both entropy backends. This
 prevents Dynamic Range terminology from becoming an accidental owner or
 compatibility surface for a context-model property.
+
+The next boundary expands an accepted descriptor into caller-owned reference
+decode tables without allocating or decoding state. Every context retains a
+stable 4,096-entry address range, so later state decoding can select a table by
+checked context ID alone. Validation, capacity admission, and a private
+frequency snapshot occur before output is touched; the table span and active
+flags become observable only after all 126,976 entries are initialized. This
+preserves frame-atomic composition even if descriptor and workspace storage
+overlap.

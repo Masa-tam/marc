@@ -15490,3 +15490,27 @@ discarded and the reviewed seed retained.
   Dynamic Range, and field-context selection and the wider 100-test Format 2
   selection pass under both compilers. The complete 2,488-test suite then
   passes under both Release configurations.
+
+## CR-0684: 2026-08-09 - Contextual rANS fixed decode tables
+
+- Authoring method: expanded the locally accepted descriptor into marc's
+  existing rANS decode-entry representation using caller-owned fixed storage
+  and transactional publication.
+- References used: AGENTS.md sections 5.5, 10.5, 12, 14, and 15; DD-654;
+  IR-0432; TVG-0533; the local contextual rANS descriptor and scalar rANS
+  decode-table record.
+- Known implementations intentionally not consulted: external contextual ANS
+  table builders, lookup layouts, source code, malformed corpora, encoded
+  streams, and test suites.
+- Independent decisions: reserve one stable 4,096-entry region per context;
+  zero inactive regions; snapshot all frequencies before writing; and publish
+  the span and active flags together only after complete construction.
+- Generated-code task description: add a bounded private table builder and
+  tests for canonical ranges, inactive contexts, prewrite failures, staged
+  descriptor independence, and exact caller-owned output extent.
+- Similarity review: fixed indexing, cumulative range filling, error staging,
+  and sentinels derive solely from marc's existing local contracts.
+- Local validation: all ten focused contextual format and decode-table tests
+  pass under MSVC and ClangCL. The complete 2,492-test Release suite, including
+  documentation layout and interoperability-schema compatibility, also passes
+  under both supported Windows compilers.
