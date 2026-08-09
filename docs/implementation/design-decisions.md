@@ -13713,3 +13713,26 @@ alignment explicitly. Partition functions recompute every layout field, reject
 forged requirements, insufficient or misaligned storage, and publish views only
 after complete validation. This adds no public C API, factory, CLI profile,
 benchmark, fuzz target, archive, or format change.
+
+## DD-664: Contextual rANS receives a distinct additive ABI-1 lifecycle
+
+- Date: 2026-08-09
+- Status: accepted
+
+Expose the private DD-661 through DD-663 lifecycle as the experimental
+`marc_lzss_contextual_rans_*` C family. Use a distinct size-tagged configuration
+that carries known size, frame and LZSS parameters, output/frame/block/payload/
+buffer/distance/match limits, and entropy-table entries. Do not reuse or alias
+the contextual Dynamic Range configuration, names, or factory.
+
+The requirements query maps encoder raw, complete-frame, and token-view
+requirements to primary, secondary, and aligned opaque views respectively.
+For decode it maps complete serialized frame, atomic raw frame, and fixed-table
+plus token views to those same three public regions. The factory repeats the
+query, validates exact used-prefix capacities, alignment, pairwise non-overlap,
+and recomputed private partitions before allocating the small transform handle.
+Failure leaves the output handle null. Prove the header from a C11 translation
+unit, requirements-driven multi-frame round trip, Format 2 rANS identity,
+direction-specific sizing, and all public validation failures. This changes no
+existing function, structure, ABI version, stream byte, CLI selector, benchmark,
+fuzz target, archive, or interoperability schema.

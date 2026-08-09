@@ -664,6 +664,12 @@ string(FIND "${c_api_content}"
 if(c_api_experimental_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API experimental profile inventory is stale")
 endif()
+string(FIND "${c_api_content}"
+    "`lzss-contextual-rans` profiles"
+    c_api_contextual_rans_profile_offset)
+if(c_api_contextual_rans_profile_offset EQUAL -1)
+    message(FATAL_ERROR "C API contextual rANS inventory is stale")
+endif()
 foreach(prohibited_c_api_history IN ITEMS
         "completion matrix"
         "Interoperability schema"
@@ -680,19 +686,19 @@ endforeach()
 file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
     REGEX "^MARC_API marc_status marc_.*_config_init\\(")
 list(LENGTH c_api_config_initializers c_api_profile_count)
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 1")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 2")
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
-        "${cli_profile_count} CLI profiles plus one experimental profile")
+        "${cli_profile_count} CLI profiles plus two experimental profiles")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
-    "marc_lzss_contextual_dynamic_range_config_init")
+    "marc_lzss_contextual_(dynamic_range|rans)_config_init")
 list(LENGTH c_api_config_initializers c_api_experimental_profile_count)
-if(NOT c_api_experimental_profile_count EQUAL 1)
+if(NOT c_api_experimental_profile_count EQUAL 2)
     message(FATAL_ERROR
-        "C API must contain exactly one contextual LZSS experimental "
-        "initializer")
+        "C API must contain exactly two contextual LZSS experimental "
+        "initializers")
 endif()
 
 set(releasing_document "${source_dir}/docs/releasing.md")

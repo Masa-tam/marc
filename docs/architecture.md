@@ -4334,3 +4334,10 @@ the fixed rANS tables followed by an explicitly aligned typed-token array; the
 partitioner recomputes this offset rather than trusting caller metadata. Both
 directions keep raw and serialized frames as separate byte regions and reject
 layout arithmetic or aggregate limits before publishing requirements.
+
+The contextual-rANS C boundary is a distinct additive ABI-1 lifecycle. Its
+requirements query assigns raw/serialized byte staging and opaque typed views
+according to immutable direction, while the factory validates the exact three
+used prefixes and recomputes their private partitions. Neither
+`LzssTypedToken` nor `RansDecodeEntry` crosses the public header, and no
+contextual Dynamic Range name serves as a compatibility alias.

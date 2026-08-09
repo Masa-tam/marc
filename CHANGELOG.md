@@ -131,6 +131,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added conservative contextual rANS encoder/decoder workspace calculators and
   aligned opaque-view partitioners for typed-token and fixed decode-table
   storage, with checked layout and aggregate admission.
+- Added the experimental ABI-1 `marc_lzss_contextual_rans_*` requirements and
+  factory lifecycle. Its distinct C configuration exposes no native token or
+  rANS table layout and constructs both streaming directions from three
+  caller-owned regions.
 
 ## 0.1.3 - 2026-08-08
 

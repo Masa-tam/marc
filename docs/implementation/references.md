@@ -3880,3 +3880,11 @@ repository-defined typed-token and fixed decode-entry layouts, documented rANS
 payload bounds, checked arithmetic, decoder limits, and local opaque-view
 partition conventions. No external allocator layout, workspace calculator,
 ABI binding, source code, benchmark, corpus, or test suite was consulted.
+
+### IR-0442
+
+The contextual rANS C lifecycle uses only DD-664, marc's existing ABI-1 handle
+contract, workspace requirement record, buffer-prefix validation helpers, and
+the independently implemented profile and streaming transforms. No external C
+binding, ABI wrapper, allocator API, source code, encoded stream, corpus, or
+test suite was consulted.

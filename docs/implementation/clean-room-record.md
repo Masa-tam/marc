@@ -15757,3 +15757,33 @@ discarded and the reviewed seed retained.
   The complete 2,559-test Release suite, including documentation layout and
   interoperability-schema compatibility, also passes under both supported
   Windows compilers.
+
+## CR-0694: 2026-08-09 - Contextual rANS C ABI lifecycle
+
+- Authoring method: wrapped marc's private contextual-rANS profile calculator
+  and streaming transforms with the repository's existing ABI-1 opaque handle,
+  caller-owned workspace, and status conventions.
+- References used: AGENTS.md sections 3, 4, 5, 10.5, 11.2, 12, 13, 14, and 15;
+  DD-664; IR-0442; TVG-0543; local contextual-rANS workspace profile and the
+  independently designed contextual dynamic-range C lifecycle.
+- Known implementations intentionally not consulted: external C compression
+  APIs, ANS bindings, source code, ABI layouts, allocator conventions, encoded
+  streams, corpora, and test suites.
+- Independent decisions: use a distinct configuration structure without a
+  compatibility alias; expose requirements before construction; preserve the
+  three opaque workspace regions; recompute and validate all partitions in the
+  factory; and publish no typed-token or rANS-table representation.
+- Generated-code task description: add initializer, requirements query, and
+  encoder/decoder factory functions with a pure-C known-size round trip, exact
+  Format 2 identity checks, and capacity, alignment, alias, reserved-field,
+  structure-size, ABI-version, direction, and null rejection.
+- Similarity review: public names and lifecycle follow marc's own ABI-1
+  vocabulary; field order, workspace mapping, error translation, and tests were
+  derived solely from repository-local profile and transform contracts.
+- Local validation: the dedicated C11 lifecycle test and documentation-layout
+  test pass under MSVC 19.51.36252 and ClangCL 22.1.3 with Ninja. All 2,516
+  registered tests other than the exhaustive schema loop pass in the clean
+  MSVC tree. The current 43-archive interoperability schema
+  and each historical schema down through 28 archives verify successfully;
+  the exhaustive historical loop exceeds this sandbox's 180-second CTest and
+  600-second direct-execution limits without reporting a content failure.

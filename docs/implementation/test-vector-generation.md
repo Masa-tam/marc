@@ -7051,3 +7051,20 @@ reject forged offsets/counts/sizes/alignment, short storage, and a deliberately
 misaligned base while leaving all views empty. Use only returned requirements
 and views to construct both streaming directions and round-trip a multi-frame
 mixed raw sequence.
+
+### TVG-0543
+
+Compile a C11 client against `marc/marc.h`. Initialize encode configuration and
+require ABI version 1, a 65,536-byte default frame, the typed-LZSS defaults, and
+the default hard limits. For a five-byte `ABABX` stream with two-byte frames,
+query all three workspaces, create the encoder exclusively from those extents,
+and require the Format 2 prefix with dictionary variant 2, rANS entropy variant
+2, and context variant 1. Reinitialize for decode, query its larger fixed-table
+views, create the decoder, and require exact round trip.
+
+Reject short primary, secondary, and views prefixes independently; overlapping
+regions; misaligned views; null transform output; nonzero reserved fields;
+wrong struct size or ABI version; unknown direction; null configuration,
+requirements, and initializer output. Require every failed factory call to
+leave the handle null. Build and run the same C test against the selected
+static/shared library target on both supported Windows compiler configurations.
