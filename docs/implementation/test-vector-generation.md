@@ -7229,3 +7229,18 @@ Require the variant-2 parser to reject this header and the compact parser to
 reject the variant-2 header. For every strict prefix, invalid parameters, and
 insufficient limits, preserve the caller header, consumed count, and serialized
 output sentinels.
+
+### TVG-0556
+
+Concatenate TVG-0555's compact stream header with two copies of TVG-0554's
+98-byte Literal `A` frame, using sequences zero and one, frame size one, and
+original size two. Feed every serialized and raw byte through one-byte input
+and output spans and require `AA`, exact input consumption, and stable repeated
+EndOfStream.
+
+Independently corrupt the second compact descriptor, truncate the final frame,
+append a trailing byte, provide each workspace one element short, exceed the
+aggregate-buffer limit, request reset or an unknown flag, alias workspaces or
+public output, and end with zero output capacity. Require only the first frame
+to publish before later corruption and require every terminal error to remain
+sticky.

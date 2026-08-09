@@ -3985,3 +3985,12 @@ through DD-676, TVG-0549 through TVG-0555, the normative Format 2 header
 layout, and marc's existing contextual-rANS header value validation and
 transactional serialization. No external stream parser, container format,
 source code, archive, corpus, or test suite was consulted.
+
+### IR-0455
+
+The compact contextual-rANS streaming decoder uses only DD-675 through DD-677,
+TVG-0554 through TVG-0556, marc's variant-3 stream-header parser, compact
+complete-frame decoder, existing variant-2 streaming lifecycle, core transform
+contract, checked arithmetic, and caller-workspace policy. No external stream
+decoder, ANS implementation, source code, archive, corpus, malformed sample,
+or test suite was consulted.

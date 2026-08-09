@@ -16143,3 +16143,36 @@ discarded and the reviewed seed retained.
   limit in 73.57 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
   whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
   finding and peaked at 43 MiB RSS.
+
+## CR-0707: 2026-08-09 - Compact contextual rANS streaming decoder
+
+- Authoring method: specified the variable-frame streaming lifecycle first,
+  then reused marc's established contextual-rANS state machine behind an
+  explicit fixed/compact representation mode and exposed a distinct compact
+  transform type.
+- References used: AGENTS.md sections 3.3, 3.4, 4, 5, 7, 10.5, 11.2, 12,
+  14, and 15; DD-675 through DD-677; IR-0455; TVG-0554 through TVG-0556; and
+  the repository's compact stream parser, compact complete-frame decoder,
+  variant-2 streaming lifecycle, checked arithmetic, overlap checks, and core
+  transform result validation.
+- Known implementations intentionally not consulted: external streaming
+  decoders, ANS implementations, source code, archives, corpora, malformed
+  samples, test suites, and optimization descriptions.
+- Independent decisions: retain distinct transform types; share one lifecycle
+  state machine; derive buffered extent from the validated descriptor size;
+  drain each private raw frame before reading another; and preserve sticky end
+  and error state across caller starvation.
+- Generated-code task description: decode two compact Literal frames through
+  one-byte input/output spans, preserve only the first frame before later
+  corruption, reject every short or aliased workspace, truncation, trailing
+  byte, fixed identity, reset, and unknown flag, and preserve EndInput across a
+  zero-capacity drain.
+- Similarity review: lifecycle sharing and the compact policy branch use only
+  marc's existing private state machine and newly specified variant-3 extent;
+  no external control flow or representation was used.
+- Local validation: all 14 focused fixed and compact streaming-decoder tests
+  pass under MSVC 19.51.36252. All 2,557 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 71.92 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
+  whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
+  finding and peaked at 43 MiB RSS.

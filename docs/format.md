@@ -6053,3 +6053,12 @@ specified entropy-variant-3 identity. They otherwise retain every common
 one another's canonical header, and failed parsing or serialization publishes
 no partial result. Frame streaming, encoder selection, and public selector
 integration remain future work.
+
+The private compact streaming decoder now accepts this exact stream identity
+and frame representation with arbitrary input and output splits. It buffers
+the validated `64 + descriptor_size + payload_size` extent for one frame,
+decodes into bounded private staging, and drains that raw frame before reading
+the next header. Empty input ends after the 112-byte stream header; nonempty
+streams require contiguous sequences and an exact known original size.
+Malformed, truncated, or trailing bytes fail without publishing the affected
+frame. Encoder selection and public selector integration remain future work.

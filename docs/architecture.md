@@ -4447,6 +4447,13 @@ variant-3 parse/serialize entries remain distinct. This prevents a later
 streaming factory from treating the compact descriptor as an incidental
 decoder preference rather than a decoder-visible format choice.
 
+The compact streaming decoder keeps a separate state-machine type while
+following the established Format 2 lifecycle. Its frame-body target is derived
+from the validated variable descriptor extent, so it neither allocates nor
+waits for fixed-descriptor padding. Complete compact frames decode into private
+raw staging and are drained before the next header is accepted; previously
+drained frames remain committed if a later compact frame fails.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

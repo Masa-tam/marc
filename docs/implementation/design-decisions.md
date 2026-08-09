@@ -13998,3 +13998,24 @@ the header nor consumed count until all fields and limits pass. Serialization
 builds the complete header in a zeroed local array before copying. This
 milestone adds no frame-streaming lifecycle, encoder selection, public API,
 CLI selector, benchmark, or interoperability archive.
+
+## DD-677: Compact streaming buffers one exact variable frame
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add a distinct private streaming decoder for entropy variant 3. It follows the
+established Format 2 lifecycle but parses only the compact stream identity,
+validates each frame with the compact header rules, and derives the buffered
+frame extent from `64 + descriptor_size + payload_size`. It must not reserve or
+wait for variant 2's fixed 9,052-byte descriptor.
+
+Buffer at most one admitted serialized frame, decode into private caller-owned
+tables/tokens/raw storage, and drain raw bytes before accepting the next frame.
+Arbitrary input and output splits, including one byte each, must not alter
+results. `EndInput` remains sticky across a zero-capacity drain. A malformed
+later frame may not retract earlier output and may not publish its own raw
+bytes. Reject trailing data, reset requests, unknown flags, premature end, and
+overlapping construction/output storage with a stable terminal error. This
+milestone adds no encoder lifecycle, public API, CLI selector, benchmark, fuzz
+entry, or interoperability archive.
