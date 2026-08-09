@@ -15983,3 +15983,34 @@ discarded and the reviewed seed retained.
   in 164.32 and 117.74 seconds. Identical-input README and format archives
   retain SHA-256 values recorded in BM-0016; the descriptive MSVC format-
   specification encode sample falls to 10.132 seconds.
+
+## CR-0702: 2026-08-09 - Compact contextual rANS descriptor implementation
+
+- Authoring method: translated marc's reserved canonical descriptor contract
+  into a separate bounded parser, validator, serializer, and executable
+  malformed-input suite without consulting another representation.
+- References used: AGENTS.md sections 3.3, 6, 7, 10.5, 11.2, 12, 14, and 15;
+  DD-670; DD-672; IR-0450; TVG-0549; TVG-0551; the local field-context schema,
+  decoder limits, checked arithmetic, and little-endian helpers.
+- Known implementations intentionally not consulted: external ANS formats,
+  frequency serializers, source code, archives, corpora, test suites, and
+  optimization descriptions.
+- Independent decisions: parse into a fixed private 4,518-entry descriptor;
+  revalidate canonical extent before publication; serialize through a fixed
+  9,025-byte local transaction; retain the fixed decode-table ceiling; and
+  leave state, frame, streaming, and public integration disconnected.
+- Generated-code task description: implement exact dense and sparse records,
+  inferred frequencies, ascending symbols, active-mask traversal, complete
+  consumption, local limits, atomic failure, and threshold/minimum/maximum
+  tests. Correct the hand vector when executable canonical selection proved
+  that alphabet two ties at three bytes and therefore selects dense.
+- Similarity review: field order, canonical inequality, loops, validation
+  sequence, errors, and tests derive only from marc's local documents and
+  fixed schema; no external code structure or byte representation was used.
+- Local validation: all seven focused descriptor tests pass under MSVC
+  19.51.36231 and ClangCL 22.1.3. They cover the corrected 26-byte vector,
+  sparse/dense threshold, exact 9,025-byte maximum, every strict prefix,
+  trailing data, malformed records, noncanonical encoding, limit gates, and
+  atomic parse and serialization failure. All 2,574 ordinary registered tests
+  excluding the separately audited exhaustive interoperability-schema loop
+  pass in 158.51 seconds under MSVC and 106.78 seconds under ClangCL.

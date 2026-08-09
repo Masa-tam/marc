@@ -7136,12 +7136,13 @@ unchanged.
 
 For one raw byte `A`, reuse variant 2's two decisions, two one-symbol context
 models, and eight-byte rANS payload. Set active-context mask bits 0 and 3. Emit
-context 0 as sparse bytes `01 00 00` and context 3 as `01 00 41`, producing the
+context 0 as dense bytes `00 00 10` because its dense and sparse records tie at
+three bytes, and emit context 3 as sparse bytes `01 00 41`, producing the
 26-byte compact descriptor:
 
 ```text
 02 00 00 00 08 00 00 00 0C 00 1F 00 A6 11 00 00
-09 00 00 00 01 00 00 01 00 41
+09 00 00 00 00 00 10 01 00 41
 ```
 
 Require exact parse/serialize round trip and full frequency reconstruction.
@@ -7162,3 +7163,13 @@ streaming encoder, profile, completion, C API, CLI, and experimental benchmark
 tests under MSVC and ClangCL. Compare one descriptive MSVC Release iteration
 over the format specification; serialized size, decoding, and workspace
 reporting must remain unchanged.
+
+### TVG-0551
+
+Implement TVG-0549 as an executable compact-descriptor suite. In addition to
+the exact one-Literal bytes and every strict prefix, create context-20
+alphabet-eight threshold models with four and five nonzero symbols to prove
+strict sparse selection and dense tie selection. Construct every context with
+all symbols present to require the exact 9,025-byte maximum. Require failed
+parse and serialize calls to preserve sentinels and enforce decision, payload,
+table-entry, exact-buffer, and output-capacity limits independently.

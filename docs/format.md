@@ -6029,13 +6029,16 @@ descriptor size to 26 (`1A 00 00 00`). Its complete descriptor is:
 
 ```text
 02 00 00 00 08 00 00 00  0C 00 1F 00 A6 11 00 00
-09 00 00 00 01 00 00 01  00 41
+09 00 00 00 00 00 10 01  00 41
 ```
 
-Mask `09 00 00 00` activates contexts 0 and 3. Each is a one-symbol sparse
-record: `(mode=1, K-1=0, symbol=0)` and
-`(mode=1, K-1=0, symbol=65)`. Both omitted frequencies infer to 4,096. The
-complete frame is 98 bytes and the complete one-byte stream is 210 bytes,
+Mask `09 00 00 00` activates contexts 0 and 3. Context 0 has alphabet size 2,
+so its one-symbol model is the three-byte dense record
+`(mode=0, symbol-0 frequency=4,096)`; dense and sparse are equal in size and
+the canonical tie rule selects dense. Context 3 is the one-symbol sparse
+record `(mode=1, K-1=0, symbol=65)`, whose omitted frequency infers to 4,096.
+The complete frame is 98 bytes and the complete one-byte stream is 210 bytes,
 compared with variant 2's 9,124-byte frame and 9,236-byte stream. This is a
-reserved vector only; it does not yet admit an implementation or public
-selector.
+descriptor-level vector: the private parser and serializer admit these exact
+26 bytes, while state, frame, streaming, and public selector integration are
+not yet implemented.

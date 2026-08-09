@@ -13856,9 +13856,10 @@ the dense record's `1 + 2(A-1)` bytes, making ties and every valid model
 canonical.
 
 The descriptor is bounded between 23 and 9,025 bytes without allocation or
-recursion. The LZSS profile's one-Literal vector uses two three-byte sparse
-records and therefore a 26-byte descriptor. Retain the existing fixed maximum
-decode-table workspace initially so this change addresses wire overhead
+recursion. The LZSS profile's one-Literal vector uses one three-byte dense
+record and one three-byte sparse record, and therefore a 26-byte descriptor.
+Retain the existing fixed maximum decode-table workspace initially so this
+change addresses wire overhead
 without combining it with a table-layout optimization. Keep variant 3 private
 until its parser, serializer, malformed suite, state round trip, frame
 integration, public lifecycle, benchmark, and cross-platform archive each
@@ -13886,3 +13887,22 @@ which is required to determine payload extent before transactional output.
 The result performs two match searches and one context validation plus one
 materialization per frame without changing bytes, workspace requirements,
 limits, or atomic failure semantics.
+
+## DD-672: Compact descriptor parsing reconstructs privately
+
+- Date: 2026-08-09
+- Status: accepted
+
+Implement entropy variant 3's descriptor as a distinct internal format module
+that reuses the variant-2 in-memory `ContextualRansDescriptor` only after
+successful reconstruction. Accept a caller-supplied exact byte span, parse at
+most 31 compile-time-bounded context records into a local fixed descriptor,
+verify the canonical dense/sparse choice after reconstructing every slice, and
+require exact input exhaustion before publication. Allocate nothing and retain
+the fixed 126,976-entry decode-table admission rule.
+
+Serialization first validates the complete in-memory descriptor and computes
+its exact canonical extent. It writes into a fixed 9,025-byte local array and
+copies only after caller capacity is known, leaving output unchanged on every
+field, model, limit, arithmetic, or capacity failure. Keep this module
+unconnected to variant-2 stream parsing, rANS state decoding, and public APIs.

@@ -149,8 +149,12 @@ format versions, and C ABI versions are independent namespaces.
   rejection of corrupt, truncated, and trailing final-frame input.
 - Reserved contextual-rANS entropy variant 3 with a canonical bounded
   dense/sparse descriptor. Its one-Literal model occupies 26 bytes instead of
-  variant 2's fixed 9,052 bytes while retaining identical rANS payload rules;
-  no implementation or public selector is claimed yet.
+  variant 2's fixed 9,052 bytes while retaining identical rANS payload rules.
+- Added the private compact contextual-rANS descriptor parser, validator, and
+  serializer. It reconstructs the fixed 4,518-frequency model atomically,
+  enforces canonical dense/sparse records and exact descriptor consumption,
+  and preserves output on every malformed, limit, or capacity failure. State,
+  frame, and public-profile integration remain unimplemented.
 
 ### Changed
 

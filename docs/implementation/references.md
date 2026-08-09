@@ -3944,3 +3944,11 @@ streaming, complete-frame, typed-token, context-materialization, and entropy
 planning contracts plus direct call-graph inspection. No external range coder,
 match finder, optimizer, source code, corpus, archive, or benchmark result was
 consulted.
+
+### IR-0450
+
+The compact contextual-rANS descriptor parser and serializer use only DD-670,
+DD-672, TVG-0549, marc's fixed field-context schema, variant-2 descriptor
+record, checked little-endian helpers, and decoder limits. No external ANS
+format, frequency serializer, source code, archive, corpus, or test suite was
+consulted.

@@ -1351,3 +1351,16 @@ to two passes per frame, while identical-input README and format-specification
 archives retain exact SHA-256 values. Focused tests pass under both compilers;
 this is a performance correction with no format, API, workspace, or admission
 change.
+
+### BR-0047
+
+Contextual-rANS entropy variant 3 now has an independently testable private
+descriptor parser, validator, and serializer. The implementation reconstructs
+the complete fixed model before publication, enforces the strict sparse-size
+inequality and dense tie rule, admits the exact 23 through 9,025-byte bounds,
+and leaves caller state and output unchanged on failure. The corrected
+one-Literal vector is 26 bytes: its alphabet-two context is dense on the
+three-byte tie and its literal-value context is sparse. All strict prefixes,
+trailing data, malformed sparse records, noncanonical alternatives, and local
+limits are covered under both local compilers. State, frame, lifecycle,
+benchmark, public API, and interoperability admission remain future work.

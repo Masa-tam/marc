@@ -305,6 +305,11 @@ Encoding every context densely is the exact maximum:
 `20 + 3*3 + 17*511 + 3*15 + 8*33 = 9,025` bytes. Descriptor length comes from
 the enclosing frame header and is checked before parsing. Variant 3 does not
 reuse variant 2's fixed 9,052-byte identity and does not alter its decoder.
+The private descriptor parser and serializer implement this representation in
+isolation. They reconstruct into fixed local storage, validate canonical size
+and decoder limits, require exact input consumption, and publish only after
+the complete descriptor succeeds. No variant-3 rANS state or frame admission
+is implied by this descriptor milestone.
 
 ## Backend substitution
 
