@@ -15815,3 +15815,33 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3 with Ninja. All 2,519 registered tests other
   than the separately audited exhaustive interoperability-schema loop pass in
   both clean Windows build trees.
+
+## CR-0696: 2026-08-09 - Contextual rANS decoder fuzz boundary
+
+- Authoring method: applied marc's independently established fixed-memory,
+  dual-decoder fuzz policy to the dedicated contextual-rANS Format 2 lifecycle
+  and admitted its fixed decode-table cost explicitly.
+- References used: AGENTS.md sections 10.5, 12, 14.4, and 15; DD-666;
+  IR-0444; TVG-0545; local contextual-rANS format, complete-frame decoder,
+  public C lifecycle, workspace calculator, and process invariants.
+- Known implementations intentionally not consulted: external fuzzer
+  harnesses, compression decoders, malformed corpora, crash catalogs, source
+  code, encoded streams, and test suites.
+- Independent decisions: cap input at 32 KiB so complete descriptor-bearing
+  frames remain reachable; fix the 126,976-entry table and all byte/token
+  extents before processing; use thread-local harness storage to avoid large
+  per-call stacks without shared mutable state; and treat malformed status as
+  normal fuzz completion.
+- Generated-code task description: add a bounded private-frame plus public-
+  streaming decoder fuzz entry, warning-clean compile-smoke targets, and
+  permanent regressions for every canonical truncation, saturated frame
+  extents, nonzero descriptor flags, raw-output atomicity, and sticky errors.
+- Similarity review: target structure, limits, mutation sites, and assertions
+  derive from marc's existing independently written Format 2 boundary and
+  finite-call policy; no external harness structure or malformed catalog was
+  reproduced.
+- Local validation: the three focused regression cases and compile-smoke
+  targets pass under MSVC 19.51.36231 and ClangCL 22.1.3 with Ninja. All 2,522
+  registered tests other than the separately audited exhaustive
+  interoperability-schema loop pass with two CTest workers under both
+  supported Windows compilers, within the 240-second ordinary-suite limit.

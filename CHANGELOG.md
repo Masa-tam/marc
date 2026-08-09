@@ -63,6 +63,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added its public-ABI completion matrix for required binary classes,
   deterministic arbitrary chunking, sticky terminal states, and frame-atomic
   rejection of corrupt, truncated, and trailing final-frame input.
+- Added the contextual-rANS profile's fixed-memory dual-decoder fuzz boundary
+  and permanent atomic regressions for every canonical truncation, saturated
+  Format 2 frame extents, and nonzero contextual-rANS descriptor flags.
 - Added its fixed-memory dual-decoder fuzz boundary and permanent atomic
   regressions for canonical truncation, saturated Format 2 frame extents, and
   nonzero contextual Dynamic Range descriptor reserved data.

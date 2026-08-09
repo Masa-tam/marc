@@ -13752,3 +13752,27 @@ Corruption, truncation, or trailing data in the fourth frame must leave its one
 raw byte unpublished after three complete 64-byte frames have committed. This
 adds completion evidence only, with no CLI, fuzz, benchmark, archive, or
 interoperability admission.
+
+## DD-666: Contextual rANS fuzzing fixes the dominant table workspace
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add one experimental decoder fuzz entry capped at 32,768 supplied bytes. This
+ceiling deliberately exceeds the fixed 9,052-byte descriptor so a complete
+Format 2 rANS frame remains reachable. After a valid stream header, exercise
+the private complete-frame decoder. Independently exercise the public C
+streaming decoder for every case with input-derived chunks, at most 4,096
+published raw bytes, a 1,024-byte raw frame, 6,144 modeled decisions, a
+`12F + 8 = 12,296` payload ceiling, and a finite input-plus-output-plus-32 call
+budget.
+
+Fix serialized, raw, output, typed-token, and 126,976-entry decode-table
+storage before accepting input. Keep the large native arrays in thread-local
+harness storage so execution neither consumes a multi-megabyte call stack nor
+shares mutable state between fuzz threads. Malformed streams end an iteration
+normally; abort only for queried-workspace, construction, accounting,
+progress, final-input, or call-budget invariant failure. Retain ordinary
+atomic regressions for every strict canonical `ABABX` prefix, saturated frame
+extents, and nonzero descriptor flags. This changes no format or admission
+inventory and does not claim a sanitizer campaign.

@@ -60,6 +60,14 @@ complete-frame decoder only after the 112-byte header is accepted and always
 exercises the public C decoder with byte-derived chunks and a finite call
 budget. Ordinary builds compile this target warning-clean; no sanitizer
 campaign is claimed until one is separately executed and recorded.
+The experimental contextual-rANS Format 2 target caps supplied input at
+32 KiB so the 9,052-byte fixed descriptor and a complete bounded frame are
+reachable. It caps public output at 4 KiB and one raw frame at 1 KiB, admits at
+most 6,144 decisions and 12,296 payload bytes, and fixes the 126,976-entry
+decode tables plus 1,024 typed tokens before processing. Large views use one
+thread-local fixed harness workspace instead of per-call stack storage. The
+private complete-frame and public streaming paths share byte-derived chunking
+and a finite call budget; no sanitizer campaign is claimed by compile-smoke.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,

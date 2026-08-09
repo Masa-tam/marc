@@ -1242,3 +1242,12 @@ one-byte and mixed chunking, sticky terminal states, and frame-atomic rejection
 of a corrupt, truncated, or extended fourth frame. It remains outside the
 baseline 42-profile matrix; fuzz, CLI, benchmark, and interoperability
 admission remain independent later steps.
+
+### CP-0047
+
+The experimental `lzss-field-context-rans` composition now has a bounded
+dual-decoder fuzz entry and permanent regressions for every canonical
+truncation, saturated Format 2 frame extents, and nonzero contextual-rANS
+descriptor flags. Its fixed decode-table cost is admitted before parsing and
+does not become input-controlled. This milestone claims neither a sanitizer
+campaign nor CLI, benchmark, stable-matrix, or interoperability admission.

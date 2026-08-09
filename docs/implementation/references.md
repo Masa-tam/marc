@@ -3896,3 +3896,11 @@ The contextual-rANS public-completion audit uses only DD-665, the local Format
 completion data classes and process invariants, and independently seeded binary
 generators. No external compression implementation, completion suite, corpus,
 encoded stream, source code, or malformed-input catalog was consulted.
+
+### IR-0444
+
+The contextual-rANS fuzz boundary uses only DD-666, marc's private
+complete-frame decoder, public C lifecycle, fixed profile calculator bounds,
+core process invariants, and established finite-call fuzz policy. No external
+fuzzer harness, compression decoder, malformed corpus, crash catalog, source
+code, encoded stream, or test suite was consulted.

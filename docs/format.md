@@ -5986,3 +5986,10 @@ raw frames, whose conservative decision ceiling is 384, payload ceiling is
 must remain byte-identical. A malformed, truncated, or extended fourth frame
 may not publish its final raw byte after three valid 64-byte frames; the
 resulting error and position remain sticky.
+
+The fixed-memory contextual-rANS fuzz boundary also changes no representation.
+Arbitrary bounded input reaches the complete-frame decoder only after the
+112-byte header is accepted, while the public decoder receives every case.
+The encoded frame, 126,976 decode entries, typed tokens, private raw staging,
+and public output are all capped independently of parsed fields; malformed
+input is an expected terminal result.

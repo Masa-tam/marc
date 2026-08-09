@@ -1291,3 +1291,13 @@ schedules, and sticky terminal results. A corrupt sequence, truncated payload,
 or trailing byte at the fourth frame publishes only the three preceding raw
 frames. This is completion evidence, not baseline-matrix, CLI, fuzz,
 benchmark, or interoperability admission.
+
+### BR-0041
+
+The experimental contextual-rANS Format 2 decoder now has a fixed-memory
+dual-path fuzz boundary. It caps supplied bytes, every byte and native table/
+token workspace, raw publication, and process calls before parsing arbitrary
+input. Ordinary regressions require atomic rejection of every strict canonical
+prefix, saturated frame extents, and nonzero descriptor flags. This is target
+construction and compile-smoke evidence, not a sanitizer campaign or CLI,
+benchmark, stable-matrix, or interoperability admission.
