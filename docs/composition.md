@@ -1304,4 +1304,7 @@ Interoperability schema 33 appends `lzss-contextual-rans-compact` exactly once
 after the frozen 43-entry schema-32 order. Local admission requires exact
 generation, verification, byte-identical re-encoding, reordered-manifest
 rejection, and schemas 1 through 32 compatibility. Fixed variant 2 remains
-outside the bundle, and external four-direction exchange remains pending.
+outside the bundle. Four-direction verification at revision
+`2c30be4da1a80d01103dac0ee82fb0c4889f3af4` establishes canonical output for
+all 44 archives across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang producers.

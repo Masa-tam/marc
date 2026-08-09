@@ -4228,6 +4228,9 @@ selected by the compact public lifecycle. Verification treats all 44 archives
 as opaque bytes and derives schema 32 by removing only the final compact entry
 before traversing the historical compatibility chain. The fixed-descriptor
 variant-2 diagnostic is deliberately absent.
+The recorded four-direction exchange at revision
+`2c30be4da1a80d01103dac0ee82fb0c4889f3af4` confirms identical schema-33
+bytes and decoding across the three x86-64 producers.
 
 ### Reserved Format 2 contextual rANS boundary
 

@@ -16455,5 +16455,9 @@ discarded and the reviewed seed retained.
 - Local validation: focused schema compatibility passes under MSVC
   19.51.36252 in 57.33 seconds. All 2,626 registered tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second
-  per-test limit in 73.84 seconds. External four-direction exchange of the
-  44-archive bundle remains pending.
+  per-test limit in 73.84 seconds. External four-direction verification at
+  revision `2c30be4da1a80d01103dac0ee82fb0c4889f3af4` completed every schema-33
+  path: Windows/MSVC and Ubuntu 24.04 artifacts decoded and re-encoded
+  identically on Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and
+  decoded and re-encoded identically on Windows/MSVC. Every pass verified all
+  44 archives.

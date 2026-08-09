@@ -14219,3 +14219,9 @@ identity, then traverse the unchanged schema-32-through-1 chain. Local
 admission is not external interoperability evidence; the four-direction
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang exchange remains a
 post-push requirement.
+
+That release check completed at revision
+`2c30be4da1a80d01103dac0ee82fb0c4889f3af4`: the Windows/MSVC and Ubuntu
+24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+bundle verified locally and on Windows/MSVC. Every pass decoded and
+byte-identically re-encoded all 44 archives.

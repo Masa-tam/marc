@@ -160,6 +160,11 @@ format versions, and C ABI versions are independent namespaces.
   private begin path preserves detailed compact format errors, produces the
   same 126,976 fixed table entries and state transitions as variant 2, and
   charges the actual compact descriptor extent rather than 9,052 bytes.
+- Added interoperability schema 33 as the frozen 43-entry schema-32 order plus
+  `lzss-contextual-rans-compact` exactly once. Four-direction exchange at
+  revision `2c30be4da1a80d01103dac0ee82fb0c4889f3af4` verifies all 44 archives
+  across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+  producers.
 
 ### Changed
 
