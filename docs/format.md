@@ -5971,3 +5971,10 @@ collects each complete descriptor and payload before decoding and exposes only
 a fully reconstructed raw frame. End-of-input before the declared known-size
 stream completes is truncation; bytes after the final declared frame are
 trailing data and are rejected. No incremental parser state is serialized.
+
+For private workspace calculation only, a frame containing at most `N` raw
+bytes has no more than `6N` modeled decisions. The existing descriptor rule
+therefore bounds its rANS payload by `12N + 8` bytes and its complete serialized
+extent by `9,116 + 12N + 8` bytes. These are allocation ceilings, not new
+serialized fields; actual frame headers continue to carry their exact counts
+and payload size.

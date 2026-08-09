@@ -15730,3 +15730,30 @@ discarded and the reviewed seed retained.
   and later-frame corruption isolation. The complete 2,552-test Release suite,
   including documentation layout and interoperability-schema compatibility,
   also passes under both supported Windows compilers.
+
+## CR-0693: 2026-08-09 - Contextual rANS workspace profile
+
+- Authoring method: derived conservative workspace ceilings from marc's
+  documented contextual-rANS decision/payload bounds and composed them with
+  repository-local typed-token and decode-entry native layouts.
+- References used: AGENTS.md sections 5, 10.5, 11.2, 12, 13, 14, and 15;
+  DD-663; IR-0441; TVG-0542; local contextual-rANS format, streaming encoder,
+  streaming decoder, checked arithmetic, and opaque-view partition contracts.
+- Known implementations intentionally not consulted: external allocator
+  layouts, workspace calculators, ABI bindings, source code, benchmarks,
+  corpora, and test suites.
+- Independent decisions: reserve `12N + 8` payload bytes; keep encoder views
+  token-only; place fixed decoder tables before an aligned token region;
+  recompute all layout metadata during partition; and reject aggregate limits
+  before publishing requirements.
+- Generated-code task description: add private encoder/decoder requirements,
+  aligned partitioners, exact default and short calculations, forged-layout
+  rejection, and a streaming round trip constructed only from returned views.
+- Similarity review: size formulas follow marc's own format bounds; native
+  layout order, alignment checks, error mapping, and tests were designed from
+  the repository's existing opaque-workspace conventions.
+- Local validation: all seven dedicated profile test groups pass under MSVC
+  and ClangCL, including requirements-only multi-frame streaming round trip.
+  The complete 2,559-test Release suite, including documentation layout and
+  interoperability-schema compatibility, also passes under both supported
+  Windows compilers.

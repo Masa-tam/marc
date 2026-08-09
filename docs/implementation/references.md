@@ -3872,3 +3872,11 @@ decoder, dedicated stream/frame parsers, fixed table layout, checked arithmetic,
 core transform contract, and local frame-atomic streaming conventions. No
 external streaming decompressor, ANS integration, source code, parser state
 machine, malformed corpus, encoded stream, or test suite was consulted.
+
+### IR-0441
+
+The contextual rANS profile calculator and partitioners use only DD-663,
+repository-defined typed-token and fixed decode-entry layouts, documented rANS
+payload bounds, checked arithmetic, decoder limits, and local opaque-view
+partition conventions. No external allocator layout, workspace calculator,
+ABI binding, source code, benchmark, corpus, or test suite was consulted.

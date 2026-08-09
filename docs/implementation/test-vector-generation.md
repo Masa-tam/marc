@@ -7032,3 +7032,22 @@ empty streams, nonterminal `Flush`, premature final input, construction-region
 overlap, caller-output/raw overlap, `ResetBlock`, and unknown flags. Retain
 `EndInput` while a decoded final frame waits for output capacity, and require
 all terminal errors to remain sticky.
+
+### TVG-0542
+
+For the default 65,536-byte frame, require the encoder calculator to publish
+65,536 raw bytes and tokens, payload ceiling 786,440, and complete-frame
+ceiling 795,556. For a short 17-byte stream require actual largest-frame
+requirements, and for empty input require zero encoder staging with alignment
+one. Reject unsupported dictionary parameters, uint32/checked-arithmetic
+bounds, configured payload/table/block limits, and aggregate excess without
+publishing partial requirements.
+
+For decoder limits, require the serialized ceiling derived from the lesser of
+the configured payload bound and `12N + 8`, fixed 126,976 table entries, the
+maximum token/raw extent, an aligned token offset after native table bytes, and
+the exact total opaque views extent. Partition aligned storage successfully;
+reject forged offsets/counts/sizes/alignment, short storage, and a deliberately
+misaligned base while leaving all views empty. Use only returned requirements
+and views to construct both streaming directions and round-trip a multi-frame
+mixed raw sequence.

@@ -13689,3 +13689,27 @@ Retain `EndInput` across raw drain; reject truncated or trailing input,
 and configured-limit excess with sticky terminal errors. Empty input accepts
 only the stream header and exact finish. This adds no workspace calculator,
 public API, CLI profile, benchmark, fuzz target, archive, or format change.
+
+## DD-663: Contextual rANS profile owns conservative typed workspace layout
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add private requirements calculators for the DD-661 encoder and DD-662
+decoder. For largest raw-frame extent `N`, reserve at most `N` typed tokens,
+`6N` decisions, `12N + 8` payload bytes, and therefore
+`64 + 9,052 + 12N + 8` complete serialized-frame bytes. The encoder views
+region contains only the native token array; raw input and serialized staging
+remain separate byte regions. Validate every product, sum, uint32 format bound,
+configured payload bound, and exact raw-plus-view-plus-frame aggregate before
+publishing requirements.
+
+The decoder calculator derives a conservative raw extent from local frame and
+block limits, caps payload by both the configured compressed limit and
+`12N + 8`, and reserves one complete serialized frame. Its opaque views region
+contains the fixed 126,976 native `RansDecodeEntry` values followed by the
+aligned maximum token array. Record the token offset, total bytes, and strongest
+alignment explicitly. Partition functions recompute every layout field, reject
+forged requirements, insufficient or misaligned storage, and publish views only
+after complete validation. This adds no public C API, factory, CLI profile,
+benchmark, fuzz target, archive, or format change.

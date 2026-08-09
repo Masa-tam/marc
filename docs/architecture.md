@@ -4326,3 +4326,11 @@ raw staging. Only a complete descriptor/payload decode and LZSS reconstruction
 makes raw bytes drainable. A corrupt later frame therefore cannot retract or
 alter an earlier committed frame, and cannot publish a partial current frame.
 Streaming output remains disjoint from the raw staging it drains.
+
+The private contextual-rANS profile boundary converts known-size encode
+configuration and decoder hard limits into conservative byte and typed-view
+requirements. Encoder views contain only typed tokens. Decoder views contain
+the fixed rANS tables followed by an explicitly aligned typed-token array; the
+partitioner recomputes this offset rather than trusting caller metadata. Both
+directions keep raw and serialized frames as separate byte regions and reject
+layout arithmetic or aggregate limits before publishing requirements.

@@ -128,6 +128,9 @@ format versions, and C ABI versions are independent namespaces.
   complete serialized/table/token/raw workspace before frame collection and
   publishes only fully validated reconstructed frames under arbitrary output
   capacity.
+- Added conservative contextual rANS encoder/decoder workspace calculators and
+  aligned opaque-view partitioners for typed-token and fixed decode-table
+  storage, with checked layout and aggregate admission.
 
 ## 0.1.3 - 2026-08-08
 
