@@ -13840,3 +13840,26 @@ redundant searches. Prove byte identity against the pre-change README and
 format-specification archives, focused streaming behavior, and comparative
 Release timing. This optimization does not repair the fixed 9,052-byte model
 cost; a compact descriptor requires a distinct entropy variant.
+
+## DD-670: Contextual rANS compact models use canonical hybrid records
+
+- Date: 2026-08-09
+- Status: accepted
+
+Reserve entropy algorithm/variant `4/3` for the same contextual-rANS state and
+payload rules as variant 2 with a variable descriptor only. Preserve variant
+2 decoding under `4/2`; do not silently reinterpret its fixed 9,052 bytes.
+Represent active contexts with a 31-bit mask and choose independently between
+an inferred-final-frequency dense record and an increasing-symbol sparse
+record. Select sparse only when its exact `3K` bytes are strictly fewer than
+the dense record's `1 + 2(A-1)` bytes, making ties and every valid model
+canonical.
+
+The descriptor is bounded between 23 and 9,025 bytes without allocation or
+recursion. The LZSS profile's one-Literal vector uses two three-byte sparse
+records and therefore a 26-byte descriptor. Retain the existing fixed maximum
+decode-table workspace initially so this change addresses wire overhead
+without combining it with a table-layout optimization. Keep variant 3 private
+until its parser, serializer, malformed suite, state round trip, frame
+integration, public lifecycle, benchmark, and cross-platform archive each
+complete independently.

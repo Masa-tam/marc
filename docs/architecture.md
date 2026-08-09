@@ -4398,3 +4398,19 @@ same frame in the streaming layer, and the frame planner does not separately
 count tokens before invoking the typed-token encoder's own transactional
 preflight. This preserves all atomic publication boundaries while reducing the
 reference match finder from six full searches to two per frame.
+
+### Compact contextual rANS descriptor boundary
+
+Entropy variant 3 is a wire-level sibling of fixed-descriptor variant 2, not a
+compatibility alias. It reconstructs the same fixed in-memory 4,518-frequency
+array before table construction, so the model builder, scalar state machine,
+typed-token bridge, and initial fixed decode-table layout remain separable from
+descriptor parsing. A 31-bit active mask bounds the record loop independently
+of input, and every context record is bounded by its compile-time alphabet.
+
+The parser receives the exact descriptor extent from the validated frame
+header, rebuilds into a private fixed array, verifies canonical dense/sparse
+selection and complete consumption, and publishes only afterward. This keeps
+malformed variable-length data outside the entropy state machine and retains
+zero recursion and bounded workspace. A later active-table optimization may
+change private workspace but must not change variant 3 bytes.

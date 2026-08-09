@@ -3928,3 +3928,11 @@ complete-frame and typed-token transactional contracts, the dependency-free
 benchmark output, and direct call-graph inspection. No external match finder,
 compression optimizer, benchmark harness, source code, corpus, archive, or
 performance result was consulted.
+
+### IR-0448
+
+The contextual-rANS compact descriptor reservation uses only DD-670, variant
+2's repository-owned normalized model, the fixed LZSS field-context alphabets,
+checked little-endian serialization, and local descriptor measurements from
+BM-0015. No external ANS descriptor, table compressor, source code, archive,
+corpus, or bitstream specification was consulted.

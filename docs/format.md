@@ -6004,3 +6004,38 @@ planning only, input extent `N` and nonempty frame count `K` admit at most
 `112 + 12N + 9,124K` bytes: one stream header, `12N` renormalization allowance,
 and a 64-byte header, 9,052-byte descriptor, and eight-byte final-state
 allowance per frame. Actual serialized fields continue to carry exact sizes.
+
+### Reserved compact LZSS field-context plus rANS profile
+
+The compact profile retains Format 2 dictionary/variant `2/2` and context
+model/variant `1/1`, and selects entropy algorithm/variant `4/3`. Its stream
+header and 16-byte entropy parameter region are otherwise byte-identical to
+variant 2. The new identity changes only how each frame serializes the same
+normalized contextual models; rANS payload bytes are unchanged for the same
+tokens and frequencies.
+
+The frame descriptor size is variable from 23 through 9,025 bytes and is
+carried by the existing frame-header field. The exact 20-byte prefix,
+active-context mask, canonical dense/sparse records, inferred final
+frequencies, selection inequality, and rejection rules are defined in the
+entropy-backend contract. A frame body remains descriptor followed immediately
+by payload, with zero context-side-data and checksum-trailer sizes. The checked
+complete-stream capacity for input extent `N` and nonempty frame count `K` is
+`112 + 12N + 9,097K` bytes.
+
+For one raw byte `A`, the stream selects entropy variant 3, while its frame
+counts and eight-byte payload remain those of variant 2. The frame header sets
+descriptor size to 26 (`1A 00 00 00`). Its complete descriptor is:
+
+```text
+02 00 00 00 08 00 00 00  0C 00 1F 00 A6 11 00 00
+09 00 00 00 01 00 00 01  00 41
+```
+
+Mask `09 00 00 00` activates contexts 0 and 3. Each is a one-symbol sparse
+record: `(mode=1, K-1=0, symbol=0)` and
+`(mode=1, K-1=0, symbol=65)`. Both omitted frequencies infer to 4,096. The
+complete frame is 98 bytes and the complete one-byte stream is 210 bytes,
+compared with variant 2's 9,124-byte frame and 9,236-byte stream. This is a
+reserved vector only; it does not yet admit an implementation or public
+selector.

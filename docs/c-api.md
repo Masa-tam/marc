@@ -152,6 +152,9 @@ publishing a handle. No token or rANS table structure is exposed in the C ABI.
 Its public completion audit covers all required binary classes, deterministic
 one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
 malformed final-frame rejection without promoting it into the baseline matrix.
+This lifecycle emits fixed-descriptor entropy variant 2 and is retained for
+diagnosis and compatibility testing, not recommended compression. Reserved
+compact variant 3 will require a distinct public lifecycle when admitted.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

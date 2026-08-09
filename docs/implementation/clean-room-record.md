@@ -15933,3 +15933,28 @@ discarded and the reviewed seed retained.
   2,567 ordinary registered tests excluding the separately audited exhaustive
   interoperability-schema loop pass with two workers in 162.36 and 116.23
   seconds, respectively, within the 240-second limit.
+
+## CR-0700: 2026-08-09 - Compact contextual rANS descriptor reservation
+
+- Authoring method: derived a bounded canonical descriptor from marc's fixed
+  field-context alphabets and measured variant-2 model sparsity, while keeping
+  the independently written rANS state and payload unchanged.
+- References used: AGENTS.md sections 6, 7, 10.5, 11.2, 12, and 15; DD-670;
+  IR-0448; TVG-0549; local variant-2 model rules and BM-0015 measurements.
+- Known implementations intentionally not consulted: external ANS formats,
+  frequency-table compressors, source code, archives, corpora, model layouts,
+  and bitstream specifications.
+- Independent decisions: assign entropy variant `4/3`; use a 31-bit active
+  mask; infer the last frequency; choose sparse only under
+  `3K < 1 + 2(A-1)`; retain the fixed reference decode-table ceiling; and
+  bound the descriptor at 9,025 bytes.
+- Generated-code task description: specify exact prefix and record bytes,
+  canonical selection, malformed conditions, capacity arithmetic, and the
+  one-Literal hand vector without implementing or publicly admitting it.
+- Similarity review: field order, dense/sparse inequality, inferred frequency,
+  vector bytes, and validation order derive from marc's local schema and
+  checked serialization conventions; no external representation was used.
+- Local validation: documentation layout passes under both Windows Ninja
+  configurations. Independent arithmetic confirms the all-dense maximum
+  `20 + 3*3 + 17*511 + 3*15 + 8*33 = 9,025` and the two-context one-Literal
+  descriptor extent `20 + 3 + 3 = 26`.

@@ -79,7 +79,9 @@ field-context, contextual Dynamic Range pipeline. It is intentionally outside
 the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
 the corresponding Format 2 typed-token and field-context pipeline with the
 scalar contextual rANS backend. Encode and decode must use the same explicit
-selector.
+selector. The current rANS selector is a fixed-descriptor variant-2 diagnostic,
+not a recommended compression profile: every frame carries 9,052 model bytes.
+The reserved compact variant 3 is not yet exposed by the CLI.
 
 ### Common stream rules
 

@@ -208,6 +208,7 @@ descriptor/output alias cannot expose a partial table. The completed span and
 The private scalar decoder owns no table allocation. `begin` validates the
 descriptor, exact payload extent, initial boundary state, and caller table
 capacity before building those fixed tables and publishing its running state.
+
 `decode_symbol` requires the context's fixed alphabet and an active model;
 `decode_bypass` accepts 1 through 16 bits and recovers them least-significant
 bit first under the fixed 2,048/2,048 split. Both consume the same state and
@@ -257,6 +258,53 @@ decisions without storing native modeled-operation records. Its forward count
 and backward encode passes must reproduce the reference operation encoder's
 decision count, normalized descriptor, exact payload extent, and every payload
 byte. The entropy primitives remain unaware of token meaning.
+
+## Contextual rANS variant 3 compact descriptor
+
+Entropy algorithm ID 4, variant 3 retains variant 2's normalized models,
+single scalar state, payload bytes, decision ordering, bypass model, strict
+completion, and fixed 126,976-entry reference decode-table ceiling. Only the
+descriptor representation changes. It is variable length, with a 20-byte
+prefix:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | identical to variant 2 |
+| 4 | 4 | payload size | identical to variant 2 |
+| 8 | 1 | table log | exactly 12 |
+| 9 | 1 | flags | zero |
+| 10 | 2 | context count | exactly 31 |
+| 12 | 4 | frequency entry count | exactly 4,518 |
+| 16 | 4 | active-context mask | bits 0 through 30; bit 31 is zero |
+
+Records for set mask bits follow in ascending context order. No record exists
+for an inactive context, whose full frequency slice is implicitly zero. An
+active context with alphabet size `A` and `K` nonzero symbols uses exactly one
+of these canonical forms:
+
+- Dense (`mode=0`): the mode byte followed by `A-1` little-endian uint16
+  frequencies for symbols `0..A-2`. The final frequency is
+  `4096 - sum(explicit)`.
+- Sparse (`mode=1`): the mode byte, one byte `K-1`, then the first `K-1`
+  entries as increasing `(symbol:uint8, frequency:uint16-le)` pairs, followed
+  by the final increasing `symbol:uint8`. Its frequency is
+  `4096 - sum(explicit)`.
+
+Every stored or inferred nonzero frequency in sparse form is positive. Dense
+form may contain zero values but its reconstructed slice must contain at least
+one nonzero value. Sparse symbols are strictly increasing and below `A`.
+The canonical encoder chooses sparse exactly when `3K < 1 + 2(A-1)`; equality
+selects dense. A decoder rejects the noncanonical alternative after rebuilding
+the slice. It also rejects an empty active mask, bit 31, unknown modes,
+truncation, overflow, a sum greater than or equal to 4,096 before an inferred
+sparse frequency, a dense sum greater than 4,096, mask/slice contradiction,
+or trailing descriptor bytes.
+
+The smallest general descriptor is 23 bytes for one one-symbol sparse context.
+Encoding every context densely is the exact maximum:
+`20 + 3*3 + 17*511 + 3*15 + 8*33 = 9,025` bytes. Descriptor length comes from
+the enclosing frame header and is checked before parsing. Variant 3 does not
+reuse variant 2's fixed 9,052-byte identity and does not alter its decoder.
 
 ## Backend substitution
 

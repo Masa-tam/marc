@@ -1331,3 +1331,13 @@ specification archives remain byte-identical to the pre-change results; the
 latter's descriptive MSVC Release encode time falls from 30.462 to 10.053
 seconds. The fixed descriptor remains unsuitable as a recommended profile and
 requires a distinct compact variant before interoperability consideration.
+
+### BR-0045
+
+Contextual-rANS entropy variant 3 now has a complete reserved descriptor
+contract and a hand-checkable one-Literal vector. Its canonical per-context
+dense/sparse choice bounds every descriptor at 9,025 bytes while reducing the
+vector descriptor from 9,052 to 26 bytes without changing rANS payload bytes.
+Variant 2 retains its old identity. This is specification evidence only; no
+parser, serializer, public API, CLI, benchmark, or interoperability admission
+is claimed.

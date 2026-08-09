@@ -7131,3 +7131,23 @@ benchmark cases under MSVC and ClangCL. Compare one Release benchmark iteration
 for the format specification and report the measured encode time without
 claiming stable throughput; decoding and every serialized byte must remain
 unchanged.
+
+### TVG-0549
+
+For one raw byte `A`, reuse variant 2's two decisions, two one-symbol context
+models, and eight-byte rANS payload. Set active-context mask bits 0 and 3. Emit
+context 0 as sparse bytes `01 00 00` and context 3 as `01 00 41`, producing the
+26-byte compact descriptor:
+
+```text
+02 00 00 00 08 00 00 00 0C 00 1F 00 A6 11 00 00
+09 00 00 00 01 00 00 01 00 41
+```
+
+Require exact parse/serialize round trip and full frequency reconstruction.
+Independently truncate every byte, set mask bit 31, clear each required mask
+bit, use unknown mode 2, duplicate or reverse sparse symbols, encode zero or
+oversummed explicit frequencies, choose the noncanonical dense representation,
+and append one trailing byte. Every failure must preserve the destination
+descriptor. Add threshold vectors on both sides of `3K < 1 + 2(A-1)` and the
+exact 9,025-byte all-dense maximum.

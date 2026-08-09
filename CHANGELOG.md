@@ -147,6 +147,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added its public-ABI completion matrix for required binary classes,
   deterministic arbitrary chunking, sticky terminal states, and frame-atomic
   rejection of corrupt, truncated, and trailing final-frame input.
+- Reserved contextual-rANS entropy variant 3 with a canonical bounded
+  dense/sparse descriptor. Its one-Literal model occupies 26 bytes instead of
+  variant 2's fixed 9,052 bytes while retaining identical rANS payload rules;
+  no implementation or public selector is claimed yet.
 
 ### Changed
 
