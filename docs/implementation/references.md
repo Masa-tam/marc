@@ -3829,3 +3829,12 @@ reconstructor, checked arithmetic, decoder limits, and existing frame-atomic
 workspace conventions. No external contextual compressor, ANS frame format,
 source code, parser structure, malformed corpus, encoded stream, or test suite
 was consulted.
+
+### IR-0436
+
+The contextual rANS operation encoder uses only DD-658, marc's independently
+specified scalar rANS variant-1 forward state arithmetic and normalization,
+the repository-owned `ModeledOperation` schema, contextual descriptor, checked
+arithmetic, and local transactional encoder conventions. No external ANS
+encoder, contextual model, source code, normalization routine, encoded stream,
+corpus, or test suite was consulted.

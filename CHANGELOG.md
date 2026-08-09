@@ -108,6 +108,10 @@ format versions, and C ABI versions are independent namespaces.
   dedicated Format 2 stream and frame identities, descriptor and exact payload
   extent, then reconstructs typed LZSS tokens and raw bytes behind one
   serialized/table/token/raw non-aliasing transaction.
+- Added the private contextual rANS operation encoder. It builds deterministic
+  normalized models per Symbol context, encodes fixed-model bypass bits in the
+  inverse order required for LSB-first decoding, and transactionally plans and
+  emits the reserved descriptor and scalar payload.
 
 ## 0.1.3 - 2026-08-08
 

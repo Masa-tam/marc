@@ -4280,3 +4280,12 @@ typed-token, and raw-output regions, performs the two-pass token inversion,
 and reconstructs raw bytes only after token validation succeeds. This remains
 a private one-frame primitive; streaming, encoding, public C lifecycle, CLI,
 benchmark, and interoperability admission are later boundaries.
+
+The first forward rANS boundary consumes an already materialized modeled-
+operation sequence. Its write-free plan validates every operation, gathers all
+frame-static Symbol statistics, normalizes each context independently, and
+runs the reverse scalar state transition to obtain the exact payload extent.
+The encode pass rejects operation/payload overlap and must reproduce that plan
+before publishing the descriptor. This intentionally keeps context modeling
+outside the entropy component; a later direct typed-token bridge may remove
+the operation staging from a complete frame without changing these bytes.

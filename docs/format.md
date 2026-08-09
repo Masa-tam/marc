@@ -5920,3 +5920,19 @@ or reconstruction failure reports zero serialized consumption and cannot
 publish raw bytes. This is still a private frame primitive: no encoder,
 streaming lifecycle, public algorithm, CLI selector, benchmark, or archive is
 admitted by this milestone.
+
+The private operation-level encoder now produces the reserved descriptor and
+payload. For each used Symbol context it applies the variant-1 deterministic
+normalization rule independently: present symbols begin at the floored
+`count * 4096 / context_count` scale with minimum one, deficits select greatest
+signed error with lowest-symbol ties, and excess selects least signed error
+with highest-symbol ties. Unused contexts serialize all zeros. Bypass bits do
+not affect descriptor frequencies and use the fixed half/half range.
+
+Operations are encoded in reverse order. A bypass field is itself traversed
+from its highest selected bit down to bit zero; the decoder consequently
+recovers that field from bit zero upward. State and renormalization bytes use
+the already specified scalar variant-1 layout. Planning and exact encoding
+must agree on payload length, and failed validation, capacity, limit, or alias
+checks publish neither descriptor nor payload. No token bridge, frame encoder,
+or public admission is implied.

@@ -241,6 +241,16 @@ table write. After strict two-pass token inversion, the existing typed LZSS
 reconstructor alone may publish raw bytes. Any failure keeps serialized
 consumption at zero. The composition adds no encoder or public profile.
 
+The private operation encoder constructs the matching forward entropy
+boundary. It validates all modeled operations first, counts Symbol values per
+context, and normalizes each used slice with the same integer-error and numeric
+tie rules as scalar rANS variant 1; unused slices stay zero and bypass bits use
+only the fixed binary model. Encoding walks operations backward and each
+bypass field from its highest bit to bit zero, filling renormalization bytes
+backward after the eight-byte final state. Planning writes no payload, exact
+encoding rejects operation/payload aliasing, and descriptor publication occurs
+only after the complete result validates.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

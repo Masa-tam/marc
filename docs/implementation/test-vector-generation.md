@@ -6951,3 +6951,19 @@ storage and raw output inside token storage, and independently alias serialized
 input with raw output; require rejection before any affected workspace changes.
 Run all 14 dedicated format/frame tests under MSVC and ClangCL, then run both
 complete Release suites.
+
+### TVG-0537
+
+Encode TVG-0531's two Symbol operations and require decision count two,
+payload size eight, normalized frequencies 4,096 at flattened entries 0 and
+71 only, and exact payload `00 00 00 80 00 00 00 00`. Decode the result through
+the scalar contextual rANS lifecycle and require both original values, exact
+counts, terminal state, and payload exhaustion.
+
+Independently encode Symbol `(context 0, value 1)`, Symbol `(context 20,
+value 2)`, and bypass value two of width two. Require the decoder to recover
+the bypass value LSB first. Exercise a used two-symbol context and require its
+normalized sum 4,096 with deterministic numeric tie handling and successful
+renormalization round trip. Reject each malformed operation field at its stable
+index, empty input, decision/table/payload/buffer limits, short output, and
+operation/payload aliasing while preserving descriptor and payload sentinels.

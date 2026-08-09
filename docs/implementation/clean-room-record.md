@@ -15591,3 +15591,31 @@ discarded and the reviewed seed retained.
   complete-frame decoder tests pass under MSVC and ClangCL. The complete
   2,521-test Release suite, including documentation layout and interoperability-
   schema compatibility, also passes under both supported Windows compilers.
+
+## CR-0688: 2026-08-09 - Contextual rANS operation encoder
+
+- Authoring method: applied marc's independently specified scalar rANS forward
+  arithmetic and numeric normalization to the repository-owned contextual
+  modeled-operation sequence.
+- References used: AGENTS.md sections 6, 10.5, 11.2, 12, 13, 14, and 15;
+  DD-658; IR-0436; TVG-0537; marc's scalar rANS encoder, contextual descriptor,
+  decoder, and `ModeledOperation` contract.
+- Known implementations intentionally not consulted: external ANS encoders,
+  contextual models, source code, normalization routines, encoded streams,
+  corpora, and test suites.
+- Independent decisions: normalize each used context separately with existing
+  numeric tie rules; exclude bypass decisions from learned frequencies; encode
+  operations and bypass bits in nested reverse order; and separate a write-free
+  plan from alias-checked exact output.
+- Generated-code task description: add a private operation-level contextual
+  rANS planner/encoder with deterministic per-context normalization, exact
+  hand vectors, decoder round trips, malformed-operation tests, and atomic
+  capacity/alias rejection.
+- Similarity review: normalization and state arithmetic derive from marc's own
+  scalar rANS implementation; operation validation, staging, and sentinels use
+  repository-local contextual encoder conventions.
+- Local validation: all seven dedicated contextual rANS encoder tests pass
+  under MSVC and ClangCL, including exact vectors, LSB-first bypass, numeric
+  ties, and renormalization round trip. The complete 2,528-test Release suite,
+  including documentation layout and interoperability-schema compatibility,
+  also passes under both supported Windows compilers.

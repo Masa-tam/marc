@@ -53,6 +53,7 @@ set(MARC_SOURCES
     src/entropy/contextual_dynamic_range_decoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
+    src/entropy/contextual_rans_encoder.cpp
     src/entropy/contextual_rans_decode_tables.cpp
     src/entropy/contextual_rans_format.cpp
     src/dictionary/lz77_decoder.cpp
@@ -1281,6 +1282,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_dynamic_range_decoder_tests.cpp
         tests/contextual_dynamic_range_encoder_tests.cpp
         tests/contextual_rans_decoder_tests.cpp
+        tests/contextual_rans_encoder_tests.cpp
         tests/contextual_rans_decode_tables_tests.cpp
         tests/contextual_rans_format_tests.cpp
         tests/lzss_contextual_rans_decoder_tests.cpp

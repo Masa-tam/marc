@@ -13578,3 +13578,25 @@ two-pass direct token inversion and typed LZSS reconstruction in order; report
 serialized consumption only after raw reconstruction succeeds. This adds no
 encoder, streaming lifecycle, public API, CLI profile, benchmark, archive, or
 format change.
+
+## DD-658: Contextual rANS operation encoding reuses numeric normalization
+
+- Date: 2026-08-09
+- Status: accepted
+
+Build each used Symbol context's static model from the complete accepted
+`ModeledOperation` sequence. Normalize its observed counts independently to
+4,096 with the variant-1 integer-error rule: floor the exact scale with a
+minimum of one for present symbols, add units to greatest positive error with
+lowest-symbol ties, and remove units from least error with highest-symbol ties.
+Leave unused context slices zero. Bypass decisions never enter these counts and
+always use the fixed 2,048/2,048 model.
+
+Validate and count the entire operation sequence before normalization or state
+coding. Encode operations in reverse logical order; within a bypass operation,
+encode bits from highest selected index down to zero so forward decoding still
+publishes the value LSB first. Use the scalar variant-1 state transition and
+backward renormalization-byte fill, plan without output writes, and publish the
+descriptor only after exact payload size and limits validate. Reject operation/
+payload overlap before encoding. This adds no direct token bridge, frame
+encoder, streaming lifecycle, public API, CLI profile, or format change.
