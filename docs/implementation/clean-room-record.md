@@ -16461,3 +16461,33 @@ discarded and the reviewed seed retained.
   identically on Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle self-verified and
   decoded and re-encoded identically on Windows/MSVC. Every pass verified all
   44 archives.
+
+## CR-0717: 2026-08-10 - Contextual tANS variant-2 reservation
+
+- Authoring method: composed marc's local tANS state/table rules with its
+  independently specified modeled-operation, field-context, and compact-model
+  contracts.
+- References used: AGENTS.md sections 5.5, 6, 7, 10.6, 11.2, 12, and 15;
+  DD-687; IR-0465; TVG-0566; marc's tANS variant 1, contextual rANS variant 3,
+  Format 2, and `LzssFieldContext` documents.
+- Known implementations intentionally not consulted: external contextual ANS
+  coders, table builders, descriptor formats, source code, corpora, encoded
+  streams, optimization descriptions, and test vectors.
+- Independent decisions: use one live state; assign independent deterministic
+  tables to active Symbol contexts; use one implicit fixed binary bypass table;
+  reuse only marc's canonical compact model records; and include tANS final-bit
+  metadata in a distinct 24-byte prefix.
+- Generated-code task description: specify the decoder-visible parameter,
+  descriptor, payload, table-workspace, bit-order, padding, finalization, and
+  one-Literal vector boundaries without implementing the codec.
+- Similarity review: algorithm IDs, field order, model records, table count,
+  bounds, and vector derive solely from marc's existing repository-owned
+  specifications and arithmetic.
+- Local validation: two one-symbol tables map live state `L=4096` to itself
+  without additional bits; the descriptor is 24 prefix plus two three-byte
+  records, the payload is two bytes, the frame is 96 bytes, and the complete
+  one-byte stream is 208 bytes. No encoder, decoder, public profile, or
+  interoperability result is claimed. All 2,626 registered tests, including
+  `marc_interoperability_schema_compatibility` and the existing tANS hand-
+  vector/table regressions, pass with a 240-second per-test limit under MSVC
+  19.51.36252 in 72.09 seconds.

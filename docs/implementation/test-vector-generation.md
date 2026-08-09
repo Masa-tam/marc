@@ -7378,3 +7378,21 @@ require order rejection. Derive schema 32 by removing only archive 44 and
 changing the manifest identity to `32` / `marc-cli-v32`; verify it, then derive
 and verify each existing schema down through schema 1. Keep fixed
 `lzss-contextual-rans` absent from every interoperability inventory.
+
+### TVG-0566
+
+Reserve contextual tANS variant 2 with one raw byte `A`. Require typed token
+`Literal(0x41)` and Symbol decisions `(context 0, value 0)` and
+`(context 3, value 65)`. Normalize each used one-symbol context to 4,096 and
+leave every other context inactive. Require active mask `09 00 00 00`, the
+three-byte dense context-0 record `00 00 10`, and the three-byte sparse
+context-3 record `01 00 41` after the 24-byte prefix.
+
+Require decision count two, payload size two, table log 12, final valid bits
+zero, context count 31, frequency-entry count 4,518, and exact descriptor size
+30. Starting from `L=4096`, both one-symbol transitions map `L` to itself and
+emit no additional bit, so payload is `00 00`. Require the 64-byte frame header
+to declare descriptor size 30 and exact complete-frame extent 96 bytes. The
+112-byte stream header selects dictionary/context `2/2` and `1/1` plus entropy
+`5/2`, making the complete one-byte stream 208 bytes. This vector reserves
+bytes before implementation and changes no public inventory.

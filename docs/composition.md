@@ -1308,3 +1308,13 @@ outside the bundle. Four-direction verification at revision
 `2c30be4da1a80d01103dac0ee82fb0c4889f3af4` establishes canonical output for
 all 44 archives across the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and
 Ubuntu 26.04/Clang producers.
+
+### CP-0055
+
+The reserved `lzss-contextual-tans` composition changes only the entropy axis:
+typed LZSS remains variant 2 and `LzssFieldContext` remains variant 1, while
+entropy becomes one-state contextual tANS variant 2. Per-context normalized
+models use the compact canonical descriptor immediately, and bypass bits share
+an implicit fixed binary tANS table. This reservation adds no implementation,
+public lifecycle, CLI, benchmark, stable matrix cell, or interoperability
+entry.

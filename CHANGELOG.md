@@ -165,6 +165,10 @@ format versions, and C ABI versions are independent namespaces.
   revision `2c30be4da1a80d01103dac0ee82fb0c4889f3af4` verifies all 44 archives
   across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
   producers.
+- Reserved contextual tANS variant 2 as the next Format 2 entropy backend. It
+  retains typed LZSS and the 31-context model, uses one frame-local state with
+  independent deterministic tables, and starts with the compact canonical
+  model representation rather than repeating fixed-descriptor overhead.
 
 ### Changed
 

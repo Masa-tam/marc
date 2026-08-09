@@ -4504,3 +4504,19 @@ serialized frame extent before output. Consequently one frame performs two
 reference match searches, one context validation, one context materialization,
 one entropy size plan, and one entropy write. No output becomes visible until
 the same complete-frame transaction succeeds.
+
+### Reserved Format 2 contextual tANS boundary
+
+The next entropy-backend experiment retains typed LZSS variant 2 and
+`LzssFieldContext` variant 1 while selecting tANS variant 2. One live state
+codes the complete bounded modeled frame. Symbol decisions select independent
+frame-static tANS tables for the expected contexts; bypass decisions select
+one implicit fixed binary table in the same state. All tables reset at the
+outer-frame boundary.
+
+The descriptor adopts the already proven canonical dense/sparse model records
+from the beginning and adds tANS final-bit metadata. It does not repeat the
+fixed contextual-rANS descriptor as a reference format. Decoder admission
+charges all 31 possible context tables plus the fixed bypass table before
+construction, and complete descriptor, table, bitstream, state, token, and raw
+validation remains inside one frame-atomic publication boundary.

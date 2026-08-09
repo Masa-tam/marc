@@ -321,9 +321,64 @@ reuse policy as variant 2. Format-specific validation charges 23 through 9,025
 descriptor bytes before the shared model/table core; it never substitutes the
 fixed 9,052-byte charge.
 
+## Contextual tANS variant 2
+
+Entropy algorithm ID 5, variant 2 retains tANS variant 1's `table_log=12`,
+table size `L=4096`, live-state interval `[L,2L)`, spread step 2,563,
+LSB-first additional bits, and exact terminal state `L`. It changes model
+ownership while retaining one state for the complete modeled frame:
+
+- every used Symbol context owns an independent static normalized model and
+  deterministic spread/transition table;
+- normalization uses rANS/tANS variant 1's exact integer rule and numeric-
+  symbol tie breaks independently within each fixed context alphabet;
+- unused Symbol contexts have no record and an implicit all-zero model;
+- each bypass bit selects one implicit fixed binary tANS table normalized as
+  `0:2048, 1:2048`, and contributes no serialized frequency;
+- all context tables, the bypass table, and the state reset at every outer
+  frame.
+
+Encoding traverses modeled operations in reverse. A Symbol uses its context's
+inverse transition. A bypass field traverses its selected bits from the
+highest index down to zero, so forward decoding reconstructs the value least-
+significant bit first. The completed payload begins with little-endian uint16
+`x-L`, followed by the logical decoder-order bit sequence packed LSB first.
+
+Variant 2 uses a variable descriptor with this 24-byte prefix:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | Symbol operations plus individual bypass bits |
+| 4 | 4 | payload size | exact bytes; at least 2 |
+| 8 | 1 | table log | exactly 12 |
+| 9 | 1 | final valid bits | 0 iff payload size is 2; otherwise 1..8 |
+| 10 | 2 | flags | zero |
+| 12 | 2 | context count | exactly 31 |
+| 14 | 2 | reserved | zero |
+| 16 | 4 | frequency entry count | exactly 4,518 |
+| 20 | 4 | active-context mask | bits 0 through 30; bit 31 is zero |
+
+Active-context records follow in ascending context order and use contextual
+rANS variant 3's exact canonical dense/sparse forms and selection inequality.
+The smallest general descriptor is 27 bytes and the all-dense maximum is 9,029
+bytes. Descriptor length comes from the enclosing frame header and parsing
+must consume it exactly.
+
+For `D` decisions, payload size is at most `2 + ceil(12D / 8)`. Decoding
+charges 32 complete 4,096-entry transition tables before construction: 31
+possible Symbol contexts plus the implicit bypass table. It rejects a
+requested inactive context, an unrequested active context, an invalid state
+transition, insufficient bits, extra valid bits, nonzero high padding, a
+terminal state other than `L`, or any count mismatch.
+
+For raw byte `A`, `LzssFieldContext` emits Symbol `(context 0, value 0)` and
+Symbol `(context 3, value 65)`. Each is a one-symbol model with frequency
+4,096. Both transitions leave state `L` unchanged and emit no bits, so the
+payload is `00 00` and final valid bits is zero.
+
 ## Backend substitution
 
-A later tANS or Huffman backend may consume the same operation sequence,
+A later Huffman backend may consume the same operation sequence,
 but it receives a distinct entropy variant and decoder-visible descriptor
 layout whenever its bytes differ. It may serialize per-context tables and a
 separate bypass-bit region, provided exact order, normalization, padding,

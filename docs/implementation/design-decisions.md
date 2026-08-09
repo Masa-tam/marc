@@ -14225,3 +14225,27 @@ That release check completed at revision
 24.04/Ninja artifacts verified on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 bundle verified locally and on Windows/MSVC. Every pass decoded and
 byte-identically re-encoded all 44 archives.
+
+## DD-687: Contextual tANS begins with a compact model descriptor
+
+- Date: 2026-08-10
+- Status: accepted
+
+Retain typed LZSS variant 2 and `LzssFieldContext` variant 1, and reserve tANS
+algorithm ID 5 variant 2 so the next experiment changes only the entropy axis.
+Reuse variant 1's table log 12, 4,096-state table, live interval `[L,2L)`,
+spread step 2,563, LSB-first additional bits, and terminal state `L`.
+
+Give each used Symbol context its own frame-static normalized tANS table. Code
+bypass bits in the same state through one implicit fixed 2,048/2,048 binary
+table. Traverse operations and the bits within each bypass field in reverse on
+encode so decode remains forward and LSB first. Charge 32 full transition
+tables before decoder construction and preserve frame-atomic publication.
+
+Do not repeat contextual rANS variant 2's fixed-descriptor experiment. Use a
+24-byte tANS-specific prefix followed by contextual rANS variant 3's exact
+canonical dense/sparse model records. This produces a 27 through 9,029-byte
+descriptor, retains explicit final-valid-bit metadata, and keeps tANS payload
+identity distinct. The decision reserves documentation and a one-Literal
+vector only; it adds no implementation, public API, CLI, benchmark, readiness,
+or interoperability claim.

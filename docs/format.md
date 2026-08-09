@@ -6099,3 +6099,62 @@ archive once after the frozen schema-32 order. Its manifest version and codec
 set change bundle inventory only and do not alter a stream header, frame,
 descriptor, payload, final state, or padding byte. Fixed-descriptor variant 2
 is not included in schema 33.
+
+### Reserved LZSS field-context plus tANS profile
+
+The next Format 2 profile is named `lzss-contextual-tans`. It retains
+dictionary algorithm/variant `2/2` and context-model algorithm/variant `1/1`,
+and selects entropy algorithm/variant `5/2`. This reservation defines bytes
+only; it claims no encoder, decoder, C lifecycle, CLI selector, benchmark, or
+interoperability archive.
+
+Its 16-byte entropy parameter region is:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 1 | table log | exactly 12 |
+| 1 | 1 | state count | exactly 1 |
+| 2 | 2 | context count | exactly 31 |
+| 4 | 4 | frequency entry count | exactly 4,518 |
+| 8 | 4 | flags | zero |
+| 12 | 4 | reserved | zero |
+
+The stream entropy-block-size field is zero because one contextual tANS block
+covers the complete modeled frame. All other 112-byte stream-header fields,
+LZSS parameters, and context-model extension rules remain unchanged.
+
+The 64-byte frame header carries the exact variable descriptor extent and
+compressed payload extent. The descriptor is 27 through 9,029 bytes. Payload
+size is at least two and at most `2 + ceil(12 * decision_count / 8)`. The body
+is the descriptor followed immediately by the payload; context-side-data and
+checksum-trailer extents are zero.
+
+The descriptor, independent per-context normalization and spreading, fixed
+bypass table, reverse encode order, forward decode order, state transitions,
+valid-bit count, padding, and strict finalization are defined by the entropy-
+backend contract. Decoder admission charges 131,072 transition entries before
+building the 31 possible context tables and one fixed bypass table. Typed-token
+reconstruction and raw publication retain the complete-frame transaction.
+
+For raw byte `A`, the frame header is:
+
+```text
+4D 52 46 32 40 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 01 00 00 00  02 00 00 00 02 00 00 00
+02 00 00 00 1E 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+```
+
+Its complete 30-byte descriptor is:
+
+```text
+02 00 00 00 02 00 00 00  0C 00 00 00 1F 00 00 00
+A6 11 00 00 09 00 00 00  00 00 10 01 00 41
+```
+
+Mask `09 00 00 00` activates contexts 0 and 3. Context 0 uses the three-byte
+dense record `(mode=0, symbol-0 frequency=4,096)` under the canonical tie
+rule. Context 3 uses the one-symbol sparse record
+`(mode=1, K-1=0, symbol=65)`. Both one-symbol transitions leave the initial
+state `L` unchanged, so the payload is `00 00`, with no following bit byte.
+The complete frame is 96 bytes and the complete one-byte stream is 208 bytes.

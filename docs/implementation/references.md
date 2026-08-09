@@ -4067,3 +4067,12 @@ TVG-0560 through TVG-0565, the frozen local schema-32 order, compact CLI
 selector, and repository-owned bundle generator, verifier, and compatibility
 scripts. No external archive, manifest, corpus, encoder, decoder, source code,
 test suite, or interoperability fixture was consulted.
+
+### IR-0465
+
+The contextual tANS variant-2 reservation uses only DD-687, marc's
+independently specified tANS variant 1 table construction and state rules,
+contextual rANS variant 3's local canonical model records, the entropy-backend
+contract, and the fixed `LzssFieldContext` schema. No external contextual ANS
+implementation, table format, source code, corpus, encoded stream, or test
+vector was consulted.
