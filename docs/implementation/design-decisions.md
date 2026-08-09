@@ -14155,3 +14155,24 @@ saturated-length, and nonzero-descriptor-flags regressions over both public and
 private representations. This milestone proves target construction and a
 bounded sanitizer smoke, not CLI, benchmark, stable-matrix, or
 interoperability admission.
+
+## DD-684: Compact contextual rANS receives an explicit CLI selector
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add `lzss-contextual-rans-compact` as an independent experimental selector.
+Keep `lzss-contextual-rans` bound to fixed-descriptor entropy variant 2 and
+bind the new name only to compact variant 3. Do not auto-detect the variant,
+change the default codec, or create a shorter ambiguous alias. Encode and
+decode require the same explicit selector.
+
+Use the same 65,536-byte frame, 393,216-decision, 786,440-byte payload, and
+8 MiB aggregate-buffer policies as the fixed diagnostic profile, but call
+only `marc_lzss_contextual_rans_compact_config_init`, its direction-specific
+workspace query, compact factory, generic process, and destroy operations.
+Obtain all storage extents and view alignment from that query. Reuse the
+transactional file adapter so overwrite refusal, malformed input, strict
+trailing data, and later failure never publish a destination. This remains an
+experimental Format 2 selector outside the stable 42-profile inventory and
+adds no benchmark or interoperability archive.

@@ -626,6 +626,17 @@ if(NOT cli_profile_count EQUAL 42)
         "CLI profile inventory must contain 42 profiles, found "
         "${cli_profile_count}")
 endif()
+foreach(required_experimental_cli IN ITEMS
+        "`lzss-contextual-dynamic-range`"
+        "`lzss-contextual-rans`"
+        "`lzss-contextual-rans-compact`")
+    string(FIND "${cli_content}" "${required_experimental_cli}"
+        experimental_cli_offset)
+    if(experimental_cli_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing experimental CLI selector: ${required_experimental_cli}")
+    endif()
+endforeach()
 
 set(c_api_document "${source_dir}/docs/c-api.md")
 file(READ "${c_api_document}" c_api_content)

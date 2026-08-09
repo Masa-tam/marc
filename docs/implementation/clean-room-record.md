@@ -16370,3 +16370,30 @@ discarded and the reviewed seed retained.
   240-second per-test limit in 174.24 seconds. Clang 22.1.3 builds the compact
   ASan/UBSan/libFuzzer target; its 1,000-run finite smoke completes without a
   crash, hang, or sanitizer finding and peaks at 44 MiB RSS.
+
+## CR-0714: 2026-08-10 - Compact contextual rANS CLI selector
+
+- Authoring method: specified a distinct experimental selector, connected it
+  only through marc's compact ABI-1 lifecycle, and extended the repository's
+  generic transactional CLI regression with exact wire-identity assertions.
+- References used: AGENTS.md sections 3, 7, 11.2, 12, 14, and 15; DD-681
+  through DD-684; IR-0462; TVG-0560 through TVG-0563; marc's existing CLI
+  adapter, compact public lifecycle, and generic CLI round-trip script.
+- Known implementations intentionally not consulted: external command-line
+  interfaces, C APIs, ANS implementations, source code, archives, corpora,
+  malformed samples, test suites, and optimization descriptions.
+- Independent decisions: use the unambiguous
+  `lzss-contextual-rans-compact` name; keep the old selector on variant 2;
+  preserve the default codec and stable 42-profile inventory; and obtain all
+  compact storage exclusively from the public requirements query.
+- Generated-code task description: configure, allocate, and construct compact
+  encode/decode transforms through public ABI-1 calls, verify entropy identity
+  `4/3` while retaining `4/2` for the fixed selector, and reuse transactional
+  nonempty, empty, overwrite, malformed, trailing-data, and cleanup tests.
+- Similarity review: the adapter follows only marc's existing local CLI flow
+  and distinct public symbol family; no external selector naming, parser,
+  storage policy, or command structure was used.
+- Local validation: both fixed and compact contextual-rANS CLI regressions
+  pass under MSVC 19.51.36252. All 2,581 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 70.28 seconds.

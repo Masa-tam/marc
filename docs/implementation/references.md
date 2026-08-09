@@ -4043,3 +4043,11 @@ contextual-rANS dual-path harness, compact complete-frame decoder, compact
 ABI-1 lifecycle, and repository-owned canonical malformed regressions. No
 external fuzzer harness, ANS implementation, source code, archive, corpus,
 malformed sample, or test suite was consulted.
+
+### IR-0462
+
+The compact contextual-rANS CLI selector uses only DD-681 through DD-684,
+TVG-0560 through TVG-0563, marc's existing transactional CLI adapter, compact
+ABI-1 lifecycle, and generic CLI round-trip script. No external command-line
+interface, C API, ANS implementation, source code, archive, corpus, malformed
+sample, or test suite was consulted.

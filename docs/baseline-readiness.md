@@ -1402,3 +1402,15 @@ without publication. MSVC compile-smoke and all 2,580 ordinary tests pass; a
 ClangCL ASan/UBSan/libFuzzer smoke completed 1,000 bounded cases without a
 crash, hang, or sanitizer finding at 44 MiB peak RSS. This is local fuzz
 evidence, not CLI, benchmark, stable-matrix, or interoperability admission.
+
+### BR-0051
+
+The compact contextual-rANS lifecycle now has the explicit experimental CLI
+selector `lzss-contextual-rans-compact`. It uses only the distinct compact
+public configuration, requirements, factory, process, and destroy surface and
+emits entropy identity `4/3`; the existing `lzss-contextual-rans` selector is
+now regression-checked to remain `4/2`. The transactional regression covers
+nonempty and empty round trips, overwrite refusal, malformed input, strict
+trailing data, and failure cleanup. All 2,581 ordinary tests pass under MSVC.
+This is CLI evidence, not benchmark, stable-matrix, or interoperability
+admission.

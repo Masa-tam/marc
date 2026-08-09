@@ -7338,3 +7338,16 @@ nonzero. Require no private raw publication, no public output publication, and
 a stable public malformed-stream result. Build the compact target with
 ASan/UBSan/libFuzzer and run exactly 1,000 bounded cases with maximum input
 8,192, five-second per-case timeout, and 512 MiB RSS limit.
+
+### TVG-0563
+
+Run the generic transactional CLI regression with
+`--codec lzss-contextual-rans-compact`. Encode a nonempty repeated
+mixed-symbol fixture, require entropy algorithm/variant `4/3`, decode it with
+the same selector, and compare exact bytes. Repeat for empty input.
+
+Independently attempt to overwrite an existing archive, decode malformed
+input, and append one strict trailing byte to an otherwise valid compact
+stream. Require nonzero command status and no destination or temporary-file
+publication after each failure. Keep the fixed `lzss-contextual-rans`
+selector bound to entropy variant 2.

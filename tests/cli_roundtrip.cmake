@@ -25,6 +25,20 @@ if(NOT encode_result EQUAL 0)
     message(FATAL_ERROR "CLI encode failed: ${encode_result}")
 endif()
 
+if(DEFINED CLI_ENTROPY_ALGORITHM AND DEFINED CLI_ENTROPY_VARIANT)
+    file(READ "${encoded}" actual_entropy_algorithm
+        OFFSET 16 LIMIT 1 HEX)
+    file(READ "${encoded}" actual_entropy_variant
+        OFFSET 18 LIMIT 1 HEX)
+    if(NOT actual_entropy_algorithm STREQUAL CLI_ENTROPY_ALGORITHM
+        OR NOT actual_entropy_variant STREQUAL CLI_ENTROPY_VARIANT)
+        message(FATAL_ERROR
+            "CLI emitted entropy ${actual_entropy_algorithm}/"
+            "${actual_entropy_variant}, expected "
+            "${CLI_ENTROPY_ALGORITHM}/${CLI_ENTROPY_VARIANT}")
+    endif()
+endif()
+
 execute_process(
     COMMAND "${MARC_CLI}" encode ${codec_args} "${input}" "${encoded}"
     RESULT_VARIABLE overwrite_result)
