@@ -7120,3 +7120,14 @@ workspace regions from the public requirements query, encode, decode, and
 compare the complete bytes before either timed sample. Require successful
 ratio, encode/decode throughput, all six workspace extents, and peak-workspace
 reporting. Keep the command outside the stable 42-profile documentation count.
+
+### TVG-0548
+
+Encode the repository README and format specification before and after removing
+the contextual-rANS streaming encoder's redundant outer frame plan. Require
+the complete archives to remain byte-for-byte identical. Run the focused
+streaming-encoder, frame-encoder, public-completion, CLI, and experimental
+benchmark cases under MSVC and ClangCL. Compare one Release benchmark iteration
+for the format specification and report the measured encode time without
+claiming stable throughput; decoding and every serialized byte must remain
+unchanged.

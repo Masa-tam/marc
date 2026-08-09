@@ -4391,3 +4391,10 @@ direction's requirements query and treats opaque table/token views solely as
 aligned bytes. Complete-stream capacity includes the 112-byte prefix and each
 frame's 64-byte header, 9,052-byte descriptor, eight-byte state allowance, and
 `12N` payload allowance. Verification completes before timing begins.
+
+The encoder path supplies that already bounded serialized-frame workspace
+directly to the transactional complete-frame encoder. It does not pre-plan the
+same frame in the streaming layer, and the frame planner does not separately
+count tokens before invoking the typed-token encoder's own transactional
+preflight. This preserves all atomic publication boundaries while reducing the
+reference match finder from six full searches to two per frame.

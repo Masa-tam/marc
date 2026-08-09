@@ -148,6 +148,13 @@ format versions, and C ABI versions are independent namespaces.
   deterministic arbitrary chunking, sticky terminal states, and frame-atomic
   rejection of corrupt, truncated, and trailing final-frame input.
 
+### Changed
+
+- Reduced experimental contextual-rANS encoding from six reference LZSS
+  match-search passes to two per frame by removing redundant nested planning.
+  The transactional failure boundary, workspace contract, and encoded bytes
+  are unchanged.
+
 ## 0.1.3 - 2026-08-08
 
 ### Added

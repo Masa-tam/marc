@@ -164,34 +164,18 @@ bool LzssContextualRansFrameStreamingEncoder::output_is_disjoint(
 bool LzssContextualRansFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
     const auto raw = raw_frame_workspace_.first(raw_frame_size_);
-    const auto plan = plan_lzss_contextual_rans_frame(
-        stream_, limits_, frame_sequence_, input_committed_, raw,
-        token_workspace_);
-    if (plan.error != LzssContextualRansFrameEncodeError::none) {
-        if (is_limit_failure(plan)) {
-            preparation_error_ = core::ErrorCode::limit_exceeded;
-        } else if (is_capacity_failure(plan.error)) {
-            preparation_error_ = core::ErrorCode::out_of_memory;
-        } else if (plan.error
-                   == LzssContextualRansFrameEncodeError::
-                       input_size_mismatch) {
-            preparation_error_ = core::ErrorCode::invalid_argument;
-        }
-        return false;
-    }
-    if (serialized_frame_workspace_.size() < plan.serialized_size) {
-        preparation_error_ = core::ErrorCode::out_of_memory;
-        return false;
-    }
     const auto encoded = encode_lzss_contextual_rans_frame(
         stream_, limits_, frame_sequence_, input_committed_, raw,
-        token_workspace_,
-        serialized_frame_workspace_.first(plan.serialized_size));
+        token_workspace_, serialized_frame_workspace_);
     if (encoded.error != LzssContextualRansFrameEncodeError::none) {
         if (is_limit_failure(encoded)) {
             preparation_error_ = core::ErrorCode::limit_exceeded;
         } else if (is_capacity_failure(encoded.error)) {
             preparation_error_ = core::ErrorCode::out_of_memory;
+        } else if (encoded.error
+                   == LzssContextualRansFrameEncodeError::
+                       input_size_mismatch) {
+            preparation_error_ = core::ErrorCode::invalid_argument;
         }
         return false;
     }

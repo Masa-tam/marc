@@ -15904,3 +15904,32 @@ discarded and the reviewed seed retained.
   interoperability-schema loop pass with two CTest workers under both
   supported Windows compilers in 164.24 seconds and 110.55 seconds,
   respectively, within the 240-second ordinary-suite limit.
+
+## CR-0699: 2026-08-09 - Contextual rANS redundant-plan removal
+
+- Authoring method: audited marc's independently written streaming, complete-
+  frame, typed-token, and benchmark call graph after the first descriptive
+  contextual-rANS measurement.
+- References used: AGENTS.md sections 3.3, 11.2, 13, 14.3, 15, and 16;
+  DD-669; IR-0447; TVG-0548; local transactional encoder contracts and direct
+  pre-change archives.
+- Known implementations intentionally not consulted: external match finders,
+  compression optimizers, benchmark harnesses, source code, corpora, archives,
+  and performance tables.
+- Independent decisions: retain one complete-frame plan inside the frame
+  encoder; rely on the typed-token encoder's existing atomic preflight instead
+  of separately counting tokens; and pass the already bounded serialized
+  workspace directly from streaming to complete-frame encoding.
+- Generated-code task description: remove two nested redundant planning layers,
+  preserve capacity/error mapping, prove exact archived-byte identity, compare
+  descriptive timing, and run focused plus complete local regression suites.
+- Similarity review: the change deletes duplicate calls and uses only marc's
+  existing error categories, workspace ownership, and transactional
+  boundaries; it introduces no external optimization structure.
+- Local validation: MSVC 19.51.36231 and ClangCL 22.1.3 builds pass all 86
+  focused contextual-rANS tests. SHA-256 equality proves the README and
+  300,194-byte format-specification archives unchanged. One MSVC Release
+  iteration falls from 30.462 to 10.053 encode seconds for the latter. All
+  2,567 ordinary registered tests excluding the separately audited exhaustive
+  interoperability-schema loop pass with two workers in 162.36 and 116.23
+  seconds, respectively, within the 240-second limit.

@@ -13816,3 +13816,27 @@ outside timed intervals; and report ratio, directional throughput, each
 queried primary/secondary/views extent, and peak caller-owned workspace. Add a
 separately labeled smoke test and record descriptive local results without
 claiming stable performance or interoperability admission.
+
+## DD-669: Contextual rANS encoding removes redundant frame planning
+
+- Date: 2026-08-09
+- Status: accepted
+
+Treat the first benchmark result as a diagnostic rather than a performance
+claim. The streaming encoder previously called the complete-frame planner and
+then the complete-frame encoder, although the latter performs the same
+transactional plan internally. Within each frame planner it also counted LZSS
+tokens in a separate pass before calling the transactional typed-token encoder,
+which performs its own preflight. With the reference match finder, these
+layers caused six complete match-search passes for every encoded frame.
+
+Pass the full preallocated serialized-frame workspace directly to the
+complete-frame encoder and let its single internal plan determine the committed
+extent. Within that plan, call the typed-token encoder directly over the
+worst-case token workspace; its existing preflight preserves atomic failure.
+The resulting two match-search passes per frame retain identical bytes,
+limits, overlap rules, and caller-owned workspace while removing four
+redundant searches. Prove byte identity against the pre-change README and
+format-specification archives, focused streaming behavior, and comparative
+Release timing. This optimization does not repair the fixed 9,052-byte model
+cost; a compact descriptor requires a distinct entropy variant.

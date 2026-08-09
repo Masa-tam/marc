@@ -108,27 +108,21 @@ LzssContextualRansFrameEncodeResult plan_lzss_contextual_rans_frame(
         return result;
     }
 
-    result.token_encode = dictionary::internal::plan_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits);
+    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
+        raw_input, stream.dictionary, limits, private_tokens);
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
         != dictionary::internal::LzssTypedEncodeError::none) {
+        if (result.token_encode.error
+            == dictionary::internal::LzssTypedEncodeError::output_too_small) {
+            result.error =
+                LzssContextualRansFrameEncodeError::token_staging_too_small;
+            return result;
+        }
         result.error = LzssContextualRansFrameEncodeError::token_encode_error;
-        return result;
-    }
-    if (private_tokens.size() < result.token_count) {
-        result.error =
-            LzssContextualRansFrameEncodeError::token_staging_too_small;
         return result;
     }
     const auto tokens = private_tokens.first(result.token_count);
-    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits, tokens);
-    if (result.token_encode.error
-        != dictionary::internal::LzssTypedEncodeError::none) {
-        result.error = LzssContextualRansFrameEncodeError::token_encode_error;
-        return result;
-    }
     if (result.token_count > std::numeric_limits<std::uint32_t>::max()) {
         result.error =
             LzssContextualRansFrameEncodeError::arithmetic_overflow;

@@ -3920,3 +3920,11 @@ capacity specification, public C lifecycle, existing dependency-free
 measurement contract, and bounded workspace reporting policy. No external
 benchmark harness, compressor, capacity formula, corpus, source code, encoded
 stream, or result table was consulted.
+
+### IR-0447
+
+The contextual-rANS encoder planning audit uses only DD-669, marc's local
+complete-frame and typed-token transactional contracts, the dependency-free
+benchmark output, and direct call-graph inspection. No external match finder,
+compression optimizer, benchmark harness, source code, corpus, archive, or
+performance result was consulted.

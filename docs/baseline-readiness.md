@@ -1320,3 +1320,14 @@ pre-timing round trip, directional throughput, compression ratio, and three-
 region workspace reporting are covered by a separately labeled smoke test
 under both local compilers. This is descriptive benchmark evidence, not
 admission to the stable 42-profile benchmark matrix or interoperability schema.
+
+### BR-0044
+
+The experimental contextual-rANS encoder no longer repeats complete frame and
+token-count planning above already transactional lower layers. Its reference
+LZSS search count falls from six to two passes per frame without changing the
+format, limits, queried workspace, or failure publication. README and format-
+specification archives remain byte-identical to the pre-change results; the
+latter's descriptive MSVC Release encode time falls from 30.462 to 10.053
+seconds. The fixed descriptor remains unsuitable as a recommended profile and
+requires a distinct compact variant before interoperability consideration.

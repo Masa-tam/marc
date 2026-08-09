@@ -524,6 +524,26 @@ this result establishes only deterministic same-input size and workspace
 evidence. It is not a representative corpus result or a stable performance
 baseline.
 
+### BM-0015: Contextual rANS planning audit
+
+One MSVC Release iteration over the 300,194-byte format specification exposed
+two independent costs. Before the planning correction, contextual rANS encoded
+120,487 bytes at ratio 0.401 in 30.462 seconds, while contextual Dynamic Range
+encoded 78,123 bytes at ratio 0.260 in 33.224 seconds. Removing four redundant
+LZSS match-search passes leaves the contextual-rANS archive byte-identical and
+reduces its measured encode time to 10.053 seconds, approximately 3.03 times
+faster in this descriptive run.
+
+The size loss is not in the rANS payload. Across five frames, rANS payload plus
+common framing excluding model descriptors occupies 74,795 bytes, but the five
+fixed descriptors add 45,260 bytes. The Dynamic Range stream carries no
+equivalent static-model cost. A locally evaluated deterministic per-context
+dense-or-sparse representation would reduce those descriptors to 7,330 bytes
+for this input and project a complete 82,557-byte archive (ratio 0.275). For
+the 4,326-byte README it projects 11,081 down to 3,006 bytes (ratio 0.695).
+This estimate motivates a distinct compact entropy variant; it is not a result
+for the current fixed-descriptor format.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
