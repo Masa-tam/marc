@@ -4002,3 +4002,11 @@ DD-675, DD-676, DD-678, TVG-0549, TVG-0554, TVG-0555, TVG-0557, marc's typed
 LZSS encoder, direct contextual-rANS token encoder, compact descriptor
 serializer, and transactional frame-output policy. No external encoder, ANS
 implementation, source code, archive, corpus, or test suite was consulted.
+
+### IR-0457
+
+The compact contextual-rANS streaming encoder uses only DD-675, DD-677,
+DD-678, DD-679, TVG-0554, TVG-0556, TVG-0557, TVG-0558, marc's fixed
+contextual-rANS streaming lifecycle, compact stream-header serializer, and
+compact complete-frame encoder. No external streaming encoder, ANS
+implementation, source code, archive, corpus, or test suite was consulted.

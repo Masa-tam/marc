@@ -6070,3 +6070,11 @@ and records the same size in the common frame header. Raw byte `A` reproduces
 the complete 98-byte vector above and decodes through the compact frame
 decoder. Streaming encoder selection and public selector integration remain
 future work.
+
+The private compact streaming encoder emits the canonical 112-byte variant-3
+stream header followed by the same compact complete-frame bytes. It buffers one
+declared raw frame, assigns zero-based frame sequences, and drains each complete
+frame before collecting another. Arbitrary input/output chunking is
+representation-neutral; Flush does not close a partial frame, and EndInput is
+retained until all final bytes are drained. Public selector integration remains
+future work.

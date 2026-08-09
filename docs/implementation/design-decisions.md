@@ -14041,3 +14041,27 @@ unchanged. The one-Literal output must equal the specified 98-byte frame and
 decode through the compact complete-frame decoder. This milestone adds no
 streaming encoder, public API, CLI selector, benchmark, or interoperability
 archive.
+
+## DD-679: Compact streaming encoding shares lifecycle, not identity
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add a distinct private compact streaming-encoder type. Reuse the fixed
+contextual-rANS encoder's collection, immutable drain, known-size EndInput,
+Flush, capacity, alias, and sticky-terminal lifecycle behind an explicit
+fixed/compact representation mode. The compact constructor must validate and
+serialize only variant 3 stream identity, and frame preparation must call only
+the DD-678 compact complete-frame encoder. It must never emit variant 2 or
+charge the fixed descriptor extent.
+
+Chunking alone does not alter output. Emit the canonical 112-byte compact
+stream header before accepting frame publication, collect exactly one declared
+raw frame, construct its complete compact bytes in caller-owned private
+workspace, and drain them before collecting another frame. Preserve EndInput
+while either header or frame bytes remain pending. Flush may expose already
+representable output but does not close a partial raw frame. ResetBlock remains
+unsupported. Constructor, workspace, capacity, limit, input-extent, alias,
+unknown-flag, and reset failures become stable terminal errors. This milestone
+adds no public API, CLI selector, benchmark, new fuzz entry, or interoperability
+archive.

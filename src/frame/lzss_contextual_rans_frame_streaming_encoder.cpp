@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_rans_frame_streaming_encoder.hpp"
 
 #include "core/checked_math.hpp"
+#include "frame/lzss_contextual_rans_compact_frame_encoder.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -74,6 +75,33 @@ enum class OverlapCheck : std::uint8_t {
                     limit_exceeded);
 }
 
+[[nodiscard]] bool is_limit_failure(
+    const LzssContextualRansCompactFrameEncodeResult& result) noexcept {
+    return result.error
+            == LzssContextualRansFrameEncodeError::workspace_limit
+        || (result.error
+                == LzssContextualRansFrameEncodeError::token_encode_error
+            && (result.token_encode.error
+                    == dictionary::internal::
+                        LzssTypedEncodeError::input_limit_exceeded
+                || result.token_encode.error
+                    == dictionary::internal::LzssTypedEncodeError::
+                        token_storage_limit_exceeded))
+        || (result.error
+                == LzssContextualRansFrameEncodeError::entropy_encode_error
+            && result.entropy_encode.error
+                == context::internal::
+                    LzssContextualRansEncodeError::limit_exceeded)
+        || (result.error == LzssContextualRansFrameEncodeError::header_error
+            && result.header_error
+                == LzssContextualRansFrameHeaderError::limit_exceeded)
+        || (result.error
+                == LzssContextualRansFrameEncodeError::descriptor_error
+            && result.descriptor_error
+                == entropy::internal::ContextualRansCompactFormatError::
+                    limit_exceeded);
+}
+
 [[nodiscard]] bool is_capacity_failure(
     const LzssContextualRansFrameEncodeError error) noexcept {
     return error
@@ -81,6 +109,23 @@ enum class OverlapCheck : std::uint8_t {
         || error
             == LzssContextualRansFrameEncodeError::
                 serialized_output_too_small;
+}
+
+template <typename Result>
+[[nodiscard]] core::ErrorCode preparation_error(
+    const Result& result) noexcept {
+    if (result.error == LzssContextualRansFrameEncodeError::none) {
+        return core::ErrorCode::none;
+    }
+    if (is_limit_failure(result)) return core::ErrorCode::limit_exceeded;
+    if (is_capacity_failure(result.error)) {
+        return core::ErrorCode::out_of_memory;
+    }
+    if (result.error
+        == LzssContextualRansFrameEncodeError::input_size_mismatch) {
+        return core::ErrorCode::invalid_argument;
+    }
+    return core::ErrorCode::internal_error;
 }
 
 } // namespace
@@ -92,7 +137,20 @@ LzssContextualRansFrameStreamingEncoder(
     const std::span<std::byte> raw_frame_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::byte> serialized_frame_workspace) noexcept
+    : LzssContextualRansFrameStreamingEncoder(
+          stream, limits, raw_frame_workspace, token_workspace,
+          serialized_frame_workspace, Representation::fixed) {}
+
+LzssContextualRansFrameStreamingEncoder::
+LzssContextualRansFrameStreamingEncoder(
+    const LzssContextualRansStreamHeader stream,
+    const core::DecoderLimits limits,
+    const std::span<std::byte> raw_frame_workspace,
+    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
+    const std::span<std::byte> serialized_frame_workspace,
+    const Representation representation) noexcept
     : stream_(stream), limits_(limits),
+      representation_(representation),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace),
       serialized_frame_workspace_(serialized_frame_workspace) {
@@ -117,15 +175,22 @@ LzssContextualRansFrameStreamingEncoder(
         : OverlapCheck::arithmetic_overflow;
     const auto required_raw = std::min<std::uint64_t>(
         stream_.original_size, stream_.frame_size);
+    const auto stream_error = representation_ == Representation::compact
+        ? validate_lzss_contextual_rans_compact_stream_header(stream_, limits_)
+        : validate_lzss_contextual_rans_stream_header(stream_, limits_);
+    const auto serialization_error =
+        representation_ == Representation::compact
+        ? serialize_lzss_contextual_rans_compact_stream_header(
+            stream_, limits_, stream_header_)
+        : serialize_lzss_contextual_rans_stream_header(
+            stream_, limits_, stream_header_);
     if (!valid_extent
-        || validate_lzss_contextual_rans_stream_header(stream_, limits_)
-            != LzssContextualRansStreamHeaderError::none
+        || stream_error != LzssContextualRansStreamHeaderError::none
         || raw_frame_workspace_.size() < required_raw
         || raw_tokens != OverlapCheck::disjoint
         || raw_serialized != OverlapCheck::disjoint
         || tokens_serialized != OverlapCheck::disjoint
-        || serialize_lzss_contextual_rans_stream_header(
-               stream_, limits_, stream_header_)
+        || serialization_error
             != LzssContextualRansStreamHeaderError::none) {
         state_ = State::error;
         terminal_error_ = {core::ErrorCode::invalid_argument, 0, 0};
@@ -164,22 +229,22 @@ bool LzssContextualRansFrameStreamingEncoder::output_is_disjoint(
 bool LzssContextualRansFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
     const auto raw = raw_frame_workspace_.first(raw_frame_size_);
-    const auto encoded = encode_lzss_contextual_rans_frame(
-        stream_, limits_, frame_sequence_, input_committed_, raw,
-        token_workspace_, serialized_frame_workspace_);
-    if (encoded.error != LzssContextualRansFrameEncodeError::none) {
-        if (is_limit_failure(encoded)) {
-            preparation_error_ = core::ErrorCode::limit_exceeded;
-        } else if (is_capacity_failure(encoded.error)) {
-            preparation_error_ = core::ErrorCode::out_of_memory;
-        } else if (encoded.error
-                   == LzssContextualRansFrameEncodeError::
-                       input_size_mismatch) {
-            preparation_error_ = core::ErrorCode::invalid_argument;
-        }
-        return false;
+    std::size_t serialized_size{};
+    if (representation_ == Representation::compact) {
+        const auto encoded = encode_lzss_contextual_rans_compact_frame(
+            stream_, limits_, frame_sequence_, input_committed_, raw,
+            token_workspace_, serialized_frame_workspace_);
+        preparation_error_ = preparation_error(encoded);
+        serialized_size = encoded.serialized_size;
+    } else {
+        const auto encoded = encode_lzss_contextual_rans_frame(
+            stream_, limits_, frame_sequence_, input_committed_, raw,
+            token_workspace_, serialized_frame_workspace_);
+        preparation_error_ = preparation_error(encoded);
+        serialized_size = encoded.serialized_size;
     }
-    pending_size_ = encoded.serialized_size;
+    if (preparation_error_ != core::ErrorCode::none) return false;
+    pending_size_ = serialized_size;
     pending_offset_ = 0;
     input_committed_ += raw_frame_size_;
     ++frame_sequence_;

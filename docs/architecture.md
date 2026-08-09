@@ -4461,6 +4461,13 @@ descriptor extent before output admission. Payload, descriptor, and header are
 then written into one already-sized private destination; the header records the
 actual compact descriptor bytes.
 
+The matching compact streaming encoder is a distinct transform type over the
+same bounded collection and immutable-drain state machine as the fixed
+contextual-rANS encoder. Its private representation choice selects the variant
+3 stream-header serializer and compact complete-frame encoder; it does not
+reinterpret variant 2 bytes. One raw frame, typed-token staging, and one exact
+serialized compact frame remain caller-owned and mutually disjoint.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

@@ -16210,3 +16210,36 @@ discarded and the reviewed seed retained.
   pass with a 240-second per-test limit in 72.99 seconds. Clang 22.1.3 rebuilt
   the ASan/UBSan/libFuzzer target, whose bounded 1,000-run smoke completed
   without a crash, hang, or sanitizer finding and peaked at 43 MiB RSS.
+
+## CR-0709: 2026-08-09 - Compact contextual rANS streaming encoder
+
+- Authoring method: specified the representation-selecting lifecycle first,
+  then reused marc's fixed contextual-rANS collection and immutable-drain state
+  machine behind a distinct compact transform wrapper.
+- References used: AGENTS.md sections 3.2 through 3.4, 4, 5, 7, 10.5, 11.2,
+  12, 14, and 15; DD-675, DD-677, DD-678, and DD-679; IR-0457; TVG-0554,
+  TVG-0556, TVG-0557, and TVG-0558; and marc's local fixed streaming encoder,
+  compact stream-header serializer, compact complete-frame encoder, compact
+  streaming decoder, checked arithmetic, and overlap policy.
+- Known implementations intentionally not consulted: external streaming
+  encoders, LZSS or ANS implementations, source code, archives, corpora,
+  malformed samples, test suites, and optimization descriptions.
+- Independent decisions: retain distinct transform types; share one lifecycle
+  state machine; select variant-3 header and frame serialization only through
+  an immutable private representation; drain every prepared frame before
+  collecting another; and preserve EndInput and sticky terminal state across
+  caller starvation.
+- Generated-code task description: reproduce two canonical compact one-Literal
+  frames through one-byte input/output spans, decode the result through the
+  compact streaming decoder, preserve Flush and EndInput semantics, finish an
+  empty stream, and reject every short, limited, aliased, premature, excess,
+  reset, and unknown-flag case with stable ProcessResult values.
+- Similarity review: lifecycle sharing and the compact backend branch use only
+  marc's existing private state machine and specified variant-3 primitives; no
+  external control flow or representation was used.
+- Local validation: all 11 focused fixed and compact streaming-encoder tests
+  pass under MSVC 19.51.36252. All 2,569 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 73.22 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
+  whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
+  finding and peaked at 43 MiB RSS.

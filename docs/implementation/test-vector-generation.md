@@ -7257,3 +7257,18 @@ payload, and complete frame bytes. Independently shorten token staging and
 serialized output, constrain aggregate workspace, invalidate stream
 parameters, mismatch raw extent, and alias raw/token/output storage. Require
 precise stable errors and unchanged serialized sentinels before any write.
+
+### TVG-0558
+
+Encode two one-byte `A` frames through the compact streaming encoder using
+one-byte input and output spans. Require exact equality with the canonical
+112-byte variant-3 stream header followed by two TVG-0554 98-byte frames whose
+sequence fields are zero and one. Decode the result through the compact
+streaming decoder and require the original two bytes.
+
+Independently retain EndInput across a zero-capacity final-frame drain, finish
+empty input after draining only the compact stream header, Flush a partial raw
+frame without closing it, and reject short token/frame workspaces, aggregate
+limits, premature or excess input, overlapping construction/output storage,
+unknown flags, and ResetBlock. Require stable terminal errors and validate
+every ProcessResult count/status combination.
