@@ -4260,3 +4260,12 @@ partially decoded value from being mistaken for accepted output. Completion
 validates counts, model use, state, and payload extent before the decoder is
 marked finished. Typed-token materialization and frame publication remain a
 later composition boundary.
+
+The inverse-model bridge is the next composition boundary. It drives the rANS
+decoder from the same `LzssFieldContextState` rules as the Dynamic Range path,
+but retains rANS's separate caller-owned table region. A write-free first pass
+proves the full entropy and token sequence; a deterministic second pass writes
+private typed tokens only after all three storage regions are proven disjoint.
+This keeps entropy-table construction, token publication, and eventual raw
+publication as explicit nested transactions without an intermediate modeled-
+operation buffer.

@@ -219,6 +219,20 @@ then requires exact payload exhaustion. Errors are sticky, repeated finish is
 an explicit lifecycle error, and a new successful `begin` resets the instance.
 The decoder exposes no public profile and does not reconstruct typed tokens.
 
+The private LZSS bridge now supplies those decoder requests directly from the
+accepted `LzssFieldContextState`. It reconstructs and validates each complete
+typed token without first materializing `ModeledOperation[]`. The first pass
+validates parameters, declared counts, every token, raw extent, every entropy
+decision, model use, and strict rANS completion. Only an identical second pass
+writes the caller-owned token span.
+
+Both passes reuse one caller-owned 126,976-entry table span. Preflight rejects
+short tables and any overlap between the payload and the written table extent;
+materialization additionally rejects payload/token and table/token overlap.
+Thus entropy workspace writes cannot corrupt bytes or tokens still needed by
+the pass, and a validation or capacity failure leaves all token output
+unchanged. Raw reconstruction and frame publication remain later boundaries.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

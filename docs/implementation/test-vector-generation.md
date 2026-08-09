@@ -6917,3 +6917,20 @@ and frequency split 1/4,095 with no required renormalization byte. Preserve
 the caller value on every failed request. At finish, independently reject
 count mismatch, a nonzero unused model, state `L+1`, and one trailing zero
 byte; require errors to remain sticky and a later `begin` to reset lifecycle.
+
+### TVG-0535
+
+Pass TVG-0531 through the direct inverse-model bridge. Require one validated
+and then materialized literal token `A`, raw size one, two events, two
+decisions, exact eight-byte payload consumption, and an untouched surplus
+token. Independently activate one-symbol models for match kind 1, length class
+0, and distance class 0; require the resulting history-before-start match to
+fail typed validation as `invalid_distance` after three entropy events.
+
+Reject initial state zero as an entropy error, descriptor/context decision
+disagreement before entropy, and declared raw size two after a valid one-byte
+token. Require short table and token spans to preserve token sentinels. Place
+the payload legally inside the object representation of the table or token
+storage and require overlap rejection before either region changes. Also
+reject invalid LZSS parameters, token-buffer limits, and aggregate output
+limits using the same fixed one-Literal vector.

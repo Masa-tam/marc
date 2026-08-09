@@ -3811,3 +3811,12 @@ and fixed tables, checked arithmetic/endian helpers, and the existing
 caller-driven contextual Dynamic Range lifecycle shape. No external ANS
 decoder, contextual coder, source code, state machine, malformed corpus,
 encoded stream, or test suite was consulted.
+
+### IR-0434
+
+The contextual rANS typed-token bridge uses only DD-656, marc's local
+`LzssFieldContextState`, typed LZSS validator, contextual rANS lifecycle,
+checked arithmetic, and the existing Dynamic Range bridge's repository-owned
+two-pass publication contract. No external contextual compressor, ANS/LZSS
+composition, source code, token grammar, malformed corpus, encoded stream, or
+test suite was consulted.

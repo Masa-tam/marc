@@ -5890,3 +5890,16 @@ unconsumed payload byte. An inactive requested context, altered or impossible
 table entry, truncated renormalization, terminal mismatch, and trailing byte
 are distinct failures. This internal milestone still does not admit the
 reserved profile or connect it to typed-token reconstruction.
+
+The private inverse-model bridge now connects this state decoder to typed LZSS
+variant 2. Starting from reset `LzssFieldContextState`, each accepted token
+kind determines the following literal or match field contexts; decoded class
+values determine the exact LSB-first bypass widths. Every reconstructed token
+is checked against LZSS parameters, prior raw extent, declared frame extent,
+and decoder limits before the context state advances.
+
+Validation decodes the complete entropy payload without token writes. A
+second byte-identical pass alone materializes tokens, after proving table and
+token capacities and disjoint payload/table/token ranges. No wire byte changes,
+raw-byte reconstruction, frame integration, or public admission occurs at
+this milestone.

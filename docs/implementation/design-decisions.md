@@ -13541,3 +13541,21 @@ state exactly `L`, and exact payload exhaustion. Treat table storage as
 exclusive decoder workspace but validate each selected entry's structural
 bounds at use. This adds no typed-token bridge, frame decoder, encoder, public
 API, CLI profile, or format change.
+
+## DD-656: Contextual rANS token inversion is a two-pass direct bridge
+
+- Date: 2026-08-09
+- Status: accepted
+
+Connect the private scalar decoder directly to `LzssFieldContextState` and
+typed LZSS validation. Derive every Symbol context, alphabet, and bypass width
+from already accepted token state, reconstruct one complete token locally,
+validate it against parameters and raw bounds, and only then advance context.
+Do not allocate or expose an intermediate modeled-operation sequence.
+
+Use a write-free validation pass followed by one deterministic token-writing
+pass. Rebuild and reuse the same caller-owned 126,976-entry table extent in
+both passes. Before either table write reject payload/table overlap; before
+token publication also reject payload/token and table/token overlap. Preserve
+token output on all prewrite failures. This adds no raw reconstruction, frame
+decoder, encoder, public API, CLI profile, or format change.

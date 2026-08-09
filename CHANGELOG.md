@@ -100,6 +100,10 @@ format versions, and C ABI versions are independent namespaces.
   caller-owned fixed tables, decodes Symbol and LSB-first bypass decisions in
   one state, preserves sticky failures, and strictly checks model use, counts,
   renormalization extent, and the terminal lower-bound state.
+- Connected contextual rANS directly to private `LzssFieldContext` inverse
+  modeling. A validation pass proves the complete typed-token frame before a
+  second deterministic pass writes caller-owned tokens, with explicit payload,
+  decode-table, and token workspace separation.
 
 ## 0.1.3 - 2026-08-08
 

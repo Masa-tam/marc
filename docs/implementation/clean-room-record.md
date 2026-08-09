@@ -15540,3 +15540,28 @@ discarded and the reviewed seed retained.
   decoder tests pass under MSVC and ClangCL. The complete 2,500-test Release
   suite, including documentation layout and interoperability-schema
   compatibility, also passes under both supported Windows compilers.
+
+## CR-0686: 2026-08-09 - Contextual rANS direct typed-token inversion
+
+- Authoring method: connected marc's local contextual rANS request lifecycle
+  to its independent `LzssFieldContextState` and typed-token validator using
+  the established private two-pass publication pattern.
+- References used: AGENTS.md sections 3, 9.3, 10.5, 11.2, 12, 14, and 15;
+  DD-656; IR-0434; TVG-0535; the local Dynamic Range token bridge and
+  contextual rANS scalar decoder.
+- Known implementations intentionally not consulted: external contextual
+  compressors, ANS/LZSS pipelines, source code, token grammars, malformed
+  corpora, encoded streams, and test suites.
+- Independent decisions: request fields directly from accepted token state;
+  validate each local token before advancing; reuse one table span across two
+  passes; and reject every payload/table/token overlap before affected writes.
+- Generated-code task description: add a private direct rANS-to-typed-LZSS
+  validator/materializer with caller-owned tables and tokens, two-pass atomic
+  publication, storage-overlap gates, hand vectors, and negative tests.
+- Similarity review: token grammar and state selection derive from marc's own
+  field-context implementation; transaction and error mapping follow local
+  bridge conventions rather than an external composition.
+- Local validation: all 15 focused contextual rANS state and direct-bridge
+  tests pass under MSVC and ClangCL. The complete 2,507-test Release suite,
+  including documentation layout and interoperability-schema compatibility,
+  also passes under both supported Windows compilers.
