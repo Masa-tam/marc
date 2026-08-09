@@ -13933,3 +13933,28 @@ typed-token bridge, encoder format selection, public API, or CLI profile.
 The shared table materializer defensively revalidates all model fields and
 frequency sums before writing, but does not repeat either format's serialized
 size charge.
+
+## DD-674: Compact contextual rANS reuses one typed-token state machine
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add distinct private validation and decode entries that accept an exact
+compact-descriptor span, but retain the existing LZSS field-context token
+state machine and two-pass transactional publication. The compact entry calls
+the scalar decoder's `begin_compact`; it does not first reconstruct a public
+descriptor or route through variant 2's fixed-format validator.
+
+Report the compact representation error beside the existing token and entropy
+decode result. Validate parameters, declared token/event/decision/raw bounds,
+descriptor/payload/table overlap, token capacity, and all token aliasing with
+the same precedence and limits as variant 2. The first pass must publish no
+token; the second pass may publish only after the first pass succeeds and
+sufficient disjoint token storage is present. Require both passes to agree on
+counts, raw extent, payload consumption, and compact error.
+
+Prove the specified one-Literal compact vector yields the same typed token and
+accounting as variant 2, and that malformed compact records, short token
+storage, and aliased buffers preserve caller token bytes. This milestone adds
+no frame parser, stream-header admission, encoder selection, public API, CLI,
+benchmark, or interoperability profile.

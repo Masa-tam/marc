@@ -4423,6 +4423,15 @@ writing but applies no serialized-format size. Each outer begin path has
 already charged its own exact descriptor extent, so variant 3 does not inherit
 variant 2's 9,052-byte internal-buffer requirement.
 
+The next private boundary feeds that compact begin result into the existing
+LZSS field-context state machine. Fixed and compact representations therefore
+share token-kind, literal, length, distance, bypass, token-validation, and raw-
+extent logic. Compact format status remains adjacent to, rather than folded
+into, the established token/entropy result. Validation performs a complete
+write-free token pass; publication repeats the same bounded pass only after
+token capacity and all descriptor/payload/table/token disjointness checks
+succeed.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

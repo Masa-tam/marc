@@ -1320,6 +1320,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_rans_compact_format_tests.cpp
         tests/contextual_rans_format_tests.cpp
         tests/lzss_contextual_rans_decoder_tests.cpp
+        tests/lzss_contextual_rans_compact_decoder_tests.cpp
         tests/lzss_contextual_rans_encoder_tests.cpp
         tests/lzss_contextual_rans_format_tests.cpp
         tests/lzss_contextual_rans_frame_decoder_tests.cpp

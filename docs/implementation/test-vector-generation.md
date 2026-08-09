@@ -7189,3 +7189,17 @@ the compact error only for descriptor parsing, ordinary decoder errors for the
 remaining gates, unchanged table sentinels before construction, unchanged
 decoded values on sticky failure, and successful reuse after both failure and
 completed decoding.
+
+### TVG-0553
+
+Pass TVG-0549's exact 26-byte descriptor and eight-byte payload through the
+private LZSS field-context compact decoder with declared counts
+`token/event/decision/raw = 1/2/2/1`. Require one literal `A`, zero distance
+and length, two entropy events and decisions, complete payload consumption,
+and equality with variant 2's typed-token result.
+
+Independently replace the final compact record with its noncanonical dense
+form, supply zero token capacity, alias payload and token storage, and shorten
+the fixed table workspace. Require compact format errors to remain distinct
+from token/state/workspace errors, every prewrite failure to preserve token
+sentinels, and validation-only decoding to publish no token.

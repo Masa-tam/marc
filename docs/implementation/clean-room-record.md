@@ -16047,3 +16047,36 @@ discarded and the reviewed seed retained.
   registered tests excluding the separately audited exhaustive
   interoperability-schema loop pass in 164.62 seconds under MSVC and 111.95
   seconds under ClangCL.
+
+## CR-0704: 2026-08-09 - Compact contextual rANS typed-token bridge
+
+- Authoring method: connected marc's compact scalar begin entry to its existing
+  private LZSS field-context token state machine and transactional two-pass
+  decoder without introducing another token grammar.
+- References used: AGENTS.md sections 3.3, 9.3, 10.5, 11.2, 12, 14, and 15;
+  DD-653 through DD-655; DD-670; DD-672 through DD-674; IR-0452; TVG-0549
+  through TVG-0553; and the repository's typed-token validator, fixed-format
+  bridge, compact scalar decoder, and overlap helpers.
+- Known implementations intentionally not consulted: external token codecs,
+  ANS adapters, source code, archives, corpora, malformed samples, test suites,
+  and optimization descriptions.
+- Independent decisions: preserve one token state machine; return compact
+  representation status beside the established token result; keep validation
+  write-free; repeat the bounded decode only after capacity and complete
+  descriptor/payload/table/token disjointness checks; and require both passes
+  to agree exactly.
+- Generated-code task description: decode the specified one-Literal compact
+  descriptor into a typed literal, compare it with variant 2, separate format
+  and state failures, preserve token sentinels, reject short and aliased
+  workspaces, and compile the bridge through the sanitizer-instrumented static
+  library.
+- Similarity review: the adapter, factoring, error composition, and tests use
+  only marc's existing state transitions, atomic-publication policy, and newly
+  specified compact bytes; no external control flow or representation was
+  used.
+- Local validation: all 25 focused fixed/compact descriptor, scalar, and token
+  decoder tests pass under MSVC 19.51.36252. All 2,541 ordinary registered
+  tests excluding the separately audited exhaustive interoperability-schema
+  loop pass in 46.86 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer
+  target, whose bounded 1,000-run smoke completed without a crash, hang, or
+  sanitizer finding and peaked at 43 MiB RSS.

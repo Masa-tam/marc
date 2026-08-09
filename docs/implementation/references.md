@@ -3960,3 +3960,11 @@ DD-670, DD-672, DD-673, TVG-0549, TVG-0551, and marc's existing private
 descriptor, fixed-table, and scalar-state contracts. No external ANS decoder,
 adapter, table layout, source code, archive, corpus, or test suite was
 consulted.
+
+### IR-0452
+
+The compact contextual-rANS typed-token decoder bridge uses only DD-653
+through DD-655, DD-670, DD-672 through DD-674, TVG-0549 through TVG-0553,
+marc's existing LZSS field-context state machine, typed-token validator, and
+two-pass transactional decoder. No external token codec, ANS adapter, source
+code, archive, corpus, malformed sample, or test suite was consulted.

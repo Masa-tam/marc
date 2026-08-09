@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 
 namespace marc::context::internal {
 namespace {
@@ -172,39 +173,29 @@ enum class OverlapCheck : std::uint8_t {
     return core::checked_multiply(tokens.size(), sizeof(LzssTypedToken), bytes);
 }
 
-[[nodiscard]] LzssContextualRansDecodeResult run_pass(
-    const ContextualRansDescriptor& descriptor,
-    const std::span<const std::byte> payload,
+[[nodiscard]] bool validate_pass_start(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<RansDecodeEntry> tables,
-    const std::span<LzssTypedToken> output) noexcept {
-    LzssContextualRansDecodeResult result{};
+    LzssContextualRansDecodeResult& result) noexcept {
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
         parameters, limits);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualRansDecodeError::limit_exceeded
             : LzssContextualRansDecodeError::invalid_parameters;
-        return result;
+        return false;
     }
-    if (!validate_declared_bounds(context, limits, result)) return result;
-    if (descriptor.decision_count != context.declared_decision_count) {
-        result.error = LzssContextualRansDecodeError::invalid_counts;
-        return result;
-    }
+    return validate_declared_bounds(context, limits, result);
+}
 
-    ContextualRansDecoder decoder;
-    result.entropy = decoder.begin(descriptor, payload, limits, tables);
-    if (result.entropy.error != ContextualRansDecodeError::none) {
-        result.error = result.entropy.error
-                == ContextualRansDecodeError::table_output_too_small
-            ? LzssContextualRansDecodeError::table_output_too_small
-            : LzssContextualRansDecodeError::entropy_error;
-        return result;
-    }
-
+[[nodiscard]] LzssContextualRansDecodeResult decode_started_pass(
+    ContextualRansDecoder& decoder,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> output,
+    LzssContextualRansDecodeResult result) noexcept {
     LzssFieldContextState state{};
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
@@ -246,6 +237,72 @@ enum class OverlapCheck : std::uint8_t {
     return result;
 }
 
+[[nodiscard]] LzssContextualRansDecodeResult run_pass(
+    const ContextualRansDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<RansDecodeEntry> tables,
+    const std::span<LzssTypedToken> output) noexcept {
+    LzssContextualRansDecodeResult result{};
+    if (!validate_pass_start(parameters, context, limits, result)) {
+        return result;
+    }
+    if (descriptor.decision_count != context.declared_decision_count) {
+        result.error = LzssContextualRansDecodeError::invalid_counts;
+        return result;
+    }
+
+    ContextualRansDecoder decoder;
+    result.entropy = decoder.begin(descriptor, payload, limits, tables);
+    if (result.entropy.error != ContextualRansDecodeError::none) {
+        result.error = result.entropy.error
+                == ContextualRansDecodeError::table_output_too_small
+            ? LzssContextualRansDecodeError::table_output_too_small
+            : LzssContextualRansDecodeError::entropy_error;
+        return result;
+    }
+    return decode_started_pass(
+        decoder, parameters, context, limits, output, result);
+}
+
+[[nodiscard]] LzssContextualRansCompactDecodeResult run_compact_pass(
+    const std::span<const std::byte> compact_descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<RansDecodeEntry> tables,
+    const std::span<LzssTypedToken> output) noexcept {
+    LzssContextualRansCompactDecodeResult result{};
+    if (!validate_pass_start(
+            parameters, context, limits, result.decode)) {
+        return result;
+    }
+    if (!std::in_range<std::uint32_t>(payload.size())) {
+        result.decode.error = LzssContextualRansDecodeError::limit_exceeded;
+        return result;
+    }
+
+    ContextualRansDecoder decoder;
+    const auto begin = decoder.begin_compact(
+        compact_descriptor, context.declared_decision_count,
+        static_cast<std::uint32_t>(payload.size()), payload, limits, tables);
+    result.decode.entropy = begin.decode;
+    result.format_error = begin.format_error;
+    if (result.decode.entropy.error != ContextualRansDecodeError::none) {
+        result.decode.error = result.decode.entropy.error
+                == ContextualRansDecodeError::table_output_too_small
+            ? LzssContextualRansDecodeError::table_output_too_small
+            : LzssContextualRansDecodeError::entropy_error;
+        return result;
+    }
+    result.decode = decode_started_pass(
+        decoder, parameters, context, limits, output, result.decode);
+    return result;
+}
+
 [[nodiscard]] LzssContextualRansDecodeResult preflight_workspace(
     const std::span<const std::byte> payload,
     const std::span<RansDecodeEntry> tables) noexcept {
@@ -266,6 +323,67 @@ enum class OverlapCheck : std::uint8_t {
     if (overlap == OverlapCheck::arithmetic_overflow) {
         result.error = LzssContextualRansDecodeError::arithmetic_overflow;
     } else if (overlap == OverlapCheck::overlap) {
+        result.error = LzssContextualRansDecodeError::overlapping_buffers;
+    }
+    return result;
+}
+
+[[nodiscard]] LzssContextualRansDecodeResult preflight_compact_workspace(
+    const std::span<const std::byte> compact_descriptor,
+    const std::span<const std::byte> payload,
+    const std::span<RansDecodeEntry> tables) noexcept {
+    auto result = preflight_workspace(payload, tables);
+    if (result.error != LzssContextualRansDecodeError::none) return result;
+
+    const auto used_tables = tables.first(
+        entropy::internal::contextual_rans_decode_table_entries);
+    std::size_t table_bytes{};
+    if (!checked_table_bytes(used_tables, table_bytes)) {
+        result.error = LzssContextualRansDecodeError::arithmetic_overflow;
+        return result;
+    }
+    const auto descriptor_payload = ranges_overlap(
+        compact_descriptor.data(), compact_descriptor.size(), payload.data(),
+        payload.size());
+    const auto descriptor_tables = ranges_overlap(
+        compact_descriptor.data(), compact_descriptor.size(),
+        used_tables.data(), table_bytes);
+    if (descriptor_payload == OverlapCheck::arithmetic_overflow
+        || descriptor_tables == OverlapCheck::arithmetic_overflow) {
+        result.error = LzssContextualRansDecodeError::arithmetic_overflow;
+    } else if (descriptor_payload == OverlapCheck::overlap
+               || descriptor_tables == OverlapCheck::overlap) {
+        result.error = LzssContextualRansDecodeError::overlapping_buffers;
+    }
+    return result;
+}
+
+[[nodiscard]] LzssContextualRansDecodeResult preflight_token_output(
+    const std::span<const std::byte> payload,
+    const std::span<RansDecodeEntry> tables,
+    const std::span<LzssTypedToken> private_tokens,
+    const std::uint32_t declared_token_count,
+    std::span<LzssTypedToken>& tokens) noexcept {
+    LzssContextualRansDecodeResult result{};
+    if (private_tokens.size() < declared_token_count) return result;
+
+    tokens = private_tokens.first(declared_token_count);
+    std::size_t table_bytes{};
+    std::size_t token_bytes{};
+    if (!checked_table_bytes(tables, table_bytes)
+        || !checked_token_bytes(tokens, token_bytes)) {
+        result.error = LzssContextualRansDecodeError::arithmetic_overflow;
+        return result;
+    }
+    const auto payload_token = ranges_overlap(
+        payload.data(), payload.size(), tokens.data(), token_bytes);
+    const auto table_token = ranges_overlap(
+        tables.data(), table_bytes, tokens.data(), token_bytes);
+    if (payload_token == OverlapCheck::arithmetic_overflow
+        || table_token == OverlapCheck::arithmetic_overflow) {
+        result.error = LzssContextualRansDecodeError::arithmetic_overflow;
+    } else if (payload_token == OverlapCheck::overlap
+               || table_token == OverlapCheck::overlap) {
         result.error = LzssContextualRansDecodeError::overlapping_buffers;
     }
     return result;
@@ -307,32 +425,10 @@ LzssContextualRansDecodeResult decode_lzss_contextual_rans_tokens(
     const auto tables = private_tables.first(
         entropy::internal::contextual_rans_decode_table_entries);
     std::span<LzssTypedToken> tokens{};
-    if (private_tokens.size() >= context.declared_token_count) {
-        tokens = private_tokens.first(context.declared_token_count);
-        std::size_t table_bytes{};
-        std::size_t token_bytes{};
-        if (!checked_table_bytes(tables, table_bytes)
-            || !checked_token_bytes(tokens, token_bytes)) {
-            LzssContextualRansDecodeResult result{};
-            result.error = LzssContextualRansDecodeError::arithmetic_overflow;
-            return result;
-        }
-        const auto payload_token = ranges_overlap(
-            payload.data(), payload.size(), tokens.data(), token_bytes);
-        const auto table_token = ranges_overlap(
-            tables.data(), table_bytes, tokens.data(), token_bytes);
-        if (payload_token == OverlapCheck::arithmetic_overflow
-            || table_token == OverlapCheck::arithmetic_overflow) {
-            LzssContextualRansDecodeResult result{};
-            result.error = LzssContextualRansDecodeError::arithmetic_overflow;
-            return result;
-        }
-        if (payload_token == OverlapCheck::overlap
-            || table_token == OverlapCheck::overlap) {
-            LzssContextualRansDecodeResult result{};
-            result.error = LzssContextualRansDecodeError::overlapping_buffers;
-            return result;
-        }
+    const auto token_workspace = preflight_token_output(
+        payload, tables, private_tokens, context.declared_token_count, tokens);
+    if (token_workspace.error != LzssContextualRansDecodeError::none) {
+        return token_workspace;
     }
 
     auto result = run_pass(
@@ -352,6 +448,102 @@ LzssContextualRansDecodeResult decode_lzss_contextual_rans_tokens(
         || decoded.entropy.payload_consumed
                != result.entropy.payload_consumed) {
         result.error = LzssContextualRansDecodeError::internal_error;
+        return result;
+    }
+    return decoded;
+}
+
+LzssContextualRansCompactDecodeResult
+validate_lzss_contextual_rans_compact_tokens(
+    const std::span<const std::byte> compact_descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<entropy::internal::RansDecodeEntry> private_tables)
+    noexcept {
+    LzssContextualRansCompactDecodeResult result{};
+    result.decode = preflight_compact_workspace(
+        compact_descriptor, payload, private_tables);
+    if (result.decode.error != LzssContextualRansDecodeError::none) {
+        return result;
+    }
+    return run_compact_pass(
+        compact_descriptor, payload, parameters, context, limits,
+        private_tables.first(
+            entropy::internal::contextual_rans_decode_table_entries), {});
+}
+
+LzssContextualRansCompactDecodeResult
+decode_lzss_contextual_rans_compact_tokens(
+    const std::span<const std::byte> compact_descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<entropy::internal::RansDecodeEntry> private_tables,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    noexcept {
+    LzssContextualRansCompactDecodeResult result{};
+    result.decode = preflight_compact_workspace(
+        compact_descriptor, payload, private_tables);
+    if (result.decode.error != LzssContextualRansDecodeError::none) {
+        return result;
+    }
+    const auto tables = private_tables.first(
+        entropy::internal::contextual_rans_decode_table_entries);
+    std::span<LzssTypedToken> tokens{};
+    result.decode = preflight_token_output(
+        payload, tables, private_tokens, context.declared_token_count, tokens);
+    if (result.decode.error != LzssContextualRansDecodeError::none) {
+        return result;
+    }
+    if (!tokens.empty()) {
+        std::size_t token_bytes{};
+        if (!checked_token_bytes(tokens, token_bytes)) {
+            result.decode.error =
+                LzssContextualRansDecodeError::arithmetic_overflow;
+            return result;
+        }
+        const auto descriptor_token = ranges_overlap(
+            compact_descriptor.data(), compact_descriptor.size(),
+            tokens.data(), token_bytes);
+        if (descriptor_token == OverlapCheck::arithmetic_overflow) {
+            result.decode.error =
+                LzssContextualRansDecodeError::arithmetic_overflow;
+            return result;
+        }
+        if (descriptor_token == OverlapCheck::overlap) {
+            result.decode.error =
+                LzssContextualRansDecodeError::overlapping_buffers;
+            return result;
+        }
+    }
+
+    result = run_compact_pass(
+        compact_descriptor, payload, parameters, context, limits, tables, {});
+    if (result.decode.error != LzssContextualRansDecodeError::none) {
+        return result;
+    }
+    if (private_tokens.size() < context.declared_token_count) {
+        result.decode.error =
+            LzssContextualRansDecodeError::token_output_too_small;
+        return result;
+    }
+    const auto decoded = run_compact_pass(
+        compact_descriptor, payload, parameters, context, limits, tables,
+        tokens);
+    if (decoded.decode.error != LzssContextualRansDecodeError::none
+        || decoded.format_error != result.format_error
+        || decoded.decode.token_count != result.decode.token_count
+        || decoded.decode.raw_size != result.decode.raw_size
+        || decoded.decode.entropy.event_count
+               != result.decode.entropy.event_count
+        || decoded.decode.entropy.decision_count
+               != result.decode.entropy.decision_count
+        || decoded.decode.entropy.payload_consumed
+               != result.decode.entropy.payload_consumed) {
+        result.decode.error = LzssContextualRansDecodeError::internal_error;
         return result;
     }
     return decoded;
