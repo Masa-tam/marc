@@ -4454,6 +4454,13 @@ waits for fixed-descriptor padding. Complete compact frames decode into private
 raw staging and are drained before the next header is accepted; previously
 drained frames remain committed if a later compact frame fails.
 
+The compact complete-frame encoder plans from the generated contextual model,
+not from the fixed-descriptor frame plan. Model normalization and rANS payload
+generation remain shared, while compact serialization determines the exact
+descriptor extent before output admission. Payload, descriptor, and header are
+then written into one already-sized private destination; the header records the
+actual compact descriptor bytes.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

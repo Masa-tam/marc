@@ -14019,3 +14019,25 @@ bytes. Reject trailing data, reset requests, unknown flags, premature end, and
 overlapping construction/output storage with a stable terminal error. This
 milestone adds no encoder lifecycle, public API, CLI selector, benchmark, fuzz
 entry, or interoperability archive.
+
+## DD-678: Compact frame planning uses the exact serialized model
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add distinct private compact frame plan and encode entries. Both reuse the
+typed-LZSS producer and direct contextual-rANS token encoder, but the plan must
+validate the resulting model through the compact descriptor contract and use
+its exact serialized size. It must not call the fixed-frame plan or inherit
+the 9,052-byte descriptor charge.
+
+The complete serialized extent is checked `64 + compact descriptor + payload`.
+Encoding writes the payload into its final admitted position, serializes the
+compact descriptor, and writes a compact-validated common frame header whose
+descriptor-size field equals the actual model bytes. Header and descriptor
+serialization use local transactional buffers; any planning, capacity, limit,
+alias, payload, descriptor, or header failure leaves serialized output
+unchanged. The one-Literal output must equal the specified 98-byte frame and
+decode through the compact complete-frame decoder. This milestone adds no
+streaming encoder, public API, CLI selector, benchmark, or interoperability
+archive.

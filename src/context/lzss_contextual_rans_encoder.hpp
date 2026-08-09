@@ -51,6 +51,25 @@ encode_lzss_contextual_rans_tokens(
     std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor) noexcept;
 
+[[nodiscard]] LzssContextualRansEncodeResult
+plan_lzss_contextual_rans_compact_tokens(
+    std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    std::size_t& descriptor_size) noexcept;
+
+[[nodiscard]] LzssContextualRansEncodeResult
+encode_lzss_contextual_rans_compact_tokens(
+    std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    std::span<std::byte> payload_output,
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    std::size_t& descriptor_size) noexcept;
+
 } // namespace marc::context::internal
 
 #endif

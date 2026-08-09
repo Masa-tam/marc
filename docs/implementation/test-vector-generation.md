@@ -7244,3 +7244,16 @@ aggregate-buffer limit, request reset or an unknown flag, alias workspaces or
 public output, and end with zero output capacity. Require only the first frame
 to publish before later corruption and require every terminal error to remain
 sticky.
+
+### TVG-0557
+
+Plan and encode raw byte `A` through typed LZSS and contextual rANS, serialize
+the resulting model with variant 3, and require descriptor size 26, payload
+size eight, complete frame size 98, and exact equality with TVG-0554. Decode
+that frame through the compact complete-frame decoder and require `A`.
+
+Repeat a mixed literal/match frame twice and require identical descriptor,
+payload, and complete frame bytes. Independently shorten token staging and
+serialized output, constrain aggregate workspace, invalidate stream
+parameters, mismatch raw extent, and alias raw/token/output storage. Require
+precise stable errors and unchanged serialized sentinels before any write.

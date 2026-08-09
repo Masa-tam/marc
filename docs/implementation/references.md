@@ -3994,3 +3994,11 @@ complete-frame decoder, existing variant-2 streaming lifecycle, core transform
 contract, checked arithmetic, and caller-workspace policy. No external stream
 decoder, ANS implementation, source code, archive, corpus, malformed sample,
 or test suite was consulted.
+
+### IR-0456
+
+The compact contextual-rANS complete-frame encoder uses only DD-670, DD-672,
+DD-675, DD-676, DD-678, TVG-0549, TVG-0554, TVG-0555, TVG-0557, marc's typed
+LZSS encoder, direct contextual-rANS token encoder, compact descriptor
+serializer, and transactional frame-output policy. No external encoder, ANS
+implementation, source code, archive, corpus, or test suite was consulted.

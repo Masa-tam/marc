@@ -137,6 +137,13 @@ serialize_lzss_contextual_rans_frame_header(
     noexcept;
 
 [[nodiscard]] LzssContextualRansFrameHeaderError
+serialize_lzss_contextual_rans_compact_frame_header(
+    const LzssContextualRansFrameHeader& header,
+    const LzssContextualRansFrameValidationContext& context,
+    std::span<std::byte, lzss_contextual_rans_frame_header_size> output)
+    noexcept;
+
+[[nodiscard]] LzssContextualRansFrameHeaderError
 parse_lzss_contextual_rans_frame_header(
     std::span<const std::byte> input,
     const LzssContextualRansFrameValidationContext& context,

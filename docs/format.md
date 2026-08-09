@@ -6062,3 +6062,11 @@ the next header. Empty input ends after the 112-byte stream header; nonempty
 streams require contiguous sequences and an exact known original size.
 Malformed, truncated, or trailing bytes fail without publishing the affected
 frame. Encoder selection and public selector integration remain future work.
+
+The private compact complete-frame encoder now emits this representation. It
+derives exact descriptor size from the normalized contextual model before
+admitting output, writes the unchanged rANS payload after that exact extent,
+and records the same size in the common frame header. Raw byte `A` reproduces
+the complete 98-byte vector above and decodes through the compact frame
+decoder. Streaming encoder selection and public selector integration remain
+future work.

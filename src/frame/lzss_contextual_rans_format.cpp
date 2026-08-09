@@ -565,14 +565,16 @@ parse_lzss_contextual_rans_compact_frame_header(
     return error;
 }
 
-LzssContextualRansFrameHeaderError
-serialize_lzss_contextual_rans_frame_header(
+static LzssContextualRansFrameHeaderError
+serialize_lzss_contextual_rans_frame_header_impl(
     const LzssContextualRansFrameHeader& header,
     const LzssContextualRansFrameValidationContext& context,
+    const bool compact,
     const std::span<std::byte, lzss_contextual_rans_frame_header_size> output)
     noexcept {
-    const auto error =
-        validate_lzss_contextual_rans_frame_header(header, context);
+    const auto error = compact
+        ? validate_lzss_contextual_rans_compact_frame_header(header, context)
+        : validate_lzss_contextual_rans_frame_header(header, context);
     if (error != LzssContextualRansFrameHeaderError::none) return error;
     std::array<std::byte, lzss_contextual_rans_frame_header_size> encoded{};
     std::ranges::copy(frame_magic, encoded.begin());
@@ -595,6 +597,26 @@ serialize_lzss_contextual_rans_frame_header(
     }
     std::ranges::copy(encoded, output.begin());
     return LzssContextualRansFrameHeaderError::none;
+}
+
+LzssContextualRansFrameHeaderError
+serialize_lzss_contextual_rans_frame_header(
+    const LzssContextualRansFrameHeader& header,
+    const LzssContextualRansFrameValidationContext& context,
+    const std::span<std::byte, lzss_contextual_rans_frame_header_size> output)
+    noexcept {
+    return serialize_lzss_contextual_rans_frame_header_impl(
+        header, context, false, output);
+}
+
+LzssContextualRansFrameHeaderError
+serialize_lzss_contextual_rans_compact_frame_header(
+    const LzssContextualRansFrameHeader& header,
+    const LzssContextualRansFrameValidationContext& context,
+    const std::span<std::byte, lzss_contextual_rans_frame_header_size> output)
+    noexcept {
+    return serialize_lzss_contextual_rans_frame_header_impl(
+        header, context, true, output);
 }
 
 LzssContextualRansFramePreflightResult

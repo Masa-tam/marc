@@ -16176,3 +16176,37 @@ discarded and the reviewed seed retained.
   limit in 71.92 seconds. Clang 22.1.3 rebuilt the ASan/UBSan/libFuzzer target,
   whose bounded 1,000-run smoke completed without a crash, hang, or sanitizer
   finding and peaked at 43 MiB RSS.
+
+## CR-0708: 2026-08-09 - Compact contextual rANS complete-frame encoder
+
+- Authoring method: specified the compact planning and publication transaction
+  first, then composed marc's existing typed-LZSS parser, contextual model
+  builder, rANS payload encoder, compact descriptor serializer, and frame-header
+  serializer behind an explicit compact entry point.
+- References used: AGENTS.md sections 3.3, 5, 7, 10.5, 11.2, 12, 14, and 15;
+  DD-670, DD-672, DD-675, DD-676, and DD-678; IR-0456; TVG-0549, TVG-0554,
+  TVG-0555, and TVG-0557; and marc's local fixed contextual-rANS encoder,
+  compact descriptor format, compact complete-frame decoder, checked
+  arithmetic, overlap checks, and typed-token validation.
+- Known implementations intentionally not consulted: external LZSS, ANS, or
+  combined-codec encoders; source code; archives; corpora; test suites;
+  malformed samples; and optimization descriptions.
+- Independent decisions: retain explicit fixed and compact encoder entry
+  points; share model construction and reverse payload coding; validate the
+  compact descriptor before charging workspace; derive the charge from its
+  exact canonical size; and publish no destination bytes until every input,
+  limit, capacity, and alias check succeeds.
+- Generated-code task description: reproduce the documented one-literal frame,
+  decode it through the compact complete-frame decoder, round-trip a mixed
+  literal/match frame deterministically, and reject short destinations,
+  aliased workspaces, invalid stream identity, wrong frame extent, and the
+  exact aggregate-workspace boundary without partial publication.
+- Similarity review: the explicit compact planning branch and transactional
+  frame composition reuse only marc's previously specified local primitives;
+  no external control flow or representation was used.
+- Local validation: all 19 focused compact format, complete-frame decoder, and
+  complete-frame encoder tests pass under MSVC 19.51.36252. All 2,563
+  registered tests, including `marc_interoperability_schema_compatibility`,
+  pass with a 240-second per-test limit in 72.99 seconds. Clang 22.1.3 rebuilt
+  the ASan/UBSan/libFuzzer target, whose bounded 1,000-run smoke completed
+  without a crash, hang, or sanitizer finding and peaked at 43 MiB RSS.
