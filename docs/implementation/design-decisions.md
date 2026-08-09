@@ -13797,3 +13797,22 @@ transactionality and prove nonempty and empty round trips, overwrite refusal,
 malformed-input cleanup, and strict trailing-data rejection through the common
 CLI regression. This changes no stream byte, ABI version, stable matrix count,
 benchmark inventory, or interoperability schema.
+
+## DD-668: Contextual rANS benchmark remains experimentally inventoried
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add `lzss-contextual-rans` to the dependency-free benchmark without changing
+the stable 42-profile command matrix. Reuse the CLI's public 65,536-byte frame,
+`6F` decision, `12F + 8` payload, and 8-MiB internal-buffer policy. Bound
+complete output for input extent `N` and nonempty frame count `K` by the exact
+conservative Format 2 rule `112 + 12N + 9,124K`.
+
+Create both directions through the public C configuration, requirements,
+factory, process, and destroy lifecycle. Require a byte-exact round trip before
+timing; keep file I/O, allocation, construction, destruction, and verification
+outside timed intervals; and report ratio, directional throughput, each
+queried primary/secondary/views extent, and peak caller-owned workspace. Add a
+separately labeled smoke test and record descriptive local results without
+claiming stable performance or interoperability admission.

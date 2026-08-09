@@ -4382,3 +4382,12 @@ separately for encode and decode. The adapter includes no private Format 2
 header and reproduces no typed-token, modeled-operation, or rANS-table layout.
 Existing temporary-file publication ensures that failed decoding leaves no
 requested destination or temporary artifact.
+
+### Contextual rANS benchmark boundary
+
+The dependency-free benchmark reaches `lzss-contextual-rans` through the same
+public-only lifecycle as the CLI. It owns caller storage returned by each
+direction's requirements query and treats opaque table/token views solely as
+aligned bytes. Complete-stream capacity includes the 112-byte prefix and each
+frame's 64-byte header, 9,052-byte descriptor, eight-byte state allowance, and
+`12N` payload allowance. Verification completes before timing begins.

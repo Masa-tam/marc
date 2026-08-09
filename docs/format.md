@@ -5998,3 +5998,9 @@ The `lzss-contextual-rans` CLI selector changes no representation either. It
 selects this exact Format 2 identity through the public C lifecycle and fixes
 only caller-side limits and workspace policy. CLI admission does not define a
 new header, frame, descriptor, payload, padding, or reset rule.
+
+The benchmark adapter likewise changes no representation. For capacity
+planning only, input extent `N` and nonempty frame count `K` admit at most
+`112 + 12N + 9,124K` bytes: one stream header, `12N` renormalization allowance,
+and a 64-byte header, 9,052-byte descriptor, and eight-byte final-state
+allowance per frame. Actual serialized fields continue to carry exact sizes.

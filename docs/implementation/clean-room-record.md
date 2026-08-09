@@ -15873,3 +15873,34 @@ discarded and the reviewed seed retained.
   other than the separately audited exhaustive interoperability-schema loop
   pass with two CTest workers under both supported Windows compilers within
   the 240-second ordinary-suite limit.
+
+## CR-0698: 2026-08-09 - Contextual rANS benchmark adapter
+
+- Authoring method: applied marc's dependency-free measurement contract to
+  the independently specified contextual-rANS public C lifecycle.
+- References used: AGENTS.md sections 11.2, 12, 13, 15, and 16; DD-668;
+  IR-0446; TVG-0547; local public capacity query, checked benchmark output
+  planning, timing boundary, and workspace-reporting conventions.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, compression tools, capacity formulas, corpora, encoded streams,
+  source code, and published result tables.
+- Independent decisions: keep the stable 42-command benchmark inventory
+  unchanged; expose the new profile through a separately labelled
+  experimental smoke test; reserve output with the checked bound
+  `112 + 12N + 9,124K`; and report every queried workspace region together
+  with the larger direction-specific caller reservation.
+- Generated-code task description: add a public-only contextual-rANS benchmark
+  adapter, checked output planning, one-iteration smoke coverage, and user
+  documentation while retaining untimed verification before measurements.
+- Similarity review: routing, checked capacity arithmetic, timing exclusions,
+  and workspace reporting reuse marc's established vocabulary and do not
+  reproduce an external harness or result presentation.
+- Local validation: the focused experimental smoke test passes under MSVC
+  19.51.36252 and ClangCL 22.1.3 with Ninja. The MSVC README sample encodes
+  4,326 bytes to 11,081 bytes (ratio 2.561) and reports 2,409,380 bytes of
+  peak workspace; this descriptive small-input expansion is expected because
+  the fixed 9,052-byte contextual-rANS descriptor dominates one short frame.
+  All 2,567 registered tests other than the separately audited exhaustive
+  interoperability-schema loop pass with two CTest workers under both
+  supported Windows compilers in 164.24 seconds and 110.55 seconds,
+  respectively, within the 240-second ordinary-suite limit.

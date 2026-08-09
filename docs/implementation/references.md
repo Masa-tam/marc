@@ -3912,3 +3912,11 @@ specification, public C lifecycle, established transactional CLI, generic CLI
 regression, and bounded file-adapter policy. No external command-line
 compressor, wrapper, workspace layout, corpus, encoded stream, source code, or
 test suite was consulted.
+
+### IR-0446
+
+The contextual-rANS benchmark adapter uses only DD-668, marc's local Format 2
+capacity specification, public C lifecycle, existing dependency-free
+measurement contract, and bounded workspace reporting policy. No external
+benchmark harness, compressor, capacity formula, corpus, source code, encoded
+stream, or result table was consulted.

@@ -207,6 +207,16 @@ constructed only through the public C lifecycle. Their primary, secondary,
 and opaque views workspace extents come from separate requirements queries,
 and a byte-exact round trip succeeds before timing.
 
+The experimental `lzss-contextual-rans` benchmark uses the same 65,536-byte
+raw frames, admits at most `6F` modeled decisions and `12F + 8` payload bytes,
+and applies an 8-MiB internal limit. For input extent `N` and nonempty frame
+count `K`, checked output capacity is `112 + 12N + 9,124K`, including the
+Format 2 stream prefix, frame headers, 9,052-byte contextual frequency
+descriptors, and final-state allowance. Both directions are constructed only
+through the public C lifecycle; all three workspace extents and opaque
+alignment come from separate requirements queries, and exact round trip is
+verified before timing.
+
 ### LZ78 profiles
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
