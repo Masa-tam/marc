@@ -3864,3 +3864,11 @@ serializer, checked arithmetic, and independently established Format 2
 streaming lifecycle. No external streaming compressor, ANS integration, source
 code, buffer state machine, encoded stream, corpus, or test suite was
 consulted.
+
+### IR-0440
+
+The contextual rANS streaming decoder uses only DD-662, marc's complete-frame
+decoder, dedicated stream/frame parsers, fixed table layout, checked arithmetic,
+core transform contract, and local frame-atomic streaming conventions. No
+external streaming decompressor, ANS integration, source code, parser state
+machine, malformed corpus, encoded stream, or test suite was consulted.

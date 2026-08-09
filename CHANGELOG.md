@@ -124,6 +124,10 @@ format versions, and C ABI versions are independent namespaces.
   dedicated stream header, prepares one complete bounded frame in caller-owned
   staging, and preserves exact bytes across arbitrary input/output chunking and
   `Flush` without adding operation staging.
+- Added the matching private contextual rANS streaming decoder. It admits the
+  complete serialized/table/token/raw workspace before frame collection and
+  publishes only fully validated reconstructed frames under arbitrary output
+  capacity.
 
 ## 0.1.3 - 2026-08-08
 

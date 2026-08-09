@@ -15702,3 +15702,31 @@ discarded and the reviewed seed retained.
   The complete 2,544-test Release suite, including documentation layout and
   interoperability-schema compatibility, also passes under both supported
   Windows compilers.
+
+## CR-0692: 2026-08-09 - Contextual rANS streaming decode
+
+- Authoring method: composed marc's contextual-rANS complete-frame decoder,
+  dedicated stream/frame parsers, fixed decode-table boundary, and core
+  transform contract under the repository's atomic frame-drain lifecycle.
+- References used: AGENTS.md sections 3, 4, 5, 10.5, 11.2, 12, 14, and 15;
+  DD-662; IR-0440; TVG-0541; local complete-frame decoder and Format 2
+  streaming decoder conventions.
+- Known implementations intentionally not consulted: external streaming
+  decompressors, ANS integrations, source code, parser state machines,
+  malformed corpora, encoded streams, and test suites.
+- Independent decisions: admit serialized/table/token/raw live storage after
+  the frame header; collect the full body before decode; commit only complete
+  reconstructed raw frames; retain finish while draining; and reject all
+  workspace and caller-output aliases.
+- Generated-code task description: add the private contextual-rANS streaming
+  decoder with exact one-byte input/output, later-frame corruption atomicity,
+  four-region capacity and aggregate gates, strict termination, sticky errors,
+  and empty, flush, alias, and flag coverage.
+- Similarity review: state transitions follow marc's repository-local Format 2
+  lifecycle; table ownership, aggregate arithmetic, error mapping, and tests
+  derive from the independently implemented complete-frame boundary.
+- Local validation: all eight dedicated streaming-decoder test groups pass
+  under MSVC and ClangCL, including the 18,360-byte two-frame one-byte stream
+  and later-frame corruption isolation. The complete 2,552-test Release suite,
+  including documentation layout and interoperability-schema compatibility,
+  also passes under both supported Windows compilers.

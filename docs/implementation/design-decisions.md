@@ -13666,3 +13666,26 @@ finish, excess input, short storage, and limit failure with sticky terminal
 errors. Empty input emits only the stream header, and calls after completion
 return `EndOfStream`. This adds no streaming decoder, workspace calculator,
 public API, CLI profile, benchmark, fuzz target, archive, or format change.
+
+## DD-662: Contextual rANS streaming decode commits complete raw frames
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add the bounded streaming decoder paired with DD-661. Incrementally collect
+and validate the dedicated 112-byte stream header and one 64-byte frame header.
+Before accepting the frame body, derive its exact serialized extent and admit
+caller-owned storage for that extent, the fixed 126,976-entry contextual-rANS
+decode tables, the declared typed-token count, and the declared raw extent.
+Require all four regions to be pairwise disjoint and charge their checked live
+byte total against `max_internal_buffered_bytes`.
+
+Collect the complete descriptor and payload before invoking DD-657. Publish no
+raw byte until descriptor/table construction, entropy inversion, typed-token
+validation, and LZSS reconstruction all succeed. Then drain only the immutable
+raw frame under arbitrary output capacity before accepting another frame.
+Retain `EndInput` across raw drain; reject truncated or trailing input,
+`ResetBlock`, unknown flags, output/workspace aliasing, insufficient storage,
+and configured-limit excess with sticky terminal errors. Empty input accepts
+only the stream header and exact finish. This adds no workspace calculator,
+public API, CLI profile, benchmark, fuzz target, archive, or format change.

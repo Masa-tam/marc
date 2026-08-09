@@ -4316,5 +4316,13 @@ private caller-owned staging, and drains that immutable frame before accepting
 more raw input. Raw, typed-token, serialized-frame, and caller-output regions
 remain disjoint; the frame encoder's exact three-region aggregate is retained.
 `Flush` does not close partial input, while `EndInput` is latched across output
-starvation. Streaming decoding and public workspace calculation remain later
-boundaries.
+starvation. At that encoder milestone, streaming decoding and public workspace
+calculation remained later boundaries.
+
+The paired contextual-rANS streaming decoder incrementally accepts the stream
+and frame headers but admits the entire four-region live set before collecting
+a frame body: serialized frame, fixed decode tables, typed tokens, and atomic
+raw staging. Only a complete descriptor/payload decode and LZSS reconstruction
+makes raw bytes drainable. A corrupt later frame therefore cannot retract or
+alter an earlier committed frame, and cannot publish a partial current frame.
+Streaming output remains disjoint from the raw staging it drains.

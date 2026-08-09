@@ -5964,3 +5964,10 @@ cannot alter frame boundaries or bytes. `EndInput` is valid only at the known
 `original_size` boundary and completion occurs only after all staged bytes have
 drained. No additional marker, trailer, padding, or reset representation is
 introduced.
+
+The paired private streaming decoder recognizes exactly that same byte
+sequence. It may parse a split stream or frame header incrementally, but it
+collects each complete descriptor and payload before decoding and exposes only
+a fully reconstructed raw frame. End-of-input before the declared known-size
+stream completes is truncation; bytes after the final declared frame are
+trailing data and are rejected. No incremental parser state is serialized.

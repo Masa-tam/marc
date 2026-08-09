@@ -7016,3 +7016,19 @@ staging, aggregate limits, premature finish, excess input, construction and
 caller-output aliases, `ResetBlock`, and unknown flags. Require every terminal
 failure to remain sticky and every reported process result to satisfy the core
 consumption/production invariant.
+
+### TVG-0541
+
+Feed the TVG-0540 two-frame stream to the streaming decoder one byte at a time
+and drain raw output one byte at a time. Require exact `AA`, complete input
+consumption, valid process results on every call, and stable `EndOfStream`.
+Corrupt only the second frame descriptor and require the first raw `A` to be
+committed while the second frame publishes nothing.
+
+Reject short serialized, fixed-table, token, and raw staging independently;
+reject aggregate live-workspace excess after a valid frame header; reject
+stream and frame limit excess. Cover truncated header/body, trailing bytes,
+empty streams, nonterminal `Flush`, premature final input, construction-region
+overlap, caller-output/raw overlap, `ResetBlock`, and unknown flags. Retain
+`EndInput` while a decoded final frame waits for output capacity, and require
+all terminal errors to remain sticky.
