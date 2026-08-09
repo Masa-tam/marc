@@ -6040,5 +6040,6 @@ record `(mode=1, K-1=0, symbol=65)`, whose omitted frequency infers to 4,096.
 The complete frame is 98 bytes and the complete one-byte stream is 210 bytes,
 compared with variant 2's 9,124-byte frame and 9,236-byte stream. This is a
 descriptor-level vector: the private parser and serializer admit these exact
-26 bytes, while state, frame, streaming, and public selector integration are
-not yet implemented.
+26 bytes, and the private scalar decoder consumes them through the same fixed
+table and state path as variant 2. Frame, streaming, encoder-selection, and
+public selector integration are not yet implemented.

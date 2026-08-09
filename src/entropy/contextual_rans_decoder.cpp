@@ -8,6 +8,21 @@
 
 namespace marc::entropy::internal {
 
+void ContextualRansDecoder::reset() noexcept {
+    payload_ = {};
+    tables_ = {};
+    active_contexts_.fill(false);
+    requested_contexts_.fill(false);
+    state_ = 0;
+    payload_offset_ = 0;
+    expected_decisions_ = 0;
+    event_count_ = 0;
+    decision_count_ = 0;
+    error_ = ContextualRansDecodeError::none;
+    started_ = false;
+    finished_ = false;
+}
+
 ContextualRansDecodeResult ContextualRansDecoder::result() const noexcept {
     return {event_count_, decision_count_, payload_offset_, error_};
 }
@@ -28,24 +43,39 @@ ContextualRansDecodeResult ContextualRansDecoder::begin(
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
     const std::span<RansDecodeEntry> table_output) noexcept {
-    payload_ = {};
-    tables_ = {};
-    active_contexts_.fill(false);
-    requested_contexts_.fill(false);
-    state_ = 0;
-    payload_offset_ = 0;
-    expected_decisions_ = 0;
-    event_count_ = 0;
-    decision_count_ = 0;
-    error_ = ContextualRansDecodeError::none;
-    started_ = false;
-    finished_ = false;
-
+    reset();
     if (validate_contextual_rans_descriptor(
             descriptor, descriptor.decision_count, descriptor.payload_size,
             limits) != ContextualRansFormatError::none) {
         return fail(ContextualRansDecodeError::invalid_descriptor);
     }
+    return begin_validated(descriptor, payload, table_output);
+}
+
+ContextualRansCompactBeginResult ContextualRansDecoder::begin_compact(
+    const std::span<const std::byte> compact_descriptor,
+    const std::uint32_t expected_decision_count,
+    const std::uint32_t expected_payload_size,
+    const std::span<const std::byte> payload,
+    const core::DecoderLimits& limits,
+    const std::span<RansDecodeEntry> table_output) noexcept {
+    reset();
+    ContextualRansDescriptor descriptor{};
+    const auto format_error = parse_contextual_rans_compact_descriptor(
+        compact_descriptor, expected_decision_count, expected_payload_size,
+        limits, descriptor);
+    if (format_error != ContextualRansCompactFormatError::none) {
+        return {fail(ContextualRansDecodeError::invalid_descriptor),
+                format_error};
+    }
+    return {begin_validated(descriptor, payload, table_output),
+            ContextualRansCompactFormatError::none};
+}
+
+ContextualRansDecodeResult ContextualRansDecoder::begin_validated(
+    const ContextualRansDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const std::span<RansDecodeEntry> table_output) noexcept {
     if (payload.size() != descriptor.payload_size) {
         return fail(ContextualRansDecodeError::payload_size_mismatch);
     }
@@ -58,9 +88,10 @@ ContextualRansDecodeResult ContextualRansDecoder::begin(
     }
 
     ContextualRansDecodeTables built{};
-    const auto table_result = build_contextual_rans_decode_tables(
-        descriptor, limits, table_output, built);
-    if (table_result.error == ContextualRansDecodeTableError::output_too_small) {
+    const auto table_result = build_contextual_rans_decode_tables_from_model(
+        descriptor, table_output, built);
+    if (table_result.error
+        == ContextualRansDecodeTableError::output_too_small) {
         return fail(ContextualRansDecodeError::table_output_too_small);
     }
     if (table_result.error != ContextualRansDecodeTableError::none) {

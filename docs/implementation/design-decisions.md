@@ -13906,3 +13906,30 @@ its exact canonical extent. It writes into a fixed 9,025-byte local array and
 copies only after caller capacity is known, leaving output unchanged on every
 field, model, limit, arithmetic, or capacity failure. Keep this module
 unconnected to variant-2 stream parsing, rANS state decoding, and public APIs.
+
+## DD-673: Compact contextual rANS begins through the existing scalar decoder
+
+- Date: 2026-08-09
+- Status: accepted
+
+Add an explicit `begin_compact` entry point to the private contextual-rANS
+decoder rather than creating a second table builder or state machine. It
+accepts the exact variable descriptor span plus frame-declared decision and
+payload sizes and parses into a local fixed descriptor. Extract the existing
+already-validated model-to-table and payload-state initialization steps as the
+single shared core used by both begin paths. Do not pass compact input through
+variant 2's format validator, because its 9,052-byte serialized-descriptor
+charge is not variant 3's actual bounded extent. Return the compact format
+error beside the ordinary decoder result so malformed representation and
+state/payload/workspace failures remain distinguishable.
+
+Reset decoder state before parsing. A compact parse failure becomes sticky
+`invalid_descriptor` for subsequent decode calls, leaves caller table storage
+unchanged, and preserves the exact compact error. A successful compact begin
+must construct byte-for-byte identical 126,976 table entries and follow the
+same Symbol, bypass, count, terminal-state, and payload-exhaustion rules as
+variant 2. This milestone adds no second decoder arithmetic, frame parser,
+typed-token bridge, encoder format selection, public API, or CLI profile.
+The shared table materializer defensively revalidates all model fields and
+frequency sums before writing, but does not repeat either format's serialized
+size charge.

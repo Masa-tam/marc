@@ -107,6 +107,18 @@ TEST(ContextualRansDecodeTables, PrewriteFailuresPreserveStorageAndView) {
     EXPECT_TRUE(tables.active_contexts[7]);
     EXPECT_TRUE(std::ranges::all_of(storage, sentinel));
 
+    result = marc::entropy::internal::
+        build_contextual_rans_decode_tables_from_model(
+            invalid, storage, tables);
+    EXPECT_EQ(result.error,
+              ContextualRansDecodeTableError::invalid_descriptor);
+    EXPECT_EQ(result.format_error,
+              ContextualRansFormatError::invalid_frequency_table);
+    EXPECT_EQ(tables.entries.data(), original_view.data());
+    EXPECT_EQ(tables.entries.size(), original_view.size());
+    EXPECT_TRUE(tables.active_contexts[7]);
+    EXPECT_TRUE(std::ranges::all_of(storage, sentinel));
+
     result = marc::entropy::internal::build_contextual_rans_decode_tables(
         literal_a_descriptor(), {},
         std::span<RansDecodeEntry>{storage}.first(storage.size() - 1), tables);

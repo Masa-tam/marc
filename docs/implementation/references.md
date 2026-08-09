@@ -3952,3 +3952,11 @@ DD-672, TVG-0549, marc's fixed field-context schema, variant-2 descriptor
 record, checked little-endian helpers, and decoder limits. No external ANS
 format, frequency serializer, source code, archive, corpus, or test suite was
 consulted.
+
+### IR-0451
+
+The compact contextual-rANS decoder entry uses only DD-653 through DD-655,
+DD-670, DD-672, DD-673, TVG-0549, TVG-0551, and marc's existing private
+descriptor, fixed-table, and scalar-state contracts. No external ANS decoder,
+adapter, table layout, source code, archive, corpus, or test suite was
+consulted.

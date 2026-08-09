@@ -1314,6 +1314,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_dynamic_range_decoder_tests.cpp
         tests/contextual_dynamic_range_encoder_tests.cpp
         tests/contextual_rans_decoder_tests.cpp
+        tests/contextual_rans_compact_decoder_tests.cpp
         tests/contextual_rans_encoder_tests.cpp
         tests/contextual_rans_decode_tables_tests.cpp
         tests/contextual_rans_compact_format_tests.cpp

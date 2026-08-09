@@ -153,8 +153,13 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private compact contextual-rANS descriptor parser, validator, and
   serializer. It reconstructs the fixed 4,518-frequency model atomically,
   enforces canonical dense/sparse records and exact descriptor consumption,
-  and preserves output on every malformed, limit, or capacity failure. State,
-  frame, and public-profile integration remain unimplemented.
+  and preserves output on every malformed, limit, or capacity failure. The
+  descriptor module itself owns no state, frame, or public-profile logic.
+- Connected compact contextual-rANS descriptors to the existing scalar state
+  decoder through a shared defensively validated model-to-table core. The new
+  private begin path preserves detailed compact format errors, produces the
+  same 126,976 fixed table entries and state transitions as variant 2, and
+  charges the actual compact descriptor extent rather than 9,052 bytes.
 
 ### Changed
 

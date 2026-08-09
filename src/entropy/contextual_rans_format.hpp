@@ -56,6 +56,11 @@ enum class ContextualRansFormatError : std::uint8_t {
     arithmetic_overflow,
 };
 
+[[nodiscard]] ContextualRansFormatError validate_contextual_rans_model(
+    const ContextualRansDescriptor& descriptor,
+    std::uint32_t expected_decision_count,
+    std::uint32_t expected_payload_size) noexcept;
+
 [[nodiscard]] ContextualRansFormatError validate_contextual_rans_descriptor(
     const ContextualRansDescriptor& descriptor,
     std::uint32_t expected_decision_count,

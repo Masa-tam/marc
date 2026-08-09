@@ -20,6 +20,22 @@ ContextualRansDecodeTableResult build_contextual_rans_decode_tables(
         result.error = ContextualRansDecodeTableError::invalid_descriptor;
         return result;
     }
+    return build_contextual_rans_decode_tables_from_model(
+        descriptor, output, tables);
+}
+
+ContextualRansDecodeTableResult
+build_contextual_rans_decode_tables_from_model(
+    const ContextualRansDescriptor& descriptor,
+    const std::span<RansDecodeEntry> output,
+    ContextualRansDecodeTables& tables) noexcept {
+    ContextualRansDecodeTableResult result{};
+    result.format_error = validate_contextual_rans_model(
+        descriptor, descriptor.decision_count, descriptor.payload_size);
+    if (result.format_error != ContextualRansFormatError::none) {
+        result.error = ContextualRansDecodeTableError::invalid_descriptor;
+        return result;
+    }
     if (output.size() < contextual_rans_decode_table_entries) {
         result.error = ContextualRansDecodeTableError::output_too_small;
         return result;

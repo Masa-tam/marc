@@ -7173,3 +7173,19 @@ strict sparse selection and dense tie selection. Construct every context with
 all symbols present to require the exact 9,025-byte maximum. Require failed
 parse and serialize calls to preserve sentinels and enforce decision, payload,
 table-entry, exact-buffer, and output-capacity limits independently.
+
+### TVG-0552
+
+Begin the scalar decoder with TVG-0549's exact 26-byte compact descriptor and
+variant-2's eight-byte payload, decode contexts 0 and 3 as values 0 and 65,
+and require the same terminal state and counts. Build the same descriptor
+through the operation encoder, serialize it compactly, and round-trip a Symbol
+plus two LSB-first bypass bits. Compare every fixed decode-table entry produced
+by ordinary and compact begin paths.
+
+Independently corrupt canonical mode, truncate the descriptor, mismatch the
+payload span, invalidate the initial state, and shorten table storage. Require
+the compact error only for descriptor parsing, ordinary decoder errors for the
+remaining gates, unchanged table sentinels before construction, unchanged
+decoded values on sticky failure, and successful reuse after both failure and
+completed decoding.

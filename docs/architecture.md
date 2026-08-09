@@ -4415,6 +4415,14 @@ malformed variable-length data outside the entropy state machine and retains
 zero recursion and bounded workspace. A later active-table optimization may
 change private workspace but must not change variant 3 bytes.
 
+The scalar decoder has a distinct compact begin boundary. It resets before
+parsing, reports the compact representation error beside its ordinary state
+result, and then enters the same model-to-fixed-table and payload-state core as
+variant 2. The shared table materializer revalidates model structure before
+writing but applies no serialized-format size. Each outer begin path has
+already charged its own exact descriptor extent, so variant 3 does not inherit
+variant 2's 9,052-byte internal-buffer requirement.
+
 ### Contextual Dynamic Range encoder planning boundary
 
 The first Format 2 streaming encoder supplies its already bounded serialized

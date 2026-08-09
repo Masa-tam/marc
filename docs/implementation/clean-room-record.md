@@ -16014,3 +16014,36 @@ discarded and the reviewed seed retained.
   atomic parse and serialization failure. All 2,574 ordinary registered tests
   excluding the separately audited exhaustive interoperability-schema loop
   pass in 158.51 seconds under MSVC and 106.78 seconds under ClangCL.
+
+## CR-0703: 2026-08-09 - Compact contextual rANS scalar decode connection
+
+- Authoring method: factored marc's existing contextual-rANS decoder at the
+  boundary between format-specific validation and common model/table/state
+  initialization, then added a compact begin entry over the local variant-3
+  parser.
+- References used: AGENTS.md sections 3.3, 6, 7, 10.5, 11.2, 12, 14, and 15;
+  DD-653 through DD-655; DD-670; DD-672; DD-673; IR-0451; TVG-0549 through
+  TVG-0552; and the repository's fixed descriptor, table, encoder, and scalar
+  decoder tests.
+- Known implementations intentionally not consulted: external ANS decoders,
+  descriptor adapters, table layouts, source code, archives, corpora, test
+  suites, and optimization descriptions.
+- Independent decisions: retain one scalar decoder object; report compact and
+  state errors separately at begin; make compact parse failures sticky; share
+  one fixed table materializer; defensively revalidate model structure without
+  applying a wire-format size; and charge each format's actual descriptor
+  extent before the common core.
+- Generated-code task description: connect the exact compact span to existing
+  state decoding, prove all fixed table entries equal, round-trip Symbol and
+  bypass operations, separate malformed representation from payload/state/
+  workspace failures, preserve table and value sentinels, and support decoder
+  reuse after failure and completion.
+- Similarity review: factoring, error composition, validation placement, and
+  tests derive only from marc's prior internal contracts and the newly
+  specified compact representation; no external state or table structure was
+  used.
+- Local validation: all 25 focused compact/fixed decoder, table, and format
+  tests pass under MSVC 19.51.36231 and ClangCL 22.1.3. All 2,581 ordinary
+  registered tests excluding the separately audited exhaustive
+  interoperability-schema loop pass in 164.62 seconds under MSVC and 111.95
+  seconds under ClangCL.

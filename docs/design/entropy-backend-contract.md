@@ -308,8 +308,18 @@ reuse variant 2's fixed 9,052-byte identity and does not alter its decoder.
 The private descriptor parser and serializer implement this representation in
 isolation. They reconstruct into fixed local storage, validate canonical size
 and decoder limits, require exact input consumption, and publish only after
-the complete descriptor succeeds. No variant-3 rANS state or frame admission
-is implied by this descriptor milestone.
+the complete descriptor succeeds. The descriptor module itself admits neither
+rANS state nor frames; state admission is the separate boundary below.
+
+The private scalar decoder now provides a compact begin operation over an
+exact descriptor span, frame-declared decision and payload sizes, exact
+payload, decoder limits, and caller-owned fixed table storage. A parse failure
+reports its compact format category and leaves the decoder in sticky
+`invalid_descriptor` state without touching table storage. Successful input
+uses the same table layout, Symbol/bypass transitions, completion checks, and
+reuse policy as variant 2. Format-specific validation charges 23 through 9,025
+descriptor bytes before the shared model/table core; it never substitutes the
+fixed 9,052-byte charge.
 
 ## Backend substitution
 

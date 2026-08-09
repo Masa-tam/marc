@@ -32,11 +32,10 @@ namespace {
 
 } // namespace
 
-ContextualRansFormatError validate_contextual_rans_descriptor(
+ContextualRansFormatError validate_contextual_rans_model(
     const ContextualRansDescriptor& descriptor,
     const std::uint32_t expected_decision_count,
-    const std::uint32_t expected_payload_size,
-    const core::DecoderLimits& limits) noexcept {
+    const std::uint32_t expected_payload_size) noexcept {
     if (descriptor.decision_count == 0) {
         return ContextualRansFormatError::invalid_decision_count;
     }
@@ -76,6 +75,17 @@ ContextualRansFormatError validate_contextual_rans_descriptor(
         || descriptor.payload_size != expected_payload_size) {
         return ContextualRansFormatError::contradictory_size;
     }
+    return ContextualRansFormatError::none;
+}
+
+ContextualRansFormatError validate_contextual_rans_descriptor(
+    const ContextualRansDescriptor& descriptor,
+    const std::uint32_t expected_decision_count,
+    const std::uint32_t expected_payload_size,
+    const core::DecoderLimits& limits) noexcept {
+    const auto model_error = validate_contextual_rans_model(
+        descriptor, expected_decision_count, expected_payload_size);
+    if (model_error != ContextualRansFormatError::none) return model_error;
     std::uint64_t buffered{};
     if (!core::checked_add(
             static_cast<std::uint64_t>(contextual_rans_descriptor_size),

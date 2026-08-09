@@ -1364,3 +1364,16 @@ three-byte tie and its literal-value context is sparse. All strict prefixes,
 trailing data, malformed sparse records, noncanonical alternatives, and local
 limits are covered under both local compilers. State, frame, lifecycle,
 benchmark, public API, and interoperability admission remain future work.
+
+### BR-0048
+
+The private contextual-rANS scalar decoder now accepts the exact variant-3
+compact descriptor span and retains its detailed format error beside the
+ordinary sticky decoder result. Successful compact and fixed descriptors
+produce identical 126,976-entry reference tables and share all state
+transitions and finish checks. Format admission remains separate, so a
+26-byte descriptor plus eight-byte payload succeeds under a valid 34-byte
+internal-buffer ceiling that correctly rejects variant 2's fixed descriptor.
+Seven compact state tests plus the existing table, decoder, and format suites
+pass under both local compilers. Typed-token, frame, streaming, encoder format,
+public API, benchmark, and interoperability admission remain future work.

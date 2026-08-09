@@ -2,6 +2,7 @@
 #define MARC_ENTROPY_CONTEXTUAL_RANS_DECODER_HPP
 
 #include "core/limits.hpp"
+#include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/contextual_rans_decode_tables.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
@@ -41,10 +42,24 @@ struct ContextualRansDecodeResult {
     ContextualRansDecodeError error{ContextualRansDecodeError::none};
 };
 
+struct ContextualRansCompactBeginResult {
+    ContextualRansDecodeResult decode{};
+    ContextualRansCompactFormatError format_error{
+        ContextualRansCompactFormatError::none};
+};
+
 class ContextualRansDecoder {
 public:
     [[nodiscard]] ContextualRansDecodeResult begin(
         const ContextualRansDescriptor& descriptor,
+        std::span<const std::byte> payload,
+        const core::DecoderLimits& limits,
+        std::span<RansDecodeEntry> table_output) noexcept;
+
+    [[nodiscard]] ContextualRansCompactBeginResult begin_compact(
+        std::span<const std::byte> compact_descriptor,
+        std::uint32_t expected_decision_count,
+        std::uint32_t expected_payload_size,
         std::span<const std::byte> payload,
         const core::DecoderLimits& limits,
         std::span<RansDecodeEntry> table_output) noexcept;
@@ -63,6 +78,11 @@ public:
         std::uint32_t expected_decision_count) noexcept;
 
 private:
+    void reset() noexcept;
+    [[nodiscard]] ContextualRansDecodeResult begin_validated(
+        const ContextualRansDescriptor& descriptor,
+        std::span<const std::byte> payload,
+        std::span<RansDecodeEntry> table_output) noexcept;
     [[nodiscard]] ContextualRansDecodeResult result() const noexcept;
     [[nodiscard]] ContextualRansDecodeResult fail(
         ContextualRansDecodeError error) noexcept;

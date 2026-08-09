@@ -37,6 +37,12 @@ build_contextual_rans_decode_tables(
     std::span<RansDecodeEntry> output,
     ContextualRansDecodeTables& tables) noexcept;
 
+[[nodiscard]] ContextualRansDecodeTableResult
+build_contextual_rans_decode_tables_from_model(
+    const ContextualRansDescriptor& descriptor,
+    std::span<RansDecodeEntry> output,
+    ContextualRansDecodeTables& tables) noexcept;
+
 } // namespace marc::entropy::internal
 
 #endif
