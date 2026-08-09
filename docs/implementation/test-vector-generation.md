@@ -6900,3 +6900,20 @@ an invalid 4,095-total slice, a table-entry limit one below 126,976, and an
 output span one entry short to preserve all sentinels and the prior view.
 Provide three surplus entries on success and require them to remain unchanged,
 proving that only the fixed charged extent is written.
+
+### TVG-0534
+
+Decode TVG-0531 through the scalar lifecycle and require Symbol requests
+`(context 0, alphabet 2) -> 0` and `(context 3, alphabet 256) -> 65`, two
+events, two decisions, state `L`, and exact eight-byte exhaustion. Independently
+use one-symbol context 0 value 1 followed by bypass value 2 of width two. The
+reverse transitions produce initial state `0x0000000200001000`, serialized as
+`00 10 00 00 02 00 00 00`; require the bypass value to emerge LSB first.
+
+Reject invalid descriptor and payload extent, one-entry-short table storage,
+initial state zero, wrong context/alphabet, inactive context, zero bypass
+width, decision overrun, a selected table entry changed to zero frequency,
+and frequency split 1/4,095 with no required renormalization byte. Preserve
+the caller value on every failed request. At finish, independently reject
+count mismatch, a nonzero unused model, state `L+1`, and one trailing zero
+byte; require errors to remain sticky and a later `begin` to reset lifecycle.

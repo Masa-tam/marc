@@ -4251,3 +4251,12 @@ frequency snapshot occur before output is touched; the table span and active
 flags become observable only after all 126,976 entries are initialized. This
 preserves frame-atomic composition even if descriptor and workspace storage
 overlap.
+
+The scalar decoder is the first consumer of this table boundary. It retains
+only spans, state, fixed context-use flags, and counters; all large storage
+remains caller-owned. Start preflight precedes table construction, Symbol and
+bypass requests advance the same state, and sticky error state prevents a
+partially decoded value from being mistaken for accepted output. Completion
+validates counts, model use, state, and payload extent before the decoder is
+marked finished. Typed-token materialization and frame publication remain a
+later composition boundary.

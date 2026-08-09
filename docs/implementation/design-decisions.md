@@ -13521,3 +13521,23 @@ span and active-context flags only after construction, leaving prior storage
 and views unchanged on every prewrite failure. This makes descriptor/output
 aliasing harmless and adds no state decoder, frame integration, public API, or
 format change.
+
+## DD-655: Contextual rANS state decoding is caller-driven and strict
+
+- Date: 2026-08-09
+- Status: accepted
+
+Implement a private scalar decoder whose `begin` accepts the fixed descriptor,
+exact payload, decoder limits, and caller-owned 126,976-entry table storage.
+Validate payload and initial state before building tables. Decode Symbol
+requests only from the caller-specified active context and fixed alphabet;
+decode bypass requests as 1 through 16 fixed-probability bits LSB first. Both
+request forms advance one shared variant-1 rANS state and exact decision
+counters without publishing a caller value on failure.
+
+Keep errors sticky. At finish, require exact caller event and decision counts,
+the descriptor decision count, use of every nonzero serialized model, terminal
+state exactly `L`, and exact payload exhaustion. Treat table storage as
+exclusive decoder workspace but validate each selected entry's structural
+bounds at use. This adds no typed-token bridge, frame decoder, encoder, public
+API, CLI profile, or format change.

@@ -3802,3 +3802,12 @@ accepted contextual descriptor, its existing scalar rANS decode-entry shape,
 caller-owned workspace conventions, and fixed `LzssFieldContext` schema. No
 external ANS table builder, contextual implementation, source code, lookup
 layout, malformed corpus, encoded stream, or test suite was consulted.
+
+### IR-0433
+
+The contextual rANS scalar decoder uses only DD-655, marc's independently
+specified variant-1 inverse state arithmetic, the local contextual descriptor
+and fixed tables, checked arithmetic/endian helpers, and the existing
+caller-driven contextual Dynamic Range lifecycle shape. No external ANS
+decoder, contextual coder, source code, state machine, malformed corpus,
+encoded stream, or test suite was consulted.

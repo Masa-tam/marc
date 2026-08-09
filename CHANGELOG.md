@@ -96,6 +96,10 @@ format versions, and C ABI versions are independent namespaces.
   and privately snapshots the complete descriptor before transactionally
   filling caller-owned storage, uses one stable 4,096-slot region per context,
   and publishes no table view on prewrite failure.
+- Added the private contextual rANS scalar state decoder. It consumes the
+  caller-owned fixed tables, decodes Symbol and LSB-first bypass decisions in
+  one state, preserves sticky failures, and strictly checks model use, counts,
+  renormalization extent, and the terminal lower-bound state.
 
 ## 0.1.3 - 2026-08-08
 

@@ -5876,3 +5876,17 @@ symbol range's cumulative start and frequency. Descriptor validation and a
 private frequency snapshot precede every output write, and the completed table
 view is published atomically. This remains an internal parsing structure: no
 rANS state is decoded and the reserved profile is not publicly admitted.
+
+The private scalar state decoder now consumes this fixed table layout. It
+loads the initial little-endian uint64 from the first eight payload bytes,
+requires `L <= x < 256L`, and applies the variant-1 inverse transition for
+each requested Symbol or fixed-probability bypass bit. Renormalization appends
+payload bytes in forward order until `x >= L`; every resulting state must
+again be below `256L`. Bypass values are assembled LSB first.
+
+Strict completion requires the declared decision count, caller-supplied event
+count, use of every nonzero context slice, terminal state exactly `L`, and no
+unconsumed payload byte. An inactive requested context, altered or impossible
+table entry, truncated renormalization, terminal mismatch, and trailing byte
+are distinct failures. This internal milestone still does not admit the
+reserved profile or connect it to typed-token reconstruction.

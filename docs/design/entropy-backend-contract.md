@@ -205,6 +205,20 @@ malformed descriptor, insufficient table limit, insufficient output, or
 descriptor/output alias cannot expose a partial table. The completed span and
 31 active-context flags are published together only after construction.
 
+The private scalar decoder owns no table allocation. `begin` validates the
+descriptor, exact payload extent, initial boundary state, and caller table
+capacity before building those fixed tables and publishing its running state.
+`decode_symbol` requires the context's fixed alphabet and an active model;
+`decode_bypass` accepts 1 through 16 bits and recovers them least-significant
+bit first under the fixed 2,048/2,048 split. Both consume the same state and
+enforce the descriptor decision budget before committing a caller value.
+
+`finish` requires exact event and decision counts, requires every serialized
+nonzero context model to have been requested, requires state exactly `L`, and
+then requires exact payload exhaustion. Errors are sticky, repeated finish is
+an explicit lifecycle error, and a new successful `begin` resets the instance.
+The decoder exposes no public profile and does not reconstruct typed tokens.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

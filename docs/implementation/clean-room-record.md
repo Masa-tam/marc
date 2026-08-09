@@ -15514,3 +15514,29 @@ discarded and the reviewed seed retained.
   pass under MSVC and ClangCL. The complete 2,492-test Release suite, including
   documentation layout and interoperability-schema compatibility, also passes
   under both supported Windows compilers.
+
+## CR-0685: 2026-08-09 - Contextual rANS scalar state decoder
+
+- Authoring method: composed marc's local variant-1 inverse state arithmetic
+  with the accepted fixed contextual tables and caller-driven operation
+  lifecycle.
+- References used: AGENTS.md sections 3, 4, 10.5, 12, 14, and 15; DD-655;
+  IR-0433; TVG-0534; marc's scalar rANS decoder and contextual Dynamic Range
+  decoder interfaces.
+- Known implementations intentionally not consulted: external contextual ANS
+  decoders, source code, state-machine layouts, malformed corpora, encoded
+  streams, and test suites.
+- Independent decisions: preflight initial state before table writes; share
+  one state across Symbol and fixed bypass decisions; track every used model;
+  validate selected table-entry bounds; and require counts, `L`, and exact
+  payload exhaustion in that order at finish.
+- Generated-code task description: add a private fixed-memory scalar decoder
+  with Symbol/bypass requests, sticky lifecycle, strict finalization, hand
+  vectors, malformed-state tests, and no frame or public integration.
+- Similarity review: state inversion follows marc's own variant-1 arithmetic;
+  request validation, counters, sticky errors, and lifecycle follow local
+  contextual contracts rather than an external implementation.
+- Local validation: all 18 focused contextual rANS format, table, and scalar
+  decoder tests pass under MSVC and ClangCL. The complete 2,500-test Release
+  suite, including documentation layout and interoperability-schema
+  compatibility, also passes under both supported Windows compilers.
