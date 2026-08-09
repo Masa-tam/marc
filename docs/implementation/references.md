@@ -3936,3 +3936,11 @@ The contextual-rANS compact descriptor reservation uses only DD-670, variant
 checked little-endian serialization, and local descriptor measurements from
 BM-0015. No external ANS descriptor, table compressor, source code, archive,
 corpus, or bitstream specification was consulted.
+
+### IR-0449
+
+The contextual Dynamic Range planning audit uses only DD-671, marc's local
+streaming, complete-frame, typed-token, context-materialization, and entropy
+planning contracts plus direct call-graph inspection. No external range coder,
+match finder, optimizer, source code, corpus, archive, or benchmark result was
+consulted.

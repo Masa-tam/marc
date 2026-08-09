@@ -544,6 +544,24 @@ the 4,326-byte README it projects 11,081 down to 3,006 bytes (ratio 0.695).
 This estimate motivates a distinct compact entropy variant; it is not a result
 for the current fixed-descriptor format.
 
+### BM-0016: Contextual Dynamic Range planning audit
+
+The same nested-plan audit applies to contextual Dynamic Range. Before the
+correction, one MSVC Release iteration over the then 300,194-byte format
+specification encoded 78,123 bytes at ratio 0.260 in 33.224 seconds. After
+removing the duplicate outer frame plan, token count, and operation count, the
+grown 301,947-byte specification encodes 78,627 bytes at the same displayed
+ratio 0.260 in 10.132 seconds. The inputs differ slightly because the compact-
+rANS design record was added between runs, so the approximately 3.28-fold time
+reduction is descriptive rather than a controlled throughput claim.
+
+Controlled compatibility evidence comes from archives produced over identical
+bytes immediately before and after rebuilding the change: README SHA-256
+`1F2DB1056161A353B3D5EFBF41E2A3DF09FA1F48693D7B9FBAD676F161AA1B09`
+and format-specification SHA-256
+`9DE67249AC75D8C8E3BEC1AF130B47799B06FFC813A8C21F5078F1B89E0B9F15`
+remain unchanged.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

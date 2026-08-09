@@ -4414,3 +4414,17 @@ selection and complete consumption, and publishes only afterward. This keeps
 malformed variable-length data outside the entropy state machine and retains
 zero recursion and bounded workspace. A later active-table optimization may
 change private workspace but must not change variant 3 bytes.
+
+### Contextual Dynamic Range encoder planning boundary
+
+The first Format 2 streaming encoder supplies its already bounded serialized
+frame workspace directly to the transactional complete-frame encoder. That
+frame's internal plan invokes the typed-token encoder and context materializer
+over their conservative caller-owned capacities, relying on each lower layer's
+existing preflight rather than first making a duplicate count-only call.
+
+The entropy plan remains distinct because its exact byte count determines the
+serialized frame extent before output. Consequently one frame performs two
+reference match searches, one context validation, one context materialization,
+one entropy size plan, and one entropy write. No output becomes visible until
+the same complete-frame transaction succeeds.

@@ -1341,3 +1341,13 @@ vector descriptor from 9,052 to 26 bytes without changing rANS payload bytes.
 Variant 2 retains its old identity. This is specification evidence only; no
 parser, serializer, public API, CLI, benchmark, or interoperability admission
 is claimed.
+
+### BR-0046
+
+The contextual Dynamic Range streaming encoder now relies on its existing
+lower-layer transactional preflights instead of repeating complete-frame,
+token-count, and operation-count plans. Reference LZSS search falls from six
+to two passes per frame, while identical-input README and format-specification
+archives retain exact SHA-256 values. Focused tests pass under both compilers;
+this is a performance correction with no format, API, workspace, or admission
+change.

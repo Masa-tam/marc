@@ -13863,3 +13863,26 @@ without combining it with a table-layout optimization. Keep variant 3 private
 until its parser, serializer, malformed suite, state round trip, frame
 integration, public lifecycle, benchmark, and cross-platform archive each
 complete independently.
+
+## DD-671: Contextual Dynamic Range removes redundant nested planning
+
+- Date: 2026-08-09
+- Status: accepted
+
+Apply DD-669's transactional call-graph correction to the first Format 2
+backend. The contextual Dynamic Range streaming encoder currently plans a
+complete frame before calling the complete-frame encoder, which repeats that
+plan. Each frame plan separately counts typed LZSS tokens before the typed
+encoder's own preflight and separately counts modeled operations before the
+context materializer's own validation. This produces six reference match
+searches and four context-plan walks per frame.
+
+Pass the full bounded serialized workspace directly from streaming to the
+complete-frame encoder. Within its plan, call the typed-token encoder over the
+worst-case token workspace and the context materializer over the worst-case
+operation workspace, mapping their existing `output_too_small` failures to the
+frame capacity categories. Retain the entropy coder's write-free exact plan,
+which is required to determine payload extent before transactional output.
+The result performs two match searches and one context validation plus one
+materialization per frame without changing bytes, workspace requirements,
+limits, or atomic failure semantics.

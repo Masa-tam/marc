@@ -15958,3 +15958,28 @@ discarded and the reviewed seed retained.
   configurations. Independent arithmetic confirms the all-dense maximum
   `20 + 3*3 + 17*511 + 3*15 + 8*33 = 9,025` and the two-context one-Literal
   descriptor extent `20 + 3 + 3 = 26`.
+
+## CR-0701: 2026-08-09 - Contextual Dynamic Range plan deduplication
+
+- Authoring method: applied marc's independently established transactional
+  call-graph audit to the older Format 2 contextual Dynamic Range encoder.
+- References used: AGENTS.md sections 3.3, 10.4, 11.2, 13, 14.3, and 15;
+  DD-671; IR-0449; TVG-0550; local typed-token, context-materialization,
+  complete-frame, streaming, and benchmark contracts.
+- Known implementations intentionally not consulted: external range coders,
+  match finders, optimizers, source code, archives, corpora, benchmark
+  harnesses, and performance tables.
+- Independent decisions: retain the exact entropy size plan; remove the outer
+  complete-frame plan; let typed-token and context materialization preflights
+  own capacity validation; and preserve existing frame error categories.
+- Generated-code task description: reduce six LZSS searches to two and four
+  context plans to one validation plus materialization, prove identical
+  archives, measure descriptively, and run focused plus complete regressions.
+- Similarity review: the change deletes duplicate local calls and reuses only
+  marc's established capacity, overlap, error, and atomic-publication rules.
+- Local validation: all 74 focused tests and all 2,567 ordinary registered
+  tests excluding the separately audited exhaustive interoperability-schema
+  loop pass under MSVC 19.51.36231 and ClangCL 22.1.3. Complete suites finish
+  in 164.32 and 117.74 seconds. Identical-input README and format archives
+  retain SHA-256 values recorded in BM-0016; the descriptive MSVC format-
+  specification encode sample falls to 10.132 seconds.

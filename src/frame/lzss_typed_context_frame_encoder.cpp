@@ -112,27 +112,21 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
         return result;
     }
 
-    result.token_encode = dictionary::internal::plan_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits);
+    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
+        raw_input, stream.dictionary, limits, private_tokens);
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
         != dictionary::internal::LzssTypedEncodeError::none) {
+        if (result.token_encode.error
+            == dictionary::internal::LzssTypedEncodeError::output_too_small) {
+            result.error =
+                LzssTypedContextFrameEncodeError::token_staging_too_small;
+            return result;
+        }
         result.error = LzssTypedContextFrameEncodeError::token_encode_error;
-        return result;
-    }
-    if (private_tokens.size() < result.token_count) {
-        result.error =
-            LzssTypedContextFrameEncodeError::token_staging_too_small;
         return result;
     }
     const auto tokens = private_tokens.first(result.token_count);
-    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits, tokens);
-    if (result.token_encode.error
-        != dictionary::internal::LzssTypedEncodeError::none) {
-        result.error = LzssTypedContextFrameEncodeError::token_encode_error;
-        return result;
-    }
     if (result.token_count > std::numeric_limits<std::uint32_t>::max()) {
         result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
         return result;
@@ -143,22 +137,24 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
         static_cast<std::uint32_t>(raw_input.size()),
         output_already_committed};
     result.context_encode =
-        context::internal::plan_lzss_field_context_operations(
-            tokens, stream.dictionary, token_context, limits);
+        context::internal::model_lzss_field_context_tokens(
+            tokens, stream.dictionary, token_context, limits,
+            private_operations);
     result.operation_count = result.context_encode.operation_count;
     result.decision_count = result.context_encode.decision_count;
     if (result.context_encode.error
         != context::internal::LzssFieldContextError::none) {
+        if (result.context_encode.error
+            == context::internal::LzssFieldContextError::output_too_small) {
+            result.error =
+                LzssTypedContextFrameEncodeError::operation_staging_too_small;
+            return result;
+        }
         result.error = LzssTypedContextFrameEncodeError::context_encode_error;
         return result;
     }
     if (result.operation_count > std::numeric_limits<std::uint32_t>::max()) {
         result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
-        return result;
-    }
-    if (private_operations.size() < result.operation_count) {
-        result.error =
-            LzssTypedContextFrameEncodeError::operation_staging_too_small;
         return result;
     }
     const auto operations = private_operations.first(result.operation_count);
@@ -169,14 +165,6 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
         result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
         return result;
     }
-    result.context_encode = context::internal::model_lzss_field_context_tokens(
-        tokens, stream.dictionary, token_context, limits, operations);
-    if (result.context_encode.error
-        != context::internal::LzssFieldContextError::none) {
-        result.error = LzssTypedContextFrameEncodeError::context_encode_error;
-        return result;
-    }
-
     entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
     result.entropy_encode =
         entropy::internal::plan_contextual_dynamic_range_operations(

@@ -158,6 +158,10 @@ format versions, and C ABI versions are independent namespaces.
   match-search passes to two per frame by removing redundant nested planning.
   The transactional failure boundary, workspace contract, and encoded bytes
   are unchanged.
+- Reduced experimental contextual Dynamic Range encoding from six reference
+  LZSS searches to two and from four context-plan walks to one validation plus
+  one materialization per frame. Encoded bytes and workspace contracts remain
+  unchanged.
 
 ## 0.1.3 - 2026-08-08
 

@@ -7151,3 +7151,14 @@ oversummed explicit frequencies, choose the noncanonical dense representation,
 and append one trailing byte. Every failure must preserve the destination
 descriptor. Add threshold vectors on both sides of `3K < 1 + 2(A-1)` and the
 exact 9,025-byte all-dense maximum.
+
+### TVG-0550
+
+Encode the repository README and format specification through
+`lzss-contextual-dynamic-range` before and after removing the redundant outer
+frame plan, token-count pass, and operation-count pass. Require SHA-256 and
+complete byte equality for both archives. Run the focused typed-context frame,
+streaming encoder, profile, completion, C API, CLI, and experimental benchmark
+tests under MSVC and ClangCL. Compare one descriptive MSVC Release iteration
+over the format specification; serialized size, decoding, and workspace
+reporting must remain unchanged.
