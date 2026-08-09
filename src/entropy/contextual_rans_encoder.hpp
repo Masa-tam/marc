@@ -2,6 +2,7 @@
 #define MARC_ENTROPY_CONTEXTUAL_RANS_ENCODER_HPP
 
 #include "context/lzss_field_context.hpp"
+#include "entropy/contextual_rans_encode_core.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <cstddef>
@@ -9,23 +10,6 @@
 #include <span>
 
 namespace marc::entropy::internal {
-
-enum class ContextualRansEncodeError : std::uint8_t {
-    none,
-    empty_operations,
-    invalid_operation_kind,
-    invalid_context,
-    invalid_alphabet,
-    invalid_symbol,
-    invalid_bypass_width,
-    nonzero_unused_field,
-    payload_output_too_small,
-    overlapping_buffers,
-    limit_exceeded,
-    normalization_error,
-    arithmetic_overflow,
-    internal_error,
-};
 
 struct ContextualRansEncodeResult {
     std::size_t operation_count{};

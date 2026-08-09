@@ -117,6 +117,16 @@ and decision counts. Only sufficient, bounded, non-aliasing operation staging
 permits deterministic materialization; an invalid token, count mismatch,
 policy failure, or short output leaves the entire operation span unchanged.
 
+The contextual rANS direct encoder may consume typed tokens without allocating
+that operation span. It first validates the complete typed frame and gathers
+the identical Symbol/bypass decisions forward. Because rANS writes decisions
+in reverse, it then traverses tokens backward and reconstructs each token's
+pre-state from the immediate predecessor kind and latest preceding Literal.
+The preceding-Literal cursor moves only backward, keeping this traversal
+linear. Fields are supplied to the shared entropy reverse writer in inverse
+modeled order, so direct and materialized-operation paths must produce byte-
+identical descriptors and payloads.
+
 The private contextual Dynamic Range decoder may consume this contract
 directly rather than allocating a modeled-operation array. It MUST derive each
 request from the same prior-token state, validate the reconstructed token

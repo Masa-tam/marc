@@ -6967,3 +6967,20 @@ normalized sum 4,096 with deterministic numeric tie handling and successful
 renormalization round trip. Reject each malformed operation field at its stable
 index, empty input, decision/table/payload/buffer limits, short output, and
 operation/payload aliasing while preserving descriptor and payload sentinels.
+
+### TVG-0538
+
+Pass one typed Literal `A` through the direct bridge and require the same two
+events, two decisions, descriptor frequencies, eight-byte payload, and decoded
+token as TVG-0531 and TVG-0537, without supplying operation staging. Compare
+the direct result byte-for-byte with the existing operation encoder after the
+reference context model materializes the same tokens.
+
+Use a mixed frame containing Literals and overlapping Matches so reverse
+context derivation crosses previous-Literal and previous-Match states. Require
+direct and operation paths to produce identical descriptors and payloads, then
+decode the direct payload back to identical tokens and raw extent. Reject an
+invalid typed frame, short payload, token/payload overlap, token-buffer and
+entropy limits, and preserve descriptor/output sentinels on every prewrite
+failure. Re-run all operation encoder tests to prove shared-core refactoring
+does not change their bytes.

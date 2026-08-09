@@ -5936,3 +5936,12 @@ the already specified scalar variant-1 layout. Planning and exact encoding
 must agree on payload length, and failed validation, capacity, limit, or alias
 checks publish neither descriptor nor payload. No token bridge, frame encoder,
 or public admission is implied.
+
+The private typed-token direct bridge emits these same bytes without a
+`ModeledOperation[]` staging region. It counts decisions while walking tokens
+forward, then walks tokens backward and derives each pre-token context from
+the immediately preceding kind and latest preceding Literal. Within each token
+it supplies fields in reverse modeled order to the same entropy writer used by
+the operation reference. Direct and materialized-operation encodings are
+required to match in descriptor, payload extent, and payload bytes. This
+changes no stream or frame field and still provides no complete frame encoder.

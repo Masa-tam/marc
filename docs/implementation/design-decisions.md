@@ -13600,3 +13600,25 @@ backward renormalization-byte fill, plan without output writes, and publish the
 descriptor only after exact payload size and limits validate. Reject operation/
 payload overlap before encoding. This adds no direct token bridge, frame
 encoder, streaming lifecycle, public API, CLI profile, or format change.
+
+## DD-659: Direct token encoding shares a count builder and reverse writer
+
+- Date: 2026-08-09
+- Status: accepted
+
+Factor contextual rANS's per-context counting/normalization and scalar reverse
+state writer into private entropy primitives used by both the operation-level
+reference encoder and a typed-LZSS direct bridge. Keep the established public-
+private operation encoder contract and exact bytes unchanged; do not duplicate
+state arithmetic or normalization in the context layer.
+
+Validate the complete typed-token frame first, then walk tokens forward to
+feed Symbol fields and bypass widths into the shared model builder. For exact
+planning and output, walk tokens backward. Derive a token's pre-state from its
+immediate predecessor kind and the latest preceding Literal. Maintain the
+preceding-Literal position monotonically while moving backward, so context
+reconstruction is linear rather than rescanning the prefix per token. Within
+each token emit fields in reverse modeled order, leaving bypass bit reversal to
+the shared writer. Reject token/payload overlap before output. This adds no raw
+dictionary parsing, frame encoder, streaming lifecycle, public API, CLI
+profile, or format change.

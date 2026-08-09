@@ -251,6 +251,13 @@ backward after the eight-byte final state. Planning writes no payload, exact
 encoding rejects operation/payload aliasing, and descriptor publication occurs
 only after the complete result validates.
 
+The shared private model builder and reverse writer are also consumed by the
+typed-LZSS direct encoder. That bridge supplies the same Symbol and bypass
+decisions without storing native modeled-operation records. Its forward count
+and backward encode passes must reproduce the reference operation encoder's
+decision count, normalized descriptor, exact payload extent, and every payload
+byte. The entropy primitives remain unaware of token meaning.
+
 ## Backend substitution
 
 A later tANS or Huffman backend may consume the same operation sequence,

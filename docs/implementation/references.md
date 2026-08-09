@@ -3838,3 +3838,12 @@ the repository-owned `ModeledOperation` schema, contextual descriptor, checked
 arithmetic, and local transactional encoder conventions. No external ANS
 encoder, contextual model, source code, normalization routine, encoded stream,
 corpus, or test suite was consulted.
+
+### IR-0437
+
+The direct typed-token contextual rANS encoder uses only DD-659, marc's local
+typed LZSS validation and field-context rules, the independently written
+contextual rANS operation encoder, checked arithmetic, and repository-owned
+transactional workspace conventions. No external ANS/LZSS composition, source
+code, reverse-context algorithm, encoded stream, corpus, or test suite was
+consulted.

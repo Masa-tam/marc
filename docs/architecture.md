@@ -4289,3 +4289,12 @@ The encode pass rejects operation/payload overlap and must reproduce that plan
 before publishing the descriptor. This intentionally keeps context modeling
 outside the entropy component; a later direct typed-token bridge may remove
 the operation staging from a complete frame without changing these bytes.
+
+The direct forward bridge now performs that composition. It validates typed
+tokens and gathers model decisions in a forward pass, then reconstructs the
+same pre-token context state while walking tokens backward. A monotonically
+retreating previous-Literal cursor makes the reverse traversal linear even
+though Literal context depends on earlier values. Both this bridge and the
+materialized-operation reference use the same private entropy model builder
+and reverse writer, and tests require identical descriptors and payloads. Raw
+LZSS parsing and complete frame serialization remain separate outer steps.

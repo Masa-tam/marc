@@ -15619,3 +15619,31 @@ discarded and the reviewed seed retained.
   ties, and renormalization round trip. The complete 2,528-test Release suite,
   including documentation layout and interoperability-schema compatibility,
   also passes under both supported Windows compilers.
+
+## CR-0689: 2026-08-09 - Direct typed-token contextual rANS encoding
+
+- Authoring method: factored marc's contextual rANS counting and reverse state
+  arithmetic into private shared primitives, then drove them directly from the
+  repository-owned typed LZSS and field-context contracts.
+- References used: AGENTS.md sections 9.3, 10.5, 11.2, 12, 13, 14, and 15;
+  DD-659; IR-0437; TVG-0538; local typed-token validation, field-context state,
+  contextual rANS encoder, and decoder.
+- Known implementations intentionally not consulted: external ANS/LZSS
+  compositions, source code, reverse-context algorithms, encoded streams,
+  corpora, and test suites.
+- Independent decisions: share one count builder and reverse writer; count
+  tokens forward; reconstruct prior kind and Literal context while moving
+  backward with a monotonic Literal cursor; reverse fields within each token;
+  and reject token/payload overlap before writes.
+- Generated-code task description: refactor the operation encoder over shared
+  private entropy primitives and add a direct typed-token planner/encoder with
+  reference-byte equality, mixed Literal/Match round trip, atomic failures,
+  and no modeled-operation staging.
+- Similarity review: context derivation follows marc's own explicit state
+  contract; reverse traversal, shared primitive boundaries, error mapping, and
+  tests were designed from repository-local invariants.
+- Local validation: all 12 contextual rANS operation and direct-token encoder
+  tests pass under MSVC and ClangCL, including byte equality and mixed-token
+  decode. The complete 2,533-test Release suite, including documentation layout
+  and interoperability-schema compatibility, also passes under both supported
+  Windows compilers.

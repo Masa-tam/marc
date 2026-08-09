@@ -112,6 +112,10 @@ format versions, and C ABI versions are independent namespaces.
   normalized models per Symbol context, encodes fixed-model bypass bits in the
   inverse order required for LSB-first decoding, and transactionally plans and
   emits the reserved descriptor and scalar payload.
+- Connected typed LZSS tokens directly to contextual rANS encoding without
+  modeled-operation staging. A shared private model builder and reverse writer
+  keep this path byte-identical to the operation-level reference encoder while
+  deriving prior-token contexts in one backward pass.
 
 ## 0.1.3 - 2026-08-08
 
