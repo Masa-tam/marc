@@ -1608,3 +1608,11 @@ exact entropy identity, output commit, and strict trailing-data rejection are
 covered. The selector remains outside the stable 42-profile inventory and
 requires explicit selection for decoding. Interoperability remains future
 work.
+
+### BR-0071
+
+Contextual tANS variant 2 is locally admitted as archive 45 in interoperability
+schema 34. Generation, self-verification, exact manifest order, SHA-256,
+fixture decode, byte-identical re-encoding, reordered-manifest rejection, and
+schemas 1 through 33 compatibility pass locally. External four-direction
+Windows/Linux evidence remains pending.

@@ -113,7 +113,8 @@ $profiles = @(
     'lzd-tans',
     'lzmw-tans',
     'lzss-contextual-dynamic-range',
-    'lzss-contextual-rans-compact'
+    'lzss-contextual-rans-compact',
+    'lzss-contextual-tans'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -136,8 +137,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 33
-    codec_set = 'marc-cli-v33'
+    schema_version = 34
+    codec_set = 'marc-cli-v34'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

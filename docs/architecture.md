@@ -4645,3 +4645,9 @@ ABI-1 lifecycle with the same 65,536-byte frame, `6F` decision, `9F + 2`
 payload, and 8-MiB aggregate policies as the benchmark. Caller-owned views
 remain opaque; the tool does not reproduce token or tANS table layouts and
 does not auto-detect this Format 2 entropy identity.
+
+Interoperability schema 34 appends the contextual-tANS archive after the
+frozen schema-33 order. The generator produces exactly 45 archives, while the
+verifier requires `marc-cli-v34`, exact manifest order, size and SHA-256,
+foreign decode equality, and byte-identical local re-encoding. Compatibility
+tests derive and validate every prior schema without changing its profile set.

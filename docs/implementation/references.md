@@ -4228,3 +4228,11 @@ The contextual-tANS CLI admission uses only DD-704, TVG-0583, the local Format
 temporary-file commit rules, and repository-owned round-trip script. No
 external command-line tool, compression implementation, source code, archive,
 corpus, test vector, test suite, or optimization description was consulted.
+
+### IR-0483
+
+Interoperability schema 34 uses only DD-705, TVG-0584, the completed local
+`lzss-contextual-tans` CLI selector, the frozen schema-33 manifest order, and
+marc's repository-owned generator, verifier, and schema-derivation scripts.
+No external archive, corpus, implementation, source code, test vector, test
+suite, manifest, or optimization description was consulted.

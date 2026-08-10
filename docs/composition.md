@@ -1458,3 +1458,11 @@ C lifecycle, preserves Format 2 identity `dictionary=2/0, entropy=5/2`, and
 inherits the public workspace partition without exposing C++ views. A
 registered file round trip also rejects strict trailing data. Interoperability
 admission remains future work.
+
+### CP-0073
+
+Interoperability schema 34 appends `lzss-contextual-tans` exactly once after
+the frozen schema-33 order. The current manifest contains 45 archives and
+requires byte-identical local re-encoding of Format 2 identity `5/2` in
+addition to fixture decode equality. Schema derivation removes only the new
+archive before validating schema 33 and every earlier profile set.

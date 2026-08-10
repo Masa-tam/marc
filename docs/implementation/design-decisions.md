@@ -14595,3 +14595,20 @@ private token/table knowledge to the command-line layer. Register exact file
 round trip, entropy identity `5/2`, temporary-output commit, and strict
 trailing-data rejection. This changes no stream bytes, C ABI, stable profile
 count, or default codec.
+
+## DD-705: Interoperability schema 34 appends contextual tANS
+
+- Date: 2026-08-10
+- Status: accepted
+
+Freeze schemas 1 through 33 unchanged and append
+`lzss-contextual-tans.marc` as archive 45. Set `schema_version` to 34 and
+`codec_set` to `marc-cli-v34`. The generator must round-trip the shared 8,193-
+byte binary fixture before recording the archive size and SHA-256.
+
+Require the verifier to enforce the exact 45-entry order, leaf names, sizes,
+digests, fixture decode, and byte-identical local re-encoding. Reject a
+reordered schema-34 manifest. Derive schema 33 by removing only archive 45 and
+changing only the schema identity, then validate every earlier schema through
+the existing chain. External cross-platform evidence remains separate from
+local schema admission.

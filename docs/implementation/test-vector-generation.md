@@ -7652,3 +7652,16 @@ Append one byte to the canonical archive and require strict decode failure.
 Verify the destination remains uncommitted through the established temporary-
 file workflow. Keep the stable 42-row profile table unchanged while requiring
 the experimental selector to appear in CLI documentation and usage text.
+
+### TVG-0584
+
+Generate schema 34 from the established 8,193-byte fixture and existing 44
+archives, then append `lzss-contextual-tans.marc` as entry 45. Require manifest
+identity `34`/`marc-cli-v34`, exact profile order, leaf-only names, recorded
+sizes and SHA-256 values, exact fixture decode, and byte-identical local
+re-encoding for every archive.
+
+Swap the first two manifest entries and require order rejection. Copy the
+canonical bundle, remove only contextual tANS, change the identity to
+`33`/`marc-cli-v33`, and require successful verification before continuing the
+unchanged derivation chain through schema 1.

@@ -16969,3 +16969,28 @@ discarded and the reviewed seed retained.
   under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,709 registered MSVC tests,
   including `marc_interoperability_schema_compatibility`, pass with a
   240-second per-test limit in 143.76 seconds.
+
+## CR-0735: 2026-08-10 - Contextual tANS interoperability schema 34
+
+- Authoring method: appended the completed contextual-tANS CLI profile to
+  marc's frozen additive interoperability manifest sequence.
+- References used: AGENTS.md sections 14.3 and 16; DD-705; IR-0483; TVG-0584;
+  the local schema-33 generator/verifier, 8,193-byte fixture, and compatibility
+  derivation chain.
+- Known implementations intentionally not consulted: external archives,
+  corpora, compression implementations, source code, manifests, test vectors,
+  test suites, and optimization descriptions.
+- Independent decisions: append exactly one archive; freeze all prior orders;
+  reject reordered manifests; require both foreign decode and deterministic
+  re-encoding; and keep external cross-platform evidence pending.
+- Generated-code task description: create schema 34 with contextual tANS as
+  archive 45, extend exact verification, and prove schemas 1 through 33 remain
+  accepted through derived bundles.
+- Similarity review: the scripts extend only marc's repository-owned additive
+  schema pattern and local CLI profile; no external naming, control flow,
+  archive bytes, or implementation structure was used.
+- Local validation: schema 34 generation, 45-archive verification, reordered-
+  manifest rejection, and schemas 1 through 33 compatibility pass under the
+  MSVC Release CLI in 60.79 seconds. All 2,709 registered MSVC tests pass with
+  a 240-second per-test limit in 147.18 seconds; the included compatibility
+  run completes in 60.43 seconds. External artifacts are not claimed.

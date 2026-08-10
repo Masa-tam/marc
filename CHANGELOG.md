@@ -26,6 +26,8 @@ format versions, and C ABI versions are independent namespaces.
 - Added the experimental `lzss-contextual-tans` CLI selector with public-ABI
   workspace construction, exact round-trip coverage, entropy identity checks,
   and strict trailing-data rejection.
+- Added contextual tANS as archive 45 in interoperability schema 34 while
+  preserving exact validation of schemas 1 through 33.
 
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one
