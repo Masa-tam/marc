@@ -4176,3 +4176,12 @@ table constants, streaming encoder/decoder constructors, checked arithmetic,
 alignment rules, and decoder limits. No external workspace calculator, ANS
 implementation, source code, archive, corpus, test vector, test suite, or
 optimization description was consulted.
+
+### IR-0477
+
+The contextual-tANS public C lifecycle uses only DD-687 through DD-699,
+TVG-0566 through TVG-0578, marc's ABI-1 size-tagged configuration convention,
+common transform handle, private contextual-tANS profile/partitioners and
+streaming constructors, checked overlap helpers, stable error mapping, and
+decoder limits. No external C API, ANS library, source code, archive, corpus,
+test vector, test suite, or optimization description was consulted.

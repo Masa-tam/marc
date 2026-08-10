@@ -53,6 +53,9 @@
 #include "frame/lzss_contextual_rans_compact_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_rans_compact_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_rans_profile.hpp"
+#include "frame/lzss_contextual_tans_frame_streaming_decoder.hpp"
+#include "frame/lzss_contextual_tans_frame_streaming_encoder.hpp"
+#include "frame/lzss_contextual_tans_profile.hpp"
 #include "frame/lzss_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_rans_frame_streaming_encoder.hpp"
 #include "frame/lzss_rans_profile.hpp"
@@ -614,6 +617,29 @@ bool load_config(
     if (config == nullptr
         || config->struct_size
             != sizeof(marc_lzss_contextual_rans_compact_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0) {
+        return false;
+    }
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_block_size = config->max_block_size;
+    limits.max_compressed_payload_size =
+        config->max_compressed_payload_size;
+    limits.max_internal_buffered_bytes =
+        config->max_internal_buffered_bytes;
+    limits.max_lz_distance = config->max_lz_distance;
+    limits.max_lz_match_length = config->max_lz_match_length;
+    limits.max_entropy_table_entries =
+        config->max_entropy_table_entries;
+    return true;
+}
+
+bool load_config(
+    const marc_lzss_contextual_tans_config* config,
+    marc::core::DecoderLimits& limits) noexcept {
+    if (config == nullptr
+        || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0) {
         return false;
@@ -1393,6 +1419,154 @@ marc_status create_contextual_rans(
             : static_cast<marc::core::Transform*>(new (std::nothrow)
                 marc::frame::internal::LzssContextualRansFrameStreamingDecoder(
                     limits, primary, views.tables, views.tokens, secondary));
+    }
+    return publish_transform(implementation, transform);
+}
+
+marc_status contextual_tans_workspace_requirements(
+    const marc_lzss_contextual_tans_config* const config,
+    marc_workspace_requirements* const requirements) noexcept {
+    if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {};
+    requirements->struct_size = sizeof(*requirements);
+    requirements->abi_version = MARC_ABI_VERSION;
+    requirements->views_alignment = 1;
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzssParameters dictionary{
+            config->window_size, config->min_match_length,
+            config->max_match_length, 0};
+        marc::frame::internal::LzssContextualTansStreamHeader stream{};
+        marc::frame::internal::
+            LzssContextualTansEncoderWorkspaceRequirements needed{};
+        const auto error =
+            marc::frame::internal::make_lzss_contextual_tans_profile(
+                {config->original_size, config->frame_size, dictionary},
+                limits, stream, needed);
+        if (error != marc::frame::internal::
+                         LzssContextualTansProfileError::none) {
+            return status_for(
+                marc::frame::internal::
+                    lzss_contextual_tans_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_input_bytes;
+        requirements->secondary_bytes = needed.frame_encoded_bytes;
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    if (config->direction == MARC_DIRECTION_DECODE) {
+        marc::frame::internal::
+            LzssContextualTansDecoderWorkspaceRequirements needed{};
+        const auto error = marc::frame::internal::
+            calculate_lzss_contextual_tans_decoder_workspace(limits, needed);
+        if (error != marc::frame::internal::
+                         LzssContextualTansProfileError::none) {
+            return status_for(
+                marc::frame::internal::
+                    lzss_contextual_tans_profile_error_code(error));
+        }
+        requirements->primary_bytes = needed.frame_encoded_bytes;
+        requirements->secondary_bytes = needed.frame_decoded_bytes;
+        requirements->views_bytes = needed.views_bytes;
+        requirements->views_alignment = needed.views_alignment;
+        return MARC_STATUS_OK;
+    }
+    return MARC_STATUS_INVALID_ARGUMENT;
+}
+
+marc_status create_contextual_tans(
+    const marc_lzss_contextual_tans_config* const config,
+    const marc_buffer primary_workspace,
+    const marc_buffer secondary_workspace,
+    const marc_buffer views_workspace,
+    marc_transform** const transform) noexcept {
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    *transform = nullptr;
+    marc_workspace_requirements required{};
+    const auto query = contextual_tans_workspace_requirements(
+        config, &required);
+    if (query != MARC_STATUS_OK) return query;
+    if (!valid_buffer(primary_workspace.data, primary_workspace.size)
+        || !valid_buffer(secondary_workspace.data, secondary_workspace.size)
+        || !valid_buffer(views_workspace.data, views_workspace.size)
+        || primary_workspace.size < required.primary_bytes
+        || secondary_workspace.size < required.secondary_bytes
+        || views_workspace.size < required.views_bytes
+        || (required.views_bytes != 0
+            && reinterpret_cast<std::uintptr_t>(views_workspace.data)
+                % required.views_alignment != 0)
+        || !disjoint_buffer_prefixes(
+            primary_workspace, required.primary_bytes,
+            secondary_workspace, required.secondary_bytes)
+        || !disjoint_buffer_prefixes(
+            primary_workspace, required.primary_bytes,
+            views_workspace, required.views_bytes)
+        || !disjoint_buffer_prefixes(
+            secondary_workspace, required.secondary_bytes,
+            views_workspace, required.views_bytes)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    marc::core::DecoderLimits limits{};
+    if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    const auto primary = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(primary_workspace.data),
+        required.primary_bytes};
+    const auto secondary = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(secondary_workspace.data),
+        required.secondary_bytes};
+    const auto views_storage = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(views_workspace.data),
+        required.views_bytes};
+    marc::core::Transform* implementation{};
+    if (config->direction == MARC_DIRECTION_ENCODE) {
+        const marc::dictionary::internal::LzssParameters dictionary{
+            config->window_size, config->min_match_length,
+            config->max_match_length, 0};
+        marc::frame::internal::LzssContextualTansStreamHeader stream{};
+        marc::frame::internal::
+            LzssContextualTansEncoderWorkspaceRequirements needed{};
+        const auto error =
+            marc::frame::internal::make_lzss_contextual_tans_profile(
+                {config->original_size, config->frame_size, dictionary},
+                limits, stream, needed);
+        if (error != marc::frame::internal::
+                         LzssContextualTansProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::internal::LzssContextualTansEncoderViews views{};
+        if (marc::frame::internal::
+                partition_lzss_contextual_tans_encoder_views(
+                    needed, views_storage, views)
+            != marc::frame::internal::
+                   LzssContextualTansWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        implementation = new (std::nothrow) marc::frame::internal::
+            LzssContextualTansFrameStreamingEncoder(
+                stream, limits, primary, views.tokens, views.tables,
+                secondary);
+    } else {
+        marc::frame::internal::
+            LzssContextualTansDecoderWorkspaceRequirements needed{};
+        const auto error = marc::frame::internal::
+            calculate_lzss_contextual_tans_decoder_workspace(limits, needed);
+        if (error != marc::frame::internal::
+                         LzssContextualTansProfileError::none) {
+            return MARC_STATUS_INTERNAL_ERROR;
+        }
+        marc::frame::internal::LzssContextualTansDecoderViews views{};
+        if (marc::frame::internal::
+                partition_lzss_contextual_tans_decoder_views(
+                    needed, views_storage, views)
+            != marc::frame::internal::
+                   LzssContextualTansWorkspaceError::none) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        implementation = new (std::nothrow) marc::frame::internal::
+            LzssContextualTansFrameStreamingDecoder(
+                limits, primary, views.tables, views.tokens, secondary);
     }
     return publish_transform(implementation, transform);
 }
@@ -4131,6 +4305,29 @@ marc_status marc_lzss_contextual_rans_compact_create(
     return create_contextual_rans(
         config, primary_workspace, secondary_workspace, views_workspace,
         transform, ContextualRansCRepresentation::compact);
+}
+
+marc_status marc_lzss_contextual_tans_config_init(
+    const marc_direction direction,
+    marc_lzss_contextual_tans_config* const config) noexcept {
+    return initialize_contextual_rans_config(direction, config);
+}
+
+marc_status marc_lzss_contextual_tans_workspace_requirements(
+    const marc_lzss_contextual_tans_config* const config,
+    marc_workspace_requirements* const requirements) noexcept {
+    return contextual_tans_workspace_requirements(config, requirements);
+}
+
+marc_status marc_lzss_contextual_tans_create(
+    const marc_lzss_contextual_tans_config* const config,
+    const marc_buffer primary_workspace,
+    const marc_buffer secondary_workspace,
+    const marc_buffer views_workspace,
+    marc_transform** const transform) noexcept {
+    return create_contextual_tans(
+        config, primary_workspace, secondary_workspace, views_workspace,
+        transform);
 }
 
 marc_status marc_lz78_config_init(

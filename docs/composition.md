@@ -1407,3 +1407,12 @@ decoder workspace sizing. Checked direction-specific token/table layouts feed
 the actual streaming constructors without knowledge of C++ object placement
 outside the partitioner. This completes the private lifecycle foundation;
 public C exposure remains future work.
+
+### CP-0067
+
+The contextual tANS composition now has an experimental public C lifecycle.
+Its configuration, direction-specific workspace query, and factory preserve
+the common three-region ownership contract while reconstructing typed tokens
+and tANS tables only inside C++. The stream remains exactly Format 2 variant
+`5/2`; completion, CLI, benchmark, fuzz, and interoperability admission remain
+future work.

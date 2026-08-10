@@ -1550,3 +1550,13 @@ local limits. Empty streams, bounds, aggregate limits, alignment, forged
 requirements, atomic partitioning, stable errors, and profile-constructed
 streaming round trips are covered. Public ABI, CLI, benchmark, fuzz, and
 interoperability remain future work.
+
+### BR-0065
+
+Contextual tANS variant 2 now has an experimental ABI-1 C lifecycle. Config
+initialization, direction-specific exact workspace queries, aligned opaque
+typed storage, encode/decode construction, binary round trip, stream identity,
+short/misaligned/overlapping regions, reserved fields, size/version tags,
+directions, and null arguments are covered by a C11 test linked through the
+public library. Completion, CLI, benchmark, fuzz, and interoperability remain
+future work.

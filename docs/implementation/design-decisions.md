@@ -14481,3 +14481,24 @@ together against the internal-buffer limit. Empty known-size streams retain
 zero frame/view requirements and alignment one. Decoder sizing derives only
 from local hard limits. This admits private constructors but no public ABI,
 CLI, benchmark, fuzz, or interoperability entry.
+
+## DD-699: Contextual tANS public construction keeps typed layouts opaque
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add a distinct size-tagged ABI-1 configuration and `config_init`, direction-
+specific `workspace_requirements`, and `create` functions for the existing
+Format 2 contextual-tANS identity `5/2`. Reuse the common transform process
+and destroy functions. This additive family does not change the ABI version
+and is not an alias for byte-oriented LZSS plus tANS or either contextual-rANS
+variant.
+
+Expose only three caller-owned byte regions and a maximum alignment. Encoding
+maps primary to raw input, secondary to the complete frame, and views to tokens
+then `uint16_t` inverse tables. Decoding maps primary to serialized input,
+secondary to raw output, and views to `TansDecodeEntry` tables then tokens.
+Validate configuration tags, limits, capacities, alignment, and all region-
+prefix overlaps before publishing a handle; partition typed views only inside
+C++. Keep allocator callbacks, CLI selection, completion, fuzzing, benchmarks,
+and interoperability outside this milestone.

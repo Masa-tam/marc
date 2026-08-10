@@ -693,6 +693,12 @@ string(FIND "${c_api_content}"
 if(c_api_compact_contextual_rans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API compact contextual rANS inventory is stale")
 endif()
+string(FIND "${c_api_content}"
+    "`marc_lzss_contextual_tans_workspace_requirements()`"
+    c_api_contextual_tans_profile_offset)
+if(c_api_contextual_tans_profile_offset EQUAL -1)
+    message(FATAL_ERROR "C API contextual tANS inventory is stale")
+endif()
 foreach(prohibited_c_api_history IN ITEMS
         "completion matrix"
         "Interoperability schema"
@@ -709,18 +715,18 @@ endforeach()
 file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
     REGEX "^MARC_API marc_status marc_.*_config_init\\(")
 list(LENGTH c_api_config_initializers c_api_profile_count)
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 3")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 4")
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
-        "${cli_profile_count} CLI profiles plus three experimental profiles")
+        "${cli_profile_count} CLI profiles plus four experimental profiles")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
-    "marc_lzss_contextual_(dynamic_range|rans(_compact)?)_config_init")
+    "marc_lzss_contextual_(dynamic_range|rans(_compact)?|tans)_config_init")
 list(LENGTH c_api_config_initializers c_api_experimental_profile_count)
-if(NOT c_api_experimental_profile_count EQUAL 3)
+if(NOT c_api_experimental_profile_count EQUAL 4)
     message(FATAL_ERROR
-        "C API must contain exactly three contextual LZSS experimental "
+        "C API must contain exactly four contextual LZSS experimental "
         "initializers")
 endif()
 

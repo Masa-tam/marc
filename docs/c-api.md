@@ -163,6 +163,18 @@ compact 9,025-byte maximum descriptor. It emits only entropy variant 3; the
 fixed and compact factories reject one another's streams. Call the matching
 compact requirements function whenever direction, known size, frame/LZSS
 parameters, or hard limits change.
+The experimental LZSS contextual tANS factory is a third distinct Format 2
+lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
+the immutable direction, known size, frame/LZSS parameters, or hard limits
+change. Encoding uses primary for raw-frame input, secondary for the complete
+serialized frame, and aligned opaque views for typed tokens followed by tANS
+inverse tables. Decoding uses primary for serialized input, secondary for
+atomic raw output, and views for fixed tANS decode tables followed by typed
+tokens. The factory checks capacity, alignment, pairwise non-overlap, and the
+private partition before publishing a handle. It emits only entropy identity
+`5/2`; neither typed-token nor table representations form part of ABI 1. This
+additive function family does not change the ABI version and remains outside
+the baseline CLI and interoperability inventory pending its completion audit.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

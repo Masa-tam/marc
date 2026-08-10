@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the experimental contextual tANS C ABI lifecycle. Its size-tagged
+  configuration, direction-specific workspace query, and caller-owned factory
+  expose the existing Format 2 `5/2` stream without exposing typed-token or
+  tANS table layouts.
+
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one
   implicit binary bypass region in bounded caller-owned storage, without yet

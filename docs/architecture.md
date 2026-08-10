@@ -4602,3 +4602,11 @@ before tokens. Checked offsets and maximum alignment turn one caller byte
 region into those views transactionally. Conservative frame extents cover six
 decisions per raw byte at up to 12 bits each, while actual frame encoding keeps
 the exact canonical descriptor and payload sizes.
+
+The public contextual tANS C boundary now exposes that private lifecycle
+through ABI 1 without exporting its C++ layouts. A size-tagged configuration
+selects one immutable direction; a requirements query maps primary, secondary,
+and aligned opaque views to the private profile; and the factory validates all
+capacities and prefix overlaps before partitioning tokens and tables. The
+published handle uses the common process/destroy contract and emits the
+unchanged Format 2 `5/2` representation.

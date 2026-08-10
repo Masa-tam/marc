@@ -7564,3 +7564,18 @@ aggregate gate. Partition both directions from aligned byte storage; reject
 forged counts, offsets, sizes, alignments, short storage, and misalignment
 without publishing views. Construct the private streaming encoder and decoder
 solely from returned requirements and round-trip a multi-frame input.
+
+### TVG-0578
+
+Initialize the public contextual-tANS C configuration for both immutable
+directions. With raw bytes `41 42 41 42 58`, a two-byte frame, and small hard
+limits, query all three workspaces, construct the encoder, require Format 2
+identity `dictionary=2/0, entropy=5/2`, then construct the decoder from its own
+requirements and recover the exact input.
+
+Reject one-byte-short primary, secondary, or views regions; misaligned views;
+overlap between a required prefix of any two regions; null output handles;
+nonzero reserved fields; wrong structure size or ABI version; invalid
+direction; and null query/init arguments. Every failed creation must leave the
+handle null. The C test must link only through the public installed header and
+library target.

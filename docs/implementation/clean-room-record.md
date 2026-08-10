@@ -16809,3 +16809,35 @@ discarded and the reviewed seed retained.
   pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,700 registered tests,
   including `marc_interoperability_schema_compatibility`, pass under MSVC with
   a 240-second per-test limit in 70.20 seconds.
+
+## CR-0729: 2026-08-10 - Contextual tANS public C lifecycle
+
+- Authoring method: projected marc's established size-tagged ABI-1 lifecycle
+  onto the independently defined contextual-tANS private profile without
+  exporting typed-token or entropy-table representations.
+- References used: AGENTS.md sections 3, 5, 10.6, 11, 12, 14, and 15; DD-687
+  through DD-699; IR-0477; TVG-0566 through TVG-0578; marc's common C transform
+  contract, local contextual-rANS C ownership precedent, contextual-tANS
+  profile/partitioners and streaming constructors, overlap helpers, checked
+  arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external compression C
+  APIs, ANS libraries, source code, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: retain ABI 1 for an additive family; expose three
+  byte regions plus alignment; keep direction-specific typed ordering private;
+  reject every required-prefix overlap before construction; and preserve the
+  existing `5/2` representation unchanged.
+- Generated-code task description: specify, implement, and test the public
+  contextual-tANS config initializer, workspace query, factory, binary round
+  trip, stream identity, capacities, alignment, overlaps, tags, directions,
+  reserved fields, null arguments, and null-handle failure behavior.
+- Similarity review: the boundary specializes only marc's repository-owned C
+  ABI and private contextual-tANS lifecycle; no external naming, control flow,
+  structure layout, vector, malformed sample, or optimization structure was
+  used.
+- Local validation: the focused C ABI and documentation tests pass under
+  ClangCL 22.1.3. All 2,656 tests registered by that configuration pass in
+  79.59 seconds. The public library, C ABI test, core tests, and CLI build
+  under MSVC 19.51.36252; all 2,701 registered MSVC tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 77.26 seconds.
