@@ -4076,3 +4076,12 @@ contextual rANS variant 3's local canonical model records, the entropy-backend
 contract, and the fixed `LzssFieldContext` schema. No external contextual ANS
 implementation, table format, source code, corpus, encoded stream, or test
 vector was consulted.
+
+### IR-0466
+
+The contextual tANS descriptor implementation uses only DD-687 and DD-688,
+TVG-0566 and TVG-0567, marc's repository-owned contextual rANS variant-3
+record implementation, fixed field-context schema, checked arithmetic,
+little-endian helpers, decoder limits, and tANS variant-1 constants. No
+external descriptor, contextual ANS source code, archive, corpus, malformed
+sample, test suite, or optimization description was consulted.

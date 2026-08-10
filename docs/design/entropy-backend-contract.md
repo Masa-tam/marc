@@ -376,6 +376,15 @@ Symbol `(context 3, value 65)`. Each is a one-symbol model with frequency
 4,096. Both transitions leave state `L` unchanged and emit no bits, so the
 payload is `00 00` and final valid bits is zero.
 
+The private format boundary now implements this descriptor independently of
+tANS state or table construction. Prefix validation enforces decision and
+payload bounds, final-valid-bit consistency, fixed identities, zero flags and
+reserved bytes, frame-supplied counts, the 131,072-entry table ceiling, and
+aggregate buffering. A shared private compact-model primitive owns only the
+dense/sparse record rules used by both this variant and contextual rANS
+variant 3; each backend retains distinct prefix and limit validation. Parsing
+and serialization publish only after the complete descriptor succeeds.
+
 ## Backend substitution
 
 A later Huffman backend may consume the same operation sequence,

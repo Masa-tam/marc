@@ -65,8 +65,10 @@ set(MARC_SOURCES
     src/entropy/contextual_rans_encode_core.cpp
     src/entropy/contextual_rans_encoder.cpp
     src/entropy/contextual_rans_decode_tables.cpp
+    src/entropy/contextual_compact_model.cpp
     src/entropy/contextual_rans_compact_format.cpp
     src/entropy/contextual_rans_format.cpp
+    src/entropy/contextual_tans_format.cpp
     src/dictionary/lz77_decoder.cpp
     src/dictionary/lz77_encoder.cpp
     src/dictionary/lz77_format.cpp
@@ -1351,6 +1353,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_rans_decode_tables_tests.cpp
         tests/contextual_rans_compact_format_tests.cpp
         tests/contextual_rans_format_tests.cpp
+        tests/contextual_tans_format_tests.cpp
         tests/lzss_contextual_rans_decoder_tests.cpp
         tests/lzss_contextual_rans_compact_decoder_tests.cpp
         tests/lzss_contextual_rans_encoder_tests.cpp

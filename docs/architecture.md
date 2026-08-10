@@ -4520,3 +4520,10 @@ fixed contextual-rANS descriptor as a reference format. Decoder admission
 charges all 31 possible context tables plus the fixed bypass table before
 construction, and complete descriptor, table, bitstream, state, token, and raw
 validation remains inside one frame-atomic publication boundary.
+
+The private contextual tANS format boundary now parses and serializes the
+24-byte prefix and exact compact model records without constructing a state or
+table. Canonical record analysis, parsing, and serialization are factored into
+one private primitive shared with compact contextual rANS; backend-specific
+prefix fields, payload bounds, valid-bit rules, and entropy-table limits remain
+separate. Both formats publish only after complete validation.

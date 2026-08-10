@@ -7396,3 +7396,19 @@ to declare descriptor size 30 and exact complete-frame extent 96 bytes. The
 112-byte stream header selects dictionary/context `2/2` and `1/1` plus entropy
 `5/2`, making the complete one-byte stream 208 bytes. This vector reserves
 bytes before implementation and changes no public inventory.
+
+### TVG-0567
+
+Require the contextual tANS parser and serializer to reproduce TVG-0566's
+exact 30 bytes and reconstruct the identical descriptor. Exercise the strict
+sparse-size inequality and dense tie rule, all-dense 9,029-byte maximum, every
+strict prefix, trailing data, active-mask bit 31 and empty mask, unknown mode,
+noncanonical alternative, duplicate or descending sparse symbols, zero stored
+frequency, inferred-frequency exhaustion, and nonzero prefix reserved bytes.
+
+Require field, expected-count, payload-bound, final-valid-bit, local block,
+compressed-payload, 131,072-entry entropy-table, aggregate-buffer, and output-
+capacity failures to preserve parsed state, serialized output, reported size,
+and written extent. Run the existing compact contextual-rANS format suite
+beside it and require all exact vectors and malformed categories to remain
+unchanged after extracting the shared canonical record primitive.

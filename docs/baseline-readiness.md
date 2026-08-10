@@ -1442,3 +1442,14 @@ direction exchange at revision
 `2c30be4da1a80d01103dac0ee82fb0c4889f3af4` verifies all 44 archives across
 the recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 producers.
+
+### BR-0054
+
+Contextual tANS variant 2 now has an independently testable private descriptor
+parser, validator, and serializer. It reproduces the 30-byte one-Literal
+vector, admits exactly 27 through 9,029 bytes, enforces payload and valid-bit
+rules plus the 131,072-entry decoder ceiling, rejects malformed and
+noncanonical records, and preserves caller state and output on failure. The
+canonical compact-record primitive is shared with compact contextual rANS,
+whose exact vectors remain unchanged. State, table, frame, lifecycle, public
+API, CLI, benchmark, fuzz, and interoperability admission remain future work.

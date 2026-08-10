@@ -14249,3 +14249,21 @@ descriptor, retains explicit final-valid-bit metadata, and keeps tANS payload
 identity distinct. The decision reserves documentation and a one-Literal
 vector only; it adds no implementation, public API, CLI, benchmark, readiness,
 or interoperability claim.
+
+## DD-688: Compact context-model records are a shared private primitive
+
+- Date: 2026-08-10
+- Status: accepted
+
+Factor only active-mask analysis and canonical dense/sparse record parsing and
+serialization out of contextual rANS variant 3. Keep the 20-byte rANS and
+24-byte tANS prefixes, payload rules, valid-bit metadata, decoder-table limits,
+error mappings, and public format identities in their backend-specific
+modules. The shared primitive owns no state, frame, allocation, or backend ID.
+
+Implement the contextual tANS descriptor over fixed local frequency and output
+storage. Validate all fields and limits before publishing parsed state; encode
+into a zeroed maximum-size local array before copying exact bytes to caller
+output. Preserve compact rANS bytes and malformed-input categories through its
+existing regression suite. This decision admits only the private descriptor
+boundary, not transition tables, state coding, frames, or a public profile.

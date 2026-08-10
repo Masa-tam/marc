@@ -16491,3 +16491,31 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility` and the existing tANS hand-
   vector/table regressions, pass with a 240-second per-test limit under MSVC
   19.51.36252 in 72.09 seconds.
+
+## CR-0718: 2026-08-10 - Contextual tANS descriptor boundary
+
+- Authoring method: isolated marc's own canonical compact model-record rules
+  behind a backend-neutral private boundary, then independently implemented
+  the specified tANS prefix, payload, valid-bit, and limit validation around
+  that boundary.
+- References used: AGENTS.md sections 5.5, 6, 7, 10.6, 12, 14, and 15;
+  DD-687 and DD-688; IR-0466; TVG-0566 and TVG-0567; marc's local contextual
+  rANS compact format, tANS constants, checked arithmetic, endian helpers,
+  decoder limits, and field-context schema.
+- Known implementations intentionally not consulted: external contextual ANS
+  formats, table builders, source code, archives, corpora, malformed samples,
+  test suites, and optimization descriptions.
+- Independent decisions: share only canonical model-record mechanics; retain
+  distinct backend prefixes and errors; use fixed local parse/output staging;
+  charge the complete 32-table decoder ceiling; and publish no partial result.
+- Generated-code task description: implement and test exact descriptor
+  validation, parse, serialization, atomic failure, canonical representation,
+  malformed input, boundary sizes, and compact-rANS byte preservation without
+  implementing a tANS state or frame.
+- Similarity review: structure and tests derive solely from marc's existing
+  local record rules and the newly specified tANS prefix; no external naming,
+  layout, control flow, vector, or malformed sample was used.
+- Local validation: all 14 contextual tANS and compact contextual-rANS format
+  tests pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,633 registered
+  tests, including `marc_interoperability_schema_compatibility`, pass under
+  MSVC with a 240-second per-test limit in 73.93 seconds.

@@ -169,6 +169,10 @@ format versions, and C ABI versions are independent namespaces.
   retains typed LZSS and the 31-context model, uses one frame-local state with
   independent deterministic tables, and starts with the compact canonical
   model representation rather than repeating fixed-descriptor overhead.
+- Added the private contextual tANS descriptor parser, validator, and
+  serializer. A shared private compact-model primitive now keeps canonical
+  dense/sparse records identical between compact rANS and tANS while each
+  format retains its own prefix, payload bounds, and table limits.
 
 ### Changed
 

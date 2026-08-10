@@ -1318,3 +1318,11 @@ models use the compact canonical descriptor immediately, and bypass bits share
 an implicit fixed binary tANS table. This reservation adds no implementation,
 public lifecycle, CLI, benchmark, stable matrix cell, or interoperability
 entry.
+
+### CP-0056
+
+The contextual tANS composition now has an independently testable private
+descriptor boundary. It owns the 24-byte tANS prefix and 131,072-entry decoder
+limit while sharing only canonical compact model-record handling with compact
+contextual rANS. No tANS transition table, state decoder, typed-token bridge,
+frame, lifecycle, or public profile is admitted.
