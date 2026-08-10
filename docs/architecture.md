@@ -4651,3 +4651,10 @@ frozen schema-33 order. The generator produces exactly 45 archives, while the
 verifier requires `marc-cli-v34`, exact manifest order, size and SHA-256,
 foreign decode equality, and byte-identical local re-encoding. Compatibility
 tests derive and validate every prior schema without changing its profile set.
+
+The recorded four-direction schema-34 exchange at revision
+`4929252144e4bfe44fb3ec076f548aa47e4ff111` verifies all 45 archives from the
+Windows/MSVC and Ubuntu 24.04/Ninja CI producers on Ubuntu 26.04/Clang, then
+verifies the Ubuntu 26.04 bundle both locally and with Windows/MSVC. Exact
+decode and byte-identical re-encoding establish the contextual-tANS bytes
+across all three recorded x86-64 producers.

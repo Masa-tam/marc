@@ -14612,3 +14612,19 @@ reordered schema-34 manifest. Derive schema 33 by removing only archive 45 and
 changing only the schema identity, then validate every earlier schema through
 the existing chain. External cross-platform evidence remains separate from
 local schema admission.
+
+## DD-706: Schema 34 external admission requires four exact paths
+
+- Date: 2026-08-11
+- Status: accepted
+
+Admit external schema-34 evidence only after the pushed Windows/MSVC and
+Ubuntu 24.04/Ninja CI artifacts both verify on the independent Ubuntu 26.04
+Clang environment, that environment generates and self-verifies its own
+bundle, and Windows/MSVC verifies the Ubuntu-generated bundle. Require every
+path to report the same full Git revision and all 45 archives.
+
+Each verifier success covers manifest identity and order, file sizes and
+SHA-256, exact fixture reconstruction, and byte-identical local re-encoding.
+This is evidence for the recorded Windows and WSL2 Linux x86-64 environments;
+it does not generalize to untested architectures or native Linux kernels.

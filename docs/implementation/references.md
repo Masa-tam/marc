@@ -4236,3 +4236,11 @@ Interoperability schema 34 uses only DD-705, TVG-0584, the completed local
 marc's repository-owned generator, verifier, and schema-derivation scripts.
 No external archive, corpus, implementation, source code, test vector, test
 suite, manifest, or optimization description was consulted.
+
+### IR-0484
+
+The schema-34 external admission record uses only DD-706, TVG-0585, the pushed
+revision's two CI-generated bundles, the independently generated Ubuntu 26.04
+bundle, and the repository-owned schema-34 verifier. No external compression
+implementation, source code, archive format, corpus, test suite, or
+optimization description was consulted.

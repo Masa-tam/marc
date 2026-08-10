@@ -7665,3 +7665,15 @@ Swap the first two manifest entries and require order rejection. Copy the
 canonical bundle, remove only contextual tANS, change the identity to
 `33`/`marc-cli-v33`, and require successful verification before continuing the
 unchanged derivation chain through schema 1.
+
+### TVG-0585
+
+At full revision `4929252144e4bfe44fb3ec076f548aa47e4ff111`, verify the
+Windows/MSVC and Ubuntu 24.04/Ninja schema-34 CI bundles with the Ubuntu 26.04
+Clang 21.1.8 CLI. Generate a schema-34 Ubuntu 26.04 bundle from the same
+revision and verify it first with that CLI and then with Windows/MSVC.
+
+Require all four final lines to report 45 archives, the exact producer label,
+and the same full revision. Retain the manifest-order, size, SHA-256, fixture-
+decode, and byte-identical re-encoding checks performed by the verifier; do
+not import the external bundles into the repository.

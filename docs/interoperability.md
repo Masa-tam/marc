@@ -120,7 +120,7 @@ retention settings; regenerate them by running CI for the required commit.
 Schema 34 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 33
 compatibility evidence. Its external Windows/MSVC, Ubuntu 24.04/Ninja, and
-Ubuntu 26.04/Clang four-direction verification remains pending.
+Ubuntu 26.04/Clang four-direction verification is recorded below.
 
 ## Work-product policy
 
@@ -549,5 +549,21 @@ Windows/MSVC executable verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-33
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0028: Schema 34
+
+Revision `4929252144e4bfe44fb3ec076f548aa47e4ff111` received the schema-34
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all
+forty-five archives from both the Windows/MSVC via Visual Studio 2026 and
+Ubuntu 24.04 default-compiler/Ninja artifacts. It then generated and
+self-verified an `ubuntu-26.04-ninja-x64` forty-five-archive bundle. The
+Windows/MSVC executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-34
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.

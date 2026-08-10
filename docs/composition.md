@@ -1466,3 +1466,11 @@ the frozen schema-33 order. The current manifest contains 45 archives and
 requires byte-identical local re-encoding of Format 2 identity `5/2` in
 addition to fixture decode equality. Schema derivation removes only the new
 archive before validating schema 33 and every earlier profile set.
+
+### CP-0074
+
+The schema-34 contextual-tANS composition now has four-direction external
+evidence at revision `4929252144e4bfe44fb3ec076f548aa47e4ff111`.
+Windows/MSVC and Ubuntu 24.04 archives verify on Ubuntu 26.04/Clang, while the
+Ubuntu 26.04 bundle verifies there and on Windows/MSVC. All 45 archives decode
+and re-encode byte-identically in every path.

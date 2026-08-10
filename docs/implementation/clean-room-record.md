@@ -16994,3 +16994,25 @@ discarded and the reviewed seed retained.
   MSVC Release CLI in 60.79 seconds. All 2,709 registered MSVC tests pass with
   a 240-second per-test limit in 147.18 seconds; the included compatibility
   run completes in 60.43 seconds. External artifacts are not claimed.
+
+## CR-0736: 2026-08-11 - Schema 34 four-direction external admission
+
+- Authoring method: recorded the user-executed repository verifier results for
+  all four schema-34 producer/consumer paths without importing artifacts.
+- References used: DD-706; IR-0484; TVG-0585; IX-0028; the full pushed
+  revision and four exact verifier completion lines supplied by the operator.
+- Known implementations intentionally not consulted: external compression
+  source code, archive formats, corpora, test suites, manifests outside the
+  generated bundles, and optimization descriptions.
+- Independent decisions: require one revision, 45 archives, three producers,
+  both consumer environments, and byte-identical re-encoding in every path;
+  limit the claim to the recorded x86-64 systems.
+- Generated-code task description: record successful schema-34 external
+  interoperability after CI and four-direction execution.
+- Similarity review: only marc's verifier output and locally defined evidence
+  vocabulary entered the record; no external implementation expression was
+  used.
+- External validation: Windows/MSVC and Ubuntu 24.04/Ninja bundles verified on
+  Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle verified locally and on
+  Windows/MSVC. Every run reported 45 archives and revision
+  `4929252144e4bfe44fb3ec076f548aa47e4ff111`.

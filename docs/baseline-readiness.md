@@ -1616,3 +1616,11 @@ schema 34. Generation, self-verification, exact manifest order, SHA-256,
 fixture decode, byte-identical re-encoding, reordered-manifest rejection, and
 schemas 1 through 33 compatibility pass locally. External four-direction
 Windows/Linux evidence remains pending.
+
+### BR-0072
+
+Contextual tANS interoperability schema 34 now has complete four-direction
+external evidence at revision `4929252144e4bfe44fb3ec076f548aa47e4ff111`.
+All 45 archives from the Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
+26.04/Clang producers decode and re-encode byte-identically across the tested
+Windows and WSL2 Linux x86-64 paths.
