@@ -6326,3 +6326,13 @@ extent belong to the next frame or caller. Every input/workspace/output range
 must be pairwise disjoint, and consumed size remains zero on failure. This does
 not yet implement a streaming lifecycle, public C API, CLI selector, benchmark
 codec, encoder, or interoperability archive.
+
+The private streaming decoder changes no serialized byte. It incrementally
+parses the same 112-byte stream header and 64-byte frame headers, buffers one
+validated `header || descriptor || payload` extent, derives the exact number of
+non-Single decode tables after descriptor preflight, reconstructs into a bounded
+private raw-frame workspace, and drains only a successful frame. Empty streams,
+one-byte input/output chunks, and final-frame draining after `EndInput` are
+supported. Truncation, trailing bytes, reset/unknown process flags, and every
+workspace/output alias are rejected. Encoder and public profile admission remain
+outside this milestone.

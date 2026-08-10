@@ -483,6 +483,15 @@ token inversion. Serialized input, used decode tables, typed tokens, and raw
 output are pairwise disjoint. Raw reconstruction begins only after complete
 token validation; `serialized_consumed` is published only after raw success.
 
+The private streaming decoder incrementally collects the fixed headers and one
+bounded complete frame, invokes that transaction, and drains only validated raw
+bytes. Because the active Huffman table count is descriptor-dependent, exact
+table capacity and aggregate buffered memory are checked after descriptor
+preflight and before any decode-table construction. An all-Single frame keeps
+the zero-table-workspace property. `EndInput` remains latched while final raw
+bytes drain; truncation, trailing bytes, unsupported flags, and workspace/output
+aliasing become sticky transform errors.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

@@ -14785,3 +14785,26 @@ features, and all decoder limits before parsing the descriptor. The complete
 decoder requires pairwise-disjoint serialized input, exact used tables, typed
 tokens, and raw output. Publish consumed size only after token inversion and raw
 reconstruction both succeed. Leave streaming and profile admission for later.
+
+## DD-713: Contextual Blocked Huffman streaming buffers one bounded frame
+
+- Date: 2026-08-11
+- Status: accepted
+
+Build the private streaming decoder from the complete-frame transaction. Parse
+the 112-byte stream header and each 64-byte frame header incrementally, collect
+only the validated `header || descriptor || payload` extent, decode it into a
+private raw-frame buffer, and drain committed raw bytes under the core process
+contract. Preserve `EndInput` while a final frame drains and reject truncation,
+trailing bytes, `ResetBlock`, unknown flags, and all output/workspace aliases.
+
+Unlike contextual tANS, Contextual Blocked Huffman has a descriptor-dependent
+number of decode tables. Do not require the conservative 35-table ceiling at
+construction or frame-header time. After the complete descriptor is buffered,
+preflight it, derive the exact non-Single table count, and then validate table
+capacity and the aggregate serialized/table/token/raw buffered-byte limit before
+building any table. This preserves zero table workspace for all-Single frames.
+
+This milestone changes no byte representation and does not admit an encoder,
+public profile, C API, CLI selector, benchmark codec, or interoperability
+archive.

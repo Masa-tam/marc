@@ -7786,3 +7786,19 @@ reject wrong entropy identity/parameters, sequence, expected raw extent,
 contradictory counts, nonzero optional sizes/reserved bytes, malformed or
 truncated descriptor/payload, short workspaces, and every pairwise overlap.
 Preserve raw output and keep consumed extent zero on every failure.
+
+### TVG-0592
+
+Construct a stream with frame size one and original size two by concatenating
+the canonical `2/2` stream header with two TVG-0591 one-Literal frames whose
+sequences are zero and one. Feed every input and output byte separately and
+require exactly `AA`, deterministic progress statuses, latched final
+`EndInput`, and stable repeated `EndOfStream`. The all-Single descriptor must
+continue to accept empty Huffman table workspace.
+
+Corrupt only the second frame and require the first raw byte to remain the sole
+committed output. Independently reject short serialized/token/raw workspace,
+aggregate buffered-byte overflow, truncation, trailing input, reset/unknown
+flags, wrong entropy identity, construction-time workspace overlap, and output
+alias with every workspace. Errors are sticky and must never return Progress
+without consuming input or producing output.

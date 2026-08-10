@@ -17176,3 +17176,31 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,742 registered MSVC tests pass with a
   240-second per-test limit in 146.33 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.63 seconds.
+
+## CR-0743: 2026-08-11 - Contextual Blocked Huffman streaming decoder
+
+- Authoring method: wrapped marc's private complete-frame transaction in its
+  established bounded transform state machine while retaining exact
+  descriptor-dependent Huffman workspace sizing.
+- References used: AGENTS.md sections 3, 4, 5, 10, 11, 12, 14, and 15;
+  DD-709 through DD-713; IR-0491; TVG-0588 through TVG-0592; marc's local
+  contextual-tANS streaming lifecycle, checked arithmetic, overlap, and limit
+  contracts.
+- Known implementations intentionally not consulted: external streaming
+  decoders, LZ/Huffman or DEFLATE implementations, source code, frames,
+  archives, corpora, test vectors, test suites, and optimization descriptions.
+- Independent decisions: collect one validated bounded frame; derive active
+  non-Single tables only after descriptor preflight; charge exact serialized,
+  table, token, and raw extents before table construction; retain zero table
+  workspace for all-Single frames; and latch final EndInput while raw drains.
+- Generated-code task description: implement incremental stream/frame header
+  collection, bounded body buffering, exact-workspace complete-frame decode,
+  one-byte split/drain, two-frame corruption, non-Single table, aggregate
+  memory, truncation, trailing-data, flag, alias, and sticky-error tests.
+- Similarity review: state adaptation, variable-workspace checkpoint, error
+  mapping, vectors, and tests were authored from marc's preceding internal
+  contracts; no external implementation expression entered the work.
+- Local validation: seven focused streaming-decoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,749 registered MSVC tests pass with a
+  240-second per-test limit in 145.81 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.83 seconds.

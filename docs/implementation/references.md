@@ -4309,3 +4309,12 @@ serialization, typed-token decoder, raw reconstructor, overlap checks, and
 limit model. No external LZ/Huffman or DEFLATE implementation, source code,
 frame, archive, test vector, suite, corpus, or optimization description was
 consulted.
+
+### IR-0491
+
+The Contextual Blocked Huffman streaming decoder uses DD-709 through DD-713,
+TVG-0588 through TVG-0592, marc's complete-frame decoder, core transform
+contract, checked arithmetic, overlap checks, decoder limits, and the local
+contextual-tANS streaming lifecycle as an architectural precedent. No external
+streaming decoder, LZ/Huffman or DEFLATE implementation, source code, frame,
+archive, test vector, suite, corpus, or optimization description was consulted.
