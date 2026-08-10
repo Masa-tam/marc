@@ -7640,3 +7640,15 @@ Run the same 4,326-byte repository README once through `lzss-tans`,
 `lzss-contextual-tans`. Record encoded extent, ratio, directional workspace,
 peak workspace, and contextual-tANS timing without turning any measured value
 into a test threshold.
+
+### TVG-0583
+
+Invoke the Release CLI with `--codec lzss-contextual-tans` over the existing
+repository-owned binary round-trip fixture. Require the encoded stream header
+to identify dictionary algorithm/variant `2/0` and entropy algorithm/variant
+`5/2`, then decode with the same selector and compare every output byte.
+
+Append one byte to the canonical archive and require strict decode failure.
+Verify the destination remains uncommitted through the established temporary-
+file workflow. Keep the stable 42-row profile table unchanged while requiring
+the experimental selector to appear in CLI documentation and usage text.

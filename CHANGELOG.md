@@ -23,6 +23,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added contextual tANS to the experimental benchmark inventory with checked
   output-capacity planning, public workspace reporting, round-trip smoke
   coverage, and a same-input descriptive comparison.
+- Added the experimental `lzss-contextual-tans` CLI selector with public-ABI
+  workspace construction, exact round-trip coverage, entropy identity checks,
+  and strict trailing-data rejection.
 
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one

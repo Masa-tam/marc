@@ -14577,3 +14577,21 @@ throughput under the existing measurement contract. Compare the same local
 input with byte-stream LZSS+tANS, compact contextual rANS, and contextual
 Dynamic Range, but treat a single small-input run as descriptive evidence and
 derive no default-profile recommendation from it.
+
+## DD-704: Contextual tANS CLI selection is explicit and public-only
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add `lzss-contextual-tans` as an experimental CLI selector outside the stable
+42-profile inventory. Configure both immutable directions with the public
+ABI-1 initializer, 65,536-byte frames, `6F` decisions, `9F + 2` payload bytes,
+an 8-MiB internal-buffer limit, and the existing LZSS distance and match
+limits. Obtain all three workspace extents and alignment from the public query
+and create the transform only through the public factory.
+
+Require the same selector for encode and decode; do not add auto-detection or
+private token/table knowledge to the command-line layer. Register exact file
+round trip, entropy identity `5/2`, temporary-output commit, and strict
+trailing-data rejection. This changes no stream bytes, C ABI, stable profile
+count, or default codec.

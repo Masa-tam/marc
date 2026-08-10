@@ -1599,3 +1599,12 @@ capacity, direction-specific public workspace queries, exact pre-timing round
 trip, ratio, encode/decode throughput, and peak caller-owned workspace are
 covered by a registered smoke test. The initial same-input result is recorded
 as descriptive evidence only; CLI and interoperability remain future work.
+
+### BR-0070
+
+Contextual tANS variant 2 now has an experimental CLI selector. Public-only
+configuration, direction-specific workspace construction, file round trip,
+exact entropy identity, output commit, and strict trailing-data rejection are
+covered. The selector remains outside the stable 42-profile inventory and
+requires explicit selection for decoding. Interoperability remains future
+work.

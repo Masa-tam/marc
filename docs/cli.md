@@ -83,6 +83,9 @@ recommended compression profile: every frame carries 9,052 model bytes.
 `lzss-contextual-rans-compact` selects the same contexts and scalar coder with
 the canonical variable-size descriptor of variant 3. Encode and decode must
 use the same explicit selector; neither name auto-detects the other variant.
+`lzss-contextual-tans` selects the same typed LZSS contexts with contextual
+tANS entropy variant 2. It likewise requires the explicit selector for both
+directions and remains outside the stable 42-profile inventory.
 
 ### Common stream rules
 
@@ -165,6 +168,14 @@ fixed selector emits entropy variant 2 and the compact selector emits variant
 direction-specific requirements query, factory, process, and destroy
 functions. All byte regions and the opaque fixed-table/token views alignment
 come from the query; the command-line layer reproduces no private layout.
+
+The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,
+a `6F = 393,216` decision ceiling, and a `9F + 2 = 589,826` payload ceiling.
+Its internal-buffer policy is 8 MiB. Encode and decode call only the public
+contextual-tANS configuration initializer, direction-specific requirements
+query, factory, process, and destroy functions. The queried opaque views own
+all typed tokens and tANS tables; the command-line layer neither names nor
+sizes those private layouts.
 
 ### LZ78 profile parameters
 

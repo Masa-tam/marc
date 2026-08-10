@@ -16945,3 +16945,27 @@ discarded and the reviewed seed retained.
   tests, including `marc_interoperability_schema_compatibility`, pass with a
   240-second per-test limit in 144.81 seconds. The same 4,326-byte README
   comparison produced the exact extents recorded in BM-0018.
+
+## CR-0734: 2026-08-10 - Contextual tANS CLI admission
+
+- Authoring method: specialized marc's existing public-profile CLI adapter for
+  the independently defined contextual-tANS `5/2` lifecycle.
+- References used: AGENTS.md sections 3, 12, 14, and 16; DD-704; IR-0482;
+  TVG-0583; marc's public ABI-1 workspace contract, CLI temporary-file commit
+  policy, and repository-owned round-trip script.
+- Known implementations intentionally not consulted: external command-line
+  tools, compression implementations, source code, archives, corpora, test
+  vectors, test suites, and optimization descriptions.
+- Independent decisions: keep selection explicit; preserve the stable matrix
+  and default; use public-only construction; require exact `5/2` identity; and
+  retain strict trailing-data rejection before output commit.
+- Generated-code task description: expose the contextual-tANS public lifecycle
+  through an experimental CLI selector and add its bounded round-trip,
+  identity, and trailing-data test.
+- Similarity review: the adapter follows only marc's local CLI ownership and
+  public lifecycle patterns; no external naming, control flow, input, vector,
+  or optimization structure was used.
+- Local validation: the focused CLI round trip and documentation layout pass
+  under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,709 registered MSVC tests,
+  including `marc_interoperability_schema_compatibility`, pass with a
+  240-second per-test limit in 143.76 seconds.

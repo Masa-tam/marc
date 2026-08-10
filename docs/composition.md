@@ -1449,3 +1449,12 @@ accounts for six decisions per raw byte, the 12-bit transition ceiling, the
 compact descriptor, state, and Format 2 framing. A verified round trip
 precedes timing, and workspace is reported by region and direction. CLI and
 interoperability admission remain future work.
+
+### CP-0072
+
+The contextual tANS composition now has an explicit experimental CLI adapter.
+The selector constructs both immutable directions solely through the public
+C lifecycle, preserves Format 2 identity `dictionary=2/0, entropy=5/2`, and
+inherits the public workspace partition without exposing C++ views. A
+registered file round trip also rejects strict trailing data. Interoperability
+admission remains future work.

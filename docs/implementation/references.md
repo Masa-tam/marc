@@ -4220,3 +4220,11 @@ benchmark measurement contract, and checked profile limits. The comparative
 input is the repository's own `README.md`. No external benchmark, corpus,
 compression implementation, source code, archive, test vector, test suite, or
 optimization description was consulted.
+
+### IR-0482
+
+The contextual-tANS CLI admission uses only DD-704, TVG-0583, the local Format
+2 `5/2` specification, public ABI-1 lifecycle, existing marc CLI ownership and
+temporary-file commit rules, and repository-owned round-trip script. No
+external command-line tool, compression implementation, source code, archive,
+corpus, test vector, test suite, or optimization description was consulted.

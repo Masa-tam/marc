@@ -629,7 +629,8 @@ endif()
 foreach(required_experimental_cli IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
-        "`lzss-contextual-rans-compact`")
+        "`lzss-contextual-rans-compact`"
+        "`lzss-contextual-tans`")
     string(FIND "${cli_content}" "${required_experimental_cli}"
         experimental_cli_offset)
     if(experimental_cli_offset EQUAL -1)

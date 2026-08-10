@@ -4638,3 +4638,10 @@ public C lifecycle. It sizes complete output with the checked
 exact round trip before timing, and reports primary, secondary, opaque views,
 ratio, and throughput without promoting the experimental profile into the
 stable 42-profile matrix.
+
+The CLI boundary now exposes `lzss-contextual-tans` as an explicit
+experimental selector. Both directions configure and construct the public
+ABI-1 lifecycle with the same 65,536-byte frame, `6F` decision, `9F + 2`
+payload, and 8-MiB aggregate policies as the benchmark. Caller-owned views
+remain opaque; the tool does not reproduce token or tANS table layouts and
+does not auto-detect this Format 2 entropy identity.
