@@ -4594,3 +4594,11 @@ bytes before accepting further raw input. Its four private regions remain
 disjoint for the transform lifetime, and every caller output span is excluded
 from all four before progress. Finish state survives header and frame drain;
 Flush never closes a partial frame.
+
+The private contextual tANS profile now centralizes construction requirements
+for both directions. Encoder typed storage places tokens before `uint16_t`
+inverse states; decoder typed storage places `TansDecodeEntry` transitions
+before tokens. Checked offsets and maximum alignment turn one caller byte
+region into those views transactionally. Conservative frame extents cover six
+decisions per raw byte at up to 12 bits each, while actual frame encoding keeps
+the exact canonical descriptor and payload sizes.

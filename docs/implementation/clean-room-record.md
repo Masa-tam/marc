@@ -16781,3 +16781,31 @@ discarded and the reviewed seed retained.
   2,693 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 69.34 seconds.
+
+## CR-0728: 2026-08-10 - Contextual tANS private profile
+
+- Authoring method: derived conservative frame ceilings and direction-specific
+  typed layouts from marc's own typed-LZSS and contextual-tANS limits, then
+  connected those returned views to the existing streaming constructors.
+- References used: AGENTS.md sections 5.2, 5.5, 10.6, 12, 13, 14, and 15;
+  DD-687 through DD-698; IR-0476; TVG-0566 through TVG-0577; marc's contextual-
+  tANS constants, typed-token layout, streaming encoder/decoder, checked
+  arithmetic, alignment policy, and decoder limits.
+- Known implementations intentionally not consulted: external profile or
+  workspace calculators, ANS implementations, source code, archives, corpora,
+  test vectors, test suites, and optimization descriptions.
+- Independent decisions: bound six decisions per raw byte and 12 bits per
+  decision; place encoder tokens before inverse tables and decoder tables
+  before tokens; return explicit offsets and alignments; keep empty encoder
+  extents zero; and derive decoder capacity solely from local limits.
+- Generated-code task description: specify, implement, and test contextual-
+  tANS profile creation, decoder calculation, typed view partitioning, exact
+  default/short/empty extents, bounds, forged requirements, misalignment,
+  stable errors, and a requirements-only streaming round trip.
+- Similarity review: all formulas and layouts derive solely from marc's local
+  representations and limits; no external naming, control flow, formula set,
+  vector, malformed sample, or optimization structure was used.
+- Local validation: all seven focused profile tests plus documentation layout
+  pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,700 registered tests,
+  including `marc_interoperability_schema_compatibility`, pass under MSVC with
+  a 240-second per-test limit in 70.20 seconds.

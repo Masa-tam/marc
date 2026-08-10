@@ -1539,3 +1539,14 @@ streams, capacities, four-region aggregate limits, input protocol, flags,
 private aliases, caller-output aliases, and sticky terminal states are
 covered. Public API, profile calculator, CLI, benchmark, fuzz, and
 interoperability remain future work.
+
+### BR-0064
+
+Contextual tANS variant 2 now has a private profile and direction-specific
+typed-view partitioners. Encoder requirements include raw, exact tokens,
+131,072 inverse entries, and conservative serialized frame storage; decoder
+requirements derive encoded/raw, 131,072 transitions, and tokens solely from
+local limits. Empty streams, bounds, aggregate limits, alignment, forged
+requirements, atomic partitioning, stable errors, and profile-constructed
+streaming round trips are covered. Public ABI, CLI, benchmark, fuzz, and
+interoperability remain future work.

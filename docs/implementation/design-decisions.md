@@ -14459,3 +14459,25 @@ limits to `limit_exceeded`, protocol mismatches to `invalid_argument`, and all
 unexpected composition failures to `internal_error`. This adds no public API,
 profile calculator, CLI selector, benchmark, fuzz target, or interoperability
 archive.
+
+## DD-698: Contextual tANS profiles own direction-specific typed layouts
+
+- Date: 2026-08-10
+- Status: accepted
+
+Define a private profile over the existing `5/2` stream configuration. Bound
+one frame by at most six modeled decisions per raw byte, at most 12 coded bits
+per decision, two initial-state bytes, the 9,029-byte maximum canonical
+descriptor, and the 64-byte frame header. This is a conservative allocation
+ceiling, not a claim that every decision consumes 12 bits.
+
+For encoding, lay out typed tokens followed by 131,072 `uint16_t` inverse-
+state entries with checked alignment. For decoding, lay out 131,072
+`TansDecodeEntry` transitions followed by typed tokens. Return explicit offsets,
+element counts, total byte extents, and maximum alignment; partition only an
+exactly self-consistent requirement record and publish no partial views on
+failure. Charge raw-frame, exact typed views, and serialized-frame regions
+together against the internal-buffer limit. Empty known-size streams retain
+zero frame/view requirements and alignment one. Decoder sizing derives only
+from local hard limits. This admits private constructors but no public ABI,
+CLI, benchmark, fuzz, or interoperability entry.

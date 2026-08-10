@@ -4167,3 +4167,12 @@ decoder limits, and repository-owned contextual-rANS streaming lifecycle as an
 architectural precedent. No external streaming encoder, LZ/ANS composition,
 source code, archive, corpus, test vector, test suite, or optimization
 description was consulted.
+
+### IR-0476
+
+The contextual-tANS private profile uses only DD-687 through DD-698,
+TVG-0566 through TVG-0577, marc's typed-LZSS bounds, contextual-tANS format and
+table constants, streaming encoder/decoder constructors, checked arithmetic,
+alignment rules, and decoder limits. No external workspace calculator, ANS
+implementation, source code, archive, corpus, test vector, test suite, or
+optimization description was consulted.

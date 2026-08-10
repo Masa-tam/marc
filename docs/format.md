@@ -6227,3 +6227,7 @@ The private streaming encoder changes no serialized byte. It emits the same
 112-byte `5/2` stream header followed by the complete frames above in increasing
 sequence order. Caller input/output chunking and nonterminal `Flush` do not
 alter frame boundaries, descriptor choice, payload bits, or stream bytes.
+
+The private profile introduces no serialized field. Its six-decision and
+12-bit ceilings are allocation bounds only; they do not pad a frame, force a
+descriptor size, or alter the exact contextual-tANS state transitions.

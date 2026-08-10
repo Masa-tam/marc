@@ -37,6 +37,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the matching contextual tANS streaming frame encoder with exact stream-
   header emission, bounded raw collection, immutable frame drain, retained
   finish state, sticky failures, and complete workspace-alias rejection.
+- Added the private contextual tANS profile and typed-view partitioners. They
+  calculate conservative direction-specific frame, token, encode/decode table,
+  alignment, offset, and aggregate workspace requirements.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

@@ -7548,3 +7548,19 @@ table, and serialized-frame workspaces; aggregate limits; premature and excess
 input; unknown flags; `ResetBlock`; every constructible private-workspace
 overlap; caller-output overlap with each private region; and sticky terminal
 errors without exposing mutable frame bytes.
+
+### TVG-0577
+
+Build the default private contextual-tANS profile for 2,500,000 raw bytes and
+a 65,536-byte frame. Require the canonical `5/2` stream fields, a 65,536-byte
+raw region, 65,536 tokens, 131,072 inverse entries, the conservative
+`64 + 9,029 + 2 + ceil(65,536 * 6 * 12 / 8)` serialized-frame extent, checked
+typed offsets, and the exact four-region aggregate gate. Require zero frame
+and view extents for an empty stream.
+
+Derive decoder requirements only from local limits and require the fixed
+131,072-entry table, bounded serialized/raw extents, aligned token offset, and
+aggregate gate. Partition both directions from aligned byte storage; reject
+forged counts, offsets, sizes, alignments, short storage, and misalignment
+without publishing views. Construct the private streaming encoder and decoder
+solely from returned requirements and round-trip a multi-frame input.

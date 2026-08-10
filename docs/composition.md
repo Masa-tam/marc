@@ -1399,3 +1399,11 @@ lifecycle. It stages one raw frame across arbitrary caller chunks, prepares the
 complete canonical frame in disjoint caller-owned storage, and drains immutable
 bytes before advancing. The stream representation remains exactly variant
 `5/2`; public lifecycle and workspace calculation remain future work.
+
+### CP-0066
+
+The contextual tANS composition now has one private authority for encoder and
+decoder workspace sizing. Checked direction-specific token/table layouts feed
+the actual streaming constructors without knowledge of C++ object placement
+outside the partitioner. This completes the private lifecycle foundation;
+public C exposure remains future work.
