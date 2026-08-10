@@ -617,6 +617,24 @@ single small-input timing reported 0.384 MiB/s encode and 2.456 MiB/s decode;
 these values are descriptive only and establish neither a recommendation nor
 a pass threshold.
 
+### BM-0019: Contextual Blocked Huffman descriptor probe
+
+The repository-owned estimator parsed the current 4,326-byte `README.md` into
+2,390 typed LZSS tokens and 5,494 field operations. Its ordinary canonical
+byte serialization would occupy 6,614 bytes. The provisional four-field-table
+Huffman representation charges 166 descriptor bytes, 14,763 modeled-symbol
+bits, 2,462 bypass bits, and 2,154 payload bytes, for 2,320 bytes total before
+any future Format 2 frame overhead.
+
+Using every active fine-grained context reduces modeled-symbol cost to 13,688
+bits. Its 19 model records increase the descriptor to 673 bytes, however, so
+the total grows to 2,692 bytes. Mapping the 19 active contexts onto 18 distinct
+code-length vectors costs a 31-byte map and totals 2,718 bytes. Thus this input
+shows 1,075 bits of contextual symbol savings but 507 bytes of additional
+model description relative to four pooled tables. The result motivates
+selective per-field context admission; it is not an encoded archive, corpus
+result, performance measurement, or pass threshold.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

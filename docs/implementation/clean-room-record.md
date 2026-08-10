@@ -17016,3 +17016,30 @@ discarded and the reviewed seed retained.
   Ubuntu 26.04/Clang; the Ubuntu 26.04 bundle verified locally and on
   Windows/MSVC. Every run reported 45 archives and revision
   `4929252144e4bfe44fb3ec076f548aa47e4ff111`.
+
+## CR-0737: 2026-08-11 - Contextual Blocked Huffman design probe
+
+- Authoring method: composed marc's typed LZSS field operations with its
+  independently implemented canonical Huffman primitive in a non-serializing
+  exact-cost estimator.
+- References used: AGENTS.md sections 5, 6, 10, 11, and 15; Huffman 1952;
+  RFC 1951's published alphabet-separation concept; DD-627 through DD-628;
+  DD-707; IR-0485; TVG-0586; BM-0019.
+- Known implementations intentionally not consulted: DEFLATE source code,
+  external Huffman or LZ/Huffman implementations, archives, corpora, test
+  vectors, test suites, descriptors, and optimization descriptions.
+- Independent decisions: keep marc's 31-context schema and LSB-first bypass
+  operations; compare pooled, fully contextual, and identical-table-sharing
+  strategies; charge dense and sparse code-length records exactly; and defer
+  every format identity until descriptor overhead is resolved.
+- Generated-code task description: add a bounded cost estimator, exact unit
+  vectors, a repository-owned file probe, and design/provenance records without
+  implementing or reserving a codec.
+- Similarity review: the implementation reuses only marc-owned typed-field and
+  canonical-Huffman interfaces; descriptor sizes, strategy comparison, test
+  vectors, tool output, and control flow were authored for this repository.
+- Local validation: four focused estimator tests pass under MSVC 19.51.36252.
+  The same tests pass under ClangCL 22.1.3. The MSVC Release estimator
+  reproduces BM-0019 over the 4,326-byte README. All 2,714 registered MSVC
+  tests, including `marc_interoperability_schema_compatibility`, pass with a
+  240-second per-test limit in 148.85 seconds.

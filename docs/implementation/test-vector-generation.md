@@ -7677,3 +7677,21 @@ Require all four final lines to report 45 archives, the exact producer label,
 and the same full revision. Retain the manifest-order, size, SHA-256, fixture-
 decode, and byte-identical re-encoding checks performed by the verifier; do
 not import the external bundles into the repository.
+
+### TVG-0586
+
+Feed a hand-checkable typed-field sequence containing three literals, one
+match, two distinct token symbols, two distinct literal symbols in one
+context, and three bypass bits to the provisional contextual-Huffman cost
+estimator. Require exact pooled/contextual/shared descriptor sizes of
+31/41/68 bytes, symbol-bit counts of 9/4/4, and complete stored extents of
+33/42/69 bytes. Require a single-symbol model to consume zero payload bits,
+empty input to charge only each strategy's fixed metadata, and malformed
+context/alphabet pairs to fail at the exact operation index.
+
+Build the repository-owned estimator and run it over the current 4,326-byte
+`README.md`. Require the tool to derive typed LZSS and field operations itself
+and print, without threshold assertions, raw size, token and operation counts,
+canonical serialized-LZSS extent, and the descriptor/symbol/bypass/payload/
+total breakdown for all three candidates. This is descriptive design evidence,
+not a compression benchmark or format vector.

@@ -81,6 +81,7 @@ set(MARC_SOURCES
     src/entropy/contextual_tans_encoder.cpp
     src/entropy/contextual_tans_decode_tables.cpp
     src/entropy/contextual_tans_decoder.cpp
+    src/entropy/contextual_huffman_estimator.cpp
     src/dictionary/lz77_decoder.cpp
     src/dictionary/lz77_encoder.cpp
     src/dictionary/lz77_format.cpp
@@ -412,6 +413,35 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_contextual_huffman_estimator
+        tools/contextual_huffman_estimator.cpp)
+    target_compile_features(marc_contextual_huffman_estimator PRIVATE cxx_std_20)
+    set_target_properties(marc_contextual_huffman_estimator
+        PROPERTIES CXX_EXTENSIONS OFF)
+    target_include_directories(marc_contextual_huffman_estimator
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_contextual_huffman_estimator
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_contextual_huffman_estimator
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    if(TARGET marc_static)
+        target_link_libraries(marc_contextual_huffman_estimator
+            PRIVATE marc::static)
+    else()
+        target_link_libraries(marc_contextual_huffman_estimator
+            PRIVATE marc::shared)
+    endif()
+    if(MARC_BUILD_TESTS)
+        add_test(NAME marc_contextual_huffman_estimator_smoke
+            COMMAND marc_contextual_huffman_estimator
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+        set_tests_properties(marc_contextual_huffman_estimator_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+    endif()
+
     add_executable(marc_benchmark benchmarks/marc_benchmark.cpp)
     target_compile_features(marc_benchmark PRIVATE cxx_std_20)
     set_target_properties(marc_benchmark PROPERTIES CXX_EXTENSIONS OFF)
@@ -1429,6 +1459,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_dynamic_range_completion_tests.cpp
         tests/lzss_contextual_dynamic_range_fuzz_regression_tests.cpp
         tests/lzss_field_context_tests.cpp
+        tests/contextual_huffman_estimator_tests.cpp
         tests/lzss_format_tests.cpp
         tests/lzss_decoder_tests.cpp
         tests/lzss_encoder_tests.cpp

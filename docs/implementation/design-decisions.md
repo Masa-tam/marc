@@ -14628,3 +14628,41 @@ Each verifier success covers manifest identity and order, file sizes and
 SHA-256, exact fixture reconstruction, and byte-identical local re-encoding.
 This is evidence for the recorded Windows and WSL2 Linux x86-64 environments;
 it does not generalize to untested architectures or native Linux kernels.
+
+## DD-707: Contextual Blocked Huffman begins as a measured descriptor probe
+
+- Date: 2026-08-11
+- Status: accepted
+
+Evaluate a future `Contextual Blocked Huffman` backend over the existing LZSS
+typed-field context variant 1. Do not call it Adaptive Huffman: every candidate
+collects a bounded frame before constructing static canonical tables, whereas
+marc's public Adaptive Huffman name denotes the synchronized FGK tree. The
+RFC 1951 distinction between literal/length and distance alphabets informs the
+field separation only; marc retains its own token-kind, literal, length-class,
+distance-class, and raw bypass-bit operations and makes no DEFLATE compatibility
+claim.
+
+Before reserving an entropy variant or serialized frame, compare three exact
+cost strategies: four pooled field tables; one table per active one of the 31
+deterministic contexts; and the same contextual tables with identical
+alphabet/code-length vectors stored once and selected by a 31-byte map. Every
+strategy charges bypass bits unchanged and byte-aligns the combined payload.
+Single-symbol tables store the symbol and consume zero payload bits.
+
+For this probe only, charge an eight-byte descriptor prefix. Each active model
+costs a four-byte record prefix. A canonical record then chooses the smaller
+of dense four-bit code lengths (`ceil(alphabet/2)` bytes) and sparse
+`(symbol,length)` pairs (two bytes per nonzero symbol). The shared strategy
+also charges its 31-byte map. These byte counts are a reproducible design
+instrument, not a decoder-visible representation, and therefore do not alter
+`docs/format.md`.
+
+The initial repository README measurement shows why the format must not yet be
+fixed. Four pooled tables cost 2,320 bytes; 31 contextual tables cost 2,692;
+and identical-table sharing costs 2,718. Contexts reduce modeled symbol bits
+from 14,763 to 13,688, but the provisional descriptor grows from 166 to 673
+bytes. The next design must therefore permit model selection or sharing at a
+finer granularity rather than requiring all available contexts. This probe
+adds no encoder, decoder, format identity, C API, CLI codec, readiness claim,
+or interoperability archive.

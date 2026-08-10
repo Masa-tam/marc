@@ -49,6 +49,13 @@ reference.
   reference for deterministic canonical Huffman table generation concepts;
   marc does not implement the JPEG representation.
   <https://www.w3.org/Graphics/JPEG/itu-t81.pdf>
+- P. Deutsch, RFC 1951, "DEFLATE Compressed Data Format Specification
+  version 1.3," 1996, consulted 2026-08-11. Used only for the independently
+  evaluated idea of separating literal/length and distance prefix-code
+  alphabets and transmitting canonical code lengths. marc's typed LZSS
+  ranges, context schema, descriptor candidates, LSB-first representation,
+  and any future Format 2 variant are distinct and are not DEFLATE-compatible.
+  <https://www.rfc-editor.org/rfc/rfc1951>
 
 No implementation source code was consulted for these primitives.
 
@@ -4243,4 +4250,16 @@ The schema-34 external admission record uses only DD-706, TVG-0585, the pushed
 revision's two CI-generated bundles, the independently generated Ubuntu 26.04
 bundle, and the repository-owned schema-34 verifier. No external compression
 implementation, source code, archive format, corpus, test suite, or
+optimization description was consulted.
+
+### IR-0485
+
+The contextual Blocked Huffman design probe uses only RFC 1951's published
+literal/length-versus-distance separation principle, Huffman's published
+prefix-code construction, DD-627 through DD-628, DD-707, TVG-0586, marc's
+typed LZSS field-context operations, and marc's independently implemented
+length-limited canonical Huffman builder. The provisional descriptor and all
+three cost strategies were designed specifically for marc and reserve no
+stream representation. No DEFLATE implementation, external Huffman source,
+LZ/Huffman composition, archive, corpus, test vector, test suite, or
 optimization description was consulted.
