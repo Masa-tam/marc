@@ -7816,3 +7816,16 @@ pooled kind model costs 80 bits; each Single override saves 40 bits and costs
 32 bits, so both overrides must be selected and the payload must be empty.
 Independently reject malformed or incomplete operations, short payload output,
 and operation/output overlap while preserving descriptor and output sentinels.
+
+### TVG-0594
+
+Plan one Literal `A` directly from a typed-token span and require two events,
+two decisions, the exact 24-byte all-Single descriptor, and zero payload. Encode
+Literal `A` followed by Match `(distance=1,length=5)` and require five events,
+five decisions, payload byte `02`, two final valid bits, and successful typed
+decoder inversion to six raw bytes.
+
+Independently model the same token pair into its five symbol operations and
+require byte-identical descriptor serialization and payload from the operation
+and direct boundaries. Reject an initial match, short payload, and token/output
+alias while preserving descriptor state.

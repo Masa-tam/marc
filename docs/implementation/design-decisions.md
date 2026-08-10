@@ -14825,3 +14825,20 @@ LSB-first code, and bypass fields emit their numeric bits LSB-first into the sam
 forward cursor. Plan before writing, zero the exact payload extent, preserve the
 descriptor on every failure, and reject operation/payload aliasing. This
 milestone does not yet connect typed LZSS tokens or emit a frame.
+
+## DD-715: Typed LZSS encoding regenerates contexts without operation storage
+
+- Date: 2026-08-11
+- Status: accepted
+
+Split the entropy encoder into a fixed-capacity model builder and a forward
+writer. The typed-LZSS adapter validates the complete token frame, walks tokens
+once to feed the builder while advancing `LzssFieldContextState`, then walks the
+same immutable tokens again to feed the writer under the identical state
+transition. It allocates and accepts no modeled-operation workspace.
+
+Require the direct and operation-level boundaries to serialize identical
+descriptors and payloads. Count only represented bypass fields as events,
+cross-check event and decision totals at writer completion, reject token/payload
+overlap before planning, and publish the descriptor only after the second pass
+succeeds. Frame serialization remains a later milestone.

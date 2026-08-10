@@ -17230,3 +17230,30 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,753 registered MSVC tests pass with a
   240-second per-test limit in 146.20 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 59.05 seconds.
+
+## CR-0745: 2026-08-11 - Direct typed-LZSS Contextual Huffman encoder
+
+- Authoring method: separated the Contextual Blocked Huffman entropy boundary
+  into fixed model-building and forward-writing objects, then drove both from
+  deterministic typed-LZSS context regeneration.
+- References used: AGENTS.md sections 3, 6, 9, 10, 11, 12, and 15; DD-710
+  through DD-715; IR-0493; TVG-0589 through TVG-0594; marc's typed-token
+  validator, `LzssFieldContextState`, operation encoder, and decoder.
+- Known implementations intentionally not consulted: external LZ/Huffman or
+  DEFLATE encoders, source code, frames, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: regenerate operations through two immutable-token
+  passes instead of storing them; share fixed builder/writer primitives; omit
+  zero-width bypass events; cross-check event, decision, and valid-bit totals;
+  and publish the descriptor only after the writer completes.
+- Generated-code task description: add reusable model builder and writer,
+  direct typed-token planning/encoding, one-Literal and literal-match vectors,
+  typed decoder round trip, operation-boundary byte identity, invalid token,
+  short output, alias, and atomic-publication tests.
+- Similarity review: two-pass token traversal, context regeneration, error
+  mapping, vectors, and tests were authored from marc's preceding internal
+  contracts; no external implementation expression entered the work.
+- Local validation: eight focused operation/direct-encoder tests pass under
+  MSVC 19.51.36252 and ClangCL 22.1.3. All 2,757 registered MSVC tests pass
+  with a 240-second per-test limit in 148.09 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 59.36 seconds.

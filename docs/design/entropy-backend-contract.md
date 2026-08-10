@@ -499,6 +499,12 @@ writes canonical codes and bypass fields through one forward LSB-first cursor;
 Single models consume no bit. Planning completes before payload publication and
 the descriptor is published only after successful encoding.
 
+The typed-LZSS adapter uses the same builder and writer without materializing
+modeled operations. Its first token pass validates context-dependent model
+choices and fixes the descriptor; its second pass regenerates the identical
+contexts and writes the payload. Writer completion cross-checks event, decision,
+and exact valid-bit extents before descriptor publication.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

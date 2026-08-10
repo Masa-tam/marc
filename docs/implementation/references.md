@@ -4327,3 +4327,12 @@ length-limited canonical Huffman primitive, typed modeled-operation schema,
 checked arithmetic, and LSB-first rules. No external Huffman or DEFLATE
 encoder, source code, frame, archive, test vector, suite, corpus, or
 optimization description was consulted.
+
+### IR-0493
+
+The typed-LZSS Contextual Blocked Huffman encoder uses DD-710 through DD-715,
+TVG-0589 through TVG-0594, marc's typed-token validator,
+`LzssFieldContextState`, fixed model builder, forward writer, checked overlap,
+and operation-level encoder. No external LZ/Huffman or DEFLATE encoder, source
+code, frame, archive, test vector, suite, corpus, or optimization description
+was consulted.

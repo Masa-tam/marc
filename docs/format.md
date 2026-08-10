@@ -6344,3 +6344,10 @@ bit savings strictly exceed the serialized record cost. Canonical codes and
 bypass values share one forward LSB-first cursor, unused high bits are zero,
 and Single records consume no payload bits. Typed-token, frame, streaming
 encoder, and public profile admission remain outside this milestone.
+
+The private typed-LZSS encoder now reaches the same operation order without a
+serialized or in-memory operation stream. It validates tokens, performs one
+context-state pass into the fixed model builder and a second identical pass into
+the forward writer, and requires byte-identical output to the operation-level
+boundary. This changes no stream byte; frame and streaming encoder admission
+remain outside this milestone.
