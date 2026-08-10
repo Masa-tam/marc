@@ -17123,3 +17123,28 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,728 registered MSVC tests pass with a
   240-second per-test limit in 149.53 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.91 seconds.
+
+## CR-0741: 2026-08-11 - Contextual Blocked Huffman typed-token decoder
+
+- Authoring method: connected marc's request-driven entropy decoder to its
+  typed-LZSS context state and token validator through a two-pass transaction.
+- References used: AGENTS.md sections 3, 9, 11, 12, and 15; DD-710 through
+  DD-711; IR-0489; TVG-0589 through TVG-0590; marc's existing contextual
+  decoder lifecycle, checked arithmetic, overlap, and limit patterns.
+- Known implementations intentionally not consulted: external LZ/Huffman or
+  DEFLATE implementations, source code, frames, archives, corpora, test
+  vectors, test suites, and optimization descriptions.
+- Independent decisions: derive exact non-Single table workspace; validate all
+  tokens without output before publication; advance context only after valid
+  tokens; reject pairwise payload/table/token overlap before table construction;
+  and leave raw reconstruction and frame admission to later milestones.
+- Generated-code task description: add typed-token validation and decoding,
+  one-Literal and literal-plus-overlap-match vectors, invalid initial reference,
+  count, raw-size, limit, workspace, alias, and atomic-publication tests.
+- Similarity review: adapter control flow, error mapping, vectors, tests, and
+  documentation were authored from marc's preceding internal contracts; no
+  external implementation expression entered the work.
+- Local validation: sixteen focused entropy/token decoder tests pass under
+  MSVC 19.51.36252 and ClangCL 22.1.3. All 2,736 registered MSVC tests pass
+  with a 240-second per-test limit in 150.53 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.94 seconds.

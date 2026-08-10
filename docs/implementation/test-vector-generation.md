@@ -7750,3 +7750,23 @@ override, calls before begin, and repeated completion. Preserve every caller
 value sentinel on a failed Symbol or bypass request. Also give context 0 a
 Single override for kind 0 while its pooled field is Single kind 1, and require
 successful decoding of kind 0 plus completion to prove override precedence.
+
+### TVG-0590
+
+Through the typed-LZSS adapter, decode the documented one-Literal `A` vector
+with empty payload and empty table workspace. The write-free pass must report
+one token, two events, two decisions, zero bits, and raw size one. Publication
+must produce exactly Literal `A` while leaving the following sentinel token
+unchanged.
+
+Construct Literal `A` followed by Match `(distance=1,length=5)`. Use pooled
+kind lengths `(1,1)`, Single literal `A`, Single length class 0, and Single
+distance class 0. Payload bits `0,1` form byte `02` with two valid bits. Require
+two tokens, five events/decisions, raw size six, exact contexts 0/3 then
+1/21/23, and one non-Single table.
+
+Independently reject a Match before history with stable token index and
+`invalid_distance`, contradictory decision/raw counts, short table or token
+workspace, invalid entropy completion, invalid LZSS parameters, per-frame and
+aggregate output limits, and every payload/table/token overlap. Every failure
+before publication must preserve all token bytes.

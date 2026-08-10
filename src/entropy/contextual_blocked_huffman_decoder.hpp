@@ -44,6 +44,10 @@ struct ContextualBlockedHuffmanDecodeResult {
         ContextualBlockedHuffmanDecodeError::none};
 };
 
+[[nodiscard]] std::size_t
+contextual_blocked_huffman_required_decode_table_count(
+    const ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+
 class ContextualBlockedHuffmanDecoder {
 public:
     [[nodiscard]] ContextualBlockedHuffmanDecodeResult begin(

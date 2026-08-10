@@ -6309,5 +6309,11 @@ selects overrides by context, reads bypass values from the shared LSB-first
 cursor, and publishes a requested value only after the whole symbol or bypass
 field succeeds. Completion requires exact event and decision counts, exact
 valid-bit consumption, and use of every serialized override. It does not infer
-the LZSS context sequence, reconstruct tokens, parse a frame, or admit the
-reserved profile.
+the LZSS context sequence, parse a frame, or admit the reserved profile.
+
+The private typed-LZSS adapter now supplies that context sequence and
+reconstructs validated typed tokens through a complete write-free pass followed
+by a publication pass. It checks declared counts, raw extent, LZSS references,
+caller limits, exact non-Single table workspace, and pairwise payload/table/
+token separation. It still does not reconstruct raw bytes, parse a frame, or
+admit the reserved profile.

@@ -14745,3 +14745,25 @@ Publish a decoded value only after the entire request succeeds. Completion
 requires exact event count, decision count, override use, and valid-bit extent.
 This milestone does not reconstruct typed tokens, parse frames, or admit the
 public profile.
+
+## DD-711: Contextual Blocked Huffman token inversion is two-pass
+
+- Date: 2026-08-11
+- Status: accepted
+
+Connect the request-driven entropy decoder to `LzssFieldContextState` using the
+same write-free validation then publication transaction as the other
+contextual backends. The first pass reconstructs and validates every literal or
+match, advances context only after a valid token, checks entropy completion and
+raw size, and writes no caller token. Only then may the second deterministic
+pass publish the complete typed-token sequence.
+
+Derive table workspace from active non-Single models rather than requiring the
+35-table ceiling. This preserves empty workspace for the documented all-Single
+one-Literal vector while retaining the format validator's conservative limit
+charge. Reject short workspace and pairwise overlap among payload, used tables,
+and token output before building a table. Preserve all token bytes on every
+prewrite failure.
+
+This boundary validates typed LZSS tokens and declared frame counts but does
+not reconstruct raw bytes, parse a Format 2 frame, or expose the profile.

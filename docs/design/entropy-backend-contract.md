@@ -465,6 +465,15 @@ invalid paths, extra valid bits, repeated completion, and requests before
 `begin`. Pooled tables may remain unrequested because the encoder retains the
 complete pooled histograms even when all requests for a field select overrides.
 
+The typed-LZSS adapter owns context evolution, class inversion, and token
+validation. It reconstructs each token in a write-free validation pass, checks
+the declared token/event/decision/raw-size tuple and all dictionary limits,
+then repeats the deterministic pass into caller-owned token storage. It derives
+the exact number of non-Single decode tables from the descriptor; an all-Single
+frame therefore accepts empty table workspace. Payload, used table workspace,
+and published token ranges must be pairwise disjoint. No token is published
+unless the complete first pass, entropy completion, and raw-size check succeed.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

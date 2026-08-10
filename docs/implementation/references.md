@@ -4291,3 +4291,12 @@ typed-context alphabet schema, checked arithmetic, and existing request-driven
 contextual entropy decoder contracts. No external Huffman decoder, DEFLATE
 implementation, source code, descriptor, test vector, suite, archive, corpus,
 or optimization description was consulted.
+
+### IR-0489
+
+The typed-LZSS Contextual Blocked Huffman decoder uses DD-710 through DD-711,
+TVG-0589 through TVG-0590, marc's `LzssFieldContextState`, typed-token
+validator, request-driven entropy decoder, checked arithmetic, limit model, and
+two-pass contextual decoder contracts. No external LZ/Huffman implementation,
+source code, frame, archive, test vector, suite, corpus, or optimization
+description was consulted.

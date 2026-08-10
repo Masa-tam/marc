@@ -44,6 +44,18 @@ enum class OverlapCheck : std::uint8_t {
 
 } // namespace
 
+std::size_t contextual_blocked_huffman_required_decode_table_count(
+    const ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    std::size_t required{};
+    for (const auto& model : descriptor.field_models) {
+        if (is_table_model(model)) ++required;
+    }
+    for (const auto& model : descriptor.context_models) {
+        if (is_table_model(model)) ++required;
+    }
+    return required;
+}
+
 void ContextualBlockedHuffmanDecoder::reset() noexcept {
     payload_ = {};
     tables_ = {};
@@ -112,13 +124,8 @@ ContextualBlockedHuffmanDecodeResult ContextualBlockedHuffmanDecoder::begin(
         }
     }
 
-    std::size_t required_tables{};
-    for (const auto& model : descriptor.field_models) {
-        if (is_table_model(model)) ++required_tables;
-    }
-    for (const auto& model : descriptor.context_models) {
-        if (is_table_model(model)) ++required_tables;
-    }
+    const auto required_tables =
+        contextual_blocked_huffman_required_decode_table_count(descriptor);
     if (table_output.size() < required_tables) {
         return fail(
             ContextualBlockedHuffmanDecodeError::table_output_too_small);
