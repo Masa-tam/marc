@@ -4157,3 +4157,13 @@ tANS token encoder, existing `5/2` frame/descriptor serializers and decoder,
 checked arithmetic, and decoder limits. No external frame encoder, LZ/ANS
 composition, source code, archive, corpus, test vector, test suite, or
 optimization description was consulted.
+
+### IR-0475
+
+The contextual-tANS streaming frame encoder uses only DD-687 through DD-697,
+TVG-0566 through TVG-0576, marc's core transform/status contract, complete
+contextual-tANS frame encoder, stream-header serializer, checked arithmetic,
+decoder limits, and repository-owned contextual-rANS streaming lifecycle as an
+architectural precedent. No external streaming encoder, LZ/ANS composition,
+source code, archive, corpus, test vector, test suite, or optimization
+description was consulted.

@@ -14436,3 +14436,26 @@ serialized sizes. The raw, token, inverse-table, and exact serialized-frame
 bytes all count toward `max_internal_buffered_bytes`. This adds no streaming
 encoder, public API, CLI selector, benchmark, fuzz target, interoperability
 archive, or serialized representation.
+
+## DD-697: Contextual tANS streaming encoding drains immutable frame bytes
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add a private immutable-direction transform for entropy identity `5/2`. Emit
+the canonical 112-byte stream header first, collect exactly one bounded raw
+frame, invoke DD-696 once that frame is complete, and then drain the immutable
+serialized frame under arbitrary output capacity before collecting more raw
+input. Preserve a nonterminal `Flush`; reject `ResetBlock` and unknown flags;
+retain `EndInput` across header and frame drain; and return stable
+`EndOfStream` after the declared original size is fully emitted.
+
+Keep raw-frame, typed-token, inverse-table, and serialized-frame workspaces
+pairwise disjoint at construction. Require caller output to be disjoint from
+all four on every call. Empty streams require none of the frame workspaces;
+nonempty capacity and aggregate-limit failures become sticky only when the
+first affected frame is prepared. Map capacity to `out_of_memory`, configured
+limits to `limit_exceeded`, protocol mismatches to `invalid_argument`, and all
+unexpected composition failures to `internal_error`. This adds no public API,
+profile calculator, CLI selector, benchmark, fuzz target, or interoperability
+archive.

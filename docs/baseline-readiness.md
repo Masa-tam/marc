@@ -1529,3 +1529,13 @@ trip mixed input through the existing complete decoder. Token, table, output,
 alias, input, stream, and aggregate four-region workspace failures are
 covered. Streaming encode, public API, CLI, benchmark, fuzz, and
 interoperability remain future work.
+
+### BR-0063
+
+Contextual tANS variant 2 now has a private streaming frame encoder. One-byte
+input/output reproduces the exact stream header and consecutive Literal
+frames; full-frame emission, partial-frame Flush, retained EndInput, empty
+streams, capacities, four-region aggregate limits, input protocol, flags,
+private aliases, caller-output aliases, and sticky terminal states are
+covered. Public API, profile calculator, CLI, benchmark, fuzz, and
+interoperability remain future work.

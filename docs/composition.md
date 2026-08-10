@@ -1391,3 +1391,11 @@ Typed parsing, direct tANS model/state encoding, canonical descriptor
 serialization, and Format 2 frame serialization execute within one admitted
 four-region transaction and reproduce the existing decoder vector exactly.
 Streaming encoding and public exposure remain future work.
+
+### CP-0065
+
+The contextual tANS composition now has a private bounded streaming encode
+lifecycle. It stages one raw frame across arbitrary caller chunks, prepares the
+complete canonical frame in disjoint caller-owned storage, and drains immutable
+bytes before advancing. The stream representation remains exactly variant
+`5/2`; public lifecycle and workspace calculation remain future work.

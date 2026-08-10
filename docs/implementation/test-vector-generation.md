@@ -7533,3 +7533,18 @@ invalid stream, wrong input extent, short token/table/serialized storage,
 raw-token, raw-table, token-table, serialized-raw, serialized-token, and
 serialized-table overlap, plus an aggregate four-region workspace excess.
 Every failure before admitted encoding must preserve serialized output.
+
+### TVG-0576
+
+Encode two raw `A` bytes as two one-byte contextual-tANS frames while limiting
+both input and output to one byte per call. Require the exact `5/2` stream
+header followed by TVG-0575's 96-byte frame at sequences zero and one, valid
+process counts/statuses, retained final `EndInput`, and stable repeated
+`EndOfStream`.
+
+Require a full frame to emit before whole-stream end while `Flush` leaves a
+partial raw frame open. Cover empty-stream header drain; short token, inverse-
+table, and serialized-frame workspaces; aggregate limits; premature and excess
+input; unknown flags; `ResetBlock`; every constructible private-workspace
+overlap; caller-output overlap with each private region; and sticky terminal
+errors without exposing mutable frame bytes.

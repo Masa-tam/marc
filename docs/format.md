@@ -6222,3 +6222,8 @@ representation from raw input. It serializes the same 64-byte Format 2 frame
 header followed by the canonical variable-size descriptor and exact entropy
 payload. For raw byte `A` it must reproduce the 96-byte frame above byte for
 byte; no field, identity, variant, padding rule, or extent changes.
+
+The private streaming encoder changes no serialized byte. It emits the same
+112-byte `5/2` stream header followed by the complete frames above in increasing
+sequence order. Caller input/output chunking and nonterminal `Flush` do not
+alter frame boundaries, descriptor choice, payload bits, or stream bytes.

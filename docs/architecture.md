@@ -4586,3 +4586,11 @@ only private token and table staging; encoding writes the already admitted
 payload, canonical variable descriptor, and frame header, with every planned
 count and extent checked again before success becomes visible. Streaming
 collection and drain remain outside this transaction.
+
+The private contextual tANS streaming encoder now supplies that outer
+lifecycle. It emits the canonical stream header, collects exactly one bounded
+raw frame, invokes the complete-frame transaction, and drains immutable frame
+bytes before accepting further raw input. Its four private regions remain
+disjoint for the transform lifetime, and every caller output span is excluded
+from all four before progress. Finish state survives header and frame drain;
+Flush never closes a partial frame.

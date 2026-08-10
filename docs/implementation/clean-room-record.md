@@ -16750,3 +16750,34 @@ discarded and the reviewed seed retained.
   2,688 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 70.74 seconds.
+
+## CR-0727: 2026-08-10 - Contextual tANS streaming frame encoder
+
+- Authoring method: specialized marc's immutable-direction streaming encode
+  lifecycle for the independently defined contextual-tANS `5/2` complete-frame
+  transaction and its additional inverse-table workspace.
+- References used: AGENTS.md sections 3.2 through 4.2, 5.5, 12, 14, and 15;
+  DD-687 through DD-697; IR-0475; TVG-0566 through TVG-0576; marc's core
+  status contract, contextual-tANS complete-frame encoder and stream-header
+  serializer, checked arithmetic, decoder limits, and local contextual-rANS
+  streaming architecture.
+- Known implementations intentionally not consulted: external streaming
+  encoders, LZ/ANS compositions, source code, archives, corpora, test vectors,
+  test suites, and optimization descriptions.
+- Independent decisions: emit the header before raw collection; buffer one raw
+  frame; keep prepared bytes immutable until drained; retain EndInput; leave
+  partial frames open on Flush; admit empty streams without frame workspaces;
+  and reject all constructible private/output alias classes before progress.
+- Generated-code task description: specify, implement, and test the private
+  contextual-tANS streaming frame encoder with one-byte I/O oracle equality,
+  full and partial frames, empty/final drain, workspace capacities and limits,
+  input protocol, flags, aliases, sticky errors, and stable repeated end.
+- Similarity review: the lifecycle derives solely from marc's repository-owned
+  transform contract, tANS frame transaction, and local streaming precedent;
+  no external naming, control flow, vector, malformed sample, or optimization
+  structure was used.
+- Local validation: all five focused streaming-encoder tests plus
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,693 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 69.34 seconds.
