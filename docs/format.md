@@ -6198,3 +6198,9 @@ payload size at least two. Preflight parses the descriptor immediately after
 the header, then admits exactly `64 + descriptor_size + payload_size` bytes.
 The documented one-Literal frame is therefore exactly 96 bytes. This parser
 and complete-frame decoder do not alter any serialized representation.
+
+The private contextual-tANS streaming decoder changes no serialized byte. It
+buffers at most one validated Format 2 frame, decodes that frame atomically,
+and drains the declared raw extent before collecting the next frame. Stream
+completion is determined solely by the header's original size plus explicit
+`EndInput`; bytes beyond the final declared frame are trailing data.

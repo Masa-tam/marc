@@ -1359,3 +1359,11 @@ Format 2 header and descriptor preflight, fixed tables, typed tokens, and raw
 reconstruction are enclosed in one caller-owned transaction with exhaustive
 workspace disjointness. Streaming, frame encoding, lifecycle, and public
 exposure remain future work.
+
+### CP-0061
+
+The contextual tANS composition now has a private bounded streaming decode
+lifecycle. It admits one validated serialized frame, fixed transition tables,
+typed tokens, and raw frame storage as disjoint caller-owned regions, then
+drains the atomic raw result under arbitrary output capacity. Streaming encode,
+public exposure, CLI, benchmark, fuzz, and interoperability remain future work.

@@ -7472,3 +7472,18 @@ unconsumed. Reject an active-mask record mismatch as trailing descriptor data,
 every strict frame truncation tested, descriptor extent below 27, the
 131,072-entry limit gate, short table/token/raw regions, serialized/raw
 overlap, and nonterminal entropy payload without publishing raw output.
+
+### TVG-0572
+
+Build a contextual-tANS Format 2 stream from the exact `5/2` 112-byte header
+and one or two copies of TVG-0566's 96-byte Literal frame, with consecutive
+sequence numbers and one raw byte per frame. Feed every serialized byte and
+every raw output byte separately; require deterministic `AA`, valid progress
+statuses, exact input consumption, and stable repeated `EndOfStream`.
+
+Corrupt only the second frame and require the first raw byte to commit before a
+sticky malformed-stream error. Test empty input, output draining after
+`EndInput`, every workspace shortage, aggregate-buffer limit, premature end,
+trailing data, `ResetBlock`, unknown flags, caller-output aliasing, and
+construction-time workspace aliasing. Every returned `ProcessResult` must
+satisfy the core count/status invariants.

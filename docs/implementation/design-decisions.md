@@ -14344,3 +14344,24 @@ reconstruct raw bytes only after all capacity and overlap checks; report frame
 consumption only after both stages succeed. Bytes after the one preflighted
 frame remain unconsumed. This admits a private complete-frame decoder, not a
 streaming lifecycle or encoder.
+
+## DD-693: Contextual tANS streaming buffers exactly one atomic frame
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add a private immutable-direction `core::Transform` for entropy identity
+`5/2`. Collect the 112-byte stream header and each 64-byte frame header
+incrementally, validate declared extents before workspace admission, then
+buffer exactly one descriptor-plus-payload body in caller-owned storage. Run
+the complete-frame decoder only after the entire frame is present. Drain its
+raw frame through arbitrary output capacities before accepting the next frame.
+
+Require disjoint serialized/table/token/raw workspaces at construction and
+disjoint caller output versus every private workspace on every call. Enforce the
+aggregate buffered-byte limit before body collection. `ResetBlock`, unknown
+flags, premature `EndInput`, trailing bytes, workspace shortage, malformed
+frames, and aliasing become sticky errors. `Flush` does not alter framing.
+Repeated calls after successful end return `EndOfStream`. This lifecycle adds
+no representation, encoder, public API, CLI, benchmark, or interoperability
+archive.

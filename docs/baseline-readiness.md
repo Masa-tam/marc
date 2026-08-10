@@ -1491,3 +1491,11 @@ complete-frame decoder. The exact 96-byte one-Literal frame reconstructs raw
 failures preserve raw output. A trailing serialized byte remains unconsumed.
 Streaming, encoder, public API, CLI, benchmark, fuzz, and interoperability
 remain future work.
+
+### BR-0059
+
+Contextual tANS variant 2 now has a private streaming frame decoder. One-byte
+input/output, nonterminal Flush, empty streams, delayed draining, multi-frame
+sequencing, later-frame corruption, truncation, trailing data, flags, limits,
+workspace shortage, and all caller/private alias classes are covered. Encoder,
+public API, CLI, benchmark, fuzz, and interoperability remain future work.

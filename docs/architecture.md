@@ -4556,3 +4556,10 @@ validate exact descriptor and payload extents before partitioned caller
 storage is admitted. The typed-token bridge and raw reconstructor run only
 after all serialized/table/token/raw regions are proven disjoint; frame
 consumption becomes visible only with complete raw success.
+
+The private contextual tANS streaming decoder now supplies the lifecycle above
+that atomic boundary. It incrementally collects the stream header and one
+frame, validates capacity and aggregate memory before body collection, decodes
+only a complete frame, and drains raw bytes before advancing. Construction
+separates all private workspaces; each call also excludes caller output from
+every private region so subsequent collection cannot overwrite produced bytes.

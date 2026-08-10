@@ -16631,3 +16631,31 @@ discarded and the reviewed seed retained.
   2,663 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 69.26 seconds.
+
+## CR-0723: 2026-08-10 - Contextual tANS streaming frame decoder
+
+- Authoring method: specialized marc's immutable-direction transform lifecycle
+  for the independently defined contextual-tANS `5/2` frame boundary.
+- References used: AGENTS.md sections 3.2 through 4.2, 5.5, 12, 14, and 15;
+  DD-687 through DD-693; IR-0471; TVG-0566 through TVG-0572; marc's core
+  status contract, contextual-tANS complete-frame decoder, checked arithmetic,
+  decoder limits, and contextual-rANS streaming architecture.
+- Known implementations intentionally not consulted: external streaming
+  decoders, LZ/ANS compositions, source code, archives, corpora, malformed
+  samples, test suites, and optimization descriptions.
+- Independent decisions: buffer one frame; validate extent, capacity, and
+  aggregate memory before body collection; drain before advancing; reject
+  output overlap with every private workspace; preserve nonterminal Flush; and
+  make all misuse, malformed-input, limit, and alias failures sticky.
+- Generated-code task description: specify, implement, and test the private
+  contextual-tANS streaming frame decoder with one-byte chunking, two-frame
+  atomicity, end/drain behavior, limits, flags, and exhaustive workspace-class
+  alias rejection without adding encoding or public exposure.
+- Similarity review: the lifecycle specializes marc's repository-owned
+  transform contract and contextual-rANS architectural precedent to the
+  independently defined tANS types and decoder; no external naming, control
+  flow, vector, or malformed sample was used.
+- Local validation: all six focused streaming tests plus documentation layout
+  pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,669 registered tests,
+  including `marc_interoperability_schema_compatibility`, pass under MSVC with
+  a 240-second per-test limit in 68.70 seconds.

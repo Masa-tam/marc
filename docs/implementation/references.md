@@ -4120,3 +4120,13 @@ layout, contextual tANS descriptor/token bridge, typed reconstructor, checked
 arithmetic, and decoder limits. No external frame format, LZ/ANS composition,
 source code, archive, corpus, malformed sample, test suite, or optimization
 description was consulted.
+
+### IR-0471
+
+The contextual-tANS streaming frame decoder uses only DD-687 through DD-693,
+TVG-0566 through TVG-0572, marc's core transform contract, contextual-tANS
+Format 2 complete-frame decoder, checked arithmetic, decoder limits, and the
+repository-owned contextual-rANS streaming lifecycle as an architectural
+precedent. No external streaming decoder, LZ/ANS composition, source code,
+archive, corpus, malformed sample, test suite, or optimization description was
+consulted.
