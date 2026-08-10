@@ -16688,3 +16688,34 @@ discarded and the reviewed seed retained.
   2,677 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 68.98 seconds.
+
+## CR-0725: 2026-08-10 - Direct contextual tANS typed-token encoder
+
+- Authoring method: composed marc's typed-LZSS validator and field-context
+  state directly with its independently derived contextual-tANS model builder,
+  inverse tables, and reverse writer.
+- References used: AGENTS.md sections 9.3, 10.6, 11.2, 12, 14, and 15;
+  DD-687 through DD-695; IR-0473; TVG-0566 through TVG-0574; marc's typed-LZSS
+  schema, field-context state, contextual-tANS operation encoder and decoder,
+  checked arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external LZ/ANS
+  compositions, encoders, source code, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: validate the complete token frame first; construct
+  the model in forward token order; reconstruct predecessor and prior-Literal
+  contexts during a monotonic reverse pass; require disjoint token, table, and
+  payload regions; and prove exact equality to the materialized-operation
+  reference before admitting the direct path.
+- Generated-code task description: specify, implement, and test direct typed-
+  LZSS contextual-tANS planning and encoding with exact Literal bytes, a mixed
+  token reference comparison, direct decoder round trip, capacities, overlap,
+  limits, aggregate memory, and prewrite atomicity without adding framing.
+- Similarity review: the traversal and tests derive solely from marc's local
+  typed-token/context contracts and contextual-tANS inverse transition rules;
+  no external naming, control flow, vector, malformed sample, or optimization
+  structure was used.
+- Local validation: all five focused direct-token encoder tests plus
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,682 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 70.10 seconds.

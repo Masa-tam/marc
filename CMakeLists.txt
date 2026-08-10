@@ -41,6 +41,7 @@ endif()
 
 set(MARC_SOURCES
     src/context/lzss_contextual_tans_decoder.cpp
+    src/context/lzss_contextual_tans_encoder.cpp
     src/context/lzss_contextual_rans_decoder.cpp
     src/context/lzss_contextual_rans_encoder.cpp
     src/context/lzss_contextual_range_decoder.cpp
@@ -1366,6 +1367,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_tans_decode_tables_tests.cpp
         tests/contextual_tans_decoder_tests.cpp
         tests/lzss_contextual_tans_decoder_tests.cpp
+        tests/lzss_contextual_tans_encoder_tests.cpp
         tests/lzss_contextual_tans_format_tests.cpp
         tests/lzss_contextual_tans_frame_decoder_tests.cpp
         tests/lzss_contextual_tans_frame_streaming_decoder_tests.cpp

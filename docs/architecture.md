@@ -4569,3 +4569,12 @@ operation boundary. A forward model pass normalizes each active context; a
 caller-owned flattened inverse-table region holds 32 canonical tANS encode
 tables. A reverse operation pass plans or writes the exact initial state and
 LSB-first payload without allocating an operation-dependent internal buffer.
+
+The direct typed-token encoder now removes the remaining modeled-operation
+staging boundary from that path. Its forward pass validates tokens and builds
+the identical per-context model; its reverse pass reconstructs predecessor-
+kind and nearest-prior-Literal contexts while emitting token fields in inverse
+modeled order. Typed tokens, inverse tables, and payload are three disjoint
+bounded regions, and comparison against the operation path fixes their exact
+descriptor and payload equivalence. Complete-frame encoding remains the next
+composition boundary.

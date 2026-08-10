@@ -1509,3 +1509,13 @@ malformed fields, table/payload capacity, all three region overlaps, limits,
 and prewrite atomicity are covered. Direct typed-token encoding, frame and
 streaming encoders, public API, CLI, benchmark, fuzz, and interoperability
 remain future work.
+
+### BR-0061
+
+Contextual tANS variant 2 now has a private direct typed-LZSS encoder. It
+validates and models tokens forward, reconstructs their field contexts during
+reverse state emission, and exactly matches the materialized-operation
+reference without allocating that intermediate array. Literal and mixed-token
+vectors, direct decode, capacities, aliasing, limits, and prewrite atomicity
+are covered. Complete-frame and streaming encoders, public API, CLI,
+benchmark, fuzz, and interoperability remain future work.

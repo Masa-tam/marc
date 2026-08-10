@@ -1375,3 +1375,11 @@ foundation. Modeled Symbol contexts produce independent normalized tables;
 bypass decisions share the fixed binary table. A reverse writer consumes
 caller-owned inverse transitions and emits the exact payload accepted by the
 existing decoder. Direct typed-token and frame encoding remain future work.
+
+### CP-0063
+
+The contextual tANS composition now connects typed LZSS directly to its
+private entropy encoder. Forward token traversal constructs the canonical
+models and reverse traversal reconstructs all token contexts, producing bytes
+identical to the operation-level reference without an operation workspace.
+Complete-frame and streaming encoding remain future work.

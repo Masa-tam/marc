@@ -4139,3 +4139,12 @@ tANS descriptor and decoder, canonical standalone tANS tables, checked
 arithmetic, endian helpers, and decoder limits. No external ANS encoder,
 source code, archive, corpus, test vector, test suite, or optimization
 description was consulted.
+
+### IR-0473
+
+The direct LZSS contextual-tANS token encoder uses only DD-687 through DD-695,
+TVG-0566 through TVG-0574, marc's typed-LZSS validator and field-context state,
+contextual-tANS model builder/inverse tables/reverse writer, checked arithmetic,
+and decoder limits. No external LZ/ANS composition, encoder, source code,
+archive, corpus, test vector, test suite, or optimization description was
+consulted.

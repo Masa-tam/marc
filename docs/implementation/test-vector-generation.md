@@ -7504,3 +7504,18 @@ operation/payload and table/payload overlap, empty operations, local limits,
 and all prewrite failures must preserve descriptor and payload. An invalid
 descriptor or short inverse-table destination must preserve the entire table
 destination.
+
+### TVG-0574
+
+Directly encode one typed `Literal(0x41)` without materializing operations.
+Require one token, two events/decisions, descriptor frequencies 4,096 at
+entries 0 and 71, and exact payload `00 00`.
+
+For `Literal(A), Literal(B), Match(distance=2,length=6),
+Match(distance=1,length=5), Literal(C)`, independently materialize the field
+operations and encode them through TVG-0573. Require the direct token plan,
+descriptor, payload, event count, and decision count to match exactly, then
+decode the direct payload back to all five tokens. Reject invalid token frames,
+short encode-table/payload regions, token/table, token/payload, and
+table/payload overlap, aggregate limits, and every prewrite failure without
+publishing descriptor or payload.

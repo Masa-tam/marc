@@ -6210,3 +6210,9 @@ variant-2 representation. It emits terminal-state inversion in reverse logical
 operation order, stores the initial state offset little-endian, and places each
 transition's additional bits into the existing forward LSB-first payload. It
 introduces no new field, identity, or variant.
+
+The direct typed-LZSS contextual-tANS encoder changes no serialized byte. It
+derives the same modeled decisions and normalized frequencies directly from
+validated typed tokens, reconstructs their contexts during reverse emission,
+and is required to match the operation encoder's descriptor, payload, counts,
+initial state, valid-bit extent, and padding exactly.

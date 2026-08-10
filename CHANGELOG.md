@@ -26,6 +26,10 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private contextual tANS operation encoder with deterministic model
   normalization, caller-owned inverse transition tables, backward LSB-first
   state writing, and exact decoder-verified vectors.
+- Connected typed LZSS tokens directly to contextual tANS encoding. Forward
+  model construction and backward context reconstruction reproduce the
+  operation-reference descriptor and payload without allocating a modeled-
+  operation array.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

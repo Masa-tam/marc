@@ -14392,3 +14392,25 @@ descriptor nor payload until operation validation, normalization, table
 construction, exact bit sizing, format validation, limits, capacity, and
 operation/table/payload disjointness succeed. This reference boundary adds no
 typed-token bridge, frame encoder, streaming encoder, or format change.
+
+## DD-695: Direct contextual tANS token encoding reconstructs contexts backward
+
+- Date: 2026-08-10
+- Status: accepted
+
+Validate the complete typed-LZSS frame before model or state construction.
+Walk tokens forward to feed token-kind, Literal, match-length class, distance
+class, and bypass decisions into the shared contextual-tANS model builder.
+Count one event per Symbol or multi-bit bypass request and one decision per
+Symbol or bypass bit.
+
+After building caller-owned inverse tables, walk tokens backward without a
+materialized operation array. Derive the token and length contexts from the
+immediate predecessor kind, and the Literal context from the nearest preceding
+Literal maintained monotonically during reverse traversal. Emit each token's
+fields in reverse modeled order; the shared writer reverses bits within bypass
+requests. Require token, table, and payload regions to be pairwise disjoint
+before table or payload writes. Planning may mutate only table scratch;
+descriptor and payload publish only after exact counts, state, bit size,
+format, limits, capacity, and second-pass agreement. This adds no dictionary
+parser, frame encoder, streaming encoder, or format change.
