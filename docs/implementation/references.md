@@ -4094,3 +4094,12 @@ table builder, contextual tANS compact descriptor, fixed field-context schema,
 and decoder limits. No external contextual ANS implementation, transition
 table, source code, archive, corpus, malformed sample, test suite, or
 optimization description was consulted.
+
+### IR-0468
+
+The contextual tANS state decoder uses only DD-687 through DD-690, TVG-0566
+through TVG-0569, marc's independently implemented tANS variant-1 decoder,
+contextual tANS descriptor and fixed decode tables, field-context schema, and
+decoder limits. No external contextual ANS decoder, bitstream, source code,
+archive, corpus, malformed sample, test suite, or optimization description was
+consulted.

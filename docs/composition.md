@@ -1335,3 +1335,11 @@ table from one validated descriptor into caller-owned storage, while reusing
 the standalone tANS transition authority. State decoding, typed-token
 reconstruction, frame composition, lifecycle, and public exposure remain
 future work.
+
+### CP-0058
+
+The contextual tANS composition now has a private operation-driven state
+decoder over its fixed table layout. Symbol contexts and bypass bits share one
+live state and exact bit cursor, while schema, count, terminal, and unused-model
+checks remain below typed-token reconstruction. A token bridge, frame,
+lifecycle, encoder, and public exposure remain future work.

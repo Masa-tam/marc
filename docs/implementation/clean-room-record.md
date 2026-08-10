@@ -16545,3 +16545,31 @@ discarded and the reviewed seed retained.
   layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,637 registered
   tests, including `marc_interoperability_schema_compatibility`, pass under
   MSVC with a 240-second per-test limit in 74.13 seconds.
+
+## CR-0720: 2026-08-10 - Contextual tANS state decoder
+
+- Authoring method: composed marc's fixed contextual transition regions with
+  its independently implemented standalone tANS live-state and bit-consumption
+  rules behind the repository-owned operation-driven decoder shape.
+- References used: AGENTS.md sections 6, 10.6, 11.2, 12, 14, and 15; DD-687
+  through DD-690; IR-0468; TVG-0566 through TVG-0569; marc's contextual tANS
+  descriptor/table builder, tANS variant-1 decoder, contextual rANS decoder,
+  field-context schema, checked arithmetic, endian helpers, and limits.
+- Known implementations intentionally not consulted: external contextual ANS
+  decoders, bitstreams, source code, archives, corpora, malformed samples,
+  test suites, and optimization descriptions.
+- Independent decisions: expose Symbol and bypass requests over one live
+  state; return bypass bits LSB first; validate mutable caller tables at use;
+  make failures sticky; and require exact counts, model use, terminal state,
+  and bit extent at finish.
+- Generated-code task description: implement and test bounded contextual tANS
+  begin, Symbol and bypass transitions, finish, malformed inputs, mutated
+  tables, sticky lifecycle, and documented one-Literal and mixed-operation
+  vectors without adding typed reconstruction or an encoder.
+- Similarity review: the API, state transitions, errors, and tests derive only
+  from marc's local format, tables, and operation contracts; no external
+  naming, control flow, vector, or malformed sample was used.
+- Local validation: all eight focused state-decoder tests and documentation
+  layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,645 registered
+  tests, including `marc_interoperability_schema_compatibility`, pass under
+  MSVC with a 240-second per-test limit in 72.74 seconds.

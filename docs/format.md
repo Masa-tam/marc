@@ -6175,3 +6175,11 @@ region 31 is the implicit 2,048/2,048 bypass model. Every region contains
 transition rules as tANS variant 1. Inactive Symbol-context regions contain
 zero entries. This in-memory layout is not serialized and admits no state
 decoder or public format claim.
+
+The private state decoder now consumes this exact representation. The initial
+little-endian payload offset selects state `4096 + offset`; every Symbol or
+bypass decision indexes its selected region by `state - 4096`, consumes that
+entry's LSB-first additional bits, and replaces state with
+`state_base + bits`. A complete modeled frame must finish at state 4,096 after
+consuming exactly the descriptor's valid bits. These rules implement the
+already reserved payload and do not change serialized bytes.

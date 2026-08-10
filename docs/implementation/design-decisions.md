@@ -14286,3 +14286,23 @@ then populate the exact 131,072-entry prefix and publish its view; leave
 storage and prior view unchanged on descriptor, limit, capacity, or table
 failure. This milestone admits decode transitions only, not live-state
 decoding, typed reconstruction, framing, or a public profile.
+
+## DD-690: Contextual tANS decoding is operation-driven over one live state
+
+- Date: 2026-08-10
+- Status: accepted
+
+Begin only after exact descriptor, payload extent, final-bit padding, initial
+state offset, caller table capacity, and decoder limits pass. Decode a Symbol
+request through its fixed context region and a bypass field through region 31,
+advancing the same state for each decision. Bypass bits are returned least-
+significant bit first and count as one event but their declared number of
+decisions.
+
+Require every request to match the fixed context alphabet and an active model.
+Validate caller-owned transition entries at use time so mutation cannot escape
+the live interval or read beyond declared bits. Make errors sticky and assign a
+requested value only after its transition succeeds. Finish requires exact
+event and decision counts, every active context requested, terminal state
+4,096, and exact bit consumption. This remains a private entropy boundary; it
+does not reconstruct typed LZSS tokens or admit a frame or encoder.

@@ -11,6 +11,9 @@ format versions, and C ABI versions are independent namespaces.
   compact model and materializes 31 fixed Symbol-context regions plus one
   implicit binary bypass region in bounded caller-owned storage, without yet
   admitting a state decoder or public profile.
+- Added the matching private contextual tANS state decoder. Operation-driven
+  Symbol and bypass requests share one bounded state and LSB-first bit cursor,
+  with strict transition, count, terminal-state, and lifecycle validation.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

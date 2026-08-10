@@ -1463,3 +1463,13 @@ Standalone-equivalence, one-symbol permutations, inactive zeroing, exact
 extent, limit rejection, and prewrite atomicity are covered. Live state
 decoding, frames, public API, CLI, benchmark, fuzz, and interoperability remain
 future work.
+
+### BR-0056
+
+Contextual tANS variant 2 now has an independently tested private state
+decoder. It decodes the documented one-Literal vector and a mixed Symbol plus
+LSB-first bypass vector, validates caller-owned transitions at use time, and
+rejects malformed padding, state, bit extent, schema requests, counts, active
+models, and lifecycle calls with sticky errors. Typed reconstruction, frames,
+encoder, public API, CLI, benchmark, fuzz, and interoperability remain future
+work.

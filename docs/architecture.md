@@ -4534,3 +4534,11 @@ region reuse the standalone tANS transition authority; inactive regions are
 zero. A private model snapshot and complete preflight precede the one output
 write phase, so descriptor and workspace admission cannot publish a partial
 table set. No live entropy state or typed-token reconstruction is attached yet.
+
+The private contextual tANS decoder now attaches one bounded live state to
+those fixed table views. Its caller drives the decoder with validated Symbol or
+bypass requests; each request selects a table region while all transitions
+share one LSB-first payload cursor. The decoder publishes values only after a
+complete transition and accepts finish only after exact counts, context use,
+terminal state, and bit extent agree. Typed-token reconstruction remains a
+separate later composition boundary.

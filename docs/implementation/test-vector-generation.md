@@ -7427,3 +7427,18 @@ bypass region to equal a standalone 2,048/2,048 binary table. Exercise an
 invalid model, a 131,071-entry output, a 131,071-entry decoder limit, and
 oversized caller output; every prewrite failure preserves storage and view,
 and success leaves bytes beyond entry 131,071 untouched.
+
+### TVG-0569
+
+Decode TVG-0566 through the contextual state API as Symbol requests `(0,2)`
+and `(3,256)`, require values zero and 65, no consumed additional bits, exact
+counts two/two, terminal state 4,096, and successful finish. Independently
+construct the inverse transitions for Symbol value one followed by a two-bit
+bypass value two; require forward LSB-first recovery and counts two/three.
+
+Reject descriptor and payload-size mismatch, invalid initial state, nonzero
+padding, short table storage, table-limit excess, invalid context/alphabet,
+inactive context, bypass widths zero and over budget, mutated transition
+extent, truncated bits, count mismatch, unused active context, nonterminal
+state, trailing bits, calls before begin, and calls after finish. Require
+sticky errors and preserve requested values when the current event fails.
