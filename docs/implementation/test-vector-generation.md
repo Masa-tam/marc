@@ -7695,3 +7695,22 @@ and print, without threshold assertions, raw size, token and operation counts,
 canonical serialized-LZSS extent, and the descriptor/symbol/bypass/payload/
 total breakdown for all three candidates. This is descriptive design evidence,
 not a compression benchmark or format vector.
+
+### TVG-0587
+
+Construct 200 literal-symbol operations: context 3 emits `A` 100 times, while
+context 4 alternates `A` and `B` 100 times. The pooled literal table must cost
+16 descriptor bytes plus 200 symbol bits, or 41 stored bytes. Context 3's
+single-symbol override saves 100 bits and costs four descriptor bytes, so it
+must be selected; context 4's table must remain pooled. Require one selected
+context, two active/stored models, 20 descriptor bytes, 100 symbol bits, and
+33 stored bytes. Retain the DD-707 small vector as a no-selection case.
+Repeat with 32 `A` symbols in context 3 and 32 alternating symbols in context
+4; the override's 32-bit saving exactly equals its four-byte record, so the
+pooled table and 24-byte total must be retained.
+
+Run the updated estimator over both repository-owned inputs without thresholds.
+The 4,326-byte README must report no profitable override. The 312,817-byte
+format specification must report nine overrides and print the full pooled,
+selective, contextual, and shared-contextual breakdown. These sizes are
+descriptive and do not become format vectors or stable pass criteria.

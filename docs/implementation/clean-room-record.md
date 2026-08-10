@@ -17043,3 +17043,28 @@ discarded and the reviewed seed retained.
   reproduces BM-0019 over the 4,326-byte README. All 2,714 registered MSVC
   tests, including `marc_interoperability_schema_compatibility`, pass with a
   240-second per-test limit in 148.85 seconds.
+
+## CR-0738: 2026-08-11 - Selective contextual Huffman probe
+
+- Authoring method: extended the repository-owned exact-cost estimator with a
+  deterministic per-context comparison against unchanged pooled field tables.
+- References used: AGENTS.md sections 5, 10, 11, 13, and 15; DD-707 through
+  DD-708; IR-0486; TVG-0587; BM-0020.
+- Known implementations intentionally not consulted: external Huffman or
+  LZ/Huffman implementations, descriptors, archives, corpora, test vectors,
+  test suites, source code, and optimization descriptions.
+- Independent decisions: reserve the provisional prefix's mask capacity only
+  inside the estimator; retain complete pooled histograms; require strict
+  repayment of every override record; retain pooled coding on ties; and leave
+  bypass operations unchanged.
+- Generated-code task description: calculate selective table cost, prove both
+  profitable and unprofitable choices, expose the breakdown in the analysis
+  tool, and record two repository-owned measurements without fixing a format.
+- Similarity review: selection arithmetic, metadata accounting, vectors, and
+  tool fields extend only the marc-owned DD-707 probe; no external expression
+  or format structure entered the implementation.
+- Local validation: five focused estimator tests pass under MSVC 19.51.36252.
+  The same tests pass under ClangCL 22.1.3. The Release tool reproduces
+  BM-0020 over README and `docs/format.md`. All 2,716 registered MSVC tests,
+  including `marc_interoperability_schema_compatibility`, pass with a
+  240-second per-test limit in 148.40 seconds.

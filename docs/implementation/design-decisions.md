@@ -14666,3 +14666,33 @@ bytes. The next design must therefore permit model selection or sharing at a
 finer granularity rather than requiring all available contexts. This probe
 adds no encoder, decoder, format identity, C API, CLI codec, readiness claim,
 or interoperability archive.
+
+## DD-708: Selective contextual tables must repay their complete record cost
+
+- Date: 2026-08-11
+- Status: accepted
+
+Extend only the non-serializing DD-707 probe with four complete pooled field
+models plus optional context overrides. The eight-byte provisional prefix has
+room for a 31-bit override mask, so selecting a context adds no separate map
+byte. Store selected override records in ascending context-ID order. Keep each
+pooled model built from the complete field histogram, including symbols later
+coded through overrides; this makes every context decision independent,
+deterministic, and bounded rather than a combinatorial subset search.
+
+For an active context, calculate its symbol bits once under the appropriate
+pooled table and once under its own table. Select the override only when the
+symbol-bit saving is strictly greater than eight times the complete individual
+model-record byte count. A tie retains the pooled table. Bypass bits are never
+eligible and remain one shared LSB-first payload. The exact final payload is
+still byte-aligned only after all modeled and bypass bits are summed.
+
+On the 4,326-byte README no override repays its record, so the selective result
+equals the 2,320-byte pooled result. On the 312,817-byte format specification,
+nine overrides reduce symbol bits from 235,043 to 231,131 while growing the
+descriptor from 166 to 516 bytes. With 299,780 unchanged bypass bits, the
+stored estimate falls from 67,019 to 66,880 bytes. Full contextualization costs
+67,147 bytes. Selective admission therefore behaves safely on both measured
+scales, but this remains evidence for a possible representation rather than a
+format reservation, encoder, decoder, public API, CLI codec, or readiness
+claim.

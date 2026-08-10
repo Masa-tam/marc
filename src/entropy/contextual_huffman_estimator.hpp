@@ -17,10 +17,12 @@ struct ContextualHuffmanEstimate {
     std::uint64_t total_bytes{};
     std::uint16_t active_tables{};
     std::uint16_t stored_models{};
+    std::uint16_t selected_contexts{};
 };
 
 struct ContextualHuffmanEstimates {
     ContextualHuffmanEstimate field_tables{};
+    ContextualHuffmanEstimate selective_context_tables{};
     ContextualHuffmanEstimate contextual_tables{};
     ContextualHuffmanEstimate shared_contextual_tables{};
 };

@@ -4263,3 +4263,13 @@ three cost strategies were designed specifically for marc and reserve no
 stream representation. No DEFLATE implementation, external Huffman source,
 LZ/Huffman composition, archive, corpus, test vector, test suite, or
 optimization description was consulted.
+
+### IR-0486
+
+The selective contextual-Huffman probe uses only DD-707 through DD-708,
+TVG-0587, marc's own pooled and per-context frequency tables, canonical code
+lengths, and checked arithmetic. Its strict profitability rule, fixed pooled
+histograms, override-mask interpretation, and deterministic tie policy were
+authored for marc. No additional external reference, compression source,
+descriptor, archive, corpus, test vector, test suite, or optimization
+description was consulted.

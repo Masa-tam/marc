@@ -635,6 +635,23 @@ model description relative to four pooled tables. The result motivates
 selective per-field context admission; it is not an encoded archive, corpus
 result, performance measurement, or pass threshold.
 
+### BM-0020: Selective contextual Huffman result
+
+The strict record-repayment rule selects no override for the 4,326-byte
+README, preserving BM-0019's 166-byte descriptor, 14,763 symbol bits, 2,462
+bypass bits, and 2,320-byte stored estimate. No small-input regression is
+introduced by merely making context tables available.
+
+For the repository's 312,817-byte `docs/format.md`, canonical serialized LZSS
+would occupy 219,133 bytes. Four pooled Huffman field tables cost 166 descriptor
+bytes, 235,043 symbol bits, and 299,780 bypass bits, totaling 67,019 bytes.
+Nine profitable overrides grow the descriptor to 516 bytes and reduce symbol
+bits to 231,131; the unchanged bypass bits then produce a 66,880-byte estimate,
+139 bytes smaller than pooled coding. Full 21-table contextualization totals
+67,147 bytes, and identical-table sharing totals 67,173 bytes. This confirms
+the selection mechanism on one larger repository-owned input but is neither
+a corpus result nor a serialized archive or throughput measurement.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

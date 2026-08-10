@@ -94,6 +94,24 @@ struct Model {
                       right.lengths.begin());
 }
 
+[[nodiscard]] ContextualHuffmanEstimateError calculate_symbol_bits(
+    const HuffmanFrequencies& frequencies,
+    const Model& model,
+    std::uint64_t& bits) noexcept {
+    bits = 0;
+    for (std::uint16_t symbol = 0; symbol < model.alphabet; ++symbol) {
+        std::uint64_t contribution{};
+        if (!core::checked_multiply(
+                frequencies[symbol],
+                static_cast<std::uint64_t>(model.lengths[symbol]),
+                contribution)
+            || !add_u64(bits, contribution, bits)) {
+            return ContextualHuffmanEstimateError::arithmetic_overflow;
+        }
+    }
+    return ContextualHuffmanEstimateError::none;
+}
+
 [[nodiscard]] ContextualHuffmanEstimateError finish_estimate(
     ContextualHuffmanEstimate& estimate) noexcept {
     std::uint64_t payload_bits{};
@@ -182,8 +200,9 @@ ContextualHuffmanEstimateResult estimate_contextual_huffman_cost(
     field.bypass_bits = bypass_bits;
     constexpr std::array<std::uint16_t, field_table_count> field_alphabets{
         2, 256, 8, 17};
+    std::array<Model, field_table_count> field_models{};
     for (std::size_t index = 0; index < field_table_count; ++index) {
-        Model model{};
+        auto& model = field_models[index];
         const auto error = build_model(
             field_frequencies[index], field_alphabets[index], model);
         if (error != ContextualHuffmanEstimateError::none) {
@@ -200,6 +219,42 @@ ContextualHuffmanEstimateResult estimate_contextual_huffman_cost(
             result.error = ContextualHuffmanEstimateError::arithmetic_overflow;
             return result;
         }
+    }
+
+    auto& selective = result.estimates.selective_context_tables;
+    selective = field;
+    for (std::size_t context_id = 0;
+         context_id < context_models.size(); ++context_id) {
+        const auto& context_model = context_models[context_id];
+        if (!context_model.active) continue;
+        const auto& base_model = field_models[field_table(
+            static_cast<std::uint16_t>(context_id))];
+        std::uint64_t base_bits{};
+        const auto cost_error = calculate_symbol_bits(
+            context_frequencies[context_id], base_model, base_bits);
+        if (cost_error != ContextualHuffmanEstimateError::none) {
+            result.error = cost_error;
+            return result;
+        }
+        if (base_bits <= context_model.symbol_bits) continue;
+        const auto symbol_savings = base_bits - context_model.symbol_bits;
+        std::uint64_t descriptor_bits{};
+        if (!core::checked_multiply(context_model.descriptor_bytes,
+                                    UINT64_C(8), descriptor_bits)) {
+            result.error = ContextualHuffmanEstimateError::arithmetic_overflow;
+            return result;
+        }
+        if (symbol_savings <= descriptor_bits) continue;
+        selective.symbol_bits -= symbol_savings;
+        if (!add_u64(selective.descriptor_bytes,
+                     context_model.descriptor_bytes,
+                     selective.descriptor_bytes)) {
+            result.error = ContextualHuffmanEstimateError::arithmetic_overflow;
+            return result;
+        }
+        ++selective.active_tables;
+        ++selective.stored_models;
+        ++selective.selected_contexts;
     }
 
     auto& contextual = result.estimates.contextual_tables;
@@ -247,7 +302,7 @@ ContextualHuffmanEstimateResult estimate_contextual_huffman_cost(
         }
     }
 
-    for (auto* estimate : {&field, &contextual, &shared}) {
+    for (auto* estimate : {&field, &selective, &contextual, &shared}) {
         const auto error = finish_estimate(*estimate);
         if (error != ContextualHuffmanEstimateError::none) {
             result.error = error;

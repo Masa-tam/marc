@@ -47,6 +47,8 @@ void print_estimate(
     std::cout << name << "_active_tables=" << estimate.active_tables
               << '\n'
               << name << "_stored_models=" << estimate.stored_models << '\n'
+              << name << "_selected_contexts="
+              << estimate.selected_contexts << '\n'
               << name << "_descriptor_bytes=" << estimate.descriptor_bytes
               << '\n'
               << name << "_symbol_bits=" << estimate.symbol_bits << '\n'
@@ -122,6 +124,8 @@ void print_estimate(
               << "operation_count=" << operations.size() << '\n'
               << "serialized_lzss_bytes=" << serialized.output_size << '\n';
     print_estimate("field_tables", estimate.estimates.field_tables);
+    print_estimate("selective_context_tables",
+                   estimate.estimates.selective_context_tables);
     print_estimate("contextual_tables",
                    estimate.estimates.contextual_tables);
     print_estimate("shared_contextual_tables",
