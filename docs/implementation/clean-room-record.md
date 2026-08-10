@@ -17148,3 +17148,31 @@ discarded and the reviewed seed retained.
   MSVC 19.51.36252 and ClangCL 22.1.3. All 2,736 registered MSVC tests pass
   with a 240-second per-test limit in 150.53 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.94 seconds.
+
+## CR-0742: 2026-08-11 - Contextual Blocked Huffman complete-frame decoder
+
+- Authoring method: composed marc's strict Format 2 prefix, reserved
+  Contextual Blocked Huffman descriptor, typed-token decoder, and raw
+  reconstructor behind a private complete-frame transaction.
+- References used: AGENTS.md sections 3, 5, 6, 7, 11, 12, and 15; DD-709
+  through DD-712; IR-0490; TVG-0588 through TVG-0591; marc's existing Format 2
+  frame validation, checked arithmetic, overlap, and decoder-limit contracts.
+- Known implementations intentionally not consulted: external LZ/Huffman or
+  DEFLATE implementations, source code, frames, archives, corpora, test
+  vectors, test suites, and optimization descriptions.
+- Independent decisions: reserve exact entropy identity `2/2`; validate the
+  112-byte stream header and 64-byte frame header before descriptor parsing;
+  derive exact table/token/raw workspace requirements; reject every pairwise
+  alias before writes; and publish consumed extent only after raw
+  reconstruction succeeds.
+- Generated-code task description: document and implement strict stream/frame
+  parsing, preflight, complete-frame typed-token and raw decode, hand-checkable
+  one-Literal framing, malformed extent, capacity, alias, and atomic-failure
+  tests while leaving streaming and public admission for later milestones.
+- Similarity review: header adaptation, validation order, errors, workspace
+  rules, vectors, and tests were authored from marc's preceding internal
+  contracts; no external implementation expression entered the work.
+- Local validation: six focused frame-format/decoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,742 registered MSVC tests pass with a
+  240-second per-test limit in 146.33 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.63 seconds.

@@ -474,6 +474,15 @@ frame therefore accepts empty table workspace. Payload, used table workspace,
 and published token ranges must be pairwise disjoint. No token is published
 unless the complete first pass, entropy completion, and raw-size check succeed.
 
+The complete-frame decoder validates the `2/2` stream configuration and the
+64-byte Format 2 frame header before locating variable data. It cross-checks
+sequence, expected raw extent, token/event/decision bounds, descriptor and
+payload sizes, zero feature extents, caller limits, and the exact descriptor.
+Only a fully preflighted `header || descriptor || payload` region may enter
+token inversion. Serialized input, used decode tables, typed tokens, and raw
+output are pairwise disjoint. Raw reconstruction begins only after complete
+token validation; `serialized_consumed` is published only after raw success.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

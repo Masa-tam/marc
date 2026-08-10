@@ -7770,3 +7770,19 @@ Independently reject a Match before history with stable token index and
 workspace, invalid entropy completion, invalid LZSS parameters, per-frame and
 aggregate output limits, and every payload/table/token overlap. Every failure
 before publication must preserve all token bytes.
+
+### TVG-0591
+
+Serialize and parse the documented 112-byte stream header for frame size 64,
+original size one, LZSS `2/2`, entropy `2/2`, and context model `1/1`. Require
+byte-for-byte identity with the format specification. Independently serialize
+the one-`A` frame header and append TVG-0588's 24-byte descriptor to form the
+documented 88-byte complete frame.
+
+Preflight and decode that frame with zero table entries, one private token, and
+one raw byte. Require Literal `A`, raw byte `41`, required sizes `(0,1,1)`, and
+consumed extent 88 while ignoring one following sentinel byte. Independently
+reject wrong entropy identity/parameters, sequence, expected raw extent,
+contradictory counts, nonzero optional sizes/reserved bytes, malformed or
+truncated descriptor/payload, short workspaces, and every pairwise overlap.
+Preserve raw output and keep consumed extent zero on every failure.

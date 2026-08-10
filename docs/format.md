@@ -6317,3 +6317,12 @@ by a publication pass. It checks declared counts, raw extent, LZSS references,
 caller limits, exact non-Single table workspace, and pairwise payload/table/
 token separation. It still does not reconstruct raw bytes, parse a frame, or
 admit the reserved profile.
+
+The private complete-frame decoder now parses and validates the documented
+112-byte stream configuration object and one 64-byte frame header, then parses
+the exact descriptor, decodes typed tokens, and reconstructs raw bytes. The
+frame extent is exactly `64 + descriptor_size + payload_size`; bytes after that
+extent belong to the next frame or caller. Every input/workspace/output range
+must be pairwise disjoint, and consumed size remains zero on failure. This does
+not yet implement a streaming lifecycle, public C API, CLI selector, benchmark
+codec, encoder, or interoperability archive.

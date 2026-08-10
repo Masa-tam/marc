@@ -14767,3 +14767,21 @@ prewrite failure.
 
 This boundary validates typed LZSS tokens and declared frame counts but does
 not reconstruct raw bytes, parse a Format 2 frame, or expose the profile.
+
+## DD-712: Contextual Blocked Huffman frames preflight before reconstruction
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add a private Format 2 stream/frame format boundary for entropy ID/variant
+`2/2`. Reuse the already validated common Format 2 prefix and dictionary/context
+layout by translating only the fixed entropy identity and parameter region;
+validate maximum length 15, four pooled fields, 31 contexts, model-record
+version 1, and zero flags/reserved bytes independently.
+
+Validate the frame's sequence, exact expected raw extent, count inequalities,
+24..2,561 descriptor extent, zero-through-ceiling payload extent, zero optional
+features, and all decoder limits before parsing the descriptor. The complete
+decoder requires pairwise-disjoint serialized input, exact used tables, typed
+tokens, and raw output. Publish consumed size only after token inversion and raw
+reconstruction both succeed. Leave streaming and profile admission for later.

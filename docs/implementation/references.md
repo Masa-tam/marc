@@ -4300,3 +4300,12 @@ validator, request-driven entropy decoder, checked arithmetic, limit model, and
 two-pass contextual decoder contracts. No external LZ/Huffman implementation,
 source code, frame, archive, test vector, suite, corpus, or optimization
 description was consulted.
+
+### IR-0490
+
+The Contextual Blocked Huffman complete-frame decoder uses DD-709 through
+DD-712, TVG-0588 through TVG-0591, marc's Format 2 header contracts, checked
+serialization, typed-token decoder, raw reconstructor, overlap checks, and
+limit model. No external LZ/Huffman or DEFLATE implementation, source code,
+frame, archive, test vector, suite, corpus, or optimization description was
+consulted.
