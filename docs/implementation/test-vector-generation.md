@@ -7613,3 +7613,16 @@ the public decoder with byte-derived chunks. Fix a 4-KiB output ceiling,
 1-KiB frame ceiling, 6,144-decision ceiling, 9,218-byte payload ceiling,
 9,029-byte descriptor ceiling, 131,072 transition entries, 1,024 tokens, one
 aggregate workspace bound, and a finite call budget.
+
+### TVG-0581
+
+Build only `marc_fuzz_lzss_contextual_tans_stream` in the existing Clang 22
+GNU-driver sanitizer tree. Query the same compiler's resource directory and
+prepend its `lib/windows` directory only for execution. Run with no corpus and
+arguments `-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`; direct
+failure artifacts to the ignored contextual-tANS build-artifact directory.
+
+Require normal exit after exactly 1,000 inputs. Record coverage output, peak
+RSS, and whether libFuzzer, AddressSanitizer, or UndefinedBehaviorSanitizer
+reports a crash, hang, or finding. Do not add generated inputs or an empty
+artifact directory to the repository.

@@ -559,6 +559,18 @@ UndefinedBehaviorSanitizer smoke on 2026-08-05 completed 1,000 inputs with an
 no crash, hang, or sanitizer finding; peak RSS was 39 MiB. Generated corpus
 changes and artifacts remained under WSL `/tmp`; the repository was unchanged.
 
+### FZ-0021: Contextual tANS smoke
+
+The experimental contextual tANS private-frame/public-C decoder target
+received its initial bounded Windows Clang 22 libFuzzer/AddressSanitizer/
+UndefinedBehaviorSanitizer smoke on 2026-08-10. It completed 1,000 inputs with
+a 32 KiB maximum input, five-second per-input timeout, and 512 MiB RSS limit
+without a crash, hang, or sanitizer finding; peak RSS was 42 MiB. The matching
+Clang 22 sanitizer runtime directory was prepended only to the campaign
+process's `PATH`. No input corpus was supplied, generated mutations remained
+in memory, and no artifact was produced. This bounded smoke is evidence for
+the exercised inputs, not a claim of exhaustive safety.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

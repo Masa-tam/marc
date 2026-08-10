@@ -14541,3 +14541,20 @@ them under one compile-time aggregate limit, derive chunks only within fixed
 bounds, and abort on contract violations or call-budget exhaustion. Compile
 the harness warning-clean in ordinary builds; do not claim a sanitizer
 campaign merely from compile smoke.
+
+## DD-702: Contextual tANS sanitizer smoke is process-local evidence
+
+- Date: 2026-08-10
+- Status: accepted
+
+Execute the contextual-tANS harness for exactly 1,000 inputs with maximum
+input 32 KiB, per-input timeout five seconds, and RSS limit 512 MiB. Use the
+Clang 22 ASan/UBSan/libFuzzer executable already built from the bounded target,
+and prepend that same toolchain's sanitizer runtime directory only to the
+campaign process. Supply no persistent corpus; direct any failure artifact to
+the ignored build tree.
+
+Record crashes, hangs, sanitizer findings, and peak RSS exactly. A clean run
+is evidence only for executed mutations, not proof of memory safety or format
+correctness, and does not replace permanent regressions. The campaign changes
+no format, API, implementation, limits, or source corpus.

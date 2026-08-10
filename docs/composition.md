@@ -1432,3 +1432,11 @@ and a bounded fuzz harness across both private complete-frame and public ABI-1
 streaming decode boundaries. Strict truncations and targeted extent/reserved-
 byte mutations preserve atomic output. A sanitizer campaign, CLI, benchmark,
 and interoperability admission remain future work.
+
+### CP-0070
+
+The contextual tANS dual-decoder fuzz boundary now has an initial bounded
+sanitizer execution: 1,000 in-memory inputs completed under Clang 22 ASan and
+UBSan without a finding. The execution adds no corpus, artifact, stream change,
+or public surface. CLI, benchmark, and interoperability admission remain
+future work.

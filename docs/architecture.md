@@ -4624,3 +4624,10 @@ complete-frame and public streaming atomicity for every canonical truncation,
 extreme frame extents, and nonzero descriptor reserved bytes. The harness
 caps input, output, frame, payload, tables, tokens, aggregate storage, and call
 count before exercising those same two decoder boundaries.
+
+The first sanitizer execution of that boundary uses the same fixed harness
+without a persistent corpus: 1,000 in-memory mutations, 32 KiB maximum input,
+five seconds per input, and 512 MiB RSS. The runtime path is process-local and
+must match the Clang generation that linked the executable. Campaign results
+are evidence for the executed cases only and do not weaken permanent regression
+or malformed-input requirements.

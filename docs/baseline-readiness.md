@@ -1581,3 +1581,13 @@ streaming lifecycle. The bounded harness fixes all input, output, frame,
 payload, table, token, aggregate, and call ceilings and compiles warning-clean.
 No sanitizer campaign is claimed yet; CLI, benchmark, and interoperability
 remain future work.
+
+### BR-0068
+
+Contextual tANS variant 2 has completed its initial bounded Windows sanitizer
+smoke. The Clang 22 libFuzzer/ASan/UBSan target processed 1,000 inputs with a
+32 KiB maximum input, five-second per-input timeout, 512 MiB RSS limit, and
+42 MiB peak RSS without a crash, hang, or sanitizer finding. No corpus or
+artifact entered the repository. This is bounded evidence rather than an
+exhaustive safety claim; CLI, benchmark, and interoperability remain future
+work.

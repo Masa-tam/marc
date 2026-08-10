@@ -16895,3 +16895,28 @@ discarded and the reviewed seed retained.
   warning-clean under both. All 2,707 registered MSVC tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
   limit in 75.04 seconds. No sanitizer campaign is claimed in this record.
+
+## CR-0732: 2026-08-10 - Contextual tANS initial sanitizer smoke
+
+- Authoring method: executed the already reviewed bounded contextual-tANS
+  harness under its matching Clang 22 libFuzzer, ASan, and UBSan runtimes with
+  fixed operational ceilings and no persistent corpus.
+- References used: DD-701 and DD-702; IR-0480; TVG-0580 and TVG-0581;
+  FZ-0021; marc's established Windows sanitizer runtime procedure and ignored
+  build-artifact policy.
+- Known implementations intentionally not consulted: external corpora,
+  malformed inputs, fuzz harnesses, source code, archives, test suites, and
+  optimization descriptions.
+- Independent decisions: run exactly 1,000 in-memory inputs; cap input at
+  32 KiB, each input at five seconds, and RSS at 512 MiB; use process-local
+  runtime selection; and retain an artifact only if a failure occurs.
+- Generated-code task description: build the contextual-tANS sanitizer target,
+  locate its matching runtime, execute the bounded smoke, and record exact
+  findings and resource evidence without persisting generated mutations.
+- Similarity review: this action executed only marc's local harness and
+  repository-owned workflow; no external input, control flow, vector, or
+  implementation structure entered the repository.
+- Local validation: Windows Clang 22 completed 1,000 inputs with no crash,
+  hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding. Peak
+  RSS was 42 MiB; final coverage was 192 counters and 398 features over a
+  nine-entry, 51-byte in-memory corpus. No artifact was produced.

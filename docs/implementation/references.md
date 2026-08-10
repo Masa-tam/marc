@@ -4203,3 +4203,11 @@ decoder, public ABI-1 lifecycle, fixed table/token constants, decoder limits,
 and repository-owned fuzz contract checks. No external harness, corpus,
 malformed sample, source code, archive, test suite, or optimization description
 was consulted.
+
+### IR-0480
+
+The contextual-tANS initial sanitizer smoke uses only DD-702, TVG-0581, the
+repository-built bounded harness from DD-701, its recorded Clang 22 resource
+directory, and libFuzzer's documented command-line limits already used by
+marc's local campaigns. No external corpus, malformed input, source code,
+archive, test suite, or optimization description was consulted.
