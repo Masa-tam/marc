@@ -385,13 +385,68 @@ dense/sparse record rules used by both this variant and contextual rANS
 variant 3; each backend retains distinct prefix and limit validation. Parsing
 and serialization publish only after the complete descriptor succeeds.
 
-## Backend substitution
+## Contextual Blocked Huffman variant 2
 
-A later Huffman backend may consume the same operation sequence,
-but it receives a distinct entropy variant and decoder-visible descriptor
-layout whenever its bytes differ. It may serialize per-context tables and a
-separate bypass-bit region, provided exact order, normalization, padding,
-workspace limits, and frame-atomic validation are specified first.
+Entropy algorithm ID 2, variant 2 consumes the same modeled-operation sequence
+with static length-limited canonical Huffman tables rebuilt at every outer
+frame. Four pooled tables correspond to token kind, literal, length class, and
+distance class. An optional table for context ID `C` overrides only its pooled
+table. Every Symbol decision selects the override when mask bit `C` is set;
+otherwise it selects the field table. Bypass values enter the same payload as
+raw LSB-first bits in operation order.
+
+The variable descriptor begins with 16 bytes:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | exact Symbol decisions plus bypass bits |
+| 4 | 4 | payload size | exact bytes; zero is permitted |
+| 8 | 4 | override mask | context bits 0..30; bit 31 zero |
+| 12 | 1 | final valid bits | zero iff payload is empty; otherwise 1..8 |
+| 13 | 1 | maximum code length | exactly 15 |
+| 14 | 1 | field-active mask | exactly `0x03` or `0x0f` |
+| 15 | 1 | flags | zero |
+
+`0x03` activates token-kind and literal tables for an all-Literal frame;
+`0x0f` additionally activates the inseparable length and distance tables when
+the frame contains a Match. Active field records follow in numeric field order,
+then override records follow in ascending context order. An override requires
+its field bit. Every record uses its inferred alphabet and one canonical form:
+
+- Single (`mode=0`): four bytes `(mode, 0, symbol:uint16-le)`. The symbol is
+  below the alphabet and consumes zero payload bits.
+- Sparse (`mode=1`): four-byte prefix `(mode, K-1, 0:uint16-le)`, followed by
+  `K` increasing `(symbol:uint8, code_length:uint8)` pairs.
+- Dense (`mode=2`): the same prefix followed by `ceil(A/2)` bytes. Symbol
+  `2i` uses the low nibble and symbol `2i+1` the high nibble; the unused high
+  nibble for odd `A` is zero.
+
+Canonical tables have `K >= 2`, lengths 1..15 for present symbols, zero for
+absent symbols, and a complete non-oversubscribed code space. Sparse is used
+exactly when `2K < ceil(A/2)`; equality selects dense. Canonical numeric codes
+are assigned normally and reversed within their length before the common
+LSB-first writer. Single records are not one-bit canonical tables.
+
+For `D` decisions, payload size is at most `ceil(15D/8)`. Symbol codes and raw
+bypass bits remain interleaved in modeled-operation order. The final partial
+byte has exactly the declared low valid bits and zero unused high bits. Strict
+completion consumes every declared operation and valid payload bit, requests
+every serialized override at least once, and rejects an invalid path,
+truncation, extra bits, nonzero padding, or an unused override.
+
+The canonical encoder builds pooled tables from complete field histograms even
+when overrides are selected. It selects an active context override only when
+its symbol-bit saving is strictly greater than eight times its complete record
+size; a tie remains pooled. Descriptor parsing validates representation and
+limits but cannot infer profitability from code lengths alone; deterministic
+encoder tests own that rule.
+
+The smallest nonempty descriptor is 24 bytes: its 16-byte prefix plus two
+single field records. The all-dense maximum is 2,561 bytes. Decoder planning
+charges at most 35 bounded Huffman tables before construction and retains the
+complete-frame token and raw publication transaction.
+
+## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model
 variant. Compression ratio, encode throughput, decode throughput, descriptor

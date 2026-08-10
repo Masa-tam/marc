@@ -7714,3 +7714,19 @@ The 4,326-byte README must report no profitable override. The 312,817-byte
 format specification must report nine overrides and print the full pooled,
 selective, contextual, and shared-contextual breakdown. These sizes are
 descriptive and do not become format vectors or stable pass criteria.
+
+### TVG-0588
+
+Construct the normative `2/2` descriptor for one raw Literal `A`: decision
+count two, payload size zero, override mask zero, final-valid-bits zero,
+maximum length 15, field mask `0x03`, and zero flags. Append Single records for
+token-kind symbol 0 and literal symbol 65. Require exact serialization to the
+documented 24 bytes, exact parsing, one untouched output sentinel, and a
+complete 88-byte frame/200-byte stream derivation.
+
+Independently require alphabet-2 lengths `(1,1)` to choose a five-byte dense
+record and alphabet-256 symbols `A/B` with lengths `(1,1)` to choose an
+eight-byte sparse record. Reject the equivalent dense literal record as
+noncanonical, an oversubscribed three-symbol length-1 table, truncated extent,
+field mask `0x07`, override bit 31, a caller maximum code length below 15, and
+short serializer output without publishing descriptor state or byte count.

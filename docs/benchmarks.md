@@ -652,6 +652,17 @@ bits to 231,131; the unchanged bypass bits then produce a 66,880-byte estimate,
 the selection mechanism on one larger repository-owned input but is neither
 a corpus result nor a serialized archive or throughput measurement.
 
+### BM-0021: Normative contextual Huffman prefix adjustment
+
+The decoder-visible descriptor needs 16 prefix bytes rather than the probe's
+eight. This uniform correction changes no selected context. The 4,326-byte
+README retains zero overrides and now estimates 174 descriptor bytes plus
+2,154 payload bytes, or 2,328 bytes. The 312,817-byte format specification
+retains nine overrides and now estimates 524 descriptor bytes plus 66,364
+payload bytes, or 66,888 bytes. Four pooled tables total 67,027 bytes and full
+contextualization totals 67,155 bytes on that input. These remain entropy-body
+size observations, not complete framed archives or throughput measurements.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

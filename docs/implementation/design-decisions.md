@@ -14696,3 +14696,28 @@ stored estimate falls from 67,019 to 66,880 bytes. Full contextualization costs
 scales, but this remains evidence for a possible representation rather than a
 format reservation, encoder, decoder, public API, CLI codec, or readiness
 claim.
+
+## DD-709: Contextual Blocked Huffman reserves Format 2 entropy variant 2
+
+- Date: 2026-08-11
+- Status: accepted
+
+Reserve entropy algorithm/variant `2/2` behind typed LZSS `2/2` and
+LzssFieldContext `1/1`. Replace the probe's underspecified eight-byte prefix
+with the normative 16-byte descriptor prefix required to cross-check decision
+count, payload extent, override mask, final valid bits, maximum length, field
+mask, and flags. The uniform eight-byte increase changes measured extents but
+not any override decision.
+
+Use four inferred pooled alphabets and ascending context overrides. Encode a
+one-symbol table as a four-byte zero-bit Single record. Encode every other
+complete length-limited table through the canonical sparse/dense record chosen
+by `2K < ceil(A/2)`, with equality dense. Keep Symbol codes and LSB-first bypass
+bits interleaved in operation order. Permit an empty payload only when all
+modeled symbols select Single records and no bypass bit exists.
+
+The descriptor parser and serializer are the first implementation boundary.
+They use fixed local staging, validate masks and exact frame-supplied counts,
+reject invalid or noncanonical tables and trailing bytes, charge at most 35
+bounded decode tables, and publish only after complete success. They do not
+decode entropy payload, parse a frame, or admit a public profile.

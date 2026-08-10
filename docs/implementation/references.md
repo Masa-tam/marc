@@ -4273,3 +4273,12 @@ histograms, override-mask interpretation, and deterministic tie policy were
 authored for marc. No additional external reference, compression source,
 descriptor, archive, corpus, test vector, test suite, or optimization
 description was consulted.
+
+### IR-0487
+
+The Contextual Blocked Huffman format reservation and descriptor boundary use
+only DD-707 through DD-709, TVG-0588, marc's typed-field schema, LSB-first bit
+contract, checked serialization helpers, canonical-Huffman validator, and
+bounded decode-table constants. RFC 1951 remains an alphabet-separation idea
+reference only; no DEFLATE byte, tree encoding, implementation, source code,
+test vector, suite, corpus, archive, or optimization structure was consulted.

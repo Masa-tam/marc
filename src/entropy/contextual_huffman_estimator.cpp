@@ -16,7 +16,7 @@ namespace {
 using context::internal::ModeledOperation;
 using context::internal::ModeledOperationKind;
 
-inline constexpr std::uint64_t descriptor_header_bytes = 8;
+inline constexpr std::uint64_t descriptor_header_bytes = 16;
 inline constexpr std::uint64_t contextual_model_map_bytes =
     context::internal::lzss_field_context_count;
 inline constexpr std::size_t field_table_count = 4;

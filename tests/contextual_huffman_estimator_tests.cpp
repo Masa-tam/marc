@@ -27,10 +27,10 @@ using marc::entropy::internal::estimate_contextual_huffman_cost;
 TEST(ContextualHuffmanEstimator, EmptyInputChargesOnlyCandidateMetadata) {
     const auto result = estimate_contextual_huffman_cost({});
     ASSERT_EQ(result.error, ContextualHuffmanEstimateError::none);
-    EXPECT_EQ(result.estimates.field_tables.total_bytes, 8U);
-    EXPECT_EQ(result.estimates.selective_context_tables.total_bytes, 8U);
-    EXPECT_EQ(result.estimates.contextual_tables.total_bytes, 8U);
-    EXPECT_EQ(result.estimates.shared_contextual_tables.total_bytes, 39U);
+    EXPECT_EQ(result.estimates.field_tables.total_bytes, 16U);
+    EXPECT_EQ(result.estimates.selective_context_tables.total_bytes, 16U);
+    EXPECT_EQ(result.estimates.contextual_tables.total_bytes, 16U);
+    EXPECT_EQ(result.estimates.shared_contextual_tables.total_bytes, 47U);
 }
 
 TEST(ContextualHuffmanEstimator, CountsDescriptorPayloadAndBypassExactly) {
@@ -46,11 +46,11 @@ TEST(ContextualHuffmanEstimator, CountsDescriptorPayloadAndBypassExactly) {
     const auto& field = result.estimates.field_tables;
     EXPECT_EQ(field.active_tables, 4U);
     EXPECT_EQ(field.stored_models, 4U);
-    EXPECT_EQ(field.descriptor_bytes, 31U);
+    EXPECT_EQ(field.descriptor_bytes, 39U);
     EXPECT_EQ(field.symbol_bits, 9U);
     EXPECT_EQ(field.bypass_bits, 3U);
     EXPECT_EQ(field.payload_bytes, 2U);
-    EXPECT_EQ(field.total_bytes, 33U);
+    EXPECT_EQ(field.total_bytes, 41U);
 
     const auto& selective = result.estimates.selective_context_tables;
     EXPECT_EQ(selective.selected_contexts, 0U);
@@ -61,19 +61,19 @@ TEST(ContextualHuffmanEstimator, CountsDescriptorPayloadAndBypassExactly) {
     const auto& contextual = result.estimates.contextual_tables;
     EXPECT_EQ(contextual.active_tables, 7U);
     EXPECT_EQ(contextual.stored_models, 7U);
-    EXPECT_EQ(contextual.descriptor_bytes, 41U);
+    EXPECT_EQ(contextual.descriptor_bytes, 49U);
     EXPECT_EQ(contextual.symbol_bits, 4U);
     EXPECT_EQ(contextual.bypass_bits, 3U);
     EXPECT_EQ(contextual.payload_bytes, 1U);
-    EXPECT_EQ(contextual.total_bytes, 42U);
+    EXPECT_EQ(contextual.total_bytes, 50U);
 
     const auto& shared = result.estimates.shared_contextual_tables;
     EXPECT_EQ(shared.active_tables, 7U);
     EXPECT_EQ(shared.stored_models, 6U);
-    EXPECT_EQ(shared.descriptor_bytes, 68U);
+    EXPECT_EQ(shared.descriptor_bytes, 76U);
     EXPECT_EQ(shared.symbol_bits, 4U);
     EXPECT_EQ(shared.payload_bytes, 1U);
-    EXPECT_EQ(shared.total_bytes, 69U);
+    EXPECT_EQ(shared.total_bytes, 77U);
 }
 
 TEST(ContextualHuffmanEstimator, RejectsMalformedOperationsAtExactIndex) {
@@ -93,8 +93,8 @@ TEST(ContextualHuffmanEstimator, SingleSymbolModelsConsumeNoPayloadBits) {
     ASSERT_EQ(result.error, ContextualHuffmanEstimateError::none);
     EXPECT_EQ(result.estimates.field_tables.symbol_bits, 0U);
     EXPECT_EQ(result.estimates.contextual_tables.symbol_bits, 0U);
-    EXPECT_EQ(result.estimates.field_tables.total_bytes, 12U);
-    EXPECT_EQ(result.estimates.contextual_tables.total_bytes, 12U);
+    EXPECT_EQ(result.estimates.field_tables.total_bytes, 20U);
+    EXPECT_EQ(result.estimates.contextual_tables.total_bytes, 20U);
 }
 
 TEST(ContextualHuffmanEstimator, SelectsOnlyProfitableContextOverrides) {
@@ -109,18 +109,18 @@ TEST(ContextualHuffmanEstimator, SelectsOnlyProfitableContextOverrides) {
     const auto result = estimate_contextual_huffman_cost(operations);
     ASSERT_EQ(result.error, ContextualHuffmanEstimateError::none);
     const auto& field = result.estimates.field_tables;
-    EXPECT_EQ(field.descriptor_bytes, 16U);
+    EXPECT_EQ(field.descriptor_bytes, 24U);
     EXPECT_EQ(field.symbol_bits, 200U);
-    EXPECT_EQ(field.total_bytes, 41U);
+    EXPECT_EQ(field.total_bytes, 49U);
 
     const auto& selective = result.estimates.selective_context_tables;
     EXPECT_EQ(selective.active_tables, 2U);
     EXPECT_EQ(selective.stored_models, 2U);
     EXPECT_EQ(selective.selected_contexts, 1U);
-    EXPECT_EQ(selective.descriptor_bytes, 20U);
+    EXPECT_EQ(selective.descriptor_bytes, 28U);
     EXPECT_EQ(selective.symbol_bits, 100U);
     EXPECT_EQ(selective.payload_bytes, 13U);
-    EXPECT_EQ(selective.total_bytes, 33U);
+    EXPECT_EQ(selective.total_bytes, 41U);
 }
 
 TEST(ContextualHuffmanEstimator, RetainsPooledTableWhenOverrideOnlyTies) {
@@ -134,8 +134,8 @@ TEST(ContextualHuffmanEstimator, RetainsPooledTableWhenOverrideOnlyTies) {
     }
     const auto result = estimate_contextual_huffman_cost(operations);
     ASSERT_EQ(result.error, ContextualHuffmanEstimateError::none);
-    EXPECT_EQ(result.estimates.field_tables.total_bytes, 24U);
+    EXPECT_EQ(result.estimates.field_tables.total_bytes, 32U);
     EXPECT_EQ(result.estimates.selective_context_tables.selected_contexts,
               0U);
-    EXPECT_EQ(result.estimates.selective_context_tables.total_bytes, 24U);
+    EXPECT_EQ(result.estimates.selective_context_tables.total_bytes, 32U);
 }

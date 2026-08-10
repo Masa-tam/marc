@@ -17068,3 +17068,31 @@ discarded and the reviewed seed retained.
   BM-0020 over README and `docs/format.md`. All 2,716 registered MSVC tests,
   including `marc_interoperability_schema_compatibility`, pass with a
   240-second per-test limit in 148.40 seconds.
+
+## CR-0739: 2026-08-11 - Contextual Blocked Huffman format boundary
+
+- Authoring method: converted marc's typed-field Huffman cost model into an
+  independently specified Format 2 reservation and a private bounded
+  descriptor parser/serializer.
+- References used: AGENTS.md sections 5, 6, 10, 11, 12, and 15; DD-707 through
+  DD-709; IR-0487; TVG-0588; BM-0021; marc's LSB-first, checked-endian,
+  canonical-Huffman, decoder-limit, and typed-context primitives.
+- Known implementations intentionally not consulted: DEFLATE source code,
+  external Huffman or LZ/Huffman implementations, descriptors, archives,
+  corpora, test vectors, test suites, and optimization descriptions.
+- Independent decisions: reserve entropy algorithm/variant `2/2`; use a
+  16-byte cross-checked prefix; serialize active pooled tables before ascending
+  context overrides; require canonical Single/sparse/dense records; bound the
+  descriptor at 2,561 bytes and the decode-table plan at 35 tables; and keep
+  payload decoding and public profile admission outside this milestone.
+- Generated-code task description: document the complete decoder-visible
+  descriptor, implement strict transactional parsing and serialization, add
+  hand-checkable positive and negative vectors, and correct the probe's fixed
+  descriptor cost.
+- Similarity review: representation, validation order, fixed staging, vectors,
+  tests, and documentation were authored from marc's own preceding design
+  records; no external implementation expression entered the work.
+- Local validation: ten focused estimator/format tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,720 registered MSVC tests pass with a
+  240-second per-test limit in 149.10 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.70 seconds.

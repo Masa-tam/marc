@@ -6231,3 +6231,75 @@ alter frame boundaries, descriptor choice, payload bits, or stream bytes.
 The private profile introduces no serialized field. Its six-decision and
 12-bit ceilings are allocation bounds only; they do not pad a frame, force a
 descriptor size, or alter the exact contextual-tANS state transitions.
+
+### Reserved LZSS field-context plus Contextual Blocked Huffman profile
+
+The next Format 2 profile is named `lzss-contextual-blocked-huffman`. It keeps
+dictionary algorithm/variant `2/2` and context-model algorithm/variant `1/1`,
+and selects entropy algorithm/variant `2/2`. It is marc's independent
+Contextual Blocked Huffman representation, not DEFLATE or Adaptive Huffman.
+
+Its 16-byte entropy parameter region is:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 1 | maximum code length | exactly 15 |
+| 1 | 1 | field table count | exactly 4 |
+| 2 | 2 | context count | exactly 31 |
+| 4 | 2 | model-record version | exactly 1 |
+| 6 | 2 | flags | zero |
+| 8 | 8 | reserved | zero |
+
+The entropy-block-size stream field remains zero because all tables reset once
+per outer frame. The common context extension remains `1/1`. The 64-byte frame
+header permits descriptor sizes 24 through 2,561 and payload sizes zero through
+`ceil(15 * decision_count / 8)`. Context side data and checksum trailer sizes
+are zero. A zero payload requires final-valid-bits zero; a nonempty payload
+requires 1..8. The exact descriptor, record, table-selection, bit-order,
+padding, and completion rules are in the entropy-backend contract.
+
+For raw byte `A`, contexts 0 and 3 each contain one symbol. Both pooled field
+tables use zero-bit Single records, no override is selected, and the payload is
+empty. The frame header and complete 24-byte descriptor are:
+
+```text
+4D 52 46 32 40 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 01 00 00 00  02 00 00 00 02 00 00 00
+00 00 00 00 18 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+02 00 00 00 00 00 00 00  00 00 00 00 00 0F 03 00
+00 00 00 00 00 00 41 00
+```
+
+The first model record is Single token-kind symbol 0; the second is Single
+literal symbol 65. The complete frame is 88 bytes. For frame size 64 and
+original size one, its 112-byte stream header is:
+
+```text
+# fixed prefix
+4D 41 52 43 02 00 00 00  40 00 01 00 02 00 02 00
+02 00 02 00 40 00 00 00  00 00 00 00 10 00 00 00
+10 00 00 00 00 00 00 00  01 00 00 00 00 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+# LZSS parameters
+00 00 01 00 05 00 00 00  02 01 00 00 00 00 00 00
+
+# Contextual Blocked Huffman parameters
+0F 04 1F 00 01 00 00 00  00 00 00 00 00 00 00 00
+
+# context-model extension
+01 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00
+```
+
+The complete one-byte stream is 200 bytes. Empty input contains only these 112
+header bytes and no descriptor or frame. This reservation does not yet claim
+an entropy decoder, frame parser, encoder, streaming lifecycle, C API, CLI
+selector, benchmark codec, or interoperability archive.
+
+The private descriptor parser and serializer now implement only this 24 through
+2,561-byte boundary. They enforce exact prefix fields, masks, record order,
+Single/sparse/dense canonical choice, complete Huffman tables, frame-supplied
+counts, caller limits, exact consumption, and atomic publication. They do not
+decode payload bits or admit the reserved frame profile.
