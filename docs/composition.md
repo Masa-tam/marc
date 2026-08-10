@@ -1367,3 +1367,11 @@ lifecycle. It admits one validated serialized frame, fixed transition tables,
 typed tokens, and raw frame storage as disjoint caller-owned regions, then
 drains the atomic raw result under arbitrary output capacity. Streaming encode,
 public exposure, CLI, benchmark, fuzz, and interoperability remain future work.
+
+### CP-0062
+
+The contextual tANS composition now has a private operation-level encode
+foundation. Modeled Symbol contexts produce independent normalized tables;
+bypass decisions share the fixed binary table. A reverse writer consumes
+caller-owned inverse transitions and emits the exact payload accepted by the
+existing decoder. Direct typed-token and frame encoding remain future work.

@@ -4563,3 +4563,9 @@ frame, validates capacity and aggregate memory before body collection, decodes
 only a complete frame, and drains raw bytes before advancing. Construction
 separates all private workspaces; each call also excludes caller output from
 every private region so subsequent collection cannot overwrite produced bytes.
+
+The private contextual tANS encode foundation now mirrors the decoder-visible
+operation boundary. A forward model pass normalizes each active context; a
+caller-owned flattened inverse-table region holds 32 canonical tANS encode
+tables. A reverse operation pass plans or writes the exact initial state and
+LSB-first payload without allocating an operation-dependent internal buffer.

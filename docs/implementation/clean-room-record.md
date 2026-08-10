@@ -16659,3 +16659,32 @@ discarded and the reviewed seed retained.
   pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,669 registered tests,
   including `marc_interoperability_schema_compatibility`, pass under MSVC with
   a 240-second per-test limit in 68.70 seconds.
+
+## CR-0724: 2026-08-10 - Contextual tANS operation encoder
+
+- Authoring method: derived inverse transitions from marc's canonical tANS
+  tables and the already specified contextual-tANS forward decoder.
+- References used: AGENTS.md sections 6.1 through 6.5, 10.6, 12, 14, and 15;
+  DD-687 through DD-694; IR-0472; TVG-0566 through TVG-0573; marc's modeled
+  operations, contextual compact frequencies, standalone tANS tables,
+  contextual-tANS descriptor/decoder, checked arithmetic, endian helpers, and
+  decoder limits.
+- Known implementations intentionally not consulted: external ANS encoders,
+  source code, archives, corpora, test vectors, test suites, and optimization
+  descriptions.
+- Independent decisions: own distinct tANS builder/writer types; normalize
+  active contexts independently; keep bypass fixed; flatten 32 caller-owned
+  inverse tables; encode operations and bypass bits in reverse order; publish
+  descriptor only after exact bit, format, limit, capacity, and alias checks.
+- Generated-code task description: specify, implement, and test contextual-tANS
+  operation planning and encoding with exact Literal and bypass vectors,
+  decoder round trips, deterministic normalization, malformed fields, three
+  region overlaps, capacities, limits, and prewrite atomicity.
+- Similarity review: state inversion follows solely from marc's own decode
+  transitions and standalone table builder; no external naming, control flow,
+  vector, malformed sample, or optimization structure was used.
+- Local validation: all eight focused operation-encoder tests plus
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,677 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 68.98 seconds.

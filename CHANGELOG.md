@@ -23,6 +23,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the private contextual tANS streaming frame decoder with one-frame
   bounded buffering, arbitrary input/output chunking, sticky failures, and
   complete workspace-alias rejection.
+- Added the private contextual tANS operation encoder with deterministic model
+  normalization, caller-owned inverse transition tables, backward LSB-first
+  state writing, and exact decoder-verified vectors.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

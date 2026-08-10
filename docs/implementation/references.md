@@ -4130,3 +4130,12 @@ repository-owned contextual-rANS streaming lifecycle as an architectural
 precedent. No external streaming decoder, LZ/ANS composition, source code,
 archive, corpus, malformed sample, test suite, or optimization description was
 consulted.
+
+### IR-0472
+
+The contextual-tANS operation encoder uses only DD-687 through DD-694,
+TVG-0566 through TVG-0573, marc's typed modeled-operation schema, contextual
+tANS descriptor and decoder, canonical standalone tANS tables, checked
+arithmetic, endian helpers, and decoder limits. No external ANS encoder,
+source code, archive, corpus, test vector, test suite, or optimization
+description was consulted.

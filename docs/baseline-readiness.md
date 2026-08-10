@@ -1499,3 +1499,13 @@ input/output, nonterminal Flush, empty streams, delayed draining, multi-frame
 sequencing, later-frame corruption, truncation, trailing data, flags, limits,
 workspace shortage, and all caller/private alias classes are covered. Encoder,
 public API, CLI, benchmark, fuzz, and interoperability remain future work.
+
+### BR-0060
+
+Contextual tANS variant 2 now has an independently tested private operation
+encoder. Exact Literal and Symbol-plus-bypass vectors decode to terminal state,
+512 alternating decisions round-trip deterministically, and normalization,
+malformed fields, table/payload capacity, all three region overlaps, limits,
+and prewrite atomicity are covered. Direct typed-token encoding, frame and
+streaming encoders, public API, CLI, benchmark, fuzz, and interoperability
+remain future work.

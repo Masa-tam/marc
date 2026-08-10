@@ -7487,3 +7487,20 @@ sticky malformed-stream error. Test empty input, output draining after
 trailing data, `ResetBlock`, unknown flags, caller-output aliasing, and
 construction-time workspace aliasing. Every returned `ProcessResult` must
 satisfy the core count/status invariants.
+
+### TVG-0573
+
+Encode the two documented contextual-tANS operations `Symbol(0,2,0)` and
+`Symbol(3,256,65)`. Require two decisions, normalized frequencies 4,096 at
+entries 0 and 71, a two-byte zero payload, and exact decode back to both
+symbols and terminal state 4,096.
+
+Encode `Symbol(0,2,1)` followed by two bypass bits with value two. Require the
+same descriptor and payload as the independently constructed decoder vector,
+then decode the symbol and LSB-first bypass value. Round-trip a 512-decision
+alternating context, verify deterministic normalization ties, and reject every
+invalid operation field at its stable index. Short table/payload storage,
+operation/payload and table/payload overlap, empty operations, local limits,
+and all prewrite failures must preserve descriptor and payload. An invalid
+descriptor or short inverse-table destination must preserve the entire table
+destination.

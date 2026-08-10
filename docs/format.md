@@ -6204,3 +6204,9 @@ buffers at most one validated Format 2 frame, decodes that frame atomically,
 and drains the declared raw extent before collecting the next frame. Stream
 completion is determined solely by the header's original size plus explicit
 `EndInput`; bytes beyond the final declared frame are trailing data.
+
+The private contextual-tANS operation encoder implements the already specified
+variant-2 representation. It emits terminal-state inversion in reverse logical
+operation order, stores the initial state offset little-endian, and places each
+transition's additional bits into the existing forward LSB-first payload. It
+introduces no new field, identity, or variant.

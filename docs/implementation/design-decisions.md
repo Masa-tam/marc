@@ -14365,3 +14365,30 @@ frames, and aliasing become sticky errors. `Flush` does not alter framing.
 Repeated calls after successful end return `EndOfStream`. This lifecycle adds
 no representation, encoder, public API, CLI, benchmark, or interoperability
 archive.
+
+## DD-694: Contextual tANS operation encoding owns inverse transition tables
+
+- Date: 2026-08-10
+- Status: accepted
+
+Build each used Symbol context's static model from a complete validated
+`ModeledOperation` sequence. Normalize observed counts independently to 4,096
+with the established integer-error rule and leave unused context slices zero.
+Bypass bits use the fixed 2,048/2,048 model and contribute decisions but not
+context frequencies.
+
+Construct caller-owned flattened inverse-state tables from marc's canonical
+standalone tANS tables. Store 4,096 `uint16` encode states for each of the 31
+field contexts plus the bypass context; derive symbol offsets from the
+descriptor frequencies. Snapshot and validate the descriptor and every
+canonical table before publishing any caller table entry. Starting at terminal
+state 4,096, encode operations in
+reverse logical order. Within bypass operations encode bit indexes high to low.
+Write each transition's additional bits backward so forward decoding remains
+LSB-first, then serialize the initial state offset little-endian.
+
+Planning may mutate only the private encode-table workspace. Publish neither
+descriptor nor payload until operation validation, normalization, table
+construction, exact bit sizing, format validation, limits, capacity, and
+operation/table/payload disjointness succeed. This reference boundary adds no
+typed-token bridge, frame encoder, streaming encoder, or format change.
