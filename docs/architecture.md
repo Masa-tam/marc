@@ -4578,3 +4578,11 @@ modeled order. Typed tokens, inverse tables, and payload are three disjoint
 bounded regions, and comparison against the operation path fixes their exact
 descriptor and payload equivalence. Complete-frame encoding remains the next
 composition boundary.
+
+The private contextual tANS complete-frame encoder now owns that composition
+boundary. Raw frame input, typed tokens, inverse transition tables, and the
+exact serialized frame are pairwise disjoint bounded regions. Planning fills
+only private token and table staging; encoding writes the already admitted
+payload, canonical variable descriptor, and frame header, with every planned
+count and extent checked again before success becomes visible. Streaming
+collection and drain remain outside this transaction.

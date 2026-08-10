@@ -30,6 +30,10 @@ format versions, and C ABI versions are independent namespaces.
   model construction and backward context reconstruction reproduce the
   operation-reference descriptor and payload without allocating a modeled-
   operation array.
+- Added the private contextual tANS complete-frame encoder. It composes raw-
+  to-token parsing, direct entropy encoding, canonical variable descriptor
+  serialization, and the 64-byte frame header under one four-region workspace
+  transaction.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

@@ -1519,3 +1519,13 @@ reference without allocating that intermediate array. Literal and mixed-token
 vectors, direct decode, capacities, aliasing, limits, and prewrite atomicity
 are covered. Complete-frame and streaming encoders, public API, CLI,
 benchmark, fuzz, and interoperability remain future work.
+
+### BR-0062
+
+Contextual tANS variant 2 now has a private complete-frame encoder. The raw-
+to-token, direct contextual entropy, canonical descriptor, and frame-header
+stages reproduce the exact 96-byte Literal frame and deterministically round-
+trip mixed input through the existing complete decoder. Token, table, output,
+alias, input, stream, and aggregate four-region workspace failures are
+covered. Streaming encode, public API, CLI, benchmark, fuzz, and
+interoperability remain future work.

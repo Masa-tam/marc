@@ -6216,3 +6216,9 @@ derives the same modeled decisions and normalized frequencies directly from
 validated typed tokens, reconstructs their contexts during reverse emission,
 and is required to match the operation encoder's descriptor, payload, counts,
 initial state, valid-bit extent, and padding exactly.
+
+The private complete-frame encoder now materializes that unchanged
+representation from raw input. It serializes the same 64-byte Format 2 frame
+header followed by the canonical variable-size descriptor and exact entropy
+payload. For raw byte `A` it must reproduce the 96-byte frame above byte for
+byte; no field, identity, variant, padding rule, or extent changes.

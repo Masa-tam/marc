@@ -16719,3 +16719,34 @@ discarded and the reviewed seed retained.
   2,682 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 70.10 seconds.
+
+## CR-0726: 2026-08-10 - Contextual tANS complete-frame encoder
+
+- Authoring method: composed marc's independently implemented raw-to-typed
+  LZSS encoder, direct contextual-tANS token encoder, and existing Format 2
+  serializers into a bounded frame transaction.
+- References used: AGENTS.md sections 5.1, 7, 9.3, 10.6, 11.2, 12, 14, and
+  15; DD-687 through DD-696; IR-0474; TVG-0566 through TVG-0575; marc's typed
+  LZSS encoder, contextual-tANS encoder/decoder, `5/2` format, checked
+  arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external frame encoders,
+  LZ/ANS compositions, source code, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: use four pairwise-disjoint regions; allow planning
+  to fill only token and inverse-table staging; charge raw, exact token, table,
+  and serialized bytes together; validate the variable descriptor before the
+  frame header; and require planned versus encoded count/extent agreement.
+- Generated-code task description: specify, implement, and test the private
+  contextual-tANS complete-frame encoder against the exact 96-byte Literal
+  vector, existing decoder, deterministic mixed input, capacities, all
+  representable alias classes, stream/input errors, and aggregate limits
+  without adding a streaming lifecycle or public exposure.
+- Similarity review: the transaction specializes marc's repository-owned
+  Format 2 frame architecture to its independently defined contextual-tANS
+  types; no external naming, control flow, vector, malformed sample, or
+  optimization structure was used.
+- Local validation: all six focused complete-frame encoder tests plus
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,688 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 70.74 seconds.

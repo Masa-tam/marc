@@ -4148,3 +4148,12 @@ contextual-tANS model builder/inverse tables/reverse writer, checked arithmetic,
 and decoder limits. No external LZ/ANS composition, encoder, source code,
 archive, corpus, test vector, test suite, or optimization description was
 consulted.
+
+### IR-0474
+
+The contextual-tANS complete-frame encoder uses only DD-687 through DD-696,
+TVG-0566 through TVG-0575, marc's raw-to-typed LZSS encoder, direct contextual-
+tANS token encoder, existing `5/2` frame/descriptor serializers and decoder,
+checked arithmetic, and decoder limits. No external frame encoder, LZ/ANS
+composition, source code, archive, corpus, test vector, test suite, or
+optimization description was consulted.

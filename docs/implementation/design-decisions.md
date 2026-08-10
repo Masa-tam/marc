@@ -14414,3 +14414,25 @@ before table or payload writes. Planning may mutate only table scratch;
 descriptor and payload publish only after exact counts, state, bit size,
 format, limits, capacity, and second-pass agreement. This adds no dictionary
 parser, frame encoder, streaming encoder, or format change.
+
+## DD-696: Contextual tANS frame encoding is a four-region transaction
+
+- Date: 2026-08-10
+- Status: accepted
+
+Compose one complete nonempty Format 2 frame from raw input, typed-LZSS token
+staging, contextual-tANS inverse-table staging, and serialized frame output.
+Require the four regions to be pairwise disjoint before token or table writes.
+Planning may materialize private tokens and inverse tables, but must not touch
+serialized output. Validate the stream identity, exact expected frame input,
+token frame, entropy descriptor, frame header, exact descriptor/payload extent,
+and aggregate workspace limit before reporting a serialized size.
+
+Encoding repeats only the direct entropy pass required to obtain the final
+descriptor and payload, then serializes the canonical variable-size descriptor
+and 64-byte frame header into the already admitted destination. Require exact
+agreement with all planned token, event, decision, descriptor, payload, and
+serialized sizes. The raw, token, inverse-table, and exact serialized-frame
+bytes all count toward `max_internal_buffered_bytes`. This adds no streaming
+encoder, public API, CLI selector, benchmark, fuzz target, interoperability
+archive, or serialized representation.

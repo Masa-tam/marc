@@ -1383,3 +1383,11 @@ private entropy encoder. Forward token traversal constructs the canonical
 models and reverse traversal reconstructs all token contexts, producing bytes
 identical to the operation-level reference without an operation workspace.
 Complete-frame and streaming encoding remain future work.
+
+### CP-0064
+
+The contextual tANS composition now has a private complete-frame encoder.
+Typed parsing, direct tANS model/state encoding, canonical descriptor
+serialization, and Format 2 frame serialization execute within one admitted
+four-region transaction and reproduce the existing decoder vector exactly.
+Streaming encoding and public exposure remain future work.

@@ -7519,3 +7519,17 @@ decode the direct payload back to all five tokens. Reject invalid token frames,
 short encode-table/payload regions, token/table, token/payload, and
 table/payload overlap, aggregate limits, and every prewrite failure without
 publishing descriptor or payload.
+
+### TVG-0575
+
+Encode raw byte `A` through typed LZSS and contextual tANS into the exact
+96-byte frame already specified by TVG-0566. Require one token, two events and
+decisions, a 30-byte descriptor, payload `00 00`, untouched destination suffix,
+and successful decoding through the existing complete-frame decoder.
+
+Encode a mixed repetitive raw frame twice with separate token and inverse-
+table storage; require byte-identical frames and exact raw recovery. Reject an
+invalid stream, wrong input extent, short token/table/serialized storage,
+raw-token, raw-table, token-table, serialized-raw, serialized-token, and
+serialized-table overlap, plus an aggregate four-region workspace excess.
+Every failure before admitted encoding must preserve serialized output.
