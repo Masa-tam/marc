@@ -4631,3 +4631,10 @@ five seconds per input, and 512 MiB RSS. The runtime path is process-local and
 must match the Clang generation that linked the executable. Campaign results
 are evidence for the executed cases only and do not weaken permanent regression
 or malformed-input requirements.
+
+The benchmark boundary now constructs contextual tANS exclusively through the
+public C lifecycle. It sizes complete output with the checked
+`112 + 9N + 9,095K` ceiling, queries each direction independently, verifies an
+exact round trip before timing, and reports primary, secondary, opaque views,
+ratio, and throughput without promoting the experimental profile into the
+stable 42-profile matrix.

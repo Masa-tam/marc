@@ -4211,3 +4211,12 @@ repository-built bounded harness from DD-701, its recorded Clang 22 resource
 directory, and libFuzzer's documented command-line limits already used by
 marc's local campaigns. No external corpus, malformed input, source code,
 archive, test suite, or optimization description was consulted.
+
+### IR-0481
+
+The contextual-tANS benchmark admission uses only DD-703, TVG-0582, the local
+Format 2 `5/2` specification, the public ABI-1 lifecycle, existing marc
+benchmark measurement contract, and checked profile limits. The comparative
+input is the repository's own `README.md`. No external benchmark, corpus,
+compression implementation, source code, archive, test vector, test suite, or
+optimization description was consulted.

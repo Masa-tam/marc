@@ -1440,3 +1440,12 @@ sanitizer execution: 1,000 in-memory inputs completed under Clang 22 ASan and
 UBSan without a finding. The execution adds no corpus, artifact, stream change,
 or public surface. CLI, benchmark, and interoperability admission remain
 future work.
+
+### CP-0071
+
+The contextual tANS composition now participates in the experimental
+benchmark inventory through its public ABI-1 lifecycle. Capacity planning
+accounts for six decisions per raw byte, the 12-bit transition ceiling, the
+compact descriptor, state, and Format 2 framing. A verified round trip
+precedes timing, and workspace is reported by region and direction. CLI and
+interoperability admission remain future work.

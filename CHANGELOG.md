@@ -20,6 +20,9 @@ format versions, and C ABI versions are independent namespaces.
 - Completed the initial bounded Windows Clang 22 sanitizer smoke for the
   contextual tANS harness: 1,000 inputs with no crash, hang, ASan, or UBSan
   finding.
+- Added contextual tANS to the experimental benchmark inventory with checked
+  output-capacity planning, public workspace reporting, round-trip smoke
+  coverage, and a same-input descriptive comparison.
 
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one

@@ -14558,3 +14558,22 @@ Record crashes, hangs, sanitizer findings, and peak RSS exactly. A clean run
 is evidence only for executed mutations, not proof of memory safety or format
 correctness, and does not replace permanent regressions. The campaign changes
 no format, API, implementation, limits, or source corpus.
+
+## DD-703: Contextual tANS benchmark admission stays descriptive
+
+- Date: 2026-08-10
+- Status: accepted
+
+Add `lzss-contextual-tans` only to the experimental benchmark inventory. Use
+the public ABI-1 lifecycle in both directions, a 65,536-byte raw frame, six
+modeled decisions per raw byte, the 12-bit transition ceiling, the 9,029-byte
+descriptor maximum, two state bytes, and an 8-MiB aggregate policy. Checked
+complete-stream capacity is `112 + 9N + 9,095K` for raw extent `N` and
+nonempty frame count `K`.
+
+Require an exact round trip before timing and report complete-stream ratio,
+both directional workspace regions, peak caller-owned workspace, and
+throughput under the existing measurement contract. Compare the same local
+input with byte-stream LZSS+tANS, compact contextual rANS, and contextual
+Dynamic Range, but treat a single small-input run as descriptive evidence and
+derive no default-profile recommendation from it.

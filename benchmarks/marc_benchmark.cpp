@@ -35,6 +35,10 @@ constexpr std::uint64_t lzss_contextual_rans_frame_size =
     UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_rans_buffered_size =
     UINT64_C(8) << 20;
+constexpr std::uint64_t lzss_contextual_tans_frame_size =
+    UINT64_C(1) << 16;
+constexpr std::uint64_t lzss_contextual_tans_buffered_size =
+    UINT64_C(8) << 20;
 constexpr std::uint64_t lzss_rans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_tans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;
@@ -152,6 +156,7 @@ enum class Codec {
     lzss_contextual_dynamic_range,
     lzss_contextual_rans,
     lzss_contextual_rans_compact,
+    lzss_contextual_tans,
     lzss_rans,
     lzss_tans,
     lz78,
@@ -210,6 +215,7 @@ struct CodecConfig {
         lzss_contextual_dynamic_range{};
     marc_lzss_contextual_rans_config lzss_contextual_rans{};
     marc_lzss_contextual_rans_compact_config lzss_contextual_rans_compact{};
+    marc_lzss_contextual_tans_config lzss_contextual_tans{};
     marc_lzss_rans_config lzss_rans{};
     marc_lzss_tans_config lzss_tans{};
     marc_lz78_config lz78{};
@@ -280,6 +286,8 @@ struct Measurement {
         return "lzss-contextual-rans";
     if (codec == Codec::lzss_contextual_rans_compact)
         return "lzss-contextual-rans-compact";
+    if (codec == Codec::lzss_contextual_tans)
+        return "lzss-contextual-tans";
     if (codec == Codec::lzss_rans) return "lzss-rans";
     if (codec == Codec::lzss_tans) return "lzss-tans";
     if (codec == Codec::lz78) return "lz78";
@@ -348,6 +356,7 @@ struct Measurement {
     if (codec == Codec::lzss_contextual_rans
         || codec == Codec::lzss_contextual_rans_compact)
         return UINT64_C(12);
+    if (codec == Codec::lzss_contextual_tans) return UINT64_C(9);
     if (codec == Codec::lzss_rans) return lzss_token_size;
     if (codec == Codec::lzss_tans)
         return lzss_token_size * UINT64_C(12) / UINT64_C(8);
@@ -505,6 +514,8 @@ struct Measurement {
             ? lzss_contextual_rans_frame_size
         : codec == Codec::lzss_contextual_rans_compact
             ? lzss_contextual_rans_frame_size
+        : codec == Codec::lzss_contextual_tans
+            ? lzss_contextual_tans_frame_size
         : codec == Codec::lzss_rans
             ? lzss_rans_frame_size
         : codec == Codec::lzss_tans
@@ -554,6 +565,8 @@ struct Measurement {
         + (codec == Codec::lzss_contextual_rans
                || codec == Codec::lzss_contextual_rans_compact
             ? UINT64_C(8) : UINT64_C(0))
+        + (codec == Codec::lzss_contextual_tans
+            ? UINT64_C(2) : UINT64_C(0))
         + (codec == Codec::rans
             ? block_count * rans_state_size
             : codec == Codec::lz77_rans
@@ -643,6 +656,8 @@ struct Measurement {
     } else if (codec == Codec::lzss_contextual_rans
                || codec == Codec::lzss_contextual_rans_compact) {
         maximum_buffered = lzss_contextual_rans_buffered_size;
+    } else if (codec == Codec::lzss_contextual_tans) {
+        maximum_buffered = lzss_contextual_tans_buffered_size;
     } else if (codec == Codec::lzss_rans) {
         maximum_buffered = lzss_rans_buffered_size;
     } else if (codec == Codec::lzss_tans) {
@@ -949,6 +964,20 @@ struct Measurement {
             static_cast<std::uint32_t>(lzss_contextual_rans_frame_size);
         config.max_frame_size = lzss_contextual_rans_frame_size;
         config.max_block_size = lzss_contextual_rans_frame_size * UINT64_C(6);
+        config.max_compressed_payload_size = maximum_payload;
+        config.max_internal_buffered_bytes = maximum_buffered;
+        config.max_lz_distance = UINT64_C(1) << 16;
+        config.max_lz_match_length = 258;
+    } else if (codec == Codec::lzss_contextual_tans) {
+        auto& config = result.lzss_contextual_tans;
+        if (marc_lzss_contextual_tans_config_init(direction, &config)
+            != MARC_STATUS_OK)
+            return false;
+        config.original_size = original_size;
+        config.frame_size =
+            static_cast<std::uint32_t>(lzss_contextual_tans_frame_size);
+        config.max_frame_size = lzss_contextual_tans_frame_size;
+        config.max_block_size = lzss_contextual_tans_frame_size * UINT64_C(6);
         config.max_compressed_payload_size = maximum_payload;
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = UINT64_C(1) << 16;
@@ -1421,6 +1450,9 @@ struct Measurement {
     if (config.codec == Codec::lzss_contextual_rans_compact)
         return marc_lzss_contextual_rans_compact_workspace_requirements(
             &config.lzss_contextual_rans_compact, &requirements);
+    if (config.codec == Codec::lzss_contextual_tans)
+        return marc_lzss_contextual_tans_workspace_requirements(
+            &config.lzss_contextual_tans, &requirements);
     if (config.codec == Codec::lzss_rans)
         return marc_lzss_rans_workspace_requirements(
             &config.lzss_rans, &requirements);
@@ -1565,6 +1597,10 @@ struct Measurement {
         return marc_lzss_contextual_rans_compact_create(
             &config.lzss_contextual_rans_compact, primary, secondary, views,
             transform);
+    if (config.codec == Codec::lzss_contextual_tans)
+        return marc_lzss_contextual_tans_create(
+            &config.lzss_contextual_tans, primary, secondary, views,
+            transform);
     if (config.codec == Codec::lzss_rans)
         return marc_lzss_rans_create(
             &config.lzss_rans, primary, secondary, views, transform);
@@ -1704,6 +1740,8 @@ struct Measurement {
             ? lzss_contextual_rans_frame_size
         : codec == Codec::lzss_contextual_rans_compact
             ? lzss_contextual_rans_frame_size
+        : codec == Codec::lzss_contextual_tans
+            ? lzss_contextual_tans_frame_size
         : codec == Codec::lzss_rans
             ? lzss_rans_frame_size
         : codec == Codec::lzss_tans
@@ -1775,6 +1813,22 @@ struct Measurement {
         constexpr auto prefix_size = std::size_t{112};
         constexpr auto payload_factor = std::size_t{12};
         constexpr auto per_frame = std::size_t{9097};
+        if (input_size > (std::numeric_limits<std::size_t>::max()
+                          - prefix_size) / payload_factor) {
+            return false;
+        }
+        const auto payload = input_size * payload_factor;
+        if (frames > (std::numeric_limits<std::size_t>::max()
+                      - prefix_size - payload) / per_frame) {
+            return false;
+        }
+        result = prefix_size + payload + frames * per_frame;
+        return true;
+    }
+    if (codec == Codec::lzss_contextual_tans) {
+        constexpr auto prefix_size = std::size_t{112};
+        constexpr auto payload_factor = std::size_t{9};
+        constexpr auto per_frame = std::size_t{9095};
         if (input_size > (std::numeric_limits<std::size_t>::max()
                           - prefix_size) / payload_factor) {
             return false;
@@ -2032,6 +2086,7 @@ void print_usage() {
                  "lzss, lzss-blocked-huffman, lzss-adaptive-huffman, "
                  "lzss-dynamic-range, lzss-contextual-dynamic-range, "
                  "lzss-contextual-rans, lzss-contextual-rans-compact, "
+                 "lzss-contextual-tans, "
                  "lzss-rans, lzss-tans, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
@@ -2173,6 +2228,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzss_contextual_rans;
     else if (name == "lzss-contextual-rans-compact")
         codec = Codec::lzss_contextual_rans_compact;
+    else if (name == "lzss-contextual-tans")
+        codec = Codec::lzss_contextual_tans;
     else if (name == "lzss-rans")
         codec = Codec::lzss_rans;
     else if (name == "lzss-tans")

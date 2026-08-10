@@ -817,7 +817,8 @@ endforeach()
 foreach(required_experimental_benchmark IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
-        "`lzss-contextual-rans-compact`")
+        "`lzss-contextual-rans-compact`"
+        "`lzss-contextual-tans`")
     string(FIND "${benchmark_content}" "${required_experimental_benchmark}"
         experimental_benchmark_offset)
     if(experimental_benchmark_offset EQUAL -1)

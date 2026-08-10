@@ -1591,3 +1591,11 @@ smoke. The Clang 22 libFuzzer/ASan/UBSan target processed 1,000 inputs with a
 artifact entered the repository. This is bounded evidence rather than an
 exhaustive safety claim; CLI, benchmark, and interoperability remain future
 work.
+
+### BR-0069
+
+Contextual tANS variant 2 now has an experimental benchmark profile. Checked
+capacity, direction-specific public workspace queries, exact pre-timing round
+trip, ratio, encode/decode throughput, and peak caller-owned workspace are
+covered by a registered smoke test. The initial same-input result is recorded
+as descriptive evidence only; CLI and interoperability remain future work.

@@ -54,7 +54,8 @@ The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`, or
-`marc_benchmark lzss-contextual-rans-compact corpus.bin 5`.
+`marc_benchmark lzss-contextual-rans-compact corpus.bin 5`, or
+`marc_benchmark lzss-contextual-tans corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -227,6 +228,15 @@ at most 9,025 descriptor bytes, and eight final-state bytes. Both directions
 are constructed only through the distinct compact public C lifecycle. The
 report includes complete-stream ratio, both throughputs, peak caller-owned
 workspace, and all three directional workspace extents after an exact
+pre-timing round trip.
+
+The experimental `lzss-contextual-tans` benchmark uses 65,536-byte raw
+frames, admits at most `6F` modeled decisions, reserves `9F + 2` payload
+bytes, and applies an 8-MiB internal limit. Checked complete-stream capacity
+is `112 + 9N + 9,095K`: each nonempty frame reserves one 64-byte common
+header, at most 9,029 descriptor bytes, and two final-state bytes. Both
+directions are constructed through the public contextual-tANS C lifecycle;
+the report includes all directional workspace regions after an exact
 pre-timing round trip.
 
 ### LZ78 profiles
@@ -590,6 +600,22 @@ The compact encoder reports primary/secondary/views extents of
 795,529/65,536/1,548,288 bytes. One small-input iteration reports encode
 throughput 0.412 MiB/s and decode throughput 10.984 MiB/s, but those timings
 are descriptive and are not a performance baseline or pass threshold.
+
+### BM-0018: Contextual tANS benchmark admission
+
+One MSVC Release iteration over the same 4,326-byte `README.md` encodes 3,005
+bytes with contextual tANS, ratio 0.695. The byte-stream `lzss-tans` profile
+encodes 3,730 bytes at ratio 0.862, compact contextual rANS encodes 3,006
+bytes at ratio 0.695, and contextual Dynamic Range encodes 2,389 bytes at
+ratio 0.552. Thus the typed contextual boundary improves this sample over
+byte-stream tANS, while it does not displace contextual Dynamic Range.
+
+Contextual tANS reports encoder primary/secondary/views extents of
+4,326/48,029/314,056 bytes and decoder extents of
+598,919/65,536/1,310,720 bytes, for 1,975,175 peak caller-owned bytes. The
+single small-input timing reported 0.384 MiB/s encode and 2.456 MiB/s decode;
+these values are descriptive only and establish neither a recommendation nor
+a pass threshold.
 
 ## Reporting results
 

@@ -16920,3 +16920,28 @@ discarded and the reviewed seed retained.
   hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding. Peak
   RSS was 42 MiB; final coverage was 192 counters and 398 features over a
   nine-entry, 51-byte in-memory corpus. No artifact was produced.
+
+## CR-0733: 2026-08-10 - Contextual tANS benchmark admission
+
+- Authoring method: specialized marc's existing public-lifecycle benchmark
+  adapter for the independently defined contextual-tANS `5/2` profile.
+- References used: AGENTS.md sections 13, 14, and 16; DD-703; IR-0481;
+  TVG-0582; marc's local Format 2 extent rules, public workspace query, and
+  benchmark measurement contract.
+- Known implementations intentionally not consulted: external benchmarks,
+  corpora, compression implementations, source code, archives, test vectors,
+  test suites, and optimization descriptions.
+- Independent decisions: retain the stable 42-profile matrix; use a distinct
+  experimental selector; plan output from local hard limits; verify before
+  timing; and compare four profiles only over the same repository-owned input.
+- Generated-code task description: add contextual tANS to the experimental
+  benchmark, register its smoke, record checked capacity and workspace policy,
+  and capture one descriptive same-input comparison.
+- Similarity review: the adapter and record derive solely from marc's existing
+  benchmark structure and local `5/2` lifecycle; no external naming, input,
+  control flow, vector, or optimization structure was used.
+- Local validation: the registered contextual-tANS benchmark smoke and
+  documentation layout pass under MSVC 19.51.36252. All 2,708 registered MSVC
+  tests, including `marc_interoperability_schema_compatibility`, pass with a
+  240-second per-test limit in 144.81 seconds. The same 4,326-byte README
+  comparison produced the exact extents recorded in BM-0018.

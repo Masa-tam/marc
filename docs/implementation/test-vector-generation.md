@@ -7626,3 +7626,17 @@ Require normal exit after exactly 1,000 inputs. Record coverage output, peak
 RSS, and whether libFuzzer, AddressSanitizer, or UndefinedBehaviorSanitizer
 reports a crash, hang, or finding. Do not add generated inputs or an empty
 artifact directory to the repository.
+
+### TVG-0582
+
+Register one Release smoke that invokes `marc_benchmark
+lzss-contextual-tans README.md 1`. Construct both transforms through the
+public contextual-tANS lifecycle, query each workspace independently, reserve
+output using `112 + 9N + 9,095K`, and require a byte-exact pre-timing round
+trip.
+
+Run the same 4,326-byte repository README once through `lzss-tans`,
+`lzss-contextual-dynamic-range`, `lzss-contextual-rans-compact`, and
+`lzss-contextual-tans`. Record encoded extent, ratio, directional workspace,
+peak workspace, and contextual-tANS timing without turning any measured value
+into a test threshold.
