@@ -1343,3 +1343,11 @@ decoder over its fixed table layout. Symbol contexts and bypass bits share one
 live state and exact bit cursor, while schema, count, terminal, and unused-model
 checks remain below typed-token reconstruction. A token bridge, frame,
 lifecycle, encoder, and public exposure remain future work.
+
+### CP-0059
+
+The contextual tANS composition now connects its private state decoder
+directly to typed LZSS reconstruction. A two-pass transaction validates the
+complete token sequence before caller token publication and requires disjoint
+payload, table, and token storage. Raw reconstruction, frame composition,
+streaming, encoder, lifecycle, and public exposure remain future work.

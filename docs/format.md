@@ -6183,3 +6183,10 @@ entry's LSB-first additional bits, and replaces state with
 `state_base + bits`. A complete modeled frame must finish at state 4,096 after
 consuming exactly the descriptor's valid bits. These rules implement the
 already reserved payload and do not change serialized bytes.
+
+The private typed-token bridge changes no serialized field. Frame-declared
+token, event, decision, and raw counts drive the exact number and kind of state
+requests; `LzssFieldContextState` selects the same context IDs defined above.
+Each reconstructed token is checked against LZSS history before the next
+request. A complete bridge pass must also satisfy the entropy terminal-state
+and exact-bit rules.

@@ -14,6 +14,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the matching private contextual tANS state decoder. Operation-driven
   Symbol and bypass requests share one bounded state and LSB-first bit cursor,
   with strict transition, count, terminal-state, and lifecycle validation.
+- Connected contextual tANS decoding directly to private typed LZSS token
+  reconstruction through a bounded two-pass bridge with disjoint caller-owned
+  payload, table, and token regions.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format

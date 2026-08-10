@@ -7442,3 +7442,18 @@ inactive context, bypass widths zero and over budget, mutated transition
 extent, truncated bits, count mismatch, unused active context, nonterminal
 state, trailing bits, calls before begin, and calls after finish. Require
 sticky errors and preserve requested values when the current event fails.
+
+### TVG-0570
+
+Feed TVG-0566 to the contextual-tANS token bridge with declared counts
+`tokens/events/decisions/raw = 1/2/2/1`. Require validation and atomic decode to
+produce exactly `Literal(0x41)`, raw extent one, and zero additional bits while
+leaving token storage beyond the declared prefix unchanged.
+
+Construct a zero-bit one-Match stream with kind one, length class zero, and
+distance class zero; require typed validation to reject distance one at raw
+offset zero after three successful entropy decisions. Reject invalid entropy,
+decision and raw-count mismatch, invalid LZSS parameters, short table/token
+storage, payload/table, payload/token, and table/token overlap, token-buffer
+limit, frame/block limit, and aggregate-output excess. Every prewrite failure
+must preserve the complete token destination.

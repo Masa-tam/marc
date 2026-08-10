@@ -4103,3 +4103,11 @@ contextual tANS descriptor and fixed decode tables, field-context schema, and
 decoder limits. No external contextual ANS decoder, bitstream, source code,
 archive, corpus, malformed sample, test suite, or optimization description was
 consulted.
+
+### IR-0469
+
+The LZSS contextual-tANS token bridge uses only DD-687 through DD-691,
+TVG-0566 through TVG-0570, marc's contextual tANS state decoder,
+`LzssFieldContextState`, typed-token validator, checked arithmetic, and decoder
+limits. No external LZ/ANS composition, source code, archive, corpus, malformed
+sample, test suite, or optimization description was consulted.

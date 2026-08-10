@@ -14306,3 +14306,22 @@ requested value only after its transition succeeds. Finish requires exact
 event and decision counts, every active context requested, terminal state
 4,096, and exact bit consumption. This remains a private entropy boundary; it
 does not reconstruct typed LZSS tokens or admit a frame or encoder.
+
+## DD-691: Contextual tANS reconstructs typed LZSS through a two-pass bridge
+
+- Date: 2026-08-10
+- Status: accepted
+
+Drive the contextual tANS decoder directly from `LzssFieldContextState` and
+construct each Literal or Match locally; do not materialize an intermediate
+modeled-operation array. Validate dictionary parameters, declared token/event/
+decision/raw counts, aggregate output, and the complete entropy termination
+before publishing tokens. Validate each reconstructed token against current raw
+history and configured LZSS limits before advancing context state.
+
+Use the existing validate-then-write two-pass policy. Require exact
+131,072-entry table storage, exact declared token storage, and pairwise
+disjoint payload/table/token regions before either pass. The write pass must
+match the validation pass in token/raw/event/decision/bit counts or report an
+internal error. This boundary emits private typed tokens only; raw
+reconstruction, frame parsing, streaming, and encoding remain separate.

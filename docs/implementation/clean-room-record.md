@@ -16573,3 +16573,32 @@ discarded and the reviewed seed retained.
   layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,645 registered
   tests, including `marc_interoperability_schema_compatibility`, pass under
   MSVC with a 240-second per-test limit in 72.74 seconds.
+
+## CR-0721: 2026-08-10 - LZSS contextual-tANS typed-token decode bridge
+
+- Authoring method: connected marc's operation-driven contextual tANS decoder
+  to its repository-owned field-context state machine and typed-token
+  validator without materializing modeled operations.
+- References used: AGENTS.md sections 9.3, 11.2, 12, 14, and 15; DD-687
+  through DD-691; IR-0469; TVG-0566 through TVG-0570; marc's contextual tANS
+  decoder, contextual rANS token bridge, `LzssFieldContextState`, typed-token
+  validation, checked arithmetic, and decoder limits.
+- Known implementations intentionally not consulted: external LZ/ANS
+  compositions, source code, archives, corpora, malformed samples, test
+  suites, and optimization descriptions.
+- Independent decisions: reconstruct one local token at a time; validate raw
+  history before accepting context state; run a complete write-free pass before
+  token publication; reject pairwise workspace overlap; and compare both passes
+  through token, raw, event, decision, and bit counts.
+- Generated-code task description: implement and test direct contextual-tANS
+  to typed-LZSS decoding, one-Literal reconstruction, invalid-Match rejection,
+  declared bounds, workspace capacity and overlap, atomic token publication,
+  and aggregate limits without adding raw reconstruction or framing.
+- Similarity review: the bridge structure and tests derive solely from marc's
+  existing local composition patterns and new tANS boundary; no external
+  naming, control flow, vector, or malformed sample was used.
+- Local validation: all eight focused typed-token bridge tests and
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,653 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 68.46 seconds.

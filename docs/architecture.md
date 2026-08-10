@@ -4542,3 +4542,10 @@ share one LSB-first payload cursor. The decoder publishes values only after a
 complete transition and accepts finish only after exact counts, context use,
 terminal state, and bit extent agree. Typed-token reconstruction remains a
 separate later composition boundary.
+
+The contextual tANS token bridge now supplies those operation requests
+directly from `LzssFieldContextState`. It reconstructs and validates one local
+typed token at a time during a write-free pass, then repeats the identical
+bounded traversal into caller token storage. Payload, transition tables, and
+tokens are disjoint regions; no intermediate modeled-operation array or raw
+output is introduced.

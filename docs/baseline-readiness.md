@@ -1473,3 +1473,12 @@ rejects malformed padding, state, bit extent, schema requests, counts, active
 models, and lifecycle calls with sticky errors. Typed reconstruction, frames,
 encoder, public API, CLI, benchmark, fuzz, and interoperability remain future
 work.
+
+### BR-0057
+
+Contextual tANS variant 2 now has an independently tested private typed-token
+decode bridge. It reconstructs the documented Literal vector atomically,
+rejects an impossible Match after entropy decoding, enforces declared counts
+and LZSS limits, and rejects short or overlapping payload/table/token storage
+without token publication. Raw reconstruction, frames, encoder, public API,
+CLI, benchmark, fuzz, and interoperability remain future work.
