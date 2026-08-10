@@ -14808,3 +14808,20 @@ building any table. This preserves zero table workspace for all-Single frames.
 This milestone changes no byte representation and does not admit an encoder,
 public profile, C API, CLI selector, benchmark codec, or interoperability
 archive.
+
+## DD-714: Contextual Blocked Huffman encoding selects strict-profit overrides
+
+- Date: 2026-08-11
+- Status: accepted
+
+Build the first encoder boundary over a caller-supplied modeled-operation span.
+Gather the four pooled field histograms and all 31 context histograms in fixed
+bounded storage. Construct deterministic length-limited canonical models, then
+select a context override only when its symbol-bit saving is strictly greater
+than its canonical model-record size in bits. Equality retains the pooled model.
+
+Single records consume zero payload bits. Other symbols emit their canonical
+LSB-first code, and bypass fields emit their numeric bits LSB-first into the same
+forward cursor. Plan before writing, zero the exact payload extent, preserve the
+descriptor on every failure, and reject operation/payload aliasing. This
+milestone does not yet connect typed LZSS tokens or emit a frame.

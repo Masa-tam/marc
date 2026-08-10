@@ -6336,3 +6336,11 @@ one-byte input/output chunks, and final-frame draining after `EndInput` are
 supported. Truncation, trailing bytes, reset/unknown process flags, and every
 workspace/output alias are rejected. Encoder and public profile admission remain
 outside this milestone.
+
+The private operation encoder now produces this unchanged descriptor and
+payload from a complete modeled-operation span. Pooled tables are always built
+for active fields; ascending context overrides are retained only when symbol
+bit savings strictly exceed the serialized record cost. Canonical codes and
+bypass values share one forward LSB-first cursor, unused high bits are zero,
+and Single records consume no payload bits. Typed-token, frame, streaming
+encoder, and public profile admission remain outside this milestone.

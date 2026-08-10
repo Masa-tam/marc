@@ -7802,3 +7802,17 @@ aggregate buffered-byte overflow, truncation, trailing input, reset/unknown
 flags, wrong entropy identity, construction-time workspace overlap, and output
 alias with every workspace. Errors are sticky and must never return Progress
 without consuming input or producing output.
+
+### TVG-0593
+
+Plan the documented one-Literal `A` operations and require the exact 24-byte,
+all-Single descriptor with no payload. Encode the seven mixed operations from
+TVG-0589 and require payload byte `06`, four final valid bits, one non-Single
+table, and successful request-by-request decoder inversion.
+
+Create 40 context-0 kind-zero symbols followed by 40 context-1 kind-one
+symbols and one Single literal to complete the required active-field mask. The
+pooled kind model costs 80 bits; each Single override saves 40 bits and costs
+32 bits, so both overrides must be selected and the payload must be empty.
+Independently reject malformed or incomplete operations, short payload output,
+and operation/output overlap while preserving descriptor and output sentinels.

@@ -42,8 +42,8 @@ struct ContextualHuffmanEstimateResult {
         ContextualHuffmanEstimateError::none};
 };
 
-// Estimates a provisional Format 2 descriptor. This does not reserve a
-// bitstream representation and deliberately emits no bytes.
+// Compares bounded Contextual Huffman model strategies. The selective result
+// follows Format 2 variant 2's strict-profit rule; this function emits no bytes.
 [[nodiscard]] ContextualHuffmanEstimateResult
 estimate_contextual_huffman_cost(
     std::span<const context::internal::ModeledOperation> operations) noexcept;

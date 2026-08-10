@@ -4318,3 +4318,12 @@ contract, checked arithmetic, overlap checks, decoder limits, and the local
 contextual-tANS streaming lifecycle as an architectural precedent. No external
 streaming decoder, LZ/Huffman or DEFLATE implementation, source code, frame,
 archive, test vector, suite, corpus, or optimization description was consulted.
+
+### IR-0492
+
+The Contextual Blocked Huffman operation encoder uses DD-707 through DD-714,
+TVG-0586 through TVG-0593, marc's selective estimator, reserved descriptor,
+length-limited canonical Huffman primitive, typed modeled-operation schema,
+checked arithmetic, and LSB-first rules. No external Huffman or DEFLATE
+encoder, source code, frame, archive, test vector, suite, corpus, or
+optimization description was consulted.

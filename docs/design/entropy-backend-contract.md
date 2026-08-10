@@ -492,6 +492,13 @@ the zero-table-workspace property. `EndInput` remains latched while final raw
 bytes drain; truncation, trailing bytes, unsupported flags, and workspace/output
 aliasing become sticky transform errors.
 
+The operation encoder is the inverse entropy boundary. It gathers bounded
+pooled/context histograms, builds canonical length-limited models, and admits an
+override only for strict net bit savings after its canonical record cost. It
+writes canonical codes and bypass fields through one forward LSB-first cursor;
+Single models consume no bit. Planning completes before payload publication and
+the descriptor is published only after successful encoding.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

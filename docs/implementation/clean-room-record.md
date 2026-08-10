@@ -17204,3 +17204,29 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,749 registered MSVC tests pass with a
   240-second per-test limit in 145.81 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.83 seconds.
+
+## CR-0744: 2026-08-11 - Contextual Blocked Huffman operation encoder
+
+- Authoring method: converted marc's selective Contextual Huffman cost rule
+  and reserved descriptor into a deterministic modeled-operation encoder.
+- References used: AGENTS.md sections 5, 6, 10, 11, 12, and 15; DD-707 through
+  DD-714; IR-0492; TVG-0586 through TVG-0593; marc's estimator, canonical
+  Huffman builder, checked arithmetic, and LSB-first contracts.
+- Known implementations intentionally not consulted: external Huffman or
+  DEFLATE encoders, source code, frames, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: build four pooled models and 31 candidate context
+  models in fixed storage; select overrides only for savings strictly above
+  record cost; encode Single models with zero bits; interleave canonical and
+  bypass bits forward; and publish the descriptor only after payload success.
+- Generated-code task description: implement operation planning and encoding,
+  exact one-Literal and mixed `06` vectors, strict-profit override selection,
+  decoder inversion, malformed/incomplete operation, short output, alias, and
+  atomic-publication tests.
+- Similarity review: model construction, selection, bit emission, error
+  mapping, vectors, and tests were authored from marc's preceding internal
+  contracts; no external implementation expression entered the work.
+- Local validation: four focused operation-encoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,753 registered MSVC tests pass with a
+  240-second per-test limit in 146.20 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 59.05 seconds.

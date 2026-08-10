@@ -87,6 +87,7 @@ set(MARC_SOURCES
     src/entropy/contextual_tans_decoder.cpp
     src/entropy/contextual_huffman_estimator.cpp
     src/entropy/contextual_blocked_huffman_format.cpp
+    src/entropy/contextual_blocked_huffman_encoder.cpp
     src/entropy/contextual_blocked_huffman_decoder.cpp
     src/dictionary/lz77_decoder.cpp
     src/dictionary/lz77_encoder.cpp
@@ -1470,6 +1471,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_field_context_tests.cpp
         tests/contextual_huffman_estimator_tests.cpp
         tests/contextual_blocked_huffman_format_tests.cpp
+        tests/contextual_blocked_huffman_encoder_tests.cpp
         tests/contextual_blocked_huffman_decoder_tests.cpp
         tests/lzss_format_tests.cpp
         tests/lzss_decoder_tests.cpp
