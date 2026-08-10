@@ -4085,3 +4085,12 @@ record implementation, fixed field-context schema, checked arithmetic,
 little-endian helpers, decoder limits, and tANS variant-1 constants. No
 external descriptor, contextual ANS source code, archive, corpus, malformed
 sample, test suite, or optimization description was consulted.
+
+### IR-0467
+
+The contextual tANS decode-table builder uses only DD-687 through DD-689,
+TVG-0566 through TVG-0568, marc's independently implemented tANS variant-1
+table builder, contextual tANS compact descriptor, fixed field-context schema,
+and decoder limits. No external contextual ANS implementation, transition
+table, source code, archive, corpus, malformed sample, test suite, or
+optimization description was consulted.

@@ -16519,3 +16519,29 @@ discarded and the reviewed seed retained.
   tests pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,633 registered
   tests, including `marc_interoperability_schema_compatibility`, pass under
   MSVC with a 240-second per-test limit in 73.93 seconds.
+
+## CR-0719: 2026-08-10 - Contextual tANS decode-table boundary
+
+- Authoring method: composed marc's local compact contextual model with its
+  independently implemented standalone tANS transition builder in fixed
+  caller-owned regions.
+- References used: AGENTS.md sections 5.5, 10.6, 12, 13, 14, and 15; DD-687
+  through DD-689; IR-0467; TVG-0566 through TVG-0568; marc's contextual tANS
+  descriptor, tANS variant-1 table builder, field-context schema, and decoder
+  limits.
+- Known implementations intentionally not consulted: external contextual ANS
+  implementations, transition tables, source code, archives, corpora,
+  malformed samples, test suites, and optimization descriptions.
+- Independent decisions: use 32 fixed 4,096-entry regions; keep inactive
+  Symbol regions zero; always build bypass at region 31; snapshot frequencies;
+  and preflight all tables before output publication.
+- Generated-code task description: implement and test bounded contextual tANS
+  decode-table construction, standalone-transition equivalence, fixed layout,
+  one-symbol transitions, limit gates, exact output extent, and atomic failure.
+- Similarity review: the layout, construction, and tests derive solely from
+  marc's repository-owned descriptor, field schema, and tANS builder; no
+  external naming, control flow, vector, or table was used.
+- Local validation: all four focused decode-table tests and documentation
+  layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,637 registered
+  tests, including `marc_interoperability_schema_compatibility`, pass under
+  MSVC with a 240-second per-test limit in 74.13 seconds.

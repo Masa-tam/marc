@@ -7,6 +7,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added the private contextual tANS decode-table builder. It preflights the
+  compact model and materializes 31 fixed Symbol-context regions plus one
+  implicit binary bypass region in bounded caller-owned storage, without yet
+  admitting a state decoder or public profile.
+
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format
   contracts plus an independently checked one-Literal vector. Existing

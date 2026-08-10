@@ -7412,3 +7412,18 @@ capacity failures to preserve parsed state, serialized output, reported size,
 and written extent. Run the existing compact contextual-rANS format suite
 beside it and require all exact vectors and malformed categories to remain
 unchanged after extracting the shared canonical record primitive.
+
+### TVG-0568
+
+Build contextual tANS decode tables for TVG-0566. Require exactly 131,072
+caller-owned entries, active Symbol contexts 0 and 3, zero-filled inactive
+regions, and the implicit bypass table at region 31. For each one-symbol table,
+require symbol identity, zero additional bits, and a one-to-one next-state
+permutation over `[4096,8192)`.
+
+Replace context 0 with normalized frequencies 2,731/1,365 and require its
+4,096 entries to equal the standalone tANS builder byte-for-byte. Require the
+bypass region to equal a standalone 2,048/2,048 binary table. Exercise an
+invalid model, a 131,071-entry output, a 131,071-entry decoder limit, and
+oversized caller output; every prewrite failure preserves storage and view,
+and success leaves bytes beyond entry 131,071 untouched.

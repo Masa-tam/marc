@@ -14267,3 +14267,22 @@ into a zeroed maximum-size local array before copying exact bytes to caller
 output. Preserve compact rANS bytes and malformed-input categories through its
 existing regression suite. This decision admits only the private descriptor
 boundary, not transition tables, state coding, frames, or a public profile.
+
+## DD-689: Contextual tANS decode tables occupy fixed caller-owned regions
+
+- Date: 2026-08-10
+- Status: accepted
+
+Lay out 32 decode tables of exactly 4,096 entries: context table `C` begins at
+`C * 4096` for `C=0..30`, and the implicit bypass table begins at
+`31 * 4096`. Zero every inactive Symbol-context region. Always construct the
+bypass region from frequencies 2,048/2,048. Report active Symbol contexts
+separately from that mandatory table.
+
+Use the existing tANS variant-1 spreading and transition builder as the only
+table-construction authority. Snapshot all 4,518 descriptor frequencies and
+preflight every active table plus bypass before changing caller output. Only
+then populate the exact 131,072-entry prefix and publish its view; leave
+storage and prior view unchanged on descriptor, limit, capacity, or table
+failure. This milestone admits decode transitions only, not live-state
+decoding, typed reconstruction, framing, or a public profile.

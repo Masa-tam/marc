@@ -1326,3 +1326,12 @@ descriptor boundary. It owns the 24-byte tANS prefix and 131,072-entry decoder
 limit while sharing only canonical compact model-record handling with compact
 contextual rANS. No tANS transition table, state decoder, typed-token bridge,
 frame, lifecycle, or public profile is admitted.
+
+### CP-0057
+
+The contextual tANS composition now has a private fixed-layout decode-table
+boundary. It builds the 31 possible Symbol-context tables and mandatory bypass
+table from one validated descriptor into caller-owned storage, while reusing
+the standalone tANS transition authority. State decoding, typed-token
+reconstruction, frame composition, lifecycle, and public exposure remain
+future work.

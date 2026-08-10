@@ -1453,3 +1453,13 @@ noncanonical records, and preserves caller state and output on failure. The
 canonical compact-record primitive is shared with compact contextual rANS,
 whose exact vectors remain unchanged. State, table, frame, lifecycle, public
 API, CLI, benchmark, fuzz, and interoperability admission remain future work.
+
+### BR-0055
+
+Contextual tANS variant 2 now has an independently tested private decode-table
+builder. It preflights all active models and the implicit binary bypass model,
+then publishes exactly 131,072 caller-owned transitions in fixed regions.
+Standalone-equivalence, one-symbol permutations, inactive zeroing, exact
+extent, limit rejection, and prewrite atomicity are covered. Live state
+decoding, frames, public API, CLI, benchmark, fuzz, and interoperability remain
+future work.

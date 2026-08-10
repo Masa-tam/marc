@@ -6167,3 +6167,11 @@ caller state and output unchanged on failure. The shared compact-record helper
 does not merge the distinct rANS and tANS descriptor identities. No tANS table,
 state transition, frame, streaming lifecycle, or public profile is admitted by
 this milestone.
+
+The private decoder-table builder now realizes the descriptor without changing
+these bytes. Entry regions `0..30` correspond directly to Symbol context IDs;
+region 31 is the implicit 2,048/2,048 bypass model. Every region contains
+4,096 `TansDecodeEntry` values constructed by the same spread step and
+transition rules as tANS variant 1. Inactive Symbol-context regions contain
+zero entries. This in-memory layout is not serialized and admits no state
+decoder or public format claim.

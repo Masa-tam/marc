@@ -4527,3 +4527,10 @@ table. Canonical record analysis, parsing, and serialization are factored into
 one private primitive shared with compact contextual rANS; backend-specific
 prefix fields, payload bounds, valid-bit rules, and entropy-table limits remain
 separate. Both formats publish only after complete validation.
+
+The contextual tANS decode-table boundary now materializes the admitted model
+into fixed caller-owned storage. Its 31 Symbol-context regions and one bypass
+region reuse the standalone tANS transition authority; inactive regions are
+zero. A private model snapshot and complete preflight precede the one output
+write phase, so descriptor and workspace admission cannot publish a partial
+table set. No live entropy state or typed-token reconstruction is attached yet.
