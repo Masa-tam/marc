@@ -1482,3 +1482,12 @@ rejects an impossible Match after entropy decoding, enforces declared counts
 and LZSS limits, and rejects short or overlapping payload/table/token storage
 without token publication. Raw reconstruction, frames, encoder, public API,
 CLI, benchmark, fuzz, and interoperability remain future work.
+
+### BR-0058
+
+Contextual tANS variant 2 now has a private Format 2 stream/frame parser and
+complete-frame decoder. The exact 96-byte one-Literal frame reconstructs raw
+`A`; descriptor, truncation, extent, limit, capacity, alias, and entropy-state
+failures preserve raw output. A trailing serialized byte remains unconsumed.
+Streaming, encoder, public API, CLI, benchmark, fuzz, and interoperability
+remain future work.

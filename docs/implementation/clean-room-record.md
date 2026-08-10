@@ -16602,3 +16602,32 @@ discarded and the reviewed seed retained.
   2,653 registered tests, including
   `marc_interoperability_schema_compatibility`, pass under MSVC with a
   240-second per-test limit in 68.46 seconds.
+
+## CR-0722: 2026-08-10 - Contextual tANS complete-frame decoder
+
+- Authoring method: specialized marc's repository-owned Format 2 header and
+  frame transaction for contextual tANS identity, compact descriptor bounds,
+  fixed table extent, typed-token bridge, and raw reconstruction.
+- References used: AGENTS.md sections 5.1, 7, 11.2, 12, 14, and 15; DD-687
+  through DD-692; IR-0470; TVG-0566 through TVG-0571; marc's Format 2
+  contextual-rANS framing, contextual tANS descriptor/token bridge, typed
+  reconstructor, checked arithmetic, endian helpers, and decoder limits.
+- Known implementations intentionally not consulted: external frame formats,
+  LZ/ANS compositions, source code, archives, corpora, malformed samples, test
+  suites, and optimization descriptions.
+- Independent decisions: use entropy identity 5/2; retain the common header
+  layout; apply tANS-specific descriptor, payload, and table bounds; parse the
+  descriptor during preflight; reject all six workspace overlaps; and publish
+  consumption only after raw reconstruction.
+- Generated-code task description: implement and test contextual-tANS stream
+  identity, frame serialization/parsing/preflight, exact one-Literal decoding,
+  bounded workspace admission, atomic failures, one-frame consumption, and raw
+  reconstruction without adding streaming or encoding.
+- Similarity review: the format specialization and tests derive solely from
+  marc's existing Format 2 layout and newly specified contextual-tANS bytes;
+  no external naming, control flow, vector, or malformed sample was used.
+- Local validation: all ten focused Format 2 and complete-frame tests plus
+  documentation layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All
+  2,663 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under MSVC with a
+  240-second per-test limit in 69.26 seconds.

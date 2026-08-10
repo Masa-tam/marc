@@ -6190,3 +6190,11 @@ requests; `LzssFieldContextState` selects the same context IDs defined above.
 Each reconstructed token is checked against LZSS history before the next
 request. A complete bridge pass must also satisfy the entropy terminal-state
 and exact-bit rules.
+
+The private Format 2 parser now recognizes contextual tANS entropy identity
+`5/2` in the unchanged 112-byte stream-header layout. Its frame header uses the
+documented 64-byte layout and admits descriptor size 27 through 9,029 and
+payload size at least two. Preflight parses the descriptor immediately after
+the header, then admits exactly `64 + descriptor_size + payload_size` bytes.
+The documented one-Literal frame is therefore exactly 96 bytes. This parser
+and complete-frame decoder do not alter any serialized representation.

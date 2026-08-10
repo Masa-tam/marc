@@ -4111,3 +4111,12 @@ TVG-0566 through TVG-0570, marc's contextual tANS state decoder,
 `LzssFieldContextState`, typed-token validator, checked arithmetic, and decoder
 limits. No external LZ/ANS composition, source code, archive, corpus, malformed
 sample, test suite, or optimization description was consulted.
+
+### IR-0470
+
+The contextual-tANS Format 2 frame preflight and complete-frame decoder use
+only DD-687 through DD-692, TVG-0566 through TVG-0571, marc's Format 2 header
+layout, contextual tANS descriptor/token bridge, typed reconstructor, checked
+arithmetic, and decoder limits. No external frame format, LZ/ANS composition,
+source code, archive, corpus, malformed sample, test suite, or optimization
+description was consulted.

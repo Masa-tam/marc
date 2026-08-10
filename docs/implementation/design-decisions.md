@@ -14325,3 +14325,22 @@ disjoint payload/table/token regions before either pass. The write pass must
 match the validation pass in token/raw/event/decision/bit counts or report an
 internal error. This boundary emits private typed tokens only; raw
 reconstruction, frame parsing, streaming, and encoding remain separate.
+
+## DD-692: Contextual tANS complete-frame decoding is one atomic transaction
+
+- Date: 2026-08-10
+- Status: accepted
+
+Give entropy identity `5/2` its own Format 2 stream-header parser and serializer
+while retaining the common 112-byte layout. Preflight the 64-byte frame header,
+27 through 9,029-byte descriptor, payload extent, exact counts, sequence,
+stream remainder, decoder limits, and complete serialized extent before
+workspace admission. Parse and retain the validated descriptor once.
+
+Require caller storage for 131,072 transitions, the declared token count, and
+the declared raw extent. Reject every pairwise overlap among the exact
+serialized frame, tables, tokens, and raw output. Decode typed tokens and then
+reconstruct raw bytes only after all capacity and overlap checks; report frame
+consumption only after both stages succeed. Bytes after the one preflighted
+frame remain unconsumed. This admits a private complete-frame decoder, not a
+streaming lifecycle or encoder.

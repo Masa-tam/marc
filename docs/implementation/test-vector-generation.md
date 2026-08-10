@@ -7457,3 +7457,18 @@ decision and raw-count mismatch, invalid LZSS parameters, short table/token
 storage, payload/table, payload/token, and table/token overlap, token-buffer
 limit, frame/block limit, and aggregate-output excess. Every prewrite failure
 must preserve the complete token destination.
+
+### TVG-0571
+
+Serialize and parse the contextual-tANS 112-byte stream header with entropy
+identity `5/2`, and reject identity `4/2`. Preflight TVG-0566's exact 96-byte
+frame, requiring descriptor size 30, payload size two, parsed frequencies for
+contexts 0 and 3, and exact frame-header reserialization.
+
+Decode that frame through caller-owned table, token, and raw regions; require
+one consumed frame, `Literal(0x41)`, and raw byte `0x41`, while preserving all
+storage beyond declared extents. Append a byte and require it to remain
+unconsumed. Reject an active-mask record mismatch as trailing descriptor data,
+every strict frame truncation tested, descriptor extent below 27, the
+131,072-entry limit gate, short table/token/raw regions, serialized/raw
+overlap, and nonterminal entropy payload without publishing raw output.

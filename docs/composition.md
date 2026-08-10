@@ -1351,3 +1351,11 @@ directly to typed LZSS reconstruction. A two-pass transaction validates the
 complete token sequence before caller token publication and requires disjoint
 payload, table, and token storage. Raw reconstruction, frame composition,
 streaming, encoder, lifecycle, and public exposure remain future work.
+
+### CP-0060
+
+The contextual tANS composition now has a private complete-frame decoder.
+Format 2 header and descriptor preflight, fixed tables, typed tokens, and raw
+reconstruction are enclosed in one caller-owned transaction with exhaustive
+workspace disjointness. Streaming, frame encoding, lifecycle, and public
+exposure remain future work.

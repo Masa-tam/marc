@@ -4549,3 +4549,10 @@ typed token at a time during a write-free pass, then repeats the identical
 bounded traversal into caller token storage. Payload, transition tables, and
 tokens are disjoint regions; no intermediate modeled-operation array or raw
 output is introduced.
+
+The private contextual tANS complete-frame decoder now owns the outer atomic
+boundary. A distinct `5/2` stream parser and tANS-specific frame preflight
+validate exact descriptor and payload extents before partitioned caller
+storage is admitted. The typed-token bridge and raw reconstructor run only
+after all serialized/table/token/raw regions are proven disjoint; frame
+consumption becomes visible only with complete raw success.

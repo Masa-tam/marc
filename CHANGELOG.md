@@ -17,6 +17,9 @@ format versions, and C ABI versions are independent namespaces.
 - Connected contextual tANS decoding directly to private typed LZSS token
   reconstruction through a bounded two-pass bridge with disjoint caller-owned
   payload, table, and token regions.
+- Added the private contextual tANS Format 2 stream/frame preflight and
+  complete-frame decoder, connecting the exact compact descriptor and typed
+  token path to frame-atomic raw reconstruction.
 
 - Reserved the experimental format-2 LZSS typed-token pipeline, including
   separate token, context-model, entropy-backend, and decoder-visible format
