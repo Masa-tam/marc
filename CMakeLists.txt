@@ -1377,6 +1377,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_tans_frame_streaming_decoder_tests.cpp
         tests/lzss_contextual_tans_frame_streaming_encoder_tests.cpp
         tests/lzss_contextual_tans_profile_tests.cpp
+        tests/lzss_contextual_tans_completion_tests.cpp
         tests/lzss_contextual_rans_decoder_tests.cpp
         tests/lzss_contextual_rans_compact_decoder_tests.cpp
         tests/lzss_contextual_rans_encoder_tests.cpp

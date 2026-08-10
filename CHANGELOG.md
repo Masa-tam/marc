@@ -11,6 +11,9 @@ format versions, and C ABI versions are independent namespaces.
   configuration, direction-specific workspace query, and caller-owned factory
   expose the existing Format 2 `5/2` stream without exposing typed-token or
   tANS table layouts.
+- Completed the public contextual tANS audit across required binary classes,
+  deterministic arbitrary chunking, repeated terminal calls, and frame-atomic
+  malformed final-frame rejection.
 
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one

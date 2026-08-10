@@ -1416,3 +1416,11 @@ the common three-region ownership contract while reconstructing typed tokens
 and tANS tables only inside C++. The stream remains exactly Format 2 variant
 `5/2`; completion, CLI, benchmark, fuzz, and interoperability admission remain
 future work.
+
+### CP-0068
+
+The contextual tANS public lifecycle now satisfies its local completion
+matrix. Deterministic required-data round trips, arbitrary multi-frame
+chunking, stable end state, and atomic final-frame corruption, truncation, and
+trailing-data rejection are proven solely through ABI 1. CLI, benchmark, fuzz,
+and interoperability admission remain future work.

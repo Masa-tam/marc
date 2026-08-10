@@ -14502,3 +14502,22 @@ Validate configuration tags, limits, capacities, alignment, and all region-
 prefix overlaps before publishing a handle; partition typed views only inside
 C++. Keep allocator callbacks, CLI selection, completion, fuzzing, benchmarks,
 and interoperability outside this milestone.
+
+## DD-700: Contextual tANS completion is proven only through ABI 1
+
+- Date: 2026-08-10
+- Status: accepted
+
+Audit the single contextual-tANS representation `5/2` through only its public
+configuration, requirements, factory, process, and destroy functions. Cover
+empty input, every one-byte value, all byte values, repeated and patterned
+binary data, deterministic generated data, 63/64/65-byte boundaries, and
+multiple frames. Encode each class twice and require byte equality.
+
+For a four-frame stream, require one-byte and two mixed input/output schedules
+to reproduce the one-shot stream and raw output exactly. Corrupt the final
+frame sequence, truncate its final byte, and append trailing data independently.
+Earlier complete frames may remain committed, but the final raw byte must stay
+untouched and each terminal error must repeat with the same category and
+position. This completes the public lifecycle audit without adding CLI,
+benchmark, fuzz, interoperability, or format changes.

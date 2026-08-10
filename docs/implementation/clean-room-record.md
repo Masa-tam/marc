@@ -16841,3 +16841,29 @@ discarded and the reviewed seed retained.
   under MSVC 19.51.36252; all 2,701 registered MSVC tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
   limit in 77.26 seconds.
+
+## CR-0730: 2026-08-10 - Contextual tANS public completion audit
+
+- Authoring method: specialized marc's established public-profile completion
+  matrix for the single independently defined contextual-tANS `5/2` lifecycle.
+- References used: AGENTS.md sections 3.3, 4, 12, 14, and 16; DD-700; IR-0478;
+  TVG-0579; marc's public ABI-1 lifecycle, local frame extent fields, process
+  invariants, and deterministic first-party binary generator.
+- Known implementations intentionally not consulted: external compression
+  implementations, completion suites, source code, archives, corpora, test
+  vectors, malformed samples, and optimization descriptions.
+- Independent decisions: audit all byte values and frame boundaries; compare
+  repeated encodes; use three nontrivial chunk schedules; permit already
+  committed complete frames; and forbid publication of the malformed final
+  frame while requiring stable repeated terminal errors.
+- Generated-code task description: add the public contextual-tANS completion
+  audit for required binary classes, determinism, multi-frame chunking,
+  repeated end, and final-frame corruption, truncation, and trailing data.
+- Similarity review: the matrix and helpers derive solely from marc's local
+  completion convention and `5/2` ABI; no external naming, vector, malformed
+  sample, control flow, or optimization structure was used.
+- Local validation: all three focused completion tests and documentation
+  layout pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,704 registered
+  MSVC tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 222.04 seconds.

@@ -174,7 +174,10 @@ tokens. The factory checks capacity, alignment, pairwise non-overlap, and the
 private partition before publishing a handle. It emits only entropy identity
 `5/2`; neither typed-token nor table representations form part of ABI 1. This
 additive function family does not change the ABI version and remains outside
-the baseline CLI and interoperability inventory pending its completion audit.
+the baseline CLI and interoperability inventory. Its completion audit covers
+all required binary classes, deterministic mixed and one-byte chunk schedules,
+stable repeated terminal calls, and frame-atomic rejection of corrupted,
+truncated, or trailing final-frame data.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

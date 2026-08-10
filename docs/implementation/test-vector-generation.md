@@ -7579,3 +7579,19 @@ nonzero reserved fields; wrong structure size or ABI version; invalid
 direction; and null query/init arguments. Every failed creation must leave the
 handle null. The C test must link only through the public installed header and
 library target.
+
+### TVG-0579
+
+Through only the public contextual-tANS ABI, round-trip empty input, every
+one-byte value, bytes `00..ff`, 257 zeros, a 259-byte `00 ff 55 aa` pattern,
+513 bytes from the documented LCG seed `c001d00d`, and seeded inputs of lengths
+63, 64, and 65. Encode each input twice. Require entropy identity `5/2` and
+byte-identical output.
+
+Generate 193 bytes with seed `6d617263`; require one-shot, 1/1, 7/5, and 13/17
+input/output chunk schedules to emit identical four-frame bytes and recover
+identical raw bytes. Generate a second 193-byte stream with seed `13579bdf`.
+Independently flip the final frame sequence, remove the final serialized byte,
+and append one trailing zero. Require exactly the first 192 raw bytes to remain
+committed, preserve the final output sentinel, and repeat the same terminal
+error and position without progress.

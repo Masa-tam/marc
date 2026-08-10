@@ -4610,3 +4610,10 @@ and aligned opaque views to the private profile; and the factory validates all
 capacities and prefix overlaps before partitioning tokens and tables. The
 published handle uses the common process/destroy contract and emits the
 unchanged Format 2 `5/2` representation.
+
+The public lifecycle is now audited through the ABI boundary rather than by
+calling private frame helpers. Required binary classes and boundary lengths
+are encoded twice for determinism, multi-frame bytes are invariant under three
+input/output schedules, and decoding follows the same schedules. A malformed
+final frame may not publish its raw byte, while earlier complete frames remain
+committed and the terminal error remains stable on repeated calls.

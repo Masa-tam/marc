@@ -1560,3 +1560,13 @@ short/misaligned/overlapping regions, reserved fields, size/version tags,
 directions, and null arguments are covered by a C11 test linked through the
 public library. Completion, CLI, benchmark, fuzz, and interoperability remain
 future work.
+
+### BR-0066
+
+Contextual tANS variant 2 now passes the public completion audit. Empty input,
+all 256 one-byte values, all-byte sequence, repeated data, mixed binary
+patterns, deterministic random data, frame boundaries, and multi-frame input
+round-trip deterministically. One-byte and mixed chunk schedules reproduce the
+same stream. Corrupted, truncated, and trailing final-frame data preserve the
+last raw byte, retain earlier frames, and return a stable repeated error. CLI,
+benchmark, fuzz, and interoperability remain future work.

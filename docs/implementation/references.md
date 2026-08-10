@@ -4185,3 +4185,12 @@ common transform handle, private contextual-tANS profile/partitioners and
 streaming constructors, checked overlap helpers, stable error mapping, and
 decoder limits. No external C API, ANS library, source code, archive, corpus,
 test vector, test suite, or optimization description was consulted.
+
+### IR-0478
+
+The contextual-tANS public completion audit uses only DD-700, the local Format
+2 `5/2` specification, ABI-1 lifecycle from DD-699, marc's established
+completion data classes and process invariants, frame-extent fields, and
+independently seeded binary generators. No external compression implementation,
+completion suite, corpus, test vector, source code, archive, or optimization
+description was consulted.
