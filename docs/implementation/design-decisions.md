@@ -14721,3 +14721,27 @@ They use fixed local staging, validate masks and exact frame-supplied counts,
 reject invalid or noncanonical tables and trailing bytes, charge at most 35
 bounded decode tables, and publish only after complete success. They do not
 decode entropy payload, parse a frame, or admit a public profile.
+
+## DD-710: Contextual Blocked Huffman decoding is request-driven
+
+- Date: 2026-08-11
+- Status: accepted
+
+Implement the first payload boundary as an entropy-layer state machine rather
+than coupling it directly to LZSS reconstruction. The caller supplies each
+expected context/alphabet or bypass width in modeled-operation order. This
+keeps context evolution independently testable and gives later typed-LZSS
+integration the same shape as contextual range, rANS, and tANS.
+
+Build only non-Single Huffman tables into caller-owned fixed workspace. Retain
+the descriptor validator's conservative 35-table limit charge, while allowing
+zero table entries for an all-Single frame. Select a serialized override before
+its pooled field model and require every override to be used at completion;
+do not require pooled models to be used because complete pooled histograms are
+retained even when all decisions for a field are overridden.
+
+Use one forward LSB-first cursor for canonical codes and raw bypass bits.
+Publish a decoded value only after the entire request succeeds. Completion
+requires exact event count, decision count, override use, and valid-bit extent.
+This milestone does not reconstruct typed tokens, parse frames, or admit the
+public profile.

@@ -18,8 +18,23 @@ inline constexpr std::size_t contextual_blocked_huffman_min_descriptor_size =
 inline constexpr std::size_t contextual_blocked_huffman_max_descriptor_size =
     2561;
 inline constexpr std::size_t contextual_blocked_huffman_field_table_count = 4;
+inline constexpr std::size_t contextual_blocked_huffman_max_table_count =
+    contextual_blocked_huffman_field_table_count
+    + context::internal::lzss_field_context_count;
 inline constexpr std::uint16_t contextual_blocked_huffman_no_single_symbol =
     UINT16_MAX;
+
+[[nodiscard]] constexpr std::size_t
+contextual_blocked_huffman_field_for_context(
+    const std::uint16_t context_id) noexcept {
+    if (context_id <= 2) return 0;
+    if (context_id <= 19) return 1;
+    if (context_id <= 22) return 2;
+    if (context_id <= 30) return 3;
+    return contextual_blocked_huffman_field_table_count;
+}
+
+static_assert(contextual_blocked_huffman_max_table_count <= UINT8_MAX);
 
 struct ContextualBlockedHuffmanModel {
     HuffmanCodeLengths lengths{};

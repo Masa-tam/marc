@@ -106,11 +106,8 @@ constexpr std::array<std::uint16_t,
          context_id < context::internal::lzss_field_context_count;
          ++context_id) {
         if ((mask & (UINT32_C(1) << context_id)) == 0) continue;
-        std::size_t field{};
-        if (context_id <= 2) field = 0;
-        else if (context_id <= 19) field = 1;
-        else if (context_id <= 22) field = 2;
-        else field = 3;
+        const auto field = contextual_blocked_huffman_field_for_context(
+            static_cast<std::uint16_t>(context_id));
         if ((field_mask & (UINT8_C(1) << field)) == 0) return false;
     }
     return true;

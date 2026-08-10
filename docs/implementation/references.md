@@ -4282,3 +4282,12 @@ contract, checked serialization helpers, canonical-Huffman validator, and
 bounded decode-table constants. RFC 1951 remains an alphabet-separation idea
 reference only; no DEFLATE byte, tree encoding, implementation, source code,
 test vector, suite, corpus, archive, or optimization structure was consulted.
+
+### IR-0488
+
+The Contextual Blocked Huffman payload decoder uses DD-709 through DD-710,
+TVG-0588 through TVG-0589, marc's canonical Huffman decode-table primitive,
+typed-context alphabet schema, checked arithmetic, and existing request-driven
+contextual entropy decoder contracts. No external Huffman decoder, DEFLATE
+implementation, source code, descriptor, test vector, suite, archive, corpus,
+or optimization description was consulted.

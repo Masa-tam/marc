@@ -17096,3 +17096,30 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,720 registered MSVC tests pass with a
   240-second per-test limit in 149.10 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.70 seconds.
+
+## CR-0740: 2026-08-11 - Contextual Blocked Huffman payload decoder
+
+- Authoring method: implemented the DD-710 request-driven entropy state machine
+  over marc's reserved descriptor and canonical Huffman decode primitive.
+- References used: AGENTS.md sections 3, 6, 10, 11, 12, and 15; DD-709 through
+  DD-710; IR-0488; TVG-0588 through TVG-0589; marc's typed-context alphabets,
+  checked arithmetic, and existing contextual decoder lifecycle contracts.
+- Known implementations intentionally not consulted: external Huffman or
+  DEFLATE decoders, source code, descriptors, archives, corpora, test vectors,
+  test suites, and optimization descriptions.
+- Independent decisions: build only non-Single tables in caller workspace;
+  prioritize context overrides; share one forward LSB-first cursor between
+  codes and bypass fields; publish values only after complete requests; require
+  every override but not every pooled table; and leave LZSS inversion and frame
+  admission to later milestones.
+- Generated-code task description: implement begin/Symbol/bypass/finish,
+  strict padding and completion checks, fixed workspace and overlap validation,
+  hand-checkable mixed bits, override precedence, mutation, truncation, budget,
+  and lifecycle tests.
+- Similarity review: state, selection, validation order, errors, vectors, and
+  tests were authored from marc's preceding internal contracts; no external
+  implementation expression entered the work.
+- Local validation: twelve focused format/decoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,728 registered MSVC tests pass with a
+  240-second per-test limit in 149.53 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.91 seconds.

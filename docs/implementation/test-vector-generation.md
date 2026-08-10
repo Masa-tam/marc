@@ -7730,3 +7730,23 @@ eight-byte sparse record. Reject the equivalent dense literal record as
 noncanonical, an oversubscribed three-symbol length-1 table, truncated extent,
 field mask `0x07`, override bit 31, a caller maximum code length below 15, and
 short serializer output without publishing descriptor state or byte count.
+
+### TVG-0589
+
+Decode the documented one-Literal descriptor with an empty payload: context 0
+must return kind 0, context 3 must return literal 65, neither consumes a bit,
+and completion requires two events and two decisions with zero table entries.
+
+Construct a mixed descriptor with pooled kind lengths `(1,1)` and Single
+literal `A`, length class 1, and distance class 1. Feed operations kind 0,
+literal `A`, kind 1, length 1, one bypass bit 1, distance 1, and one bypass bit
+0. The physical bit sequence is `0,1,1,0`, byte `06`, with four final valid
+bits; completion requires seven events and seven decisions.
+
+Independently reject insufficient table workspace, nonzero high padding,
+truncated canonical input, an invalid context or alphabet, an invalid bypass
+width, decision-budget overrun, trailing valid bits, an unused serialized
+override, calls before begin, and repeated completion. Preserve every caller
+value sentinel on a failed Symbol or bypass request. Also give context 0 a
+Single override for kind 0 while its pooled field is Single kind 1, and require
+successful decoding of kind 0 plus completion to prove override precedence.

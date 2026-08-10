@@ -446,6 +446,25 @@ single field records. The all-dense maximum is 2,561 bytes. Decoder planning
 charges at most 35 bounded Huffman tables before construction and retains the
 complete-frame token and raw publication transaction.
 
+The entropy decoder is a forward state machine. `begin` validates the complete
+descriptor and exact payload extent, rejects nonzero high padding, and builds
+only non-Single canonical tables into caller-owned workspace. A Symbol request
+must supply the exact schema context and alphabet. It selects the context
+override when present or the context's pooled field table otherwise. A Single
+selection returns its stored symbol without consuming a bit; every other
+selection consumes one complete canonical code. A bypass request accepts 1
+through 16 bits and reconstructs its value least-significant bit first from the
+same cursor.
+
+Each Symbol counts as one event and one decision. Each bypass field counts as
+one event and one decision per bit. Failed requests do not publish their output
+value. `finish` requires the caller's event and decision counts to equal the
+descriptor budget, every serialized override to have been requested, and the
+bit cursor to equal the exact valid-bit extent. It rejects premature input,
+invalid paths, extra valid bits, repeated completion, and requests before
+`begin`. Pooled tables may remain unrequested because the encoder retains the
+complete pooled histograms even when all requests for a field select overrides.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

@@ -6294,12 +6294,20 @@ original size one, its 112-byte stream header is:
 ```
 
 The complete one-byte stream is 200 bytes. Empty input contains only these 112
-header bytes and no descriptor or frame. This reservation does not yet claim
-an entropy decoder, frame parser, encoder, streaming lifecycle, C API, CLI
-selector, benchmark codec, or interoperability archive.
+header bytes and no descriptor or frame. This reservation does not yet claim a
+frame parser, encoder, streaming lifecycle, C API, CLI selector, benchmark
+codec, or interoperability archive.
 
-The private descriptor parser and serializer now implement only this 24 through
+The private descriptor parser and serializer implement this 24 through
 2,561-byte boundary. They enforce exact prefix fields, masks, record order,
 Single/sparse/dense canonical choice, complete Huffman tables, frame-supplied
-counts, caller limits, exact consumption, and atomic publication. They do not
-decode payload bits or admit the reserved frame profile.
+counts, caller limits, exact consumption, and atomic publication.
+
+The private entropy decoder consumes the descriptor object plus the exact
+payload. It builds only non-Single canonical tables in caller-owned workspace,
+selects overrides by context, reads bypass values from the shared LSB-first
+cursor, and publishes a requested value only after the whole symbol or bypass
+field succeeds. Completion requires exact event and decision counts, exact
+valid-bit consumption, and use of every serialized override. It does not infer
+the LZSS context sequence, reconstruct tokens, parse a frame, or admit the
+reserved profile.
