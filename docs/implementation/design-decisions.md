@@ -14521,3 +14521,23 @@ Earlier complete frames may remain committed, but the final raw byte must stay
 untouched and each terminal error must repeat with the same category and
 position. This completes the public lifecycle audit without adding CLI,
 benchmark, fuzz, interoperability, or format changes.
+
+## DD-701: Contextual tANS fuzzing is bounded at two decoder boundaries
+
+- Date: 2026-08-10
+- Status: accepted
+
+Retain permanent regressions for every strict prefix of a repository-generated
+single-frame `ABABX` stream, all-ones frame extent fields, and a nonzero byte
+in the descriptor's reserved table-log padding. Require both the private
+complete-frame decoder and public ABI-1 streaming decoder to preserve sentinel
+raw output; require the public terminal error and position to remain sticky.
+
+Add one libFuzzer entry point that truncates supplied input to 32 KiB. Fix raw
+publication at 4 KiB, a frame at 1 KiB, decisions at 6,144, payload at 9,218
+bytes, descriptor at 9,029 bytes, decoder transitions at 131,072 entries, and
+typed tokens at 1,024 records. Store large workspaces thread-locally, admit
+them under one compile-time aggregate limit, derive chunks only within fixed
+bounds, and abort on contract violations or call-budget exhaustion. Compile
+the harness warning-clean in ordinary builds; do not claim a sanitizer
+campaign merely from compile smoke.

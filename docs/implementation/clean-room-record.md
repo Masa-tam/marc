@@ -16867,3 +16867,31 @@ discarded and the reviewed seed retained.
   MSVC tests, including
   `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
   limit in 222.04 seconds.
+
+## CR-0731: 2026-08-10 - Contextual tANS bounded fuzz boundary
+
+- Authoring method: specialized marc's repository-owned dual private/public
+  decoder fuzz pattern for the independently defined contextual-tANS `5/2`
+  representation and its fixed transition-table layout.
+- References used: AGENTS.md sections 12 and 14.4; DD-701; IR-0479; TVG-0580;
+  marc's contextual-tANS complete-frame decoder, ABI-1 streaming lifecycle,
+  local format constants, fixed workspace policy, and process invariants.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, malformed samples, source code, archives, test suites, and
+  optimization descriptions.
+- Independent decisions: preserve both private and public atomicity oracles;
+  mutate strict truncations, extent saturation, and descriptor padding; cap
+  supplied input at 32 KiB; hold large tables in thread-local fixed storage;
+  and treat invalid progress or call-budget exhaustion as reproducible harness
+  failures.
+- Generated-code task description: add permanent contextual-tANS fuzz
+  regressions and a bounded dual-decoder libFuzzer entry with fixed byte,
+  table, token, aggregate-memory, chunk, and call ceilings.
+- Similarity review: the harness derives solely from marc's local format,
+  decoder contracts, and existing first-party fuzz architecture; no external
+  naming, control flow, input, corpus, or optimization structure was used.
+- Local validation: all three focused regressions and documentation layout
+  pass under MSVC 19.51.36252 and ClangCL 22.1.3; the bounded harness compiles
+  warning-clean under both. All 2,707 registered MSVC tests, including
+  `marc_interoperability_schema_compatibility`, pass with a 240-second per-test
+  limit in 75.04 seconds. No sanitizer campaign is claimed in this record.

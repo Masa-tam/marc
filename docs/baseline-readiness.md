@@ -1570,3 +1570,14 @@ round-trip deterministically. One-byte and mixed chunk schedules reproduce the
 same stream. Corrupted, truncated, and trailing final-frame data preserve the
 last raw byte, retain earlier frames, and return a stable repeated error. CLI,
 benchmark, fuzz, and interoperability remain future work.
+
+### BR-0067
+
+Contextual tANS variant 2 now retains permanent dual-boundary malformed-input
+regressions. Every strict prefix of a generated canonical `ABABX` stream,
+all-ones frame extents, and a nonzero descriptor reserved byte fail without
+publishing raw output through both the complete-frame helper and public
+streaming lifecycle. The bounded harness fixes all input, output, frame,
+payload, table, token, aggregate, and call ceilings and compiles warning-clean.
+No sanitizer campaign is claimed yet; CLI, benchmark, and interoperability
+remain future work.

@@ -68,6 +68,15 @@ decode tables plus 1,024 typed tokens before processing. Large views use one
 thread-local fixed harness workspace instead of per-call stack storage. The
 private complete-frame and public streaming paths share byte-derived chunking
 and a finite call budget; no sanitizer campaign is claimed by compile-smoke.
+The experimental contextual-tANS Format 2 target uses the same dual-boundary
+shape with its own fixed layout: at most 32 KiB supplied input, 4 KiB published
+raw output, one 1 KiB frame, 6,144 decisions, 9,218 payload bytes, the
+9,029-byte descriptor, 131,072 fixed `TansDecodeEntry` transitions, and 1,024
+typed tokens. All large storage is one thread-local fixed workspace admitted
+under a compile-time aggregate ceiling. The private complete-frame and public
+C streaming decoders use byte-derived chunks and a finite call budget. An
+ordinary-build compile smoke is evidence only; no sanitizer campaign is
+claimed until one is separately executed and recorded.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,

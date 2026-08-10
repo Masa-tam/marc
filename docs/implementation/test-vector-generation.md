@@ -7595,3 +7595,21 @@ Independently flip the final frame sequence, remove the final serialized byte,
 and append one trailing zero. Require exactly the first 192 raw bytes to remain
 committed, preserve the final output sentinel, and repeat the same terminal
 error and position without progress.
+
+### TVG-0580
+
+Generate the canonical single-frame `ABABX` stream through the public
+contextual-tANS encoder with a five-byte frame. Submit every strict prefix to
+fresh private complete-frame and public streaming decoders and require no raw
+publication. Independently overwrite frame-header bytes 16 through 47 with
+`ff`, then set byte 9 of the contextual-tANS descriptor to one. Require both
+decoder boundaries to preserve `a5` sentinels, and require the public decoder
+to repeat the same terminal error category and byte/bit position without
+progress.
+
+Compile one bounded fuzz entry that gives each at-most-32-KiB input to the
+private complete-frame decoder after exact header admission and always drives
+the public decoder with byte-derived chunks. Fix a 4-KiB output ceiling,
+1-KiB frame ceiling, 6,144-decision ceiling, 9,218-byte payload ceiling,
+9,029-byte descriptor ceiling, 131,072 transition entries, 1,024 tokens, one
+aggregate workspace bound, and a finite call budget.

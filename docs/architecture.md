@@ -4617,3 +4617,10 @@ are encoded twice for determinism, multi-frame bytes are invariant under three
 input/output schedules, and decoding follows the same schedules. A malformed
 final frame may not publish its raw byte, while earlier complete frames remain
 committed and the terminal error remains stable on repeated calls.
+
+The contextual tANS malformed-input boundary now has both permanent regression
+oracles and a bounded fuzz entry point. The permanent tests compare private
+complete-frame and public streaming atomicity for every canonical truncation,
+extreme frame extents, and nonzero descriptor reserved bytes. The harness
+caps input, output, frame, payload, tables, tokens, aggregate storage, and call
+count before exercising those same two decoder boundaries.

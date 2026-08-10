@@ -4194,3 +4194,12 @@ completion data classes and process invariants, frame-extent fields, and
 independently seeded binary generators. No external compression implementation,
 completion suite, corpus, test vector, source code, archive, or optimization
 description was consulted.
+
+### IR-0479
+
+The contextual-tANS permanent fuzz regressions and bounded harness use only
+DD-701, TVG-0580, marc's local `5/2` stream/frame format, private complete-frame
+decoder, public ABI-1 lifecycle, fixed table/token constants, decoder limits,
+and repository-owned fuzz contract checks. No external harness, corpus,
+malformed sample, source code, archive, test suite, or optimization description
+was consulted.

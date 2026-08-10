@@ -14,6 +14,9 @@ format versions, and C ABI versions are independent namespaces.
 - Completed the public contextual tANS audit across required binary classes,
   deterministic arbitrary chunking, repeated terminal calls, and frame-atomic
   malformed final-frame rejection.
+- Added permanent contextual tANS malformed-stream regressions and a bounded
+  dual-boundary fuzz harness covering the private complete-frame decoder and
+  public C streaming decoder.
 
 - Added the private contextual tANS decode-table builder. It preflights the
   compact model and materializes 31 fixed Symbol-context regions plus one

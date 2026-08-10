@@ -1424,3 +1424,11 @@ matrix. Deterministic required-data round trips, arbitrary multi-frame
 chunking, stable end state, and atomic final-frame corruption, truncation, and
 trailing-data rejection are proven solely through ABI 1. CLI, benchmark, fuzz,
 and interoperability admission remain future work.
+
+### CP-0069
+
+The contextual tANS composition now has permanent malformed-stream regressions
+and a bounded fuzz harness across both private complete-frame and public ABI-1
+streaming decode boundaries. Strict truncations and targeted extent/reserved-
+byte mutations preserve atomic output. A sanitizer campaign, CLI, benchmark,
+and interoperability admission remain future work.
