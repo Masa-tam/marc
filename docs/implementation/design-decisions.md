@@ -14938,3 +14938,23 @@ remain untouched. Apply this rule independently to sequence corruption,
 truncation, and strict trailing data, and require the first error category and
 position to remain stable on repeated calls. This audit changes no stream,
 factory, CLI, benchmark, fuzz, or interoperability surface.
+
+## DD-721: Contextual Blocked Huffman fuzzing keeps two bounded decode paths
+
+- Date: 2026-08-11
+- Status: accepted
+
+Give permanent malformed-stream regressions and one fuzz entry point the same
+two independent targets: the private complete-frame decoder after a validated
+112-byte stream header, and the public ABI-1 streaming decoder. Seed permanent
+tests from a locally encoded `ABABX` stream and require every strict truncation,
+extreme frame-count/extent fields, and nonzero descriptor flags to preserve raw
+output atomically in both paths.
+
+Bound the harness before decoding: inspect at most 32 KiB, admit at most a
+1,024-byte raw frame, 6,144 decisions, 11,520 payload bytes, 35 Huffman decode
+tables, 4 KiB total raw output, fixed caller-owned workspaces, and a finite
+call count. Drive public input/output chunks deterministically from the bounded
+input. Abort only on violated process/workspace invariants; ordinary malformed
+input is an expected terminal result. This milestone adds no corpus, campaign
+claim, stream change, CLI, benchmark, or interoperability surface.

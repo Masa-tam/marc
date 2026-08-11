@@ -4382,3 +4382,12 @@ data classes and chunk schedules, Format 2 frame layout, and sticky-error
 contract. No external Huffman or DEFLATE implementation, source code, archive,
 corpus, test vector, test suite, completion checklist, or optimization
 description was consulted.
+
+### IR-0499
+
+The Contextual Blocked Huffman malformed regression and fuzz boundary use
+DD-709 through DD-721, TVG-0588 through TVG-0600, marc's complete-frame
+decoder, public ABI-1 lifecycle, fixed Contextual Huffman maxima, caller-owned
+workspaces, checked chunk loop, and sticky-error contract. No external fuzz
+harness, corpus, Huffman or DEFLATE implementation, source code, archive, test
+vector, test suite, or optimization description was consulted.

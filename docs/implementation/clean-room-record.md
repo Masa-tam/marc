@@ -17404,3 +17404,35 @@ discarded and the reviewed seed retained.
   interoperability compatibility in 58.03 seconds; all 2,731 registered
   ClangCL tests pass in 149.98 seconds, including compatibility in 58.86
   seconds. Every test used the 240-second per-test limit.
+
+## CR-0751: 2026-08-11 - Contextual Blocked Huffman bounded fuzz boundary
+
+- Authoring method: paired marc's private complete-frame decoder with its
+  public ABI-1 streaming decoder behind one fixed-capacity malformed-input
+  harness, then promoted deterministic mutations into permanent regressions.
+- References used: AGENTS.md sections 5, 10, 11, 12, 14, 15, and 16; DD-709
+  through DD-721; IR-0499; TVG-0588 through TVG-0600; marc's Contextual Blocked
+  Huffman frame decoder, public lifecycle, fixed format maxima, Huffman table
+  type, checked process loop, and sticky-error rules.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, Huffman or DEFLATE implementations, source code, archives, malformed
+  samples, test vectors, test suites, and optimization descriptions.
+- Independent decisions: cap inspected input at 32 KiB, raw frames at 1 KiB,
+  decisions at 6,144, payload at 11,520 bytes, tables at 35, public output at
+  4 KiB, and calls at `input + output + 32`; derive chunk sizes only from the
+  bounded input; and treat malformed terminal results as ordinary outcomes.
+- Generated-code task description: add every-prefix and targeted extent/flag
+  atomicity regressions, a dual private/public LLVM fuzz entry point, normal
+  MSVC/ClangCL compile-smoke targets, and the optional ASan/UBSan/libFuzzer
+  executable target without running a campaign in this milestone.
+- Similarity review: mutation sites, bounds, workspace layout, chunk policy,
+  invariants, tests, and build wiring were derived from marc's local format and
+  preceding contextual harness architecture; no external implementation
+  expression entered the work.
+- Local validation: all three focused regressions and the bounded harness
+  compile-smoke pass under MSVC 19.51.36252 and ClangCL 22.1.3. All 2,781
+  registered MSVC tests pass in 149.08 seconds, including interoperability
+  compatibility in 58.34 seconds; all 2,734 registered ClangCL tests pass in
+  150.29 seconds, including compatibility in 58.26 seconds. Every test used
+  the 240-second per-test limit. No fuzz campaign or corpus was executed or
+  claimed.

@@ -7904,3 +7904,21 @@ Independently alter its sequence, remove its last byte, and append strict
 trailing data. Each decode must retain exactly the first 192 raw bytes, leave
 the final output sentinel untouched, and repeat the identical terminal error
 category and position without further progress.
+
+### TVG-0600
+
+Encode `ABABX` through ABI 1 under a five-byte frame and bounded `6F` decision
+limit. For every strict prefix of the canonical stream, require both the
+private complete-frame boundary, whenever its stream header parses, and a fresh
+public streaming decoder to reject without changing a raw-output sentinel.
+Independently overwrite frame offsets 16 through 47 with `FF`, then set the
+descriptor flags byte at `112 + 64 + 15`; require the same dual atomic failure.
+
+For fuzz input, truncate inspection to 32 KiB. Exercise the private frame only
+after the exact stream header validates. Exercise the public decoder with
+input chunks 1..17 and output chunks 1..19 derived from input bytes, at most
+1,024 raw bytes per frame, 6,144 decisions, 11,520 payload bytes, 35 bounded
+decode tables, 4 KiB total output, fixed workspaces, and at most
+`input + output + 32` calls. Abort on over-reported counts, impossible
+zero-progress status, exhausted input requesting more input, or call-bound
+exhaustion; accept every documented terminal stream status.

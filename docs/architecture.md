@@ -4675,3 +4675,11 @@ byte-identical under three input/output schedules; and decoding follows the
 same schedules. Corruption, truncation, or strict trailing data in the final
 frame cannot publish that frame's raw byte, while earlier complete frames and
 the first terminal error remain stable.
+
+The Contextual Blocked Huffman malformed-input boundary now has two bounded
+oracles. Permanent regressions compare private complete-frame and public
+streaming atomicity for every canonical truncation plus targeted frame-extent
+and descriptor-flag mutations. The fuzz entry point caps input, output, frame,
+decision, payload, table, aggregate workspace, and call counts before driving
+those same two decoders; malformed results are normal, while process-contract
+violations terminate the harness.

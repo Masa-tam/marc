@@ -1493,3 +1493,12 @@ three arbitrary chunk schedules, stable end state, and frame-atomic final-frame
 corruption, truncation, and trailing-data rejection are proven solely through
 ABI 1. CLI, benchmark, fuzzing, and interoperability admission remain future
 work.
+
+### CP-0077
+
+The Contextual Blocked Huffman composition now has permanent malformed-stream
+regressions and a bounded fuzz harness across both private complete-frame and
+public ABI-1 streaming decode boundaries. Canonical truncations and targeted
+frame-extent and descriptor-flag mutations preserve atomic raw publication.
+A sanitizer campaign, CLI, benchmark, and interoperability admission remain
+future work.
