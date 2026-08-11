@@ -8376,3 +8376,11 @@ identity `4/2` rejection that preserves caller state. Retain the variant-3
 frame encode/decode, capacity, aliasing, limit, one-byte streaming, flush,
 sticky-error, completion, malformed, and CLI assertions exactly once. Build
 the complete core-test target warning-clean before running this focused set.
+
+### TVG-0631
+
+Compile the sole Contextual rANS fuzz harness without a representation macro
+under the warning-clean ClangCL compile-smoke target. Require its private
+complete-frame oracle and public streaming lifecycle to select the canonical
+variant-3 path, share the same bounded input, output, payload, and workspace
+limits, and retain no compact-qualified public symbols or duplicate target.

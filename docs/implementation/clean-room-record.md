@@ -18307,3 +18307,22 @@ discarded and the reviewed seed retained.
   and complete core test executable warning-clean. The same focused format,
   frame, profile, streaming, completion, malformed, documentation, and CLI
   tests pass under both, including explicit retired-variant rejection.
+
+## CR-0782: 2026-08-12 - Canonical Contextual rANS fuzz target
+
+- Authoring method: collapsed marc's two compile-time branches into the
+  surviving variant-3 private oracle and unqualified public lifecycle, then
+  removed the duplicate compact executable and compile-smoke registrations.
+- References used: DD-749, DD-750, DD-754; IR-0530; TVG-0628 and TVG-0631;
+  marc's existing bounded Contextual rANS fuzz harness.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  rANS or compression implementations, source code, corpora, test suites,
+  patent text, and optimization descriptions.
+- Independent decisions: retain fixed-memory dual-path coverage and every
+  existing limit; derive frame capacity only from variant 3; expose one target.
+- Generated-code task description: remove fixed/compact fuzz selection while
+  preserving bounded private and public decoder exercise.
+- Similarity review: the change deletes duplicate marc-owned routing only; no
+  external implementation expression entered the work.
+- Local validation: the sole ClangCL warning-clean fuzz compile-smoke target
+  builds successfully after CMake regeneration.

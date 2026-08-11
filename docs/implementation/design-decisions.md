@@ -15517,3 +15517,14 @@ variant selector from both streaming state machines and delete the fixed frame
 implementation, compact wrappers, and duplicate tests. The canonical stream
 parser accepts only entropy identity `4/3`; it rejects retired identity `4/2`
 before publishing parsed state.
+
+## DD-754: Contextual rANS has one fuzz target
+
+- Date: 2026-08-12
+- Status: accepted
+
+Use only `marc_fuzz_lzss_contextual_rans_stream` for the canonical public and
+private decoder paths. Remove the compile-time representation switch and the
+duplicate compact target. Size its fixed thread-local workspace from the
+variant-3 maximum descriptor and retain the existing bounded input, output,
+frame, payload, table, and aggregate limits.

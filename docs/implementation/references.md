@@ -4673,3 +4673,11 @@ fixed and compact regression tests, and Format 2 identity validation as local
 precedents. No external rANS or compression implementation, source code, API,
 archive, corpus, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0530
+
+The canonical Contextual rANS fuzz target uses DD-749, DD-750, DD-754,
+TVG-0628, TVG-0631, marc's existing bounded dual-path harness, canonical frame
+decoder, public lifecycle, and compile-smoke target as local precedents. No
+external fuzz harness, rANS or compression implementation, source code,
+corpus, test suite, patent text, or optimization description was consulted.
