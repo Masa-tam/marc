@@ -4510,3 +4510,13 @@ contextual streaming decoders as local architectural precedents. No external
 Adaptive Huffman, LZSS, or streaming implementation, source code, archive,
 test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0513
+
+The Contextual Adaptive Huffman operation encoder uses DD-728 through DD-735,
+TVG-0607 through TVG-0614, marc's caller-owned contextual FGK model bank,
+typed modeled-operation boundary, checked arithmetic, and operation encoders
+for the other contextual entropy backends as local architectural precedents.
+No external Adaptive Huffman, LZSS, or entropy-encoder implementation, source
+code, archive, test vector, test suite, patent text, or optimization
+description was consulted.

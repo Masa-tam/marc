@@ -15187,3 +15187,23 @@ header. Latch `EndInput` through draining, reject truncation and strict trailing
 data, make terminal errors sticky, reject `ResetBlock`, and return no-progress
 statuses exactly as the common process contract requires. Defer encoder and
 public profile admission.
+
+## DD-735: Contextual Adaptive Huffman encoding plans before publication
+
+- Date: 2026-08-11
+- Status: accepted
+
+Expose private operation-level planning and encoding functions over the common
+`ModeledOperation` sequence. Both passes initialize the exact caller-owned
+9,067-node and 4,518-symbol model bank and traverse operations forward. A
+Symbol writes its current leaf or NYT path, writes the alphabet-width new
+value when needed, then updates only that context tree. BypassBits write their
+value least-significant bit first and update no tree.
+
+Planning validates the complete operation sequence and computes exact bits,
+bytes, decision count, final valid bits, and descriptor without publishing it.
+Encoding repeats that deterministic traversal only after output capacity,
+limits, and all operation/model/output overlaps are validated. Zero-fill only
+the exact payload prefix, preserve trailing capacity, and publish the
+descriptor only after the second pass matches the plan. Defer LZSS token
+inference, frame construction, streaming, and public admission.

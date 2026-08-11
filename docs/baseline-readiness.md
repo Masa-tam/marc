@@ -1764,8 +1764,19 @@ The private Contextual Adaptive Huffman path now satisfies the streaming
 decode lifecycle. One-byte input/output, zero-capacity final drain, empty
 input, two-frame model reset, deterministic completion, truncation at
 stream-header, frame-header, and frame-body boundaries, trailing data,
-nonzero padding, every workspace
-shortage, representative constructor and output aliases, aggregate limits,
+nonzero padding, every workspace shortage, representative constructor and
+output aliases, aggregate limits,
 unsupported flags, and sticky terminal results are tested under both local
 compilers. Encoder parity, public C ABI, CLI, benchmark, malformed regression
 set, fuzzing, and interoperability admission remain pending.
+
+### BR-0089
+
+The private Contextual Adaptive Huffman operation path can now plan and encode
+the reserved payload representation. The documented literal vector, existing
+and new symbols, bypass bits, encode/decode model lockstep, deterministic fresh
+workspaces, every malformed operation field, short model and payload storage,
+operation/model/output aliases, trailing-capacity preservation, entropy-entry,
+payload, planning-aggregate, and writing-aggregate limits are tested under
+both local compilers. LZSS token encoding and all frame/public layers remain
+pending.

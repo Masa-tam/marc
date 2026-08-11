@@ -8121,3 +8121,18 @@ padding, short serialized/node/symbol/token/raw workspaces, pairwise workspace
 overlap, output/workspace overlap, aggregate memory one byte below the exact
 need, and sticky terminal errors. Require no `Progress` result with both counts
 zero and run under MSVC and ClangCL before both complete registered suites.
+
+### TVG-0614
+
+Plan and encode the documented one-Literal operations `Symbol(0,2,0)` and
+`Symbol(3,256,65)` and require payload `82 00`, nine payload bits, two
+decisions, and one valid bit in the last byte. Encode repeated symbols and a
+three-bit bypass sequence, then decode every operation through the existing
+operation decoder and require exact values and synchronized tree completion.
+
+Exercise every invalid operation kind, context, alphabet, symbol, bypass
+width, and unused field at a stable index. Require empty input, short node,
+symbol, and payload storage, operation/model/output overlap classes, entropy
+entry, compressed payload, and aggregate-memory limits to fail before output
+or descriptor publication. Verify trailing output capacity is unchanged and
+run focused and complete registered suites under MSVC and ClangCL.

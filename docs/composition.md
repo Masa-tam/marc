@@ -1614,3 +1614,14 @@ Exact aggregate accounting, all workspace aliases, output aliases, strict
 truncation and trailing data, latched final input, unsupported reset, and
 sticky terminal states are enforced. Encoding, public ABI, tools, fuzzing,
 and profile admission remain future milestones.
+
+### CP-0090
+
+Contextual Adaptive Huffman now has a private operation-level planner and
+encoder over the common modeled-operation interface. The exact 31-tree model
+bank produces documented forward LSB-first payloads without serializing or
+re-parsing typed operations. Planning and writing agree on operation, decision,
+bit, byte, and descriptor extents; malformed operations, short storage, every
+used-region alias, and local or aggregate limits fail before payload or
+descriptor publication. LZSS token inference, frame encoding, streaming, and
+public admission remain future milestones.

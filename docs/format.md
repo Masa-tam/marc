@@ -6514,3 +6514,9 @@ starvation after `EndInput`, therefore produces the same representation and
 result. Empty input remains the 112-byte header alone; strict mode rejects any
 byte after the declared original size is reconstructed. This lifecycle adds no
 new field, identity, or public-profile claim.
+
+The private operation encoder is the exact inverse of the documented payload
+walk: operations are traversed forward, FGK paths precede alphabet-width NYT
+values, bypass values remain LSB-first, and all 31 trees reset at the start of
+each plan or encode pass. Planning and encoding must produce the `82 00`
+one-Literal payload above without adding serialized metadata.

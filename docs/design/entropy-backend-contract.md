@@ -622,6 +622,13 @@ are drained. It never resumes an FGK tree across frames, never publishes a
 partially decoded frame, and does not expose the model layout through a public
 ABI.
 
+The private operation encoder is symmetric with the decoder request boundary.
+It plans with the same exact model slices, then resets and repeats the forward
+operation sequence into an exact zero-filled payload prefix. A Symbol emits
+the pre-update tree path and optional NYT value before observing the symbol;
+BypassBits never touch a tree. Descriptor publication follows a second-pass
+agreement check, while excess output capacity remains untouched.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

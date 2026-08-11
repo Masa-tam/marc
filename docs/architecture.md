@@ -4786,3 +4786,12 @@ and output aliases are rejected. `EndInput` remains latched through draining,
 while truncation, trailing data, unsupported reset, and terminal failures are
 strict and sticky. Encoding and public-profile admission remain later
 boundaries.
+
+The private Contextual Adaptive Huffman operation encoder now mirrors the
+decoder's 31-tree boundary without passing through a serialized byte stream.
+Planning and encoding each reset the exact caller-owned model bank, traverse
+typed Symbol and BypassBits operations forward, and update only the selected
+tree after its bits are accounted for. The second pass starts only after exact
+payload capacity, aggregate limits, and every input/model/output alias are
+validated; only then may it publish the descriptor. LZSS context inference
+and framing remain above this boundary.
