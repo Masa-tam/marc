@@ -1907,3 +1907,16 @@ MSVC and ClangCL. The stable profile inventory and interoperability schema
 remain unchanged. All 2,876 registered tests, including
 `marc_interoperability_schema_compatibility`, pass under both compilers with
 the 240-second per-test limit. Interoperability admission remains pending.
+
+### BR-0101
+
+Contextual Adaptive Huffman now occupies archive 47 of interoperability
+schema 36 and codec set `marc-cli-v36`, after the frozen schema-35 order. The
+focused compatibility test proves generator round trip, exact manifest order,
+size and SHA-256 validation, fixture decode, byte-identical re-encoding,
+reordered-manifest rejection, and the complete schema-36-through-1 downgrade
+chain under MSVC and ClangCL. It completes in 68.10 seconds and 64.79 seconds,
+respectively. All 2,876 registered tests, including
+`marc_interoperability_schema_compatibility`, pass under both compilers with
+the 240-second per-test limit. External four-direction schema-36 verification
+remains pending; the stable 42-profile inventory is unchanged.

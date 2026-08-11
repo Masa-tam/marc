@@ -1737,3 +1737,14 @@ overwrite refusal, and transactional malformed/trailing rejection under both
 compilers. No typed layout, auto-detection, stable-profile entry, or
 interoperability archive is added; interoperability admission remains a future
 milestone.
+
+### CP-0102
+
+Contextual Adaptive Huffman now enters interoperability schema 36 exactly
+once, as archive 47 after schema 35's frozen 46-entry order. Generator-side
+round trip, exact manifest identity and order, leaf-name/size/SHA-256 checks,
+foreign decode, and byte-identical local re-encoding use the public CLI
+selector. The compatibility test rejects a reordered schema-36 manifest,
+derives schema 35 by removing only the new final entry, and preserves the
+complete schema-35-through-1 chain. The stable 42-profile inventory remains
+unchanged.

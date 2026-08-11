@@ -4627,3 +4627,13 @@ file-commit loop, registered round-trip script, and neighboring contextual CLI
 adapters as local architectural precedents. No external CLI, Adaptive Huffman
 or LZSS implementation, source code, archive, test vector, test suite, patent
 text, or optimization description was consulted.
+
+### IR-0525
+
+Contextual Adaptive Huffman interoperability schema 36 uses DD-747,
+TVG-0626, marc's schema-35 manifest order, public CLI selector,
+repository-owned bundle generator/verifier, SHA-256 manifest checks, and
+compatibility downgrade chain as local architectural precedents. No external
+archive, corpus, interoperability suite, Adaptive Huffman or LZSS
+implementation, source code, test vector, test suite, patent text, or
+optimization description was consulted.

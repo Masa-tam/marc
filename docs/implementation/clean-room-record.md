@@ -18178,3 +18178,33 @@ discarded and the reviewed seed retained.
   runs include and pass `marc_interoperability_schema_compatibility`. MSVC was
   built through the established approved route for its sandboxed FileTracker
   behavior.
+
+## CR-0777: 2026-08-11 - Contextual Adaptive Huffman interoperability admission
+
+- Authoring method: advanced the repository-owned interoperability manifest
+  by appending the existing explicit CLI selector after the frozen schema-35
+  order, then extended the verifier and downgrade test independently from
+  marc's prior schema pattern.
+- References used: DD-747; IR-0525; TVG-0626; marc's schema-35 profile order,
+  public CLI selector, bundle generator/verifier, SHA-256 manifest checks, and
+  compatibility conversion chain.
+- Known implementations intentionally not consulted: external archives,
+  interoperability suites, corpora, Adaptive Huffman or LZSS implementations,
+  source code, test vectors, test suites, patent text, and optimization
+  descriptions.
+- Independent decisions: use schema 36 and `marc-cli-v36`; retain all 46 old
+  entries byte-for-byte and in order; append the experimental Contextual
+  Adaptive Huffman archive once; reject reordered manifests; derive schema 35
+  by removing only that entry; leave the stable 42-profile set unchanged.
+- Generated-code task description: update the bundle generator, verifier, and
+  schema compatibility script; document exact ordering, integrity checks,
+  local evidence, and pending external evidence.
+- Similarity review: names, order, validation, conversion, and test structure
+  derive solely from marc's existing scripts and documented CLI profile; no
+  external implementation expression entered the work.
+- Local validation: the focused schema-36-through-1 compatibility test passes
+  in 68.10 seconds under MSVC 19.51.36252 and 64.79 seconds under ClangCL
+  22.1.3. All 2,876 registered tests pass under each compiler with the
+  240-second per-test limit, including
+  `marc_interoperability_schema_compatibility`. External four-direction
+  schema-36 verification remains pending.

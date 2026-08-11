@@ -15427,3 +15427,22 @@ strict-trailing rejection, and no
 destination or temporary-file publication on failure. Keep selector choice
 explicit in both directions; do not add auto-detection, a stable profile, or
 an interoperability archive in this milestone.
+
+## DD-747: Schema 36 appends Contextual Adaptive Huffman once
+
+- Date: 2026-08-11
+- Status: accepted
+
+Advance the current interoperability manifest to schema 36 and codec set
+`marc-cli-v36`. Preserve schema 35's exact 46-archive order and append
+`lzss-contextual-adaptive-huffman` as archive 47. The generator must round-trip
+the repository-owned 8,193-byte fixture before recording the archive's leaf
+name, size, and SHA-256.
+
+The verifier must preserve schemas 1 through 35 exactly, require the schema-36
+identity and complete 47-entry order, validate all manifest hashes and sizes,
+decode every archive to the fixture, and reproduce every archive byte for byte
+with the local CLI. The compatibility test must reject a reordered schema-36
+manifest and derive schema 35 before continuing the existing downgrade chain.
+This changes the interoperability inventory only; it does not change the
+stable 42-profile inventory or any serialized profile representation.

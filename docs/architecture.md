@@ -4872,3 +4872,13 @@ regions, creates one immutable-direction transform, and uses the common
 transactional temporary-file loop. Empty and nonempty streams, malformed and
 trailing rejection, and overwrite protection therefore share the established
 CLI boundary without exposing token or FGK model layouts.
+
+Interoperability schema 36 appends that experimental selector as archive 47
+without disturbing schema 35's exact 46-entry order. The generator proves a
+local fixture round trip before recording the leaf name, size, and SHA-256;
+the verifier requires the exact schema identity and order, decodes every
+archive, and reproduces every archive byte for byte. Compatibility validation
+rejects reordered schema-36 manifests, derives schema 35 by removing only the
+new final entry, and then continues the frozen downgrade chain through schema
+1. The stable 42-profile inventory and serialized codec representation remain
+unchanged.

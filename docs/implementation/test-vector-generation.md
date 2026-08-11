@@ -8308,3 +8308,18 @@ temporary file. Exercise both directions through the public C lifecycle with
 the fixed 65,536-byte frame, exact 13,585-entry model bank,
 2,187,264-byte payload ceiling, and 8-MiB aggregate policies. This test does
 not add auto-detection, a stable profile, or an interoperability archive.
+
+### TVG-0626
+
+Generate a schema-36 bundle from the local CLI and the deterministic
+8,193-byte fixture. Preserve all 46 schema-35 profiles in order and append
+`lzss-contextual-adaptive-huffman`. Require generator-side round trip, then
+verify `36`/`marc-cli-v36`, exactly 47 archives, leaf-only names, recorded
+sizes and SHA-256 values, decoded fixture equality, and byte-identical local
+re-encoding for every entry.
+
+Swap the first two schema-36 manifest entries and require exact-order
+rejection. Convert the canonical schema-36 bundle to schema 35 by removing
+only the new final archive, then continue the existing schema-35-through-1
+compatibility chain. Leave all generated bundles under the temporary test
+root and remove them after either success or failure.
