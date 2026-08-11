@@ -15583,3 +15583,23 @@ that Ubuntu 26.04 executable verifies both locally and with Windows/MSVC.
 Require every path to report the same full Git revision, producer label, and
 all 47 archives. Record exact decode and byte-identical re-encoding evidence
 without importing a generated bundle into the repository.
+
+## DD-759: Project version 0.2.0 publishes the contextual LZSS family
+
+- Date: 2026-08-12
+- Status: accepted
+
+Release the completed typed-token LZSS contextual entropy family and canonical
+Contextual rANS surface as project version `0.2.0`. The minor-version boundary
+communicates the intentional removal of fixed Contextual rANS variant 2 and
+compact-qualified public names. Retain C ABI lifecycle version 1, every
+previously published stream identity and byte representation, and canonical
+Contextual rANS identity `4/3`; never reassign retired identity `4/2`.
+
+Require the final release commit to synchronize the CMake package version,
+runtime version query, metadata test, dated changelog, validation baseline,
+decision, and provenance. Require complete MSVC and ClangCL Release suites,
+pushed Windows/MSVC and Ubuntu 24.04 CI, and the recorded four-direction
+schema-37 exchange before tagging. Preserve the explicitly open non-x86-64,
+representative-measurement, and longer sanitizer-campaign evidence rather than
+overstating the 0.2.0 claim.

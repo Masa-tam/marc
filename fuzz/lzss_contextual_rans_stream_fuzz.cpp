@@ -38,6 +38,10 @@ constexpr std::size_t maximum_views = table_entries * sizeof(RansDecodeEntry)
     + maximum_views_alignment - 1 + maximum_frame * sizeof(Token);
 constexpr std::size_t maximum_internal =
     maximum_encoded_frame + maximum_views + maximum_frame;
+constexpr std::size_t maximum_view_words =
+    (maximum_views + sizeof(std::max_align_t) - 1)
+    / sizeof(std::max_align_t);
+static_assert(maximum_views_alignment <= alignof(std::max_align_t));
 
 struct FuzzWorkspace {
     std::array<RansDecodeEntry, table_entries> private_tables{};
@@ -45,8 +49,7 @@ struct FuzzWorkspace {
     std::array<std::byte, maximum_frame> private_raw{};
     std::array<std::uint8_t, maximum_encoded_frame> primary{};
     std::array<std::uint8_t, maximum_frame> secondary{};
-    alignas(maximum_views_alignment)
-        std::array<std::uint8_t, maximum_views> views{};
+    std::array<std::max_align_t, maximum_view_words> views{};
     std::array<std::uint8_t, maximum_total_output> output{};
 };
 
@@ -144,7 +147,8 @@ void exercise_public_streaming(
     if (public_workspace_requirements(config, requirements) != MARC_STATUS_OK
         || requirements.primary_bytes > workspace.primary.size()
         || requirements.secondary_bytes > workspace.secondary.size()
-        || requirements.views_bytes > workspace.views.size()
+        || requirements.views_bytes
+            > workspace.views.size() * sizeof(std::max_align_t)
         || requirements.views_alignment > maximum_views_alignment) {
         std::abort();
     }
@@ -154,7 +158,9 @@ void exercise_public_streaming(
             config,
             {workspace.primary.data(), requirements.primary_bytes},
             {workspace.secondary.data(), requirements.secondary_bytes},
-            {workspace.views.data(), requirements.views_bytes}, &decoder)
+            {reinterpret_cast<std::uint8_t*>(workspace.views.data()),
+             requirements.views_bytes},
+            &decoder)
         != MARC_STATUS_OK) {
         std::abort();
     }

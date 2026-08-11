@@ -1879,7 +1879,7 @@ uint32_t marc_abi_version(void) noexcept {
 }
 
 const char* marc_version_string(void) noexcept {
-    return "0.1.2";
+    return "0.2.0";
 }
 
 const char* marc_status_name(const marc_status status) noexcept {

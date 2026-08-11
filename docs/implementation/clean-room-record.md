@@ -18432,3 +18432,41 @@ discarded and the reviewed seed retained.
   24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
   the Ubuntu 26.04 bundle. Every run reported 47 archives and revision
   `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`.
+
+## CR-0787: 2026-08-12 - Project version 0.2.0 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  all five typed-token LZSS contextual entropy profiles, canonicalizing
+  Contextual rANS, and recording schema-37 external evidence.
+- References used: DD-759; the repository release procedure; the 0.1.3
+  release policy; the public C version query; CMake package-version generation;
+  CHANGELOG history; and the recorded schema-37 verification results.
+- Known implementations intentionally not consulted: external release scripts,
+  package-version policies, changelog generators, release notes, and binary-
+  distribution workflows.
+- Independent decisions: use `0.2.0` to signal the intentional Contextual rANS
+  API removal and rename; retain ABI lifecycle version 1 and every published
+  stream identity; reject rather than reuse entropy identity `4/2`; publish
+  schema 37 as an independent namespace; and retain the stated non-x86-64,
+  representative-benchmark, and longer-fuzz evidence limits.
+- Generated-code task description: synchronize the CMake project version,
+  runtime C version string, metadata test, dated changelog, current validation
+  baseline, decision record, and provenance without changing codec bytes.
+- Similarity review: these changes are repository metadata and first-party
+  policy prose. No external versioning implementation or release automation
+  was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced optimized Release builds for
+  MSVC 19.51.36252/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. The
+  initial complete run exposed a stale documentation-baseline assertion; after
+  updating the assertion to schema 37 and the exact reconfigured inventory,
+  all 2,813 tests passed under each compiler with the 240-second per-test
+  limit, including the runtime `0.2.0` assertion, all 48 benchmark smokes, and
+  the schema-37-through-1 compatibility chain. The release build also exposed
+  MSVC C4324 on the canonical Contextual rANS fuzz workspace; replacing its
+  explicit byte-array alignment with the established `std::max_align_t` word
+  storage preserved capacity and alignment and compiled warning-free under
+  both compilers. The rebuilt Clang 22.1.3 ASan/UBSan/libFuzzer target then
+  completed another 1,000 bounded inputs without a crash, hang, or sanitizer
+  finding and peaked at 43 MiB RSS; no failure artifact was produced. The
+  exact release-preparation commit still requires pushed CI before the
+  annotated tag is created.

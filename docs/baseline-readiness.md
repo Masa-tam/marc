@@ -168,19 +168,22 @@ kept separate because it requires artifacts produced outside the local build.
 
 ## Current validation baseline
 
-All forty-two profiles in the current composition matrix satisfy the local
-`Ready` definition above and are present in interoperability schema 31. The
-internal canonical Huffman primitives remain support components rather than a
-separate public profile.
+All forty-two baseline profiles in the composition matrix satisfy the local
+`Ready` definition and remain present in interoperability schema 37 alongside
+the five experimental typed-token LZSS contextual profiles. The internal
+canonical Huffman primitives remain support components rather than a separate
+public profile.
 
-The optimized Release configuration currently enumerates 2,355 tests under
-both MSVC/Visual Studio 2026 and ClangCL on Windows x64. These suites cover the
-common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke and
-permanent regressions, installed-package behavior, documentation structure,
-and interoperability schema compatibility.
+The optimized Release configurations each enumerate 2,813 tests under
+MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
+the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
+and permanent regressions, installed-package behavior, documentation
+structure, and interoperability schema compatibility. Contextual rANS
+additionally completed a bounded 1,000-input Clang 22
+ASan/UBSan/libFuzzer smoke after canonicalization.
 
-The established four-direction schema-31 exchange at revision
-`903181080556c3bb511ad4a2e5275837ebda48e7` verifies all forty-two archives
+The established four-direction schema-37 exchange at revision
+`58b829dafa078e7dadd46e5de9ed7b1af45b5cc2` verifies all forty-seven archives
 across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
 producers. The remaining evidence gaps are listed below.
 

@@ -499,9 +499,9 @@ foreach(required_readiness_section IN ITEMS
     set(previous_readiness_section_offset "${readiness_section_offset}")
 endforeach()
 foreach(required_current_baseline IN ITEMS
-        "All forty-two profiles"
-        "currently enumerates 2,355 tests"
-        "four-direction schema-31 exchange")
+        "All forty-two baseline profiles"
+        "each enumerate 2,813 tests under"
+        "four-direction schema-37 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
     if(current_baseline_offset EQUAL -1)

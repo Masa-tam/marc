@@ -3,10 +3,21 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
-## Unreleased
+## 0.2.0 - 2026-08-12
 
 ### Added
 
+- Completed the experimental typed-token LZSS contextual family across Dynamic
+  Range, rANS, tANS, Blocked Huffman, and Adaptive Huffman backends. Each
+  profile has a bounded public C lifecycle, transactional CLI selector,
+  dependency-free benchmark adapter, malformed-input regressions, and a
+  fixed-memory dual-boundary fuzz harness.
+- Added interoperability schemas 35 through 37. Schema 35 adds Contextual
+  Blocked Huffman, schema 36 adds Contextual Adaptive Huffman, and schema 37
+  promotes canonical Contextual rANS naming without changing archive 44's
+  bytes. Four-direction exchanges verify every 47-archive schema-37 bundle at
+  revision `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2` across Windows/MSVC,
+  Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64 producers.
 - Added the experimental contextual tANS C ABI lifecycle. Its size-tagged
   configuration, direction-specific workspace query, and caller-owned factory
   expose the existing Format 2 `5/2` stream without exposing typed-token or
@@ -232,6 +243,12 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Changed
 
+- Promoted Contextual rANS entropy variant 3's bounded variable descriptor to
+  the sole canonical `lzss-contextual-rans` representation. Removed fixed-
+  descriptor variant 2 and all compact-qualified public, CLI, benchmark,
+  frame, entropy, and fuzz names without compatibility aliases. Existing
+  variant-3 bytes remain unchanged; retired entropy identity `4/2` is rejected
+  and canonical identity `4/3` is retained.
 - Reduced experimental contextual-rANS encoding from six reference LZSS
   match-search passes to two per frame by removing redundant nested planning.
   The transactional failure boundary, workspace contract, and encoded bytes
