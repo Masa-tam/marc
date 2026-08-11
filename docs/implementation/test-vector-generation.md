@@ -8293,3 +8293,18 @@ complete-stream size and ratio, both throughputs, each directional workspace
 region, and their peak sum. A smoke pass establishes wiring and round-trip
 correctness only; it imposes no ratio, speed, or workspace threshold and does
 not add a stable profile.
+
+### TVG-0625
+
+Register `marc_cli_lzss_contextual_adaptive_huffman_round_trip` through the
+common CLI file script. Build a deterministic repeated binary-text fixture,
+encode with the explicit selector, require Format 2 entropy bytes `01/02`,
+refuse a second write to the same path, decode with the same selector, and
+compare every output byte. Repeat for empty input.
+
+Decode a malformed file and a canonical archive with one appended byte.
+Require both operations to fail and leave neither the destination nor its
+temporary file. Exercise both directions through the public C lifecycle with
+the fixed 65,536-byte frame, exact 13,585-entry model bank,
+2,187,264-byte payload ceiling, and 8-MiB aggregate policies. This test does
+not add auto-detection, a stable profile, or an interoperability archive.

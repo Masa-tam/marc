@@ -1727,3 +1727,13 @@ calls. The adapter uses checked exact capacity, verifies a byte-exact round
 trip before timing, and reports both throughputs plus every caller-owned
 workspace region. The selector does not enter the stable benchmark matrix;
 CLI and interoperability admission remain future milestones.
+
+### CP-0101
+
+Contextual Adaptive Huffman now enters the CLI through one explicit selector
+and the same public ABI-1 lifecycle used by its benchmark. The common file
+adapter proves nonempty and empty round trips, Format 2 identity `1/2`,
+overwrite refusal, and transactional malformed/trailing rejection under both
+compilers. No typed layout, auto-detection, stable-profile entry, or
+interoperability archive is added; interoperability admission remains a future
+milestone.

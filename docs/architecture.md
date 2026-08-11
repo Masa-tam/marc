@@ -4864,3 +4864,11 @@ both directions. It fixes a 65,536-byte frame, exact 13,585-entry model bank,
 three workspace regions from the ABI. Checked capacity uses
 `112 + 80K + ceil(267N/8)`; an untimed exact round trip precedes all reported
 measurements. This adds no stable profile, CLI selector, or format field.
+
+The CLI now exposes that same composition only through the explicit
+`lzss-contextual-adaptive-huffman` selector. Its file adapter initializes the
+public configuration, queries and allocates the three opaque workspace
+regions, creates one immutable-direction transform, and uses the common
+transactional temporary-file loop. Empty and nonempty streams, malformed and
+trailing rejection, and overwrite protection therefore share the established
+CLI boundary without exposing token or FGK model layouts.

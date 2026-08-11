@@ -1896,3 +1896,14 @@ schema remain unchanged. All 2,875 registered tests, including
 `marc_interoperability_schema_compatibility`, pass under both compilers with
 the 240-second per-test limit. CLI and interoperability admission remain
 pending.
+
+### BR-0100
+
+Contextual Adaptive Huffman now has an explicit experimental CLI selector.
+Its registered test verifies Format 2 entropy identity `1/2`, nonempty and
+empty byte-exact round trips, overwrite refusal, malformed and strict-trailing
+rejection, and absence of destination or temporary output on failure under
+MSVC and ClangCL. The stable profile inventory and interoperability schema
+remain unchanged. All 2,876 registered tests, including
+`marc_interoperability_schema_compatibility`, pass under both compilers with
+the 240-second per-test limit. Interoperability admission remains pending.

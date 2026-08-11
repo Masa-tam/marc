@@ -4618,3 +4618,12 @@ neighboring contextual benchmark adapters as local architectural precedents.
 No external benchmark, corpus, Adaptive Huffman or LZSS implementation, source
 code, archive, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0524
+
+The Contextual Adaptive Huffman experimental CLI admission uses DD-728 through
+DD-746, TVG-0607 through TVG-0625, marc's public ABI-1 lifecycle, common CLI
+file-commit loop, registered round-trip script, and neighboring contextual CLI
+adapters as local architectural precedents. No external CLI, Adaptive Huffman
+or LZSS implementation, source code, archive, test vector, test suite, patent
+text, or optimization description was consulted.

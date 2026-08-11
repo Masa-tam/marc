@@ -89,6 +89,9 @@ directions and remains outside the stable 42-profile inventory.
 `lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
 Contextual Blocked Huffman entropy variant 2. It also requires the same
 explicit selector for encode and decode and remains experimental.
+`lzss-contextual-adaptive-huffman` selects typed LZSS plus Contextual Adaptive
+Huffman entropy variant 2. It also requires the same explicit selector for
+encode and decode and remains outside the stable 42-profile inventory.
 
 ### Common stream rules
 
@@ -187,6 +190,14 @@ its aggregate policy is 8 MiB. Both directions call only the public
 configuration initializer, requirements query, factory, process, and destroy
 functions. Typed tokens and Huffman tables remain in the queried opaque views;
 the CLI neither names nor sizes those private layouts.
+
+The experimental `lzss-contextual-adaptive-huffman` adapter uses 65,536-byte
+raw frames, at most one typed token per raw byte, the exact 9,067-node plus
+4,518-symbol model bank, and a `ceil(267F/8) = 2,187,264` payload ceiling. Its
+aggregate policy is 8 MiB. Both directions call only the public configuration
+initializer, requirements query, factory, process, and destroy functions.
+Typed tokens and FGK model storage remain in the queried opaque views; the CLI
+neither names nor sizes those private layouts.
 
 ### LZ78 profile parameters
 

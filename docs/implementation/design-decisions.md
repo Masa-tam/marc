@@ -15406,3 +15406,24 @@ query, and factory. Require an untimed byte-exact round trip before measuring
 either direction, then report complete-stream ratio, encode/decode throughput,
 peak caller-owned workspace, and every direction-specific workspace region.
 Measurements and the registered smoke test are descriptive, not thresholds.
+
+## DD-746: Contextual Adaptive Huffman CLI admission stays explicit
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add `lzss-contextual-adaptive-huffman` as an explicit experimental CLI
+selector for both encode and decode. Use the benchmark's 65,536-byte raw
+frame, one-token-per-byte ceiling, exact 13,585-entry model bank,
+`ceil(267F/8)` payload limit, and 8-MiB aggregate policy. Construct the
+transform only through the public ABI-1 configuration, direction-specific
+requirements query, factory, process, and destroy calls; private typed layouts
+must not enter the command-line layer.
+
+Register the common file round-trip test with Format 2 entropy identity `1/2`.
+Require a deterministic-fixture nonempty round trip and an empty round trip,
+refusal to overwrite an existing destination, malformed-stream and
+strict-trailing rejection, and no
+destination or temporary-file publication on failure. Keep selector choice
+explicit in both directions; do not add auto-detection, a stable profile, or
+an interoperability archive in this milestone.

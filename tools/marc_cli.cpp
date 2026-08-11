@@ -81,6 +81,15 @@ constexpr std::uint64_t lzss_contextual_blocked_huffman_payload_size =
     lzss_contextual_blocked_huffman_frame_size * UINT64_C(12);
 constexpr std::uint64_t lzss_contextual_blocked_huffman_buffered_size =
     UINT64_C(8) << 20;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_frame_size =
+    UINT64_C(1) << 16;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_payload_size =
+    (lzss_contextual_adaptive_huffman_frame_size * UINT64_C(267)
+     + UINT64_C(7)) / UINT64_C(8);
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_buffered_size =
+    UINT64_C(8) << 20;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_model_entries =
+    UINT64_C(9067) + UINT64_C(4518);
 constexpr std::uint64_t lzss_rans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_rans_dictionary_size =
     lzss_rans_frame_size * UINT64_C(2);
@@ -219,6 +228,7 @@ enum class Codec {
     lzss_contextual_rans_compact,
     lzss_contextual_tans,
     lzss_contextual_blocked_huffman,
+    lzss_contextual_adaptive_huffman,
     lzss_rans,
     lzss_tans,
     lz78,
@@ -938,6 +948,31 @@ bool configure(
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
+    marc_lzss_contextual_adaptive_huffman_config& config) {
+    const auto status =
+        marc_lzss_contextual_adaptive_huffman_config_init(direction, &config);
+    if (status != MARC_STATUS_OK) {
+        print_status("configuration failed", status);
+        return false;
+    }
+    config.original_size = original_size;
+    config.frame_size = static_cast<std::uint32_t>(
+        lzss_contextual_adaptive_huffman_frame_size);
+    config.max_frame_size = lzss_contextual_adaptive_huffman_frame_size;
+    config.max_block_size = lzss_contextual_adaptive_huffman_frame_size;
+    config.max_compressed_payload_size =
+        lzss_contextual_adaptive_huffman_payload_size;
+    config.max_internal_buffered_bytes =
+        lzss_contextual_adaptive_huffman_buffered_size;
+    config.max_lz_distance = UINT64_C(1) << 16;
+    config.max_lz_match_length = 258;
+    config.max_entropy_table_entries =
+        lzss_contextual_adaptive_huffman_model_entries;
+    return true;
+}
+
+bool configure(
+    const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_rans_config& config) {
     const auto status = marc_lzss_rans_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
@@ -1600,6 +1635,8 @@ bool process_file(const marc_direction direction,
     marc_lzss_contextual_tans_config lzss_contextual_tans_settings{};
     marc_lzss_contextual_blocked_huffman_config
         lzss_contextual_blocked_huffman_settings{};
+    marc_lzss_contextual_adaptive_huffman_config
+        lzss_contextual_adaptive_huffman_settings{};
     marc_lzss_rans_config lzss_rans_combined_config{};
     marc_lzss_tans_config lzss_tans_combined_config{};
     marc_lz78_config lz78_config{};
@@ -1689,6 +1726,12 @@ bool process_file(const marc_direction direction,
         if (!configure(
                 direction, source_size,
                 lzss_contextual_blocked_huffman_settings)) {
+            return false;
+        }
+    } else if (codec == Codec::lzss_contextual_adaptive_huffman) {
+        if (!configure(
+                direction, source_size,
+                lzss_contextual_adaptive_huffman_settings)) {
             return false;
         }
     } else if (codec == Codec::lzss_rans) {
@@ -1827,6 +1870,9 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_blocked_huffman)
         status = marc_lzss_contextual_blocked_huffman_workspace_requirements(
             &lzss_contextual_blocked_huffman_settings, &needed);
+    else if (codec == Codec::lzss_contextual_adaptive_huffman)
+        status = marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+            &lzss_contextual_adaptive_huffman_settings, &needed);
     else if (codec == Codec::lzss_rans)
         status = marc_lzss_rans_workspace_requirements(
             &lzss_rans_combined_config, &needed);
@@ -2007,6 +2053,10 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_blocked_huffman)
         status = marc_lzss_contextual_blocked_huffman_create(
             &lzss_contextual_blocked_huffman_settings, primary_buffer,
+            secondary_buffer, views_buffer, &raw_transform);
+    else if (codec == Codec::lzss_contextual_adaptive_huffman)
+        status = marc_lzss_contextual_adaptive_huffman_create(
+            &lzss_contextual_adaptive_huffman_settings, primary_buffer,
             secondary_buffer, views_buffer, &raw_transform);
     else if (codec == Codec::lzss_rans)
         status = marc_lzss_rans_create(
@@ -2258,6 +2308,7 @@ void usage() {
                  "lzss-dynamic-range, lzss-contextual-dynamic-range, "
                  "lzss-contextual-rans, lzss-contextual-rans-compact, "
                  "lzss-contextual-tans, lzss-contextual-blocked-huffman, "
+                 "lzss-contextual-adaptive-huffman, "
                  "lzss-rans, lzss-tans, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
@@ -2326,6 +2377,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_tans;
         else if (name == "lzss-contextual-blocked-huffman")
             codec = Codec::lzss_contextual_blocked_huffman;
+        else if (name == "lzss-contextual-adaptive-huffman")
+            codec = Codec::lzss_contextual_adaptive_huffman;
         else if (name == "lzss-rans")
             codec = Codec::lzss_rans;
         else if (name == "lzss-tans")

@@ -18149,3 +18149,32 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The sandboxed MSVC build first
   encountered the known FileTracker access denial and passed unchanged through
   the established approved build route.
+
+## CR-0776: 2026-08-11 - Contextual Adaptive Huffman CLI admission
+
+- Authoring method: added one explicit command-line selector by composing the
+  existing public C lifecycle with marc's transactional file adapter after
+  fixing limits and failure behavior in repository documentation.
+- References used: DD-728 through DD-746; IR-0524; TVG-0607 through TVG-0625;
+  marc's public Contextual Adaptive Huffman lifecycle, benchmark policy,
+  common CLI round-trip script, and neighboring contextual CLI adapters.
+- Known implementations intentionally not consulted: external CLIs, Adaptive
+  Huffman or LZSS implementations, source code, archives, test vectors, test
+  suites, patent text, and optimization descriptions.
+- Independent decisions: retain the 65,536-byte frame, exact 13,585-entry
+  model bank, 2,187,264-byte payload ceiling, and 8-MiB aggregate policy;
+  require explicit selector symmetry, Format 2 identity `1/2`, transactional
+  failure cleanup, and no stable or interoperability admission.
+- Generated-code task description: add CLI constants, selector/configuration/
+  requirements/factory dispatch, help text, registered nonempty/empty and
+  malformed/trailing round-trip coverage, and synchronized documentation.
+- Similarity review: names, limits, dispatch structure, file lifecycle, and
+  tests derive solely from marc's public ABI and repository-owned CLI pattern;
+  no external implementation expression entered the work.
+- Local validation: the focused CLI test passes under MSVC 19.51.36252 and
+  ClangCL 22.1.3, including entropy identity, round trips, overwrite refusal,
+  malformed and trailing rejection, and failure cleanup. All 2,876 registered
+  tests pass under each compiler with the 240-second per-test limit; both full
+  runs include and pass `marc_interoperability_schema_compatibility`. MSVC was
+  built through the established approved route for its sandboxed FileTracker
+  behavior.
