@@ -1483,6 +1483,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_adaptive_huffman_frame_streaming_decoder_tests.cpp
         tests/lzss_contextual_adaptive_huffman_frame_streaming_encoder_tests.cpp
         tests/lzss_contextual_adaptive_huffman_profile_tests.cpp
+        tests/lzss_contextual_adaptive_huffman_completion_tests.cpp
         tests/lzss_contextual_blocked_huffman_decoder_tests.cpp
         tests/lzss_contextual_blocked_huffman_encoder_tests.cpp
         tests/lzss_contextual_tans_encoder_tests.cpp

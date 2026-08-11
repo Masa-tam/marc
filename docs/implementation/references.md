@@ -4570,3 +4570,12 @@ validation, and neighboring contextual C lifecycles as local architectural
 precedents. No external Adaptive Huffman, LZSS, C API, allocator, source code,
 archive, test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0519
+
+The Contextual Adaptive Huffman public completion audit uses DD-728 through
+DD-741, TVG-0607 through TVG-0620, only the ABI-1 C header and common transform
+lifecycle, the independently specified Format 2 frame layout, and neighboring
+public completion audits as local architectural precedents. No external
+Adaptive Huffman, LZSS, completion suite, source code, archive, test vector,
+test suite, patent text, or optimization description was consulted.

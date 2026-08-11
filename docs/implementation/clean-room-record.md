@@ -17995,3 +17995,34 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets build under
   both compilers; MSVC uses the established approved route for its sandboxed
   FileTracker behavior.
+
+## CR-0771: 2026-08-11 - Contextual Adaptive Huffman public completion audit
+
+- Authoring method: exercised the completed Contextual Adaptive Huffman path
+  solely through its public ABI-1 lifecycle and common process results, without
+  importing any private codec or workspace type into the audit.
+- References used: DD-728 through DD-741; IR-0519; TVG-0607 through TVG-0620;
+  marc's public C header, independently specified Format 2 layout, and local
+  public completion-audit structure.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, completion, conformance, or malformed-input implementations,
+  source code, archives, test vectors, test suites, patent text, and
+  optimization descriptions.
+- Independent decisions: cover every one-byte value and the required binary
+  classes through repeated public encoding; compare whole, one-byte, and mixed
+  chunk schedules; and damage only the fourth frame so the exact boundary
+  between committed and atomic output is observable.
+- Generated-code task description: add a public-only completion audit for
+  required round trips, deterministic chunking, sticky EndOfStream, corrupted,
+  truncated, and trailing final-frame rejection, and update architecture,
+  format, C API, composition, readiness, test, decision, reference, and
+  provenance records.
+- Similarity review: the audit uses only marc's public contract and its own
+  deterministic generated inputs; no external test expression entered the
+  work.
+- Local validation: all three focused completion tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,869 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets build under
+  both compilers; MSVC uses the established approved route for its sandboxed
+  FileTracker behavior.

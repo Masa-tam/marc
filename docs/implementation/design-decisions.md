@@ -15307,3 +15307,23 @@ pairwise used-prefix overlaps before publishing a transform. Keep destroy and
 process behavior on the common ABI-1 transform contract. This additive family
 does not change the ABI version or serialized bytes and does not yet admit a
 CLI selector, benchmark, fuzzer, or interoperability archive.
+
+## DD-741: Contextual Adaptive Huffman completion is proven through ABI 1
+
+- Date: 2026-08-11
+- Status: accepted
+
+Audit the single Contextual Adaptive Huffman representation entirely through
+its public configuration, requirements, create, process, and destroy calls.
+Require empty input, all one-byte values, all byte values in sequence,
+repetition, mixed binary patterns, deterministic pseudo-random data, and sizes
+immediately around the 64-byte test-frame boundary to round trip with stable
+bytes. Require multi-frame bytes and output to be identical under one-byte and
+mixed input/output chunk schedules, with sticky EndOfStream.
+
+Corrupt, truncate, and append data to only the final frame of a four-frame
+stream. Earlier complete frames may remain committed, but the final frame must
+publish no raw byte and the terminal malformed-stream result must be sticky.
+Do not use a private parser, encoder, decoder, or workspace type in this audit.
+This milestone changes no format or public symbol and does not yet admit
+fuzzing, benchmark, CLI, or interoperability support.

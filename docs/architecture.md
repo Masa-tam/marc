@@ -4835,3 +4835,10 @@ publishing the common transform handle. Encoding binds raw input, serialized
 frame, then token/node/symbol views. Decoding binds serialized input, atomic
 raw output, then node/symbol/token views. No allocator callback, native C++
 type, or additional serialized field crosses ABI 1.
+
+The public completion audit now treats that ABI as the sole observable
+composition boundary. It proves required binary classes and deterministic
+multi-frame chunking without reaching into the private profile. For a damaged,
+truncated, or trailing final frame, previously completed raw frames remain
+committed while the current frame's atomic output remains unpublished; the
+resulting terminal error is stable on later calls.

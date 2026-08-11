@@ -6550,3 +6550,7 @@ The ABI-1 Contextual Adaptive Huffman C lifecycle changes none of these bytes.
 Its size-tagged configuration, three workspace byte counts and alignment,
 opaque typed-view partition, transform handle, and stable status mapping are
 process-local contracts and never appear in the stream.
+
+The later public completion audit also introduces no serialized field or
+variant. Whole-buffer, one-byte, and mixed chunk schedules are required to
+produce the same bytes already defined above.

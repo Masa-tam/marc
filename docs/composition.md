@@ -1677,3 +1677,14 @@ binary round trip, exact workspace derivation, structure/version/reserved-field
 validation, short and misaligned storage rejection, all pairwise overlap
 classes, and null-handle safety. CLI, benchmark, fuzzing, completion audit, and
 interoperability admission remain future milestones.
+
+### CP-0096
+
+Contextual Adaptive Huffman now passes its public completion audit entirely
+through ABI 1. Empty input, every single-byte value, ordered alphabet,
+repetition, mixed binary, deterministic random, frame-boundary, deterministic
+multi-frame chunking, and sticky terminal behavior are covered. Corruption,
+truncation, and trailing data in the final frame commit only earlier complete
+frames and preserve the current frame's output sentinel. Malformed regression,
+fuzzing, benchmark, CLI, and interoperability admission remain future
+milestones.

@@ -207,6 +207,10 @@ output, and views for nodes, symbols, then tokens. Capacity, alignment, and
 pairwise used-prefix overlap are validated before handle publication. The
 additive ABI-1 family emits only dictionary identity `2/2`, context identity
 `1/1`, and entropy identity `1/2`; no typed C++ layout crosses the ABI.
+Its public completion audit covers all required binary classes, deterministic
+whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
+and frame-atomic rejection of corrupted, truncated, or trailing final-frame
+data.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

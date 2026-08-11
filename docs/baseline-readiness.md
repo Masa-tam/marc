@@ -1837,3 +1837,15 @@ MSVC and ClangCL. All 2,866 registered tests, including
 the 240-second per-test limit; static and shared targets build successfully.
 Public completion, malformed regression, fuzzing, benchmark, CLI, and
 interoperability admission remain pending.
+
+### BR-0095
+
+Contextual Adaptive Huffman now satisfies the local public completion audit
+through only its ABI-1 C lifecycle. The audit proves required binary classes,
+byte-identical repeated encoding, one-byte and mixed multi-frame chunking,
+sticky EndOfStream, and frame-atomic malformed final-frame rejection for
+corruption, truncation, and trailing data under MSVC and ClangCL. Private
+completion helpers are not part of the proof. All 2,869 registered tests,
+including `marc_interoperability_schema_compatibility`, pass under both local
+compilers with the 240-second per-test limit. Dedicated malformed regression,
+fuzzing, benchmark, CLI, and interoperability admission remain pending.

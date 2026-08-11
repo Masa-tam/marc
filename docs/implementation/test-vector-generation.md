@@ -8215,3 +8215,19 @@ Require failed factories to leave the transform pointer null. Run the C11
 boundary through the configured production-library target, build both shared
 and static libraries, and execute the full registered suites under MSVC and
 ClangCL.
+
+### TVG-0620
+
+Through only the public Contextual Adaptive Huffman C lifecycle, round trip
+empty input, each one-byte value, the ordered 256-byte alphabet, 257 zeroes, a
+259-byte mixed binary pattern, 513 deterministic pseudo-random bytes, and
+deterministic inputs of 63, 64, and 65 bytes. Encode each case twice and require
+identical Format 2 identity `2/2 + 1/1 + 1/2` and bytes.
+
+Encode and decode 193 deterministic bytes through whole-buffer, one-byte, and
+two mixed chunk schedules and require the same stream and raw output. Corrupt
+the final frame sequence, truncate its last byte, and append one trailing byte;
+require each public decoder to commit exactly the first 192 raw bytes, preserve
+the sentinel final output byte, report malformed stream, and repeat the same
+terminal error with zero further progress. Run the focused audit and complete
+registered suites under MSVC and ClangCL.
