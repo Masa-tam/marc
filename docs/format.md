@@ -6375,3 +6375,10 @@ and decoder workspace ceilings from the documented six decisions per raw byte,
 decoder maximum. These are allocation bounds only and do not pad a frame or
 force unused tables into the representation. Public profile admission remains
 outside this milestone.
+
+The public C lifecycle adds no serialized field or alternative representation.
+Its initializer, workspace query, and factory admit exactly the already
+reserved Format 2 dictionary identity `2/2` plus entropy identity `2/2`.
+Workspace byte counts, alignment, C structure size tags, and ABI version are
+process-local contracts and never appear in a stream. CLI, benchmark,
+completion, fuzzing, and interoperability admission remain later milestones.

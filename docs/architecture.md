@@ -4658,3 +4658,12 @@ Windows/MSVC and Ubuntu 24.04/Ninja CI producers on Ubuntu 26.04/Clang, then
 verifies the Ubuntu 26.04 bundle both locally and with Windows/MSVC. Exact
 decode and byte-identical re-encoding establish the contextual-tANS bytes
 across all three recorded x86-64 producers.
+
+The public Contextual Blocked Huffman C boundary now exposes its private
+streaming lifecycle without exporting typed-token or decode-table layouts. A
+size-tagged ABI-1 configuration fixes one direction; the requirements query
+derives raw/serialized, atomic-output, and aligned opaque-view extents from
+trusted local limits; and the factory rejects short, misaligned, or overlapping
+regions before partitioning them in C++. The common process/destroy contract
+then emits and accepts the unchanged Format 2 dictionary `2/2`, entropy `2/2`
+representation. Public completion and tool admission remain separate work.

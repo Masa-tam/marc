@@ -17340,3 +17340,33 @@ discarded and the reviewed seed retained.
   ClangCL 22.1.3. All 2,774 registered MSVC tests pass with a 240-second
   per-test limit in 149.94 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 60.84 seconds.
+
+## CR-0749: 2026-08-11 - Contextual Blocked Huffman public C lifecycle
+
+- Authoring method: exposed marc's completed private profile through the
+  established ABI-1 size-tag, workspace-query, opaque-handle, process, and
+  destroy boundary without changing its stream or exporting C++ layouts.
+- References used: AGENTS.md sections 3, 4, 5, 7, 11, 12, 14, 15, and 16;
+  DD-709 through DD-719; IR-0497; TVG-0588 through TVG-0598; marc's private
+  profile, streaming transforms, checked overlap helpers, stable status map,
+  and neighboring contextual public lifecycles.
+- Known implementations intentionally not consulted: external C compression
+  APIs, Huffman or DEFLATE implementations, source code, archives, corpora,
+  test vectors, test suites, and optimization descriptions.
+- Independent decisions: retain ABI version 1 for the additive family; mirror
+  the contextual fixed-width configuration shape; return only byte extents and
+  alignment; reject short, misaligned, and pairwise-overlapping used prefixes;
+  and preserve Format 2 dictionary `2/2`, entropy `2/2` exactly.
+- Generated-code task description: add the public configuration and three
+  functions, connect direction-specific profile partitions, compile a C11-only
+  round-trip and invalid-workspace client, update the exact experimental API
+  inventory check, and document the ownership and serialization boundaries.
+- Similarity review: public names, configuration fields, workspace ownership,
+  validation order, test input, and documentation were derived from marc's
+  local ABI and private profile; no external implementation expression entered
+  the work.
+- Local validation: the focused C11 ABI test passes under MSVC 19.51.36252 and
+  ClangCL 22.1.3. All 2,775 registered MSVC tests pass with a 240-second
+  per-test limit in 146.79 seconds, including interoperability compatibility in
+  58.76 seconds. All 2,728 registered ClangCL tests pass in 156.22 seconds,
+  including the same compatibility test in 60.57 seconds.

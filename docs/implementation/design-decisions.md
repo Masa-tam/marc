@@ -14898,3 +14898,23 @@ typed views explicitly and reject forged, short, or misaligned partitions
 transactionally. Keep the existing LZSS `2/2` bounds and map stable profile
 errors to the core error categories. This profile remains private and does not
 yet add a public C lifecycle or completion claim.
+
+## DD-719: Contextual Blocked Huffman enters ABI 1 through opaque workspaces
+
+- Date: 2026-08-11
+- Status: accepted
+
+Expose the private DD-718 profile as a distinct additive C function family.
+Use a fixed-width, size-tagged configuration with immutable direction and the
+same frame, LZSS, and hard-limit fields as the other contextual profiles.
+Require callers to query three direction-specific regions before construction:
+encoder raw input, serialized frame, and typed tokens; or decoder serialized
+frame, atomic raw output, and aligned tables followed by tokens.
+
+Do not expose C++ view layouts or object placement. The factory validates
+configuration tags, reserved fields, capacity, required alignment, and
+pairwise used-prefix non-overlap before partitioning or publishing a transform.
+Retain the common process/destroy and sticky-error contracts and the unchanged
+Format 2 dictionary `2/2`, entropy `2/2` identity. Treat completion, CLI,
+benchmark, fuzzing, and interoperability as later, independently audited
+milestones.

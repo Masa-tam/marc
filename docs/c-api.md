@@ -178,6 +178,20 @@ the baseline CLI and interoperability inventory. Its completion audit covers
 all required binary classes, deterministic mixed and one-byte chunk schedules,
 stable repeated terminal calls, and frame-atomic rejection of corrupted,
 truncated, or trailing final-frame data.
+The experimental LZSS Contextual Blocked Huffman factory is a fourth distinct
+Format 2 lifecycle. Initialize its size-tagged configuration with
+`marc_lzss_contextual_blocked_huffman_config_init()`, repeat
+`marc_lzss_contextual_blocked_huffman_workspace_requirements()` whenever the
+immutable direction, known size, frame/LZSS parameters, or hard limits change,
+and give all three returned regions to the factory. Encoding uses primary for
+raw-frame input, secondary for the complete serialized frame, and aligned
+opaque views for typed tokens. Decoding uses primary for serialized input,
+secondary for atomic raw output, and views for at most 35 bounded Huffman
+decode tables followed by typed tokens. Capacity, alignment, and pairwise
+prefix non-overlap are checked before a handle is published. The additive ABI-1
+family emits only dictionary identity `2/2` and entropy identity `2/2`; no C++
+token or table layout crosses the ABI. CLI, benchmark, completion, fuzzing, and
+interoperability admission remain later milestones.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

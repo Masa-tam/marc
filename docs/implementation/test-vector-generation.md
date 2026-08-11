@@ -7873,3 +7873,18 @@ tables. Reject unsupported LZSS parameters, payload/block/table/aggregate
 limits, forged layouts, short storage, and misalignment without publishing
 views. Finally construct both streaming transforms solely from calculated
 requirements and round-trip `ABABX` across three frames.
+
+### TVG-0598
+
+Compile a C11-only client against the public header. Initialize the Contextual
+Blocked Huffman encoder configuration and require ABI-1 size tags plus the
+documented LZSS defaults. Under a two-byte frame limit, query nonzero bounded
+raw, serialized-frame, and aligned opaque-view regions, create the transform,
+encode `ABABX`, and require Format 2 dictionary and entropy identities `2/2`.
+
+Independently initialize and query decoding, create it from three fresh caller
+regions, and require exact reconstruction across the three encoded frames.
+Reject each one-byte-short region, overlapping used prefixes, misaligned views,
+a null transform output, nonzero reserved fields, altered structure size or ABI
+version, invalid direction, and null configuration/requirements/initializer
+arguments. Every failed factory call must leave the handle null.

@@ -4364,3 +4364,12 @@ format maxima, streaming constructors, checked arithmetic, alignment rules,
 and decoder limits. No external workspace calculator, Huffman or DEFLATE
 implementation, source code, archive, corpus, test vector, test suite, or
 optimization description was consulted.
+
+### IR-0497
+
+The Contextual Blocked Huffman public C lifecycle uses DD-709 through DD-719,
+TVG-0588 through TVG-0598, marc's private profile, common ABI-1 transform
+lifecycle, checked workspace-prefix overlap rules, and neighboring contextual
+rANS/tANS public factories as local architectural precedents. No external C
+compression API, Huffman or DEFLATE implementation, source code, archive,
+corpus, test vector, test suite, or optimization description was consulted.

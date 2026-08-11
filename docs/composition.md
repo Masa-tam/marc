@@ -1474,3 +1474,13 @@ evidence at revision `4929252144e4bfe44fb3ec076f548aa47e4ff111`.
 Windows/MSVC and Ubuntu 24.04 archives verify on Ubuntu 26.04/Clang, while the
 Ubuntu 26.04 bundle verifies there and on Windows/MSVC. All 45 archives decode
 and re-encode byte-identically in every path.
+
+### CP-0075
+
+The Contextual Blocked Huffman composition now has an experimental public C
+lifecycle. Its size-tagged configuration, direction-specific workspace query,
+and factory preserve the common three-region ownership contract while
+reconstructing typed tokens and bounded Huffman decode tables only inside C++.
+The stream remains exactly Format 2 dictionary `2/2`, entropy `2/2`;
+completion, CLI, benchmark, fuzzing, and interoperability admission remain
+future work.
