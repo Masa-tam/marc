@@ -157,7 +157,10 @@ serialize_lzss_contextual_tans_stream_header(
     }
     if (!core::store_le(
             std::span<std::byte>{encoded}, 16,
-            static_cast<std::uint16_t>(5))) {
+            static_cast<std::uint16_t>(5))
+        || !core::store_le(
+            std::span<std::byte>{encoded}, 18,
+            static_cast<std::uint16_t>(2))) {
         return LzssContextualTansStreamHeaderError::arithmetic_overflow;
     }
     std::ranges::copy(encoded, output.begin());
@@ -190,7 +193,10 @@ LzssContextualTansStreamHeaderError parse_lzss_contextual_tans_stream_header(
         adapted.begin());
     if (!core::store_le(
             std::span<std::byte>{adapted}, 16,
-            static_cast<std::uint16_t>(4))) {
+            static_cast<std::uint16_t>(4))
+        || !core::store_le(
+            std::span<std::byte>{adapted}, 18,
+            static_cast<std::uint16_t>(3))) {
         return LzssContextualTansStreamHeaderError::arithmetic_overflow;
     }
     LzssContextualRansStreamHeader common{};

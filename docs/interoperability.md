@@ -10,9 +10,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-36 bundle contains the same generated `input.bin`, the
+Each current schema-37 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, five experimental Format 2 archives, and
-`manifest.json`. The manifest declares codec set `marc-cli-v36` and records
+`manifest.json`. The manifest declares codec set `marc-cli-v37` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -112,7 +112,11 @@ requires `marc-cli-v34` and all forty-five archives, appending the experimental
 `lzss-contextual-blocked-huffman` archive to the frozen schema-34 order. Schema
 36 requires `marc-cli-v36` and all forty-seven archives, appending the
 experimental `lzss-contextual-adaptive-huffman` archive to the frozen
-schema-35 order. No schema silently inherits profiles added by a later schema.
+schema-35 order. Schema 37 requires `marc-cli-v37` and the same forty-seven
+archive bytes and order, but renames archive 44's manifest codec and leaf from
+the historical `lzss-contextual-rans-compact` to the canonical
+`lzss-contextual-rans`. No schema silently inherits profiles or names added by
+a later schema.
 
 ## Integrity and current evidence
 
@@ -121,10 +125,11 @@ and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 36 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 35
-compatibility evidence. Its external Windows/MSVC, Ubuntu 24.04/Ninja, and
-Ubuntu 26.04/Clang four-direction verification is recorded below.
+Schema 37 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 36
+compatibility evidence. Its four-direction external verification remains to
+be recorded. Schema 36's completed Windows/MSVC, Ubuntu 24.04/Ninja, and
+Ubuntu 26.04/Clang evidence remains recorded below.
 
 ## Work-product policy
 

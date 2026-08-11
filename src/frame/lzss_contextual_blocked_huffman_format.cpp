@@ -195,7 +195,7 @@ parse_lzss_contextual_blocked_huffman_stream_header(
     std::ranges::copy_n(input.begin(), adapted.size(), adapted.begin());
     const std::span<std::byte> bytes{adapted};
     if (!core::store_le(bytes, 16, std::uint16_t{4})
-        || !core::store_le(bytes, 18, std::uint16_t{2})) {
+        || !core::store_le(bytes, 18, std::uint16_t{3})) {
         return LzssContextualBlockedHuffmanStreamHeaderError::
             arithmetic_overflow;
     }

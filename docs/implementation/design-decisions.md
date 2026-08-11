@@ -15543,3 +15543,15 @@ generic compact-model records because Contextual tANS also consumes them.
 Preserve applicable scalar-state, malformed-input, limit, aliasing, and token
 validation tests through the canonical serialized entry rather than deleting
 coverage with the retired representation.
+
+## DD-756: Derived contextual headers adapt through identity 4/3
+
+- Date: 2026-08-12
+- Status: accepted
+
+Contextual tANS, Blocked Huffman, and Adaptive Huffman reuse the common
+Contextual rANS stream-header field parser only through a private adapted
+copy. After retiring identity `4/2`, that copy must select the canonical base
+identity `4/3`; each derived serializer still overwrites both entropy fields
+with its own unchanged identity (`5/2`, `2/2`, or `1/2`). This is a private
+validation dependency and must not change any derived profile byte.

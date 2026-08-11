@@ -37,11 +37,35 @@ function Convert-Bundle(
     Write-Manifest $manifestPath $manifest
 }
 
+function Convert-Schema37To36([string]$Source, [string]$Destination) {
+    Copy-Item -LiteralPath $Source -Destination $Destination -Recurse
+    $manifestPath = Join-Path $Destination 'manifest.json'
+    $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+    $manifest.schema_version = 36
+    $manifest.codec_set = 'marc-cli-v36'
+    $entry = @($manifest.archives | Where-Object {
+        $_.codec -eq 'lzss-contextual-rans' })
+    if ($entry.Count -ne 1) {
+        throw 'Schema 37 must contain one canonical Contextual rANS archive'
+    }
+    $oldFile = 'lzss-contextual-rans.marc'
+    $newFile = 'lzss-contextual-rans-compact.marc'
+    if ([string]$entry[0].file -ne $oldFile) {
+        throw 'Schema 37 Contextual rANS leaf name is not canonical'
+    }
+    Move-Item -LiteralPath (Join-Path $Destination $oldFile) `
+        -Destination (Join-Path $Destination $newFile)
+    $entry[0].codec = 'lzss-contextual-rans-compact'
+    $entry[0].file = $newFile
+    Write-Manifest $manifestPath $manifest
+}
+
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema37 = Join-Path $root 'schema37'
+$schema37Reordered = Join-Path $root 'schema37-reordered'
 $schema36 = Join-Path $root 'schema36'
-$schema36Reordered = Join-Path $root 'schema36-reordered'
 $schema35 = Join-Path $root 'schema35'
 $schema34 = Join-Path $root 'schema34'
 $schema33 = Join-Path $root 'schema33'
@@ -130,22 +154,31 @@ $schema32Profiles = $schema31Profiles + @('lzss-contextual-dynamic-range')
 $schema33Profiles = $schema32Profiles + @('lzss-contextual-rans-compact')
 $schema34Profiles = $schema33Profiles + @('lzss-contextual-tans')
 $schema35Profiles = $schema34Profiles + @('lzss-contextual-blocked-huffman')
+$schema36Profiles = $schema35Profiles + @('lzss-contextual-adaptive-huffman')
+$schema37Profiles = @(
+    $schema36Profiles | ForEach-Object {
+        if ($_ -eq 'lzss-contextual-rans-compact') {
+            'lzss-contextual-rans'
+        } else {
+            $_
+        }
+    })
 
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema36 `
+        -OutputDirectory $schema37 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -BundleDirectory $schema36 `
-        -OutputDirectory (Join-Path $root 'verified36')
+        -BundleDirectory $schema37 `
+        -OutputDirectory (Join-Path $root 'verified37')
 
-    Copy-Item -LiteralPath $schema36 -Destination $schema36Reordered -Recurse
-    $reorderedManifestPath = Join-Path $schema36Reordered 'manifest.json'
+    Copy-Item -LiteralPath $schema37 -Destination $schema37Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema37Reordered 'manifest.json'
     $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
         ConvertFrom-Json
     $firstArchive = $reorderedManifest.archives[0]
@@ -156,8 +189,8 @@ try {
     try {
         & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
             -MarcCli $resolvedCli `
-            -BundleDirectory $schema36Reordered `
-            -OutputDirectory (Join-Path $root 'verified36-reordered')
+            -BundleDirectory $schema37Reordered `
+            -OutputDirectory (Join-Path $root 'verified37-reordered')
     } catch {
         if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
             throw
@@ -165,8 +198,14 @@ try {
         $reorderedRejected = $true
     }
     if (-not $reorderedRejected) {
-        throw 'Verifier accepted a reordered schema-36 manifest'
+        throw 'Verifier accepted a reordered schema-37 manifest'
     }
+
+    Convert-Schema37To36 $schema37 $schema36
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema36 `
+        -OutputDirectory (Join-Path $root 'verified36')
 
     Convert-Bundle $schema36 $schema35 35 'marc-cli-v35' $schema35Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
@@ -378,7 +417,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 36'
+    Write-Host 'Verified interoperability schemas 1 through 37'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

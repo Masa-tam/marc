@@ -4,7 +4,6 @@
 #include "core/limits.hpp"
 #include "dictionary/lzss_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
-#include "entropy/contextual_rans_format.hpp"
 
 #include <cstddef>
 #include <cstdint>

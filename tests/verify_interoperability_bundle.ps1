@@ -109,6 +109,14 @@ $schema33Profiles = $schema32Profiles + @('lzss-contextual-rans-compact')
 $schema34Profiles = $schema33Profiles + @('lzss-contextual-tans')
 $schema35Profiles = $schema34Profiles + @('lzss-contextual-blocked-huffman')
 $schema36Profiles = $schema35Profiles + @('lzss-contextual-adaptive-huffman')
+$schema37Profiles = @(
+    $schema36Profiles | ForEach-Object {
+        if ($_ -eq 'lzss-contextual-rans-compact') {
+            'lzss-contextual-rans'
+        } else {
+            $_
+        }
+    })
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -289,6 +297,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema36Profiles
+} elseif ($manifest.schema_version -eq 37) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v37') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema37Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -332,14 +345,19 @@ foreach ($entry in $manifest.archives) {
 
     $decodedPath = Join-Path $resolvedOutput "$codec.decoded"
     $reencodedPath = Join-Path $resolvedOutput "$codec.marc"
+    $cliCodec = if ($codec -eq 'lzss-contextual-rans-compact') {
+        'lzss-contextual-rans'
+    } else {
+        $codec
+    }
     Invoke-Marc @(
-        'decode', '--codec', $codec, $archivePath, $decodedPath)
+        'decode', '--codec', $cliCodec, $archivePath, $decodedPath)
     if (-not (Test-FileBytesEqual $inputPath $decodedPath)) {
         throw "Decoded bytes differ from the fixture: $codec"
     }
 
     Invoke-Marc @(
-        'encode', '--codec', $codec, $inputPath, $reencodedPath)
+        'encode', '--codec', $cliCodec, $inputPath, $reencodedPath)
     if (-not (Test-FileBytesEqual $archivePath $reencodedPath)) {
         throw "Locally re-encoded archive differs: $codec"
     }

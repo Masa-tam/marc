@@ -8397,3 +8397,14 @@ bridge with invalid matches, contradictory counts, raw-size mismatch, short
 and overlapping workspaces, aggregate limits, deterministic direct encoding,
 and exact descriptor-size agreement. Build warning-clean and run the focused
 canonical Contextual rANS set under ClangCL and MSVC.
+
+### TVG-0633
+
+Generate schema 37 with the canonical Contextual rANS name at archive 44,
+verify all 47 archives, and reject a reordered manifest. Convert schema 37 to
+36 by renaming only that manifest entry and leaf file, privately map the old
+name to the canonical CLI selector, and verify the unchanged bytes before
+continuing through every schema to 1. Exercise Contextual tANS, Blocked
+Huffman, and Adaptive Huffman stream-header round trips after changing the
+common adapted identity from retired `4/2` to canonical `4/3`; require their
+serialized entropy identities to remain `5/2`, `2/2`, and `1/2`.

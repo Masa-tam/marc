@@ -4691,3 +4691,12 @@ decoder, and Contextual tANS shared model records as local precedents. No
 external rANS or compression implementation, source code, API, archive,
 corpus, test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0532
+
+Schema-37 migration and contextual header inheritance use DD-751, DD-756,
+TVG-0633, marc's schema-36 scripts, canonical Contextual rANS header parser,
+three derived contextual format adapters, and repository-generated fixtures as
+local precedents. No external compression implementation, source code, API,
+archive, corpus, test vector, test suite, patent text, or optimization
+description was consulted.

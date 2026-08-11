@@ -18349,3 +18349,25 @@ discarded and the reviewed seed retained.
 - Local validation: ClangCL 22.1.3 builds the library, CLI, and complete core
   test executable warning-clean; all 81 focused Contextual rANS, C API, CLI,
   benchmark, malformed, and completion tests pass with a 240-second timeout.
+
+## CR-0784: 2026-08-12 - Schema 37 canonical-name migration
+
+- Authoring method: changed the current generated bundle to schema 37,
+  introduced exact historical-name conversion for schema 36, and updated the
+  verifier with a private old-name-to-canonical-CLI mapping.
+- References used: DD-751 and DD-756; IR-0532; TVG-0633; marc's schema-36
+  generator, verifier, downgrade test, and contextual stream-header adapters.
+- Known implementations intentionally not consulted: external compression
+  implementations, source code, APIs, archives, corpora, test vectors, test
+  suites, patent text, and optimization descriptions.
+- Independent decisions: retain 47 archives and archive-44 bytes; change only
+  its current manifest and leaf name; keep schemas 1 through 36 frozen; adapt
+  derived header validation through `4/3` while preserving their own bytes.
+- Generated-code task description: implement schema 37, its exact downgrade,
+  legacy verifier mapping, and fix derived contextual header reuse exposed by
+  the full compatibility test.
+- Similarity review: the work modifies marc-owned scripts and common header
+  composition only; no external implementation expression entered the work.
+- Local validation: MSVC 19.51.36252 generated and verified schema 37, rejected
+  reordered schema 37, and verified the complete downgrade chain through
+  schema 1 in 72.27 seconds under the 240-second limit.
