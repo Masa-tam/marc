@@ -50,8 +50,6 @@
 #include "frame/lzss_typed_context_profile.hpp"
 #include "frame/lzss_contextual_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_streaming_encoder.hpp"
-#include "frame/lzss_contextual_rans_compact_frame_streaming_decoder.hpp"
-#include "frame/lzss_contextual_rans_compact_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_rans_profile.hpp"
 #include "frame/lzss_contextual_tans_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_tans_frame_streaming_encoder.hpp"
@@ -1284,7 +1282,7 @@ marc_status contextual_rans_workspace_requirements(
         marc::frame::internal::
             LzssContextualRansEncoderWorkspaceRequirements needed{};
         const auto error =
-            marc::frame::internal::make_lzss_contextual_rans_compact_profile(
+            marc::frame::internal::make_lzss_contextual_rans_profile(
                 {config->original_size, config->frame_size, dictionary},
                 limits, stream, needed);
         if (error != marc::frame::internal::
@@ -1303,7 +1301,7 @@ marc_status contextual_rans_workspace_requirements(
         marc::frame::internal::
             LzssContextualRansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
-            calculate_lzss_contextual_rans_compact_decoder_workspace(
+            calculate_lzss_contextual_rans_decoder_workspace(
                 limits, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1373,7 +1371,7 @@ marc_status create_contextual_rans(
         marc::frame::internal::
             LzssContextualRansEncoderWorkspaceRequirements needed{};
         const auto error =
-            marc::frame::internal::make_lzss_contextual_rans_compact_profile(
+            marc::frame::internal::make_lzss_contextual_rans_profile(
                 {config->original_size, config->frame_size, dictionary},
                 limits, stream, needed);
         if (error != marc::frame::internal::
@@ -1390,13 +1388,13 @@ marc_status create_contextual_rans(
         }
         implementation = new (std::nothrow)
             marc::frame::internal::
-                LzssContextualRansCompactFrameStreamingEncoder(
+                LzssContextualRansFrameStreamingEncoder(
                     stream, limits, primary, views.tokens, secondary);
     } else {
         marc::frame::internal::
             LzssContextualRansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
-            calculate_lzss_contextual_rans_compact_decoder_workspace(
+            calculate_lzss_contextual_rans_decoder_workspace(
                 limits, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1412,7 +1410,7 @@ marc_status create_contextual_rans(
         }
         implementation = new (std::nothrow)
             marc::frame::internal::
-                LzssContextualRansCompactFrameStreamingDecoder(
+                LzssContextualRansFrameStreamingDecoder(
                     limits, primary, views.tables, views.tokens, secondary);
     }
     return publish_transform(implementation, transform);

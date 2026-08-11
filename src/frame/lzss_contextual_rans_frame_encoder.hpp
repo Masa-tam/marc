@@ -29,6 +29,7 @@ enum class LzssContextualRansFrameEncodeError : std::uint8_t {
 
 struct LzssContextualRansFrameEncodeResult {
     std::size_t serialized_size{};
+    std::size_t descriptor_size{};
     std::size_t token_count{};
     std::size_t event_count{};
     std::uint32_t decision_count{};
@@ -37,8 +38,8 @@ struct LzssContextualRansFrameEncodeResult {
     context::internal::LzssContextualRansEncodeResult entropy_encode{};
     LzssContextualRansFrameHeaderError header_error{
         LzssContextualRansFrameHeaderError::none};
-    entropy::internal::ContextualRansFormatError descriptor_error{
-        entropy::internal::ContextualRansFormatError::none};
+    entropy::internal::ContextualRansCompactFormatError descriptor_error{
+        entropy::internal::ContextualRansCompactFormatError::none};
     LzssContextualRansFrameEncodeError error{
         LzssContextualRansFrameEncodeError::none};
 };

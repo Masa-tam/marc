@@ -4,7 +4,7 @@
 #include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 #include "entropy/rans_decode_table.hpp"
-#include "frame/lzss_contextual_rans_compact_frame_decoder.hpp"
+#include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_format.hpp"
 
@@ -148,7 +148,7 @@ protected:
         marc::frame::internal::LzssContextualRansStreamHeader stream{};
         std::size_t consumed{};
         const auto parsed = marc::frame::internal::
-            parse_lzss_contextual_rans_compact_stream_header(
+            parse_lzss_contextual_rans_stream_header(
                 bytes, limits, stream, consumed);
         if (parsed != marc::frame::internal::
                           LzssContextualRansStreamHeaderError::none) {
@@ -159,7 +159,7 @@ protected:
             LzssContextualRansFrameValidationContext context{
                 stream, limits, 0, 0};
         const auto result = marc::frame::internal::
-            decode_lzss_contextual_rans_compact_frame(
+            decode_lzss_contextual_rans_frame(
                 bytes.subspan(consumed), context, tables_, tokens_,
                 private_raw_);
         const bool failed = result.error

@@ -69,25 +69,6 @@ parse_lzss_contextual_rans_stream_header(
     LzssContextualRansStreamHeader& header,
     std::size_t& bytes_consumed) noexcept;
 
-[[nodiscard]] LzssContextualRansStreamHeaderError
-validate_lzss_contextual_rans_compact_stream_header(
-    const LzssContextualRansStreamHeader& header,
-    const core::DecoderLimits& limits) noexcept;
-
-[[nodiscard]] LzssContextualRansStreamHeaderError
-serialize_lzss_contextual_rans_compact_stream_header(
-    const LzssContextualRansStreamHeader& header,
-    const core::DecoderLimits& limits,
-    std::span<std::byte, lzss_contextual_rans_stream_header_size> output)
-    noexcept;
-
-[[nodiscard]] LzssContextualRansStreamHeaderError
-parse_lzss_contextual_rans_compact_stream_header(
-    std::span<const std::byte> input,
-    const core::DecoderLimits& limits,
-    LzssContextualRansStreamHeader& header,
-    std::size_t& bytes_consumed) noexcept;
-
 struct LzssContextualRansFrameHeader {
     std::uint16_t flags{};
     std::uint64_t sequence{};
@@ -125,11 +106,6 @@ enum class LzssContextualRansFrameHeaderError : std::uint8_t {
 };
 
 [[nodiscard]] LzssContextualRansFrameHeaderError
-validate_lzss_contextual_rans_frame_header(
-    const LzssContextualRansFrameHeader& header,
-    const LzssContextualRansFrameValidationContext& context) noexcept;
-
-[[nodiscard]] LzssContextualRansFrameHeaderError
 serialize_lzss_contextual_rans_frame_header(
     const LzssContextualRansFrameHeader& header,
     const LzssContextualRansFrameValidationContext& context,
@@ -137,11 +113,9 @@ serialize_lzss_contextual_rans_frame_header(
     noexcept;
 
 [[nodiscard]] LzssContextualRansFrameHeaderError
-serialize_lzss_contextual_rans_compact_frame_header(
+validate_lzss_contextual_rans_frame_header(
     const LzssContextualRansFrameHeader& header,
-    const LzssContextualRansFrameValidationContext& context,
-    std::span<std::byte, lzss_contextual_rans_frame_header_size> output)
-    noexcept;
+    const LzssContextualRansFrameValidationContext& context) noexcept;
 
 [[nodiscard]] LzssContextualRansFrameHeaderError
 parse_lzss_contextual_rans_frame_header(
@@ -152,7 +126,6 @@ parse_lzss_contextual_rans_frame_header(
 
 struct LzssContextualRansFrameLayout {
     LzssContextualRansFrameHeader header{};
-    entropy::internal::ContextualRansDescriptor descriptor{};
     std::size_t serialized_size{};
 };
 
@@ -170,8 +143,8 @@ struct LzssContextualRansFramePreflightResult {
         LzssContextualRansFramePreflightError::none};
     LzssContextualRansFrameHeaderError header_error{
         LzssContextualRansFrameHeaderError::none};
-    entropy::internal::ContextualRansFormatError descriptor_error{
-        entropy::internal::ContextualRansFormatError::none};
+    entropy::internal::ContextualRansCompactFormatError descriptor_error{
+        entropy::internal::ContextualRansCompactFormatError::none};
 };
 
 [[nodiscard]] LzssContextualRansFramePreflightResult
@@ -179,47 +152,6 @@ preflight_lzss_contextual_rans_frame(
     std::span<const std::byte> input,
     const LzssContextualRansFrameValidationContext& context,
     LzssContextualRansFrameLayout& layout) noexcept;
-
-[[nodiscard]] LzssContextualRansFrameHeaderError
-validate_lzss_contextual_rans_compact_frame_header(
-    const LzssContextualRansFrameHeader& header,
-    const LzssContextualRansFrameValidationContext& context) noexcept;
-
-[[nodiscard]] LzssContextualRansFrameHeaderError
-parse_lzss_contextual_rans_compact_frame_header(
-    std::span<const std::byte> input,
-    const LzssContextualRansFrameValidationContext& context,
-    LzssContextualRansFrameHeader& header,
-    std::size_t& bytes_consumed) noexcept;
-
-struct LzssContextualRansCompactFrameLayout {
-    LzssContextualRansFrameHeader header{};
-    std::size_t serialized_size{};
-};
-
-enum class LzssContextualRansCompactFramePreflightError : std::uint8_t {
-    none,
-    header_error,
-    descriptor_error,
-    truncated_frame,
-    arithmetic_overflow,
-    limit_exceeded,
-};
-
-struct LzssContextualRansCompactFramePreflightResult {
-    LzssContextualRansCompactFramePreflightError error{
-        LzssContextualRansCompactFramePreflightError::none};
-    LzssContextualRansFrameHeaderError header_error{
-        LzssContextualRansFrameHeaderError::none};
-    entropy::internal::ContextualRansCompactFormatError descriptor_error{
-        entropy::internal::ContextualRansCompactFormatError::none};
-};
-
-[[nodiscard]] LzssContextualRansCompactFramePreflightResult
-preflight_lzss_contextual_rans_compact_frame(
-    std::span<const std::byte> input,
-    const LzssContextualRansFrameValidationContext& context,
-    LzssContextualRansCompactFrameLayout& layout) noexcept;
 
 } // namespace marc::frame::internal
 

@@ -15505,3 +15505,15 @@ lifecycle directly to variant 3. Remove compact-qualified declarations,
 selectors, benchmark paths, and duplicate public tests without aliases. Keep
 the variant-3 workspace bounds and bytes unchanged while private frame names
 are consolidated separately.
+
+## DD-753: Contextual rANS frame routing has one representation
+
+- Date: 2026-08-12
+- Status: accepted
+
+Promote the existing variant-3 frame validator, encoder, decoder, streaming
+transforms, and workspace profile to the unqualified private names. Remove the
+variant selector from both streaming state machines and delete the fixed frame
+implementation, compact wrappers, and duplicate tests. The canonical stream
+parser accepts only entropy identity `4/3`; it rejects retired identity `4/2`
+before publishing parsed state.

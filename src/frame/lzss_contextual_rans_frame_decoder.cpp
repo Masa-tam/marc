@@ -39,7 +39,8 @@ enum class OverlapCheck : std::uint8_t {
 
 } // namespace
 
-LzssContextualRansFrameDecodeResult decode_lzss_contextual_rans_frame(
+LzssContextualRansFrameDecodeResult
+decode_lzss_contextual_rans_frame(
     const std::span<const std::byte> serialized_frame,
     const LzssContextualRansFrameValidationContext& context,
     const std::span<entropy::internal::RansDecodeEntry> private_tables,
@@ -56,7 +57,8 @@ LzssContextualRansFrameDecodeResult decode_lzss_contextual_rans_frame(
     }
 
     if (!std::in_range<std::size_t>(layout.header.token_count)
-        || !std::in_range<std::size_t>(layout.header.uncompressed_size)) {
+        || !std::in_range<std::size_t>(layout.header.uncompressed_size)
+        || !std::in_range<std::size_t>(layout.header.descriptor_size)) {
         result.error =
             LzssContextualRansFrameDecodeError::output_size_unsupported;
         return result;
@@ -122,11 +124,13 @@ LzssContextualRansFrameDecodeResult decode_lzss_contextual_rans_frame(
         return result;
     }
 
-    constexpr std::size_t payload_offset =
-        lzss_contextual_rans_frame_header_size
-        + entropy::internal::contextual_rans_descriptor_size;
+    const auto descriptor_size =
+        static_cast<std::size_t>(layout.header.descriptor_size);
+    const auto compact_descriptor = serialized_frame.subspan(
+        lzss_contextual_rans_frame_header_size, descriptor_size);
     const auto payload = serialized_frame.subspan(
-        payload_offset, static_cast<std::size_t>(layout.header.payload_size));
+        lzss_contextual_rans_frame_header_size + descriptor_size,
+        static_cast<std::size_t>(layout.header.payload_size));
     const context::internal::LzssFieldContextValidationContext token_context{
         layout.header.token_count,
         layout.header.event_count,
@@ -135,10 +139,10 @@ LzssContextualRansFrameDecodeResult decode_lzss_contextual_rans_frame(
         context.output_already_committed,
     };
     result.token_decode =
-        context::internal::decode_lzss_contextual_rans_tokens(
-            layout.descriptor, payload, context.stream.dictionary,
+        context::internal::decode_lzss_contextual_rans_compact_tokens(
+            compact_descriptor, payload, context.stream.dictionary,
             token_context, context.limits, tables, tokens);
-    if (result.token_decode.error
+    if (result.token_decode.decode.error
         != context::internal::LzssContextualRansDecodeError::none) {
         result.error =
             LzssContextualRansFrameDecodeError::token_decode_error;

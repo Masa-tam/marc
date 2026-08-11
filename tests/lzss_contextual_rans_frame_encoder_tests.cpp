@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <ranges>
 #include <span>
 #include <vector>
 
@@ -26,19 +27,26 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
 }
 
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
-    std::vector<std::byte> bytes(9124);
+    std::vector<std::byte> bytes(98);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
     bytes[2] = std::byte{0x46}; bytes[3] = std::byte{0x32};
     bytes[4] = std::byte{0x40}; bytes[16] = std::byte{0x01};
     bytes[20] = std::byte{0x01}; bytes[24] = std::byte{0x02};
     bytes[28] = std::byte{0x02}; bytes[32] = std::byte{0x08};
-    bytes[36] = std::byte{0x5c}; bytes[37] = std::byte{0x23};
-    bytes[64] = std::byte{0x02}; bytes[68] = std::byte{0x08};
-    bytes[72] = std::byte{0x0c}; bytes[74] = std::byte{0x1f};
-    bytes[76] = std::byte{0xa6}; bytes[77] = std::byte{0x11};
-    bytes[80] = std::byte{0x00}; bytes[81] = std::byte{0x10};
-    bytes[222] = std::byte{0x00}; bytes[223] = std::byte{0x10};
-    bytes[9119] = std::byte{0x80};
+    bytes[36] = std::byte{0x1a};
+    constexpr std::array descriptor{
+        std::byte{0x02}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x08}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x0c}, std::byte{0x00}, std::byte{0x1f}, std::byte{0x00},
+        std::byte{0xa6}, std::byte{0x11}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x09}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x10}, std::byte{0x01},
+        std::byte{0x00}, std::byte{0x41}};
+    constexpr std::array payload{
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x80},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    std::ranges::copy(descriptor, bytes.begin() + 64);
+    std::ranges::copy(payload, bytes.begin() + 90);
     return bytes;
 }
 
@@ -48,7 +56,8 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
 
 } // namespace
 
-TEST(LzssContextualRansFrameEncoder, PlansAndEmitsDocumentedLiteralFrame) {
+TEST(LzssContextualRansFrameEncoder,
+     PlansAndEmitsDocumentedLiteralFrame) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for(raw.size());
     std::array<LzssTypedToken, 2> tokens{};
@@ -56,7 +65,8 @@ TEST(LzssContextualRansFrameEncoder, PlansAndEmitsDocumentedLiteralFrame) {
     auto result = plan_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw, tokens);
     ASSERT_EQ(result.error, LzssContextualRansFrameEncodeError::none);
-    EXPECT_EQ(result.serialized_size, 9124U);
+    EXPECT_EQ(result.serialized_size, 98U);
+    EXPECT_EQ(result.descriptor_size, 26U);
     EXPECT_EQ(result.token_count, 1U);
     EXPECT_EQ(result.event_count, 2U);
     EXPECT_EQ(result.decision_count, 2U);
@@ -78,7 +88,7 @@ TEST(LzssContextualRansFrameEncoder, CompleteDecoderRecoversLiteral) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for(raw.size());
     std::array<LzssTypedToken, 1> encode_tokens{};
-    std::vector<std::byte> frame(9124);
+    std::vector<std::byte> frame(98);
     ASSERT_EQ(encode_lzss_contextual_rans_frame(
                   stream, {}, 0, 0, raw, encode_tokens, frame).error,
               LzssContextualRansFrameEncodeError::none);
@@ -93,7 +103,8 @@ TEST(LzssContextualRansFrameEncoder, CompleteDecoderRecoversLiteral) {
     EXPECT_EQ(decoded, raw);
 }
 
-TEST(LzssContextualRansFrameEncoder, RoundTripsMixedRawFrameDeterministically) {
+TEST(LzssContextualRansFrameEncoder,
+     RoundTripsMixedRawFrameDeterministically) {
     constexpr std::array raw{
         std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
         std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
@@ -101,7 +112,7 @@ TEST(LzssContextualRansFrameEncoder, RoundTripsMixedRawFrameDeterministically) {
         std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
     const auto stream = stream_for(raw.size());
     std::array<LzssTypedToken, raw.size()> tokens_a{};
-    auto plan = plan_lzss_contextual_rans_frame(
+    const auto plan = plan_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw, tokens_a);
     ASSERT_EQ(plan.error, LzssContextualRansFrameEncodeError::none);
     std::vector<std::byte> first(plan.serialized_size);
@@ -125,11 +136,12 @@ TEST(LzssContextualRansFrameEncoder, RoundTripsMixedRawFrameDeterministically) {
     EXPECT_EQ(decoded, raw);
 }
 
-TEST(LzssContextualRansFrameEncoder, CapacityFailuresPreserveSerializedOutput) {
+TEST(LzssContextualRansFrameEncoder,
+     CapacityFailuresPreserveSerializedOutput) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for(raw.size());
     std::array<LzssTypedToken, 1> tokens{};
-    std::vector<std::byte> output(9124, std::byte{0xcc});
+    std::vector<std::byte> output(98, std::byte{0xcc});
 
     auto result = encode_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw,
@@ -150,10 +162,11 @@ TEST(LzssContextualRansFrameEncoder, CapacityFailuresPreserveSerializedOutput) {
     }));
 }
 
-TEST(LzssContextualRansFrameEncoder, RejectsAllWorkspaceAliasingBeforeWrites) {
+TEST(LzssContextualRansFrameEncoder,
+     RejectsAllWorkspaceAliasingBeforeWrites) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for(raw.size());
-    std::array<LzssTypedToken, 800> storage{};
+    std::array<LzssTypedToken, 20> storage{};
     auto bytes = std::as_writable_bytes(std::span{storage});
     bytes[0] = std::byte{'A'};
     const auto before = bytes[0];
@@ -173,15 +186,15 @@ TEST(LzssContextualRansFrameEncoder, RejectsAllWorkspaceAliasingBeforeWrites) {
     EXPECT_EQ(bytes[0], before);
 }
 
-TEST(LzssContextualRansFrameEncoder, RejectsStreamInputAndWorkspaceLimits) {
+TEST(LzssContextualRansFrameEncoder,
+     RejectsStreamInputAndWorkspaceLimits) {
     constexpr std::array raw{std::byte{'A'}};
     auto stream = stream_for(raw.size());
     std::array<LzssTypedToken, 1> tokens{};
     stream.state_count = 2;
     auto result = plan_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw, tokens);
-    EXPECT_EQ(result.error,
-              LzssContextualRansFrameEncodeError::invalid_stream);
+    EXPECT_EQ(result.error, LzssContextualRansFrameEncodeError::invalid_stream);
 
     stream = stream_for(2);
     result = plan_lzss_contextual_rans_frame(
@@ -189,13 +202,22 @@ TEST(LzssContextualRansFrameEncoder, RejectsStreamInputAndWorkspaceLimits) {
     EXPECT_EQ(result.error,
               LzssContextualRansFrameEncodeError::input_size_mismatch);
 
-    stream = stream_for(raw.size());
+    constexpr std::array workspace_raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'F'}, std::byte{'G'}, std::byte{'H'}};
+    std::array<LzssTypedToken, workspace_raw.size()> workspace_tokens{};
+    stream = stream_for(workspace_raw.size());
+    result = plan_lzss_contextual_rans_frame(
+        stream, {}, 0, 0, workspace_raw, workspace_tokens);
+    ASSERT_EQ(result.error, LzssContextualRansFrameEncodeError::none);
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = 64;
     limits.max_block_size = 64;
-    limits.max_internal_buffered_bytes = 9124;
+    limits.max_internal_buffered_bytes =
+        workspace_raw.size() + result.token_encode.token_storage_size
+        + result.serialized_size - 1;
     result = plan_lzss_contextual_rans_frame(
-        stream, limits, 0, 0, raw, tokens);
+        stream, limits, 0, 0, workspace_raw, workspace_tokens);
     EXPECT_EQ(result.error,
               LzssContextualRansFrameEncodeError::workspace_limit);
 }

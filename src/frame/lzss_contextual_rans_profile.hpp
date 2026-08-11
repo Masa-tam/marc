@@ -69,19 +69,7 @@ make_lzss_contextual_rans_profile(
     LzssContextualRansEncoderWorkspaceRequirements& workspace) noexcept;
 
 [[nodiscard]] LzssContextualRansProfileError
-make_lzss_contextual_rans_compact_profile(
-    const LzssContextualRansProfileConfig& config,
-    const core::DecoderLimits& limits,
-    LzssContextualRansStreamHeader& stream,
-    LzssContextualRansEncoderWorkspaceRequirements& workspace) noexcept;
-
-[[nodiscard]] LzssContextualRansProfileError
 calculate_lzss_contextual_rans_decoder_workspace(
-    const core::DecoderLimits& limits,
-    LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept;
-
-[[nodiscard]] LzssContextualRansProfileError
-calculate_lzss_contextual_rans_compact_decoder_workspace(
     const core::DecoderLimits& limits,
     LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept;
 

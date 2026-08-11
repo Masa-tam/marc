@@ -5,7 +5,7 @@
 #include "entropy/contextual_rans_format.hpp"
 #include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/rans_decode_table.hpp"
-#include "frame/lzss_contextual_rans_compact_frame_decoder.hpp"
+#include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_format.hpp"
 
@@ -82,7 +82,7 @@ thread_local FuzzWorkspace workspace{};
     std::size_t& consumed) noexcept {
 #if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
     return marc::frame::internal::
-               parse_lzss_contextual_rans_compact_stream_header(
+               parse_lzss_contextual_rans_stream_header(
                    input, limits, stream, consumed)
         == marc::frame::internal::LzssContextualRansStreamHeaderError::none;
 #else
@@ -98,7 +98,7 @@ void decode_complete_frame(
         context) noexcept {
 #if defined(MARC_CONTEXTUAL_RANS_COMPACT_FUZZ)
     static_cast<void>(
-        marc::frame::internal::decode_lzss_contextual_rans_compact_frame(
+        marc::frame::internal::decode_lzss_contextual_rans_frame(
             input, context, workspace.private_tables,
             workspace.private_tokens, workspace.private_raw));
 #else

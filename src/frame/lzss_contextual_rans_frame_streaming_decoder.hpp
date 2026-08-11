@@ -11,8 +11,6 @@
 
 namespace marc::frame::internal {
 
-class LzssContextualRansCompactFrameStreamingDecoder;
-
 class LzssContextualRansFrameStreamingDecoder final
     : public core::Transform {
 public:
@@ -29,13 +27,6 @@ public:
         std::uint32_t flags) noexcept override;
 
 private:
-    friend class LzssContextualRansCompactFrameStreamingDecoder;
-
-    enum class Representation : std::uint8_t {
-        fixed,
-        compact,
-    };
-
     enum class State : std::uint8_t {
         collecting_stream_header,
         collecting_frame_header,
@@ -46,14 +37,6 @@ private:
         error,
     };
 
-    LzssContextualRansFrameStreamingDecoder(
-        core::DecoderLimits limits,
-        std::span<std::byte> serialized_frame_workspace,
-        std::span<entropy::internal::RansDecodeEntry> table_workspace,
-        std::span<dictionary::internal::LzssTypedToken> token_workspace,
-        std::span<std::byte> raw_frame_workspace,
-        Representation representation) noexcept;
-
     [[nodiscard]] core::ProcessResult fail(
         core::ErrorCode code,
         std::size_t consumed,
@@ -63,7 +46,6 @@ private:
     [[nodiscard]] bool decode_collected_frame() noexcept;
 
     core::DecoderLimits limits_{};
-    Representation representation_{Representation::fixed};
     std::span<std::byte> serialized_frame_workspace_{};
     std::span<entropy::internal::RansDecodeEntry> table_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};

@@ -1,7 +1,6 @@
 #include "frame/lzss_contextual_rans_frame_streaming_decoder.hpp"
 
 #include "core/checked_math.hpp"
-#include "frame/lzss_contextual_rans_compact_frame_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -52,20 +51,7 @@ LzssContextualRansFrameStreamingDecoder(
     const std::span<entropy::internal::RansDecodeEntry> table_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::byte> raw_frame_workspace) noexcept
-    : LzssContextualRansFrameStreamingDecoder(
-          limits, serialized_frame_workspace, table_workspace, token_workspace,
-          raw_frame_workspace, Representation::fixed) {}
-
-LzssContextualRansFrameStreamingDecoder::
-LzssContextualRansFrameStreamingDecoder(
-    const core::DecoderLimits limits,
-    const std::span<std::byte> serialized_frame_workspace,
-    const std::span<entropy::internal::RansDecodeEntry> table_workspace,
-    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
-    const std::span<std::byte> raw_frame_workspace,
-    const Representation representation) noexcept
     : limits_(limits),
-      representation_(representation),
       serialized_frame_workspace_(serialized_frame_workspace),
       table_workspace_(table_workspace), token_workspace_(token_workspace),
       raw_frame_workspace_(raw_frame_workspace) {
@@ -131,11 +117,8 @@ core::ProcessResult LzssContextualRansFrameStreamingDecoder::fail(
 bool LzssContextualRansFrameStreamingDecoder::
 parse_collected_stream_header() noexcept {
     std::size_t consumed{};
-    const auto error = representation_ == Representation::compact
-        ? parse_lzss_contextual_rans_compact_stream_header(
-            stream_header_bytes_, limits_, stream_, consumed)
-        : parse_lzss_contextual_rans_stream_header(
-            stream_header_bytes_, limits_, stream_, consumed);
+    const auto error = parse_lzss_contextual_rans_stream_header(
+        stream_header_bytes_, limits_, stream_, consumed);
     preparation_error_ =
         error == LzssContextualRansStreamHeaderError::limit_exceeded
         ? core::ErrorCode::limit_exceeded
@@ -150,11 +133,8 @@ bool LzssContextualRansFrameStreamingDecoder::prepare_collected_frame()
     const LzssContextualRansFrameValidationContext context{
         stream_, limits_, frame_sequence_, output_committed_};
     std::size_t consumed{};
-    const auto header_error = representation_ == Representation::compact
-        ? parse_lzss_contextual_rans_compact_frame_header(
-            frame_header_bytes_, context, frame_, consumed)
-        : parse_lzss_contextual_rans_frame_header(
-            frame_header_bytes_, context, frame_, consumed);
+    const auto header_error = parse_lzss_contextual_rans_frame_header(
+        frame_header_bytes_, context, frame_, consumed);
     if (header_error != LzssContextualRansFrameHeaderError::none
         || consumed != lzss_contextual_rans_frame_header_size) {
         preparation_error_ = header_error
@@ -222,37 +202,20 @@ bool LzssContextualRansFrameStreamingDecoder::decode_collected_frame()
     noexcept {
     const LzssContextualRansFrameValidationContext context{
         stream_, limits_, frame_sequence_, output_committed_};
-    if (representation_ == Representation::compact) {
-        const auto decoded = decode_lzss_contextual_rans_compact_frame(
-            serialized_frame_workspace_.first(frame_serialized_size_), context,
-            table_workspace_.first(
-                entropy::internal::contextual_rans_decode_table_entries),
-            token_workspace_.first(frame_.token_count),
-            raw_frame_workspace_.first(frame_.uncompressed_size));
-        if (decoded.error != LzssContextualRansFrameDecodeError::none) {
-            preparation_error_ = decoded.error
-                    == LzssContextualRansFrameDecodeError::reconstruction_error
-                ? core::ErrorCode::internal_error
-                : core::ErrorCode::malformed_stream;
-            return false;
-        }
-        decoded_size_ = decoded.required_raw_size;
-    } else {
-        const auto decoded = decode_lzss_contextual_rans_frame(
-            serialized_frame_workspace_.first(frame_serialized_size_), context,
-            table_workspace_.first(
-                entropy::internal::contextual_rans_decode_table_entries),
-            token_workspace_.first(frame_.token_count),
-            raw_frame_workspace_.first(frame_.uncompressed_size));
-        if (decoded.error != LzssContextualRansFrameDecodeError::none) {
-            preparation_error_ = decoded.error
-                    == LzssContextualRansFrameDecodeError::reconstruction_error
-                ? core::ErrorCode::internal_error
-                : core::ErrorCode::malformed_stream;
-            return false;
-        }
-        decoded_size_ = decoded.required_raw_size;
+    const auto decoded = decode_lzss_contextual_rans_frame(
+        serialized_frame_workspace_.first(frame_serialized_size_), context,
+        table_workspace_.first(
+            entropy::internal::contextual_rans_decode_table_entries),
+        token_workspace_.first(frame_.token_count),
+        raw_frame_workspace_.first(frame_.uncompressed_size));
+    if (decoded.error != LzssContextualRansFrameDecodeError::none) {
+        preparation_error_ = decoded.error
+                == LzssContextualRansFrameDecodeError::reconstruction_error
+            ? core::ErrorCode::internal_error
+            : core::ErrorCode::malformed_stream;
+        return false;
     }
+    decoded_size_ = decoded.required_raw_size;
     output_offset_ = 0;
     output_committed_ += decoded_size_;
     ++frame_sequence_;

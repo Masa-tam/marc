@@ -30,7 +30,7 @@ struct LzssContextualRansFrameDecodeResult {
     std::size_t required_token_count{};
     std::size_t required_raw_size{};
     LzssContextualRansFramePreflightResult preflight{};
-    context::internal::LzssContextualRansDecodeResult token_decode{};
+    context::internal::LzssContextualRansCompactDecodeResult token_decode{};
     dictionary::internal::LzssTypedReconstructResult reconstruction{};
     LzssContextualRansFrameDecodeError error{
         LzssContextualRansFrameDecodeError::none};

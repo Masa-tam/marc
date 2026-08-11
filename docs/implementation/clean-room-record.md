@@ -18283,3 +18283,27 @@ discarded and the reviewed seed retained.
   six canonical completion/malformed cases, C11 lifecycle, CLI entropy-`4/3`
   round trip, and benchmark smoke. The initial sandboxed MSVC build met the
   known FileTracker `E_ACCESSDENIED`; the established approved route passed.
+
+## CR-0781: 2026-08-12 - Canonical Contextual rANS frame boundary
+
+- Authoring method: promoted marc's existing variant-3 frame implementation
+  into the unqualified frame, streaming, and profile files; removed runtime
+  representation branches, compact wrappers, fixed frame code, and duplicate
+  fixed tests.
+- References used: DD-749, DD-750, DD-753; IR-0529; TVG-0628 and TVG-0630;
+  marc's local variant-3 frame and workspace implementation.
+- Known implementations intentionally not consulted: external rANS or
+  compression implementations, source code, APIs, archives, corpora, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: retain variant-3 bytes and workspace bounds; expose
+  only unqualified private frame names; reject identity `4/2` transactionally;
+  preserve each applicable behavioral assertion once.
+- Generated-code task description: consolidate frame format, encode/decode,
+  streaming state machines, workspace profiles, fuzz oracle, and tests around
+  the sole canonical variant while deleting the fixed path.
+- Similarity review: changes reorganize and delete marc-owned code only; no
+  external implementation expression entered the work.
+- Local validation: ClangCL 22.1.3 and MSVC 19.51.36252 build the library, CLI,
+  and complete core test executable warning-clean. The same focused format,
+  frame, profile, streaming, completion, malformed, documentation, and CLI
+  tests pass under both, including explicit retired-variant rejection.

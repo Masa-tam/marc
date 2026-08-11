@@ -4664,3 +4664,12 @@ workspace profile, CLI and benchmark adapters, C11 test, completion matrix,
 and malformed regressions as local precedents. No external rANS or compression
 implementation, source code, API, archive, corpus, test vector, test suite,
 patent text, or optimization description was consulted.
+
+### IR-0529
+
+The Contextual rANS frame canonicalization uses DD-749, DD-750, DD-753,
+TVG-0628, TVG-0630, marc's existing variant-3 frame/profile/streaming code,
+fixed and compact regression tests, and Format 2 identity validation as local
+precedents. No external rANS or compression implementation, source code, API,
+archive, corpus, test vector, test suite, patent text, or optimization
+description was consulted.

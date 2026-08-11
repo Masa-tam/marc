@@ -8367,3 +8367,12 @@ one canonical parameter while retaining every input class, chunk schedule,
 terminal check, truncation, extreme-length, descriptor mutation, sentinel, and
 sticky-error assertion. Run those six cases plus the C11, CLI, and benchmark
 smokes under both MSVC and ClangCL before private frame renaming.
+
+### TVG-0630
+
+After promoting variant 3 to the unqualified frame and profile names, run the
+canonical stream-header vector, every truncation, and an explicit entropy
+identity `4/2` rejection that preserves caller state. Retain the variant-3
+frame encode/decode, capacity, aliasing, limit, one-byte streaming, flush,
+sticky-error, completion, malformed, and CLI assertions exactly once. Build
+the complete core-test target warning-clean before running this focused set.

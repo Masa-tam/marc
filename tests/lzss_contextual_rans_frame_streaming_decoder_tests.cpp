@@ -27,7 +27,7 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
     bytes[4] = std::byte{0x02}; bytes[8] = std::byte{0x40};
     bytes[10] = std::byte{0x01}; bytes[12] = std::byte{0x02};
     bytes[14] = std::byte{0x02}; bytes[16] = std::byte{0x04};
-    bytes[18] = std::byte{0x02};
+    bytes[18] = std::byte{0x03};
     bytes[20] = static_cast<std::byte>(frame_size);
     bytes[28] = std::byte{0x10}; bytes[32] = std::byte{0x10};
     bytes[40] = static_cast<std::byte>(original_size);
@@ -42,39 +42,36 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
 
 [[nodiscard]] std::vector<std::byte> literal_frame(
     const std::uint8_t sequence) {
-    std::vector<std::byte> bytes(9124);
+    std::vector<std::byte> bytes(98);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
     bytes[2] = std::byte{0x46}; bytes[3] = std::byte{0x32};
     bytes[4] = std::byte{0x40}; bytes[8] = static_cast<std::byte>(sequence);
     bytes[16] = std::byte{0x01}; bytes[20] = std::byte{0x01};
     bytes[24] = std::byte{0x02}; bytes[28] = std::byte{0x02};
-    bytes[32] = std::byte{0x08}; bytes[36] = std::byte{0x5c};
-    bytes[37] = std::byte{0x23}; bytes[64] = std::byte{0x02};
-    bytes[68] = std::byte{0x08}; bytes[72] = std::byte{0x0c};
-    bytes[74] = std::byte{0x1f}; bytes[76] = std::byte{0xa6};
-    bytes[77] = std::byte{0x11}; bytes[80] = std::byte{0x00};
-    bytes[81] = std::byte{0x10}; bytes[222] = std::byte{0x00};
-    bytes[223] = std::byte{0x10}; bytes[9119] = std::byte{0x80};
+    bytes[32] = std::byte{0x08}; bytes[36] = std::byte{0x1a};
+    constexpr std::array descriptor{
+        std::byte{0x02}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x08}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x0c}, std::byte{0x00}, std::byte{0x1f}, std::byte{0x00},
+        std::byte{0xa6}, std::byte{0x11}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x09}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x10}, std::byte{0x01},
+        std::byte{0x00}, std::byte{0x41}};
+    constexpr std::array payload{
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x80},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    std::ranges::copy(descriptor, bytes.begin() + 64);
+    std::ranges::copy(payload, bytes.begin() + 90);
     return bytes;
 }
 
-[[nodiscard]] std::vector<std::byte> two_frame_stream() {
-    const auto header = stream_header(1, 2);
-    const auto first = literal_frame(0);
-    const auto second = literal_frame(1);
-    std::vector<std::byte> bytes;
-    bytes.insert(bytes.end(), header.begin(), header.end());
-    bytes.insert(bytes.end(), first.begin(), first.end());
-    bytes.insert(bytes.end(), second.begin(), second.end());
-    return bytes;
-}
-
-[[nodiscard]] std::vector<std::byte> one_frame_stream() {
-    const auto header = stream_header(1, 1);
-    const auto frame = literal_frame(0);
-    std::vector<std::byte> bytes;
-    bytes.insert(bytes.end(), header.begin(), header.end());
-    bytes.insert(bytes.end(), frame.begin(), frame.end());
+[[nodiscard]] std::vector<std::byte> stream(const std::uint8_t frame_count) {
+    const auto header = stream_header(1, frame_count);
+    std::vector<std::byte> bytes(header.begin(), header.end());
+    for (std::uint8_t sequence = 0; sequence < frame_count; ++sequence) {
+        const auto frame = literal_frame(sequence);
+        bytes.insert(bytes.end(), frame.begin(), frame.end());
+    }
     return bytes;
 }
 
@@ -88,9 +85,10 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
 
 } // namespace
 
-TEST(LzssContextualRansFrameStreamingDecoder, HandlesOneByteInputAndOutput) {
-    const auto encoded = two_frame_stream();
-    std::array<std::byte, 9124> frame{};
+TEST(LzssContextualRansFrameStreamingDecoder,
+     HandlesOneByteInputAndOutput) {
+    const auto encoded = stream(2);
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
@@ -118,16 +116,15 @@ TEST(LzssContextualRansFrameStreamingDecoder, HandlesOneByteInputAndOutput) {
     } while (status != StreamStatus::end_of_stream);
     EXPECT_EQ(input_offset, encoded.size());
     EXPECT_EQ(actual, (std::vector{std::byte{'A'}, std::byte{'A'}}));
-    EXPECT_EQ(decoder.process({}, {}, 0).status,
-              StreamStatus::end_of_stream);
+    EXPECT_EQ(decoder.process({}, {}, 0).status, StreamStatus::end_of_stream);
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,
      CommitsOnlyFirstFrameBeforeLaterCorruption) {
-    auto encoded = two_frame_stream();
-    encoded[lzss_contextual_rans_stream_header_size + 9124 + 80]
-        = std::byte{1};
-    std::array<std::byte, 9124> frame{};
+    auto encoded = stream(2);
+    encoded[lzss_contextual_rans_stream_header_size + 98 + 84]
+        = std::byte{0x01};
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
@@ -147,8 +144,8 @@ TEST(LzssContextualRansFrameStreamingDecoder,
 
 TEST(LzssContextualRansFrameStreamingDecoder,
      ReportsWorkspaceAndAggregateFailures) {
-    const auto encoded = one_frame_stream();
-    std::array<std::byte, 9124> frame{};
+    const auto encoded = stream(1);
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
@@ -159,8 +156,6 @@ TEST(LzssContextualRansFrameStreamingDecoder,
         table_storage, tokens, raw};
     EXPECT_EQ(short_frame.process(encoded, output, end_flag()).error.code,
               ErrorCode::out_of_memory);
-    EXPECT_EQ(short_frame.process({}, {}, 0).error.code,
-              ErrorCode::out_of_memory);
 
     LzssContextualRansFrameStreamingDecoder short_tables{
         {}, frame,
@@ -169,21 +164,15 @@ TEST(LzssContextualRansFrameStreamingDecoder,
         tokens, raw};
     EXPECT_EQ(short_tables.process(encoded, output, end_flag()).error.code,
               ErrorCode::out_of_memory);
-    EXPECT_EQ(short_tables.process({}, {}, 0).error.code,
-              ErrorCode::out_of_memory);
 
     LzssContextualRansFrameStreamingDecoder short_tokens{
         {}, frame, table_storage, {}, raw};
     EXPECT_EQ(short_tokens.process(encoded, output, end_flag()).error.code,
               ErrorCode::out_of_memory);
-    EXPECT_EQ(short_tokens.process({}, {}, 0).error.code,
-              ErrorCode::out_of_memory);
 
     LzssContextualRansFrameStreamingDecoder short_raw{
         {}, frame, table_storage, tokens, {}};
     EXPECT_EQ(short_raw.process(encoded, output, end_flag()).error.code,
-              ErrorCode::out_of_memory);
-    EXPECT_EQ(short_raw.process({}, {}, 0).error.code,
               ErrorCode::out_of_memory);
 
     auto limits = marc::core::DecoderLimits{};
@@ -195,32 +184,18 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     limits.max_internal_buffered_bytes = aggregate - 1;
     LzssContextualRansFrameStreamingDecoder aggregate_limited{
         limits, frame, table_storage, tokens, raw};
-    EXPECT_EQ(aggregate_limited.process(
-                  encoded, output, end_flag()).error.code,
-              ErrorCode::limit_exceeded);
-    EXPECT_EQ(aggregate_limited.process({}, {}, 0).error.code,
-              ErrorCode::limit_exceeded);
-
-    limits = marc::core::DecoderLimits{};
-    limits.max_total_output_size = 1;
-    limits.max_frame_size = 1;
-    LzssContextualRansFrameStreamingDecoder stream_limited{
-        limits, frame, table_storage, tokens, raw};
-    EXPECT_EQ(stream_limited.process(
-                  two_frame_stream(), output, end_flag()).error.code,
-              ErrorCode::limit_exceeded);
-    EXPECT_EQ(stream_limited.process({}, {}, 0).error.code,
+    EXPECT_EQ(aggregate_limited.process(encoded, output, end_flag()).error.code,
               ErrorCode::limit_exceeded);
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,
-     RejectsTruncationTrailingResetAndOutputAliasSticky) {
-    const auto encoded = two_frame_stream();
-    std::array<std::byte, 9124> frame{};
+     RejectsTruncationTrailingFlagsAndAliasesSticky) {
+    const auto encoded = stream(1);
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
-    std::array<std::byte, 2> output{};
+    std::array<std::byte, 1> output{};
 
     LzssContextualRansFrameStreamingDecoder truncated{
         {}, frame, table_storage, tokens, raw};
@@ -228,91 +203,59 @@ TEST(LzssContextualRansFrameStreamingDecoder,
                   std::span<const std::byte>{encoded}.first(encoded.size() - 1),
                   output, end_flag()).error.code,
               ErrorCode::malformed_stream);
-    EXPECT_EQ(truncated.process({}, {}, 0).error.code,
+
+    auto trailing = encoded;
+    trailing.push_back(std::byte{0});
+    LzssContextualRansFrameStreamingDecoder trailing_decoder{
+        {}, frame, table_storage, tokens, raw};
+    EXPECT_EQ(trailing_decoder.process(
+                  trailing, output, end_flag()).error.code,
               ErrorCode::malformed_stream);
 
-    auto trailing_bytes = encoded;
-    trailing_bytes.push_back(std::byte{0});
-    LzssContextualRansFrameStreamingDecoder trailing{
+    LzssContextualRansFrameStreamingDecoder flags{
         {}, frame, table_storage, tokens, raw};
-    EXPECT_EQ(trailing.process(
-                  trailing_bytes, output, end_flag()).error.code,
-              ErrorCode::malformed_stream);
-
-    LzssContextualRansFrameStreamingDecoder reset{
-        {}, frame, table_storage, tokens, raw};
-    EXPECT_EQ(reset.process(
+    EXPECT_EQ(flags.process(
                   {}, {}, marc::core::flag_value(ProcessFlags::reset_block))
                   .error.code,
               ErrorCode::unsupported);
-    EXPECT_EQ(reset.process({}, {}, 0).error.code, ErrorCode::unsupported);
+    EXPECT_EQ(flags.process({}, {}, 0).error.code, ErrorCode::unsupported);
+
+    LzssContextualRansFrameStreamingDecoder unknown{
+        {}, frame, table_storage, tokens, raw};
+    EXPECT_EQ(unknown.process({}, {}, UINT32_C(1) << 31).error.code,
+              ErrorCode::unsupported);
+    EXPECT_EQ(unknown.process({}, {}, 0).error.code, ErrorCode::unsupported);
 
     LzssContextualRansFrameStreamingDecoder aliased_output{
         {}, frame, table_storage, tokens, raw};
     EXPECT_EQ(aliased_output.process({}, raw, 0).error.code,
               ErrorCode::invalid_argument);
-    EXPECT_EQ(aliased_output.process({}, {}, 0).error.code,
+
+    auto table_bytes = std::as_writable_bytes(std::span{table_storage});
+    LzssContextualRansFrameStreamingDecoder aliased_construction{
+        {}, table_bytes.first(frame.size()), table_storage, {}, {}};
+    EXPECT_EQ(aliased_construction.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,
-     HandlesEmptyFlushAndPrematureEnd) {
+     HandlesEmptyAndPreservesEndAcrossDrain) {
     const auto empty = stream_header(1, 0);
     LzssContextualRansFrameStreamingDecoder empty_decoder{
         {}, {}, {}, {}, {}};
     EXPECT_EQ(empty_decoder.process(empty, {}, end_flag()).status,
               StreamStatus::end_of_stream);
 
-    std::array<std::byte, 9124> frame{};
-    auto table_storage = tables();
-    std::array<LzssTypedToken, 1> tokens{};
-    std::array<std::byte, 1> raw{};
-    LzssContextualRansFrameStreamingDecoder starved{
-        {}, frame, table_storage, tokens, raw};
-    EXPECT_EQ(starved.process(
-                  {}, {}, marc::core::flag_value(ProcessFlags::flush)).status,
-              StreamStatus::need_input);
-
-    const auto encoded = two_frame_stream();
-    LzssContextualRansFrameStreamingDecoder premature{
-        {}, frame, table_storage, tokens, raw};
-    std::array<std::byte, 1> output{};
-    const auto result = premature.process(
-        std::span<const std::byte>{encoded}.first(112 + 9124), output,
-        end_flag());
-    ASSERT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
-    EXPECT_EQ(result.output_produced, 1U);
-    EXPECT_EQ(output[0], std::byte{'A'});
-}
-
-TEST(LzssContextualRansFrameStreamingDecoder,
-     RejectsOverlappingConstructionWorkspaces) {
-    auto table_storage = tables();
-    auto bytes = std::as_writable_bytes(std::span{table_storage});
-    LzssContextualRansFrameStreamingDecoder decoder{
-        {}, bytes.first(9124), table_storage, {}, {}};
-    const auto result = decoder.process({}, {}, 0);
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
-    EXPECT_EQ(decoder.process({}, {}, 0).error.code,
-              ErrorCode::invalid_argument);
-}
-
-TEST(LzssContextualRansFrameStreamingDecoder,
-     PreservesEndInputAcrossZeroCapacityDrain) {
-    const auto encoded = one_frame_stream();
-    std::array<std::byte, 9124> frame{};
+    const auto encoded = stream(1);
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
     LzssContextualRansFrameStreamingDecoder decoder{
         {}, frame, table_storage, tokens, raw};
-
     auto result = decoder.process(encoded, {}, end_flag());
     ASSERT_EQ(result.status, StreamStatus::need_output);
     EXPECT_EQ(result.input_consumed, encoded.size());
-    EXPECT_EQ(result.output_produced, 0U);
 
     std::array<std::byte, 1> output{};
     result = decoder.process({}, output, 0);
@@ -321,18 +264,19 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     EXPECT_EQ(output[0], std::byte{'A'});
 }
 
-TEST(LzssContextualRansFrameStreamingDecoder, RejectsUnknownFlagsSticky) {
-    std::array<std::byte, 9124> frame{};
+TEST(LzssContextualRansFrameStreamingDecoder,
+     RejectsRetiredVariantTwoStreamIdentity) {
+    auto encoded = stream(1);
+    encoded[18] = std::byte{0x02};
+    std::array<std::byte, 98> frame{};
     auto table_storage = tables();
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 1> raw{};
+    std::array<std::byte, 1> output{};
     LzssContextualRansFrameStreamingDecoder decoder{
         {}, frame, table_storage, tokens, raw};
 
-    auto result = decoder.process({}, {}, UINT32_C(1) << 31);
-    ASSERT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::unsupported);
-    result = decoder.process({}, {}, 0);
+    const auto result = decoder.process(encoded, output, end_flag());
     EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::unsupported);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
 }
