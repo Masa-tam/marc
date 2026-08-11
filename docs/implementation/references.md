@@ -4444,3 +4444,12 @@ Ubuntu 24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang
 bundle, and marc's repository-owned schema-35 verifier. No external
 compression implementation, source code, archive contents, corpus, test
 suite, or optimization description was consulted.
+
+### IR-0506
+
+The Contextual Adaptive Huffman reservation uses DD-728, TVG-0607, marc's
+Adaptive Huffman FGK variant 1, LZSS typed-token protocol, 31-context schema,
+Format 2 framing, entropy-backend contract, and neighboring contextual backend
+profiles as local design precedents. No external Adaptive Huffman
+implementation, source code, archive, test vector, test suite, patent text, or
+optimization description was consulted.

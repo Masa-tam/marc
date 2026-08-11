@@ -1547,3 +1547,12 @@ Schema 35 now has four-direction external evidence at revision
 24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
 verifies there and on Windows/MSVC. All 46 archives decode and re-encode
 byte-identically in every path.
+
+### CP-0083
+
+`lzss-contextual-adaptive-huffman` is reserved as the next Format 2
+composition with dictionary `2/2`, context model `1/1`, and entropy `1/2`.
+Its 31 independent alphabet-bounded FGK trees consume Symbol operations
+directly; bypass bits remain unmodeled in the same LSB-first payload. This
+milestone fixes representation and bounds only and changes no implemented,
+stable, CLI, benchmark, or interoperability inventory.

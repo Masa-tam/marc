@@ -4725,3 +4725,14 @@ directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
 re-encoding establish the Contextual Blocked Huffman bytes across all three
 recorded x86-64 producers.
+
+### Reserved Contextual Adaptive Huffman boundary
+
+The next Format 2 backend is entropy identity `1/2` behind the unchanged LZSS
+typed-token and 31-context model boundary. Every Symbol context owns a bounded
+FGK tree sized to its fixed alphabet, while bypass bits share the payload cursor
+without updating a tree. Alphabet-specific NYT literals avoid expanding the
+2-, 8-, and 17-symbol fields to byte values, and one frame reset bounds all
+weights and state. The fixed 16-byte descriptor carries only decision and
+payload extents, context count, and final-bit metadata; no tree is serialized.
+This is a format reservation, not implementation or public-profile admission.

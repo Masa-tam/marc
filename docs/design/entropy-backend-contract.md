@@ -529,6 +529,54 @@ encoder view is `F` LZSS tokens. Decoder views contain the conservative maximum
 35 Huffman tables followed by aligned token storage. All raw, serialized, view,
 and publication extents are charged to the aggregate caller limit.
 
+## Contextual Adaptive Huffman variant 2
+
+Entropy algorithm ID 1, variant 2 applies one independent FGK tree to every
+Symbol context in `LzssFieldContext` variant 1. Context `c` owns exactly the
+fixed alphabet declared by the shared 31-context schema; a serialized stream
+cannot enlarge that alphabet or select a different tree.
+
+Each tree starts as one NYT node with number `2A`, where `A` is that context's
+alphabet size. Splitting NYT number `n` retains `n` for the new internal node,
+assigns `n-2` to the new NYT left child and `n-1` to the new symbol right
+child, then performs the same leader selection, swap exclusions, weight
+increments, and parent traversal as Adaptive Huffman FGK variant 1. A tree has
+capacity `2A+1` nodes. Tree weights are unsigned 32-bit values; the Format 2
+frame limits keep every context below overflow, so variant 2 performs no
+mid-frame rescaling. All 31 trees reset at every outer-frame boundary.
+
+An existing Symbol emits its current root-to-leaf path. A new Symbol emits the
+NYT path followed by `ceil(log2(A))` raw value bits, least-significant bit
+first. The decoder rejects raw values at or above `A` and a NYT value already
+present in that context. This uses one, three, five, or eight raw bits for the
+current alphabets 2, 8, 17, and 256. Paths and raw values share the common
+forward LSB-first cursor. BypassBits also enter that cursor least-significant
+bit first but never inspect or update an FGK tree.
+
+Variant 2 uses one fixed 16-byte descriptor:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | Symbol events plus individual bypass bits |
+| 4 | 4 | payload size | exact payload byte extent; nonzero |
+| 8 | 2 | context count | exactly 31 |
+| 10 | 1 | final valid bits | 1 through 8 |
+| 11 | 1 | flags | zero |
+| 12 | 4 | reserved | zero |
+
+Each Symbol counts as one event and one decision regardless of the number of
+FGK path or NYT raw bits it emits. Each bypass field counts as one event and
+one decision per bit. `finish` requires the frame-supplied event count and the
+descriptor decision count, exact valid-bit consumption, zero unused high bits,
+and a valid tree after every completed Symbol. Failed requests publish no
+value and do not mutate a tree.
+
+For the one-Literal operation sequence `Symbol(0,2,0),
+Symbol(3,256,65)`, both contexts begin at NYT. The first raw value contributes
+one zero bit and the second contributes the eight LSB-first bits of `0x41`, so
+the payload is `82 00` with one valid bit in the final byte. This vector uses
+no context-model inference inside the entropy backend.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

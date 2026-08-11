@@ -8007,3 +8007,19 @@ producer label, and the identical full revision. Each verifier pass must
 therefore cover manifest identity/order, size and SHA-256, fixture decode, and
 byte-identical local re-encoding. Record only the results; do not import any
 bundle or generated archive into the repository.
+
+### TVG-0607
+
+From reset LZSS context state, map raw byte `A` to the established two Symbol
+operations `(context=0, alphabet=2, value=0)` and
+`(context=3, alphabet=256, value=65)`. Start an independent NYT-only FGK tree
+for each context. Emit one zero raw bit for the first value, followed by the
+eight LSB-first bits of `0x41`; pack the nine physical bits as `82 00` with one
+valid bit in the final byte.
+
+Serialize decision count 2, payload size 2, context count 31, final-valid-bits
+1, and zero flags/reserved fields into the fixed 16-byte descriptor. Combine
+it with the specified Format 2 frame and stream headers and require the exact
+82-byte frame and 194-byte stream. Documentation checks must also require the
+`1/2` entropy identity, 2^24 raw-frame ceiling, 33,554,432 Symbol-event ceiling,
+per-alphabet NYT widths, zero padding, and explicit non-implementation status.

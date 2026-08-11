@@ -1700,3 +1700,12 @@ Schema 35 now has complete four-direction external evidence at revision
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths.
+
+### BR-0082
+
+Contextual Adaptive Huffman now has a decoder-visible Format 2 reservation.
+The stream identity, parameter and descriptor layouts, 31 context-local FGK
+trees, alphabet-specific NYT widths, frame reset, bypass-bit rule, strict
+completion conditions, fixed bounds, and one-Literal vector are specified.
+No implementation or public surface is claimed, so baseline and schema-35
+readiness remain unchanged.

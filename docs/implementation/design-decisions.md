@@ -15056,3 +15056,22 @@ that Ubuntu 26.04 executable verifies both locally and with Windows/MSVC.
 Require every path to report the same full Git revision, producer label, and
 all 46 archives. Record exact decode and byte-identical re-encoding evidence
 without importing any generated bundle into the repository.
+
+## DD-728: Contextual Adaptive Huffman uses alphabet-bounded FGK trees
+
+- Date: 2026-08-11
+- Status: accepted
+
+Reserve `lzss-contextual-adaptive-huffman` as Format 2 dictionary `2/2`,
+context model `1/1`, entropy `1/2`. Give each of the 31 fixed Symbol contexts
+an independent FGK tree whose capacity and initial numbering derive from that
+context's alphabet. Encode a new symbol using the NYT path followed by exactly
+`ceil(log2(alphabet))` LSB-first raw bits, rejecting unused numeric values.
+
+Interleave raw bypass bits in the same forward cursor without tree updates and
+reset every tree at the outer-frame boundary. Bound raw frames to 2^24 bytes,
+so unsigned 32-bit weights need no mid-frame rescaling. Use one fixed 16-byte
+descriptor with decision count, payload size, context count, final-valid-bit
+count, and zero flags/reserved fields. Reserve the exact one-Literal bytes but
+defer parser, tree generalization, coding, public admission, and tools to
+separate milestones.

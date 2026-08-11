@@ -6382,3 +6382,82 @@ reserved Format 2 dictionary identity `2/2` plus entropy identity `2/2`.
 Workspace byte counts, alignment, C structure size tags, and ABI version are
 process-local contracts and never appear in a stream. CLI, benchmark,
 completion, fuzzing, and interoperability admission remain later milestones.
+
+### Reserved LZSS field-context plus Contextual Adaptive Huffman profile
+
+The next Format 2 profile is named `lzss-contextual-adaptive-huffman`. It
+retains dictionary algorithm/variant `2/2` and context-model algorithm/variant
+`1/1`, and selects entropy algorithm/variant `1/2`. Variant 2 is a separate
+decoder-visible representation; it does not reinterpret byte-oriented
+Adaptive Huffman FGK variant 1.
+
+Its 16-byte entropy parameter region is:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | maximum modeled Symbol events | exactly 33,554,432 |
+| 4 | 2 | context count | exactly 31 |
+| 6 | 1 | maximum NYT raw width | exactly 8 |
+| 7 | 1 | flags | zero |
+| 8 | 8 | reserved | zero |
+
+The configured raw frame size is at most 2^24 bytes. The entropy-block-size
+stream field remains zero because all 31 context-local FGK trees reset once
+per outer frame. The common context extension remains `1/1`.
+
+Every nonempty frame uses the common 64-byte Format 2 frame header. Its
+descriptor size is exactly 16, context side-data and checksum trailer sizes
+are zero, and compressed payload size is the exact nonzero byte extent. The
+descriptor is:
+
+| Offset | Size | Field | Rule |
+|---:|---:|---|---|
+| 0 | 4 | decision count | equals the frame entropy decision count |
+| 4 | 4 | payload size | equals the frame compressed payload size |
+| 8 | 2 | context count | exactly 31 |
+| 10 | 1 | final valid bits | 1 through 8 |
+| 11 | 1 | flags | zero |
+| 12 | 4 | reserved | zero |
+
+The exact context-local tree numbering, alphabet-specific NYT raw widths,
+FGK updates, bypass-bit handling, completion rules, and bounds are defined in
+the entropy-backend contract. No model description is serialized.
+
+For raw byte `A`, the typed context operations are the established
+`Symbol(0,2,0)` and `Symbol(3,256,65)`. The payload is `82 00`, with one valid
+bit in the final byte. The frame header and descriptor are:
+
+```text
+4D 52 46 32 40 00 00 00  00 00 00 00 00 00 00 00
+01 00 00 00 01 00 00 00  02 00 00 00 02 00 00 00
+02 00 00 00 10 00 00 00  00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+02 00 00 00 02 00 00 00  1F 00 01 00 00 00 00 00
+82 00
+```
+
+For frame size 64 and original size one, the 112-byte stream header is:
+
+```text
+# fixed prefix
+4D 41 52 43 02 00 00 00  40 00 01 00 02 00 02 00
+01 00 02 00 40 00 00 00  00 00 00 00 10 00 00 00
+10 00 00 00 00 00 00 00  01 00 00 00 00 00 00 00
+10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+
+# LZSS parameters
+00 00 01 00 05 00 00 00  02 01 00 00 00 00 00 00
+
+# Contextual Adaptive Huffman parameters
+00 00 00 02 1F 00 08 00  00 00 00 00 00 00 00 00
+
+# context-model extension
+01 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00
+```
+
+The complete one-byte frame is 82 bytes and the complete stream is 194 bytes.
+Empty input contains only the 112-byte stream header and no frame. This
+reservation does not yet claim a parser, tree implementation, encoder,
+decoder, streaming lifecycle, C API, CLI selector, benchmark codec, stable
+profile, or interoperability archive.

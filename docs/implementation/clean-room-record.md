@@ -17605,3 +17605,31 @@ discarded and the reviewed seed retained.
   24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
   the Ubuntu 26.04 bundle. Every run reported 46 archives and revision
   `7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`.
+
+## CR-0758: 2026-08-11 - Contextual Adaptive Huffman format reservation
+
+- Authoring method: derived one new entropy boundary from marc's existing FGK
+  rules and the already specified LZSS modeled-operation schema before writing
+  implementation code.
+- References used: DD-728; IR-0506; TVG-0607; Adaptive Huffman variant 1;
+  Format 2 framing; the LZSS typed-token, context-model, and entropy-backend
+  contracts; and marc's contextual Dynamic Range, rANS, tANS, and Blocked
+  Huffman boundaries.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman implementations, source code, archives, test vectors, test suites,
+  patent text, and optimization descriptions.
+- Independent decisions: use one alphabet-bounded FGK tree per context;
+  derive NYT raw width from the fixed alphabet; share the forward bit cursor
+  with unmodeled bypass bits; reset once per frame; omit mid-frame rescaling
+  under an explicit bound; and reserve entropy identity `1/2`.
+- Generated-code task description: specify the parameter and descriptor
+  layouts, tree and completion rules, one-Literal vector, architecture and
+  composition status, readiness boundary, test-generation method, references,
+  and provenance without implementing or exposing the profile.
+- Similarity review: tree behavior reuses only marc's independently documented
+  FGK variant 1 and generalizes it mechanically to repository-owned fixed
+  alphabets; no external implementation expression entered the work.
+- Local validation: `marc_documentation_layout` passes under the configured
+  MSVC 19.51.36252 and ClangCL 22.1.3 trees with the 240-second per-test limit.
+  The byte vector was also checked directly from its nine LSB-first payload bits;
+  no executable codec is claimed by this reservation.
