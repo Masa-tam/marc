@@ -78,11 +78,9 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 field-context, contextual Dynamic Range pipeline. It is intentionally outside
 the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
 the corresponding Format 2 typed-token and field-context pipeline with the
-fixed-descriptor scalar contextual rANS variant 2. It is a diagnostic, not a
-recommended compression profile: every frame carries 9,052 model bytes.
-`lzss-contextual-rans-compact` selects the same contexts and scalar coder with
-the canonical variable-size descriptor of variant 3. Encode and decode must
-use the same explicit selector; neither name auto-detects the other variant.
+canonical variable-size descriptor of scalar contextual rANS variant 3.
+Entropy variant 2 is retired and reserved; no diagnostic selector or alias
+remains. Encode and decode use the same explicit unqualified selector.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
 tANS entropy variant 2. It likewise requires the explicit selector for both
 directions and remains outside the stable 42-profile inventory.
@@ -165,14 +163,12 @@ direction-specific requirements query, factory, process, and destroy
 functions. All three workspace extents and the opaque views alignment come
 from the query; no private token, operation, or model layout is reproduced.
 
-The experimental `lzss-contextual-rans` and
-`lzss-contextual-rans-compact` adapters also fix raw frames at 65,536 bytes.
-Their public Format 2 decision ceiling is `6F = 393,216`, their payload ceiling
-is `12F + 8 = 786,440` bytes, and each internal-buffer policy is 8 MiB. The
-fixed selector emits entropy variant 2 and the compact selector emits variant
-3. Each adapter calls only its distinct public configuration initializer,
+The experimental `lzss-contextual-rans` adapter also fixes raw frames at
+65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its
+payload ceiling is `12F + 8 = 786,440` bytes, and its internal-buffer policy
+is 8 MiB. It emits entropy variant 3 and calls only its public initializer,
 direction-specific requirements query, factory, process, and destroy
-functions. All byte regions and the opaque fixed-table/token views alignment
+functions. All byte regions and the opaque model-table/token views alignment
 come from the query; the command-line layer reproduces no private layout.
 
 The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,

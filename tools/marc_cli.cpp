@@ -225,7 +225,6 @@ enum class Codec {
     lzss_dynamic_range,
     lzss_contextual_dynamic_range,
     lzss_contextual_rans,
-    lzss_contextual_rans_compact,
     lzss_contextual_tans,
     lzss_contextual_blocked_huffman,
     lzss_contextual_adaptive_huffman,
@@ -865,27 +864,6 @@ bool configure(
     marc_lzss_contextual_rans_config& config) {
     const auto status =
         marc_lzss_contextual_rans_config_init(direction, &config);
-    if (status != MARC_STATUS_OK) {
-        print_status("configuration failed", status);
-        return false;
-    }
-    config.original_size = original_size;
-    config.frame_size =
-        static_cast<std::uint32_t>(lzss_contextual_rans_frame_size);
-    config.max_frame_size = lzss_contextual_rans_frame_size;
-    config.max_block_size = lzss_contextual_rans_decision_count;
-    config.max_compressed_payload_size = lzss_contextual_rans_payload_size;
-    config.max_internal_buffered_bytes = lzss_contextual_rans_buffered_size;
-    config.max_lz_distance = UINT64_C(1) << 16;
-    config.max_lz_match_length = 258;
-    return true;
-}
-
-bool configure(
-    const marc_direction direction, const std::uint64_t original_size,
-    marc_lzss_contextual_rans_compact_config& config) {
-    const auto status =
-        marc_lzss_contextual_rans_compact_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
@@ -1630,8 +1608,6 @@ bool process_file(const marc_direction direction,
     marc_lzss_contextual_dynamic_range_config
         lzss_contextual_range_config{};
     marc_lzss_contextual_rans_config lzss_contextual_rans_settings{};
-    marc_lzss_contextual_rans_compact_config
-        lzss_contextual_rans_compact_settings{};
     marc_lzss_contextual_tans_config lzss_contextual_tans_settings{};
     marc_lzss_contextual_blocked_huffman_config
         lzss_contextual_blocked_huffman_settings{};
@@ -1711,12 +1687,6 @@ bool process_file(const marc_direction direction,
     } else if (codec == Codec::lzss_contextual_rans) {
         if (!configure(direction, source_size, lzss_contextual_rans_settings))
             return false;
-    } else if (codec == Codec::lzss_contextual_rans_compact) {
-        if (!configure(
-                direction, source_size,
-                lzss_contextual_rans_compact_settings)) {
-            return false;
-        }
     } else if (codec == Codec::lzss_contextual_tans) {
         if (!configure(
                 direction, source_size, lzss_contextual_tans_settings)) {
@@ -1861,9 +1831,6 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_rans)
         status = marc_lzss_contextual_rans_workspace_requirements(
             &lzss_contextual_rans_settings, &needed);
-    else if (codec == Codec::lzss_contextual_rans_compact)
-        status = marc_lzss_contextual_rans_compact_workspace_requirements(
-            &lzss_contextual_rans_compact_settings, &needed);
     else if (codec == Codec::lzss_contextual_tans)
         status = marc_lzss_contextual_tans_workspace_requirements(
             &lzss_contextual_tans_settings, &needed);
@@ -2042,10 +2009,6 @@ bool process_file(const marc_direction direction,
         status = marc_lzss_contextual_rans_create(
             &lzss_contextual_rans_settings, primary_buffer, secondary_buffer,
             views_buffer, &raw_transform);
-    else if (codec == Codec::lzss_contextual_rans_compact)
-        status = marc_lzss_contextual_rans_compact_create(
-            &lzss_contextual_rans_compact_settings, primary_buffer,
-            secondary_buffer, views_buffer, &raw_transform);
     else if (codec == Codec::lzss_contextual_tans)
         status = marc_lzss_contextual_tans_create(
             &lzss_contextual_tans_settings, primary_buffer, secondary_buffer,
@@ -2306,7 +2269,7 @@ void usage() {
                  "lz77-rans, lz77-tans, "
                  "lzss, lzss-blocked-huffman, lzss-adaptive-huffman, "
                  "lzss-dynamic-range, lzss-contextual-dynamic-range, "
-                 "lzss-contextual-rans, lzss-contextual-rans-compact, "
+                 "lzss-contextual-rans, "
                  "lzss-contextual-tans, lzss-contextual-blocked-huffman, "
                  "lzss-contextual-adaptive-huffman, "
                  "lzss-rans, lzss-tans, lz78, "
@@ -2371,8 +2334,6 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_dynamic_range;
         else if (name == "lzss-contextual-rans")
             codec = Codec::lzss_contextual_rans;
-        else if (name == "lzss-contextual-rans-compact")
-            codec = Codec::lzss_contextual_rans_compact;
         else if (name == "lzss-contextual-tans")
             codec = Codec::lzss_contextual_tans;
         else if (name == "lzss-contextual-blocked-huffman")

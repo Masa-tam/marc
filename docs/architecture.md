@@ -4889,3 +4889,11 @@ directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
 re-encoding establish the Contextual Adaptive Huffman bytes across all three
 recorded x86-64 producers.
+
+The canonical Contextual rANS public boundary now has one meaning: the
+unqualified C lifecycle, CLI selector, and benchmark selector emit entropy
+variant 3's variable descriptor. The compact-qualified public declarations and
+selectors are absent, and completion, malformed-regression, C11, CLI, and
+benchmark tests exercise the surviving path once. Private fixed and compact
+frame names remain temporarily isolated behind this boundary until the next
+canonicalization milestone; no variant-3 byte changes here.

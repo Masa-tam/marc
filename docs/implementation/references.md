@@ -4655,3 +4655,12 @@ CLI and benchmark adapters, fuzz harnesses, schema-36 order, and repository
 history as local architectural precedents. No external rANS or compression
 implementation, source code, API, archive, corpus, test vector, test suite,
 patent text, or optimization description was consulted.
+
+### IR-0528
+
+The canonical Contextual rANS public-boundary change uses DD-749, DD-750, and
+DD-752, TVG-0628 and TVG-0629, marc's two existing public lifecycles, variant-3
+workspace profile, CLI and benchmark adapters, C11 test, completion matrix,
+and malformed regressions as local precedents. No external rANS or compression
+implementation, source code, API, archive, corpus, test vector, test suite,
+patent text, or optimization description was consulted.

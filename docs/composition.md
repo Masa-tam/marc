@@ -1756,3 +1756,13 @@ Schema 36 now has four-direction external evidence at revision
 24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
 verifies there and on Windows/MSVC. All 47 archives decode and re-encode
 byte-identically in every path.
+
+### CP-0104
+
+The public Contextual rANS composition is now singular. The unqualified ABI,
+CLI, and benchmark names dispatch only to the existing variant-3 lifecycle;
+compact-qualified public names and duplicate registered adapters are removed.
+The canonical completion and malformed suites retain all data-class,
+chunking, terminal, and frame-atomic checks once, and the C11/CLI/benchmark
+smokes pass under both compilers. Private frame-name consolidation remains the
+next milestone.

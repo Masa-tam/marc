@@ -15493,3 +15493,15 @@ name with `lzss-contextual-rans`. The verifier privately maps the historical
 schema-33-through-36 name to the new CLI selector; the public CLI has no alias.
 The compatibility test converts schema 37 to 36 by renaming that one manifest
 entry and file before continuing the existing downgrade chain.
+
+## DD-752: Public Contextual rANS names select variant 3 immediately
+
+- Date: 2026-08-12
+- Status: accepted
+
+Free the unqualified public meaning by removing fixed dispatch, then bind the
+existing size-tagged `marc_lzss_contextual_rans_config` and three-function
+lifecycle directly to variant 3. Remove compact-qualified declarations,
+selectors, benchmark paths, and duplicate public tests without aliases. Keep
+the variant-3 workspace bounds and bytes unchanged while private frame names
+are consolidated separately.

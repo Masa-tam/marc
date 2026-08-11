@@ -618,30 +618,6 @@ bool load_config(
 }
 
 bool load_config(
-    const marc_lzss_contextual_rans_compact_config* config,
-    marc::core::DecoderLimits& limits) noexcept {
-    if (config == nullptr
-        || config->struct_size
-            != sizeof(marc_lzss_contextual_rans_compact_config)
-        || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0) {
-        return false;
-    }
-    limits.max_total_output_size = config->max_total_output_size;
-    limits.max_frame_size = config->max_frame_size;
-    limits.max_block_size = config->max_block_size;
-    limits.max_compressed_payload_size =
-        config->max_compressed_payload_size;
-    limits.max_internal_buffered_bytes =
-        config->max_internal_buffered_bytes;
-    limits.max_lz_distance = config->max_lz_distance;
-    limits.max_lz_match_length = config->max_lz_match_length;
-    limits.max_entropy_table_entries =
-        config->max_entropy_table_entries;
-    return true;
-}
-
-bool load_config(
     const marc_lzss_contextual_tans_config* config,
     marc::core::DecoderLimits& limits) noexcept {
     if (config == nullptr
@@ -1259,11 +1235,6 @@ marc_status publish_transform(marc::core::Transform* implementation,
     return MARC_STATUS_OK;
 }
 
-enum class ContextualRansCRepresentation : std::uint8_t {
-    fixed,
-    compact,
-};
-
 template <typename Config>
 marc_status initialize_contextual_rans_config(
     const marc_direction direction, Config* const config) noexcept {
@@ -1296,8 +1267,8 @@ marc_status initialize_contextual_rans_config(
 
 template <typename Config>
 marc_status contextual_rans_workspace_requirements(
-    const Config* const config, marc_workspace_requirements* requirements,
-    const ContextualRansCRepresentation representation) noexcept {
+    const Config* const config,
+    marc_workspace_requirements* requirements) noexcept {
     if (requirements == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
     *requirements = {};
     requirements->struct_size = sizeof(*requirements);
@@ -1312,12 +1283,8 @@ marc_status contextual_rans_workspace_requirements(
         marc::frame::internal::LzssContextualRansStreamHeader stream{};
         marc::frame::internal::
             LzssContextualRansEncoderWorkspaceRequirements needed{};
-        const auto error = representation
-                == ContextualRansCRepresentation::compact
-            ? marc::frame::internal::make_lzss_contextual_rans_compact_profile(
-                {config->original_size, config->frame_size, dictionary},
-                limits, stream, needed)
-            : marc::frame::internal::make_lzss_contextual_rans_profile(
+        const auto error =
+            marc::frame::internal::make_lzss_contextual_rans_compact_profile(
                 {config->original_size, config->frame_size, dictionary},
                 limits, stream, needed);
         if (error != marc::frame::internal::
@@ -1335,14 +1302,9 @@ marc_status contextual_rans_workspace_requirements(
     if (config->direction == MARC_DIRECTION_DECODE) {
         marc::frame::internal::
             LzssContextualRansDecoderWorkspaceRequirements needed{};
-        const auto error = representation
-                == ContextualRansCRepresentation::compact
-            ? marc::frame::internal::
-                calculate_lzss_contextual_rans_compact_decoder_workspace(
-                    limits, needed)
-            : marc::frame::internal::
-                calculate_lzss_contextual_rans_decoder_workspace(
-                    limits, needed);
+        const auto error = marc::frame::internal::
+            calculate_lzss_contextual_rans_compact_decoder_workspace(
+                limits, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return status_for(
@@ -1364,13 +1326,12 @@ marc_status create_contextual_rans(
     const marc_buffer primary_workspace,
     const marc_buffer secondary_workspace,
     const marc_buffer views_workspace,
-    marc_transform** const transform,
-    const ContextualRansCRepresentation representation) noexcept {
+    marc_transform** const transform) noexcept {
     if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
     *transform = nullptr;
     marc_workspace_requirements required{};
-    const auto query = contextual_rans_workspace_requirements(
-        config, &required, representation);
+    const auto query =
+        contextual_rans_workspace_requirements(config, &required);
     if (query != MARC_STATUS_OK) return query;
     if (!valid_buffer(primary_workspace.data, primary_workspace.size)
         || !valid_buffer(secondary_workspace.data, secondary_workspace.size)
@@ -1411,12 +1372,8 @@ marc_status create_contextual_rans(
         marc::frame::internal::LzssContextualRansStreamHeader stream{};
         marc::frame::internal::
             LzssContextualRansEncoderWorkspaceRequirements needed{};
-        const auto error = representation
-                == ContextualRansCRepresentation::compact
-            ? marc::frame::internal::make_lzss_contextual_rans_compact_profile(
-                {config->original_size, config->frame_size, dictionary},
-                limits, stream, needed)
-            : marc::frame::internal::make_lzss_contextual_rans_profile(
+        const auto error =
+            marc::frame::internal::make_lzss_contextual_rans_compact_profile(
                 {config->original_size, config->frame_size, dictionary},
                 limits, stream, needed);
         if (error != marc::frame::internal::
@@ -1431,26 +1388,16 @@ marc_status create_contextual_rans(
                    LzssContextualRansWorkspaceError::none) {
             return MARC_STATUS_INVALID_ARGUMENT;
         }
-        implementation = representation
-                == ContextualRansCRepresentation::compact
-            ? static_cast<marc::core::Transform*>(new (std::nothrow)
-                marc::frame::internal::
-                    LzssContextualRansCompactFrameStreamingEncoder(
-                        stream, limits, primary, views.tokens, secondary))
-            : static_cast<marc::core::Transform*>(new (std::nothrow)
-                marc::frame::internal::LzssContextualRansFrameStreamingEncoder(
-                    stream, limits, primary, views.tokens, secondary));
+        implementation = new (std::nothrow)
+            marc::frame::internal::
+                LzssContextualRansCompactFrameStreamingEncoder(
+                    stream, limits, primary, views.tokens, secondary);
     } else {
         marc::frame::internal::
             LzssContextualRansDecoderWorkspaceRequirements needed{};
-        const auto error = representation
-                == ContextualRansCRepresentation::compact
-            ? marc::frame::internal::
-                calculate_lzss_contextual_rans_compact_decoder_workspace(
-                    limits, needed)
-            : marc::frame::internal::
-                calculate_lzss_contextual_rans_decoder_workspace(
-                    limits, needed);
+        const auto error = marc::frame::internal::
+            calculate_lzss_contextual_rans_compact_decoder_workspace(
+                limits, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1463,16 +1410,10 @@ marc_status create_contextual_rans(
                    LzssContextualRansWorkspaceError::none) {
             return MARC_STATUS_INVALID_ARGUMENT;
         }
-        implementation = representation
-                == ContextualRansCRepresentation::compact
-            ? static_cast<marc::core::Transform*>(new (std::nothrow)
-                marc::frame::internal::
-                    LzssContextualRansCompactFrameStreamingDecoder(
-                        limits, primary, views.tables, views.tokens,
-                        secondary))
-            : static_cast<marc::core::Transform*>(new (std::nothrow)
-                marc::frame::internal::LzssContextualRansFrameStreamingDecoder(
-                    limits, primary, views.tables, views.tokens, secondary));
+        implementation = new (std::nothrow)
+            marc::frame::internal::
+                LzssContextualRansCompactFrameStreamingDecoder(
+                    limits, primary, views.tables, views.tokens, secondary);
     }
     return publish_transform(implementation, transform);
 }
@@ -4628,8 +4569,7 @@ marc_status marc_lzss_contextual_rans_config_init(
 marc_status marc_lzss_contextual_rans_workspace_requirements(
     const marc_lzss_contextual_rans_config* config,
     marc_workspace_requirements* requirements) noexcept {
-    return contextual_rans_workspace_requirements(
-        config, requirements, ContextualRansCRepresentation::fixed);
+    return contextual_rans_workspace_requirements(config, requirements);
 }
 
 marc_status marc_lzss_contextual_rans_create(
@@ -4640,31 +4580,7 @@ marc_status marc_lzss_contextual_rans_create(
     marc_transform** transform) noexcept {
     return create_contextual_rans(
         config, primary_workspace, secondary_workspace, views_workspace,
-        transform, ContextualRansCRepresentation::fixed);
-}
-
-marc_status marc_lzss_contextual_rans_compact_config_init(
-    const marc_direction direction,
-    marc_lzss_contextual_rans_compact_config* config) noexcept {
-    return initialize_contextual_rans_config(direction, config);
-}
-
-marc_status marc_lzss_contextual_rans_compact_workspace_requirements(
-    const marc_lzss_contextual_rans_compact_config* config,
-    marc_workspace_requirements* requirements) noexcept {
-    return contextual_rans_workspace_requirements(
-        config, requirements, ContextualRansCRepresentation::compact);
-}
-
-marc_status marc_lzss_contextual_rans_compact_create(
-    const marc_lzss_contextual_rans_compact_config* config,
-    const marc_buffer primary_workspace,
-    const marc_buffer secondary_workspace,
-    const marc_buffer views_workspace,
-    marc_transform** transform) noexcept {
-    return create_contextual_rans(
-        config, primary_workspace, secondary_workspace, views_workspace,
-        transform, ContextualRansCRepresentation::compact);
+        transform);
 }
 
 marc_status marc_lzss_contextual_tans_config_init(

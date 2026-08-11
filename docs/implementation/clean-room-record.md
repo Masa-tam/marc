@@ -18258,3 +18258,28 @@ discarded and the reviewed seed retained.
 - Local validation: design-only milestone; implementation, builds, tests,
   sanitizer evidence, benchmarks, and schema-37 interoperability remain
   pending.
+
+## CR-0780: 2026-08-12 - Canonical Contextual rANS public boundary
+
+- Authoring method: removed the fixed public dispatch first, rebound the
+  existing unqualified configuration and lifecycle to variant 3, then removed
+  compact-qualified C, CLI, benchmark, and duplicate public-test surfaces.
+- References used: DD-749, DD-750, and DD-752; IR-0528; TVG-0628 and TVG-0629;
+  marc's existing fixed/variant-3 public adapters and tests.
+- Known implementations intentionally not consulted: external rANS or
+  compression implementations, source code, APIs, archives, corpora, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: retain the existing unqualified C struct layout;
+  select only variant 3; use its 9,025-byte descriptor workspace ceiling;
+  remove aliases and duplicate registration; preserve all public behavioral
+  assertions once.
+- Generated-code task description: canonicalize public C, CLI, benchmark,
+  CMake registration, C11 lifecycle, completion, and malformed-regression
+  paths while leaving private frame-name consolidation for a later commit.
+- Similarity review: all changes are deletions and rewiring among marc-owned
+  paths; no external implementation expression entered the work.
+- Local validation: affected targets build warning-clean under MSVC
+  19.51.36252 and ClangCL 22.1.3. The same nine focused tests pass under each:
+  six canonical completion/malformed cases, C11 lifecycle, CLI entropy-`4/3`
+  round trip, and benchmark smoke. The initial sandboxed MSVC build met the
+  known FileTracker `E_ACCESSDENIED`; the established approved route passed.

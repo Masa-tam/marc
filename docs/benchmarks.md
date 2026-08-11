@@ -54,7 +54,6 @@ The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`, or
-`marc_benchmark lzss-contextual-rans-compact corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
@@ -215,22 +214,13 @@ and a byte-exact round trip succeeds before timing.
 The experimental `lzss-contextual-rans` benchmark uses the same 65,536-byte
 raw frames, admits at most `6F` modeled decisions and `12F + 8` payload bytes,
 and applies an 8-MiB internal limit. For input extent `N` and nonempty frame
-count `K`, checked output capacity is `112 + 12N + 9,124K`, including the
-Format 2 stream prefix, frame headers, 9,052-byte contextual frequency
-descriptors, and final-state allowance. Both directions are constructed only
-through the public C lifecycle; all three workspace extents and opaque
-alignment come from separate requirements queries, and exact round trip is
-verified before timing.
-
-The experimental `lzss-contextual-rans-compact` benchmark holds those frame,
-decision, payload, and 8-MiB aggregate policies constant while selecting the
-canonical variable-size descriptor of entropy variant 3. Checked capacity is
+count `K`, checked output capacity is
 `112 + 12N + 9,097K`: each nonempty frame reserves one 64-byte common header,
 at most 9,025 descriptor bytes, and eight final-state bytes. Both directions
-are constructed only through the distinct compact public C lifecycle. The
-report includes complete-stream ratio, both throughputs, peak caller-owned
-workspace, and all three directional workspace extents after an exact
-pre-timing round trip.
+are constructed only through the public C lifecycle for canonical entropy
+variant 3. The report includes complete-stream ratio, both throughputs, peak
+caller-owned workspace, and all three directional workspace extents after an
+exact pre-timing round trip.
 
 The experimental `lzss-contextual-tans` benchmark uses 65,536-byte raw
 frames, admits at most `6F` modeled decisions, reserves `9F + 2` payload

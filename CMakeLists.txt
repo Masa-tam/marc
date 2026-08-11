@@ -573,12 +573,6 @@ if(MARC_BUILD_BENCHMARKS)
         set_tests_properties(
             marc_benchmark_lzss_contextual_rans_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
-        add_test(NAME marc_benchmark_lzss_contextual_rans_compact_smoke
-            COMMAND marc_benchmark lzss-contextual-rans-compact
-                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
-        set_tests_properties(
-            marc_benchmark_lzss_contextual_rans_compact_smoke
-            PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_tans_smoke
             COMMAND marc_benchmark lzss-contextual-tans
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
@@ -2932,20 +2926,6 @@ if(MARC_BUILD_TESTS)
     add_test(NAME marc_lzss_contextual_rans_c_api_tests
         COMMAND marc_lzss_contextual_rans_c_api_tests)
 
-    add_executable(marc_lzss_contextual_rans_compact_c_api_tests
-        tests/lzss_contextual_rans_compact_c_api_tests.c)
-    target_compile_features(marc_lzss_contextual_rans_compact_c_api_tests
-        PRIVATE c_std_11)
-    if(TARGET marc_shared)
-        target_link_libraries(marc_lzss_contextual_rans_compact_c_api_tests
-            PRIVATE marc::shared)
-    else()
-        target_link_libraries(marc_lzss_contextual_rans_compact_c_api_tests
-            PRIVATE marc::static)
-    endif()
-    add_test(NAME marc_lzss_contextual_rans_compact_c_api_tests
-        COMMAND marc_lzss_contextual_rans_compact_c_api_tests)
-
     add_executable(marc_lzss_contextual_tans_c_api_tests
         tests/lzss_contextual_tans_c_api_tests.c)
     target_compile_features(marc_lzss_contextual_tans_c_api_tests
@@ -3495,18 +3475,9 @@ if(MARC_BUILD_TESTS)
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
                 "-DCLI_CODEC=lzss-contextual-rans"
                 "-DCLI_ENTROPY_ALGORITHM=04"
-                "-DCLI_ENTROPY_VARIANT=02"
-                "-DCLI_TRAILING_TEST=ON"
-                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-rans-test-$<CONFIG>"
-                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
-        add_test(NAME marc_cli_lzss_contextual_rans_compact_round_trip
-            COMMAND ${CMAKE_COMMAND}
-                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
-                "-DCLI_CODEC=lzss-contextual-rans-compact"
-                "-DCLI_ENTROPY_ALGORITHM=04"
                 "-DCLI_ENTROPY_VARIANT=03"
                 "-DCLI_TRAILING_TEST=ON"
-                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-rans-compact-test-$<CONFIG>"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-rans-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_lzss_contextual_tans_round_trip
             COMMAND ${CMAKE_COMMAND}

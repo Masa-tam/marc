@@ -17,14 +17,11 @@ constexpr std::size_t test_frame_size = 64;
 constexpr std::size_t maximum_payload_size = test_frame_size * 12 + 8;
 constexpr std::size_t maximum_buffered_bytes = 2U << 20;
 
-enum class Representation { fixed, compact };
+enum class Representation { canonical };
 
 [[nodiscard]] constexpr std::size_t maximum_frame_size(
-    const Representation representation) noexcept {
-    const auto descriptor_size = representation == Representation::fixed
-        ? std::size_t{9052}
-        : std::size_t{9025};
-    return 64 + descriptor_size + maximum_payload_size;
+    const Representation) noexcept {
+    return 64 + 9025 + maximum_payload_size;
 }
 
 struct TransformDeleter {
@@ -47,9 +44,7 @@ struct Workspace {
 };
 
 struct Config {
-    Representation representation{};
-    marc_lzss_contextual_rans_config fixed{};
-    marc_lzss_contextual_rans_compact_config compact{};
+    marc_lzss_contextual_rans_config value{};
 };
 
 template <class T>
@@ -70,28 +65,18 @@ void configure_fields(T& result, const std::size_t original_size) {
                             const marc_direction direction,
                             const std::size_t original_size) {
     Config result{};
-    result.representation = representation;
-    if (representation == Representation::fixed) {
-        EXPECT_EQ(marc_lzss_contextual_rans_config_init(
-                      direction, &result.fixed),
-                  MARC_STATUS_OK);
-        configure_fields(result.fixed, original_size);
-    } else {
-        EXPECT_EQ(marc_lzss_contextual_rans_compact_config_init(
-                      direction, &result.compact),
-                  MARC_STATUS_OK);
-        configure_fields(result.compact, original_size);
-    }
+    static_cast<void>(representation);
+    EXPECT_EQ(marc_lzss_contextual_rans_config_init(
+                  direction, &result.value),
+              MARC_STATUS_OK);
+    configure_fields(result.value, original_size);
     return result;
 }
 
 [[nodiscard]] Workspace workspace_for(const Config& settings) {
     Workspace result{};
-    const auto status = settings.representation == Representation::fixed
-        ? marc_lzss_contextual_rans_workspace_requirements(
-              &settings.fixed, &result.requirements)
-        : marc_lzss_contextual_rans_compact_workspace_requirements(
-              &settings.compact, &result.requirements);
+    const auto status = marc_lzss_contextual_rans_workspace_requirements(
+        &settings.value, &result.requirements);
     EXPECT_EQ(status, MARC_STATUS_OK);
     EXPECT_LE(result.requirements.views_alignment,
               alignof(std::max_align_t));
@@ -111,11 +96,8 @@ void configure_fields(T& result, const std::size_t original_size) {
     const marc_buffer secondary{workspace.secondary.data(),
                                 workspace.secondary.size()};
     const auto views = workspace.views_buffer();
-    const auto status = settings.representation == Representation::fixed
-        ? marc_lzss_contextual_rans_create(
-              &settings.fixed, primary, secondary, views, &raw)
-        : marc_lzss_contextual_rans_compact_create(
-              &settings.compact, primary, secondary, views, &raw);
+    const auto status = marc_lzss_contextual_rans_create(
+        &settings.value, primary, secondary, views, &raw);
     EXPECT_EQ(status, MARC_STATUS_OK);
     return Transform{raw};
 }
@@ -210,7 +192,7 @@ void expect_round_trip(const Representation representation,
     EXPECT_EQ(encode(representation, input), first);
     ASSERT_GE(first.size(), 19U);
     EXPECT_EQ(first[16], 4U);
-    EXPECT_EQ(first[18], representation == Representation::fixed ? 2U : 3U);
+    EXPECT_EQ(first[18], 3U);
     const auto decoded = process_all(
         representation, MARC_DIRECTION_DECODE, first, input.size(), SIZE_MAX,
         SIZE_MAX, input.size());
@@ -351,10 +333,7 @@ TEST_P(LzssContextualRansCompletion,
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    FixedAndCompact, LzssContextualRansCompletion,
-    testing::Values(Representation::fixed, Representation::compact),
-    [](const testing::TestParamInfo<Representation>& info) {
-        return info.param == Representation::fixed ? "Fixed" : "Compact";
-    });
+    Canonical, LzssContextualRansCompletion,
+    testing::Values(Representation::canonical));
 
 } // namespace

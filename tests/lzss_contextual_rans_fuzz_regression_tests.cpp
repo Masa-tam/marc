@@ -22,7 +22,7 @@ namespace {
 using RansDecodeEntry = marc::entropy::internal::RansDecodeEntry;
 using Token = marc::dictionary::internal::LzssTypedToken;
 
-enum class Representation { fixed, compact };
+enum class Representation { canonical };
 
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
@@ -32,10 +32,9 @@ constexpr std::size_t maximum_payload = raw.size() * 12 + 8;
 constexpr std::size_t maximum_internal = 2U << 20;
 
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
-    const Representation representation) noexcept {
-    const auto descriptor_size = representation == Representation::fixed
-        ? marc::entropy::internal::contextual_rans_descriptor_size
-        : marc::entropy::internal::contextual_rans_compact_max_descriptor_size;
+    const Representation) noexcept {
+    const auto descriptor_size =
+        marc::entropy::internal::contextual_rans_compact_max_descriptor_size;
     return marc::frame::internal::lzss_contextual_rans_frame_header_size
         + descriptor_size + maximum_payload;
 }
@@ -53,9 +52,7 @@ struct Workspace {
 };
 
 struct Config {
-    Representation representation{};
-    marc_lzss_contextual_rans_config fixed{};
-    marc_lzss_contextual_rans_compact_config compact{};
+    marc_lzss_contextual_rans_config value{};
 };
 
 template <class T>
@@ -76,28 +73,18 @@ void configure_fields(T& result) {
 [[nodiscard]] Config settings(const Representation representation,
                               const marc_direction direction) {
     Config result{};
-    result.representation = representation;
-    if (representation == Representation::fixed) {
-        EXPECT_EQ(marc_lzss_contextual_rans_config_init(
-                      direction, &result.fixed),
-                  MARC_STATUS_OK);
-        configure_fields(result.fixed);
-    } else {
-        EXPECT_EQ(marc_lzss_contextual_rans_compact_config_init(
-                      direction, &result.compact),
-                  MARC_STATUS_OK);
-        configure_fields(result.compact);
-    }
+    static_cast<void>(representation);
+    EXPECT_EQ(marc_lzss_contextual_rans_config_init(
+                  direction, &result.value),
+              MARC_STATUS_OK);
+    configure_fields(result.value);
     return result;
 }
 
 [[nodiscard]] Workspace workspace_for(const Config& config) {
     Workspace result{};
-    const auto status = config.representation == Representation::fixed
-        ? marc_lzss_contextual_rans_workspace_requirements(
-              &config.fixed, &result.requirements)
-        : marc_lzss_contextual_rans_compact_workspace_requirements(
-              &config.compact, &result.requirements);
+    const auto status = marc_lzss_contextual_rans_workspace_requirements(
+        &config.value, &result.requirements);
     EXPECT_EQ(status, MARC_STATUS_OK);
     EXPECT_LE(result.requirements.views_alignment,
               alignof(std::max_align_t));
@@ -120,11 +107,8 @@ void configure_fields(T& result) {
     const marc_buffer secondary{workspace.secondary.data(),
                                 workspace.secondary.size()};
     const auto views = workspace.views_buffer();
-    const auto status = representation == Representation::fixed
-        ? marc_lzss_contextual_rans_create(
-              &config.fixed, primary, secondary, views, &encoder)
-        : marc_lzss_contextual_rans_compact_create(
-              &config.compact, primary, secondary, views, &encoder);
+    const auto status = marc_lzss_contextual_rans_create(
+        &config.value, primary, secondary, views, &encoder);
     EXPECT_EQ(status, MARC_STATUS_OK);
     std::vector<std::uint8_t> encoded(
         marc::frame::internal::lzss_contextual_rans_stream_header_size
@@ -163,12 +147,9 @@ protected:
         const auto bytes = std::as_bytes(input);
         marc::frame::internal::LzssContextualRansStreamHeader stream{};
         std::size_t consumed{};
-        const auto parsed = representation_ == Representation::fixed
-            ? marc::frame::internal::parse_lzss_contextual_rans_stream_header(
-                  bytes, limits, stream, consumed)
-            : marc::frame::internal::
-                  parse_lzss_contextual_rans_compact_stream_header(
-                      bytes, limits, stream, consumed);
+        const auto parsed = marc::frame::internal::
+            parse_lzss_contextual_rans_compact_stream_header(
+                bytes, limits, stream, consumed);
         if (parsed != marc::frame::internal::
                           LzssContextualRansStreamHeaderError::none) {
             return;
@@ -177,23 +158,12 @@ protected:
         const marc::frame::internal::
             LzssContextualRansFrameValidationContext context{
                 stream, limits, 0, 0};
-        bool failed{};
-        if (representation_ == Representation::fixed) {
-            const auto result =
-                marc::frame::internal::decode_lzss_contextual_rans_frame(
-                    bytes.subspan(consumed), context, tables_, tokens_,
-                    private_raw_);
-            failed = result.error != marc::frame::internal::
-                                         LzssContextualRansFrameDecodeError::none;
-        } else {
-            const auto result = marc::frame::internal::
-                decode_lzss_contextual_rans_compact_frame(
-                    bytes.subspan(consumed), context, tables_, tokens_,
-                    private_raw_);
-            failed = result.error
-                != marc::frame::internal::
-                       LzssContextualRansFrameDecodeError::none;
-        }
+        const auto result = marc::frame::internal::
+            decode_lzss_contextual_rans_compact_frame(
+                bytes.subspan(consumed), context, tables_, tokens_,
+                private_raw_);
+        const bool failed = result.error
+            != marc::frame::internal::LzssContextualRansFrameDecodeError::none;
         EXPECT_TRUE(failed);
         EXPECT_TRUE(std::ranges::all_of(
             private_raw_, [](const std::byte value) {
@@ -209,12 +179,8 @@ protected:
         const marc_buffer secondary{public_workspace_.secondary.data(),
                                     public_workspace_.secondary.size()};
         const auto views = public_workspace_.views_buffer();
-        const auto status = representation_ == Representation::fixed
-            ? marc_lzss_contextual_rans_create(
-                  &decode_config_.fixed, primary, secondary, views, &decoder)
-            : marc_lzss_contextual_rans_compact_create(
-                  &decode_config_.compact, primary, secondary, views,
-                  &decoder);
+        const auto status = marc_lzss_contextual_rans_create(
+            &decode_config_.value, primary, secondary, views, &decoder);
         ASSERT_EQ(status, MARC_STATUS_OK);
         std::array<std::uint8_t, raw.size()> output{};
         output.fill(UINT8_C(0xa5));
@@ -282,10 +248,7 @@ TEST_P(LzssContextualRansFuzzRegression,
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    FixedAndCompact, LzssContextualRansFuzzRegression,
-    testing::Values(Representation::fixed, Representation::compact),
-    [](const testing::TestParamInfo<Representation>& info) {
-        return info.param == Representation::fixed ? "Fixed" : "Compact";
-    });
+    Canonical, LzssContextualRansFuzzRegression,
+    testing::Values(Representation::canonical));
 
 } // namespace

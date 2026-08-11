@@ -16,7 +16,8 @@ static void release(marc_buffer buffer) {
     free(buffer.data);
 }
 
-static void set_small_limits(marc_lzss_contextual_rans_config* config) {
+static void set_small_limits(
+    marc_lzss_contextual_rans_config* config) {
     config->max_total_output_size = 1024;
     config->max_frame_size = 2;
     config->max_block_size = 4096;
@@ -49,7 +50,7 @@ int main(void) {
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     assert(needed.primary_bytes == 2);
-    assert(needed.secondary_bytes == 9148);
+    assert(needed.secondary_bytes == 9121);
     assert(needed.views_bytes != 0 && needed.views_alignment != 0);
 
     marc_buffer primary = allocate(needed.primary_bytes);
@@ -69,9 +70,7 @@ int main(void) {
     assert(encoded[4] == 2 && encoded[5] == 0);
     assert(encoded[14] == 2 && encoded[15] == 0);
     assert(encoded[16] == 4 && encoded[17] == 0);
-    assert(encoded[18] == 2 && encoded[19] == 0);
-    assert(encoded[72] == 2 && encoded[73] == 1);
-    assert(encoded[96] == 1 && encoded[98] == 1);
+    assert(encoded[18] == 3 && encoded[19] == 0);
     const size_t encoded_size = result.output_produced;
     marc_transform_destroy(transform);
     release(primary);
@@ -83,7 +82,7 @@ int main(void) {
     set_small_limits(&config);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
-    assert(needed.primary_bytes == 9148);
+    assert(needed.primary_bytes == 9121);
     assert(needed.secondary_bytes == 2);
     assert(needed.views_bytes != 0 && needed.views_alignment != 0);
     primary = allocate(needed.primary_bytes);
@@ -116,11 +115,18 @@ int main(void) {
                (marc_buffer){views.data, needed.views_bytes - 1},
                &transform) == MARC_STATUS_INVALID_ARGUMENT);
     assert(transform == NULL);
+
+    const size_t shared_size = needed.views_bytes > needed.primary_bytes
+        ? needed.views_bytes : needed.primary_bytes;
+    marc_buffer shared = allocate(shared_size);
     assert(marc_lzss_contextual_rans_create(
-               &config, primary, secondary,
-               (marc_buffer){primary.data, needed.views_bytes},
-               &transform) == MARC_STATUS_INVALID_ARGUMENT);
+               &config,
+               (marc_buffer){shared.data, needed.primary_bytes}, secondary,
+               (marc_buffer){shared.data, needed.views_bytes}, &transform)
+           == MARC_STATUS_INVALID_ARGUMENT);
     assert(transform == NULL);
+    release(shared);
+
     if (needed.views_alignment > 1) {
         marc_buffer storage = allocate(needed.views_bytes + 1);
         const marc_buffer misaligned = {
@@ -155,11 +161,11 @@ int main(void) {
                NULL, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, NULL) == MARC_STATUS_INVALID_ARGUMENT);
-    config.direction = 99;
+    config.direction = (marc_direction)99;
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
-    assert(marc_lzss_contextual_rans_config_init(0, &config)
-           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(marc_lzss_contextual_rans_config_init(
+               (marc_direction)0, &config) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_rans_config_init(
                MARC_DIRECTION_ENCODE, NULL) == MARC_STATUS_INVALID_ARGUMENT);
 

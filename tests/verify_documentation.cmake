@@ -629,8 +629,9 @@ endif()
 foreach(required_experimental_cli IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
-        "`lzss-contextual-rans-compact`"
-        "`lzss-contextual-tans`")
+        "`lzss-contextual-tans`"
+        "`lzss-contextual-blocked-huffman`"
+        "`lzss-contextual-adaptive-huffman`")
     string(FIND "${cli_content}" "${required_experimental_cli}"
         experimental_cli_offset)
     if(experimental_cli_offset EQUAL -1)
@@ -671,28 +672,16 @@ if(c_api_profile_count_offset EQUAL -1)
     message(FATAL_ERROR "C API profile count is stale")
 endif()
 string(FIND "${c_api_content}"
-    "experimental Format 2 `lzss-contextual-dynamic-range`"
+    "five experimental Format 2 LZSS contextual profiles"
     c_api_experimental_profile_offset)
 if(c_api_experimental_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API experimental profile inventory is stale")
 endif()
 string(FIND "${c_api_content}"
-    "fixed-descriptor `lzss-contextual-rans`"
+    "canonical lifecycle emits only compact entropy variant 3"
     c_api_contextual_rans_profile_offset)
 if(c_api_contextual_rans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual rANS inventory is stale")
-endif()
-string(FIND "${c_api_content}"
-    "`lzss-contextual-rans-compact`"
-    c_api_compact_contextual_rans_name_offset)
-if(c_api_compact_contextual_rans_name_offset EQUAL -1)
-    message(FATAL_ERROR "C API compact contextual rANS name is stale")
-endif()
-string(FIND "${c_api_content}"
-    "`marc_lzss_contextual_rans_compact_*`"
-    c_api_compact_contextual_rans_profile_offset)
-if(c_api_compact_contextual_rans_profile_offset EQUAL -1)
-    message(FATAL_ERROR "C API compact contextual rANS inventory is stale")
 endif()
 string(FIND "${c_api_content}"
     "`marc_lzss_contextual_tans_workspace_requirements()`"
@@ -730,18 +719,18 @@ endforeach()
 file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
     REGEX "^MARC_API marc_status marc_.*_config_init\\(")
 list(LENGTH c_api_config_initializers c_api_profile_count)
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 6")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5")
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
-        "${cli_profile_count} CLI profiles plus six experimental profiles")
+        "${cli_profile_count} CLI profiles plus five experimental profiles")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
-    "marc_lzss_contextual_(dynamic_range|rans(_compact)?|tans|adaptive_huffman|blocked_huffman)_config_init")
+    "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
 list(LENGTH c_api_config_initializers c_api_experimental_profile_count)
-if(NOT c_api_experimental_profile_count EQUAL 6)
+if(NOT c_api_experimental_profile_count EQUAL 5)
     message(FATAL_ERROR
-        "C API must contain exactly six contextual LZSS experimental "
+        "C API must contain exactly five contextual LZSS experimental "
         "initializers")
 endif()
 
@@ -832,8 +821,9 @@ endforeach()
 foreach(required_experimental_benchmark IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
-        "`lzss-contextual-rans-compact`"
-        "`lzss-contextual-tans`")
+        "`lzss-contextual-tans`"
+        "`lzss-contextual-blocked-huffman`"
+        "`lzss-contextual-adaptive-huffman`")
     string(FIND "${benchmark_content}" "${required_experimental_benchmark}"
         experimental_benchmark_offset)
     if(experimental_benchmark_offset EQUAL -1)

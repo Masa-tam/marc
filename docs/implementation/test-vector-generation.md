@@ -8353,3 +8353,17 @@ only that entry and leaf file to `lzss-contextual-rans-compact`, use the
 verifier's private legacy-name mapping, and continue through schema 1. Run all
 registered tests under MSVC and ClangCL, then run bounded sanitizer and
 benchmark comparisons before merge.
+
+### TVG-0629
+
+Build the library, CLI, benchmark, core tests, and pure-C Contextual rANS test
+after removing the fixed public dispatch and compact-qualified public names.
+Require the unqualified CLI round trip to identify entropy `4/3`; require the
+variant-3 C11 workspace extents, encode/decode round trip, alignment and
+overlap rejection, and configuration validation under the unqualified family.
+
+Collapse the dual-representation public completion and malformed fixtures to
+one canonical parameter while retaining every input class, chunk schedule,
+terminal check, truncation, extreme-length, descriptor mutation, sentinel, and
+sticky-error assertion. Run those six cases plus the C11, CLI, and benchmark
+smokes under both MSVC and ClangCL before private frame renaming.

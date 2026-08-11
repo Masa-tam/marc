@@ -1928,3 +1928,14 @@ Schema 36 now has complete four-direction external evidence at revision
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths.
+
+### BR-0103
+
+Contextual rANS now exposes only the unqualified public C, CLI, and benchmark
+surface, backed by entropy variant 3. The six canonical completion and
+malformed-regression cases plus C11 lifecycle, CLI file round trip, and
+benchmark smoke all pass under MSVC 19.51.36252 and ClangCL 22.1.3. Both
+compilers build the affected library, CLI, benchmark, core-test, and C11
+targets warning-clean. This is focused evidence; private fixed-layer removal,
+full-suite, sanitizer, schema-37, and performance-comparison evidence remain
+pending.
