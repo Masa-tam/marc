@@ -17312,3 +17312,31 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,768 registered MSVC tests pass with a
   240-second per-test limit in 147.82 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 58.94 seconds.
+
+## CR-0748: 2026-08-11 - Contextual Blocked Huffman private profile
+
+- Authoring method: derived conservative encoder and decoder workspace
+  calculators from marc's fixed Format 2 bounds and connected their aligned
+  views directly to the completed streaming transforms.
+- References used: AGENTS.md sections 5, 9, 10, 11, 12, 13, and 15; DD-709
+  through DD-718; IR-0496; TVG-0588 through TVG-0597; marc's typed-LZSS,
+  Contextual Blocked Huffman maxima, checked arithmetic, alignment, limit, and
+  streaming-transform contracts.
+- Known implementations intentionally not consulted: external workspace
+  calculators, Huffman or DEFLATE implementations, source code, archives,
+  corpora, test vectors, test suites, and optimization descriptions.
+- Independent decisions: reserve one token per raw byte; use six 15-bit
+  decisions per raw byte as the payload ceiling; reserve the full 2,561-byte
+  descriptor and 35 decoder tables; align decoder tokens after tables; and
+  publish no views until the whole partition validates.
+- Generated-code task description: add private profile/workspace types,
+  encoder and decoder calculators, transactional aligned partitioners, stable
+  error mapping, exact default/short/empty/limited tests, and a calculated
+  three-frame `ABABX` streaming round trip.
+- Similarity review: bounds, layouts, error mapping, vectors, and tests were
+  authored from marc's preceding internal contracts; no external
+  implementation expression entered the work.
+- Local validation: six focused profile tests pass under MSVC 19.51.36252 and
+  ClangCL 22.1.3. All 2,774 registered MSVC tests pass with a 240-second
+  per-test limit in 149.94 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 60.84 seconds.

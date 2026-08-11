@@ -7859,3 +7859,17 @@ buffered-byte overflow, premature and excess input, reset/unknown flags,
 construction-time overlap, and output alias with every workspace. Errors are
 sticky and must never return Progress without consuming input or producing
 output.
+
+### TVG-0597
+
+Calculate the default 65,536-byte encoder frame and require 65,536 raw bytes,
+65,536 typed tokens, a 739,905-byte serialized-frame ceiling, and explicitly
+aligned token storage. Require a 17-byte input to use a 2,817-byte frame
+ceiling, while empty input uses no frame or view storage.
+
+For decoder limits `(frame=4096, block=1024, payload=2000)`, require a
+4,625-byte serialized frame, 1,024 raw bytes and tokens, and 35 aligned Huffman
+tables. Reject unsupported LZSS parameters, payload/block/table/aggregate
+limits, forged layouts, short storage, and misalignment without publishing
+views. Finally construct both streaming transforms solely from calculated
+requirements and round-trip `ABABX` across three frames.

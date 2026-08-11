@@ -522,6 +522,13 @@ that result before collecting its successor. `Flush` preserves a partial
 frame; final input remains latched through output starvation. Contextual
 Blocked Huffman requires no caller-owned encoder-table workspace.
 
+The private profile computes those workspaces without inspecting input data.
+Its encoder ceiling is the fixed header plus the 2,561-byte maximum descriptor
+plus `ceil(6F * 15 / 8)` payload bytes for raw frame size `F`; its only typed
+encoder view is `F` LZSS tokens. Decoder views contain the conservative maximum
+35 Huffman tables followed by aligned token storage. All raw, serialized, view,
+and publication extents are charged to the aggregate caller limit.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

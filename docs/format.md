@@ -6368,3 +6368,10 @@ closes a partial frame for `Flush`, and retains final-input state while output
 drains. Empty input contains only the stream header. This changes no serialized
 field; public C API, CLI, benchmark, and interoperability admission remain
 outside this milestone.
+
+The private profile adds no serialized field. It derives conservative encoder
+and decoder workspace ceilings from the documented six decisions per raw byte,
+15-bit maximum canonical code, 2,561-byte descriptor maximum, and 35-table
+decoder maximum. These are allocation bounds only and do not pad a frame or
+force unused tables into the representation. Public profile admission remains
+outside this milestone.

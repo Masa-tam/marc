@@ -14880,3 +14880,21 @@ after the last serialized byte is emitted. Reject `ResetBlock`, unknown flags,
 excess or premature input, construction/output aliasing, and preparation
 failures as sticky errors. Empty input emits only the stream header. Public
 profile admission remains a later milestone.
+
+## DD-718: The private profile derives conservative bounded workspaces
+
+- Date: 2026-08-11
+- Status: accepted
+
+Define one private profile over the fixed Format 2 `2/2` identity. For an
+encoder frame of `F` raw bytes, reserve `F` typed tokens, the 2,561-byte maximum
+descriptor, and at most `ceil(6F * 15 / 8)` payload bytes. Charge raw input,
+typed tokens, and the complete serialized frame together. Empty input requires
+no frame workspace.
+
+For decoding, reserve the caller-limit frame extent, 35 worst-case non-Single
+Huffman tables, one token per raw byte, and one raw publication frame. Align
+typed views explicitly and reject forged, short, or misaligned partitions
+transactionally. Keep the existing LZSS `2/2` bounds and map stable profile
+errors to the core error categories. This profile remains private and does not
+yet add a public C lifecycle or completion claim.

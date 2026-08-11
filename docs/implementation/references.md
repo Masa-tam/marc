@@ -4355,3 +4355,12 @@ contextual-tANS streaming lifecycle as an architectural precedent. No external
 streaming encoder, LZ/Huffman or DEFLATE implementation, source code, frame,
 archive, test vector, suite, corpus, or optimization description was
 consulted.
+
+### IR-0496
+
+The Contextual Blocked Huffman private profile uses DD-709 through DD-718,
+TVG-0588 through TVG-0597, marc's typed-LZSS bounds, Contextual Blocked Huffman
+format maxima, streaming constructors, checked arithmetic, alignment rules,
+and decoder limits. No external workspace calculator, Huffman or DEFLATE
+implementation, source code, archive, corpus, test vector, test suite, or
+optimization description was consulted.
