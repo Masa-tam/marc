@@ -4700,3 +4700,13 @@ three derived contextual format adapters, and repository-generated fixtures as
 local precedents. No external compression implementation, source code, API,
 archive, corpus, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0533
+
+The canonical Contextual rANS merge admission uses DD-757, TVG-0634, marc's
+complete registered MSVC and ClangCL suites, schema-compatibility test,
+repository-owned bounded fuzz harness, established matching-runtime sanitizer
+procedure, prior compact variant-3 README benchmark record, and local name and
+diff audits. No external rANS or compression implementation, source code,
+benchmark, corpus, malformed input, archive, test vector, test suite, patent
+text, or optimization description was consulted.

@@ -8408,3 +8408,22 @@ continuing through every schema to 1. Exercise Contextual tANS, Blocked
 Huffman, and Adaptive Huffman stream-header round trips after changing the
 common adapted identity from retired `4/2` to canonical `4/3`; require their
 serialized entropy identities to remain `5/2`, `2/2`, and `1/2`.
+
+### TVG-0634
+
+Run every registered Release test under MSVC and ClangCL with a 240-second
+per-test timeout and require `marc_interoperability_schema_compatibility` to
+run rather than be excluded. Rebuild only
+`marc_fuzz_lzss_contextual_rans_stream` in the established Windows Clang 22
+GNU-driver sanitizer tree, prepend that compiler's runtime directory only to
+the child process, and execute without a persistent corpus using
+`-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`.
+
+Run `marc_benchmark lzss-contextual-rans README.md 1` and require the same
+4,326-byte input and 3,006-byte encoded extent recorded for variant 3 before
+the rename. Treat throughput as descriptive because a one-iteration run is
+noisy. Require `git diff --check` to pass and require no compact-qualified
+file beneath public, implementation, tool, fuzz, or test roots. Historical
+schema mappings and provenance text may retain the old name. Do not claim
+schema-37 external interoperability until the four-direction exchange is run
+from one pushed revision.

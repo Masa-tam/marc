@@ -15555,3 +15555,19 @@ copy. After retiring identity `4/2`, that copy must select the canonical base
 identity `4/3`; each derived serializer still overwrites both entropy fields
 with its own unchanged identity (`5/2`, `2/2`, or `1/2`). This is a private
 validation dependency and must not change any derived profile byte.
+
+## DD-757: Canonical Contextual rANS is admitted only after full regression
+
+- Date: 2026-08-12
+- Status: accepted
+
+Merge the canonicalization branch only after both supported Windows compiler
+configurations pass every registered test with the 240-second per-test limit,
+including schema compatibility; the sole bounded sanitizer target completes a
+finite 1,000-input ASan/UBSan/libFuzzer smoke; and the repository README
+benchmark reproduces variant 3's previously recorded encoded extent. Treat
+compact-qualified names in frozen schema history and explanatory records as
+intentional history, but require zero such files or selectable implementation
+surfaces. This admission establishes deletion and rename equivalence; it does
+not claim a general performance threshold or an external interoperability
+result for schema 37.

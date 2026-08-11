@@ -18371,3 +18371,39 @@ discarded and the reviewed seed retained.
 - Local validation: MSVC 19.51.36252 generated and verified schema 37, rejected
   reordered schema 37, and verified the complete downgrade chain through
   schema 1 in 72.27 seconds under the 240-second limit.
+
+## CR-0785: 2026-08-12 - Canonical Contextual rANS merge admission
+
+- Authoring method: executed marc's complete local regression suites and
+  established finite sanitizer procedure, compared the canonical benchmark
+  with the repository's pre-rename variant-3 record, and audited names and
+  diff integrity before merging the isolated branch.
+- References used: DD-749 through DD-757; IR-0533; TVG-0628 through TVG-0634;
+  marc's registered tests, schema verifier, bounded Contextual rANS harness,
+  prior 4,326-to-3,006-byte README benchmark record, and Git diff.
+- Known implementations intentionally not consulted: external rANS or
+  compression implementations, source code, APIs, benchmarks, corpora,
+  malformed inputs, archives, test vectors, test suites, patent text, and
+  optimization descriptions.
+- Independent decisions: accept historical compact-qualified names only in
+  frozen schema conversion and explanatory records; require no matching file
+  or selectable surface; use encoded extent rather than noisy one-iteration
+  throughput as the benchmark equivalence criterion; defer schema-37 external
+  interoperability until a pushed revision exists.
+- Generated-code task description: prove the surviving variant-3 path under
+  both compilers, sanitizer instrumentation, schema downgrade, benchmark, and
+  repository audits, then record exact local evidence before merge.
+- Similarity review: validation exercised only marc-owned code, inputs,
+  scripts, and historical measurements; no external implementation expression
+  entered the work.
+- Local validation: all 2,813 MSVC 19.51.36252 Release tests passed in 163.86
+  seconds and all 5,480 ClangCL 22.1.3 Release tests passed in approximately
+  239 seconds, each with the 240-second per-test limit and schema compatibility
+  included. The canonical Clang 22.1.3 ASan/UBSan/libFuzzer target completed
+  exactly 1,000 inputs with no crash, hang, or sanitizer finding, 174 coverage
+  counters, 310 features, a seven-entry 33-byte in-memory corpus, and 43 MiB
+  peak RSS; no failure artifact was produced. The MSVC benchmark reproduced
+  3,006 encoded bytes from the 4,326-byte README (ratio 0.695), exactly matching
+  the pre-rename variant-3 record. `git diff --check` passed and no
+  compact-qualified file remained in the public, implementation, tool, fuzz,
+  or test roots.
