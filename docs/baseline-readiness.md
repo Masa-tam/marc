@@ -174,7 +174,7 @@ the five experimental typed-token LZSS contextual profiles. The internal
 canonical Huffman primitives remain support components rather than a separate
 public profile.
 
-The optimized Release configurations each enumerate 2,820 tests under
+The optimized Release configurations each enumerate 2,825 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation

@@ -15650,3 +15650,30 @@ position by the same extent. This changes no stream, public API, workspace,
 limit, or error mapping. The range notification exists so HashChain can later
 index every position skipped by a Match without owning or duplicating parser
 policy.
+
+## DD-762: HashChain Exact uses capped heads and distance-ring links
+
+- Date: 2026-08-12
+- Status: accepted
+
+Implement HashChain first as a private differential boundary, without routing
+any production encoder through it. Hash exactly five bytes with five rounds of
+`(hash << 5) xor (hash >> 2) xor byte` followed by `hash xor (hash >> 16)` in
+32-bit unsigned arithmetic. Use the next power of two at least as large as
+`min(input_size, window_size, 65,536)` for bucket heads. Store each head as a
+native absolute `size_t` position with its maximum value as the empty sentinel.
+Store one 32-bit predecessor distance per active history position in a ring;
+zero terminates a chain.
+
+Visit heads from newest to oldest, verify every hash collision by raw byte
+comparison, update only for a strictly longer match, and stop immediately on
+the first maximum-length match because it is also the nearest such candidate.
+Stop at the first expired candidate because all following candidates are
+older. During `advance`, insert every consumed position with five bytes
+remaining, including positions skipped by a Match. Calculate exact size,
+alignment, bucket count, link count, and link offset with checked arithmetic.
+Before initializing any table, validate limits and LZSS parameters, enforce
+raw-plus-workspace aggregate limits, require sufficient aligned storage, and
+reject input/workspace overlap. The tables are native private workspace and
+start their implicit-lifetime scalar objects explicitly before use. They are
+never serialized, so native width cannot affect stream bytes.

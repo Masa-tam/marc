@@ -111,6 +111,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_decoder.cpp
     src/dictionary/lzss_encoder.cpp
     src/dictionary/lzss_match_finder.cpp
+    src/dictionary/lzss_hash_chain_match_finder.cpp
     src/dictionary/lzss_typed_encoder.cpp
     src/dictionary/lzss_streaming_decoder.cpp
     src/dictionary/lzss_streaming_encoder.cpp

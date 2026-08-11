@@ -8474,3 +8474,22 @@ Freeze `ABCDE1ABCDE2ABCDE3` as a complete 34-byte canonical byte-token vector:
 six Literals, distance-6 length-5 Match, Literal `2`, the same Match, and
 Literal `3`. Require focused Exhaustive, byte-token, and typed-token tests to
 pass warning-clean under MSVC and ClangCL before running the complete suites.
+
+### TVG-0638
+
+Calculate zero workspace below the five-byte prefix boundary; for 65,536-byte
+input and default window require 65,536 heads, 65,536 links, native alignment,
+and exactly `65,536 * (sizeof(size_t) + sizeof(uint32_t))` bytes on supported
+targets. For a one-MiB window require one MiB of links but retain the 65,536
+bucket cap. Reject invalid limits, invalid LZSS parameters, oversized input,
+aggregate-limit excess, short workspace, one-byte misalignment, and actual
+input/workspace overlap without publishing a finder.
+
+Compare HashChain Exact with Exhaustive at every raw position for empty and
+one-byte inputs, periodic and repeated data, nearest-distance ties, many common
+prefixes, all 256 byte values repeated, deterministic pseudorandom input, and
+a mixed 1,024-byte corpus across windows 1, 5, 17, 256, and 65,536 and maximum
+match lengths 5, 17, and 258. Separately advance over a Match-sized range and
+require the next query to remain identical, proving skipped positions enter
+the index. Run this deterministic differential layer under MSVC and ClangCL
+before production integration or fuzzing.

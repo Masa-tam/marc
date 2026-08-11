@@ -4738,3 +4738,15 @@ format vectors, GoogleTest infrastructure, and CMake test registration as
 first-party references. No external LZSS implementation, match-finder API,
 source code, test vector, test suite, corpus, benchmark, patent text, or
 optimization description was consulted.
+
+### IR-0537
+
+The first private HashChain Exact boundary uses DD-760 and DD-761, TVG-0636
+and TVG-0637, marc's new finder contract and Exhaustive oracle, checked-math
+and limit utilities, existing caller-owned opaque workspace conventions, and
+GoogleTest differential patterns as first-party references. Its five-byte
+hash expression, capped power-of-two buckets, absolute heads, and ring of
+32-bit predecessor distances were designed within this repository. No
+external LZSS implementation, hash-chain source, hash function, table layout,
+test suite, corpus, benchmark result, patent text, or optimization description
+was consulted.

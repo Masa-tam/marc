@@ -18526,3 +18526,34 @@ discarded and the reviewed seed retained.
   registered ClangCL test passed in 168.32 seconds with the 240-second
   per-test limit, including documentation layout and the complete schema-37-
   through-1 compatibility chain.
+
+## CR-0790: 2026-08-12 - Private HashChain Exact boundary
+
+- Authoring method: independently defined a five-byte prefix hash, bounded
+  head table, predecessor-distance ring, workspace calculator, transactional
+  initializer, and newest-first Exact traversal behind the existing private
+  finder contract.
+- References used: DD-760 through DD-762; IR-0537; TVG-0636 through TVG-0638;
+  marc's Exhaustive finder, checked arithmetic, limits, caller-workspace
+  conventions, and deterministic GoogleTest infrastructure.
+- Known implementations intentionally not consulted: external LZSS or
+  hash-chain implementations, hash functions, source code, layouts, tests,
+  corpora, benchmark results, patent text, and optimization descriptions.
+- Independent decisions: cap buckets at 65,536; retain a link for every active
+  history position; encode links as predecessor distances; use absolute native
+  heads only in private workspace; stop on expiration or the first nearest
+  maximum-length match; explicitly start scalar workspace-object lifetimes;
+  and keep production routing on Exhaustive.
+- Generated-code task description: add a bounded caller-owned HashChain Exact
+  implementation, prove initialization failure atomicity and Exact equivalence
+  over deterministic corpora and parameter grids, and do not change stream or
+  public interfaces.
+- Similarity review: the hash expression, table organization, implementation,
+  and tests were written from the accepted marc design and local oracle; no
+  external implementation expression entered the work.
+- Local validation: both MSVC 19.51.36252 and ClangCL 22.1.3 built the private
+  boundary and test target warning-clean. All 11 direct Exhaustive/HashChain
+  tests passed under each compiler. Every one of the 2,825 registered MSVC
+  tests then passed in 163.85 seconds and every registered ClangCL test passed
+  in 166.49 seconds with the 240-second per-test limit, including documentation
+  layout and the complete schema-37-through-1 compatibility chain.

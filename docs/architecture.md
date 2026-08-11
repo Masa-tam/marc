@@ -83,6 +83,14 @@ for every consumed half-open raw range. Exhaustive implements the query with
 the original complete scan and treats `advance` as a no-op. Both canonical
 byte-token and typed-token parsers drive this contract, so a later stateful
 index receives skipped Match positions without duplicating parser policy.
+The private HashChain Exact boundary calculates one aligned caller-owned
+region containing power-of-two bucket heads and a window-bounded ring of
+32-bit predecessor distances. Bucket count is capped at 65,536 while link
+count is bounded by the smaller of frame input and window size. Initialization
+validates parameters, limits, checked aggregate size, capacity, alignment, and
+input/workspace disjointness before clearing storage or publishing the finder.
+It is exercised only as a differential boundary at this stage; production
+encoders still instantiate Exhaustive.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,
