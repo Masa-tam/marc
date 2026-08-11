@@ -514,6 +514,14 @@ the header last, after the payload and canonical descriptor agree with the
 plan; short output and every preflight error therefore leave the destination
 unchanged.
 
+The private streaming encoder retains exactly one raw outer frame and one
+serialized complete frame around the typed-token workspace. It emits the
+stream header before accepting or publishing frame bytes, invokes the exact
+complete-frame transaction only when the raw extent is complete, and drains
+that result before collecting its successor. `Flush` preserves a partial
+frame; final input remains latched through output starvation. Contextual
+Blocked Huffman requires no caller-owned encoder-table workspace.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

@@ -6360,3 +6360,11 @@ aggregate raw, used-token, and serialized-frame workspace. Only then may it
 write the payload, descriptor, and finally the frame header. The documented
 one-byte `A` input therefore produces the exact 88-byte frame above. Streaming
 encoder and public profile admission remain outside this milestone.
+
+The private streaming encoder concatenates the canonical 112-byte stream
+header and complete-frame encoder results in zero-based sequence order. It
+buffers at most one exact raw frame and one exact serialized frame, never
+closes a partial frame for `Flush`, and retains final-input state while output
+drains. Empty input contains only the stream header. This changes no serialized
+field; public C API, CLI, benchmark, and interoperability admission remain
+outside this milestone.

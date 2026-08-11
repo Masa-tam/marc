@@ -7843,3 +7843,19 @@ stream, a raw extent different from the next expected frame, short token and
 serialized-output spans, aggregate workspace overflow, and every raw/token/
 serialized overlap. All failures detected before publication must preserve the
 serialized-output sentinel.
+
+### TVG-0596
+
+For frame size one and raw `AA`, concatenate the documented 112-byte stream
+header with two TVG-0595 one-Literal frames whose sequences are zero and one.
+Feed and drain one byte at a time and require exact byte identity, valid
+progress statuses, latched final `EndInput`, and stable repeated
+`EndOfStream`.
+
+Require a full non-final frame to drain before `EndInput`, while `Flush` leaves
+a partial frame open. Require empty input to emit only its stream header.
+Independently reject short token or serialized-frame workspace, aggregate
+buffered-byte overflow, premature and excess input, reset/unknown flags,
+construction-time overlap, and output alias with every workspace. Errors are
+sticky and must never return Progress without consuming input or producing
+output.

@@ -14860,3 +14860,23 @@ serialized output is written. Encoding writes payload first, descriptor
 second, and the 64-byte header last. A short destination or any preflight
 failure therefore preserves every serialized-output byte. This milestone does
 not add a streaming encoder or admit the profile publicly.
+
+## DD-717: Streaming Contextual Huffman encoding retains one complete frame
+
+- Date: 2026-08-11
+- Status: accepted
+
+Wrap DD-716 in a private forward-only transform. Serialize and drain the
+112-byte stream header first, collect at most one exact raw frame, invoke the
+complete-frame encoder, then drain that retained serialized frame before
+accepting bytes for its successor. Retain only caller-owned raw, typed-token,
+and serialized-frame workspaces; Contextual Blocked Huffman needs no external
+encode-table workspace.
+
+`Flush` does not close a partial outer frame. `EndInput` is accepted only when
+the current call supplies every remaining byte promised by `original_size`,
+remains latched while headers or frames drain, and reaches `EndOfStream` only
+after the last serialized byte is emitted. Reject `ResetBlock`, unknown flags,
+excess or premature input, construction/output aliasing, and preparation
+failures as sticky errors. Empty input emits only the stream header. Public
+profile admission remains a later milestone.

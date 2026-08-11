@@ -17284,3 +17284,31 @@ discarded and the reviewed seed retained.
   19.51.36252 and ClangCL 22.1.3. All 2,763 registered MSVC tests pass with a
   240-second per-test limit in 149.46 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 59.84 seconds.
+
+## CR-0747: 2026-08-11 - Contextual Blocked Huffman streaming encoder
+
+- Authoring method: wrapped marc's complete-frame encoder in the established
+  bounded Format 2 streaming lifecycle while removing the encode-table
+  workspace that this Huffman backend does not require.
+- References used: AGENTS.md sections 3, 4, 5, 10, 11, 12, and 15; DD-709
+  through DD-717; IR-0495; TVG-0588 through TVG-0596; marc's complete-frame
+  encoder, core transform, checked arithmetic, overlap, and limit contracts;
+  the local contextual-tANS streaming lifecycle as an architectural precedent.
+- Known implementations intentionally not consulted: external streaming,
+  LZ/Huffman or DEFLATE encoders, source code, frames, archives, corpora, test
+  vectors, test suites, and optimization descriptions.
+- Independent decisions: retain one raw and one serialized frame; require no
+  encoder-table workspace; drain the canonical stream header first; preserve
+  partial frames across `Flush`; latch exact final input while draining; and
+  map all construction, protocol, capacity, limit, and alias failures to sticky
+  transform errors.
+- Generated-code task description: add the private streaming encoder, exact
+  two-frame one-byte oracle, full-frame/flush/final-drain/empty-stream tests,
+  and independent capacity, limit, input-protocol, alias, and flag failures.
+- Similarity review: state transitions, workspace ownership, error mapping,
+  vectors, and tests were authored from marc's preceding internal contracts;
+  no external implementation expression entered the work.
+- Local validation: five focused streaming-encoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,768 registered MSVC tests pass with a
+  240-second per-test limit in 147.82 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 58.94 seconds.

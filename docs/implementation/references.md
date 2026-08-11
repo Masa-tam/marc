@@ -4345,3 +4345,13 @@ entropy encoder, Format 2 serializers and validators, checked arithmetic,
 overlap checks, and decoder-limit model. No external LZ/Huffman or DEFLATE
 encoder, source code, frame, archive, test vector, suite, corpus, or
 optimization description was consulted.
+
+### IR-0495
+
+The Contextual Blocked Huffman streaming encoder uses DD-709 through DD-717,
+TVG-0588 through TVG-0596, marc's complete-frame encoder, core transform
+contract, checked arithmetic, overlap checks, decoder limits, and the local
+contextual-tANS streaming lifecycle as an architectural precedent. No external
+streaming encoder, LZ/Huffman or DEFLATE implementation, source code, frame,
+archive, test vector, suite, corpus, or optimization description was
+consulted.
