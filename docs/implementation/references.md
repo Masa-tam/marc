@@ -4710,3 +4710,12 @@ procedure, prior compact variant-3 README benchmark record, and local name and
 diff audits. No external rANS or compression implementation, source code,
 benchmark, corpus, malformed input, archive, test vector, test suite, patent
 text, or optimization description was consulted.
+
+### IR-0534
+
+The schema-37 external admission record uses DD-758, TVG-0635, pushed revision
+`58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`, the Windows/MSVC and Ubuntu
+24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang bundle, and
+marc's repository-owned schema-37 verifier. No external compression
+implementation, source code, archive contents, corpus, test suite, or
+optimization description was consulted.

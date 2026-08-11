@@ -1766,3 +1766,20 @@ The canonical completion and malformed suites retain all data-class,
 chunking, terminal, and frame-atomic checks once, and the C11/CLI/benchmark
 smokes pass under both compilers. Private frame-name consolidation remains the
 next milestone.
+
+### CP-0105
+
+Contextual rANS composition is now singular at every boundary. The surviving
+variant-3 descriptor is exposed only through unqualified context, entropy,
+frame, streaming, profile, public ABI, CLI, benchmark, and fuzz names; fixed
+variant 2 and compact-qualified implementation files are removed. Schema 37
+renames only archive 44, while a private verifier translation preserves frozen
+schema-33-through-36 manifests without adding a public alias.
+
+### CP-0106
+
+Schema 37 now has four-direction external evidence at revision
+`58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`. Windows/MSVC and Ubuntu
+24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
+verifies there and on Windows/MSVC. All 47 archives decode and re-encode
+byte-identically in every path.

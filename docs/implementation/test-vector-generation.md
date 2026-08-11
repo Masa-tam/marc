@@ -8427,3 +8427,16 @@ file beneath public, implementation, tool, fuzz, or test roots. Historical
 schema mappings and provenance text may retain the old name. Do not claim
 schema-37 external interoperability until the four-direction exchange is run
 from one pushed revision.
+
+### TVG-0635
+
+At pushed revision `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`, verify the
+Windows/MSVC and Ubuntu 24.04/Ninja schema-37 CI bundles with the Ubuntu 26.04
+Clang 21.1.8 CLI. Generate a schema-37 Ubuntu 26.04 bundle from the same
+revision, verify it locally, then verify it with the Windows/MSVC CLI.
+
+Require all four final lines to report exactly 47 archives, the expected
+producer label, and the identical full revision. Each verifier pass must cover
+manifest identity and order, size and SHA-256, fixture decode, and
+byte-identical local re-encoding. Record only the results; do not import any
+bundle or generated archive into the repository.

@@ -1939,3 +1939,21 @@ compilers build the affected library, CLI, benchmark, core-test, and C11
 targets warning-clean. This is focused evidence; private fixed-layer removal,
 full-suite, sanitizer, schema-37, and performance-comparison evidence remain
 pending.
+
+### BR-0104
+
+Contextual rANS canonicalization now satisfies its local admission criteria.
+Fixed variant 2 and every compact-qualified implementation surface are
+removed, while variant 3's hand vectors and 4,326-to-3,006-byte README result
+remain unchanged. All 2,813 MSVC and 5,480 ClangCL Release tests pass with
+schema compatibility included; the sole bounded sanitizer target completes
+1,000 inputs without a crash, hang, ASan finding, or UBSan finding. Schema 37
+retains 47 archives and changes only archive 44's current name.
+
+### BR-0105
+
+Schema 37 now has complete four-direction external evidence at revision
+`58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`. All 47 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths.

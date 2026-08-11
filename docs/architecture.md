@@ -4897,3 +4897,18 @@ selectors are absent, and completion, malformed-regression, C11, CLI, and
 benchmark tests exercise the surviving path once. Private fixed and compact
 frame names remain temporarily isolated behind this boundary until the next
 canonicalization milestone; no variant-3 byte changes here.
+
+Contextual rANS canonicalization is now complete through the private frame,
+streaming, entropy, typed-token, fuzz, and workspace boundaries. Fixed
+descriptor variant 2 and compact-qualified implementation surfaces are
+removed; entropy identity `4/3` and its existing variable descriptor are the
+sole canonical representation. Schema 37 changes only archive 44's historical
+name while retaining its bytes, and the private verifier mapping keeps schemas
+1 through 36 readable without restoring a public alias.
+
+The recorded schema-37 exchange at revision
+`58b829dafa078e7dadd46e5de9ed7b1af45b5cc2` verifies all 47 archives in four
+directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
+re-encoding establish the canonical Contextual rANS name and bytes across all
+three recorded x86-64 producers.

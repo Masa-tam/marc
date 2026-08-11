@@ -18407,3 +18407,28 @@ discarded and the reviewed seed retained.
   the pre-rename variant-3 record. `git diff --check` passed and no
   compact-qualified file remained in the public, implementation, tool, fuzz,
   or test roots.
+
+## CR-0786: 2026-08-12 - Schema-37 external interoperability evidence
+
+- Authoring method: recorded the maintainer-executed four-direction verifier
+  results only after every path reported the same pushed revision and all 47
+  archives.
+- References used: DD-758; IR-0534; TVG-0635; revision
+  `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`; the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles; the Ubuntu 26.04/Clang bundle; and marc's verifier.
+- Known implementations intentionally not consulted: external compression
+  implementations, source code, archive contents, corpora, test suites, and
+  optimization descriptions.
+- Independent decisions: require one revision, 47 archives, three producers,
+  two consumers, and four directions; record exact verification outcomes; and
+  import no generated bundle or archive.
+- Generated-code task description: record successful schema-37 external
+  verification in interoperability, architecture, composition, readiness,
+  test-generation, reference, design-decision, and provenance documents.
+- Similarity review: the record contains only repository-owned schema facts
+  and maintainer-reported verifier output; no external implementation
+  expression entered the work.
+- External validation: Ubuntu 26.04/Clang verified the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
+  the Ubuntu 26.04 bundle. Every run reported 47 archives and revision
+  `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2`.
