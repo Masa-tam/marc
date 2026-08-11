@@ -10,15 +10,15 @@
 namespace marc::dictionary::internal {
 namespace {
 
-template <typename Consumer>
+template <LzssMatchFinder Finder, typename Consumer>
 [[nodiscard]] LzssTypedEncodeResult run_typed_parser(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, Consumer&& consume) noexcept {
+    const std::span<const std::byte> input, Finder& finder,
+    Consumer&& consume) noexcept {
     LzssTypedEncodeResult result{};
     result.input_size = input.size();
     std::size_t position{};
     while (position < input.size()) {
-        const auto match = find_lzss_match(input, position, parameters);
+        const auto match = finder.find_match(position);
         LzssTypedToken token{};
         std::size_t advance{1};
         if (match.length != 0 && lzss_match_is_beneficial(match)) {
@@ -32,6 +32,7 @@ template <typename Consumer>
             result.error = LzssTypedEncodeError::internal_error;
             return result;
         }
+        finder.advance(position, position + advance);
         if (result.token_count == std::numeric_limits<std::size_t>::max()) {
             result.error = LzssTypedEncodeError::arithmetic_overflow;
             return result;
@@ -70,8 +71,9 @@ template <typename Consumer>
         result.error = LzssTypedEncodeError::input_limit_exceeded;
         return result;
     }
+    LzssExhaustiveMatchFinder finder{input, parameters};
     result = run_typed_parser(
-        input, parameters,
+        input, finder,
         [](const LzssTypedToken&, std::size_t) noexcept { return true; });
     if (result.error != LzssTypedEncodeError::none) return result;
 
@@ -152,8 +154,9 @@ LzssTypedEncodeResult encode_lzss_typed_tokens(
         failed.error = LzssTypedEncodeError::overlapping_buffers;
         return failed;
     }
+    LzssExhaustiveMatchFinder finder{input, parameters};
     const auto encoded = run_typed_parser(
-        input, parameters,
+        input, finder,
         [output](const LzssTypedToken& token,
                  const std::size_t index) noexcept {
             output[index] = token;

@@ -18497,3 +18497,32 @@ discarded and the reviewed seed retained.
 - Local validation: the registered documentation-layout test passed under the
   configured MSVC and ClangCL Release trees. `git diff --check` also passed.
   No accelerated finder is claimed by this record.
+
+## CR-0789: 2026-08-12 - Exhaustive match-finder contract
+
+- Authoring method: extracted marc's existing exhaustive scan into a named
+  state-free finder, defined the minimal query/range-notification contract
+  needed by a future index, and routed both existing parser loops through it.
+- References used: DD-760 and DD-761; IR-0536; TVG-0636 and TVG-0637; marc's
+  match finder, byte-token encoder, typed-token encoder, format vectors, test
+  registration, and supported Windows build configurations.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, match-finder interfaces, source code, tests, corpora,
+  benchmarks, patent text, and optimization descriptions.
+- Independent decisions: keep strategy dispatch compile-time and private;
+  make `advance` a half-open consumed-range notification; call it only after
+  token acceptance; define exact-end query as no match; and freeze a full
+  nearest-tie serialized vector before adding any index.
+- Generated-code task description: refactor without changing output, add
+  direct Exhaustive boundary tests and a canonical reference stream, and
+  compile and run the focused paths under both supported compilers.
+- Similarity review: the implementation reorganizes marc-owned exhaustive
+  logic and first-party tests only; no external implementation expression
+  entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the core tests
+  warning-clean. All 20 focused Exhaustive, byte-token, and typed-token tests
+  passed under each compiler. After synchronizing the current inventory at
+  2,820 tests, every registered MSVC test passed in 164.90 seconds and every
+  registered ClangCL test passed in 168.32 seconds with the 240-second
+  per-test limit, including documentation layout and the complete schema-37-
+  through-1 compatibility chain.

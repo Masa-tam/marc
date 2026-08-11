@@ -4729,3 +4729,12 @@ and byte-token encoder paths, existing workspace profiles, and benchmark
 contract as first-party references. No external LZSS implementation, source
 code, match-finder optimization, hash-chain layout, benchmark result, corpus,
 test suite, patent text, or generated table was consulted.
+
+### IR-0536
+
+The Exhaustive match-finder contract uses DD-760, TVG-0636, marc's existing
+`find_lzss_match` loop, byte-token and typed-token parser control flow, LZSS
+format vectors, GoogleTest infrastructure, and CMake test registration as
+first-party references. No external LZSS implementation, match-finder API,
+source code, test vector, test suite, corpus, benchmark, patent text, or
+optimization description was consulted.

@@ -78,6 +78,11 @@ selection and effort limits are not decoder-visible and do not change the
 stream format. The first accelerated boundary is a caller-workspace-backed
 five-byte-prefix HashChain Exact; BinaryTree, automatic selection, and bounded
 effort remain deferred until measurements justify their complexity.
+The internal finder contract has a const match query plus an `advance` notice
+for every consumed half-open raw range. Exhaustive implements the query with
+the original complete scan and treats `advance` as a no-op. Both canonical
+byte-token and typed-token parsers drive this contract, so a later stateful
+index receives skipped Match positions without duplicating parser policy.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

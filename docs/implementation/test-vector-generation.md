@@ -8460,3 +8460,17 @@ a permanent regression. Measure finder-only candidate counts, parse
 throughput, complete compression throughput, peak workspace, and current
 two-pass cost before considering BinaryTree, automatic selection, Bounded, or
 token reuse.
+
+### TVG-0637
+
+Exercise `LzssExhaustiveMatchFinder` directly at empty and exact-end positions,
+distance-one overlap, configured maximum length, equal-length nearest-distance
+ties, the exact window boundary, below-minimum candidates, and before/after its
+no-op range notification. Require both canonical parsers to compile through
+the concept-constrained contract and retain all existing typed/serialized
+equivalence tests.
+
+Freeze `ABCDE1ABCDE2ABCDE3` as a complete 34-byte canonical byte-token vector:
+six Literals, distance-6 length-5 Match, Literal `2`, the same Match, and
+Literal `3`. Require focused Exhaustive, byte-token, and typed-token tests to
+pass warning-clean under MSVC and ClangCL before running the complete suites.

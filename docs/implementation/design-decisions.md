@@ -15629,3 +15629,24 @@ Bounded, public C ABI, and CLI exposure until HashChain Exact differential
 tests and measurements establish a need. Treat removal of repeated parsing as
 a separate follow-up optimization so its memory and speed effects remain
 measurable.
+
+## DD-761: Exhaustive implements the stateful-finder contract without state
+
+- Date: 2026-08-12
+- Status: accepted
+
+Define the private C++20 `LzssMatchFinder` contract as a const `find_match`
+query followed by a mutable `advance(position, next_position)` notification
+for every raw range consumed by the greedy parser. Move the original complete
+distance scan into `LzssExhaustiveMatchFinder`; its `advance` is intentionally
+a no-op. Return no match at the exact input end and retain the original
+longest-match, nearest-distance, overlap, minimum-length, maximum-length, and
+window rules at every valid parse position.
+
+Parameterize both byte-token and typed-token parser loops over that private
+contract while continuing to instantiate Exhaustive exclusively. Notify the
+finder only after the token consumer accepts the token, then advance the raw
+position by the same extent. This changes no stream, public API, workspace,
+limit, or error mapping. The range notification exists so HashChain can later
+index every position skipped by a Match without owning or duplicating parser
+policy.

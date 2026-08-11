@@ -85,6 +85,22 @@ TEST(LzssEncoder, UsesNearestDistanceForEqualLength) {
     EXPECT_EQ(last_match.length, 5U);
 }
 
+TEST(LzssEncoder, PreservesExhaustiveReferenceBytes) {
+    const auto encoded = encode("ABCDE1ABCDE2ABCDE3");
+    constexpr std::array expected{
+        std::byte{0x00}, std::byte{'A'}, std::byte{0x00}, std::byte{'B'},
+        std::byte{0x00}, std::byte{'C'}, std::byte{0x00}, std::byte{'D'},
+        std::byte{0x00}, std::byte{'E'}, std::byte{0x00}, std::byte{'1'},
+        std::byte{0x01}, std::byte{0x06}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x05}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{'2'}, std::byte{0x01},
+        std::byte{0x06}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x05}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{'3'}};
+    ASSERT_EQ(encoded.size(), expected.size());
+    EXPECT_TRUE(std::ranges::equal(encoded, expected));
+}
+
 TEST(LzssEncoder, PlansExactlyAndRoundTripsBinaryData) {
     std::vector<std::byte> input;
     for (unsigned int value = 0; value < 256; ++value)

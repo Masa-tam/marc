@@ -6,15 +6,15 @@
 namespace marc::dictionary::internal {
 namespace {
 
-template <typename Consumer>
+template <LzssMatchFinder Finder, typename Consumer>
 [[nodiscard]] LzssEncodeResult run(
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters, Consumer&& consume) noexcept {
+    const std::span<const std::byte> input, Finder& finder,
+    Consumer&& consume) noexcept {
     std::size_t position{};
     std::size_t output_size{};
     std::size_t token_count{};
     while (position < input.size()) {
-        const auto match = find_lzss_match(input, position, parameters);
+        const auto match = finder.find_match(position);
         LzssToken token{};
         std::size_t advance{1};
         std::size_t token_size{lzss_literal_size};
@@ -34,6 +34,7 @@ template <typename Consumer>
             return {input.size(), 0, token_count, LzssFormatError::none,
                     LzssEncodeError::internal_error};
         }
+        finder.advance(position, position + advance);
         output_size = next_output_size;
         ++token_count;
         position += advance;
@@ -60,8 +61,9 @@ template <typename Consumer>
         return {input.size(), 0, 0, LzssFormatError::none,
                 LzssEncodeError::input_limit_exceeded};
     }
+    LzssExhaustiveMatchFinder finder{input, parameters};
     const auto planned = run(
-        input, parameters,
+        input, finder,
         [](const LzssToken&, std::size_t, std::size_t) noexcept {
             return true;
         });
@@ -96,8 +98,9 @@ LzssEncodeResult encode_lzss_token_stream(
         short_output.error = LzssEncodeError::output_too_small;
         return short_output;
     }
+    LzssExhaustiveMatchFinder finder{input, parameters};
     const auto encoded = run(
-        input, parameters,
+        input, finder,
         [output](const LzssToken& token, const std::size_t offset,
                  const std::size_t expected_size) noexcept {
             std::size_t written{};
