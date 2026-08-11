@@ -1813,3 +1813,14 @@ checks constructor and output aliases, enforces input protocol and unsupported
 flags, and keeps terminal states sticky under both local compilers. Public C
 ABI, CLI, benchmark, malformed regression, fuzzing, and interoperability
 admission remain pending.
+
+### BR-0093
+
+The private Contextual Adaptive Huffman profile now derives bounded encoder and
+decoder storage without allocator callbacks. Default, short, empty, restricted
+decoder, payload, block, entropy-entry, and aggregate cases are tested; aligned
+token/node/symbol partitions reject forged metadata, short storage, and
+misalignment transactionally. Requirements produced by the calculator build
+the streaming encoder and decoder and complete a multi-frame round trip under
+both local compilers. Public C ABI, CLI, benchmark, malformed regression,
+fuzzing, and interoperability admission remain pending.

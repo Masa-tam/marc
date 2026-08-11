@@ -6540,3 +6540,8 @@ through the complete-frame encoder, and drains the retained bytes before
 reusing all frame-local workspaces. Two one-byte `41` frames therefore append
 two independent 82-byte frames with sequence numbers zero and one; no model
 state crosses their boundary.
+
+Profile sizing does not add serialized fields. For a largest raw frame `F`, it
+reserves at most `ceil(267F/8)` payload bytes: at most three bits for a new
+token-kind symbol plus at most 264 bits for a new literal symbol. The complete
+serialized-frame ceiling is therefore `64 + 16 + ceil(267F/8)` bytes.

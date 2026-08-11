@@ -1,0 +1,107 @@
+#ifndef MARC_FRAME_LZSS_CONTEXTUAL_ADAPTIVE_HUFFMAN_PROFILE_HPP
+#define MARC_FRAME_LZSS_CONTEXTUAL_ADAPTIVE_HUFFMAN_PROFILE_HPP
+
+#include "core/status.hpp"
+#include "dictionary/lzss_typed_token.hpp"
+#include "entropy/contextual_adaptive_huffman_model.hpp"
+#include "frame/lzss_contextual_adaptive_huffman_format.hpp"
+
+#include <cstddef>
+#include <cstdint>
+#include <span>
+
+namespace marc::frame::internal {
+
+struct LzssContextualAdaptiveHuffmanProfileConfig {
+    std::uint64_t original_size{};
+    std::uint32_t frame_size{UINT32_C(1) << 16};
+    dictionary::internal::LzssParameters dictionary{};
+};
+
+struct LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements {
+    std::size_t frame_input_bytes{};
+    std::size_t frame_encoded_bytes{};
+    std::size_t token_count{};
+    std::size_t node_count{};
+    std::size_t node_offset{};
+    std::size_t symbol_count{};
+    std::size_t symbol_offset{};
+    std::size_t views_bytes{};
+    std::size_t views_alignment{1};
+};
+
+struct LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements {
+    std::size_t frame_encoded_bytes{};
+    std::size_t frame_decoded_bytes{};
+    std::size_t node_count{};
+    std::size_t symbol_count{};
+    std::size_t symbol_offset{};
+    std::size_t token_count{};
+    std::size_t token_offset{};
+    std::size_t views_bytes{};
+    std::size_t views_alignment{1};
+};
+
+enum class LzssContextualAdaptiveHuffmanProfileError : std::uint8_t {
+    none,
+    invalid_configuration,
+    unsupported,
+    limit_exceeded,
+    arithmetic_overflow,
+};
+
+enum class LzssContextualAdaptiveHuffmanWorkspaceError : std::uint8_t {
+    none,
+    invalid_requirements,
+    too_small,
+    misaligned,
+    arithmetic_overflow,
+};
+
+struct LzssContextualAdaptiveHuffmanEncoderViews {
+    std::span<dictionary::internal::LzssTypedToken> tokens{};
+    std::span<entropy::internal::AdaptiveHuffmanNode> nodes{};
+    std::span<std::uint16_t> symbols{};
+};
+
+struct LzssContextualAdaptiveHuffmanDecoderViews {
+    std::span<entropy::internal::AdaptiveHuffmanNode> nodes{};
+    std::span<std::uint16_t> symbols{};
+    std::span<dictionary::internal::LzssTypedToken> tokens{};
+};
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanProfileError
+make_lzss_contextual_adaptive_huffman_profile(
+    const LzssContextualAdaptiveHuffmanProfileConfig& config,
+    const core::DecoderLimits& limits,
+    LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements& workspace)
+    noexcept;
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanProfileError
+calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
+    const core::DecoderLimits& limits,
+    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements& workspace)
+    noexcept;
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanWorkspaceError
+partition_lzss_contextual_adaptive_huffman_encoder_views(
+    const LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements&
+        requirements,
+    std::span<std::byte> storage,
+    LzssContextualAdaptiveHuffmanEncoderViews& views) noexcept;
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanWorkspaceError
+partition_lzss_contextual_adaptive_huffman_decoder_views(
+    const LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements&
+        requirements,
+    std::span<std::byte> storage,
+    LzssContextualAdaptiveHuffmanDecoderViews& views) noexcept;
+
+[[nodiscard]] core::ErrorCode
+lzss_contextual_adaptive_huffman_profile_error_code(
+    LzssContextualAdaptiveHuffmanProfileError error) noexcept;
+
+} // namespace marc::frame::internal
+
+#endif

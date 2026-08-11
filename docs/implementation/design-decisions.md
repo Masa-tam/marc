@@ -15265,3 +15265,24 @@ raw frame open, reject `ResetBlock`, extra or premature final input, unknown
 flags, and every workspace/output alias, and make terminal results sticky.
 Constructor validation must bind disjoint raw, token, node, symbol, and
 serialized-frame workspaces. Defer public profile admission.
+
+## DD-739: Contextual Adaptive Huffman profiles derive typed model layouts
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add private encoder and decoder workspace calculators plus transactional typed
+view partitioners. For largest raw frame `F`, reserve at most `F` typed tokens,
+the exact 9,067 nodes and 4,518 symbol indices, and a serialized frame ceiling
+`64 + 16 + ceil(267F/8)`. The 267-bit raw-byte ceiling is the sum of the
+three-bit maximum new token-kind operation and the 264-bit maximum new
+256-symbol literal operation; matches consume at least five raw bytes and do
+not exceed this per-byte bound.
+
+Lay out encoder views as tokens, aligned nodes, then aligned symbols; lay out
+decoder views as nodes, aligned symbols, then aligned tokens. Publish offsets,
+byte counts, alignment, stream header, and typed spans only after all checked
+arithmetic, format, entropy-entry, payload, and aggregate limits succeed.
+Empty encoding requires no frame views. Reject forged requirements, short or
+misaligned storage, and map profile errors to stable core categories. Defer C
+ABI exposure.

@@ -4550,3 +4550,13 @@ contextual streaming encoders as local architectural precedents. No external
 Adaptive Huffman, LZSS, or streaming implementation, source code, archive,
 test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0517
+
+The Contextual Adaptive Huffman profile and workspace calculator uses DD-728
+through DD-739, TVG-0607 through TVG-0618, marc's fixed model schema, typed
+token bounds, stream validator, streaming constructors, checked layout helpers,
+and neighboring contextual profiles as local architectural precedents. No
+external Adaptive Huffman, LZSS, profile, or allocator implementation, source
+code, archive, test vector, test suite, patent text, or optimization
+description was consulted.

@@ -4819,3 +4819,10 @@ serialized frame, then drains it before reusing raw, token, node, symbol, or
 serialized storage. Final input remains latched through drain, while complete
 non-final frames may be emitted immediately. Each complete-frame call resets
 all contextual trees, so no hidden model state crosses a frame boundary.
+
+The private profile calculator now turns configuration or decoder limits into
+those exact caller-owned regions. Encoder views place tokens before aligned
+nodes and symbols; decoder views place nodes and symbols before aligned tokens.
+Both directions reserve the same fixed model bank and derive a checked
+serialized ceiling from the 267-bit worst-case Literal cost per raw byte.
+Transactional partitioning keeps allocation policy outside the codec.

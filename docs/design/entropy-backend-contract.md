@@ -646,6 +646,12 @@ transaction while draining. It never advances an FGK tree incrementally across
 process calls or frames; chunking affects only raw collection and byte drain,
 not entropy decisions or the resulting representation.
 
+The profile boundary describes model storage as typed counts and aligned byte
+offsets without exposing it through a public ABI. Encoder and decoder layouts
+may differ, but both bind exactly 9,067 nodes and 4,518 symbol indices before a
+streaming object is constructed. Forged layout metadata never publishes a
+partial view.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

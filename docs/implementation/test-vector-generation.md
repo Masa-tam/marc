@@ -8183,3 +8183,18 @@ workspaces, aggregate limit, premature and excess input, every constructor and
 process-output alias class, unknown flags, and `ResetBlock`; require stable
 error mapping and sticky terminal results. Run focused and complete registered
 suites under MSVC and ClangCL.
+
+### TVG-0618
+
+Build the default profile for 2,500,000 raw bytes and a 65,536-byte frame.
+Require the fixed stream parameters, `F` token entries, 9,067 node entries,
+4,518 symbol entries, exact aligned offsets, and encoded-frame ceiling
+`64 + 16 + ceil(267F/8)`. Repeat with a 17-byte final frame and with empty
+input, whose encoder frame and typed-view requirements are all zero.
+
+Calculate decoder storage from restricted frame, block, payload, entropy-entry,
+and aggregate limits. Partition aligned storage in both directions, reject
+forged offsets/counts/bytes/alignment, short and misaligned storage without
+publishing views, and construct the streaming encoder and decoder solely from
+the returned requirements for a multi-frame round trip. Verify stable core
+error mapping under MSVC and ClangCL.

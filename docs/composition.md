@@ -1656,3 +1656,13 @@ flushes remain open, final input survives output starvation, and empty input
 ends after its header drains. Constructor, process-output, capacity, aggregate,
 input-protocol, flag, and sticky-terminal rules are tested. Public ABI, tools,
 fuzzing, benchmark, and interoperability admission remain future milestones.
+
+### CP-0094
+
+Contextual Adaptive Huffman now has private encoder and decoder workspace
+calculators and transactional typed-view partitioners. The fixed model bank,
+maximum typed tokens, raw and serialized frame buffers, alignment, checked
+offsets, 267-bit payload ceiling, aggregate accounting, empty encoder, forged
+requirements, short or misaligned storage, and stable error mapping are tested.
+Returned requirements construct both streaming directions for a multi-frame
+round trip. Public ABI exposure remains a future milestone.
