@@ -1718,3 +1718,12 @@ per-input, and 512 MiB RSS ceilings without a crash, hang, or sanitizer
 finding. No corpus or artifact entered the repository. This finite smoke does
 not establish exhaustive safety; benchmark, CLI, and interoperability
 admission remain future milestones.
+
+### CP-0100
+
+Contextual Adaptive Huffman now enters the experimental benchmark through only
+its public ABI-1 configuration, requirements, factory, process, and destroy
+calls. The adapter uses checked exact capacity, verifies a byte-exact round
+trip before timing, and reports both throughputs plus every caller-owned
+workspace region. The selector does not enter the stable benchmark matrix;
+CLI and interoperability admission remain future milestones.

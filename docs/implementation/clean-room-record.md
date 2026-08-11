@@ -18117,3 +18117,35 @@ discarded and the reviewed seed retained.
   crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding.
   Peak RSS was 40 MiB; final coverage was 205 counters and 426 features over a
   seven-entry, 32-byte in-memory corpus. No artifact was produced.
+
+## CR-0775: 2026-08-11 - Contextual Adaptive Huffman benchmark admission
+
+- Authoring method: extended marc's public-C-lifecycle benchmark adapter and
+  registered smoke inventory after fixing its capacity, round-trip, reporting,
+  and experimental-only contracts in repository documentation.
+- References used: DD-728 through DD-745; IR-0523; TVG-0607 through TVG-0624;
+  BM-0023; marc's existing contextual benchmark adapters and public Contextual
+  Adaptive Huffman lifecycle.
+- Known implementations intentionally not consulted: external benchmarks,
+  corpora, Adaptive Huffman or LZSS implementations, source code, archives,
+  test vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: use a 65,536-byte raw frame, exact 13,585-entry model
+  bank, `ceil(267F/8)` payload ceiling, 8-MiB aggregate policy, and checked
+  `112 + 80K + ceil(267N/8)` complete-stream capacity; require exact untimed
+  round trip before either direction is measured; and leave stable, CLI, and
+  interoperability inventories unchanged.
+- Generated-code task description: add the experimental selector, public
+  configuration/requirements/factory dispatch, checked capacity branch,
+  registered README smoke, complete reporting, and provenance records.
+- Similarity review: names, limits, capacity arithmetic, dispatch structure,
+  test registration, and reporting derive solely from marc's public ABI and
+  neighboring repository-owned benchmark adapters; no external implementation
+  expression entered the work.
+- Local validation: one MSVC 19.51.36252 and one ClangCL 22.1.3 Release run
+  each round-trip the 4,326-byte README to an identical 2,572-byte archive at
+  ratio 0.595 and report identical direction-specific workspace extents. The
+  focused registered smoke and all 2,875 tests pass under each compiler with
+  the 240-second per-test limit; both full runs include and pass
+  `marc_interoperability_schema_compatibility`. The sandboxed MSVC build first
+  encountered the known FileTracker access denial and passed unchanged through
+  the established approved build route.

@@ -55,7 +55,9 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`, or
 `marc_benchmark lzss-contextual-rans-compact corpus.bin 5`, or
-`marc_benchmark lzss-contextual-tans corpus.bin 5`.
+`marc_benchmark lzss-contextual-tans corpus.bin 5`,
+`marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
+`marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -247,6 +249,16 @@ aggregate limit. Checked complete-stream capacity is
 header plus maximum descriptor. Both directions are constructed only through
 the public C lifecycle; an exact round trip precedes timing, and the report
 includes ratio, throughput, peak workspace, and all directional regions.
+
+The experimental `lzss-contextual-adaptive-huffman` benchmark uses
+65,536-byte raw frames, reserves at most one typed token per raw byte, fixes
+the shared model bank at 9,067 nodes plus 4,518 symbol indices, reserves
+`ceil(267F/8)` payload bytes, and applies an 8-MiB aggregate limit. Checked
+complete-stream capacity is `112 + 80K + ceil(267N/8)`, including the Format 2
+prefix and each 64-byte common frame header plus fixed 16-byte descriptor.
+Both directions are constructed only through the public C lifecycle; an exact
+round trip precedes timing, and the report includes ratio, throughput, peak
+workspace, and all directional regions.
 
 ### LZ78 profiles
 
@@ -686,6 +698,21 @@ Both builds report identical workspaces: encoder primary/secondary/views are
 739,905/65,536/929,652 bytes, for a 1,735,093-byte peak. The single MSVC run
 reports 0.461 MiB/s encode and 15.101 MiB/s decode; ClangCL reports 0.434 and
 10.495 MiB/s. These small-input timings are descriptive and are neither a
+performance baseline nor a pass threshold.
+
+### BM-0023: Contextual Adaptive Huffman benchmark admission
+
+One Release iteration over the 4,326-byte `README.md` produces a complete
+2,572-byte Contextual Adaptive Huffman archive at ratio 0.595 under both MSVC
+and ClangCL. This is a measured complete stream after the required untimed
+round trip; the much larger checked 267-bit-per-byte capacity remains a safety
+ceiling rather than a size prediction.
+
+Both builds report identical workspaces: encoder primary/secondary/views are
+4,326/144,461/206,020 bytes and decoder regions are
+2,187,344/65,536/940,540 bytes, for a 3,193,420-byte peak. The single MSVC run
+reports 0.339 MiB/s encode and 1.865 MiB/s decode; ClangCL reports 0.331 and
+1.870 MiB/s. These small-input timings are descriptive and are neither a
 performance baseline nor a pass threshold.
 
 ## Reporting results

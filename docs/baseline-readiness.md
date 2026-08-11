@@ -1884,3 +1884,15 @@ sanitizer finding; peak RSS was 40 MiB. The run supplied no persistent corpus
 and produced no artifact. This is bounded evidence for the exercised inputs,
 not an exhaustive safety claim. Benchmark, CLI, and interoperability admission
 remain pending.
+
+### BR-0099
+
+Contextual Adaptive Huffman now has an explicit experimental benchmark
+selector backed only by its public ABI-1 lifecycle. One measured Release
+iteration over the 4,326-byte README round trips an identical 2,572-byte stream
+under MSVC and ClangCL, and both builds report identical direction-specific
+workspace extents. The stable benchmark matrix, CLI, and interoperability
+schema remain unchanged. All 2,875 registered tests, including
+`marc_interoperability_schema_compatibility`, pass under both compilers with
+the 240-second per-test limit. CLI and interoperability admission remain
+pending.

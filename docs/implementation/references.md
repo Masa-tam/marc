@@ -4608,3 +4608,13 @@ established Windows GNU-driver Clang sanitizer tree, matching-runtime process
 policy, and ignored failure-artifact policy. No external Adaptive Huffman,
 LZSS, fuzz harness, corpus, malformed input, source code, archive, test vector,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0523
+
+The Contextual Adaptive Huffman experimental benchmark admission uses DD-728
+through DD-745, TVG-0607 through TVG-0624, marc's public ABI-1 lifecycle,
+exact 267-bit payload ceiling, checked benchmark capacity helpers, and
+neighboring contextual benchmark adapters as local architectural precedents.
+No external benchmark, corpus, Adaptive Huffman or LZSS implementation, source
+code, archive, test vector, test suite, patent text, or optimization
+description was consulted.

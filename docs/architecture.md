@@ -4857,3 +4857,10 @@ public primary, secondary, aligned views, and output regions. A valid stream
 header gates private complete-frame decoding; the public streaming decoder is
 always driven with byte-derived partial buffers and a finite call budget.
 Input bytes can select chunks but cannot select allocation sizes.
+
+The experimental benchmark adapter now composes the same public lifecycle in
+both directions. It fixes a 65,536-byte frame, exact 13,585-entry model bank,
+267-bit-per-byte payload ceiling, and 8-MiB aggregate policy, then obtains all
+three workspace regions from the ABI. Checked capacity uses
+`112 + 80K + ceil(267N/8)`; an untimed exact round trip precedes all reported
+measurements. This adds no stable profile, CLI selector, or format field.

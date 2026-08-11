@@ -15385,3 +15385,24 @@ failure artifact to the ignored sanitizer build area only if a finding occurs.
 Record the exact exit, coverage, features, corpus extent, peak RSS, and finding
 status reported by the run. A successful bounded smoke is evidence only for
 the exercised inputs and is not an exhaustive safety claim.
+
+## DD-745: Contextual Adaptive Huffman enters the experimental benchmark only
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add `lzss-contextual-adaptive-huffman` as an explicit experimental benchmark
+selector without changing the stable profile inventory, CLI, or
+interoperability schema. Use 65,536-byte raw frames, at most one typed token
+per raw byte, the exact 9,067-node plus 4,518-symbol model bank, a
+`ceil(267F/8)` payload ceiling, and the established 8-MiB aggregate-buffer
+policy.
+
+For raw input extent `N` and nonempty frame count `K`, reserve complete output
+with checked arithmetic using `112 + 80K + ceil(267N/8)`; the per-frame term
+covers the 64-byte common header and fixed 16-byte descriptor. Construct each
+immutable direction only through the public ABI-1 configuration, requirements
+query, and factory. Require an untimed byte-exact round trip before measuring
+either direction, then report complete-stream ratio, encode/decode throughput,
+peak caller-owned workspace, and every direction-specific workspace region.
+Measurements and the registered smoke test are descriptive, not thresholds.
