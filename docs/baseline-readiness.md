@@ -1709,3 +1709,11 @@ trees, alphabet-specific NYT widths, frame reset, bypass-bit rule, strict
 completion conditions, fixed bounds, and one-Literal vector are specified.
 No implementation or public surface is claimed, so baseline and schema-35
 readiness remain unchanged.
+
+### BR-0083
+
+The reserved Contextual Adaptive Huffman profile now has a private fixed
+descriptor boundary and an allocation-free alphabet-bounded FGK tree. Exact
+serialization, malformed fields, local limits, atomic failure, all four schema
+alphabet sizes, full-tree insertion, reset, and byte-alphabet equivalence with
+variant 1 are tested. Payload and frame completion remain future work.

@@ -8023,3 +8023,18 @@ it with the specified Format 2 frame and stream headers and require the exact
 82-byte frame and 194-byte stream. Documentation checks must also require the
 `1/2` entropy identity, 2^24 raw-frame ceiling, 33,554,432 Symbol-event ceiling,
 per-alphabet NYT widths, zero padding, and explicit non-implementation status.
+
+### TVG-0608
+
+Serialize the one-Literal descriptor tuple `(decisions=2, payload=2,
+contexts=31, valid-bits=1, flags=0)` and require the exact 16 bytes from
+TVG-0607. Parse them back, then independently mutate every semantic field,
+reserved bytes, expected counts, and payload limits; require a stable error and
+unchanged destination object or byte array.
+
+Initialize one caller-owned FGK tree for each alphabet 2, 8, 17, and 256.
+Require initial order `2A`, exact bounded-workspace rejection, successful
+insertion of every alphabet symbol with validation after each insertion,
+out-of-alphabet and duplicate rejection, and reset to NYT. For alphabet 256,
+walk `A`, `B`, `A` through both the new tree and Adaptive Huffman variant 1;
+require identical paths and valid state after every observation.

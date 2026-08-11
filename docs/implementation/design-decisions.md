@@ -15075,3 +15075,20 @@ descriptor with decision count, payload size, context count, final-valid-bit
 count, and zero flags/reserved fields. Reserve the exact one-Literal bytes but
 defer parser, tree generalization, coding, public admission, and tools to
 separate milestones.
+
+## DD-729: Contextual Adaptive Huffman foundations keep storage caller-owned
+
+- Date: 2026-08-11
+- Status: accepted
+
+Implement the entropy `1/2` descriptor as an independent fixed-size parser and
+serializer with transactional output. Implement one contextual FGK tree as a
+view over caller-supplied `AdaptiveHuffmanNode` and symbol-index spans. Admit
+only alphabets 2 through 256 and consume exactly the `2A+1` and `A` prefixes
+after validating both capacities.
+
+Preserve Adaptive Huffman variant 1 unchanged. Require the 256-symbol
+contextual tree to reproduce its paths and updates, while smaller trees derive
+their root order and storage from their fixed alphabet. Detect invalid
+initialization, symbols, paths, tree relationships, and weight overflow. Do not
+add bit coding or allocate the 31-tree collection in this milestone.

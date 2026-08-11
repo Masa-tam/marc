@@ -6461,3 +6461,10 @@ Empty input contains only the 112-byte stream header and no frame. This
 reservation does not yet claim a parser, tree implementation, encoder,
 decoder, streaming lifecycle, C API, CLI selector, benchmark codec, stable
 profile, or interoperability archive.
+
+The private entropy descriptor parser and serializer now implement the exact
+16-byte boundary above with atomic publication and local-limit enforcement. A
+separate caller-owned bounded FGK tree implements the alphabet-derived node
+capacity, root numbering, paths, insertion, updates, reset, and validation
+rules for one context. Payload coding, the 31-tree owner, frame parsing, and
+profile admission remain outside this milestone.

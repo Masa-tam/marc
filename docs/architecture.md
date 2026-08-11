@@ -4736,3 +4736,10 @@ without updating a tree. Alphabet-specific NYT literals avoid expanding the
 weights and state. The fixed 16-byte descriptor carries only decision and
 payload extents, context count, and final-bit metadata; no tree is serialized.
 This is a format reservation, not implementation or public-profile admission.
+
+The first private implementation boundary keeps descriptor bytes and adaptive
+state separate. Descriptor parsing is allocation free and transactional. One
+context tree is a view over caller-owned `2A+1` node and `A` symbol regions,
+so the future 31-tree owner can calculate the exact 9,067-node and 4,518-symbol
+maximum instead of embedding 31 maximum byte-alphabet trees. Existing
+byte-oriented Adaptive Huffman variant 1 remains unchanged.

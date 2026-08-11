@@ -1556,3 +1556,11 @@ Its 31 independent alphabet-bounded FGK trees consume Symbol operations
 directly; bypass bits remain unmodeled in the same LSB-first payload. This
 milestone fixes representation and bounds only and changes no implemented,
 stable, CLI, benchmark, or interoperability inventory.
+
+### CP-0084
+
+The Contextual Adaptive Huffman composition now has independently testable
+private descriptor and single-context FGK foundations. Fixed descriptor bytes
+are parsed and serialized atomically, while one caller-owned tree enforces its
+alphabet-derived storage and state invariants. No payload coder, 31-tree
+controller, frame lifecycle, or public profile is claimed.

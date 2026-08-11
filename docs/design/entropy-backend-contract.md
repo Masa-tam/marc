@@ -577,6 +577,14 @@ one zero bit and the second contributes the eight LSB-first bits of `0x41`, so
 the payload is `82 00` with one valid bit in the final byte. This vector uses
 no context-model inference inside the entropy backend.
 
+The private format boundary now parses and serializes the fixed descriptor
+atomically and enforces the context, decision, payload, final-bit, flag,
+reserved-byte, and caller-limit rules above. The private bounded tree accepts
+caller-owned node and symbol spans, consumes exactly `2A+1` nodes and `A`
+symbol slots, derives initial order `2A`, and implements the specified FGK
+paths and updates for alphabets 2 through 256. Neither component yet reads or
+writes a payload bit or owns the array of 31 trees.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

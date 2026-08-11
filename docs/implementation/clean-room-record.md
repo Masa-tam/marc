@@ -17633,3 +17633,32 @@ discarded and the reviewed seed retained.
   MSVC 19.51.36252 and ClangCL 22.1.3 trees with the 240-second per-test limit.
   The byte vector was also checked directly from its nine LSB-first payload bits;
   no executable codec is claimed by this reservation.
+
+## CR-0759: 2026-08-11 - Contextual Adaptive Huffman format and tree foundation
+
+- Authoring method: implemented only the already reserved fixed descriptor and
+  one bounded FGK context tree, then compared its byte-alphabet behavior with
+  marc's existing independent variant-1 tree.
+- References used: DD-728; DD-729; IR-0507; TVG-0607; TVG-0608; marc's
+  Adaptive Huffman node definitions, endian helpers, caller-owned workspace
+  policy, and LZSS context alphabet schema.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman implementations, source code, archives, test vectors, test suites,
+  patent text, and optimization descriptions.
+- Independent decisions: keep variant 1 unchanged; use caller-owned exact
+  storage prefixes; validate before binding storage; return stable errors for
+  initialization, symbol, path, tree, and weight failures; and keep payload
+  coding and the 31-tree owner out of scope.
+- Generated-code task description: add the private descriptor and tree headers
+  and implementations, register focused GoogleTests and source files, document
+  the implementation boundary, and run both local compiler suites.
+- Similarity review: the new tree generalizes only marc's documented FGK
+  rules and is cross-checked against marc's existing variant-1 behavior; no
+  external implementation expression entered the work.
+- Local validation: the ten focused format and tree tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,793 registered tests, including
+  `marc_interoperability_schema_compatibility`, then pass under each compiler
+  with the 240-second per-test limit. Static and shared targets build under
+  both compilers. A later incremental MSVC rebuild encountered the known
+  sandboxed FileTracker `E_ACCESSDENIED`; the established approved build route
+  rebuilt the updated target successfully before its focused tests were rerun.

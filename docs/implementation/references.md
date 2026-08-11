@@ -4453,3 +4453,12 @@ Format 2 framing, entropy-backend contract, and neighboring contextual backend
 profiles as local design precedents. No external Adaptive Huffman
 implementation, source code, archive, test vector, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0507
+
+The Contextual Adaptive Huffman format/tree foundation uses DD-728 and DD-729,
+TVG-0607 and TVG-0608, marc's Adaptive Huffman variant-1 node semantics,
+caller-owned workspace conventions, endian helpers, fixed Format 2 descriptor,
+and 31-context alphabet schema. No external Adaptive Huffman implementation,
+source code, archive, test vector, test suite, patent text, or optimization
+description was consulted.
