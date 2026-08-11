@@ -86,6 +86,9 @@ use the same explicit selector; neither name auto-detects the other variant.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
 tANS entropy variant 2. It likewise requires the explicit selector for both
 directions and remains outside the stable 42-profile inventory.
+`lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
+Contextual Blocked Huffman entropy variant 2. It also requires the same
+explicit selector for encode and decode and remains experimental.
 
 ### Common stream rules
 
@@ -176,6 +179,14 @@ contextual-tANS configuration initializer, direction-specific requirements
 query, factory, process, and destroy functions. The queried opaque views own
 all typed tokens and tANS tables; the command-line layer neither names nor
 sizes those private layouts.
+
+The experimental `lzss-contextual-blocked-huffman` adapter uses 65,536-byte
+raw frames, a `6F = 393,216` decision ceiling, and a
+`12F = 786,432` payload ceiling. Its descriptor is bounded at 2,561 bytes and
+its aggregate policy is 8 MiB. Both directions call only the public
+configuration initializer, requirements query, factory, process, and destroy
+functions. Typed tokens and Huffman tables remain in the queried opaque views;
+the CLI neither names nor sizes those private layouts.
 
 ### LZ78 profile parameters
 

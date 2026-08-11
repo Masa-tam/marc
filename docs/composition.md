@@ -1520,3 +1520,13 @@ entropy=2/2`; typed tokens and Huffman tables remain opaque. Checked capacity,
 an exact untimed round trip, ratio, encode/decode throughput, and all
 caller-owned workspace regions are reported. CLI, stable-matrix, and
 interoperability admission remain future work.
+
+### CP-0080
+
+The Contextual Blocked Huffman composition now has an explicit experimental
+CLI adapter. Both directions preserve Format 2 identity `dictionary=2/2,
+entropy=2/2` through the public ABI-1 lifecycle, while opaque views retain all
+typed-token and Huffman-table ownership. Registered file tests cover nonempty
+and empty round trip, exact entropy identity, overwrite refusal, malformed
+input, strict trailing-data rejection, and atomic output cleanup. Stable and
+interoperability inventories remain unchanged.

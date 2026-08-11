@@ -4697,3 +4697,11 @@ capacity, queries each immutable direction independently, and verifies exact
 round trip before timing. Reports expose only the public primary, secondary,
 and opaque views extents plus ratio and throughput; typed-token and Huffman
 table layouts remain private, and the stable 42-profile inventory is unchanged.
+
+The CLI boundary now exposes `lzss-contextual-blocked-huffman` only as an
+explicit experimental selector. Both immutable directions use the public
+ABI-1 lifecycle with the benchmark's 65,536-byte frame, `6F` decision, `12F`
+payload, 2,561-byte descriptor, and 8-MiB aggregate policies. The file adapter
+inherits atomic commit and strict trailing-data behavior without exposing
+typed-token or Huffman-table layouts or changing stable/interoperability
+inventories.

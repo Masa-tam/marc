@@ -14994,3 +14994,21 @@ and factory. Require an untimed byte-exact round trip before measuring either
 direction, then report complete-stream ratio, encode/decode throughput, peak
 caller-owned workspace, and every direction-specific workspace region.
 Measurements and the registered smoke test are descriptive, not thresholds.
+
+## DD-724: Contextual Blocked Huffman CLI admission stays explicit
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add `lzss-contextual-blocked-huffman` as an explicit experimental CLI selector
+for both encode and decode. Use the benchmark's 65,536-byte raw frame, `6F`
+decision, `12F` payload, 2,561-byte descriptor, and 8-MiB aggregate policies.
+Construct the transform only through the public ABI-1 configuration,
+direction-specific requirements query, factory, process, and destroy calls;
+the CLI must not reproduce typed-token or Huffman-table layouts.
+
+Register nonempty and empty file round trips, require emitted Format 2 entropy
+identity `algorithm=2, variant=2`, reject malformed input and strict trailing
+data without retaining output, and refuse overwrite as for every other CLI
+profile. The selector is not auto-detected, does not enter the stable
+42-profile inventory, and does not yet change interoperability schema 34.

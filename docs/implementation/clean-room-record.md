@@ -17493,3 +17493,34 @@ discarded and the reviewed seed retained.
   focused registered smoke and all 2,782 tests pass under each compiler with
   the 240-second per-test limit; both full runs include and pass
   `marc_interoperability_schema_compatibility`.
+
+## CR-0754: 2026-08-11 - Contextual Blocked Huffman CLI admission
+
+- Authoring method: extended marc's common command-line transform adapter only
+  after fixing the selector, public lifecycle, limits, atomic-file, identity,
+  and experimental-only contracts in repository documentation.
+- References used: DD-709 through DD-724; IR-0502; TVG-0588 through TVG-0603;
+  marc's public Contextual Blocked Huffman ABI, common CLI processing loop, and
+  neighboring contextual Dynamic Range, rANS, and tANS adapters.
+- Known implementations intentionally not consulted: external CLIs, Huffman
+  or DEFLATE implementations, source code, archives, test vectors, test suites,
+  and optimization descriptions.
+- Independent decisions: expose one explicit selector for both directions;
+  use a 65,536-byte frame, 393,216 decisions, 786,432 payload bytes, 2,561-byte
+  descriptor bound, and 8-MiB aggregate policy; require entropy identity
+  `2/2`, strict trailing-data rejection, overwrite refusal, and atomic cleanup;
+  and leave stable and interoperability inventories unchanged.
+- Generated-code task description: add CLI constants and enum selection,
+  public configuration/requirements/factory dispatch, usage text, one common
+  file round-trip registration, CLI documentation, and completion records.
+- Similarity review: limits, dispatch structure, file behavior, and tests
+  derive solely from marc's public ABI and repository-owned CLI architecture;
+  no external implementation expression entered the work.
+- Local validation: the focused registered nonempty/empty round trip, identity,
+  overwrite, malformed-input, trailing-data, and cleanup test passes under
+  MSVC 19.51.36252 and ClangCL 22.1.3. In each 2,783-test full run every
+  functional test, including `marc_interoperability_schema_compatibility`,
+  passed; the sole documentation-order failure was corrected by moving
+  CP-0080 and BR-0078 after their immediate predecessors, after which the
+  documentation test passed under both compilers. All tests use the
+  240-second per-test limit.

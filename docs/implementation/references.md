@@ -4409,3 +4409,12 @@ Dynamic Range, rANS, and tANS benchmark adapters as local architectural
 precedents. No external benchmark, corpus, Huffman or DEFLATE implementation,
 source code, archive, test vector, test suite, or optimization description was
 consulted.
+
+### IR-0502
+
+The Contextual Blocked Huffman experimental CLI admission uses DD-709 through
+DD-724, TVG-0588 through TVG-0603, marc's public ABI-1 lifecycle, common CLI
+file-commit loop, registered round-trip script, and neighboring contextual
+Dynamic Range, rANS, and tANS adapters as local architectural precedents. No
+external CLI, Huffman or DEFLATE implementation, source code, archive, test
+vector, test suite, or optimization description was consulted.

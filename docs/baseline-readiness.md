@@ -1666,3 +1666,12 @@ exact pre-timing round trip, repeatable measured extents, ratio, throughput,
 and peak caller-owned workspace. No metric is a pass threshold, and the
 profile remains outside the stable 42-profile, CLI, and interoperability
 inventories.
+
+### BR-0078
+
+Contextual Blocked Huffman now has an explicit experimental CLI selector.
+Public-only configuration and workspace construction, nonempty and empty file
+round trip, exact Format 2 entropy identity `2/2`, overwrite refusal,
+malformed-input rejection, strict trailing-data rejection, and failed-output
+cleanup are registered. It remains outside the stable 42-profile and
+interoperability inventories and is not auto-detected.
