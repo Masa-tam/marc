@@ -1726,3 +1726,13 @@ storage. Documented and mixed hand vectors, existing and new symbols,
 BypassBits, malformed NYT values, truncation atomicity, overlap, local limits,
 strict completion, and sticky lifecycle errors are covered. This does not yet
 constitute a complete codec profile.
+
+### BR-0085
+
+The private Contextual Adaptive Huffman decoder now reconstructs validated
+LZSS typed tokens. Literal and overlapping-match vectors, bypass fields,
+invalid distance, count and raw-extent disagreement, truncation, every
+workspace shortage and alias class, aggregate limits, and atomic token output
+are tested under both local compilers. Raw-byte reconstruction, a complete
+frame transaction, encoder parity, streaming, C ABI, tools, and
+interoperability are still required before profile admission.

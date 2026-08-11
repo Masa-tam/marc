@@ -6476,3 +6476,13 @@ bytes are charged to decoder limits before initialization. Symbol and bypass
 requests commit atomically, padding and unused alphabet values are strict, and
 completion requires exact event, decision, and valid-bit extents. No frame,
 typed-token adapter, encoder, or public profile is introduced.
+
+The private typed-token decoder now interprets those operations through the
+unchanged LZSS field-context state machine. The one-Literal descriptor and
+payload above reconstruct `{Literal, 0x41}`. The hand vector `82 06 00` with
+19 valid bits reconstructs `{Literal, 0x41}` followed by
+`{Match, distance=1, length=6}` and therefore declares two tokens, six events,
+six decisions, and seven raw bytes. These bytes do not add a new serialized
+field: they exercise the already reserved representation. Frame parsing, raw
+copy reconstruction, encoding, and public profile admission remain outside
+this milestone.

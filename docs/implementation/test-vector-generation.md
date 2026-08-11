@@ -8057,3 +8057,19 @@ For a one-bit truncated context-3 NYT and the unused 5-bit value 31 in alphabet
 17, require unchanged output, zero committed bits, and zero events. Reject
 nonzero padding, trailing bits, wrong finish counts, payload/model overlap,
 short workspaces, and limits one below the exact entry or aggregate-byte need.
+
+### TVG-0610
+
+Decode the documented `82 00` payload through reset LZSS context state and
+require one Literal `0x41`, two events, two decisions, nine consumed bits, and
+raw extent one. Decode `82 06 00` with 19 valid bits and require Literal
+`0x41` followed by Match distance one and length six, six events, six
+decisions, and raw extent seven.
+
+Change the second vector's distance to two at raw position one and require an
+invalid-token result with the entire caller token span unchanged. Independently
+reject wrong event, decision, and raw declarations, payload truncation, either
+short model workspace, short token output, every token alias with payload or
+model storage, invalid LZSS parameters, aggregate storage one byte below the
+exact requirement, and total-output overflow. Run the vectors under MSVC and
+ClangCL before the complete registered suites.

@@ -17691,3 +17691,33 @@ discarded and the reviewed seed retained.
   with the 240-second per-test limit. Static and shared library targets build
   successfully under both compilers; the MSVC shared build uses the established
   approved route for the known sandboxed FileTracker behavior.
+
+## CR-0761: 2026-08-11 - Contextual Adaptive Huffman LZSS token decoder
+
+- Authoring method: composed marc's private operation decoder with the
+  repository-owned LZSS field-context state and typed-token validator, without
+  introducing a frame or raw-output path.
+- References used: DD-728 through DD-731; IR-0509; TVG-0607 through TVG-0610;
+  marc's contextual decoder adapters, checked arithmetic, decoder limits, and
+  caller-owned workspace conventions.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, archives, test vectors, test
+  suites, patent text, and optimization descriptions.
+- Independent decisions: infer contexts outside the entropy backend; validate
+  tokens before state advancement; run a complete nonpublishing pass before
+  token output; reject all storage aliases; and keep raw reconstruction and
+  framing out of scope.
+- Generated-code task description: add the private LZSS Contextual Adaptive
+  Huffman token decoder, register hand-vector, malformed-input, workspace,
+  alias, limit, and publication-atomicity GoogleTests, and update architecture,
+  format, composition, readiness, test, reference, decision, and provenance
+  documents.
+- Similarity review: the implementation composes only marc's independently
+  designed local interfaces and representation; no external implementation
+  expression entered the work.
+- Local validation: the seven focused token-adapter tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,813 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

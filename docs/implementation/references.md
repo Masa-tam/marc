@@ -4471,3 +4471,12 @@ fixed LZSS context schema, checked arithmetic, limit model, and neighboring
 contextual decoder lifecycle as local precedents. No external Adaptive Huffman
 implementation, source code, archive, test vector, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0509
+
+The Contextual Adaptive Huffman LZSS token adapter uses DD-728 through DD-731,
+TVG-0607 through TVG-0610, marc's typed-token validator, fixed field-context
+state, checked arithmetic, decoder limits, and neighboring private contextual
+token adapters as local architectural precedents. No external Adaptive
+Huffman or LZSS implementation, source code, archive, test vector, test suite,
+patent text, or optimization description was consulted.

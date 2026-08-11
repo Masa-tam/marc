@@ -4751,3 +4751,12 @@ state machine expects. Payload and both model regions must be pairwise
 disjoint, their aggregate is bounded before reset, and failed partial Symbol
 decodes do not commit a cursor or returned value. Full tree validation occurs
 at block completion rather than in the per-Symbol hot path.
+
+The private typed-token adapter now owns LZSS context inference above that
+operation decoder. It reconstructs one literal or match field at a time,
+validates every completed token against the declared raw extent and decoder
+limits, and advances the context state only after acceptance. Decoding first
+runs a write-free validation pass and publishes tokens only during an
+identical second pass, so malformed entropy, invalid references, and short
+output cannot expose a partial token sequence. Frame parsing and raw-byte
+reconstruction remain separate later boundaries.

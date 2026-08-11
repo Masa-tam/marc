@@ -595,6 +595,14 @@ short workspace, aggregate memory, and entropy-entry limits; finish validates
 counts, exact bit exhaustion, and every tree. Typed-LZSS context inference and
 frame decoding remain outside this boundary.
 
+The private LZSS adapter supplies that context inference without changing the
+entropy contract. Starting from reset state, it requests token kind, literal,
+length class, distance class, and bypass bits from their fixed contexts,
+reconstructs the canonical typed token, validates it, then advances state.
+The adapter validates the complete sequence without output before repeating
+the decode into caller storage. Thus token publication is atomic at the
+sequence boundary; the entropy backend still has no knowledge of LZSS tokens.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

@@ -15111,3 +15111,21 @@ padding at begin and all trees plus exact counts and valid-bit exhaustion at
 finish. Avoid a whole-tree validation in the per-Symbol hot path. Leave LZSS
 context inference, frame parsing, streaming, encoding, and public admission to
 later milestones.
+
+## DD-731: Contextual Adaptive Huffman token publication uses two passes
+
+- Date: 2026-08-11
+- Status: accepted
+
+Place a private LZSS typed-token adapter above the Contextual Adaptive Huffman
+operation decoder. Derive every expected context and alphabet solely from the
+established `LzssFieldContextState`; reconstruct class and bypass values before
+calling the common typed-token validator; and require declared token, event,
+decision, and raw extents to agree at completion.
+
+Perform a complete write-free validation pass before decoding again into the
+caller-owned token span. Reject short output only after the first pass proves
+the stream valid, and reject payload, node, symbol, and token aliases before
+decoding. Charge exact token and model storage plus payload to the aggregate
+limit. Defer raw-byte reconstruction, frame parsing, encoding, streaming, and
+public profile admission.

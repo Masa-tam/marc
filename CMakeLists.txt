@@ -40,6 +40,7 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/context/lzss_contextual_adaptive_huffman_decoder.cpp
     src/context/lzss_contextual_blocked_huffman_decoder.cpp
     src/context/lzss_contextual_blocked_huffman_encoder.cpp
     src/context/lzss_contextual_tans_decoder.cpp
@@ -1466,6 +1467,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_tans_decode_tables_tests.cpp
         tests/contextual_tans_decoder_tests.cpp
         tests/lzss_contextual_tans_decoder_tests.cpp
+        tests/lzss_contextual_adaptive_huffman_decoder_tests.cpp
         tests/lzss_contextual_blocked_huffman_decoder_tests.cpp
         tests/lzss_contextual_blocked_huffman_encoder_tests.cpp
         tests/lzss_contextual_tans_encoder_tests.cpp

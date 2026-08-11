@@ -1573,3 +1573,14 @@ context and alphabet; BypassBits share the forward cursor without model
 updates. Exact workspaces, limits, atomic requests, padding, NYT values,
 counts, and bit exhaustion are enforced. Typed-token and frame integration
 remain future milestones.
+
+### CP-0086
+
+Contextual Adaptive Huffman now has a private LZSS typed-token decoder above
+the operation boundary. The established context state selects every Symbol
+request, bypass fields reconstruct length and distance values, and the common
+typed-token validator enforces raw extent and reference validity. A complete
+write-free pass precedes token publication; exact workspaces, pairwise alias
+rejection, aggregate memory, counts, padding, and completion remain bounded.
+Raw reconstruction, frame lifecycle, encoding, and public admission remain
+future milestones.
