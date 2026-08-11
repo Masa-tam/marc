@@ -14974,3 +14974,23 @@ direct failure artifacts only to the ignored build tree. Record the final
 coverage/features, peak RSS, and absence or presence of libFuzzer, ASan, or
 UBSan findings. This bounded execution is evidence only for exercised inputs
 and cannot establish exhaustive safety or change any release surface.
+
+## DD-723: Contextual Blocked Huffman enters the experimental benchmark only
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add `lzss-contextual-blocked-huffman` as an explicit experimental benchmark
+selector without changing the stable 42-profile inventory, CLI, or
+interoperability schema. Use 65,536-byte raw frames, admit at most `6F` typed
+decisions and `12F` payload bytes per frame, retain the 2,561-byte descriptor
+ceiling, and apply the established 8-MiB aggregate-buffer policy.
+
+For raw input extent `N` and nonempty frame count `K`, reserve complete output
+with checked arithmetic using `112 + 12N + 2,625K`; the per-frame term covers
+the 64-byte common header and maximum descriptor. Construct each immutable
+direction only through the public ABI-1 configuration, requirements query,
+and factory. Require an untimed byte-exact round trip before measuring either
+direction, then report complete-stream ratio, encode/decode throughput, peak
+caller-owned workspace, and every direction-specific workspace region.
+Measurements and the registered smoke test are descriptive, not thresholds.

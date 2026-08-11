@@ -4399,3 +4399,13 @@ DD-722, TVG-0600 and TVG-0601, FZ-0022, marc's reviewed bounded harness,
 ignored build-artifact policy, and established matching-runtime procedure. No
 external corpus, malformed sample, fuzz harness, source code, archive, test
 suite, or optimization description was consulted.
+
+### IR-0501
+
+The Contextual Blocked Huffman experimental benchmark admission uses DD-709
+through DD-723, TVG-0588 through TVG-0602, marc's public ABI-1 lifecycle,
+existing checked benchmark capacity helpers, and neighboring contextual
+Dynamic Range, rANS, and tANS benchmark adapters as local architectural
+precedents. No external benchmark, corpus, Huffman or DEFLATE implementation,
+source code, archive, test vector, test suite, or optimization description was
+consulted.

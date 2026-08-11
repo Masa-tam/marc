@@ -1510,3 +1510,13 @@ bounded sanitizer execution. Windows Clang 22 libFuzzer, ASan, and UBSan
 completed 1,000 ephemeral inputs within the documented input, timeout, RSS,
 workspace, and call ceilings without a finding or artifact. CLI, benchmark,
 and interoperability admission remain future work.
+
+### CP-0079
+
+The Contextual Blocked Huffman composition now has an explicit experimental
+benchmark adapter. Both immutable directions are constructed solely through
+the public ABI-1 lifecycle with Format 2 identity `dictionary=2/2,
+entropy=2/2`; typed tokens and Huffman tables remain opaque. Checked capacity,
+an exact untimed round trip, ratio, encode/decode throughput, and all
+caller-owned workspace regions are reported. CLI, stable-matrix, and
+interoperability admission remain future work.

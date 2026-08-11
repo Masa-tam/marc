@@ -239,6 +239,15 @@ directions are constructed through the public contextual-tANS C lifecycle;
 the report includes all directional workspace regions after an exact
 pre-timing round trip.
 
+The experimental `lzss-contextual-blocked-huffman` benchmark uses 65,536-byte
+raw frames, admits at most `6F` modeled decisions, reserves `12F` payload
+bytes, retains the 2,561-byte descriptor ceiling, and applies an 8-MiB
+aggregate limit. Checked complete-stream capacity is
+`112 + 12N + 2,625K`, including the Format 2 prefix and each common frame
+header plus maximum descriptor. Both directions are constructed only through
+the public C lifecycle; an exact round trip precedes timing, and the report
+includes ratio, throughput, peak workspace, and all directional regions.
+
 ### LZ78 profiles
 
 `lz78-blocked-huffman` uses one MiB raw frames, 65,536-symbol entropy blocks,
@@ -662,6 +671,22 @@ retains nine overrides and now estimates 524 descriptor bytes plus 66,364
 payload bytes, or 66,888 bytes. Four pooled tables total 67,027 bytes and full
 contextualization totals 67,155 bytes on that input. These remain entropy-body
 size observations, not complete framed archives or throughput measurements.
+
+### BM-0022: Contextual Blocked Huffman benchmark admission
+
+One Release iteration over the 4,326-byte `README.md` produces a complete
+2,504-byte Contextual Blocked Huffman archive at ratio 0.579 under both MSVC
+and ClangCL. BM-0021's 2,328-byte entropy-body estimate plus the 112-byte
+Format 2 stream prefix and 64-byte common frame header predicts exactly this
+extent, so the public streaming adapter introduces no unaccounted payload or
+descriptor bytes.
+
+Both builds report identical workspaces: encoder primary/secondary/views are
+4,326/51,293/51,912 bytes and decoder regions are
+739,905/65,536/929,652 bytes, for a 1,735,093-byte peak. The single MSVC run
+reports 0.461 MiB/s encode and 15.101 MiB/s decode; ClangCL reports 0.434 and
+10.495 MiB/s. These small-input timings are descriptive and are neither a
+performance baseline nor a pass threshold.
 
 ## Reporting results
 

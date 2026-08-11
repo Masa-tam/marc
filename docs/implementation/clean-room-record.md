@@ -17463,3 +17463,33 @@ discarded and the reviewed seed retained.
   crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding.
   Peak RSS was 40 MiB; final coverage was 192 counters and 390 features over a
   seven-entry, 29-byte in-memory corpus. No artifact was produced.
+
+## CR-0753: 2026-08-11 - Contextual Blocked Huffman benchmark admission
+
+- Authoring method: extended marc's public-C-lifecycle benchmark adapter and
+  registered smoke inventory after fixing its capacity, round-trip, reporting,
+  and experimental-only contracts in repository documentation.
+- References used: DD-709 through DD-723; IR-0501; TVG-0588 through TVG-0602;
+  BM-0019 through BM-0022; marc's existing contextual Dynamic Range, rANS, and
+  tANS benchmark adapters and public Contextual Blocked Huffman lifecycle.
+- Known implementations intentionally not consulted: external benchmarks,
+  corpora, Huffman or DEFLATE implementations, source code, archives, test
+  vectors, test suites, and optimization descriptions.
+- Independent decisions: use a 65,536-byte raw frame, `6F` decision and `12F`
+  payload limits, 2,561-byte descriptor ceiling, 8-MiB aggregate policy, and
+  checked `112 + 12N + 2,625K` complete-stream capacity; require exact untimed
+  round trip before either direction is measured; and leave stable, CLI, and
+  interoperability inventories unchanged.
+- Generated-code task description: add the experimental selector, public
+  configuration/requirements/factory dispatch, checked capacity branch,
+  registered README smoke, complete reporting, and provenance records.
+- Similarity review: names, limits, capacity arithmetic, dispatch structure,
+  test registration, and reporting derive solely from marc's public ABI and
+  neighboring repository-owned benchmark adapters; no external implementation
+  expression entered the work.
+- Local validation: one MSVC 19.51.36252 and one ClangCL 22.1.3 Release run
+  each round-trip the 4,326-byte README to an identical 2,504-byte archive at
+  ratio 0.579 and report identical direction-specific workspace extents. The
+  focused registered smoke and all 2,782 tests pass under each compiler with
+  the 240-second per-test limit; both full runs include and pass
+  `marc_interoperability_schema_compatibility`.

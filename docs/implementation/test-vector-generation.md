@@ -7936,3 +7936,19 @@ Require normal exit after exactly 1,000 inputs. Record final coverage and
 feature counts, peak RSS, and whether libFuzzer, AddressSanitizer, or
 UndefinedBehaviorSanitizer reports a crash, hang, or finding. Do not persist
 generated inputs or add an empty artifact directory to the repository.
+
+### TVG-0602
+
+Register one experimental benchmark smoke over the repository's `README.md`
+with one measured iteration. Select `lzss-contextual-blocked-huffman`, query
+encoder and decoder workspace requirements separately through ABI 1, allocate
+the three caller-owned regions with the reported opaque-view alignment, and
+reserve encoded output through the checked `112 + 12N + 2,625K` ceiling.
+
+Before timing, encode once, decode the exact produced prefix, and require the
+decoded extent and every byte to equal the input. During measurement require
+every repeated encode and decode to reproduce the verified extents. Report
+complete-stream size and ratio, both throughputs, each directional workspace
+region, and their peak sum. A smoke pass establishes wiring and round-trip
+correctness only; it imposes no ratio, speed, or workspace threshold and does
+not add a stable profile.

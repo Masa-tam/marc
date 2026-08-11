@@ -572,6 +572,12 @@ if(MARC_BUILD_BENCHMARKS)
         set_tests_properties(
             marc_benchmark_lzss_contextual_tans_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_benchmark_lzss_contextual_blocked_huffman_smoke
+            COMMAND marc_benchmark lzss-contextual-blocked-huffman
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_blocked_huffman_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_rans_smoke
             COMMAND marc_benchmark lzss-rans
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)

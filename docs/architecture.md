@@ -4690,3 +4690,10 @@ processed 1,000 inputs under the 32 KiB input, five-second per-input, and
 512 MiB RSS ceilings, peaking at 40 MiB without a finding. The matching runtime
 path existed only in the campaign process, and no generated input or artifact
 entered the repository. This finite result does not imply exhaustive safety.
+
+The benchmark boundary now admits Contextual Blocked Huffman only through its
+public ABI-1 lifecycle. It uses checked `112 + 12N + 2,625K` complete-stream
+capacity, queries each immutable direction independently, and verifies exact
+round trip before timing. Reports expose only the public primary, secondary,
+and opaque views extents plus ratio and throughput; typed-token and Huffman
+table layouts remain private, and the stable 42-profile inventory is unchanged.

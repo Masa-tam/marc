@@ -1656,3 +1656,13 @@ Clang 22 libFuzzer/ASan/UBSan with 32 KiB maximum input, five-second per-input
 timeout, 512 MiB RSS limit, and 40 MiB peak RSS. No crash, hang, sanitizer
 finding, persistent corpus, or artifact occurred. This is bounded execution
 evidence; CLI, benchmark, and interoperability admission remain future work.
+
+### BR-0077
+
+Contextual Blocked Huffman now has an experimental benchmark selector backed
+only by its public ABI-1 lifecycle. A registered smoke test covers checked
+complete-stream capacity, independent direction-specific workspace queries,
+exact pre-timing round trip, repeatable measured extents, ratio, throughput,
+and peak caller-owned workspace. No metric is a pass threshold, and the
+profile remains outside the stable 42-profile, CLI, and interoperability
+inventories.
