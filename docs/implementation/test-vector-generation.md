@@ -8440,3 +8440,23 @@ producer label, and the identical full revision. Each verifier pass must cover
 manifest identity and order, size and SHA-256, fixture decode, and
 byte-identical local re-encoding. Record only the results; do not import any
 bundle or generated archive into the repository.
+
+### TVG-0636
+
+Freeze the existing Exhaustive LZSS match, typed-token, serialized-token, and
+complete-stream outputs before integrating an indexed finder. For HashChain
+Exact, compare every selected distance and length against Exhaustive on empty
+and one-byte inputs, all byte values, minimum/maximum match neighbors, window
+neighbors, distance-one overlap, equal-length nearest-distance ties, deliberate
+hash collisions, repeated prefixes, zero and periodic runs, deterministic
+pseudorandom bytes, and frame-reset boundaries.
+
+Require byte-identical typed tokens, canonical serialized tokens, and complete
+streams for every Exact case under MSVC and ClangCL. Reject short, misaligned,
+overlapping, overflowed, or aggregate-limit-exceeding caller workspace before
+publication. Add a bounded finite differential fuzz target only after the
+deterministic suite passes; Exhaustive is its oracle and every finding becomes
+a permanent regression. Measure finder-only candidate counts, parse
+throughput, complete compression throughput, peak workspace, and current
+two-pass cost before considering BinaryTree, automatic selection, Bounded, or
+token reuse.

@@ -4719,3 +4719,13 @@ The schema-37 external admission record uses DD-758, TVG-0635, pushed revision
 marc's repository-owned schema-37 verifier. No external compression
 implementation, source code, archive contents, corpus, test suite, or
 optimization description was consulted.
+
+### IR-0535
+
+The LZSS match-finder acceleration design uses the maintainer-authored
+`docs/design/lzss-match-finder-strategy.md`, AGENTS.md's LZSS determinism and
+bounded-workspace requirements, marc's exhaustive `lzss_match_finder`, typed
+and byte-token encoder paths, existing workspace profiles, and benchmark
+contract as first-party references. No external LZSS implementation, source
+code, match-finder optimization, hash-chain layout, benchmark result, corpus,
+test suite, patent text, or generated table was consulted.

@@ -15603,3 +15603,29 @@ pushed Windows/MSVC and Ubuntu 24.04 CI, and the recorded four-direction
 schema-37 exchange before tagging. Preserve the explicitly open non-x86-64,
 representative-measurement, and longer sanitizer-campaign evidence rather than
 overstating the 0.2.0 claim.
+
+## DD-760: LZSS acceleration begins with format-neutral HashChain Exact
+
+- Date: 2026-08-12
+- Status: accepted
+
+Retain the exhaustive nearest-first LZSS match finder as the permanent
+correctness oracle and implement caller-workspace-backed HashChain Exact as
+the first accelerated strategy. Hash the fixed first five bytes because every
+valid variant-1 Match has length at least five; verify collisions by comparing
+raw bytes, visit candidates newest first, reject expired positions, and insert
+every consumed raw position even when the greedy parser advances by a Match.
+An Exact finder must return the same length and nearest-distance tie break as
+Exhaustive at every position and therefore produce identical typed tokens,
+serialized tokens, frames, and streams.
+
+Do not serialize finder strategy, search effort, or future candidate/depth
+limits. They are encoder configuration and optional application provenance,
+not decoder-visible LZSS parameters. The same input and complete encoder
+configuration must remain deterministic across supported platforms. A future
+Bounded policy may produce a different but valid stream and does not claim the
+Exhaustive canonical reference output. Defer BinaryTree, WindowAdaptive,
+Bounded, public C ABI, and CLI exposure until HashChain Exact differential
+tests and measurements establish a need. Treat removal of repeated parsing as
+a separate follow-up optimization so its memory and speed effects remain
+measurable.

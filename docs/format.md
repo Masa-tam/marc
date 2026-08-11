@@ -468,6 +468,13 @@ Match. If no eligible and beneficial match exists, emit one Literal. Advance by
 one byte after a Literal or by the complete match length after a Match. This
 greedy rule and nearest-distance tie break make encoder output deterministic.
 
+The method used by an encoder to discover candidate matches is not serialized.
+Exhaustive, indexed Exact, and bounded-effort encoders produce the same LZSS
+variant when they obey the token rules above. A decoder neither knows nor
+validates the match-finder strategy. Byte-identical re-encoding therefore
+requires the same external encoder configuration when a non-Exact policy is
+used; such provenance is application metadata, not part of this format.
+
 Tokens are concatenated without padding:
 
 | Tag | Serialized size | Fields |

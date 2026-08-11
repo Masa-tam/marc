@@ -70,6 +70,14 @@ LZSS variant 1 uses transactional variable-size token parsing and a strict
 frame scanner before its atomic reference decoder. The deterministic reference
 encoder shares one exhaustive nearest-first greedy parse between planning and
 writing, and applies the exact two-byte Literal versus nine-byte Match cost.
+The exhaustive finder remains the correctness oracle. Encoder-side indexed
+finders are separate internal strategies: Exact strategies must return the
+same longest match and nearest-distance tie break at every parse position,
+while a future bounded-effort strategy may select a shorter valid match. Finder
+selection and effort limits are not decoder-visible and do not change the
+stream format. The first accelerated boundary is a caller-workspace-backed
+five-byte-prefix HashChain Exact; BinaryTree, automatic selection, and bounded
+effort remain deferred until measurements justify their complexity.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

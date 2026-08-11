@@ -17,6 +17,8 @@ navigate chronological development records.
 
 ## Experimental design
 
+- [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
+  encoder-side acceleration without changing the LZSS stream format.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

@@ -18470,3 +18470,30 @@ discarded and the reviewed seed retained.
   finding and peaked at 43 MiB RSS; no failure artifact was produced. The
   exact release-preparation commit still requires pushed CI before the
   annotated tag is created.
+
+## CR-0788: 2026-08-12 - LZSS match-finder acceleration design
+
+- Authoring method: reviewed the maintainer-authored strategy draft against
+  marc's exhaustive match finder, both LZSS encoder paths, workspace model,
+  stream determinism rules, and benchmark boundaries, then narrowed the first
+  implementation milestone to HashChain Exact.
+- References used: DD-760; IR-0535; TVG-0636; AGENTS.md; the repository-owned
+  LZSS format, architecture, source, tests, and benchmark documentation.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, source code, match-finder layouts, optimization guides,
+  benchmarks, corpora, test suites, patent text, and generated tables.
+- Independent decisions: preserve Exhaustive as the oracle; use the mandatory
+  five-byte match prefix for candidate indexing; keep all finder and effort
+  settings outside the stream; make caller-owned bounded workspace a gate;
+  and defer BinaryTree, automatic selection, Bounded, public exposure, and
+  parse reuse until HashChain measurements justify each step.
+- Generated-code task description: formalize the user-approved match-finder
+  draft as a format-neutral design, document deterministic Exact equivalence
+  and future Bounded provenance, and define the regression, differential,
+  safety, fuzz, and benchmark gates before implementation.
+- Similarity review: this step contains first-party design prose and references
+  only marc-owned implementation structure; no external implementation
+  expression entered the work.
+- Local validation: the registered documentation-layout test passed under the
+  configured MSVC and ClangCL Release trees. `git diff --check` also passed.
+  No accelerated finder is claimed by this record.
