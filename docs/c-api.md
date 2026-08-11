@@ -190,8 +190,11 @@ secondary for atomic raw output, and views for at most 35 bounded Huffman
 decode tables followed by typed tokens. Capacity, alignment, and pairwise
 prefix non-overlap are checked before a handle is published. The additive ABI-1
 family emits only dictionary identity `2/2` and entropy identity `2/2`; no C++
-token or table layout crosses the ABI. CLI, benchmark, completion, fuzzing, and
-interoperability admission remain later milestones.
+token or table layout crosses the ABI. CLI, benchmark, fuzzing, and
+interoperability admission remain later milestones. Its public completion
+audit covers the required binary classes, deterministic whole and mixed chunk
+schedules, stable repeated terminal calls, and frame-atomic rejection of a
+corrupted, truncated, or trailing final frame.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

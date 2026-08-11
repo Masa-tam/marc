@@ -4373,3 +4373,12 @@ lifecycle, checked workspace-prefix overlap rules, and neighboring contextual
 rANS/tANS public factories as local architectural precedents. No external C
 compression API, Huffman or DEFLATE implementation, source code, archive,
 corpus, test vector, test suite, or optimization description was consulted.
+
+### IR-0498
+
+The Contextual Blocked Huffman public-completion audit uses DD-709 through
+DD-720, TVG-0588 through TVG-0599, marc's ABI-1 lifecycle, fixed completion
+data classes and chunk schedules, Format 2 frame layout, and sticky-error
+contract. No external Huffman or DEFLATE implementation, source code, archive,
+corpus, test vector, test suite, completion checklist, or optimization
+description was consulted.

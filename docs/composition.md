@@ -1484,3 +1484,12 @@ reconstructing typed tokens and bounded Huffman decode tables only inside C++.
 The stream remains exactly Format 2 dictionary `2/2`, entropy `2/2`;
 completion, CLI, benchmark, fuzzing, and interoperability admission remain
 future work.
+
+### CP-0076
+
+The Contextual Blocked Huffman public lifecycle now satisfies its local
+completion matrix. Required binary classes, deterministic multi-frame bytes,
+three arbitrary chunk schedules, stable end state, and frame-atomic final-frame
+corruption, truncation, and trailing-data rejection are proven solely through
+ABI 1. CLI, benchmark, fuzzing, and interoperability admission remain future
+work.

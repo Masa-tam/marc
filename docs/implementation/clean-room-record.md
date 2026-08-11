@@ -17370,3 +17370,37 @@ discarded and the reviewed seed retained.
   per-test limit in 146.79 seconds, including interoperability compatibility in
   58.76 seconds. All 2,728 registered ClangCL tests pass in 156.22 seconds,
   including the same compatibility test in 60.57 seconds.
+
+## CR-0750: 2026-08-11 - Contextual Blocked Huffman public completion
+
+- Authoring method: exercised the completed Contextual Blocked Huffman stream
+  exclusively through marc's published ABI-1 configuration, workspace,
+  factory, process, and destroy functions.
+- References used: AGENTS.md sections 3, 4, 7, 12, 14, 15, and 16; DD-709
+  through DD-720; IR-0498; TVG-0588 through TVG-0599; marc's fixed completion
+  data classes, deterministic generator, chunk schedules, Format 2 headers,
+  frame-atomic decoder, and sticky-error contract.
+- Known implementations intentionally not consulted: external Huffman or
+  DEFLATE implementations, source code, archives, corpora, test vectors, test
+  suites, completion checklists, and optimization descriptions.
+- Independent decisions: use a 64-byte audit frame; reserve the exact
+  `6F` decision-symbol block limit and `ceil(6F * 15 / 8)` payload ceiling;
+  verify all three `2/2` identity fields; derive the fourth-frame offset only
+  from serialized little-endian extents; and preserve its final raw sentinel
+  for corruption, truncation, and strict trailing data.
+- Generated-code task description: add three public-only completion tests for
+  required deterministic data, multi-frame chunk invariance, stable repeated
+  completion, and malformed-final-frame atomicity, plus corresponding design,
+  composition, architecture, C API, reference, and vector records.
+- Similarity review: data classes and schedules intentionally follow marc's
+  uniform local completion policy, while Contextual Blocked Huffman bounds,
+  identities, extents, and negative cases were derived from its repository
+  specification; no external implementation expression entered the work.
+- Local validation: all three focused completion tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. The initial focused run correctly rejected a
+  test-only 64-symbol entropy-block limit, establishing that the documented
+  unit is the maximum `6F` decisions rather than raw frame bytes. After that
+  correction, all 2,778 registered MSVC tests pass in 148.15 seconds, including
+  interoperability compatibility in 58.03 seconds; all 2,731 registered
+  ClangCL tests pass in 149.98 seconds, including compatibility in 58.86
+  seconds. Every test used the 240-second per-test limit.

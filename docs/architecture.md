@@ -4667,3 +4667,11 @@ trusted local limits; and the factory rejects short, misaligned, or overlapping
 regions before partitioning them in C++. The common process/destroy contract
 then emits and accepts the unchanged Format 2 dictionary `2/2`, entropy `2/2`
 representation. Public completion and tool admission remain separate work.
+
+The public Contextual Blocked Huffman lifecycle is now audited at the ABI
+boundary rather than through private frame helpers. Required binary classes
+and boundary lengths encode twice identically; a four-frame stream remains
+byte-identical under three input/output schedules; and decoding follows the
+same schedules. Corruption, truncation, or strict trailing data in the final
+frame cannot publish that frame's raw byte, while earlier complete frames and
+the first terminal error remain stable.

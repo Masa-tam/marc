@@ -14918,3 +14918,23 @@ Retain the common process/destroy and sticky-error contracts and the unchanged
 Format 2 dictionary `2/2`, entropy `2/2` identity. Treat completion, CLI,
 benchmark, fuzzing, and interoperability as later, independently audited
 milestones.
+
+## DD-720: Contextual Blocked Huffman completion is audited through ABI 1
+
+- Date: 2026-08-11
+- Status: accepted
+
+Define public completion solely in terms of the DD-719 C lifecycle. Require
+deterministic round trips for empty input, every single-byte value, the complete
+byte alphabet, long runs, repeated binary patterns, deterministic pseudo-random
+data, and lengths immediately around the 64-byte audit frame boundary. Require
+the same serialized stream under whole-buffer and three mixed input/output
+chunk schedules, plus stable repeated `EndOfStream`.
+
+Size the audit output by the conservative per-frame ceiling
+`64 + 2,561 + ceil(6F * 15 / 8)`. For a malformed fourth frame, permit the
+three preceding frames to remain committed but require its final raw byte to
+remain untouched. Apply this rule independently to sequence corruption,
+truncation, and strict trailing data, and require the first error category and
+position to remain stable on repeated calls. This audit changes no stream,
+factory, CLI, benchmark, fuzz, or interoperability surface.
