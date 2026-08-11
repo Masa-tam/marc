@@ -8104,3 +8104,20 @@ serialized consumption and unchanged raw output. Set a high unused payload bit
 under a one-valid-bit descriptor and require a nested entropy padding error
 before raw publication. Run these tests under MSVC and ClangCL before both
 complete registered suites.
+
+### TVG-0613
+
+Construct a stream from the documented 112-byte header and 82-byte one-Literal
+frame. Decode it with every input byte supplied separately and one-byte output,
+then require raw `0x41`, exact completion, and stable repeated EndOfStream.
+Repeat with the whole input while output capacity is zero, latch `EndInput`,
+and require `NeedOutput` followed by successful drain without more input.
+Encode two independent one-byte frames in one stream and require both literal
+bytes after the per-frame model reset.
+
+Exercise empty input, `Flush`, unsupported `ResetBlock`, unknown flags,
+truncated stream and frame headers/bodies, strict trailing input, malformed
+padding, short serialized/node/symbol/token/raw workspaces, pairwise workspace
+overlap, output/workspace overlap, aggregate memory one byte below the exact
+need, and sticky terminal errors. Require no `Progress` result with both counts
+zero and run under MSVC and ClangCL before both complete registered suites.

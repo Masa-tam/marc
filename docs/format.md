@@ -6505,3 +6505,12 @@ frame. Serialized input and all workspaces must be pairwise disjoint. A
 preflight, entropy, token, capacity, alias, or reconstruction error leaves
 serialized consumption and raw publication at zero; trailing bytes after a
 successful frame remain unconsumed.
+
+The private streaming consumer does not alter these bytes. It buffers exactly
+one declared 64-byte-header-plus-descriptor-plus-payload frame, validates and
+reconstructs that frame atomically, and only then publishes its raw extent.
+Arbitrary input and output chunking, including one-byte buffers and output
+starvation after `EndInput`, therefore produces the same representation and
+result. Empty input remains the 112-byte header alone; strict mode rejects any
+byte after the declared original size is reconstructed. This lifecycle adds no
+new field, identity, or public-profile claim.

@@ -615,6 +615,13 @@ after every region is proven disjoint, then reconstructs raw LZSS bytes only
 after the full token sequence validates. The entropy backend therefore still
 publishes no raw bytes and retains no state beyond one frame.
 
+The private stream transform preserves that frame-local ownership. It holds
+the serialized frame and exact 9,067-node, 4,518-symbol, declared-token, and
+raw workspaces only until complete-frame validation succeeds and the raw bytes
+are drained. It never resumes an FGK tree across frames, never publishes a
+partially decoded frame, and does not expose the model layout through a public
+ABI.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

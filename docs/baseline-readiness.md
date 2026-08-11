@@ -1757,3 +1757,15 @@ padding, nested diagnostics, token/raw sentinel preservation, and success-only
 consumption are tested under both local compilers. A streaming decoder,
 encoder parity, C ABI, CLI, benchmark, malformed regression set, fuzzing, and
 interoperability admission remain required.
+
+### BR-0088
+
+The private Contextual Adaptive Huffman path now satisfies the streaming
+decode lifecycle. One-byte input/output, zero-capacity final drain, empty
+input, two-frame model reset, deterministic completion, truncation at
+stream-header, frame-header, and frame-body boundaries, trailing data,
+nonzero padding, every workspace
+shortage, representative constructor and output aliases, aggregate limits,
+unsupported flags, and sticky terminal results are tested under both local
+compilers. Encoder parity, public C ABI, CLI, benchmark, malformed regression
+set, fuzzing, and interoperability admission remain pending.

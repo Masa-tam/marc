@@ -1603,3 +1603,14 @@ serialized/model/token/raw regions are checked for capacity and pairwise
 overlap before entropy state changes. Failures publish neither raw bytes nor
 serialized consumption. Streaming, encoding, public ABI, tools, fuzzing, and
 profile admission remain future milestones.
+
+### CP-0089
+
+Contextual Adaptive Huffman now has a private bounded streaming decoder around
+the complete-frame transaction. It accepts arbitrary input and output chunks,
+buffers one declared frame in caller-owned storage, and drains raw bytes only
+after preflight, entropy, token, and reconstruction validation all succeed.
+Exact aggregate accounting, all workspace aliases, output aliases, strict
+truncation and trailing data, latched final input, unsupported reset, and
+sticky terminal states are enforced. Encoding, public ABI, tools, fuzzing,
+and profile admission remain future milestones.

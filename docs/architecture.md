@@ -4776,3 +4776,13 @@ overlap with the serialized frame and each other. Token decoding completes
 before the reconstructor performs its own full validation, so raw bytes and
 serialized consumption are published only after the entire frame succeeds.
 Streaming ownership remains a later boundary.
+
+The private streaming decoder now owns that bounded frame transaction through
+the common transform lifecycle. It collects one 112-byte stream header and one
+declared complete frame in caller storage, invokes the complete-frame decoder,
+then drains only validated raw bytes before accepting the next frame. Exact
+model, token, raw, and serialized extents are charged together; all workspace
+and output aliases are rejected. `EndInput` remains latched through draining,
+while truncation, trailing data, unsupported reset, and terminal failures are
+strict and sticky. Encoding and public-profile admission remain later
+boundaries.

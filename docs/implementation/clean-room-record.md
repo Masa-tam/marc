@@ -17780,3 +17780,32 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0764: 2026-08-11 - Contextual Adaptive Huffman streaming decoder
+
+- Authoring method: wrapped marc's private complete-frame decoder in the
+  repository-owned immutable-direction transform lifecycle without changing
+  the serialized representation or entropy state machine.
+- References used: DD-728 through DD-734; IR-0512; TVG-0607 through TVG-0613;
+  marc's checked arithmetic, caller-owned workspace policy, and neighboring
+  bounded streaming frame controllers.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, or streaming implementations, source code, archives, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: buffer exactly one serialized frame; require exact
+  model capacities at construction; charge declared frame, model, token, and
+  raw extents together; reject every storage alias; publish only validated raw
+  bytes; latch final input through draining; and keep terminal outcomes sticky.
+- Generated-code task description: add the private streaming decoder,
+  register chunking, drain, empty, malformed, capacity, limit, alias, flag,
+  and lifecycle GoogleTests, and update architecture, format, backend,
+  composition, readiness, test, reference, decision, and provenance records.
+- Similarity review: the implementation composes only marc's independently
+  designed complete-frame and transform contracts; no external implementation
+  expression entered the work.
+- Local validation: the seven focused streaming-decoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,832 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

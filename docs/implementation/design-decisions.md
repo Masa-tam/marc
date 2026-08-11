@@ -15167,3 +15167,23 @@ first write. Set serialized consumption only after raw reconstruction succeeds.
 Expose nested preflight, token, and reconstruction diagnostics while mapping
 the outer failure to a stable category. Defer streaming lifecycle, encoding,
 C ABI, CLI, benchmark, fuzzing, and profile admission.
+
+## DD-734: Contextual Adaptive Huffman streaming buffers one bounded frame
+
+- Date: 2026-08-11
+- Status: accepted
+
+Wrap the complete-frame decoder in an immutable-direction `core::Transform`.
+Collect the fixed stream header, then one fixed frame header and its declared
+body into caller-owned storage. Require exact node and symbol workspace
+ceilings at construction and verify all serialized, model, token, and raw
+regions are pairwise disjoint. Charge the complete serialized frame, exact
+model storage, declared tokens, and raw frame to the aggregate limit before
+collecting a body.
+
+Decode a frame only after its complete body arrives, then drain its validated
+raw bytes through arbitrary output capacities before collecting the next
+header. Latch `EndInput` through draining, reject truncation and strict trailing
+data, make terminal errors sticky, reject `ResetBlock`, and return no-progress
+statuses exactly as the common process contract requires. Defer encoder and
+public profile admission.
