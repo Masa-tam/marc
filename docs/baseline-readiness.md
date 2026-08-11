@@ -1717,3 +1717,12 @@ descriptor boundary and an allocation-free alphabet-bounded FGK tree. Exact
 serialization, malformed fields, local limits, atomic failure, all four schema
 alphabet sizes, full-tree insertion, reset, and byte-alphabet equivalence with
 variant 1 are tested. Payload and frame completion remain future work.
+
+### BR-0084
+
+The Contextual Adaptive Huffman payload can now be decoded at the private
+operation boundary with all 31 FGK contexts live in exact caller-owned
+storage. Documented and mixed hand vectors, existing and new symbols,
+BypassBits, malformed NYT values, truncation atomicity, overlap, local limits,
+strict completion, and sticky lifecycle errors are covered. This does not yet
+constitute a complete codec profile.

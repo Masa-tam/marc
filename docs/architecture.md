@@ -4743,3 +4743,11 @@ context tree is a view over caller-owned `2A+1` node and `A` symbol regions,
 so the future 31-tree owner can calculate the exact 9,067-node and 4,518-symbol
 maximum instead of embedding 31 maximum byte-alphabet trees. Existing
 byte-oriented Adaptive Huffman variant 1 remains unchanged.
+
+The private model-bank boundary now materializes those exact 31 slices without
+heap allocation. Its operation decoder keeps the context request external,
+which prevents entropy bytes from selecting a different model than the LZSS
+state machine expects. Payload and both model regions must be pairwise
+disjoint, their aggregate is bounded before reset, and failed partial Symbol
+decodes do not commit a cursor or returned value. Full tree validation occurs
+at block completion rather than in the per-Symbol hot path.

@@ -585,6 +585,16 @@ symbol slots, derives initial order `2A`, and implements the specified FGK
 paths and updates for alphabets 2 through 256. Neither component yet reads or
 writes a payload bit or owns the array of 31 trees.
 
+The private model bank now partitions caller-owned storage into all 31 exact
+tree and symbol slices: 9,067 nodes and 4,518 symbol indices. The operation
+decoder owns that bank for one `begin`/request/`finish` lifecycle, traverses
+Symbol paths and alphabet-width NYT values, and interleaves BypassBits through
+one LSB-first offset. A request commits its value and bit offset only after the
+complete operation and tree update succeed. Begin rejects padding, overlap,
+short workspace, aggregate memory, and entropy-entry limits; finish validates
+counts, exact bit exhaustion, and every tree. Typed-LZSS context inference and
+frame decoding remain outside this boundary.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

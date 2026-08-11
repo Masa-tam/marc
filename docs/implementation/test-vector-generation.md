@@ -8038,3 +8038,22 @@ insertion of every alphabet symbol with validation after each insertion,
 out-of-alphabet and duplicate rejection, and reset to NYT. For alphabet 256,
 walk `A`, `B`, `A` through both the new tree and Adaptive Huffman variant 1;
 require identical paths and valid state after every observation.
+
+### TVG-0609
+
+Allocate exactly 9,067 `AdaptiveHuffmanNode` entries and 4,518 symbol indices,
+initialize all 31 contexts, update context 0, and prove context 1 remains reset.
+Reject either short region and overlapping node/symbol storage before model
+publication.
+
+Decode TVG-0607 payload `82 00` by requesting `(0,2)` then `(3,256)` and
+require values 0 and 65, bit offsets 1 and 9, two events, two decisions, and
+exact finish. Independently decode payload `5A` with seven valid bits by
+requesting context-0 new 0, existing 0, new 1, then three bypass bits; require
+values `0,0,1,5`, four events, six decisions, and exact finish.
+
+Require wrong context/alphabet/width and excess decisions to become sticky.
+For a one-bit truncated context-3 NYT and the unused 5-bit value 31 in alphabet
+17, require unchanged output, zero committed bits, and zero events. Reject
+nonzero padding, trailing bits, wrong finish counts, payload/model overlap,
+short workspaces, and limits one below the exact entry or aggregate-byte need.

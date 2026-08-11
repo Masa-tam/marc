@@ -1564,3 +1564,12 @@ private descriptor and single-context FGK foundations. Fixed descriptor bytes
 are parsed and serialized atomically, while one caller-owned tree enforces its
 alphabet-derived storage and state invariants. No payload coder, 31-tree
 controller, frame lifecycle, or public profile is claimed.
+
+### CP-0085
+
+Contextual Adaptive Huffman now has a private 31-context model bank and
+operation-level decoder. Symbol requests select only the caller-expected fixed
+context and alphabet; BypassBits share the forward cursor without model
+updates. Exact workspaces, limits, atomic requests, padding, NYT values,
+counts, and bit exhaustion are enforced. Typed-token and frame integration
+remain future milestones.

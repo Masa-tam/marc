@@ -4462,3 +4462,12 @@ caller-owned workspace conventions, endian helpers, fixed Format 2 descriptor,
 and 31-context alphabet schema. No external Adaptive Huffman implementation,
 source code, archive, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0508
+
+The Contextual Adaptive Huffman model bank and operation decoder use DD-728
+through DD-730, TVG-0607 through TVG-0609, marc's private bounded FGK tree,
+fixed LZSS context schema, checked arithmetic, limit model, and neighboring
+contextual decoder lifecycle as local precedents. No external Adaptive Huffman
+implementation, source code, archive, test vector, test suite, patent text, or
+optimization description was consulted.

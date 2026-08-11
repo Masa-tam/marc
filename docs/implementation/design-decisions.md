@@ -15092,3 +15092,22 @@ contextual tree to reproduce its paths and updates, while smaller trees derive
 their root order and storage from their fixed alphabet. Detect invalid
 initialization, symbols, paths, tree relationships, and weight overflow. Do not
 add bit coding or allocate the 31-tree collection in this milestone.
+
+## DD-730: Contextual Adaptive Huffman decoding commits whole operations
+
+- Date: 2026-08-11
+- Status: accepted
+
+Partition caller-owned storage into the fixed schema's 9,067 nodes and 4,518
+symbol indices and reject any short or overlapping regions before tree reset.
+Expose a private operation decoder whose caller supplies the expected context,
+alphabet, or bypass width. Keep a request-local bit offset until the complete
+path, NYT raw value, and FGK update succeed; publish neither offset nor value
+on failure.
+
+Charge the 13,585 model entries to `max_entropy_table_entries` and charge the
+payload plus both used model regions to `max_internal_buffered_bytes`. Validate
+padding at begin and all trees plus exact counts and valid-bit exhaustion at
+finish. Avoid a whole-tree validation in the per-Symbol hot path. Leave LZSS
+context inference, frame parsing, streaming, encoding, and public admission to
+later milestones.

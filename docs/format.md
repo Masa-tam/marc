@@ -6468,3 +6468,11 @@ separate caller-owned bounded FGK tree implements the alphabet-derived node
 capacity, root numbering, paths, insertion, updates, reset, and validation
 rules for one context. Payload coding, the 31-tree owner, frame parsing, and
 profile admission remain outside this milestone.
+
+The private operation decoder now consumes the unchanged descriptor and exact
+payload through all 31 context-local trees. Its caller-owned model workspace
+contains exactly 9,067 nodes and 4,518 symbol indices; those entries and their
+bytes are charged to decoder limits before initialization. Symbol and bypass
+requests commit atomically, padding and unused alphabet values are strict, and
+completion requires exact event, decision, and valid-bit extents. No frame,
+typed-token adapter, encoder, or public profile is introduced.
