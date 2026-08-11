@@ -1873,3 +1873,14 @@ MSVC and ClangCL, the five permanent malformed regressions still pass, and all
 pass under both compilers with the 240-second per-test limit. No mutation or
 sanitizer campaign has been executed. Benchmark, CLI, and interoperability
 admission remain pending.
+
+### BR-0098
+
+Contextual Adaptive Huffman's admitted bounded harness now has its initial
+Windows Clang 22 libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer
+smoke. Exactly 1,000 generated inputs completed under a 64 KiB maximum input,
+five-second per-input timeout, and 512 MiB RSS limit without a crash, hang, or
+sanitizer finding; peak RSS was 40 MiB. The run supplied no persistent corpus
+and produced no artifact. This is bounded evidence for the exercised inputs,
+not an exhaustive safety claim. Benchmark, CLI, and interoperability admission
+remain pending.

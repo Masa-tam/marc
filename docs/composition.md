@@ -1708,3 +1708,13 @@ ceilings are compile-time constants. The private complete-frame and public
 ABI-1 streaming paths compile warning-clean under MSVC and ClangCL. No
 mutation campaign or sanitizer evidence is claimed yet; benchmark, CLI, and
 interoperability admission also remain future milestones.
+
+### CP-0099
+
+Contextual Adaptive Huffman's bounded dual-decoder harness now has initial
+sanitizer evidence. The dedicated Windows Clang 22 libFuzzer/ASan/UBSan target
+completed exactly 1,000 in-memory inputs under its 64 KiB input, five-second
+per-input, and 512 MiB RSS ceilings without a crash, hang, or sanitizer
+finding. No corpus or artifact entered the repository. This finite smoke does
+not establish exhaustive safety; benchmark, CLI, and interoperability
+admission remain future milestones.

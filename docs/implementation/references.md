@@ -4599,3 +4599,12 @@ neighboring contextual bounded harnesses as local architectural precedents.
 No external Adaptive Huffman, LZSS, fuzz harness, corpus, source code, archive,
 test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0522
+
+The initial Contextual Adaptive Huffman sanitizer smoke uses DD-728 through
+DD-744, TVG-0607 through TVG-0623, FZ-0023, marc's reviewed bounded harness,
+established Windows GNU-driver Clang sanitizer tree, matching-runtime process
+policy, and ignored failure-artifact policy. No external Adaptive Huffman,
+LZSS, fuzz harness, corpus, malformed input, source code, archive, test vector,
+test suite, patent text, or optimization description was consulted.

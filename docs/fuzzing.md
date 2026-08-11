@@ -592,6 +592,19 @@ the child process. No input corpus was supplied and no artifact was produced.
 This bounded result is evidence for the exercised inputs, not an exhaustive
 safety claim.
 
+### FZ-0023: Contextual Adaptive Huffman smoke
+
+The experimental Contextual Adaptive Huffman private-frame/public-C decoder
+target received its initial bounded Windows Clang 22 libFuzzer/
+AddressSanitizer/UndefinedBehaviorSanitizer smoke on 2026-08-11. It completed
+1,000 inputs with a 64 KiB maximum input, five-second per-input timeout, and
+512 MiB RSS limit without a crash, hang, or sanitizer finding. Peak RSS was
+40 MiB; final coverage was 205 counters and 426 features over a seven-entry,
+32-byte in-memory corpus. The matching Clang 22 runtime path applied only to
+the child process. No input corpus was supplied and no artifact was produced.
+This bounded result is evidence for the exercised inputs, not an exhaustive
+safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

@@ -18090,3 +18090,30 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`, pass under each compiler with
   the 240-second per-test limit. Static and shared targets build under both;
   no libFuzzer or sanitizer campaign was executed.
+
+## CR-0774: 2026-08-11 - Contextual Adaptive Huffman sanitizer smoke
+
+- Authoring method: executed the already reviewed bounded dual-decoder harness
+  under its matching Windows Clang 22 libFuzzer, ASan, and UBSan runtimes with
+  fixed operational ceilings and no persistent corpus.
+- References used: DD-728 through DD-744; IR-0522; TVG-0607 through TVG-0623;
+  FZ-0023; marc's established GNU-driver sanitizer tree, matching-runtime
+  procedure, and ignored failure-artifact policy.
+- Known implementations intentionally not consulted: external corpora,
+  malformed inputs, fuzz harnesses, source code, archives, test suites, and
+  optimization descriptions.
+- Independent decisions: build only the dedicated target; run exactly 1,000
+  in-memory inputs; cap length at 64 KiB, each input at five seconds, and RSS at
+  512 MiB; apply the runtime path only to the child process; and retain an
+  artifact only upon failure.
+- Generated-code task description: rebuild the reviewed Contextual Adaptive
+  Huffman sanitizer target, execute the finite no-corpus smoke, verify the
+  artifact directory, and record exact coverage, feature, memory, and finding
+  evidence without persisting generated mutations.
+- Similarity review: this action executed only marc's local harness and
+  repository-owned workflow; no external input, control flow, vector, corpus,
+  or implementation structure entered the repository.
+- Local validation: Windows Clang 22.1.3 completed exactly 1,000 inputs with no
+  crash, hang, AddressSanitizer finding, or UndefinedBehaviorSanitizer finding.
+  Peak RSS was 40 MiB; final coverage was 205 counters and 426 features over a
+  seven-entry, 32-byte in-memory corpus. No artifact was produced.

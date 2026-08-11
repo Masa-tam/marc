@@ -15367,3 +15367,21 @@ output ceilings, and abort on impossible consumption, production, progress, or
 input-starvation behavior. Ordinary MSVC and ClangCL builds must compile the
 translation unit warning-clean. This milestone does not execute a mutation
 campaign, retain a corpus, or claim sanitizer evidence.
+
+## DD-744: Contextual Adaptive Huffman sanitizer admission is finite and local
+
+- Date: 2026-08-11
+- Status: accepted
+
+Run the admitted dual-decoder harness under the established Windows Clang 22
+GNU-driver libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer build.
+The initial smoke processes exactly 1,000 generated inputs, permits input up to
+the harness's 64 KiB ceiling, limits each input to five seconds, and limits RSS
+to 512 MiB. The matching sanitizer runtime directory is added only to the
+fuzzer child process.
+
+Supply no persistent corpus. Keep generated mutations in memory and direct a
+failure artifact to the ignored sanitizer build area only if a finding occurs.
+Record the exact exit, coverage, features, corpus extent, peak RSS, and finding
+status reported by the run. A successful bounded smoke is evidence only for
+the exercised inputs and is not an exhaustive safety claim.

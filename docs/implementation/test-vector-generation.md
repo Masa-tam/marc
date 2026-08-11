@@ -8261,3 +8261,18 @@ outside its fixed storage, and abort on transform-contract violations. Re-run
 the five permanent malformed regressions and complete registered suites under
 both compilers. Do not execute libFuzzer or write corpus/artifact files in this
 milestone.
+
+### TVG-0623
+
+Reconfigure the established Windows Clang 22 GNU-driver sanitizer tree and
+build only `marc_fuzz_lzss_contextual_adaptive_huffman_stream`. Query that
+compiler's resource directory and prepend its `lib/windows` directory only to
+the child process `PATH`. Run without a corpus using
+`-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`; direct failure
+artifacts to an ignored Contextual Adaptive Huffman build directory.
+
+Require normal exit after exactly 1,000 inputs. Record final coverage and
+feature counts, in-memory corpus extent, peak RSS, and whether libFuzzer,
+AddressSanitizer, or UndefinedBehaviorSanitizer reports a crash, hang, or
+finding. Do not persist generated inputs or add an empty artifact directory to
+the repository.
