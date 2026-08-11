@@ -6545,3 +6545,8 @@ Profile sizing does not add serialized fields. For a largest raw frame `F`, it
 reserves at most `ceil(267F/8)` payload bytes: at most three bits for a new
 token-kind symbol plus at most 264 bits for a new literal symbol. The complete
 serialized-frame ceiling is therefore `64 + 16 + ceil(267F/8)` bytes.
+
+The ABI-1 Contextual Adaptive Huffman C lifecycle changes none of these bytes.
+Its size-tagged configuration, three workspace byte counts and alignment,
+opaque typed-view partition, transform handle, and stable status mapping are
+process-local contracts and never appear in the stream.

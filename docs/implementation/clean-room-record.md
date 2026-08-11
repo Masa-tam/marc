@@ -17965,3 +17965,33 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0770: 2026-08-11 - Contextual Adaptive Huffman public C lifecycle
+
+- Authoring method: mapped marc's private Contextual Adaptive Huffman profile
+  and streaming constructors onto the established additive ABI-1 transform
+  ownership contract without exposing typed implementation storage.
+- References used: DD-728 through DD-740; IR-0518; TVG-0607 through TVG-0619;
+  marc's public C status/process contract, private profile and partitioners,
+  checked overlap helper, and neighboring contextual C lifecycles.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, C ABI, allocator, workspace, or streaming implementations,
+  source code, archives, test vectors, test suites, patent text, and
+  optimization descriptions.
+- Independent decisions: add a distinct size-tagged configuration and three
+  functions without changing ABI version; keep encoder token/node/symbol and
+  decoder node/symbol/token views opaque; validate every used-prefix overlap
+  before handle publication; and preserve the exact existing Format 2 bytes.
+- Generated-code task description: expose Contextual Adaptive Huffman through
+  C configuration initialization, direction-specific workspace calculation,
+  create/process/destroy ownership, stable error mapping, C11 round-trip and
+  rejection tests, documentation inventory, and provenance records.
+- Similarity review: the implementation is a direct adapter over marc's own
+  independently designed profile and common ABI; no external implementation
+  expression entered the work.
+- Local validation: the focused pure-C lifecycle passes under MSVC 19.51.36252
+  and ClangCL 22.1.3. All 2,866 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets build under
+  both compilers; MSVC uses the established approved route for its sandboxed
+  FileTracker behavior.

@@ -4826,3 +4826,12 @@ nodes and symbols; decoder views place nodes and symbols before aligned tokens.
 Both directions reserve the same fixed model bank and derive a checked
 serialized ceiling from the 267-bit worst-case Literal cost per raw byte.
 Transactional partitioning keeps allocation policy outside the codec.
+
+The public C boundary now exposes that private profile without exposing its
+typed layouts. A size-tagged immutable configuration produces three
+direction-specific byte requirements; the factory validates capacity,
+alignment, and pairwise used-prefix separation before partitioning views and
+publishing the common transform handle. Encoding binds raw input, serialized
+frame, then token/node/symbol views. Decoding binds serialized input, atomic
+raw output, then node/symbol/token views. No allocator callback, native C++
+type, or additional serialized field crosses ABI 1.

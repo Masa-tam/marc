@@ -8198,3 +8198,20 @@ forged offsets/counts/bytes/alignment, short and misaligned storage without
 publishing views, and construct the streaming encoder and decoder solely from
 the returned requirements for a multi-frame round trip. Verify stable core
 error mapping under MSVC and ClangCL.
+
+### TVG-0619
+
+Initialize the new Contextual Adaptive Huffman C configuration in both
+directions and require ABI-1 size tags, canonical LZSS defaults, and the
+private profile's exact direction-specific workspace extents. Construct the
+encoder solely from the returned three regions, encode `41 42 41 42 58`, and
+require the Format 2 identity `2/2 + 1/1 + 1/2`. Reconstruct the input through
+a separately queried decoder and the common process/destroy lifecycle.
+
+Reject short primary, secondary, and views regions, misaligned views, every
+pairwise used-prefix overlap, a null transform output, nonzero reserved fields,
+wrong structure size or ABI version, null arguments, and invalid directions.
+Require failed factories to leave the transform pointer null. Run the C11
+boundary through the configured production-library target, build both shared
+and static libraries, and execute the full registered suites under MSVC and
+ClangCL.

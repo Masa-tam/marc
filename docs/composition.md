@@ -1666,3 +1666,14 @@ offsets, 267-bit payload ceiling, aggregate accounting, empty encoder, forged
 requirements, short or misaligned storage, and stable error mapping are tested.
 Returned requirements construct both streaming directions for a multi-frame
 round trip. Public ABI exposure remains a future milestone.
+
+### CP-0095
+
+Contextual Adaptive Huffman now has an experimental ABI-1 C lifecycle. Its
+initializer, direction-specific requirements query, and factory bind the
+private streaming implementation to three caller-owned regions while keeping
+token, node, and symbol layouts opaque. Pure-C tests prove Format 2 identity,
+binary round trip, exact workspace derivation, structure/version/reserved-field
+validation, short and misaligned storage rejection, all pairwise overlap
+classes, and null-handle safety. CLI, benchmark, fuzzing, completion audit, and
+interoperability admission remain future milestones.

@@ -4560,3 +4560,13 @@ and neighboring contextual profiles as local architectural precedents. No
 external Adaptive Huffman, LZSS, profile, or allocator implementation, source
 code, archive, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0518
+
+The Contextual Adaptive Huffman public C lifecycle uses DD-728 through DD-740,
+TVG-0607 through TVG-0619, marc's ABI-1 transform ownership contract, private
+workspace profile and partitioners, stable core error mapping, checked overlap
+validation, and neighboring contextual C lifecycles as local architectural
+precedents. No external Adaptive Huffman, LZSS, C API, allocator, source code,
+archive, test vector, test suite, patent text, or optimization description was
+consulted.

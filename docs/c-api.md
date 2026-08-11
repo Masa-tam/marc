@@ -195,6 +195,18 @@ interoperability admission remain later milestones. Its public completion
 audit covers the required binary classes, deterministic whole and mixed chunk
 schedules, stable repeated terminal calls, and frame-atomic rejection of a
 corrupted, truncated, or trailing final frame.
+The experimental LZSS Contextual Adaptive Huffman factory is another distinct
+Format 2 lifecycle. Initialize its size-tagged configuration with
+`marc_lzss_contextual_adaptive_huffman_config_init()`, then call
+`marc_lzss_contextual_adaptive_huffman_workspace_requirements()` again after
+changing direction, known size, frame/LZSS parameters, or hard limits.
+Encoding uses primary for raw-frame input, secondary for one retained
+serialized frame, and aligned opaque views for tokens, FGK nodes, then symbol
+indices. Decoding uses primary for serialized input, secondary for atomic raw
+output, and views for nodes, symbols, then tokens. Capacity, alignment, and
+pairwise used-prefix overlap are validated before handle publication. The
+additive ABI-1 family emits only dictionary identity `2/2`, context identity
+`1/1`, and entropy identity `1/2`; no typed C++ layout crosses the ABI.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
 uses primary for raw-frame collection, partitions secondary into canonical
 LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses

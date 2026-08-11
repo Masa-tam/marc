@@ -15286,3 +15286,24 @@ arithmetic, format, entropy-entry, payload, and aggregate limits succeed.
 Empty encoding requires no frame views. Reject forged requirements, short or
 misaligned storage, and map profile errors to stable core categories. Defer C
 ABI exposure.
+
+## DD-740: Contextual Adaptive Huffman public construction keeps models opaque
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add an ABI-1 C lifecycle dedicated to the already fixed Format 2 Contextual
+Adaptive Huffman identity `2/2 + 1/1 + 1/2`. Use a new size-tagged
+`marc_lzss_contextual_adaptive_huffman_config`, a direction-specific workspace
+query, and a factory accepting primary, secondary, and aligned opaque views.
+Do not expose C++ token, FGK-node, or symbol-index types in the public header.
+
+Encoding assigns primary to raw-frame collection, secondary to the retained
+serialized frame, and views to tokens, nodes, then symbols. Decoding assigns
+primary to serialized-frame collection, secondary to atomic raw output, and
+views to nodes, symbols, then tokens. Recalculate requirements whenever any
+immutable parameter or hard limit changes; validate sizes, alignment, and all
+pairwise used-prefix overlaps before publishing a transform. Keep destroy and
+process behavior on the common ABI-1 transform contract. This additive family
+does not change the ABI version or serialized bytes and does not yet admit a
+CLI selector, benchmark, fuzzer, or interoperability archive.

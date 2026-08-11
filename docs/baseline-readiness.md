@@ -1824,3 +1824,16 @@ misalignment transactionally. Requirements produced by the calculator build
 the streaming encoder and decoder and complete a multi-frame round trip under
 both local compilers. Public C ABI, CLI, benchmark, malformed regression,
 fuzzing, and interoperability admission remain pending.
+
+### BR-0094
+
+The private Contextual Adaptive Huffman lifecycle is now constructible through
+a small additive ABI-1 C family without exposing typed C++ storage. The C11
+boundary validates canonical defaults, exact encode/decode requirements,
+Format 2 identity, binary round trip, capacity, alignment, pairwise overlap,
+configuration tags, reserved fields, directions, and null arguments under
+MSVC and ClangCL. All 2,866 registered tests, including
+`marc_interoperability_schema_compatibility`, pass under both compilers with
+the 240-second per-test limit; static and shared targets build successfully.
+Public completion, malformed regression, fuzzing, benchmark, CLI, and
+interoperability admission remain pending.
