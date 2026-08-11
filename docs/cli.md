@@ -363,3 +363,11 @@ partially decoded destination.
 
 The process returns `0` on success, `1` when the requested operation fails, and
 `2` for invalid command-line usage or an unknown profile name.
+
+## Contextual rANS canonical selector for 0.2.0
+
+The sole selector is `lzss-contextual-rans`, and it emits and accepts only
+entropy variant 3's canonical variable descriptor. The fixed variant-2 path
+and the `lzss-contextual-rans-compact` selector are removed without aliases.
+Historical schema-33-through-36 manifest names are translated only inside the
+interoperability verifier and are not accepted as general CLI input.

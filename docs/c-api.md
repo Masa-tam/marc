@@ -449,3 +449,13 @@ the 128 MiB maximum buffered frame body.
 See [`../examples/c_roundtrip.c`](../examples/c_roundtrip.c) for a complete
 single-call round trip. Real streaming callers should also handle partial
 consumption and production as described above.
+
+## Contextual rANS canonical surface for 0.2.0
+
+The final pre-1.0 Contextual rANS C surface uses only the unqualified
+`marc_lzss_contextual_rans_*` family and selects entropy variant 3's canonical
+variable descriptor. The fixed variant-2 implementation and every
+`marc_lzss_contextual_rans_compact_*` declaration are removed together. No
+compatibility typedef, wrapper, macro, or exported alias is provided. This API
+rename does not renumber `MARC_ABI_VERSION`; callers must compile against the
+matching 0.2.0 header and library.

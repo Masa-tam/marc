@@ -18233,3 +18233,28 @@ discarded and the reviewed seed retained.
   24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
   the Ubuntu 26.04 bundle. Every run reported 47 archives and revision
   `bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`.
+
+## CR-0779: 2026-08-11 - Contextual rANS canonicalization design
+
+- Authoring method: audited marc's fixed and compact Contextual rANS files,
+  includes, public functions, selectors, tests, and schema history, then wrote
+  a repository-local migration design before changing implementation code.
+- References used: DD-749 through DD-751; IR-0527; TVG-0628; the local Format
+  2 contracts, variant-2/3 code, public C ABI, CLI, benchmark, fuzz, tests, and
+  interoperability scripts.
+- Known implementations intentionally not consulted: external rANS or
+  compression implementations, source code, APIs, archives, corpora, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: preserve variant 3 exactly; retire and never reuse
+  variant 2; remove aliases; preserve shared arithmetic/model/token code;
+  introduce schema 37 as a one-entry rename; privately translate legacy
+  manifest names while keeping old schemas frozen.
+- Generated-code task description: define deletion and rename boundaries,
+  final public names, wire identity, schema migration, and admission criteria
+  on an isolated local branch.
+- Similarity review: the design derives solely from marc's existing two
+  profiles and repository conventions; no external implementation expression
+  entered the work.
+- Local validation: design-only milestone; implementation, builds, tests,
+  sanitizer evidence, benchmarks, and schema-37 interoperability remain
+  pending.

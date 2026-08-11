@@ -6559,3 +6559,17 @@ Permanent malformed regressions do not relax this representation. Strict
 prefixes, altered identity or reserved fields, impossible frame counts and
 lengths, invalid descriptor fields, and nonzero final-byte padding remain
 decoder errors and publish no raw byte from the affected frame.
+
+### Canonical Contextual rANS identity for the 0.2.0 line
+
+The sole supported LZSS Contextual rANS profile keeps the previously specified
+compact representation exactly: dictionary `2/2`, context model `1/1`, and
+entropy `4/3`. Its variable 23-through-9,025-byte canonical descriptor, rANS
+payload, scalar final state, limits, and strict rejection rules do not change.
+The profile and public selector are named `lzss-contextual-rans`; `compact` is
+not part of the canonical name.
+
+Entropy identity `4/2` and its fixed 9,052-byte descriptor are withdrawn. The
+identity remains reserved and MUST NOT be reused; current decoders reject it
+as an unsupported entropy variant. Renaming variant 3 MUST NOT change any
+stream, frame, descriptor, payload, state, padding, or checksum byte.

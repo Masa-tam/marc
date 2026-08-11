@@ -8336,3 +8336,20 @@ producer label, and the identical full revision. Each verifier pass must
 therefore cover manifest identity/order, size and SHA-256, fixture decode, and
 byte-identical local re-encoding. Record only the results; do not import any
 bundle or generated archive into the repository.
+
+### TVG-0628
+
+Retain the existing variant-3 one-byte hand vector and deterministic fixtures
+under the canonical unqualified Contextual rANS names and require every byte
+to remain unchanged. Add an entropy-identity `4/2` stream-header negative test.
+Require the public C lifecycle, CLI, benchmark, completion matrix, malformed
+regressions, split buffers, and bounded fuzz harness to expose no compact
+selector or symbol.
+
+Generate schema 37 with 47 archives and canonical
+`lzss-contextual-rans` at archive 44. Verify exact order, hashes, fixture
+decode, and byte-identical re-encoding. Convert it to schema 36 by renaming
+only that entry and leaf file to `lzss-contextual-rans-compact`, use the
+verifier's private legacy-name mapping, and continue through schema 1. Run all
+registered tests under MSVC and ClangCL, then run bounded sanitizer and
+benchmark comparisons before merge.

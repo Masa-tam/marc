@@ -4646,3 +4646,12 @@ Ubuntu 24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang
 bundle, and marc's repository-owned schema-36 verifier. No external
 compression implementation, source code, archive contents, corpus, test
 suite, or optimization description was consulted.
+
+### IR-0527
+
+The Contextual rANS canonicalization design uses DD-749 through DD-751,
+TVG-0628, marc's variant-2 and variant-3 specifications, public C lifecycles,
+CLI and benchmark adapters, fuzz harnesses, schema-36 order, and repository
+history as local architectural precedents. No external rANS or compression
+implementation, source code, API, archive, corpus, test vector, test suite,
+patent text, or optimization description was consulted.

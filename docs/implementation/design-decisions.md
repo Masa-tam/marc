@@ -15458,3 +15458,38 @@ that Ubuntu 26.04 executable verifies both locally and with Windows/MSVC.
 Require every path to report the same full Git revision, producer label, and
 all 47 archives. Record exact decode and byte-identical re-encoding evidence
 without importing any generated bundle into the repository.
+
+## DD-749: Contextual rANS variant 3 becomes the sole canonical profile
+
+- Date: 2026-08-11
+- Status: accepted
+
+Withdraw fixed-descriptor entropy variant 2 and promote the existing canonical
+variable-length descriptor variant 3 under the unqualified Contextual rANS
+name. Preserve every variant-3 byte and strict decode rule. Never reassign
+variant 2; reject identity `4/2` as unsupported. Remove both the old fixed
+surface and every compact-qualified public/selectable name without aliases.
+
+## DD-750: Canonicalization preserves shared rANS and typed-token cores
+
+- Date: 2026-08-11
+- Status: accepted
+
+Delete only fixed-descriptor serialization and lifecycle layers. Retain the
+typed LZSS context bridge, normalized in-memory model, rANS arithmetic,
+decode-table construction, and canonical dense/sparse records used by variant
+3 and contextual tANS. Rename the surviving variant-3 frame, profile,
+streaming, C ABI, CLI, benchmark, fuzz, and test surfaces after the conflicting
+fixed names are removed.
+
+## DD-751: Schema 37 renames archive 44 without changing its bytes
+
+- Date: 2026-08-11
+- Status: accepted
+
+Keep schemas 1 through 36 frozen. Schema 37 retains 47 archives and replaces
+only archive 44's historical `lzss-contextual-rans-compact` codec and leaf
+name with `lzss-contextual-rans`. The verifier privately maps the historical
+schema-33-through-36 name to the new CLI selector; the public CLI has no alias.
+The compatibility test converts schema 37 to 36 by renaming that one manifest
+entry and file before continuing the existing downgrade chain.
