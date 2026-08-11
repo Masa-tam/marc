@@ -4336,3 +4336,12 @@ TVG-0589 through TVG-0594, marc's typed-token validator,
 and operation-level encoder. No external LZ/Huffman or DEFLATE encoder, source
 code, frame, archive, test vector, suite, corpus, or optimization description
 was consulted.
+
+### IR-0494
+
+The Contextual Blocked Huffman complete-frame encoder uses DD-709 through
+DD-716, TVG-0588 through TVG-0595, marc's typed-LZSS encoder, direct contextual
+entropy encoder, Format 2 serializers and validators, checked arithmetic,
+overlap checks, and decoder-limit model. No external LZ/Huffman or DEFLATE
+encoder, source code, frame, archive, test vector, suite, corpus, or
+optimization description was consulted.

@@ -17257,3 +17257,30 @@ discarded and the reviewed seed retained.
   MSVC 19.51.36252 and ClangCL 22.1.3. All 2,757 registered MSVC tests pass
   with a 240-second per-test limit in 148.09 seconds; the included
   `marc_interoperability_schema_compatibility` test completes in 59.36 seconds.
+
+## CR-0746: 2026-08-11 - Contextual Blocked Huffman complete-frame encoder
+
+- Authoring method: composed marc's deterministic raw-to-typed LZSS parser,
+  direct Contextual Blocked Huffman encoder, and existing Format 2 serializers
+  behind one preflighted complete-frame transaction.
+- References used: AGENTS.md sections 3, 5, 6, 9, 10, 11, 12, and 15; DD-709
+  through DD-716; IR-0494; TVG-0588 through TVG-0595; marc's typed-LZSS
+  encoder, direct entropy encoder, frame decoder, checked arithmetic, overlap,
+  and limit contracts.
+- Known implementations intentionally not consulted: external LZ/Huffman or
+  DEFLATE encoders, source code, frames, archives, corpora, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: require the exact next raw-frame extent; plan and
+  validate all counts and sizes before output publication; charge raw, used
+  token, and serialized extents together; keep all three ranges disjoint; and
+  publish the fixed frame header last.
+- Generated-code task description: add private complete-frame planning and
+  encoding, exact documented one-Literal frame, independent decoder round
+  trip, deterministic mixed frame, capacity, limit, and alias tests.
+- Similarity review: transaction order, workspace accounting, error mapping,
+  vectors, and tests were authored from marc's preceding internal contracts;
+  no external implementation expression entered the work.
+- Local validation: six focused complete-frame encoder tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,763 registered MSVC tests pass with a
+  240-second per-test limit in 149.46 seconds; the included
+  `marc_interoperability_schema_compatibility` test completes in 59.84 seconds.

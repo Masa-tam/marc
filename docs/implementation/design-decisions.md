@@ -14842,3 +14842,21 @@ descriptors and payloads. Count only represented bypass fields as events,
 cross-check event and decision totals at writer completion, reject token/payload
 overlap before planning, and publish the descriptor only after the second pass
 succeeds. Frame serialization remains a later milestone.
+
+## DD-716: Complete Contextual Huffman frames are planned before publication
+
+- Date: 2026-08-11
+- Status: accepted
+
+Compose raw LZSS parsing and the direct typed-token entropy encoder behind a
+private complete-frame boundary. Require the raw extent to equal the next
+frame implied by the validated stream header, keep raw input, used typed-token
+storage, and serialized output pairwise disjoint, and admit their aggregate
+size under `max_internal_buffered_bytes`.
+
+Planning fixes token, event, decision, descriptor, payload, and complete-frame
+sizes and validates the resulting descriptor and frame header before any
+serialized output is written. Encoding writes payload first, descriptor
+second, and the 64-byte header last. A short destination or any preflight
+failure therefore preserves every serialized-output byte. This milestone does
+not add a streaming encoder or admit the profile publicly.

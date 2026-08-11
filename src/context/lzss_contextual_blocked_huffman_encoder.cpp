@@ -43,17 +43,6 @@ using entropy::internal::ContextualBlockedHuffmanWriter;
     return result;
 }
 
-[[nodiscard]] bool add_event(
-    LzssContextualBlockedHuffmanEncodeResult& result) noexcept {
-    if (result.event_count == std::numeric_limits<std::size_t>::max()) {
-        result.error =
-            LzssContextualBlockedHuffmanEncodeError::arithmetic_overflow;
-        return false;
-    }
-    ++result.event_count;
-    return true;
-}
-
 template <typename Sink>
 [[nodiscard]] ContextualBlockedHuffmanEncodeError emit_symbol(
     Sink& sink, const std::uint16_t context_id,

@@ -6351,3 +6351,12 @@ context-state pass into the fixed model builder and a second identical pass into
 the forward writer, and requires byte-identical output to the operation-level
 boundary. This changes no stream byte; frame and streaming encoder admission
 remain outside this milestone.
+
+The private complete-frame encoder now materializes the unchanged
+`64-byte header || descriptor || payload` representation from one exact raw
+frame. It first tokenizes into caller-owned private storage, completes the
+direct entropy plan, validates the descriptor and frame header, and admits the
+aggregate raw, used-token, and serialized-frame workspace. Only then may it
+write the payload, descriptor, and finally the frame header. The documented
+one-byte `A` input therefore produces the exact 88-byte frame above. Streaming
+encoder and public profile admission remain outside this milestone.

@@ -7829,3 +7829,17 @@ Independently model the same token pair into its five symbol operations and
 require byte-identical descriptor serialization and payload from the operation
 and direct boundaries. Reject an initial match, short payload, and token/output
 alias while preserving descriptor state.
+
+### TVG-0595
+
+Plan raw byte `A` into one typed Literal and require `(token,event,decision) =
+(1,2,2)`, the 24-byte all-Single descriptor, zero payload, and complete size
+88. Encode it and require byte identity with TVG-0591's documented frame, then
+decode that generated frame through the independent complete-frame decoder.
+
+Encode a mixed literal/match input twice into separate workspaces and require
+byte-identical frames plus raw reconstruction. Independently reject an invalid
+stream, a raw extent different from the next expected frame, short token and
+serialized-output spans, aggregate workspace overflow, and every raw/token/
+serialized overlap. All failures detected before publication must preserve the
+serialized-output sentinel.

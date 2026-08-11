@@ -505,6 +505,15 @@ choices and fixes the descriptor; its second pass regenerates the identical
 contexts and writes the payload. Writer completion cross-checks event, decision,
 and exact valid-bit extents before descriptor publication.
 
+The private complete-frame encoder composes raw LZSS tokenization with that
+direct adapter. Its planning pass fixes and validates the complete
+`64-byte header || descriptor || payload` extent before publication and charges
+raw input, used token storage, and the serialized frame to the aggregate
+workspace limit. These three ranges are pairwise disjoint. Encoding publishes
+the header last, after the payload and canonical descriptor agree with the
+plan; short output and every preflight error therefore leave the destination
+unchanged.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model
