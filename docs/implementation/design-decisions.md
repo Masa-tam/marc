@@ -14958,3 +14958,19 @@ call count. Drive public input/output chunks deterministically from the bounded
 input. Abort only on violated process/workspace invariants; ordinary malformed
 input is an expected terminal result. This milestone adds no corpus, campaign
 claim, stream change, CLI, benchmark, or interoperability surface.
+
+## DD-722: The first Contextual Huffman sanitizer run is finite and ephemeral
+
+- Date: 2026-08-11
+- Status: accepted
+
+Execute DD-721's already reviewed harness under the repository's established
+Windows Clang 22 GNU-driver sanitizer tree. Build only the dedicated target and
+select its matching `lib/windows` runtime through a process-local `PATH`.
+
+Run exactly 1,000 in-memory inputs with 32 KiB maximum length, five seconds per
+input, and 512 MiB RSS limit. Supply no corpus, create no persistent seed, and
+direct failure artifacts only to the ignored build tree. Record the final
+coverage/features, peak RSS, and absence or presence of libFuzzer, ASan, or
+UBSan findings. This bounded execution is evidence only for exercised inputs
+and cannot establish exhaustive safety or change any release surface.

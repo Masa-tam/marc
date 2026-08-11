@@ -571,6 +571,19 @@ process's `PATH`. No input corpus was supplied, generated mutations remained
 in memory, and no artifact was produced. This bounded smoke is evidence for
 the exercised inputs, not a claim of exhaustive safety.
 
+### FZ-0022: Contextual Blocked Huffman smoke
+
+The experimental Contextual Blocked Huffman private-frame/public-C decoder
+target received its initial bounded Windows Clang 22 libFuzzer/
+AddressSanitizer/UndefinedBehaviorSanitizer smoke on 2026-08-11. It completed
+1,000 inputs with a 32 KiB maximum input, five-second per-input timeout, and
+512 MiB RSS limit without a crash, hang, or sanitizer finding. Peak RSS was
+40 MiB; final coverage was 192 counters and 390 features over a seven-entry,
+29-byte in-memory corpus. The matching Clang 22 runtime path applied only to
+the child process. No input corpus was supplied and no artifact was produced.
+This bounded result is evidence for the exercised inputs, not an exhaustive
+safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

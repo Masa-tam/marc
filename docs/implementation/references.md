@@ -4391,3 +4391,11 @@ decoder, public ABI-1 lifecycle, fixed Contextual Huffman maxima, caller-owned
 workspaces, checked chunk loop, and sticky-error contract. No external fuzz
 harness, corpus, Huffman or DEFLATE implementation, source code, archive, test
 vector, test suite, or optimization description was consulted.
+
+### IR-0500
+
+The initial Contextual Blocked Huffman sanitizer execution uses DD-721 and
+DD-722, TVG-0600 and TVG-0601, FZ-0022, marc's reviewed bounded harness,
+ignored build-artifact policy, and established matching-runtime procedure. No
+external corpus, malformed sample, fuzz harness, source code, archive, test
+suite, or optimization description was consulted.

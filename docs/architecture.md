@@ -4683,3 +4683,10 @@ and descriptor-flag mutations. The fuzz entry point caps input, output, frame,
 decision, payload, table, aggregate workspace, and call counts before driving
 those same two decoders; malformed results are normal, while process-contract
 violations terminate the harness.
+
+The first sanitizer execution of that boundary uses the same fixed harness
+without a persistent corpus. Windows Clang 22 libFuzzer, ASan, and UBSan
+processed 1,000 inputs under the 32 KiB input, five-second per-input, and
+512 MiB RSS ceilings, peaking at 40 MiB without a finding. The matching runtime
+path existed only in the campaign process, and no generated input or artifact
+entered the repository. This finite result does not imply exhaustive safety.

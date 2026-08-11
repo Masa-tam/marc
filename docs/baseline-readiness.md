@@ -1624,3 +1624,35 @@ external evidence at revision `4929252144e4bfe44fb3ec076f548aa47e4ff111`.
 All 45 archives from the Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang producers decode and re-encode byte-identically across the tested
 Windows and WSL2 Linux x86-64 paths.
+
+### BR-0073
+
+Contextual Blocked Huffman now has an additive experimental ABI-1 lifecycle.
+Direction-specific workspace queries retain typed LZSS tokens and bounded
+Huffman tables behind opaque caller-owned regions while emitting unchanged
+Format 2 dictionary `2/2`, entropy `2/2`. It remains outside CLI, benchmark,
+stable-matrix, and interoperability inventories.
+
+### BR-0074
+
+The public lifecycle satisfies its local completion matrix through ABI 1.
+Required binary classes, deterministic repeated encoding, three mixed chunk
+schedules, stable terminal state, and final-frame corruption, truncation, and
+trailing-data atomicity pass under MSVC and ClangCL. Tool and interoperability
+admission remain separate.
+
+### BR-0075
+
+The private complete-frame and public streaming decoders now share permanent
+malformed-input regressions and a fixed-memory fuzz harness. Every canonical
+truncation, saturated frame extents, and nonzero descriptor flags preserve raw
+publication atomically. Input, frame, decision, payload, table, output,
+aggregate, and call bounds are fixed before arbitrary input is parsed.
+
+### BR-0076
+
+The initial bounded Windows sanitizer smoke completed 1,000 inputs under
+Clang 22 libFuzzer/ASan/UBSan with 32 KiB maximum input, five-second per-input
+timeout, 512 MiB RSS limit, and 40 MiB peak RSS. No crash, hang, sanitizer
+finding, persistent corpus, or artifact occurred. This is bounded execution
+evidence; CLI, benchmark, and interoperability admission remain future work.

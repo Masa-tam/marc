@@ -1502,3 +1502,11 @@ public ABI-1 streaming decode boundaries. Canonical truncations and targeted
 frame-extent and descriptor-flag mutations preserve atomic raw publication.
 A sanitizer campaign, CLI, benchmark, and interoperability admission remain
 future work.
+
+### CP-0078
+
+The Contextual Blocked Huffman dual-decoder fuzz boundary now has an initial
+bounded sanitizer execution. Windows Clang 22 libFuzzer, ASan, and UBSan
+completed 1,000 ephemeral inputs within the documented input, timeout, RSS,
+workspace, and call ceilings without a finding or artifact. CLI, benchmark,
+and interoperability admission remain future work.

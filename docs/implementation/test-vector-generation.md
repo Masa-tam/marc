@@ -7922,3 +7922,17 @@ decode tables, 4 KiB total output, fixed workspaces, and at most
 `input + output + 32` calls. Abort on over-reported counts, impossible
 zero-progress status, exhausted input requesting more input, or call-bound
 exhaustion; accept every documented terminal stream status.
+
+### TVG-0601
+
+Reconfigure the existing Windows Clang 22 GNU-driver sanitizer tree and build
+only `marc_fuzz_lzss_contextual_blocked_huffman_stream`. Query that compiler's
+resource directory and prepend its `lib/windows` directory only to the child
+process `PATH`. Run without a corpus using
+`-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`; direct failure
+artifacts to an ignored Contextual Blocked Huffman build directory.
+
+Require normal exit after exactly 1,000 inputs. Record final coverage and
+feature counts, peak RSS, and whether libFuzzer, AddressSanitizer, or
+UndefinedBehaviorSanitizer reports a crash, hang, or finding. Do not persist
+generated inputs or add an empty artifact directory to the repository.
