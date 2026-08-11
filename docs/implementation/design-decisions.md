@@ -15129,3 +15129,22 @@ the stream valid, and reject payload, node, symbol, and token aliases before
 decoding. Charge exact token and model storage plus payload to the aggregate
 limit. Defer raw-byte reconstruction, frame parsing, encoding, streaming, and
 public profile admission.
+
+## DD-732: Contextual Adaptive Huffman preflights complete frame extents
+
+- Date: 2026-08-11
+- Status: accepted
+
+Implement the reserved Format 2 stream identity `dictionary=2/2,
+entropy=1/2, context=1/1` as a private parser and serializer. Require the
+112-byte stream header's entropy region to contain the fixed Symbol-event
+ceiling, 31 contexts, eight-bit maximum NYT raw width, zero flags, and zero
+reserved bytes. Preserve the 2^24 raw-frame ceiling and exact LZSS parameter
+bounds.
+
+Validate the common 64-byte frame header before slicing its fixed 16-byte
+descriptor and exact payload. Require nonempty canonical frames, consistent
+token/event/decision/raw counts, zero optional side data and checksum trailer,
+all decoder limits, exact descriptor/header agreement, checked serialized
+extent, and transactional output objects. Keep token and raw reconstruction
+outside this format-only milestone.

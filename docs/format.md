@@ -6486,3 +6486,13 @@ six decisions, and seven raw bytes. These bytes do not add a new serialized
 field: they exercise the already reserved representation. Frame parsing, raw
 copy reconstruction, encoding, and public profile admission remain outside
 this milestone.
+
+The private Format 2 parser and serializer now implement the stream and frame
+headers shown above. Stream parsing enforces entropy identity `1/2`, the exact
+16-byte entropy parameter region, LZSS bounds, the raw-frame ceiling, context
+identity, and caller limits. Frame preflight enforces sequence, exact expected
+raw extent, token/event/decision bounds, zero optional regions and reserved
+bytes, the fixed descriptor, exact payload extent, and checked serialized
+size. It consumes only the validated frame extent and leaves following bytes
+untouched. This adds no new field or representation and still does not perform
+token or raw reconstruction.

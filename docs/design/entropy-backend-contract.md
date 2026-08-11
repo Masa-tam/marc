@@ -603,6 +603,12 @@ The adapter validates the complete sequence without output before repeating
 the decode into caller storage. Thus token publication is atomic at the
 sequence boundary; the entropy backend still has no knowledge of LZSS tokens.
 
+The private frame-format layer now validates the outer contract before this
+backend is entered. It fixes entropy identity `1/2`, the 31-context and NYT
+parameter region, the 2^24 raw-frame ceiling, exact descriptor and payload
+extents, and the model-entry limit. It does not allocate or initialize a tree;
+the validated payload and descriptor remain inputs to the operation decoder.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

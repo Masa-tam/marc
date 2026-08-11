@@ -4480,3 +4480,13 @@ state, checked arithmetic, decoder limits, and neighboring private contextual
 token adapters as local architectural precedents. No external Adaptive
 Huffman or LZSS implementation, source code, archive, test vector, test suite,
 patent text, or optimization description was consulted.
+
+### IR-0510
+
+The Contextual Adaptive Huffman stream/frame format boundary uses DD-728
+through DD-732, TVG-0607 through TVG-0611, marc's Format 2 common header,
+fixed 16-byte entropy descriptor, checked arithmetic, decoder limits, and
+neighboring contextual frame-format validators as local architectural
+precedents. No external Adaptive Huffman or LZSS implementation, source code,
+archive, test vector, test suite, patent text, or optimization description was
+consulted.

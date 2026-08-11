@@ -4760,3 +4760,11 @@ runs a write-free validation pass and publishes tokens only during an
 identical second pass, so malformed entropy, invalid references, and short
 output cannot expose a partial token sequence. Frame parsing and raw-byte
 reconstruction remain separate later boundaries.
+
+The private Format 2 framing boundary now precedes that adapter. It parses or
+serializes the reserved 112-byte stream header, validates the common 64-byte
+frame header, and preflights the fixed 16-byte entropy descriptor plus exact
+payload before any model or token workspace is used. Header, descriptor, and
+layout objects publish only after complete validation. Extra input remains for
+the next frame; raw reconstruction and a complete-frame transaction remain
+later boundaries.

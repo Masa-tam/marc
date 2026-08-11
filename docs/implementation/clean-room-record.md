@@ -17721,3 +17721,33 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0762: 2026-08-11 - Contextual Adaptive Huffman frame-format boundary
+
+- Authoring method: implemented only the already reserved Format 2 stream and
+  frame representation, using marc's common header and fixed entropy
+  descriptor as independently tested local components.
+- References used: DD-728 through DD-732; IR-0510; TVG-0607 through TVG-0611;
+  marc's common Format 2 header, checked arithmetic, decoder limits, and
+  neighboring contextual format validators.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, archives, test vectors, test
+  suites, patent text, and optimization descriptions.
+- Independent decisions: adapt only the fixed entropy identity and parameter
+  region through the common header; cap raw frames at 2^24; preflight the
+  exact descriptor and payload; leave trailing caller bytes unconsumed; and
+  publish parsed objects only after complete validation.
+- Generated-code task description: add the private stream/frame format header
+  and implementation, register identity, round-trip, truncation, malformed
+  metadata, limit, and transactional GoogleTests, and update architecture,
+  format, composition, readiness, test, reference, decision, and provenance
+  documents.
+- Similarity review: the implementation composes only marc's independently
+  designed local format helpers and reserved bytes; no external implementation
+  expression entered the work.
+- Local validation: the seven focused format tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,820 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

@@ -8073,3 +8073,19 @@ short model workspace, short token output, every token alias with payload or
 model storage, invalid LZSS parameters, aggregate storage one byte below the
 exact requirement, and total-output overflow. Run the vectors under MSVC and
 ClangCL before the complete registered suites.
+
+### TVG-0611
+
+Serialize the reserved one-byte stream header and require entropy identity
+`1/2`, maximum Symbol events 33,554,432, context count 31, maximum NYT raw
+width eight, zero flags, and zero reserved bytes at the documented offsets.
+Parse it back without modifying outputs on failure, then reject wrong identity,
+parameters, reserved bytes, dictionary bounds, frame ceiling, model-entry
+limit, and truncated prefixes.
+
+Combine the documented 64-byte frame header, 16-byte descriptor, and payload
+`82 00`; require serialized extent 82 and exact header/descriptor agreement.
+Round-trip the header, reject every truncated prefix transactionally, and
+independently reject sequence/raw/count/feature/descriptor contradictions,
+nonzero reserved bytes, aggregate or payload limits, and extra caller bytes
+without consuming them.

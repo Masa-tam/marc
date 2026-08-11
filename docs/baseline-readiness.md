@@ -1736,3 +1736,14 @@ workspace shortage and alias class, aggregate limits, and atomic token output
 are tested under both local compilers. Raw-byte reconstruction, a complete
 frame transaction, encoder parity, streaming, C ABI, tools, and
 interoperability are still required before profile admission.
+
+### BR-0086
+
+The reserved Contextual Adaptive Huffman identity now has private stream and
+frame parsing, serialization, and preflight. Exact documented bytes,
+round-trip headers, every truncated stream/frame prefix, wrong identity and
+parameters, dictionary and model bounds, sequence and reserved metadata,
+unsupported features, descriptor contradictions, payload limits, trailing
+input preservation, and transactional outputs are tested under both local
+compilers. Complete-frame decoding and all encoder/public layers remain
+pending.

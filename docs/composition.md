@@ -1584,3 +1584,12 @@ write-free pass precedes token publication; exact workspaces, pairwise alias
 rejection, aggregate memory, counts, padding, and completion remain bounded.
 Raw reconstruction, frame lifecycle, encoding, and public admission remain
 future milestones.
+
+### CP-0087
+
+Contextual Adaptive Huffman now has a private stream/frame format boundary for
+the reserved Format 2 identity. The fixed stream parameters, 2^24 frame
+ceiling, sequence and raw extent, token/event/decision bounds, absent optional
+features, exact 16-byte descriptor, payload extent, model-entry limit, and
+transactional layout publication are enforced before decoding. Token and raw
+reconstruction are not yet composed into a complete frame transaction.
