@@ -4718,3 +4718,10 @@ facility rather than relying on implementation-specific transitive includes.
 The Contextual Blocked Huffman complete-frame decoder therefore includes
 `<utility>` directly for `std::in_range`; this portability repair changes no
 decoder behavior, serialization, workspace, or public boundary.
+
+The recorded schema-35 exchange at revision
+`7c276151ab428aa9ba0376f8d9ba9a85a9fbd347` verifies all 46 archives in four
+directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
+re-encoding establish the Contextual Blocked Huffman bytes across all three
+recorded x86-64 producers.

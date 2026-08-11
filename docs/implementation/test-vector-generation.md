@@ -7994,3 +7994,16 @@ and header files containing `std::in_range` and require each to include
 `<utility>` directly. Then rebuild the affected MSVC and ClangCL library, CLI,
 and core-test targets and run the complete registered suite under both local
 compilers.
+
+### TVG-0606
+
+At pushed revision `7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`, verify the
+Windows/MSVC and Ubuntu 24.04/Ninja schema-35 CI bundles with the Ubuntu 26.04
+Clang 21.1.8 CLI. Generate a schema-35 Ubuntu 26.04 bundle from the same
+revision, verify it locally, then verify it with the Windows/MSVC CLI.
+
+Require all four final lines to report exactly 46 archives, the expected
+producer label, and the identical full revision. Each verifier pass must
+therefore cover manifest identity/order, size and SHA-256, fixture decode, and
+byte-identical local re-encoding. Record only the results; do not import any
+bundle or generated archive into the repository.

@@ -1539,3 +1539,11 @@ requires byte-identical local re-encoding of Format 2 identity `2/2` in
 addition to fixture decode equality. Compatibility derivation removes only
 the new archive before validating schema 34 and every earlier profile set.
 External four-direction evidence remains pending.
+
+### CP-0082
+
+Schema 35 now has four-direction external evidence at revision
+`7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`. Windows/MSVC and Ubuntu
+24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
+verifies there and on Windows/MSVC. All 46 archives decode and re-encode
+byte-identically in every path.

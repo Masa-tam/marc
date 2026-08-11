@@ -17580,3 +17580,28 @@ discarded and the reviewed seed retained.
   each compiler with the 240-second per-test limit. The initial sandboxed
   MSBuild attempt encountered the known FileTracker `E_ACCESSDENIED`; the
   established approved build route completed normally.
+
+## CR-0757: 2026-08-11 - Schema-35 external interoperability evidence
+
+- Authoring method: recorded the maintainer-executed four-direction verifier
+  results only after all paths reported the same pushed revision and all 46
+  archives.
+- References used: DD-727; IR-0505; TVG-0606; revision
+  `7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`; the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles; the Ubuntu 26.04/Clang bundle; and marc's verifier.
+- Known implementations intentionally not consulted: external compression
+  implementations, source code, archive contents, corpora, test suites, and
+  optimization descriptions.
+- Independent decisions: require one revision, 46 archives, three producers,
+  two consumers, and four directions; record exact verification outcomes; and
+  import no bundle or generated archive.
+- Generated-code task description: record successful schema-35 external
+  verification in interoperability, architecture, composition, readiness,
+  test-generation, reference, design-decision, and provenance documents.
+- Similarity review: the record contains only repository-owned schema facts
+  and maintainer-reported verifier output; no external implementation
+  expression entered the work.
+- External validation: Ubuntu 26.04/Clang verified the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
+  the Ubuntu 26.04 bundle. Every run reported 46 archives and revision
+  `7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`.

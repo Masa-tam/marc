@@ -4435,3 +4435,12 @@ standard-library ownership of `std::in_range` by `<utility>`, the Ubuntu CI
 diagnostic supplied by the maintainer, and marc's existing translation-unit
 include policy. No external implementation, source code, patch, archive, test
 vector, test suite, or optimization description was consulted.
+
+### IR-0505
+
+The schema-35 external admission record uses DD-727, TVG-0606, the pushed
+revision `7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`, the Windows/MSVC and
+Ubuntu 24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang
+bundle, and marc's repository-owned schema-35 verifier. No external
+compression implementation, source code, archive contents, corpus, test
+suite, or optimization description was consulted.

@@ -1692,3 +1692,11 @@ with respect to `std::in_range`: its defining `<utility>` header is included
 directly. A repository-wide use-site audit found no second omission, Ubuntu
 Clang accepts the translation unit independently, and both local compiler
 suites pass without any stream, ABI, limit, or schema change.
+
+### BR-0081
+
+Schema 35 now has complete four-direction external evidence at revision
+`7c276151ab428aa9ba0376f8d9ba9a85a9fbd347`. All 46 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths.
