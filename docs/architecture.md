@@ -4712,3 +4712,9 @@ the verifier requires `marc-cli-v35`, exact order, size and SHA-256, foreign
 decode equality, and byte-identical local re-encoding. Compatibility tests
 remove only archive 46 to reconstruct schema 34 before validating all earlier
 schemas. No stable-profile identity or historical schema changes.
+
+Translation units include the defining standard header for each named
+facility rather than relying on implementation-specific transitive includes.
+The Contextual Blocked Huffman complete-frame decoder therefore includes
+`<utility>` directly for `std::in_range`; this portability repair changes no
+decoder behavior, serialization, workspace, or public boundary.

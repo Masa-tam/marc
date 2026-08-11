@@ -15031,3 +15031,16 @@ then derive schema 34 by removing only archive 46 and restoring version 34 and
 changing any historical profile set. This milestone records local generation
 and verification only; cross-platform four-direction evidence requires the
 same pushed revision and remains separate.
+
+## DD-726: Standard-library facilities require their defining headers
+
+- Date: 2026-08-11
+- Status: accepted
+
+Treat each translation unit as responsible for directly including the standard
+header that declares every facility it names. In particular,
+`std::in_range` requires `<utility>` even when a Windows standard-library
+include graph happens to expose it transitively. Fix the Contextual Blocked
+Huffman complete-frame decoder without changing control flow, stream bytes,
+limits, or public ABI, and audit every repository `std::in_range` use for the
+same omission.

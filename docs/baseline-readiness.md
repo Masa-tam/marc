@@ -1684,3 +1684,11 @@ order, size and SHA-256, fixture decode, byte-identical re-encoding,
 reordered-manifest rejection, and schemas 1 through 34 compatibility are
 required locally. External Windows/Linux four-direction evidence remains a
 separate post-push milestone.
+
+### BR-0080
+
+The Contextual Blocked Huffman complete-frame decoder is now self-contained
+with respect to `std::in_range`: its defining `<utility>` header is included
+directly. A repository-wide use-site audit found no second omission, Ubuntu
+Clang accepts the translation unit independently, and both local compiler
+suites pass without any stream, ABI, limit, or schema change.

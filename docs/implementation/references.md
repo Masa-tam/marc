@@ -4427,3 +4427,11 @@ generator/verifier, compatibility derivation script, and common 8,193-byte
 fixture. No external archive, interoperability suite, Huffman or DEFLATE
 implementation, source code, test vector, test suite, or optimization
 description was consulted.
+
+### IR-0504
+
+The Linux Contextual Blocked Huffman build repair uses DD-726, the C++20
+standard-library ownership of `std::in_range` by `<utility>`, the Ubuntu CI
+diagnostic supplied by the maintainer, and marc's existing translation-unit
+include policy. No external implementation, source code, patch, archive, test
+vector, test suite, or optimization description was consulted.

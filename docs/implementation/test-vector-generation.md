@@ -7983,3 +7983,14 @@ restoring `34`/`marc-cli-v34`, verify it, then derive and verify every earlier
 schema through schema 1. Use temporary directories only and remove them after
 success or failure. External producer/consumer evidence is not part of this
 local test.
+
+### TVG-0605
+
+Compile `src/frame/lzss_contextual_blocked_huffman_frame_decoder.cpp` alone as
+a C++20 translation unit with Ubuntu Clang, repository public/internal include
+paths, and `-Wall -Wextra -Wpedantic -fsyntax-only`. Require success without
+diagnostics after adding the direct `<utility>` dependency. Audit all source
+and header files containing `std::in_range` and require each to include
+`<utility>` directly. Then rebuild the affected MSVC and ClangCL library, CLI,
+and core-test targets and run the complete registered suite under both local
+compilers.

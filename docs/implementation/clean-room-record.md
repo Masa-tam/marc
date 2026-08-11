@@ -17554,3 +17554,29 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit and leave no bundle in the repository. All
   2,783 registered tests subsequently pass under each compiler with that same
   per-test limit.
+
+## CR-0756: 2026-08-11 - Linux Contextual Huffman header repair
+
+- Authoring method: diagnosed the maintainer-supplied Ubuntu CI compiler log,
+  audited every local `std::in_range` use, and added the missing defining
+  standard header to the sole affected translation unit.
+- References used: DD-726; IR-0504; TVG-0605; the supplied Ubuntu diagnostic;
+  C++20 `<utility>` ownership of `std::in_range`; and marc's local sources.
+- Known implementations intentionally not consulted: external Huffman or
+  DEFLATE implementations, source code, patches, archives, test vectors, test
+  suites, and optimization descriptions.
+- Independent decisions: include `<utility>` directly; change no expression,
+  state transition, stream representation, limit, ABI, or schema; audit all
+  other use sites; and verify the exact translation unit under Linux.
+- Generated-code task description: repair the missing direct include, perform
+  the repository-wide use-site audit, syntax-compile the translation unit in
+  WSL2 Ubuntu, rebuild affected Windows targets, and rerun both full suites.
+- Similarity review: the change is one standard-header dependency dictated by
+  the named C++20 facility and compiler diagnostic; no external implementation
+  expression entered the work.
+- Local validation: Ubuntu Clang 21.1.8 accepts the translation unit with
+  C++20, `-Wall -Wextra -Wpedantic`, and `-fsyntax-only`. MSVC 19.51.36252 and
+  ClangCL 22.1.3 rebuild the affected targets, and all 2,783 tests pass under
+  each compiler with the 240-second per-test limit. The initial sandboxed
+  MSBuild attempt encountered the known FileTracker `E_ACCESSDENIED`; the
+  established approved build route completed normally.
