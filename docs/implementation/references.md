@@ -4637,3 +4637,12 @@ compatibility downgrade chain as local architectural precedents. No external
 archive, corpus, interoperability suite, Adaptive Huffman or LZSS
 implementation, source code, test vector, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0526
+
+The schema-36 external admission record uses DD-748, TVG-0627, the pushed
+revision `bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`, the Windows/MSVC and
+Ubuntu 24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang
+bundle, and marc's repository-owned schema-36 verifier. No external
+compression implementation, source code, archive contents, corpus, test
+suite, or optimization description was consulted.

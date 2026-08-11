@@ -4882,3 +4882,10 @@ rejects reordered schema-36 manifests, derives schema 35 by removing only the
 new final entry, and then continues the frozen downgrade chain through schema
 1. The stable 42-profile inventory and serialized codec representation remain
 unchanged.
+
+The recorded schema-36 exchange at revision
+`bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2` verifies all 47 archives in four
+directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
+re-encoding establish the Contextual Adaptive Huffman bytes across all three
+recorded x86-64 producers.

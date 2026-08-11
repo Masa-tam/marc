@@ -1748,3 +1748,11 @@ selector. The compatibility test rejects a reordered schema-36 manifest,
 derives schema 35 by removing only the new final entry, and preserves the
 complete schema-35-through-1 chain. The stable 42-profile inventory remains
 unchanged.
+
+### CP-0103
+
+Schema 36 now has four-direction external evidence at revision
+`bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`. Windows/MSVC and Ubuntu
+24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
+verifies there and on Windows/MSVC. All 47 archives decode and re-encode
+byte-identically in every path.

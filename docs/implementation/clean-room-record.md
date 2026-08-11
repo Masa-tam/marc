@@ -18208,3 +18208,28 @@ discarded and the reviewed seed retained.
   240-second per-test limit, including
   `marc_interoperability_schema_compatibility`. External four-direction
   schema-36 verification remains pending.
+
+## CR-0778: 2026-08-11 - Schema-36 external interoperability evidence
+
+- Authoring method: recorded the maintainer-executed four-direction verifier
+  results only after all paths reported the same pushed revision and all 47
+  archives.
+- References used: DD-748; IR-0526; TVG-0627; revision
+  `bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`; the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles; the Ubuntu 26.04/Clang bundle; and marc's verifier.
+- Known implementations intentionally not consulted: external compression
+  implementations, source code, archive contents, corpora, test suites, and
+  optimization descriptions.
+- Independent decisions: require one revision, 47 archives, three producers,
+  two consumers, and four directions; record exact verification outcomes; and
+  import no bundle or generated archive.
+- Generated-code task description: record successful schema-36 external
+  verification in interoperability, architecture, composition, readiness,
+  test-generation, reference, design-decision, and provenance documents.
+- Similarity review: the record contains only repository-owned schema facts
+  and maintainer-reported verifier output; no external implementation
+  expression entered the work.
+- External validation: Ubuntu 26.04/Clang verified the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
+  the Ubuntu 26.04 bundle. Every run reported 47 archives and revision
+  `bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`.

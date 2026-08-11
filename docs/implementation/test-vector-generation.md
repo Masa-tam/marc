@@ -8323,3 +8323,16 @@ rejection. Convert the canonical schema-36 bundle to schema 35 by removing
 only the new final archive, then continue the existing schema-35-through-1
 compatibility chain. Leave all generated bundles under the temporary test
 root and remove them after either success or failure.
+
+### TVG-0627
+
+At pushed revision `bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`, verify the
+Windows/MSVC and Ubuntu 24.04/Ninja schema-36 CI bundles with the Ubuntu 26.04
+Clang 21.1.8 CLI. Generate a schema-36 Ubuntu 26.04 bundle from the same
+revision, verify it locally, then verify it with the Windows/MSVC CLI.
+
+Require all four final lines to report exactly 47 archives, the expected
+producer label, and the identical full revision. Each verifier pass must
+therefore cover manifest identity/order, size and SHA-256, fixture decode, and
+byte-identical local re-encoding. Record only the results; do not import any
+bundle or generated archive into the repository.

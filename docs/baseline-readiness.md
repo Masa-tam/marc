@@ -1920,3 +1920,11 @@ respectively. All 2,876 registered tests, including
 `marc_interoperability_schema_compatibility`, pass under both compilers with
 the 240-second per-test limit. External four-direction schema-36 verification
 remains pending; the stable 42-profile inventory is unchanged.
+
+### BR-0102
+
+Schema 36 now has complete four-direction external evidence at revision
+`bdcabd439d9cedb9e58f3dd2a3ac4dcb3526e1a2`. All 47 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths.
