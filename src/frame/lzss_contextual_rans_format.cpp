@@ -337,9 +337,9 @@ validate_lzss_contextual_rans_frame_header(
     }
     if (header.event_count < minimum_events || header.payload_size < 8
         || header.descriptor_size
-               < entropy::internal::contextual_rans_compact_min_descriptor_size
+               < entropy::internal::contextual_rans_min_descriptor_size
         || header.descriptor_size
-               > entropy::internal::contextual_rans_compact_max_descriptor_size) {
+               > entropy::internal::contextual_rans_max_descriptor_size) {
         return LzssContextualRansFrameHeaderError::contradictory_counts;
     }
     if (header.context_side_data_size != 0
@@ -489,11 +489,11 @@ preflight_lzss_contextual_rans_frame(
     const auto descriptor_input = input.subspan(
         header_bytes, static_cast<std::size_t>(parsed.header.descriptor_size));
     const auto descriptor_error =
-        entropy::internal::parse_contextual_rans_compact_descriptor(
+        entropy::internal::parse_contextual_rans_descriptor(
             descriptor_input, parsed.header.decision_count,
             parsed.header.payload_size, context.limits, descriptor);
     if (descriptor_error
-        != entropy::internal::ContextualRansCompactFormatError::none) {
+        != entropy::internal::ContextualRansFormatError::none) {
         return {
             LzssContextualRansFramePreflightError::descriptor_error,
             LzssContextualRansFrameHeaderError::none, descriptor_error};

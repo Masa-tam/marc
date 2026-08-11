@@ -1,7 +1,7 @@
 #include "frame/lzss_contextual_rans_profile.hpp"
 
 #include "core/checked_math.hpp"
-#include "entropy/contextual_rans_compact_format.hpp"
+#include "entropy/contextual_rans_format.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -137,7 +137,7 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
 
     const std::uint64_t token_count{largest_frame};
     constexpr auto descriptor_size =
-        entropy::internal::contextual_rans_compact_max_descriptor_size;
+        entropy::internal::contextual_rans_max_descriptor_size;
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t views_bytes{};
@@ -209,7 +209,7 @@ calculate_lzss_contextual_rans_decoder_workspace(
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
     constexpr auto descriptor_size =
-        entropy::internal::contextual_rans_compact_max_descriptor_size;
+        entropy::internal::contextual_rans_max_descriptor_size;
     if (!core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_rans_frame_header_size),

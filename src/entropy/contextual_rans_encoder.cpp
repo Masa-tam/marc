@@ -153,8 +153,10 @@ ContextualRansEncodeResult plan_contextual_rans_operations(
         return fail(result, ContextualRansEncodeError::arithmetic_overflow);
     }
     planned.payload_size = static_cast<std::uint32_t>(result.payload_size);
+    std::size_t descriptor_size{};
     const auto format_error = validate_contextual_rans_descriptor(
-        planned, planned.decision_count, planned.payload_size, limits);
+        planned, planned.decision_count, planned.payload_size, limits,
+        descriptor_size);
     if (format_error == ContextualRansFormatError::limit_exceeded) {
         return fail(result, ContextualRansEncodeError::limit_exceeded);
     }

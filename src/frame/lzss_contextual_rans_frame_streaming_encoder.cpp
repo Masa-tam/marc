@@ -70,7 +70,7 @@ enum class OverlapCheck : std::uint8_t {
         || (result.error
                 == LzssContextualRansFrameEncodeError::descriptor_error
             && result.descriptor_error
-                == entropy::internal::ContextualRansCompactFormatError::
+                == entropy::internal::ContextualRansFormatError::
                     limit_exceeded);
 }
 

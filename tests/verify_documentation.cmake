@@ -678,7 +678,7 @@ if(c_api_experimental_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API experimental profile inventory is stale")
 endif()
 string(FIND "${c_api_content}"
-    "canonical lifecycle emits only compact entropy variant 3"
+    "canonical lifecycle emits only variable-length entropy variant 3"
     c_api_contextual_rans_profile_offset)
 if(c_api_contextual_rans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual rANS inventory is stale")

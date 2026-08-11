@@ -130,12 +130,12 @@ plan_lzss_contextual_rans_frame(
         output_already_committed};
     entropy::internal::ContextualRansDescriptor descriptor{};
     result.entropy_encode =
-        context::internal::plan_lzss_contextual_rans_compact_tokens(
-            tokens, stream.dictionary, token_context, limits, descriptor,
-            result.descriptor_size);
+        context::internal::plan_lzss_contextual_rans_tokens(
+            tokens, stream.dictionary, token_context, limits, descriptor);
     result.event_count = result.entropy_encode.event_count;
     result.decision_count = result.entropy_encode.decision_count;
     result.payload_size = result.entropy_encode.payload_size;
+    result.descriptor_size = result.entropy_encode.descriptor_size;
     if (result.entropy_encode.error
         != context::internal::LzssContextualRansEncodeError::none) {
         result.error = LzssContextualRansFrameEncodeError::entropy_encode_error;
@@ -152,12 +152,12 @@ plan_lzss_contextual_rans_frame(
     }
     std::size_t verified_descriptor_size{};
     result.descriptor_error =
-        entropy::internal::validate_contextual_rans_compact_descriptor(
+        entropy::internal::validate_contextual_rans_descriptor(
             descriptor, result.decision_count,
             static_cast<std::uint32_t>(result.payload_size), limits,
             verified_descriptor_size);
     if (result.descriptor_error
-            != entropy::internal::ContextualRansCompactFormatError::none
+            != entropy::internal::ContextualRansFormatError::none
         || verified_descriptor_size != result.descriptor_size) {
         result.error = LzssContextualRansFrameEncodeError::descriptor_error;
         return result;
@@ -251,25 +251,23 @@ encode_lzss_contextual_rans_frame(
         static_cast<std::uint32_t>(result.token_count),
         static_cast<std::uint32_t>(raw_input.size()),
         output_already_committed};
-    std::size_t descriptor_size{};
     result.entropy_encode =
-        context::internal::encode_lzss_contextual_rans_compact_tokens(
+        context::internal::encode_lzss_contextual_rans_tokens(
             tokens, stream.dictionary, token_context, limits,
-            output.subspan(payload_offset, result.payload_size), descriptor,
-            descriptor_size);
+            output.subspan(payload_offset, result.payload_size), descriptor);
     if (result.entropy_encode.error
             != context::internal::LzssContextualRansEncodeError::none
         || result.entropy_encode.event_count != result.event_count
         || result.entropy_encode.decision_count != result.decision_count
         || result.entropy_encode.payload_size != result.payload_size
-        || descriptor_size != result.descriptor_size) {
+        || result.entropy_encode.descriptor_size != result.descriptor_size) {
         result.error = LzssContextualRansFrameEncodeError::internal_error;
         return result;
     }
 
     std::size_t descriptor_written{};
     result.descriptor_error =
-        entropy::internal::serialize_contextual_rans_compact_descriptor(
+        entropy::internal::serialize_contextual_rans_descriptor(
             descriptor, result.decision_count,
             static_cast<std::uint32_t>(result.payload_size), limits,
             output.subspan(
@@ -277,7 +275,7 @@ encode_lzss_contextual_rans_frame(
                 result.descriptor_size),
             descriptor_written);
     if (result.descriptor_error
-            != entropy::internal::ContextualRansCompactFormatError::none
+            != entropy::internal::ContextualRansFormatError::none
         || descriptor_written != result.descriptor_size) {
         result.error = LzssContextualRansFrameEncodeError::internal_error;
         return result;

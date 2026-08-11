@@ -86,7 +86,6 @@ set(MARC_SOURCES
     src/entropy/contextual_rans_encoder.cpp
     src/entropy/contextual_rans_decode_tables.cpp
     src/entropy/contextual_compact_model.cpp
-    src/entropy/contextual_rans_compact_format.cpp
     src/entropy/contextual_rans_format.cpp
     src/entropy/contextual_tans_format.cpp
     src/entropy/contextual_tans_encode_core.cpp
@@ -1459,10 +1458,8 @@ if(MARC_BUILD_TESTS)
         tests/contextual_dynamic_range_decoder_tests.cpp
         tests/contextual_dynamic_range_encoder_tests.cpp
         tests/contextual_rans_decoder_tests.cpp
-        tests/contextual_rans_compact_decoder_tests.cpp
         tests/contextual_rans_encoder_tests.cpp
         tests/contextual_rans_decode_tables_tests.cpp
-        tests/contextual_rans_compact_format_tests.cpp
         tests/contextual_rans_format_tests.cpp
         tests/contextual_tans_format_tests.cpp
         tests/contextual_tans_encoder_tests.cpp
@@ -1498,7 +1495,6 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_blocked_huffman_fuzz_regression_tests.cpp
         tests/lzss_contextual_tans_fuzz_regression_tests.cpp
         tests/lzss_contextual_rans_decoder_tests.cpp
-        tests/lzss_contextual_rans_compact_decoder_tests.cpp
         tests/lzss_contextual_rans_encoder_tests.cpp
         tests/lzss_contextual_rans_format_tests.cpp
         tests/lzss_contextual_rans_frame_decoder_tests.cpp

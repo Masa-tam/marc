@@ -38,22 +38,8 @@ bool ContextualRansDecoder::boundary_state() const noexcept {
         && state_ < rans_lower_bound * UINT64_C(256);
 }
 
-ContextualRansDecodeResult ContextualRansDecoder::begin(
-    const ContextualRansDescriptor& descriptor,
-    const std::span<const std::byte> payload,
-    const core::DecoderLimits& limits,
-    const std::span<RansDecodeEntry> table_output) noexcept {
-    reset();
-    if (validate_contextual_rans_descriptor(
-            descriptor, descriptor.decision_count, descriptor.payload_size,
-            limits) != ContextualRansFormatError::none) {
-        return fail(ContextualRansDecodeError::invalid_descriptor);
-    }
-    return begin_validated(descriptor, payload, table_output);
-}
-
-ContextualRansCompactBeginResult ContextualRansDecoder::begin_compact(
-    const std::span<const std::byte> compact_descriptor,
+ContextualRansBeginResult ContextualRansDecoder::begin(
+    const std::span<const std::byte> serialized_descriptor,
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const std::span<const std::byte> payload,
@@ -61,15 +47,15 @@ ContextualRansCompactBeginResult ContextualRansDecoder::begin_compact(
     const std::span<RansDecodeEntry> table_output) noexcept {
     reset();
     ContextualRansDescriptor descriptor{};
-    const auto format_error = parse_contextual_rans_compact_descriptor(
-        compact_descriptor, expected_decision_count, expected_payload_size,
+    const auto format_error = parse_contextual_rans_descriptor(
+        serialized_descriptor, expected_decision_count, expected_payload_size,
         limits, descriptor);
-    if (format_error != ContextualRansCompactFormatError::none) {
+    if (format_error != ContextualRansFormatError::none) {
         return {fail(ContextualRansDecodeError::invalid_descriptor),
                 format_error};
     }
     return {begin_validated(descriptor, payload, table_output),
-            ContextualRansCompactFormatError::none};
+            ContextualRansFormatError::none};
 }
 
 ContextualRansDecodeResult ContextualRansDecoder::begin_validated(

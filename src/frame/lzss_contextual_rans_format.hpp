@@ -3,7 +3,7 @@
 
 #include "core/limits.hpp"
 #include "dictionary/lzss_format.hpp"
-#include "entropy/contextual_rans_compact_format.hpp"
+#include "entropy/contextual_rans_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <cstddef>
@@ -143,8 +143,8 @@ struct LzssContextualRansFramePreflightResult {
         LzssContextualRansFramePreflightError::none};
     LzssContextualRansFrameHeaderError header_error{
         LzssContextualRansFrameHeaderError::none};
-    entropy::internal::ContextualRansCompactFormatError descriptor_error{
-        entropy::internal::ContextualRansCompactFormatError::none};
+    entropy::internal::ContextualRansFormatError descriptor_error{
+        entropy::internal::ContextualRansFormatError::none};
 };
 
 [[nodiscard]] LzssContextualRansFramePreflightResult

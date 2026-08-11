@@ -1,7 +1,7 @@
 #include <marc/marc.h>
 
 #include "dictionary/lzss_typed_token.hpp"
-#include "entropy/contextual_rans_compact_format.hpp"
+#include "entropy/contextual_rans_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 #include "entropy/rans_decode_table.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
@@ -34,7 +34,7 @@ constexpr std::size_t maximum_internal = 2U << 20;
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
     const Representation) noexcept {
     const auto descriptor_size =
-        marc::entropy::internal::contextual_rans_compact_max_descriptor_size;
+        marc::entropy::internal::contextual_rans_max_descriptor_size;
     return marc::frame::internal::lzss_contextual_rans_frame_header_size
         + descriptor_size + maximum_payload;
 }

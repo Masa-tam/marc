@@ -2,7 +2,6 @@
 #define MARC_ENTROPY_CONTEXTUAL_RANS_DECODER_HPP
 
 #include "core/limits.hpp"
-#include "entropy/contextual_rans_compact_format.hpp"
 #include "entropy/contextual_rans_decode_tables.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
@@ -42,22 +41,15 @@ struct ContextualRansDecodeResult {
     ContextualRansDecodeError error{ContextualRansDecodeError::none};
 };
 
-struct ContextualRansCompactBeginResult {
+struct ContextualRansBeginResult {
     ContextualRansDecodeResult decode{};
-    ContextualRansCompactFormatError format_error{
-        ContextualRansCompactFormatError::none};
+    ContextualRansFormatError format_error{ContextualRansFormatError::none};
 };
 
 class ContextualRansDecoder {
 public:
-    [[nodiscard]] ContextualRansDecodeResult begin(
-        const ContextualRansDescriptor& descriptor,
-        std::span<const std::byte> payload,
-        const core::DecoderLimits& limits,
-        std::span<RansDecodeEntry> table_output) noexcept;
-
-    [[nodiscard]] ContextualRansCompactBeginResult begin_compact(
-        std::span<const std::byte> compact_descriptor,
+    [[nodiscard]] ContextualRansBeginResult begin(
+        std::span<const std::byte> serialized_descriptor,
         std::uint32_t expected_decision_count,
         std::uint32_t expected_payload_size,
         std::span<const std::byte> payload,

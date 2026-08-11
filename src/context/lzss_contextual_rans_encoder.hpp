@@ -27,6 +27,7 @@ struct LzssContextualRansEncodeResult {
     std::size_t event_count{};
     std::uint32_t decision_count{};
     std::size_t payload_size{};
+    std::size_t descriptor_size{};
     dictionary::internal::LzssTypedFrameValidationResult token_validation{};
     entropy::internal::ContextualRansEncodeError entropy_error{
         entropy::internal::ContextualRansEncodeError::none};
@@ -50,25 +51,6 @@ encode_lzss_contextual_rans_tokens(
     const core::DecoderLimits& limits,
     std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor) noexcept;
-
-[[nodiscard]] LzssContextualRansEncodeResult
-plan_lzss_contextual_rans_compact_tokens(
-    std::span<const dictionary::internal::LzssTypedToken> tokens,
-    const dictionary::internal::LzssParameters& parameters,
-    const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    std::size_t& descriptor_size) noexcept;
-
-[[nodiscard]] LzssContextualRansEncodeResult
-encode_lzss_contextual_rans_compact_tokens(
-    std::span<const dictionary::internal::LzssTypedToken> tokens,
-    const dictionary::internal::LzssParameters& parameters,
-    const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits,
-    std::span<std::byte> payload_output,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    std::size_t& descriptor_size) noexcept;
 
 } // namespace marc::context::internal
 

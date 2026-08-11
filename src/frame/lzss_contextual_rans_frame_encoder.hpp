@@ -38,8 +38,8 @@ struct LzssContextualRansFrameEncodeResult {
     context::internal::LzssContextualRansEncodeResult entropy_encode{};
     LzssContextualRansFrameHeaderError header_error{
         LzssContextualRansFrameHeaderError::none};
-    entropy::internal::ContextualRansCompactFormatError descriptor_error{
-        entropy::internal::ContextualRansCompactFormatError::none};
+    entropy::internal::ContextualRansFormatError descriptor_error{
+        entropy::internal::ContextualRansFormatError::none};
     LzssContextualRansFrameEncodeError error{
         LzssContextualRansFrameEncodeError::none};
 };

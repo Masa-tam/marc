@@ -129,7 +129,12 @@ BypassBits(bit_count 1, value 0)
 From reset models, variant-1 arithmetic and termination produce payload
 `00 A4 3C 3C 38 00`. This is five modeled events and six entropy decisions.
 
-## Contextual rANS variant 2
+## Retired Contextual rANS variant 2 identity
+
+This section records the withdrawn fixed-descriptor experiment. Entropy
+identity `4/2` remains permanently reserved, but current encoders do not emit
+it and current decoders reject it before descriptor parsing. The implementation
+details below are retained as provenance, not as a supported backend contract.
 
 Entropy algorithm ID 4, variant 2 retains variant 1's scalar unsigned 64-bit
 state, `table_log=12`, normalized total 4,096, lower bound `L=2^31`, byte
@@ -259,7 +264,7 @@ and backward encode passes must reproduce the reference operation encoder's
 decision count, normalized descriptor, exact payload extent, and every payload
 byte. The entropy primitives remain unaware of token meaning.
 
-## Contextual rANS variant 3 compact descriptor
+## Contextual rANS variant 3 canonical descriptor
 
 Entropy algorithm ID 4, variant 3 retains variant 2's normalized models,
 single scalar state, payload bytes, decision ordering, bypass model, strict
@@ -311,15 +316,22 @@ and decoder limits, require exact input consumption, and publish only after
 the complete descriptor succeeds. The descriptor module itself admits neither
 rANS state nor frames; state admission is the separate boundary below.
 
-The private scalar decoder now provides a compact begin operation over an
+The private scalar decoder provides one canonical begin operation over an
 exact descriptor span, frame-declared decision and payload sizes, exact
 payload, decoder limits, and caller-owned fixed table storage. A parse failure
-reports its compact format category and leaves the decoder in sticky
+reports its format category and leaves the decoder in sticky
 `invalid_descriptor` state without touching table storage. Successful input
 uses the same table layout, Symbol/bypass transitions, completion checks, and
 reuse policy as variant 2. Format-specific validation charges 23 through 9,025
 descriptor bytes before the shared model/table core; it never substitutes the
 fixed 9,052-byte charge.
+
+The canonical implementation uses unqualified Contextual rANS names at its
+descriptor, scalar decoder, typed-token bridge, frame, streaming, fuzz, and
+public boundaries. There is no descriptor-object decoding entry and no
+compact-qualified compatibility alias. The dense/sparse record primitive
+retains its generic compact-model name because Contextual tANS shares that
+representation rule.
 
 ## Contextual tANS variant 2
 

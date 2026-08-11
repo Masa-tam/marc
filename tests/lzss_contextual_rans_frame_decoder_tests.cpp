@@ -14,7 +14,7 @@ namespace {
 using namespace marc::frame::internal;
 using marc::dictionary::internal::LzssTypedToken;
 using marc::dictionary::internal::LzssTypedTokenKind;
-using marc::entropy::internal::ContextualRansCompactFormatError;
+using marc::entropy::internal::ContextualRansFormatError;
 using marc::entropy::internal::RansDecodeEntry;
 using marc::entropy::internal::contextual_rans_decode_table_entries;
 
@@ -80,7 +80,7 @@ TEST(LzssContextualRansFrameDecoder, DecodesSpecifiedFrameAtomically) {
     EXPECT_EQ(result.required_token_count, 1U);
     EXPECT_EQ(result.required_raw_size, 1U);
     EXPECT_EQ(result.token_decode.format_error,
-              ContextualRansCompactFormatError::none);
+              ContextualRansFormatError::none);
     EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::literal);
     EXPECT_EQ(tokens[0].literal, 'A');
     EXPECT_EQ(tokens[1].literal, 0xcc);
@@ -120,7 +120,7 @@ TEST(LzssContextualRansFrameDecoder,
     EXPECT_EQ(result.error,
               LzssContextualRansFrameDecodeError::preflight_error);
     EXPECT_EQ(result.preflight.descriptor_error,
-              ContextualRansCompactFormatError::noncanonical_representation);
+              ContextualRansFormatError::noncanonical_representation);
     EXPECT_EQ(result.serialized_consumed, 0U);
     EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::match);
     EXPECT_EQ(raw[0], std::byte{0xcc});
@@ -137,7 +137,7 @@ TEST(LzssContextualRansFrameDecoder,
 }
 
 TEST(LzssContextualRansFrameDecoder,
-     RejectsDescriptorExtentsOutsideCompactBounds) {
+     RejectsDescriptorExtentsOutsideCanonicalBounds) {
     auto frame = canonical_frame_vector();
     const auto stream = stream_config();
     auto table_storage = tables();

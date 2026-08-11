@@ -18326,3 +18326,26 @@ discarded and the reviewed seed retained.
   external implementation expression entered the work.
 - Local validation: the sole ClangCL warning-clean fuzz compile-smoke target
   builds successfully after CMake regeneration.
+
+## CR-0783: 2026-08-12 - Canonical Contextual rANS entropy boundary
+
+- Authoring method: promoted marc's existing variable descriptor and
+  serialized-decoder path to unqualified entropy and typed-token names, removed
+  the fixed descriptor implementation, and consolidated duplicate tests.
+- References used: DD-749, DD-750, DD-755; IR-0531; TVG-0628 and TVG-0632;
+  marc's local variant-3 descriptor, scalar coder, table builder, and typed
+  token bridge.
+- Known implementations intentionally not consulted: external rANS or
+  compression implementations, source code, APIs, archives, corpora, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: accept only exact serialized canonical descriptors;
+  return descriptor extent with direct encode planning; retain shared generic
+  compact-model records for tANS; preserve non-format behavioral regressions.
+- Generated-code task description: remove fixed descriptor parsing and
+  descriptor-object decode entry, rename the surviving boundary without an
+  alias, and route frame, fuzz, profile, and tests through it.
+- Similarity review: the change deletes and renames marc-owned implementation
+  expression only; no external implementation expression entered the work.
+- Local validation: ClangCL 22.1.3 builds the library, CLI, and complete core
+  test executable warning-clean; all 81 focused Contextual rANS, C API, CLI,
+  benchmark, malformed, and completion tests pass with a 240-second timeout.

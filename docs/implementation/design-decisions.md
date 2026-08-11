@@ -15528,3 +15528,18 @@ private decoder paths. Remove the compile-time representation switch and the
 duplicate compact target. Size its fixed thread-local workspace from the
 variant-3 maximum descriptor and retain the existing bounded input, output,
 frame, payload, table, and aggregate limits.
+
+## DD-755: Contextual rANS has one canonical entropy boundary
+
+- Date: 2026-08-12
+- Status: accepted
+
+Delete the fixed 9,052-byte descriptor parser, serializer, decoder entry, and
+typed-token bridge. Promote variant 3's 23-through-9,025-byte descriptor to
+the unqualified entropy and context names without changing its bytes. Return
+the canonical descriptor size in the direct typed-token encode result, admit
+decoding only from an exact serialized descriptor span, and retain the shared
+generic compact-model records because Contextual tANS also consumes them.
+Preserve applicable scalar-state, malformed-input, limit, aliasing, and token
+validation tests through the canonical serialized entry rather than deleting
+coverage with the retired representation.

@@ -1,3 +1,4 @@
+#include "context/lzss_field_context_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <gtest/gtest.h>
@@ -6,12 +7,15 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <ranges>
+#include <span>
+#include <vector>
 
 namespace {
 
-using marc::entropy::internal::ContextualRansDescriptor;
 using marc::entropy::internal::ContextualRansFormatError;
-using marc::entropy::internal::contextual_rans_descriptor_size;
+using marc::entropy::internal::ContextualRansDescriptor;
+using marc::entropy::internal::contextual_rans_max_descriptor_size;
 
 [[nodiscard]] ContextualRansDescriptor literal_a_descriptor() {
     ContextualRansDescriptor descriptor{};
@@ -22,147 +26,273 @@ using marc::entropy::internal::contextual_rans_descriptor_size;
     return descriptor;
 }
 
+[[nodiscard]] bool descriptors_equal(
+    const ContextualRansDescriptor& left,
+    const ContextualRansDescriptor& right) {
+    return left.decision_count == right.decision_count
+        && left.payload_size == right.payload_size
+        && left.table_log == right.table_log
+        && left.flags == right.flags
+        && left.context_count == right.context_count
+        && left.frequency_entry_count == right.frequency_entry_count
+        && left.frequencies == right.frequencies;
+}
+
+[[nodiscard]] std::vector<std::byte> serialize(
+    const ContextualRansDescriptor& descriptor) {
+    std::array<std::byte, contextual_rans_max_descriptor_size>
+        storage{};
+    std::size_t written{};
+    EXPECT_EQ(
+        marc::entropy::internal::serialize_contextual_rans_descriptor(
+            descriptor, descriptor.decision_count, descriptor.payload_size,
+            {}, storage, written),
+        ContextualRansFormatError::none);
+    return {storage.begin(), storage.begin() + written};
+}
+
+[[nodiscard]] ContextualRansDescriptor context_twenty_descriptor(
+    const std::span<const std::uint16_t> frequencies) {
+    ContextualRansDescriptor descriptor{};
+    descriptor.decision_count = 5;
+    descriptor.payload_size = 8;
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets[20];
+    std::copy(frequencies.begin(), frequencies.end(),
+              descriptor.frequencies.begin() + offset);
+    return descriptor;
+}
+
 TEST(ContextualRansFormat, SerializesAndParsesOneLiteralVector) {
-    const auto descriptor = literal_a_descriptor();
-    std::array<std::byte, contextual_rans_descriptor_size> bytes{};
-    ASSERT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}, bytes),
-              ContextualRansFormatError::none);
-    constexpr std::array prefix{
+    constexpr std::array expected{
         std::byte{0x02}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
         std::byte{0x08}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
         std::byte{0x0c}, std::byte{0x00}, std::byte{0x1f}, std::byte{0x00},
-        std::byte{0xa6}, std::byte{0x11}, std::byte{0x00}, std::byte{0x00}};
-    EXPECT_TRUE(std::ranges::equal(
-        std::span<const std::byte>{bytes}.first(prefix.size()), prefix));
-    EXPECT_EQ(bytes[16], std::byte{0x00});
-    EXPECT_EQ(bytes[17], std::byte{0x10});
-    EXPECT_EQ(bytes[158], std::byte{0x00});
-    EXPECT_EQ(bytes[159], std::byte{0x10});
-    EXPECT_EQ(std::count_if(
-                  bytes.begin() + 16, bytes.end(),
-                  [](const std::byte value) { return value != std::byte{}; }),
-              2);
+        std::byte{0xa6}, std::byte{0x11}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x09}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x00}, std::byte{0x00}, std::byte{0x10}, std::byte{0x01},
+        std::byte{0x00}, std::byte{0x41}};
+    const auto descriptor = literal_a_descriptor();
+    const auto bytes = serialize(descriptor);
+    EXPECT_TRUE(std::ranges::equal(bytes, expected));
 
     ContextualRansDescriptor parsed{};
     ASSERT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
                   bytes, 2, 8, {}, parsed),
               ContextualRansFormatError::none);
-    EXPECT_EQ(parsed.decision_count, descriptor.decision_count);
-    EXPECT_EQ(parsed.payload_size, descriptor.payload_size);
-    EXPECT_EQ(parsed.frequencies, descriptor.frequencies);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
 }
 
-TEST(ContextualRansFormat, AcceptsZeroUnusedSlicesAndCompleteUsedSlices) {
-    auto descriptor = literal_a_descriptor();
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::none);
+TEST(ContextualRansFormat, SelectsSparseStrictlyAndDenseOnTie) {
+    constexpr std::array<std::uint16_t, 4> four{
+        1024, 1024, 1024, 1024};
+    const auto sparse = serialize(context_twenty_descriptor(four));
+    ASSERT_EQ(sparse.size(), 32U);
+    EXPECT_EQ(sparse[20], std::byte{0x01});
 
-    descriptor.frequencies[0] = 2048;
-    descriptor.frequencies[1] = 2048;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
+    constexpr std::array<std::uint16_t, 5> five{
+        819, 819, 819, 819, 820};
+    const auto dense = serialize(context_twenty_descriptor(five));
+    ASSERT_EQ(dense.size(), 35U);
+    EXPECT_EQ(dense[20], std::byte{0x00});
+
+    ContextualRansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  dense, 5, 8, {}, parsed),
               ContextualRansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, context_twenty_descriptor(five)));
 }
 
-TEST(ContextualRansFormat, RejectsMalformedSlicesWithoutPublishing) {
-    auto descriptor = literal_a_descriptor();
-    descriptor.frequencies[0] = 4095;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::invalid_frequency_table);
+TEST(ContextualRansFormat, EveryDenseModelReachesExactMaximum) {
+    ContextualRansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 8;
+    for (std::size_t context = 0;
+         context < marc::context::internal::lzss_field_context_count;
+         ++context) {
+        const auto begin =
+            marc::context::internal::lzss_field_context_offsets[context];
+        const auto alphabet =
+            marc::context::internal::lzss_field_context_alphabets[context];
+        for (std::uint16_t symbol = 0; symbol + 1 < alphabet; ++symbol) {
+            descriptor.frequencies[begin + symbol] = 1;
+        }
+        descriptor.frequencies[begin + alphabet - 1] =
+            static_cast<std::uint16_t>(4096 - (alphabet - 1));
+    }
 
-    std::array<std::byte, contextual_rans_descriptor_size> bytes{};
-    auto valid = literal_a_descriptor();
-    ASSERT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
-                  valid, 2, 8, {}, bytes),
+    const auto bytes = serialize(descriptor);
+    ASSERT_EQ(bytes.size(), contextual_rans_max_descriptor_size);
+    ContextualRansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  bytes, 1, 8, {}, parsed),
               ContextualRansFormatError::none);
-    bytes[16] = std::byte{0xff};
-    bytes[17] = std::byte{0x0f};
-    ContextualRansDescriptor parsed = valid;
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualRansFormat, RejectsEveryStrictPrefixAndTrailingData) {
+    const auto valid = serialize(literal_a_descriptor());
+    for (std::size_t extent = 0; extent < valid.size(); ++extent) {
+        auto sentinel = literal_a_descriptor();
+        sentinel.flags = 0xa5;
+        const auto before = sentinel;
+        EXPECT_NE(
+            marc::entropy::internal::parse_contextual_rans_descriptor(
+                std::span<const std::byte>{valid}.first(extent), 2, 8, {},
+                sentinel),
+                  ContextualRansFormatError::none)
+            << extent;
+        EXPECT_TRUE(descriptors_equal(sentinel, before)) << extent;
+    }
+
+    auto trailing = valid;
+    trailing.push_back(std::byte{});
+    auto sentinel = literal_a_descriptor();
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
     EXPECT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
-                  bytes, 2, 8, {}, parsed),
-              ContextualRansFormatError::invalid_frequency_table);
-    EXPECT_EQ(parsed.frequencies, valid.frequencies);
+                  trailing, 2, 8, {}, sentinel),
+              ContextualRansFormatError::trailing_data);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
 }
 
-TEST(ContextualRansFormat, RejectsFieldsPayloadBoundsAndContradictions) {
+TEST(ContextualRansFormat, RejectsMasksModesAndNoncanonicalRecords) {
+    const auto valid = serialize(literal_a_descriptor());
+    auto expect_error = [&](std::vector<std::byte> bytes,
+                            const ContextualRansFormatError expected) {
+        auto sentinel = literal_a_descriptor();
+        sentinel.flags = 0xa5;
+        const auto before = sentinel;
+        EXPECT_EQ(
+            marc::entropy::internal::parse_contextual_rans_descriptor(
+                bytes, 2, 8, {}, sentinel),
+                  expected);
+        EXPECT_TRUE(descriptors_equal(sentinel, before));
+    };
+
+    auto malformed = valid;
+    malformed[19] |= std::byte{0x80};
+    expect_error(malformed,
+                 ContextualRansFormatError::invalid_active_context_mask);
+    malformed = valid;
+    std::fill(malformed.begin() + 16, malformed.begin() + 20, std::byte{});
+    expect_error(malformed,
+                 ContextualRansFormatError::invalid_active_context_mask);
+    malformed = valid;
+    malformed[16] = std::byte{0x08};
+    expect_error(malformed,
+                 ContextualRansFormatError::invalid_frequency_table);
+    malformed = valid;
+    malformed[16] = std::byte{0x01};
+    expect_error(malformed, ContextualRansFormatError::trailing_data);
+    malformed = valid;
+    malformed[20] = std::byte{0x02};
+    expect_error(malformed, ContextualRansFormatError::invalid_mode);
+    malformed = valid;
+    malformed[21] = std::byte{0x01};
+    malformed[22] = std::byte{0x10};
+    expect_error(malformed,
+                 ContextualRansFormatError::invalid_frequency_table);
+    malformed = valid;
+    malformed[20] = std::byte{0x01};
+    malformed[21] = std::byte{0x00};
+    malformed[22] = std::byte{0x00};
+    expect_error(
+        malformed,
+        ContextualRansFormatError::noncanonical_representation);
+}
+
+TEST(ContextualRansFormat, RejectsMalformedSparseModels) {
+    constexpr std::array<std::uint16_t, 2> two{2048, 2048};
+    const auto descriptor = context_twenty_descriptor(two);
+    const auto valid = serialize(descriptor);
+    ASSERT_EQ(valid.size(), 26U);
+    ASSERT_EQ(valid[20], std::byte{0x01});
+
+    auto expect_invalid = [&](std::vector<std::byte> bytes) {
+        ContextualRansDescriptor sentinel = literal_a_descriptor();
+        const auto before = sentinel;
+        EXPECT_EQ(
+            marc::entropy::internal::parse_contextual_rans_descriptor(
+                bytes, 5, 8, {}, sentinel),
+                  ContextualRansFormatError::invalid_frequency_table);
+        EXPECT_TRUE(descriptors_equal(sentinel, before));
+    };
+    auto malformed = valid;
+    malformed[25] = malformed[22];
+    expect_invalid(malformed);
+    malformed = valid;
+    malformed[22] = std::byte{0x01};
+    malformed[25] = std::byte{0x00};
+    expect_invalid(malformed);
+    malformed = valid;
+    malformed[23] = std::byte{};
+    malformed[24] = std::byte{};
+    expect_invalid(malformed);
+    malformed = valid;
+    malformed[23] = std::byte{0x00};
+    malformed[24] = std::byte{0x10};
+    expect_invalid(malformed);
+}
+
+TEST(ContextualRansFormat, EnforcesFieldsLimitsAndAtomicOutput) {
     auto descriptor = literal_a_descriptor();
+    std::size_t size = 0xa5a5;
     descriptor.decision_count = 0;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 0, 8, {}),
+    EXPECT_EQ(
+        marc::entropy::internal::validate_contextual_rans_descriptor(
+            descriptor, 0, 8, {}, size),
               ContextualRansFormatError::invalid_decision_count);
-    descriptor = literal_a_descriptor();
-    descriptor.payload_size = 7;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 7, {}),
-              ContextualRansFormatError::invalid_payload_size);
-    descriptor.payload_size = 13;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 13, {}),
-              ContextualRansFormatError::invalid_payload_size);
-    descriptor = literal_a_descriptor();
-    descriptor.table_log = 11;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::invalid_table_log);
-    descriptor = literal_a_descriptor();
-    descriptor.flags = 1;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::unknown_flags);
-    descriptor = literal_a_descriptor();
-    descriptor.context_count = 30;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::invalid_context_count);
-    descriptor = literal_a_descriptor();
-    --descriptor.frequency_entry_count;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}),
-              ContextualRansFormatError::invalid_frequency_entry_count);
-    descriptor = literal_a_descriptor();
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 3, 8, {}),
-              ContextualRansFormatError::contradictory_size);
-}
+    EXPECT_EQ(size, 0xa5a5U);
 
-TEST(ContextualRansFormat, EnforcesBlockPayloadTableAndBufferLimits) {
-    const auto descriptor = literal_a_descriptor();
+    descriptor = literal_a_descriptor();
     marc::core::DecoderLimits limits{};
     limits.max_block_size = 1;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, limits),
+    EXPECT_EQ(
+        marc::entropy::internal::validate_contextual_rans_descriptor(
+            descriptor, 2, 8, limits, size),
               ContextualRansFormatError::limit_exceeded);
     limits = {};
     limits.max_compressed_payload_size = 7;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, limits),
+    EXPECT_EQ(
+        marc::entropy::internal::validate_contextual_rans_descriptor(
+            descriptor, 2, 8, limits, size),
               ContextualRansFormatError::limit_exceeded);
     limits = {};
     limits.max_entropy_table_entries =
         marc::entropy::internal::contextual_rans_decode_table_entries - 1;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, limits),
+    EXPECT_EQ(
+        marc::entropy::internal::validate_contextual_rans_descriptor(
+            descriptor, 2, 8, limits, size),
               ContextualRansFormatError::limit_exceeded);
     limits = {};
-    limits.max_internal_buffered_bytes = contextual_rans_descriptor_size + 7;
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
-                  descriptor, 2, 8, limits),
+    limits.max_internal_buffered_bytes = 33;
+    EXPECT_EQ(
+        marc::entropy::internal::validate_contextual_rans_descriptor(
+            descriptor, 2, 8, limits, size),
               ContextualRansFormatError::limit_exceeded);
-}
 
-TEST(ContextualRansFormat, FailedSerializationLeavesOutputUntouched) {
-    auto descriptor = literal_a_descriptor();
-    descriptor.flags = 1;
-    std::array<std::byte, contextual_rans_descriptor_size> output{};
-    std::fill(output.begin(), output.end(), std::byte{0xa5});
-    EXPECT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
-                  descriptor, 2, 8, {}, output),
-              ContextualRansFormatError::unknown_flags);
+    std::array<std::byte, 25> output{};
+    std::ranges::fill(output, std::byte{0xa5});
+    std::size_t written = 0xa5a5;
+    EXPECT_EQ(
+        marc::entropy::internal::serialize_contextual_rans_descriptor(
+            descriptor, 2, 8, {}, output, written),
+        ContextualRansFormatError::output_too_small);
     EXPECT_TRUE(std::ranges::all_of(
-        output, [](const std::byte value) { return value == std::byte{0xa5}; }));
+        output, [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
+
+    descriptor.flags = 1;
+    std::array<std::byte, contextual_rans_max_descriptor_size> large{};
+    std::ranges::fill(large, std::byte{0xa5});
+    EXPECT_EQ(
+        marc::entropy::internal::serialize_contextual_rans_descriptor(
+            descriptor, 2, 8, {}, large, written),
+        ContextualRansFormatError::unknown_flags);
+    EXPECT_TRUE(std::ranges::all_of(
+        large, [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
 }
 
 } // namespace

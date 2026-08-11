@@ -36,43 +36,24 @@ struct LzssContextualRansDecodeResult {
         LzssContextualRansDecodeError::none};
 };
 
-struct LzssContextualRansCompactDecodeResult {
+struct LzssContextualRansFormatDecodeResult {
     LzssContextualRansDecodeResult decode{};
-    entropy::internal::ContextualRansCompactFormatError format_error{
-        entropy::internal::ContextualRansCompactFormatError::none};
+    entropy::internal::ContextualRansFormatError format_error{
+        entropy::internal::ContextualRansFormatError::none};
 };
 
-[[nodiscard]] LzssContextualRansDecodeResult
+[[nodiscard]] LzssContextualRansFormatDecodeResult
 validate_lzss_contextual_rans_tokens(
-    const entropy::internal::ContextualRansDescriptor& descriptor,
+    std::span<const std::byte> serialized_descriptor,
     std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     std::span<entropy::internal::RansDecodeEntry> private_tables) noexcept;
 
-[[nodiscard]] LzssContextualRansDecodeResult
+[[nodiscard]] LzssContextualRansFormatDecodeResult
 decode_lzss_contextual_rans_tokens(
-    const entropy::internal::ContextualRansDescriptor& descriptor,
-    std::span<const std::byte> payload,
-    const dictionary::internal::LzssParameters& parameters,
-    const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits,
-    std::span<entropy::internal::RansDecodeEntry> private_tables,
-    std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
-
-[[nodiscard]] LzssContextualRansCompactDecodeResult
-validate_lzss_contextual_rans_compact_tokens(
-    std::span<const std::byte> compact_descriptor,
-    std::span<const std::byte> payload,
-    const dictionary::internal::LzssParameters& parameters,
-    const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits,
-    std::span<entropy::internal::RansDecodeEntry> private_tables) noexcept;
-
-[[nodiscard]] LzssContextualRansCompactDecodeResult
-decode_lzss_contextual_rans_compact_tokens(
-    std::span<const std::byte> compact_descriptor,
+    std::span<const std::byte> serialized_descriptor,
     std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,

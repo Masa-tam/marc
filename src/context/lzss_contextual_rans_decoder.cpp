@@ -15,7 +15,6 @@ using dictionary::internal::LzssTypedTokenError;
 using dictionary::internal::LzssTypedTokenKind;
 using entropy::internal::ContextualRansDecodeError;
 using entropy::internal::ContextualRansDecoder;
-using entropy::internal::ContextualRansDescriptor;
 using entropy::internal::RansDecodeEntry;
 
 [[nodiscard]] bool read_symbol(
@@ -237,45 +236,15 @@ enum class OverlapCheck : std::uint8_t {
     return result;
 }
 
-[[nodiscard]] LzssContextualRansDecodeResult run_pass(
-    const ContextualRansDescriptor& descriptor,
+[[nodiscard]] LzssContextualRansFormatDecodeResult run_pass(
+    const std::span<const std::byte> serialized_descriptor,
     const std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<RansDecodeEntry> tables,
     const std::span<LzssTypedToken> output) noexcept {
-    LzssContextualRansDecodeResult result{};
-    if (!validate_pass_start(parameters, context, limits, result)) {
-        return result;
-    }
-    if (descriptor.decision_count != context.declared_decision_count) {
-        result.error = LzssContextualRansDecodeError::invalid_counts;
-        return result;
-    }
-
-    ContextualRansDecoder decoder;
-    result.entropy = decoder.begin(descriptor, payload, limits, tables);
-    if (result.entropy.error != ContextualRansDecodeError::none) {
-        result.error = result.entropy.error
-                == ContextualRansDecodeError::table_output_too_small
-            ? LzssContextualRansDecodeError::table_output_too_small
-            : LzssContextualRansDecodeError::entropy_error;
-        return result;
-    }
-    return decode_started_pass(
-        decoder, parameters, context, limits, output, result);
-}
-
-[[nodiscard]] LzssContextualRansCompactDecodeResult run_compact_pass(
-    const std::span<const std::byte> compact_descriptor,
-    const std::span<const std::byte> payload,
-    const dictionary::internal::LzssParameters& parameters,
-    const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits,
-    const std::span<RansDecodeEntry> tables,
-    const std::span<LzssTypedToken> output) noexcept {
-    LzssContextualRansCompactDecodeResult result{};
+    LzssContextualRansFormatDecodeResult result{};
     if (!validate_pass_start(
             parameters, context, limits, result.decode)) {
         return result;
@@ -286,8 +255,8 @@ enum class OverlapCheck : std::uint8_t {
     }
 
     ContextualRansDecoder decoder;
-    const auto begin = decoder.begin_compact(
-        compact_descriptor, context.declared_decision_count,
+    const auto begin = decoder.begin(
+        serialized_descriptor, context.declared_decision_count,
         static_cast<std::uint32_t>(payload.size()), payload, limits, tables);
     result.decode.entropy = begin.decode;
     result.format_error = begin.format_error;
@@ -328,8 +297,8 @@ enum class OverlapCheck : std::uint8_t {
     return result;
 }
 
-[[nodiscard]] LzssContextualRansDecodeResult preflight_compact_workspace(
-    const std::span<const std::byte> compact_descriptor,
+[[nodiscard]] LzssContextualRansDecodeResult preflight_workspace(
+    const std::span<const std::byte> serialized_descriptor,
     const std::span<const std::byte> payload,
     const std::span<RansDecodeEntry> tables) noexcept {
     auto result = preflight_workspace(payload, tables);
@@ -343,10 +312,10 @@ enum class OverlapCheck : std::uint8_t {
         return result;
     }
     const auto descriptor_payload = ranges_overlap(
-        compact_descriptor.data(), compact_descriptor.size(), payload.data(),
+        serialized_descriptor.data(), serialized_descriptor.size(), payload.data(),
         payload.size());
     const auto descriptor_tables = ranges_overlap(
-        compact_descriptor.data(), compact_descriptor.size(),
+        serialized_descriptor.data(), serialized_descriptor.size(),
         used_tables.data(), table_bytes);
     if (descriptor_payload == OverlapCheck::arithmetic_overflow
         || descriptor_tables == OverlapCheck::arithmetic_overflow) {
@@ -391,92 +360,28 @@ enum class OverlapCheck : std::uint8_t {
 
 } // namespace
 
-LzssContextualRansDecodeResult validate_lzss_contextual_rans_tokens(
-    const entropy::internal::ContextualRansDescriptor& descriptor,
+LzssContextualRansFormatDecodeResult validate_lzss_contextual_rans_tokens(
+    const std::span<const std::byte> serialized_descriptor,
     const std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<entropy::internal::RansDecodeEntry> private_tables)
     noexcept {
-    const auto workspace = preflight_workspace(payload, private_tables);
-    if (workspace.error != LzssContextualRansDecodeError::none) {
-        return workspace;
-    }
-    return run_pass(
-        descriptor, payload, parameters, context, limits,
-        private_tables.first(
-            entropy::internal::contextual_rans_decode_table_entries), {});
-}
-
-LzssContextualRansDecodeResult decode_lzss_contextual_rans_tokens(
-    const entropy::internal::ContextualRansDescriptor& descriptor,
-    const std::span<const std::byte> payload,
-    const dictionary::internal::LzssParameters& parameters,
-    const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits,
-    const std::span<entropy::internal::RansDecodeEntry> private_tables,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
-    noexcept {
-    const auto workspace = preflight_workspace(payload, private_tables);
-    if (workspace.error != LzssContextualRansDecodeError::none) {
-        return workspace;
-    }
-    const auto tables = private_tables.first(
-        entropy::internal::contextual_rans_decode_table_entries);
-    std::span<LzssTypedToken> tokens{};
-    const auto token_workspace = preflight_token_output(
-        payload, tables, private_tokens, context.declared_token_count, tokens);
-    if (token_workspace.error != LzssContextualRansDecodeError::none) {
-        return token_workspace;
-    }
-
-    auto result = run_pass(
-        descriptor, payload, parameters, context, limits, tables, {});
-    if (result.error != LzssContextualRansDecodeError::none) return result;
-    if (private_tokens.size() < context.declared_token_count) {
-        result.error = LzssContextualRansDecodeError::token_output_too_small;
-        return result;
-    }
-    const auto decoded = run_pass(
-        descriptor, payload, parameters, context, limits, tables, tokens);
-    if (decoded.error != LzssContextualRansDecodeError::none
-        || decoded.token_count != result.token_count
-        || decoded.raw_size != result.raw_size
-        || decoded.entropy.event_count != result.entropy.event_count
-        || decoded.entropy.decision_count != result.entropy.decision_count
-        || decoded.entropy.payload_consumed
-               != result.entropy.payload_consumed) {
-        result.error = LzssContextualRansDecodeError::internal_error;
-        return result;
-    }
-    return decoded;
-}
-
-LzssContextualRansCompactDecodeResult
-validate_lzss_contextual_rans_compact_tokens(
-    const std::span<const std::byte> compact_descriptor,
-    const std::span<const std::byte> payload,
-    const dictionary::internal::LzssParameters& parameters,
-    const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits,
-    const std::span<entropy::internal::RansDecodeEntry> private_tables)
-    noexcept {
-    LzssContextualRansCompactDecodeResult result{};
-    result.decode = preflight_compact_workspace(
-        compact_descriptor, payload, private_tables);
+    LzssContextualRansFormatDecodeResult result{};
+    result.decode = preflight_workspace(
+        serialized_descriptor, payload, private_tables);
     if (result.decode.error != LzssContextualRansDecodeError::none) {
         return result;
     }
-    return run_compact_pass(
-        compact_descriptor, payload, parameters, context, limits,
+    return run_pass(
+        serialized_descriptor, payload, parameters, context, limits,
         private_tables.first(
             entropy::internal::contextual_rans_decode_table_entries), {});
 }
 
-LzssContextualRansCompactDecodeResult
-decode_lzss_contextual_rans_compact_tokens(
-    const std::span<const std::byte> compact_descriptor,
+LzssContextualRansFormatDecodeResult decode_lzss_contextual_rans_tokens(
+    const std::span<const std::byte> serialized_descriptor,
     const std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
@@ -484,9 +389,9 @@ decode_lzss_contextual_rans_compact_tokens(
     const std::span<entropy::internal::RansDecodeEntry> private_tables,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens)
     noexcept {
-    LzssContextualRansCompactDecodeResult result{};
-    result.decode = preflight_compact_workspace(
-        compact_descriptor, payload, private_tables);
+    LzssContextualRansFormatDecodeResult result{};
+    result.decode = preflight_workspace(
+        serialized_descriptor, payload, private_tables);
     if (result.decode.error != LzssContextualRansDecodeError::none) {
         return result;
     }
@@ -506,7 +411,7 @@ decode_lzss_contextual_rans_compact_tokens(
             return result;
         }
         const auto descriptor_token = ranges_overlap(
-            compact_descriptor.data(), compact_descriptor.size(),
+            serialized_descriptor.data(), serialized_descriptor.size(),
             tokens.data(), token_bytes);
         if (descriptor_token == OverlapCheck::arithmetic_overflow) {
             result.decode.error =
@@ -520,8 +425,8 @@ decode_lzss_contextual_rans_compact_tokens(
         }
     }
 
-    result = run_compact_pass(
-        compact_descriptor, payload, parameters, context, limits, tables, {});
+    result = run_pass(
+        serialized_descriptor, payload, parameters, context, limits, tables, {});
     if (result.decode.error != LzssContextualRansDecodeError::none) {
         return result;
     }
@@ -530,8 +435,8 @@ decode_lzss_contextual_rans_compact_tokens(
             LzssContextualRansDecodeError::token_output_too_small;
         return result;
     }
-    const auto decoded = run_compact_pass(
-        compact_descriptor, payload, parameters, context, limits, tables,
+    const auto decoded = run_pass(
+        serialized_descriptor, payload, parameters, context, limits, tables,
         tokens);
     if (decoded.decode.error != LzssContextualRansDecodeError::none
         || decoded.format_error != result.format_error

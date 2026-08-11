@@ -19,16 +19,14 @@ inline constexpr std::uint16_t contextual_rans_context_count =
     marc::context::internal::lzss_field_context_count;
 inline constexpr std::size_t contextual_rans_frequency_entries =
     marc::context::internal::lzss_field_context_frequency_entries;
-inline constexpr std::size_t contextual_rans_descriptor_prefix_size = 16;
-inline constexpr std::size_t contextual_rans_frequency_size = 2;
-inline constexpr std::size_t contextual_rans_descriptor_size =
-    contextual_rans_descriptor_prefix_size
-    + contextual_rans_frequency_entries * contextual_rans_frequency_size;
 inline constexpr std::uint64_t contextual_rans_decode_table_entries =
     static_cast<std::uint64_t>(contextual_rans_context_count)
     * contextual_rans_total_frequency;
+inline constexpr std::size_t contextual_rans_prefix_size = 20;
+inline constexpr std::size_t contextual_rans_min_descriptor_size = 23;
+inline constexpr std::size_t contextual_rans_max_descriptor_size =
+    9025;
 
-static_assert(contextual_rans_descriptor_size == 9052);
 static_assert(contextual_rans_decode_table_entries == 126976);
 
 struct ContextualRansDescriptor {
@@ -44,16 +42,23 @@ struct ContextualRansDescriptor {
 
 enum class ContextualRansFormatError : std::uint8_t {
     none,
+    truncated_descriptor,
+    invalid_descriptor_size,
     invalid_decision_count,
     invalid_payload_size,
     invalid_table_log,
     unknown_flags,
     invalid_context_count,
     invalid_frequency_entry_count,
+    invalid_active_context_mask,
+    invalid_mode,
     invalid_frequency_table,
+    noncanonical_representation,
     contradictory_size,
+    trailing_data,
     limit_exceeded,
     arithmetic_overflow,
+    output_too_small,
 };
 
 [[nodiscard]] ContextualRansFormatError validate_contextual_rans_model(
@@ -65,10 +70,11 @@ enum class ContextualRansFormatError : std::uint8_t {
     const ContextualRansDescriptor& descriptor,
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    std::size_t& serialized_size) noexcept;
 
 [[nodiscard]] ContextualRansFormatError parse_contextual_rans_descriptor(
-    std::span<const std::byte, contextual_rans_descriptor_size> input,
+    std::span<const std::byte> input,
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
@@ -79,7 +85,8 @@ enum class ContextualRansFormatError : std::uint8_t {
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::span<std::byte, contextual_rans_descriptor_size> output) noexcept;
+    std::span<std::byte> output,
+    std::size_t& bytes_written) noexcept;
 
 } // namespace marc::entropy::internal
 

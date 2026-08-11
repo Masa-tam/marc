@@ -6005,7 +6005,12 @@ planning only, input extent `N` and nonempty frame count `K` admit at most
 and a 64-byte header, 9,052-byte descriptor, and eight-byte final-state
 allowance per frame. Actual serialized fields continue to carry exact sizes.
 
-### Reserved compact LZSS field-context plus rANS profile
+### Historical reservation: compact LZSS field-context plus rANS profile
+
+This subsection records the staged introduction of entropy variant 3. Its old
+compact-qualified lifecycle and selector statements are superseded by
+"Canonical Contextual rANS identity for the 0.2.0 line" below; the serialized
+bytes and rejection rules remain normative.
 
 The compact profile retains Format 2 dictionary/variant `2/2` and context
 model/variant `1/1`, and selects entropy algorithm/variant `4/3`. Its stream

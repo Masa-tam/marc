@@ -134,6 +134,15 @@ TEST(LzssContextualRansEncoder, DirectPayloadDecodesToMixedTokens) {
                   expected, {}, frame_context, {}, payload, descriptor).error,
               LzssContextualRansEncodeError::none);
 
+    std::vector<std::byte> serialized_descriptor(plan.descriptor_size);
+    std::size_t descriptor_written{};
+    ASSERT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
+                  descriptor, plan.decision_count,
+                  static_cast<std::uint32_t>(plan.payload_size), {},
+                  serialized_descriptor, descriptor_written),
+              marc::entropy::internal::ContextualRansFormatError::none);
+    ASSERT_EQ(descriptor_written, serialized_descriptor.size());
+
     auto table_storage = tables();
     std::array<LzssTypedToken, expected.size()> decoded{};
     const LzssFieldContextValidationContext decode_context{
@@ -141,8 +150,11 @@ TEST(LzssContextualRansEncoder, DirectPayloadDecodesToMixedTokens) {
         static_cast<std::uint32_t>(plan.event_count), plan.decision_count,
         14, 0};
     const auto result = decode_lzss_contextual_rans_tokens(
-        descriptor, payload, {}, decode_context, {}, table_storage, decoded);
-    ASSERT_EQ(result.error, LzssContextualRansDecodeError::none);
+        serialized_descriptor, payload, {}, decode_context, {}, table_storage,
+        decoded);
+    ASSERT_EQ(result.format_error,
+              marc::entropy::internal::ContextualRansFormatError::none);
+    ASSERT_EQ(result.decode.error, LzssContextualRansDecodeError::none);
     for (std::size_t index = 0; index < expected.size(); ++index) {
         EXPECT_EQ(decoded[index].kind, expected[index].kind);
         EXPECT_EQ(decoded[index].literal, expected[index].literal);

@@ -1,6 +1,6 @@
 #include "context/lzss_contextual_rans_encoder.hpp"
 
-#include "entropy/contextual_rans_compact_format.hpp"
+#include "entropy/contextual_rans_format.hpp"
 
 #include "context/lzss_field_context_state.hpp"
 #include "core/checked_math.hpp"
@@ -12,11 +12,6 @@
 
 namespace marc::context::internal {
 namespace {
-
-enum class DescriptorRepresentation : std::uint8_t {
-    fixed,
-    compact,
-};
 
 using dictionary::internal::LzssTypedToken;
 using dictionary::internal::LzssTypedTokenKind;
@@ -236,9 +231,7 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    const DescriptorRepresentation representation,
-    std::size_t& descriptor_size) noexcept {
+    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
     LzssContextualRansEncodeResult result{};
     result.token_validation = dictionary::internal::validate_lzss_typed_frame(
         tokens, parameters, context, limits);
@@ -283,46 +276,25 @@ enum class OverlapCheck : std::uint8_t {
         return result;
     }
     planned.payload_size = static_cast<std::uint32_t>(result.payload_size);
-    if (representation == DescriptorRepresentation::compact) {
-        const auto compact_error =
-            entropy::internal::validate_contextual_rans_compact_descriptor(
-                planned, planned.decision_count, planned.payload_size, limits,
-                descriptor_size);
-        if (compact_error
-            == entropy::internal::ContextualRansCompactFormatError::
-                limit_exceeded) {
-            result.error = LzssContextualRansEncodeError::limit_exceeded;
-            return result;
-        }
-        if (compact_error
-            == entropy::internal::ContextualRansCompactFormatError::
-                arithmetic_overflow) {
-            result.error = LzssContextualRansEncodeError::arithmetic_overflow;
-            return result;
-        }
-        if (compact_error
-            != entropy::internal::ContextualRansCompactFormatError::none) {
-            result.error = LzssContextualRansEncodeError::internal_error;
-            return result;
-        }
-        descriptor = planned;
-        return result;
-    }
-
     const auto format_error =
         entropy::internal::validate_contextual_rans_descriptor(
-            planned, planned.decision_count, planned.payload_size, limits);
+            planned, planned.decision_count, planned.payload_size, limits,
+            result.descriptor_size);
+
     if (format_error
-        == entropy::internal::ContextualRansFormatError::limit_exceeded) {
+        == entropy::internal::ContextualRansFormatError::
+            limit_exceeded) {
         result.error = LzssContextualRansEncodeError::limit_exceeded;
         return result;
     }
     if (format_error
-        == entropy::internal::ContextualRansFormatError::arithmetic_overflow) {
+        == entropy::internal::ContextualRansFormatError::
+            arithmetic_overflow) {
         result.error = LzssContextualRansEncodeError::arithmetic_overflow;
         return result;
     }
-    if (format_error != entropy::internal::ContextualRansFormatError::none) {
+    if (format_error
+        != entropy::internal::ContextualRansFormatError::none) {
         result.error = LzssContextualRansEncodeError::internal_error;
         return result;
     }
@@ -336,12 +308,10 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    const DescriptorRepresentation representation,
-    std::size_t& descriptor_size) noexcept {
+    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
     entropy::internal::ContextualRansDescriptor planned{};
-    const auto plan = plan_tokens(tokens, parameters, context, limits, planned,
-                                  representation, descriptor_size);
+    const auto plan = plan_tokens(
+        tokens, parameters, context, limits, planned);
     if (plan.error != LzssContextualRansEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         auto result = plan;
@@ -379,9 +349,7 @@ LzssContextualRansEncodeResult plan_lzss_contextual_rans_tokens(
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
-    std::size_t descriptor_size{};
-    return plan_tokens(tokens, parameters, context, limits, descriptor,
-                       DescriptorRepresentation::fixed, descriptor_size);
+    return plan_tokens(tokens, parameters, context, limits, descriptor);
 }
 
 LzssContextualRansEncodeResult encode_lzss_contextual_rans_tokens(
@@ -391,34 +359,8 @@ LzssContextualRansEncodeResult encode_lzss_contextual_rans_tokens(
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
-    std::size_t descriptor_size{};
     return encode_tokens(tokens, parameters, context, limits, payload_output,
-                         descriptor, DescriptorRepresentation::fixed,
-                         descriptor_size);
-}
-
-LzssContextualRansEncodeResult plan_lzss_contextual_rans_compact_tokens(
-    const std::span<const LzssTypedToken> tokens,
-    const dictionary::internal::LzssParameters& parameters,
-    const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    std::size_t& descriptor_size) noexcept {
-    return plan_tokens(tokens, parameters, context, limits, descriptor,
-                       DescriptorRepresentation::compact, descriptor_size);
-}
-
-LzssContextualRansEncodeResult encode_lzss_contextual_rans_compact_tokens(
-    const std::span<const LzssTypedToken> tokens,
-    const dictionary::internal::LzssParameters& parameters,
-    const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits,
-    const std::span<std::byte> payload_output,
-    entropy::internal::ContextualRansDescriptor& descriptor,
-    std::size_t& descriptor_size) noexcept {
-    return encode_tokens(tokens, parameters, context, limits, payload_output,
-                         descriptor, DescriptorRepresentation::compact,
-                         descriptor_size);
+                         descriptor);
 }
 
 } // namespace marc::context::internal

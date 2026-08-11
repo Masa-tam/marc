@@ -13,9 +13,10 @@ ContextualRansDecodeTableResult build_contextual_rans_decode_tables(
     const std::span<RansDecodeEntry> output,
     ContextualRansDecodeTables& tables) noexcept {
     ContextualRansDecodeTableResult result{};
+    std::size_t descriptor_size{};
     result.format_error = validate_contextual_rans_descriptor(
         descriptor, descriptor.decision_count, descriptor.payload_size,
-        limits);
+        limits, descriptor_size);
     if (result.format_error != ContextualRansFormatError::none) {
         result.error = ContextualRansDecodeTableError::invalid_descriptor;
         return result;

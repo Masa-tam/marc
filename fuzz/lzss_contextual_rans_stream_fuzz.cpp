@@ -2,7 +2,7 @@
 
 #include "core/status.hpp"
 #include "dictionary/lzss_typed_token.hpp"
-#include "entropy/contextual_rans_compact_format.hpp"
+#include "entropy/contextual_rans_format.hpp"
 #include "entropy/rans_decode_table.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_format.hpp"
@@ -28,7 +28,7 @@ constexpr std::size_t maximum_decisions = maximum_frame * 6;
 constexpr std::size_t maximum_payload = maximum_frame * 12 + 8;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::lzss_contextual_rans_frame_header_size
-    + marc::entropy::internal::contextual_rans_compact_max_descriptor_size
+    + marc::entropy::internal::contextual_rans_max_descriptor_size
     + maximum_payload;
 constexpr std::size_t table_entries =
     marc::entropy::internal::contextual_rans_decode_table_entries;

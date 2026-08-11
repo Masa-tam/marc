@@ -153,7 +153,7 @@ publishing a handle. No token or rANS table structure is exposed in the C ABI.
 Its public completion audit covers all required binary classes, deterministic
 one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
 malformed final-frame rejection without promoting it into the baseline matrix.
-This canonical lifecycle emits only compact entropy variant 3 and uses the
+This canonical lifecycle emits only variable-length entropy variant 3 and uses the
 9,025-byte maximum descriptor bound. Entropy variant 2 is retired and reserved;
 the decoder rejects it. Call the requirements function whenever direction,
 known size, frame/LZSS parameters, or hard limits change.

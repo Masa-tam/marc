@@ -4681,3 +4681,13 @@ TVG-0628, TVG-0631, marc's existing bounded dual-path harness, canonical frame
 decoder, public lifecycle, and compile-smoke target as local precedents. No
 external fuzz harness, rANS or compression implementation, source code,
 corpus, test suite, patent text, or optimization description was consulted.
+
+### IR-0531
+
+The canonical Contextual rANS entropy and typed-token boundary uses DD-749,
+DD-750, DD-755, TVG-0628, TVG-0632, marc's existing variable descriptor,
+scalar state machine, decode-table builder, direct typed-token encoder and
+decoder, and Contextual tANS shared model records as local precedents. No
+external rANS or compression implementation, source code, API, archive,
+corpus, test vector, test suite, patent text, or optimization description was
+consulted.

@@ -8384,3 +8384,16 @@ under the warning-clean ClangCL compile-smoke target. Require its private
 complete-frame oracle and public streaming lifecycle to select the canonical
 variant-3 path, share the same bounded input, output, payload, and workspace
 limits, and retain no compact-qualified public symbols or duplicate target.
+
+### TVG-0632
+
+Promote variant 3's exact one-literal descriptor, dense/sparse selection,
+maximum-size, strict-prefix, malformed-record, limit, and transactional-output
+vectors to the unqualified format suite. Begin the scalar decoder only from
+the serialized descriptor and retain state, alphabet, activity, bypass,
+decision-budget, mutated-table, truncated-renormalization, terminal-state,
+trailing-payload, and lifecycle failures. Exercise the direct typed-token
+bridge with invalid matches, contradictory counts, raw-size mismatch, short
+and overlapping workspaces, aggregate limits, deterministic direct encoding,
+and exact descriptor-size agreement. Build warning-clean and run the focused
+canonical Contextual rANS set under ClangCL and MSVC.

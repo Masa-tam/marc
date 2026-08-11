@@ -126,7 +126,7 @@ decode_lzss_contextual_rans_frame(
 
     const auto descriptor_size =
         static_cast<std::size_t>(layout.header.descriptor_size);
-    const auto compact_descriptor = serialized_frame.subspan(
+    const auto serialized_descriptor = serialized_frame.subspan(
         lzss_contextual_rans_frame_header_size, descriptor_size);
     const auto payload = serialized_frame.subspan(
         lzss_contextual_rans_frame_header_size + descriptor_size,
@@ -139,8 +139,8 @@ decode_lzss_contextual_rans_frame(
         context.output_already_committed,
     };
     result.token_decode =
-        context::internal::decode_lzss_contextual_rans_compact_tokens(
-            compact_descriptor, payload, context.stream.dictionary,
+        context::internal::decode_lzss_contextual_rans_tokens(
+            serialized_descriptor, payload, context.stream.dictionary,
             token_context, context.limits, tables, tokens);
     if (result.token_decode.decode.error
         != context::internal::LzssContextualRansDecodeError::none) {

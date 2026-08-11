@@ -33,6 +33,23 @@ using namespace marc::entropy::internal;
     return std::vector<RansDecodeEntry>(contextual_rans_decode_table_entries);
 }
 
+[[nodiscard]] ContextualRansBeginResult begin_decoder(
+    ContextualRansDecoder& decoder,
+    const ContextualRansDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const std::span<RansDecodeEntry> table_storage) {
+    std::array<std::byte, contextual_rans_max_descriptor_size> bytes{};
+    std::size_t written{};
+    EXPECT_EQ(serialize_contextual_rans_descriptor(
+                  descriptor, descriptor.decision_count,
+                  descriptor.payload_size, {}, bytes, written),
+              ContextualRansFormatError::none);
+    return decoder.begin(
+        std::span<const std::byte>{bytes}.first(written),
+        descriptor.decision_count, descriptor.payload_size, payload, {},
+        table_storage);
+}
+
 } // namespace
 
 TEST(ContextualRansEncoder, PlansAndEncodesDocumentedLiteralVector) {
@@ -80,7 +97,8 @@ TEST(ContextualRansEncoder, EncodesAndDecodesLsbFirstBypassVector) {
 
     auto table_storage = tables();
     ContextualRansDecoder decoder;
-    ASSERT_EQ(decoder.begin(descriptor, payload, {}, table_storage).error,
+    ASSERT_EQ(begin_decoder(decoder, descriptor, payload, table_storage)
+                  .decode.error,
               ContextualRansDecodeError::none);
     std::uint32_t value{};
     ASSERT_EQ(decoder.decode_symbol(0, 2, value).error,
@@ -113,7 +131,8 @@ TEST(ContextualRansEncoder, NormalizesAndRoundTripsRenormalizedContext) {
 
     auto table_storage = tables();
     ContextualRansDecoder decoder;
-    ASSERT_EQ(decoder.begin(descriptor, payload, {}, table_storage).error,
+    ASSERT_EQ(begin_decoder(decoder, descriptor, payload, table_storage)
+                  .decode.error,
               ContextualRansDecodeError::none);
     for (const auto& operation : operations) {
         std::uint32_t value{};
