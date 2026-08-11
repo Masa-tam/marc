@@ -4850,3 +4850,10 @@ sentinels. A valid stream header reaches the private complete-frame decoder;
 all inputs reach the public streaming decoder, whose malformed result remains
 sticky. These ordinary tests establish the oracle required before admitting a
 mutation-driven harness.
+
+The admitted harness keeps that oracle inside two fixed decode paths. One
+thread-local workspace owns the exact private model bank and tokens plus the
+public primary, secondary, aligned views, and output regions. A valid stream
+header gates private complete-frame decoding; the public streaming decoder is
+always driven with byte-derived partial buffers and a finite call budget.
+Input bytes can select chunks but cannot select allocation sizes.

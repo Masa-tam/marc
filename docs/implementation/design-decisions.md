@@ -15346,3 +15346,24 @@ publication and a sticky byte/bit position and status on the next call. Keep
 all workspaces fixed and locally bounded. This is a permanent deterministic
 regression milestone, not a fuzz execution, and changes no format, decoder
 policy, or public symbol.
+
+## DD-743: Contextual Adaptive Huffman fuzzing keeps two fixed decode paths
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add one libFuzzer-compatible entry point that caps supplied input at 64 KiB,
+published raw output at 4 KiB, one raw frame at 1 KiB, and payload at the exact
+`ceil(267F/8)` profile ceiling. Preallocate the exact 9,067 private FGK nodes,
+4,518 private symbol entries, 1,024 private tokens, private raw output, public
+primary/secondary/views regions, and final public output in one thread-local
+workspace. Charge the public requirements against a compile-time aggregate
+bound before construction.
+
+Exercise the private complete-frame decoder only after a valid 112-byte stream
+header, and always exercise the public ABI-1 streaming decoder. Derive partial
+input/output chunk sizes from input bytes, cap process calls by input plus
+output ceilings, and abort on impossible consumption, production, progress, or
+input-starvation behavior. Ordinary MSVC and ClangCL builds must compile the
+translation unit warning-clean. This milestone does not execute a mutation
+campaign, retain a corpus, or claim sanitizer evidence.

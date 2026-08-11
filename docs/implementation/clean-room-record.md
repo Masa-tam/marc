@@ -18058,3 +18058,35 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared targets build under both
   compilers; MSVC uses the established approved route for its sandboxed
   FileTracker behavior.
+
+## CR-0773: 2026-08-11 - Contextual Adaptive Huffman bounded fuzz harness
+
+- Authoring method: connected marc's private complete-frame and public ABI-1
+  streaming decoders to one independently bounded libFuzzer entry point with
+  thread-local compile-time storage and a finite process-call budget.
+- References used: DD-728 through DD-743; IR-0521; TVG-0607 through TVG-0622;
+  marc's decoder limits, status invariants, private decoder, public workspace
+  lifecycle, permanent malformed oracle, and neighboring contextual harness
+  architecture.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, fuzz harness, corpus, decoder, or allocation implementations,
+  source code, archives, test vectors, test suites, patent text, and
+  optimization descriptions.
+- Independent decisions: cap input at 64 KiB, output at 4 KiB, raw frame at
+  1 KiB, payload at the exact 267-bit-per-byte ceiling, and allocate the fixed
+  9,067-node/4,518-symbol model bank plus private/public regions once per
+  thread; derive chunks from input while fixing the maximum call count.
+- Generated-code task description: add a dual-decoder bounded fuzz entry point,
+  sanitizer-enabled optional target, ordinary warning-clean compile-smoke
+  target, fixed requirement and progress guards, and update architecture,
+  fuzzing, composition, readiness, test, decision, reference, and provenance
+  records without running a mutation campaign.
+- Similarity review: the harness follows marc's own decoder and workspace
+  contracts and locally established bounded shape; no external harness or
+  corpus expression entered the work.
+- Local validation: the harness compiles warning-clean under MSVC 19.51.36252
+  and ClangCL 22.1.3; all five permanent malformed regressions pass under both.
+  All 2,874 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared targets build under both;
+  no libFuzzer or sanitizer campaign was executed.

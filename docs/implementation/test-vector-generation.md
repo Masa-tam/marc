@@ -8246,3 +8246,18 @@ one unused high padding bit in the final payload byte. Require the public
 decoder to return sticky malformed stream with zero output and both decoder
 boundaries to preserve sentinel raw storage. Run the focused regressions and
 complete registered suites under MSVC and ClangCL.
+
+### TVG-0622
+
+Compile the Contextual Adaptive Huffman dual-decoder harness as an ordinary
+C++20 object under MSVC and ClangCL with the repository warning set. Require
+compile-time bounds for 64 KiB supplied input, 4 KiB output, a 1 KiB raw frame,
+`ceil(267 * 1024 / 8)` payload bytes, the exact fixed node/symbol model bank,
+1,024 tokens, aligned public views, and a finite input-plus-output call budget.
+
+The harness must parse a stream header before private complete-frame decoding,
+always drive the public decoder with byte-derived chunks, reject requirements
+outside its fixed storage, and abort on transform-contract violations. Re-run
+the five permanent malformed regressions and complete registered suites under
+both compilers. Do not execute libFuzzer or write corpus/artifact files in this
+milestone.

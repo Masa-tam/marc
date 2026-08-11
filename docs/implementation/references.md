@@ -4589,3 +4589,13 @@ field offsets, and neighboring contextual dual-boundary regressions as local
 architectural precedents. No external Adaptive Huffman, LZSS, malformed corpus,
 fuzzer output, source code, archive, test vector, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0521
+
+The Contextual Adaptive Huffman bounded fuzz harness uses DD-728 through
+DD-743, TVG-0607 through TVG-0622, marc's private complete-frame decoder,
+public ABI-1 streaming decoder, fixed decoder limits, status invariants, and
+neighboring contextual bounded harnesses as local architectural precedents.
+No external Adaptive Huffman, LZSS, fuzz harness, corpus, source code, archive,
+test vector, test suite, patent text, or optimization description was
+consulted.

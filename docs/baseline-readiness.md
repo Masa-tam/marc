@@ -1861,3 +1861,15 @@ publication. All 2,874 registered tests, including
 `marc_interoperability_schema_compatibility`, pass under MSVC and ClangCL with
 the 240-second per-test limit. A bounded fuzz harness and sanitizer smoke,
 benchmark, CLI, and interoperability admission remain pending.
+
+### BR-0097
+
+Contextual Adaptive Huffman now has an admitted bounded dual-decoder harness.
+All storage and process-call ceilings are compile-time fixed; public workspace
+requirements must fit before handle construction, and input bytes affect only
+bounded chunk schedules. The translation unit compiles warning-clean under
+MSVC and ClangCL, the five permanent malformed regressions still pass, and all
+2,874 registered tests including `marc_interoperability_schema_compatibility`
+pass under both compilers with the 240-second per-test limit. No mutation or
+sanitizer campaign has been executed. Benchmark, CLI, and interoperability
+admission remain pending.

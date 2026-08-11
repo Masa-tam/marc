@@ -1698,3 +1698,13 @@ and payload-padding mutation fails atomically. The private complete-frame and
 public ABI-1 decoder preserve sentinel raw storage, while the public error is
 sticky. A bounded fuzz harness, sanitizer smoke, benchmark, CLI, and
 interoperability admission remain future milestones.
+
+### CP-0098
+
+Contextual Adaptive Huffman now has a bounded dual-decoder fuzz harness. Its
+64 KiB input, 4 KiB output, 1 KiB frame, 34,176-byte payload, exact fixed model
+bank, typed-token, aligned public-view, aggregate-memory, and process-call
+ceilings are compile-time constants. The private complete-frame and public
+ABI-1 streaming paths compile warning-clean under MSVC and ClangCL. No
+mutation campaign or sanitizer evidence is claimed yet; benchmark, CLI, and
+interoperability admission also remain future milestones.

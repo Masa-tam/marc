@@ -77,12 +77,14 @@ under a compile-time aggregate ceiling. The private complete-frame and public
 C streaming decoders use byte-derived chunks and a finite call budget. An
 ordinary-build compile smoke is evidence only; no sanitizer campaign is
 claimed until one is separately executed and recorded.
-Before admitting a Contextual Adaptive Huffman fuzz target, five ordinary
-dual-boundary regressions fix its oracle. They cover every canonical strict
-prefix plus independently malformed stream identity/reserved bytes, extreme
-frame counts and lengths, invalid descriptor fields, and nonzero payload
-padding. Both private complete-frame and public C streaming outputs remain
-atomic; this deterministic coverage is not itself a sanitizer campaign.
+The experimental Contextual Adaptive Huffman target fixes the oracle with five
+ordinary dual-boundary regressions, then caps supplied input at 64 KiB,
+published raw output at 4 KiB, one frame at 1 KiB, and payload at 34,176 bytes.
+Its exact 9,067-node/4,518-symbol model bank, 1,024 private tokens, private raw
+storage, public primary/secondary/aligned views, and final output are one
+thread-local fixed workspace. Both decode paths use a finite call budget and
+the public path uses byte-derived chunks. Ordinary MSVC and ClangCL builds
+compile it warning-clean; no sanitizer campaign is yet claimed.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,
