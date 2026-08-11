@@ -7967,3 +7967,19 @@ temporary file. Exercise both directions through the public C lifecycle with
 the fixed 65,536-byte frame, 393,216-decision, 786,432-byte payload, and 8-MiB
 aggregate policies. This test does not add auto-detection, a stable profile,
 or an interoperability archive.
+
+### TVG-0604
+
+Generate a schema-35 bundle from the local CLI and the existing deterministic
+8,193-byte fixture. Preserve all 45 schema-34 profiles in order and append
+`lzss-contextual-blocked-huffman`. Require generator-side round trip, then
+verify `35`/`marc-cli-v35`, exactly 46 archives, leaf-only names, recorded
+sizes and SHA-256 values, decoded fixture equality, and byte-identical local
+re-encoding for every entry.
+
+Swap the first two schema-35 manifest entries and require exact-order
+rejection. Derive schema 34 by retaining its first 45 named profiles and
+restoring `34`/`marc-cli-v34`, verify it, then derive and verify every earlier
+schema through schema 1. Use temporary directories only and remove them after
+success or failure. External producer/consumer evidence is not part of this
+local test.

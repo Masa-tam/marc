@@ -15012,3 +15012,22 @@ identity `algorithm=2, variant=2`, reject malformed input and strict trailing
 data without retaining output, and refuse overwrite as for every other CLI
 profile. The selector is not auto-detected, does not enter the stable
 42-profile inventory, and does not yet change interoperability schema 34.
+
+## DD-725: Schema 35 appends Contextual Blocked Huffman once
+
+- Date: 2026-08-11
+- Status: accepted
+
+Advance the current interoperability manifest to schema 35 and codec set
+`marc-cli-v35`. Preserve schema 34's exact 45-archive order and append
+`lzss-contextual-blocked-huffman` as archive 46. The generator must round-trip
+the common 8,193-byte fixture before recording its size and SHA-256. The
+verifier must require the exact 46-entry order, decode equality, and
+byte-identical local re-encoding.
+
+Extend compatibility testing by rejecting a reordered schema-35 manifest,
+then derive schema 34 by removing only archive 46 and restoring version 34 and
+`marc-cli-v34`. Continue deriving and verifying schemas 33 through 1 without
+changing any historical profile set. This milestone records local generation
+and verification only; cross-platform four-direction evidence requires the
+same pushed revision and remains separate.

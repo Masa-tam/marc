@@ -17524,3 +17524,33 @@ discarded and the reviewed seed retained.
   CP-0080 and BR-0078 after their immediate predecessors, after which the
   documentation test passed under both compilers. All tests use the
   240-second per-test limit.
+
+## CR-0755: 2026-08-11 - Contextual Blocked Huffman schema-35 admission
+
+- Authoring method: advanced only marc's repository-owned bundle schema after
+  fixing the append-only profile order, verification, compatibility derivation,
+  and local-evidence contracts in documentation.
+- References used: DD-725; IR-0503; TVG-0604; the schema-34 profile order,
+  common 8,193-byte fixture, public CLI selector, and repository-owned bundle
+  creation, verification, and compatibility scripts.
+- Known implementations intentionally not consulted: external archives,
+  interoperability suites, Huffman or DEFLATE implementations, source code,
+  test vectors, test suites, and optimization descriptions.
+- Independent decisions: advance to `35`/`marc-cli-v35`; append only
+  `lzss-contextual-blocked-huffman` as archive 46; reject reordered manifests;
+  derive schema 34 by removing only that archive; preserve every older schema;
+  and defer external evidence until one pushed revision is available.
+- Generated-code task description: update the bundle generator, verifier,
+  compatibility derivation, current interoperability guide, architecture,
+  composition/readiness records, and clean-room provenance without importing
+  generated bundles.
+- Similarity review: manifest identity, exact order, fixture, hashes,
+  re-encoding comparison, and derivation flow extend marc's own schema-34
+  scripts mechanically; no external implementation expression entered the
+  work.
+- Local validation: schema 35 generates and verifies all 46 archives, rejects
+  reordered entries, and derives and verifies schemas 34 through 1 under MSVC
+  19.51.36252 in 61.74 seconds and ClangCL 22.1.3 in 60.45 seconds. Both use
+  the 240-second per-test limit and leave no bundle in the repository. All
+  2,783 registered tests subsequently pass under each compiler with that same
+  per-test limit.

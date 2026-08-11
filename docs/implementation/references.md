@@ -4418,3 +4418,12 @@ file-commit loop, registered round-trip script, and neighboring contextual
 Dynamic Range, rANS, and tANS adapters as local architectural precedents. No
 external CLI, Huffman or DEFLATE implementation, source code, archive, test
 vector, test suite, or optimization description was consulted.
+
+### IR-0503
+
+Contextual Blocked Huffman interoperability schema 35 uses DD-725, TVG-0604,
+marc's schema-34 manifest order, public CLI selector, repository-owned bundle
+generator/verifier, compatibility derivation script, and common 8,193-byte
+fixture. No external archive, interoperability suite, Huffman or DEFLATE
+implementation, source code, test vector, test suite, or optimization
+description was consulted.

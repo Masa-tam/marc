@@ -1530,3 +1530,12 @@ typed-token and Huffman-table ownership. Registered file tests cover nonempty
 and empty round trip, exact entropy identity, overwrite refusal, malformed
 input, strict trailing-data rejection, and atomic output cleanup. Stable and
 interoperability inventories remain unchanged.
+
+### CP-0081
+
+Interoperability schema 35 appends `lzss-contextual-blocked-huffman` exactly
+once after the frozen schema-34 order. The manifest contains 46 archives and
+requires byte-identical local re-encoding of Format 2 identity `2/2` in
+addition to fixture decode equality. Compatibility derivation removes only
+the new archive before validating schema 34 and every earlier profile set.
+External four-direction evidence remains pending.

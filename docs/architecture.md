@@ -4705,3 +4705,10 @@ payload, 2,561-byte descriptor, and 8-MiB aggregate policies. The file adapter
 inherits atomic commit and strict trailing-data behavior without exposing
 typed-token or Huffman-table layouts or changing stable/interoperability
 inventories.
+
+Interoperability schema 35 appends the Contextual Blocked Huffman archive
+after the frozen schema-34 order. The generator produces exactly 46 archives;
+the verifier requires `marc-cli-v35`, exact order, size and SHA-256, foreign
+decode equality, and byte-identical local re-encoding. Compatibility tests
+remove only archive 46 to reconstruct schema 34 before validating all earlier
+schemas. No stable-profile identity or historical schema changes.

@@ -1675,3 +1675,12 @@ round trip, exact Format 2 entropy identity `2/2`, overwrite refusal,
 malformed-input rejection, strict trailing-data rejection, and failed-output
 cleanup are registered. It remains outside the stable 42-profile and
 interoperability inventories and is not auto-detected.
+
+### BR-0079
+
+Contextual Blocked Huffman is locally admitted as archive 46 in
+interoperability schema 35. Generation, self-verification, exact manifest
+order, size and SHA-256, fixture decode, byte-identical re-encoding,
+reordered-manifest rejection, and schemas 1 through 34 compatibility are
+required locally. External Windows/Linux four-direction evidence remains a
+separate post-push milestone.
