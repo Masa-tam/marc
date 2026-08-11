@@ -4579,3 +4579,13 @@ lifecycle, the independently specified Format 2 frame layout, and neighboring
 public completion audits as local architectural precedents. No external
 Adaptive Huffman, LZSS, completion suite, source code, archive, test vector,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0520
+
+The Contextual Adaptive Huffman permanent malformed regression uses DD-728
+through DD-742, TVG-0607 through TVG-0621, marc's private complete-frame
+decoder, public ABI-1 streaming decoder, independently specified Format 2
+field offsets, and neighboring contextual dual-boundary regressions as local
+architectural precedents. No external Adaptive Huffman, LZSS, malformed corpus,
+fuzzer output, source code, archive, test vector, test suite, patent text, or
+optimization description was consulted.

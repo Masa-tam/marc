@@ -4842,3 +4842,11 @@ multi-frame chunking without reaching into the private profile. For a damaged,
 truncated, or trailing final frame, previously completed raw frames remain
 committed while the current frame's atomic output remains unpublished; the
 resulting terminal error is stable on later calls.
+
+The permanent malformed regression now probes both decoder boundaries with
+one bounded canonical stream. Every strict prefix and independent stream,
+frame, descriptor, and payload-padding mutation preserves raw-output
+sentinels. A valid stream header reaches the private complete-frame decoder;
+all inputs reach the public streaming decoder, whose malformed result remains
+sticky. These ordinary tests establish the oracle required before admitting a
+mutation-driven harness.

@@ -1688,3 +1688,13 @@ truncation, and trailing data in the final frame commit only earlier complete
 frames and preserve the current frame's output sentinel. Malformed regression,
 fuzzing, benchmark, CLI, and interoperability admission remain future
 milestones.
+
+### CP-0097
+
+Contextual Adaptive Huffman now retains permanent dual-boundary malformed
+regressions. Every canonical truncation and independent stream identity,
+reserved-byte, frame-length/count, descriptor context/final-bit/flag/reserved,
+and payload-padding mutation fails atomically. The private complete-frame and
+public ABI-1 decoder preserve sentinel raw storage, while the public error is
+sticky. A bounded fuzz harness, sanitizer smoke, benchmark, CLI, and
+interoperability admission remain future milestones.

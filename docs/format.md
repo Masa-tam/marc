@@ -6554,3 +6554,8 @@ process-local contracts and never appear in the stream.
 The later public completion audit also introduces no serialized field or
 variant. Whole-buffer, one-byte, and mixed chunk schedules are required to
 produce the same bytes already defined above.
+
+Permanent malformed regressions do not relax this representation. Strict
+prefixes, altered identity or reserved fields, impossible frame counts and
+lengths, invalid descriptor fields, and nonzero final-byte padding remain
+decoder errors and publish no raw byte from the affected frame.

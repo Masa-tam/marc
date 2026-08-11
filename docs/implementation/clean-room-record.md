@@ -18026,3 +18026,35 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets build under
   both compilers; MSVC uses the established approved route for its sandboxed
   FileTracker behavior.
+
+## CR-0772: 2026-08-11 - Contextual Adaptive Huffman malformed regressions
+
+- Authoring method: generated one canonical stream with marc's public encoder,
+  applied independently selected field and truncation mutations, and checked
+  the private complete-frame and public streaming decoder boundaries with
+  fixed caller-owned storage.
+- References used: DD-728 through DD-742; IR-0520; TVG-0607 through TVG-0621;
+  marc's Format 2 offsets, private complete-frame decoder, public ABI-1
+  lifecycle, and neighboring contextual malformed-regression structure.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, malformed corpus, fuzzer finding, decoder, or test
+  implementations, source code, archives, test vectors, test suites, patent
+  text, and optimization descriptions.
+- Independent decisions: enumerate every strict prefix; mutate stream identity
+  and reserved bytes separately from extreme frame fields; cover descriptor
+  context, final-bit, flag, and reserved validation; and set exactly one unused
+  LSB-first final-byte padding bit.
+- Generated-code task description: add fixed dual-boundary regressions for
+  truncation and independently malformed stream, frame, descriptor, and
+  payload-padding classes with sentinel atomicity and sticky public errors,
+  then update architecture, format, fuzzing, composition, readiness, test,
+  decision, reference, and provenance records.
+- Similarity review: all inputs derive from marc's own encoder and documented
+  field layout; no external malformed corpus or test expression entered the
+  work.
+- Local validation: all five focused malformed regressions pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,874 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared targets build under both
+  compilers; MSVC uses the established approved route for its sandboxed
+  FileTracker behavior.

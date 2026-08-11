@@ -15327,3 +15327,22 @@ publish no raw byte and the terminal malformed-stream result must be sticky.
 Do not use a private parser, encoder, decoder, or workspace type in this audit.
 This milestone changes no format or public symbol and does not yet admit
 fuzzing, benchmark, CLI, or interoperability support.
+
+## DD-742: Contextual Adaptive Huffman malformed regressions are dual-boundary
+
+- Date: 2026-08-11
+- Status: accepted
+
+Create one canonical five-byte public stream, then preserve permanent ordinary
+GoogleTests for every strict prefix and independently malformed stream header,
+frame length, entropy descriptor, and payload padding classes. Feed inputs
+whose stream header parses to both the private complete-frame decoder and the
+public ABI-1 streaming decoder; malformed stream headers are still required to
+fail through the public boundary.
+
+The private output and public output must retain sentinel bytes on every
+single-frame failure. The public result must be malformed stream with zero raw
+publication and a sticky byte/bit position and status on the next call. Keep
+all workspaces fixed and locally bounded. This is a permanent deterministic
+regression milestone, not a fuzz execution, and changes no format, decoder
+policy, or public symbol.

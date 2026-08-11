@@ -1849,3 +1849,15 @@ completion helpers are not part of the proof. All 2,869 registered tests,
 including `marc_interoperability_schema_compatibility`, pass under both local
 compilers with the 240-second per-test limit. Dedicated malformed regression,
 fuzzing, benchmark, CLI, and interoperability admission remain pending.
+
+### BR-0096
+
+Contextual Adaptive Huffman now has permanent dual-boundary malformed-input
+regressions. Every canonical strict prefix plus independent stream identity,
+reserved-byte, extreme frame count/length, descriptor context/final-bit/flag/
+reserved, and nonzero padding mutations preserve private and public raw-output
+sentinels. Public failures are sticky malformed-stream results with zero
+publication. All 2,874 registered tests, including
+`marc_interoperability_schema_compatibility`, pass under MSVC and ClangCL with
+the 240-second per-test limit. A bounded fuzz harness and sanitizer smoke,
+benchmark, CLI, and interoperability admission remain pending.

@@ -8231,3 +8231,18 @@ require each public decoder to commit exactly the first 192 raw bytes, preserve
 the sentinel final output byte, report malformed stream, and repeat the same
 terminal error with zero further progress. Run the focused audit and complete
 registered suites under MSVC and ClangCL.
+
+### TVG-0621
+
+Generate the canonical public stream for raw `41 42 41 42 58` using one
+five-byte frame and locally bounded Contextual Adaptive Huffman limits. Require
+every strict prefix to fail atomically through the public decoder and, after a
+valid stream header, through the private complete-frame decoder.
+
+Independently mutate fixed stream-header identity and reserved bytes, fill all
+frame length/count fields with `FF`, set descriptor flags and reserved bytes,
+replace context count and final-valid-bit fields with invalid values, and set
+one unused high padding bit in the final payload byte. Require the public
+decoder to return sticky malformed stream with zero output and both decoder
+boundaries to preserve sentinel raw storage. Run the focused regressions and
+complete registered suites under MSVC and ClangCL.
