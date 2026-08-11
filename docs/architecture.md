@@ -4804,3 +4804,11 @@ before exact payload and alias checks, and the write pass must reproduce every
 token, event, decision, and bit count before descriptor publication. This
 retains the typed-token abstraction while removing an avoidable bounded-frame
 copy and traversal.
+
+The private complete-frame encoder now places that adapter above the typed
+LZSS parser. It plans raw-to-token and token-to-payload stages before binding
+the fixed descriptor and frame header, charges raw, used tokens, exact model
+storage, and serialized output as one bounded transaction, and rejects every
+cross-stage alias before serialized publication. The second entropy traversal
+must reproduce the plan exactly; excess output and unused token capacity remain
+outside the committed frame.

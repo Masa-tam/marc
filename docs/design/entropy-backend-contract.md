@@ -635,6 +635,12 @@ backend still sees only context, alphabet, symbol, and bypass requests. No
 operation array, native token representation, or dictionary byte
 serialization enters the entropy boundary.
 
+The complete-frame encoder preserves that separation. Raw LZSS parsing ends at
+caller-owned typed tokens; the direct adapter alone converts those tokens into
+contextual entropy events. The outer frame layer records only validated counts,
+the fixed descriptor, and payload, while resetting the exact model bank for
+each planned and written frame.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

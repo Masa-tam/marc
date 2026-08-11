@@ -4530,3 +4530,13 @@ token adapters for neighboring contextual backends as local architectural
 precedents. No external Adaptive Huffman, LZSS, or entropy-encoder
 implementation, source code, archive, test vector, test suite, patent text,
 or optimization description was consulted.
+
+### IR-0515
+
+The Contextual Adaptive Huffman complete-frame encoder uses DD-728 through
+DD-737, TVG-0607 through TVG-0616, marc's typed LZSS encoder, direct
+contextual token encoder, fixed descriptor serializer, frame validator, checked
+arithmetic, and neighboring contextual complete-frame encoders as local
+architectural precedents. No external Adaptive Huffman, LZSS, or frame-encoder
+implementation, source code, archive, test vector, test suite, patent text, or
+optimization description was consulted.

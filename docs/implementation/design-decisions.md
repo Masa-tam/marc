@@ -15226,3 +15226,23 @@ exact model storage, and exact payload bytes together; reject every
 token/model/output alias before payload publication; and publish the entropy
 descriptor only after plan/write counts and bit extents agree. Defer frame
 header construction, raw LZSS parsing, streaming, and public admission.
+
+## DD-737: Contextual Adaptive Huffman frame encoding is one planned transaction
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add a private complete-frame planner and encoder above the direct typed-token
+adapter. First validate the stream and exact non-empty frame input, encode raw
+bytes into caller-owned typed-token storage, and plan the contextual payload
+with the exact caller-owned 9,067-node and 4,518-symbol model bank. Validate
+the fixed 16-byte descriptor and outer frame header before calculating the
+complete serialized extent.
+
+Charge raw input, used typed-token storage, exact model storage, and the whole
+serialized frame together. Reject every raw, token, node, symbol, and
+serialized-region alias before a serialized write. The writing pass repeats
+only the deterministic entropy traversal, serializes descriptor and header
+after its counts agree with the plan, preserves excess output capacity, and
+returns no serialized size on a failed plan. Defer streaming lifecycle and
+public profile admission.

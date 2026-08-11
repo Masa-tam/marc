@@ -6526,3 +6526,10 @@ typed-token context state. It therefore reproduces both documented payloads,
 `82 00` for one literal and `82 06 00` for a literal followed by the
 distance-one length-six match, without an intermediate operation array or any
 format change.
+
+The private complete-frame encoder now materializes the unchanged 64-byte
+frame header, fixed 16-byte descriptor, and exact contextual payload from raw
+LZSS input. Raw byte `41` therefore reproduces the documented 82-byte frame
+above. Planning validates all counts, limits, storage, and outer header fields
+before the writing pass; no additional field, flag, variant, or representation
+is introduced.

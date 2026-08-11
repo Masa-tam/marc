@@ -8151,3 +8151,19 @@ entropy-entry, compressed-payload, and exact aggregate-memory limits. Require
 all prewrite failures to preserve payload and descriptor, trailing output
 capacity to remain untouched, and fresh workspaces to produce identical bytes.
 Run focused and complete registered suites under MSVC and ClangCL.
+
+### TVG-0616
+
+Plan and encode raw byte `41` with the reserved one-byte stream parameters.
+Require one typed token, two events, two decisions, the fixed 16-byte
+descriptor, two payload bytes, 82 serialized bytes, and exact equality with
+the documented complete frame. Decode that output through the existing
+complete-frame decoder and require raw `41`. Repeat a mixed literal/match raw
+frame with fresh workspaces and require deterministic bytes and round trip.
+
+Exercise short token, node, symbol, and serialized storage; invalid stream and
+frame-size inputs; every raw/token/model/output alias class; and aggregate
+workspace one byte below the exact requirement. Require all failures before
+serialized publication, preserve trailing output capacity and unused token
+capacity, and run focused and complete registered suites under MSVC and
+ClangCL.

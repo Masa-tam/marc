@@ -17872,3 +17872,34 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0767: 2026-08-11 - Contextual Adaptive Huffman complete-frame encoder
+
+- Authoring method: composed marc's private typed LZSS encoder, direct
+  contextual token encoder, fixed descriptor serializer, and validated frame
+  header without changing their representations.
+- References used: DD-728 through DD-737; IR-0515; TVG-0607 through TVG-0616;
+  marc's checked arithmetic, caller-owned workspace policy, complete-frame
+  decoder, and neighboring contextual complete-frame encoders.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, or frame-encoder implementations, source code, archives, test
+  vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: plan raw tokens and entropy before serialized output;
+  require exact node and symbol prefixes; charge raw, used token, exact model,
+  and whole serialized extents together; reject every cross-stage alias; and
+  serialize descriptor and header only after the entropy write matches its
+  planned counts.
+- Generated-code task description: add the private complete-frame planner and
+  encoder, register documented-vector, complete-decoder, deterministic mixed,
+  capacity, alias, invalid-input, limit, and publication-atomicity GoogleTests,
+  and update architecture, format, backend, composition, readiness, test,
+  reference, decision, and provenance records.
+- Similarity review: the implementation composes only marc's independently
+  designed local boundaries; no external implementation expression entered
+  the work.
+- Local validation: all six focused complete-frame encoder tests pass under
+  MSVC 19.51.36252 and ClangCL 22.1.3. All 2,853 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

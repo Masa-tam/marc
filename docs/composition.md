@@ -1636,3 +1636,13 @@ operation boundary and decode back to the original tokens; token/model/output
 aliases, storage and aggregate limits, invalid tokens, and publication
 atomicity remain enforced. Frame encoding, streaming, and public admission
 remain future milestones.
+
+### CP-0092
+
+Contextual Adaptive Huffman now has a private complete-frame encoder. It
+composes raw LZSS parsing, direct typed-token entropy planning, fixed descriptor
+serialization, and outer frame construction without an operation array or
+dictionary-byte round trip. The documented 82-byte frame, complete-decoder
+round trip, deterministic mixed input, capacity and alias rejection, aggregate
+accounting, trailing-capacity preservation, and exact model ownership are
+tested. Streaming encoding and public admission remain future milestones.

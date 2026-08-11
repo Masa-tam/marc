@@ -1791,3 +1791,13 @@ alias, entropy, payload, aggregate, and total-output limits, trailing-capacity
 preservation, deterministic fresh workspaces, and forward lifecycle misuse are
 tested under both local compilers. Complete-frame and streaming encoding plus
 all public layers remain pending.
+
+### BR-0091
+
+The private Contextual Adaptive Huffman path now encodes one complete raw LZSS
+frame. It reproduces the documented 82-byte frame, decodes through the existing
+complete-frame consumer, round-trips mixed literal/match input deterministically,
+preserves trailing serialized and unused token capacity, rejects short token,
+node, symbol, and output storage, rejects raw and output alias classes, and
+enforces stream, frame-size, and exact aggregate limits under both local
+compilers. Streaming encoding and all public layers remain pending.
