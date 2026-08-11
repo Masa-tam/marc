@@ -4520,3 +4520,13 @@ for the other contextual entropy backends as local architectural precedents.
 No external Adaptive Huffman, LZSS, or entropy-encoder implementation, source
 code, archive, test vector, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0514
+
+The Contextual Adaptive Huffman LZSS token encoder uses DD-728 through DD-736,
+TVG-0607 through TVG-0615, marc's typed-token validator and field-context
+state, the new forward entropy planner/writer, checked arithmetic, and direct
+token adapters for neighboring contextual backends as local architectural
+precedents. No external Adaptive Huffman, LZSS, or entropy-encoder
+implementation, source code, archive, test vector, test suite, patent text,
+or optimization description was consulted.

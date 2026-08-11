@@ -8136,3 +8136,18 @@ symbol, and payload storage, operation/model/output overlap classes, entropy
 entry, compressed payload, and aggregate-memory limits to fail before output
 or descriptor publication. Verify trailing output capacity is unchanged and
 run focused and complete registered suites under MSVC and ClangCL.
+
+### TVG-0615
+
+Plan and encode one literal token `A`; require one token, two events, two
+decisions, nine bits, descriptor size two, final-valid-bit count one, and exact
+payload `82 00`. Encode `{Literal A, Match(distance=1,length=6)}` directly and
+require the established `82 06 00` payload, then decode it through the existing
+token adapter and compare both tokens and the seven-byte raw extent.
+
+Exercise invalid parameters and tokens, raw-extent disagreement, short node,
+symbol, and payload storage, token/model/output aliases, total-output,
+entropy-entry, compressed-payload, and exact aggregate-memory limits. Require
+all prewrite failures to preserve payload and descriptor, trailing output
+capacity to remain untouched, and fresh workspaces to produce identical bytes.
+Run focused and complete registered suites under MSVC and ClangCL.

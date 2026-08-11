@@ -309,3 +309,36 @@ TEST(ContextualAdaptiveHuffmanEncoder, DeterministicAcrossFreshWorkspaces) {
     EXPECT_EQ(first_descriptor.final_valid_bits,
               second_descriptor.final_valid_bits);
 }
+
+TEST(ContextualAdaptiveHuffmanEncoder, EnforcesForwardLifecycle) {
+    Workspace workspace{};
+    ContextualAdaptiveHuffmanForwardEncoder encoder;
+    EXPECT_EQ(encoder.encode_symbol(0, 2, 0).error,
+              ContextualAdaptiveHuffmanEncodeError::not_started);
+
+    ASSERT_EQ(encoder.begin_plan(
+                  {}, workspace.nodes, workspace.symbols).error,
+              ContextualAdaptiveHuffmanEncodeError::none);
+    ContextualAdaptiveHuffmanDescriptor descriptor{};
+    EXPECT_EQ(encoder.finish_plan(descriptor).error,
+              ContextualAdaptiveHuffmanEncodeError::empty_operations);
+    EXPECT_EQ(encoder.encode_symbol(0, 2, 0).error,
+              ContextualAdaptiveHuffmanEncodeError::empty_operations);
+
+    ASSERT_EQ(encoder.begin_plan(
+                  {}, workspace.nodes, workspace.symbols).error,
+              ContextualAdaptiveHuffmanEncodeError::none);
+    ASSERT_EQ(encoder.encode_symbol(0, 2, 0).error,
+              ContextualAdaptiveHuffmanEncodeError::none);
+    ASSERT_EQ(encoder.finish_plan(descriptor).error,
+              ContextualAdaptiveHuffmanEncodeError::none);
+    EXPECT_EQ(encoder.encode_symbol(0, 2, 0).error,
+              ContextualAdaptiveHuffmanEncodeError::already_finished);
+
+    descriptor.context_count = 30;
+    std::array<std::byte, 1> payload{};
+    EXPECT_EQ(encoder.begin_write(
+                  descriptor, {}, workspace.nodes, workspace.symbols,
+                  payload).error,
+              ContextualAdaptiveHuffmanEncodeError::invalid_descriptor);
+}

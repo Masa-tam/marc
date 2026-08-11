@@ -1780,3 +1780,14 @@ operation/model/output aliases, trailing-capacity preservation, entropy-entry,
 payload, planning-aggregate, and writing-aggregate limits are tested under
 both local compilers. LZSS token encoding and all frame/public layers remain
 pending.
+
+### BR-0090
+
+The private Contextual Adaptive Huffman path can now encode validated LZSS
+typed tokens directly. The two documented payloads, operation-boundary byte
+identity, token-decoder round trip, invalid parameters, invalid and
+raw-mismatched tokens, short model and payload storage, every token-related
+alias, entropy, payload, aggregate, and total-output limits, trailing-capacity
+preservation, deterministic fresh workspaces, and forward lifecycle misuse are
+tested under both local compilers. Complete-frame and streaming encoding plus
+all public layers remain pending.

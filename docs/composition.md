@@ -1625,3 +1625,14 @@ bit, byte, and descriptor extents; malformed operations, short storage, every
 used-region alias, and local or aggregate limits fail before payload or
 descriptor publication. LZSS token inference, frame encoding, streaming, and
 public admission remain future milestones.
+
+### CP-0091
+
+Contextual Adaptive Huffman now has a private direct LZSS token planner and
+encoder. The typed-token validator and field-context state feed the reusable
+forward entropy lifecycle without allocating or replaying an intermediate
+operation array. Documented literal and match payloads agree exactly with the
+operation boundary and decode back to the original tokens; token/model/output
+aliases, storage and aggregate limits, invalid tokens, and publication
+atomicity remain enforced. Frame encoding, streaming, and public admission
+remain future milestones.

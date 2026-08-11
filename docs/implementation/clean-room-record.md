@@ -17840,3 +17840,35 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0766: 2026-08-11 - Contextual Adaptive Huffman LZSS token encoder
+
+- Authoring method: extended marc's private operation encoder with a reusable
+  forward lifecycle and drove it directly from the repository-owned typed-LZSS
+  validator and field-context state.
+- References used: DD-728 through DD-736; IR-0514; TVG-0607 through TVG-0615;
+  marc's modeled-operation encoder, typed-token validator, direct contextual
+  token adapters, checked arithmetic, and caller-owned workspace policy.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman, LZSS, or entropy-encoder implementations, source code, archives,
+  test vectors, test suites, patent text, and optimization descriptions.
+- Independent decisions: expose plan/write lifecycle states; emit token fields
+  directly without an operation array; accept context state only after a full
+  token succeeds; plan before zero-filling output; charge token, exact model,
+  and payload storage together; and require write counts to equal the plan
+  before descriptor publication.
+- Generated-code task description: add the direct private LZSS token planner
+  and encoder, extend operation encoding with a forward lifecycle, register
+  vector, parity, decoder-round-trip, malformed-token, capacity, alias, limit,
+  determinism, lifecycle, and atomic-publication GoogleTests, and update all
+  design, format, readiness, test, and provenance records.
+- Similarity review: the implementation composes only marc's independently
+  designed token/context and entropy interfaces; no external implementation
+  expression entered the work.
+- Local validation: seven focused token-encoder tests and all eight operation-
+  encoder regression tests pass under MSVC 19.51.36252 and ClangCL 22.1.3.
+  All 2,847 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

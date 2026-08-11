@@ -165,7 +165,7 @@ void write_bit(
     return ContextualAdaptiveHuffmanEncodeError::none;
 }
 
-[[nodiscard]] ContextualAdaptiveHuffmanEncodeError encode_symbol(
+[[nodiscard]] ContextualAdaptiveHuffmanEncodeError emit_symbol(
     ContextualAdaptiveHuffmanModelBank& models,
     const ModeledOperation& operation,
     const std::span<std::byte> output,
@@ -234,7 +234,7 @@ void write_bit(
         if (kind > static_cast<std::uint8_t>(ModeledOperationKind::bypass_bits)) {
             error = ContextualAdaptiveHuffmanEncodeError::invalid_operation_kind;
         } else if (operation.kind == ModeledOperationKind::symbol) {
-            error = encode_symbol(models, operation, output, result);
+            error = emit_symbol(models, operation, output, result);
             if (error == ContextualAdaptiveHuffmanEncodeError::none) {
                 if (result.decision_count == UINT32_MAX) {
                     error = ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow;
@@ -276,6 +276,305 @@ void write_bit(
 }
 
 } // namespace
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::fail(
+    const ContextualAdaptiveHuffmanEncodeError error) noexcept {
+    result_.error = error;
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::begin_common(
+    const core::DecoderLimits& limits,
+    const std::span<AdaptiveHuffmanNode> node_workspace,
+    const std::span<std::uint16_t> symbol_workspace,
+    const std::span<std::byte> payload_output) noexcept {
+    models_ = {};
+    limits_ = limits;
+    output_ = {};
+    expected_ = {};
+    result_ = {};
+    started_ = false;
+    writing_ = false;
+    finished_ = false;
+    if (core::validate_limits(limits_) != core::LimitError::none) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    }
+    if (node_workspace.size() < contextual_adaptive_huffman_node_entries) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::node_workspace_too_small);
+    }
+    if (symbol_workspace.size()
+        < contextual_adaptive_huffman_symbol_entries) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::symbol_workspace_too_small);
+    }
+    std::size_t node_bytes{};
+    std::size_t symbol_bytes{};
+    std::size_t aggregate{};
+    if (!core::checked_multiply(
+            contextual_adaptive_huffman_node_entries,
+            sizeof(AdaptiveHuffmanNode), node_bytes)
+        || !core::checked_multiply(
+            contextual_adaptive_huffman_symbol_entries,
+            sizeof(std::uint16_t), symbol_bytes)
+        || !core::checked_add(node_bytes, symbol_bytes, aggregate)
+        || !core::checked_add(aggregate, payload_output.size(), aggregate)) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    const std::array overlaps{
+        ranges_overlap(
+            node_workspace.data(), node_bytes,
+            symbol_workspace.data(), symbol_bytes),
+        ranges_overlap(
+            node_workspace.data(), node_bytes,
+            payload_output.data(), payload_output.size()),
+        ranges_overlap(
+            symbol_workspace.data(), symbol_bytes,
+            payload_output.data(), payload_output.size()),
+    };
+    if (std::ranges::find(
+            overlaps, OverlapCheck::arithmetic_overflow) != overlaps.end()) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (std::ranges::find(overlaps, OverlapCheck::overlap) != overlaps.end()) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::overlapping_buffers);
+    }
+    if (contextual_adaptive_huffman_node_entries
+                + contextual_adaptive_huffman_symbol_entries
+            > limits_.max_entropy_table_entries
+        || aggregate > limits_.max_internal_buffered_bytes) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    }
+    if (models_.initialize(
+            node_workspace.first(contextual_adaptive_huffman_node_entries),
+            symbol_workspace.first(
+                contextual_adaptive_huffman_symbol_entries))
+            != ContextualAdaptiveHuffmanModelError::none
+        || !models_.validate()) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::tree_error);
+    }
+    output_ = payload_output;
+    started_ = true;
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::begin_plan(
+    const core::DecoderLimits& limits,
+    const std::span<AdaptiveHuffmanNode> node_workspace,
+    const std::span<std::uint16_t> symbol_workspace) noexcept {
+    return begin_common(limits, node_workspace, symbol_workspace, {});
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::begin_write(
+    const ContextualAdaptiveHuffmanDescriptor& descriptor,
+    const core::DecoderLimits& limits,
+    const std::span<AdaptiveHuffmanNode> node_workspace,
+    const std::span<std::uint16_t> symbol_workspace,
+    const std::span<std::byte> payload_output) noexcept {
+    if (payload_output.size() < descriptor.payload_size) {
+        models_ = {};
+        limits_ = limits;
+        output_ = {};
+        expected_ = {};
+        result_ = {};
+        started_ = false;
+        writing_ = false;
+        finished_ = false;
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::payload_output_too_small);
+    }
+    const auto payload = payload_output.first(descriptor.payload_size);
+    auto result = begin_common(
+        limits, node_workspace, symbol_workspace, payload);
+    if (result.error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return result;
+    }
+    if (validate_contextual_adaptive_huffman_descriptor(
+            descriptor, descriptor.decision_count, descriptor.payload_size,
+            limits_)
+        != ContextualAdaptiveHuffmanFormatError::none) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::invalid_descriptor);
+    }
+    expected_ = descriptor;
+    writing_ = true;
+    std::ranges::fill(output_, std::byte{});
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::encode_symbol(
+    const std::uint16_t context_id, const std::uint16_t alphabet_size,
+    const std::uint32_t value) noexcept {
+    if (!started_) {
+        return result_.error == ContextualAdaptiveHuffmanEncodeError::none
+            ? fail(ContextualAdaptiveHuffmanEncodeError::not_started)
+            : result_;
+    }
+    if (result_.error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return result_;
+    }
+    if (finished_) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::already_finished);
+    }
+    const ModeledOperation operation{
+        ModeledOperationKind::symbol, context_id, alphabet_size, value, 0};
+    if (result_.decision_count == UINT32_MAX) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    const auto error = emit_symbol(models_, operation, output_, result_);
+    if (error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return fail(error);
+    }
+    ++result_.decision_count;
+    ++result_.operation_count;
+    result_.operation_index = result_.operation_count;
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::encode_bypass(
+    const std::uint8_t bit_count, const std::uint32_t value) noexcept {
+    if (!started_) {
+        return result_.error == ContextualAdaptiveHuffmanEncodeError::none
+            ? fail(ContextualAdaptiveHuffmanEncodeError::not_started)
+            : result_;
+    }
+    if (result_.error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return result_;
+    }
+    if (finished_) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::already_finished);
+    }
+    if (bit_count == 0 || bit_count > 16) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::invalid_bypass_width);
+    }
+    if ((value >> bit_count) != 0) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::nonzero_unused_field);
+    }
+    std::uint32_t updated{};
+    if (!core::checked_add(
+            result_.decision_count, static_cast<std::uint32_t>(bit_count),
+            updated)) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    const auto error = emit_value(value, bit_count, output_, result_);
+    if (error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return fail(error);
+    }
+    result_.decision_count = updated;
+    ++result_.operation_count;
+    result_.operation_index = result_.operation_count;
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::finish_plan(
+    ContextualAdaptiveHuffmanDescriptor& descriptor) noexcept {
+    if (!started_) {
+        return result_.error == ContextualAdaptiveHuffmanEncodeError::none
+            ? fail(ContextualAdaptiveHuffmanEncodeError::not_started)
+            : result_;
+    }
+    if (result_.error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return result_;
+    }
+    if (finished_ || writing_) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::already_finished);
+    }
+    if (result_.operation_count == 0) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::empty_operations);
+    }
+    if (!models_.validate()) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::tree_error);
+    }
+    if (result_.decision_count
+        > contextual_adaptive_huffman_max_decision_count) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    }
+    if (result_.payload_bits > std::numeric_limits<std::size_t>::max() - 7U) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    result_.payload_size = (result_.payload_bits + 7U) / 8U;
+    if (result_.payload_size > std::numeric_limits<std::uint32_t>::max()) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    std::size_t node_bytes{};
+    std::size_t symbol_bytes{};
+    std::size_t aggregate{};
+    if (!core::checked_multiply(
+            contextual_adaptive_huffman_node_entries,
+            sizeof(AdaptiveHuffmanNode), node_bytes)
+        || !core::checked_multiply(
+            contextual_adaptive_huffman_symbol_entries,
+            sizeof(std::uint16_t), symbol_bytes)
+        || !core::checked_add(node_bytes, symbol_bytes, aggregate)
+        || !core::checked_add(aggregate, result_.payload_size, aggregate)) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (result_.payload_size > limits_.max_compressed_payload_size
+        || aggregate > limits_.max_internal_buffered_bytes) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    }
+    ContextualAdaptiveHuffmanDescriptor planned{};
+    planned.decision_count = result_.decision_count;
+    planned.payload_size = static_cast<std::uint32_t>(result_.payload_size);
+    planned.final_valid_bits = static_cast<std::uint8_t>(
+        result_.payload_bits % 8U == 0 ? 8U : result_.payload_bits % 8U);
+    const auto format_error = validate_contextual_adaptive_huffman_descriptor(
+        planned, planned.decision_count, planned.payload_size, limits_);
+    if (format_error == ContextualAdaptiveHuffmanFormatError::limit_exceeded) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    }
+    if (format_error != ContextualAdaptiveHuffmanFormatError::none) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::internal_error);
+    }
+    descriptor = planned;
+    finished_ = true;
+    return result_;
+}
+
+ContextualAdaptiveHuffmanEncodeResult
+ContextualAdaptiveHuffmanForwardEncoder::finish_write(
+    const std::size_t expected_operation_count,
+    const std::uint32_t expected_decision_count,
+    const std::size_t expected_payload_bits) noexcept {
+    if (!started_) {
+        return result_.error == ContextualAdaptiveHuffmanEncodeError::none
+            ? fail(ContextualAdaptiveHuffmanEncodeError::not_started)
+            : result_;
+    }
+    if (result_.error != ContextualAdaptiveHuffmanEncodeError::none) {
+        return result_;
+    }
+    if (finished_ || !writing_) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::already_finished);
+    }
+    const auto payload_size = (result_.payload_bits + 7U) / 8U;
+    if (result_.operation_count != expected_operation_count
+        || result_.decision_count != expected_decision_count
+        || result_.decision_count != expected_.decision_count
+        || result_.payload_bits != expected_payload_bits
+        || payload_size != expected_.payload_size
+        || !models_.validate()) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::internal_error);
+    }
+    const auto final_bits = static_cast<std::uint8_t>(
+        result_.payload_bits % 8U == 0 ? 8U : result_.payload_bits % 8U);
+    if (final_bits != expected_.final_valid_bits) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::internal_error);
+    }
+    result_.payload_size = payload_size;
+    finished_ = true;
+    return result_;
+}
 
 ContextualAdaptiveHuffmanEncodeResult
 plan_contextual_adaptive_huffman_operations(

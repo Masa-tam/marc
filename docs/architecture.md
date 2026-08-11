@@ -4795,3 +4795,12 @@ tree after its bits are accounted for. The second pass starts only after exact
 payload capacity, aggregate limits, and every input/model/output alias are
 validated; only then may it publish the descriptor. LZSS context inference
 and framing remain above this boundary.
+
+The private LZSS token encoder now drives that forward lifecycle directly.
+Validated typed tokens produce context-selected Symbol and BypassBits events
+without allocating a modeled-operation array; a token advances the shared
+field-context state only after all of its events succeed. Planning completes
+before exact payload and alias checks, and the write pass must reproduce every
+token, event, decision, and bit count before descriptor publication. This
+retains the typed-token abstraction while removing an avoidable bounded-frame
+copy and traversal.

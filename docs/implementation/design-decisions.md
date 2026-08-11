@@ -15207,3 +15207,22 @@ limits, and all operation/model/output overlaps are validated. Zero-fill only
 the exact payload prefix, preserve trailing capacity, and publish the
 descriptor only after the second pass matches the plan. Defer LZSS token
 inference, frame construction, streaming, and public admission.
+
+## DD-736: Contextual Adaptive Huffman tokens emit operations directly
+
+- Date: 2026-08-11
+- Status: accepted
+
+Add a reusable private forward planner/writer lifecycle to the operation
+encoder, then drive it directly from validated LZSS typed tokens and
+`LzssFieldContextState`. Do not allocate, serialize, or replay an intermediate
+`ModeledOperation` array. Emit token kind, literal, length class and extras,
+distance class and extras in canonical forward order, accepting a token into
+the context state only after all of its events succeed.
+
+Run a complete planning traversal before validating exact payload capacity and
+performing the deterministic writing traversal. Charge typed-token bytes,
+exact model storage, and exact payload bytes together; reject every
+token/model/output alias before payload publication; and publish the entropy
+descriptor only after plan/write counts and bit extents agree. Defer frame
+header construction, raw LZSS parsing, streaming, and public admission.

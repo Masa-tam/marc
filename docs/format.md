@@ -6520,3 +6520,9 @@ walk: operations are traversed forward, FGK paths precede alphabet-width NYT
 values, bypass values remain LSB-first, and all 31 trees reset at the start of
 each plan or encode pass. Planning and encoding must produce the `82 00`
 one-Literal payload above without adding serialized metadata.
+
+The private LZSS token encoder now supplies those operations directly from the
+typed-token context state. It therefore reproduces both documented payloads,
+`82 00` for one literal and `82 06 00` for a literal followed by the
+distance-one length-six match, without an intermediate operation array or any
+format change.

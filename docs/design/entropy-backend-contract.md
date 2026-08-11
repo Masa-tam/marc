@@ -629,6 +629,12 @@ the pre-update tree path and optional NYT value before observing the symbol;
 BypassBits never touch a tree. Descriptor publication follows a second-pass
 agreement check, while excess output capacity remains untouched.
 
+The LZSS adapter invokes the same forward planner/writer one field at a time.
+It owns context inference and class/extra-bit decomposition; the entropy
+backend still sees only context, alphabet, symbol, and bypass requests. No
+operation array, native token representation, or dictionary byte
+serialization enters the entropy boundary.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

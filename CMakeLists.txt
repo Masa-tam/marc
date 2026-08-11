@@ -41,6 +41,7 @@ endif()
 
 set(MARC_SOURCES
     src/context/lzss_contextual_adaptive_huffman_decoder.cpp
+    src/context/lzss_contextual_adaptive_huffman_encoder.cpp
     src/context/lzss_contextual_blocked_huffman_decoder.cpp
     src/context/lzss_contextual_blocked_huffman_encoder.cpp
     src/context/lzss_contextual_tans_decoder.cpp
@@ -1472,6 +1473,7 @@ if(MARC_BUILD_TESTS)
         tests/contextual_tans_decoder_tests.cpp
         tests/lzss_contextual_tans_decoder_tests.cpp
         tests/lzss_contextual_adaptive_huffman_decoder_tests.cpp
+        tests/lzss_contextual_adaptive_huffman_encoder_tests.cpp
         tests/lzss_contextual_adaptive_huffman_format_tests.cpp
         tests/lzss_contextual_adaptive_huffman_frame_decoder_tests.cpp
         tests/lzss_contextual_adaptive_huffman_frame_streaming_decoder_tests.cpp
