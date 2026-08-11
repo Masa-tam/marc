@@ -1593,3 +1593,13 @@ ceiling, sequence and raw extent, token/event/decision bounds, absent optional
 features, exact 16-byte descriptor, payload extent, model-entry limit, and
 transactional layout publication are enforced before decoding. Token and raw
 reconstruction are not yet composed into a complete frame transaction.
+
+### CP-0088
+
+Contextual Adaptive Huffman now has a private complete-frame decoder. It
+composes format preflight, two-pass LZSS token decoding, and validated raw
+reconstruction over exact caller-owned model and output regions. All five
+serialized/model/token/raw regions are checked for capacity and pairwise
+overlap before entropy state changes. Failures publish neither raw bytes nor
+serialized consumption. Streaming, encoding, public ABI, tools, fuzzing, and
+profile admission remain future milestones.

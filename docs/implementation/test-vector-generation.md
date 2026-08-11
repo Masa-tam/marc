@@ -8089,3 +8089,18 @@ Round-trip the header, reject every truncated prefix transactionally, and
 independently reject sequence/raw/count/feature/descriptor contradictions,
 nonzero reserved bytes, aggregate or payload limits, and extra caller bytes
 without consuming them.
+
+### TVG-0612
+
+Decode the documented 82-byte one-Literal frame using exact caller-owned
+9,067-node, 4,518-symbol, one-token, and one-byte raw regions. Require one
+consumed frame, Literal `0x41`, raw byte `0x41`, exact required capacities, and
+unchanged sentinel storage beyond every used prefix. Append one unrelated byte
+and require it to remain unconsumed.
+
+For every preflight failure, either short model region, short token or raw
+region, and each representative serialized/workspace alias, require zero
+serialized consumption and unchanged raw output. Set a high unused payload bit
+under a one-valid-bit descriptor and require a nested entropy padding error
+before raw publication. Run these tests under MSVC and ClangCL before both
+complete registered suites.

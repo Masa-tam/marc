@@ -4490,3 +4490,13 @@ neighboring contextual frame-format validators as local architectural
 precedents. No external Adaptive Huffman or LZSS implementation, source code,
 archive, test vector, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0511
+
+The Contextual Adaptive Huffman complete-frame decoder uses DD-728 through
+DD-733, TVG-0607 through TVG-0612, marc's private frame preflight, two-pass
+typed-token adapter, typed LZSS reconstructor, checked overlap arithmetic, and
+neighboring contextual complete-frame decoders as local architectural
+precedents. No external Adaptive Huffman or LZSS implementation, source code,
+archive, test vector, test suite, patent text, or optimization description was
+consulted.

@@ -15148,3 +15148,22 @@ token/event/decision/raw counts, zero optional side data and checksum trailer,
 all decoder limits, exact descriptor/header agreement, checked serialized
 extent, and transactional output objects. Keep token and raw reconstruction
 outside this format-only milestone.
+
+## DD-733: Contextual Adaptive Huffman frames publish raw bytes last
+
+- Date: 2026-08-11
+- Status: accepted
+
+Compose the private frame preflight, Contextual Adaptive Huffman LZSS token
+adapter, and typed LZSS reconstructor into one complete-frame decoder. Require
+exact caller-owned prefixes of 9,067 FGK nodes, 4,518 symbol indices, the
+declared token count, and the declared raw extent. Reject short or pairwise
+overlapping serialized, node, symbol, token, and raw regions before invoking
+the entropy decoder.
+
+Decode and validate the complete token sequence before reconstructing raw
+bytes, and let the reconstructor validate the entire sequence again before its
+first write. Set serialized consumption only after raw reconstruction succeeds.
+Expose nested preflight, token, and reconstruction diagnostics while mapping
+the outer failure to a stable category. Defer streaming lifecycle, encoding,
+C ABI, CLI, benchmark, fuzzing, and profile admission.

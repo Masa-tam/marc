@@ -17751,3 +17751,32 @@ discarded and the reviewed seed retained.
   the 240-second per-test limit. Static and shared library targets also build
   successfully under both compilers; the MSVC build uses the established
   approved route for the sandboxed FileTracker behavior.
+
+## CR-0763: 2026-08-11 - Contextual Adaptive Huffman complete-frame decoder
+
+- Authoring method: composed marc's private preflight, typed-token decoder,
+  and typed LZSS reconstructor without changing any component representation
+  or introducing streaming state.
+- References used: DD-728 through DD-733; IR-0511; TVG-0607 through TVG-0612;
+  marc's checked overlap arithmetic, caller-owned workspace policy, and
+  neighboring contextual complete-frame decoders.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, archives, test vectors, test
+  suites, patent text, and optimization descriptions.
+- Independent decisions: require exact node and symbol prefixes; preflight all
+  five regions before entropy mutation; decode all tokens before raw
+  reconstruction; preserve nested diagnostics; and publish consumption only
+  after complete success.
+- Generated-code task description: add the private complete-frame decoder,
+  register success, trailing-byte, truncation, capacity, overlap, padding, and
+  atomic-publication GoogleTests, and update architecture, format,
+  composition, readiness, test, reference, decision, and provenance records.
+- Similarity review: the implementation composes only marc's independently
+  designed local boundaries; no external implementation expression entered
+  the work.
+- Local validation: the five focused complete-frame tests pass under MSVC
+  19.51.36252 and ClangCL 22.1.3. All 2,825 registered tests, including
+  `marc_interoperability_schema_compatibility`, pass under each compiler with
+  the 240-second per-test limit. Static and shared library targets also build
+  successfully under both compilers; the MSVC build uses the established
+  approved route for the sandboxed FileTracker behavior.

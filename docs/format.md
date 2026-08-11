@@ -6496,3 +6496,12 @@ bytes, the fixed descriptor, exact payload extent, and checked serialized
 size. It consumes only the validated frame extent and leaves following bytes
 untouched. This adds no new field or representation and still does not perform
 token or raw reconstruction.
+
+The private complete-frame decoder now consumes exactly one preflighted frame,
+decodes its contextual entropy payload into validated LZSS typed tokens, and
+reconstructs the declared raw extent. It uses exact caller-owned storage for
+9,067 FGK nodes, 4,518 symbol indices, the declared token count, and the raw
+frame. Serialized input and all workspaces must be pairwise disjoint. A
+preflight, entropy, token, capacity, alias, or reconstruction error leaves
+serialized consumption and raw publication at zero; trailing bytes after a
+successful frame remain unconsumed.

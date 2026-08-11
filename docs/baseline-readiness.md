@@ -1747,3 +1747,13 @@ unsupported features, descriptor contradictions, payload limits, trailing
 input preservation, and transactional outputs are tested under both local
 compilers. Complete-frame decoding and all encoder/public layers remain
 pending.
+
+### BR-0087
+
+The private Contextual Adaptive Huffman path now decodes one complete frame to
+raw bytes. The documented frame, trailing input preservation, truncation,
+every workspace shortage, serialized and model/raw aliases, nonzero entropy
+padding, nested diagnostics, token/raw sentinel preservation, and success-only
+consumption are tested under both local compilers. A streaming decoder,
+encoder parity, C ABI, CLI, benchmark, malformed regression set, fuzzing, and
+interoperability admission remain required.

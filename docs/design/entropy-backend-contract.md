@@ -609,6 +609,12 @@ parameter region, the 2^24 raw-frame ceiling, exact descriptor and payload
 extents, and the model-entry limit. It does not allocate or initialize a tree;
 the validated payload and descriptor remain inputs to the operation decoder.
 
+The complete-frame consumer keeps those entropy workspaces caller-owned and
+separate from token and raw storage. It invokes the operation decoder only
+after every region is proven disjoint, then reconstructs raw LZSS bytes only
+after the full token sequence validates. The entropy backend therefore still
+publishes no raw bytes and retains no state beyond one frame.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

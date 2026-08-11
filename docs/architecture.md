@@ -4768,3 +4768,11 @@ payload before any model or token workspace is used. Header, descriptor, and
 layout objects publish only after complete validation. Extra input remains for
 the next frame; raw reconstruction and a complete-frame transaction remain
 later boundaries.
+
+The private complete-frame decoder now composes preflight, typed-token decode,
+and typed LZSS reconstruction. It binds exact caller-owned node, symbol,
+token, and raw prefixes only after checking all capacities and every pairwise
+overlap with the serialized frame and each other. Token decoding completes
+before the reconstructor performs its own full validation, so raw bytes and
+serialized consumption are published only after the entire frame succeeds.
+Streaming ownership remains a later boundary.
