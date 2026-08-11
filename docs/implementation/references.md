@@ -4540,3 +4540,13 @@ arithmetic, and neighboring contextual complete-frame encoders as local
 architectural precedents. No external Adaptive Huffman, LZSS, or frame-encoder
 implementation, source code, archive, test vector, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0516
+
+The Contextual Adaptive Huffman streaming encoder uses DD-728 through DD-738,
+TVG-0607 through TVG-0617, marc's complete-frame encoder, core transform
+contract, checked arithmetic, caller-owned workspace policy, and neighboring
+contextual streaming encoders as local architectural precedents. No external
+Adaptive Huffman, LZSS, or streaming implementation, source code, archive,
+test vector, test suite, patent text, or optimization description was
+consulted.

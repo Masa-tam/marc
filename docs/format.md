@@ -6533,3 +6533,10 @@ LZSS input. Raw byte `41` therefore reproduces the documented 82-byte frame
 above. Planning validates all counts, limits, storage, and outer header fields
 before the writing pass; no additional field, flag, variant, or representation
 is introduced.
+
+The private streaming encoder also leaves these bytes unchanged. It emits the
+112-byte stream header, collects one bounded raw frame, materializes that frame
+through the complete-frame encoder, and drains the retained bytes before
+reusing all frame-local workspaces. Two one-byte `41` frames therefore append
+two independent 82-byte frames with sequence numbers zero and one; no model
+state crosses their boundary.

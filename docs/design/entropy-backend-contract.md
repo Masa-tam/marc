@@ -641,6 +641,11 @@ contextual entropy events. The outer frame layer records only validated counts,
 the fixed descriptor, and payload, while resetting the exact model bank for
 each planned and written frame.
 
+The streaming producer retains only the serialized result of that complete
+transaction while draining. It never advances an FGK tree incrementally across
+process calls or frames; chunking affects only raw collection and byte drain,
+not entropy decisions or the resulting representation.
+
 ## Backend substitution
 
 Backend substitution never changes the dictionary variant or context-model

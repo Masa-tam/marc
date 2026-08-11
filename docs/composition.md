@@ -1646,3 +1646,13 @@ dictionary-byte round trip. The documented 82-byte frame, complete-decoder
 round trip, deterministic mixed input, capacity and alias rejection, aggregate
 accounting, trailing-capacity preservation, and exact model ownership are
 tested. Streaming encoding and public admission remain future milestones.
+
+### CP-0093
+
+Contextual Adaptive Huffman now has a private bounded streaming encoder around
+the complete-frame transaction. One-byte input/output reproduces the exact
+stream and independent frame bytes; full frames emit before finish, partial
+flushes remain open, final input survives output starvation, and empty input
+ends after its header drains. Constructor, process-output, capacity, aggregate,
+input-protocol, flag, and sticky-terminal rules are tested. Public ABI, tools,
+fuzzing, benchmark, and interoperability admission remain future milestones.

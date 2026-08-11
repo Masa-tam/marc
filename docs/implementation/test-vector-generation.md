@@ -8167,3 +8167,19 @@ workspace one byte below the exact requirement. Require all failures before
 serialized publication, preserve trailing output capacity and unused token
 capacity, and run focused and complete registered suites under MSVC and
 ClangCL.
+
+### TVG-0617
+
+Encode two raw `41` bytes with one-byte frames using one-byte input and output
+chunks. Require the documented 112-byte stream header followed by two
+independent 82-byte frames with sequence numbers zero and one, exact byte
+identity, complete input consumption, and sticky EndOfStream. Feed a full
+frame before `EndInput`, require immediate frame output, and require `Flush`
+on a partial frame to leave that frame open.
+
+Latch final input through zero-capacity frame drain and through empty-stream
+header drain. Exercise short token, node, symbol, and serialized-frame
+workspaces, aggregate limit, premature and excess input, every constructor and
+process-output alias class, unknown flags, and `ResetBlock`; require stable
+error mapping and sticky terminal results. Run focused and complete registered
+suites under MSVC and ClangCL.

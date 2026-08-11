@@ -4812,3 +4812,10 @@ storage, and serialized output as one bounded transaction, and rejects every
 cross-stage alias before serialized publication. The second entropy traversal
 must reproduce the plan exactly; excess output and unused token capacity remain
 outside the committed frame.
+
+The private streaming encoder owns exactly one such transaction at a time. It
+drains the stream header, collects one raw frame, materializes and retains one
+serialized frame, then drains it before reusing raw, token, node, symbol, or
+serialized storage. Final input remains latched through drain, while complete
+non-final frames may be emitted immediately. Each complete-frame call resets
+all contextual trees, so no hidden model state crosses a frame boundary.

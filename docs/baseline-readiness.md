@@ -1801,3 +1801,15 @@ preserves trailing serialized and unused token capacity, rejects short token,
 node, symbol, and output storage, rejects raw and output alias classes, and
 enforces stream, frame-size, and exact aggregate limits under both local
 compilers. Streaming encoding and all public layers remain pending.
+
+### BR-0092
+
+The private Contextual Adaptive Huffman path now satisfies both streaming
+directions. The encoder reproduces the documented stream under one-byte
+input/output, resets the model across two frames, emits complete frames before
+finish, keeps partial frames open on flush, latches final input through frame
+and empty-header drain, rejects short workspaces and exact aggregate overflow,
+checks constructor and output aliases, enforces input protocol and unsupported
+flags, and keeps terminal states sticky under both local compilers. Public C
+ABI, CLI, benchmark, malformed regression, fuzzing, and interoperability
+admission remain pending.

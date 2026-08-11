@@ -15246,3 +15246,22 @@ only the deterministic entropy traversal, serializes descriptor and header
 after its counts agree with the plan, preserves excess output capacity, and
 returns no serialized size on a failed plan. Defer streaming lifecycle and
 public profile admission.
+
+## DD-738: Contextual Adaptive Huffman streaming owns one bounded frame
+
+- Date: 2026-08-11
+- Status: accepted
+
+Wrap the complete-frame encoder in the immutable-direction transform contract.
+Serialize and drain the stream header first, collect at most one raw frame in
+caller storage, invoke the complete-frame encoder only when that frame reaches
+its exact expected raw size, then drain the retained serialized frame through
+arbitrary output capacities. Reset the exact contextual model through each
+complete-frame invocation; retain no entropy state between frames.
+
+Latch `EndInput` while a final frame or header is draining, allow a full frame
+to be emitted before final input, keep `Flush` non-terminal and leave a partial
+raw frame open, reject `ResetBlock`, extra or premature final input, unknown
+flags, and every workspace/output alias, and make terminal results sticky.
+Constructor validation must bind disjoint raw, token, node, symbol, and
+serialized-frame workspaces. Defer public profile admission.
