@@ -67,6 +67,8 @@ struct LzssRansFrameValidationResult {
         dictionary::internal::LzssDecodeError::none};
     dictionary::internal::LzssEncodeError dictionary_encode_error{
         dictionary::internal::LzssEncodeError::none};
+    dictionary::internal::LzssHashChainError match_finder_error{
+        dictionary::internal::LzssHashChainError::none};
     entropy::internal::RansEncodeError entropy_encode_error{
         entropy::internal::RansEncodeError::none};
     LzssRansFrameValidationError error{
@@ -96,6 +98,31 @@ struct LzssRansFrameValidationResult {
     std::uint64_t output_already_committed,
     std::span<const std::byte> input,
     std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
+
+// Private exact-search route used to evaluate HashChain without changing the
+// public strategy or serialized format. The strategy is not serialized.
+[[nodiscard]] LzssRansFrameValidationResult
+plan_lzss_rans_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> match_finder_workspace) noexcept;
+
+[[nodiscard]] LzssRansFrameValidationResult
+encode_lzss_rans_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> match_finder_workspace,
     std::span<std::byte> output) noexcept;
 
 // Validates and rANS-decodes one complete frame into private canonical LZSS

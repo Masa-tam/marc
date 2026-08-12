@@ -2135,3 +2135,17 @@ README retains its 3,355-byte stream. The CLI's explicit aggregate bound also
 includes its platform-width HashChain worst case. Full-suite admission is
 established by all 2,854 registered tests under both MSVC and ClangCL,
 including documentation layout and the complete schema compatibility chain.
+
+### BR-0121
+
+Byte-oriented LZSS plus rANS now has a private HashChain Exact complete-frame
+route sharing canonical dictionary staging, unchanged rANS block partition,
+descriptors, normalized models and payload production, and generic header
+serialization with the Exhaustive oracle. Direct frame tests under MSVC and
+ClangCL prove complete byte identity and strict decode, exact finder capacity,
+all workspace alias rejection, one-byte-short aggregate enforcement, and
+atomic failure. The public streaming/profile/C/CLI/schema route remains
+unchanged pending a separate promotion step. Full-suite admission is
+established by all 2,855 registered tests in about 161 seconds under MSVC and
+167 seconds under ClangCL, including documentation layout and the complete
+schema compatibility chain.

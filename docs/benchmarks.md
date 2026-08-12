@@ -1012,6 +1012,20 @@ small-input timings are descriptive and not stable pass thresholds. Exhaustive
 stream identity, bounded profile sizing, stable capacity and alias rejection,
 and successful public round trip are the normative evidence.
 
+### BM-0044: Byte-oriented LZSS rANS HashChain frame baseline
+
+The private HashChain route produces exactly the same 3,654-byte LZSS plus
+rANS frame as Exhaustive for the 4,326-byte README, including its unchanged
+rANS block partition, descriptors, normalized models, payloads, and generic
+header.
+
+Ten MSVC 19.51.36252 Release iterations report 0.218 MiB/s for Exhaustive and
+14.430 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.303 and
+19.589 MiB/s. These small-input timings are descriptive and not stable speedup
+claims or pass thresholds. Exact staged tokens and complete frame bytes,
+successful strict decode, bounded finder capacity, aggregate accounting, and
+atomic alias rejection are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

@@ -16099,3 +16099,22 @@ to out-of-memory. Extend the CLI's explicit aggregate limit by one platform-
 width head and one 32-bit link per raw position. Do not record the search
 strategy or alter canonical bytes, decoder behavior, ABI version, CLI selector,
 format, or schema.
+
+## DD-784: Byte-oriented LZSS rANS isolates HashChain production
+
+- Date: 2026-08-13
+- Status: accepted
+
+Refactor the byte-oriented LZSS plus rANS complete-frame planner and writer
+behind compile-time finder selection. Both routes produce the same canonical
+LZSS byte tokens and then share the unchanged rANS block partition,
+normalization, descriptors, payload serialization, and generic frame header.
+Retain the existing entry points as the Exhaustive oracle and add private
+HashChain entries accepting a separate aligned finder span.
+
+Reject overlap among raw input, canonical-token staging, finder storage, and
+serialized output before publication. Preserve the nested finder error and
+charge raw input, exact dictionary bytes, exact finder storage, and the
+complete frame against aggregate memory. Do not serialize the finder strategy
+or alter the decoder, public streaming/profile/C/CLI path, format, ABI, or
+interoperability schema before a separate promotion decision.

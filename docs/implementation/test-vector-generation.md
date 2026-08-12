@@ -8865,3 +8865,20 @@ width head and one 32-bit link per raw position. Run the public README benchmark
 for ten iterations under MSVC and ClangCL while asserting no timing threshold.
 Run all 2,854 registered tests, including schema compatibility, under both
 compilers with the 240-second per-test limit.
+
+### TVG-0660
+
+Encode one match-bearing byte-oriented LZSS plus rANS frame through the
+established Exhaustive route and the private HashChain route. Require identical
+canonical dictionary staging, dictionary extent, rANS block count, descriptor
+extent, payload extent, serialized extent, complete frame bytes, and strict
+decode through the unchanged decoder.
+
+Provide finder capacity one byte short and require its stable nested error
+without modifying dictionary staging. Alias every pair involving raw input,
+dictionary staging, finder workspace, and serialized output and require
+rejection before publication. Set aggregate memory one byte below raw plus
+exact dictionary plus finder plus complete frame and require workspace-limit.
+Extend the internal README benchmark with ten verified iterations under MSVC
+and ClangCL while asserting no timing. Run all 2,855 registered tests,
+including schema compatibility, under both compilers.
