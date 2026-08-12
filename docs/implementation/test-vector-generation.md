@@ -8935,3 +8935,19 @@ and benchmark with aggregate limits containing the finder worst case. Run the
 public README benchmark for ten iterations under MSVC and ClangCL without a
 timing threshold. Run all 2,858 registered tests, including schema
 compatibility, under both compilers with the 240-second per-test limit.
+
+### TVG-0664
+
+For HashChain phase closure, require the complete branch to pass all 2,858
+registered tests under MSVC and ClangCL, including documentation layout and
+the schema-37-through-1 compatibility chain. Confirm that match-finder
+differential tests cover empty, one-byte, all-byte, repetitive, mixed, and
+4,096-byte deterministic pseudorandom input plus window sizes 1, 5, 17, 256,
+and 65,536 and maximum match lengths 5, 17, and 258.
+
+Rebuild all eleven public LZSS stream fuzz targets with ClangCL 22
+AddressSanitizer, UndefinedBehaviorSanitizer, and libFuzzer. Add the Clang
+sanitizer runtime and binary directories to the process-local PATH, then run
+each target for 100 bounded iterations with maximum input length 8,192.
+Require every target to exit normally without a sanitizer finding, crash, or
+hang.

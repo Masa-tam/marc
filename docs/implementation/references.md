@@ -4999,3 +4999,12 @@ exact finder, overlap helper, CLI, and public benchmark as first-party
 references. No external LZSS or ANS implementation, source code, integration,
 workspace layout, ABI design, benchmark, corpus, result, test suite, patent
 text, or optimization description was consulted.
+
+### IR-0563
+
+The LZSS HashChain phase-closure audit uses DD-760 through DD-788,
+TVG-0636 through TVG-0664, marc's full Exhaustive differential suite, all
+public HashChain profile tests, the complete MSVC and ClangCL suites, and the
+repository's eleven LZSS sanitizer fuzz targets as first-party evidence. No
+external LZSS implementation, source code, integration, benchmark, corpus,
+result, test suite, patent text, or optimization description was consulted.

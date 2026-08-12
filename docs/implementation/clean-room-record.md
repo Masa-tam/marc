@@ -19411,3 +19411,31 @@ discarded and the reviewed seed retained.
   2,858 registered tests in about 164 seconds under MSVC and 172 seconds under
   ClangCL with the 240-second per-test limit, including documentation layout
   and the complete schema-37-through-1 compatibility chain.
+
+## CR-0816: 2026-08-13 - LZSS HashChain phase closure
+
+- Authoring method: audited the complete LZSS acceleration branch against its
+  independently written strategy document, differential tests, public route
+  inventory, full suites, schema chain, and sanitizer fuzz targets.
+- References used: DD-760 through DD-788; IR-0563; TVG-0636 through TVG-0664;
+  marc's Exhaustive oracle, exact HashChain implementation, eleven public LZSS
+  fuzz targets, and complete MSVC and ClangCL test registrations.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, source code, strategy layouts, integrations, benchmarks,
+  corpora, results, test suites, patent text, and optimization descriptions.
+- Independent decisions: close the current production phase at HashChain
+  Exact; retain Exhaustive privately; keep strategy metadata outside the
+  stream; and require separate multi-corpus, multi-window evidence before
+  considering BinaryTree, WindowAdaptive, or Bounded search.
+- Generated-code task description: perform the LZSS acceleration branch
+  closure audit, rebuild and finitely execute every affected sanitizer target,
+  and record the completed and deferred boundaries without changing code or
+  format.
+- Similarity review: the closure criteria and deferral boundary were derived
+  entirely from marc-owned design, tests, benchmarks, and validation results;
+  no external implementation expression entered the work.
+- Local validation: all 2,858 registered tests passed under MSVC 19.51.36252
+  and ClangCL 22.1.3, including documentation layout and schema 37 through 1.
+  Eleven ClangCL 22 ASan/UBSan/libFuzzer LZSS targets were rebuilt from the
+  branch and each completed 100 bounded runs at maximum input length 8,192
+  without a sanitizer finding, crash, or hang.

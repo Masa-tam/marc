@@ -16176,3 +16176,20 @@ output to be pairwise disjoint, map one-byte-short finder capacity to out-of-
 memory, and extend CLI and benchmark aggregate limits for the finder. Do not
 record the strategy or alter canonical bytes, decoder behavior, ABI version,
 CLI selector, format, or schema.
+
+## DD-788: HashChain Exact closes the first LZSS acceleration phase
+
+- Date: 2026-08-13
+- Status: accepted
+
+Treat HashChain Exact as the completed production strategy for the current
+LZSS encoder scope. Every standalone, byte-oriented entropy, and contextual
+LZSS public encode route selects it while retaining Exhaustive as the private
+correctness oracle. The strategy remains format-neutral and is not serialized.
+
+Do not add BinaryTree, WindowAdaptive, or Bounded search in this change. Those
+strategies require a separate decision supported by repeatable measurements
+over multiple input categories and window sizes large enough to show that
+HashChain workspace or search cost justifies their additional implementation,
+validation, and maintenance surface. Their absence does not leave the current
+default 65,536-byte LZSS path incomplete.

@@ -2191,3 +2191,15 @@ include finder storage. Full-suite admission is established by all 2,858
 registered tests in about 164 seconds under MSVC and 172 seconds under
 ClangCL, including documentation layout and the complete schema compatibility
 chain.
+
+### BR-0125
+
+The first LZSS match-finder acceleration phase is complete. All standalone,
+byte-oriented entropy, and contextual public LZSS encode routes now select
+HashChain Exact without changing decoder-visible bytes or public ABI. The
+Exhaustive oracle remains available to prove exact longest-match and nearest-
+distance identity. Full MSVC and ClangCL suites pass all 2,858 tests, including
+schema compatibility, and eleven rebuilt LZSS sanitizer fuzz targets each pass
+100 bounded iterations. BinaryTree, WindowAdaptive, and Bounded search remain
+separate evidence-driven future work rather than completion requirements for
+the current 65,536-byte default path.
