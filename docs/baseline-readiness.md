@@ -2036,3 +2036,14 @@ completion tests prove Exhaustive byte identity, bounded capacity and alias
 rejection, stable public error mapping, and successful public round trip under
 MSVC and ClangCL. Full-suite admission is recorded separately after both
 2,845-test runs.
+
+### BR-0113
+
+Standalone entropy-none LZSS now has a private HashChain Exact complete-frame
+route sharing header and canonical token serialization with the Exhaustive
+oracle. Six direct tests under MSVC and ClangCL prove complete byte identity
+and decode, exact finder capacity, raw/finder/output alias rejection,
+complete-frame aggregate limits, and atomic failure. The public streaming
+profile, C ABI, CLI, and interoperability schema remain unchanged pending a
+separate promotion step. Full-suite admission is recorded separately after
+both 2,846-test runs.

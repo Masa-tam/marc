@@ -8722,3 +8722,20 @@ C lifecycle. Re-run public C, CLI, completion, and benchmark-smoke paths.
 Measure ten descriptive README iterations under MSVC and ClangCL while
 asserting only the unchanged 2,572-byte stream. Run all 2,845 tests, including
 schema compatibility, under both compilers.
+
+### TVG-0652
+
+Encode one match-bearing entropy-none LZSS frame through the established
+Exhaustive and new HashChain routes. Require identical serialized size, raw
+size, token count, frame header, canonical token payload, and complete frame,
+then decode the HashChain frame to the exact raw input.
+
+Provide finder workspace one byte short and require the nested stable
+match-finder error while the complete serialized output retains its sentinel.
+Alias serialized output independently with finder workspace and raw input and
+require rejection before header publication. Set aggregate memory one byte
+below raw input plus exact finder workspace plus complete frame and require the
+stable serialized-limit category. Extend the internal benchmark with ten
+verified standalone frame iterations under MSVC and ClangCL, but assert no
+timing. Run all 2,846 tests, including schema compatibility, under both
+compilers.

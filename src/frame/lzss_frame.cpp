@@ -1,5 +1,6 @@
 #include "frame/lzss_frame.hpp"
 
+#include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 
 #include <limits>
@@ -76,12 +77,14 @@ struct ParsedFrame {
 
 } // namespace
 
-LzssFrameCodecResult plan_lzss_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssFrameCodecResult plan_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
-    const std::span<const std::byte> input) noexcept {
+    const std::span<const std::byte> input,
+    const std::span<std::byte> match_finder_workspace) noexcept {
     LzssFrameCodecResult result{};
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
         || !supported_pipeline(stream)) {
@@ -93,8 +96,15 @@ LzssFrameCodecResult plan_lzss_frame(
         result.error = LzssFrameCodecError::input_size_mismatch;
         return result;
     }
-    const auto planned = dictionary::internal::plan_lzss_token_stream(
-        input, parameters, limits);
+    const auto planned = [&] {
+        if constexpr (UseHashChain) {
+            return dictionary::internal::plan_lzss_token_stream_hash_chain(
+                input, parameters, limits, match_finder_workspace);
+        } else {
+            return dictionary::internal::plan_lzss_token_stream(
+                input, parameters, limits);
+        }
+    }();
     result.encode_error = planned.error;
     result.format_error = planned.format_error;
     result.token_count = planned.token_count;
@@ -127,19 +137,64 @@ LzssFrameCodecResult plan_lzss_frame(
         result.error = LzssFrameCodecError::arithmetic_overflow;
         return result;
     }
+    if constexpr (UseHashChain) {
+        const auto finder = dictionary::internal::
+            calculate_lzss_hash_chain_workspace(
+                input.size(), parameters, limits);
+        std::size_t aggregate{};
+        if (finder.error
+                != dictionary::internal::LzssHashChainError::none
+            || !core::checked_add(input.size(), finder.workspace_size,
+                                  aggregate)
+            || !core::checked_add(aggregate, result.serialized_size,
+                                  aggregate)) {
+            result.encode_error =
+                dictionary::internal::LzssEncodeError::arithmetic_overflow;
+            result.error = LzssFrameCodecError::body_encode_error;
+            return result;
+        }
+        if (aggregate > limits.max_internal_buffered_bytes) {
+            result.encode_error = dictionary::internal::LzssEncodeError::
+                serialized_limit_exceeded;
+            result.error = LzssFrameCodecError::body_encode_error;
+            return result;
+        }
+    }
     result.output_size = input.size();
     return result;
 }
 
-LzssFrameCodecResult encode_lzss_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssFrameCodecResult encode_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
+    const std::span<std::byte> match_finder_workspace,
     const std::span<std::byte> output) noexcept {
-    auto result = plan_lzss_frame(stream, parameters, limits, sequence,
-                                  output_already_committed, input);
+    if constexpr (UseHashChain) {
+        const auto input_overlap = core::check_buffer_overlap(
+            input.data(), input.size(), output.data(), output.size());
+        const auto finder_overlap = core::check_buffer_overlap(
+            match_finder_workspace.data(), match_finder_workspace.size(),
+            output.data(), output.size());
+        if (input_overlap != core::BufferOverlap::disjoint
+            || finder_overlap != core::BufferOverlap::disjoint) {
+            LzssFrameCodecResult result{};
+            result.encode_error =
+                input_overlap == core::BufferOverlap::arithmetic_overflow
+                    || finder_overlap
+                        == core::BufferOverlap::arithmetic_overflow
+                ? dictionary::internal::LzssEncodeError::arithmetic_overflow
+                : dictionary::internal::LzssEncodeError::overlapping_buffers;
+            result.error = LzssFrameCodecError::body_encode_error;
+            return result;
+        }
+    }
+    auto result = plan_frame<UseHashChain>(
+        stream, parameters, limits, sequence, output_already_committed, input,
+        match_finder_workspace);
     if (result.error != LzssFrameCodecError::none) return result;
     if (output.size() < result.serialized_size) {
         result.error = LzssFrameCodecError::output_too_small;
@@ -160,15 +215,68 @@ LzssFrameCodecResult encode_lzss_frame(
         result.error = LzssFrameCodecError::internal_error;
         return result;
     }
-    const auto encoded = dictionary::internal::encode_lzss_token_stream(
-        input, parameters, limits,
-        output.subspan(frame_header_size,
-                       result.serialized_size - frame_header_size));
+    const auto body = output.subspan(
+        frame_header_size, result.serialized_size - frame_header_size);
+    const auto encoded = [&] {
+        if constexpr (UseHashChain) {
+            return dictionary::internal::encode_lzss_token_stream_hash_chain(
+                input, parameters, limits, body, match_finder_workspace);
+        } else {
+            return dictionary::internal::encode_lzss_token_stream(
+                input, parameters, limits, body);
+        }
+    }();
     if (encoded.error != dictionary::internal::LzssEncodeError::none) {
         result.error = LzssFrameCodecError::internal_error;
         return result;
     }
     return result;
+}
+
+LzssFrameCodecResult plan_lzss_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input) noexcept {
+    return plan_frame<false>(stream, parameters, limits, sequence,
+                             output_already_committed, input, {});
+}
+
+LzssFrameCodecResult encode_lzss_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> output) noexcept {
+    return encode_frame<false>(stream, parameters, limits, sequence,
+                               output_already_committed, input, {}, output);
+}
+
+LzssFrameCodecResult plan_lzss_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> match_finder_workspace) noexcept {
+    return plan_frame<true>(stream, parameters, limits, sequence,
+                            output_already_committed, input,
+                            match_finder_workspace);
+}
+
+LzssFrameCodecResult encode_lzss_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> output) noexcept {
+    return encode_frame<true>(stream, parameters, limits, sequence,
+                              output_already_committed, input,
+                              match_finder_workspace, output);
 }
 
 LzssFrameCodecResult validate_lzss_frame(

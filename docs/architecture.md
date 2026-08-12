@@ -5047,3 +5047,12 @@ symbol, finder, serialized, and caller-output regions disjoint. Short finder
 capacity maps to out-of-memory, policy rejection maps to limit exceeded, and
 Exhaustive remains a private byte-identity oracle. No stream field, decoder
 behavior, public selector, ABI version, or schema changes.
+
+The private entropy-none LZSS frame now has parallel Exhaustive and HashChain
+Exact canonical-token producers behind one shared common-header and payload
+layout. Finder storage remains a separate aligned caller-owned span; raw input,
+finder, and serialized output are proven disjoint before header publication.
+Its aggregate charges raw input, the exact finder extent, canonical token
+payload, and complete frame header. Streaming, profile sizing, public ABI,
+decoder, stream identity, CLI, and schema remain on the established route
+pending a separate promotion step.

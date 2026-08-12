@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -51,6 +53,86 @@ TEST(LzssFrame, PlansEncodesValidatesAndDecodesCanonicalFrame) {
     EXPECT_EQ(result.error, LzssFrameCodecError::none);
     EXPECT_EQ(result.token_count, 7U);
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssFrame, HashChainMatchesExhaustiveAndFailsAtomically) {
+    const auto raw = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto stream = config(raw.size());
+    const auto reference_plan = plan_lzss_frame(stream, {}, {}, 0, 0, raw);
+    ASSERT_EQ(reference_plan.error, LzssFrameCodecError::none);
+    std::vector<std::byte> reference(reference_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_frame(stream, {}, {}, 0, 0, raw, reference).error,
+              LzssFrameCodecError::none);
+
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    ASSERT_GT(requirements.workspace_size, 0U);
+    std::vector<std::max_align_t> finder_backing(
+        (requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto finder = std::as_writable_bytes(std::span{finder_backing}).first(
+        requirements.workspace_size);
+    const auto plan = plan_lzss_frame_hash_chain(
+        stream, {}, {}, 0, 0, raw, finder);
+    ASSERT_EQ(plan.error, LzssFrameCodecError::none);
+    EXPECT_EQ(plan.serialized_size, reference_plan.serialized_size);
+    EXPECT_EQ(plan.output_size, reference_plan.output_size);
+    EXPECT_EQ(plan.token_count, reference_plan.token_count);
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, finder, encoded).error,
+              LzssFrameCodecError::none);
+    EXPECT_EQ(encoded, reference);
+    std::vector<std::byte> decoded(raw.size());
+    EXPECT_EQ(decode_lzss_frame(
+                  stream, {}, {}, 0, 0, encoded, decoded).error,
+              LzssFrameCodecError::none);
+    EXPECT_EQ(decoded, raw);
+
+    std::ranges::fill(encoded, std::byte{0xcc});
+    auto failed = encode_lzss_frame_hash_chain(
+        stream, {}, {}, 0, 0, raw,
+        finder.first(finder.size() - 1), encoded);
+    EXPECT_EQ(failed.error, LzssFrameCodecError::body_encode_error);
+    EXPECT_EQ(failed.encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  match_finder_error);
+    EXPECT_TRUE(std::ranges::all_of(encoded, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+
+    failed = encode_lzss_frame_hash_chain(
+        stream, {}, {}, 0, 0, raw, finder,
+        finder.first(encoded.size()));
+    EXPECT_EQ(failed.error, LzssFrameCodecError::body_encode_error);
+    EXPECT_EQ(failed.encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+
+    std::vector<std::byte> shared(
+        std::max(raw.size(), encoded.size()), std::byte{0xcc});
+    std::ranges::copy(raw, shared.begin());
+    failed = encode_lzss_frame_hash_chain(
+        stream, {}, {}, 0, 0,
+        std::span<const std::byte>{shared}.first(raw.size()), finder,
+        std::span<std::byte>{shared}.first(encoded.size()));
+    EXPECT_EQ(failed.encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = raw.size();
+    limits.max_internal_buffered_bytes = raw.size() + finder.size()
+        + plan.serialized_size - 1;
+    failed = plan_lzss_frame_hash_chain(
+        stream, {}, limits, 0, 0, raw, finder);
+    EXPECT_EQ(failed.error, LzssFrameCodecError::body_encode_error);
+    EXPECT_EQ(failed.encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  serialized_limit_exceeded);
 }
 
 TEST(LzssFrame, EmitsHandCheckableSingleLiteralFrame) {

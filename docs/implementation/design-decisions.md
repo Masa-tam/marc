@@ -15937,3 +15937,21 @@ CLI, and schema because both finders produce identical canonical tokens and the
 decoder needs no strategy information. Require callers to query opaque
 requirements again, retain Exhaustive as the private oracle, and leave the
 decoder's node, symbol, and token workspace unchanged.
+
+## DD-776: Standalone LZSS isolates HashChain frame production
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for the entropy-none LZSS
+frame through one compile-time-selected body shared with Exhaustive. Select
+only canonical token production; leave the common frame header, token
+serialization, decoder, and stream representation unchanged. The HashChain
+route accepts a separate aligned caller-owned finder workspace.
+
+Reject raw-input or finder overlap with the complete serialized-output span
+before writing the header. Charge raw input, exact finder workspace, canonical
+token payload, and the complete frame header to aggregate memory. Retain the
+public streaming profile, C ABI, CLI, format, and schema on their established
+route until exact frame identity, decoding, bounded failure, and performance
+are demonstrated independently.

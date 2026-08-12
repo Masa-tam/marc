@@ -55,6 +55,23 @@ struct LzssFrameCodecResult {
     std::uint64_t output_already_committed,
     std::span<const std::byte> input, std::span<std::byte> output) noexcept;
 
+[[nodiscard]] LzssFrameCodecResult plan_lzss_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> match_finder_workspace) noexcept;
+
+[[nodiscard]] LzssFrameCodecResult encode_lzss_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> output) noexcept;
+
 [[nodiscard]] LzssFrameCodecResult validate_lzss_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,

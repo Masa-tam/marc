@@ -7,6 +7,7 @@
 #include "frame/lzss_contextual_tans_frame_encoder.hpp"
 #include "frame/lzss_contextual_blocked_huffman_frame_encoder.hpp"
 #include "frame/lzss_contextual_adaptive_huffman_frame_encoder.hpp"
+#include "frame/lzss_frame.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -155,6 +156,36 @@ int main(const int argc, const char* const argv[]) {
             != LzssEncodeError::none
         || exhaustive_output != hash_output) {
         std::cerr << "encoded equivalence failed\n";
+        return 1;
+    }
+
+    marc::frame::StreamHeader lzss_frame_stream{};
+    lzss_frame_stream.dictionary_algorithm =
+        marc::frame::DictionaryAlgorithm::lzss;
+    lzss_frame_stream.dictionary_variant = 1;
+    lzss_frame_stream.frame_size = static_cast<std::uint32_t>(input.size());
+    lzss_frame_stream.dictionary_parameters_size = lzss_parameter_size;
+    lzss_frame_stream.original_size = input.size();
+    const auto lzss_frame_plan = marc::frame::plan_lzss_frame(
+        lzss_frame_stream, parameters, limits, 0, 0, input);
+    if (lzss_frame_plan.error != marc::frame::LzssFrameCodecError::none) {
+        std::cerr << "LZSS frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> lzss_frame_exhaustive(
+        lzss_frame_plan.serialized_size);
+    std::vector<std::byte> lzss_frame_hash_chain(
+        lzss_frame_plan.serialized_size);
+    if (marc::frame::encode_lzss_frame(
+            lzss_frame_stream, parameters, limits, 0, 0, input,
+            lzss_frame_exhaustive).error
+            != marc::frame::LzssFrameCodecError::none
+        || marc::frame::encode_lzss_frame_hash_chain(
+            lzss_frame_stream, parameters, limits, 0, 0, input, workspace,
+            lzss_frame_hash_chain).error
+            != marc::frame::LzssFrameCodecError::none
+        || lzss_frame_exhaustive != lzss_frame_hash_chain) {
+        std::cerr << "LZSS frame equivalence failed\n";
         return 1;
     }
 
@@ -400,6 +431,21 @@ int main(const int argc, const char* const argv[]) {
             input, parameters, limits, hash_output, workspace).error
             == LzssEncodeError::none;
     });
+    const auto lzss_frame_exhaustive_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok && marc::frame::encode_lzss_frame(
+                lzss_frame_stream, parameters, limits, 0, 0, input,
+                lzss_frame_exhaustive).error
+                == marc::frame::LzssFrameCodecError::none;
+        });
+    const auto lzss_frame_hash_chain_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok
+                && marc::frame::encode_lzss_frame_hash_chain(
+                    lzss_frame_stream, parameters, limits, 0, 0, input,
+                    workspace, lzss_frame_hash_chain).error
+                    == marc::frame::LzssFrameCodecError::none;
+        });
     const auto typed_two_pass_seconds = measure_seconds(iterations, [&] {
         timing_ok = timing_ok && encode_lzss_typed_tokens_hash_chain(
             input, parameters, limits, typed_two_pass, workspace).error
@@ -502,6 +548,7 @@ int main(const int argc, const char* const argv[]) {
                     LzssContextualAdaptiveHuffmanFrameEncodeError::none;
         });
     if (!timing_ok || exhaustive_output != hash_output
+        || lzss_frame_exhaustive != lzss_frame_hash_chain
         || frame_exhaustive != frame_hash_chain
         || rans_exhaustive != rans_hash_chain
         || tans_exhaustive != tans_hash_chain
@@ -514,6 +561,7 @@ int main(const int argc, const char* const argv[]) {
     std::cout << std::fixed << std::setprecision(6)
               << "input_bytes=" << input.size() << '\n'
               << "output_bytes=" << hash_output.size() << '\n'
+              << "lzss_frame_bytes=" << lzss_frame_hash_chain.size() << '\n'
               << "token_count=" << hash_plan.token_count << '\n'
               << "contextual_frame_bytes=" << frame_hash_chain.size() << '\n'
               << "contextual_rans_frame_bytes=" << rans_hash_chain.size()
@@ -546,6 +594,10 @@ int main(const int argc, const char* const argv[]) {
                       input.size(), iterations);
     print_measurement("hash_chain_encode", hash_encode_seconds,
                       input.size(), iterations);
+    print_measurement("lzss_frame_exhaustive",
+                      lzss_frame_exhaustive_seconds, input.size(), iterations);
+    print_measurement("lzss_frame_hash_chain",
+                      lzss_frame_hash_chain_seconds, input.size(), iterations);
     print_measurement("hash_chain_typed_two_pass", typed_two_pass_seconds,
                       input.size(), iterations);
     print_measurement("hash_chain_typed_single_pass",

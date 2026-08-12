@@ -4879,3 +4879,13 @@ CLI, and public benchmark as first-party references. No external LZSS,
 Adaptive Huffman, combined implementation, source code, workspace layout, API
 integration, benchmark, corpus, result, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0551
+
+The private standalone LZSS HashChain frame uses DD-760 through DD-776,
+TVG-0636 through TVG-0652, marc's entropy-none LZSS frame encoder and decoder,
+canonical token serializer, exact finder, buffer-overlap and aggregate-memory
+contracts, and internal benchmark as first-party references. No external LZSS
+implementation, source code, frame integration, workspace layout, benchmark,
+corpus, result, test suite, patent text, or optimization description was
+consulted.

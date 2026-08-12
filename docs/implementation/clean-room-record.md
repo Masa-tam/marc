@@ -18997,3 +18997,36 @@ discarded and the reviewed seed retained.
   passed under each compiler with the 240-second per-test limit (about 186
   seconds per run), including the corrected documentation order and complete
   schema-37-through-1 compatibility chain.
+
+## CR-0804: 2026-08-12 - Standalone LZSS HashChain frame
+
+- Authoring method: refactored marc's entropy-none LZSS frame planner and
+  writer into one compile-time-selected body, then selected the existing exact
+  HashChain token-stream route without changing frame or token formats.
+- References used: DD-760 through DD-776; IR-0551; TVG-0636 through TVG-0652;
+  marc's standalone LZSS frame encoder and decoder, canonical token serializer,
+  exact finder workspace, overlap contracts, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, source code, integrations, workspace layouts, tests,
+  corpora, benchmarks, results, patent text, and optimization descriptions.
+- Independent decisions: select only canonical token production; preflight
+  complete-output aliases before header publication; charge the header in
+  aggregate memory; retain Exhaustive as oracle; and defer streaming and
+  public routing until this frame route is proven.
+- Generated-code task description: connect the private entropy-none LZSS frame
+  to HashChain Exact, prove exact header/payload/frame bytes and decode,
+  preserve bounded atomic failure, and measure complete-frame cost without
+  changing the format.
+- Similarity review: common-body refactoring, workspace checks, regression
+  vector, benchmark extension, and records were independently derived from
+  marc-owned contracts; no external implementation expression entered the
+  work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core tests and internal benchmark warning-clean. All six direct standalone
+  LZSS frame tests passed under each compiler. Ten README iterations produced
+  identical 6,670-byte frames and measured 0.219 versus 42.633 MiB/s under
+  MSVC and 0.302 versus 42.984 MiB/s under ClangCL for Exhaustive versus
+  HashChain respectively. All 2,846 registered tests passed under each
+  compiler with the 240-second per-test limit (about 188 seconds per run),
+  including documentation layout and the complete schema-37-through-1
+  compatibility chain.

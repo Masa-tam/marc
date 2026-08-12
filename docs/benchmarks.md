@@ -895,6 +895,20 @@ reservations and the 3,193,420-byte direction-maximum peak remain unchanged.
 Exact stream identity, bounded workspace partitioning, stable failure mapping,
 and successful public round trip are the normative evidence.
 
+### BM-0036: Standalone LZSS HashChain frame baseline
+
+The private HashChain route produces exactly the same 6,670-byte entropy-none
+LZSS frame as Exhaustive for the 4,326-byte README. This measurement includes
+canonical token planning and serialization plus the complete 56-byte frame
+header, but excludes the outer stream prefix and streaming lifecycle.
+
+Ten MSVC 19.51.36252 Release iterations report 0.219 MiB/s for Exhaustive and
+42.633 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.302 and
+42.984 MiB/s. These small-input timings are descriptive and not stable speedup
+claims or pass thresholds. Exact header, payload, and frame bytes, successful
+decode, bounded finder workspace, complete-frame aggregate accounting, and
+atomic rejection are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
