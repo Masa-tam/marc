@@ -1,6 +1,7 @@
 #include "frame/lzss_adaptive_huffman_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -66,6 +67,21 @@ LzssAdaptiveHuffmanProfileError make_lzss_adaptive_huffman_profile(
         return LzssAdaptiveHuffmanProfileError::none;
     }
 
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssAdaptiveHuffmanProfileError::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.parameters, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error
+                == dictionary::internal::LzssHashChainError::
+                    workspace_limit_exceeded
+            ? LzssAdaptiveHuffmanProfileError::limit_exceeded
+            : LzssAdaptiveHuffmanProfileError::arithmetic_overflow;
+    }
+
     std::uint64_t dictionary_bytes{};
     std::uint64_t worst_payload_bits{};
     std::uint64_t rounded_payload_bits{};
@@ -93,6 +109,10 @@ LzssAdaptiveHuffmanProfileError make_lzss_adaptive_huffman_profile(
         || !core::checked_add(
             largest_frame, dictionary_bytes, aggregate_bytes)
         || !core::checked_add(
+            aggregate_bytes,
+            static_cast<std::uint64_t>(finder.workspace_size),
+            aggregate_bytes)
+        || !core::checked_add(
             aggregate_bytes, frame_encoded_bytes, aggregate_bytes)) {
         return LzssAdaptiveHuffmanProfileError::arithmetic_overflow;
     }
@@ -110,6 +130,9 @@ LzssAdaptiveHuffmanProfileError make_lzss_adaptive_huffman_profile(
         workspace = {};
         return LzssAdaptiveHuffmanProfileError::arithmetic_overflow;
     }
+    workspace.match_finder_bytes = finder.workspace_size;
+    workspace.match_finder_alignment = finder.workspace_size == 0
+        ? 1 : finder.workspace_alignment;
     return LzssAdaptiveHuffmanProfileError::none;
 }
 

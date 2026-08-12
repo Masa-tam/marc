@@ -4196,7 +4196,15 @@ marc_status marc_lzss_adaptive_huffman_workspace_requirements(
         }
         requirements->primary_bytes = needed.frame_input_bytes;
         if (!marc::core::checked_add(
+                needed.match_finder_bytes,
+                needed.match_finder_alignment - 1,
+                requirements->secondary_bytes)
+            || !marc::core::checked_add(
+                requirements->secondary_bytes,
                 needed.dictionary_staging_bytes,
+                requirements->secondary_bytes)
+            || !marc::core::checked_add(
+                requirements->secondary_bytes,
                 needed.frame_encoded_bytes,
                 requirements->secondary_bytes)) {
             return MARC_STATUS_LIMIT_EXCEEDED;
@@ -4260,14 +4268,31 @@ marc_status marc_lzss_adaptive_huffman_create(
             != marc::frame::LzssAdaptiveHuffmanProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
         }
+        std::span<std::byte> finder_workspace{};
+        std::size_t finder_extent{};
+        if (!aligned_buffer_region(
+                secondary_workspace, needed.match_finder_bytes,
+                needed.match_finder_alignment, finder_workspace,
+                finder_extent)
+            || finder_extent > secondary_workspace.size
+            || needed.dictionary_staging_bytes
+                > secondary_workspace.size - finder_extent
+            || needed.frame_encoded_bytes
+                > secondary_workspace.size - finder_extent
+                    - needed.dictionary_staging_bytes) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        auto* const dictionary = finder_extent == 0
+            ? secondary : secondary + finder_extent;
         auto* const encoded = needed.dictionary_staging_bytes == 0
-            ? secondary : secondary + needed.dictionary_staging_bytes;
+            ? dictionary : dictionary + needed.dictionary_staging_bytes;
         implementation = new (std::nothrow)
             marc::frame::LzssAdaptiveHuffmanFrameStreamingEncoder(
                 stream, parameters, limits,
                 {reinterpret_cast<std::byte*>(primary_workspace.data),
                  needed.frame_input_bytes},
-                {secondary, needed.dictionary_staging_bytes},
+                {dictionary, needed.dictionary_staging_bytes},
+                finder_workspace,
                 {encoded, needed.frame_encoded_bytes});
     } else {
         marc::frame::LzssAdaptiveHuffmanDecoderWorkspaceRequirements needed{};

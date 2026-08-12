@@ -1,4 +1,5 @@
 #include "frame/lzss_adaptive_huffman_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -25,6 +26,12 @@ TEST(LzssAdaptiveHuffmanProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
     EXPECT_EQ(workspace.frame_input_bytes, 65'536U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 131'072U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 4'325'448U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 }
 
 TEST(LzssAdaptiveHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
@@ -36,6 +43,12 @@ TEST(LzssAdaptiveHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 17U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 34U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 1'194U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(17, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 
     workspace = {1, 1, 1};
     ASSERT_EQ(marc::frame::make_lzss_adaptive_huffman_profile(
@@ -44,6 +57,8 @@ TEST(LzssAdaptiveHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_alignment, 1U);
 }
 
 TEST(LzssAdaptiveHuffmanProfile, RejectsUnsupportedWorstCasePayload) {

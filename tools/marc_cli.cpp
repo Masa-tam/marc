@@ -50,6 +50,8 @@ constexpr std::uint64_t lz77_tans_buffered_size =
     + lz77_tans_block_count * tans_descriptor_size
     + lz77_tans_payload_size;
 constexpr std::uint64_t lzss_adaptive_frame_size = UINT64_C(1) << 16;
+constexpr std::uint64_t lzss_hash_chain_max_workspace_per_input_byte =
+    sizeof(std::size_t) + sizeof(std::uint32_t);
 constexpr std::uint64_t lzss_dynamic_range_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_dynamic_range_frame_size =
     UINT64_C(1) << 16;
@@ -383,6 +385,8 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
         const auto dictionary_bytes =
             lzss_adaptive_frame_size * UINT64_C(2);
         return lzss_adaptive_frame_size + dictionary_bytes
+            + lzss_adaptive_frame_size
+                * lzss_hash_chain_max_workspace_per_input_byte
             + frame_header_size + entropy_descriptor_size
             + maximum_frame_payload(codec);
     }

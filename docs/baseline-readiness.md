@@ -2096,3 +2096,16 @@ streaming/profile/C/CLI/schema route remains unchanged pending a separate
 promotion step. Full-suite admission is recorded with this change.
 Both 2,851-test suites pass under MSVC and ClangCL, including documentation
 layout and the complete schema compatibility chain.
+
+### BR-0118
+
+Byte-oriented LZSS plus Adaptive Huffman now selects HashChain Exact through
+its public streaming and C encode lifecycle without changing canonical bytes,
+decoder behavior, C signatures, ABI version, CLI selector, or interoperability
+schema. Encoder profile sizing includes exact finder capacity and alignment
+allowance in secondary storage and aggregate limits. Fourteen direct profile,
+streaming, and public C tests pass under MSVC and ClangCL and the 4,326-byte
+README retains its 3,442-byte stream. The CLI's explicit aggregate bound also
+includes its platform-width HashChain worst case. Full-suite admission is
+established by all 2,852 registered tests under both MSVC and ClangCL,
+including documentation layout and the complete schema compatibility chain.

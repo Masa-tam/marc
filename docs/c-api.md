@@ -122,8 +122,11 @@ Call `marc_lzss_blocked_huffman_workspace_requirements()` again after changing
 any size, LZSS parameter, or local limit.
 The LZSS plus Adaptive Huffman factory uses the same primary and secondary
 roles without a views region. Encoding partitions secondary storage into
-canonical LZSS token staging followed by the complete serialized frame;
-decoding partitions it into token staging followed by private raw staging.
+an internally aligned exact HashChain finder, canonical LZSS token staging,
+and the complete serialized frame; the workspace query includes the maximum
+alignment padding needed for an otherwise unaligned secondary pointer.
+Decoding partitions secondary storage into token staging followed by private
+raw staging.
 Each outer frame resets both LZSS history and its one FGK tree. Call
 `marc_lzss_adaptive_huffman_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.

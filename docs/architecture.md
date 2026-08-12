@@ -5078,5 +5078,9 @@ bounded FGK payload, and generic-frame serialization body. Finder storage is a
 separate aligned caller-owned span, and raw input, dictionary staging, finder,
 and serialized output are rejected when any active regions overlap. Aggregate
 accounting charges raw input, exact dictionary bytes, exact finder storage, and
-the complete serialized frame. Streaming, profile sizing, C lifecycle, CLI,
-decoder, format, and schema remain on Exhaustive pending a separate promotion.
+the complete serialized frame. The public streaming encoder and C encode
+lifecycle select HashChain while the retained C++ constructor remains the
+Exhaustive byte oracle. Profile sizing reserves the exact finder plus alignment
+allowance ahead of dictionary and frame staging in the secondary region.
+Decoder, stream identity, CLI selector, ABI signature, format, and schema are
+unchanged.

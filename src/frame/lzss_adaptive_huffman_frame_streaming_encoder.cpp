@@ -1,8 +1,10 @@
 #include "frame/lzss_adaptive_huffman_frame_streaming_encoder.hpp"
 
+#include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cstring>
 
 namespace marc::frame {
@@ -57,7 +59,84 @@ LzssAdaptiveHuffmanFrameStreamingEncoder(
         || !workspace_valid
         || frame_input_storage_.size() < largest_frame
         || dictionary_staging_.size() < dictionary_bytes
+        || core::check_buffer_overlap(
+               frame_input_storage_.data(), frame_input_storage_.size(),
+               dictionary_staging_.data(), dictionary_staging_.size())
+               != core::BufferOverlap::disjoint
+        || core::check_buffer_overlap(
+               frame_input_storage_.data(), frame_input_storage_.size(),
+               frame_encoded_storage_.data(), frame_encoded_storage_.size())
+               != core::BufferOverlap::disjoint
+        || core::check_buffer_overlap(
+               dictionary_staging_.data(), dictionary_staging_.size(),
+               frame_encoded_storage_.data(), frame_encoded_storage_.size())
+               != core::BufferOverlap::disjoint
         || dictionary_bytes > limits_.max_dictionary_serialized_size
+        || serialize_stream_header(stream_, limits_, header_output)
+               != StreamHeaderError::none
+        || dictionary::internal::serialize_lzss_parameters(
+               parameters_, limits_, parameter_output)
+               != dictionary::internal::LzssFormatError::none) {
+        state_ = State::error;
+        terminal_error_ = {core::ErrorCode::invalid_argument, 0, 0};
+    }
+}
+
+LzssAdaptiveHuffmanFrameStreamingEncoder::
+LzssAdaptiveHuffmanFrameStreamingEncoder(
+    const StreamHeader stream,
+    const dictionary::internal::LzssParameters parameters,
+    const core::DecoderLimits limits,
+    const std::span<std::byte> frame_input_storage,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> match_finder_storage,
+    const std::span<std::byte> frame_encoded_storage) noexcept
+    : stream_(stream), parameters_(parameters), limits_(limits),
+      frame_input_storage_(frame_input_storage),
+      dictionary_staging_(dictionary_staging),
+      match_finder_storage_(match_finder_storage),
+      frame_encoded_storage_(frame_encoded_storage), use_hash_chain_(true) {
+    const auto largest_frame = std::min<std::uint64_t>(
+        stream_.original_size, stream_.frame_size);
+    std::uint64_t dictionary_bytes{};
+    const bool workspace_valid = core::checked_multiply(
+        largest_frame, UINT64_C(2), dictionary_bytes);
+    const std::span<std::byte, stream_header_size> header_output{
+        prefix_.data(), stream_header_size};
+    const std::span<std::byte,
+                    dictionary::internal::lzss_parameter_size>
+        parameter_output{prefix_.data() + stream_header_size,
+                         dictionary::internal::lzss_parameter_size};
+    const std::array overlaps{
+        core::check_buffer_overlap(
+            frame_input_storage_.data(), frame_input_storage_.size(),
+            dictionary_staging_.data(), dictionary_staging_.size()),
+        core::check_buffer_overlap(
+            frame_input_storage_.data(), frame_input_storage_.size(),
+            match_finder_storage_.data(), match_finder_storage_.size()),
+        core::check_buffer_overlap(
+            frame_input_storage_.data(), frame_input_storage_.size(),
+            frame_encoded_storage_.data(), frame_encoded_storage_.size()),
+        core::check_buffer_overlap(
+            dictionary_staging_.data(), dictionary_staging_.size(),
+            match_finder_storage_.data(), match_finder_storage_.size()),
+        core::check_buffer_overlap(
+            dictionary_staging_.data(), dictionary_staging_.size(),
+            frame_encoded_storage_.data(), frame_encoded_storage_.size()),
+        core::check_buffer_overlap(
+            match_finder_storage_.data(), match_finder_storage_.size(),
+            frame_encoded_storage_.data(), frame_encoded_storage_.size())};
+    if (validate_stream_header(stream_, limits_) != StreamHeaderError::none
+        || !supported_pipeline(stream_)
+        || dictionary::internal::validate_lzss_parameters(parameters_, limits_)
+               != dictionary::internal::LzssFormatError::none
+        || !workspace_valid
+        || frame_input_storage_.size() < largest_frame
+        || dictionary_staging_.size() < dictionary_bytes
+        || dictionary_bytes > limits_.max_dictionary_serialized_size
+        || std::ranges::any_of(overlaps, [](const core::BufferOverlap value) {
+               return value != core::BufferOverlap::disjoint;
+           })
         || serialize_stream_header(stream_, limits_, header_output)
                != StreamHeaderError::none
         || dictionary::internal::serialize_lzss_parameters(
@@ -79,9 +158,14 @@ core::ProcessResult LzssAdaptiveHuffmanFrameStreamingEncoder::fail(
 
 bool LzssAdaptiveHuffmanFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
-    const auto plan = plan_lzss_adaptive_huffman_frame(
-        stream_, parameters_, limits_, frame_sequence_, input_committed_,
-        frame_input_storage_.first(frame_input_size_), dictionary_staging_);
+    const auto plan = use_hash_chain_
+        ? plan_lzss_adaptive_huffman_frame_hash_chain(
+            stream_, parameters_, limits_, frame_sequence_, input_committed_,
+            frame_input_storage_.first(frame_input_size_), dictionary_staging_,
+            match_finder_storage_)
+        : plan_lzss_adaptive_huffman_frame(
+            stream_, parameters_, limits_, frame_sequence_, input_committed_,
+            frame_input_storage_.first(frame_input_size_), dictionary_staging_);
     if (plan.error
         != LzssAdaptiveHuffmanFrameValidationError::none) {
         switch (plan.error) {
@@ -95,11 +179,22 @@ bool LzssAdaptiveHuffmanFrameStreamingEncoder::prepare_frame() noexcept {
             serialized_output_too_small:
             preparation_error_ = core::ErrorCode::out_of_memory;
             break;
+        case LzssAdaptiveHuffmanFrameValidationError::dictionary_encode_error:
+            if (plan.dictionary_encode_error
+                    == dictionary::internal::LzssEncodeError::
+                        match_finder_error
+                && plan.match_finder_error
+                    == dictionary::internal::LzssHashChainError::
+                        workspace_too_small) {
+                preparation_error_ = core::ErrorCode::out_of_memory;
+            } else {
+                preparation_error_ = core::ErrorCode::limit_exceeded;
+            }
+            break;
         case LzssAdaptiveHuffmanFrameValidationError::workspace_limit:
         case LzssAdaptiveHuffmanFrameValidationError::
             invalid_dictionary_extent:
         case LzssAdaptiveHuffmanFrameValidationError::invalid_entropy_extent:
-        case LzssAdaptiveHuffmanFrameValidationError::dictionary_encode_error:
         case LzssAdaptiveHuffmanFrameValidationError::entropy_encode_error:
         case LzssAdaptiveHuffmanFrameValidationError::header_error:
         case LzssAdaptiveHuffmanFrameValidationError::arithmetic_overflow:
@@ -119,6 +214,11 @@ bool LzssAdaptiveHuffmanFrameStreamingEncoder::prepare_frame() noexcept {
             aggregate_bytes,
             static_cast<std::uint64_t>(plan.serialized_size),
             aggregate_bytes)
+        || (use_hash_chain_
+            && !core::checked_add(
+                aggregate_bytes,
+                static_cast<std::uint64_t>(match_finder_storage_.size()),
+                aggregate_bytes))
         || aggregate_bytes > limits_.max_internal_buffered_bytes) {
         preparation_error_ = core::ErrorCode::limit_exceeded;
         return false;
@@ -127,10 +227,16 @@ bool LzssAdaptiveHuffmanFrameStreamingEncoder::prepare_frame() noexcept {
         preparation_error_ = core::ErrorCode::out_of_memory;
         return false;
     }
-    const auto encoded = encode_lzss_adaptive_huffman_frame(
-        stream_, parameters_, limits_, frame_sequence_, input_committed_,
-        frame_input_storage_.first(frame_input_size_), dictionary_staging_,
-        frame_encoded_storage_.first(plan.serialized_size));
+    const auto encoded = use_hash_chain_
+        ? encode_lzss_adaptive_huffman_frame_hash_chain(
+            stream_, parameters_, limits_, frame_sequence_, input_committed_,
+            frame_input_storage_.first(frame_input_size_), dictionary_staging_,
+            match_finder_storage_,
+            frame_encoded_storage_.first(plan.serialized_size))
+        : encode_lzss_adaptive_huffman_frame(
+            stream_, parameters_, limits_, frame_sequence_, input_committed_,
+            frame_input_storage_.first(frame_input_size_), dictionary_staging_,
+            frame_encoded_storage_.first(plan.serialized_size));
     if (encoded.error
         != LzssAdaptiveHuffmanFrameValidationError::none) {
         return false;
@@ -157,6 +263,25 @@ core::ProcessResult LzssAdaptiveHuffmanFrameStreamingEncoder::process(
     if ((flags & ~known_flags) != 0
         || (flags & core::flag_value(core::ProcessFlags::reset_block)) != 0) {
         return fail(core::ErrorCode::unsupported, 0, 0);
+    }
+    const std::array output_overlaps{
+        core::check_buffer_overlap(
+            output.data(), output.size(), frame_input_storage_.data(),
+            frame_input_storage_.size()),
+        core::check_buffer_overlap(
+            output.data(), output.size(), dictionary_staging_.data(),
+            dictionary_staging_.size()),
+        core::check_buffer_overlap(
+            output.data(), output.size(), match_finder_storage_.data(),
+            match_finder_storage_.size()),
+        core::check_buffer_overlap(
+            output.data(), output.size(), frame_encoded_storage_.data(),
+            frame_encoded_storage_.size())};
+    if (std::ranges::any_of(
+            output_overlaps, [](const core::BufferOverlap value) {
+                return value != core::BufferOverlap::disjoint;
+            })) {
+        return fail(core::ErrorCode::invalid_argument, 0, 0);
     }
     if (input.size() > stream_.original_size - input_received_) {
         return fail(core::ErrorCode::invalid_argument, 0, 0);

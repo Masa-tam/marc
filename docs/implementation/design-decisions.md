@@ -16039,3 +16039,22 @@ errors and charge raw input, exact dictionary bytes, finder workspace, and the
 complete frame against aggregate memory. Do not add strategy metadata or alter
 the decoder, public streaming route, ABI, CLI, format, or schema until private
 identity and bounded failure are independently established.
+
+## DD-781: Byte-oriented LZSS Adaptive Huffman promotes HashChain without format state
+
+- Date: 2026-08-13
+- Status: accepted
+
+Route the byte-oriented LZSS plus Adaptive Huffman streaming encoder through
+the proven exact HashChain frame entry. Add a finder-span constructor while
+retaining the existing C++ constructor as the Exhaustive byte oracle. Extend
+the encoder profile with the exact largest-frame finder extent and alignment,
+and charge the finder to checked aggregate memory.
+
+Preserve the C function signatures and keep `views` empty. During encoding,
+partition secondary storage into an internally aligned finder region,
+canonical dictionary staging, and complete frame staging; include worst-case
+alignment padding in the queried capacity. Require all persistent workspaces
+and caller output to be pairwise disjoint. Map one-byte-short finder capacity
+to out-of-memory. Do not record the search strategy or alter canonical bytes,
+decoder behavior, ABI version, CLI selector, format, or schema.

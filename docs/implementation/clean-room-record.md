@@ -19168,3 +19168,40 @@ discarded and the reviewed seed retained.
   about 175 seconds and ClangCL in about 182 seconds with the 240-second per-
   test limit, including documentation layout and the complete schema-37-
   through-1 compatibility chain.
+
+## CR-0809: 2026-08-13 - Byte-oriented LZSS Adaptive Huffman HashChain streaming
+
+- Authoring method: connected marc's independently verified private HashChain
+  frame route to its byte-oriented LZSS plus Adaptive Huffman streaming
+  encoder, profile workspace calculation, and existing public C lifecycle.
+- References used: DD-760 through DD-781; IR-0556; TVG-0636 through TVG-0657;
+  marc's private byte-identical frame routes, exact finder, streaming contract,
+  profile calculator, C workspace lifecycle, overlap helper, and benchmark.
+- Known implementations intentionally not consulted: external LZSS or
+  Adaptive Huffman implementations, source code, integrations, workspace
+  layouts, ABI designs, tests, corpora, benchmarks, results, patent text, and
+  optimization descriptions.
+- Independent decisions: retain the C++ Exhaustive constructor as oracle;
+  expose exact finder size and alignment only in the internal profile; reserve
+  alignment allowance within the existing C secondary region; preserve empty
+  views and all public signatures; reject every persistent-workspace/output
+  alias; and map short finder capacity to out-of-memory.
+- Generated-code task description: promote the proven exact HashChain route to
+  byte-oriented LZSS plus Adaptive Huffman streaming and C encoding, prove
+  byte identity and bounded workspace behavior, benchmark the public route,
+  and leave the decoder-visible format and ABI unchanged.
+- Similarity review: profile sizing, constructor overload, C secondary-region
+  partition, overlap checks, regression tests, and records were independently
+  derived from marc-owned contracts; no external implementation expression
+  entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core, C API, CLI, and benchmark targets warning-clean. Fourteen focused
+  profile, streaming, and C lifecycle tests passed under each compiler. Ten
+  README iterations retained the 3,442-byte stream and measured 0.136 MiB/s
+  encode under MSVC and 0.150 MiB/s under ClangCL. The first full-suite run
+  exposed the CLI's old Exhaustive-only aggregate bound; the bound now includes
+  the platform-width HashChain worst case and its round trip passes. Full-suite
+  validation passed all 2,852 registered tests in about 160 seconds under MSVC
+  and 171 seconds under ClangCL with the 240-second per-test limit, including
+  documentation layout and the complete schema-37-through-1 compatibility
+  chain.

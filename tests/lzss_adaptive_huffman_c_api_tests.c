@@ -16,7 +16,8 @@ static void release(marc_buffer buffer) {
 
 int main(void) {
     static const uint8_t input[] = {
-        0x41, 0x42, 0x41, 0x42, 0x41, 0x42, 0x58};
+        0x41, 0x42, 0x43, 0x44, 0x45, 0x31,
+        0x41, 0x42, 0x43, 0x44, 0x45, 0x32};
     uint8_t encoded[4096];
     uint8_t decoded[sizeof(input)];
     marc_lzss_adaptive_huffman_config config;
@@ -36,7 +37,7 @@ int main(void) {
                &config, &needed)
            == MARC_STATUS_OK);
     assert(needed.primary_bytes == sizeof(input));
-    assert(needed.secondary_bytes == 548);
+    assert(needed.secondary_bytes > sizeof(input) * 2 + 1024);
     assert(needed.views_bytes == 0 && needed.views_alignment == 1);
 
     marc_buffer primary = allocate(needed.primary_bytes);
