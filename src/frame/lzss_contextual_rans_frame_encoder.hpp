@@ -65,6 +65,31 @@ encode_lzss_contextual_rans_frame(
     std::span<dictionary::internal::LzssTypedToken> private_tokens,
     std::span<std::byte> serialized_output) noexcept;
 
+[[nodiscard]] LzssContextualRansFrameEncodeResult
+plan_lzss_contextual_rans_frame_hash_chain(
+    const LzssContextualRansStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssContextualRansFrameEncodeResult
+encode_lzss_contextual_rans_frame_hash_chain(
+    const LzssContextualRansStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
 } // namespace marc::frame::internal
 
 #endif

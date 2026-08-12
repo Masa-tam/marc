@@ -15779,3 +15779,23 @@ produce identical canonical tokens and streams and the decoder does not need
 it. The existing C requirements query changes its returned opaque views extent;
 callers already must query again after configuration changes. Retain Exhaustive
 as the private oracle and promote no other LZSS pipeline in this step.
+
+## DD-768: Contextual rANS reuses typed HashChain before streaming promotion
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for canonical Contextual
+rANS, sharing one compile-time-selected frame body with the existing
+Exhaustive path. Select only typed-token production; leave event modeling,
+frequency normalization, variable descriptor construction, reverse-order rANS
+coding, final state, and frame serialization common. Require a separate aligned
+finder workspace and optional statistics, and charge exact finder storage plus
+the conservative one-token-per-byte reservation to complete aggregate memory.
+
+Reject raw/token/finder/output aliasing and short finder capacity before frame
+publication. Retain streaming, profile sizing, public C ABI, CLI, format, and
+schema on the established path until exact frame identity, decoding, bounded
+failure, and performance are independently demonstrated. rANS reverse coding
+does not justify a distinct finder contract because it consumes the completed
+forward typed-token sequence.

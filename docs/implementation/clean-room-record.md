@@ -18719,3 +18719,39 @@ discarded and the reviewed seed retained.
   and all 2,836 registered ClangCL tests passed in 164.51 seconds with the
   240-second per-test limit, including documentation layout and the complete
   schema-37-through-1 compatibility chain.
+
+## CR-0796: 2026-08-12 - Contextual rANS HashChain frame
+
+- Authoring method: refactored marc's canonical Contextual rANS frame planner
+  and writer into one compile-time-selected internal body, then selected the
+  already proven single-pass typed HashChain route without changing rANS or
+  format logic.
+- References used: DD-760 through DD-768; IR-0543; TVG-0636 through TVG-0644;
+  marc's Contextual rANS encoder/decoder, typed parser, exact finder, workspace
+  contracts, deterministic tests, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS, rANS, or
+  combined implementations, source code, integrations, workspace layouts,
+  tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: keep reverse rANS processing behind the unchanged
+  typed-token boundary; select only token production; retain the variable
+  descriptor; use a separate finder region; charge conservative token capacity;
+  and defer streaming and public routing until this frame is proven.
+- Generated-code task description: connect canonical Contextual rANS frame
+  planning and writing to HashChain Exact, prove exact descriptor/payload/frame
+  bytes and decode, preserve bounded atomic failure, and measure complete frame
+  cost without changing the format.
+- Similarity review: common-body refactoring, workspace checks, regression
+  vectors, benchmark extension, and records were independently derived from
+  marc-owned contracts; no external implementation expression entered the
+  work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  static/shared library, CLI, core tests, and internal benchmark warning-clean.
+  All eight direct Contextual rANS frame encoder tests passed under each
+  compiler. Ten README iterations produced identical 2,894-byte frames and
+  measured 0.308 versus 7.585 MiB/s under MSVC and 0.436 versus 18.154 MiB/s
+  under ClangCL for Exhaustive versus HashChain respectively. All 2,838
+  registered MSVC tests passed in 171.68 seconds and all 2,838 registered
+  ClangCL tests passed in 169.11 seconds with the 240-second per-test limit,
+  including documentation layout and the complete schema-37-through-1
+  compatibility chain.

@@ -4797,3 +4797,13 @@ stable error mapping, CLI, and public benchmark as first-party references. No
 external LZSS, range-coder, combined implementation, source code, workspace
 layout, API integration, benchmark, corpus, result, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0543
+
+The private Contextual rANS HashChain frame uses DD-760 through DD-768,
+TVG-0636 through TVG-0644, marc's canonical variable-descriptor Contextual
+rANS frame encoder and decoder, single-pass typed parser, exact finder,
+workspace and alias contracts, and internal benchmark as first-party
+references. No external LZSS, rANS, combined implementation, source code,
+frame integration, workspace layout, benchmark, corpus, result, test suite,
+patent text, or optimization description was consulted.

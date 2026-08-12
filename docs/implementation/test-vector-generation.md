@@ -8577,3 +8577,21 @@ transactionally. Re-run the public C lifecycle, CLI round trip, and benchmark
 smoke. Measure ten descriptive README iterations under MSVC and ClangCL while
 asserting only the unchanged 2,389-byte stream. Run all 2,836 tests, including
 schema compatibility, under both compilers.
+
+### TVG-0644
+
+Encode a match-bearing raw frame through the established Exhaustive and new
+HashChain canonical Contextual rANS routes. Require identical plan extents,
+descriptor size, token/event/decision counts, payload size, one finder query
+per token, byte-identical descriptor and payload, and successful decode to the
+exact raw input.
+
+Provide finder workspace one byte short and require the nested stable
+workspace-too-small detail while serialized output retains its sentinel. Alias
+serialized output with finder workspace and require rejection before the
+shared region changes. Set aggregate memory one byte below raw input plus the
+conservative typed-token reservation plus exact finder workspace plus complete
+frame and require workspace-limit rejection. Extend the internal benchmark
+with ten verified Contextual rANS frame iterations under MSVC and ClangCL, but
+assert no timing. Run all 2,838 tests, including schema compatibility, under
+both compilers.

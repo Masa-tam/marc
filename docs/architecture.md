@@ -127,6 +127,13 @@ CLI, and benchmark therefore use HashChain Exact automatically while retaining
 the same ABI shape and byte-identical stream. Search strategy is encoder policy
 rather than decoder-visible metadata; Exhaustive remains the private
 correctness oracle.
+The second private complete-frame integration applies the same compile-time
+selection to Contextual rANS. Its entropy planner and reverse-order rANS writer
+consume the already materialized typed-token sequence unchanged, so the
+HashChain route adds only its separate aligned workspace and conservative
+one-token-per-byte aggregate charge. Descriptor normalization, rANS state,
+payload order, header bytes, decoder behavior, streaming, profile, C ABI, CLI,
+and schema remain unchanged while the private boundary is measured.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,
