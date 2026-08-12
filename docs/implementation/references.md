@@ -4979,3 +4979,13 @@ exact finder, overlap helper, CLI, and public benchmark as first-party
 references. No external LZSS or ANS implementation, source code, integration,
 workspace layout, ABI design, benchmark, corpus, result, test suite, patent
 text, or optimization description was consulted.
+
+### IR-0561
+
+The byte-oriented LZSS plus tANS private HashChain frame uses DD-760 through
+DD-786, TVG-0636 through TVG-0662, marc's canonical LZSS byte-token encoder,
+exact finder, bounded block tANS encoder and decoder, generic frame codec,
+overlap helper, and internal benchmark as first-party references. No external
+LZSS or ANS implementation, source code, integration, workspace layout,
+benchmark, corpus, result, test suite, patent text, or optimization description
+was consulted.

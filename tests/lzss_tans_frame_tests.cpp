@@ -735,3 +735,116 @@ TEST(LzssTansFrameEncoder, ShortSerializedOutputIsAtomic) {
             return value == std::byte{0x5a};
         }));
 }
+
+TEST(LzssTansFrameEncoder,
+     HashChainMatchesExhaustiveAndRejectsInvalidWorkspace) {
+    const std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for(raw.size(), 64);
+    std::array<std::byte, raw.size() * 2> exhaustive_staging{};
+    std::array<std::byte, raw.size() * 2> hash_staging{};
+    const auto exhaustive_plan = marc::frame::plan_lzss_tans_frame(
+        stream, {}, {}, 0, 0, raw, exhaustive_staging);
+    ASSERT_EQ(exhaustive_plan.error, LzssTansFrameValidationError::none);
+    const auto required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::byte> allocation(
+        required.workspace_size + required.workspace_alignment - 1);
+    const auto address = reinterpret_cast<std::uintptr_t>(allocation.data());
+    const auto remainder = address % required.workspace_alignment;
+    const auto padding = remainder == 0
+        ? std::size_t{0} : required.workspace_alignment - remainder;
+    const auto finder = std::span<std::byte>{allocation}.subspan(
+        padding, required.workspace_size);
+    const auto hash_plan = marc::frame::plan_lzss_tans_frame_hash_chain(
+        stream, {}, {}, 0, 0, raw, hash_staging, finder);
+    ASSERT_EQ(hash_plan.error, LzssTansFrameValidationError::none);
+    EXPECT_EQ(hash_plan.dictionary_size, exhaustive_plan.dictionary_size);
+    EXPECT_EQ(hash_plan.descriptor_size, exhaustive_plan.descriptor_size);
+    EXPECT_EQ(hash_plan.payload_size, exhaustive_plan.payload_size);
+    EXPECT_EQ(hash_plan.serialized_size, exhaustive_plan.serialized_size);
+    EXPECT_EQ(hash_plan.block_count, exhaustive_plan.block_count);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span{hash_staging}.first(hash_plan.dictionary_size),
+        std::span{exhaustive_staging}.first(
+            exhaustive_plan.dictionary_size)));
+
+    std::vector<std::byte> exhaustive(exhaustive_plan.serialized_size);
+    std::vector<std::byte> hash(hash_plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_tans_frame(
+                  stream, {}, {}, 0, 0, raw, exhaustive_staging, exhaustive)
+                  .error,
+              LzssTansFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, hash_staging, finder, hash)
+                  .error,
+              LzssTansFrameValidationError::none);
+    EXPECT_EQ(hash, exhaustive);
+
+    std::vector<marc::entropy::internal::TansBlockView> views(
+        hash_plan.block_count);
+    std::array<std::byte, raw.size() * 2> decode_staging{};
+    std::array<std::byte, raw.size()> raw_staging{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(marc::frame::decode_lzss_tans_frame(
+                  stream, {}, {}, 0, 0, hash, views, decode_staging,
+                  raw_staging, decoded).error,
+              LzssTansFrameValidationError::none);
+    EXPECT_EQ(decoded, raw);
+
+    hash_staging.fill(std::byte{0x5a});
+    const auto short_result = marc::frame::plan_lzss_tans_frame_hash_chain(
+        stream, {}, {}, 0, 0, raw, hash_staging,
+        finder.first(finder.size() - 1));
+    EXPECT_EQ(short_result.error,
+              LzssTansFrameValidationError::dictionary_encode_error);
+    EXPECT_EQ(short_result.match_finder_error,
+              marc::dictionary::internal::LzssHashChainError::
+                  workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(hash_staging, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+
+    EXPECT_EQ(marc::frame::encode_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, hash_staging, finder, finder)
+                  .dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    auto raw_copy = raw;
+    EXPECT_EQ(marc::frame::plan_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw_copy, raw_copy, finder)
+                  .dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    EXPECT_EQ(marc::frame::plan_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, finder, finder)
+                  .dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    EXPECT_EQ(marc::frame::encode_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw_copy, hash_staging, finder,
+                  raw_copy).dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    EXPECT_EQ(marc::frame::encode_lzss_tans_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, hash_staging, finder,
+                  hash_staging).dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+
+    auto tight_limits = marc::core::DecoderLimits{};
+    tight_limits.max_internal_buffered_bytes = raw.size()
+        + hash_plan.dictionary_size + finder.size()
+        + hash_plan.serialized_size - 1;
+    tight_limits.max_block_size = 64;
+    EXPECT_EQ(marc::frame::plan_lzss_tans_frame_hash_chain(
+                  stream, {}, tight_limits, 0, 0, raw, hash_staging, finder)
+                  .error,
+              LzssTansFrameValidationError::workspace_limit);
+}

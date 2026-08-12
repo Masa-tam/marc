@@ -5111,3 +5111,14 @@ oracle. Profile sizing reserves the exact finder plus alignment allowance
 ahead of dictionary and frame staging in the secondary region. Decoder,
 stream identity, CLI selector, ABI signature, format, and schema are unchanged;
 no search-strategy field is serialized.
+
+The byte-oriented LZSS plus tANS frame has parallel Exhaustive and HashChain
+Exact canonical-token producers feeding the same unchanged tANS block
+partition, normalized descriptors, transition tables, state payloads, and
+generic frame header. The private HashChain entry receives separate aligned
+caller-owned finder storage and rejects overlap among raw input, dictionary
+staging, finder, and serialized output before publication. Aggregate accounting
+charges raw input, exact dictionary bytes, exact finder storage, and the
+complete serialized frame. The public streaming/profile/C/CLI/schema route
+remains Exhaustive pending a separate promotion step; no strategy field is
+serialized.

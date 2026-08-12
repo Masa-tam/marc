@@ -2163,3 +2163,17 @@ bounds include finder storage. Full-suite admission is established by all
 2,856 registered tests in about 168 seconds under MSVC and 175 seconds under
 ClangCL, including documentation layout and the complete schema compatibility
 chain.
+
+### BR-0123
+
+Byte-oriented LZSS plus tANS now has a private HashChain Exact complete-frame
+route sharing canonical dictionary staging, unchanged tANS block partition,
+descriptors, normalized models, transition tables and payload production, and
+generic header serialization with the Exhaustive oracle. The focused frame
+test under MSVC and ClangCL proves complete byte identity and strict decode,
+exact finder capacity, all workspace alias rejection, one-byte-short aggregate
+enforcement, and atomic failure. The public streaming/profile/C/CLI/schema
+route remains unchanged pending a separate promotion step. Full-suite
+admission is established by all 2,857 registered tests in about 163 seconds
+under MSVC and 170 seconds under ClangCL, including documentation layout and
+the complete schema compatibility chain.

@@ -16137,3 +16137,23 @@ output to be pairwise disjoint, map one-byte-short finder capacity to out-of-
 memory, and extend CLI and benchmark aggregate limits for the finder. Do not
 record the strategy or alter canonical bytes, decoder behavior, ABI version,
 CLI selector, format, or schema.
+
+## DD-786: Byte-oriented LZSS tANS isolates HashChain production
+
+- Date: 2026-08-13
+- Status: accepted
+
+Refactor the byte-oriented LZSS plus tANS complete-frame planner and writer
+behind compile-time finder selection. Both routes produce the same canonical
+LZSS byte tokens and then share the unchanged tANS block partition,
+normalization, descriptors, transition-table construction, payload
+serialization, and generic frame header. Retain the existing entry points as
+the Exhaustive oracle and add private HashChain entries accepting a separate
+aligned finder span.
+
+Reject overlap among raw input, canonical-token staging, finder storage, and
+serialized output before publication. Preserve nested finder errors and charge
+raw input, exact dictionary bytes, exact finder storage, and the complete frame
+against aggregate memory. Do not serialize the finder strategy or alter the
+decoder, public streaming/profile/C/CLI path, format, ABI, or interoperability
+schema before a separate promotion decision.

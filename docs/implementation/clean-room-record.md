@@ -19343,3 +19343,35 @@ discarded and the reviewed seed retained.
   seconds under ClangCL with the 240-second per-test limit, including
   documentation layout and the complete schema-37-through-1 compatibility
   chain.
+
+## CR-0814: 2026-08-13 - Byte-oriented LZSS tANS HashChain frame
+
+- Authoring method: refactored marc's byte-oriented LZSS plus tANS complete-
+  frame planner and encoder into shared compile-time-selected bodies, adding a
+  private exact HashChain route beside the retained Exhaustive oracle.
+- References used: DD-760 through DD-786; IR-0561; TVG-0636 through TVG-0662;
+  BM-0046; marc's canonical LZSS byte-token encoder, exact finder, tANS block
+  controller and codec, generic frame implementation, overlap helper, and
+  benchmark.
+- Known implementations intentionally not consulted: external LZSS or ANS
+  implementations, source code, integrations, workspace layouts, tests,
+  corpora, benchmarks, results, patent text, and optimization descriptions.
+- Independent decisions: preserve tANS block boundaries, normalized model,
+  descriptors, transition tables and payload exactly; retain Exhaustive as
+  oracle; expose nested finder errors; reject every active workspace alias;
+  charge exact finder and complete-frame storage; and defer public routing.
+- Generated-code task description: add a private exact HashChain route to the
+  byte-oriented LZSS plus tANS frame, prove complete byte identity and bounded
+  atomic failure, benchmark it, and leave its decoder-visible format unchanged.
+- Similarity review: common-body factoring, overlap preflight, aggregate
+  accounting, regression vector, benchmark extension, and records were derived
+  independently from marc-owned contracts; no external implementation
+  expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected core
+  tests and internal benchmark warning-clean. The focused frame test passed
+  under each compiler. Ten README iterations retained the 3,650-byte frame and
+  measured 0.210 versus 6.299 MiB/s under MSVC and 0.288 versus 9.146 MiB/s
+  under ClangCL for Exhaustive versus HashChain. Full-suite validation passed
+  all 2,857 registered tests in about 163 seconds under MSVC and 170 seconds
+  under ClangCL with the 240-second per-test limit, including documentation
+  layout and the complete schema-37-through-1 compatibility chain.
