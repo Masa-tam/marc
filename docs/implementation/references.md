@@ -4750,3 +4750,13 @@ hash expression, capped power-of-two buckets, absolute heads, and ring of
 external LZSS implementation, hash-chain source, hash function, table layout,
 test suite, corpus, benchmark result, patent text, or optimization description
 was consulted.
+
+### IR-0538
+
+The first HashChain Exact one-shot encoder routes use DD-760 through DD-763,
+TVG-0636 through TVG-0639, marc's byte-token and typed-token parsers, private
+finder workspace calculator, existing transactional encoder contracts,
+checked-overlap utility, limits, and Exhaustive reference output as first-
+party references. No external LZSS implementation, source code, match-finder
+integration, test vector, test suite, corpus, benchmark result, patent text,
+or optimization description was consulted.

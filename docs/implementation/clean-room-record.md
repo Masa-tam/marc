@@ -18557,3 +18557,34 @@ discarded and the reviewed seed retained.
   tests then passed in 163.85 seconds and every registered ClangCL test passed
   in 166.49 seconds with the 240-second per-test limit, including documentation
   layout and the complete schema-37-through-1 compatibility chain.
+
+## CR-0791: 2026-08-12 - HashChain Exact one-shot encoder routes
+
+- Authoring method: introduced explicit internal byte-token and typed-token
+  routes over the accepted HashChain boundary while leaving every established
+  encoder route on Exhaustive, then compared their complete canonical output.
+- References used: DD-760 through DD-763; IR-0538; TVG-0636 through TVG-0639;
+  marc's existing transactional encoders, finder workspace contract, checked
+  arithmetic and overlap rules, limits, and Exhaustive oracle.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, match-finder integrations, source code, tests, corpora,
+  benchmarks, patent text, and optimization descriptions.
+- Independent decisions: make accelerated selection explicit and private;
+  preserve ordinary validation categories; retain a detailed workspace error;
+  reject complete supplied-output aliasing before workspace initialization;
+  aggregate raw, finder, and token storage; and require exact Exhaustive output
+  before any streaming or public route may adopt the finder.
+- Generated-code task description: connect HashChain Exact to both one-shot
+  canonical parsers, prove exact byte/token equality and atomic bounded failure,
+  and do not alter format bytes or existing callers.
+- Similarity review: integration control flow, error mapping, overlap helper,
+  vectors, and tests were independently derived from marc's accepted design
+  and repository-owned implementation; no external implementation expression
+  entered the work.
+- Local validation: all four focused byte-token and typed-token HashChain
+  integration tests passed under ClangCL 22.1.3. MSVC 19.51.36252 and ClangCL
+  rebuilt the affected core target warning-clean. Every one of the 2,829
+  registered MSVC tests then passed in 158.04 seconds and every registered
+  ClangCL test passed in 158.93 seconds with the 240-second per-test limit,
+  including documentation layout and the complete schema-37-through-1
+  compatibility chain.

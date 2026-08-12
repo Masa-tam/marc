@@ -8493,3 +8493,19 @@ match lengths 5, 17, and 258. Separately advance over a Match-sized range and
 require the next query to remain identical, proving skipped positions enter
 the index. Run this deterministic differential layer under MSVC and ClangCL
 before production integration or fuzzing.
+
+### TVG-0639
+
+For both canonical one-shot encoders, parse a mixed repeated-prefix and full-
+byte-alphabet input with Exhaustive and HashChain Exact. Require identical
+plan counts and extents, byte-for-byte serialized tokens, and field-for-field
+typed tokens. Require the detailed finder error to remain `none` on success.
+
+Supply a workspace one byte short and require a stable workspace-too-small
+detail without changing token output. Alias the supplied output region with
+the finder workspace and require overlap rejection before either region is
+modified. Set the aggregate internal-buffer limit one byte below raw input
+plus exact workspace plus planned token storage and require the established
+serialized/token-storage limit error. Run all four focused tests and then the
+complete 2,829-test suite under both supported Release compilers, including
+documentation layout and schema-37-through-1 compatibility.

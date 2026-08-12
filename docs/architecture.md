@@ -89,8 +89,14 @@ region containing power-of-two bucket heads and a window-bounded ring of
 count is bounded by the smaller of frame input and window size. Initialization
 validates parameters, limits, checked aggregate size, capacity, alignment, and
 input/workspace disjointness before clearing storage or publishing the finder.
-It is exercised only as a differential boundary at this stage; production
-encoders still instantiate Exhaustive.
+The established byte-token and typed-token entry points still instantiate
+Exhaustive. Separate internal one-shot entry points accept that same caller-
+owned workspace and route each canonical parser through HashChain Exact. They
+plan before publication, preserve the existing parameter and limit errors,
+report finder-workspace errors separately, reject input/output/workspace
+aliasing, and produce exactly the Exhaustive token sequence. Streaming,
+profile, C ABI, and CLI selection remain on Exhaustive until complete-path
+measurements justify exposing a strategy choice.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

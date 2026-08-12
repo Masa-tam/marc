@@ -15677,3 +15677,25 @@ raw-plus-workspace aggregate limits, require sufficient aligned storage, and
 reject input/workspace overlap. The tables are native private workspace and
 start their implicit-lifetime scalar objects explicitly before use. They are
 never serialized, so native width cannot affect stream bytes.
+
+## DD-763: HashChain Exact enters through explicit one-shot encoders
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add separate private byte-token and typed-token planning and encoding entry
+points that require caller-owned HashChain workspace. Retain the established
+entry points and every streaming, profile, C ABI, CLI, and format route on
+Exhaustive. This makes the first production parse measurable without silently
+changing an existing caller's memory contract or strategy.
+
+Validate ordinary limits and LZSS parameters with the established error
+categories before initializing the finder. Report workspace-specific failure
+with its stable HashChain detail. Treat the complete supplied output span as
+disjoint from both input and finder workspace, and reject overlap before the
+workspace is initialized so the shared region remains unchanged. Planning may
+initialize and reuse caller workspace but never publishes tokens. Encoding
+must reproduce Exhaustive token count, serialized extent, typed-token storage,
+and every token byte or field exactly; any disagreement is an internal error.
+Charge raw input, exact finder workspace, and planned token output together
+against the aggregate internal-buffer limit.

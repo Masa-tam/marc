@@ -39,6 +39,18 @@ using namespace marc::dictionary::internal;
                          token.length};
 }
 
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
+
 } // namespace
 
 TEST(LzssTypedEncoder, PlansEmptyAndOneLiteralExactly) {
@@ -196,6 +208,87 @@ TEST(LzssTypedEncoder, EnforcesVariantAndWorkspaceLimits) {
     limits.max_internal_buffered_bytes =
         input.size() + plan.token_storage_size - 1;
     result = plan_lzss_typed_tokens(input, {}, limits);
+    EXPECT_EQ(result.error,
+              LzssTypedEncodeError::token_storage_limit_exceeded);
+}
+
+TEST(LzssTypedEncoder, HashChainExactMatchesExhaustiveTokens) {
+    auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    for (std::uint32_t value = 0; value < 256; ++value)
+        input.push_back(static_cast<std::byte>(value));
+    input.insert(input.end(), input.begin(), input.end());
+
+    const auto reference_plan = plan_lzss_typed_tokens(input, {}, {});
+    ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(reference_plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens(input, {}, {}, reference).error,
+              LzssTypedEncodeError::none);
+
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const auto plan = plan_lzss_typed_tokens_hash_chain(
+        input, {}, {}, workspace);
+    ASSERT_EQ(plan.error, LzssTypedEncodeError::none);
+    EXPECT_EQ(plan.token_count, reference_plan.token_count);
+    EXPECT_EQ(plan.token_storage_size, reference_plan.token_storage_size);
+    std::vector<LzssTypedToken> encoded(plan.token_count);
+    const auto result = encode_lzss_typed_tokens_hash_chain(
+        input, {}, {}, encoded, workspace);
+    ASSERT_EQ(result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(encoded.size(), reference.size());
+    for (std::size_t index = 0; index < encoded.size(); ++index)
+        EXPECT_TRUE(equal_token(encoded[index], reference[index]));
+}
+
+TEST(LzssTypedEncoder, HashChainFailuresAreAtomicAndBounded) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    ASSERT_GT(requirements.workspace_size, 0U);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const auto plan = plan_lzss_typed_tokens_hash_chain(
+        input, {}, {}, workspace);
+    ASSERT_EQ(plan.error, LzssTypedEncodeError::none);
+
+    std::vector<LzssTypedToken> output(
+        plan.token_count,
+        {LzssTypedTokenKind::match, 0, 123, 456});
+    const auto before = output;
+    auto result = encode_lzss_typed_tokens_hash_chain(
+        input, {}, {}, output,
+        workspace.first(requirements.workspace_size - 1));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.match_finder_error,
+              LzssHashChainError::workspace_too_small);
+    for (std::size_t index = 0; index < output.size(); ++index)
+        EXPECT_TRUE(equal_token(output[index], before[index]));
+
+    std::vector<LzssTypedToken> aliased_storage(
+        (requirements.workspace_size + sizeof(LzssTypedToken) - 1)
+        / sizeof(LzssTypedToken));
+    auto aliased_workspace = std::as_writable_bytes(
+        std::span{aliased_storage}).first(requirements.workspace_size);
+    ASSERT_GE(aliased_storage.size(), plan.token_count);
+    const auto snapshot = std::vector<std::byte>(
+        aliased_workspace.begin(), aliased_workspace.end());
+    result = encode_lzss_typed_tokens_hash_chain(
+        input, {}, {}, std::span{aliased_storage}.first(plan.token_count),
+        aliased_workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(snapshot, aliased_workspace));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    limits.max_internal_buffered_bytes = input.size()
+        + requirements.workspace_size + plan.token_storage_size - 1;
+    result = plan_lzss_typed_tokens_hash_chain(
+        input, {}, limits, workspace);
     EXPECT_EQ(result.error,
               LzssTypedEncodeError::token_storage_limit_exceeded);
 }

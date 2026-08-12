@@ -1,6 +1,7 @@
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include "core/checked_math.hpp"
+#include "core/buffer_overlap.hpp"
 
 #include <algorithm>
 #include <bit>
@@ -22,28 +23,6 @@ namespace {
             ^ std::to_integer<std::uint8_t>(input[position + index]);
     }
     return hash ^ (hash >> 16U);
-}
-
-[[nodiscard]] bool ranges_overlap(
-    const std::span<const std::byte> input,
-    const std::span<std::byte> workspace,
-    bool& arithmetic_overflow) noexcept {
-    arithmetic_overflow = false;
-    if (input.empty() || workspace.empty()) return false;
-    const auto input_begin = reinterpret_cast<std::uintptr_t>(input.data());
-    const auto workspace_begin =
-        reinterpret_cast<std::uintptr_t>(workspace.data());
-    std::uintptr_t input_end{};
-    std::uintptr_t workspace_end{};
-    if (!core::checked_add(input_begin,
-                           static_cast<std::uintptr_t>(input.size()), input_end)
-        || !core::checked_add(
-            workspace_begin, static_cast<std::uintptr_t>(workspace.size()),
-            workspace_end)) {
-        arithmetic_overflow = true;
-        return false;
-    }
-    return input_begin < workspace_end && workspace_begin < input_end;
 }
 
 } // namespace
@@ -120,10 +99,13 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
                % required.workspace_alignment != 0) {
         return LzssHashChainError::misaligned_workspace;
     }
-    bool overlap_overflow{};
-    if (ranges_overlap(input, active_workspace, overlap_overflow))
+    const auto overlap = core::check_buffer_overlap(
+        input.data(), input.size(), active_workspace.data(),
+        active_workspace.size());
+    if (overlap == core::BufferOverlap::overlap)
         return LzssHashChainError::overlapping_buffers;
-    if (overlap_overflow) return LzssHashChainError::arithmetic_overflow;
+    if (overlap == core::BufferOverlap::arithmetic_overflow)
+        return LzssHashChainError::arithmetic_overflow;
 
     LzssHashChainMatchFinder initialized{};
     initialized.input_ = input;

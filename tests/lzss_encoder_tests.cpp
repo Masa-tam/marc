@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <string_view>
 #include <vector>
 
@@ -27,6 +28,18 @@ std::vector<std::byte> encode(const std::string_view text) {
               LzssEncodeError::none);
     return output;
 }
+
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
 
 TEST(LzssEncoder, EmitsHandCheckableEmptyAndSingleLiteral) {
     EXPECT_TRUE(encode("").empty());
@@ -170,6 +183,76 @@ TEST(LzssEncoder, RespectsConfiguredMatchRange) {
     EXPECT_EQ(encoded[7], std::byte{0x05});
     EXPECT_EQ(encoded[11], std::byte{0x00});
     EXPECT_EQ(encoded[13], std::byte{0x00});
+}
+
+TEST(LzssEncoder, HashChainExactMatchesExhaustiveBytes) {
+    auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    for (unsigned int value = 0; value < 256; ++value)
+        input.push_back(static_cast<std::byte>(value));
+    input.insert(input.end(), input.begin(), input.end());
+
+    const auto reference_plan = plan_lzss_token_stream(input, {}, {});
+    ASSERT_EQ(reference_plan.error, LzssEncodeError::none);
+    std::vector<std::byte> reference(reference_plan.output_size);
+    ASSERT_EQ(encode_lzss_token_stream(input, {}, {}, reference).error,
+              LzssEncodeError::none);
+
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const auto plan = plan_lzss_token_stream_hash_chain(
+        input, {}, {}, workspace);
+    ASSERT_EQ(plan.error, LzssEncodeError::none);
+    EXPECT_EQ(plan.output_size, reference_plan.output_size);
+    EXPECT_EQ(plan.token_count, reference_plan.token_count);
+    std::vector<std::byte> encoded(plan.output_size);
+    const auto result = encode_lzss_token_stream_hash_chain(
+        input, {}, {}, encoded, workspace);
+    ASSERT_EQ(result.error, LzssEncodeError::none);
+    EXPECT_EQ(result.match_finder_error, LzssHashChainError::none);
+    EXPECT_EQ(encoded, reference);
+}
+
+TEST(LzssEncoder, HashChainFailuresAreAtomicAndBounded) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    ASSERT_GT(requirements.workspace_size, 0U);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const auto plan = plan_lzss_token_stream_hash_chain(
+        input, {}, {}, workspace);
+    ASSERT_EQ(plan.error, LzssEncodeError::none);
+
+    std::vector<std::byte> output(plan.output_size, std::byte{0xcc});
+    auto result = encode_lzss_token_stream_hash_chain(
+        input, {}, {}, output,
+        workspace.first(requirements.workspace_size - 1));
+    EXPECT_EQ(result.error, LzssEncodeError::match_finder_error);
+    EXPECT_EQ(result.match_finder_error,
+              LzssHashChainError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+
+    const auto snapshot = std::vector<std::byte>(
+        workspace.begin(), workspace.end());
+    result = encode_lzss_token_stream_hash_chain(
+        input, {}, {}, workspace.first(plan.output_size), workspace);
+    EXPECT_EQ(result.error, LzssEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(snapshot, workspace));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    limits.max_internal_buffered_bytes =
+        input.size() + requirements.workspace_size + plan.output_size - 1;
+    result = plan_lzss_token_stream_hash_chain(
+        input, {}, limits, workspace);
+    EXPECT_EQ(result.error, LzssEncodeError::serialized_limit_exceeded);
 }
 
 } // namespace
