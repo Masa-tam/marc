@@ -19375,3 +19375,39 @@ discarded and the reviewed seed retained.
   all 2,857 registered tests in about 163 seconds under MSVC and 170 seconds
   under ClangCL with the 240-second per-test limit, including documentation
   layout and the complete schema-37-through-1 compatibility chain.
+
+## CR-0815: 2026-08-13 - Byte-oriented LZSS tANS HashChain streaming
+
+- Authoring method: connected marc's independently verified private HashChain
+  frame route to its byte-oriented LZSS plus tANS streaming encoder, profile
+  workspace calculation, existing public C lifecycle, CLI, and benchmark.
+- References used: DD-760 through DD-787; IR-0562; TVG-0636 through TVG-0663;
+  BM-0047; marc's private byte-identical frame routes, exact finder, streaming
+  contract, profile calculator, C workspace lifecycle, overlap helper, CLI,
+  and public benchmark.
+- Known implementations intentionally not consulted: external LZSS or ANS
+  implementations, source code, integrations, workspace layouts, ABI designs,
+  tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: retain the C++ Exhaustive constructor as oracle;
+  expose exact finder size and alignment only in the internal profile; reserve
+  alignment allowance within the existing C secondary region; preserve empty
+  encoder views and all public signatures; reject persistent-workspace/output
+  aliases; map short finder capacity to out-of-memory; and expand CLI and
+  benchmark aggregate limits without changing stream identity.
+- Generated-code task description: promote the proven exact HashChain route to
+  byte-oriented LZSS plus tANS streaming and C encoding, prove byte identity
+  and bounded workspace behavior, benchmark the public route, and leave the
+  decoder-visible format and ABI unchanged.
+- Similarity review: profile sizing, constructor overload, C secondary-region
+  partition, CLI bound, overlap checks, regression tests, and records were
+  independently derived from marc-owned contracts; no external implementation
+  expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected core,
+  C API, CLI, and benchmark targets warning-clean. Thirteen focused profile,
+  streaming, and public C tests passed under each compiler. Ten README
+  iterations retained the 3,730-byte stream and measured 4.948 MiB/s encode
+  under MSVC and 6.504 MiB/s under ClangCL. Full-suite validation passed all
+  2,858 registered tests in about 164 seconds under MSVC and 172 seconds under
+  ClangCL with the 240-second per-test limit, including documentation layout
+  and the complete schema-37-through-1 compatibility chain.

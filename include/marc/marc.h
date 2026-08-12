@@ -1297,8 +1297,9 @@ MARC_API marc_status marc_lzss_tans_workspace_requirements(
     const marc_lzss_tans_config* config,
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;
 /*
- * secondary_workspace is partitioned internally into LZSS token staging and
- * frame storage. Decoding uses aligned views_workspace for tANS blocks.
+ * Encoding partitions secondary_workspace into alignment allowance, private
+ * match-finder storage, LZSS token staging, and frame storage. Decoding uses
+ * aligned views_workspace for tANS blocks.
  */
 MARC_API marc_status marc_lzss_tans_create(
     const marc_lzss_tans_config* config,

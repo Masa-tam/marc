@@ -229,13 +229,15 @@ known original size, either block dimension, LZSS parameters, or any hard
 limit. Finder shortage fails before frame publication; its private layout does
 not cross the ABI. The public header exposes only byte counts and alignment.
 The LZSS plus tANS factory follows the same three-region ownership policy.
-Encoding uses primary storage for raw-frame collection and partitions
-secondary storage into canonical LZSS tokens and one complete tANS frame;
-decoding uses primary for the serialized frame, partitions secondary into
-token and private raw staging, and receives aligned opaque tANS block views.
+Encoding uses primary for raw-frame collection, partitions secondary into
+alignment allowance, exact HashChain finder storage, canonical LZSS tokens,
+and one complete tANS frame, and reports zero views. Decoding uses primary for
+the serialized frame, partitions secondary into token and private raw staging,
+and receives aligned opaque tANS block views.
 Call `marc_lzss_tans_workspace_requirements()` again after changing direction,
 known original size, either block dimension, LZSS parameters, or any hard
-limit.
+limit. Finder shortage fails before frame publication; its private layout does
+not cross the ABI. The public header exposes only byte counts and alignment.
 
 ### LZ78 profiles
 

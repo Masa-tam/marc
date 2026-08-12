@@ -120,8 +120,9 @@ constexpr std::uint64_t lzss_tans_payload_size =
 constexpr std::uint64_t lzss_tans_encoder_buffered_size =
     lzss_tans_frame_size + lzss_tans_dictionary_size + frame_header_size
     + lzss_tans_block_count * tans_descriptor_size
-    + lzss_tans_payload_size;
-constexpr std::uint64_t lzss_tans_buffered_size = UINT64_C(512) << 10;
+    + lzss_tans_payload_size
+    + lzss_tans_frame_size * lzss_hash_chain_max_workspace_per_input_byte;
+constexpr std::uint64_t lzss_tans_buffered_size = UINT64_C(2) << 20;
 static_assert(
     lzss_tans_encoder_buffered_size <= lzss_tans_buffered_size);
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;

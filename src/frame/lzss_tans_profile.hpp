@@ -21,6 +21,8 @@ struct LzssTansEncoderWorkspaceRequirements {
     std::size_t frame_input_bytes{};
     std::size_t dictionary_staging_bytes{};
     std::size_t frame_encoded_bytes{};
+    std::size_t match_finder_bytes{};
+    std::size_t match_finder_alignment{1};
 };
 
 struct LzssTansDecoderWorkspaceRequirements {
@@ -55,4 +57,3 @@ calculate_lzss_tans_decoder_workspace(
 } // namespace marc::frame
 
 #endif
-

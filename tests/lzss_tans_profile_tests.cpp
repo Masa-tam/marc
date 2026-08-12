@@ -1,5 +1,6 @@
 
 #include "frame/lzss_tans_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "frame/lzss_tans_frame_streaming_decoder.hpp"
 #include "frame/lzss_tans_frame_streaming_encoder.hpp"
 
@@ -33,6 +34,12 @@ TEST(LzssTansProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
     EXPECT_EQ(workspace.frame_input_bytes, 65'536U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 131'072U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 197'724U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 }
 
 TEST(LzssTansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
@@ -46,6 +53,12 @@ TEST(LzssTansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 17U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 34U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 637U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(17, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 
     ASSERT_EQ(marc::frame::make_lzss_tans_profile(
                   {}, {}, stream, workspace),
@@ -53,6 +66,8 @@ TEST(LzssTansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_alignment, 1U);
 }
 
 TEST(LzssTansProfile, EnforcesBlockPayloadAggregateAndFrameLimits) {

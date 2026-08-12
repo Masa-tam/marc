@@ -96,7 +96,7 @@ constexpr std::uint64_t lzss_tans_dictionary_size =
 constexpr std::uint64_t lzss_tans_block_count =
     (lzss_tans_dictionary_size + entropy_block_size - 1)
     / entropy_block_size;
-constexpr std::uint64_t lzss_tans_buffered_size = UINT64_C(512) << 10;
+constexpr std::uint64_t lzss_tans_buffered_size = UINT64_C(2) << 20;
 constexpr std::uint64_t lz78_rans_dictionary_size =
     lz78_rans_frame_size * lz78_token_size;
 constexpr std::uint64_t lz78_rans_block_count =
