@@ -4787,3 +4787,13 @@ decoder, single-pass typed parser, workspace and alias contracts, and internal
 benchmark as first-party references. No external LZSS, range-coder, combined
 codec, source code, frame integration, benchmark, corpus, result, test suite,
 patent text, or optimization description was consulted.
+
+### IR-0542
+
+The first streaming HashChain promotion uses DD-760 through DD-767, TVG-0636
+through TVG-0643, marc's Contextual Dynamic Range profile, C lifecycle,
+streaming encoder, exact frame equivalence, opaque workspace partitioning,
+stable error mapping, CLI, and public benchmark as first-party references. No
+external LZSS, range-coder, combined implementation, source code, workspace
+layout, API integration, benchmark, corpus, result, test suite, patent text, or
+optimization description was consulted.

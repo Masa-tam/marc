@@ -15759,3 +15759,23 @@ complete frame aggregate, in addition to raw input, actual modeled operations,
 and serialized frame storage. Retain all existing routes on Exhaustive. Do not
 change streaming, profile sizing, public ABI, CLI, format, or schema until this
 frame boundary is measured and validated independently.
+
+## DD-767: Contextual Dynamic Range promotes HashChain without a format field
+
+- Date: 2026-08-12
+- Status: accepted
+
+Route the existing Contextual Dynamic Range streaming encoder through the
+single-pass HashChain Exact frame entry. Extend its internal constructor with
+a separate finder span and extend the encoder profile's opaque views layout to
+tokens, operations, then aligned finder workspace sized for the largest raw
+frame. Include this region in checked aggregate memory and every constructor
+and process-time overlap check. Map a short finder span to the established
+public out-of-memory category and finder policy-limit failure to limit exceeded.
+
+Do not add a strategy field, algorithm variant, C ABI member, CLI selector, or
+schema revision. Exact finder choice is encoder policy because both strategies
+produce identical canonical tokens and streams and the decoder does not need
+it. The existing C requirements query changes its returned opaque views extent;
+callers already must query again after configuration changes. Retain Exhaustive
+as the private oracle and promote no other LZSS pipeline in this step.

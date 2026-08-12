@@ -8559,3 +8559,21 @@ plus exact finder workspace plus serialized frame and require workspace-limit
 rejection. Extend the internal benchmark with ten verified complete-frame
 iterations under MSVC and ClangCL, but assert no timing. Run all 2,835 tests,
 including schema compatibility, under both compilers.
+
+### TVG-0643
+
+Build one match-bearing Contextual Dynamic Range stream with the promoted
+streaming encoder and compare it byte for byte with the stream header followed
+by the Exhaustive reference frame. Require exact input consumption, complete
+output publication, and EndOfStream. Supply finder workspace one byte short
+and require stable out-of-memory after only the already-valid stream header is
+published; alias finder storage with raw staging and require constructor-time
+invalid-argument without publication.
+
+Require the encoder profile to calculate the exact largest-frame HashChain
+extent, align and partition it after token and operation views, include it in
+aggregate limits, and reject forged offsets, short storage, and misalignment
+transactionally. Re-run the public C lifecycle, CLI round trip, and benchmark
+smoke. Measure ten descriptive README iterations under MSVC and ClangCL while
+asserting only the unchanged 2,389-byte stream. Run all 2,836 tests, including
+schema compatibility, under both compilers.

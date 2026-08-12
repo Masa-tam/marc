@@ -19,6 +19,7 @@ public:
         std::span<std::byte> raw_frame_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
         std::span<context::internal::ModeledOperation> operation_workspace,
+        std::span<std::byte> match_finder_workspace,
         std::span<std::byte> serialized_frame_workspace) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
@@ -49,6 +50,7 @@ private:
     std::span<std::byte> raw_frame_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<context::internal::ModeledOperation> operation_workspace_{};
+    std::span<std::byte> match_finder_workspace_{};
     std::span<std::byte> serialized_frame_workspace_{};
     std::array<std::byte, typed_context_stream_header_size> stream_header_{};
     std::size_t raw_frame_size_{};

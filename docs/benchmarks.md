@@ -756,6 +756,22 @@ timings remain descriptive and are neither stable speedup claims nor pass
 thresholds. Byte identity, successful decode, bounded workspace, and atomic
 failure are the normative evidence.
 
+### BM-0027: Contextual Dynamic Range streaming HashChain promotion
+
+Ten complete public-lifecycle iterations over the 4,326-byte README preserve
+the 2,389-byte stream and ratio 0.552 after the Contextual Dynamic Range
+streaming encoder moves from Exhaustive to HashChain Exact. MSVC 19.51.36252
+reports 22.014 MiB/s encode and 10.761 MiB/s decode; ClangCL 22.1.3 reports
+24.364 and 14.953 MiB/s. These small-input timings are descriptive, not stable
+thresholds.
+
+Encoder primary and secondary reservations remain 4,326 and 51,997 bytes.
+Opaque encoder views increase from 190,344 to 273,184 bytes by adding the
+exact 82,840-byte HashChain workspace. Decoder reservations and the
+1,638,485-byte direction-maximum peak remain unchanged. Exact stream identity,
+bounded workspace partitioning, stable failure mapping, and successful public
+round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

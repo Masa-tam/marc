@@ -1,4 +1,5 @@
 #include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -101,6 +102,18 @@ using marc::dictionary::internal::LzssTypedToken;
     return marc::core::flag_value(ProcessFlags::end_input);
 }
 
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
+
 } // namespace
 
 TEST(LzssTypedContextFrameStreamingEncoder, MatchesOneByteOracle) {
@@ -111,7 +124,7 @@ TEST(LzssTypedContextFrameStreamingEncoder, MatchesOneByteOracle) {
     std::array<ModeledOperation, 2> operations{};
     std::array<std::byte, 86> frame{};
     LzssTypedContextFrameStreamingEncoder encoder{
-        stream_config(1, input.size()), {}, raw, tokens, operations, frame};
+        stream_config(1, input.size()), {}, raw, tokens, operations, {}, frame};
 
     std::vector<std::byte> actual;
     std::size_t input_offset{};
@@ -148,7 +161,7 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     std::array<ModeledOperation, 4> operations{};
     std::array<std::byte, 128> frame{};
     LzssTypedContextFrameStreamingEncoder encoder{
-        stream_config(2, input.size()), {}, raw, tokens, operations, frame};
+        stream_config(2, input.size()), {}, raw, tokens, operations, {}, frame};
     std::array<std::byte, 512> output{};
 
     const auto first = encoder.process(
@@ -182,7 +195,7 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     std::array<ModeledOperation, 2> operations{};
     std::array<std::byte, 86> frame{};
     LzssTypedContextFrameStreamingEncoder encoder{
-        stream_config(1, 1), {}, raw, tokens, operations, frame};
+        stream_config(1, 1), {}, raw, tokens, operations, {}, frame};
     std::array<std::byte, typed_context_stream_header_size> header{};
     const auto header_result = encoder.process({}, header, 0);
     ASSERT_EQ(header_result.status, StreamStatus::progress);
@@ -196,7 +209,7 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     EXPECT_EQ(result.output_produced, encoded_frame.size());
 
     LzssTypedContextFrameStreamingEncoder empty{
-        stream_config(1, 0), {}, {}, {}, {}, {}};
+        stream_config(1, 0), {}, {}, {}, {}, {}, {}};
     result = empty.process({}, {}, end_flag());
     ASSERT_EQ(result.status, StreamStatus::need_output);
     result = empty.process({}, header, 0);
@@ -214,18 +227,18 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     std::array<std::byte, 256> output{};
 
     LzssTypedContextFrameStreamingEncoder short_tokens{
-        stream_config(1, 1), {}, raw, {}, operations, frame};
+        stream_config(1, 1), {}, raw, {}, operations, {}, frame};
     auto result = short_tokens.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::out_of_memory);
 
     LzssTypedContextFrameStreamingEncoder short_operations{
         stream_config(1, 1), {}, raw, tokens,
-        std::span<ModeledOperation>{operations}.first(1), frame};
+        std::span<ModeledOperation>{operations}.first(1), {}, frame};
     result = short_operations.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::out_of_memory);
 
     LzssTypedContextFrameStreamingEncoder short_frame{
-        stream_config(1, 1), {}, raw, tokens, operations,
+        stream_config(1, 1), {}, raw, tokens, operations, {},
         std::span<std::byte>{frame}.first(85)};
     result = short_frame.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::out_of_memory);
@@ -233,7 +246,7 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     auto limits = marc::core::DecoderLimits{};
     limits.max_compressed_payload_size = 5;
     LzssTypedContextFrameStreamingEncoder limited{
-        stream_config(1, 1), limits, raw, tokens, operations, frame};
+        stream_config(1, 1), limits, raw, tokens, operations, {}, frame};
     result = limited.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::limit_exceeded);
 
@@ -243,7 +256,7 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     std::array<std::byte, 128> premature_frame{};
     LzssTypedContextFrameStreamingEncoder premature{
         stream_config(2, 2), {},
-        premature_raw, premature_tokens, premature_operations,
+        premature_raw, premature_tokens, premature_operations, {},
         premature_frame};
     result = premature.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
@@ -258,27 +271,91 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     std::array<std::byte, 86> frame{};
     LzssTypedContextFrameStreamingEncoder overlapping{
         stream_config(1, 1), {}, shared_bytes.first(1),
-        std::span<LzssTypedToken>{shared}.first(1), operations, frame};
+        std::span<LzssTypedToken>{shared}.first(1), operations, {}, frame};
     EXPECT_EQ(overlapping.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 
     std::array<std::byte, 1> raw{};
     std::array<LzssTypedToken, 1> tokens{};
     LzssTypedContextFrameStreamingEncoder output_alias{
-        stream_config(1, 1), {}, raw, tokens, operations, frame};
+        stream_config(1, 1), {}, raw, tokens, operations, {}, frame};
     EXPECT_EQ(output_alias.process({}, raw, 0).error.code,
               ErrorCode::invalid_argument);
 
     LzssTypedContextFrameStreamingEncoder unknown{
-        stream_config(1, 1), {}, raw, tokens, operations, frame};
+        stream_config(1, 1), {}, raw, tokens, operations, {}, frame};
     auto result = unknown.process({}, {}, UINT32_C(1) << 31);
     EXPECT_EQ(result.error.code, ErrorCode::unsupported);
     EXPECT_EQ(unknown.process({}, {}, 0).error.code,
               ErrorCode::unsupported);
 
     LzssTypedContextFrameStreamingEncoder reset{
-        stream_config(1, 1), {}, raw, tokens, operations, frame};
+        stream_config(1, 1), {}, raw, tokens, operations, {}, frame};
     result = reset.process(
         {}, {}, marc::core::flag_value(ProcessFlags::reset_block));
     EXPECT_EQ(result.error.code, ErrorCode::unsupported);
+}
+
+TEST(LzssTypedContextFrameStreamingEncoder,
+     HashChainMatchesExhaustiveStreamAndRequiresWorkspace) {
+    constexpr std::array input{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_config(input.size(), input.size());
+    std::array<std::byte, input.size()> raw{};
+    std::array<LzssTypedToken, input.size()> tokens{};
+    std::array<ModeledOperation, input.size() * 2> operations{};
+    const auto required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), {}, {});
+    ASSERT_EQ(required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    auto finder = owner.bytes(required.workspace_size);
+
+    const auto frame_plan = plan_lzss_typed_context_frame(
+        stream, {}, 0, 0, input, tokens, operations);
+    ASSERT_EQ(frame_plan.error, LzssTypedContextFrameEncodeError::none);
+    std::vector<std::byte> frame(frame_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_typed_context_frame(
+                  stream, {}, 0, 0, input, tokens, operations, frame).error,
+              LzssTypedContextFrameEncodeError::none);
+    std::array<std::byte, typed_context_stream_header_size> header{};
+    ASSERT_EQ(serialize_typed_context_stream_header(stream, {}, header),
+              TypedContextStreamHeaderError::none);
+    std::vector<std::byte> expected(
+        typed_context_stream_header_size + frame.size());
+    std::ranges::copy(header, expected.begin());
+    std::ranges::copy(
+        frame, expected.begin() + typed_context_stream_header_size);
+
+    std::vector<std::byte> serialized(frame_plan.serialized_size);
+    LzssTypedContextFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, operations, finder, serialized};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(input, actual, end_flag());
+    ASSERT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.input_consumed, input.size());
+    EXPECT_EQ(result.output_produced, expected.size());
+    EXPECT_EQ(actual, expected);
+
+    LzssTypedContextFrameStreamingEncoder short_finder{
+        stream, {}, raw, tokens, operations,
+        finder.first(finder.size() - 1), serialized};
+    std::ranges::fill(actual, std::byte{0xCC});
+    const auto short_result = short_finder.process(input, actual, end_flag());
+    EXPECT_EQ(short_result.status, StreamStatus::error);
+    EXPECT_EQ(short_result.error.code, ErrorCode::out_of_memory);
+    EXPECT_EQ(short_result.input_consumed, input.size());
+    EXPECT_EQ(short_result.output_produced,
+              typed_context_stream_header_size);
+
+    LzssTypedContextFrameStreamingEncoder finder_alias{
+        stream, {}, raw, tokens, operations,
+        std::span<std::byte>{raw}, serialized};
+    EXPECT_EQ(finder_alias.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
 }

@@ -1,6 +1,7 @@
 #include "frame/lzss_typed_context_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -43,7 +44,10 @@ inline constexpr std::uint64_t range_termination_bytes = 5;
 [[nodiscard]] bool encoder_view_layout(
     const std::uint64_t token_count,
     const std::uint64_t operation_count,
+    const std::uint64_t match_finder_bytes,
+    const std::uint64_t match_finder_alignment,
     std::uint64_t& operation_offset,
+    std::uint64_t& match_finder_offset,
     std::uint64_t& views_bytes) noexcept {
     std::uint64_t token_bytes{};
     std::uint64_t operation_bytes{};
@@ -61,7 +65,12 @@ inline constexpr std::uint64_t range_termination_bytes = 5;
                token_bytes,
                alignof(context::internal::ModeledOperation),
                operation_offset)
-        && core::checked_add(operation_offset, operation_bytes, views_bytes);
+        && core::checked_add(
+               operation_offset, operation_bytes, match_finder_offset)
+        && align_up(match_finder_offset, match_finder_alignment,
+                    match_finder_offset)
+        && core::checked_add(
+               match_finder_offset, match_finder_bytes, views_bytes);
 }
 
 [[nodiscard]] bool decoder_view_layout(
@@ -132,8 +141,24 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t operation_offset{};
+    std::uint64_t match_finder_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssTypedContextProfileError::arithmetic_overflow;
+    }
+    const auto match_finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.dictionary, limits);
+    if (match_finder.error
+        != dictionary::internal::LzssHashChainError::none) {
+        return match_finder.error
+                == dictionary::internal::
+                    LzssHashChainError::workspace_limit_exceeded
+            ? LzssTypedContextProfileError::limit_exceeded
+            : LzssTypedContextProfileError::arithmetic_overflow;
+    }
     if (!core::checked_multiply(
             largest_frame, operations_per_raw_byte, operation_count)
         || !core::checked_multiply(
@@ -150,7 +175,9 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
         || !encoder_view_layout(
-            token_count, operation_count, operation_offset, views_bytes)
+            token_count, operation_count, match_finder.workspace_size,
+            match_finder.workspace_alignment, operation_offset,
+            match_finder_offset, views_bytes)
         || !core::checked_add(
             largest_frame, views_bytes, aggregate_bytes)
         || !core::checked_add(
@@ -172,13 +199,17 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
         || !to_size(token_count, workspace.token_count)
         || !to_size(operation_count, workspace.operation_count)
         || !to_size(operation_offset, workspace.operation_offset)
+        || !to_size(match_finder_offset, workspace.match_finder_offset)
+        || !to_size(match_finder.workspace_size,
+                    workspace.match_finder_bytes)
         || !to_size(views_bytes, workspace.views_bytes)) {
         workspace = {};
         return LzssTypedContextProfileError::arithmetic_overflow;
     }
     workspace.views_alignment = std::max(
-        alignof(dictionary::internal::LzssTypedToken),
-        alignof(context::internal::ModeledOperation));
+        std::max(alignof(dictionary::internal::LzssTypedToken),
+                 alignof(context::internal::ModeledOperation)),
+        match_finder.workspace_alignment);
     return LzssTypedContextProfileError::none;
 }
 
@@ -231,10 +262,15 @@ LzssTypedContextWorkspaceError partition_lzss_typed_context_encoder_views(
     LzssTypedContextEncoderViews& views) noexcept {
     views = {};
     std::uint64_t expected_offset{};
+    std::uint64_t expected_match_finder_offset{};
     std::uint64_t expected_bytes{};
     if (!encoder_view_layout(
             requirements.token_count, requirements.operation_count,
-            expected_offset, expected_bytes)) {
+            requirements.match_finder_bytes,
+            dictionary::internal::LzssHashChainWorkspaceRequirements{}
+                .workspace_alignment,
+            expected_offset, expected_match_finder_offset,
+            expected_bytes)) {
         return LzssTypedContextWorkspaceError::arithmetic_overflow;
     }
     if (expected_bytes == 0) {
@@ -245,9 +281,13 @@ LzssTypedContextWorkspaceError partition_lzss_typed_context_encoder_views(
             : LzssTypedContextWorkspaceError::invalid_requirements;
     }
     const auto expected_alignment = std::max(
-        alignof(dictionary::internal::LzssTypedToken),
-        alignof(context::internal::ModeledOperation));
+        std::max(alignof(dictionary::internal::LzssTypedToken),
+                 alignof(context::internal::ModeledOperation)),
+        dictionary::internal::LzssHashChainWorkspaceRequirements{}
+            .workspace_alignment);
     if (expected_offset != requirements.operation_offset
+        || expected_match_finder_offset
+            != requirements.match_finder_offset
         || expected_bytes != requirements.views_bytes
         || requirements.views_alignment != expected_alignment) {
         return LzssTypedContextWorkspaceError::invalid_requirements;
@@ -266,6 +306,9 @@ LzssTypedContextWorkspaceError partition_lzss_typed_context_encoder_views(
         reinterpret_cast<context::internal::ModeledOperation*>(
             storage.data() + requirements.operation_offset),
         requirements.operation_count};
+    views.match_finder = storage.subspan(
+        requirements.match_finder_offset,
+        requirements.match_finder_bytes);
     return LzssTypedContextWorkspaceError::none;
 }
 

@@ -1,6 +1,7 @@
 #include "frame/lzss_typed_context_frame_streaming_decoder.hpp"
 #include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
 #include "frame/lzss_typed_context_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -37,14 +38,23 @@ TEST(LzssTypedContextProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
     EXPECT_EQ(workspace.operation_count, 131'072U);
     EXPECT_EQ(workspace.operation_offset,
               65'536U * sizeof(marc::dictionary::internal::LzssTypedToken));
-    EXPECT_EQ(workspace.views_bytes,
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_offset,
               workspace.operation_offset
                   + 131'072U
                       * sizeof(marc::context::internal::ModeledOperation));
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.match_finder_offset + finder.workspace_size);
     EXPECT_EQ(workspace.views_alignment,
               std::max(
-                  alignof(marc::dictionary::internal::LzssTypedToken),
-                  alignof(marc::context::internal::ModeledOperation)));
+                  std::max(
+                      alignof(marc::dictionary::internal::LzssTypedToken),
+                      alignof(marc::context::internal::ModeledOperation)),
+                  finder.workspace_alignment));
 }
 
 TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
@@ -58,7 +68,15 @@ TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.token_count, 17U);
     EXPECT_EQ(workspace.operation_count, 34U);
 
-    workspace = {1, 1, 1, 1, 1, 1, 8};
+    workspace.frame_input_bytes = 1;
+    workspace.frame_encoded_bytes = 1;
+    workspace.token_count = 1;
+    workspace.operation_count = 1;
+    workspace.operation_offset = 1;
+    workspace.match_finder_offset = 1;
+    workspace.match_finder_bytes = 1;
+    workspace.views_bytes = 1;
+    workspace.views_alignment = 8;
     ASSERT_EQ(make_lzss_typed_context_profile(
                   {}, {}, stream, workspace),
               LzssTypedContextProfileError::none);
@@ -72,6 +90,7 @@ TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
               LzssTypedContextWorkspaceError::none);
     EXPECT_TRUE(empty_views.tokens.empty());
     EXPECT_TRUE(empty_views.operations.empty());
+    EXPECT_TRUE(empty_views.match_finder.empty());
 }
 
 TEST(LzssTypedContextProfile, RejectsUnsupportedAndBoundedConfigurations) {
@@ -143,6 +162,9 @@ TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
               LzssTypedContextWorkspaceError::none);
     EXPECT_EQ(views.tokens.size(), requirements.token_count);
     EXPECT_EQ(views.operations.size(), requirements.operation_count);
+    EXPECT_EQ(views.match_finder.size(), requirements.match_finder_bytes);
+    EXPECT_EQ(views.match_finder.data(),
+              storage.data() + requirements.match_finder_offset);
 
     auto forged = requirements;
     ++forged.operation_offset;
@@ -151,6 +173,13 @@ TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
               LzssTypedContextWorkspaceError::invalid_requirements);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.operations.empty());
+    EXPECT_TRUE(views.match_finder.empty());
+    forged = requirements;
+    ++forged.match_finder_offset;
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  forged, storage, views),
+              LzssTypedContextWorkspaceError::invalid_requirements);
+    EXPECT_TRUE(views.match_finder.empty());
     EXPECT_EQ(partition_lzss_typed_context_encoder_views(
                   requirements, storage.first(storage.size() - 1), views),
               LzssTypedContextWorkspaceError::too_small);
@@ -161,8 +190,15 @@ TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
     small_requirements.operation_count = 2;
     small_requirements.operation_offset =
         sizeof(marc::dictionary::internal::LzssTypedToken);
-    small_requirements.views_bytes = small_requirements.operation_offset
+    const auto operation_end = small_requirements.operation_offset
         + 2 * sizeof(marc::context::internal::ModeledOperation);
+    const auto finder_alignment = marc::dictionary::internal::
+        LzssHashChainWorkspaceRequirements{}.workspace_alignment;
+    small_requirements.match_finder_offset =
+        (operation_end + finder_alignment - 1) / finder_alignment
+        * finder_alignment;
+    small_requirements.match_finder_bytes = 0;
+    small_requirements.views_bytes = small_requirements.match_finder_offset;
     EXPECT_EQ(partition_lzss_typed_context_encoder_views(
                   small_requirements,
                   std::span<std::byte>{misaligned}.subspan(
@@ -222,7 +258,7 @@ TEST(LzssTypedContextProfile, RequirementsConstructStreamingRoundTrip) {
               LzssTypedContextWorkspaceError::none);
     LzssTypedContextFrameStreamingEncoder encoder{
         stream, limits, frame_input, encode_views.tokens,
-        encode_views.operations, frame_encoded};
+        encode_views.operations, encode_views.match_finder, frame_encoded};
     std::vector<std::byte> encoded(4096);
     const auto encoded_result = encoder.process(
         raw, encoded,

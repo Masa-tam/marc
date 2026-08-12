@@ -57,7 +57,10 @@ enum class OverlapCheck : std::uint8_t {
                         LzssTypedEncodeError::input_limit_exceeded
                 || result.token_encode.error
                     == dictionary::internal::LzssTypedEncodeError::
-                        token_storage_limit_exceeded))
+                        token_storage_limit_exceeded
+                || result.token_encode.match_finder_error
+                    == dictionary::internal::LzssHashChainError::
+                        workspace_limit_exceeded))
         || (result.error
                 == LzssTypedContextFrameEncodeError::context_encode_error
             && result.context_encode.error
@@ -77,12 +80,18 @@ enum class OverlapCheck : std::uint8_t {
 }
 
 [[nodiscard]] bool is_capacity_failure(
-    const LzssTypedContextFrameEncodeError error) noexcept {
-    return error == LzssTypedContextFrameEncodeError::token_staging_too_small
-        || error
+    const LzssTypedContextFrameEncodeResult& result) noexcept {
+    return result.error
+            == LzssTypedContextFrameEncodeError::token_staging_too_small
+        || result.error
             == LzssTypedContextFrameEncodeError::operation_staging_too_small
-        || error
-            == LzssTypedContextFrameEncodeError::serialized_output_too_small;
+        || result.error
+            == LzssTypedContextFrameEncodeError::serialized_output_too_small
+        || (result.error
+                == LzssTypedContextFrameEncodeError::token_encode_error
+            && result.token_encode.match_finder_error
+                == dictionary::internal::
+                    LzssHashChainError::workspace_too_small);
 }
 
 } // namespace
@@ -94,11 +103,13 @@ LzssTypedContextFrameStreamingEncoder(
     const std::span<std::byte> raw_frame_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<context::internal::ModeledOperation> operation_workspace,
+    const std::span<std::byte> match_finder_workspace,
     const std::span<std::byte> serialized_frame_workspace) noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace),
       operation_workspace_(operation_workspace),
+      match_finder_workspace_(match_finder_workspace),
       serialized_frame_workspace_(serialized_frame_workspace) {
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
@@ -122,6 +133,9 @@ LzssTypedContextFrameStreamingEncoder(
         raw_frame_workspace_.data(), raw_frame_workspace_.size(),
         serialized_frame_workspace_.data(),
         serialized_frame_workspace_.size());
+    const auto raw_match_finder = regions_overlap(
+        raw_frame_workspace_.data(), raw_frame_workspace_.size(),
+        match_finder_workspace_.data(), match_finder_workspace_.size());
     const auto tokens_operations = valid_extents
         ? regions_overlap(token_workspace_.data(), token_bytes,
                           operation_workspace_.data(), operation_bytes)
@@ -131,11 +145,25 @@ LzssTypedContextFrameStreamingEncoder(
                           serialized_frame_workspace_.data(),
                           serialized_frame_workspace_.size())
         : OverlapCheck::arithmetic_overflow;
+    const auto tokens_match_finder = valid_extents
+        ? regions_overlap(token_workspace_.data(), token_bytes,
+                          match_finder_workspace_.data(),
+                          match_finder_workspace_.size())
+        : OverlapCheck::arithmetic_overflow;
     const auto operations_serialized = valid_extents
         ? regions_overlap(operation_workspace_.data(), operation_bytes,
                           serialized_frame_workspace_.data(),
                           serialized_frame_workspace_.size())
         : OverlapCheck::arithmetic_overflow;
+    const auto operations_match_finder = valid_extents
+        ? regions_overlap(operation_workspace_.data(), operation_bytes,
+                          match_finder_workspace_.data(),
+                          match_finder_workspace_.size())
+        : OverlapCheck::arithmetic_overflow;
+    const auto match_finder_serialized = regions_overlap(
+        match_finder_workspace_.data(), match_finder_workspace_.size(),
+        serialized_frame_workspace_.data(),
+        serialized_frame_workspace_.size());
     const auto required_raw = std::min<std::uint64_t>(
         stream_.original_size, stream_.frame_size);
     if (!valid_extents
@@ -145,9 +173,13 @@ LzssTypedContextFrameStreamingEncoder(
         || raw_tokens != OverlapCheck::disjoint
         || raw_operations != OverlapCheck::disjoint
         || raw_serialized != OverlapCheck::disjoint
+        || raw_match_finder != OverlapCheck::disjoint
         || tokens_operations != OverlapCheck::disjoint
         || tokens_serialized != OverlapCheck::disjoint
+        || tokens_match_finder != OverlapCheck::disjoint
         || operations_serialized != OverlapCheck::disjoint
+        || operations_match_finder != OverlapCheck::disjoint
+        || match_finder_serialized != OverlapCheck::disjoint
         || serialize_typed_context_stream_header(
                stream_, limits_, stream_header_)
             != TypedContextStreamHeaderError::none) {
@@ -188,6 +220,10 @@ bool LzssTypedContextFrameStreamingEncoder::output_is_disjoint(
                            operation_workspace_.data(), operation_bytes)
             == OverlapCheck::disjoint
         && regions_overlap(output.data(), output.size(),
+                           match_finder_workspace_.data(),
+                           match_finder_workspace_.size())
+            == OverlapCheck::disjoint
+        && regions_overlap(output.data(), output.size(),
                            serialized_frame_workspace_.data(),
                            serialized_frame_workspace_.size())
             == OverlapCheck::disjoint;
@@ -196,14 +232,14 @@ bool LzssTypedContextFrameStreamingEncoder::output_is_disjoint(
 bool LzssTypedContextFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
     const auto raw = raw_frame_workspace_.first(raw_frame_size_);
-    const auto encoded = encode_lzss_typed_context_frame(
+    const auto encoded = encode_lzss_typed_context_frame_hash_chain(
         stream_, limits_, frame_sequence_, input_committed_, raw,
-        token_workspace_, operation_workspace_,
+        token_workspace_, operation_workspace_, match_finder_workspace_,
         serialized_frame_workspace_);
     if (encoded.error != LzssTypedContextFrameEncodeError::none) {
         if (is_limit_failure(encoded)) {
             preparation_error_ = core::ErrorCode::limit_exceeded;
-        } else if (is_capacity_failure(encoded.error)) {
+        } else if (is_capacity_failure(encoded)) {
             preparation_error_ = core::ErrorCode::out_of_memory;
         } else if (encoded.error
                    == LzssTypedContextFrameEncodeError::input_size_mismatch) {

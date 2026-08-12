@@ -132,8 +132,9 @@ The experimental LZSS contextual Dynamic Range factory is a separate Format 2
 lifecycle, not an alias for the preceding byte-oriented profile. Call
 `marc_lzss_contextual_dynamic_range_workspace_requirements()` for the selected
 immutable direction. Encoding uses primary for raw-frame input, secondary for
-the complete serialized frame, and aligned opaque views for typed tokens plus
-modeled operations. Decoding uses primary for serialized input, secondary for
+the complete serialized frame, and aligned opaque views for typed tokens,
+modeled operations, and the exact HashChain match-finder workspace. Decoding
+uses primary for serialized input, secondary for
 atomic raw-frame output, and views for typed tokens. The factory validates
 capacity, alignment, and pairwise non-overlap before publishing a handle.
 Encoder sizes and LZSS parameters are read from the size-tagged configuration;

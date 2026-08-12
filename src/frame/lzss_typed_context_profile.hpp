@@ -24,6 +24,8 @@ struct LzssTypedContextEncoderWorkspaceRequirements {
     std::size_t token_count{};
     std::size_t operation_count{};
     std::size_t operation_offset{};
+    std::size_t match_finder_offset{};
+    std::size_t match_finder_bytes{};
     std::size_t views_bytes{};
     std::size_t views_alignment{1};
 };
@@ -55,6 +57,7 @@ enum class LzssTypedContextWorkspaceError : std::uint8_t {
 struct LzssTypedContextEncoderViews {
     std::span<dictionary::internal::LzssTypedToken> tokens{};
     std::span<context::internal::ModeledOperation> operations{};
+    std::span<std::byte> match_finder{};
 };
 
 struct LzssTypedContextDecoderViews {

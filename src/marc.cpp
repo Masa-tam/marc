@@ -4533,7 +4533,7 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         implementation = new (std::nothrow)
             marc::frame::internal::LzssTypedContextFrameStreamingEncoder(
                 stream, limits, primary, views.tokens, views.operations,
-                secondary);
+                views.match_finder, secondary);
     } else {
         marc::frame::internal::
             LzssTypedContextDecoderWorkspaceRequirements needed{};

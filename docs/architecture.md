@@ -94,9 +94,9 @@ Exhaustive. Separate internal one-shot entry points accept that same caller-
 owned workspace and route each canonical parser through HashChain Exact. They
 plan before publication, preserve the existing parameter and limit errors,
 report finder-workspace errors separately, reject input/output/workspace
-aliasing, and produce exactly the Exhaustive token sequence. Streaming,
-profile, C ABI, and CLI selection remain on Exhaustive until complete-path
-measurements justify exposing a strategy choice.
+aliasing, and produce exactly the Exhaustive token sequence. The initial
+one-shot integration leaves streaming and public routing unchanged until
+complete-path measurements justify promoting the exact strategy.
 Both private finders optionally accumulate query, candidate, and byte-
 comparison counts into caller-owned statistics. Null statistics add no global
 state and leave the ordinary encoder path uninstrumented. A dedicated internal
@@ -117,8 +117,16 @@ and writer are shared with the Exhaustive route; only typed-token generation
 is selected at compile time. The HashChain route receives a fourth disjoint
 workspace, charges exact finder storage plus the conservative token reservation
 to the complete frame aggregate, and otherwise uses the same context modeling,
-entropy planning, header, descriptor, and payload code. It remains private and
-does not yet alter streaming, profile, C ABI, CLI, or interoperability routes.
+entropy planning, header, descriptor, and payload code. The route remains an
+internal frame primitive and introduces no format field. The Contextual
+Dynamic Range streaming encoder now supplies it with a fifth caller-owned
+region from the profile's opaque views storage. That storage is partitioned
+into tokens, modeled operations, and an aligned exact HashChain workspace
+sized for the largest raw frame. The public C requirements query, factory,
+CLI, and benchmark therefore use HashChain Exact automatically while retaining
+the same ABI shape and byte-identical stream. Search strategy is encoder policy
+rather than decoder-visible metadata; Exhaustive remains the private
+correctness oracle.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,
