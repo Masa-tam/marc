@@ -18622,3 +18622,36 @@ discarded and the reviewed seed retained.
   regeneration encountered the known FileTracker E_ACCESSDENIED at ZERO_CHECK;
   the established external MSBuild route completed without a source or build-
   graph error.
+
+## CR-0793: 2026-08-12 - HashChain typed-token single-pass route
+
+- Authoring method: derived a conservative one-token-per-byte admission bound
+  from marc's Literal fallback, validated every possible failure before token
+  publication, and reused the established typed parser for one HashChain pass.
+- References used: DD-760 through DD-765; IR-0540; TVG-0636 through TVG-0641;
+  marc's typed encoder, HashChain workspace, buffer-overlap utility, limits,
+  sentinel tests, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, parse-reuse schemes, source code, tests, corpora,
+  benchmarks, results, patent text, and optimization descriptions.
+- Independent decisions: preserve the precise two-pass route; make the faster
+  capacity trade explicit; reserve one token per raw byte; charge that full
+  reservation to aggregate memory; leave unused slots untouched; and expose
+  optional statistics only for private measurement and tests.
+- Generated-code task description: remove the second typed-token parse without
+  weakening atomic failure, bounds, exact output, or determinism, then measure
+  it independently before changing any contextual frame route.
+- Similarity review: admission logic, API shape, regression vectors, benchmark
+  extension, and documentation were independently derived from marc-owned
+  contracts; no external implementation expression entered the work.
+- Local validation: both focused single-pass tests passed under ClangCL
+  22.1.3. MSVC 19.51.36252 and ClangCL built the affected library, core tests,
+  and benchmark warning-clean. Ten README iterations reproduced identical
+  2,390-token output; the recorded typed throughput was 64.503 versus 130.888
+  MiB/s under MSVC and 70.887 versus 139.237 MiB/s under ClangCL for two-pass
+  versus single-pass respectively. After correcting an initially out-of-order
+  IR-0540 insertion detected by the unchanged documentation test, all 2,833
+  registered MSVC tests passed in 158.90 seconds and all registered ClangCL
+  tests passed in 160.77 seconds with the 240-second per-test limit, including
+  documentation layout and the complete schema-37-through-1 compatibility
+  chain.

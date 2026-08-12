@@ -103,6 +103,14 @@ state and leave the ordinary encoder path uninstrumented. A dedicated internal
 benchmark verifies exact output first, then separately times planning and the
 current two-pass encoding entry points while reporting these work counts and
 the exact HashChain workspace.
+A separate typed-token single-pass entry point reserves the conservative
+maximum of one token per raw byte before parsing. Once capacity, aggregate
+raw/workspace/token memory, alignment, and aliasing are accepted, HashChain
+initialization and token publication cannot encounter an input-dependent
+capacity failure. It therefore parses exactly once, returns the actual token
+extent, and leaves unused reserved token slots untouched. The precise-capacity
+two-pass entry point remains available when conserving caller storage matters
+more than parse throughput.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

@@ -292,3 +292,75 @@ TEST(LzssTypedEncoder, HashChainFailuresAreAtomicAndBounded) {
     EXPECT_EQ(result.error,
               LzssTypedEncodeError::token_storage_limit_exceeded);
 }
+
+TEST(LzssTypedEncoder, HashChainSinglePassMatchesAndQueriesOnce) {
+    auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    for (std::uint32_t value = 0; value < 256; ++value)
+        input.push_back(static_cast<std::byte>(value));
+    input.insert(input.end(), input.begin(), input.end());
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+
+    const auto plan = plan_lzss_typed_tokens_hash_chain(
+        input, {}, {}, workspace);
+    ASSERT_EQ(plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens_hash_chain(
+                  input, {}, {}, reference, workspace).error,
+              LzssTypedEncodeError::none);
+
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+    std::vector<LzssTypedToken> encoded(input.size(), sentinel);
+    LzssMatchFinderStatistics statistics{};
+    const auto result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        input, {}, {}, encoded, workspace, &statistics);
+    ASSERT_EQ(result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(result.token_count, reference.size());
+    EXPECT_EQ(result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+    EXPECT_EQ(statistics.query_count, result.token_count);
+    for (std::size_t index = 0; index < reference.size(); ++index)
+        EXPECT_TRUE(equal_token(encoded[index], reference[index]));
+    for (std::size_t index = reference.size(); index < encoded.size(); ++index)
+        EXPECT_TRUE(equal_token(encoded[index], sentinel));
+}
+
+TEST(LzssTypedEncoder, HashChainSinglePassReservesWorstCaseAtomically) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+    std::vector<LzssTypedToken> short_output(input.size() - 1, sentinel);
+    auto result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        input, {}, {}, short_output, workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
+    EXPECT_EQ(result.token_count, input.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    const auto maximum_storage = input.size() * sizeof(LzssTypedToken);
+    limits.max_internal_buffered_bytes =
+        input.size() + requirements.workspace_size + maximum_storage - 1;
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+    result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        input, {}, limits, output, workspace);
+    EXPECT_EQ(result.error,
+              LzssTypedEncodeError::token_storage_limit_exceeded);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+}

@@ -1,6 +1,7 @@
 #include "dictionary/lzss_encoder.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_match_finder.hpp"
+#include "dictionary/lzss_typed_encoder.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -152,6 +153,39 @@ int main(const int argc, const char* const argv[]) {
         return 1;
     }
 
+    const auto typed_plan = plan_lzss_typed_tokens_hash_chain(
+        input, parameters, limits, workspace);
+    if (typed_plan.error != LzssTypedEncodeError::none
+        || typed_plan.token_count != hash_plan.token_count) {
+        std::cerr << "typed planning equivalence failed\n";
+        return 1;
+    }
+    std::vector<LzssTypedToken> typed_two_pass(input.size());
+    std::vector<LzssTypedToken> typed_single_pass(input.size());
+    const auto typed_two_pass_result = encode_lzss_typed_tokens_hash_chain(
+        input, parameters, limits, typed_two_pass, workspace);
+    const auto typed_single_pass_result =
+        encode_lzss_typed_tokens_hash_chain_single_pass(
+            input, parameters, limits, typed_single_pass, workspace);
+    if (typed_two_pass_result.error != LzssTypedEncodeError::none
+        || typed_single_pass_result.error != LzssTypedEncodeError::none
+        || typed_two_pass_result.token_count
+            != typed_single_pass_result.token_count
+        || !std::equal(
+            typed_two_pass.begin(),
+            typed_two_pass.begin() + typed_two_pass_result.token_count,
+            typed_single_pass.begin(),
+            [](const LzssTypedToken& left,
+               const LzssTypedToken& right) noexcept {
+                return left.kind == right.kind
+                    && left.literal == right.literal
+                    && left.distance == right.distance
+                    && left.length == right.length;
+            })) {
+        std::cerr << "typed single-pass equivalence failed\n";
+        return 1;
+    }
+
     LzssMatchFinderStatistics exhaustive_statistics{};
     LzssExhaustiveMatchFinder exhaustive_finder{
         input, parameters, &exhaustive_statistics};
@@ -191,6 +225,17 @@ int main(const int argc, const char* const argv[]) {
             input, parameters, limits, hash_output, workspace).error
             == LzssEncodeError::none;
     });
+    const auto typed_two_pass_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok && encode_lzss_typed_tokens_hash_chain(
+            input, parameters, limits, typed_two_pass, workspace).error
+            == LzssTypedEncodeError::none;
+    });
+    const auto typed_single_pass_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok
+            && encode_lzss_typed_tokens_hash_chain_single_pass(
+                input, parameters, limits, typed_single_pass, workspace).error
+                == LzssTypedEncodeError::none;
+    });
     if (!timing_ok || exhaustive_output != hash_output) {
         std::cerr << "timed encoding failed\n";
         return 1;
@@ -222,5 +267,9 @@ int main(const int argc, const char* const argv[]) {
                       input.size(), iterations);
     print_measurement("hash_chain_encode", hash_encode_seconds,
                       input.size(), iterations);
+    print_measurement("hash_chain_typed_two_pass", typed_two_pass_seconds,
+                      input.size(), iterations);
+    print_measurement("hash_chain_typed_single_pass",
+                      typed_single_pass_seconds, input.size(), iterations);
     return 0;
 }

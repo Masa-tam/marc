@@ -723,6 +723,22 @@ These sub-millisecond HashChain and small-input timings are descriptive wiring
 evidence, not stable speedup claims or pass thresholds. The work counts and
 identical output are deterministic; elapsed time is not.
 
+### BM-0025: HashChain typed-token single-pass baseline
+
+The bounded single-pass entry produces the same 2,390 typed tokens as the
+precise-capacity two-pass HashChain entry for the 4,326-byte README, while
+reserving the conservative 4,326-token output capacity. Ten ClangCL 22.1.3
+Release iterations report 70.887 MiB/s for the two-pass typed path and
+139.237 MiB/s for the single-pass path. MSVC 19.51.36252 reports 64.503 and
+130.888 MiB/s respectively.
+
+This near-twofold result is consistent with removing one complete HashChain
+parse, but the timed regions are still sub-millisecond on a small repository-
+owned input. It is descriptive evidence for the integration direction, not a
+stable speedup claim or threshold. Exact token equality, one finder query per
+published token, conservative capacity, and atomic preflight rejection are
+the normative observations.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

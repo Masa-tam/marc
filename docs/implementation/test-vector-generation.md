@@ -8525,3 +8525,19 @@ comparisons plus the 82,840-byte workspace, and emit finite planning and two-
 pass encoding metric fields. Register a one-iteration experimental smoke, but
 assert no timing or ratio. Then run the complete 2,831-test suites, including
 schema compatibility, under both compilers.
+
+### TVG-0641
+
+Compare the new single-pass HashChain typed output with the established exact-
+capacity two-pass output over repeated prefixes followed by two copies of all
+256 byte values. Require identical actual token count, storage extent, and
+every token field; require the optional query count to equal the actual token
+count and every unused worst-case token slot to retain its sentinel.
+
+Provide one fewer than `input_size` token slots and require the conservative
+required count and storage extent with atomic `output_too_small`. Set aggregate
+memory one byte below raw plus exact finder workspace plus `input_size` tokens
+and require atomic token-storage-limit rejection. Extend the internal benchmark
+with verified typed two-pass and single-pass measurements, using ten descriptive
+README iterations under MSVC and ClangCL. Run all 2,833 registered tests under
+both compilers with schema compatibility included.

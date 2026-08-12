@@ -162,6 +162,63 @@ template <LzssMatchFinder Finder, typename Consumer>
     return result;
 }
 
+[[nodiscard]] LzssTypedEncodeResult validate_hash_chain_encode_buffers(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace) noexcept {
+    LzssTypedEncodeResult validation{};
+    validation.input_size = input.size();
+    if (core::validate_limits(limits) != core::LimitError::none) {
+        validation.error = LzssTypedEncodeError::input_limit_exceeded;
+        return validation;
+    }
+    validation.token_error = validate_lzss_typed_parameters(
+        parameters, limits);
+    if (validation.token_error != LzssTypedTokenError::none) {
+        validation.error = validation.token_error
+                == LzssTypedTokenError::limit_exceeded
+            ? LzssTypedEncodeError::input_limit_exceeded
+            : LzssTypedEncodeError::invalid_parameters;
+        return validation;
+    }
+    if (input.size() > limits.max_frame_size
+        || input.size() > limits.max_block_size
+        || input.size() > limits.max_total_output_size) {
+        validation.error = LzssTypedEncodeError::input_limit_exceeded;
+        return validation;
+    }
+    std::size_t supplied_output_bytes{};
+    if (!core::checked_multiply(
+            private_tokens.size(), sizeof(LzssTypedToken),
+            supplied_output_bytes)) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    auto overlap = core::check_buffer_overlap(
+        input.data(), input.size(), private_tokens.data(),
+        supplied_output_bytes);
+    if (overlap == core::BufferOverlap::overlap) {
+        validation.error = LzssTypedEncodeError::overlapping_buffers;
+        return validation;
+    }
+    if (overlap == core::BufferOverlap::arithmetic_overflow) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    overlap = core::check_buffer_overlap(
+        private_tokens.data(), supplied_output_bytes,
+        match_finder_workspace.data(), match_finder_workspace.size());
+    if (overlap == core::BufferOverlap::overlap) {
+        validation.error = LzssTypedEncodeError::overlapping_buffers;
+        return validation;
+    }
+    if (overlap == core::BufferOverlap::arithmetic_overflow) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+    }
+    return validation;
+}
+
 } // namespace
 
 LzssTypedEncodeResult plan_lzss_typed_tokens(
@@ -226,56 +283,10 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain(
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace) noexcept {
-    LzssTypedEncodeResult validation{};
-    validation.input_size = input.size();
-    if (core::validate_limits(limits) != core::LimitError::none) {
-        validation.error = LzssTypedEncodeError::input_limit_exceeded;
-        return validation;
-    }
-    validation.token_error = validate_lzss_typed_parameters(
-        parameters, limits);
-    if (validation.token_error != LzssTypedTokenError::none) {
-        validation.error = validation.token_error
-                == LzssTypedTokenError::limit_exceeded
-            ? LzssTypedEncodeError::input_limit_exceeded
-            : LzssTypedEncodeError::invalid_parameters;
-        return validation;
-    }
-    if (input.size() > limits.max_frame_size
-        || input.size() > limits.max_block_size
-        || input.size() > limits.max_total_output_size) {
-        validation.error = LzssTypedEncodeError::input_limit_exceeded;
-        return validation;
-    }
-    std::size_t supplied_output_bytes{};
-    if (!core::checked_multiply(
-            private_tokens.size(), sizeof(LzssTypedToken),
-            supplied_output_bytes)) {
-        validation.error = LzssTypedEncodeError::arithmetic_overflow;
-        return validation;
-    }
-    auto overlap = core::check_buffer_overlap(
-        input.data(), input.size(), private_tokens.data(),
-        supplied_output_bytes);
-    if (overlap == core::BufferOverlap::overlap) {
-        validation.error = LzssTypedEncodeError::overlapping_buffers;
-        return validation;
-    }
-    if (overlap == core::BufferOverlap::arithmetic_overflow) {
-        validation.error = LzssTypedEncodeError::arithmetic_overflow;
-        return validation;
-    }
-    overlap = core::check_buffer_overlap(
-        private_tokens.data(), supplied_output_bytes,
-        match_finder_workspace.data(), match_finder_workspace.size());
-    if (overlap == core::BufferOverlap::overlap) {
-        validation.error = LzssTypedEncodeError::overlapping_buffers;
-        return validation;
-    }
-    if (overlap == core::BufferOverlap::arithmetic_overflow) {
-        validation.error = LzssTypedEncodeError::arithmetic_overflow;
-        return validation;
-    }
+    const auto validation = validate_hash_chain_encode_buffers(
+        input, parameters, limits, private_tokens,
+        match_finder_workspace);
+    if (validation.error != LzssTypedEncodeError::none) return validation;
 
     const auto planned = preflight_hash_chain(
         input, parameters, limits, match_finder_workspace);
@@ -310,6 +321,61 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain(
         return failed;
     }
     return encoded;
+}
+
+LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    auto validation = validate_hash_chain_encode_buffers(
+        input, parameters, limits, private_tokens,
+        match_finder_workspace);
+    if (validation.error != LzssTypedEncodeError::none) return validation;
+
+    std::size_t maximum_token_storage{};
+    if (!core::checked_multiply(
+            input.size(), sizeof(LzssTypedToken), maximum_token_storage)) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    validation.token_count = input.size();
+    validation.token_storage_size = maximum_token_storage;
+    if (private_tokens.size() < input.size()) {
+        validation.error = LzssTypedEncodeError::output_too_small;
+        return validation;
+    }
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, limits);
+    if (required.error != LzssHashChainError::none)
+        return typed_finder_failure(input.size(), required.error);
+    std::size_t aggregate{};
+    if (!core::checked_add(input.size(), required.workspace_size, aggregate)
+        || !core::checked_add(
+            aggregate, maximum_token_storage, aggregate)) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    if (aggregate > limits.max_internal_buffered_bytes) {
+        validation.error = LzssTypedEncodeError::token_storage_limit_exceeded;
+        return validation;
+    }
+
+    const auto active_workspace =
+        match_finder_workspace.first(required.workspace_size);
+    LzssHashChainMatchFinder finder{};
+    const auto finder_error = initialize_lzss_hash_chain_match_finder(
+        input, parameters, limits, active_workspace, finder, statistics);
+    if (finder_error != LzssHashChainError::none)
+        return typed_finder_failure(input.size(), finder_error);
+    return run_typed_parser(
+        input, finder,
+        [private_tokens](const LzssTypedToken& token,
+                         const std::size_t index) noexcept {
+            private_tokens[index] = token;
+            return true;
+        });
 }
 
 } // namespace marc::dictionary::internal

@@ -4769,3 +4769,12 @@ caller workspace rules, dependency-free benchmark conventions, and repository
 README as first-party references. No external LZSS implementation, match-
 finder benchmark, instrumentation scheme, source code, corpus, result, test
 suite, patent text, or optimization description was consulted.
+
+### IR-0540
+
+The typed-token single-pass route uses DD-760 through DD-765, TVG-0636 through
+TVG-0641, marc's HashChain finder, typed parser, conservative contextual token
+workspace bounds, atomic buffer checks, and internal benchmark as first-party
+references. No external LZSS implementation, parse-reuse design, source code,
+benchmark, corpus, result, test suite, patent text, or optimization description
+was consulted.

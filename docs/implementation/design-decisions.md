@@ -15719,3 +15719,23 @@ counts, exact HashChain workspace, planning throughput, and current two-pass
 encoding throughput. Cap input at one MiB so accidental Exhaustive runs remain
 bounded. Treat timings as descriptive only; do not make a speedup, candidate
 ratio, compression ratio, or absolute throughput a test threshold.
+
+## DD-765: Single-pass typed encoding trades capacity for one parse
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add an explicit private HashChain Exact typed-token encoder that requires
+capacity for `input_size` tokens, the deterministic worst case of one Literal
+per raw byte. Validate that full reservation, exact finder workspace, their
+aggregate with raw input, alignment, and all aliasing before initializing the
+finder or publishing a token. Once admitted, run the parser exactly once and
+return the actual token count and storage extent; do not modify unused token
+slots.
+
+Retain the precise-capacity two-pass API. Its smaller exact reservation remains
+useful where memory matters more than throughput, while the single-pass API is
+the candidate for contextual frame integration whose token workspace is
+already sized to a raw-frame worst case. Allow optional caller-owned finder
+statistics on the single-pass route so tests can prove one query per actual
+token. This step changes no existing routing, public API, or stream bytes.
