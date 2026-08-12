@@ -58,6 +58,8 @@ struct LzssBlockedHuffmanFrameValidationResult {
         dictionary::internal::LzssDecodeError::none};
     dictionary::internal::LzssEncodeError dictionary_encode_error{
         dictionary::internal::LzssEncodeError::none};
+    dictionary::internal::LzssHashChainError match_finder_error{
+        dictionary::internal::LzssHashChainError::none};
     entropy::internal::BlockedHuffmanFrameEncodeError entropy_encode_error{
         entropy::internal::BlockedHuffmanFrameEncodeError::none};
     LzssBlockedHuffmanFrameValidationError error{
@@ -87,6 +89,27 @@ encode_lzss_blocked_huffman_frame(
     std::uint64_t output_already_committed,
     std::span<const std::byte> input,
     std::span<std::byte> dictionary_staging,
+    std::span<std::byte> output) noexcept;
+
+[[nodiscard]] LzssBlockedHuffmanFrameValidationResult
+plan_lzss_blocked_huffman_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> match_finder_workspace) noexcept;
+
+[[nodiscard]] LzssBlockedHuffmanFrameValidationResult
+encode_lzss_blocked_huffman_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> input,
+    std::span<std::byte> dictionary_staging,
+    std::span<std::byte> match_finder_workspace,
     std::span<std::byte> output) noexcept;
 
 // Validates and entropy-decodes one complete frame into dictionary_staging.

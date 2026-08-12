@@ -19063,3 +19063,35 @@ discarded and the reviewed seed retained.
   passed under MSVC in about 168 seconds and ClangCL in about 173 seconds with
   the 240-second per-test limit, including documentation layout and the full
   schema-37-through-1 compatibility chain.
+
+## CR-0806: 2026-08-13 - Byte-oriented LZSS Blocked Huffman HashChain frame
+
+- Authoring method: refactored marc's byte-oriented LZSS plus Blocked Huffman
+  frame planner and writer behind compile-time finder selection, then routed
+  the existing exact HashChain byte-token encoder through the shared entropy
+  and frame serialization.
+- References used: DD-760 through DD-778; IR-0553; TVG-0636 through TVG-0654;
+  marc's canonical LZSS byte-token encoder, exact finder, Blocked Huffman
+  primitives, frame codec, overlap helper, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS or Huffman
+  implementations, source code, integrations, workspace layouts, tests,
+  corpora, benchmarks, results, patent text, and optimization descriptions.
+- Independent decisions: preserve exact dictionary staging and complete frame
+  bytes; retain Exhaustive as oracle; expose nested finder errors; preflight
+  all aliases; account for the complete HashChain workspace; and defer public
+  routing until the private frame boundary is independently proven.
+- Generated-code task description: add a private exact HashChain route to the
+  byte-oriented LZSS plus Blocked Huffman frame, prove byte identity and bounded
+  atomic failure, benchmark the full frame, and leave its format unchanged.
+- Similarity review: common-body factoring, workspace checks, regression
+  vector, benchmark extension, and records were independently derived from
+  marc-owned contracts; no external implementation expression entered the
+  work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core tests and internal benchmark warning-clean. All six direct encoder tests
+  passed under each compiler. Ten README iterations retained the 3,403-byte
+  frame and measured 0.212 versus 10.974 MiB/s under MSVC and 0.294 versus
+  14.607 MiB/s under ClangCL for Exhaustive versus HashChain. All 2,848
+  registered tests passed under MSVC in about 171 seconds and ClangCL in about
+  176 seconds with the 240-second per-test limit, including documentation
+  layout and the complete schema-37-through-1 compatibility chain.

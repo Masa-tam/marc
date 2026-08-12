@@ -15976,3 +15976,22 @@ workspace and place the complete encoded frame after it. Charge the same
 extent to profile aggregate limits. Reject all persistent-workspace and
 caller-output aliases before consuming input; map short finder capacity to
 out-of-memory and finder policy rejection to limit-exceeded.
+
+## DD-778: Byte-oriented LZSS Blocked Huffman isolates HashChain production
+
+- Date: 2026-08-13
+- Status: accepted
+
+Refactor only the byte-oriented LZSS plus Blocked Huffman frame planner and
+writer behind a compile-time finder selection. The HashChain route writes the
+same canonical LZSS byte tokens into the established dictionary staging, then
+uses the unchanged Blocked Huffman planner, descriptors, payload writer, and
+generic frame header. Retain the existing public and Exhaustive entry points as
+the oracle until private frame identity and cost are proven.
+
+Require raw input, dictionary staging, finder workspace, and serialized output
+to be mutually disjoint. Preserve nested finder failure details, reject short
+finder capacity before modifying dictionary staging, and charge raw bytes,
+exact dictionary bytes, exact finder workspace, and the complete frame to the
+HashChain aggregate limit. Do not add strategy metadata or alter decoder-visible
+bytes.

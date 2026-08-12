@@ -2058,3 +2058,14 @@ secondary reservation and aggregate limit. Ten direct profile/streaming tests
 plus the public C lifecycle pass under MSVC and ClangCL; the 4,326-byte README
 retains its 6,750-byte stream. Full-suite admission is established by both
 2,847-test runs under MSVC and ClangCL, including schema compatibility.
+
+### BR-0115
+
+Byte-oriented LZSS plus Blocked Huffman now has a private HashChain Exact frame
+route sharing canonical dictionary staging, entropy production, and generic
+header serialization with the Exhaustive oracle. Six encoder tests under MSVC
+and ClangCL prove complete byte identity, exact finder capacity, all workspace
+alias rejection, one-byte-short aggregate enforcement, and atomic failure. The
+public streaming/profile/C/CLI/schema route remains unchanged pending a
+separate promotion step. Full-suite admission is established by both 2,848-test
+runs recorded with this change.

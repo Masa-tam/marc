@@ -5060,3 +5060,12 @@ proven disjoint. Aggregate limits charge raw input, exact finder extent and
 alignment allowance, canonical token payload, and complete frame header.
 Decoder, stream identity, CLI selector, ABI signature, and schema are
 unchanged.
+The byte-oriented LZSS plus Blocked Huffman frame likewise has parallel
+Exhaustive and HashChain Exact dictionary-token producers behind the same
+Blocked Huffman and generic-frame serialization. The private optimized route
+receives separate dictionary staging and aligned finder spans, rejects every
+raw/staging/finder/serialized alias before publishing a header, and charges raw
+input, exact dictionary bytes, finder workspace, and the complete serialized
+frame to aggregate memory. Its public streaming profile, C lifecycle, CLI,
+decoder, format, and schema remain on Exhaustive pending a separate promotion
+step.

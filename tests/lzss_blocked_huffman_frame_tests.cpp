@@ -1,4 +1,5 @@
 #include "frame/lzss_blocked_huffman_frame.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -436,4 +437,147 @@ TEST(LzssBlockedHuffmanFrameEncoder,
                   stream_for_a(), {}, {}, 0, 0, raw, staging)
                   .error,
               LzssBlockedHuffmanFrameValidationError::input_size_mismatch);
+}
+
+TEST(LzssBlockedHuffmanFrameEncoder,
+     HashChainMatchesExhaustiveAndRejectsInvalidWorkspace) {
+    const std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    auto stream = stream_for_a();
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.original_size = raw.size();
+    stream.entropy_block_size = 16;
+    std::array<std::byte, raw.size() * 2> exhaustive_staging{};
+    std::array<std::byte, raw.size() * 2> hash_staging{};
+    const auto exhaustive_plan = marc::frame::
+        plan_lzss_blocked_huffman_frame(
+            stream, {}, {}, 0, 0, raw, exhaustive_staging);
+    ASSERT_EQ(exhaustive_plan.error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    const auto required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::byte> allocation(
+        required.workspace_size + required.workspace_alignment - 1);
+    const auto address = reinterpret_cast<std::uintptr_t>(allocation.data());
+    const auto remainder = address % required.workspace_alignment;
+    const auto padding = remainder == 0
+        ? std::size_t{0} : required.workspace_alignment - remainder;
+    const auto finder = std::span<std::byte>{allocation}.subspan(
+        padding, required.workspace_size);
+    const auto hash_plan = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw, hash_staging, finder);
+    ASSERT_EQ(hash_plan.error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(hash_plan.dictionary_size, exhaustive_plan.dictionary_size);
+    EXPECT_EQ(hash_plan.block_count, exhaustive_plan.block_count);
+    EXPECT_EQ(hash_plan.descriptor_size, exhaustive_plan.descriptor_size);
+    EXPECT_EQ(hash_plan.payload_size, exhaustive_plan.payload_size);
+    EXPECT_EQ(hash_plan.serialized_size, exhaustive_plan.serialized_size);
+    EXPECT_TRUE(std::ranges::equal(
+        std::span{hash_staging}.first(hash_plan.dictionary_size),
+        std::span{exhaustive_staging}.first(
+            exhaustive_plan.dictionary_size)));
+
+    std::vector<std::byte> exhaustive(exhaustive_plan.serialized_size);
+    std::vector<std::byte> hash(hash_plan.serialized_size);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame(
+                  stream, {}, {}, 0, 0, raw, exhaustive_staging, exhaustive)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    ASSERT_EQ(marc::frame::encode_lzss_blocked_huffman_frame_hash_chain(
+                  stream, {}, {}, 0, 0, raw, hash_staging, finder, hash)
+                  .error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    EXPECT_EQ(hash, exhaustive);
+
+    hash_staging.fill(std::byte{0x5a});
+    const auto short_result = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw, hash_staging,
+            finder.first(finder.size() - 1));
+    EXPECT_EQ(short_result.error,
+              LzssBlockedHuffmanFrameValidationError::
+                  dictionary_encode_error);
+    EXPECT_EQ(short_result.match_finder_error,
+              marc::dictionary::internal::LzssHashChainError::
+                  workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(hash_staging, [](const std::byte value) {
+        return value == std::byte{0x5a};
+    }));
+
+    const auto alias_result = marc::frame::
+        encode_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw, hash_staging, finder, finder);
+    EXPECT_EQ(alias_result.dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+
+    auto raw_copy = raw;
+    const auto raw_alias = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw_copy, raw_copy, finder);
+    EXPECT_EQ(raw_alias.dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    const auto staging_finder_alias = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw, finder, finder);
+    EXPECT_EQ(staging_finder_alias.dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+    const auto raw_output_alias = marc::frame::
+        encode_lzss_blocked_huffman_frame_hash_chain(
+            stream, {}, {}, 0, 0, raw_copy, hash_staging, finder, raw_copy);
+    EXPECT_EQ(raw_output_alias.dictionary_encode_error,
+              marc::dictionary::internal::LzssEncodeError::
+                  overlapping_buffers);
+
+    std::array<std::byte, 1024> aggregate_raw{};
+    auto aggregate_stream = stream;
+    aggregate_stream.frame_size =
+        static_cast<std::uint32_t>(aggregate_raw.size());
+    aggregate_stream.original_size = aggregate_raw.size();
+    aggregate_stream.entropy_block_size = 2048;
+    std::array<std::byte, aggregate_raw.size() * 2> aggregate_staging{};
+    const auto aggregate_required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(aggregate_raw.size(), {}, {});
+    ASSERT_EQ(aggregate_required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::byte> aggregate_finder_allocation(
+        aggregate_required.workspace_size
+        + aggregate_required.workspace_alignment - 1);
+    const auto aggregate_address = reinterpret_cast<std::uintptr_t>(
+        aggregate_finder_allocation.data());
+    const auto aggregate_remainder =
+        aggregate_address % aggregate_required.workspace_alignment;
+    const auto aggregate_padding = aggregate_remainder == 0
+        ? std::size_t{0}
+        : aggregate_required.workspace_alignment - aggregate_remainder;
+    const auto aggregate_finder =
+        std::span<std::byte>{aggregate_finder_allocation}.subspan(
+            aggregate_padding, aggregate_required.workspace_size);
+    const auto aggregate_plan = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            aggregate_stream, {}, {}, 0, 0, aggregate_raw,
+            aggregate_staging, aggregate_finder);
+    ASSERT_EQ(aggregate_plan.error,
+              LzssBlockedHuffmanFrameValidationError::none);
+    auto tight_limits = marc::core::DecoderLimits{};
+    tight_limits.max_block_size = aggregate_stream.entropy_block_size;
+    tight_limits.max_internal_buffered_bytes = aggregate_raw.size()
+        + aggregate_plan.dictionary_size + aggregate_finder.size()
+        + aggregate_plan.serialized_size - 1;
+    const auto aggregate_result = marc::frame::
+        plan_lzss_blocked_huffman_frame_hash_chain(
+            aggregate_stream, {}, tight_limits, 0, 0, aggregate_raw,
+            aggregate_staging, aggregate_finder);
+    EXPECT_EQ(aggregate_result.error,
+              LzssBlockedHuffmanFrameValidationError::workspace_limit);
 }

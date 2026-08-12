@@ -924,6 +924,19 @@ small-input timings are descriptive, not stable pass thresholds. Exact stream
 identity, bounded profile sizing, stable capacity and alias failure, and public
 round trip are the normative evidence.
 
+### BM-0038: Byte-oriented LZSS Blocked Huffman HashChain frame baseline
+
+The private HashChain route produces exactly the same 3,403-byte LZSS plus
+Blocked Huffman frame as Exhaustive for the 4,326-byte README, including the
+generic 56-byte header, Blocked Huffman descriptors, and entropy payload.
+
+Ten MSVC 19.51.36252 Release iterations report 0.212 MiB/s for Exhaustive and
+10.974 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.294 and
+14.607 MiB/s. These small-input timings are descriptive, not stable speedup
+claims or pass thresholds. Exact staged tokens and frame bytes, bounded finder
+capacity, complete aggregate accounting, alias rejection, and unchanged decode
+are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

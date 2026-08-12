@@ -4899,3 +4899,13 @@ public benchmark as first-party references. No external LZSS implementation,
 source code, streaming integration, workspace layout, ABI design, benchmark,
 corpus, result, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0553
+
+The byte-oriented LZSS plus Blocked Huffman private HashChain frame uses DD-760
+through DD-778, TVG-0636 through TVG-0654, marc's canonical LZSS byte-token
+encoder, exact finder, Blocked Huffman frame primitives, generic frame codec,
+overlap helper, and internal benchmark as first-party references. No external
+LZSS or Huffman implementation, source code, integration, workspace layout,
+benchmark, corpus, result, test suite, patent text, or optimization description
+was consulted.

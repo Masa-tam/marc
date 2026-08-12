@@ -8754,3 +8754,20 @@ same 214-byte small vector and exact raw output. Run the README benchmark for
 ten iterations under MSVC and ClangCL, requiring the unchanged 6,750-byte
 stream but asserting no timing. Run all registered tests, including schema
 compatibility, under both compilers with the 240-second per-test limit.
+
+### TVG-0654
+
+Encode one match-bearing byte-oriented LZSS plus Blocked Huffman frame through
+the established Exhaustive route and the private HashChain route. Require
+identical dictionary byte staging, token extent, entropy block count,
+descriptor extent, payload extent, serialized extent, complete frame bytes,
+and successful strict decode through the unchanged decoder.
+
+Provide finder capacity one byte short and require its stable nested error
+without modifying dictionary staging. Alias each raw, dictionary, finder, and
+serialized region and require rejection. Set aggregate memory one byte below
+raw plus exact dictionary plus finder plus complete frame on a large enough
+vector that the lower entropy workspace is admitted. Extend the internal README
+benchmark with ten verified iterations under MSVC and ClangCL, but assert no
+timing. Run all 2,848 registered tests, including schema compatibility, under
+both compilers.
