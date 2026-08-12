@@ -4889,3 +4889,13 @@ contracts, and internal benchmark as first-party references. No external LZSS
 implementation, source code, frame integration, workspace layout, benchmark,
 corpus, result, test suite, patent text, or optimization description was
 consulted.
+
+### IR-0552
+
+The standalone LZSS HashChain streaming promotion uses DD-760 through DD-777,
+TVG-0636 through TVG-0653, marc's independently implemented LZSS profile,
+streaming encoder, C lifecycle, exact finder, frame codec, overlap helper, and
+public benchmark as first-party references. No external LZSS implementation,
+source code, streaming integration, workspace layout, ABI design, benchmark,
+corpus, result, test suite, patent text, or optimization description was
+consulted.

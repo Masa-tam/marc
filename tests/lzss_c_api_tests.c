@@ -28,10 +28,12 @@ int main(void) {
     config.frame_size = 6;
     assert(marc_lzss_workspace_requirements(&config, &needed)
            == MARC_STATUS_OK);
-    assert(needed.primary_bytes == 6 && needed.secondary_bytes == 68);
+    assert(needed.primary_bytes == 6 && needed.secondary_bytes > 68);
     assert(needed.views_bytes == 0 && needed.views_alignment == 1);
     marc_buffer primary = allocate(needed.primary_bytes);
-    marc_buffer secondary = allocate(needed.secondary_bytes);
+    marc_buffer secondary_allocation = allocate(needed.secondary_bytes + 1);
+    marc_buffer secondary = {
+        secondary_allocation.data + 1, needed.secondary_bytes};
     assert(marc_lzss_create(&config, primary, secondary, &transform)
            == MARC_STATUS_OK);
     marc_const_buffer source = {input, sizeof(input)};
@@ -43,7 +45,7 @@ int main(void) {
     assert(encoded_size == 214);
     marc_transform_destroy(transform);
     free(primary.data);
-    free(secondary.data);
+    free(secondary_allocation.data);
 
     assert(marc_lzss_config_init(MARC_DIRECTION_DECODE, &config)
            == MARC_STATUS_OK);

@@ -19030,3 +19030,36 @@ discarded and the reviewed seed retained.
   compiler with the 240-second per-test limit (about 188 seconds per run),
   including documentation layout and the complete schema-37-through-1
   compatibility chain.
+
+## CR-0805: 2026-08-13 - Standalone LZSS HashChain streaming promotion
+
+- Authoring method: connected marc's proven private HashChain frame route to
+  the existing standalone streaming profile and C lifecycle, preserving the
+  Exhaustive C++ constructor as an independent byte oracle.
+- References used: DD-760 through DD-777; IR-0552; TVG-0636 through TVG-0653;
+  marc's LZSS profile, streaming encoder, C lifecycle, frame codec, exact
+  finder, overlap contract, and public benchmark.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, source code, integrations, workspace layouts, ABI designs,
+  tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: omit encoder-strategy metadata; preserve the C ABI;
+  align finder storage inside secondary workspace; retain Exhaustive as a
+  private oracle; reject caller-output aliases before input consumption; and
+  keep the decoder and format unchanged.
+- Generated-code task description: promote exact HashChain search through
+  standalone LZSS streaming and C encoding with exact bounded workspace,
+  unchanged bytes, stable failures, cross-compiler tests, and benchmark
+  evidence.
+- Similarity review: profile sizing, internal workspace partition, overload,
+  error mapping, regression vectors, and records were independently derived
+  from marc-owned contracts; no external implementation expression entered
+  the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core, C API, CLI, and benchmark targets warning-clean. All ten direct profile
+  and streaming tests plus the public C test passed under each compiler. Ten
+  README iterations retained the 6,750-byte stream and measured 28.401 MiB/s
+  encode under MSVC and 35.667 MiB/s under ClangCL. All 2,847 registered tests
+  passed under MSVC in about 168 seconds and ClangCL in about 173 seconds with
+  the 240-second per-test limit, including documentation layout and the full
+  schema-37-through-1 compatibility chain.

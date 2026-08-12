@@ -15955,3 +15955,24 @@ token payload, and the complete frame header to aggregate memory. Retain the
 public streaming profile, C ABI, CLI, format, and schema on their established
 route until exact frame identity, decoding, bounded failure, and performance
 are demonstrated independently.
+
+## DD-777: Standalone LZSS promotes HashChain without format metadata
+
+- Date: 2026-08-13
+- Status: accepted
+
+Select HashChain Exact in the standalone entropy-none LZSS streaming and C
+encode routes after DD-776 proved complete-frame identity. Do not record the
+match-finder strategy: it changes only deterministic encoder search cost and
+produces the same canonical tokens as Exhaustive under the specified tie
+breaks. Retain the legacy five-argument C++ streaming constructor as an
+Exhaustive oracle and add a separate finder-span constructor for the optimized
+route.
+
+Keep the published C function signatures and ABI version unchanged. Because
+standalone `marc_lzss_create` predates a views argument, reserve the exact
+finder extent plus worst-case alignment padding at the front of secondary
+workspace and place the complete encoded frame after it. Charge the same
+extent to profile aggregate limits. Reject all persistent-workspace and
+caller-output aliases before consuming input; map short finder capacity to
+out-of-memory and finder policy rejection to limit-exceeded.

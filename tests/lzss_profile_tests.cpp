@@ -1,5 +1,6 @@
 #include "frame/lzss_profile.hpp"
 #include "frame/frame_header.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -20,6 +21,13 @@ TEST(LzssProfile, BuildsCanonicalProfileAndWorstCaseWorkspace) {
     EXPECT_EQ(stream.dictionary_parameters_size, 16U);
     EXPECT_EQ(workspace.frame_input_bytes, 4U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 56U + 4U * 2U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(4, config.parameters, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              finder.workspace_size == 0 ? 1U : finder.workspace_alignment);
 }
 
 TEST(LzssProfile, EmptyEncoderNeedsNoFramePayloadWorkspace) {
@@ -29,6 +37,8 @@ TEST(LzssProfile, EmptyEncoderNeedsNoFramePayloadWorkspace) {
               LzssProfileError::none);
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, frame_header_size);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_alignment, 1U);
 }
 
 TEST(LzssProfile, RejectsParameterAndAggregateLimits) {

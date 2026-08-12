@@ -105,8 +105,12 @@ transform pointer null, and the header never exposes `TansBlockView`.
 ### LZSS profiles
 
 LZSS also uses no views workspace. Its encoder's exact worst-case token payload
-is two bytes per raw byte; its decoder uses the same frame-atomic workspace
-roles as LZ77.
+is two bytes per raw byte. Encoding reserves primary for one raw frame and
+partitions secondary into an internally aligned exact HashChain match-finder
+region followed by the complete encoded frame. Callers must query requirements
+again after changing size, LZSS parameters, or limits; the reported alignment
+allowance makes an otherwise unaligned secondary pointer safe. Its decoder uses
+the same frame-atomic workspace roles as LZ77.
 The LZSS plus Blocked Huffman factory keeps the same three-region convention as
 the LZ77 composition. Its secondary region contains token staging followed by
 serialized-frame staging while encoding, or token staging followed by raw

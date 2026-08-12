@@ -32,6 +32,8 @@ struct LzssFrameCodecResult {
     FrameHeaderError header_error{FrameHeaderError::none};
     dictionary::internal::LzssEncodeError encode_error{
         dictionary::internal::LzssEncodeError::none};
+    dictionary::internal::LzssHashChainError match_finder_error{
+        dictionary::internal::LzssHashChainError::none};
     dictionary::internal::LzssDecodeError decode_error{
         dictionary::internal::LzssDecodeError::none};
     dictionary::internal::LzssValidationError validation_error{

@@ -106,6 +106,7 @@ template <bool UseHashChain>
         }
     }();
     result.encode_error = planned.error;
+    result.match_finder_error = planned.match_finder_error;
     result.format_error = planned.format_error;
     result.token_count = planned.token_count;
     if (planned.error != dictionary::internal::LzssEncodeError::none) {

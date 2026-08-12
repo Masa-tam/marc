@@ -2047,3 +2047,14 @@ complete-frame aggregate limits, and atomic failure. The public streaming
 profile, C ABI, CLI, and interoperability schema remain unchanged pending a
 separate promotion step. Full-suite admission is recorded separately after
 both 2,846-test runs.
+
+### BR-0114
+
+Standalone entropy-none LZSS now selects HashChain Exact through its public
+streaming and C encode lifecycle without changing stream bytes, decoder
+behavior, C signatures, ABI version, CLI selector, or interoperability schema.
+Profile sizing includes exact finder capacity and alignment allowance in the
+secondary reservation and aggregate limit. Ten direct profile/streaming tests
+plus the public C lifecycle pass under MSVC and ClangCL; the 4,326-byte README
+retains its 6,750-byte stream. Full-suite admission is established by both
+2,847-test runs under MSVC and ClangCL, including schema compatibility.

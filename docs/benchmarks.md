@@ -909,6 +909,21 @@ claims or pass thresholds. Exact header, payload, and frame bytes, successful
 decode, bounded finder workspace, complete-frame aggregate accounting, and
 atomic rejection are the normative evidence.
 
+### BM-0037: Standalone LZSS public HashChain promotion
+
+The public `lzss` benchmark over the 4,326-byte README retains the exact
+6,750-byte stream after selecting HashChain Exact in the streaming and C encode
+routes. Encoder primary workspace remains 4,326 bytes; secondary workspace
+increases to 91,555 bytes because it now contains the exact aligned finder and
+complete worst-case frame. Views remain zero. Decoder reservations and the
+3,145,784-byte direction-maximum peak remain unchanged.
+
+Ten MSVC 19.51.36252 Release iterations report 28.401 MiB/s encode and
+136.881 MiB/s decode. ClangCL 22.1.3 reports 35.667 and 70.523 MiB/s. These
+small-input timings are descriptive, not stable pass thresholds. Exact stream
+identity, bounded profile sizing, stable capacity and alias failure, and public
+round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

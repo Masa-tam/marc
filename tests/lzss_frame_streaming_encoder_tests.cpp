@@ -1,10 +1,12 @@
 #include "frame/lzss_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
 #include <array>
 #include <vector>
+#include <cstdint>
 
 namespace {
 using namespace marc::frame;
@@ -119,6 +121,60 @@ TEST(LzssFrameStreamingEncoder, HandlesEmptyPrefixAndEndedCalls) {
     EXPECT_EQ(result.output_produced, lzss_stream_prefix_size);
     result = encoder.process({}, {}, 0);
     EXPECT_EQ(result.status, marc::core::StreamStatus::end_of_stream);
+}
+
+TEST(LzssFrameStreamingEncoder, HashChainMatchesReferenceAndChecksWorkspace) {
+    const auto expected = reference();
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(6, {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::array<std::byte, 6> frame_input{};
+    std::array<std::byte, 80> frame_encoded{};
+    std::vector<std::byte> backing(
+        requirements.workspace_size + requirements.workspace_alignment - 1);
+    const auto address = reinterpret_cast<std::uintptr_t>(backing.data());
+    const auto remainder = address % requirements.workspace_alignment;
+    const auto padding = remainder == 0
+        ? std::size_t{0} : requirements.workspace_alignment - remainder;
+    const auto finder = std::span<std::byte>{backing}.subspan(
+        padding, requirements.workspace_size);
+    LzssFrameStreamingEncoder encoder{
+        config(input.size()), {}, {}, frame_input, finder, frame_encoded};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(
+        input, actual,
+        marc::core::flag_value(marc::core::ProcessFlags::end_input));
+    ASSERT_EQ(result.status, marc::core::StreamStatus::end_of_stream);
+    actual.resize(result.output_produced);
+    EXPECT_EQ(actual, expected);
+
+    LzssFrameStreamingEncoder short_encoder{
+        config(input.size()), {}, {}, frame_input, finder.first(
+            requirements.workspace_size - 1), frame_encoded};
+    std::array<std::byte, 300> output{};
+    const auto short_result = short_encoder.process(
+        std::span<const std::byte>{input}.first(6), output, 0);
+    EXPECT_EQ(short_result.error.code, marc::core::ErrorCode::out_of_memory);
+
+    LzssFrameStreamingEncoder alias_encoder{
+        config(input.size()), {}, {}, frame_input, finder, frame_encoded};
+    const auto alias_result = alias_encoder.process({}, finder, 0);
+    EXPECT_EQ(alias_result.error.code,
+              marc::core::ErrorCode::invalid_argument);
+
+    LzssFrameStreamingEncoder raw_output_alias{
+        config(input.size()), {}, {}, frame_input, finder, frame_encoded};
+    EXPECT_EQ(raw_output_alias.process({}, frame_input, 0).error.code,
+              marc::core::ErrorCode::invalid_argument);
+    LzssFrameStreamingEncoder encoded_output_alias{
+        config(input.size()), {}, {}, frame_input, finder, frame_encoded};
+    EXPECT_EQ(encoded_output_alias.process({}, frame_encoded, 0).error.code,
+              marc::core::ErrorCode::invalid_argument);
+    LzssFrameStreamingEncoder constructor_alias{
+        config(input.size()), {}, {}, frame_input, frame_input, frame_encoded};
+    EXPECT_EQ(constructor_alias.process({}, {}, 0).error.code,
+              marc::core::ErrorCode::invalid_argument);
 }
 
 } // namespace

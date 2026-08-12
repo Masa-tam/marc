@@ -192,6 +192,28 @@ bool valid_buffer(const void* data, const std::size_t size) noexcept {
     return size == 0 || data != nullptr;
 }
 
+bool aligned_buffer_region(
+    const marc_buffer storage, const std::size_t size,
+    const std::size_t alignment, std::span<std::byte>& region,
+    std::size_t& consumed) noexcept {
+    region = {};
+    consumed = 0;
+    if (size == 0) return true;
+    if (!valid_buffer(storage.data, storage.size) || alignment == 0) {
+        return false;
+    }
+    const auto begin = reinterpret_cast<std::uintptr_t>(storage.data);
+    const auto remainder = begin % alignment;
+    const auto padding = remainder == 0
+        ? std::size_t{0} : alignment - remainder;
+    if (padding > storage.size || size > storage.size - padding
+        || !marc::core::checked_add(padding, size, consumed)) {
+        return false;
+    }
+    region = {reinterpret_cast<std::byte*>(storage.data) + padding, size};
+    return true;
+}
+
 bool disjoint_buffer_prefixes(
     const marc_buffer first, const std::size_t first_size,
     const marc_buffer second, const std::size_t second_size) noexcept {
@@ -3857,7 +3879,16 @@ marc_status marc_lzss_workspace_requirements(
         if (error != marc::frame::LzssProfileError::none)
             return status_for(marc::frame::lzss_profile_error_code(error));
         requirements->primary_bytes = needed.frame_input_bytes;
-        requirements->secondary_bytes = needed.frame_encoded_bytes;
+        if (!marc::core::checked_add(
+                needed.match_finder_bytes,
+                needed.match_finder_alignment - 1,
+                requirements->secondary_bytes)
+            || !marc::core::checked_add(
+                requirements->secondary_bytes,
+                needed.frame_encoded_bytes,
+                requirements->secondary_bytes)) {
+            return MARC_STATUS_LIMIT_EXCEEDED;
+        }
         return MARC_STATUS_OK;
     }
     if (config->direction == MARC_DIRECTION_DECODE) {
@@ -3902,13 +3933,28 @@ marc_status marc_lzss_create(
                 limits, stream, ignored)
             != marc::frame::LzssProfileError::none)
             return MARC_STATUS_INTERNAL_ERROR;
+        std::span<std::byte> finder_workspace{};
+        std::size_t finder_extent{};
+        if (!aligned_buffer_region(
+                secondary_workspace, ignored.match_finder_bytes,
+                ignored.match_finder_alignment, finder_workspace,
+                finder_extent)
+            || finder_extent > secondary_workspace.size
+            || ignored.frame_encoded_bytes
+                > secondary_workspace.size - finder_extent) {
+            return MARC_STATUS_INVALID_ARGUMENT;
+        }
+        const std::span<std::byte> secondary{
+            reinterpret_cast<std::byte*>(secondary_workspace.data),
+            needed.secondary_bytes};
         implementation = new (std::nothrow)
             marc::frame::LzssFrameStreamingEncoder(
                 stream, parameters, limits,
                 {reinterpret_cast<std::byte*>(primary_workspace.data),
                  needed.primary_bytes},
-                {reinterpret_cast<std::byte*>(secondary_workspace.data),
-                 needed.secondary_bytes});
+                finder_workspace,
+                secondary.subspan(
+                    finder_extent, ignored.frame_encoded_bytes));
     } else {
         implementation = new (std::nothrow)
             marc::frame::LzssFrameStreamingDecoder(

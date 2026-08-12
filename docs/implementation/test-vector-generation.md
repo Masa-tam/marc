@@ -8739,3 +8739,18 @@ stable serialized-limit category. Extend the internal benchmark with ten
 verified standalone frame iterations under MSVC and ClangCL, but assert no
 timing. Run all 2,846 tests, including schema compatibility, under both
 compilers.
+
+### TVG-0653
+
+Build the standalone LZSS streaming encoder with the exact six-byte-frame
+HashChain workspace and require complete byte identity with the established
+Exhaustive stream across two frames. Repeat with finder capacity one byte short
+and require out-of-memory only when the first frame is prepared. Present the
+finder as caller output and require invalid-argument before input consumption.
+
+Query and exercise the public C encode lifecycle with its enlarged secondary
+reservation, then decode through the unchanged public route and require the
+same 214-byte small vector and exact raw output. Run the README benchmark for
+ten iterations under MSVC and ClangCL, requiring the unchanged 6,750-byte
+stream but asserting no timing. Run all registered tests, including schema
+compatibility, under both compilers with the 240-second per-test limit.

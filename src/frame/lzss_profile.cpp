@@ -1,6 +1,7 @@
 #include "frame/lzss_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "frame/frame_header.hpp"
 
 #include <algorithm>
@@ -58,14 +59,35 @@ LzssProfileError make_lzss_profile(
     std::uint64_t token_bytes{};
     std::uint64_t encoded_bytes{frame_header_size};
     std::uint64_t buffered_bytes{};
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssProfileError::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.parameters, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error
+                == dictionary::internal::LzssHashChainError::
+                    workspace_limit_exceeded
+            ? LzssProfileError::limit_exceeded
+            : LzssProfileError::arithmetic_overflow;
+    }
     if (!core::checked_multiply(
             largest_frame,
             static_cast<std::uint64_t>(
                 dictionary::internal::lzss_literal_size),
             token_bytes)
         || !core::checked_add(encoded_bytes, token_bytes, encoded_bytes)
-        || !core::checked_add(largest_frame, encoded_bytes,
-                              buffered_bytes)) {
+        || !core::checked_add(largest_frame, encoded_bytes, buffered_bytes)
+        || !core::checked_add(
+            buffered_bytes, static_cast<std::uint64_t>(finder.workspace_size),
+            buffered_bytes)
+        || (finder.workspace_size != 0
+            && !core::checked_add(
+                buffered_bytes,
+                static_cast<std::uint64_t>(finder.workspace_alignment - 1),
+                buffered_bytes))) {
         return LzssProfileError::arithmetic_overflow;
     }
     if (token_bytes > limits.max_dictionary_serialized_size
@@ -78,6 +100,9 @@ LzssProfileError make_lzss_profile(
         workspace = {};
         return LzssProfileError::arithmetic_overflow;
     }
+    workspace.match_finder_bytes = finder.workspace_size;
+    workspace.match_finder_alignment = finder.workspace_size == 0
+        ? 1 : finder.workspace_alignment;
     return LzssProfileError::none;
 }
 

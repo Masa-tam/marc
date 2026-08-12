@@ -157,8 +157,11 @@ The streaming encoder similarly buffers one raw frame and its complete encoded
 form in separate caller-owned workspaces. Completed frames drain immediately;
 partial-frame Flush does not create a format boundary.
 The LZSS profile builder normalizes this pipeline and reports encoder workspace
-from the exact two-byte-per-input worst case. Decoder workspace depends only on
-local frame, dictionary-payload, compressed-payload, and aggregate limits.
+from the exact two-byte-per-input worst case plus the exact largest-frame
+HashChain match-finder extent. The C factory aligns that finder inside the
+secondary reservation before the complete encoded frame. Decoder workspace
+depends only on local frame, dictionary-payload, compressed-payload, and
+aggregate limits.
 The C ABI exposes the same path through an independent size-tagged LZSS config,
 workspace query, and encoder/decoder factory without changing ABI version 1 or
 passing C++ ownership across the boundary.
@@ -5048,11 +5051,12 @@ capacity maps to out-of-memory, policy rejection maps to limit exceeded, and
 Exhaustive remains a private byte-identity oracle. No stream field, decoder
 behavior, public selector, ABI version, or schema changes.
 
-The private entropy-none LZSS frame now has parallel Exhaustive and HashChain
-Exact canonical-token producers behind one shared common-header and payload
-layout. Finder storage remains a separate aligned caller-owned span; raw input,
-finder, and serialized output are proven disjoint before header publication.
-Its aggregate charges raw input, the exact finder extent, canonical token
-payload, and complete frame header. Streaming, profile sizing, public ABI,
-decoder, stream identity, CLI, and schema remain on the established route
-pending a separate promotion step.
+The entropy-none LZSS frame has parallel Exhaustive and HashChain Exact
+canonical-token producers behind one shared header and payload layout. The
+public streaming and C encode routes select HashChain while the legacy C++
+constructor retains Exhaustive as an oracle. Finder storage remains a separate
+aligned span; raw input, finder, serialized output, and caller output are
+proven disjoint. Aggregate limits charge raw input, exact finder extent and
+alignment allowance, canonical token payload, and complete frame header.
+Decoder, stream identity, CLI selector, ABI signature, and schema are
+unchanged.
