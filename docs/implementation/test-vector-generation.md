@@ -8595,3 +8595,20 @@ frame and require workspace-limit rejection. Extend the internal benchmark
 with ten verified Contextual rANS frame iterations under MSVC and ClangCL, but
 assert no timing. Run all 2,838 tests, including schema compatibility, under
 both compilers.
+
+### TVG-0645
+
+Build one match-bearing canonical Contextual rANS stream with the promoted
+streaming encoder and compare it byte for byte with the stream header followed
+by the Exhaustive reference frame. Require exact input consumption, complete
+output publication, and EndOfStream. Supply finder workspace one byte short
+and require stable out-of-memory after only the valid stream header is
+published; alias finder storage with raw staging and require constructor-time
+invalid-argument without publication.
+
+Require the encoder profile to calculate the exact largest-frame HashChain
+extent, align and partition it after typed-token views, include it in aggregate
+limits, and carry it through the public C lifecycle. Re-run the public C, CLI,
+and benchmark-smoke paths. Measure ten descriptive README iterations under
+MSVC and ClangCL while asserting only the unchanged 3,006-byte stream. Run all
+2,839 tests, including schema compatibility, under both compilers.

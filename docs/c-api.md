@@ -454,3 +454,9 @@ variable descriptor. The fixed variant-2 implementation and every
 compatibility typedef, wrapper, macro, or exported alias is provided. This API
 rename does not renumber `MARC_ABI_VERSION`; callers must compile against the
 matching 0.2.0 header and library.
+
+The canonical Contextual rANS encoder's opaque views requirement includes its
+caller-owned HashChain Exact workspace after typed-token staging. Callers must
+use the current `marc_lzss_contextual_rans_workspace_requirements()` result
+rather than cache an earlier extent. The finder layout and strategy do not
+cross the ABI or stream; the decoder and serialized identity remain unchanged.

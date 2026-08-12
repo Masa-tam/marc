@@ -4807,3 +4807,13 @@ workspace and alias contracts, and internal benchmark as first-party
 references. No external LZSS, rANS, combined implementation, source code,
 frame integration, workspace layout, benchmark, corpus, result, test suite,
 patent text, or optimization description was consulted.
+
+### IR-0544
+
+The Contextual rANS streaming HashChain promotion uses DD-760 through DD-769,
+TVG-0636 through TVG-0645, marc's canonical Contextual rANS profile, C
+lifecycle, streaming encoder, byte-identical private frame routes, opaque
+workspace partitioning, stable error mapping, CLI, and public benchmark as
+first-party references. No external LZSS, rANS, combined implementation,
+source code, workspace layout, API integration, benchmark, corpus, result,
+test suite, patent text, or optimization description was consulted.

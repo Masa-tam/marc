@@ -174,7 +174,7 @@ the five experimental typed-token LZSS contextual profiles. The internal
 canonical Huffman primitives remain support components rather than a separate
 public profile.
 
-The optimized Release configurations each enumerate 2,838 tests under
+The optimized Release configurations each enumerate 2,839 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -1960,3 +1960,14 @@ Schema 37 now has complete four-direction external evidence at revision
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths.
+
+### BR-0106
+
+Canonical Contextual rANS now routes its public streaming encoder through the
+byte-identical HashChain Exact typed-token producer. Its opaque encoder views
+include the exact largest-frame finder workspace, while the decoder, stream
+identity, CLI selector, and interoperability schema remain unchanged. Direct
+profile and streaming tests prove Exhaustive byte identity, bounded capacity
+and alias rejection, stable public error mapping, and successful public round
+trip under MSVC and ClangCL. Full-suite admission is recorded separately after
+both 2,839-test runs.

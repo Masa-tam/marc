@@ -15799,3 +15799,22 @@ schema on the established path until exact frame identity, decoding, bounded
 failure, and performance are independently demonstrated. rANS reverse coding
 does not justify a distinct finder contract because it consumes the completed
 forward typed-token sequence.
+
+## DD-769: Contextual rANS promotes HashChain through opaque encoder views
+
+- Date: 2026-08-12
+- Status: accepted
+
+Route the canonical Contextual rANS streaming encoder through the proven
+single-pass HashChain Exact frame entry. Extend its internal constructor with
+a separate finder span and extend the encoder profile's opaque views layout to
+typed tokens followed by aligned finder workspace sized for the largest raw
+frame. Include that region in checked aggregate memory and every constructor
+and process-time overlap check. Map short finder capacity to the established
+out-of-memory category and finder policy-limit failure to limit exceeded.
+
+Keep finder selection outside the format, public configuration, C structure,
+CLI, and schema because Exhaustive and HashChain Exact produce identical
+canonical tokens and the decoder needs no strategy information. Require callers
+to query the opaque requirements again, retain Exhaustive as the private oracle,
+and promote no additional LZSS pipeline in this step.

@@ -1,9 +1,11 @@
 #include "frame/lzss_contextual_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_rans_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <span>
@@ -38,9 +40,20 @@ TEST(LzssContextualRansProfile, BuildsCanonicalWorkspaceBounds) {
     EXPECT_EQ(workspace.frame_input_bytes, 65'536U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 795'529U);
     EXPECT_EQ(workspace.token_count, 65'536U);
-    EXPECT_EQ(workspace.views_bytes,
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_offset,
               65'536U
                   * sizeof(marc::dictionary::internal::LzssTypedToken));
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.match_finder_offset + finder.workspace_size);
+    EXPECT_EQ(workspace.views_alignment,
+              std::max(
+                  alignof(marc::dictionary::internal::LzssTypedToken),
+                  finder.workspace_alignment));
 
     ASSERT_EQ(make_lzss_contextual_rans_profile(
                   {17}, {}, stream, workspace),
@@ -48,13 +61,20 @@ TEST(LzssContextualRansProfile, BuildsCanonicalWorkspaceBounds) {
     EXPECT_EQ(workspace.frame_encoded_bytes, 9301U);
     EXPECT_EQ(workspace.token_count, 17U);
 
-    workspace = {1, 1, 1, 1, 8};
+    workspace.frame_input_bytes = 1;
+    workspace.frame_encoded_bytes = 1;
+    workspace.token_count = 1;
+    workspace.match_finder_offset = 1;
+    workspace.match_finder_bytes = 1;
+    workspace.views_bytes = 1;
+    workspace.views_alignment = 8;
     ASSERT_EQ(make_lzss_contextual_rans_profile(
                   {}, {}, stream, workspace),
               LzssContextualRansProfileError::none);
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
     EXPECT_EQ(workspace.token_count, 0U);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
     EXPECT_EQ(workspace.views_bytes, 0U);
     EXPECT_EQ(workspace.views_alignment, 1U);
 }
@@ -142,8 +162,38 @@ TEST(LzssContextualRansProfile,
     ASSERT_EQ(partition_lzss_contextual_rans_encoder_views(
                   encoder_requirements, encode_storage, encode_views),
               LzssContextualRansWorkspaceError::none);
+    EXPECT_EQ(encode_views.tokens.size(), encoder_requirements.token_count);
+    EXPECT_EQ(encode_views.match_finder.size(),
+              encoder_requirements.match_finder_bytes);
+    EXPECT_EQ(encode_views.match_finder.data(),
+              encode_storage.data()
+                  + encoder_requirements.match_finder_offset);
+    auto forged = encoder_requirements;
+    ++forged.match_finder_offset;
+    EXPECT_EQ(partition_lzss_contextual_rans_encoder_views(
+                  forged, encode_storage, encode_views),
+              LzssContextualRansWorkspaceError::invalid_requirements);
+    EXPECT_TRUE(encode_views.tokens.empty());
+    EXPECT_TRUE(encode_views.match_finder.empty());
+    EXPECT_EQ(partition_lzss_contextual_rans_encoder_views(
+                  encoder_requirements,
+                  encode_storage.first(encode_storage.size() - 1),
+                  encode_views),
+              LzssContextualRansWorkspaceError::too_small);
+    std::vector<std::max_align_t> misaligned_backing;
+    auto misaligned = aligned_storage(
+        misaligned_backing, encoder_requirements.views_bytes + 1);
+    EXPECT_EQ(partition_lzss_contextual_rans_encoder_views(
+                  encoder_requirements,
+                  misaligned.subspan(1, encoder_requirements.views_bytes),
+                  encode_views),
+              LzssContextualRansWorkspaceError::misaligned);
+    ASSERT_EQ(partition_lzss_contextual_rans_encoder_views(
+                  encoder_requirements, encode_storage, encode_views),
+              LzssContextualRansWorkspaceError::none);
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream, limits, frame_input, encode_views.tokens, frame_encoded};
+        stream, limits, frame_input, encode_views.tokens,
+        encode_views.match_finder, frame_encoded};
     std::vector<std::byte> encoded(40'000);
     const auto encoded_result = encoder.process(raw, encoded, end_flag());
     ASSERT_EQ(encoded_result.status, marc::core::StreamStatus::end_of_stream);

@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_rans_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <algorithm>
@@ -49,12 +50,21 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
 }
 
 [[nodiscard]] bool encoder_view_layout(
-    const std::uint64_t token_count, std::uint64_t& views_bytes) noexcept {
+    const std::uint64_t token_count,
+    const std::uint64_t match_finder_bytes,
+    const std::uint64_t match_finder_alignment,
+    std::uint64_t& match_finder_offset,
+    std::uint64_t& views_bytes) noexcept {
+    std::uint64_t token_bytes{};
     return core::checked_multiply(
         token_count,
         static_cast<std::uint64_t>(
             sizeof(dictionary::internal::LzssTypedToken)),
-        views_bytes);
+        token_bytes)
+        && align_up(token_bytes, match_finder_alignment,
+                    match_finder_offset)
+        && core::checked_add(
+            match_finder_offset, match_finder_bytes, views_bytes);
 }
 
 [[nodiscard]] bool decoder_view_layout(
@@ -140,8 +150,24 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
         entropy::internal::contextual_rans_max_descriptor_size;
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
+    std::uint64_t match_finder_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssContextualRansProfileError::arithmetic_overflow;
+    }
+    const auto match_finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.dictionary, limits);
+    if (match_finder.error
+        != dictionary::internal::LzssHashChainError::none) {
+        return match_finder.error
+                == dictionary::internal::
+                    LzssHashChainError::workspace_limit_exceeded
+            ? LzssContextualRansProfileError::limit_exceeded
+            : LzssContextualRansProfileError::arithmetic_overflow;
+    }
     if (!payload_ceiling(largest_frame, payload_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(
@@ -150,7 +176,10 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
             frame_encoded_bytes)
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
-        || !encoder_view_layout(token_count, views_bytes)
+        || !encoder_view_layout(
+            token_count, match_finder.workspace_size,
+            match_finder.workspace_alignment, match_finder_offset,
+            views_bytes)
         || !core::checked_add(
             largest_frame, views_bytes, aggregate_bytes)
         || !core::checked_add(
@@ -168,12 +197,16 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     if (!to_size(largest_frame, workspace.frame_input_bytes)
         || !to_size(frame_encoded_bytes, workspace.frame_encoded_bytes)
         || !to_size(token_count, workspace.token_count)
+        || !to_size(match_finder_offset, workspace.match_finder_offset)
+        || !to_size(match_finder.workspace_size,
+                    workspace.match_finder_bytes)
         || !to_size(views_bytes, workspace.views_bytes)) {
         workspace = {};
         return LzssContextualRansProfileError::arithmetic_overflow;
     }
-    workspace.views_alignment =
-        alignof(dictionary::internal::LzssTypedToken);
+    workspace.views_alignment = std::max(
+        alignof(dictionary::internal::LzssTypedToken),
+        match_finder.workspace_alignment);
     return LzssContextualRansProfileError::none;
 }
 
@@ -248,8 +281,13 @@ partition_lzss_contextual_rans_encoder_views(
     const std::span<std::byte> storage,
     LzssContextualRansEncoderViews& views) noexcept {
     views = {};
+    std::uint64_t expected_offset{};
     std::uint64_t expected_bytes{};
-    if (!encoder_view_layout(requirements.token_count, expected_bytes)) {
+    const auto finder_alignment = dictionary::internal::
+        LzssHashChainWorkspaceRequirements{}.workspace_alignment;
+    if (!encoder_view_layout(
+            requirements.token_count, requirements.match_finder_bytes,
+            finder_alignment, expected_offset, expected_bytes)) {
         return LzssContextualRansWorkspaceError::arithmetic_overflow;
     }
     if (expected_bytes == 0) {
@@ -258,9 +296,10 @@ partition_lzss_contextual_rans_encoder_views(
             ? LzssContextualRansWorkspaceError::none
             : LzssContextualRansWorkspaceError::invalid_requirements;
     }
-    const auto expected_alignment =
-        alignof(dictionary::internal::LzssTypedToken);
-    if (expected_bytes != requirements.views_bytes
+    const auto expected_alignment = std::max(
+        alignof(dictionary::internal::LzssTypedToken), finder_alignment);
+    if (expected_offset != requirements.match_finder_offset
+        || expected_bytes != requirements.views_bytes
         || requirements.views_alignment != expected_alignment) {
         return LzssContextualRansWorkspaceError::invalid_requirements;
     }
@@ -274,6 +313,9 @@ partition_lzss_contextual_rans_encoder_views(
         reinterpret_cast<dictionary::internal::LzssTypedToken*>(
             storage.data()),
         requirements.token_count};
+    views.match_finder = storage.subspan(
+        requirements.match_finder_offset,
+        requirements.match_finder_bytes);
     return LzssContextualRansWorkspaceError::none;
 }
 

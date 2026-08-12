@@ -4976,3 +4976,13 @@ directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
 re-encoding establish the canonical Contextual rANS name and bytes across all
 three recorded x86-64 producers.
+
+The Contextual rANS streaming encoder now selects HashChain Exact at the same
+typed-token boundary as its proven private frame route. Its opaque encoder
+views place aligned finder storage after the worst-case token array; profile
+calculation charges that exact largest-frame extent, and the C factory passes
+the partitioned span without exposing its type. Constructor and process-time
+checks keep raw, token, finder, serialized, and caller output regions disjoint.
+Short finder capacity maps to out-of-memory, policy rejection maps to limit
+exceeded, and Exhaustive remains a private byte-identity oracle. No stream
+field, decoder behavior, public selector, ABI version, or schema changes.

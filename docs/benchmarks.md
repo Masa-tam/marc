@@ -787,6 +787,21 @@ these small-input values are descriptive and not stable speedup claims or pass
 thresholds. Exact descriptor, payload, frame bytes, successful decode, bounded
 workspace, and atomic rejection are the normative evidence.
 
+### BM-0029: Contextual rANS streaming HashChain promotion
+
+Ten complete public-lifecycle iterations over the 4,326-byte README preserve
+the 3,006-byte canonical stream and ratio 0.695 after the streaming encoder
+moves from Exhaustive to HashChain Exact. MSVC 19.51.36252 reports 8.964 MiB/s
+encode and 12.358 MiB/s decode; ClangCL 22.1.3 reports 15.939 and 16.232 MiB/s.
+These small-input timings are descriptive and are not stable thresholds.
+
+Encoder primary and secondary reservations remain 4,326 and 61,009 bytes.
+Opaque encoder views increase by the exact 82,840-byte finder workspace to
+134,752 bytes. Decoder reservations and the 2,409,353-byte direction-maximum
+peak remain unchanged. Exact stream identity, bounded workspace partitioning,
+stable failure mapping, and successful public round trip are the normative
+evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

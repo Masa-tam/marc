@@ -2,6 +2,7 @@
 
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
 #include "frame/lzss_contextual_rans_frame_streaming_decoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -20,6 +21,18 @@ using marc::core::StreamStatus;
 using marc::dictionary::internal::LzssTypedToken;
 using marc::entropy::internal::RansDecodeEntry;
 using marc::entropy::internal::contextual_rans_decode_table_entries;
+
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
 
 [[nodiscard]] LzssContextualRansStreamHeader stream_config(
     const std::uint32_t frame_size,
@@ -92,7 +105,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 98> frame{};
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream_config(1, input.size()), {}, raw, tokens, frame};
+        stream_config(1, input.size()), {}, raw, tokens, {}, frame};
     const auto encoded = encode_one_byte_chunks(encoder, input);
     EXPECT_EQ(encoded, two_frame_oracle());
     EXPECT_EQ(encoder.process({}, {}, 0).status,
@@ -106,7 +119,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     std::array<LzssTypedToken, 1> tokens{};
     std::array<std::byte, 98> frame{};
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream_config(1, input.size()), {}, raw, tokens, frame};
+        stream_config(1, input.size()), {}, raw, tokens, {}, frame};
     const auto encoded = encode_one_byte_chunks(encoder, input);
 
     std::array<std::byte, 98> serialized{};
@@ -125,6 +138,65 @@ TEST(LzssContextualRansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,
+     HashChainMatchesExhaustiveStreamAndValidatesWorkspace) {
+    constexpr std::array input{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_config(input.size(), input.size());
+    const auto finder_requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), stream.dictionary,
+                                            {});
+    ASSERT_EQ(finder_requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    ASSERT_GT(finder_requirements.workspace_size, 0U);
+    AlignedWorkspace finder_owner{finder_requirements.workspace_size};
+    auto finder = finder_owner.bytes(finder_requirements.workspace_size);
+
+    std::array<LzssTypedToken, input.size()> oracle_tokens{};
+    std::vector<std::byte> oracle_frame(16'384);
+    const auto oracle = encode_lzss_contextual_rans_frame(
+        stream, {}, 0, 0, input, oracle_tokens, oracle_frame);
+    ASSERT_EQ(oracle.error, LzssContextualRansFrameEncodeError::none);
+    oracle_frame.resize(oracle.serialized_size);
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> header{};
+    ASSERT_EQ(serialize_lzss_contextual_rans_stream_header(
+                  stream, {}, header),
+              LzssContextualRansStreamHeaderError::none);
+    std::vector<std::byte> expected(header.begin(), header.end());
+    expected.insert(expected.end(), oracle_frame.begin(), oracle_frame.end());
+
+    std::array<std::byte, input.size()> raw{};
+    std::array<LzssTypedToken, input.size()> tokens{};
+    std::vector<std::byte> frame(16'384);
+    LzssContextualRansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, finder, frame};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(input, actual, end_flag());
+    ASSERT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.input_consumed, input.size());
+    EXPECT_EQ(result.output_produced, expected.size());
+    EXPECT_EQ(actual, expected);
+
+    LzssContextualRansFrameStreamingEncoder short_finder{
+        stream, {}, raw, tokens, finder.first(finder.size() - 1), frame};
+    std::vector<std::byte> failure_output(expected.size());
+    const auto short_result = short_finder.process(
+        input, failure_output, end_flag());
+    EXPECT_EQ(short_result.error.code, ErrorCode::out_of_memory);
+    EXPECT_EQ(short_result.input_consumed, input.size());
+    EXPECT_EQ(short_result.output_produced,
+              lzss_contextual_rans_stream_header_size);
+
+    LzssContextualRansFrameStreamingEncoder alias{
+        stream, {}, raw, tokens, raw, frame};
+    EXPECT_EQ(alias.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
      FlushKeepsPartialFrameOpenAndEndInputSurvivesDrain) {
     constexpr std::array input{
         std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
@@ -132,7 +204,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     std::array<LzssTypedToken, 2> tokens{};
     std::array<std::byte, 256> frame{};
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream_config(2, input.size()), {}, raw, tokens, frame};
+        stream_config(2, input.size()), {}, raw, tokens, {}, frame};
     std::array<std::byte, lzss_contextual_rans_stream_header_size> header{};
     auto result = encoder.process(
         std::span<const std::byte>{input}.first(1), header,
@@ -156,7 +228,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
 TEST(LzssContextualRansFrameStreamingEncoder,
      EmptyInputEndsAfterHeaderDrain) {
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream_config(1, 0), {}, {}, {}, {}};
+        stream_config(1, 0), {}, {}, {}, {}, {}};
     auto result = encoder.process({}, {}, end_flag());
     ASSERT_EQ(result.status, StreamStatus::need_output);
     std::array<std::byte, lzss_contextual_rans_stream_header_size> header{};
@@ -175,14 +247,14 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     std::vector<std::byte> output(256);
 
     LzssContextualRansFrameStreamingEncoder short_tokens{
-        stream_config(1, 1), {}, raw, {}, frame};
+        stream_config(1, 1), {}, raw, {}, {}, frame};
     auto result = short_tokens.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::out_of_memory);
     EXPECT_EQ(short_tokens.process({}, {}, 0).error.code,
               ErrorCode::out_of_memory);
 
     LzssContextualRansFrameStreamingEncoder short_frame{
-        stream_config(1, 1), {}, raw, tokens,
+        stream_config(1, 1), {}, raw, tokens, {},
         std::span<std::byte>{frame}.first(frame.size() - 1)};
     result = short_frame.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::out_of_memory);
@@ -196,23 +268,32 @@ TEST(LzssContextualRansFrameStreamingEncoder,
         std::byte{'E'}, std::byte{'F'}, std::byte{'G'}, std::byte{'H'}};
     std::array<std::byte, limit_input.size()> limit_raw{};
     std::array<LzssTypedToken, limit_input.size()> limit_tokens{};
+    const auto limit_finder_requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            limit_input.size(), stream_config(8, 8).dictionary, {});
+    ASSERT_EQ(limit_finder_requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace limit_finder_owner{
+        limit_finder_requirements.workspace_size};
     LzssContextualRansFrameStreamingEncoder limited{
         stream_config(limit_input.size(), limit_input.size()), limits,
-        limit_raw, limit_tokens, frame};
+        limit_raw, limit_tokens,
+        limit_finder_owner.bytes(limit_finder_requirements.workspace_size),
+        frame};
     result = limited.process(limit_input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::limit_exceeded);
 
     std::array<std::byte, 2> two_raw{};
     std::array<LzssTypedToken, 2> two_tokens{};
     LzssContextualRansFrameStreamingEncoder premature{
-        stream_config(2, 2), {}, two_raw, two_tokens, frame};
+        stream_config(2, 2), {}, two_raw, two_tokens, {}, frame};
     result = premature.process(input, output, end_flag());
     EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
     EXPECT_EQ(result.input_consumed, 0U);
 
     constexpr std::array excess{std::byte{'A'}, std::byte{'B'}};
     LzssContextualRansFrameStreamingEncoder too_much{
-        stream_config(1, 1), {}, raw, tokens, frame};
+        stream_config(1, 1), {}, raw, tokens, {}, frame};
     result = too_much.process(excess, output, 0);
     EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
 }
@@ -224,26 +305,26 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     std::array<std::byte, 98> frame{};
     LzssContextualRansFrameStreamingEncoder overlapping{
         stream_config(1, 1), {}, bytes.first(1),
-        std::span<LzssTypedToken>{shared}.first(1), frame};
+        std::span<LzssTypedToken>{shared}.first(1), {}, frame};
     EXPECT_EQ(overlapping.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 
     std::array<std::byte, 1> raw{};
     std::array<LzssTypedToken, 1> tokens{};
     LzssContextualRansFrameStreamingEncoder output_alias{
-        stream_config(1, 1), {}, raw, tokens, frame};
+        stream_config(1, 1), {}, raw, tokens, {}, frame};
     EXPECT_EQ(output_alias.process({}, raw, 0).error.code,
               ErrorCode::invalid_argument);
     EXPECT_EQ(output_alias.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 
     LzssContextualRansFrameStreamingEncoder unknown{
-        stream_config(1, 1), {}, raw, tokens, frame};
+        stream_config(1, 1), {}, raw, tokens, {}, frame};
     EXPECT_EQ(unknown.process({}, {}, UINT32_C(1) << 31).error.code,
               ErrorCode::unsupported);
 
     LzssContextualRansFrameStreamingEncoder reset{
-        stream_config(1, 1), {}, raw, tokens, frame};
+        stream_config(1, 1), {}, raw, tokens, {}, frame};
     EXPECT_EQ(reset.process(
                   {}, {}, marc::core::flag_value(ProcessFlags::reset_block))
                   .error.code,
