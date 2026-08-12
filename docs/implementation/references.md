@@ -4848,3 +4848,13 @@ tables, exact finder, workspace and alias contracts, and internal benchmark as
 first-party references. No external LZSS, Huffman, combined implementation,
 source code, frame integration, workspace layout, benchmark, corpus, result,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0548
+
+The Contextual Blocked Huffman streaming HashChain promotion uses DD-760
+through DD-773, TVG-0636 through TVG-0649, marc's Contextual Blocked Huffman
+profile, C lifecycle, streaming encoder, byte-identical private frame routes,
+opaque workspace partitioning, stable error mapping, CLI, and public benchmark
+as first-party references. No external LZSS, Huffman, combined implementation,
+source code, workspace layout, API integration, benchmark, corpus, result,
+test suite, patent text, or optimization description was consulted.

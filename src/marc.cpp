@@ -1845,7 +1845,8 @@ marc_status create_contextual_blocked_huffman(
         }
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualBlockedHuffmanFrameStreamingEncoder(
-                stream, limits, primary, views.tokens, secondary);
+                stream, limits, primary, views.tokens, views.match_finder,
+                secondary);
     } else {
         marc::frame::internal::
             LzssContextualBlockedHuffmanDecoderWorkspaceRequirements needed{};

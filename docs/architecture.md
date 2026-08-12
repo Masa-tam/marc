@@ -5016,3 +5016,13 @@ staging, and serialized output. Its aggregate charges the conservative token
 reservation, exact finder workspace, raw input, and complete frame. Streaming,
 profile sizing, public ABI, decoder, stream identity, CLI, and schema continue
 to select the established route pending a separate promotion step.
+
+The Contextual Blocked Huffman streaming encoder now selects HashChain Exact
+at the same typed-token boundary as its proven private frame route. Its opaque
+encoder views append aligned finder storage after the worst-case token array;
+profile calculation charges the exact largest-frame extent, and the C factory
+passes the partitioned span without exposing its type. Constructor and process-
+time checks keep raw, token, finder, serialized, and caller output regions
+disjoint. Short finder capacity maps to out-of-memory, policy rejection maps to
+limit exceeded, and Exhaustive remains a private byte-identity oracle. No
+stream field, decoder behavior, public selector, ABI version, or schema changes.

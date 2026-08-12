@@ -60,7 +60,10 @@ enum class OverlapCheck : std::uint8_t {
                         input_limit_exceeded
                 || result.token_encode.error
                     == dictionary::internal::LzssTypedEncodeError::
-                        token_storage_limit_exceeded))
+                        token_storage_limit_exceeded
+                || result.token_encode.match_finder_error
+                    == dictionary::internal::LzssHashChainError::
+                        workspace_limit_exceeded))
         || (result.error
                 == LzssContextualBlockedHuffmanFrameEncodeError::
                     entropy_encode_error
@@ -81,13 +84,19 @@ enum class OverlapCheck : std::uint8_t {
 }
 
 [[nodiscard]] bool is_capacity_failure(
-    const LzssContextualBlockedHuffmanFrameEncodeError error) noexcept {
-    return error
+    const LzssContextualBlockedHuffmanFrameEncodeResult& result) noexcept {
+    return result.error
             == LzssContextualBlockedHuffmanFrameEncodeError::
                 token_staging_too_small
-        || error
+        || result.error
             == LzssContextualBlockedHuffmanFrameEncodeError::
-                serialized_output_too_small;
+                serialized_output_too_small
+        || (result.error
+                == LzssContextualBlockedHuffmanFrameEncodeError::
+                    token_encode_error
+            && result.token_encode.match_finder_error
+                == dictionary::internal::LzssHashChainError::
+                    workspace_too_small);
 }
 
 [[nodiscard]] core::ErrorCode preparation_error(
@@ -97,7 +106,7 @@ enum class OverlapCheck : std::uint8_t {
         return core::ErrorCode::none;
     }
     if (is_limit_failure(result)) return core::ErrorCode::limit_exceeded;
-    if (is_capacity_failure(result.error)) {
+    if (is_capacity_failure(result)) {
         return core::ErrorCode::out_of_memory;
     }
     if (result.error
@@ -116,9 +125,22 @@ LzssContextualBlockedHuffmanFrameStreamingEncoder(
     const std::span<std::byte> raw_frame_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::byte> serialized_frame_workspace) noexcept
+    : LzssContextualBlockedHuffmanFrameStreamingEncoder(
+        stream, limits, raw_frame_workspace, token_workspace, {},
+        serialized_frame_workspace) {}
+
+LzssContextualBlockedHuffmanFrameStreamingEncoder::
+LzssContextualBlockedHuffmanFrameStreamingEncoder(
+    const LzssContextualBlockedHuffmanStreamHeader stream,
+    const core::DecoderLimits limits,
+    const std::span<std::byte> raw_frame_workspace,
+    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_frame_workspace) noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace),
+      match_finder_workspace_(match_finder_workspace),
       serialized_frame_workspace_(serialized_frame_workspace) {
     std::size_t token_bytes{};
     const bool valid_extent = extent(
@@ -140,6 +162,19 @@ LzssContextualBlockedHuffmanFrameStreamingEncoder(
                 serialized_frame_workspace_.data(),
                 serialized_frame_workspace_.size())
             : OverlapCheck::arithmetic_overflow,
+        regions_overlap(
+            raw_frame_workspace_.data(), raw_frame_workspace_.size(),
+            match_finder_workspace_.data(), match_finder_workspace_.size()),
+        valid_extent
+            ? regions_overlap(
+                token_workspace_.data(), token_bytes,
+                match_finder_workspace_.data(),
+                match_finder_workspace_.size())
+            : OverlapCheck::arithmetic_overflow,
+        regions_overlap(
+            serialized_frame_workspace_.data(),
+            serialized_frame_workspace_.size(),
+            match_finder_workspace_.data(), match_finder_workspace_.size()),
     };
     const auto required_raw = std::min<std::uint64_t>(
         stream_.original_size, stream_.frame_size);
@@ -188,6 +223,9 @@ bool LzssContextualBlockedHuffmanFrameStreamingEncoder::output_is_disjoint(
             output.data(), output.size(), token_workspace_.data(),
             token_bytes),
         regions_overlap(
+            output.data(), output.size(), match_finder_workspace_.data(),
+            match_finder_workspace_.size()),
+        regions_overlap(
             output.data(), output.size(),
             serialized_frame_workspace_.data(),
             serialized_frame_workspace_.size()),
@@ -200,10 +238,11 @@ bool LzssContextualBlockedHuffmanFrameStreamingEncoder::output_is_disjoint(
 bool LzssContextualBlockedHuffmanFrameStreamingEncoder::prepare_frame()
     noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
-    const auto encoded = encode_lzss_contextual_blocked_huffman_frame(
+    const auto encoded =
+        encode_lzss_contextual_blocked_huffman_frame_hash_chain(
         stream_, limits_, frame_sequence_, input_committed_,
         raw_frame_workspace_.first(raw_frame_size_), token_workspace_,
-        serialized_frame_workspace_);
+        match_finder_workspace_, serialized_frame_workspace_);
     preparation_error_ = preparation_error(encoded);
     if (preparation_error_ != core::ErrorCode::none) return false;
     pending_size_ = encoded.serialized_size;

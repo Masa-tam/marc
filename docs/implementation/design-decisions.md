@@ -15878,3 +15878,22 @@ and schema on Exhaustive until exact frame identity, decoding, bounded failure,
 and performance are demonstrated independently. Preserve Adaptive Huffman as a
 separate later integration because its node and symbol staging adds different
 workspace boundaries.
+
+## DD-773: Contextual Blocked Huffman promotes HashChain without format state
+
+- Date: 2026-08-12
+- Status: accepted
+
+Route the Contextual Blocked Huffman streaming encoder through the proven
+single-pass HashChain Exact frame entry. Extend its internal constructor with a
+separate finder span and extend the encoder profile's opaque views layout to
+typed tokens followed by aligned finder workspace sized for the largest raw
+frame. Include that region in checked aggregate memory and every constructor
+and process-time overlap check. Map short finder capacity to the established
+out-of-memory category and finder policy-limit failure to limit exceeded.
+
+Keep finder selection outside the format, public configuration, C structure,
+CLI, and schema because both finders produce identical canonical tokens and the
+decoder does not need the strategy. Require callers to query opaque workspace
+requirements again, retain Exhaustive as the private oracle, and leave the
+decoder's bounded Huffman-table workspace unchanged.

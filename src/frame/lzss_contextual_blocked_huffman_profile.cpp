@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_blocked_huffman_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "entropy/contextual_blocked_huffman_format.hpp"
 
 #include <algorithm>
@@ -48,12 +49,17 @@ inline constexpr std::uint64_t bits_per_decision = 15;
 }
 
 [[nodiscard]] bool encoder_view_layout(
-    const std::uint64_t token_count, std::uint64_t& views_bytes) noexcept {
+    const std::uint64_t token_count, const std::uint64_t finder_bytes,
+    const std::uint64_t finder_alignment, std::uint64_t& finder_offset,
+    std::uint64_t& views_bytes) noexcept {
+    std::uint64_t token_bytes{};
     return core::checked_multiply(
         token_count,
         static_cast<std::uint64_t>(
             sizeof(dictionary::internal::LzssTypedToken)),
-        views_bytes);
+        token_bytes)
+        && align_up(token_bytes, finder_alignment, finder_offset)
+        && core::checked_add(finder_offset, finder_bytes, views_bytes);
 }
 
 [[nodiscard]] bool decoder_view_layout(
@@ -81,6 +87,13 @@ inline constexpr std::uint64_t bits_per_decision = 15;
     return std::max(
         alignof(entropy::internal::HuffmanDecodeTable),
         alignof(dictionary::internal::LzssTypedToken));
+}
+
+[[nodiscard]] constexpr std::size_t encoder_alignment() noexcept {
+    return std::max(
+        alignof(dictionary::internal::LzssTypedToken),
+        dictionary::internal::LzssHashChainWorkspaceRequirements{}
+            .workspace_alignment);
 }
 
 } // namespace
@@ -148,8 +161,22 @@ make_lzss_contextual_blocked_huffman_profile(
     const std::uint64_t token_count{largest_frame};
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
+    std::uint64_t finder_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.dictionary, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error == dictionary::internal::LzssHashChainError::
+                                   workspace_limit_exceeded
+            ? LzssContextualBlockedHuffmanProfileError::limit_exceeded
+            : LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
+    }
     if (!payload_ceiling(largest_frame, payload_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(
@@ -159,7 +186,9 @@ make_lzss_contextual_blocked_huffman_profile(
             frame_encoded_bytes)
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
-        || !encoder_view_layout(token_count, views_bytes)
+        || !encoder_view_layout(
+            token_count, finder.workspace_size, finder.workspace_alignment,
+            finder_offset, views_bytes)
         || !core::checked_add(
             largest_frame, views_bytes, aggregate_bytes)
         || !core::checked_add(
@@ -175,12 +204,13 @@ make_lzss_contextual_blocked_huffman_profile(
     if (!to_size(largest_frame, workspace.frame_input_bytes)
         || !to_size(frame_encoded_bytes, workspace.frame_encoded_bytes)
         || !to_size(token_count, workspace.token_count)
+        || !to_size(finder_offset, workspace.match_finder_offset)
+        || !to_size(finder.workspace_size, workspace.match_finder_bytes)
         || !to_size(views_bytes, workspace.views_bytes)) {
         workspace = {};
         return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
-    workspace.views_alignment =
-        alignof(dictionary::internal::LzssTypedToken);
+    workspace.views_alignment = encoder_alignment();
     return LzssContextualBlockedHuffmanProfileError::none;
 }
 
@@ -257,8 +287,13 @@ partition_lzss_contextual_blocked_huffman_encoder_views(
     const std::span<std::byte> storage,
     LzssContextualBlockedHuffmanEncoderViews& views) noexcept {
     views = {};
+    std::uint64_t expected_offset{};
     std::uint64_t expected_bytes{};
-    if (!encoder_view_layout(requirements.token_count, expected_bytes)) {
+    if (!encoder_view_layout(
+            requirements.token_count, requirements.match_finder_bytes,
+            dictionary::internal::LzssHashChainWorkspaceRequirements{}
+                .workspace_alignment,
+            expected_offset, expected_bytes)) {
         return LzssContextualBlockedHuffmanWorkspaceError::
             arithmetic_overflow;
     }
@@ -269,9 +304,9 @@ partition_lzss_contextual_blocked_huffman_encoder_views(
             : LzssContextualBlockedHuffmanWorkspaceError::
                 invalid_requirements;
     }
-    const auto expected_alignment =
-        alignof(dictionary::internal::LzssTypedToken);
-    if (expected_bytes != requirements.views_bytes
+    const auto expected_alignment = encoder_alignment();
+    if (expected_offset != requirements.match_finder_offset
+        || expected_bytes != requirements.views_bytes
         || requirements.views_alignment != expected_alignment) {
         return LzssContextualBlockedHuffmanWorkspaceError::
             invalid_requirements;
@@ -286,6 +321,8 @@ partition_lzss_contextual_blocked_huffman_encoder_views(
         reinterpret_cast<dictionary::internal::LzssTypedToken*>(
             storage.data()),
         requirements.token_count};
+    views.match_finder = storage.subspan(
+        requirements.match_finder_offset, requirements.match_finder_bytes);
     return LzssContextualBlockedHuffmanWorkspaceError::none;
 }
 

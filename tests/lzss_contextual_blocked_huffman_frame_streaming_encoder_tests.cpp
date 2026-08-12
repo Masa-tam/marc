@@ -1,4 +1,5 @@
 #include "frame/lzss_contextual_blocked_huffman_frame_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -67,6 +68,69 @@ using marc::dictionary::internal::LzssTypedToken;
 }
 
 } // namespace
+
+TEST(LzssContextualBlockedHuffmanFrameStreamingEncoder,
+     HashChainMatchesReferenceAndEnforcesFinderBoundaries) {
+    constexpr std::array input{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+    const auto stream = stream_config(input.size(), input.size());
+    std::array<LzssTypedToken, input.size()> reference_tokens{};
+    const auto plan = plan_lzss_contextual_blocked_huffman_frame(
+        stream, {}, 0, 0, input, reference_tokens);
+    ASSERT_EQ(plan.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    std::vector<std::byte> reference_frame(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame(
+                  stream, {}, 0, 0, input, reference_tokens,
+                  reference_frame).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    std::array<std::byte,
+               lzss_contextual_blocked_huffman_stream_header_size>
+        header{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  stream, {}, header),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    std::vector<std::byte> expected(header.begin(), header.end());
+    expected.insert(
+        expected.end(), reference_frame.begin(), reference_frame.end());
+
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), stream.dictionary, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::max_align_t> finder_backing(
+        (requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto finder = std::as_writable_bytes(std::span{finder_backing}).first(
+        requirements.workspace_size);
+    std::array<std::byte, input.size()> raw{};
+    std::array<LzssTypedToken, input.size()> tokens{};
+    std::vector<std::byte> frame(plan.serialized_size);
+    LzssContextualBlockedHuffmanFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, finder, frame};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(input, actual, end_flag());
+    ASSERT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.input_consumed, input.size());
+    EXPECT_EQ(result.output_produced, expected.size());
+    EXPECT_EQ(actual, expected);
+
+    LzssContextualBlockedHuffmanFrameStreamingEncoder short_finder{
+        stream, {}, raw, tokens, finder.first(finder.size() - 1), frame};
+    std::ranges::fill(actual, std::byte{0xcc});
+    const auto failed = short_finder.process(input, actual, end_flag());
+    EXPECT_EQ(failed.status, StreamStatus::error);
+    EXPECT_EQ(failed.error.code, ErrorCode::out_of_memory);
+    EXPECT_EQ(failed.output_produced, header.size());
+
+    LzssContextualBlockedHuffmanFrameStreamingEncoder output_alias{
+        stream, {}, raw, tokens, finder, frame};
+    EXPECT_EQ(output_alias.process({}, finder, 0).error.code,
+              ErrorCode::invalid_argument);
+}
 
 TEST(LzssContextualBlockedHuffmanFrameStreamingEncoder,
      MatchesOneByteOracle) {

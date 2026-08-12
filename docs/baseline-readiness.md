@@ -2002,3 +2002,14 @@ ClangCL prove complete byte identity and decode, one query per token, exact
 finder capacity, raw/token/serialized alias rejection, aggregate limits, and
 atomic failure. The public streaming/profile/C/CLI/schema route remains
 unchanged pending a separate promotion step.
+
+### BR-0110
+
+Contextual Blocked Huffman now routes its public streaming encoder through the
+byte-identical HashChain Exact typed-token producer. Its opaque encoder views
+append the exact largest-frame finder workspace, while decoder workspace,
+stream identity, CLI selector, and interoperability schema remain unchanged.
+Direct profile and streaming tests prove Exhaustive byte identity, bounded
+capacity and alias rejection, stable public error mapping, and successful
+public round trip under MSVC and ClangCL. Full-suite admission is recorded
+separately after both 2,843-test runs.

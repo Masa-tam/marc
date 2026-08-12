@@ -21,6 +21,14 @@ public:
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
         std::span<std::byte> serialized_frame_workspace) noexcept;
 
+    LzssContextualBlockedHuffmanFrameStreamingEncoder(
+        LzssContextualBlockedHuffmanStreamHeader stream,
+        core::DecoderLimits limits,
+        std::span<std::byte> raw_frame_workspace,
+        std::span<dictionary::internal::LzssTypedToken> token_workspace,
+        std::span<std::byte> match_finder_workspace,
+        std::span<std::byte> serialized_frame_workspace) noexcept;
+
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input,
         std::span<std::byte> output,
@@ -48,6 +56,7 @@ private:
     core::DecoderLimits limits_{};
     std::span<std::byte> raw_frame_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
+    std::span<std::byte> match_finder_workspace_{};
     std::span<std::byte> serialized_frame_workspace_{};
     std::array<std::byte,
                lzss_contextual_blocked_huffman_stream_header_size>

@@ -467,3 +467,10 @@ aligned HashChain Exact finder workspace. Callers must obtain the extent from
 `marc_lzss_contextual_tans_workspace_requirements()` and must not infer or
 cache the private partition. Finder selection does not add a configuration
 field, ABI revision, stream variant, or decoder requirement.
+
+The Contextual Blocked Huffman encoder's opaque views requirement likewise
+contains its caller-owned HashChain Exact workspace after typed-token staging.
+Callers must use the current
+`marc_lzss_contextual_blocked_huffman_workspace_requirements()` result and must
+not infer or cache the private partition. Finder selection does not cross the
+ABI or stream, and decoder table workspace remains unchanged.
