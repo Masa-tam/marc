@@ -10,6 +10,7 @@
 #include "frame/lzss_frame.hpp"
 #include "frame/lzss_adaptive_huffman_frame.hpp"
 #include "frame/lzss_blocked_huffman_frame.hpp"
+#include "frame/lzss_dynamic_range_frame.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -259,6 +260,39 @@ int main(const int argc, const char* const argv[]) {
             != marc::frame::LzssAdaptiveHuffmanFrameValidationError::none
         || byte_adaptive_exhaustive != byte_adaptive_hash_chain) {
         std::cerr << "LZSS Adaptive Huffman frame equivalence failed\n";
+        return 1;
+    }
+
+    auto byte_range_stream = lzss_frame_stream;
+    byte_range_stream.entropy_algorithm =
+        marc::frame::EntropyAlgorithm::dynamic_range;
+    byte_range_stream.entropy_variant = 1;
+    std::vector<std::byte> byte_range_exhaustive_staging(
+        exhaustive_plan.output_size);
+    std::vector<std::byte> byte_range_hash_staging(
+        exhaustive_plan.output_size);
+    const auto byte_range_plan = marc::frame::plan_lzss_dynamic_range_frame(
+        byte_range_stream, parameters, limits, 0, 0, input,
+        byte_range_exhaustive_staging);
+    if (byte_range_plan.error
+        != marc::frame::LzssDynamicRangeFrameValidationError::none) {
+        std::cerr << "LZSS Dynamic Range frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> byte_range_exhaustive(
+        byte_range_plan.serialized_size);
+    std::vector<std::byte> byte_range_hash_chain(
+        byte_range_plan.serialized_size);
+    if (marc::frame::encode_lzss_dynamic_range_frame(
+            byte_range_stream, parameters, limits, 0, 0, input,
+            byte_range_exhaustive_staging, byte_range_exhaustive).error
+            != marc::frame::LzssDynamicRangeFrameValidationError::none
+        || marc::frame::encode_lzss_dynamic_range_frame_hash_chain(
+            byte_range_stream, parameters, limits, 0, 0, input,
+            byte_range_hash_staging, workspace, byte_range_hash_chain).error
+            != marc::frame::LzssDynamicRangeFrameValidationError::none
+        || byte_range_exhaustive != byte_range_hash_chain) {
+        std::cerr << "LZSS Dynamic Range frame equivalence failed\n";
         return 1;
     }
 
@@ -560,6 +594,26 @@ int main(const int argc, const char* const argv[]) {
                     == marc::frame::
                         LzssAdaptiveHuffmanFrameValidationError::none;
         });
+    const auto byte_range_exhaustive_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok
+                && marc::frame::encode_lzss_dynamic_range_frame(
+                    byte_range_stream, parameters, limits, 0, 0, input,
+                    byte_range_exhaustive_staging,
+                    byte_range_exhaustive).error
+                    == marc::frame::
+                        LzssDynamicRangeFrameValidationError::none;
+        });
+    const auto byte_range_hash_chain_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok
+                && marc::frame::encode_lzss_dynamic_range_frame_hash_chain(
+                    byte_range_stream, parameters, limits, 0, 0, input,
+                    byte_range_hash_staging, workspace,
+                    byte_range_hash_chain).error
+                    == marc::frame::
+                        LzssDynamicRangeFrameValidationError::none;
+        });
     const auto typed_two_pass_seconds = measure_seconds(iterations, [&] {
         timing_ok = timing_ok && encode_lzss_typed_tokens_hash_chain(
             input, parameters, limits, typed_two_pass, workspace).error
@@ -665,6 +719,7 @@ int main(const int argc, const char* const argv[]) {
         || lzss_frame_exhaustive != lzss_frame_hash_chain
         || byte_blocked_exhaustive != byte_blocked_hash_chain
         || byte_adaptive_exhaustive != byte_adaptive_hash_chain
+        || byte_range_exhaustive != byte_range_hash_chain
         || frame_exhaustive != frame_hash_chain
         || rans_exhaustive != rans_hash_chain
         || tans_exhaustive != tans_hash_chain
@@ -682,6 +737,8 @@ int main(const int argc, const char* const argv[]) {
               << byte_blocked_hash_chain.size() << '\n'
               << "lzss_adaptive_huffman_frame_bytes="
               << byte_adaptive_hash_chain.size() << '\n'
+              << "lzss_dynamic_range_frame_bytes="
+              << byte_range_hash_chain.size() << '\n'
               << "token_count=" << hash_plan.token_count << '\n'
               << "contextual_frame_bytes=" << frame_hash_chain.size() << '\n'
               << "contextual_rans_frame_bytes=" << rans_hash_chain.size()
@@ -730,6 +787,10 @@ int main(const int argc, const char* const argv[]) {
     print_measurement("lzss_adaptive_huffman_frame_hash_chain",
                       byte_adaptive_hash_chain_seconds, input.size(),
                       iterations);
+    print_measurement("lzss_dynamic_range_frame_exhaustive",
+                      byte_range_exhaustive_seconds, input.size(), iterations);
+    print_measurement("lzss_dynamic_range_frame_hash_chain",
+                      byte_range_hash_chain_seconds, input.size(), iterations);
     print_measurement("hash_chain_typed_two_pass", typed_two_pass_seconds,
                       input.size(), iterations);
     print_measurement("hash_chain_typed_single_pass",

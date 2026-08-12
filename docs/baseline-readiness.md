@@ -2093,7 +2093,9 @@ oracle. Six direct encoder tests under MSVC and ClangCL prove complete byte
 identity and strict decode, exact finder capacity, all workspace alias
 rejection, one-byte-short aggregate enforcement, and atomic failure. The public
 streaming/profile/C/CLI/schema route remains unchanged pending a separate
-promotion step. Full-suite admission is recorded with this change.
+promotion step. Full-suite admission is established by all 2,853 registered
+tests under both MSVC and ClangCL, including documentation layout and the
+complete schema compatibility chain.
 Both 2,851-test suites pass under MSVC and ClangCL, including documentation
 layout and the complete schema compatibility chain.
 
@@ -2109,3 +2111,14 @@ README retains its 3,442-byte stream. The CLI's explicit aggregate bound also
 includes its platform-width HashChain worst case. Full-suite admission is
 established by all 2,852 registered tests under both MSVC and ClangCL,
 including documentation layout and the complete schema compatibility chain.
+
+### BR-0119
+
+Byte-oriented LZSS plus Dynamic Range now has a private HashChain Exact
+complete-frame route sharing canonical dictionary staging, descriptor and
+range payload production, and generic header serialization with the Exhaustive
+oracle. Sixteen direct frame tests under MSVC and ClangCL prove complete byte
+identity and strict decode, exact finder capacity, all workspace alias
+rejection, one-byte-short aggregate enforcement, and atomic failure. The public
+streaming/profile/C/CLI/schema route remains unchanged pending a separate
+promotion step. Full-suite admission is recorded with this change.

@@ -16058,3 +16058,23 @@ alignment padding in the queried capacity. Require all persistent workspaces
 and caller output to be pairwise disjoint. Map one-byte-short finder capacity
 to out-of-memory. Do not record the search strategy or alter canonical bytes,
 decoder behavior, ABI version, CLI selector, format, or schema.
+
+## DD-782: Byte-oriented LZSS Dynamic Range isolates HashChain production
+
+- Date: 2026-08-13
+- Status: accepted
+
+Refactor the byte-oriented LZSS plus Dynamic Range frame planner and writer
+behind compile-time finder selection. Both routes produce canonical LZSS byte
+tokens into the same staging and then share the unchanged adaptive range
+descriptor, byte-oriented payload, and generic frame header. Retain the
+existing public entry points as the Exhaustive oracle and add private HashChain
+plan and encode entries accepting a separate aligned finder span.
+
+Reject every raw-input, dictionary-staging, finder, and serialized-output
+alias before publishing a header, including aliases on the legacy route where
+the documented contract already required disjointness. Preserve nested finder
+errors and charge raw input, exact dictionary bytes, finder workspace, and the
+complete frame against aggregate memory. Do not add strategy metadata or alter
+the decoder, public streaming route, ABI, CLI, format, or schema until private
+identity and bounded failure are independently established.

@@ -4939,3 +4939,13 @@ routes, exact finder, overlap helper, CLI, and public benchmark as first-party
 references. No external LZSS or Adaptive Huffman implementation, source code,
 integration, workspace layout, ABI design, benchmark, corpus, result, test
 suite, patent text, or optimization description was consulted.
+
+### IR-0557
+
+The byte-oriented LZSS plus Dynamic Range private HashChain frame uses DD-760
+through DD-782, TVG-0636 through TVG-0658, marc's canonical LZSS byte-token
+encoder, exact finder, bounded Dynamic Range encoder and decoder, generic frame
+codec, overlap helper, and internal benchmark as first-party references. No
+external LZSS or range-coder implementation, source code, integration,
+workspace layout, benchmark, corpus, result, test suite, patent text, or
+optimization description was consulted.

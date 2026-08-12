@@ -1,5 +1,6 @@
 #include "frame/lzss_dynamic_range_frame.hpp"
 
+#include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 
 #include <algorithm>
@@ -239,14 +240,16 @@ inline constexpr std::uint64_t termination_bytes = 5;
 
 } // namespace
 
-LzssDynamicRangeFrameValidationResult plan_lzss_dynamic_range_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssDynamicRangeFrameValidationResult plan_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
-    const std::span<std::byte> dictionary_staging) noexcept {
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> match_finder_workspace) noexcept {
     LzssDynamicRangeFrameValidationResult result{};
     result.raw_size = input.size();
     if (validate_stream_header(stream, limits) != StreamHeaderError::none
@@ -264,12 +267,53 @@ LzssDynamicRangeFrameValidationResult plan_lzss_dynamic_range_frame(
         return result;
     }
 
-    const auto dictionary_plan =
-        dictionary::internal::plan_lzss_token_stream(
-            input, parameters, limits);
+    const auto input_staging_overlap = core::check_buffer_overlap(
+        input.data(), input.size(), dictionary_staging.data(),
+        dictionary_staging.size());
+    if (input_staging_overlap != core::BufferOverlap::disjoint) {
+        result.dictionary_encode_error = input_staging_overlap
+                == core::BufferOverlap::arithmetic_overflow
+            ? dictionary::internal::LzssEncodeError::arithmetic_overflow
+            : dictionary::internal::LzssEncodeError::overlapping_buffers;
+        result.error =
+            LzssDynamicRangeFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+    if constexpr (UseHashChain) {
+        const auto input_finder_overlap = core::check_buffer_overlap(
+            input.data(), input.size(), match_finder_workspace.data(),
+            match_finder_workspace.size());
+        const auto staging_finder_overlap = core::check_buffer_overlap(
+            dictionary_staging.data(), dictionary_staging.size(),
+            match_finder_workspace.data(), match_finder_workspace.size());
+        if (input_finder_overlap != core::BufferOverlap::disjoint
+            || staging_finder_overlap != core::BufferOverlap::disjoint) {
+            result.dictionary_encode_error =
+                input_finder_overlap
+                        == core::BufferOverlap::arithmetic_overflow
+                    || staging_finder_overlap
+                        == core::BufferOverlap::arithmetic_overflow
+                ? dictionary::internal::LzssEncodeError::arithmetic_overflow
+                : dictionary::internal::LzssEncodeError::overlapping_buffers;
+            result.error = LzssDynamicRangeFrameValidationError::
+                dictionary_encode_error;
+            return result;
+        }
+    }
+
+    const auto dictionary_plan = [&] {
+        if constexpr (UseHashChain) {
+            return dictionary::internal::plan_lzss_token_stream_hash_chain(
+                input, parameters, limits, match_finder_workspace);
+        } else {
+            return dictionary::internal::plan_lzss_token_stream(
+                input, parameters, limits);
+        }
+    }();
     result.dictionary_size = dictionary_plan.output_size;
     result.dictionary_encode_error = dictionary_plan.error;
     result.dictionary_format_error = dictionary_plan.format_error;
+    result.match_finder_error = dictionary_plan.match_finder_error;
     if (dictionary_plan.error
         != dictionary::internal::LzssEncodeError::none) {
         result.error = LzssDynamicRangeFrameValidationError::
@@ -298,12 +342,21 @@ LzssDynamicRangeFrameValidationResult plan_lzss_dynamic_range_frame(
             dictionary_staging_too_small;
         return result;
     }
-    const auto dictionary_encoded =
-        dictionary::internal::encode_lzss_token_stream(
-            input, parameters, limits,
-            dictionary_staging.first(result.dictionary_size));
+    const auto dictionary_encoded = [&] {
+        if constexpr (UseHashChain) {
+            return dictionary::internal::encode_lzss_token_stream_hash_chain(
+                input, parameters, limits,
+                dictionary_staging.first(result.dictionary_size),
+                match_finder_workspace);
+        } else {
+            return dictionary::internal::encode_lzss_token_stream(
+                input, parameters, limits,
+                dictionary_staging.first(result.dictionary_size));
+        }
+    }();
     result.dictionary_encode_error = dictionary_encoded.error;
     result.dictionary_format_error = dictionary_encoded.format_error;
+    result.match_finder_error = dictionary_encoded.match_finder_error;
     if (dictionary_encoded.error
         != dictionary::internal::LzssEncodeError::none) {
         result.error = LzssDynamicRangeFrameValidationError::
@@ -390,10 +443,35 @@ LzssDynamicRangeFrameValidationResult plan_lzss_dynamic_range_frame(
         result.error =
             LzssDynamicRangeFrameValidationError::arithmetic_overflow;
     }
+    if constexpr (UseHashChain) {
+        const auto finder = dictionary::internal::
+            calculate_lzss_hash_chain_workspace(
+                input.size(), parameters, limits);
+        std::size_t aggregate{};
+        if (finder.error != dictionary::internal::LzssHashChainError::none) {
+            result.dictionary_encode_error =
+                dictionary::internal::LzssEncodeError::match_finder_error;
+            result.match_finder_error = finder.error;
+            result.error = LzssDynamicRangeFrameValidationError::
+                dictionary_encode_error;
+        } else if (!core::checked_add(input.size(), result.dictionary_size,
+                                      aggregate)
+                   || !core::checked_add(
+                       aggregate, finder.workspace_size, aggregate)
+                   || !core::checked_add(
+                       aggregate, result.serialized_size, aggregate)) {
+            result.error =
+                LzssDynamicRangeFrameValidationError::arithmetic_overflow;
+        } else if (aggregate > limits.max_internal_buffered_bytes) {
+            result.error =
+                LzssDynamicRangeFrameValidationError::workspace_limit;
+        }
+    }
     return result;
 }
 
-LzssDynamicRangeFrameValidationResult encode_lzss_dynamic_range_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssDynamicRangeFrameValidationResult encode_frame(
     const StreamHeader& stream,
     const dictionary::internal::LzssParameters& parameters,
     const core::DecoderLimits& limits,
@@ -401,10 +479,35 @@ LzssDynamicRangeFrameValidationResult encode_lzss_dynamic_range_frame(
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> input,
     const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> match_finder_workspace,
     const std::span<std::byte> output) noexcept {
-    auto result = plan_lzss_dynamic_range_frame(
+    const auto output_input_overlap = core::check_buffer_overlap(
+        output.data(), output.size(), input.data(), input.size());
+    const auto output_staging_overlap = core::check_buffer_overlap(
+        output.data(), output.size(), dictionary_staging.data(),
+        dictionary_staging.size());
+    const auto output_finder_overlap = core::check_buffer_overlap(
+        output.data(), output.size(), match_finder_workspace.data(),
+        match_finder_workspace.size());
+    if (output_input_overlap != core::BufferOverlap::disjoint
+        || output_staging_overlap != core::BufferOverlap::disjoint
+        || output_finder_overlap != core::BufferOverlap::disjoint) {
+        LzssDynamicRangeFrameValidationResult result{};
+        result.dictionary_encode_error =
+            output_input_overlap == core::BufferOverlap::arithmetic_overflow
+                || output_staging_overlap
+                    == core::BufferOverlap::arithmetic_overflow
+                || output_finder_overlap
+                    == core::BufferOverlap::arithmetic_overflow
+            ? dictionary::internal::LzssEncodeError::arithmetic_overflow
+            : dictionary::internal::LzssEncodeError::overlapping_buffers;
+        result.error =
+            LzssDynamicRangeFrameValidationError::dictionary_encode_error;
+        return result;
+    }
+    auto result = plan_frame<UseHashChain>(
         stream, parameters, limits, sequence, output_already_committed,
-        input, dictionary_staging);
+        input, dictionary_staging, match_finder_workspace);
     if (result.error != LzssDynamicRangeFrameValidationError::none) {
         return result;
     }
@@ -473,6 +576,64 @@ LzssDynamicRangeFrameValidationResult encode_lzss_dynamic_range_frame(
         result.error = LzssDynamicRangeFrameValidationError::internal_error;
     }
     return result;
+}
+
+LzssDynamicRangeFrameValidationResult plan_lzss_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging) noexcept {
+    return plan_frame<false>(
+        stream, parameters, limits, sequence, output_already_committed,
+        input, dictionary_staging, {});
+}
+
+LzssDynamicRangeFrameValidationResult encode_lzss_dynamic_range_frame(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> output) noexcept {
+    return encode_frame<false>(
+        stream, parameters, limits, sequence, output_already_committed,
+        input, dictionary_staging, {}, output);
+}
+
+LzssDynamicRangeFrameValidationResult
+plan_lzss_dynamic_range_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> match_finder_workspace) noexcept {
+    return plan_frame<true>(
+        stream, parameters, limits, sequence, output_already_committed,
+        input, dictionary_staging, match_finder_workspace);
+}
+
+LzssDynamicRangeFrameValidationResult
+encode_lzss_dynamic_range_frame_hash_chain(
+    const StreamHeader& stream,
+    const dictionary::internal::LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> input,
+    const std::span<std::byte> dictionary_staging,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> output) noexcept {
+    return encode_frame<true>(
+        stream, parameters, limits, sequence, output_already_committed,
+        input, dictionary_staging, match_finder_workspace, output);
 }
 
 LzssDynamicRangeFrameValidationResult validate_lzss_dynamic_range_frame(
