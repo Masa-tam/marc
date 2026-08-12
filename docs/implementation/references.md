@@ -4868,3 +4868,14 @@ exact finder, workspace and alias contracts, and internal benchmark as first-
 party references. No external LZSS, Adaptive Huffman, combined implementation,
 source code, frame integration, workspace layout, benchmark, corpus, result,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0550
+
+The Contextual Adaptive Huffman streaming HashChain promotion uses DD-760
+through DD-775, TVG-0636 through TVG-0651, marc's Contextual Adaptive Huffman
+profile, C lifecycle, streaming encoder, byte-identical private frame routes,
+opaque token/node/symbol/finder workspace partitioning, stable error mapping,
+CLI, and public benchmark as first-party references. No external LZSS,
+Adaptive Huffman, combined implementation, source code, workspace layout, API
+integration, benchmark, corpus, result, test suite, patent text, or
+optimization description was consulted.

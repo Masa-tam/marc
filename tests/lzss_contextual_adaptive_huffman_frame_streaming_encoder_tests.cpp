@@ -1,4 +1,5 @@
 #include "frame/lzss_contextual_adaptive_huffman_frame_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -85,6 +86,69 @@ stream_header(const std::uint32_t frame_size,
 }
 
 } // namespace
+
+TEST(LzssContextualAdaptiveHuffmanFrameStreamingEncoder,
+     HashChainMatchesReferenceAndEnforcesFinderBoundaries) {
+    constexpr std::array input{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+    const auto stream = stream_config(input.size(), input.size());
+    std::array<LzssTypedToken, input.size()> reference_tokens{};
+    ModelWorkspace reference_models{};
+    const auto plan = plan_lzss_contextual_adaptive_huffman_frame(
+        stream, {}, 0, 0, input, reference_tokens, reference_models.nodes,
+        reference_models.symbols);
+    ASSERT_EQ(plan.error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    std::vector<std::byte> reference_frame(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_frame(
+                  stream, {}, 0, 0, input, reference_tokens,
+                  reference_models.nodes, reference_models.symbols,
+                  reference_frame).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    const auto header = stream_header(input.size(), input.size());
+    std::vector<std::byte> expected(header.begin(), header.end());
+    expected.insert(
+        expected.end(), reference_frame.begin(), reference_frame.end());
+
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), stream.dictionary, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::max_align_t> finder_backing(
+        (requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto finder = std::as_writable_bytes(std::span{finder_backing}).first(
+        requirements.workspace_size);
+    std::array<std::byte, input.size()> raw{};
+    std::array<LzssTypedToken, input.size()> tokens{};
+    ModelWorkspace models{};
+    std::vector<std::byte> frame(plan.serialized_size);
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, models.nodes, models.symbols, finder, frame};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(input, actual, end_flag());
+    ASSERT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.input_consumed, input.size());
+    EXPECT_EQ(result.output_produced, expected.size());
+    EXPECT_EQ(actual, expected);
+
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder short_finder{
+        stream, {}, raw, tokens, models.nodes, models.symbols,
+        finder.first(finder.size() - 1), frame};
+    std::ranges::fill(actual, std::byte{0xcc});
+    const auto failed = short_finder.process(input, actual, end_flag());
+    EXPECT_EQ(failed.status, StreamStatus::error);
+    EXPECT_EQ(failed.error.code, ErrorCode::out_of_memory);
+    EXPECT_EQ(failed.output_produced, header.size());
+
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder output_alias{
+        stream, {}, raw, tokens, models.nodes, models.symbols, finder, frame};
+    EXPECT_EQ(output_alias.process({}, finder, 0).error.code,
+              ErrorCode::invalid_argument);
+}
 
 TEST(LzssContextualAdaptiveHuffmanFrameStreamingEncoder,
      MatchesOneByteOracle) {
@@ -310,6 +374,32 @@ TEST(LzssContextualAdaptiveHuffmanFrameStreamingEncoder,
         stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
         symbol_bytes.first(82)};
     EXPECT_EQ(symbol_frame_overlap.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder raw_finder_overlap{
+        stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
+        raw, frame};
+    EXPECT_EQ(raw_finder_overlap.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder token_finder_overlap{
+        stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
+        token_bytes, frame};
+    EXPECT_EQ(token_finder_overlap.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder node_finder_overlap{
+        stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
+        node_bytes.first(1), frame};
+    EXPECT_EQ(node_finder_overlap.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder symbol_finder_overlap{
+        stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
+        symbol_bytes.first(1), frame};
+    EXPECT_EQ(symbol_finder_overlap.process({}, {}, 0).error.code,
+              ErrorCode::invalid_argument);
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder frame_finder_overlap{
+        stream_config(1, 1), {}, raw, tokens, models.nodes, models.symbols,
+        frame, frame};
+    EXPECT_EQ(frame_finder_overlap.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 
     LzssContextualAdaptiveHuffmanFrameStreamingEncoder raw_output_alias{

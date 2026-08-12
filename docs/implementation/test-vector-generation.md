@@ -8704,3 +8704,21 @@ finder workspace, and complete frame and require workspace-limit rejection.
 Extend the internal benchmark with ten verified Contextual Adaptive Huffman
 frame iterations under MSVC and ClangCL, but assert no timing. Run all 2,844
 tests, including schema compatibility, under both compilers.
+
+### TVG-0651
+
+Build one match-bearing canonical Contextual Adaptive Huffman stream with the
+promoted streaming encoder and compare it byte for byte with the stream header
+followed by the Exhaustive reference frame. Require exact input consumption,
+complete output publication, and EndOfStream. Supply finder workspace one byte
+short and require stable out-of-memory after only the valid stream header is
+published; alias finder independently with raw, token, node, symbol, frame, and
+caller-output regions and require rejection before shared storage is used.
+
+Require the encoder profile to calculate the exact largest-frame HashChain
+extent, align and partition it after symbol lookup storage, reject a forged
+finder offset, include it in aggregate limits, and carry it through the public
+C lifecycle. Re-run public C, CLI, completion, and benchmark-smoke paths.
+Measure ten descriptive README iterations under MSVC and ClangCL while
+asserting only the unchanged 2,572-byte stream. Run all 2,845 tests, including
+schema compatibility, under both compilers.

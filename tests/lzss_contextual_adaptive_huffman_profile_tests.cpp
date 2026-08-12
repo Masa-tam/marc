@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_adaptive_huffman_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_adaptive_huffman_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_adaptive_huffman_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -62,9 +63,18 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
             * sizeof(marc::entropy::internal::AdaptiveHuffmanNode);
     EXPECT_EQ(workspace.symbol_offset,
               align_size(node_end, alignof(std::uint16_t)));
+    const auto symbol_end = workspace.symbol_offset
+        + workspace.symbol_count * sizeof(std::uint16_t);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_offset,
+              align_size(symbol_end, finder.workspace_alignment));
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
     EXPECT_EQ(workspace.views_bytes,
-              workspace.symbol_offset
-                  + workspace.symbol_count * sizeof(std::uint16_t));
+              workspace.match_finder_offset
+                  + workspace.match_finder_bytes);
 }
 
 TEST(LzssContextualAdaptiveHuffmanProfile,
@@ -93,6 +103,7 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.nodes.empty());
     EXPECT_TRUE(views.symbols.empty());
+    EXPECT_TRUE(views.match_finder.empty());
 }
 
 TEST(LzssContextualAdaptiveHuffmanProfile,
@@ -123,6 +134,17 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
         marc::entropy::internal::contextual_adaptive_huffman_node_entries
         + marc::entropy::internal::contextual_adaptive_huffman_symbol_entries
         - 1;
+    EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  {17}, limits, stream, workspace),
+              LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
+
+    limits = {};
+    ASSERT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  {17}, limits, stream, workspace),
+              LzssContextualAdaptiveHuffmanProfileError::none);
+    limits.max_block_size = 17;
+    limits.max_internal_buffered_bytes = workspace.frame_input_bytes
+        + workspace.frame_encoded_bytes + workspace.views_bytes - 1;
     EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
                   {17}, limits, stream, workspace),
               LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
@@ -182,6 +204,9 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_EQ(views.tokens.size(), requirements.token_count);
     EXPECT_EQ(views.nodes.size(), requirements.node_count);
     EXPECT_EQ(views.symbols.size(), requirements.symbol_count);
+    EXPECT_EQ(views.match_finder.size(), requirements.match_finder_bytes);
+    EXPECT_EQ(views.match_finder.data(),
+              storage.data() + requirements.match_finder_offset);
     auto forged = requirements;
     ++forged.node_offset;
     EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
@@ -191,6 +216,7 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.nodes.empty());
     EXPECT_TRUE(views.symbols.empty());
+    EXPECT_TRUE(views.match_finder.empty());
     forged = requirements;
     --forged.symbol_count;
     EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
@@ -203,6 +229,17 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
                   forged, storage, views),
               LzssContextualAdaptiveHuffmanWorkspaceError::
                   invalid_requirements);
+    forged = requirements;
+    ++forged.match_finder_offset;
+    EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
+                  forged, storage, views),
+              LzssContextualAdaptiveHuffmanWorkspaceError::
+                  invalid_requirements);
+    EXPECT_TRUE(views.tokens.empty());
+    EXPECT_TRUE(views.match_finder.empty());
+    EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
+                  requirements, storage.first(storage.size() - 1), views),
+              LzssContextualAdaptiveHuffmanWorkspaceError::too_small);
 
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = 64;
@@ -270,7 +307,7 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
               LzssContextualAdaptiveHuffmanWorkspaceError::none);
     LzssContextualAdaptiveHuffmanFrameStreamingEncoder encoder{
         stream, limits, frame_input, encode_views.tokens, encode_views.nodes,
-        encode_views.symbols, frame_encoded};
+        encode_views.symbols, encode_views.match_finder, frame_encoded};
     std::vector<std::byte> encoded(40'000);
     const auto encoded_result = encoder.process(raw, encoded, end_flag());
     ASSERT_EQ(encoded_result.status, marc::core::StreamStatus::end_of_stream);

@@ -18962,3 +18962,38 @@ discarded and the reviewed seed retained.
   under each compiler with the 240-second per-test limit (about 174 seconds
   for MSVC and 179 seconds for ClangCL), including documentation layout and
   the complete schema-37-through-1 compatibility chain.
+
+## CR-0803: 2026-08-12 - Contextual Adaptive Huffman HashChain streaming
+
+- Authoring method: carried marc's proven private Contextual Adaptive Huffman
+  HashChain frame route through the streaming encoder, opaque profile views,
+  and public C factory without altering decoding or serialized bytes.
+- References used: DD-760 through DD-775; IR-0550; TVG-0636 through TVG-0651;
+  marc's Contextual Adaptive Huffman profile and streaming lifecycle, exact
+  finder workspace, fixed node and symbol banks, public C boundary, CLI, and
+  benchmark.
+- Known implementations intentionally not consulted: external LZSS, Adaptive
+  Huffman, or combined implementations, source code, integrations, workspace
+  layouts, tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: promote only canonical Contextual Adaptive Huffman;
+  append aligned finder storage after symbols; preserve public error
+  categories; require a fresh requirements query; retain Exhaustive as oracle;
+  and leave decoder storage, format, CLI selector, ABI version, and schema
+  unchanged.
+- Generated-code task description: carry the byte-identical Contextual
+  Adaptive Huffman HashChain frame through bounded streaming and C lifecycles,
+  enforce workspace and alias boundaries transactionally, and record public-
+  path performance without changing the stream.
+- Similarity review: profile layout, constructor routing, tests, benchmark
+  interpretation, and records were independently derived from marc-owned
+  contracts; no external implementation expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  static/shared library, CLI, core tests, C test, and benchmark warning-clean.
+  All 16 direct profile, streaming, and completion tests passed under each
+  compiler; public C, CLI, benchmark, and documentation paths passed. Ten
+  README iterations retained the 2,572-byte stream and measured 1.155 MiB/s
+  encode under MSVC and 1.227 MiB/s under ClangCL. All 2,845 registered tests
+  passed under each compiler with the 240-second per-test limit (about 186
+  seconds per run), including the corrected documentation order and complete
+  schema-37-through-1 compatibility chain.

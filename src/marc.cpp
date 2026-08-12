@@ -1693,7 +1693,7 @@ marc_status create_contextual_adaptive_huffman(
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualAdaptiveHuffmanFrameStreamingEncoder(
                 stream, limits, primary, views.tokens, views.nodes,
-                views.symbols, secondary);
+                views.symbols, views.match_finder, secondary);
     } else {
         marc::frame::internal::
             LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements

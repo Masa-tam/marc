@@ -15917,3 +15917,23 @@ regions, exact finder workspace, and complete serialized frame to aggregate
 memory. Retain streaming, profile sizing, public C ABI, CLI, format, and schema
 on Exhaustive until exact frame identity, decoding, bounded failure, and
 performance are demonstrated independently.
+
+## DD-775: Contextual Adaptive Huffman promotes HashChain without format state
+
+- Date: 2026-08-12
+- Status: accepted
+
+Route the Contextual Adaptive Huffman streaming encoder through the proven
+single-pass HashChain Exact frame entry. Extend its internal constructor with a
+separate finder span and extend the encoder profile's opaque views layout from
+tokens, nodes, and symbols to a final aligned finder workspace sized for the
+largest raw frame. Include that region in checked aggregate memory and every
+constructor and process-time overlap check. Map short finder capacity to the
+established out-of-memory category and finder policy-limit failure to limit
+exceeded.
+
+Keep finder selection outside the format, public configuration, C structure,
+CLI, and schema because both finders produce identical canonical tokens and the
+decoder needs no strategy information. Require callers to query opaque
+requirements again, retain Exhaustive as the private oracle, and leave the
+decoder's node, symbol, and token workspace unchanged.

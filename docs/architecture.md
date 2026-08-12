@@ -5036,3 +5036,14 @@ conservative token reservation, fixed model banks, exact finder workspace, raw
 input, and complete frame. Streaming, profile sizing, public ABI, decoder,
 stream identity, CLI, and schema continue to select the established route
 pending a separate promotion step.
+
+The Contextual Adaptive Huffman streaming encoder now selects HashChain Exact
+at the same typed-token boundary as its proven private frame route. Its opaque
+encoder views retain token staging and fixed node and symbol banks, then append
+separately aligned finder storage; profile calculation charges the exact
+largest-frame extent, and the C factory passes every span without exposing its
+representation. Constructor and process-time checks keep raw, token, node,
+symbol, finder, serialized, and caller-output regions disjoint. Short finder
+capacity maps to out-of-memory, policy rejection maps to limit exceeded, and
+Exhaustive remains a private byte-identity oracle. No stream field, decoder
+behavior, public selector, ABI version, or schema changes.

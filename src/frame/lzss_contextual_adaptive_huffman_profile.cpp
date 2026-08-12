@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_adaptive_huffman_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -45,7 +46,9 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
 [[nodiscard]] bool encoder_view_layout(
     const std::uint64_t token_count, const std::uint64_t node_count,
     const std::uint64_t symbol_count, std::uint64_t& node_offset,
-    std::uint64_t& symbol_offset, std::uint64_t& views_bytes) noexcept {
+    std::uint64_t& symbol_offset, const std::uint64_t finder_bytes,
+    const std::uint64_t finder_alignment, std::uint64_t& finder_offset,
+    std::uint64_t& views_bytes) noexcept {
     std::uint64_t token_bytes{};
     std::uint64_t node_bytes{};
     std::uint64_t symbol_bytes{};
@@ -67,7 +70,9 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
                     node_offset)
         && core::checked_add(node_offset, node_bytes, symbol_offset)
         && align_up(symbol_offset, alignof(std::uint16_t), symbol_offset)
-        && core::checked_add(symbol_offset, symbol_bytes, views_bytes);
+        && core::checked_add(symbol_offset, symbol_bytes, finder_offset)
+        && align_up(finder_offset, finder_alignment, finder_offset)
+        && core::checked_add(finder_offset, finder_bytes, views_bytes);
 }
 
 [[nodiscard]] bool decoder_view_layout(
@@ -102,11 +107,16 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
     return std::max({
         alignof(dictionary::internal::LzssTypedToken),
         alignof(entropy::internal::AdaptiveHuffmanNode),
-        alignof(std::uint16_t)});
+        alignof(std::uint16_t),
+        dictionary::internal::LzssHashChainWorkspaceRequirements{}
+            .workspace_alignment});
 }
 
 [[nodiscard]] constexpr std::size_t decoder_alignment() noexcept {
-    return encoder_alignment();
+    return std::max({
+        alignof(dictionary::internal::LzssTypedToken),
+        alignof(entropy::internal::AdaptiveHuffmanNode),
+        alignof(std::uint16_t)});
 }
 
 } // namespace
@@ -176,8 +186,22 @@ make_lzss_contextual_adaptive_huffman_profile(
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t node_offset{};
     std::uint64_t symbol_offset{};
+    std::uint64_t finder_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return E::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.dictionary, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error == dictionary::internal::LzssHashChainError::
+                                   workspace_limit_exceeded
+            ? E::limit_exceeded
+            : E::arithmetic_overflow;
+    }
     if (!payload_ceiling(largest_frame, payload_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(
@@ -189,7 +213,8 @@ make_lzss_contextual_adaptive_huffman_profile(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
         || !encoder_view_layout(
             token_count, node_count, symbol_count, node_offset,
-            symbol_offset, views_bytes)
+            symbol_offset, finder.workspace_size,
+            finder.workspace_alignment, finder_offset, views_bytes)
         || !core::checked_add(
             largest_frame, views_bytes, aggregate_bytes)
         || !core::checked_add(
@@ -209,6 +234,8 @@ make_lzss_contextual_adaptive_huffman_profile(
         || !to_size(node_offset, workspace.node_offset)
         || !to_size(symbol_count, workspace.symbol_count)
         || !to_size(symbol_offset, workspace.symbol_offset)
+        || !to_size(finder_offset, workspace.match_finder_offset)
+        || !to_size(finder.workspace_size, workspace.match_finder_bytes)
         || !to_size(views_bytes, workspace.views_bytes)) {
         workspace = {};
         return E::arithmetic_overflow;
@@ -292,16 +319,22 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
     views = {};
     std::uint64_t expected_node_offset{};
     std::uint64_t expected_symbol_offset{};
+    std::uint64_t expected_finder_offset{};
     std::uint64_t expected_bytes{};
     if (!encoder_view_layout(
             requirements.token_count, requirements.node_count,
             requirements.symbol_count, expected_node_offset,
-            expected_symbol_offset, expected_bytes)) {
+            expected_symbol_offset, requirements.match_finder_bytes,
+            dictionary::internal::LzssHashChainWorkspaceRequirements{}
+                .workspace_alignment,
+            expected_finder_offset, expected_bytes)) {
         return E::arithmetic_overflow;
     }
     if (expected_bytes == 0) {
         return requirements.node_offset == 0
                 && requirements.symbol_offset == 0
+                && requirements.match_finder_offset == 0
+                && requirements.match_finder_bytes == 0
                 && requirements.views_bytes == 0
                 && requirements.views_alignment == 1
             ? E::none
@@ -313,6 +346,7 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
             != entropy::internal::contextual_adaptive_huffman_symbol_entries
         || expected_node_offset != requirements.node_offset
         || expected_symbol_offset != requirements.symbol_offset
+        || expected_finder_offset != requirements.match_finder_offset
         || expected_bytes != requirements.views_bytes
         || requirements.views_alignment != encoder_alignment()) {
         return E::invalid_requirements;
@@ -333,6 +367,8 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
         reinterpret_cast<std::uint16_t*>(
             storage.data() + requirements.symbol_offset),
         requirements.symbol_count};
+    views.match_finder = storage.subspan(
+        requirements.match_finder_offset, requirements.match_finder_bytes);
     return E::none;
 }
 

@@ -2024,3 +2024,15 @@ capacity, raw/token/node/symbol/output alias rejection, aggregate limits, and
 atomic failure. The public streaming/profile/C/CLI/schema route remains
 unchanged pending a separate promotion step. Full-suite admission is recorded
 separately after both 2,844-test runs.
+
+### BR-0112
+
+Contextual Adaptive Huffman now routes its public streaming encoder through the
+byte-identical HashChain Exact typed-token producer. Its opaque encoder views
+append the exact largest-frame finder workspace after the fixed node and symbol
+banks, while decoder workspace, stream identity, CLI selector, and
+interoperability schema remain unchanged. Direct profile, streaming, and
+completion tests prove Exhaustive byte identity, bounded capacity and alias
+rejection, stable public error mapping, and successful public round trip under
+MSVC and ClangCL. Full-suite admission is recorded separately after both
+2,845-test runs.

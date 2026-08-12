@@ -26,6 +26,8 @@ struct LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements {
     std::size_t node_offset{};
     std::size_t symbol_count{};
     std::size_t symbol_offset{};
+    std::size_t match_finder_offset{};
+    std::size_t match_finder_bytes{};
     std::size_t views_bytes{};
     std::size_t views_alignment{1};
 };
@@ -62,6 +64,7 @@ struct LzssContextualAdaptiveHuffmanEncoderViews {
     std::span<dictionary::internal::LzssTypedToken> tokens{};
     std::span<entropy::internal::AdaptiveHuffmanNode> nodes{};
     std::span<std::uint16_t> symbols{};
+    std::span<std::byte> match_finder{};
 };
 
 struct LzssContextualAdaptiveHuffmanDecoderViews {

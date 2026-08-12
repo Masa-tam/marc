@@ -23,6 +23,16 @@ public:
         std::span<std::uint16_t> symbol_workspace,
         std::span<std::byte> serialized_frame_workspace) noexcept;
 
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder(
+        LzssContextualAdaptiveHuffmanStreamHeader stream,
+        core::DecoderLimits limits,
+        std::span<std::byte> raw_frame_workspace,
+        std::span<dictionary::internal::LzssTypedToken> token_workspace,
+        std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
+        std::span<std::uint16_t> symbol_workspace,
+        std::span<std::byte> match_finder_workspace,
+        std::span<std::byte> serialized_frame_workspace) noexcept;
+
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input, std::span<std::byte> output,
         std::uint32_t flags) noexcept override;
@@ -50,6 +60,7 @@ private:
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace_{};
     std::span<std::uint16_t> symbol_workspace_{};
+    std::span<std::byte> match_finder_workspace_{};
     std::span<std::byte> serialized_frame_workspace_{};
     std::array<std::byte,
                lzss_contextual_adaptive_huffman_stream_header_size>

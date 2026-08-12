@@ -880,6 +880,21 @@ pass thresholds. Exact descriptor, payload, and frame bytes, successful
 decode, bounded finder workspace, and atomic rejection are the normative
 evidence.
 
+### BM-0035: Contextual Adaptive Huffman streaming HashChain promotion
+
+Ten complete public-lifecycle iterations over the 4,326-byte README preserve
+the 2,572-byte canonical stream and ratio 0.595 after the streaming encoder
+moves from Exhaustive to HashChain Exact. MSVC 19.51.36252 reports 1.155 MiB/s
+encode and 1.870 MiB/s decode; ClangCL 22.1.3 reports 1.227 and 1.899 MiB/s.
+These small-input timings are descriptive and are not stable thresholds.
+
+Encoder primary and secondary reservations remain 4,326 and 144,461 bytes.
+Opaque encoder views increase from 206,020 to 288,864 bytes by appending the
+exact 82,840-byte finder workspace after required alignment. Decoder
+reservations and the 3,193,420-byte direction-maximum peak remain unchanged.
+Exact stream identity, bounded workspace partitioning, stable failure mapping,
+and successful public round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

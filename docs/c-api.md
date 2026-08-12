@@ -474,3 +474,10 @@ Callers must use the current
 `marc_lzss_contextual_blocked_huffman_workspace_requirements()` result and must
 not infer or cache the private partition. Finder selection does not cross the
 ABI or stream, and decoder table workspace remains unchanged.
+
+The Contextual Adaptive Huffman encoder's opaque views requirement retains its
+typed-token, node, and symbol regions and appends an aligned HashChain Exact
+finder workspace. Callers must use the current
+`marc_lzss_contextual_adaptive_huffman_workspace_requirements()` result and
+must not infer or cache the private partition. Finder selection does not add a
+configuration field, ABI revision, stream variant, or decoder requirement.
