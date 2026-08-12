@@ -2013,3 +2013,14 @@ Direct profile and streaming tests prove Exhaustive byte identity, bounded
 capacity and alias rejection, stable public error mapping, and successful
 public round trip under MSVC and ClangCL. Full-suite admission is recorded
 separately after both 2,843-test runs.
+
+### BR-0111
+
+Contextual Adaptive Huffman now has a private HashChain Exact complete-frame
+route sharing all contextual event, bounded FGK model, payload, and header
+logic with the Exhaustive oracle. Seven direct tests under MSVC and ClangCL
+prove complete byte identity and decode, one query per token, exact finder
+capacity, raw/token/node/symbol/output alias rejection, aggregate limits, and
+atomic failure. The public streaming/profile/C/CLI/schema route remains
+unchanged pending a separate promotion step. Full-suite admission is recorded
+separately after both 2,844-test runs.

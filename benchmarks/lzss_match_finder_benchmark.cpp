@@ -6,6 +6,7 @@
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
 #include "frame/lzss_contextual_tans_frame_encoder.hpp"
 #include "frame/lzss_contextual_blocked_huffman_frame_encoder.hpp"
+#include "frame/lzss_contextual_adaptive_huffman_frame_encoder.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -317,6 +318,49 @@ int main(const int argc, const char* const argv[]) {
         return 1;
     }
 
+    marc::frame::internal::LzssContextualAdaptiveHuffmanStreamHeader
+        adaptive_huffman_stream{};
+    adaptive_huffman_stream.frame_size =
+        static_cast<std::uint32_t>(input.size());
+    adaptive_huffman_stream.original_size = input.size();
+    std::vector<marc::entropy::internal::AdaptiveHuffmanNode> adaptive_nodes(
+        marc::entropy::internal::
+            contextual_adaptive_huffman_node_entries);
+    std::vector<std::uint16_t> adaptive_symbols(
+        marc::entropy::internal::
+            contextual_adaptive_huffman_symbol_entries);
+    const auto adaptive_huffman_plan = marc::frame::internal::
+        plan_lzss_contextual_adaptive_huffman_frame(
+            adaptive_huffman_stream, limits, 0, 0, input, typed_two_pass,
+            adaptive_nodes, adaptive_symbols);
+    if (adaptive_huffman_plan.error != marc::frame::internal::
+            LzssContextualAdaptiveHuffmanFrameEncodeError::none) {
+        std::cerr << "Contextual Adaptive Huffman frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> adaptive_huffman_exhaustive(
+        adaptive_huffman_plan.serialized_size);
+    std::vector<std::byte> adaptive_huffman_hash_chain(
+        adaptive_huffman_plan.serialized_size);
+    if (marc::frame::internal::
+            encode_lzss_contextual_adaptive_huffman_frame(
+                adaptive_huffman_stream, limits, 0, 0, input,
+                typed_two_pass, adaptive_nodes, adaptive_symbols,
+                adaptive_huffman_exhaustive).error
+            != marc::frame::internal::
+                LzssContextualAdaptiveHuffmanFrameEncodeError::none
+        || marc::frame::internal::
+            encode_lzss_contextual_adaptive_huffman_frame_hash_chain(
+                adaptive_huffman_stream, limits, 0, 0, input,
+                typed_single_pass, adaptive_nodes, adaptive_symbols,
+                workspace, adaptive_huffman_hash_chain).error
+            != marc::frame::internal::
+                LzssContextualAdaptiveHuffmanFrameEncodeError::none
+        || adaptive_huffman_exhaustive != adaptive_huffman_hash_chain) {
+        std::cerr << "Contextual Adaptive Huffman frame equivalence failed\n";
+        return 1;
+    }
+
     LzssMatchFinderStatistics exhaustive_statistics{};
     LzssExhaustiveMatchFinder exhaustive_finder{
         input, parameters, &exhaustive_statistics};
@@ -437,11 +481,32 @@ int main(const int argc, const char* const argv[]) {
                 == marc::frame::internal::
                     LzssContextualBlockedHuffmanFrameEncodeError::none;
         });
+    const auto adaptive_huffman_exhaustive_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok && marc::frame::internal::
+                encode_lzss_contextual_adaptive_huffman_frame(
+                    adaptive_huffman_stream, limits, 0, 0, input,
+                    typed_two_pass, adaptive_nodes, adaptive_symbols,
+                    adaptive_huffman_exhaustive).error
+                == marc::frame::internal::
+                    LzssContextualAdaptiveHuffmanFrameEncodeError::none;
+        });
+    const auto adaptive_huffman_hash_chain_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok && marc::frame::internal::
+                encode_lzss_contextual_adaptive_huffman_frame_hash_chain(
+                    adaptive_huffman_stream, limits, 0, 0, input,
+                    typed_single_pass, adaptive_nodes, adaptive_symbols,
+                    workspace, adaptive_huffman_hash_chain).error
+                == marc::frame::internal::
+                    LzssContextualAdaptiveHuffmanFrameEncodeError::none;
+        });
     if (!timing_ok || exhaustive_output != hash_output
         || frame_exhaustive != frame_hash_chain
         || rans_exhaustive != rans_hash_chain
         || tans_exhaustive != tans_hash_chain
-        || blocked_huffman_exhaustive != blocked_huffman_hash_chain) {
+        || blocked_huffman_exhaustive != blocked_huffman_hash_chain
+        || adaptive_huffman_exhaustive != adaptive_huffman_hash_chain) {
         std::cerr << "timed encoding failed\n";
         return 1;
     }
@@ -457,6 +522,8 @@ int main(const int argc, const char* const argv[]) {
               << '\n'
               << "contextual_blocked_huffman_frame_bytes="
               << blocked_huffman_hash_chain.size() << '\n'
+              << "contextual_adaptive_huffman_frame_bytes="
+              << adaptive_huffman_hash_chain.size() << '\n'
               << "iterations=" << iterations << '\n'
               << "hash_workspace_bytes=" << requirements.workspace_size
               << '\n'
@@ -500,6 +567,12 @@ int main(const int argc, const char* const argv[]) {
                       iterations);
     print_measurement("contextual_blocked_huffman_frame_hash_chain",
                       blocked_huffman_hash_chain_seconds, input.size(),
+                      iterations);
+    print_measurement("contextual_adaptive_huffman_frame_exhaustive",
+                      adaptive_huffman_exhaustive_seconds, input.size(),
+                      iterations);
+    print_measurement("contextual_adaptive_huffman_frame_hash_chain",
+                      adaptive_huffman_hash_chain_seconds, input.size(),
                       iterations);
     return 0;
 }

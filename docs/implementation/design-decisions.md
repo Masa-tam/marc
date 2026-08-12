@@ -15897,3 +15897,23 @@ CLI, and schema because both finders produce identical canonical tokens and the
 decoder does not need the strategy. Require callers to query opaque workspace
 requirements again, retain Exhaustive as the private oracle, and leave the
 decoder's bounded Huffman-table workspace unchanged.
+
+## DD-774: Contextual Adaptive Huffman isolates HashChain token production
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for Contextual Adaptive
+Huffman through one compile-time-selected frame body shared with Exhaustive.
+Select only typed-token production; leave context events, FGK model updates,
+descriptor and payload coding, and frame serialization common. The HashChain
+route accepts a separate aligned finder workspace and optional statistics
+while preserving the caller-owned fixed node and symbol banks.
+
+Reject finder overlap with raw input, token staging, Adaptive Huffman nodes,
+symbol lookup storage, or serialized output before publication. Charge raw
+input, the conservative one-token-per-byte reservation, fixed node and symbol
+regions, exact finder workspace, and complete serialized frame to aggregate
+memory. Retain streaming, profile sizing, public C ABI, CLI, format, and schema
+on Exhaustive until exact frame identity, decoding, bounded failure, and
+performance are demonstrated independently.

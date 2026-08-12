@@ -4858,3 +4858,13 @@ opaque workspace partitioning, stable error mapping, CLI, and public benchmark
 as first-party references. No external LZSS, Huffman, combined implementation,
 source code, workspace layout, API integration, benchmark, corpus, result,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0549
+
+The private Contextual Adaptive Huffman HashChain frame uses DD-760 through
+DD-774, TVG-0636 through TVG-0650, marc's Contextual Adaptive Huffman frame
+encoder and decoder, single-pass typed parser, bounded FGK context models,
+exact finder, workspace and alias contracts, and internal benchmark as first-
+party references. No external LZSS, Adaptive Huffman, combined implementation,
+source code, frame integration, workspace layout, benchmark, corpus, result,
+test suite, patent text, or optimization description was consulted.

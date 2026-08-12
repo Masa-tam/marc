@@ -122,15 +122,18 @@ struct RegionSizes {
 
 } // namespace
 
-LzssContextualAdaptiveHuffmanFrameEncodeResult
-plan_lzss_contextual_adaptive_huffman_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssContextualAdaptiveHuffmanFrameEncodeResult plan_frame(
     const LzssContextualAdaptiveHuffmanStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
-    const std::span<std::uint16_t> private_symbols) noexcept {
+    const std::span<std::uint16_t> private_symbols,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
     using E = LzssContextualAdaptiveHuffmanFrameEncodeError;
     LzssContextualAdaptiveHuffmanFrameEncodeResult result{};
     if (private_nodes.size() < result.required_node_entries) {
@@ -151,6 +154,26 @@ plan_lzss_contextual_adaptive_huffman_frame(
     if (overlap != OverlapCheck::disjoint) {
         return fail_overlap(result, overlap);
     }
+    if constexpr (UseHashChain) {
+        const std::array finder_overlaps{
+            regions_overlap(raw_input.data(), raw_input.size(),
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+            regions_overlap(private_tokens.data(), sizes.tokens,
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+            regions_overlap(private_nodes.data(), sizes.nodes,
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+            regions_overlap(private_symbols.data(), sizes.symbols,
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+        };
+        for (const auto finder_overlap : finder_overlaps) {
+            if (finder_overlap != OverlapCheck::disjoint)
+                return fail_overlap(result, finder_overlap);
+        }
+    }
     if (validate_lzss_contextual_adaptive_huffman_stream_header(stream, limits)
         != LzssContextualAdaptiveHuffmanStreamHeaderError::none) {
         result.error = E::invalid_stream;
@@ -162,8 +185,15 @@ plan_lzss_contextual_adaptive_huffman_frame(
         return result;
     }
 
-    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits, private_tokens);
+    if constexpr (UseHashChain) {
+        result.token_encode = dictionary::internal::
+            encode_lzss_typed_tokens_hash_chain_single_pass(
+                raw_input, stream.dictionary, limits, private_tokens,
+                match_finder_workspace, statistics);
+    } else {
+        result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
+            raw_input, stream.dictionary, limits, private_tokens);
+    }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
         != dictionary::internal::LzssTypedEncodeError::none) {
@@ -233,10 +263,19 @@ plan_lzss_contextual_adaptive_huffman_frame(
         return result;
     }
 
+    std::size_t token_workspace = result.token_encode.token_storage_size;
+    if constexpr (UseHashChain) {
+        if (!core::checked_multiply(
+                raw_input.size(),
+                sizeof(dictionary::internal::LzssTypedToken),
+                token_workspace)) {
+            result.error = E::arithmetic_overflow;
+            return result;
+        }
+    }
     std::size_t workspace{};
     if (!core::checked_add(
-            raw_input.size(), result.token_encode.token_storage_size,
-            workspace)
+            raw_input.size(), token_workspace, workspace)
         || !core::checked_add(workspace, sizes.nodes, workspace)
         || !core::checked_add(workspace, sizes.symbols, workspace)
         || !core::checked_add(
@@ -244,14 +283,32 @@ plan_lzss_contextual_adaptive_huffman_frame(
         result.error = E::arithmetic_overflow;
         return result;
     }
+    if constexpr (UseHashChain) {
+        const auto required = dictionary::internal::
+            calculate_lzss_hash_chain_workspace(
+                raw_input.size(), stream.dictionary, limits);
+        if (required.error
+            != dictionary::internal::LzssHashChainError::none) {
+            result.error = E::token_encode_error;
+            result.token_encode.error = dictionary::internal::
+                LzssTypedEncodeError::match_finder_error;
+            result.token_encode.match_finder_error = required.error;
+            return result;
+        }
+        if (!core::checked_add(
+                workspace, required.workspace_size, workspace)) {
+            result.error = E::arithmetic_overflow;
+            return result;
+        }
+    }
     if (workspace > limits.max_internal_buffered_bytes) {
         result.error = E::workspace_limit;
     }
     return result;
 }
 
-LzssContextualAdaptiveHuffmanFrameEncodeResult
-encode_lzss_contextual_adaptive_huffman_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssContextualAdaptiveHuffmanFrameEncodeResult encode_frame(
     const LzssContextualAdaptiveHuffmanStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
@@ -259,7 +316,10 @@ encode_lzss_contextual_adaptive_huffman_frame(
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
     const std::span<std::uint16_t> private_symbols,
-    const std::span<std::byte> serialized_output) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
     using E = LzssContextualAdaptiveHuffmanFrameEncodeError;
     LzssContextualAdaptiveHuffmanFrameEncodeResult result{};
     if (private_nodes.size() < result.required_node_entries) {
@@ -294,10 +354,18 @@ encode_lzss_contextual_adaptive_huffman_frame(
         != output_overlaps.end()) {
         return fail_overlap(result, OverlapCheck::overlap);
     }
+    if constexpr (UseHashChain) {
+        const auto finder_overlap = regions_overlap(
+            serialized_output.data(), serialized_output.size(),
+            match_finder_workspace.data(), match_finder_workspace.size());
+        if (finder_overlap != OverlapCheck::disjoint)
+            return fail_overlap(result, finder_overlap);
+    }
 
-    result = plan_lzss_contextual_adaptive_huffman_frame(
+    result = plan_frame<UseHashChain>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens, private_nodes, private_symbols);
+        private_tokens, private_nodes, private_symbols,
+        match_finder_workspace, statistics);
     if (result.error != E::none) return result;
     if (serialized_output.size() < result.serialized_size) {
         result.error = E::serialized_output_too_small;
@@ -364,6 +432,73 @@ encode_lzss_contextual_adaptive_huffman_frame(
         result.error = E::internal_error;
     }
     return result;
+}
+
+LzssContextualAdaptiveHuffmanFrameEncodeResult
+plan_lzss_contextual_adaptive_huffman_frame(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    const std::span<std::uint16_t> private_symbols) noexcept {
+    return plan_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_nodes, private_symbols, {}, nullptr);
+}
+
+LzssContextualAdaptiveHuffmanFrameEncodeResult
+encode_lzss_contextual_adaptive_huffman_frame(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    const std::span<std::uint16_t> private_symbols,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_nodes, private_symbols, {}, serialized_output,
+        nullptr);
+}
+
+LzssContextualAdaptiveHuffmanFrameEncodeResult
+plan_lzss_contextual_adaptive_huffman_frame_hash_chain(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    const std::span<std::uint16_t> private_symbols,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return plan_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_nodes, private_symbols,
+        match_finder_workspace, statistics);
+}
+
+LzssContextualAdaptiveHuffmanFrameEncodeResult
+encode_lzss_contextual_adaptive_huffman_frame_hash_chain(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    const std::span<std::uint16_t> private_symbols,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return encode_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_nodes, private_symbols,
+        match_finder_workspace, serialized_output, statistics);
 }
 
 } // namespace marc::frame::internal
