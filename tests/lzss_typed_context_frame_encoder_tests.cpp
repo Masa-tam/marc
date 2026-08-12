@@ -61,6 +61,18 @@ using namespace marc::frame::internal;
     return encoded;
 }
 
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
+
 } // namespace
 
 TEST(LzssTypedContextFrameEncoder, EmitsSpecifiedOneLiteralFrame) {
@@ -228,4 +240,112 @@ TEST(LzssTypedContextFrameEncoder, AliasingFailsBeforeCallerStorageChanges) {
     EXPECT_EQ(token_alias.error,
               LzssTypedContextFrameEncodeError::overlapping_workspaces);
     EXPECT_TRUE(std::ranges::equal(token_snapshot, token_bytes));
+}
+
+TEST(LzssTypedContextFrameEncoder, HashChainFrameMatchesExhaustiveBytes) {
+    auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    for (std::uint32_t value = 0; value < 256; ++value)
+        input.push_back(static_cast<std::byte>(value));
+    input.insert(input.end(), input.begin(), input.end());
+    const auto stream = stream_config(
+        static_cast<std::uint32_t>(input.size()), input.size());
+    std::vector<marc::dictionary::internal::LzssTypedToken> tokens(
+        input.size());
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        input.size() * 5);
+    const auto reference_plan = plan_lzss_typed_context_frame(
+        stream, {}, 0, 0, input, tokens, operations);
+    ASSERT_EQ(reference_plan.error, LzssTypedContextFrameEncodeError::none);
+    std::vector<std::byte> reference(reference_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_typed_context_frame(
+                  stream, {}, 0, 0, input, tokens, operations, reference).error,
+              LzssTypedContextFrameEncodeError::none);
+
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    marc::dictionary::internal::LzssMatchFinderStatistics statistics{};
+    const auto plan = plan_lzss_typed_context_frame_hash_chain(
+        stream, {}, 0, 0, input, tokens, operations, workspace, &statistics);
+    ASSERT_EQ(plan.error, LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(plan.serialized_size, reference_plan.serialized_size);
+    EXPECT_EQ(plan.token_count, reference_plan.token_count);
+    EXPECT_EQ(plan.operation_count, reference_plan.operation_count);
+    EXPECT_EQ(statistics.query_count, plan.token_count);
+
+    statistics = {};
+    std::vector<std::byte> encoded(plan.serialized_size);
+    const auto result = encode_lzss_typed_context_frame_hash_chain(
+        stream, {}, 0, 0, input, tokens, operations, workspace, encoded,
+        &statistics);
+    ASSERT_EQ(result.error, LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(statistics.query_count, result.token_count);
+    EXPECT_EQ(encoded, reference);
+
+    std::vector<marc::dictionary::internal::LzssTypedToken> decoded_tokens(
+        result.token_count);
+    std::vector<std::byte> reconstructed(input.size());
+    const auto decoded = decode_lzss_typed_context_frame(
+        encoded, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(reconstructed, input);
+}
+
+TEST(LzssTypedContextFrameEncoder, HashChainWorkspaceFailuresAreAtomic) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto stream = stream_config(
+        static_cast<std::uint32_t>(input.size()), input.size());
+    std::vector<marc::dictionary::internal::LzssTypedToken> tokens(
+        input.size());
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        input.size() * 5);
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(input.size(), {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    ASSERT_GT(requirements.workspace_size, 0U);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    std::array<std::byte, 256> output{};
+    output.fill(std::byte{0xCC});
+
+    auto result = encode_lzss_typed_context_frame_hash_chain(
+        stream, {}, 0, 0, input, tokens, operations,
+        workspace.first(workspace.size() - 1), output);
+    EXPECT_EQ(result.error,
+              LzssTypedContextFrameEncodeError::token_encode_error);
+    EXPECT_EQ(result.token_encode.match_finder_error,
+              marc::dictionary::internal::LzssHashChainError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xCC};
+    }));
+
+    const auto snapshot = std::vector<std::byte>(
+        workspace.begin(), workspace.end());
+    result = encode_lzss_typed_context_frame_hash_chain(
+        stream, {}, 0, 0, input, tokens, operations, workspace,
+        workspace.first(128));
+    EXPECT_EQ(result.error,
+              LzssTypedContextFrameEncodeError::overlapping_workspaces);
+    EXPECT_TRUE(std::ranges::equal(snapshot, workspace));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    const auto baseline = plan_lzss_typed_context_frame_hash_chain(
+        stream, limits, 0, 0, input, tokens, operations, workspace);
+    ASSERT_EQ(baseline.error, LzssTypedContextFrameEncodeError::none);
+    const auto complete_workspace = input.size()
+        + input.size()
+            * sizeof(marc::dictionary::internal::LzssTypedToken)
+        + baseline.operation_count
+            * sizeof(marc::context::internal::ModeledOperation)
+        + requirements.workspace_size + baseline.serialized_size;
+    limits.max_internal_buffered_bytes = complete_workspace - 1;
+    result = plan_lzss_typed_context_frame_hash_chain(
+        stream, limits, 0, 0, input, tokens, operations, workspace);
+    EXPECT_EQ(result.error, LzssTypedContextFrameEncodeError::workspace_limit);
 }

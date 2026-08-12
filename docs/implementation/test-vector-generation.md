@@ -8541,3 +8541,21 @@ and require atomic token-storage-limit rejection. Extend the internal benchmark
 with verified typed two-pass and single-pass measurements, using ten descriptive
 README iterations under MSVC and ClangCL. Run all 2,833 registered tests under
 both compilers with schema compatibility included.
+
+### TVG-0642
+
+Encode repeated prefixes followed by two complete byte alphabets through the
+existing Exhaustive and new HashChain typed Contextual Dynamic Range frame
+routes. Require identical frame plan extents, token and operation counts, one
+HashChain query per token, byte-identical serialized frames, and successful
+decode back to the exact raw input.
+
+Provide finder workspace one byte short and require the nested stable
+workspace-too-small detail while serialized output retains its sentinel. Alias
+serialized output with finder workspace and require rejection before that
+shared region changes. Set the complete aggregate limit one byte below raw
+input plus conservative typed-token reservation plus actual operation storage
+plus exact finder workspace plus serialized frame and require workspace-limit
+rejection. Extend the internal benchmark with ten verified complete-frame
+iterations under MSVC and ClangCL, but assert no timing. Run all 2,835 tests,
+including schema compatibility, under both compilers.

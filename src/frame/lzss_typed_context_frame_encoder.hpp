@@ -70,6 +70,33 @@ encode_lzss_typed_context_frame(
     std::span<context::internal::ModeledOperation> private_operations,
     std::span<std::byte> serialized_output) noexcept;
 
+[[nodiscard]] LzssTypedContextFrameEncodeResult
+plan_lzss_typed_context_frame_hash_chain(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<context::internal::ModeledOperation> private_operations,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssTypedContextFrameEncodeResult
+encode_lzss_typed_context_frame_hash_chain(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<context::internal::ModeledOperation> private_operations,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
 } // namespace marc::frame::internal
 
 #endif

@@ -18655,3 +18655,34 @@ discarded and the reviewed seed retained.
   tests passed in 160.77 seconds with the 240-second per-test limit, including
   documentation layout and the complete schema-37-through-1 compatibility
   chain.
+
+## CR-0794: 2026-08-12 - Contextual Dynamic Range HashChain frame
+
+- Authoring method: refactored marc's existing typed Contextual Dynamic Range
+  frame planner and writer into one compile-time-selected internal body, then
+  added an explicit HashChain entry without changing entropy or format logic.
+- References used: DD-760 through DD-766; IR-0541; TVG-0636 through TVG-0642;
+  marc's frame encoder/decoder, single-pass typed route, overlap and aggregate
+  contracts, deterministic tests, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS, range-
+  coder, or combined implementations, source code, integrations, tests,
+  corpora, benchmarks, results, patent text, and optimization descriptions.
+- Independent decisions: begin with the foundational Contextual Dynamic Range
+  frame; keep selection explicit and private; share every post-token operation;
+  make finder workspace a fourth disjoint region; charge conservative token
+  capacity to the complete aggregate; and defer all public and streaming
+  routing until this boundary is proven.
+- Generated-code task description: connect one complete contextual frame to
+  single-pass HashChain Exact, prove exact bytes and decode, preserve atomic
+  bounded failure, and measure full frame cost without changing the format.
+- Similarity review: common-body refactoring, workspace validation, vectors,
+  benchmark extension, and records were independently derived from marc-owned
+  code and design; no external implementation expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  static/shared library, CLI, core tests, and benchmark warning-clean. Ten
+  README iterations produced identical 2,277-byte frames and measured 0.304
+  versus 22.025 MiB/s under MSVC and 0.440 versus 27.280 MiB/s under ClangCL
+  for Exhaustive versus HashChain respectively. All 2,835 registered MSVC
+  tests passed in 169.88 seconds and all 2,835 registered ClangCL tests passed
+  in 163.92 seconds with the 240-second per-test limit, including documentation
+  layout and the complete schema-37-through-1 compatibility chain.

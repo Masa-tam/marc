@@ -111,6 +111,14 @@ capacity failure. It therefore parses exactly once, returns the actual token
 extent, and leaves unused reserved token slots untouched. The precise-capacity
 two-pass entry point remains available when conserving caller storage matters
 more than parse throughput.
+The first complete-frame integration is an explicit parallel route for the
+foundational typed Contextual Dynamic Range frame. Its common frame planner
+and writer are shared with the Exhaustive route; only typed-token generation
+is selected at compile time. The HashChain route receives a fourth disjoint
+workspace, charges exact finder storage plus the conservative token reservation
+to the complete frame aggregate, and otherwise uses the same context modeling,
+entropy planning, header, descriptor, and payload code. It remains private and
+does not yet alter streaming, profile, C ABI, CLI, or interoperability routes.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

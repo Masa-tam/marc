@@ -350,6 +350,10 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
         input.size(), parameters, limits);
     if (required.error != LzssHashChainError::none)
         return typed_finder_failure(input.size(), required.error);
+    if (match_finder_workspace.size() < required.workspace_size) {
+        return typed_finder_failure(
+            input.size(), LzssHashChainError::workspace_too_small);
+    }
     std::size_t aggregate{};
     if (!core::checked_add(input.size(), required.workspace_size, aggregate)
         || !core::checked_add(

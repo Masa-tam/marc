@@ -15739,3 +15739,23 @@ the candidate for contextual frame integration whose token workspace is
 already sized to a raw-frame worst case. Allow optional caller-owned finder
 statistics on the single-pass route so tests can prove one query per actual
 token. This step changes no existing routing, public API, or stream bytes.
+
+## DD-766: Contextual Dynamic Range is the first complete HashChain frame
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for the foundational typed
+Contextual Dynamic Range frame. Share one templated frame implementation with
+the existing Exhaustive route and select only the typed-token producer. The
+HashChain route accepts separate caller-owned finder workspace and optional
+statistics; it must produce the same token count, operations, descriptor,
+payload, header, and complete frame bytes.
+
+Reject finder workspace overlap with raw input, token staging, operation
+staging, or serialized output before finder initialization. Charge the exact
+finder workspace and conservative one-token-per-byte typed reservation to the
+complete frame aggregate, in addition to raw input, actual modeled operations,
+and serialized frame storage. Retain all existing routes on Exhaustive. Do not
+change streaming, profile sizing, public ABI, CLI, format, or schema until this
+frame boundary is measured and validated independently.

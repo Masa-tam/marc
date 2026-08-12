@@ -2,6 +2,7 @@
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
+#include "frame/lzss_typed_context_frame_encoder.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -186,6 +187,38 @@ int main(const int argc, const char* const argv[]) {
         return 1;
     }
 
+    marc::frame::internal::TypedContextStreamHeader frame_stream{};
+    frame_stream.frame_size = static_cast<std::uint32_t>(input.size());
+    frame_stream.original_size = input.size();
+    frame_stream.range_model_total =
+        marc::frame::internal::typed_context_model_total;
+    frame_stream.context_count =
+        marc::frame::internal::typed_context_count;
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        input.size() * 5U);
+    const auto frame_plan =
+        marc::frame::internal::plan_lzss_typed_context_frame(
+            frame_stream, limits, 0, 0, input, typed_two_pass, operations);
+    if (frame_plan.error
+        != marc::frame::internal::LzssTypedContextFrameEncodeError::none) {
+        std::cerr << "contextual frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> frame_exhaustive(frame_plan.serialized_size);
+    std::vector<std::byte> frame_hash_chain(frame_plan.serialized_size);
+    if (marc::frame::internal::encode_lzss_typed_context_frame(
+            frame_stream, limits, 0, 0, input, typed_two_pass, operations,
+            frame_exhaustive).error
+            != marc::frame::internal::LzssTypedContextFrameEncodeError::none
+        || marc::frame::internal::encode_lzss_typed_context_frame_hash_chain(
+            frame_stream, limits, 0, 0, input, typed_single_pass, operations,
+            workspace, frame_hash_chain).error
+            != marc::frame::internal::LzssTypedContextFrameEncodeError::none
+        || frame_exhaustive != frame_hash_chain) {
+        std::cerr << "contextual frame equivalence failed\n";
+        return 1;
+    }
+
     LzssMatchFinderStatistics exhaustive_statistics{};
     LzssExhaustiveMatchFinder exhaustive_finder{
         input, parameters, &exhaustive_statistics};
@@ -236,6 +269,23 @@ int main(const int argc, const char* const argv[]) {
                 input, parameters, limits, typed_single_pass, workspace).error
                 == LzssTypedEncodeError::none;
     });
+    const auto frame_exhaustive_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok
+            && marc::frame::internal::encode_lzss_typed_context_frame(
+                frame_stream, limits, 0, 0, input, typed_two_pass, operations,
+                frame_exhaustive).error
+                == marc::frame::internal::
+                    LzssTypedContextFrameEncodeError::none;
+    });
+    const auto frame_hash_chain_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok
+            && marc::frame::internal::
+                encode_lzss_typed_context_frame_hash_chain(
+                    frame_stream, limits, 0, 0, input, typed_single_pass,
+                    operations, workspace, frame_hash_chain).error
+                == marc::frame::internal::
+                    LzssTypedContextFrameEncodeError::none;
+    });
     if (!timing_ok || exhaustive_output != hash_output) {
         std::cerr << "timed encoding failed\n";
         return 1;
@@ -245,6 +295,7 @@ int main(const int argc, const char* const argv[]) {
               << "input_bytes=" << input.size() << '\n'
               << "output_bytes=" << hash_output.size() << '\n'
               << "token_count=" << hash_plan.token_count << '\n'
+              << "contextual_frame_bytes=" << frame_hash_chain.size() << '\n'
               << "iterations=" << iterations << '\n'
               << "hash_workspace_bytes=" << requirements.workspace_size
               << '\n'
@@ -271,5 +322,9 @@ int main(const int argc, const char* const argv[]) {
                       input.size(), iterations);
     print_measurement("hash_chain_typed_single_pass",
                       typed_single_pass_seconds, input.size(), iterations);
+    print_measurement("contextual_frame_exhaustive",
+                      frame_exhaustive_seconds, input.size(), iterations);
+    print_measurement("contextual_frame_hash_chain",
+                      frame_hash_chain_seconds, input.size(), iterations);
     return 0;
 }

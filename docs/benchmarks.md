@@ -739,6 +739,23 @@ stable speedup claim or threshold. Exact token equality, one finder query per
 published token, conservative capacity, and atomic preflight rejection are
 the normative observations.
 
+### BM-0026: Contextual Dynamic Range HashChain frame baseline
+
+The first complete-frame HashChain route produces exactly the same 2,277-byte
+typed Contextual Dynamic Range frame as the Exhaustive route for the 4,326-byte
+README. This is a private frame body rather than the complete public stream;
+the measurement includes dictionary parsing, context modeling, entropy coding,
+descriptor construction, and frame serialization but excludes the outer stream
+prefix and public streaming lifecycle.
+
+Ten MSVC 19.51.36252 Release iterations report 0.304 MiB/s for the Exhaustive
+frame and 22.025 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.440 and
+27.280 MiB/s respectively. The large difference confirms that exhaustive match
+search dominates this small input even after contextual entropy work, but the
+timings remain descriptive and are neither stable speedup claims nor pass
+thresholds. Byte identity, successful decode, bounded workspace, and atomic
+failure are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

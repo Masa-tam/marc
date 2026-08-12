@@ -4778,3 +4778,12 @@ workspace bounds, atomic buffer checks, and internal benchmark as first-party
 references. No external LZSS implementation, parse-reuse design, source code,
 benchmark, corpus, result, test suite, patent text, or optimization description
 was consulted.
+
+### IR-0541
+
+The first complete HashChain frame route uses DD-760 through DD-766, TVG-0636
+through TVG-0642, marc's typed Contextual Dynamic Range frame encoder and
+decoder, single-pass typed parser, workspace and alias contracts, and internal
+benchmark as first-party references. No external LZSS, range-coder, combined
+codec, source code, frame integration, benchmark, corpus, result, test suite,
+patent text, or optimization description was consulted.

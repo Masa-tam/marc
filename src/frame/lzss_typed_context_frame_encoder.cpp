@@ -65,14 +65,17 @@ enum class OverlapCheck : std::uint8_t {
 
 } // namespace
 
-LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssTypedContextFrameEncodeResult plan_frame(
     const TypedContextStreamHeader& stream,
     const core::DecoderLimits& limits,
     const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
-    const std::span<context::internal::ModeledOperation> private_operations)
+    const std::span<context::internal::ModeledOperation> private_operations,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
     noexcept {
     LzssTypedContextFrameEncodeResult result{};
     std::size_t token_capacity_bytes{};
@@ -101,6 +104,22 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
             return fail_overlap(result, overlap);
         }
     }
+    if constexpr (UseHashChain) {
+        for (const auto overlap : {
+                 regions_overlap(raw_input.data(), raw_input.size(),
+                                 match_finder_workspace.data(),
+                                 match_finder_workspace.size()),
+                 regions_overlap(private_tokens.data(), token_capacity_bytes,
+                                 match_finder_workspace.data(),
+                                 match_finder_workspace.size()),
+                 regions_overlap(private_operations.data(),
+                                 operation_capacity_bytes,
+                                 match_finder_workspace.data(),
+                                 match_finder_workspace.size())}) {
+            if (overlap != OverlapCheck::disjoint)
+                return fail_overlap(result, overlap);
+        }
+    }
     if (validate_typed_context_stream_header(stream, limits)
         != TypedContextStreamHeaderError::none) {
         result.error = LzssTypedContextFrameEncodeError::invalid_stream;
@@ -112,8 +131,15 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
         return result;
     }
 
-    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits, private_tokens);
+    if constexpr (UseHashChain) {
+        result.token_encode = dictionary::internal::
+            encode_lzss_typed_tokens_hash_chain_single_pass(
+                raw_input, stream.dictionary, limits, private_tokens,
+                match_finder_workspace, statistics);
+    } else {
+        result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
+            raw_input, stream.dictionary, limits, private_tokens);
+    }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
         != dictionary::internal::LzssTypedEncodeError::none) {
@@ -214,12 +240,36 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
     }
 
     std::size_t workspace{};
-    if (!core::checked_add(raw_input.size(),
-                           result.token_encode.token_storage_size, workspace)
+    std::size_t token_workspace = result.token_encode.token_storage_size;
+    if constexpr (UseHashChain) {
+        if (!core::checked_multiply(
+                raw_input.size(),
+                sizeof(dictionary::internal::LzssTypedToken),
+                token_workspace)) {
+            result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
+            return result;
+        }
+    }
+    if (!core::checked_add(raw_input.size(), token_workspace, workspace)
         || !core::checked_add(workspace, operation_bytes, workspace)
         || !core::checked_add(workspace, result.serialized_size, workspace)) {
         result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
         return result;
+    }
+    if constexpr (UseHashChain) {
+        const auto required = dictionary::internal::
+            calculate_lzss_hash_chain_workspace(
+                raw_input.size(), stream.dictionary, limits);
+        if (required.error
+            != dictionary::internal::LzssHashChainError::none) {
+            result.error = LzssTypedContextFrameEncodeError::token_encode_error;
+            return result;
+        }
+        if (!core::checked_add(
+                workspace, required.workspace_size, workspace)) {
+            result.error = LzssTypedContextFrameEncodeError::arithmetic_overflow;
+            return result;
+        }
     }
     if (workspace > limits.max_internal_buffered_bytes) {
         result.error = LzssTypedContextFrameEncodeError::workspace_limit;
@@ -227,7 +277,8 @@ LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
     return result;
 }
 
-LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssTypedContextFrameEncodeResult encode_frame(
     const TypedContextStreamHeader& stream,
     const core::DecoderLimits& limits,
     const std::uint64_t sequence,
@@ -235,7 +286,9 @@ LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame(
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<context::internal::ModeledOperation> private_operations,
-    const std::span<std::byte> serialized_output) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics) noexcept {
     LzssTypedContextFrameEncodeResult result{};
     std::size_t token_capacity_bytes{};
     std::size_t operation_capacity_bytes{};
@@ -265,9 +318,17 @@ LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame(
             return fail_overlap(result, overlap);
         }
     }
-    result = plan_lzss_typed_context_frame(
+    if constexpr (UseHashChain) {
+        const auto overlap = regions_overlap(
+            serialized_output.data(), serialized_output.size(),
+            match_finder_workspace.data(), match_finder_workspace.size());
+        if (overlap != OverlapCheck::disjoint)
+            return fail_overlap(result, overlap);
+    }
+    result = plan_frame<UseHashChain>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens, private_operations);
+        private_tokens, private_operations, match_finder_workspace,
+        statistics);
     if (result.error != LzssTypedContextFrameEncodeError::none) return result;
     if (serialized_output.size() < result.serialized_size) {
         result.error =
@@ -320,6 +381,69 @@ LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame(
         result.error = LzssTypedContextFrameEncodeError::internal_error;
     }
     return result;
+}
+
+LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<context::internal::ModeledOperation> private_operations)
+    noexcept {
+    return plan_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_operations, {}, nullptr);
+}
+
+LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<context::internal::ModeledOperation> private_operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_operations, {}, serialized_output, nullptr);
+}
+
+LzssTypedContextFrameEncodeResult plan_lzss_typed_context_frame_hash_chain(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<context::internal::ModeledOperation> private_operations,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return plan_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_operations, match_finder_workspace,
+        statistics);
+}
+
+LzssTypedContextFrameEncodeResult encode_lzss_typed_context_frame_hash_chain(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<context::internal::ModeledOperation> private_operations,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return encode_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, private_operations, match_finder_workspace,
+        serialized_output, statistics);
 }
 
 } // namespace marc::frame::internal
