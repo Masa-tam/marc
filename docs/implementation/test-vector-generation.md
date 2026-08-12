@@ -8630,3 +8630,22 @@ tables, exact finder workspace, and complete frame and require workspace-limit
 rejection. Extend the internal benchmark with ten verified Contextual tANS
 frame iterations under MSVC and ClangCL, but assert no timing. Run all 2,841
 tests, including schema compatibility, under both compilers.
+
+### TVG-0647
+
+Build one match-bearing canonical Contextual tANS stream with the promoted
+streaming encoder and compare it byte for byte with the stream header followed
+by the Exhaustive reference frame. Require exact input consumption, complete
+output publication, and EndOfStream. Supply finder workspace one byte short
+and require stable out-of-memory after only the valid stream header is
+published; alias finder storage independently with raw staging, typed tokens,
+encode tables, serialized staging, and caller output and require rejection
+before frame publication.
+
+Require the encoder profile to calculate the exact largest-frame HashChain
+extent, align and partition it after encode tables, reject a forged finder
+offset, include it in aggregate limits, and carry it through the public C
+lifecycle. Re-run public C, CLI, and benchmark-smoke paths. Measure ten
+descriptive README iterations under MSVC and ClangCL while asserting only the
+unchanged 3,005-byte stream. Run all 2,841 tests, including schema
+compatibility, under both compilers.

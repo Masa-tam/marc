@@ -1540,7 +1540,7 @@ marc_status create_contextual_tans(
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualTansFrameStreamingEncoder(
                 stream, limits, primary, views.tokens, views.tables,
-                secondary);
+                views.match_finder, secondary);
     } else {
         marc::frame::internal::
             LzssContextualTansDecoderWorkspaceRequirements needed{};

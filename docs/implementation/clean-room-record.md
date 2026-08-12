@@ -18824,3 +18824,37 @@ discarded and the reviewed seed retained.
   seconds and all 2,841 registered ClangCL tests passed in 165.69 seconds with
   the 240-second per-test limit, including documentation layout and the
   complete schema-37-through-1 compatibility chain.
+
+## CR-0799: 2026-08-12 - Contextual tANS HashChain streaming promotion
+
+- Authoring method: carried marc's proven private Contextual tANS HashChain
+  frame route through the streaming encoder, opaque profile views, and public C
+  factory without altering the decoder or serialized representation.
+- References used: DD-760 through DD-771; IR-0546; TVG-0636 through TVG-0647;
+  marc's Contextual tANS profile and streaming lifecycle, fixed encode-table
+  staging, exact finder workspace, public C boundary, CLI, and benchmark.
+- Known implementations intentionally not consulted: external LZSS, tANS,
+  FSE, or combined implementations, source code, integrations, workspace
+  layouts, tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: promote only canonical Contextual tANS; retain the
+  independent fixed table region; append aligned finder storage to opaque
+  encoder views; preserve public error categories; require a fresh
+  requirements query; retain Exhaustive as oracle; and leave the format,
+  decoder, CLI selector, ABI version, and schema unchanged.
+- Generated-code task description: carry the byte-identical Contextual tANS
+  HashChain frame through bounded streaming and C lifecycles, enforce all
+  workspace and alias boundaries transactionally, and record public-path
+  performance without changing the stream.
+- Similarity review: profile layout, constructor routing, tests, benchmark
+  interpretation, and records were independently derived from marc-owned
+  contracts; no external implementation expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  static/shared library, CLI, core tests, and benchmark warning-clean. All 12
+  direct profile and streaming tests passed under each compiler; public CLI
+  and benchmark paths passed. Ten README iterations retained the 3,005-byte
+  stream and measured 1.068 MiB/s encode under MSVC and 1.754 MiB/s under
+  ClangCL. All 2,841 registered tests passed under each compiler with the
+  240-second per-test limit (about 187 seconds for MSVC and 191 seconds for
+  ClangCL), including documentation layout and the complete
+  schema-37-through-1 compatibility chain.

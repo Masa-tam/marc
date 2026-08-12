@@ -1,6 +1,7 @@
 #include "frame/lzss_contextual_tans_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_tans_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_tans_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -48,12 +49,15 @@ TEST(LzssContextualTansProfile, BuildsCanonicalDefaultWorkspace) {
               workspace.token_count
                   * sizeof(marc::dictionary::internal::LzssTypedToken));
     EXPECT_EQ(workspace.views_bytes,
-              workspace.table_offset
-                  + workspace.table_count * sizeof(std::uint16_t));
+              workspace.match_finder_offset + workspace.match_finder_bytes);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error, marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
     EXPECT_EQ(workspace.views_alignment,
               std::max(
                   alignof(marc::dictionary::internal::LzssTypedToken),
-                  alignof(std::uint16_t)));
+                  std::max(alignof(std::uint16_t), finder.workspace_alignment)));
 }
 
 TEST(LzssContextualTansProfile, UsesShortFrameAndEmptyEncoderExtent) {
@@ -66,7 +70,15 @@ TEST(LzssContextualTansProfile, UsesShortFrameAndEmptyEncoderExtent) {
     EXPECT_EQ(workspace.frame_encoded_bytes, 9248U);
     EXPECT_EQ(workspace.token_count, 17U);
 
-    workspace = {1, 1, 1, 1, 1, 1, 8};
+    workspace.frame_input_bytes = 1;
+    workspace.frame_encoded_bytes = 1;
+    workspace.token_count = 1;
+    workspace.table_count = 1;
+    workspace.table_offset = 1;
+    workspace.match_finder_offset = 1;
+    workspace.match_finder_bytes = 1;
+    workspace.views_bytes = 1;
+    workspace.views_alignment = 8;
     ASSERT_EQ(make_lzss_contextual_tans_profile(
                   {}, {}, stream, workspace),
               LzssContextualTansProfileError::none);
@@ -82,6 +94,7 @@ TEST(LzssContextualTansProfile, UsesShortFrameAndEmptyEncoderExtent) {
               LzssContextualTansWorkspaceError::none);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.tables.empty());
+    EXPECT_TRUE(views.match_finder.empty());
 }
 
 TEST(LzssContextualTansProfile, RejectsUnsupportedAndBoundedConfigurations) {
@@ -164,6 +177,9 @@ TEST(LzssContextualTansProfile, PartitionsTypedViewsTransactionally) {
               LzssContextualTansWorkspaceError::none);
     EXPECT_EQ(views.tokens.size(), requirements.token_count);
     EXPECT_EQ(views.tables.size(), requirements.table_count);
+    EXPECT_EQ(views.match_finder.size(), requirements.match_finder_bytes);
+    EXPECT_EQ(views.match_finder.data(),
+              storage.data() + requirements.match_finder_offset);
     auto forged_encoder = requirements;
     ++forged_encoder.table_offset;
     EXPECT_EQ(partition_lzss_contextual_tans_encoder_views(
@@ -171,11 +187,20 @@ TEST(LzssContextualTansProfile, PartitionsTypedViewsTransactionally) {
               LzssContextualTansWorkspaceError::invalid_requirements);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.tables.empty());
+    EXPECT_TRUE(views.match_finder.empty());
     forged_encoder = requirements;
     --forged_encoder.table_count;
     EXPECT_EQ(partition_lzss_contextual_tans_encoder_views(
                   forged_encoder, storage, views),
               LzssContextualTansWorkspaceError::invalid_requirements);
+    forged_encoder = requirements;
+    ++forged_encoder.match_finder_offset;
+    EXPECT_EQ(partition_lzss_contextual_tans_encoder_views(
+                  forged_encoder, storage, views),
+              LzssContextualTansWorkspaceError::invalid_requirements);
+    EXPECT_TRUE(views.tokens.empty());
+    EXPECT_TRUE(views.tables.empty());
+    EXPECT_TRUE(views.match_finder.empty());
     forged_encoder = requirements;
     ++forged_encoder.views_bytes;
     EXPECT_EQ(partition_lzss_contextual_tans_encoder_views(
@@ -272,7 +297,7 @@ TEST(LzssContextualTansProfile, RequirementsConstructStreamingRoundTrip) {
               LzssContextualTansWorkspaceError::none);
     LzssContextualTansFrameStreamingEncoder encoder{
         stream, limits, frame_input, encode_views.tokens,
-        encode_views.tables, frame_encoded};
+        encode_views.tables, encode_views.match_finder, frame_encoded};
     std::vector<std::byte> encoded(40'000);
     const auto encoded_result = encoder.process(
         raw, encoded, end_flag());

@@ -460,3 +460,10 @@ caller-owned HashChain Exact workspace after typed-token staging. Callers must
 use the current `marc_lzss_contextual_rans_workspace_requirements()` result
 rather than cache an earlier extent. The finder layout and strategy do not
 cross the ABI or stream; the decoder and serialized identity remain unchanged.
+
+The Contextual tANS encoder follows the same opaque-workspace rule. Its current
+views requirement contains typed-token staging, fixed encode tables, and the
+aligned HashChain Exact finder workspace. Callers must obtain the extent from
+`marc_lzss_contextual_tans_workspace_requirements()` and must not infer or
+cache the private partition. Finder selection does not add a configuration
+field, ABI revision, stream variant, or decoder requirement.

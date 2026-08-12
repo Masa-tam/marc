@@ -818,6 +818,21 @@ claims or pass thresholds. Exact descriptor, payload, frame bytes, successful
 decode, bounded table/finder workspace, and atomic rejection are the normative
 evidence.
 
+### BM-0031: Contextual tANS streaming HashChain promotion
+
+Ten complete public-lifecycle iterations over the 4,326-byte README preserve
+the 3,005-byte canonical stream and ratio 0.695 after the streaming encoder
+moves from Exhaustive to HashChain Exact. MSVC 19.51.36252 reports 1.068 MiB/s
+encode and 2.477 MiB/s decode; ClangCL 22.1.3 reports 1.754 and 1.229 MiB/s.
+These small-input timings are descriptive and are not stable thresholds.
+
+Encoder primary and secondary reservations remain 4,326 and 48,029 bytes.
+Opaque encoder views increase by the exact 82,840-byte finder workspace to
+396,896 bytes while retaining fixed encode-table staging. Decoder reservations
+and the 1,975,175-byte direction-maximum peak remain unchanged. Exact stream
+identity, bounded workspace partitioning, stable failure mapping, and
+successful public round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
