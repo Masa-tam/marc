@@ -19133,3 +19133,38 @@ discarded and the reviewed seed retained.
   about 186 seconds and ClangCL in about 195 seconds with the 240-second per-
   test limit, including documentation layout and the complete schema-37-
   through-1 compatibility chain.
+
+## CR-0808: 2026-08-13 - Byte-oriented LZSS Adaptive Huffman HashChain frame
+
+- Authoring method: refactored marc's byte-oriented LZSS plus Adaptive Huffman
+  frame planner and writer behind compile-time finder selection and connected
+  the existing exact HashChain byte-token producer to the shared FGK and frame
+  serialization body.
+- References used: DD-760 through DD-780; IR-0555; TVG-0636 through TVG-0656;
+  marc's canonical LZSS encoder, exact finder, bounded Adaptive Huffman codec,
+  frame codec, overlap helper, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS or
+  Adaptive Huffman implementations, source code, integrations, workspace
+  layouts, tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: preserve canonical dictionary and complete frame
+  bytes; retain Exhaustive as oracle; expose nested finder errors; enforce the
+  pre-existing disjointness contract on both routes; charge complete HashChain
+  workspace; and defer public routing until private proof is complete.
+- Generated-code task description: add a private exact HashChain route to the
+  byte-oriented LZSS plus Adaptive Huffman frame, prove byte identity and
+  bounded atomic failure, benchmark the complete frame, and leave its format
+  unchanged.
+- Similarity review: common-body factoring, overlap preflight, aggregate
+  accounting, regression vector, benchmark extension, and records were derived
+  independently from marc-owned contracts; no external implementation
+  expression entered the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected core
+  tests and internal benchmark warning-clean. All six direct encoder tests
+  passed under each compiler. Ten README iterations retained the 3,362-byte
+  frame and measured 0.084 versus 0.136 MiB/s under MSVC and 0.111 versus
+  0.188 MiB/s under ClangCL for Exhaustive versus HashChain. Full suites are
+  recorded after both runs. All 2,851 registered tests passed under MSVC in
+  about 175 seconds and ClangCL in about 182 seconds with the 240-second per-
+  test limit, including documentation layout and the complete schema-37-
+  through-1 compatibility chain.

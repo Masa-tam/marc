@@ -16019,3 +16019,23 @@ Treat `max_block_size` solely as the Blocked Huffman input-symbol limit. The
 HashChain dictionary preflight validates raw input against frame and total-
 output limits, not the independently sized entropy block; an outer frame may
 and normally does contain multiple entropy blocks.
+
+## DD-780: Byte-oriented LZSS Adaptive Huffman isolates HashChain production
+
+- Date: 2026-08-13
+- Status: accepted
+
+Refactor the byte-oriented LZSS plus Adaptive Huffman frame planner and writer
+behind compile-time finder selection. Both routes produce canonical LZSS byte
+tokens into the same staging and then share the unchanged Adaptive Huffman
+descriptor, bounded FGK payload, and generic frame header. Retain the existing
+public entry points as the Exhaustive oracle and add private HashChain plan and
+encode entries accepting a separate aligned finder span.
+
+Reject every raw-input, dictionary-staging, finder, and serialized-output alias
+before publishing a header, including aliases on the legacy route where the
+documented contract already required disjointness. Preserve nested finder
+errors and charge raw input, exact dictionary bytes, finder workspace, and the
+complete frame against aggregate memory. Do not add strategy metadata or alter
+the decoder, public streaming route, ABI, CLI, format, or schema until private
+identity and bounded failure are independently established.

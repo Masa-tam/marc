@@ -8794,3 +8794,20 @@ entropy-block limit. Require successful HashChain planning to prove that the
 dictionary raw-frame extent is not incorrectly constrained by the downstream
 entropy-block extent, then require the public CLI round trip under both
 compilers.
+
+### TVG-0656
+
+Encode one match-bearing byte-oriented LZSS plus Adaptive Huffman frame through
+the established Exhaustive route and the private HashChain route. Require
+identical canonical dictionary staging, dictionary extent, fixed descriptor
+extent, payload extent, serialized extent, complete frame bytes, and strict
+decode through the unchanged decoder.
+
+Provide finder capacity one byte short and require its stable nested error
+without modifying dictionary staging. Alias every pair involving raw input,
+dictionary staging, finder workspace, and serialized output and require
+rejection before publication. Set aggregate memory one byte below raw plus
+exact dictionary plus finder plus complete frame and require workspace-limit.
+Extend the internal README benchmark with ten verified iterations under MSVC
+and ClangCL while asserting no timing. Run all 2,851 registered tests,
+including schema compatibility, under both compilers.

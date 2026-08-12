@@ -8,6 +8,7 @@
 #include "frame/lzss_contextual_blocked_huffman_frame_encoder.hpp"
 #include "frame/lzss_contextual_adaptive_huffman_frame_encoder.hpp"
 #include "frame/lzss_frame.hpp"
+#include "frame/lzss_adaptive_huffman_frame.hpp"
 #include "frame/lzss_blocked_huffman_frame.hpp"
 
 #include <algorithm>
@@ -223,6 +224,41 @@ int main(const int argc, const char* const argv[]) {
             != marc::frame::LzssBlockedHuffmanFrameValidationError::none
         || byte_blocked_exhaustive != byte_blocked_hash_chain) {
         std::cerr << "LZSS Blocked Huffman frame equivalence failed\n";
+        return 1;
+    }
+
+    auto byte_adaptive_stream = lzss_frame_stream;
+    byte_adaptive_stream.entropy_algorithm =
+        marc::frame::EntropyAlgorithm::adaptive_huffman;
+    byte_adaptive_stream.entropy_variant = 1;
+    std::vector<std::byte> byte_adaptive_exhaustive_staging(
+        exhaustive_plan.output_size);
+    std::vector<std::byte> byte_adaptive_hash_staging(
+        exhaustive_plan.output_size);
+    const auto byte_adaptive_plan = marc::frame::
+        plan_lzss_adaptive_huffman_frame(
+            byte_adaptive_stream, parameters, limits, 0, 0, input,
+            byte_adaptive_exhaustive_staging);
+    if (byte_adaptive_plan.error != marc::frame::
+            LzssAdaptiveHuffmanFrameValidationError::none) {
+        std::cerr << "LZSS Adaptive Huffman frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> byte_adaptive_exhaustive(
+        byte_adaptive_plan.serialized_size);
+    std::vector<std::byte> byte_adaptive_hash_chain(
+        byte_adaptive_plan.serialized_size);
+    if (marc::frame::encode_lzss_adaptive_huffman_frame(
+            byte_adaptive_stream, parameters, limits, 0, 0, input,
+            byte_adaptive_exhaustive_staging, byte_adaptive_exhaustive).error
+            != marc::frame::LzssAdaptiveHuffmanFrameValidationError::none
+        || marc::frame::encode_lzss_adaptive_huffman_frame_hash_chain(
+            byte_adaptive_stream, parameters, limits, 0, 0, input,
+            byte_adaptive_hash_staging, workspace,
+            byte_adaptive_hash_chain).error
+            != marc::frame::LzssAdaptiveHuffmanFrameValidationError::none
+        || byte_adaptive_exhaustive != byte_adaptive_hash_chain) {
+        std::cerr << "LZSS Adaptive Huffman frame equivalence failed\n";
         return 1;
     }
 
@@ -504,6 +540,26 @@ int main(const int argc, const char* const argv[]) {
                     == marc::frame::
                         LzssBlockedHuffmanFrameValidationError::none;
         });
+    const auto byte_adaptive_exhaustive_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok
+                && marc::frame::encode_lzss_adaptive_huffman_frame(
+                    byte_adaptive_stream, parameters, limits, 0, 0, input,
+                    byte_adaptive_exhaustive_staging,
+                    byte_adaptive_exhaustive).error
+                    == marc::frame::
+                        LzssAdaptiveHuffmanFrameValidationError::none;
+        });
+    const auto byte_adaptive_hash_chain_seconds = measure_seconds(
+        iterations, [&] {
+            timing_ok = timing_ok
+                && marc::frame::encode_lzss_adaptive_huffman_frame_hash_chain(
+                    byte_adaptive_stream, parameters, limits, 0, 0, input,
+                    byte_adaptive_hash_staging, workspace,
+                    byte_adaptive_hash_chain).error
+                    == marc::frame::
+                        LzssAdaptiveHuffmanFrameValidationError::none;
+        });
     const auto typed_two_pass_seconds = measure_seconds(iterations, [&] {
         timing_ok = timing_ok && encode_lzss_typed_tokens_hash_chain(
             input, parameters, limits, typed_two_pass, workspace).error
@@ -608,6 +664,7 @@ int main(const int argc, const char* const argv[]) {
     if (!timing_ok || exhaustive_output != hash_output
         || lzss_frame_exhaustive != lzss_frame_hash_chain
         || byte_blocked_exhaustive != byte_blocked_hash_chain
+        || byte_adaptive_exhaustive != byte_adaptive_hash_chain
         || frame_exhaustive != frame_hash_chain
         || rans_exhaustive != rans_hash_chain
         || tans_exhaustive != tans_hash_chain
@@ -623,6 +680,8 @@ int main(const int argc, const char* const argv[]) {
               << "lzss_frame_bytes=" << lzss_frame_hash_chain.size() << '\n'
               << "lzss_blocked_huffman_frame_bytes="
               << byte_blocked_hash_chain.size() << '\n'
+              << "lzss_adaptive_huffman_frame_bytes="
+              << byte_adaptive_hash_chain.size() << '\n'
               << "token_count=" << hash_plan.token_count << '\n'
               << "contextual_frame_bytes=" << frame_hash_chain.size() << '\n'
               << "contextual_rans_frame_bytes=" << rans_hash_chain.size()
@@ -664,6 +723,12 @@ int main(const int argc, const char* const argv[]) {
                       iterations);
     print_measurement("lzss_blocked_huffman_frame_hash_chain",
                       byte_blocked_hash_chain_seconds, input.size(),
+                      iterations);
+    print_measurement("lzss_adaptive_huffman_frame_exhaustive",
+                      byte_adaptive_exhaustive_seconds, input.size(),
+                      iterations);
+    print_measurement("lzss_adaptive_huffman_frame_hash_chain",
+                      byte_adaptive_hash_chain_seconds, input.size(),
                       iterations);
     print_measurement("hash_chain_typed_two_pass", typed_two_pass_seconds,
                       input.size(), iterations);

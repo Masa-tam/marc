@@ -952,6 +952,20 @@ small-input timings are descriptive, not stable pass thresholds. Exhaustive
 stream identity, bounded profile sizing, stable capacity and alias rejection,
 and successful public round trip are the normative evidence.
 
+### BM-0040: Byte-oriented LZSS Adaptive Huffman HashChain frame baseline
+
+The private HashChain route produces exactly the same 3,362-byte LZSS plus
+Adaptive Huffman frame as Exhaustive for the 4,326-byte README, including the
+generic 56-byte header, fixed descriptor, and bounded FGK payload.
+
+Ten MSVC 19.51.36252 Release iterations report 0.084 MiB/s for Exhaustive and
+0.136 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.111 and 0.188 MiB/s.
+The remaining FGK model-update cost dominates this small input, so these values
+are descriptive and not stable speedup claims or pass thresholds. Exact staged
+tokens and complete frame bytes, successful strict decode, bounded finder
+capacity, aggregate accounting, and atomic alias rejection are the normative
+evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

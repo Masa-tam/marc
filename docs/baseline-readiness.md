@@ -2083,3 +2083,16 @@ also proves that dictionary input may span multiple 65,536-symbol entropy
 blocks. Full-suite admission is established by both 2,850-test runs under MSVC
 and ClangCL, including documentation layout and the complete schema
 compatibility chain.
+
+### BR-0117
+
+Byte-oriented LZSS plus Adaptive Huffman now has a private HashChain Exact
+complete-frame route sharing canonical dictionary staging, descriptor and FGK
+payload production, and generic header serialization with the Exhaustive
+oracle. Six direct encoder tests under MSVC and ClangCL prove complete byte
+identity and strict decode, exact finder capacity, all workspace alias
+rejection, one-byte-short aggregate enforcement, and atomic failure. The public
+streaming/profile/C/CLI/schema route remains unchanged pending a separate
+promotion step. Full-suite admission is recorded with this change.
+Both 2,851-test suites pass under MSVC and ClangCL, including documentation
+layout and the complete schema compatibility chain.

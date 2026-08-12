@@ -5071,3 +5071,12 @@ that HashChain producer while the legacy C++ constructor retains Exhaustive as
 an oracle. The existing opaque `views` region carries finder storage while
 encoding and Blocked Huffman block views while decoding. CLI identity, decoder,
 format, ABI signatures, and schema remain unchanged.
+
+The byte-oriented LZSS plus Adaptive Huffman frame now has parallel Exhaustive
+and HashChain Exact canonical-token producers behind one shared descriptor,
+bounded FGK payload, and generic-frame serialization body. Finder storage is a
+separate aligned caller-owned span, and raw input, dictionary staging, finder,
+and serialized output are rejected when any active regions overlap. Aggregate
+accounting charges raw input, exact dictionary bytes, exact finder storage, and
+the complete serialized frame. Streaming, profile sizing, C lifecycle, CLI,
+decoder, format, and schema remain on Exhaustive pending a separate promotion.
