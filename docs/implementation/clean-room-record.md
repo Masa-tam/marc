@@ -19095,3 +19095,41 @@ discarded and the reviewed seed retained.
   registered tests passed under MSVC in about 171 seconds and ClangCL in about
   176 seconds with the 240-second per-test limit, including documentation
   layout and the complete schema-37-through-1 compatibility chain.
+
+## CR-0807: 2026-08-13 - Byte-oriented LZSS Blocked Huffman HashChain streaming promotion
+
+- Authoring method: connected marc's proven private exact HashChain frame to
+  the existing byte-oriented LZSS plus Blocked Huffman streaming profile and C
+  lifecycle while retaining the Exhaustive constructor as a byte oracle.
+- References used: DD-760 through DD-779; IR-0554; TVG-0636 through TVG-0655;
+  marc's profile, C lifecycle, streaming encoder, exact finder, frame codec,
+  overlap helper, CLI, and public benchmark.
+- Known implementations intentionally not consulted: external LZSS or Huffman
+  implementations, source code, integrations, workspace layouts, ABI designs,
+  tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: omit search-strategy metadata; reuse direction-
+  dependent opaque views for the encoder finder; preserve the ABI and decoder;
+  retain Exhaustive as an oracle; and preflight every persistent and caller-
+  output alias.
+- Generated-code task description: promote byte-identical HashChain search
+  through byte-oriented LZSS plus Blocked Huffman streaming and C encoding with
+  exact bounded workspace, stable failures, cross-compiler tests, and public
+  benchmark evidence.
+- Similarity review: profile sizing, constructor overload, C workspace mapping,
+  overlap checks, regression vectors, and records were independently derived
+  from marc-owned contracts; no external implementation expression entered
+  the work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core, C API, CLI, and benchmark targets warning-clean. Thirteen direct frame,
+  profile, and streaming tests plus the strengthened public C lifecycle passed
+  under each compiler. The large-frame regression also exposed and removed an
+  incorrect HashChain comparison between raw-frame size and the downstream
+  entropy-block limit; the 76,800-byte CLI round trip then passed with
+  65,536-symbol blocks. Ten README iterations produced a 3,483-byte stream and
+  measured 9.904 MiB/s encode under MSVC and 9.581 MiB/s under ClangCL. Full
+  suites are recorded after both runs, including documentation layout and the
+  schema compatibility chain. All 2,850 registered tests passed under MSVC in
+  about 186 seconds and ClangCL in about 195 seconds with the 240-second per-
+  test limit, including documentation layout and the complete schema-37-
+  through-1 compatibility chain.

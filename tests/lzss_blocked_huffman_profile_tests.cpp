@@ -1,6 +1,7 @@
 #include "frame/lzss_blocked_huffman_profile.hpp"
 #include "frame/lzss_blocked_huffman_frame_streaming_decoder.hpp"
 #include "frame/lzss_blocked_huffman_frame_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -31,6 +32,13 @@ TEST(LzssBlockedHuffmanProfile, BuildsCanonicalProfileAndWorstCaseWorkspaces) {
     EXPECT_EQ(workspace.dictionary_staging_bytes, 2'000'000U);
     EXPECT_EQ(workspace.frame_encoded_bytes,
               56U + 2'000'000U + 31U * 16U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            1'000'000, config.parameters, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 }
 
 TEST(LzssBlockedHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
@@ -44,6 +52,7 @@ TEST(LzssBlockedHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 17U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 34U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 106U);
+    EXPECT_NE(workspace.match_finder_bytes, 0U);
 
     ASSERT_EQ(marc::frame::make_lzss_blocked_huffman_profile(
                   {}, {}, stream, workspace),
@@ -51,6 +60,8 @@ TEST(LzssBlockedHuffmanProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_alignment, 1U);
 }
 
 TEST(LzssBlockedHuffmanProfile, EnforcesBlockAndAggregateLimits) {

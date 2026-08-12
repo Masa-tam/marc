@@ -114,7 +114,10 @@ the same frame-atomic workspace roles as LZ77.
 The LZSS plus Blocked Huffman factory keeps the same three-region convention as
 the LZ77 composition. Its secondary region contains token staging followed by
 serialized-frame staging while encoding, or token staging followed by raw
-staging while decoding. Only decode requires aligned entropy-block views.
+staging while decoding. The opaque aligned views region contains the exact
+HashChain match-finder workspace while encoding and entropy-block views while
+decoding; neither private representation crosses the ABI. Finder selection is
+not stream metadata and does not change decoder requirements.
 Call `marc_lzss_blocked_huffman_workspace_requirements()` again after changing
 any size, LZSS parameter, or local limit.
 The LZSS plus Adaptive Huffman factory uses the same primary and secondary

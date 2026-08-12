@@ -2069,3 +2069,17 @@ alias rejection, one-byte-short aggregate enforcement, and atomic failure. The
 public streaming/profile/C/CLI/schema route remains unchanged pending a
 separate promotion step. Full-suite admission is established by both 2,848-test
 runs recorded with this change.
+
+### BR-0116
+
+Byte-oriented LZSS plus Blocked Huffman now selects HashChain Exact through its
+public streaming and C encode lifecycle without changing canonical bytes,
+decoder behavior, C signatures, ABI version, CLI selector, or interoperability
+schema. Encoder profile sizing exposes exact finder capacity through its
+direction-dependent opaque views region and includes it in aggregate limits.
+Direct profile, streaming, and public C tests pass under MSVC and ClangCL and
+the 4,326-byte README produces a 3,483-byte stream. A 76,800-byte CLI frame
+also proves that dictionary input may span multiple 65,536-symbol entropy
+blocks. Full-suite admission is established by both 2,850-test runs under MSVC
+and ClangCL, including documentation layout and the complete schema
+compatibility chain.

@@ -5066,6 +5066,8 @@ Blocked Huffman and generic-frame serialization. The private optimized route
 receives separate dictionary staging and aligned finder spans, rejects every
 raw/staging/finder/serialized alias before publishing a header, and charges raw
 input, exact dictionary bytes, finder workspace, and the complete serialized
-frame to aggregate memory. Its public streaming profile, C lifecycle, CLI,
-decoder, format, and schema remain on Exhaustive pending a separate promotion
-step.
+frame to aggregate memory. The public streaming and C encode routes now select
+that HashChain producer while the legacy C++ constructor retains Exhaustive as
+an oracle. The existing opaque `views` region carries finder storage while
+encoding and Blocked Huffman block views while decoding. CLI identity, decoder,
+format, ABI signatures, and schema remain unchanged.

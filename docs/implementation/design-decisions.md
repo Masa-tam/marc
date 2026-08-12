@@ -15995,3 +15995,27 @@ finder capacity before modifying dictionary staging, and charge raw bytes,
 exact dictionary bytes, exact finder workspace, and the complete frame to the
 HashChain aggregate limit. Do not add strategy metadata or alter decoder-visible
 bytes.
+
+## DD-779: Byte-oriented LZSS Blocked Huffman promotes HashChain without format state
+
+- Date: 2026-08-13
+- Status: accepted
+
+Route the byte-oriented LZSS plus Blocked Huffman streaming encoder through
+the proven exact HashChain frame entry. Add a finder-span constructor while
+retaining the existing C++ constructor as the Exhaustive byte oracle. Extend
+the encoder profile with the exact largest-frame finder extent and charge it
+to checked aggregate memory.
+
+Preserve the C function signatures and reuse the direction-dependent opaque
+views region: it holds the finder while encoding and Blocked Huffman block
+views while decoding. Require the current workspace query, alignment, and
+pairwise disjointness from raw input, dictionary staging, serialized staging,
+and caller output. Map one-byte-short finder capacity to out-of-memory. Do not
+record the search strategy or alter canonical dictionary bytes, entropy bytes,
+stream identity, decoder behavior, ABI version, CLI selector, or schema.
+
+Treat `max_block_size` solely as the Blocked Huffman input-symbol limit. The
+HashChain dictionary preflight validates raw input against frame and total-
+output limits, not the independently sized entropy block; an outer frame may
+and normally does contain multiple entropy blocks.

@@ -96,7 +96,6 @@ template <LzssMatchFinder Finder, typename Consumer>
         return validation;
     }
     if (input.size() > limits.max_frame_size
-        || input.size() > limits.max_block_size
         || input.size() > limits.max_total_output_size) {
         validation.error = LzssEncodeError::input_limit_exceeded;
     }

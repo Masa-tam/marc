@@ -4033,6 +4033,8 @@ marc_status marc_lzss_blocked_huffman_workspace_requirements(
                 requirements->secondary_bytes)) {
             return MARC_STATUS_LIMIT_EXCEEDED;
         }
+        requirements->views_bytes = needed.match_finder_bytes;
+        requirements->views_alignment = needed.match_finder_alignment;
         return MARC_STATUS_OK;
     }
     if (config->direction == MARC_DIRECTION_DECODE) {
@@ -4112,6 +4114,8 @@ marc_status marc_lzss_blocked_huffman_create(
                 {reinterpret_cast<std::byte*>(primary_workspace.data),
                  needed.frame_input_bytes},
                 {secondary, needed.dictionary_staging_bytes},
+                {reinterpret_cast<std::byte*>(views_workspace.data),
+                 needed.match_finder_bytes},
                 {encoded, needed.frame_encoded_bytes});
     } else {
         using View = marc::entropy::internal::BlockedHuffmanBlockView;

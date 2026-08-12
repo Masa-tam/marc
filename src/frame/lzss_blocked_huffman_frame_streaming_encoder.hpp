@@ -24,6 +24,14 @@ public:
         std::span<std::byte> frame_input_storage,
         std::span<std::byte> dictionary_staging,
         std::span<std::byte> frame_encoded_storage) noexcept;
+    LzssBlockedHuffmanFrameStreamingEncoder(
+        StreamHeader stream,
+        dictionary::internal::LzssParameters parameters,
+        core::DecoderLimits limits,
+        std::span<std::byte> frame_input_storage,
+        std::span<std::byte> dictionary_staging,
+        std::span<std::byte> match_finder_storage,
+        std::span<std::byte> frame_encoded_storage) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input,
@@ -51,6 +59,7 @@ private:
     core::DecoderLimits limits_{};
     std::span<std::byte> frame_input_storage_{};
     std::span<std::byte> dictionary_staging_{};
+    std::span<std::byte> match_finder_storage_{};
     std::span<std::byte> frame_encoded_storage_{};
     std::array<std::byte, lzss_blocked_huffman_stream_prefix_size> prefix_{};
     std::size_t frame_input_size_{};
@@ -63,6 +72,7 @@ private:
     State state_{State::draining_prefix};
     core::StreamError terminal_error_{};
     core::ErrorCode preparation_error_{core::ErrorCode::internal_error};
+    bool use_hash_chain_{};
 };
 
 } // namespace marc::frame

@@ -1,4 +1,5 @@
 #include "frame/lzss_blocked_huffman_frame_streaming_encoder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -6,6 +7,7 @@
 #include <array>
 #include <cstddef>
 #include <span>
+#include <cstdint>
 #include <vector>
 
 namespace {
@@ -177,4 +179,68 @@ TEST(LzssBlockedHuffmanFrameStreamingEncoder,
     result = reset.process(
         {}, {}, marc::core::flag_value(marc::core::ProcessFlags::reset_block));
     EXPECT_EQ(result.error.code, marc::core::ErrorCode::unsupported);
+}
+
+TEST(LzssBlockedHuffmanFrameStreamingEncoder,
+     HashChainMatchesOracleAndEnforcesFinderBoundaries) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'}};
+    auto stream = config(raw.size());
+    stream.frame_size = static_cast<std::uint32_t>(raw.size());
+    stream.entropy_block_size = 32;
+    std::array<std::byte, raw.size()> frame_input{};
+    std::array<std::byte, raw.size() * 2> dictionary_staging{};
+    std::array<std::byte, 160> frame_encoded{};
+    const auto required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::byte> allocation(
+        required.workspace_size + required.workspace_alignment - 1);
+    const auto address = reinterpret_cast<std::uintptr_t>(allocation.data());
+    const auto remainder = address % required.workspace_alignment;
+    const auto padding = remainder == 0
+        ? std::size_t{0} : required.workspace_alignment - remainder;
+    const auto finder = std::span<std::byte>{allocation}.subspan(
+        padding, required.workspace_size);
+
+    std::array<std::byte, raw.size() * 2> reference_staging{};
+    const auto plan = plan_lzss_blocked_huffman_stream(
+        stream, {}, {}, raw, reference_staging);
+    ASSERT_EQ(plan.error, LzssBlockedHuffmanStreamCodecError::none);
+    std::vector<std::byte> expected(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_blocked_huffman_stream(
+                  stream, {}, {}, raw, reference_staging, expected).error,
+              LzssBlockedHuffmanStreamCodecError::none);
+
+    LzssBlockedHuffmanFrameStreamingEncoder encoder{
+        stream, {}, {}, frame_input, dictionary_staging, finder,
+        frame_encoded};
+    std::vector<std::byte> actual(expected.size());
+    const auto result = encoder.process(
+        raw, actual,
+        marc::core::flag_value(marc::core::ProcessFlags::end_input));
+    ASSERT_EQ(result.status, marc::core::StreamStatus::end_of_stream);
+    actual.resize(result.output_produced);
+    EXPECT_EQ(actual, expected);
+
+    LzssBlockedHuffmanFrameStreamingEncoder short_finder{
+        stream, {}, {}, frame_input, dictionary_staging,
+        finder.first(finder.size() - 1), frame_encoded};
+    std::array<std::byte, 300> output{};
+    EXPECT_EQ(short_finder.process(raw, output, 0).error.code,
+              marc::core::ErrorCode::out_of_memory);
+
+    LzssBlockedHuffmanFrameStreamingEncoder output_alias{
+        stream, {}, {}, frame_input, dictionary_staging, finder,
+        frame_encoded};
+    EXPECT_EQ(output_alias.process({}, finder, 0).error.code,
+              marc::core::ErrorCode::invalid_argument);
+    LzssBlockedHuffmanFrameStreamingEncoder constructor_alias{
+        stream, {}, {}, frame_input, dictionary_staging,
+        dictionary_staging, frame_encoded};
+    EXPECT_EQ(constructor_alias.process({}, {}, 0).error.code,
+              marc::core::ErrorCode::invalid_argument);
 }

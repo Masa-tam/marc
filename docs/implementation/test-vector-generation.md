@@ -8771,3 +8771,26 @@ vector that the lower entropy workspace is admitted. Extend the internal README
 benchmark with ten verified iterations under MSVC and ClangCL, but assert no
 timing. Run all 2,848 registered tests, including schema compatibility, under
 both compilers.
+
+### TVG-0655
+
+Construct the byte-oriented LZSS plus Blocked Huffman streaming encoder with
+the exact HashChain workspace and require complete stream identity with the
+legacy Exhaustive constructor on a match-bearing input. Repeat with finder
+capacity one byte short and require out-of-memory at frame preparation. Alias
+finder storage with constructor workspaces and caller output and require
+invalid-argument without input consumption.
+
+Query the public C encoder for a match-bearing twelve-byte frame and require a
+nonzero aligned opaque finder extent. Reject one-byte-short and misaligned
+views, encode through the optimized path, and decode through the unchanged
+public path to the exact input. Run the public README benchmark for ten
+iterations under MSVC and ClangCL while asserting no timing threshold. Run all
+registered tests, including schema compatibility, under both compilers with
+the 240-second per-test limit.
+
+Also encode the CLI's 76,800-byte repeated-text frame with a 65,536-symbol
+entropy-block limit. Require successful HashChain planning to prove that the
+dictionary raw-frame extent is not incorrectly constrained by the downstream
+entropy-block extent, then require the public CLI round trip under both
+compilers.

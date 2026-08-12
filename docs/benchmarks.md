@@ -937,6 +937,21 @@ claims or pass thresholds. Exact staged tokens and frame bytes, bounded finder
 capacity, complete aggregate accounting, alias rejection, and unchanged decode
 are the normative evidence.
 
+### BM-0039: Byte-oriented LZSS Blocked Huffman public HashChain promotion
+
+The public `lzss-blocked-huffman` benchmark over the 4,326-byte README emits a
+3,483-byte stream at ratio 0.805 after its streaming and C encode routes select
+HashChain Exact. Encoder primary and secondary workspaces are 4,326 and 17,376
+bytes, and the direction-dependent opaque views region now reserves 82,840
+bytes for the finder. Decoder workspace and the 8,389,872-byte
+direction-maximum peak remain unchanged.
+
+Ten MSVC 19.51.36252 Release iterations report 9.904 MiB/s encode and
+10.713 MiB/s decode. ClangCL 22.1.3 reports 9.581 and 13.364 MiB/s. These
+small-input timings are descriptive, not stable pass thresholds. Exhaustive
+stream identity, bounded profile sizing, stable capacity and alias rejection,
+and successful public round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
