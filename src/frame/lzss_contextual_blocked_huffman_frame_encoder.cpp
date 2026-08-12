@@ -80,13 +80,15 @@ enum class OverlapCheck : std::uint8_t {
 
 } // namespace
 
-LzssContextualBlockedHuffmanFrameEncodeResult
-plan_lzss_contextual_blocked_huffman_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssContextualBlockedHuffmanFrameEncodeResult plan_frame(
     const LzssContextualBlockedHuffmanStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> raw_input,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
     noexcept {
     LzssContextualBlockedHuffmanFrameEncodeResult result{};
     std::size_t token_capacity{};
@@ -101,6 +103,20 @@ plan_lzss_contextual_blocked_huffman_frame(
     if (overlap != OverlapCheck::disjoint) {
         return fail_overlap(result, overlap);
     }
+    if constexpr (UseHashChain) {
+        const std::array finder_overlaps{
+            regions_overlap(raw_input.data(), raw_input.size(),
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+            regions_overlap(private_tokens.data(), token_capacity,
+                            match_finder_workspace.data(),
+                            match_finder_workspace.size()),
+        };
+        for (const auto finder_overlap : finder_overlaps) {
+            if (finder_overlap != OverlapCheck::disjoint)
+                return fail_overlap(result, finder_overlap);
+        }
+    }
     if (validate_lzss_contextual_blocked_huffman_stream_header(stream, limits)
         != LzssContextualBlockedHuffmanStreamHeaderError::none) {
         result.error =
@@ -113,8 +129,15 @@ plan_lzss_contextual_blocked_huffman_frame(
         return result;
     }
 
-    result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-        raw_input, stream.dictionary, limits, private_tokens);
+    if constexpr (UseHashChain) {
+        result.token_encode = dictionary::internal::
+            encode_lzss_typed_tokens_hash_chain_single_pass(
+                raw_input, stream.dictionary, limits, private_tokens,
+                match_finder_workspace, statistics);
+    } else {
+        result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
+            raw_input, stream.dictionary, limits, private_tokens);
+    }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
         != dictionary::internal::LzssTypedEncodeError::none) {
@@ -187,14 +210,45 @@ plan_lzss_contextual_blocked_huffman_frame(
             LzssContextualBlockedHuffmanFrameEncodeError::arithmetic_overflow;
         return result;
     }
+    std::size_t token_workspace = result.token_encode.token_storage_size;
+    if constexpr (UseHashChain) {
+        if (!core::checked_multiply(
+                raw_input.size(),
+                sizeof(dictionary::internal::LzssTypedToken),
+                token_workspace)) {
+            result.error = LzssContextualBlockedHuffmanFrameEncodeError::
+                arithmetic_overflow;
+            return result;
+        }
+    }
     std::size_t workspace{};
     if (!core::checked_add(
-            raw_input.size(), result.token_encode.token_storage_size, workspace)
+            raw_input.size(), token_workspace, workspace)
         || !core::checked_add(
             workspace, result.serialized_size, workspace)) {
         result.error =
             LzssContextualBlockedHuffmanFrameEncodeError::arithmetic_overflow;
         return result;
+    }
+    if constexpr (UseHashChain) {
+        const auto required = dictionary::internal::
+            calculate_lzss_hash_chain_workspace(
+                raw_input.size(), stream.dictionary, limits);
+        if (required.error
+            != dictionary::internal::LzssHashChainError::none) {
+            result.error =
+                LzssContextualBlockedHuffmanFrameEncodeError::token_encode_error;
+            result.token_encode.error = dictionary::internal::
+                LzssTypedEncodeError::match_finder_error;
+            result.token_encode.match_finder_error = required.error;
+            return result;
+        }
+        if (!core::checked_add(
+                workspace, required.workspace_size, workspace)) {
+            result.error = LzssContextualBlockedHuffmanFrameEncodeError::
+                arithmetic_overflow;
+            return result;
+        }
     }
     if (workspace > limits.max_internal_buffered_bytes) {
         result.error =
@@ -203,14 +257,17 @@ plan_lzss_contextual_blocked_huffman_frame(
     return result;
 }
 
-LzssContextualBlockedHuffmanFrameEncodeResult
-encode_lzss_contextual_blocked_huffman_frame(
+template <bool UseHashChain>
+[[nodiscard]] LzssContextualBlockedHuffmanFrameEncodeResult encode_frame(
     const LzssContextualBlockedHuffmanStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
     const std::uint64_t output_already_committed,
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
-    const std::span<std::byte> serialized_output) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
     LzssContextualBlockedHuffmanFrameEncodeResult result{};
     std::size_t token_capacity{};
     if (!token_capacity_bytes(private_tokens, token_capacity)) {
@@ -231,9 +288,16 @@ encode_lzss_contextual_blocked_huffman_frame(
     if (std::ranges::find(overlaps, OverlapCheck::overlap) != overlaps.end()) {
         return fail_overlap(result, OverlapCheck::overlap);
     }
-    result = plan_lzss_contextual_blocked_huffman_frame(
+    if constexpr (UseHashChain) {
+        const auto finder_overlap = regions_overlap(
+            serialized_output.data(), serialized_output.size(),
+            match_finder_workspace.data(), match_finder_workspace.size());
+        if (finder_overlap != OverlapCheck::disjoint)
+            return fail_overlap(result, finder_overlap);
+    }
+    result = plan_frame<UseHashChain>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens);
+        private_tokens, match_finder_workspace, statistics);
     if (result.error
         != LzssContextualBlockedHuffmanFrameEncodeError::none) {
         return result;
@@ -305,6 +369,64 @@ encode_lzss_contextual_blocked_huffman_frame(
             LzssContextualBlockedHuffmanFrameEncodeError::internal_error;
     }
     return result;
+}
+
+LzssContextualBlockedHuffmanFrameEncodeResult
+plan_lzss_contextual_blocked_huffman_frame(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    noexcept {
+    return plan_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, {}, nullptr);
+}
+
+LzssContextualBlockedHuffmanFrameEncodeResult
+encode_lzss_contextual_blocked_huffman_frame(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode_frame<false>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, {}, serialized_output, nullptr);
+}
+
+LzssContextualBlockedHuffmanFrameEncodeResult
+plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return plan_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, match_finder_workspace, statistics);
+}
+
+LzssContextualBlockedHuffmanFrameEncodeResult
+encode_lzss_contextual_blocked_huffman_frame_hash_chain(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, const std::uint64_t sequence,
+    const std::uint64_t output_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    const std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    noexcept {
+    return encode_frame<true>(
+        stream, limits, sequence, output_already_committed, raw_input,
+        private_tokens, match_finder_workspace, serialized_output,
+        statistics);
 }
 
 } // namespace marc::frame::internal

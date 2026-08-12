@@ -5007,3 +5007,12 @@ output regions disjoint. Short finder capacity maps to out-of-memory, policy
 rejection maps to limit exceeded, and Exhaustive remains a private byte-
 identity oracle. No stream field, decoder behavior, public selector, ABI
 version, or schema changes.
+
+The private Contextual Blocked Huffman frame now has parallel Exhaustive and
+HashChain Exact typed-token producers behind one shared context-model,
+canonical-table, descriptor, payload, and frame-header body. Finder storage is
+a separate aligned caller-owned region checked against raw input, typed-token
+staging, and serialized output. Its aggregate charges the conservative token
+reservation, exact finder workspace, raw input, and complete frame. Streaming,
+profile sizing, public ABI, decoder, stream identity, CLI, and schema continue
+to select the established route pending a separate promotion step.

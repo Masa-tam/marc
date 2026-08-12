@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <ranges>
 #include <span>
 #include <vector>
@@ -132,6 +133,116 @@ TEST(LzssContextualBlockedHuffmanFrameEncoder,
     ASSERT_EQ(result.error,
               LzssContextualBlockedHuffmanFrameDecodeError::none);
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameEncoder,
+     HashChainMatchesExhaustiveAndRejectsWorkspaceFailuresAtomically) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}};
+    const auto stream = stream_for(raw.size());
+    std::array<LzssTypedToken, raw.size()> exhaustive_tokens{};
+    const auto exhaustive_plan = plan_lzss_contextual_blocked_huffman_frame(
+        stream, {}, 0, 0, raw, exhaustive_tokens);
+    ASSERT_EQ(exhaustive_plan.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    std::vector<std::byte> exhaustive(exhaustive_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame(
+                  stream, {}, 0, 0, raw, exhaustive_tokens,
+                  exhaustive).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+
+    const auto finder_requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), stream.dictionary, {});
+    ASSERT_EQ(finder_requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    std::vector<std::max_align_t> finder_backing(
+        (finder_requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto finder = std::as_writable_bytes(std::span{finder_backing}).first(
+        finder_requirements.workspace_size);
+    std::array<LzssTypedToken, raw.size()> hash_tokens{};
+    marc::dictionary::internal::LzssMatchFinderStatistics statistics{};
+    const auto hash_plan =
+        plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+            stream, {}, 0, 0, raw, hash_tokens, finder, &statistics);
+    ASSERT_EQ(hash_plan.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    EXPECT_EQ(hash_plan.serialized_size, exhaustive_plan.serialized_size);
+    EXPECT_EQ(hash_plan.descriptor_size, exhaustive_plan.descriptor_size);
+    EXPECT_EQ(hash_plan.token_count, exhaustive_plan.token_count);
+    EXPECT_EQ(hash_plan.event_count, exhaustive_plan.event_count);
+    EXPECT_EQ(hash_plan.decision_count, exhaustive_plan.decision_count);
+    EXPECT_EQ(hash_plan.payload_size, exhaustive_plan.payload_size);
+    EXPECT_EQ(statistics.query_count, hash_plan.token_count);
+
+    std::vector<std::byte> hash(hash_plan.serialized_size);
+    statistics = {};
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame_hash_chain(
+                  stream, {}, 0, 0, raw, hash_tokens, finder, hash,
+                  &statistics).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    EXPECT_EQ(hash, exhaustive);
+    EXPECT_EQ(statistics.query_count, hash_plan.token_count);
+
+    std::array<HuffmanDecodeTable, 35> tables{};
+    std::array<LzssTypedToken, raw.size()> decode_tokens{};
+    std::array<std::byte, raw.size()> decoded{};
+    ASSERT_EQ(decode_lzss_contextual_blocked_huffman_frame(
+                  hash, {stream, {}, 0, 0}, tables, decode_tokens,
+                  decoded).error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
+
+    std::ranges::fill(hash, std::byte{0xcc});
+    auto short_finder = finder.first(finder.size() - 1);
+    auto failed = encode_lzss_contextual_blocked_huffman_frame_hash_chain(
+        stream, {}, 0, 0, raw, hash_tokens, short_finder, hash);
+    EXPECT_EQ(failed.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::token_encode_error);
+    EXPECT_EQ(failed.token_encode.match_finder_error,
+              marc::dictionary::internal::LzssHashChainError::
+                  workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(hash, [](const auto value) {
+        return value == std::byte{0xcc};
+    }));
+
+    std::vector<std::byte> shared(
+        std::max(finder.size(), hash.size()), std::byte{0xcc});
+    failed = encode_lzss_contextual_blocked_huffman_frame_hash_chain(
+        stream, {}, 0, 0, raw, hash_tokens,
+        std::span<std::byte>{shared}.first(finder.size()),
+        std::span<std::byte>{shared}.first(hash.size()));
+    EXPECT_EQ(failed.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::
+                  overlapping_workspaces);
+
+    auto raw_copy = raw;
+    failed = plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+        stream, {}, 0, 0, raw_copy, hash_tokens,
+        std::span<std::byte>{raw_copy});
+    EXPECT_EQ(failed.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::
+                  overlapping_workspaces);
+    failed = plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+        stream, {}, 0, 0, raw, hash_tokens,
+        std::as_writable_bytes(std::span{hash_tokens}));
+    EXPECT_EQ(failed.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::
+                  overlapping_workspaces);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 64;
+    limits.max_block_size = 64;
+    limits.max_internal_buffered_bytes = raw.size()
+        + raw.size() * sizeof(LzssTypedToken) + finder.size()
+        + hash_plan.serialized_size - 1;
+    failed = plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+        stream, limits, 0, 0, raw, hash_tokens, finder);
+    EXPECT_EQ(failed.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::workspace_limit);
 }
 
 TEST(LzssContextualBlockedHuffmanFrameEncoder,

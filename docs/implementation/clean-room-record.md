@@ -18858,3 +18858,39 @@ discarded and the reviewed seed retained.
   240-second per-test limit (about 187 seconds for MSVC and 191 seconds for
   ClangCL), including documentation layout and the complete
   schema-37-through-1 compatibility chain.
+
+## CR-0800: 2026-08-12 - Contextual Blocked Huffman HashChain frame
+
+- Authoring method: refactored marc's Contextual Blocked Huffman frame planner
+  and writer into one compile-time-selected body, then selected the existing
+  single-pass typed HashChain route without changing context modeling, bounded
+  canonical-table construction, entropy coding, or format logic.
+- References used: DD-760 through DD-772; IR-0547; TVG-0636 through TVG-0648;
+  marc's Contextual Blocked Huffman encoder/decoder, typed parser, exact finder,
+  workspace contracts, deterministic tests, and internal benchmark.
+- Known implementations intentionally not consulted: external LZSS, Huffman,
+  or combined implementations, source code, integrations, workspace layouts,
+  tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: select only token production; preserve bounded
+  context/table construction; require finder disjointness from raw, token, and
+  serialized regions; charge conservative token capacity and exact finder
+  storage; retain Exhaustive as oracle; and defer streaming and public routing
+  until this frame is proven.
+- Generated-code task description: connect the private Contextual Blocked
+  Huffman frame to HashChain Exact, prove exact descriptor/payload/frame bytes
+  and decode, preserve bounded atomic failure, and measure complete-frame cost
+  without changing the format.
+- Similarity review: common-body refactoring, workspace checks, regression
+  vectors, benchmark extension, and records were independently derived from
+  marc-owned contracts; no external implementation expression entered the
+  work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core tests and internal benchmark warning-clean. All seven direct Contextual
+  Blocked Huffman frame encoder tests passed under each compiler. Ten README
+  iterations produced identical 2,392-byte frames and measured 0.303 versus
+  8.613 MiB/s under MSVC and 0.417 versus 11.748 MiB/s under ClangCL for
+  Exhaustive versus HashChain respectively. All 2,842 registered tests passed
+  under each compiler with the 240-second per-test limit (about 181 seconds
+  for MSVC and 183 seconds for ClangCL), including documentation layout and
+  the complete schema-37-through-1 compatibility chain.

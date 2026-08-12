@@ -8649,3 +8649,21 @@ lifecycle. Re-run public C, CLI, and benchmark-smoke paths. Measure ten
 descriptive README iterations under MSVC and ClangCL while asserting only the
 unchanged 3,005-byte stream. Run all 2,841 tests, including schema
 compatibility, under both compilers.
+
+### TVG-0648
+
+Encode a match-bearing raw frame through the established Exhaustive and new
+HashChain Contextual Blocked Huffman routes. Require identical serialized,
+descriptor, token, event, decision, and payload extents, one finder query per
+token, byte-identical descriptor and payload, and successful complete-frame
+decode to the exact raw input.
+
+Provide finder workspace one byte short and require the nested stable
+workspace-too-small detail while serialized output retains its sentinel. Alias
+finder workspace independently with raw input, typed-token staging, and
+serialized output and require rejection before shared storage changes. Set
+aggregate memory one byte below raw input plus conservative token reservation,
+exact finder workspace, and complete frame and require workspace-limit
+rejection. Extend the internal benchmark with ten verified Contextual Blocked
+Huffman frame iterations under MSVC and ClangCL, but assert no timing. Run all
+2,842 tests, including schema compatibility, under both compilers.

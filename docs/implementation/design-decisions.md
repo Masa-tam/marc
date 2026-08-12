@@ -15857,3 +15857,24 @@ CLI, and schema because Exhaustive and HashChain Exact produce identical
 canonical tokens and the decoder needs no strategy information. Require
 callers to query the opaque requirements again, retain Exhaustive as the
 private oracle, and preserve the independent caller-owned encode-table region.
+
+## DD-772: Contextual Blocked Huffman isolates HashChain token production
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for Contextual Blocked
+Huffman through one compile-time-selected frame body shared with Exhaustive.
+Select only typed-token production; leave field contexts, per-context bounded
+frequency collection, canonical table construction, descriptor serialization,
+payload coding, and frame header common. The HashChain route accepts a separate
+aligned finder workspace and optional statistics.
+
+Reject finder overlap with raw input, token staging, or serialized output
+before finder initialization. Charge raw input, the conservative one-token-per-
+byte reservation, exact finder workspace, and complete serialized frame to
+aggregate memory. Retain streaming, profile sizing, public C ABI, CLI, format,
+and schema on Exhaustive until exact frame identity, decoding, bounded failure,
+and performance are demonstrated independently. Preserve Adaptive Huffman as a
+separate later integration because its node and symbol staging adds different
+workspace boundaries.
