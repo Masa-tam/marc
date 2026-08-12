@@ -394,6 +394,8 @@ constexpr std::uint64_t maximum_buffered_bytes(const Codec codec) noexcept {
         const auto dictionary_bytes =
             lzss_dynamic_range_frame_size * UINT64_C(2);
         return lzss_dynamic_range_frame_size + dictionary_bytes
+            + lzss_dynamic_range_frame_size
+                * lzss_hash_chain_max_workspace_per_input_byte
             + frame_header_size + entropy_descriptor_size
             + maximum_frame_payload(codec);
     }

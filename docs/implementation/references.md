@@ -4949,3 +4949,13 @@ codec, overlap helper, and internal benchmark as first-party references. No
 external LZSS or range-coder implementation, source code, integration,
 workspace layout, benchmark, corpus, result, test suite, patent text, or
 optimization description was consulted.
+
+### IR-0558
+
+The byte-oriented LZSS plus Dynamic Range HashChain streaming promotion uses
+DD-760 through DD-783, TVG-0636 through TVG-0659, marc's independently written
+profile, C lifecycle, streaming encoder, byte-identical private frame routes,
+exact finder, overlap helper, CLI, and public benchmark as first-party
+references. No external LZSS or range-coder implementation, source code,
+integration, workspace layout, ABI design, benchmark, corpus, result, test
+suite, patent text, or optimization description was consulted.

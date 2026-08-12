@@ -5091,6 +5091,9 @@ descriptor, payload, and generic-frame serialization body. The private
 HashChain entry receives a separate aligned caller-owned finder span; raw
 input, dictionary staging, finder, and serialized output must be mutually
 disjoint. Aggregate accounting charges raw input, exact dictionary bytes,
-exact finder storage, and the complete serialized frame. Streaming, profile
-sizing, C lifecycle, CLI, decoder, format, and schema remain on Exhaustive
-pending a separate promotion.
+exact finder storage, and the complete serialized frame. The public streaming
+encoder and C encode lifecycle select HashChain while the retained C++
+constructor remains the Exhaustive byte oracle. Profile sizing reserves the
+exact finder plus alignment allowance ahead of dictionary and frame staging in
+the secondary region. Decoder, stream identity, CLI selector, ABI signature,
+format, and schema are unchanged.

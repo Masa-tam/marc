@@ -1,6 +1,7 @@
 #include "frame/lzss_dynamic_range_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -68,6 +69,21 @@ LzssDynamicRangeProfileError make_lzss_dynamic_range_profile(
         return LzssDynamicRangeProfileError::none;
     }
 
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssDynamicRangeProfileError::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.parameters, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error
+                == dictionary::internal::LzssHashChainError::
+                    workspace_limit_exceeded
+            ? LzssDynamicRangeProfileError::limit_exceeded
+            : LzssDynamicRangeProfileError::arithmetic_overflow;
+    }
+
     std::uint64_t dictionary_bytes{};
     std::uint64_t payload_bytes{};
     std::uint64_t entropy_buffered_bytes{};
@@ -89,6 +105,10 @@ LzssDynamicRangeProfileError make_lzss_dynamic_range_profile(
         || !core::checked_add(
             largest_frame, dictionary_bytes, aggregate_bytes)
         || !core::checked_add(
+            aggregate_bytes,
+            static_cast<std::uint64_t>(finder.workspace_size),
+            aggregate_bytes)
+        || !core::checked_add(
             aggregate_bytes, frame_encoded_bytes, aggregate_bytes)) {
         return LzssDynamicRangeProfileError::arithmetic_overflow;
     }
@@ -105,6 +125,9 @@ LzssDynamicRangeProfileError make_lzss_dynamic_range_profile(
         workspace = {};
         return LzssDynamicRangeProfileError::arithmetic_overflow;
     }
+    workspace.match_finder_bytes = finder.workspace_size;
+    workspace.match_finder_alignment = finder.workspace_size == 0
+        ? 1 : finder.workspace_alignment;
     return LzssDynamicRangeProfileError::none;
 }
 

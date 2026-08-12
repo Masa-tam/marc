@@ -131,10 +131,12 @@ Each outer frame resets both LZSS history and its one FGK tree. Call
 `marc_lzss_adaptive_huffman_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
 The LZSS plus Dynamic Range factory has the same byte-only ownership and no
-views region. Encoding partitions secondary storage into canonical LZSS tokens
-and one complete range-coded frame; decoding partitions it into token staging
-and private raw staging. The configuration fixes Dynamic Range variant 1 and
-has no entropy-block parameter. Call
+views region. Encoding partitions secondary storage into an internally aligned
+exact HashChain finder, canonical LZSS token staging, and one complete range-
+coded frame; the workspace query includes maximum alignment padding for an
+otherwise unaligned secondary pointer. Decoding partitions it into token
+staging and private raw staging. The configuration fixes Dynamic Range variant
+1 and has no entropy-block parameter. Call
 `marc_lzss_dynamic_range_workspace_requirements()` again after changing the
 direction, known original size, frame size, LZSS parameters, or any hard limit.
 Creation failure leaves the caller's transform pointer null.

@@ -996,6 +996,22 @@ claims or pass thresholds. Exact staged tokens and complete frame bytes,
 successful strict decode, bounded finder capacity, aggregate accounting, and
 atomic alias rejection are the normative evidence.
 
+### BM-0043: Byte-oriented LZSS Dynamic Range public HashChain promotion
+
+The public `lzss-dynamic-range` benchmark over the 4,326-byte README emits the
+unchanged 3,355-byte stream at ratio 0.776 after its streaming and C encode
+routes select HashChain Exact. Encoder primary workspace remains 4,326 bytes;
+secondary workspace is 108,880 bytes and now contains alignment allowance, the
+exact finder, canonical dictionary staging, and complete worst-case frame.
+Views remain zero. Decoder workspace and the 655,493-byte direction-maximum
+peak remain unchanged.
+
+Ten MSVC 19.51.36252 Release iterations report 7.588 MiB/s encode and
+13.548 MiB/s decode. ClangCL 22.1.3 reports 10.051 and 18.444 MiB/s. These
+small-input timings are descriptive and not stable pass thresholds. Exhaustive
+stream identity, bounded profile sizing, stable capacity and alias rejection,
+and successful public round trip are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
