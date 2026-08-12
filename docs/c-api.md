@@ -219,13 +219,15 @@ whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame
 data.
 The LZSS plus rANS factory uses the common three-region convention. Encoding
-uses primary for raw-frame collection, partitions secondary into canonical
-LZSS tokens and one complete rANS frame, and reports zero views. Decoding uses
+uses primary for raw-frame collection, partitions secondary into alignment
+allowance, exact HashChain finder storage, canonical LZSS tokens, and one
+complete rANS frame, and reports zero views. Decoding uses
 primary for the serialized frame, partitions secondary into token and private
 raw staging, and receives aligned opaque rANS block views. Call
 `marc_lzss_rans_workspace_requirements()` again after changing direction,
 known original size, either block dimension, LZSS parameters, or any hard
-limit. The public header exposes only byte counts and alignment.
+limit. Finder shortage fails before frame publication; its private layout does
+not cross the ABI. The public header exposes only byte counts and alignment.
 The LZSS plus tANS factory follows the same three-region ownership policy.
 Encoding uses primary storage for raw-frame collection and partitions
 secondary storage into canonical LZSS tokens and one complete tANS frame;

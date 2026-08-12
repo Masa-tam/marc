@@ -8882,3 +8882,21 @@ exact dictionary plus finder plus complete frame and require workspace-limit.
 Extend the internal README benchmark with ten verified iterations under MSVC
 and ClangCL while asserting no timing. Run all 2,855 registered tests,
 including schema compatibility, under both compilers.
+
+### TVG-0661
+
+Construct the byte-oriented LZSS plus rANS streaming encoder with the exact
+aligned HashChain workspace and require complete stream identity with the
+retained Exhaustive C++ oracle on a match-bearing frame. Repeat with finder
+capacity one byte short and require out-of-memory at frame preparation. Alias
+finder storage with constructor workspaces and caller output and require
+invalid-argument without input consumption.
+
+Query the public C encoder for a match-bearing twelve-byte frame and require
+secondary capacity beyond dictionary and frame staging; reject a one-byte-
+short secondary region, then encode through the optimized path and decode
+through the unchanged public path to the exact input. Exercise the public CLI
+and benchmark with aggregate limits containing the finder worst case. Run the
+public README benchmark for ten iterations under MSVC and ClangCL without a
+timing threshold. Run all 2,856 registered tests, including schema
+compatibility, under both compilers with the 240-second per-test limit.

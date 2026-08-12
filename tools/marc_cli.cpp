@@ -103,8 +103,9 @@ constexpr std::uint64_t lzss_rans_payload_size =
 constexpr std::uint64_t lzss_rans_encoder_buffered_size =
     lzss_rans_frame_size + lzss_rans_dictionary_size + frame_header_size
     + lzss_rans_block_count * rans_descriptor_size
-    + lzss_rans_payload_size;
-constexpr std::uint64_t lzss_rans_buffered_size = UINT64_C(512) << 10;
+    + lzss_rans_payload_size
+    + lzss_rans_frame_size * lzss_hash_chain_max_workspace_per_input_byte;
+constexpr std::uint64_t lzss_rans_buffered_size = UINT64_C(2) << 20;
 static_assert(
     lzss_rans_encoder_buffered_size <= lzss_rans_buffered_size);
 constexpr std::uint64_t lzss_tans_frame_size = UINT64_C(1) << 16;

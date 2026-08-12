@@ -16118,3 +16118,22 @@ charge raw input, exact dictionary bytes, exact finder storage, and the
 complete frame against aggregate memory. Do not serialize the finder strategy
 or alter the decoder, public streaming/profile/C/CLI path, format, ABI, or
 interoperability schema before a separate promotion decision.
+
+## DD-785: Byte-oriented LZSS rANS promotes HashChain without format state
+
+- Date: 2026-08-13
+- Status: accepted
+
+Route the byte-oriented LZSS plus rANS streaming encoder through the proven
+exact HashChain frame entry. Add a finder-span constructor while retaining the
+existing C++ constructor as the Exhaustive byte oracle. Extend encoder profile
+sizing with the exact largest-frame finder extent and alignment, and charge the
+finder to checked aggregate memory.
+
+Preserve C function signatures and keep encoder views empty. Partition
+secondary storage into internal alignment allowance, finder, canonical token
+staging, and complete frame staging. Require persistent workspaces and caller
+output to be pairwise disjoint, map one-byte-short finder capacity to out-of-
+memory, and extend CLI and benchmark aggregate limits for the finder. Do not
+record the strategy or alter canonical bytes, decoder behavior, ABI version,
+CLI selector, format, or schema.

@@ -16,7 +16,8 @@ static void release(marc_buffer buffer) {
 
 int main(void) {
     static const uint8_t input[] = {
-        0x41, 0x42, 0x41, 0x42, 0x41, 0x42, 0x58};
+        0x41, 0x42, 0x43, 0x44, 0x45, 0x31,
+        0x41, 0x42, 0x43, 0x44, 0x45, 0x32};
     uint8_t encoded[8192];
     uint8_t decoded[sizeof(input)];
     marc_lzss_rans_config config;
@@ -35,12 +36,18 @@ int main(void) {
     assert(marc_lzss_rans_workspace_requirements(&config, &needed)
            == MARC_STATUS_OK);
     assert(needed.primary_bytes == sizeof(input));
-    assert(needed.secondary_bytes == 620);
+    assert(needed.secondary_bytes > 650);
     assert(needed.views_bytes == 0 && needed.views_alignment == 1);
 
     marc_buffer primary = allocate(needed.primary_bytes);
     marc_buffer secondary = allocate(needed.secondary_bytes);
     marc_buffer views = allocate(needed.views_bytes);
+    marc_buffer short_secondary = secondary;
+    --short_secondary.size;
+    assert(marc_lzss_rans_create(
+               &config, primary, short_secondary, views, &transform)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(transform == NULL);
     assert(marc_lzss_rans_create(
                &config, primary, secondary, views, &transform)
            == MARC_STATUS_OK);

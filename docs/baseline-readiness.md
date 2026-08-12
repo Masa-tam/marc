@@ -2149,3 +2149,17 @@ unchanged pending a separate promotion step. Full-suite admission is
 established by all 2,855 registered tests in about 161 seconds under MSVC and
 167 seconds under ClangCL, including documentation layout and the complete
 schema compatibility chain.
+
+### BR-0122
+
+Byte-oriented LZSS plus rANS now selects HashChain Exact through its public
+streaming and C encode lifecycle without changing canonical bytes, decoder
+behavior, C signatures, ABI version, CLI selector, or interoperability schema.
+Encoder profile sizing includes exact finder capacity and alignment allowance
+in secondary storage and aggregate limits. Twelve focused profile and
+streaming tests plus the public C lifecycle pass under MSVC and ClangCL; the
+4,326-byte README retains its 3,734-byte stream. CLI and benchmark aggregate
+bounds include finder storage. Full-suite admission is established by all
+2,856 registered tests in about 168 seconds under MSVC and 175 seconds under
+ClangCL, including documentation layout and the complete schema compatibility
+chain.

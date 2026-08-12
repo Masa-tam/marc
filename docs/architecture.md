@@ -5105,5 +5105,9 @@ The private HashChain entry receives separate aligned caller-owned finder
 storage and rejects overlap among raw input, dictionary staging, finder, and
 serialized output before publication. Aggregate accounting charges raw input,
 exact dictionary bytes, exact finder storage, and the complete serialized
-frame. The public streaming/profile/C/CLI/schema route remains Exhaustive until
-a separate promotion step; no search-strategy field is serialized.
+frame. The public streaming encoder and C encode lifecycle now select
+HashChain while the retained C++ constructor remains the Exhaustive byte
+oracle. Profile sizing reserves the exact finder plus alignment allowance
+ahead of dictionary and frame staging in the secondary region. Decoder,
+stream identity, CLI selector, ABI signature, format, and schema are unchanged;
+no search-strategy field is serialized.

@@ -1,6 +1,7 @@
 #include "frame/lzss_rans_profile.hpp"
 
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "entropy/rans_format.hpp"
 
 #include <algorithm>
@@ -71,6 +72,21 @@ LzssRansProfileError make_lzss_rans_profile(
         return LzssRansProfileError::none;
     }
 
+    std::size_t largest_frame_size{};
+    if (!to_size(largest_frame, largest_frame_size)) {
+        return LzssRansProfileError::arithmetic_overflow;
+    }
+    const auto finder = dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            largest_frame_size, config.parameters, limits);
+    if (finder.error != dictionary::internal::LzssHashChainError::none) {
+        return finder.error
+                == dictionary::internal::LzssHashChainError::
+                    workspace_limit_exceeded
+            ? LzssRansProfileError::limit_exceeded
+            : LzssRansProfileError::arithmetic_overflow;
+    }
+
     std::uint64_t dictionary_bytes{};
     if (!core::checked_multiply(
             largest_frame, dictionary_bytes_per_raw_byte,
@@ -111,6 +127,10 @@ LzssRansProfileError make_lzss_rans_profile(
         || !core::checked_add(
             largest_frame, dictionary_bytes, aggregate_bytes)
         || !core::checked_add(
+            aggregate_bytes,
+            static_cast<std::uint64_t>(finder.workspace_size),
+            aggregate_bytes)
+        || !core::checked_add(
             aggregate_bytes, frame_encoded_bytes, aggregate_bytes)) {
         return LzssRansProfileError::arithmetic_overflow;
     }
@@ -130,6 +150,9 @@ LzssRansProfileError make_lzss_rans_profile(
         workspace = {};
         return LzssRansProfileError::arithmetic_overflow;
     }
+    workspace.match_finder_bytes = finder.workspace_size;
+    workspace.match_finder_alignment = finder.workspace_size == 0
+        ? 1 : finder.workspace_alignment;
     return LzssRansProfileError::none;
 }
 

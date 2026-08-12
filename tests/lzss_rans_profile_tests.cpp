@@ -1,4 +1,5 @@
 #include "frame/lzss_rans_profile.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "frame/lzss_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_rans_frame_streaming_encoder.hpp"
 
@@ -32,6 +33,12 @@ TEST(LzssRansProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
     EXPECT_EQ(workspace.frame_input_bytes, 65'536U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 131'072U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 132'200U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(65'536, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 }
 
 TEST(LzssRansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
@@ -45,6 +52,12 @@ TEST(LzssRansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 17U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 34U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 626U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(17, {}, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment, finder.workspace_alignment);
 
     ASSERT_EQ(marc::frame::make_lzss_rans_profile(
                   {}, {}, stream, workspace),
@@ -52,6 +65,8 @@ TEST(LzssRansProfile, UsesActualLargestShortFrameAndEmptyExtent) {
     EXPECT_EQ(workspace.frame_input_bytes, 0U);
     EXPECT_EQ(workspace.dictionary_staging_bytes, 0U);
     EXPECT_EQ(workspace.frame_encoded_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_alignment, 1U);
 }
 
 TEST(LzssRansProfile, EnforcesBlockPayloadAggregateAndFrameLimits) {
