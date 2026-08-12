@@ -18588,3 +18588,37 @@ discarded and the reviewed seed retained.
   ClangCL test passed in 158.93 seconds with the 240-second per-test limit,
   including documentation layout and the complete schema-37-through-1
   compatibility chain.
+
+## CR-0792: 2026-08-12 - LZSS Exact match-finder measurement boundary
+
+- Authoring method: added optional first-party work counters to both Exact
+  finders and a bounded internal benchmark that verifies canonical equivalence
+  before measuring plan and current two-pass encode paths.
+- References used: DD-760 through DD-764; IR-0539; TVG-0636 through TVG-0640;
+  marc's private finder, one-shot encoder, workspace, benchmark, CMake, and
+  documentation conventions, plus the repository README input.
+- Known implementations intentionally not consulted: external LZSS
+  implementations, match-finder instrumentation or benchmarks, source code,
+  corpora, results, tests, patent text, and optimization descriptions.
+- Independent decisions: keep statistics optional and caller-owned; count
+  actual candidate inspections and byte-pair tests; verify output before all
+  timing; expose no public selector; cap input at one MiB; and distinguish
+  deterministic work counts from descriptive elapsed time.
+- Generated-code task description: establish an auditable Exhaustive versus
+  HashChain Exact measurement tool, freeze its correctness and boundedness,
+  and record preliminary Release observations without treating them as
+  performance guarantees.
+- Similarity review: statistics, driver control flow, output fields, smoke,
+  and documentation were independently written from marc-owned contracts; no
+  external implementation expression entered the work.
+- Local validation: the focused work-statistics test passed under ClangCL
+  22.1.3. MSVC 19.51.36252 and ClangCL built the affected library, core tests,
+  and benchmark warning-clean. The three-iteration README measurements
+  reproduced identical plans, output bytes, work counts, and workspace under
+  both builds. All 2,831 registered MSVC tests passed in 161.71 seconds and all
+  registered ClangCL tests passed in 162.03 seconds with the 240-second per-
+  test limit, including the new experimental smoke, documentation layout, and
+  complete schema-37-through-1 compatibility chain. The first sandboxed MSVC
+  regeneration encountered the known FileTracker E_ACCESSDENIED at ZERO_CHECK;
+  the established external MSBuild route completed without a source or build-
+  graph error.

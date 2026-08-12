@@ -705,6 +705,24 @@ reports 0.339 MiB/s encode and 1.865 MiB/s decode; ClangCL reports 0.331 and
 1.870 MiB/s. These small-input timings are descriptive and are neither a
 performance baseline nor a pass threshold.
 
+### BM-0024: LZSS Exact match-finder baseline
+
+The internal match-finder benchmark first verifies that Exhaustive and
+HashChain Exact produce the same 2,390 tokens and identical 6,614-byte
+canonical serialization for the repository's 4,326-byte `README.md`. Both
+finders receive 2,390 queries. Exhaustive inspects 4,435,045 candidates and
+compares 4,643,735 byte pairs; HashChain inspects 1,092 candidates and compares
+4,988 byte pairs while using 82,840 bytes of caller-owned workspace.
+
+Three ClangCL 22.1.3 Release iterations report 0.956 MiB/s for Exhaustive
+planning and 123.644 MiB/s for HashChain planning. The current complete
+one-shot encoder, which performs planning and writing as two parses, reports
+0.473 and 47.713 MiB/s respectively. MSVC 19.51.36252 reports 0.615 versus
+95.796 MiB/s for planning and 0.303 versus 45.705 MiB/s for two-pass encoding.
+These sub-millisecond HashChain and small-input timings are descriptive wiring
+evidence, not stable speedup claims or pass thresholds. The work counts and
+identical output are deterministic; elapsed time is not.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

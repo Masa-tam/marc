@@ -15699,3 +15699,23 @@ must reproduce Exhaustive token count, serialized extent, typed-token storage,
 and every token byte or field exactly; any disagreement is an internal error.
 Charge raw input, exact finder workspace, and planned token output together
 against the aggregate internal-buffer limit.
+
+## DD-764: Match-finder measurement separates work from elapsed time
+
+- Date: 2026-08-12
+- Status: accepted
+
+Permit each private Exact finder to accumulate query, candidate, and compared-
+byte counts into an optional caller-owned statistics object. A null pointer is
+the normal encoder configuration and introduces no global mutable state,
+allocation, serialized field, or output change. Count one candidate when its
+possible match is inspected and one byte comparison whenever a byte pair is
+actually tested.
+
+Add a dependency-free internal benchmark rather than extending the public C
+benchmark selector. It accepts one bounded file and iteration count, proves
+plan and canonical byte equality before timing, and reports deterministic work
+counts, exact HashChain workspace, planning throughput, and current two-pass
+encoding throughput. Cap input at one MiB so accidental Exhaustive runs remain
+bounded. Treat timings as descriptive only; do not make a speedup, candidate
+ratio, compression ratio, or absolute throughput a test threshold.

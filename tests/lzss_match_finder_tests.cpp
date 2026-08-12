@@ -262,4 +262,35 @@ TEST(LzssHashChainMatchFinder, IndexesPositionsSkippedByMatch) {
     EXPECT_EQ(hash_chain.find_match(16), exhaustive.find_match(16));
 }
 
+TEST(LzssHashChainMatchFinder, ReportsOptionalComparableWorkStatistics) {
+    const auto input = bytes("ABCDEABCDE");
+    LzssMatchFinderStatistics exhaustive_statistics{};
+    LzssExhaustiveMatchFinder exhaustive{
+        input, {}, &exhaustive_statistics};
+
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto storage = make_hash_chain_storage(required.workspace_size);
+    LzssMatchFinderStatistics hash_statistics{};
+    LzssHashChainMatchFinder hash_chain{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, {}, {}, storage.bytes.first(required.workspace_size),
+                  hash_chain, &hash_statistics),
+              LzssHashChainError::none);
+
+    for (std::size_t position = 0; position < input.size(); ++position) {
+        EXPECT_EQ(hash_chain.find_match(position),
+                  exhaustive.find_match(position));
+        hash_chain.advance(position, position + 1);
+        exhaustive.advance(position, position + 1);
+    }
+    EXPECT_EQ(exhaustive_statistics.query_count, input.size());
+    EXPECT_EQ(hash_statistics.query_count, input.size());
+    EXPECT_EQ(exhaustive_statistics.candidate_count, 45U);
+    EXPECT_EQ(hash_statistics.candidate_count, 4U);
+    EXPECT_GT(exhaustive_statistics.byte_comparison_count,
+              hash_statistics.byte_comparison_count);
+}
+
 } // namespace

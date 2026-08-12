@@ -4760,3 +4760,12 @@ checked-overlap utility, limits, and Exhaustive reference output as first-
 party references. No external LZSS implementation, source code, match-finder
 integration, test vector, test suite, corpus, benchmark result, patent text,
 or optimization description was consulted.
+
+### IR-0539
+
+The LZSS Exact measurement boundary uses DD-760 through DD-764, TVG-0636
+through TVG-0640, marc's two private finders, explicit one-shot encoder routes,
+caller workspace rules, dependency-free benchmark conventions, and repository
+README as first-party references. No external LZSS implementation, match-
+finder benchmark, instrumentation scheme, source code, corpus, result, test
+suite, patent text, or optimization description was consulted.

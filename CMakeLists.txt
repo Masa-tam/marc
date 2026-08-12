@@ -433,6 +433,35 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    add_executable(marc_lzss_match_finder_benchmark
+        benchmarks/lzss_match_finder_benchmark.cpp)
+    target_compile_features(marc_lzss_match_finder_benchmark PRIVATE cxx_std_20)
+    set_target_properties(marc_lzss_match_finder_benchmark
+        PROPERTIES CXX_EXTENSIONS OFF)
+    target_include_directories(marc_lzss_match_finder_benchmark
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    if(MSVC)
+        target_compile_options(marc_lzss_match_finder_benchmark
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_lzss_match_finder_benchmark
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    if(TARGET marc_static)
+        target_link_libraries(marc_lzss_match_finder_benchmark
+            PRIVATE marc::static)
+    else()
+        target_link_libraries(marc_lzss_match_finder_benchmark
+            PRIVATE marc::shared)
+    endif()
+    if(MARC_BUILD_TESTS)
+        add_test(NAME marc_lzss_match_finder_benchmark_smoke
+            COMMAND marc_lzss_match_finder_benchmark
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(marc_lzss_match_finder_benchmark_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+    endif()
+
     add_executable(marc_contextual_huffman_estimator
         tools/contextual_huffman_estimator.cpp)
     target_compile_features(marc_contextual_huffman_estimator PRIVATE cxx_std_20)

@@ -17,6 +17,12 @@ struct LzssMatch {
     [[nodiscard]] bool operator==(const LzssMatch&) const noexcept = default;
 };
 
+struct LzssMatchFinderStatistics {
+    std::uint64_t query_count{};
+    std::uint64_t candidate_count{};
+    std::uint64_t byte_comparison_count{};
+};
+
 template <typename Finder>
 concept LzssMatchFinder = requires(
     Finder& finder, const Finder& constant_finder, std::size_t position,
@@ -31,7 +37,8 @@ class LzssExhaustiveMatchFinder {
 public:
     LzssExhaustiveMatchFinder(
         std::span<const std::byte> input,
-        const LzssParameters& parameters) noexcept;
+        const LzssParameters& parameters,
+        LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
     // position must not exceed the input extent. The finder returns no match
     // at the exact end. Earlier positions need not be announced to this
@@ -46,6 +53,7 @@ public:
 private:
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
+    LzssMatchFinderStatistics* statistics_{};
 };
 
 static_assert(LzssMatchFinder<LzssExhaustiveMatchFinder>);

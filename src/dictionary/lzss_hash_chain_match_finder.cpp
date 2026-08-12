@@ -87,7 +87,8 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<std::byte> workspace,
-    LzssHashChainMatchFinder& finder) noexcept {
+    LzssHashChainMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
     const auto required = calculate_lzss_hash_chain_workspace(
         input.size(), parameters, limits);
     if (required.error != LzssHashChainError::none) return required.error;
@@ -110,6 +111,7 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
     LzssHashChainMatchFinder initialized{};
     initialized.input_ = input;
     initialized.parameters_ = parameters;
+    initialized.statistics_ = statistics;
     if (required.workspace_size == 0) {
         finder = initialized;
         return LzssHashChainError::none;
@@ -139,7 +141,11 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
 LzssMatch LzssHashChainMatchFinder::find_match(
     const std::size_t position) const noexcept {
     LzssMatch best{};
-    if (position != next_position_ || heads_.empty()
+    if (position != next_position_ || position >= input_.size()) {
+        return best;
+    }
+    if (statistics_ != nullptr) ++statistics_->query_count;
+    if (heads_.empty()
         || input_.size() - position < lzss_hash_chain_prefix_size) {
         return best;
     }
@@ -152,9 +158,13 @@ LzssMatch LzssHashChainMatchFinder::find_match(
     while (candidate != std::numeric_limits<std::size_t>::max()) {
         const auto distance = position - candidate;
         if (distance == 0 || distance > parameters_.window_size) break;
+        if (statistics_ != nullptr) ++statistics_->candidate_count;
         std::size_t length{};
-        while (length < maximum_length
-               && input_[position + length] == input_[candidate + length]) {
+        while (length < maximum_length) {
+            if (statistics_ != nullptr)
+                ++statistics_->byte_comparison_count;
+            if (input_[position + length] != input_[candidate + length])
+                break;
             ++length;
         }
         if (length >= parameters_.min_match_length

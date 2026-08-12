@@ -8509,3 +8509,19 @@ plus exact workspace plus planned token storage and require the established
 serialized/token-storage limit error. Run all four focused tests and then the
 complete 2,829-test suite under both supported Release compilers, including
 documentation layout and schema-37-through-1 compatibility.
+
+### TVG-0640
+
+Instrument `ABCDEABCDE` without changing finder output. Require ten queries
+for both finders, 45 Exhaustive candidates, four HashChain candidates under the
+specified capped hash table, and fewer HashChain byte comparisons. Leave
+statistics optional and caller-owned.
+
+Run the dedicated Release benchmark over the 4,326-byte repository README for
+three iterations under MSVC and ClangCL. Before timing, require identical
+2,390-token plans and identical 6,614-byte serialized output. Require both
+finders to report 2,390 queries, record deterministic candidates and byte
+comparisons plus the 82,840-byte workspace, and emit finite planning and two-
+pass encoding metric fields. Register a one-iteration experimental smoke, but
+assert no timing or ratio. Then run the complete 2,831-test suites, including
+schema compatibility, under both compilers.

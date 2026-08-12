@@ -7,23 +7,28 @@ namespace marc::dictionary::internal {
 
 LzssExhaustiveMatchFinder::LzssExhaustiveMatchFinder(
     const std::span<const std::byte> input,
-    const LzssParameters& parameters) noexcept
-    : input_(input), parameters_(parameters) {}
+    const LzssParameters& parameters,
+    LzssMatchFinderStatistics* const statistics) noexcept
+    : input_(input), parameters_(parameters), statistics_(statistics) {}
 
 LzssMatch LzssExhaustiveMatchFinder::find_match(
     const std::size_t position) const noexcept {
     LzssMatch best{};
     if (position >= input_.size()) return best;
+    if (statistics_ != nullptr) ++statistics_->query_count;
     const auto maximum_distance = std::min<std::size_t>(
         position, static_cast<std::size_t>(parameters_.window_size));
     const auto maximum_length = std::min<std::size_t>(
         input_.size() - position,
         static_cast<std::size_t>(parameters_.max_match_length));
     for (std::size_t distance = 1; distance <= maximum_distance; ++distance) {
+        if (statistics_ != nullptr) ++statistics_->candidate_count;
         std::size_t length{};
-        while (length < maximum_length
-               && input_[position + length]
-                      == input_[position - distance + length]) {
+        while (length < maximum_length) {
+            if (statistics_ != nullptr)
+                ++statistics_->byte_comparison_count;
+            if (input_[position + length]
+                != input_[position - distance + length]) break;
             ++length;
         }
         if (length >= parameters_.min_match_length

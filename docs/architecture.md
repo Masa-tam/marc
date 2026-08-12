@@ -97,6 +97,12 @@ report finder-workspace errors separately, reject input/output/workspace
 aliasing, and produce exactly the Exhaustive token sequence. Streaming,
 profile, C ABI, and CLI selection remain on Exhaustive until complete-path
 measurements justify exposing a strategy choice.
+Both private finders optionally accumulate query, candidate, and byte-
+comparison counts into caller-owned statistics. Null statistics add no global
+state and leave the ordinary encoder path uninstrumented. A dedicated internal
+benchmark verifies exact output first, then separately times planning and the
+current two-pass encoding entry points while reporting these work counts and
+the exact HashChain workspace.
 The streaming decoder accumulates at most one nine-byte token, validates it
 against committed frame history, and drains its Literal or Match through a
 caller-owned circular history region. Token collection, overlap-copy progress,

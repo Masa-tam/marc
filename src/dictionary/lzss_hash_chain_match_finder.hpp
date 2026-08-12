@@ -54,13 +54,14 @@ private:
     friend LzssHashChainError initialize_lzss_hash_chain_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssHashChainMatchFinder&) noexcept;
+        LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
     std::span<std::size_t> heads_{};
     std::span<std::uint32_t> links_{};
     std::size_t next_position_{};
+    LzssMatchFinderStatistics* statistics_{};
 };
 
 static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
@@ -68,7 +69,8 @@ static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
 [[nodiscard]] LzssHashChainError initialize_lzss_hash_chain_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
-    LzssHashChainMatchFinder& finder) noexcept;
+    LzssHashChainMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 } // namespace marc::dictionary::internal
 
