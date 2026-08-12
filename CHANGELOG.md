@@ -3,7 +3,27 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
-## Unreleased
+## 0.3.0 - 2026-08-13
+
+### Added
+
+- Added the independently implemented HashChain Exact LZSS match finder and a
+  dependency-free match-finder benchmark. Differential tests retain the
+  Exhaustive implementation as a correctness oracle and prove identical
+  longest-match and nearest-distance selection across representative binary
+  inputs, match limits, and window boundaries.
+
+### Changed
+
+- Accelerated every public standalone, byte-oriented entropy, and contextual
+  LZSS encoding route by selecting HashChain Exact and eliminating redundant
+  parsing passes where applicable. Existing decoder-visible representations,
+  deterministic encoded bytes, C signatures, ABI version 1, CLI profile
+  inventory, and interoperability schema 37 remain unchanged.
+- Extended direction-specific encoder workspace calculations to include the
+  caller-owned HashChain storage and alignment allowance. Applications must
+  continue to query workspace requirements rather than relying on extents
+  observed with an earlier release.
 
 ## 0.2.0 - 2026-08-12
 

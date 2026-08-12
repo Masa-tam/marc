@@ -18,16 +18,17 @@ Changing one namespace does not implicitly change another. A decoder-visible
 byte change requires a new documented format variant even when the project
 version changes.
 
-Before project version 1.0, the `0.1.x` line is reserved for additions and
-fixes that retain the published C ABI and preserve decoder compatibility and
-deterministic bytes for every existing stream variant. New explicitly named
-profiles and new format variant IDs may be added without changing those
-existing contracts. A `0.2.0` release may introduce intentionally incompatible
-API changes, new defaults, or separately identified representation variants
-for compression-ratio or performance work. A project-version change never
-permits an existing algorithm or variant ID to change representation silently.
-The installed CMake package therefore advertises `SameMinorVersion`
-compatibility while the project remains below version 1.0.
+Before project version 1.0, a patch release is reserved for compatible fixes
+and small additions that retain the published C ABI and preserve decoder
+compatibility and deterministic bytes for every existing stream variant. A
+minor release may communicate larger additive work, changed workspace or
+performance characteristics, intentionally incompatible API changes, new
+defaults, or separately identified representation variants. New explicitly
+named profiles and new format variant IDs do not by themselves alter existing
+contracts. A project-version change never permits an existing algorithm or
+variant ID to change representation silently. The installed CMake package
+therefore advertises `SameMinorVersion` compatibility while the project
+remains below version 1.0.
 
 ## Release scope
 

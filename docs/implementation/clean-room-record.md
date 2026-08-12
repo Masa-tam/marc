@@ -19439,3 +19439,39 @@ discarded and the reviewed seed retained.
   Eleven ClangCL 22 ASan/UBSan/libFuzzer LZSS targets were rebuilt from the
   branch and each completed 100 bounded runs at maximum input length 8,192
   without a sanitizer finding, crash, or hang.
+
+## CR-0817: 2026-08-13 - Project version 0.3.0 release preparation
+
+- Authoring method: advanced marc's project/package version after closing the
+  first LZSS match-finder acceleration phase and reconciling its observable
+  workspace, performance, format, ABI, CLI, and interoperability boundaries.
+- References used: DD-760 through DD-789; CR-0816; the repository release
+  procedure; the public C runtime-version query; CMake package-version
+  generation; CHANGELOG history; and the schema-37 compatibility chain.
+- Known implementations intentionally not consulted: external LZSS source
+  code, match-finder implementations, release scripts, changelog generators,
+  package policies, binary distributions, and third-party release notes.
+- Independent decisions: use project version `0.3.0` to communicate the large
+  performance and encoder-workspace change; retain C ABI lifecycle version 1,
+  every public signature, every decoder-visible stream identity and byte
+  representation, CLI inventory, and interoperability schema 37; and keep
+  match-finder strategy outside serialized state.
+- Generated-code task description: synchronize the CMake and runtime version,
+  metadata test, dated changelog, generic pre-1.0 release policy, readiness
+  baseline, design decision, and provenance without changing codec bytes.
+- Similarity review: the release metadata and policy prose were derived from
+  marc's first-party records and validation results. No external
+  implementation expression, release automation, or prose was copied or
+  structurally reproduced.
+- Local validation: official CMake 4.3.4 generated warning-clean optimized
+  Release builds with MSVC 19.51.36252.0 through Visual Studio 2026 18.8.2 and
+  ClangCL 22.1.3 on Windows x64. All 2,858 registered tests passed in 161.69
+  seconds under MSVC and 167.67 seconds under ClangCL with the 240-second
+  per-test limit. Both runs included runtime version `0.3.0`, generated CMake
+  package version `0.3.0`, documentation validation, all 49 benchmark smokes,
+  and `marc_interoperability_schema_compatibility`, which passed in 64.40 and
+  64.19 seconds respectively. The checked-out GoogleTest commit
+  `52eb8108c5bdec04579160ae17225d66034bd723` matches the recorded gitlink.
+  CR-0816 retains the immediately preceding bounded sanitizer evidence for all
+  eleven affected LZSS targets. The exact release-preparation commit still
+  requires pushed CI and a schema-37 cross-platform exchange before tagging.

@@ -174,13 +174,16 @@ the five experimental typed-token LZSS contextual profiles. The internal
 canonical Huffman primitives remain support components rather than a separate
 public profile.
 
-The optimized Release configurations each enumerate 2,841 tests under
+The optimized Release configurations each enumerate 2,858 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
 structure, and interoperability schema compatibility. Contextual rANS
 additionally completed a bounded 1,000-input Clang 22
-ASan/UBSan/libFuzzer smoke after canonicalization.
+ASan/UBSan/libFuzzer smoke after canonicalization. The LZSS HashChain phase
+additionally rebuilt all eleven affected ClangCL 22 ASan/UBSan/libFuzzer
+targets and completed 100 bounded inputs per target at maximum input length
+8,192 without a finding.
 
 The established four-direction schema-37 exchange at revision
 `58b829dafa078e7dadd46e5de9ed7b1af45b5cc2` verifies all forty-seven archives

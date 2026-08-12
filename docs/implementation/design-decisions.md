@@ -16193,3 +16193,24 @@ over multiple input categories and window sizes large enough to show that
 HashChain workspace or search cost justifies their additional implementation,
 validation, and maintenance surface. Their absence does not leave the current
 default 65,536-byte LZSS path incomplete.
+
+## DD-789: Project version 0.3.0 publishes LZSS HashChain acceleration
+
+- Date: 2026-08-13
+- Status: accepted
+
+Release the completed first LZSS match-finder acceleration phase as project
+version `0.3.0`. The minor-version boundary communicates a substantial change
+to encoder performance and direction-specific workspace requirements even
+though the public C function signatures, ABI lifecycle version 1, CLI profile
+inventory, interoperability schema 37, decoder behavior, and every existing
+stream representation remain unchanged.
+
+Retain HashChain Exact as an encoder implementation choice rather than stream
+metadata. Preserve Exhaustive as the private correctness oracle, and require
+applications to obtain the larger caller-owned encoder extents from the public
+workspace query instead of relying on values observed under 0.2.0. Require the
+release candidate to synchronize the CMake package version, runtime version
+query, metadata test, dated changelog, readiness baseline, release policy,
+decision, and provenance. Complete both Windows Release suites, pushed CI, and
+the schema-37 interoperability check before creating the annotated tag.
