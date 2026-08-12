@@ -4,6 +4,7 @@
 #include "dictionary/lzss_typed_encoder.hpp"
 #include "frame/lzss_typed_context_frame_encoder.hpp"
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
+#include "frame/lzss_contextual_tans_frame_encoder.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -249,6 +250,37 @@ int main(const int argc, const char* const argv[]) {
         return 1;
     }
 
+    marc::frame::internal::LzssContextualTansStreamHeader tans_stream{};
+    tans_stream.frame_size = static_cast<std::uint32_t>(input.size());
+    tans_stream.original_size = input.size();
+    std::vector<std::uint16_t> tans_tables(
+        marc::entropy::internal::contextual_tans_encode_table_entries);
+    const auto tans_plan =
+        marc::frame::internal::plan_lzss_contextual_tans_frame(
+            tans_stream, limits, 0, 0, input, typed_two_pass, tans_tables);
+    if (tans_plan.error
+        != marc::frame::internal::LzssContextualTansFrameEncodeError::none) {
+        std::cerr << "contextual tANS frame planning failed\n";
+        return 1;
+    }
+    std::vector<std::byte> tans_exhaustive(tans_plan.serialized_size);
+    std::vector<std::byte> tans_hash_chain(tans_plan.serialized_size);
+    if (marc::frame::internal::encode_lzss_contextual_tans_frame(
+            tans_stream, limits, 0, 0, input, typed_two_pass, tans_tables,
+            tans_exhaustive).error
+            != marc::frame::internal::
+                LzssContextualTansFrameEncodeError::none
+        || marc::frame::internal::
+            encode_lzss_contextual_tans_frame_hash_chain(
+                tans_stream, limits, 0, 0, input, typed_single_pass,
+                tans_tables, workspace, tans_hash_chain).error
+            != marc::frame::internal::
+                LzssContextualTansFrameEncodeError::none
+        || tans_exhaustive != tans_hash_chain) {
+        std::cerr << "contextual tANS frame equivalence failed\n";
+        return 1;
+    }
+
     LzssMatchFinderStatistics exhaustive_statistics{};
     LzssExhaustiveMatchFinder exhaustive_finder{
         input, parameters, &exhaustive_statistics};
@@ -333,7 +365,27 @@ int main(const int argc, const char* const argv[]) {
                 == marc::frame::internal::
                     LzssContextualRansFrameEncodeError::none;
     });
-    if (!timing_ok || exhaustive_output != hash_output) {
+    const auto tans_exhaustive_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok
+            && marc::frame::internal::encode_lzss_contextual_tans_frame(
+                tans_stream, limits, 0, 0, input, typed_two_pass,
+                tans_tables, tans_exhaustive).error
+                == marc::frame::internal::
+                    LzssContextualTansFrameEncodeError::none;
+    });
+    const auto tans_hash_chain_seconds = measure_seconds(iterations, [&] {
+        timing_ok = timing_ok
+            && marc::frame::internal::
+                encode_lzss_contextual_tans_frame_hash_chain(
+                    tans_stream, limits, 0, 0, input, typed_single_pass,
+                    tans_tables, workspace, tans_hash_chain).error
+                == marc::frame::internal::
+                    LzssContextualTansFrameEncodeError::none;
+    });
+    if (!timing_ok || exhaustive_output != hash_output
+        || frame_exhaustive != frame_hash_chain
+        || rans_exhaustive != rans_hash_chain
+        || tans_exhaustive != tans_hash_chain) {
         std::cerr << "timed encoding failed\n";
         return 1;
     }
@@ -344,6 +396,8 @@ int main(const int argc, const char* const argv[]) {
               << "token_count=" << hash_plan.token_count << '\n'
               << "contextual_frame_bytes=" << frame_hash_chain.size() << '\n'
               << "contextual_rans_frame_bytes=" << rans_hash_chain.size()
+              << '\n'
+              << "contextual_tans_frame_bytes=" << tans_hash_chain.size()
               << '\n'
               << "iterations=" << iterations << '\n'
               << "hash_workspace_bytes=" << requirements.workspace_size
@@ -379,5 +433,9 @@ int main(const int argc, const char* const argv[]) {
                       rans_exhaustive_seconds, input.size(), iterations);
     print_measurement("contextual_rans_frame_hash_chain",
                       rans_hash_chain_seconds, input.size(), iterations);
+    print_measurement("contextual_tans_frame_exhaustive",
+                      tans_exhaustive_seconds, input.size(), iterations);
+    print_measurement("contextual_tans_frame_hash_chain",
+                      tans_hash_chain_seconds, input.size(), iterations);
     return 0;
 }

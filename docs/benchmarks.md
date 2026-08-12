@@ -802,6 +802,22 @@ peak remain unchanged. Exact stream identity, bounded workspace partitioning,
 stable failure mapping, and successful public round trip are the normative
 evidence.
 
+### BM-0030: Contextual tANS HashChain frame baseline
+
+The private HashChain route produces exactly the same 2,893-byte Contextual
+tANS frame as Exhaustive for the 4,326-byte README. This frame-body measurement
+includes typed parsing, contextual event modeling, normalized descriptor and
+encode-table construction, tANS state coding, and frame serialization, but
+excludes the outer stream prefix and streaming lifecycle.
+
+Ten MSVC 19.51.36252 Release iterations report 0.278 MiB/s for Exhaustive and
+1.956 MiB/s for HashChain Exact. ClangCL 22.1.3 reports 0.370 and 1.925 MiB/s.
+The remaining table-construction and tANS coding cost dominates after search
+removal; these small-input timings are descriptive and not stable speedup
+claims or pass thresholds. Exact descriptor, payload, frame bytes, successful
+decode, bounded table/finder workspace, and atomic rejection are the normative
+evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

@@ -174,7 +174,7 @@ the five experimental typed-token LZSS contextual profiles. The internal
 canonical Huffman primitives remain support components rather than a separate
 public profile.
 
-The optimized Release configurations each enumerate 2,839 tests under
+The optimized Release configurations each enumerate 2,841 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -1971,3 +1971,13 @@ profile and streaming tests prove Exhaustive byte identity, bounded capacity
 and alias rejection, stable public error mapping, and successful public round
 trip under MSVC and ClangCL. Full-suite admission is recorded separately after
 both 2,839-test runs.
+
+### BR-0107
+
+Contextual tANS now has a private HashChain Exact complete-frame route sharing
+all entropy-table, descriptor, state, payload, and header logic with the
+Exhaustive oracle. Eight direct tests under MSVC and ClangCL prove complete
+byte identity and decode, one query per token, exact finder capacity, table and
+serialized-output alias rejection, aggregate limits, and atomic failure. The
+public streaming/profile/C/CLI/schema route remains unchanged pending a
+separate promotion step.

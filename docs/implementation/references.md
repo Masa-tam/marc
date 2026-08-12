@@ -4817,3 +4817,13 @@ workspace partitioning, stable error mapping, CLI, and public benchmark as
 first-party references. No external LZSS, rANS, combined implementation,
 source code, workspace layout, API integration, benchmark, corpus, result,
 test suite, patent text, or optimization description was consulted.
+
+### IR-0545
+
+The private Contextual tANS HashChain frame uses DD-760 through DD-770,
+TVG-0636 through TVG-0646, marc's Contextual tANS frame encoder and decoder,
+single-pass typed parser, fixed encode-table staging, exact finder, workspace
+and alias contracts, and internal benchmark as first-party references. No
+external LZSS, tANS, FSE, combined implementation, source code, frame
+integration, workspace layout, benchmark, corpus, result, test suite, patent
+text, or optimization description was consulted.

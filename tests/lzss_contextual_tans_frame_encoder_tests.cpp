@@ -19,6 +19,18 @@ using marc::entropy::internal::TansDecodeEntry;
 using marc::entropy::internal::contextual_tans_decode_table_entries;
 using marc::entropy::internal::contextual_tans_encode_table_entries;
 
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
+
 [[nodiscard]] LzssContextualTansStreamHeader stream_for(
     const std::uint64_t original_size) {
     LzssContextualTansStreamHeader stream{};
@@ -261,6 +273,131 @@ TEST(LzssContextualTansFrameEncoder,
         + result.serialized_size - 1;
     result = plan_lzss_contextual_tans_frame(
         stream, limits, 0, 0, raw, tokens, tables);
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::workspace_limit);
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     HashChainFrameMatchesExhaustiveBytes) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for(raw.size());
+    std::array<LzssTypedToken, raw.size()> reference_tokens{};
+    auto reference_tables = encode_tables();
+    const auto reference_plan = plan_lzss_contextual_tans_frame(
+        stream, {}, 0, 0, raw, reference_tokens, reference_tables);
+    ASSERT_EQ(reference_plan.error,
+              LzssContextualTansFrameEncodeError::none);
+    std::vector<std::byte> reference(reference_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_tans_frame(
+                  stream, {}, 0, 0, raw, reference_tokens,
+                  reference_tables, reference).error,
+              LzssContextualTansFrameEncodeError::none);
+
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    std::array<LzssTypedToken, raw.size()> tokens{};
+    auto tables = encode_tables();
+    marc::dictionary::internal::LzssMatchFinderStatistics statistics{};
+    const auto plan = plan_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, tokens, tables, workspace, &statistics);
+    ASSERT_EQ(plan.error, LzssContextualTansFrameEncodeError::none);
+    EXPECT_EQ(plan.serialized_size, reference_plan.serialized_size);
+    EXPECT_EQ(plan.descriptor_size, reference_plan.descriptor_size);
+    EXPECT_EQ(plan.token_count, reference_plan.token_count);
+    EXPECT_EQ(plan.event_count, reference_plan.event_count);
+    EXPECT_EQ(plan.decision_count, reference_plan.decision_count);
+    EXPECT_EQ(plan.payload_size, reference_plan.payload_size);
+    EXPECT_EQ(statistics.query_count, plan.token_count);
+
+    statistics = {};
+    std::vector<std::byte> encoded(plan.serialized_size);
+    const auto result = encode_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, tokens, tables, workspace, encoded,
+        &statistics);
+    ASSERT_EQ(result.error, LzssContextualTansFrameEncodeError::none);
+    EXPECT_EQ(statistics.query_count, result.token_count);
+    EXPECT_EQ(encoded, reference);
+
+    auto decoder_tables = decode_tables();
+    std::array<LzssTypedToken, raw.size()> decoded_tokens{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto decoded_result = decode_lzss_contextual_tans_frame(
+        encoded, {stream, {}, 0, 0}, decoder_tables, decoded_tokens, decoded);
+    ASSERT_EQ(decoded_result.error,
+              LzssContextualTansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     HashChainWorkspaceFailuresAreAtomic) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'}};
+    const auto stream = stream_for(raw.size());
+    std::array<LzssTypedToken, raw.size()> tokens{};
+    auto tables = encode_tables();
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(raw.size(), {}, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    ASSERT_GT(requirements.workspace_size, 0U);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    std::vector<std::byte> output(16'384, std::byte{0xcc});
+
+    auto result = encode_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, tokens, tables,
+        workspace.first(workspace.size() - 1), output);
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::token_encode_error);
+    EXPECT_EQ(result.token_encode.match_finder_error,
+              marc::dictionary::internal::
+                  LzssHashChainError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+
+    auto table_bytes = std::as_writable_bytes(std::span{tables});
+    const auto table_snapshot = std::vector<std::byte>(
+        table_bytes.begin(), table_bytes.end());
+    result = plan_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, tokens, tables,
+        table_bytes.first(requirements.workspace_size));
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::overlapping_workspaces);
+    EXPECT_TRUE(std::ranges::equal(table_snapshot, table_bytes));
+
+    const auto snapshot = std::vector<std::byte>(
+        workspace.begin(), workspace.end());
+    result = encode_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, tokens, tables, workspace,
+        workspace.first(workspace.size()));
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::overlapping_workspaces);
+    EXPECT_TRUE(std::ranges::equal(snapshot, workspace));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = stream.frame_size;
+    limits.max_block_size = stream.frame_size;
+    const auto baseline = plan_lzss_contextual_tans_frame_hash_chain(
+        stream, limits, 0, 0, raw, tokens, tables, workspace);
+    ASSERT_EQ(baseline.error, LzssContextualTansFrameEncodeError::none);
+    limits.max_internal_buffered_bytes = raw.size()
+        + raw.size() * sizeof(LzssTypedToken)
+        + contextual_tans_encode_table_entries * sizeof(std::uint16_t)
+        + requirements.workspace_size + baseline.serialized_size - 1;
+    result = plan_lzss_contextual_tans_frame_hash_chain(
+        stream, limits, 0, 0, raw, tokens, tables, workspace);
     EXPECT_EQ(result.error,
               LzssContextualTansFrameEncodeError::workspace_limit);
 }

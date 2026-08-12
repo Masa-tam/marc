@@ -70,6 +70,33 @@ encode_lzss_contextual_tans_frame(
     std::span<std::uint16_t> private_encode_tables,
     std::span<std::byte> serialized_output) noexcept;
 
+[[nodiscard]] LzssContextualTansFrameEncodeResult
+plan_lzss_contextual_tans_frame_hash_chain(
+    const LzssContextualTansStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<std::uint16_t> private_encode_tables,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssContextualTansFrameEncodeResult
+encode_lzss_contextual_tans_frame_hash_chain(
+    const LzssContextualTansStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<std::uint16_t> private_encode_tables,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
 } // namespace marc::frame::internal
 
 #endif

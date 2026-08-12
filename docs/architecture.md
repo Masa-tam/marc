@@ -4986,3 +4986,13 @@ checks keep raw, token, finder, serialized, and caller output regions disjoint.
 Short finder capacity maps to out-of-memory, policy rejection maps to limit
 exceeded, and Exhaustive remains a private byte-identity oracle. No stream
 field, decoder behavior, public selector, ABI version, or schema changes.
+
+The private Contextual tANS frame now has parallel Exhaustive and HashChain
+Exact typed-token producers behind one shared entropy and serialization body.
+Unlike rANS, this boundary retains its fixed caller-owned encode-table bank;
+finder storage is a separate aligned region and is checked against raw input,
+tokens, tables, and serialized output. The HashChain aggregate charges the
+conservative token reservation, fixed tables, exact finder, raw input, and
+complete frame. Streaming, profile sizing, the public ABI, decoder, stream
+identity, CLI, and schema still select the established route pending a separate
+promotion step.

@@ -15818,3 +15818,22 @@ CLI, and schema because Exhaustive and HashChain Exact produce identical
 canonical tokens and the decoder needs no strategy information. Require callers
 to query the opaque requirements again, retain Exhaustive as the private oracle,
 and promote no additional LZSS pipeline in this step.
+
+## DD-770: Contextual tANS preserves table staging around HashChain
+
+- Date: 2026-08-12
+- Status: accepted
+
+Add explicit private plan and encode entry points for Contextual tANS through
+one compile-time-selected frame body shared with Exhaustive. Select only the
+typed-token producer; leave context events, normalized distributions, table
+construction, state transitions, descriptor serialization, payload, and frame
+header common. Keep the fixed caller-owned encode-table staging independent
+from the aligned finder workspace.
+
+Reject finder overlap with raw input, token staging, encode tables, or
+serialized output before finder initialization. Charge raw input, conservative
+one-token-per-byte staging, fixed encode tables, exact finder storage, and the
+complete serialized frame to aggregate memory. Retain streaming, profile, C
+ABI, CLI, format, and schema on Exhaustive until exact frame identity, decode,
+bounded failure, and performance are demonstrated independently.

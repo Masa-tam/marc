@@ -18788,3 +18788,39 @@ discarded and the reviewed seed retained.
   2,839 registered ClangCL tests passed in 170.03 seconds with the 240-second
   per-test limit, including documentation layout and the complete
   schema-37-through-1 compatibility chain.
+
+## CR-0798: 2026-08-12 - Contextual tANS HashChain frame
+
+- Authoring method: refactored marc's Contextual tANS frame planner and writer
+  into one compile-time-selected body, then selected the existing single-pass
+  typed HashChain route without changing table construction, tANS coding, or
+  format logic.
+- References used: DD-760 through DD-770; IR-0545; TVG-0636 through TVG-0646;
+  marc's Contextual tANS encoder/decoder, typed parser, encode-table staging,
+  exact finder, workspace contracts, deterministic tests, and internal
+  benchmark.
+- Known implementations intentionally not consulted: external LZSS, tANS,
+  FSE, or combined implementations, source code, integrations, workspace
+  layouts, tests, corpora, benchmarks, results, patent text, and optimization
+  descriptions.
+- Independent decisions: select only token production; preserve fixed encode-
+  table staging; require finder disjointness from tables; charge conservative
+  token capacity and exact finder storage; retain Exhaustive as oracle; and
+  defer streaming and public routing until this frame is proven.
+- Generated-code task description: connect the private Contextual tANS frame
+  to HashChain Exact, prove exact descriptor/payload/frame bytes and decode,
+  preserve bounded atomic failure across table and finder workspaces, and
+  measure complete-frame cost without changing the format.
+- Similarity review: common-body refactoring, workspace checks, regression
+  vectors, benchmark extension, and records were independently derived from
+  marc-owned contracts; no external implementation expression entered the
+  work.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 built the affected
+  core tests and internal benchmark warning-clean. All eight direct Contextual
+  tANS frame encoder tests passed under each compiler. Ten README iterations
+  produced identical 2,893-byte frames and measured 0.278 versus 1.956 MiB/s
+  under MSVC and 0.370 versus 1.925 MiB/s under ClangCL for Exhaustive versus
+  HashChain respectively. All 2,841 registered MSVC tests passed in 172.38
+  seconds and all 2,841 registered ClangCL tests passed in 165.69 seconds with
+  the 240-second per-test limit, including documentation layout and the
+  complete schema-37-through-1 compatibility chain.
