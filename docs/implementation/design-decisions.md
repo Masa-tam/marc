@@ -16328,3 +16328,21 @@ validate the complete raw/views/frame aggregate. Make decoder workspace
 validation select 4,518 or 4,550 frequency entries from the profile enum.
 Defer the C struct and public factory change so the existing ABI continues to
 select only the frozen profile during this step.
+
+## DD-795: Contextual Dynamic Range C admission uses one exact profile selector
+
+- Date: 2026-08-14
+- Status: accepted
+
+Allocate the Contextual Dynamic Range configuration's former 64-bit reserved
+tail as a 32-bit `window_profile` followed by a 32-bit reserved word. Retain
+ABI version 1, the structure extent, and zero as the frozen 64 KiB default.
+Define value 1 as the additive 1 MiB profile. Reject every unknown value.
+
+Use the selector for workspace calculation, encoder stream identity, typed
+parameter validation, and decoder admission. Do not infer identity from
+`window_size`. A decoder created for one profile must reject the other known
+dictionary/context pair before frame allocation, while the private generic
+streaming decoder may continue to admit either pair for focused format tests.
+Keep CLI, benchmark, fuzz, and interoperability admission as later vertical
+steps.

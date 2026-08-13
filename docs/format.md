@@ -6625,15 +6625,18 @@ identity without changing the descriptor grammar. Crossed known dictionary/
 context pairs remain contradictory parameters. This admission does not expose
 a new public profile.
 
-The internal profile calculator selects the 64 KiB or 1 MiB identity
-explicitly. For a largest raw frame of `F` bytes, both variants retain the
+The profile calculator and Contextual Dynamic Range C lifecycle select the
+64 KiB or 1 MiB identity explicitly. For a largest raw frame of `F` bytes,
+both variants retain the
 same conservative extents: at most `F` typed tokens, `2F` modeled operations,
 `6F` arithmetic decisions, `12F + 5` payload bytes, and therefore
 `12F + 85` complete-frame bytes. The encoder workspace additionally contains
 the exact HashChain workspace derived from `F` and the selected LZSS
 parameters. The decoder workspace selects the 4,518- or 4,550-entry model
-limit from the requested profile variant. These calculations are internal and
-do not yet define a public C selector.
+limit from the requested profile variant. The public selector is process-local
+and is not serialized: value 0 admits only `2/2 + 1/1`, and value 1 admits only
+`2/3 + 1/2`. The encoder writes the selected exact pair, while the C streaming
+decoder rejects a different pair before frame allocation.
 
 Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
@@ -6644,11 +6647,10 @@ descriptor grammars, but their exact selected-layout table, tree, payload, and
 workspace bounds must be specified before either pairing is admitted.
 
 This subsection reserves the shared dictionary/context identity and the two
-exact ANS descriptor ceilings, and records the internal Dynamic Range frame
-encoder/decoder and streaming lifecycle described above. It does not yet
-claim a public C lifecycle, workspace profile, CLI selector, benchmark
-profile, fuzz target, or interoperability archive. Each backend receives its
-own complete public admission and hand-checkable serialized vector before
-release.
+exact ANS descriptor ceilings, and records the Dynamic Range frame,
+streaming, profile, and C workspace lifecycle described above. It does not yet
+claim a 1 MiB CLI selector, benchmark profile, fuzz target, interoperability
+archive, or any other entropy backend. Each backend receives its own complete
+admission and hand-checkable serialized vector before release.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

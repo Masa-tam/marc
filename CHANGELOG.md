@@ -5,6 +5,13 @@ format versions, and C ABI versions are independent namespaces.
 
 ## Unreleased
 
+### Added
+
+- Added explicit 64 KiB and 1 MiB window-profile selection to the public LZSS
+  Contextual Dynamic Range C lifecycle. The extended selector emits and admits
+  only the reserved Format 2 dictionary/context identity `2/3 + 1/2`, while
+  the zero default preserves `2/2 + 1/1` and the ABI-1 structure extent.
+
 ## 0.3.0 - 2026-08-13
 
 ### Added

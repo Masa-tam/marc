@@ -44,6 +44,7 @@ int main(void) {
     assert(config.abi_version == MARC_ABI_VERSION);
     assert(config.frame_size == 65536);
     assert(config.window_size == 65536);
+    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
     config.original_size = sizeof(input);
@@ -102,6 +103,91 @@ int main(void) {
     assert(memcmp(decoded, input, sizeof(input)) == 0);
     marc_transform_destroy(transform);
 
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_ENCODE, &config)
+           == MARC_STATUS_OK);
+    config.original_size = sizeof(input);
+    config.frame_size = 2;
+    config.window_size = UINT32_C(1) << 20;
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    config.max_entropy_table_entries = 4549;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_entropy_table_entries = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_dynamic_range_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(encoded[14] == 3 && encoded[15] == 0);
+    assert(encoded[98] == 2 && encoded[99] == 0);
+    const size_t extended_encoded_size = result.output_produced;
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_DECODE, &config)
+           == MARC_STATUS_OK);
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_dynamic_range_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, extended_encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_MALFORMED_STREAM);
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_DECODE, &config)
+           == MARC_STATUS_OK);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_dynamic_range_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, extended_encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == sizeof(decoded));
+    assert(memcmp(decoded, input, sizeof(input)) == 0);
+    marc_transform_destroy(transform);
+
     assert(marc_lzss_contextual_dynamic_range_create(
                &config,
                (marc_buffer){primary.data, needed.primary_bytes - 1},
@@ -139,6 +225,11 @@ int main(void) {
     assert(marc_lzss_contextual_dynamic_range_create(
                &config, primary, secondary, views, NULL)
            == MARC_STATUS_INVALID_ARGUMENT);
+    config.window_profile = UINT32_C(2);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)

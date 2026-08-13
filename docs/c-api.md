@@ -151,9 +151,16 @@ atomic raw-frame output, and views for typed tokens. The factory validates
 capacity, alignment, and pairwise non-overlap before publishing a handle.
 Encoder sizes and LZSS parameters are read from the size-tagged configuration;
 decoder workspace sizing comes only from its hard limits and validates stream
-parameters later. The profile remains experimental and outside the baseline
-CLI inventory, though the same public lifecycle is reachable through the
-explicit experimental command-line option.
+parameters later. `window_profile` selects one exact dictionary/context pair:
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K` selects `2/2 + 1/1` and remains the
+initializer default, while `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
+`2/3 + 1/2`. The selector is not inferred from `window_size`; encoding rejects
+parameters outside the selected profile and decoding rejects a stream whose
+identity does not match it. Re-query all three workspace regions after
+changing the selector. The field and its trailing 32-bit reserved word occupy
+the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
+all-zero meaning used by earlier callers. The profile remains outside the
+baseline CLI and interoperability inventories.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, or hard limits.

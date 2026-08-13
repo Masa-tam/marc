@@ -589,6 +589,26 @@ bool load_config(const marc_lzss_dynamic_range_config* config,
     return true;
 }
 
+[[nodiscard]] marc::frame::internal::LzssTypedContextProfileVariant
+typed_context_profile_variant(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssTypedContextProfileVariant::
+              field_context_1m
+        : marc::frame::internal::LzssTypedContextProfileVariant::
+              field_context_64k;
+}
+
+[[nodiscard]] marc::frame::internal::LzssTypedContextStreamAdmission
+typed_context_stream_admission(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssTypedContextStreamAdmission::
+              field_context_1m
+        : marc::frame::internal::LzssTypedContextStreamAdmission::
+              field_context_64k;
+}
+
 bool load_config(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc::core::DecoderLimits& limits) noexcept {
@@ -596,7 +616,9 @@ bool load_config(
         || config->struct_size
             != sizeof(marc_lzss_contextual_dynamic_range_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0) {
+        || config->reserved != 0 || config->reserved2 != 0
+        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -4560,6 +4582,7 @@ marc_status marc_lzss_contextual_dynamic_range_config_init(
     config->max_entropy_table_entries =
         limits.max_entropy_table_entries;
     config->max_range_model_total = limits.max_range_model_total;
+    config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
     return MARC_STATUS_OK;
 }
 
@@ -4582,7 +4605,8 @@ marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
             LzssTypedContextEncoderWorkspaceRequirements needed{};
         const auto error =
             marc::frame::internal::make_lzss_typed_context_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 typed_context_profile_variant(config->window_profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssTypedContextProfileError::none) {
@@ -4600,7 +4624,9 @@ marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
         marc::frame::internal::
             LzssTypedContextDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
-            calculate_lzss_typed_context_decoder_workspace(limits, needed);
+            calculate_lzss_typed_context_decoder_workspace(
+                limits, needed,
+                typed_context_profile_variant(config->window_profile));
         if (error != marc::frame::internal::
                          LzssTypedContextProfileError::none) {
             return status_for(
@@ -4669,7 +4695,8 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         marc::frame::internal::
             LzssTypedContextEncoderWorkspaceRequirements needed{};
         if (marc::frame::internal::make_lzss_typed_context_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 typed_context_profile_variant(config->window_profile)},
                 limits, stream, needed)
             != marc::frame::internal::
                    LzssTypedContextProfileError::none) {
@@ -4691,7 +4718,8 @@ marc_status marc_lzss_contextual_dynamic_range_create(
             LzssTypedContextDecoderWorkspaceRequirements needed{};
         if (marc::frame::internal::
                 calculate_lzss_typed_context_decoder_workspace(
-                    limits, needed)
+                    limits, needed,
+                    typed_context_profile_variant(config->window_profile))
             != marc::frame::internal::
                    LzssTypedContextProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -4705,7 +4733,8 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         }
         implementation = new (std::nothrow)
             marc::frame::internal::LzssTypedContextFrameStreamingDecoder(
-                limits, primary, views.tokens, secondary);
+                limits, primary, views.tokens, secondary,
+                typed_context_stream_admission(config->window_profile));
     }
     return publish_transform(implementation, transform);
 }

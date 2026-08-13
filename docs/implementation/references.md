@@ -5059,3 +5059,13 @@ context layouts, and completed internal frame lifecycle as first-party
 references. No external compression profile, workspace formula, ABI design,
 source code, tests, benchmark, corpus, result, patent text, or optimization
 description was consulted.
+
+### IR-0569
+
+The public 1 MiB Contextual Dynamic Range C lifecycle uses DD-790 through
+DD-795, TVG-0665 through TVG-0670, marc's size-tagged ABI-1 configuration,
+internal selected profile/workspace calculator, exact HashChain streaming
+encoder, typed-context streaming decoder, and existing C lifecycle tests as
+first-party references. No external compression API, ABI extension pattern,
+extended-window implementation, source code, tests, benchmark, corpus,
+result, patent text, or optimization description was consulted.

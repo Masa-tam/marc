@@ -11,13 +11,21 @@
 
 namespace marc::frame::internal {
 
+enum class LzssTypedContextStreamAdmission : std::uint8_t {
+    any,
+    field_context_64k,
+    field_context_1m,
+};
+
 class LzssTypedContextFrameStreamingDecoder final : public core::Transform {
 public:
     LzssTypedContextFrameStreamingDecoder(
         core::DecoderLimits limits,
         std::span<std::byte> serialized_frame_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
-        std::span<std::byte> raw_frame_workspace) noexcept;
+        std::span<std::byte> raw_frame_workspace,
+        LzssTypedContextStreamAdmission admission =
+            LzssTypedContextStreamAdmission::any) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input,
@@ -47,6 +55,8 @@ private:
     std::span<std::byte> serialized_frame_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<std::byte> raw_frame_workspace_{};
+    LzssTypedContextStreamAdmission admission_{
+        LzssTypedContextStreamAdmission::any};
     std::array<std::byte, typed_context_stream_header_size>
         stream_header_bytes_{};
     std::array<std::byte, typed_context_frame_header_size>

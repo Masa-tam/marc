@@ -19645,3 +19645,32 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include documentation
   layout, every existing contextual profile, and schema 37 through 1
   interoperability compatibility.
+
+## CR-0824: 2026-08-14 - Public 1 MiB Contextual Dynamic Range C profile
+
+- Authoring method: allocated marc's existing Contextual Dynamic Range
+  configuration reserve to an explicit profile selector and connected it to
+  the completed local profile, workspace, encoder, and decoder boundaries.
+- References used: DD-790 through DD-795; IR-0569; TVG-0665 through TVG-0670;
+  marc's ABI-1 C lifecycle, selected typed-context profile, and completed
+  64 KiB/1 MiB Dynamic Range implementations.
+- Known implementations intentionally not consulted: external compression
+  APIs, ABI extension designs, extended-window implementations, source code,
+  tests, benchmarks, corpora, results, patent text, and optimization
+  descriptions.
+- Independent decisions: preserve the ABI structure extent and all-zero old
+  default; use one explicit selector rather than infer from window size;
+  require decoder identity agreement; and defer CLI, benchmark, fuzz, and
+  interoperability admission.
+- Generated-code task description: expose the 1 MiB profile through the C
+  configuration, requirements query, factory, and strict streaming decoder;
+  prove the exact emitted identity, profile-mismatch rejection, table limit,
+  unknown selector, reserved field, and old-profile regression; then run both
+  complete Windows suites including schema compatibility.
+- Similarity review: the implementation follows marc-owned ABI types,
+  workspace calculators, stream identities, error categories, and tests. No
+  external implementation expression entered the change.
+- Local validation: all 2,877 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include documentation
+  layout, every existing contextual profile, and schema 37 through 1
+  interoperability compatibility.

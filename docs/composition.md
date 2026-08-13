@@ -1783,3 +1783,14 @@ Schema 37 now has four-direction external evidence at revision
 24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
 verifies there and on Windows/MSVC. All 47 archives decode and re-encode
 byte-identically in every path.
+
+### CP-0107
+
+The public Contextual Dynamic Range C configuration now selects either the
+frozen 64 KiB `2/2 + 1/1` profile or the additive 1 MiB `2/3 + 1/2` profile
+through one explicit value in its former reserved tail. Query, factory, exact
+HashChain encoder, and decoder admission derive identity and table limits from
+that value without inferring a profile from window size. A C decoder rejects
+the other known profile before frame allocation. The ABI-1 structure extent
+and zero-initialized old default remain unchanged; CLI, benchmark, fuzz, and
+interoperability admission are still separate milestones.

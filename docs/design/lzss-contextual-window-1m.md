@@ -213,7 +213,18 @@ HashChain, and aggregate extents with checked arithmetic. Decoder requirements
 select the corresponding frequency-table limit. At `F = 1,048,576`, the
 conservative serialized-frame ceiling is 12,582,997 bytes and the complete
 encoder aggregate remains below the default 128 MiB limit. Existing C queries
-continue to select the old profile until an explicit ABI field is introduced.
+selected the old profile until the following explicit ABI field was
+introduced.
+
+The Contextual Dynamic Range C lifecycle now allocates the former 64-bit
+reserved tail as a 32-bit `window_profile` followed by a 32-bit reserved word,
+retaining the ABI-1 structure extent and the prior all-zero default. Value 0
+selects only the frozen `2/2 + 1/1` identity; value 1 selects only the extended
+`2/3 + 1/2` identity. Workspace queries derive the selected 4,518- or
+4,550-entry table requirement, encoders serialize that exact pair, and C
+decoders reject the other pair before frame allocation. `window_size` does
+not select or override the profile. CLI, benchmark, fuzz, and interoperability
+admission remain separate stages.
 
 ## Required validation
 

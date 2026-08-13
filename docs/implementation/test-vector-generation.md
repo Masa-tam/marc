@@ -9042,3 +9042,17 @@ Set the entropy-table limit to 4,549 entries. Require the extended decoder
 workspace query to fail while the old 4,518-entry query succeeds. Reject an
 unknown profile enum without publishing stream or workspace results. Retain
 all old default profile values and partition tests unchanged.
+
+### TVG-0670
+
+Initialize the public Contextual Dynamic Range C encode configuration and
+require profile value 0. Select value 1 with a 1,048,576-byte window and LZ
+distance limit, then require the emitted Format 2 header to contain dictionary
+variant 3 and context variant 2. Decode that stream with profile 1 and require
+the original bytes exactly; decode the same bytes with profile 0 and require a
+stable malformed-stream error before any output.
+
+Require 4,549 entropy-table entries to reject the extended query, then admit
+it with the ordinary limit. Reject profile value 2 and a nonzero trailing
+reserved word. Preserve the existing profile-0 C lifecycle, header identity,
+workspace values, and round trip unchanged.
