@@ -29,6 +29,9 @@ struct TypedContextStreamHeader {
     dictionary::internal::LzssParameters dictionary{};
     std::uint32_t range_model_total{};
     std::uint16_t context_count{};
+    std::uint16_t dictionary_variant{2};
+    std::uint16_t context_algorithm{1};
+    std::uint16_t context_variant{1};
 };
 
 enum class TypedContextStreamHeaderError : std::uint8_t {

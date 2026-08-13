@@ -57,6 +57,25 @@ TEST(LzssContextualRangeDecoder, ValidatesAndDecodesOneLiteralAtomically) {
     EXPECT_EQ(tokens[1].literal, 0xCC);
 }
 
+TEST(LzssContextualRangeDecoder, DecodesExtendedVariantLiteralAtomically) {
+    constexpr auto payload = literal_payload();
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = 1048576;
+    std::array<LzssTypedToken, 1> tokens{};
+    const auto decoded = decode_lzss_contextual_range_tokens(
+        {2, 6, 31}, payload, parameters, literal_context(), {}, tokens,
+        LzssFieldContextVariant::field_context_1m);
+    ASSERT_EQ(decoded.error, LzssContextualRangeDecodeError::none);
+    EXPECT_EQ(decoded.token_count, 1U);
+    EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::literal);
+    EXPECT_EQ(tokens[0].literal, 'A');
+
+    EXPECT_EQ(validate_lzss_contextual_range_tokens(
+                  {2, 6, 31}, payload, parameters, literal_context(), {},
+                  LzssFieldContextVariant::field_context_64k).error,
+              LzssContextualRangeDecodeError::invalid_parameters);
+}
+
 TEST(LzssContextualRangeDecoder, RejectsInvalidReconstructedMatch) {
     constexpr auto payload = match_payload();
     const auto result = validate_lzss_contextual_range_tokens(

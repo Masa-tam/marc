@@ -6613,7 +6613,16 @@ be shorter. Match-finder strategy is not serialized.
 
 The existing contextual entropy variants may be composed with this pair only
 after their context-layout-dependent bounds are documented and implemented.
-Dynamic Range `3/2` retains its fixed descriptor. Canonical contextual rANS
+Dynamic Range `3/2` retains its fixed descriptor. Its internal decoder-side
+admission now accepts the exact `2/3 + 1/2 + 3/2` identity: the stream parser
+selects the 4,550-entry layout before frame allocation, frame validation uses
+the 30-decision-per-token ceiling, and the complete-frame and streaming
+decoders apply the selected 21-symbol distance alphabet and 20-bit bypass
+ceiling through transactional typed-token reconstruction. Crossed known
+dictionary/context pairs remain contradictory parameters. This admission does
+not expose a new public profile or encoder.
+
+Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
 Contextual tANS `5/2` uses frequency entry count 4,550 and a
 27-through-9,093-byte descriptor. Contextual Blocked Huffman `1/2` and
@@ -6621,10 +6630,12 @@ Contextual Adaptive Huffman `2/2` retain their backend arithmetic and
 descriptor grammars, but their exact selected-layout table, tree, payload, and
 workspace bounds must be specified before either pairing is admitted.
 
-This subsection reserves only the shared dictionary/context identity and the
-two exact ANS descriptor ceilings. It does not yet claim an implemented
-decoder, encoder, public C lifecycle, CLI selector, benchmark profile, fuzz
+This subsection reserves the shared dictionary/context identity and the two
+exact ANS descriptor ceilings, and records only the first internal Dynamic
+Range decoder slice described above. It does not yet claim a complete
+backend, encoder, public C lifecycle, CLI selector, benchmark profile, fuzz
 target, or interoperability archive. Each backend receives its own complete
-format admission and hand-checkable serialized vector before implementation.
+format admission and hand-checkable serialized vector before public
+implementation.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

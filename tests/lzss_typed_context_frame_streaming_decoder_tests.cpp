@@ -93,6 +93,18 @@ using marc::dictionary::internal::LzssTypedToken;
     return bytes;
 }
 
+[[nodiscard]] std::vector<std::byte> extended_one_frame_stream() {
+    auto header = stream_header(0, 1);
+    header[14] = std::byte{0x03};
+    header[22] = std::byte{0x10};
+    header[66] = std::byte{0x10};
+    header[98] = std::byte{0x02};
+    constexpr auto frame = literal_frame(0);
+    std::vector<std::byte> bytes(header.begin(), header.end());
+    bytes.insert(bytes.end(), frame.begin(), frame.end());
+    return bytes;
+}
+
 [[nodiscard]] constexpr std::uint32_t end_flag() {
     return marc::core::flag_value(ProcessFlags::end_input);
 }
@@ -129,6 +141,35 @@ TEST(LzssTypedContextFrameStreamingDecoder, HandlesOneByteInputAndOutput) {
     EXPECT_EQ(actual, (std::vector{std::byte{'A'}, std::byte{'A'}}));
     EXPECT_EQ(decoder.process({}, {}, 0).status,
               StreamStatus::end_of_stream);
+}
+
+TEST(LzssTypedContextFrameStreamingDecoder,
+     HandlesExtendedVariantWithOneByteInputAndOutput) {
+    const auto encoded = extended_one_frame_stream();
+    std::array<std::byte, 86> frame{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+    LzssTypedContextFrameStreamingDecoder decoder{{}, frame, tokens, raw};
+    std::size_t input_offset{};
+    std::array<std::byte, 1> output{};
+    StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, encoded.size() - input_offset);
+        const auto chunk = std::span<const std::byte>{encoded}.subspan(
+            input_offset, count);
+        const auto flags = input_offset + count == encoded.size()
+            ? end_flag()
+            : 0U;
+        const auto result = decoder.process(chunk, output, flags);
+        ASSERT_TRUE(marc::core::is_valid(
+            result, chunk.size(), output.size()));
+        ASSERT_NE(result.status, StreamStatus::error);
+        input_offset += result.input_consumed;
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, encoded.size());
+    EXPECT_EQ(output[0], std::byte{'A'});
 }
 
 TEST(LzssTypedContextFrameStreamingDecoder,

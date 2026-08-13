@@ -43,6 +43,9 @@ struct LzssFieldContextLayoutResult {
 };
 
 [[nodiscard]] LzssFieldContextLayoutResult
+get_lzss_field_context_layout(LzssFieldContextVariant variant) noexcept;
+
+[[nodiscard]] LzssFieldContextLayoutResult
 select_lzss_field_context_layout(
     std::uint16_t dictionary_variant,
     std::uint16_t context_algorithm,

@@ -508,6 +508,16 @@ void materialize(const std::span<const ModeledOperation> operations,
 
 } // namespace
 
+LzssFieldContextLayoutResult get_lzss_field_context_layout(
+    const LzssFieldContextVariant variant) noexcept {
+    const auto layout = layout_for_variant(variant);
+    return valid_layout(layout)
+        ? LzssFieldContextLayoutResult{
+              layout, LzssFieldContextLayoutError::none}
+        : LzssFieldContextLayoutResult{
+              {}, LzssFieldContextLayoutError::unsupported_context_variant};
+}
+
 LzssFieldContextLayoutResult select_lzss_field_context_layout(
     const std::uint16_t dictionary_variant,
     const std::uint16_t context_algorithm,

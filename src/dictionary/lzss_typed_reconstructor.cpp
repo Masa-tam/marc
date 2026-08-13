@@ -49,10 +49,12 @@ LzssTypedReconstructResult reconstruct_lzss_typed_frame(
     const LzssParameters& parameters,
     const LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<std::byte> private_raw_output) noexcept {
+    const std::span<std::byte> private_raw_output,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssTypedReconstructResult result{};
     result.validation =
-        validate_lzss_typed_frame(tokens, parameters, context, limits);
+        validate_lzss_typed_frame(tokens, parameters, context, limits,
+                                  variant);
     if (result.validation.error != LzssTypedFrameValidationError::none) {
         result.error = LzssTypedReconstructError::invalid_token_frame;
         return result;

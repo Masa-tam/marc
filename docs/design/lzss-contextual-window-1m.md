@@ -181,11 +181,19 @@ format, bounds, decoder, encoder, malformed-input tests, and benchmark are
 complete.
 
 The first shared-groundwork stage is implemented internally. Typed-token
-validation now selects the 64 KiB or 1 MiB parameter ceiling explicitly, and
-the field-context layer owns one validated layout for each reserved pair.
-Existing callers default to the frozen variants. The selector accepts only
-`2/2 + 1/1` and `2/3 + 1/2`; it does not yet make the new pair available to a
-stream parser or public profile.
+validation selects the 64 KiB or 1 MiB parameter ceiling explicitly, and the
+field-context layer owns one validated layout for each reserved pair. Existing
+callers default to the frozen variants. The selector accepts only
+`2/2 + 1/1` and `2/3 + 1/2`.
+
+The first Dynamic Range decoder slice is also implemented internally. Its
+stream parser admits the exact new pair, its frame preflight derives table and
+decision bounds from that pair, and its raw range decoder, typed-token inverse,
+reconstructor, complete-frame decoder, and streaming decoder carry the
+selected layout without inferring it from a descriptor. One-byte input and
+output chunking is covered. This slice does not yet provide the new encoder,
+public profile, workspace factory, CLI, benchmark, fuzz target, or
+interoperability archive; those remain later steps in the same vertical path.
 
 ## Required validation
 

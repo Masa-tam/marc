@@ -8992,3 +8992,20 @@ the next byte and unknown typed variants. Materialize and invert a variant-2
 context sequence whose Match at distance 131,072 produces alphabet 21,
 class 17, and 17 zero-valued bypass bits. Require the same configuration to
 remain invalid under the frozen variant-1 path.
+
+### TVG-0667
+
+For the first Contextual Dynamic Range decoder slice, derive a variant-3/2
+stream header from the frozen one-byte `A` vector by changing only dictionary
+variant to 3, frame and window size to 1,048,576, and context variant to 2.
+Require exact parse/serialize identity and require both crossed known pairs to
+fail atomically. Retain the existing 86-byte literal frame body because none of
+its decisions uses an expanded distance context; decode it through both the
+complete-frame and one-byte streaming paths and require exactly `A`.
+
+Exercise the selected resource differences independently: require 4,550 table
+entries where 4,549 fails, admit 27 decisions for one token only under the new
+layout, decode a Symbol decision in distance context 23 with alphabet 21, and
+decode 20 bypass bits only under context variant 2. The old variant must keep
+rejecting the 20-bit operation and the 1 MiB typed-token parameters. Preserve
+all existing old-header serialization vectors byte for byte.

@@ -79,6 +79,41 @@ TEST(ContextualDynamicRangeDecoder, DecodesLsbFirstFixedBypassVector) {
               ContextualDynamicRangeDecodeError::none);
 }
 
+TEST(ContextualDynamicRangeDecoder, SelectsExtendedAlphabetAndBypassWidth) {
+    constexpr std::array<std::byte, 5> symbol_payload{};
+    ContextualDynamicRangeDecoder symbol_decoder;
+    ASSERT_EQ(symbol_decoder.begin(
+                  {1, 5, 31}, symbol_payload, {},
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m).error,
+              ContextualDynamicRangeDecodeError::none);
+    std::uint32_t value{0xCCCCCCCCU};
+    ASSERT_EQ(symbol_decoder.decode_symbol(23, 21, value).error,
+              ContextualDynamicRangeDecodeError::none);
+    EXPECT_EQ(value, 0U);
+    EXPECT_EQ(symbol_decoder.finish(1, 1).error,
+              ContextualDynamicRangeDecodeError::none);
+
+    constexpr std::array<std::byte, 7> bypass_payload{};
+    ContextualDynamicRangeDecoder bypass_decoder;
+    ASSERT_EQ(bypass_decoder.begin(
+                  {20, 7, 31}, bypass_payload, {},
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m).error,
+              ContextualDynamicRangeDecodeError::none);
+    ASSERT_EQ(bypass_decoder.decode_bypass(20, value).error,
+              ContextualDynamicRangeDecodeError::none);
+    EXPECT_EQ(value, 0U);
+    EXPECT_EQ(bypass_decoder.finish(1, 20).error,
+              ContextualDynamicRangeDecodeError::none);
+
+    ContextualDynamicRangeDecoder old_decoder;
+    ASSERT_EQ(old_decoder.begin({20, 7, 31}, bypass_payload, {}).error,
+              ContextualDynamicRangeDecodeError::none);
+    EXPECT_EQ(old_decoder.decode_bypass(20, value).error,
+              ContextualDynamicRangeDecodeError::invalid_bypass_width);
+}
+
 TEST(ContextualDynamicRangeDecoder, RejectsDescriptorAndPayloadMismatch) {
     constexpr auto payload = literal_payload();
     ContextualDynamicRangeDecoder decoder;
@@ -215,6 +250,15 @@ TEST(ContextualDynamicRangeDecoder, EnforcesTableAndModelLimits) {
         marc::context::internal::lzss_field_context_frequency_entries - 1;
     ContextualDynamicRangeDecoder decoder;
     EXPECT_EQ(decoder.begin({2, 6, 31}, payload, limits).error,
+              ContextualDynamicRangeDecodeError::invalid_descriptor);
+
+    limits = {};
+    limits.max_entropy_table_entries =
+        marc::context::internal::lzss_field_context_frequency_entries_v2 - 1;
+    EXPECT_EQ(decoder.begin(
+                  {2, 6, 31}, payload, limits,
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m).error,
               ContextualDynamicRangeDecodeError::invalid_descriptor);
 
     limits = {};

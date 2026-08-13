@@ -42,7 +42,9 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
 
 [[nodiscard]] bool read_token(
     ContextualDynamicRangeDecoder& decoder,
-    const LzssFieldContextState& state, LzssTypedToken& token,
+    const LzssFieldContextState& state,
+    const LzssFieldContextLayout& layout,
+    LzssTypedToken& token,
     LzssContextualRangeDecodeResult& result) noexcept {
     std::uint32_t kind{};
     if (!read_symbol(decoder, state.token_context(), 2, kind, result)) {
@@ -75,7 +77,9 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
 
     std::uint32_t distance_class{};
     if (!read_symbol(
-            decoder, LzssFieldContextState::distance_context(length_class), 17,
+            decoder, LzssFieldContextState::distance_context(length_class),
+            (*layout.alphabets)[LzssFieldContextState::distance_context(
+                length_class)],
             distance_class, result)) {
         return false;
     }
@@ -94,6 +98,7 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
 [[nodiscard]] bool validate_declared_bounds(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     LzssContextualRangeDecodeResult& result) noexcept {
     const auto token_count =
         static_cast<std::uint64_t>(context.declared_token_count);
@@ -106,7 +111,8 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
     if (token_count == 0 || raw_size == 0 || token_count > raw_size
         || event_count < 2 * token_count || event_count > 5 * token_count
         || event_count > 2 * raw_size || decision_count < event_count
-        || decision_count > 26 * token_count
+        || decision_count
+               > layout.maximum_decisions_per_token * token_count
         || decision_count > 6 * raw_size) {
         result.error = LzssContextualRangeDecodeError::invalid_counts;
         return false;
@@ -143,24 +149,33 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualRangeDecodeResult result{};
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        result.error = LzssContextualRangeDecodeError::invalid_parameters;
+        return result;
+    }
+    const auto& layout = selected.layout;
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
-        parameters, limits);
+        parameters, limits, layout.dictionary_variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualRangeDecodeError::limit_exceeded
             : LzssContextualRangeDecodeError::invalid_parameters;
         return result;
     }
-    if (!validate_declared_bounds(context, limits, result)) return result;
+    if (!validate_declared_bounds(context, limits, layout, result)) {
+        return result;
+    }
     if (descriptor.decision_count != context.declared_decision_count) {
         result.error = LzssContextualRangeDecodeError::invalid_counts;
         return result;
     }
 
     ContextualDynamicRangeDecoder decoder;
-    result.entropy = decoder.begin(descriptor, payload, limits);
+    result.entropy = decoder.begin(descriptor, payload, limits, variant);
     if (result.entropy.error != ContextualDynamicRangeDecodeError::none) {
         result.error = LzssContextualRangeDecodeError::entropy_error;
         return result;
@@ -170,13 +185,13 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
-        if (!read_token(decoder, state, token, result)) return result;
+        if (!read_token(decoder, state, layout, token, result)) return result;
 
         std::uint64_t next_raw_size{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters,
             {result.raw_size, context.declared_raw_size}, limits,
-            next_raw_size);
+            next_raw_size, layout.dictionary_variant);
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error == LzssTypedTokenError::limit_exceeded) {
                 result.error = LzssContextualRangeDecodeError::limit_exceeded;
@@ -247,8 +262,10 @@ LzssContextualRangeDecodeResult validate_lzss_contextual_range_tokens(
     const std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits) noexcept {
-    return run_pass(descriptor, payload, parameters, context, limits, {});
+    const core::DecoderLimits& limits,
+    const LzssFieldContextVariant variant) noexcept {
+    return run_pass(
+        descriptor, payload, parameters, context, limits, {}, variant);
 }
 
 LzssContextualRangeDecodeResult decode_lzss_contextual_range_tokens(
@@ -257,10 +274,10 @@ LzssContextualRangeDecodeResult decode_lzss_contextual_range_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
-    noexcept {
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const LzssFieldContextVariant variant) noexcept {
     auto result = run_pass(
-        descriptor, payload, parameters, context, limits, {});
+        descriptor, payload, parameters, context, limits, {}, variant);
     if (result.error != LzssContextualRangeDecodeError::none) return result;
     if (private_tokens.size() < context.declared_token_count) {
         result.error = LzssContextualRangeDecodeError::output_too_small;
@@ -277,7 +294,7 @@ LzssContextualRangeDecodeResult decode_lzss_contextual_range_tokens(
         return result;
     }
     const auto decoded = run_pass(
-        descriptor, payload, parameters, context, limits, output);
+        descriptor, payload, parameters, context, limits, output, variant);
     if (decoded.error != LzssContextualRangeDecodeError::none
         || decoded.token_count != result.token_count
         || decoded.raw_size != result.raw_size

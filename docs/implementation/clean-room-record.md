@@ -19560,3 +19560,33 @@ discarded and the reviewed seed retained.
   typed-token/context tests pass. All 2,863 registered tests pass under each
   compiler with the 240-second per-test limit, including documentation layout,
   all existing contextual profiles, and schema 37 through 1 compatibility.
+
+## CR-0821: 2026-08-13 - First 1 MiB Contextual Dynamic Range decoder slice
+
+- Authoring method: propagated the already reserved dictionary/context identity
+  through marc's local parser, frame validator, entropy decoder, typed-token
+  inverse, reconstructor, complete-frame transaction, and streaming state
+  machine without consulting another compression implementation.
+- References used: DD-790 through DD-792; IR-0566; TVG-0665 through TVG-0667;
+  marc's existing Contextual Dynamic Range variant 2 decoder and Format 2
+  framing implementation.
+- Known implementations intentionally not consulted: external LZSS, context-
+  model, range-coder, extended-window format, decoder architecture, source
+  code, tests, benchmarks, corpora, results, patent text, and optimization
+  descriptions.
+- Independent decisions: store identity in the internal header value; select
+  one layout before resource validation; preserve the descriptor grammar;
+  allocate only the bounded maximum frequency array; pass explicit variants
+  into token validation and reconstruction; and keep encoder/public admission
+  outside this incremental decoder slice.
+- Generated-code task description: admit only the exact new pair, propagate
+  variant-derived bounds through transactional decoding, retain all old bytes,
+  add parser, boundary, complete-frame, and one-byte streaming regressions,
+  then run both complete Windows suites including schema compatibility.
+- Similarity review: the implementation follows marc-owned types, checked
+  arithmetic, error categories, state machines, and vectors. No external
+  implementation expression entered the change.
+- Local validation: all 2,871 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include documentation
+  layout, every existing contextual profile, and schema 37 through 1
+  interoperability compatibility.

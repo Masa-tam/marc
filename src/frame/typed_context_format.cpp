@@ -1,5 +1,6 @@
 #include "frame/typed_context_format.hpp"
 
+#include "context/lzss_field_context.hpp"
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 
@@ -44,17 +45,34 @@ TypedContextStreamHeaderError validate_typed_context_stream_header(
             > limits.max_internal_buffered_bytes) {
         return TypedContextStreamHeaderError::limit_exceeded;
     }
+    const auto layout = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    switch (layout.error) {
+    case context::internal::LzssFieldContextLayoutError::none:
+        break;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_dictionary_variant:
+        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_context_algorithm:
+        return TypedContextStreamHeaderError::unknown_context_model;
+    case context::internal::LzssFieldContextLayoutError::
+        unsupported_context_variant:
+        return TypedContextStreamHeaderError::unsupported_context_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        incompatible_variants:
+        return TypedContextStreamHeaderError::contradictory_parameters;
+    }
     const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            header.dictionary, limits);
+        dictionary::internal::validate_lzss_typed_parameters(
+            header.dictionary, limits, layout.layout.dictionary_variant);
     if (dictionary_error
-        == dictionary::internal::LzssFormatError::limit_exceeded) {
+        == dictionary::internal::LzssTypedTokenError::limit_exceeded) {
         return TypedContextStreamHeaderError::limit_exceeded;
     }
-    if (dictionary_error != dictionary::internal::LzssFormatError::none
-        || header.dictionary.min_match_length != 5
-        || header.dictionary.max_match_length > 258
-        || header.dictionary.window_size > 65536) {
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
         return TypedContextStreamHeaderError::invalid_dictionary_parameters;
     }
     if (header.range_model_total != typed_context_model_total
@@ -62,7 +80,8 @@ TypedContextStreamHeaderError validate_typed_context_stream_header(
         return TypedContextStreamHeaderError::invalid_entropy_parameters;
     }
     if (header.range_model_total > limits.max_range_model_total
-        || typed_context_table_entries > limits.max_entropy_table_entries) {
+        || layout.layout.frequency_entries
+               > limits.max_entropy_table_entries) {
         return TypedContextStreamHeaderError::limit_exceeded;
     }
     return TypedContextStreamHeaderError::none;
@@ -122,7 +141,7 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     if (dictionary_algorithm != 2) {
         return TypedContextStreamHeaderError::unknown_dictionary_algorithm;
     }
-    if (dictionary_variant != 2) {
+    if (dictionary_variant != 2 && dictionary_variant != 3) {
         return TypedContextStreamHeaderError::unsupported_dictionary_variant;
     }
     if (entropy_algorithm != 3) {
@@ -179,7 +198,7 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     if (context_algorithm != 1) {
         return TypedContextStreamHeaderError::unknown_context_model;
     }
-    if (context_variant != 1) {
+    if (context_variant != 1 && context_variant != 2) {
         return TypedContextStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {
@@ -187,6 +206,10 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
             ? TypedContextStreamHeaderError::unknown_flags
             : TypedContextStreamHeaderError::nonzero_reserved;
     }
+
+    parsed.dictionary_variant = dictionary_variant;
+    parsed.context_algorithm = context_algorithm;
+    parsed.context_variant = context_variant;
 
     const auto error = validate_typed_context_stream_header(parsed, limits);
     if (error == TypedContextStreamHeaderError::none) {
@@ -213,7 +236,7 @@ TypedContextStreamHeaderError serialize_typed_context_stream_header(
             static_cast<std::uint16_t>(typed_context_stream_prefix_size))
         || !core::store_le(bytes, 10, static_cast<std::uint16_t>(1))
         || !core::store_le(bytes, 12, static_cast<std::uint16_t>(2))
-        || !core::store_le(bytes, 14, static_cast<std::uint16_t>(2))
+        || !core::store_le(bytes, 14, header.dictionary_variant)
         || !core::store_le(bytes, 16, static_cast<std::uint16_t>(3))
         || !core::store_le(bytes, 18, static_cast<std::uint16_t>(2))
         || !core::store_le(bytes, 20, header.frame_size)
@@ -239,8 +262,8 @@ TypedContextStreamHeaderError serialize_typed_context_stream_header(
     if (!core::store_le(bytes, 80, header.range_model_total)
         || !core::store_le(bytes, 84, header.context_count)
         || !core::store_le(bytes, 86, static_cast<std::uint16_t>(0))
-        || !core::store_le(bytes, 96, static_cast<std::uint16_t>(1))
-        || !core::store_le(bytes, 98, static_cast<std::uint16_t>(1))
+        || !core::store_le(bytes, 96, header.context_algorithm)
+        || !core::store_le(bytes, 98, header.context_variant)
         || !core::store_le(bytes, 100, std::uint32_t{0})) {
         return TypedContextStreamHeaderError::arithmetic_overflow;
     }
@@ -253,6 +276,13 @@ TypedContextFrameHeaderError validate_typed_context_frame_header(
     const TypedContextFrameValidationContext& context) noexcept {
     if (validate_typed_context_stream_header(context.stream, context.limits)
         != TypedContextStreamHeaderError::none) {
+        return TypedContextFrameHeaderError::invalid_stream_header;
+    }
+    const auto layout = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant, context.stream.context_algorithm,
+        context.stream.context_variant);
+    if (layout.error
+        != context::internal::LzssFieldContextLayoutError::none) {
         return TypedContextFrameHeaderError::invalid_stream_header;
     }
     if (header.flags != 0) return TypedContextFrameHeaderError::unknown_flags;
@@ -279,7 +309,8 @@ TypedContextFrameHeaderError validate_typed_context_frame_header(
                                     header.event_count)
         || !checked_product_at_most(6, header.uncompressed_size,
                                     header.decision_count)
-        || !checked_product_at_most(26, header.token_count,
+        || !checked_product_at_most(
+            layout.layout.maximum_decisions_per_token, header.token_count,
                                     header.decision_count)) {
         return TypedContextFrameHeaderError::contradictory_counts;
     }
@@ -309,7 +340,7 @@ TypedContextFrameHeaderError validate_typed_context_frame_header(
         context.stream.dictionary.window_size,
         context.stream.dictionary.max_match_length,
         0,
-        typed_context_table_entries,
+        layout.layout.frequency_entries,
         context.stream.range_model_total,
         0,
         header.payload_size,

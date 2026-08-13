@@ -43,6 +43,17 @@ stream_vector() {
     return bytes;
 }
 
+[[nodiscard]] std::array<std::byte, typed_context_stream_header_size>
+extended_stream_vector() {
+    auto bytes = stream_vector();
+    bytes[14] = std::byte{0x03};
+    bytes[20] = std::byte{0x00};
+    bytes[22] = std::byte{0x10};
+    bytes[66] = std::byte{0x10};
+    bytes[98] = std::byte{0x02};
+    return bytes;
+}
+
 [[nodiscard]] std::array<std::byte, 86> frame_vector() {
     std::array<std::byte, 86> bytes{};
     bytes[0] = std::byte{0x4d};
@@ -74,6 +85,15 @@ stream_vector() {
     stream.original_size = 1;
     stream.range_model_total = typed_context_model_total;
     stream.context_count = typed_context_count;
+    return stream;
+}
+
+[[nodiscard]] TypedContextStreamHeader extended_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 1048576;
+    stream.dictionary.window_size = 1048576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
     return stream;
 }
 
@@ -120,6 +140,27 @@ TEST(TypedContextStreamFormat, SerializesSpecifiedHeaderTransactionally) {
     }));
 }
 
+TEST(TypedContextStreamFormat, ParsesAndSerializesExtendedWindowHeader) {
+    const auto expected = extended_stream_vector();
+    TypedContextStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_typed_context_stream_header(
+                  expected, marc::core::DecoderLimits{}, parsed, consumed),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(consumed, typed_context_stream_header_size);
+    EXPECT_EQ(parsed.dictionary_variant, 3U);
+    EXPECT_EQ(parsed.context_algorithm, 1U);
+    EXPECT_EQ(parsed.context_variant, 2U);
+    EXPECT_EQ(parsed.dictionary.window_size, 1048576U);
+
+    std::array<std::byte, typed_context_stream_header_size> output{};
+    ASSERT_EQ(serialize_typed_context_stream_header(
+                  extended_stream_config(), marc::core::DecoderLimits{},
+                  output),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(output, expected);
+}
+
 TEST(TypedContextStreamFormat, RejectsEveryTruncatedHeaderAtomically) {
     const auto bytes = stream_vector();
     for (std::size_t size = 0; size < bytes.size(); ++size) {
@@ -161,6 +202,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         Mutation{96, std::byte{2},
                  TypedContextStreamHeaderError::unknown_context_model},
         Mutation{98, std::byte{2},
+                 TypedContextStreamHeaderError::contradictory_parameters},
+        Mutation{98, std::byte{3},
                  TypedContextStreamHeaderError::unsupported_context_variant},
     };
     for (const auto& mutation : mutations) {
@@ -176,6 +219,42 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         EXPECT_EQ(output.original_size, 123U);
         EXPECT_EQ(consumed, 7U);
     }
+}
+
+TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {
+    for (const auto& bytes : {[] {
+             auto value = stream_vector();
+             value[14] = std::byte{3};
+             return value;
+         }(), [] {
+             auto value = extended_stream_vector();
+             value[14] = std::byte{2};
+             return value;
+         }()}) {
+        TypedContextStreamHeader output{};
+        output.original_size = 123;
+        std::size_t consumed = 7;
+        EXPECT_EQ(parse_typed_context_stream_header(
+                      bytes, marc::core::DecoderLimits{}, output, consumed),
+                  TypedContextStreamHeaderError::contradictory_parameters);
+        EXPECT_EQ(output.original_size, 123U);
+        EXPECT_EQ(consumed, 7U);
+    }
+}
+
+TEST(TypedContextStreamFormat, SelectsVariantSpecificTableLimit) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_entropy_table_entries = 4518;
+    EXPECT_EQ(validate_typed_context_stream_header(stream_config(), limits),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  extended_stream_config(), limits),
+              TypedContextStreamHeaderError::limit_exceeded);
+
+    limits.max_entropy_table_entries = 4550;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  extended_stream_config(), limits),
+              TypedContextStreamHeaderError::none);
 }
 
 TEST(TypedContextStreamFormat, RejectsReservedAndParameterViolations) {
@@ -241,6 +320,25 @@ TEST(TypedContextFrameFormat, PreflightsSpecifiedOneLiteralFrame) {
     EXPECT_EQ(layout.header.decision_count, 2U);
     EXPECT_EQ(layout.header.payload_size, 6U);
     EXPECT_EQ(layout.descriptor.context_count, 31U);
+}
+
+TEST(TypedContextFrameFormat, SelectsVariantSpecificDecisionCeiling) {
+    auto old_stream = stream_config();
+    old_stream.frame_size = 5;
+    old_stream.original_size = 5;
+    auto extended_stream = old_stream;
+    extended_stream.dictionary.window_size = 1048576;
+    extended_stream.dictionary_variant = 3;
+    extended_stream.context_variant = 2;
+    const auto limits = marc::core::DecoderLimits{};
+    const TypedContextFrameHeader header{
+        0, 0, 5, 1, 5, 27, 5, 16, 0, 0};
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  header, frame_context(old_stream, limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  header, frame_context(extended_stream, limits)),
+              TypedContextFrameHeaderError::none);
 }
 
 TEST(TypedContextFrameFormat, SerializesHeaderAndDescriptorTransactionally) {

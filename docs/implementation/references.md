@@ -5029,3 +5029,13 @@ design as first-party references. No external LZSS implementation,
 context-model implementation, extended-window format, lookup layout, source
 code, tests, benchmark, corpus, result, patent text, or optimization
 description was consulted.
+
+### IR-0566
+
+The first 1 MiB Contextual Dynamic Range decoder slice uses DD-790 through
+DD-792, TVG-0665 through TVG-0667, marc's typed Contextual Dynamic Range stream
+and frame parsers, bounded range decoder, typed-token inverse and
+reconstructor, transactional complete-frame decoder, and one-byte streaming
+decoder as first-party references. No external LZSS, context-model, range-
+coder, extended-window format, source code, tests, benchmark, corpus, result,
+patent text, or optimization description was consulted.

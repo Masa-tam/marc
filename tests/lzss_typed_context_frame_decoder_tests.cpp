@@ -48,6 +48,15 @@ using marc::dictionary::internal::LzssTypedTokenKind;
     return stream;
 }
 
+[[nodiscard]] constexpr TypedContextStreamHeader extended_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 1048576;
+    stream.dictionary.window_size = 1048576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    return stream;
+}
+
 } // namespace
 
 TEST(LzssTypedContextFrameDecoder, DecodesSpecifiedFrameAtomically) {
@@ -71,6 +80,23 @@ TEST(LzssTypedContextFrameDecoder, DecodesSpecifiedFrameAtomically) {
     EXPECT_EQ(tokens[1].literal, 0xCC);
     EXPECT_EQ(raw[0], std::byte{'A'});
     EXPECT_EQ(raw[1], std::byte{0xCC});
+}
+
+TEST(LzssTypedContextFrameDecoder, DecodesExtendedWindowLiteralFrame) {
+    constexpr auto frame = frame_vector();
+    constexpr auto stream = extended_stream_config();
+    const auto limits = marc::core::DecoderLimits{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+
+    const auto result = decode_lzss_typed_context_frame(
+        frame, {stream, limits, 0, 0}, tokens, raw);
+    ASSERT_EQ(result.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(result.serialized_consumed, frame.size());
+    EXPECT_EQ(result.token_decode.token_count, 1U);
+    EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::literal);
+    EXPECT_EQ(tokens[0].literal, 'A');
+    EXPECT_EQ(raw[0], std::byte{'A'});
 }
 
 TEST(LzssTypedContextFrameDecoder, ConsumesOnlyPreflightedFrameExtent) {

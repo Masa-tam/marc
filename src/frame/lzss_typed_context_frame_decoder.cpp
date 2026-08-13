@@ -53,6 +53,15 @@ LzssTypedContextFrameDecodeResult decode_lzss_typed_context_frame(
         result.error = LzssTypedContextFrameDecodeError::preflight_error;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm,
+        context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = LzssTypedContextFrameDecodeError::preflight_error;
+        return result;
+    }
 
     if (!std::in_range<std::size_t>(layout.header.token_count)
         || !std::in_range<std::size_t>(layout.header.uncompressed_size)) {
@@ -120,7 +129,8 @@ LzssTypedContextFrameDecodeResult decode_lzss_typed_context_frame(
     result.token_decode =
         marc::context::internal::decode_lzss_contextual_range_tokens(
             layout.descriptor, payload, context.stream.dictionary,
-            token_context, context.limits, tokens);
+            token_context, context.limits, tokens,
+            selected.layout.context_variant);
     if (result.token_decode.error
         != marc::context::internal::LzssContextualRangeDecodeError::none) {
         result.error = LzssTypedContextFrameDecodeError::token_decode_error;
@@ -133,7 +143,8 @@ LzssTypedContextFrameDecodeResult decode_lzss_typed_context_frame(
         context.output_already_committed,
     };
     result.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
-        tokens, context.stream.dictionary, raw_context, context.limits, raw);
+        tokens, context.stream.dictionary, raw_context, context.limits, raw,
+        selected.layout.dictionary_variant);
     if (result.reconstruction.error
         != dictionary::internal::LzssTypedReconstructError::none) {
         result.error = LzssTypedContextFrameDecodeError::reconstruction_error;

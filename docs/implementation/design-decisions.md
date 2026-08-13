@@ -16263,3 +16263,28 @@ Correct the design boundary found while creating executable vectors:
 distance 65,537 exceeds the old window but remains class 16. Class 17 begins
 at distance 131,072. Preserve 65,537 as the primary extended-window boundary
 and use 131,072 as the first-new-class vector.
+
+## DD-792: Dynamic Range decoder identity selects the contextual layout
+
+- Date: 2026-08-13
+- Status: accepted
+
+Admit dictionary/context pair `2/3 + 1/2` only on the internal Contextual
+Dynamic Range `3/2` decoder path. Store the parsed identity explicitly and
+select its layout before validating frame counts or decoding entropy. Derive
+the frequency-table extent, distance alphabet, bypass ceiling, decisions per
+token, typed-token parameter ceiling, and reconstruction variant from that one
+selection. Preserve default identity `2/2 + 1/1` and its serialized output.
+
+Reject unknown IDs distinctly and reject crossed known pairs as contradictory
+parameters. Keep the fixed 16-byte Dynamic Range descriptor because its
+grammar does not depend on the contextual layout; apply the selected table
+limit at stream/frame validation instead. Extend the private decoder's bounded
+frequency storage to the maximum reserved 4,550 entries, while resetting and
+addressing only the selected extent.
+
+Treat this as decoder-first groundwork rather than public backend completion.
+Require parser/serializer identity tests, old-byte regressions, variant-bound
+table and decision checks, selected alphabet/bypass checks, complete-frame
+transactionality, and one-byte streaming input/output before proceeding to the
+encoder and public lifecycle.

@@ -28,16 +28,20 @@ ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::fail(
 
 void ContextualDynamicRangeDecoder::reset_models() noexcept {
     frequencies_.fill(1);
+    if (layout_.alphabets == nullptr) {
+        totals_.fill(0);
+        return;
+    }
     for (std::size_t index = 0; index < totals_.size(); ++index) {
-        totals_[index] =
-            marc::context::internal::lzss_field_context_alphabets[index];
+        totals_[index] = (*layout_.alphabets)[index];
     }
 }
 
 ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::begin(
     const ContextualDynamicRangeDescriptor& descriptor,
     const std::span<const std::byte> payload,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     payload_ = {};
     descriptor_ = {};
     payload_offset_ = 0;
@@ -48,16 +52,20 @@ ContextualDynamicRangeDecodeResult ContextualDynamicRangeDecoder::begin(
     error_ = ContextualDynamicRangeDecodeError::none;
     started_ = false;
     finished_ = false;
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    layout_ = selected.layout;
     reset_models();
 
-    if (core::validate_limits(limits) != core::LimitError::none
+    if (selected.error
+            != context::internal::LzssFieldContextLayoutError::none
+        || core::validate_limits(limits) != core::LimitError::none
         || descriptor.decision_count == 0 || descriptor.payload_size < 5
         || descriptor.context_count
             != marc::context::internal::lzss_field_context_count
         || descriptor.payload_size > limits.max_compressed_payload_size
         || descriptor.payload_size > limits.max_internal_buffered_bytes
-        || marc::context::internal::lzss_field_context_frequency_entries
-               > limits.max_entropy_table_entries
+        || layout_.frequency_entries > limits.max_entropy_table_entries
         || contextual_dynamic_range_model_total_limit
                > limits.max_range_model_total) {
         return fail(ContextualDynamicRangeDecodeError::invalid_descriptor);
@@ -126,8 +134,7 @@ ContextualDynamicRangeDecoder::decode_symbol(
         return fail(ContextualDynamicRangeDecodeError::invalid_context);
     }
     if (expected_alphabet
-        != marc::context::internal::lzss_field_context_alphabets[
-            expected_context]) {
+        != (*layout_.alphabets)[expected_context]) {
         return fail(ContextualDynamicRangeDecodeError::invalid_alphabet);
     }
     if (decision_count_ >= descriptor_.decision_count) {
@@ -136,7 +143,7 @@ ContextualDynamicRangeDecoder::decode_symbol(
     }
 
     const auto offset =
-        marc::context::internal::lzss_field_context_offsets[expected_context];
+        (*layout_.offsets)[expected_context];
     const auto total = totals_[expected_context];
     const auto unit = range_ / total;
     if (range_ < normalization_threshold || unit == 0) {
@@ -194,7 +201,8 @@ ContextualDynamicRangeDecoder::decode_bypass(
     if (finished_) {
         return fail(ContextualDynamicRangeDecodeError::already_finished);
     }
-    if (expected_bit_count == 0 || expected_bit_count > 16) {
+    if (expected_bit_count == 0
+        || expected_bit_count > layout_.maximum_bypass_bits) {
         return fail(
             ContextualDynamicRangeDecodeError::invalid_bypass_width);
     }
@@ -233,7 +241,7 @@ ContextualDynamicRangeDecoder::decode_bypass(
 bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
     for (std::size_t context = 0; context < totals_.size(); ++context) {
         const auto alphabet =
-            marc::context::internal::lzss_field_context_alphabets[context];
+            (*layout_.alphabets)[context];
         if (totals_[context] < alphabet
             || totals_[context] >= contextual_dynamic_range_model_total_limit) {
             return false;
@@ -241,8 +249,7 @@ bool ContextualDynamicRangeDecoder::validate_models() const noexcept {
         std::uint32_t sum{};
         for (std::size_t symbol = 0; symbol < alphabet; ++symbol) {
             const auto frequency =
-                frequencies_[marc::context::internal::lzss_field_context_offsets[
-                                 context]
+                frequencies_[(*layout_.offsets)[context]
                              + symbol];
             if (frequency == 0) return false;
             sum += frequency;

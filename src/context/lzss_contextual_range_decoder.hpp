@@ -41,7 +41,9 @@ validate_lzss_contextual_range_tokens(
     std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualRangeDecodeResult
 decode_lzss_contextual_range_tokens(
@@ -50,7 +52,9 @@ decode_lzss_contextual_range_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 

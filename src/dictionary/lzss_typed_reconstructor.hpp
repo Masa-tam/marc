@@ -29,7 +29,9 @@ struct LzssTypedReconstructResult {
     const LzssParameters& parameters,
     const LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    std::span<std::byte> private_raw_output) noexcept;
+    std::span<std::byte> private_raw_output,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 } // namespace marc::dictionary::internal
 

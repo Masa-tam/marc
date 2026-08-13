@@ -1,7 +1,7 @@
 #ifndef MARC_ENTROPY_CONTEXTUAL_DYNAMIC_RANGE_DECODER_HPP
 #define MARC_ENTROPY_CONTEXTUAL_DYNAMIC_RANGE_DECODER_HPP
 
-#include "context/lzss_field_context_format.hpp"
+#include "context/lzss_field_context.hpp"
 #include "core/limits.hpp"
 #include "entropy/contextual_dynamic_range_format.hpp"
 
@@ -44,7 +44,10 @@ public:
     [[nodiscard]] ContextualDynamicRangeDecodeResult begin(
         const ContextualDynamicRangeDescriptor& descriptor,
         std::span<const std::byte> payload,
-        const core::DecoderLimits& limits) noexcept;
+        const core::DecoderLimits& limits,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_symbol(
         std::uint16_t expected_context,
@@ -71,11 +74,13 @@ private:
 
     std::span<const std::byte> payload_{};
     std::array<std::uint16_t,
-               marc::context::internal::lzss_field_context_frequency_entries>
+               marc::context::internal::
+                   lzss_field_context_frequency_entries_v2>
         frequencies_{};
     std::array<std::uint32_t,
                marc::context::internal::lzss_field_context_count> totals_{};
     ContextualDynamicRangeDescriptor descriptor_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::size_t payload_offset_{};
     std::uint32_t code_{};
     std::uint32_t range_{UINT32_MAX};
