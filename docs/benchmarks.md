@@ -53,6 +53,7 @@ marc_benchmark lzmw-tans corpus.bin 5
 The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
+`marc_benchmark lzss-contextual-dynamic-range-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
@@ -210,6 +211,15 @@ headers, range descriptors, and termination bytes. Both directions are
 constructed only through the public C lifecycle. Their primary, secondary,
 and opaque views workspace extents come from separate requirements queries,
 and a byte-exact round trip succeeds before timing.
+
+The experimental `lzss-contextual-dynamic-range-1m` benchmark uses the same
+checked `112 + 12N + 85K` complete-stream capacity formula with 1,048,576-byte
+frames and window profile 1. Its public 128 MiB aggregate limit admits the
+selected exact HashChain, typed-token, modeled-operation, range-frame, and raw
+decode workspaces. Both directions are constructed only through the public C
+lifecycle, and the report exposes all returned regions and peak caller-owned
+reservation after an exact pre-timing round trip. Run the 64 KiB and 1 MiB
+commands with the same input/build/count for a meaningful profile comparison.
 
 The experimental `lzss-contextual-rans` benchmark uses the same 65,536-byte
 raw frames, admits at most `6F` modeled decisions and `12F + 8` payload bytes,
@@ -1071,6 +1081,20 @@ Ten MSVC 19.51.36252 Release iterations report 4.948 MiB/s encode and
 small-input timings are descriptive and not stable pass thresholds. Exhaustive
 stream identity, bounded profile sizing, stable capacity and alias rejection,
 and successful public round trip are the normative evidence.
+
+### BM-0048: 1 MiB Contextual Dynamic Range benchmark admission
+
+One ClangCL 22 Release smoke over the 4,326-byte README emits a 2,393-byte
+stream at ratio 0.553 through `lzss-contextual-dynamic-range-1m`. Encoder
+primary/secondary/views workspaces are 4,326/51,997/273,184 bytes; decoder
+workspaces are 12,582,997/1,048,576/12,582,912 bytes. Peak caller-owned
+workspace is 26,214,485 bytes.
+
+The tiny input contains no evidence that a distance beyond 64 KiB improves
+ratio, and its single timed iteration is not a throughput claim. This smoke
+establishes public-profile wiring, bounded capacity, reported workspace, and
+an untimed exact round trip. Same-corpus 64 KiB/1 MiB measurements on inputs
+large enough to contain distant repetition remain the useful comparison.
 
 ## Reporting results
 

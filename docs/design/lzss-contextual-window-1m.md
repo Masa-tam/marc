@@ -231,7 +231,15 @@ The Dynamic Range CLI stage is now admitted under the explicit selector
 ordinary requirements/factory/process lifecycle. The old unqualified selector
 remains the 64 KiB profile. Each decoder name rejects the other's stream and
 retains transactional output cleanup. Benchmark, fuzz, and interoperability
-admission remain separate stages.
+admission proceed as separate stages.
+
+The Dynamic Range benchmark stage is now admitted under the same `-1m` name.
+It changes only the public C profile/frame/window policy, derives all three
+directional workspace extents from the requirements query, checks the common
+Format 2 complete-stream capacity formula, and requires an exact untimed round
+trip before measuring. The report makes ratio, both throughputs, every
+workspace extent, and peak caller reservation available for same-input 64 KiB
+versus 1 MiB comparison. Fuzz and interoperability admission remain separate.
 
 ## Required validation
 

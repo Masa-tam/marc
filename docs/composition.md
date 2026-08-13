@@ -1805,3 +1805,12 @@ both decode names reject the other's identity before publishing output. Exact
 identity, nonempty/empty round trips, overwrite refusal, malformed/trailing
 rejection, and temporary-file cleanup are tested without adding a benchmark,
 fuzz target, or interoperability archive.
+
+### CP-0109
+
+The 1 MiB Contextual Dynamic Range profile now enters the dependency-free
+benchmark through its public C configuration, requirements, factory, process,
+and destroy calls. The adapter uses checked complete-stream capacity, verifies
+an exact round trip before timing, and reports ratio, both throughputs, all
+directional workspace regions, and peak caller reservation. It remains outside
+the stable benchmark matrix and adds no fuzz or interoperability admission.

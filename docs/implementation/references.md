@@ -5078,3 +5078,12 @@ C lifecycle, existing 64 KiB selector, and shared CLI round-trip script as
 first-party references. No external compression CLI, extended-window profile,
 source code, tests, benchmark, corpus, result, patent text, or optimization
 description was consulted.
+
+### IR-0571
+
+The 1 MiB Contextual Dynamic Range benchmark uses DD-795 through DD-797,
+TVG-0670 through TVG-0672, marc's dependency-free benchmark framework, public
+selected C lifecycle, checked Format 2 capacity formula, and 64 KiB benchmark
+adapter as first-party references. No external benchmark implementation,
+compression result, corpus, harness, source code, test, patent text, or
+optimization description was consulted.

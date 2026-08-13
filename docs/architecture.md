@@ -4272,12 +4272,12 @@ requested destination.
 
 ### Format 2 benchmark boundary
 
-The dependency-free benchmark reaches the experimental profile through the
-same public-only lifecycle as the CLI. It owns caller storage returned by each
-direction's requirements query and treats opaque views solely as aligned
-bytes. Complete-stream capacity uses serialized Format 2 fields, while native
-token and operation layouts remain confined to the library. Verification is
-complete before the timed process call begins.
+The dependency-free benchmark reaches both 64 KiB and 1 MiB Contextual Dynamic
+Range profiles through the same public-only lifecycle as the CLI. It owns
+caller storage returned by each direction's requirements query and treats
+opaque views solely as aligned bytes. Complete-stream capacity uses serialized
+Format 2 fields, while native token and operation layouts remain confined to
+the library. Verification is complete before the timed process call begins.
 
 ### Format 2 interoperability boundary
 

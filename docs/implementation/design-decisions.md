@@ -16362,3 +16362,20 @@ Require the same explicit selector for decode. Reject the other known profile
 before output publication rather than auto-detecting it. Delegate all
 workspace extents, alignment, construction, processing, and destruction to
 the public C lifecycle. Defer benchmark, fuzz, and interoperability admission.
+
+## DD-797: The 1 MiB benchmark is a public-lifecycle comparison adapter
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range-1m` to the experimental benchmark without
+adding it to the stable 42-profile matrix. Reuse the exact CLI policy: 1 MiB
+frame/window, public profile 1, maximum match length 258, and the existing
+128 MiB aggregate limit. Keep the checked `112 + 12N + 85K` output-capacity
+formula because the Dynamic Range descriptor grammar is unchanged.
+
+Construct both directions only through public requirements and factory calls.
+Require an exact untimed round trip before timing, and report compression
+ratio, encode/decode throughput, all six returned workspace extents, and peak
+caller-owned reservation. Treat smoke throughput and ratio as descriptive,
+not stable thresholds. Defer fuzz and interoperability admission.

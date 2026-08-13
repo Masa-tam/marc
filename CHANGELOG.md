@@ -14,6 +14,9 @@ format versions, and C ABI versions are independent namespaces.
 - Added the explicit `lzss-contextual-dynamic-range-1m` CLI selector. The
   existing unqualified selector remains the frozen 64 KiB profile, and each
   decode selector rejects streams belonging to the other profile.
+- Added a matching dependency-free benchmark selector reporting ratio,
+  directional throughput, queried workspaces, and peak caller reservation
+  after a mandatory exact round trip.
 
 ## 0.3.0 - 2026-08-13
 

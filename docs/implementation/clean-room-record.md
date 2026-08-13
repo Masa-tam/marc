@@ -19700,3 +19700,29 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include the two
   Contextual Dynamic Range CLI profiles, documentation layout, and schema 37
   through 1 interoperability compatibility.
+
+## CR-0826: 2026-08-14 - 1 MiB Contextual Dynamic Range benchmark
+
+- Authoring method: parameterized marc's existing dependency-free Contextual
+  Dynamic Range benchmark exclusively through the public C profile selector,
+  requirements query, and transform lifecycle.
+- References used: DD-795 through DD-797; IR-0571; TVG-0670 through TVG-0672;
+  marc's 64 KiB benchmark adapter, checked Format 2 capacity formula, and
+  public selected C lifecycle.
+- Known implementations intentionally not consulted: external benchmark
+  implementations, compression results, corpora, harnesses, source code,
+  tests, patent text, and optimization descriptions.
+- Independent decisions: retain an experimental selector outside the stable
+  matrix; use the same 1 MiB CLI policy; expose every queried workspace; and
+  treat the small-input smoke result as wiring evidence only.
+- Generated-code task description: add the `-1m` benchmark selector, carry it
+  through naming, sizing, configuration, workspace/factory dispatch, capacity,
+  usage, and smoke registration; document the result; then run both complete
+  Windows suites including schema compatibility.
+- Similarity review: the adapter follows marc-owned benchmark configuration,
+  overflow checks, public ABI dispatch, measurement, and CMake smoke patterns.
+  No external implementation expression entered the change.
+- Local validation: all 2,879 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include eight
+  experimental benchmark smokes, documentation layout, and schema 37 through
+  1 interoperability compatibility.

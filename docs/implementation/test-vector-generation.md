@@ -9070,3 +9070,16 @@ Repeat the identity and cross-profile rejection checks in the existing 64 KiB
 CLI test: require dictionary variant 2 and context variant 1, then require the
 1 MiB selector to reject that stream. Neither selector changes its counterpart
 or auto-detects the stream identity.
+
+### TVG-0672
+
+Run one Release iteration of
+`marc_benchmark lzss-contextual-dynamic-range-1m README.md 1` under each local
+compiler. Require successful public encode and decode, byte-exact untimed
+verification, nonzero encoded extent, finite ratio and throughput fields, all
+three encoder and decoder workspace extents, and peak caller reservation.
+
+Register the command as an experimental benchmark smoke rather than a stable
+matrix member. Retain the 64 KiB smoke unchanged so users can run both commands
+over the same larger corpus; do not set size, speed, ratio, or relative-
+improvement pass thresholds from the small README input.
