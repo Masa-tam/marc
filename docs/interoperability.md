@@ -624,3 +624,20 @@ manifest-order, size, SHA-256, fixture-decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-37
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+#### Project version 0.3.0 release-candidate repeat
+
+Revision `b13cb7a51c782a66e63c493a7e5d1a5721edd86c` received the project-version
+0.3.0 release-candidate cross-check after its pushed CI completed
+successfully. The Ubuntu 26.04 WSL2 x86-64 environment, using Ubuntu Clang
+21.1.8 via Ninja, verified all 47 archives from both the Windows/MSVC via
+Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja artifacts. It then
+generated and self-verified an `ubuntu-26.04-ninja-x64` 47-archive bundle. The
+Windows/MSVC executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest-order, size, SHA-256, fixture-decode, and byte-identical local
+re-encoding checks for every archive. This reconfirms canonical schema-37 bytes
+after the format-neutral HashChain Exact encoder promotion and establishes
+bidirectional decoding between the recorded Windows and WSL2 Linux x86-64
+environments for the 0.3.0 release candidate.
