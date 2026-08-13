@@ -1835,3 +1835,11 @@ local re-encoding. Compatibility removes only entry 48 to reconstruct schema
 37 before traversing its unchanged historical conversion chain. The shared
 fixture establishes profile identity and determinism, not a greater-than-64-
 KiB match; dedicated format tests retain that responsibility.
+
+### CP-0112
+
+Schema 38 has four-direction external evidence at revision
+`363a385168fcfab27adfc8eea3e302129cf01b15`. Windows/MSVC and Ubuntu
+24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
+verifies there and on Windows/MSVC. All 48 archives decode and re-encode
+byte-identically in every path.

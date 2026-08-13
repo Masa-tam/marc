@@ -9115,3 +9115,16 @@ only entry 48 to reconstruct schema 37, then verify the existing schema-37-to-
 the archive carries dictionary/context variants `3/2`; do not claim the common
 fixture exercises a distance greater than 65,536. Run the complete registered
 suite under MSVC and ClangCL before local admission.
+
+### TVG-0675
+
+At pushed revision `363a385168fcfab27adfc8eea3e302129cf01b15`, verify the
+Windows/MSVC and Ubuntu 24.04/Ninja schema-38 CI bundles with the Ubuntu 26.04
+Clang 21.1.8 CLI. Generate a schema-38 Ubuntu 26.04 bundle from the same
+revision, verify it locally, then verify it with the Windows/MSVC CLI.
+
+Require all four final lines to report exactly 48 archives, the expected
+producer label, and the identical full revision. Each verifier pass covers
+manifest identity and order, size and SHA-256, fixture decoding, and
+byte-identical local re-encoding. Record only the results; do not import any
+bundle or generated archive into the repository.

@@ -5106,3 +5106,12 @@ SHA-256/file-equality helpers as first-party references. No external bundle
 format, interoperability suite, compressor, corpus, archive, source code,
 manifest, conformance vector, patent text, or optimization description was
 consulted.
+
+### IR-0574
+
+The schema-38 external admission record uses DD-800, TVG-0675, pushed revision
+`363a385168fcfab27adfc8eea3e302129cf01b15`, the Windows/MSVC and Ubuntu
+24.04/Ninja CI bundles, the locally generated Ubuntu 26.04/Clang bundle, and
+marc's repository-owned schema-38 verifier. No external compression
+implementation, source code, archive contents, corpus, test suite, patent
+text, or optimization description was consulted.

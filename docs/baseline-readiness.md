@@ -2219,3 +2219,12 @@ tests pass in each Release configuration. The shared
 dedicated format vectors remain the evidence for distances beyond 64 KiB.
 External four-direction schema-38 evidence remains pending until pushed CI
 artifacts are exchanged.
+
+### BR-0127
+
+Schema 38 now has complete four-direction external evidence at revision
+`363a385168fcfab27adfc8eea3e302129cf01b15`. All 48 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 1 MiB
+Contextual Dynamic Range profile.

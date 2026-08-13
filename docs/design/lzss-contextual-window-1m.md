@@ -257,7 +257,10 @@ decode equality, and byte-identical local re-encoding. The 8,193-byte shared
 fixture proves the new identity across producers but cannot force a distance
 above 64 KiB; the dedicated distance-65,537 and larger vectors remain the
 evidence for extended-window semantics. External cross-platform schema-38
-exchange remains a post-push step.
+exchange is complete at revision
+`363a385168fcfab27adfc8eea3e302129cf01b15`: both CI bundles verified on
+Ubuntu 26.04/Clang, and the Ubuntu 26.04 bundle verified there and on
+Windows/MSVC, with all 48 archives reproduced byte-identically.
 
 ## Required validation
 

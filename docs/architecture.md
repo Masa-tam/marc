@@ -5000,6 +5000,13 @@ Because the shared fixture is 8,193 bytes, this boundary proves the extended
 variant identity and deterministic representation, while dedicated vectors
 remain responsible for references beyond 64 KiB.
 
+The recorded schema-38 exchange at revision
+`363a385168fcfab27adfc8eea3e302129cf01b15` verifies all 48 archives in four
+directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+producer locally and on Windows/MSVC. Exact fixture decoding and byte-identical
+re-encoding establish the extended Dynamic Range profile identity across all
+three recorded x86-64 producers.
+
 The Contextual rANS streaming encoder now selects HashChain Exact at the same
 typed-token boundary as its proven private frame route. Its opaque encoder
 views place aligned finder storage after the worst-case token array; profile

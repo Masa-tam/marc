@@ -127,10 +127,9 @@ workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
 Schema 38 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 37
-compatibility evidence. Its four-direction external verification remains to
-be recorded. Schema 37's completed Windows/MSVC, Ubuntu 24.04/Ninja, and
-Ubuntu 26.04/Clang evidence remains recorded below.
+re-encoding, reordered-manifest rejection, schemas 1 through 37 compatibility,
+and completed Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+four-direction evidence recorded below.
 
 ## Work-product policy
 
@@ -642,3 +641,19 @@ re-encoding checks for every archive. This reconfirms canonical schema-37 bytes
 after the format-neutral HashChain Exact encoder promotion and establishes
 bidirectional decoding between the recorded Windows and WSL2 Linux x86-64
 environments for the 0.3.0 release candidate.
+
+### IX-0032: Schema 38
+
+Revision `363a385168fcfab27adfc8eea3e302129cf01b15` received the schema-38
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 48
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 48-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-38
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.

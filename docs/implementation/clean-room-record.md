@@ -19787,3 +19787,28 @@ discarded and the reviewed seed retained.
   schemas 38 through 1 compatibility pass under both MSVC and ClangCL. All
   2,882 registered tests pass in both Release configurations with the
   240-second per-test limit, including documentation layout.
+
+## CR-0829: 2026-08-14 - Schema-38 external interoperability evidence
+
+- Authoring method: recorded the maintainer-executed four-direction verifier
+  results only after every path reported the same pushed revision and all 48
+  archives.
+- References used: DD-800; IR-0574; TVG-0675; revision
+  `363a385168fcfab27adfc8eea3e302129cf01b15`; the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles; the Ubuntu 26.04/Clang bundle; and marc's verifier.
+- Known implementations intentionally not consulted: external compression
+  implementations, source code, archive contents, corpora, test suites,
+  patent text, and optimization descriptions.
+- Independent decisions: require one revision, 48 archives, three producers,
+  two consumers, and four directions; record exact verification outcomes; and
+  import no generated bundle or archive.
+- Generated-code task description: record successful schema-38 external
+  verification in interoperability, architecture, composition, readiness,
+  test-generation, reference, design-decision, and provenance documents.
+- Similarity review: the record contains only repository-owned schema facts
+  and maintainer-reported verifier output; no external implementation
+  expression entered the work.
+- External validation: Ubuntu 26.04/Clang verified the Windows/MSVC and Ubuntu
+  24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
+  the Ubuntu 26.04 bundle. Every run reported 48 archives and revision
+  `363a385168fcfab27adfc8eea3e302129cf01b15`.
