@@ -10,9 +10,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-37 bundle contains the same generated `input.bin`, the
-frozen 42 stable-profile archives, five experimental Format 2 archives, and
-`manifest.json`. The manifest declares codec set `marc-cli-v37` and records
+Each current schema-38 bundle contains the same generated `input.bin`, the
+frozen 42 stable-profile archives, six experimental Format 2 archives, and
+`manifest.json`. The manifest declares codec set `marc-cli-v38` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -33,7 +33,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all forty-seven foreign archives and compares their output byte
+2. decodes all forty-eight foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -46,7 +46,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 47 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 48 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -115,8 +115,9 @@ experimental `lzss-contextual-adaptive-huffman` archive to the frozen
 schema-35 order. Schema 37 requires `marc-cli-v37` and the same forty-seven
 archive bytes and order, but renames archive 44's manifest codec and leaf from
 the historical `lzss-contextual-rans-compact` to the canonical
-`lzss-contextual-rans`. No schema silently inherits profiles or names added by
-a later schema.
+`lzss-contextual-rans`. Schema 38 requires `marc-cli-v38` and all forty-eight
+archives, appending `lzss-contextual-dynamic-range-1m` to the frozen schema-37
+order. No schema silently inherits profiles or names added by a later schema.
 
 ## Integrity and current evidence
 
@@ -125,10 +126,10 @@ and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 37 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 36
+Schema 38 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 37
 compatibility evidence. Its four-direction external verification remains to
-be recorded. Schema 36's completed Windows/MSVC, Ubuntu 24.04/Ninja, and
+be recorded. Schema 37's completed Windows/MSVC, Ubuntu 24.04/Ninja, and
 Ubuntu 26.04/Clang evidence remains recorded below.
 
 ## Work-product policy

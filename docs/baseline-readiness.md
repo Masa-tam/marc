@@ -2206,3 +2206,16 @@ schema compatibility, and eleven rebuilt LZSS sanitizer fuzz targets each pass
 100 bounded iterations. BinaryTree, WindowAdaptive, and Bounded search remain
 separate evidence-driven future work rather than completion requirements for
 the current 65,536-byte default path.
+
+### BR-0126
+
+The 1 MiB Contextual Dynamic Range profile is admitted to local
+interoperability schema 38 as archive 48 after the frozen schema-37 inventory.
+Generation, exact-order verification, reordered-manifest rejection,
+byte-identical local re-encoding, and the complete schema-38-through-1
+compatibility chain pass under both MSVC and ClangCL. All 2,882 registered
+tests pass in each Release configuration. The shared
+8,193-byte fixture proves extended profile identity and deterministic bytes;
+dedicated format vectors remain the evidence for distances beyond 64 KiB.
+External four-direction schema-38 evidence remains pending until pushed CI
+artifacts are exchanged.

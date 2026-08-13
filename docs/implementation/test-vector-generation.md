@@ -9099,3 +9099,19 @@ the sanitizer target with Windows Clang 22, then run exactly 1,000 generated
 inputs with seed 12345, maximum length 8,192, five-second per-input timeout,
 and 512 MiB RSS limit. Do not supply or save a corpus; record any finding as a
 new minimized permanent regression before proceeding.
+
+### TVG-0674
+
+Generate schema 38 from the unchanged deterministic 8,193-byte fixture and
+the exact schema-37 archive order, then append one
+`lzss-contextual-dynamic-range-1m` archive as entry 48. Require an immediate
+round trip, `schema_version=38`, `codec_set=marc-cli-v38`, full source
+revision, exact manifest order, unique leaf names, size/SHA-256 agreement,
+foreign decode equality, and byte-identical local re-encoding.
+
+Swap the first two schema-38 manifest entries and require rejection. Remove
+only entry 48 to reconstruct schema 37, then verify the existing schema-37-to-
+1 compatibility chain including the canonical-rANS name conversion. Confirm
+the archive carries dictionary/context variants `3/2`; do not claim the common
+fixture exercises a distance greater than 65,536. Run the complete registered
+suite under MSVC and ClangCL before local admission.

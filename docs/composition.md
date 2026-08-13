@@ -1824,3 +1824,14 @@ warning-clean, permanent regressions cover extended truncation, cross-profile
 rejection, and descriptor corruption, and a bounded sanitizer smoke completed
 without a finding. No production-sized allocation, corpus artifact, or
 interoperability archive is introduced.
+
+### CP-0111
+
+Interoperability schema 38 appends
+`lzss-contextual-dynamic-range-1m` once after the frozen 47-entry schema-37
+order. The generator requires an immediate round trip, and the verifier
+requires the exact 48-entry order, foreign decode equality, and byte-identical
+local re-encoding. Compatibility removes only entry 48 to reconstruct schema
+37 before traversing its unchanged historical conversion chain. The shared
+fixture establishes profile identity and determinism, not a greater-than-64-
+KiB match; dedicated format tests retain that responsibility.

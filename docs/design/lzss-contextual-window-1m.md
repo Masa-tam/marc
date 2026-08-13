@@ -250,6 +250,15 @@ increase those allocations. Canonical extended truncations, cross-profile
 admission, and descriptor corruption are permanent atomic regressions.
 Interoperability admission remains separate.
 
+The Dynamic Range interoperability stage appends the explicit `-1m` CLI
+archive as schema-38 entry 48 after the exact schema-37 inventory. Generation
+requires a local round trip, while verification enforces exact order, foreign
+decode equality, and byte-identical local re-encoding. The 8,193-byte shared
+fixture proves the new identity across producers but cannot force a distance
+above 64 KiB; the dedicated distance-65,537 and larger vectors remain the
+evidence for extended-window semantics. External cross-platform schema-38
+exchange remains a post-push step.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

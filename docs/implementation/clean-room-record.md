@@ -19758,3 +19758,32 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include six permanent
   Contextual Dynamic Range fuzz regressions, documentation layout, and schema
   37 through 1 interoperability compatibility.
+
+## CR-0828: 2026-08-14 - Interoperability schema 38 local admission
+
+- Authoring method: extended marc's append-only interoperability manifest
+  sequence with the already specified explicit 1 MiB Contextual Dynamic Range
+  CLI output.
+- References used: DD-799; IR-0573; TVG-0674; marc's frozen schema-37 order,
+  deterministic binary fixture, CLI transaction, manifest verifier,
+  compatibility conversion, and SHA-256/file-equality helpers.
+- Known implementations intentionally not consulted: external bundle formats,
+  interoperability suites, compressors, corpora, archives, source code,
+  manifests, conformance vectors, patent text, and optimization descriptions.
+- Independent decisions: name the set `marc-cli-v38`; append the 1 MiB profile
+  once as entry 48; inspect its dictionary/context variants `3/2` during
+  generation; reject reordered schema 38; and reconstruct schema 37 by removing
+  only that final entry before its existing canonical-rANS conversion.
+- Generated-code task description: update generation and verification for
+  schema 38, add direct extended-identity inspection, exact-order and reorder
+  checks, preserve schemas 1 through 37, distinguish identity evidence from
+  greater-than-64-KiB distance evidence, and document external exchange as
+  pending.
+- Similarity review: the append-only inventory, manifest validation,
+  compatibility conversion, and negative mutation follow marc-owned prior-
+  schema patterns. No external implementation expression entered the change.
+- Local validation: schema-38 generation, all 48 local round trips, exact-order
+  verification, byte-identical re-encoding, reordered-manifest rejection, and
+  schemas 38 through 1 compatibility pass under both MSVC and ClangCL. All
+  2,882 registered tests pass in both Release configurations with the
+  240-second per-test limit, including documentation layout.

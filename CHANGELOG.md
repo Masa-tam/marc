@@ -19,6 +19,9 @@ format versions, and C ABI versions are independent namespaces.
   after a mandatory exact round trip.
 - Extended the fixed-memory Contextual Dynamic Range fuzz target and permanent
   malformed regressions to cover both 64 KiB and 1 MiB profile admissions.
+- Added interoperability schema 38 by appending the 1 MiB Contextual Dynamic
+  Range archive to the frozen schema-37 order, while retaining verification of
+  every earlier schema.
 
 ## 0.3.0 - 2026-08-13
 

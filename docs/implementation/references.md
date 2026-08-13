@@ -5096,3 +5096,13 @@ harness, selected public C decoder, private complete-frame decoder, and local
 malformed regression helpers as first-party references. No external fuzz
 harness, corpus, finding, compression implementation, source code, test,
 patent text, or optimization description was consulted.
+
+### IR-0573
+
+Interoperability schema 38 uses DD-799, the frozen local schema-37 inventory,
+the explicit 1 MiB Contextual Dynamic Range CLI profile, marc's existing
+manifest contract, PowerShell bundle scripts, compatibility conversion, and
+SHA-256/file-equality helpers as first-party references. No external bundle
+format, interoperability suite, compressor, corpus, archive, source code,
+manifest, conformance vector, patent text, or optimization description was
+consulted.

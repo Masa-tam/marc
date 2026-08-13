@@ -4990,6 +4990,16 @@ producer locally and on Windows/MSVC. Exact fixture decode and byte-identical
 re-encoding establish the canonical Contextual rANS name and bytes across all
 three recorded x86-64 producers.
 
+Interoperability schema 38 freezes all 47 schema-37 entries and appends the
+explicit `lzss-contextual-dynamic-range-1m` CLI archive as entry 48. Bundle
+generation first proves a local round trip; verification requires exact
+manifest identity/order, foreign decoding, and byte-identical local
+re-encoding. The compatibility chain removes only that final entry to recover
+schema 37 before applying its existing canonical-rANS rename conversion.
+Because the shared fixture is 8,193 bytes, this boundary proves the extended
+variant identity and deterministic representation, while dedicated vectors
+remain responsible for references beyond 64 KiB.
+
 The Contextual rANS streaming encoder now selects HashChain Exact at the same
 typed-token boundary as its proven private frame route. Its opaque encoder
 views place aligned finder storage after the worst-case token array; profile

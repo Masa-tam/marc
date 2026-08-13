@@ -6644,6 +6644,14 @@ The explicit CLI name `lzss-contextual-dynamic-range-1m` selects public value
 byte frames/window. Decode uses the same explicit name as encode; the two names
 do not auto-detect one another. No CLI name or policy value is serialized.
 
+Interoperability schema 38 appends one archive generated through that explicit
+1 MiB selector after the exact 47-entry schema-37 order. The common 8,193-byte
+fixture exercises the extended stream identity and deterministic encoder/
+decoder contract, but is too short to require a distance above 65,536. Schema
+38 therefore changes bundle inventory and manifest identity only; the
+long-distance representation remains established by its dedicated format
+vectors and boundary tests.
+
 Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
 Contextual tANS `5/2` uses frequency entry count 4,550 and a
@@ -6653,10 +6661,9 @@ descriptor grammars, but their exact selected-layout table, tree, payload, and
 workspace bounds must be specified before either pairing is admitted.
 
 This subsection reserves the shared dictionary/context identity and the two
-exact ANS descriptor ceilings, and records the Dynamic Range frame,
-streaming, profile, and C workspace lifecycle described above. It does not yet
-claim a 1 MiB CLI selector, benchmark profile, fuzz target, interoperability
-archive, or any other entropy backend. Each backend receives its own complete
-admission and hand-checkable serialized vector before release.
+exact ANS descriptor ceilings. Dynamic Range now has its complete internal,
+streaming, public C, CLI, benchmark, fuzz, and schema-38 interoperability
+admission. No other entropy backend is claimed here; each receives its own
+complete admission and hand-checkable serialized vector before release.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

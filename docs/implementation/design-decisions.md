@@ -16397,3 +16397,22 @@ Abort only on contract violations or exceeding the call budget. Add permanent
 atomic regressions for every prefix of an extended canonical stream,
 cross-profile public admission, and extended descriptor corruption. Run a
 small deterministic sanitizer smoke without persisting generated corpus data.
+
+## DD-799: Schema 38 appends the 1 MiB Dynamic Range profile once
+
+- Date: 2026-08-14
+- Status: accepted
+
+Freeze schema 37's exact 47-entry inventory and append one
+`lzss-contextual-dynamic-range-1m` archive as entry 48. Set
+`schema_version` to 38 and `codec_set` to `marc-cli-v38`. Preserve the shared
+deterministic 8,193-byte fixture, full source revision, producer identity, CLI
+SHA-256, and every input/archive size and SHA-256.
+
+Require generation-time round trip, exact order, unique codecs, foreign decode
+equality, byte-identical local re-encoding, and reordered-manifest rejection.
+Recover schema 37 by removing only entry 48, then apply its existing canonical
+rANS conversion and the unchanged chain through schema 1. Treat this fixture
+as identity/determinism evidence; distances above 64 KiB remain the
+responsibility of dedicated format vectors. External four-direction evidence
+must be recorded only after pushed artifacts are exchanged.
