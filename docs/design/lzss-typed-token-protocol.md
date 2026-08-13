@@ -1,7 +1,8 @@
 # LZSS typed-token protocol
 
-Status: experimental design for the `0.2.x` line. This protocol does not alter
-or replace any format-version-1 stream.
+Status: variant 2 was introduced for the `0.2.x` line and is frozen. Additive
+variant 3 is reserved after 0.3.0. Neither alters or replaces a
+format-version-1 stream.
 
 ## Purpose and boundary
 
@@ -50,6 +51,19 @@ tie break. Its initial experimental limits are deliberately narrower:
 - `1 <= window_size <= 65,536`;
 - dictionary history starts empty and resets at every outer frame;
 - no token or match crosses an outer-frame boundary.
+
+Variant 3 retains the same typed values, parse, tie break, beneficial-match
+rule, and frame-local reset while expanding only the admitted window:
+
+- `minimum_match_length == 5`;
+- `5 <= maximum_match_length <= 258`;
+- `1 <= window_size <= 1,048,576`;
+- dictionary history starts empty and resets at every outer frame;
+- no token or match crosses an outer-frame boundary.
+
+Variant 3 is valid only with `LzssFieldContext` variant 2. Variant 2 remains
+valid only with context variant 1. The full extension contract is defined in
+[LZSS contextual 1 MiB window](lzss-contextual-window-1m.md).
 
 ## Encoder-side contract
 

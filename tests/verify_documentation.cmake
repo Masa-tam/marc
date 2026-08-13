@@ -313,6 +313,7 @@ foreach(required_format_section IN ITEMS
 endforeach()
 
 foreach(experimental_design IN ITEMS
+        "lzss-contextual-window-1m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -323,10 +324,35 @@ foreach(experimental_design IN ITEMS
             "Missing experimental design document: ${experimental_design}")
     endif()
 endforeach()
+
+set(lzss_contextual_window_design
+    "${source_dir}/docs/design/lzss-contextual-window-1m.md")
+file(READ "${lzss_contextual_window_design}"
+    lzss_contextual_window_content)
+foreach(required_window_term IN ITEMS
+        "dictionary algorithm ID 2, dictionary variant 3"
+        "context-model algorithm ID 1, context variant 2"
+        "1,048,576-byte window"
+        "exactly 4,550 entries"
+        "Match produces at most five modeled events and 30 entropy decisions"
+        "Existing dictionary variant 2 plus context variant 1 remains frozen"
+        "Match-finder strategy is not serialized"
+        "Dynamic Range complete-frame decoder")
+    string(FIND "${lzss_contextual_window_content}"
+        "${required_window_term}" required_window_term_offset)
+    if(required_window_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 1 MiB contextual LZSS design: ${required_window_term}")
+    endif()
+endforeach()
 foreach(required_typed_format_term IN ITEMS
         "dictionary algorithm ID 2, dictionary variant 2"
         "context-model algorithm ID 1, context variant 1"
         "entropy algorithm ID 3, entropy variant 2"
+        "dictionary algorithm/variant `2/3`"
+        "Context variant 2 reuses the 16-byte context"
+        "flattened Symbol layout contains exactly 4,550 entries"
+        "Match-finder strategy is not serialized"
         "4D 52 46 32 40 00 00 00"
         "00 20 7F FF BF 00")
     string(FIND "${format_content}" "${required_typed_format_term}"

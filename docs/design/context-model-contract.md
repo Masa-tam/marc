@@ -1,7 +1,8 @@
 # Context-model contract
 
-Status: experimental design for the `0.2.x` line. Context-model identifiers and
-variants are decoder-visible and never reinterpret an existing stream variant.
+Status: variant 1 was introduced for the `0.2.x` line and is frozen. Additive
+variant 2 is reserved after 0.3.0. Context-model identifiers and variants are
+decoder-visible and never reinterpret an existing stream variant.
 
 ## Role
 
@@ -35,9 +36,9 @@ struct ModeledOperation {
 ```
 
 For `Symbol`, `bit_count` is zero and `value < alphabet_size`. For
-`BypassBits`, `context_id` and `alphabet_size` are zero, `bit_count <= 16`, and
-unused high value bits are zero. This is an internal value contract, not a
-serialized struct.
+`BypassBits`, `context_id` and `alphabet_size` are zero. Variant 1 permits
+`bit_count <= 16`; variant 2 permits `bit_count <= 20`. Unused high value bits
+are zero. This is an internal value contract, not a serialized struct.
 
 The producer and consumer report token and operation counts independently.
 They obey the core no-zero-progress rule and retain terminal status. A complete
@@ -134,3 +135,18 @@ before updating that state, and preserve the exact event and decision counts.
 The reference bridge performs a write-free complete pass before a second
 materialization pass, so entropy, token, count, raw-size, capacity, limit, and
 alias failures publish no partial typed-token sequence.
+
+## LZSS field-context model variant 2
+
+Context-model algorithm ID 1, variant 2 retains variant 1's 31 context IDs,
+state transitions, Literal alphabets, token-kind alphabets, and length-class
+alphabets. Contexts 23 through 30 use distance-class alphabet 21 instead of
+17, producing exactly 4,550 flattened Symbol entries. Distance classes 0
+through 20 and bypass widths up to 20 represent distances through 1,048,576.
+
+Variant 2 is coupled only to typed LZSS dictionary variant 3. Its exact
+identity, arithmetic, bounds, backend consequences, and required validation
+are specified in
+[LZSS contextual 1 MiB window](lzss-contextual-window-1m.md). Variant 1 keeps
+its 4,518 entries and MUST continue to reject a distance class above 16 or a
+bypass width above 16.

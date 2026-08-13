@@ -16214,3 +16214,30 @@ release candidate to synchronize the CMake package version, runtime version
 query, metadata test, dated changelog, readiness baseline, release policy,
 decision, and provenance. Complete both Windows Release suites, pushed CI, and
 the schema-37 interoperability check before creating the annotated tag.
+
+## DD-790: The 1 MiB contextual window is an additive variant pair
+
+- Date: 2026-08-13
+- Status: accepted
+
+Reserve typed LZSS dictionary variant 3 and `LzssFieldContext` variant 2 as one
+inseparable Format 2 identity. Retain the 258-byte match-length ceiling, expand
+the distance ceiling from 65,536 to 1,048,576, and set the reference frame and
+window to 1 MiB. Preserve dictionary variant 2 plus context variant 1 exactly;
+reject crossed pairs rather than inferring a layout from parameters or
+descriptor length.
+
+Keep the 31 context IDs and state transitions. Expand only distance contexts
+23 through 30 from alphabet 17 to 21, raising flattened Symbol entries from
+4,518 to 4,550 and the maximum bypass width from 16 to 20. Retain the common
+`2F` event and `6F` decision bounds and add the variant-specific 30-decision-
+per-token validation bound.
+
+Allow the five existing contextual entropy variant IDs to consume the selected
+context layout because full stream identity includes dictionary, context, and
+entropy variants. Do not alter any old tuple. Implement one vertical backend
+at a time, beginning with Dynamic Range, and require exact format admission,
+decoder-first validation, encoder identity, malformed-input coverage,
+workspace accounting, benchmark evidence, fuzzing, and interoperability before
+each backend receives a public name. Retain HashChain Exact initially and keep
+search strategy outside the stream.

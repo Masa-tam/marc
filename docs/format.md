@@ -6585,3 +6585,46 @@ Entropy identity `4/2` and its fixed 9,052-byte descriptor are withdrawn. The
 identity remains reserved and MUST NOT be reused; current decoders reject it
 as an unsupported entropy variant. Renaming variant 3 MUST NOT change any
 stream, frame, descriptor, payload, state, padding, or checksum byte.
+
+### Reserved 1 MiB LZSS field-context family
+
+Format 2.0 reserves dictionary algorithm/variant `2/3` together with context-
+model algorithm/variant `1/2` for the additive 1 MiB-window family. These two
+variants MUST occur together. Existing `2/2 + 1/1` streams retain their exact
+meaning and bytes; crossed pairs are unsupported.
+
+Dictionary variant 3 reuses the 16-byte LZSS parameter field layout. It
+requires minimum match length 5, maximum match length at most 258, and window
+size at most 1,048,576 bytes. Context variant 2 reuses the 16-byte context
+extension layout with algorithm ID 1 and variant ID 2. All flags, side-data
+size, and reserved fields remain zero.
+
+Context IDs and selection remain unchanged. Distance contexts 23 through 30
+have alphabet 21, admitting classes 0 through 20 and up to 20 LSB-first bypass
+bits. The flattened Symbol layout contains exactly 4,550 entries. A frame may
+declare at most five events and 30 decisions for one Match; the common
+`event_count <= 2F` and `decision_count <= 6F` bounds remain valid for raw
+frame size `F`.
+
+The reference profile will use 1,048,576-byte raw frames and a 1,048,576-byte
+window. History still begins empty and resets at each frame, so every distance
+must also be at most the already reconstructed raw prefix. The final frame may
+be shorter. Match-finder strategy is not serialized.
+
+The existing contextual entropy variants may be composed with this pair only
+after their context-layout-dependent bounds are documented and implemented.
+Dynamic Range `3/2` retains its fixed descriptor. Canonical contextual rANS
+`4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
+Contextual tANS `5/2` uses frequency entry count 4,550 and a
+27-through-9,093-byte descriptor. Contextual Blocked Huffman `1/2` and
+Contextual Adaptive Huffman `2/2` retain their backend arithmetic and
+descriptor grammars, but their exact selected-layout table, tree, payload, and
+workspace bounds must be specified before either pairing is admitted.
+
+This subsection reserves only the shared dictionary/context identity and the
+two exact ANS descriptor ceilings. It does not yet claim an implemented
+decoder, encoder, public C lifecycle, CLI selector, benchmark profile, fuzz
+target, or interoperability archive. Each backend receives its own complete
+format admission and hand-checkable serialized vector before implementation.
+The full design and staged validation contract is
+[LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

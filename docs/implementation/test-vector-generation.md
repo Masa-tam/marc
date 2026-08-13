@@ -8951,3 +8951,26 @@ sanitizer runtime and binary directories to the process-local PATH, then run
 each target for 100 bounded iterations with maximum input length 8,192.
 Require every target to exit normally without a sanitizer finding, crash, or
 hang.
+
+### TVG-0665
+
+For the 1 MiB contextual-window reservation, construct typed-token and modeled-
+operation vectors at distances 65,535, 65,536, 65,537, 1,048,575, and
+1,048,576. Require class 16 at 65,536, class 17 at 65,537, and class 20 with
+zero extra value at 1,048,576. Verify exact LSB-first bypass widths and reject
+distance 1,048,577, a reference beyond the accepted frame prefix, class 17
+through 20 under context variant 1, and crossed dictionary/context variants.
+
+Create an input whose only beneficial repeated phrase is more than 65,536
+bytes behind the current position. Require Exhaustive and HashChain Exact to
+produce the same variant-3 token sequence and require variant 2 to produce no
+such Match. Repeat at the 1 MiB boundary, final short frames, one-byte process
+buffers, and one-byte-short or aliased workspaces.
+
+For every admitted entropy backend, add a hand-checkable serialized vector,
+old-variant byte-identity regressions, exact descriptor and workspace boundary
+tests, malformed class/alphabet/bypass/count/terminal/padding/truncation tests,
+bounded complete-frame and streaming fuzzing, and same-input ratio, throughput,
+and peak-workspace measurements. Do not add a public profile or
+interoperability archive until its decoder and encoder meet the full completion
+criteria.

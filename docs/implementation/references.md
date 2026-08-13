@@ -5008,3 +5008,14 @@ public HashChain profile tests, the complete MSVC and ClangCL suites, and the
 repository's eleven LZSS sanitizer fuzz targets as first-party evidence. No
 external LZSS implementation, source code, integration, benchmark, corpus,
 result, test suite, patent text, or optimization description was consulted.
+
+### IR-0564
+
+The 1 MiB typed-token LZSS contextual reservation uses DD-628, DD-788,
+DD-790, TVG-0665, marc's frozen dictionary variant 2 and context variant 1,
+the local typed-token and context-model contracts, Format 2 framing, the exact
+HashChain implementation, and all five local contextual entropy contracts as
+first-party references. No external LZSS, context-model, Huffman, range-coder,
+or ANS source code, extended-window format, workspace layout, test vector,
+benchmark, corpus, result, test suite, patent text, or optimization
+description was consulted.

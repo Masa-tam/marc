@@ -19503,3 +19503,32 @@ discarded and the reviewed seed retained.
   validated manifest order, sizes, SHA-256 values, foreign decoding, and
   byte-identical local re-encoding. The resulting documentation-only evidence
   commit requires final pushed CI before the annotated `v0.3.0` tag.
+
+## CR-0819: 2026-08-13 - LZSS contextual 1 MiB window reservation
+
+- Authoring method: derived the additive distance representation and resource
+  policy from marc's frozen typed-token/context contracts and existing local
+  Format 2 backend specifications after releasing project version 0.3.0.
+- References used: DD-628, DD-788, DD-790; IR-0564; TVG-0665; marc's local
+  Format 2, LZSS typed-token, field-context, HashChain, decoder-limit, and five
+  contextual entropy specifications.
+- Known implementations intentionally not consulted: external LZSS or
+  contextual compression source, large-window formats, model layouts,
+  descriptor encodings, workspace strategies, test vectors, benchmarks,
+  corpora, results, test suites, patent text, and optimization descriptions.
+- Independent decisions: freeze `2/2 + 1/1`; reserve `2/3 + 1/2`; keep maximum
+  match length 258; admit distance classes through 20 and a 1 MiB window;
+  retain entropy variant IDs as context-parameterized backends; begin vertical
+  implementation with Dynamic Range; retain the 128 MiB aggregate default;
+  and keep HashChain strategy outside the stream.
+- Generated-code task description: document identities, class arithmetic,
+  model layouts, frame and memory policy, staged implementation, negative
+  tests, differential vectors, performance evidence, fuzzing, and
+  interoperability requirements before changing implementation code.
+- Similarity review: all prose, arithmetic, identities, boundaries, and test
+  plans were independently derived from marc-owned specifications and source.
+  No external implementation expression entered the design.
+- Local validation: documentation structure, numerical bounds, identifier
+  consistency, and historical placement passed
+  `marc_documentation_layout` under both MSVC and ClangCL. No codec
+  implementation or public-profile claim is part of this record.
