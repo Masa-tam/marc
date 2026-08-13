@@ -51,14 +51,16 @@ template <LzssMatchFinder Finder, typename Consumer>
 [[nodiscard]] LzssTypedEncodeResult preflight(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssTypedEncodeResult result{};
     result.input_size = input.size();
     if (core::validate_limits(limits) != core::LimitError::none) {
         result.error = LzssTypedEncodeError::input_limit_exceeded;
         return result;
     }
-    result.token_error = validate_lzss_typed_parameters(parameters, limits);
+    result.token_error = validate_lzss_typed_parameters(
+        parameters, limits, variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssTypedEncodeError::input_limit_exceeded
@@ -116,14 +118,16 @@ template <LzssMatchFinder Finder, typename Consumer>
 [[nodiscard]] LzssTypedEncodeResult preflight_hash_chain(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<std::byte> workspace) noexcept {
+    const std::span<std::byte> workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssTypedEncodeResult result{};
     result.input_size = input.size();
     if (core::validate_limits(limits) != core::LimitError::none) {
         result.error = LzssTypedEncodeError::input_limit_exceeded;
         return result;
     }
-    result.token_error = validate_lzss_typed_parameters(parameters, limits);
+    result.token_error = validate_lzss_typed_parameters(
+        parameters, limits, variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssTypedEncodeError::input_limit_exceeded
@@ -166,7 +170,8 @@ template <LzssMatchFinder Finder, typename Consumer>
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssTypedEncodeResult validation{};
     validation.input_size = input.size();
     if (core::validate_limits(limits) != core::LimitError::none) {
@@ -174,7 +179,7 @@ template <LzssMatchFinder Finder, typename Consumer>
         return validation;
     }
     validation.token_error = validate_lzss_typed_parameters(
-        parameters, limits);
+        parameters, limits, variant);
     if (validation.token_error != LzssTypedTokenError::none) {
         validation.error = validation.token_error
                 == LzssTypedTokenError::limit_exceeded
@@ -224,16 +229,18 @@ template <LzssMatchFinder Finder, typename Consumer>
 LzssTypedEncodeResult plan_lzss_typed_tokens(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept {
-    return preflight(input, parameters, limits);
+    const core::DecoderLimits& limits,
+    const LzssTypedTokenVariant variant) noexcept {
+    return preflight(input, parameters, limits, variant);
 }
 
 LzssTypedEncodeResult encode_lzss_typed_tokens(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens) noexcept {
-    const auto planned = preflight(input, parameters, limits);
+    const std::span<LzssTypedToken> private_tokens,
+    const LzssTypedTokenVariant variant) noexcept {
+    const auto planned = preflight(input, parameters, limits, variant);
     if (planned.error != LzssTypedEncodeError::none) return planned;
     if (private_tokens.size() < planned.token_count) {
         auto failed = planned;
@@ -273,23 +280,25 @@ LzssTypedEncodeResult encode_lzss_typed_tokens(
 LzssTypedEncodeResult plan_lzss_typed_tokens_hash_chain(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
-    const std::span<std::byte> match_finder_workspace) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     return preflight_hash_chain(
-        input, parameters, limits, match_finder_workspace);
+        input, parameters, limits, match_finder_workspace, variant);
 }
 
 LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<LzssTypedToken> private_tokens,
-    const std::span<std::byte> match_finder_workspace) noexcept {
+    const std::span<std::byte> match_finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     const auto validation = validate_hash_chain_encode_buffers(
         input, parameters, limits, private_tokens,
-        match_finder_workspace);
+        match_finder_workspace, variant);
     if (validation.error != LzssTypedEncodeError::none) return validation;
 
     const auto planned = preflight_hash_chain(
-        input, parameters, limits, match_finder_workspace);
+        input, parameters, limits, match_finder_workspace, variant);
     if (planned.error != LzssTypedEncodeError::none) return planned;
     if (private_tokens.size() < planned.token_count) {
         auto failed = planned;
@@ -328,10 +337,11 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* const statistics) noexcept {
+    LzssMatchFinderStatistics* const statistics,
+    const LzssTypedTokenVariant variant) noexcept {
     auto validation = validate_hash_chain_encode_buffers(
         input, parameters, limits, private_tokens,
-        match_finder_workspace);
+        match_finder_workspace, variant);
     if (validation.error != LzssTypedEncodeError::none) return validation;
 
     std::size_t maximum_token_storage{};

@@ -5039,3 +5039,13 @@ reconstructor, transactional complete-frame decoder, and one-byte streaming
 decoder as first-party references. No external LZSS, context-model, range-
 coder, extended-window format, source code, tests, benchmark, corpus, result,
 patent text, or optimization description was consulted.
+
+### IR-0567
+
+The first 1 MiB Contextual Dynamic Range encoder slice uses DD-790 through
+DD-793, TVG-0665 through TVG-0668, marc's typed LZSS Exhaustive and exact
+HashChain parsers, field-context modeler, bounded Dynamic Range operation
+encoder, complete-frame encoder, streaming lifecycle, and decoder slice as
+first-party references. No external LZSS, context-model, range-coder,
+extended-window format, source code, tests, benchmark, corpus, result, patent
+text, or optimization description was consulted.

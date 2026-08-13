@@ -125,6 +125,14 @@ template <bool UseHashChain>
         result.error = LzssTypedContextFrameEncodeError::invalid_stream;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = LzssTypedContextFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (!exact_input_size(stream, output_already_committed,
                           raw_input.size())) {
         result.error = LzssTypedContextFrameEncodeError::input_size_mismatch;
@@ -135,10 +143,12 @@ template <bool UseHashChain>
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_single_pass(
                 raw_input, stream.dictionary, limits, private_tokens,
-                match_finder_workspace, statistics);
+                match_finder_workspace, statistics,
+                selected.layout.dictionary_variant);
     } else {
         result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-            raw_input, stream.dictionary, limits, private_tokens);
+            raw_input, stream.dictionary, limits, private_tokens,
+            selected.layout.dictionary_variant);
     }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
@@ -165,7 +175,7 @@ template <bool UseHashChain>
     result.context_encode =
         context::internal::model_lzss_field_context_tokens(
             tokens, stream.dictionary, token_context, limits,
-            private_operations);
+            private_operations, selected.layout.context_variant);
     result.operation_count = result.context_encode.operation_count;
     result.decision_count = result.context_encode.decision_count;
     if (result.context_encode.error
@@ -194,7 +204,8 @@ template <bool UseHashChain>
     entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
     result.entropy_encode =
         entropy::internal::plan_contextual_dynamic_range_operations(
-            operations, limits, descriptor);
+            operations, limits, descriptor,
+            selected.layout.context_variant);
     result.payload_size = result.entropy_encode.payload_size;
     if (result.entropy_encode.error
         != entropy::internal::ContextualDynamicRangeEncodeError::none) {
@@ -337,6 +348,14 @@ template <bool UseHashChain>
     }
     const auto output = serialized_output.first(result.serialized_size);
     const auto operations = private_operations.first(result.operation_count);
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = LzssTypedContextFrameEncodeError::internal_error;
+        return result;
+    }
 
     entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
     const auto payload_offset = typed_context_frame_header_size
@@ -344,7 +363,8 @@ template <bool UseHashChain>
     result.entropy_encode =
         entropy::internal::encode_contextual_dynamic_range_operations(
             operations, limits,
-            output.subspan(payload_offset, result.payload_size), descriptor);
+            output.subspan(payload_offset, result.payload_size), descriptor,
+            selected.layout.context_variant);
     if (result.entropy_encode.error
             != entropy::internal::ContextualDynamicRangeEncodeError::none
         || result.entropy_encode.decision_count != result.decision_count

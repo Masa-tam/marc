@@ -16288,3 +16288,24 @@ Require parser/serializer identity tests, old-byte regressions, variant-bound
 table and decision checks, selected alphabet/bypass checks, complete-frame
 transactionality, and one-byte streaming input/output before proceeding to the
 encoder and public lifecycle.
+
+## DD-793: Dynamic Range encoding carries one selected layout end to end
+
+- Date: 2026-08-14
+- Status: accepted
+
+Extend the internal typed-token encoder APIs with an explicit variant that
+defaults to the frozen 64 KiB form. Select the full stream layout once in the
+Contextual Dynamic Range frame encoder, then pass its dictionary variant into
+Exhaustive or HashChain tokenization and its context variant into field
+modeling and range planning/encoding. Do not infer a variant from window size,
+operation alphabets, or descriptor length.
+
+Give the Range encoder bounded storage for the maximum reserved 4,550-entry
+model bank, but initialize, validate, update, and rescale using only the
+selected layout. Preserve the old default arguments and one-literal payload
+bytes. Require a real distance-65,537 HashChain Match, complete-frame round
+trip, 21-symbol/20-bypass entropy inversion, variant-specific table-limit
+failure, and one-byte streaming identity before treating the internal encoder
+slice as complete. Public profile and interoperability admission remain a
+separate step with exact workspace accounting.

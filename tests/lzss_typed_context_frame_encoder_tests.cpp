@@ -36,6 +36,16 @@ using namespace marc::frame::internal;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader extended_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 1048576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 86> one_literal_frame() {
     std::array<std::byte, 86> encoded{};
     encoded[0] = std::byte{0x4D};
@@ -98,6 +108,19 @@ TEST(LzssTypedContextFrameEncoder, EmitsSpecifiedOneLiteralFrame) {
     EXPECT_TRUE(std::ranges::equal(
         expected, std::span<const std::byte>{output}.first(expected.size())));
     EXPECT_EQ(output.back(), std::byte{0xCC});
+}
+
+TEST(LzssTypedContextFrameEncoder,
+     ExtendedVariantRetainsOneLiteralFrameBytes) {
+    constexpr std::array input{std::byte{'A'}};
+    const auto stream = extended_stream_config(1048576, 1);
+    std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
+    std::array<marc::context::internal::ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> output{};
+    const auto encoded = encode_lzss_typed_context_frame(
+        stream, {}, 0, 0, input, tokens, operations, output);
+    ASSERT_EQ(encoded.error, LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(output, one_literal_frame());
 }
 
 TEST(LzssTypedContextFrameEncoder, RoundTripsMatchBearingFrame) {
@@ -290,6 +313,53 @@ TEST(LzssTypedContextFrameEncoder, HashChainFrameMatchesExhaustiveBytes) {
     std::vector<std::byte> reconstructed(input.size());
     const auto decoded = decode_lzss_typed_context_frame(
         encoded, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(reconstructed, input);
+}
+
+TEST(LzssTypedContextFrameEncoder,
+     ExtendedHashChainFrameUsesAndRoundTripsDistantMatch) {
+    constexpr std::size_t distance = 65537;
+    std::vector<std::byte> input(distance + 5, std::byte{0});
+    for (std::size_t index = 5; index < distance; ++index) {
+        input[index] = static_cast<std::byte>(1 + ((index - 5) % 255));
+    }
+    const auto stream = extended_stream_config(
+        static_cast<std::uint32_t>(input.size()), input.size());
+    std::vector<marc::dictionary::internal::LzssTypedToken> tokens(
+        input.size());
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        input.size() * 5);
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            input.size(), stream.dictionary, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    const auto plan = plan_lzss_typed_context_frame_hash_chain(
+        stream, {}, 0, 0, input, tokens, operations, workspace);
+    ASSERT_EQ(plan.error, LzssTypedContextFrameEncodeError::none);
+    const auto distant = std::ranges::find_if(
+        std::span{tokens}.first(plan.token_count),
+        [](const marc::dictionary::internal::LzssTypedToken& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance == 65537;
+        });
+    ASSERT_NE(distant, std::span{tokens}.first(plan.token_count).end());
+    EXPECT_EQ(distant->length, 5U);
+
+    std::vector<std::byte> serialized(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_typed_context_frame_hash_chain(
+                  stream, {}, 0, 0, input, tokens, operations, workspace,
+                  serialized).error,
+              LzssTypedContextFrameEncodeError::none);
+    std::vector<marc::dictionary::internal::LzssTypedToken> decoded_tokens(
+        plan.token_count);
+    std::vector<std::byte> reconstructed(input.size());
+    const auto decoded = decode_lzss_typed_context_frame(
+        serialized, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
     ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
     EXPECT_EQ(reconstructed, input);
 }

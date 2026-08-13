@@ -103,6 +103,42 @@ TEST(ContextualDynamicRangeEncoder, DecoderRecoversEveryOperationValue) {
     EXPECT_EQ(finished.payload_consumed, payload.size());
 }
 
+TEST(ContextualDynamicRangeEncoder, EncodesExtendedAlphabetAndBypassWidth) {
+    constexpr std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 21, 20, 0},
+        ModeledOperation{ModeledOperationKind::bypass_bits, 0, 0,
+                         UINT32_C(0xABCDE), 20},
+    };
+    constexpr auto variant = LzssFieldContextVariant::field_context_1m;
+    ContextualDynamicRangeDescriptor descriptor{};
+    const auto plan = plan_contextual_dynamic_range_operations(
+        operations, {}, descriptor, variant);
+    ASSERT_EQ(plan.error, ContextualDynamicRangeEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 21U);
+    std::vector<std::byte> payload(plan.payload_size);
+    ASSERT_EQ(encode_contextual_dynamic_range_operations(
+                  operations, {}, payload, descriptor, variant).error,
+              ContextualDynamicRangeEncodeError::none);
+
+    ContextualDynamicRangeDecoder decoder;
+    ASSERT_EQ(decoder.begin(descriptor, payload, {}, variant).error,
+              ContextualDynamicRangeDecodeError::none);
+    std::uint32_t value{};
+    ASSERT_EQ(decoder.decode_symbol(23, 21, value).error,
+              ContextualDynamicRangeDecodeError::none);
+    EXPECT_EQ(value, 20U);
+    ASSERT_EQ(decoder.decode_bypass(20, value).error,
+              ContextualDynamicRangeDecodeError::none);
+    EXPECT_EQ(value, UINT32_C(0xABCDE));
+    EXPECT_EQ(decoder.finish(2, 21).error,
+              ContextualDynamicRangeDecodeError::none);
+
+    descriptor = {};
+    EXPECT_EQ(plan_contextual_dynamic_range_operations(
+                  operations, {}, descriptor).error,
+              ContextualDynamicRangeEncodeError::invalid_alphabet);
+}
+
 TEST(ContextualDynamicRangeEncoder, RescalesInLockstepWithDecoder) {
     std::vector<ModeledOperation> operations;
     operations.reserve(32770);
@@ -213,6 +249,15 @@ TEST(ContextualDynamicRangeEncoder, EnforcesEmptyAndLocalLimits) {
         marc::context::internal::lzss_field_context_frequency_entries - 1;
     result = plan_contextual_dynamic_range_operations(
         operations, limits, descriptor);
+    EXPECT_EQ(result.error,
+              ContextualDynamicRangeEncodeError::limit_exceeded);
+
+    limits = {};
+    limits.max_entropy_table_entries =
+        marc::context::internal::lzss_field_context_frequency_entries_v2 - 1;
+    result = plan_contextual_dynamic_range_operations(
+        operations, limits, descriptor,
+        LzssFieldContextVariant::field_context_1m);
     EXPECT_EQ(result.error,
               ContextualDynamicRangeEncodeError::limit_exceeded);
 

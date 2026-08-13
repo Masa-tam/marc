@@ -34,24 +34,32 @@ struct LzssTypedEncodeResult {
 [[nodiscard]] LzssTypedEncodeResult plan_lzss_typed_tokens(
     std::span<const std::byte> input,
     const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedEncodeResult encode_lzss_typed_tokens(
     std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    std::span<LzssTypedToken> private_tokens) noexcept;
+    std::span<LzssTypedToken> private_tokens,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedEncodeResult plan_lzss_typed_tokens_hash_chain(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    std::span<std::byte> match_finder_workspace) noexcept;
+    std::span<std::byte> match_finder_workspace,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     std::span<LzssTypedToken> private_tokens,
-    std::span<std::byte> match_finder_workspace) noexcept;
+    std::span<std::byte> match_finder_workspace,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedEncodeResult
 encode_lzss_typed_tokens_hash_chain_single_pass(
@@ -59,7 +67,9 @@ encode_lzss_typed_tokens_hash_chain_single_pass(
     const core::DecoderLimits& limits,
     std::span<LzssTypedToken> private_tokens,
     std::span<std::byte> match_finder_workspace,
-    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
+    LzssMatchFinderStatistics* statistics = nullptr,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 } // namespace marc::dictionary::internal
 

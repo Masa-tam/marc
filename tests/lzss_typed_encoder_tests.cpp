@@ -212,6 +212,39 @@ TEST(LzssTypedEncoder, EnforcesVariantAndWorkspaceLimits) {
               LzssTypedEncodeError::token_storage_limit_exceeded);
 }
 
+TEST(LzssTypedEncoder, HashChainEmitsMatchBeyond64KiBForExtendedVariant) {
+    constexpr std::size_t distance = 65537;
+    std::vector<std::byte> input(distance + 5, std::byte{0});
+    for (std::size_t index = 5; index < distance; ++index) {
+        input[index] = static_cast<std::byte>(1 + ((index - 5) % 255));
+    }
+    marc::dictionary::internal::LzssParameters parameters{};
+    parameters.window_size = 1048576;
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(requirements.error, LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+    std::vector<LzssTypedToken> tokens(input.size());
+    LzssMatchFinderStatistics statistics{};
+    const auto result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        input, parameters, {}, tokens, workspace, &statistics,
+        LzssTypedTokenVariant::field_context_1m);
+    ASSERT_EQ(result.error, LzssTypedEncodeError::none);
+    tokens.resize(result.token_count);
+    const auto match = std::ranges::find_if(
+        tokens, [](const LzssTypedToken& token) {
+            return token.kind == LzssTypedTokenKind::match
+                && token.distance == 65537;
+        });
+    ASSERT_NE(match, tokens.end());
+    EXPECT_EQ(match->length, 5U);
+
+    EXPECT_EQ(encode_lzss_typed_tokens_hash_chain_single_pass(
+                  input, parameters, {}, tokens, workspace).error,
+              LzssTypedEncodeError::invalid_parameters);
+}
+
 TEST(LzssTypedEncoder, HashChainExactMatchesExhaustiveTokens) {
     auto input = bytes("ABCDE1ABCDE2ABCDE3");
     for (std::uint32_t value = 0; value < 256; ++value)

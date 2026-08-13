@@ -9009,3 +9009,21 @@ layout, decode a Symbol decision in distance context 23 with alphabet 21, and
 decode 20 bypass bits only under context variant 2. The old variant must keep
 rejecting the 20-bit operation and the 1 MiB typed-token parameters. Preserve
 all existing old-header serialization vectors byte for byte.
+
+### TVG-0668
+
+For the first Contextual Dynamic Range encoder slice, encode the operation
+pair `(Symbol, context 23, alphabet 21, value 20)` and `(Bypass, 20 bits,
+0xABCDE)` under context variant 2, then decode both values exactly. Require the
+same Symbol operation to fail under the old default layout and require a
+4,549-entry table limit to reject the new encoder.
+
+Construct 65,542 raw bytes as five zero bytes, 65,532 nonzero cycling bytes,
+and the same five zero bytes. With a 1 MiB window this places the only five-
+zero candidate at distance 65,537. Require exact HashChain typed-token and
+complete-frame encoding to emit that distance with length five, then decode
+the serialized frame to the original bytes. Require the old default typed
+variant to reject the 1 MiB parameters. Separately encode raw `A` through the
+new complete-frame and one-byte streaming paths: its 86-byte frame remains the
+frozen literal frame, while its 112-byte stream header changes only the
+reserved dictionary/context identity and 1 MiB frame/window fields.

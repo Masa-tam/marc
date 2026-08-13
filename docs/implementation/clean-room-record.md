@@ -19590,3 +19590,32 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include documentation
   layout, every existing contextual profile, and schema 37 through 1
   interoperability compatibility.
+
+## CR-0822: 2026-08-14 - First 1 MiB Contextual Dynamic Range encoder slice
+
+- Authoring method: propagated the selected layout through marc's existing
+  typed-token, field-model, Range-operation, complete-frame, and streaming
+  encoder layers, using the preceding decoder as the independent inverse.
+- References used: DD-790 through DD-793; IR-0567; TVG-0665 through TVG-0668;
+  marc's local exact HashChain match finder and Contextual Dynamic Range
+  implementation.
+- Known implementations intentionally not consulted: external LZSS, context-
+  model, range-coder, extended-window format, encoder architecture, source
+  code, tests, benchmarks, corpora, results, patent text, and optimization
+  descriptions.
+- Independent decisions: add defaulted internal variant parameters; select the
+  layout once at the frame boundary; retain maximum bounded model storage;
+  prove extended-window use with distance 65,537; and defer public workspace
+  and profile admission.
+- Generated-code task description: carry explicit variants through both match-
+  finder routes and entropy encoding, preserve old bytes, generate and invert
+  expanded operations, produce a real distant Match, exercise one-byte
+  streaming output, and run both complete Windows suites with schema
+  compatibility.
+- Similarity review: all changes follow marc-owned API patterns, arithmetic,
+  state machines, match-finder contract, and vectors. No external
+  implementation expression entered the change.
+- Local validation: all 2,876 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include documentation
+  layout, every existing contextual profile, and schema 37 through 1
+  interoperability compatibility.

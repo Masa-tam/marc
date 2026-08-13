@@ -89,30 +89,30 @@ private:
 
 struct ModelState {
     std::array<std::uint16_t,
-               marc::context::internal::lzss_field_context_frequency_entries>
+               marc::context::internal::
+                   lzss_field_context_frequency_entries_v2>
         frequencies{};
     std::array<std::uint32_t,
                marc::context::internal::lzss_field_context_count> totals{};
 
-    ModelState() noexcept {
+    explicit ModelState(
+        const context::internal::LzssFieldContextLayout& layout) noexcept
+        : layout_(layout) {
         frequencies.fill(1);
         for (std::size_t index = 0; index < totals.size(); ++index) {
-            totals[index] =
-                marc::context::internal::lzss_field_context_alphabets[index];
+            totals[index] = (*layout_.alphabets)[index];
         }
     }
 
     void update(const std::uint16_t context, const std::uint32_t symbol)
         noexcept {
-        const auto offset =
-            marc::context::internal::lzss_field_context_offsets[context];
+        const auto offset = (*layout_.offsets)[context];
         ++frequencies[offset + symbol];
         auto& total = totals[context];
         ++total;
         if (total != contextual_dynamic_range_model_total_limit) return;
         total = 0;
-        const auto alphabet =
-            marc::context::internal::lzss_field_context_alphabets[context];
+        const auto alphabet = (*layout_.alphabets)[context];
         for (std::size_t index = 0; index < alphabet; ++index) {
             auto& frequency = frequencies[offset + index];
             frequency = static_cast<std::uint16_t>(
@@ -120,6 +120,8 @@ struct ModelState {
             total += frequency;
         }
     }
+
+    context::internal::LzssFieldContextLayout layout_{};
 };
 
 [[nodiscard]] ContextualDynamicRangeEncodeResult fail(
@@ -143,9 +145,10 @@ struct ModelState {
 
 [[nodiscard]] ContextualDynamicRangeEncodeResult run_encoder(
     const std::span<const context::internal::ModeledOperation> operations,
-    const std::span<std::byte> output) noexcept {
+    const std::span<std::byte> output,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
     ContextualDynamicRangeEncodeResult result{};
-    ModelState models;
+    ModelState models{layout};
     RangeEncoder encoder(output);
     for (const auto& operation : operations) {
         result.operation_index = result.operation_count;
@@ -163,8 +166,7 @@ struct ModelState {
                             ContextualDynamicRangeEncodeError::invalid_context);
             }
             if (operation.alphabet_size
-                != marc::context::internal::lzss_field_context_alphabets[
-                    operation.context_id]) {
+                != (*layout.alphabets)[operation.context_id]) {
                 return fail(
                     result, ContextualDynamicRangeEncodeError::invalid_alphabet);
             }
@@ -177,9 +179,7 @@ struct ModelState {
                     result,
                     ContextualDynamicRangeEncodeError::nonzero_unused_field);
             }
-            const auto offset =
-                marc::context::internal::lzss_field_context_offsets[
-                    operation.context_id];
+            const auto offset = (*layout.offsets)[operation.context_id];
             std::uint32_t cumulative{};
             for (std::uint32_t symbol = 0; symbol < operation.value; ++symbol) {
                 cumulative += models.frequencies[offset + symbol];
@@ -199,7 +199,8 @@ struct ModelState {
                     result,
                     ContextualDynamicRangeEncodeError::nonzero_unused_field);
             }
-            if (operation.bit_count == 0 || operation.bit_count > 16) {
+            if (operation.bit_count == 0
+                || operation.bit_count > layout.maximum_bypass_bits) {
                 return fail(
                     result,
                     ContextualDynamicRangeEncodeError::invalid_bypass_width);
@@ -268,13 +269,18 @@ enum class OverlapCheck : std::uint8_t {
 ContextualDynamicRangeEncodeResult plan_contextual_dynamic_range_operations(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    ContextualDynamicRangeDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (operations.empty()) {
         return {0, 0, 0, 0,
                 ContextualDynamicRangeEncodeError::empty_operations};
     }
-    if (core::validate_limits(limits) != core::LimitError::none
-        || marc::context::internal::lzss_field_context_frequency_entries
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+            != context::internal::LzssFieldContextLayoutError::none
+        || core::validate_limits(limits) != core::LimitError::none
+        || selected.layout.frequency_entries
                > limits.max_entropy_table_entries
         || contextual_dynamic_range_model_total_limit
                > limits.max_range_model_total) {
@@ -293,7 +299,7 @@ ContextualDynamicRangeEncodeResult plan_contextual_dynamic_range_operations(
                 ContextualDynamicRangeEncodeError::limit_exceeded};
     }
 
-    const auto result = run_encoder(operations, {});
+    const auto result = run_encoder(operations, {}, selected.layout);
     if (result.error != ContextualDynamicRangeEncodeError::none) return result;
     if (result.payload_size > std::numeric_limits<std::uint32_t>::max()) {
         return fail(result,
@@ -315,10 +321,12 @@ ContextualDynamicRangeEncodeResult encode_contextual_dynamic_range_operations(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    ContextualDynamicRangeDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualDynamicRangeDescriptor planned{};
     const auto plan =
-        plan_contextual_dynamic_range_operations(operations, limits, planned);
+        plan_contextual_dynamic_range_operations(
+            operations, limits, planned, variant);
     if (plan.error != ContextualDynamicRangeEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         return fail(
@@ -334,7 +342,14 @@ ContextualDynamicRangeEncodeResult encode_contextual_dynamic_range_operations(
         return fail(plan,
                     ContextualDynamicRangeEncodeError::overlapping_buffers);
     }
-    const auto encoded = run_encoder(operations, output);
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(plan,
+                    ContextualDynamicRangeEncodeError::internal_error);
+    }
+    const auto encoded = run_encoder(operations, output, selected.layout);
     if (encoded.error != ContextualDynamicRangeEncodeError::none
         || encoded.operation_count != plan.operation_count
         || encoded.decision_count != plan.decision_count

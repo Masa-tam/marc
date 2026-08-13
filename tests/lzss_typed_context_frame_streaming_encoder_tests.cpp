@@ -29,6 +29,16 @@ using marc::dictionary::internal::LzssTypedToken;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader extended_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 1048576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 112> stream_header(
     const std::uint8_t frame_size,
     const std::uint8_t original_size) noexcept {
@@ -150,6 +160,49 @@ TEST(LzssTypedContextFrameStreamingEncoder, MatchesOneByteOracle) {
     EXPECT_EQ(actual, expected);
     EXPECT_EQ(encoder.process({}, {}, 0).status,
               StreamStatus::end_of_stream);
+}
+
+TEST(LzssTypedContextFrameStreamingEncoder,
+     ExtendedVariantMatchesOneByteOracle) {
+    constexpr std::array input{std::byte{'A'}};
+    auto expected_header = stream_header(0, 1);
+    expected_header[14] = std::byte{0x03};
+    expected_header[22] = std::byte{0x10};
+    expected_header[66] = std::byte{0x10};
+    expected_header[98] = std::byte{0x02};
+    constexpr auto expected_frame = literal_frame(0);
+    std::vector<std::byte> expected(
+        expected_header.begin(), expected_header.end());
+    expected.insert(
+        expected.end(), expected_frame.begin(), expected_frame.end());
+
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> frame{};
+    LzssTypedContextFrameStreamingEncoder encoder{
+        extended_stream_config(1048576, 1), {}, raw, tokens, operations, {},
+        frame};
+    std::vector<std::byte> actual;
+    std::array<std::byte, 1> output{};
+    std::size_t input_offset{};
+    StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, input.size() - input_offset);
+        const auto chunk = std::span<const std::byte>{input}.subspan(
+            input_offset, count);
+        const auto result = encoder.process(
+            chunk, output,
+            input_offset + count == input.size() ? end_flag() : 0U);
+        ASSERT_TRUE(marc::core::is_valid(
+            result, chunk.size(), output.size()));
+        ASSERT_NE(result.status, StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) actual.push_back(output[0]);
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(actual, expected);
 }
 
 TEST(LzssTypedContextFrameStreamingEncoder,

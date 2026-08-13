@@ -39,14 +39,18 @@ struct ContextualDynamicRangeEncodeResult {
 plan_contextual_dynamic_range_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualDynamicRangeDescriptor& descriptor) noexcept;
+    ContextualDynamicRangeDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualDynamicRangeEncodeResult
 encode_contextual_dynamic_range_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     std::span<std::byte> payload_output,
-    ContextualDynamicRangeDescriptor& descriptor) noexcept;
+    ContextualDynamicRangeDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

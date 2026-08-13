@@ -195,6 +195,16 @@ output chunking is covered. This slice does not yet provide the new encoder,
 public profile, workspace factory, CLI, benchmark, fuzz target, or
 interoperability archive; those remain later steps in the same vertical path.
 
+The matching internal encoder slice is implemented next. Typed-token parsing
+now receives the selected dictionary variant for both Exhaustive and
+HashChain routes; field modeling and Dynamic Range planning/encoding receive
+the selected context variant. The bounded model bank has maximum storage for
+4,550 entries but addresses only the selected layout. Complete-frame encoding
+produces and round-trips a real distance-65,537 Match, and the streaming
+encoder preserves the exact new header under one-byte output chunking. The
+public profile, workspace query, CLI, benchmark, fuzzing, and interoperability
+admission remain intentionally absent.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
