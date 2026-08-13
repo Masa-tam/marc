@@ -6625,6 +6625,16 @@ identity without changing the descriptor grammar. Crossed known dictionary/
 context pairs remain contradictory parameters. This admission does not expose
 a new public profile.
 
+The internal profile calculator selects the 64 KiB or 1 MiB identity
+explicitly. For a largest raw frame of `F` bytes, both variants retain the
+same conservative extents: at most `F` typed tokens, `2F` modeled operations,
+`6F` arithmetic decisions, `12F + 5` payload bytes, and therefore
+`12F + 85` complete-frame bytes. The encoder workspace additionally contains
+the exact HashChain workspace derived from `F` and the selected LZSS
+parameters. The decoder workspace selects the 4,518- or 4,550-entry model
+limit from the requested profile variant. These calculations are internal and
+do not yet define a public C selector.
+
 Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
 Contextual tANS `5/2` uses frequency entry count 4,550 and a

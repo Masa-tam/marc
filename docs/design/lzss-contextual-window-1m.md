@@ -205,6 +205,16 @@ encoder preserves the exact new header under one-byte output chunking. The
 public profile, workspace query, CLI, benchmark, fuzzing, and interoperability
 admission remain intentionally absent.
 
+The internal profile/workspace stage is implemented independently of the C
+ABI. A profile enum selects the 64 KiB or 1 MiB layout; the selected layout
+sets stream dictionary/context IDs and typed-parameter validation. Encoder
+requirements derive raw, serialized-frame, token, operation, aligned
+HashChain, and aggregate extents with checked arithmetic. Decoder requirements
+select the corresponding frequency-table limit. At `F = 1,048,576`, the
+conservative serialized-frame ceiling is 12,582,997 bytes and the complete
+encoder aggregate remains below the default 128 MiB limit. Existing C queries
+continue to select the old profile until an explicit ABI field is introduced.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

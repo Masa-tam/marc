@@ -9027,3 +9027,18 @@ variant to reject the 1 MiB parameters. Separately encode raw `A` through the
 new complete-frame and one-byte streaming paths: its 86-byte frame remains the
 frozen literal frame, while its 112-byte stream header changes only the
 reserved dictionary/context identity and 1 MiB frame/window fields.
+
+### TVG-0669
+
+For the internal 1 MiB profile, request original size, frame size, and window
+size 1,048,576 with the explicit extended enum. Require stream identity
+dictionary variant 3 and context variant 2, frame input 1,048,576 bytes,
+1,048,576 token slots, 2,097,152 operation slots, and serialized-frame ceiling
+12,582,997 bytes. Independently calculate the exact HashChain workspace and
+require the profile's aligned view extent and total aggregate to include it
+and remain within the default internal-buffer limit.
+
+Set the entropy-table limit to 4,549 entries. Require the extended decoder
+workspace query to fail while the old 4,518-entry query succeeds. Reject an
+unknown profile enum without publishing stream or workspace results. Retain
+all old default profile values and partition tests unchanged.

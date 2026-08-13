@@ -19619,3 +19619,29 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include documentation
   layout, every existing contextual profile, and schema 37 through 1
   interoperability compatibility.
+
+## CR-0823: 2026-08-14 - Internal 1 MiB Contextual Dynamic Range profile
+
+- Authoring method: parameterized marc's existing typed-context profile with
+  the already reserved layout identity and re-derived every workspace extent
+  using its local checked formulas and exact HashChain query.
+- References used: DD-790 through DD-794; IR-0568; TVG-0665 through TVG-0669;
+  marc's 64 KiB profile, selected layout, limits, workspace partitioner, and
+  completed internal frame lifecycle.
+- Known implementations intentionally not consulted: external compression
+  profiles, workspace formulas, ABI designs, source code, tests, benchmarks,
+  corpora, results, patent text, and optimization descriptions.
+- Independent decisions: use an explicit internal profile enum; preserve the
+  old default; derive identity and table limits from one selection; retain
+  common conservative frame formulas; and defer public ABI mutation.
+- Generated-code task description: add explicit internal profile selection,
+  calculate and validate 1 MiB encoder/decoder workspaces, retain all old
+  defaults and partition contracts, document exact extents, and run both full
+  Windows suites including schema compatibility.
+- Similarity review: all formulas and code follow marc-owned format bounds,
+  checked arithmetic, layout types, and tests. No external implementation
+  expression entered the change.
+- Local validation: all 2,877 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include documentation
+  layout, every existing contextual profile, and schema 37 through 1
+  interoperability compatibility.

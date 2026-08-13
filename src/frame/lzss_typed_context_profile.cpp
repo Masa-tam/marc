@@ -83,6 +83,20 @@ inline constexpr std::uint64_t range_termination_bytes = 5;
         views_bytes);
 }
 
+[[nodiscard]] context::internal::LzssFieldContextLayoutResult profile_layout(
+    const LzssTypedContextProfileVariant variant) noexcept {
+    switch (variant) {
+    case LzssTypedContextProfileVariant::field_context_64k:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64k);
+    case LzssTypedContextProfileVariant::field_context_1m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_1m);
+    }
+    return {{}, context::internal::LzssFieldContextLayoutError::
+                    unsupported_context_variant};
+}
+
 } // namespace
 
 LzssTypedContextProfileError make_lzss_typed_context_profile(
@@ -96,19 +110,28 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
         || config.frame_size == 0) {
         return LzssTypedContextProfileError::invalid_configuration;
     }
-    const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            config.dictionary, limits);
-    if (dictionary_error != dictionary::internal::LzssFormatError::none) {
-        return dictionary_error
-                   == dictionary::internal::LzssFormatError::limit_exceeded
+    const auto selected = profile_layout(config.variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return LzssTypedContextProfileError::unsupported;
+    }
+    const auto format_error = dictionary::internal::validate_lzss_parameters(
+        config.dictionary, limits);
+    if (format_error != dictionary::internal::LzssFormatError::none) {
+        return format_error == dictionary::internal::LzssFormatError::
+                                   limit_exceeded
             ? LzssTypedContextProfileError::limit_exceeded
             : LzssTypedContextProfileError::invalid_configuration;
     }
-    if (config.dictionary.min_match_length != 5
-        || config.dictionary.max_match_length > 258
-        || config.dictionary.window_size > 65536) {
-        return LzssTypedContextProfileError::unsupported;
+    const auto dictionary_error =
+        dictionary::internal::validate_lzss_typed_parameters(
+            config.dictionary, limits, selected.layout.dictionary_variant);
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
+        return dictionary_error
+                   == dictionary::internal::LzssTypedTokenError::limit_exceeded
+            ? LzssTypedContextProfileError::limit_exceeded
+            : LzssTypedContextProfileError::unsupported;
     }
     if (config.original_size > limits.max_total_output_size
         || config.frame_size > limits.max_frame_size) {
@@ -118,6 +141,10 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
     stream.frame_size = config.frame_size;
     stream.original_size = config.original_size;
     stream.dictionary = config.dictionary;
+    stream.dictionary_variant = static_cast<std::uint16_t>(
+        selected.layout.dictionary_variant);
+    stream.context_variant = static_cast<std::uint16_t>(
+        selected.layout.context_variant);
     stream.range_model_total = typed_context_model_total;
     stream.context_count = typed_context_count;
     const auto stream_error =
@@ -216,14 +243,21 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
 LzssTypedContextProfileError
 calculate_lzss_typed_context_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssTypedContextDecoderWorkspaceRequirements& workspace) noexcept {
+    LzssTypedContextDecoderWorkspaceRequirements& workspace,
+    const LzssTypedContextProfileVariant variant) noexcept {
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssTypedContextProfileError::invalid_configuration;
     }
+    const auto selected = profile_layout(variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return LzssTypedContextProfileError::unsupported;
+    }
     if (typed_context_stream_header_size > limits.max_internal_buffered_bytes
         || typed_context_model_total > limits.max_range_model_total
-        || typed_context_table_entries > limits.max_entropy_table_entries) {
+        || selected.layout.frequency_entries
+               > limits.max_entropy_table_entries) {
         return LzssTypedContextProfileError::limit_exceeded;
     }
     const auto raw_bytes = std::min<std::uint64_t>(

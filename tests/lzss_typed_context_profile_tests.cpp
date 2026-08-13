@@ -57,6 +57,39 @@ TEST(LzssTypedContextProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
                   finder.workspace_alignment));
 }
 
+TEST(LzssTypedContextProfile, BuildsExtendedOneMiBProfileAndWorkspace) {
+    LzssTypedContextProfileConfig config{};
+    config.original_size = 1048576;
+    config.frame_size = 1048576;
+    config.dictionary.window_size = 1048576;
+    config.variant = LzssTypedContextProfileVariant::field_context_1m;
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, {}, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 3U);
+    EXPECT_EQ(stream.context_algorithm, 1U);
+    EXPECT_EQ(stream.context_variant, 2U);
+    EXPECT_EQ(stream.frame_size, 1048576U);
+    EXPECT_EQ(stream.dictionary.window_size, 1048576U);
+    EXPECT_EQ(workspace.frame_input_bytes, 1048576U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 12582997U);
+    EXPECT_EQ(workspace.token_count, 1048576U);
+    EXPECT_EQ(workspace.operation_count, 2097152U);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            1048576, config.dictionary, {});
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.match_finder_offset + finder.workspace_size);
+    EXPECT_LE(1048576U + workspace.views_bytes
+                  + workspace.frame_encoded_bytes,
+              marc::core::DecoderLimits{}.max_internal_buffered_bytes);
+}
+
 TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
     TypedContextStreamHeader stream{};
     LzssTypedContextEncoderWorkspaceRequirements workspace{};
@@ -98,6 +131,13 @@ TEST(LzssTypedContextProfile, RejectsUnsupportedAndBoundedConfigurations) {
     LzssTypedContextEncoderWorkspaceRequirements workspace{};
     LzssTypedContextProfileConfig unsupported{};
     unsupported.dictionary.max_match_length = 259;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  unsupported, {}, stream, workspace),
+              LzssTypedContextProfileError::unsupported);
+
+    unsupported = {};
+    unsupported.variant =
+        static_cast<LzssTypedContextProfileVariant>(255);
     EXPECT_EQ(make_lzss_typed_context_profile(
                   unsupported, {}, stream, workspace),
               LzssTypedContextProfileError::unsupported);
@@ -146,6 +186,18 @@ TEST(LzssTypedContextProfile, CalculatesDecoderWorkspaceFromLimits) {
                   limits, workspace),
               LzssTypedContextProfileError::limit_exceeded);
     EXPECT_EQ(workspace.views_bytes, 0U);
+
+    limits = {};
+    limits.max_entropy_table_entries =
+        marc::context::internal::lzss_field_context_frequency_entries_v2 - 1;
+    EXPECT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, workspace,
+                  LzssTypedContextProfileVariant::field_context_1m),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, workspace,
+                  LzssTypedContextProfileVariant::field_context_64k),
+              LzssTypedContextProfileError::none);
 }
 
 TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {

@@ -5049,3 +5049,13 @@ encoder, complete-frame encoder, streaming lifecycle, and decoder slice as
 first-party references. No external LZSS, context-model, range-coder,
 extended-window format, source code, tests, benchmark, corpus, result, patent
 text, or optimization description was consulted.
+
+### IR-0568
+
+The 1 MiB Contextual Dynamic Range internal profile uses DD-790 through
+DD-794, TVG-0665 through TVG-0669, marc's existing 64 KiB typed-context
+profile, checked workspace arithmetic, exact HashChain requirements, selected
+context layouts, and completed internal frame lifecycle as first-party
+references. No external compression profile, workspace formula, ABI design,
+source code, tests, benchmark, corpus, result, patent text, or optimization
+description was consulted.

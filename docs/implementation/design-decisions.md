@@ -16309,3 +16309,22 @@ trip, 21-symbol/20-bypass entropy inversion, variant-specific table-limit
 failure, and one-byte streaming identity before treating the internal encoder
 slice as complete. Public profile and interoperability admission remain a
 separate step with exact workspace accounting.
+
+## DD-794: Internal profile selection precedes C ABI admission
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add an internal typed-context profile enum with explicit 64 KiB and 1 MiB
+values. Preserve 64 KiB as the default. Map that enum to the already validated
+field-context layout, then derive stream dictionary/context IDs and typed LZSS
+parameter validation from the selected layout. Do not infer profile identity
+from frame or window size.
+
+Retain the common worst-case formulas `F` tokens, `2F` operations, `6F`
+decisions, `12F + 5` payload bytes, and `12F + 85` serialized-frame bytes.
+Continue to calculate exact HashChain storage from the selected parameters and
+validate the complete raw/views/frame aggregate. Make decoder workspace
+validation select 4,518 or 4,550 frequency entries from the profile enum.
+Defer the C struct and public factory change so the existing ABI continues to
+select only the frozen profile during this step.

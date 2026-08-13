@@ -12,10 +12,17 @@
 
 namespace marc::frame::internal {
 
+enum class LzssTypedContextProfileVariant : std::uint8_t {
+    field_context_64k,
+    field_context_1m,
+};
+
 struct LzssTypedContextProfileConfig {
     std::uint64_t original_size{};
     std::uint32_t frame_size{UINT32_C(1) << 16};
     dictionary::internal::LzssParameters dictionary{};
+    LzssTypedContextProfileVariant variant{
+        LzssTypedContextProfileVariant::field_context_64k};
 };
 
 struct LzssTypedContextEncoderWorkspaceRequirements {
@@ -73,7 +80,9 @@ struct LzssTypedContextDecoderViews {
 [[nodiscard]] LzssTypedContextProfileError
 calculate_lzss_typed_context_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssTypedContextDecoderWorkspaceRequirements& workspace) noexcept;
+    LzssTypedContextDecoderWorkspaceRequirements& workspace,
+    LzssTypedContextProfileVariant variant =
+        LzssTypedContextProfileVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedContextWorkspaceError
 partition_lzss_typed_context_encoder_views(
