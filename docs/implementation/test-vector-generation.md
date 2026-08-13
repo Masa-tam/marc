@@ -9056,3 +9056,17 @@ Require 4,549 entropy-table entries to reject the extended query, then admit
 it with the ordinary limit. Reject profile value 2 and a nonzero trailing
 reserved word. Preserve the existing profile-0 C lifecycle, header identity,
 workspace values, and round trip unchanged.
+
+### TVG-0671
+
+Run the common CLI transaction test once with
+`lzss-contextual-dynamic-range-1m`. Require dictionary variant byte 3 and
+context variant byte 2 in the encoded header, exact nonempty and empty round
+trips, overwrite refusal, malformed and trailing-data rejection, and removal
+of temporary output after every error. Decode the same stream through the
+64 KiB selector and require rejection without an output file.
+
+Repeat the identity and cross-profile rejection checks in the existing 64 KiB
+CLI test: require dictionary variant 2 and context variant 1, then require the
+1 MiB selector to reject that stream. Neither selector changes its counterpart
+or auto-detects the stream identity.

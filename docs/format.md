@@ -6638,6 +6638,12 @@ and is not serialized: value 0 admits only `2/2 + 1/1`, and value 1 admits only
 `2/3 + 1/2`. The encoder writes the selected exact pair, while the C streaming
 decoder rejects a different pair before frame allocation.
 
+The explicit CLI name `lzss-contextual-dynamic-range-1m` selects public value
+1, 1,048,576-byte frames, and a 1,048,576-byte window. The existing
+`lzss-contextual-dynamic-range` name continues to select value 0 and 65,536-
+byte frames/window. Decode uses the same explicit name as encode; the two names
+do not auto-detect one another. No CLI name or policy value is serialized.
+
 Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
 Contextual tANS `5/2` uses frequency entry count 4,550 and a

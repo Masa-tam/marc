@@ -4259,13 +4259,16 @@ sanitizer campaign remains separate evidence from target construction.
 
 ### Format 2 CLI boundary
 
-The transactional CLI admits Format 2 only through the explicit experimental
-selector `lzss-contextual-dynamic-range`. It fixes a 65,536-byte frame policy,
-then obtains primary, secondary, and aligned opaque-view requirements from the
-public C lifecycle separately for encode and decode. The adapter neither
-includes private Format 2 headers nor reproduces typed-token, modeled-operation,
-or context-table layout. Existing temporary-file publication ensures that a
-failed decode never replaces or leaves the requested destination.
+The transactional CLI admits Contextual Dynamic Range Format 2 through two
+explicit experimental selectors. `lzss-contextual-dynamic-range` fixes the
+frozen 65,536-byte frame/window profile; its `-1m` counterpart fixes both at
+1,048,576 bytes. Each sets one public C profile value, then obtains primary,
+secondary, and aligned opaque-view requirements from that lifecycle separately
+for encode and decode. The adapter neither includes private Format 2 headers
+nor reproduces typed-token, modeled-operation, or context-table layout. The
+selectors reject one another's stream identity, and existing temporary-file
+publication ensures that a failed decode never replaces or leaves the
+requested destination.
 
 ### Format 2 benchmark boundary
 

@@ -11,6 +11,9 @@ format versions, and C ABI versions are independent namespaces.
   Contextual Dynamic Range C lifecycle. The extended selector emits and admits
   only the reserved Format 2 dictionary/context identity `2/3 + 1/2`, while
   the zero default preserves `2/2 + 1/1` and the ABI-1 structure extent.
+- Added the explicit `lzss-contextual-dynamic-range-1m` CLI selector. The
+  existing unqualified selector remains the frozen 64 KiB profile, and each
+  decode selector rejects streams belonging to the other profile.
 
 ## 0.3.0 - 2026-08-13
 

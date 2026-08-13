@@ -5069,3 +5069,12 @@ encoder, typed-context streaming decoder, and existing C lifecycle tests as
 first-party references. No external compression API, ABI extension pattern,
 extended-window implementation, source code, tests, benchmark, corpus,
 result, patent text, or optimization description was consulted.
+
+### IR-0570
+
+The 1 MiB Contextual Dynamic Range CLI adapter uses DD-795 and DD-796,
+TVG-0670 and TVG-0671, marc's transactional CLI file adapter, public selected
+C lifecycle, existing 64 KiB selector, and shared CLI round-trip script as
+first-party references. No external compression CLI, extended-window profile,
+source code, tests, benchmark, corpus, result, patent text, or optimization
+description was consulted.

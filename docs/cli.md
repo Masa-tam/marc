@@ -75,8 +75,12 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 ### Experimental profile
 
 `lzss-contextual-dynamic-range` selects the Format 2 LZSS typed-token,
-field-context, contextual Dynamic Range pipeline. It is intentionally outside
-the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
+field-context, contextual Dynamic Range pipeline with the frozen 64 KiB
+dictionary/context identity `2/2 + 1/1`.
+`lzss-contextual-dynamic-range-1m` selects its additive 1 MiB identity
+`2/3 + 1/2`. Decode requires the same selector used for encode; neither name
+auto-detects or admits the other profile. Both are intentionally outside the
+stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
 the corresponding Format 2 typed-token and field-context pipeline with the
 canonical variable-size descriptor of scalar contextual rANS variant 3.
 Entropy variant 2 is retired and reserved; no diagnostic selector or alias
@@ -162,6 +166,13 @@ The command-line layer calls only the public configuration initializer,
 direction-specific requirements query, factory, process, and destroy
 functions. All three workspace extents and the opaque views alignment come
 from the query; no private token, operation, or model layout is reproduced.
+
+The experimental `lzss-contextual-dynamic-range-1m` adapter uses 1,048,576-
+byte raw frames and a 1,048,576-byte LZSS window. Its conservative payload
+bound is `12F + 5`, or 12,582,917 bytes, and its aggregate internal-buffer
+policy remains the public 128 MiB default. The adapter changes only public C
+configuration values before using the same requirements, factory, process,
+and destroy lifecycle. Queried workspace extents remain authoritative.
 
 The experimental `lzss-contextual-rans` adapter also fixes raw frames at
 65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its

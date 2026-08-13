@@ -19674,3 +19674,29 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include documentation
   layout, every existing contextual profile, and schema 37 through 1
   interoperability compatibility.
+
+## CR-0825: 2026-08-14 - 1 MiB Contextual Dynamic Range CLI selector
+
+- Authoring method: parameterized marc's existing transactional Contextual
+  Dynamic Range CLI adapter exclusively through the public C profile selector
+  and its returned workspace extents.
+- References used: DD-795 and DD-796; IR-0570; TVG-0670 and TVG-0671; marc's
+  public selected C lifecycle, frozen 64 KiB CLI route, and common CLI
+  round-trip transaction script.
+- Known implementations intentionally not consulted: external compression
+  CLIs, extended-window profiles, source code, tests, benchmarks, corpora,
+  results, patent text, and optimization descriptions.
+- Independent decisions: use the explicit `-1m` name; preserve the old name;
+  fix frame and window at 1 MiB; use the existing public aggregate limit; and
+  reject cross-profile decoding without output publication.
+- Generated-code task description: add a distinct CLI enum/name and public
+  configuration policy, extend common identity and mismatch checks, preserve
+  transactional empty/malformed/trailing/overwrite behavior, document the
+  boundary, and run both complete Windows suites with schema compatibility.
+- Similarity review: the adapter follows marc-owned CLI dispatch, C lifecycle,
+  policy constants, file transaction, and CMake test patterns. No external
+  implementation expression entered the change.
+- Local validation: all 2,878 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include the two
+  Contextual Dynamic Range CLI profiles, documentation layout, and schema 37
+  through 1 interoperability compatibility.

@@ -39,6 +39,26 @@ if(DEFINED CLI_ENTROPY_ALGORITHM AND DEFINED CLI_ENTROPY_VARIANT)
     endif()
 endif()
 
+if(DEFINED CLI_DICTIONARY_VARIANT)
+    file(READ "${encoded}" actual_dictionary_variant
+        OFFSET 14 LIMIT 1 HEX)
+    if(NOT actual_dictionary_variant STREQUAL CLI_DICTIONARY_VARIANT)
+        message(FATAL_ERROR
+            "CLI emitted dictionary variant ${actual_dictionary_variant}, "
+            "expected ${CLI_DICTIONARY_VARIANT}")
+    endif()
+endif()
+
+if(DEFINED CLI_CONTEXT_VARIANT)
+    file(READ "${encoded}" actual_context_variant
+        OFFSET 98 LIMIT 1 HEX)
+    if(NOT actual_context_variant STREQUAL CLI_CONTEXT_VARIANT)
+        message(FATAL_ERROR
+            "CLI emitted context variant ${actual_context_variant}, "
+            "expected ${CLI_CONTEXT_VARIANT}")
+    endif()
+endif()
+
 execute_process(
     COMMAND "${MARC_CLI}" encode ${codec_args} "${input}" "${encoded}"
     RESULT_VARIABLE overwrite_result)
@@ -57,6 +77,22 @@ execute_process(
     RESULT_VARIABLE compare_result)
 if(NOT compare_result EQUAL 0)
     message(FATAL_ERROR "CLI round trip changed the input")
+endif()
+
+if(DEFINED CLI_REJECT_CODEC AND NOT CLI_REJECT_CODEC STREQUAL "")
+    set(wrong_profile_output "${TEST_DIR}/wrong-profile.bin")
+    execute_process(
+        COMMAND "${MARC_CLI}" decode --codec "${CLI_REJECT_CODEC}"
+            "${encoded}" "${wrong_profile_output}"
+        RESULT_VARIABLE wrong_profile_result)
+    if(wrong_profile_result EQUAL 0)
+        message(FATAL_ERROR "CLI accepted the stream under another profile")
+    endif()
+    if(EXISTS "${wrong_profile_output}"
+        OR EXISTS "${wrong_profile_output}.tmp")
+        message(FATAL_ERROR
+            "CLI retained output after profile-mismatch rejection")
+    endif()
 endif()
 
 set(malformed "${TEST_DIR}/malformed.marc")

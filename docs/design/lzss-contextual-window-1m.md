@@ -223,7 +223,14 @@ selects only the frozen `2/2 + 1/1` identity; value 1 selects only the extended
 `2/3 + 1/2` identity. Workspace queries derive the selected 4,518- or
 4,550-entry table requirement, encoders serialize that exact pair, and C
 decoders reject the other pair before frame allocation. `window_size` does
-not select or override the profile. CLI, benchmark, fuzz, and interoperability
+not select or override the profile.
+
+The Dynamic Range CLI stage is now admitted under the explicit selector
+`lzss-contextual-dynamic-range-1m`. It fixes both frame and window at
+1,048,576 bytes and changes only the public C configuration before using the
+ordinary requirements/factory/process lifecycle. The old unqualified selector
+remains the 64 KiB profile. Each decoder name rejects the other's stream and
+retains transactional output cleanup. Benchmark, fuzz, and interoperability
 admission remain separate stages.
 
 ## Required validation

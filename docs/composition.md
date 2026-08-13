@@ -1794,3 +1794,14 @@ that value without inferring a profile from window size. A C decoder rejects
 the other known profile before frame allocation. The ABI-1 structure extent
 and zero-initialized old default remain unchanged; CLI, benchmark, fuzz, and
 interoperability admission are still separate milestones.
+
+### CP-0108
+
+The additive 1 MiB Contextual Dynamic Range profile is now reachable through
+the explicit CLI selector `lzss-contextual-dynamic-range-1m`. It fixes a 1 MiB
+frame/window and delegates all workspace extents and transform construction to
+the selected public C lifecycle. The frozen unqualified name remains 64 KiB;
+both decode names reject the other's identity before publishing output. Exact
+identity, nonempty/empty round trips, overwrite refusal, malformed/trailing
+rejection, and temporary-file cleanup are tested without adding a benchmark,
+fuzz target, or interoperability archive.

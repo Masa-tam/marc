@@ -16346,3 +16346,19 @@ dictionary/context pair before frame allocation, while the private generic
 streaming decoder may continue to admit either pair for focused format tests.
 Keep CLI, benchmark, fuzz, and interoperability admission as later vertical
 steps.
+
+## DD-796: The 1 MiB Dynamic Range CLI profile has an explicit name
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range-1m` as a distinct experimental CLI name.
+Set its frame and window to 1,048,576 bytes, select public window profile 1,
+retain maximum match length 258, and use the public 128 MiB aggregate limit.
+Do not reinterpret the existing unqualified name; it continues to select the
+frozen 64 KiB profile.
+
+Require the same explicit selector for decode. Reject the other known profile
+before output publication rather than auto-detecting it. Delegate all
+workspace extents, alignment, construction, processing, and destruction to
+the public C lifecycle. Defer benchmark, fuzz, and interoperability admission.
