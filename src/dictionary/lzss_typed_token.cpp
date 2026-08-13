@@ -6,7 +6,8 @@ namespace marc::dictionary::internal {
 
 LzssTypedTokenError validate_lzss_typed_parameters(
     const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits,
+    const LzssTypedTokenVariant variant) noexcept {
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssTypedTokenError::limit_exceeded;
     }
@@ -14,10 +15,21 @@ LzssTypedTokenError validate_lzss_typed_parameters(
     if (format_error == LzssFormatError::limit_exceeded) {
         return LzssTypedTokenError::limit_exceeded;
     }
+    std::uint32_t maximum_window{};
+    switch (variant) {
+    case LzssTypedTokenVariant::field_context_64k:
+        maximum_window = 65536;
+        break;
+    case LzssTypedTokenVariant::field_context_1m:
+        maximum_window = 1048576;
+        break;
+    default:
+        return LzssTypedTokenError::invalid_parameters;
+    }
     if (format_error != LzssFormatError::none
         || parameters.min_match_length != 5
         || parameters.max_match_length > 258
-        || parameters.window_size > 65536) {
+        || parameters.window_size > maximum_window) {
         return LzssTypedTokenError::invalid_parameters;
     }
     return LzssTypedTokenError::none;
@@ -28,9 +40,10 @@ LzssTypedTokenError validate_lzss_typed_token(
     const LzssParameters& parameters,
     const LzssTypedTokenValidationContext& context,
     const core::DecoderLimits& limits,
-    std::uint64_t& next_raw_size) noexcept {
+    std::uint64_t& next_raw_size,
+    const LzssTypedTokenVariant variant) noexcept {
     const auto parameter_error =
-        validate_lzss_typed_parameters(parameters, limits);
+        validate_lzss_typed_parameters(parameters, limits, variant);
     if (parameter_error != LzssTypedTokenError::none) {
         return parameter_error;
     }
@@ -80,10 +93,11 @@ LzssTypedFrameValidationResult validate_lzss_typed_frame(
     const std::span<const LzssTypedToken> tokens,
     const LzssParameters& parameters,
     const LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssTypedFrameValidationResult result{};
     const auto parameter_error =
-        validate_lzss_typed_parameters(parameters, limits);
+        validate_lzss_typed_parameters(parameters, limits, variant);
     if (parameter_error != LzssTypedTokenError::none) {
         result.token_error = parameter_error;
         result.error = parameter_error == LzssTypedTokenError::limit_exceeded
@@ -133,7 +147,7 @@ LzssTypedFrameValidationResult validate_lzss_typed_frame(
         result.token_error = validate_lzss_typed_token(
             token, parameters,
             {result.raw_size, context.declared_raw_size}, limits,
-            next_raw_size);
+            next_raw_size, variant);
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error
                 == LzssTypedTokenError::arithmetic_overflow) {

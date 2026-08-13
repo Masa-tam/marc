@@ -19532,3 +19532,31 @@ discarded and the reviewed seed retained.
   consistency, and historical placement passed
   `marc_documentation_layout` under both MSVC and ClangCL. No codec
   implementation or public-profile claim is part of this record.
+
+## CR-0820: 2026-08-13 - Shared 1 MiB contextual LZSS layout
+
+- Authoring method: implemented the first internal groundwork directly from
+  DD-790, the local typed-token/context contracts, and executable boundary
+  arithmetic without consulting another compression implementation.
+- References used: DD-790 and DD-791; IR-0565; TVG-0665 and TVG-0666; marc's
+  typed-token validator, field-context model, frozen layout arrays, and unit
+  tests.
+- Known implementations intentionally not consulted: external LZSS or
+  contextual compression source, extended-window formats, lookup layouts,
+  tests, benchmarks, corpora, results, patent text, and optimization
+  descriptions.
+- Independent decisions: use explicit internal variant values; retain old
+  defaults and aliases; centralize pair selection and layout-dependent bounds;
+  keep stream parsers unchanged; and correct the class-17 boundary from 65,537
+  to 131,072 after deriving and testing `floor(log2(distance))`.
+- Generated-code task description: add exact variant pairing, 4,550-entry
+  layout selection, 1 MiB typed-token validation, 20-bit contextual modeling,
+  old-layout identity tests, boundary vectors, dual-compiler builds, and full
+  regression validation without admitting a public codec.
+- Similarity review: the implementation follows marc-owned types, validation
+  patterns, checked arithmetic, and tests. No external implementation
+  expression entered the change.
+- Local validation: targeted MSVC and ClangCL builds and all 38 relevant
+  typed-token/context tests pass. All 2,863 registered tests pass under each
+  compiler with the 240-second per-test limit, including documentation layout,
+  all existing contextual profiles, and schema 37 through 1 compatibility.

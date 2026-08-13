@@ -10,6 +10,11 @@
 
 namespace marc::dictionary::internal {
 
+enum class LzssTypedTokenVariant : std::uint16_t {
+    field_context_64k = 2,
+    field_context_1m = 3,
+};
+
 enum class LzssTypedTokenKind : std::uint8_t {
     literal = 0,
     match = 1,
@@ -41,14 +46,18 @@ enum class LzssTypedTokenError : std::uint8_t {
 
 [[nodiscard]] LzssTypedTokenError validate_lzss_typed_parameters(
     const LzssParameters& parameters,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssTypedTokenError validate_lzss_typed_token(
     const LzssTypedToken& token,
     const LzssParameters& parameters,
     const LzssTypedTokenValidationContext& context,
     const core::DecoderLimits& limits,
-    std::uint64_t& next_raw_size) noexcept;
+    std::uint64_t& next_raw_size,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 struct LzssTypedFrameValidationContext {
     std::uint32_t declared_token_count{};
@@ -80,7 +89,9 @@ struct LzssTypedFrameValidationResult {
     std::span<const LzssTypedToken> tokens,
     const LzssParameters& parameters,
     const LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
 
 } // namespace marc::dictionary::internal
 

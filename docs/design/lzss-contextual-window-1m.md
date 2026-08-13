@@ -180,14 +180,25 @@ Public profile names and C declarations are reserved only when that backend's
 format, bounds, decoder, encoder, malformed-input tests, and benchmark are
 complete.
 
+The first shared-groundwork stage is implemented internally. Typed-token
+validation now selects the 64 KiB or 1 MiB parameter ceiling explicitly, and
+the field-context layer owns one validated layout for each reserved pair.
+Existing callers default to the frozen variants. The selector accepts only
+`2/2 + 1/1` and `2/3 + 1/2`; it does not yet make the new pair available to a
+stream parser or public profile.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
 
-- distances 65,535, 65,536, 65,537, 1,048,575, and 1,048,576;
-- class transitions 16 to 17 and 19 to 20;
+- distances 65,535, 65,536, 65,537, 131,071, 131,072, 1,048,575,
+  and 1,048,576;
+- the class-16-to-17 transition at distances 131,071 and 131,072 and the
+  class-19-to-20 transition at 1,048,575 and 1,048,576;
 - rejection of distance 1,048,577 and every reference beyond frame history;
-- exact rejection of variant-1 streams containing class 17 through 20;
+- exact rejection by variant 1 of every distance above 65,536, including a
+  class-16 value whose reconstructed distance is 65,537, and of classes 17
+  through 20;
 - rejection of crossed dictionary/context variant pairs;
 - deterministic identity between Exhaustive and HashChain Exact on inputs with
   useful matches beyond 64 KiB;
@@ -203,6 +214,8 @@ In addition to ordinary Format 2 coverage, require:
 - cross-platform decoding and byte-identical re-encoding before release.
 
 The primary hand vector is a frame containing a Match at distance 65,537 so
-the new class-17 path is unavoidable. A separate maximum-distance vector must
-exercise class 20. Small vectors remain necessary for exact header and model
-serialization, but they cannot establish that the extended window is used.
+use of the extended window is unavoidable even though that distance remains
+in class 16. A separate distance-131,072 vector must exercise the first new
+class, 17, and a maximum-distance vector must exercise class 20. Small vectors
+remain necessary for exact header and model serialization, but they cannot
+establish that the extended window is used.

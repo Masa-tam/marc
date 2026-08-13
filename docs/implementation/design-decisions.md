@@ -16241,3 +16241,25 @@ decoder-first validation, encoder identity, malformed-input coverage,
 workspace accounting, benchmark evidence, fuzzing, and interoperability before
 each backend receives a public name. Retain HashChain Exact initially and keep
 search strategy outside the stream.
+
+## DD-791: Shared contextual layout selection precedes backend admission
+
+- Date: 2026-08-13
+- Status: accepted
+
+Represent typed-token variants 2 and 3 and field-context variants 1 and 2 as
+explicit internal values. Preserve variant 2 and variant 1 as defaults for all
+existing callers. Select a context layout from the full dictionary/context
+identity and accept only `2/2 + 1/1` or `2/3 + 1/2`; distinguish unknown IDs
+from crossed known variants.
+
+Keep the frozen 4,518-entry arrays as compatibility aliases and add independent
+4,550-entry arrays for variant 2. Parameterize typed-token window validation,
+distance alphabet, maximum bypass width, and per-token decision ceiling from
+the selected layout. Do not connect variant 3/2 to a stream parser, entropy
+backend, public profile, or C API in this step.
+
+Correct the design boundary found while creating executable vectors:
+distance 65,537 exceeds the old window but remains class 16. Class 17 begins
+at distance 131,072. Preserve 65,537 as the primary extended-window boundary
+and use 131,072 as the first-new-class vector.

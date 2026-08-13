@@ -8955,11 +8955,13 @@ hang.
 ### TVG-0665
 
 For the 1 MiB contextual-window reservation, construct typed-token and modeled-
-operation vectors at distances 65,535, 65,536, 65,537, 1,048,575, and
-1,048,576. Require class 16 at 65,536, class 17 at 65,537, and class 20 with
-zero extra value at 1,048,576. Verify exact LSB-first bypass widths and reject
-distance 1,048,577, a reference beyond the accepted frame prefix, class 17
-through 20 under context variant 1, and crossed dictionary/context variants.
+operation vectors at distances 65,535, 65,536, 65,537, 131,071, 131,072,
+1,048,575, and 1,048,576. Require class 16 at distances 65,536 through
+131,071, class 17 with zero extra value at 131,072, and class 20 with zero
+extra value at 1,048,576. Verify exact LSB-first bypass widths and reject
+distance 1,048,577, a reference beyond the accepted frame prefix, every
+variant-1 distance above 65,536, classes 17 through 20 under context variant
+1, and crossed dictionary/context variants.
 
 Create an input whose only beneficial repeated phrase is more than 65,536
 bytes behind the current position. Require Exhaustive and HashChain Exact to
@@ -8974,3 +8976,19 @@ bounded complete-frame and streaming fuzzing, and same-input ratio, throughput,
 and peak-workspace measurements. Do not add a public profile or
 interoperability archive until its decoder and encoder meet the full completion
 criteria.
+
+### TVG-0666
+
+For shared layout implementation, require the selector to accept exactly
+`2/2 + 1/1` and `2/3 + 1/2`, report 4,518/4,550 frequency entries,
+17/21 distance alphabets, 16/20 maximum bypass bits, and 26/30 maximum
+decisions per token, and reject unknown dictionary IDs, unknown context-model
+IDs, unsupported context variants, and both crossed known pairs.
+
+Require the old public constants to equal variant-1 arrays exactly. Check
+distance classes at 65,535, 65,536, 65,537, 131,071, 131,072, 1,048,575,
+and 1,048,576. Validate variant-3 parameters at the 1 MiB ceiling and reject
+the next byte and unknown typed variants. Materialize and invert a variant-2
+context sequence whose Match at distance 131,072 produces alphabet 21,
+class 17, and 17 zero-valued bypass bits. Require the same configuration to
+remain invalid under the frozen variant-1 path.

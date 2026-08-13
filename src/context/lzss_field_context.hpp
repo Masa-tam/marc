@@ -5,11 +5,48 @@
 #include "core/limits.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <span>
 
 namespace marc::context::internal {
+
+enum class LzssFieldContextVariant : std::uint16_t {
+    field_context_64k = 1,
+    field_context_1m = 2,
+};
+
+struct LzssFieldContextLayout {
+    LzssFieldContextVariant context_variant{
+        LzssFieldContextVariant::field_context_64k};
+    dictionary::internal::LzssTypedTokenVariant dictionary_variant{
+        dictionary::internal::LzssTypedTokenVariant::field_context_64k};
+    const std::array<std::uint16_t, lzss_field_context_count>* alphabets{};
+    const std::array<std::size_t, lzss_field_context_count + 1>* offsets{};
+    std::size_t frequency_entries{};
+    std::uint8_t maximum_bypass_bits{};
+    std::uint8_t maximum_decisions_per_token{};
+};
+
+enum class LzssFieldContextLayoutError : std::uint8_t {
+    none,
+    unknown_dictionary_variant,
+    unknown_context_algorithm,
+    unsupported_context_variant,
+    incompatible_variants,
+};
+
+struct LzssFieldContextLayoutResult {
+    LzssFieldContextLayout layout{};
+    LzssFieldContextLayoutError error{LzssFieldContextLayoutError::none};
+};
+
+[[nodiscard]] LzssFieldContextLayoutResult
+select_lzss_field_context_layout(
+    std::uint16_t dictionary_variant,
+    std::uint16_t context_algorithm,
+    std::uint16_t context_variant) noexcept;
 
 enum class ModeledOperationKind : std::uint8_t {
     symbol,
@@ -71,27 +108,35 @@ struct LzssFieldContextResult {
     std::span<const dictionary::internal::LzssTypedToken> tokens,
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssFieldContextResult model_lzss_field_context_tokens(
     std::span<const dictionary::internal::LzssTypedToken> tokens,
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    std::span<ModeledOperation> private_operations) noexcept;
+    std::span<ModeledOperation> private_operations,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssFieldContextResult validate_lzss_field_context_operations(
     std::span<const ModeledOperation> operations,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
-    const core::DecoderLimits& limits) noexcept;
+    const core::DecoderLimits& limits,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssFieldContextResult invert_lzss_field_context_operations(
     std::span<const ModeledOperation> operations,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 

@@ -337,7 +337,8 @@ foreach(required_window_term IN ITEMS
         "Match produces at most five modeled events and 30 entropy decisions"
         "Existing dictionary variant 2 plus context variant 1 remains frozen"
         "Match-finder strategy is not serialized"
-        "Dynamic Range complete-frame decoder")
+        "Dynamic Range complete-frame decoder"
+        "distance-131,072 vector")
     string(FIND "${lzss_contextual_window_content}"
         "${required_window_term}" required_window_term_offset)
     if(required_window_term_offset EQUAL -1)

@@ -5019,3 +5019,13 @@ first-party references. No external LZSS, context-model, Huffman, range-coder,
 or ANS source code, extended-window format, workspace layout, test vector,
 benchmark, corpus, result, test suite, patent text, or optimization
 description was consulted.
+
+### IR-0565
+
+The shared 1 MiB contextual LZSS layout implementation uses DD-790 and
+DD-791, TVG-0665 and TVG-0666, marc's typed-token validator, field-context
+model, frozen 4,518-entry arrays, existing unit tests, and local Format 2
+design as first-party references. No external LZSS implementation,
+context-model implementation, extended-window format, lookup layout, source
+code, tests, benchmark, corpus, result, patent text, or optimization
+description was consulted.
