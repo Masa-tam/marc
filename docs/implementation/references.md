@@ -5087,3 +5087,12 @@ selected C lifecycle, checked Format 2 capacity formula, and 64 KiB benchmark
 adapter as first-party references. No external benchmark implementation,
 compression result, corpus, harness, source code, test, patent text, or
 optimization description was consulted.
+
+### IR-0572
+
+The dual-profile Contextual Dynamic Range fuzz boundary uses DD-795 through
+DD-798, TVG-0670 through TVG-0673, marc's existing fixed-memory dual-decoder
+harness, selected public C decoder, private complete-frame decoder, and local
+malformed regression helpers as first-party references. No external fuzz
+harness, corpus, finding, compression implementation, source code, test,
+patent text, or optimization description was consulted.

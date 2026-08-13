@@ -17,6 +17,8 @@ format versions, and C ABI versions are independent namespaces.
 - Added a matching dependency-free benchmark selector reporting ratio,
   directional throughput, queried workspaces, and peak caller reservation
   after a mandatory exact round trip.
+- Extended the fixed-memory Contextual Dynamic Range fuzz target and permanent
+  malformed regressions to cover both 64 KiB and 1 MiB profile admissions.
 
 ## 0.3.0 - 2026-08-13
 

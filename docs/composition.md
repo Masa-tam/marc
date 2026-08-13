@@ -1814,3 +1814,13 @@ and destroy calls. The adapter uses checked complete-stream capacity, verifies
 an exact round trip before timing, and reports ratio, both throughputs, all
 directional workspace regions, and peak caller reservation. It remains outside
 the stable benchmark matrix and adds no fuzz or interoperability admission.
+
+### CP-0110
+
+The fixed-memory Contextual Dynamic Range fuzz boundary now exercises both
+64 KiB and 1 MiB public decoder admissions for every input, plus the shared
+private complete-frame decoder after header validation. Compile-smoke remains
+warning-clean, permanent regressions cover extended truncation, cross-profile
+rejection, and descriptor corruption, and a bounded sanitizer smoke completed
+without a finding. No production-sized allocation, corpus artifact, or
+interoperability archive is introduced.

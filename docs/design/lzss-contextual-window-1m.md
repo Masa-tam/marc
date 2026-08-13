@@ -241,6 +241,15 @@ trip before measuring. The report makes ratio, both throughputs, every
 workspace extent, and peak caller reservation available for same-input 64 KiB
 versus 1 MiB comparison. Fuzz and interoperability admission remain separate.
 
+The Dynamic Range fuzz stage reuses one fixed-memory dual-boundary target for
+both profiles. It invokes the private complete-frame decoder after generic
+header validation and separately creates the two strict public C decoders.
+Supplied input remains capped at 8 KiB, published output at 4 KiB, and one raw
+frame at 1 KiB; the extended identity, table ceiling, and distance limit do not
+increase those allocations. Canonical extended truncations, cross-profile
+admission, and descriptor corruption are permanent atomic regressions.
+Interoperability admission remains separate.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

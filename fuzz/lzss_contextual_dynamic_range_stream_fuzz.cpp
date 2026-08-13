@@ -1,6 +1,7 @@
 #include <marc/marc.h>
 
 #include "core/status.hpp"
+#include "context/lzss_field_context_format.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "frame/lzss_typed_context_frame_decoder.hpp"
 #include "frame/typed_context_format.hpp"
@@ -36,10 +37,10 @@ constexpr std::size_t maximum_internal =
     limits.max_block_size = maximum_frame;
     limits.max_compressed_payload_size = maximum_payload;
     limits.max_internal_buffered_bytes = maximum_internal;
-    limits.max_lz_distance = maximum_frame;
+    limits.max_lz_distance = UINT64_C(1) << 20;
     limits.max_lz_match_length = 258;
     limits.max_entropy_table_entries =
-        marc::frame::internal::typed_context_table_entries;
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
     limits.max_range_model_total =
         marc::frame::internal::typed_context_model_total;
     return limits;
@@ -70,7 +71,8 @@ void exercise_complete_frame(const std::span<const std::byte> input) noexcept {
 }
 
 void exercise_public_streaming(
-    const std::span<const std::byte> input) noexcept {
+    const std::span<const std::byte> input,
+    const marc_lzss_contextual_window_profile window_profile) noexcept {
     marc_lzss_contextual_dynamic_range_config config{};
     if (marc_lzss_contextual_dynamic_range_config_init(
             MARC_DIRECTION_DECODE, &config)
@@ -82,12 +84,13 @@ void exercise_public_streaming(
     config.max_block_size = maximum_frame;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.max_lz_distance = maximum_frame;
+    config.max_lz_distance = UINT64_C(1) << 20;
     config.max_lz_match_length = 258;
     config.max_entropy_table_entries =
-        marc::frame::internal::typed_context_table_entries;
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
     config.max_range_model_total =
         marc::frame::internal::typed_context_model_total;
+    config.window_profile = window_profile;
 
     marc_workspace_requirements requirements{};
     if (marc_lzss_contextual_dynamic_range_workspace_requirements(
@@ -187,6 +190,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     const std::span<const std::byte> input{
         reinterpret_cast<const std::byte*>(data), bounded_size};
     exercise_complete_frame(input);
-    exercise_public_streaming(input);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
     return 0;
 }

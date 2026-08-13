@@ -19726,3 +19726,35 @@ discarded and the reviewed seed retained.
   ClangCL with the 240-second per-test limit. Both runs include eight
   experimental benchmark smokes, documentation layout, and schema 37 through
   1 interoperability compatibility.
+
+## CR-0827: 2026-08-14 - Dual-profile Contextual Dynamic Range fuzz boundary
+
+- Authoring method: extended marc's existing fixed-memory Contextual Dynamic
+  Range fuzz harness and malformed regression helpers with the public 1 MiB
+  profile selector and already validated extended layout bounds.
+- References used: DD-795 through DD-798; IR-0572; TVG-0670 through TVG-0673;
+  marc's private complete-frame decoder, strict public decoders, fixed harness
+  workspaces, and transactional malformed tests.
+- Known implementations intentionally not consulted: external fuzz harnesses,
+  corpora, findings, compression implementations, source code, tests, patent
+  text, and optimization descriptions.
+- Independent decisions: share one private frame path; drive both strict public
+  profiles; grant extended validation limits without increasing the 1 KiB
+  frame allocation; and persist behavior assertions rather than generated
+  corpus data.
+- Generated-code task description: extend the bounded target to both profile
+  admissions, add extended truncation, mismatch, and descriptor regressions,
+  compile warning-clean under both local compilers, run one deterministic
+  1,000-input sanitizer smoke, document its finite result, and run both full
+  Windows suites including schema compatibility.
+- Similarity review: all changes follow marc-owned fixed-array, limits,
+  lifecycle, process-contract, and GoogleTest patterns. No external
+  implementation expression entered the change.
+- Sanitizer validation: Windows Clang 22 with ASan, UBSan, and libFuzzer
+  completed 1,000 inputs at seed 12345, maximum length 8,192, five-second
+  timeout, and 512 MiB RSS limit without a finding; peak RSS was 40 MiB. No
+  corpus or artifact entered the repository.
+- Local validation: all 2,882 registered tests pass under both MSVC and
+  ClangCL with the 240-second per-test limit. Both runs include six permanent
+  Contextual Dynamic Range fuzz regressions, documentation layout, and schema
+  37 through 1 interoperability compatibility.

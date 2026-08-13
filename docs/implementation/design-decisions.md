@@ -16379,3 +16379,21 @@ Require an exact untimed round trip before timing, and report compression
 ratio, encode/decode throughput, all six returned workspace extents, and peak
 caller-owned reservation. Treat smoke throughput and ratio as descriptive,
 not stable thresholds. Defer fuzz and interoperability admission.
+
+## DD-798: One fixed fuzz boundary drives both Dynamic Range profiles
+
+- Date: 2026-08-14
+- Status: accepted
+
+Extend the existing Contextual Dynamic Range target rather than duplicate its
+private frame path and fixed arrays. For every bounded input, run the shared
+complete-frame decoder after generic header admission and create each strict
+public decoder with profile 0 and profile 1. Give validation the extended
+1 MiB distance and 4,550-entry table limits, but retain the 8 KiB input,
+4 KiB output, 1 KiB frame, fixed workspace, and finite call ceilings.
+
+Treat ordinary malformed status and output exhaustion as normal completion.
+Abort only on contract violations or exceeding the call budget. Add permanent
+atomic regressions for every prefix of an extended canonical stream,
+cross-profile public admission, and extended descriptor corruption. Run a
+small deterministic sanitizer smoke without persisting generated corpus data.

@@ -57,9 +57,11 @@ contextual Dynamic Range target bounds supplied input at 8 KiB, published raw
 output at 4 KiB, one raw frame at 1 KiB, contextual payload at 12,293 bytes,
 and native typed-token views at 1,024 fixed records. It exercises the private
 complete-frame decoder only after the 112-byte header is accepted and always
-exercises the public C decoder with byte-derived chunks and a finite call
-budget. Ordinary builds compile this target warning-clean; no sanitizer
-campaign is claimed until one is separately executed and recorded.
+exercises both the 64 KiB and 1 MiB public C decoder admissions with byte-
+derived chunks and a finite call budget. The wider profile permits the 1 MiB
+identity and limits but cannot allocate a 1 MiB frame: fuzz storage and raw
+history remain capped at 1 KiB. Ordinary builds compile this target warning-
+clean.
 The experimental contextual-rANS Format 2 target caps supplied input at
 32 KiB so the 9,052-byte fixed descriptor and a complete bounded frame are
 reachable. It caps public output at 4 KiB and one raw frame at 1 KiB, admits at
@@ -604,6 +606,20 @@ AddressSanitizer/UndefinedBehaviorSanitizer smoke on 2026-08-11. It completed
 the child process. No input corpus was supplied and no artifact was produced.
 This bounded result is evidence for the exercised inputs, not an exhaustive
 safety claim.
+
+### FZ-0024: Dual-profile Contextual Dynamic Range smoke
+
+The Contextual Dynamic Range private-frame/public-C target now drives both
+public window-profile admissions for every bounded input while retaining its
+8 KiB input, 4 KiB output, 1 KiB frame, fixed arrays, and finite call ceiling.
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer smoke
+with seed 12345 completed exactly 1,000 inputs under a five-second per-input
+timeout and 512 MiB RSS limit without a crash, hang, or sanitizer finding.
+Peak RSS was 40 MiB; final coverage was 196 counters and 308 features over a
+five-entry, 20-byte in-memory corpus. The sanitizer runtime path applied only
+to the campaign process. No input corpus was supplied and no artifact was
+produced. This bounded smoke is evidence for the exercised inputs, not an
+exhaustive safety claim.
 
 ## Finding retention policy
 

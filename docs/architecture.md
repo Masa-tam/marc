@@ -4257,6 +4257,13 @@ decoder violates consumption/production bounds, progress semantics, queried
 workspace guarantees, final-input behavior, or its finite call budget. A
 sanitizer campaign remains separate evidence from target construction.
 
+The Contextual Dynamic Range harness applies that same fixed boundary to both
+public window-profile admissions. It grants the extended decoder its 1 MiB LZ
+distance limit and 4,550-entry model ceiling, but retains a 1 KiB raw frame and
+fixed preallocated frame/token/output arrays. Thus stream identity and expanded
+layout validation are fuzzed without allowing arbitrary input to request the
+production 1 MiB workspace.
+
 ### Format 2 CLI boundary
 
 The transactional CLI admits Contextual Dynamic Range Format 2 through two

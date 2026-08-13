@@ -9083,3 +9083,19 @@ Register the command as an experimental benchmark smoke rather than a stable
 matrix member. Retain the 64 KiB smoke unchanged so users can run both commands
 over the same larger corpus; do not set size, speed, ratio, or relative-
 improvement pass thresholds from the small README input.
+
+### TVG-0673
+
+Generate the five-byte canonical Contextual Dynamic Range stream once for
+profile 0 and once for profile 1. For every strict prefix of the extended
+stream, require the private frame destination and public output to remain
+unchanged. Feed each complete stream to the opposite public profile and
+require a stable malformed-stream error with zero output. Set the final
+descriptor reserved byte in the extended stream and require the same atomic
+failure on both decoder boundaries.
+
+Compile the fixed harness warning-clean under ordinary MSVC and ClangCL. Build
+the sanitizer target with Windows Clang 22, then run exactly 1,000 generated
+inputs with seed 12345, maximum length 8,192, five-second per-input timeout,
+and 512 MiB RSS limit. Do not supply or save a corpus; record any finding as a
+new minimized permanent regression before proceeding.
