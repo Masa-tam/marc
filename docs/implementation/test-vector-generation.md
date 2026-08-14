@@ -9437,3 +9437,30 @@ plan/write disagreement. Planning may mutate only its documented token, table,
 and HashChain workspaces; serialized output remains untouched until the
 complete plan succeeds. Streaming, profiles, public C, CLI, benchmarks,
 fuzzing, and interoperability remain later stages.
+
+### TVG-0690
+
+Construct 64 KiB and 1 MiB Contextual tANS profiles from the same bounded
+configuration. Require exact stream identities `2/2 + 1/1 + 5/2` and
+`2/3 + 1/2 + 5/2`, frequency-entry counts 4,518 and 4,550, fixed 131,072-entry
+encode/decode tables, selected descriptor ceilings 9,029 and 9,093, and
+serialized-frame ceilings `9F + 9,095` and `9F + 9,159`. Partition every
+caller-owned typed view and require exact offsets, alignment, and HashChain
+extent. Reject unknown profile values, crossed dictionary parameters,
+one-byte-short or misaligned storage, arithmetic overflow, and each aggregate
+limit without publishing partial requirements or views.
+
+Use the selected requirements to construct streaming encoder and decoder
+instances. Round trip deterministic raw input whose exact HashChain parse
+contains a Match distance above 65,536, varying input and output down to one
+byte and retaining EndInput across every drain. Require an empty selected
+stream and a final short frame to terminate exactly. Run the frozen 64 KiB
+oracle unchanged.
+
+Parse both supported stream identities under decoder admissions `any`,
+`field_context_64k`, and `field_context_1m`. `any` accepts both; each explicit
+admission accepts only its matching pair and rejects the other before frame
+collection or raw publication. Exercise crossed identities, truncation,
+trailing bytes, unsupported flags, workspace aliases, table/token/raw
+shortage, and sticky errors. Public C, CLI, benchmark, fuzz, and
+interoperability admission remain later vectors.

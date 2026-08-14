@@ -16821,3 +16821,41 @@ preflight, table construction, typed-token reconstruction, and raw output.
 Presenting the same identity or descriptor under variant 1 must fail before
 raw publication. This stage does not yet admit variant 2 through streaming,
 profile calculators, public C, CLI, benchmark, fuzzing, or interoperability.
+
+## DD-815: Contextual tANS profiles and streaming admit the selected lifecycle
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `field_context_64k` and `field_context_1m` values to the private Contextual
+tANS profile configuration. Select the shared immutable field-context layout
+before validating dictionary parameters or calculating storage. The selected
+profile writes dictionary variant 2 or 3, context variant 1 or 2, and frequency
+entry count 4,518 or 4,550 into the existing stream header. Variant 64 KiB
+remains the source-compatible default; unsupported enum values fail without a
+partially published stream or workspace result.
+
+Calculate encoder and decoder storage from the selected 9,029- or 9,093-byte
+descriptor ceiling, unchanged tANS payload ceiling, fixed 131,072-entry table
+extent, raw-frame and token extents, and exact HashChain workspace. For raw
+frame extent `F`, retain conservative serialized-frame ceilings `9F + 9,095`
+and `9F + 9,159`. Include raw staging, typed tokens, encode/decode tables,
+HashChain storage where applicable, and serialized frame storage in checked
+aggregate-memory enforcement. The decoder calculator receives an explicit
+profile variant with 64 KiB as its default.
+
+Remove the temporary selected-identity rejection from the streaming encoder.
+Add decoder admission values `any`, `field_context_64k`, and
+`field_context_1m`; parse and validate the complete header first, then apply
+the requested admission before any frame allocation, table construction, or
+raw publication. `any` accepts either exact supported pair, while explicit
+admission rejects the other pair atomically. Search strategy remains an
+encoder-local choice and is not serialized.
+
+Require one-byte input/output streaming, empty selected streams, final short
+frames, sticky terminal states, exact profile partitioning, one-byte-short and
+misaligned workspaces, aggregate limits, crossed identities, and explicit
+admission mismatch. A selected profile must round trip a HashChain frame whose
+match distance exceeds 65,536. Frozen default stream bytes and all existing
+64 KiB lifecycle behavior remain exact. Public C, CLI, benchmark, fuzzing, and
+interoperability are later stages.

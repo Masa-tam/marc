@@ -20532,3 +20532,26 @@ discarded and the reviewed seed retained.
   output. All 2,912 registered Release tests pass under MSVC in 174.93 seconds
   and ClangCL in 181.59 seconds with the 300-second per-test limit, including
   interoperability schema compatibility and documentation layout.
+
+## CR-0859: 2026-08-15 - Contextual tANS selected lifecycle design
+
+- Authoring method: derived the profile and partial-buffer lifecycle boundary
+  from marc's selected complete tANS frame, frozen 64 KiB state machines, and
+  completed dual-profile Contextual rANS lifecycle.
+- References used: DD-790 through DD-815; IR-0589; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0690; marc's selected tANS frame, profile calculators,
+  streaming encoder/decoder, HashChain workspace calculator, and fixed tables.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, streaming lifecycles, workspace policies, source code,
+  tests, corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: expose an explicit private profile variant; retain
+  64 KiB defaults; use selected descriptor ceilings with fixed tables; add
+  `any/64k/1m` decoder admission; reject mismatches before frames; retain
+  caller-owned checked storage; and stop before public surfaces.
+- Generated-code task description: specify selected profile construction,
+  encoder/decoder workspace formulas, typed partitioning, streaming identity
+  admission, partial-buffer behavior, long-distance proof, atomic failures,
+  frozen compatibility, and the following public boundary.
+- Similarity review: the design composes only marc-owned selected-layout,
+  profile, workspace, streaming, tANS, and HashChain abstractions. No external
+  implementation expression entered the design.

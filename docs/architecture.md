@@ -5210,3 +5210,10 @@ distance-65,542 Match proves the extended route; crossed identity pairs fail
 before output publication. Streaming and profile construction still reject
 variant 2 explicitly, leaving public API, CLI, benchmark, fuzz, and schema on
 the frozen route until lifecycle workspace promotion is reviewed.
+
+The next private Contextual tANS lifecycle stage introduces explicit 64 KiB
+and 1 MiB profile selection, selected descriptor sizing over the unchanged
+131,072-entry table extent, and decoder admission policy `any/64k/1m`.
+Streaming identity is checked before frame collection; caller-owned raw,
+token, table, HashChain, and serialized-frame storage remains bounded by the
+same aggregate limit. Public surfaces remain a separate promotion.

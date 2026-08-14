@@ -5252,3 +5252,14 @@ workspace, and completed selected Contextual rANS frame migration as first-
 party references. No external LZSS or tANS implementation, frame format,
 source code, test, corpus, archive, patent text, or optimization description
 was consulted.
+
+### IR-0589
+
+The selected Contextual tANS profile and streaming design uses DD-790 through
+DD-815, TVG-0665, TVG-0666, and TVG-0686 through TVG-0690; marc's admitted
+selected tANS complete frames, frozen 64 KiB profile and partial-buffer state
+machines, exact HashChain workspace calculator, fixed transition tables, and
+completed dual-profile Contextual rANS lifecycle as first-party references.
+No external LZSS or tANS implementation, streaming lifecycle, workspace
+policy, source code, test, corpus, archive, patent text, or optimization
+description was consulted.

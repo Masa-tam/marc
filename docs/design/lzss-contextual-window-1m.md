@@ -383,6 +383,15 @@ selected identity explicitly. This preserves a narrow review boundary: the
 next stage must derive and validate its larger caller-owned workspaces before
 promoting profile factories or partial-buffer lifecycle behavior.
 
+That lifecycle stage uses the same explicit two-value profile selection as
+Contextual rANS. Encoder and decoder calculators derive the selected
+descriptor ceiling while retaining the fixed tANS transition extent. The
+streaming encoder accepts the identity already validated by its profile; the
+streaming decoder applies `any`, 64 KiB-only, or 1 MiB-only admission after
+transactional header parsing and before frame collection. The stage must prove
+one-byte chunking and a distance above 64 KiB, but it does not yet expose the
+selection through the public C ABI, CLI, benchmark, fuzz, or schema.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
