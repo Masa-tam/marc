@@ -16685,3 +16685,31 @@ is too short to require a distance beyond 65,536; dedicated extended-distance
 vectors remain authoritative. External Windows/Linux exchange is required
 after push and is recorded separately. This schema changes bundle inventory
 and manifest identity only, not any stream byte rule.
+
+## DD-811: Contextual tANS descriptor validation receives the selected layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Retain Contextual tANS entropy identity `5/2`, its 24-byte compact-descriptor
+prefix, 31 Symbol contexts, table log 12, one state, and the separate implicit
+bypass model. Pass an explicit `LzssFieldContextVariant` into descriptor
+analysis, parsing, validation, and serialization. Keep variant 1 as the
+default only for source migration; never infer the selected layout from the
+descriptor length, serialized frequency-entry count, active-context mask, or
+observed distance symbols.
+
+Reserve one fixed in-memory frequency bank for 4,550 entries. Variant 1 uses
+exactly 4,518 meaningful entries, requires the unused 32-entry tail to remain
+zero, and retains its exact 27-through-9,029-byte descriptor range. Variant 2
+uses all 4,550 entries, distance alphabet 21, and the exact
+27-through-9,093-byte range. The serialized frequency-entry count must equal
+the selected layout; crossed counts, unsupported variants, nonzero inactive
+tail values, and records outside the selected alphabet fail atomically.
+
+This descriptor-only stage does not change the 131,072-entry tANS transition-
+table requirement: both layouts retain 31 context IDs plus one 4,096-entry
+bypass table. It does not yet parameterize model construction, table building,
+state coding, typed-token composition, frames, streaming, public C, CLI,
+benchmark, fuzzing, or interoperability. Frozen variant-1 bytes remain the
+compatibility oracle for every later stage.

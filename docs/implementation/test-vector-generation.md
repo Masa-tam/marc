@@ -9327,3 +9327,24 @@ schema-39 artifacts with Ubuntu 26.04/Clang. Generate and self-verify an Ubuntu
 Windows/MSVC executable. Require all four final lines to report 49 archives,
 the expected producer label, and one identical full revision before recording
 external evidence.
+
+### TVG-0686
+
+Preserve the existing one-literal Contextual tANS descriptor byte for byte
+under the default 64 KiB layout. Parse, validate, and reserialize it only when
+the caller selects field-context variant 1; require serialized frequency-entry
+count 4,518, the exact canonical extent, and a zero unused 32-entry tail.
+
+Construct a variant-2 descriptor with frequency-entry count 4,550 and an
+active distance context using symbol class 20. Require canonical compact-model
+serialization, exact parse/serialize inversion, selected alphabet 21, and a
+descriptor extent no greater than 9,093 bytes. Exercise the all-dense maximum
+to establish that exact ceiling independently of frame data.
+
+For each layout, replace the entry count with the other layout's value, pass
+an unsupported context variant, set one unused variant-1 tail entry, truncate
+every descriptor byte, append trailing bytes, corrupt the active mask and
+record mode, and provide output one byte short. Require a stable format error,
+unchanged destination descriptor or serialized sentinel bytes, checked size
+arithmetic, and no table, frame, or raw-output publication. Table construction
+and entropy inversion remain later vectors.

@@ -6684,6 +6684,19 @@ may reserve 4,550 in-memory frequencies for both, but the unused final 32
 entries of a variant-1 descriptor are non-semantic and must be zero. They are
 never serialized or allowed to affect canonical model analysis.
 
+Contextual tANS descriptor processing follows the same external-selection
+rule but retains its distinct 24-byte prefix and entropy identity `5/2`. The
+already validated dictionary/context pair supplies field-context variant 1 or
+2 to descriptor analysis, parsing, validation, and serialization. The
+serialized frequency-entry count must be 4,518 or 4,550 respectively; it does
+not select the layout. Variant 1 retains the exact 27-through-9,029-byte range
+and requires its unused 32-entry in-memory tail to be zero. Variant 2 uses
+distance alphabet 21 and the exact 27-through-9,093-byte range. Both layouts
+retain 31 Symbol context IDs plus one implicit bypass model, so the required
+transition-table storage remains exactly 131,072 entries. Crossed counts,
+unsupported layout values, and records outside the selected alphabet are
+malformed.
+
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
 public C, CLI, benchmark, fuzz, and schema-38 interoperability admission.

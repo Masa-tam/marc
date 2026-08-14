@@ -310,6 +310,17 @@ schema 38 before the existing downgrade chain. Revision
 exchange across the Windows/MSVC, Ubuntu 24.04 CI, and Ubuntu 26.04/Clang
 producers with all 49 archives verified in every pass.
 
+The next tANS vertical path begins at its descriptor boundary. The selected
+field-context layout is supplied explicitly to descriptor analysis, parsing,
+validation, and serialization; descriptor size or frequency-entry count never
+selects it. Variant 1 retains 4,518 entries and 27 through 9,029 bytes, while
+variant 2 uses 4,550 entries and 27 through 9,093 bytes. One fixed 4,550-entry
+in-memory bank is permitted, but the unused variant-1 tail must remain zero.
+Both layouts retain the same 131,072 transition-entry requirement because the
+31 context IDs and one bypass table do not change. Coding tables, state
+transitions, typed-token composition, frames, and public admission remain
+separate later stages.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

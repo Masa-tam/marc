@@ -5211,3 +5211,12 @@ schema-38 inventory, explicit 1 MiB CLI, bundle generator, verifier, and
 downgrade compatibility chain as first-party references. No external LZSS or
 rANS implementation, archive, manifest, interoperability suite, source code,
 test, corpus, patent text, or optimization description was consulted.
+
+### IR-0585
+
+The selected-layout Contextual tANS descriptor design uses DD-790, DD-791,
+DD-811, TVG-0665, TVG-0666, and TVG-0686; marc's frozen Contextual tANS
+descriptor, shared selected field-context layouts, compact-model primitive,
+and completed Contextual rANS descriptor migration as first-party references.
+No external LZSS or tANS implementation, descriptor format, source code, test,
+corpus, archive, patent text, or optimization description was consulted.

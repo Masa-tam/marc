@@ -20325,3 +20325,22 @@ discarded and the reviewed seed retained.
 - External validation: Windows/MSVC and Ubuntu 24.04 CI bundles verified on
   Ubuntu 26.04/Clang 21.1.8; the Ubuntu 26.04 bundle verified locally and on
   Windows/MSVC. Every pass reported 49 archives and the exact revision above.
+
+## CR-0851: 2026-08-14 - Contextual tANS selected-descriptor design
+
+- Authoring method: derived the next vertical stage from marc's frozen tANS
+  descriptor and the completed shared-layout and Contextual rANS migrations.
+- References used: DD-790; DD-791; DD-811; IR-0585; TVG-0665; TVG-0666;
+  TVG-0686; marc's tANS format, compact-model, and field-context sources.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, descriptor formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select layout externally; retain the 24-byte tANS
+  prefix; reserve 4,550 frequencies; require a zero frozen tail; preserve the
+  131,072-entry transition extent; and stop before coding or frame admission.
+- Generated-code task description: specify exact selected entry counts and
+  descriptor ceilings, negative crossings, atomic format behavior, frozen-byte
+  preservation, and the boundary to later coding and lifecycle stages.
+- Similarity review: the design composes only marc-owned format and model
+  abstractions and follows its existing explicit-layout policy. No external
+  implementation expression entered the design.
