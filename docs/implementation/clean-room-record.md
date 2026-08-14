@@ -20711,3 +20711,24 @@ discarded and the reviewed seed retained.
   rejection. All 2,916 registered Release tests pass under MSVC in 191.73
   seconds and ClangCL in 193.20 seconds with the 300-second per-test limit,
   including interoperability schema compatibility and documentation layout.
+
+## CR-0866: 2026-08-15 - Contextual tANS selected benchmark design
+
+- Authoring method: derived the benchmark boundary from marc's completed
+  dual-name CLI/public C admission and existing selected contextual benchmark
+  adapters, keeping the measurement contract unchanged.
+- References used: DD-790 through DD-818; IR-0592; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0693; marc's benchmark configuration, checked capacity,
+  public workspace report, exact pre-timing round trip, and smoke harness.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, benchmarks, adapters, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: mirror the exact `-1m` name; use the selected public
+  profile and 128 MiB policy; reserve 9,159 bytes per nonempty frame; and keep
+  performance values descriptive rather than pass thresholds.
+- Generated-code task description: specify selected benchmark constants,
+  enum/parser/help/configuration/workspace/factory/capacity wiring, report
+  invariants, smoke coverage, documentation, and later fuzz/schema work.
+- Similarity review: the design composes only marc-owned benchmark, public C,
+  CLI-profile, workspace, streaming, tANS, and CMake test abstractions. No
+  external implementation expression entered the design.

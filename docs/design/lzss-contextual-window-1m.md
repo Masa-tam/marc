@@ -419,6 +419,12 @@ ceiling, and 128 MiB internal-buffer policy. The established name remains
 64 KiB and 8 MiB; decoding with either crossed name fails atomically. Runtime
 inventory tests also keep both names ordered and reject near-miss spelling.
 
+The next benchmark stage mirrors `lzss-contextual-tans` and
+`lzss-contextual-tans-1m`. Selected complete-stream capacity is
+`112 + 9N + 9,159K`, where each frame reserves 64 header, 9,093 descriptor,
+and two final-state bytes. The benchmark reports public queried workspace and
+uses the existing pre-timing exact round trip; timings remain descriptive.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

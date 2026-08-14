@@ -16915,3 +16915,29 @@ Require CLI round trips for both names with exact `2/2 + 1/1 + 5/2` and
 `2/3 + 1/2 + 5/2` identities, and require both crossed decode directions to
 fail without replacing an existing output. Benchmark, fuzzing, and
 interoperability publication remain later stages.
+
+## DD-818: Contextual tANS benchmark mirrors exact CLI profile names
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-tans-1m` to the experimental benchmark beside the frozen
+`lzss-contextual-tans` name. Use the same name-to-public-profile mapping and
+bounded configuration as DD-817. The selected route therefore uses a
+1,048,576-byte frame/window and LZ distance, `6F = 6,291,456` decisions,
+`9F + 2 = 9,437,186` payload bytes, and a 128 MiB internal-buffer policy.
+
+Extend checked complete-stream capacity from the frozen
+`112 + 9N + 9,095K` formula to `112 + 9N + 9,159K` for the selected route.
+The selected per-frame term comprises the 64-byte frame header, 9,093-byte
+descriptor ceiling, and two-byte final state. Preserve checked arithmetic and
+use the selected frame size when deriving K.
+
+Add the name to the benchmark enum, parser, help, configuration, workspace,
+factory, capacity, documentation, and experimental smoke inventory. The
+existing benchmark contract remains unchanged: verify an exact public C round
+trip before timing; exclude workspace allocation and transform lifetime from
+timing; report encoded ratio, encode/decode throughput, both directional view
+extents, and peak caller-owned workspace. Compare profiles only with identical
+input, build, and iteration count. Fuzzing and interoperability publication
+remain later stages.

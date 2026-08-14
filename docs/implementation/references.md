@@ -5283,3 +5283,13 @@ admission, generic round-trip harness, and output-preservation checks as
 first-party references. No external LZSS or tANS implementation, CLI,
 adapter, source code, test, corpus, archive, patent text, or optimization
 description was consulted.
+
+### IR-0592
+
+The Contextual tANS selected benchmark design uses DD-790 through DD-818,
+TVG-0665, TVG-0666, and TVG-0686 through TVG-0693; marc's completed dual-name
+CLI/public C admission, Contextual Dynamic Range and rANS selected benchmark
+adapters, checked capacity planner, workspace report, and pre-timing round-trip
+contract as first-party references. No external LZSS or tANS implementation,
+benchmark, adapter, source code, test, corpus, archive, patent text, or
+optimization description was consulted.

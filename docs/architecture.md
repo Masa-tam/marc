@@ -5243,3 +5243,9 @@ The names configure 1,048,576-byte and 65,536-byte frame/window profiles
 respectively and bind the same strict public C admission in both directions.
 Round-trip tests enforce both identities and crossed rejection. No
 auto-detection, fallback, alias, or format inference is introduced.
+
+The next benchmark boundary mirrors those two exact CLI names without adding
+format behavior. The 1 MiB route uses the public selected C profile, checked
+capacity `112 + 9N + 9,159K`, and queried directional workspace extents.
+Construction, allocation, file I/O, and verification remain outside timing;
+only transform processing is compared under identical input/build/iterations.

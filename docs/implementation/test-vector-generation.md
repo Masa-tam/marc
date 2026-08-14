@@ -9501,3 +9501,19 @@ and leave a pre-existing destination sentinel unchanged. Require the help
 inventory to list each name once in order. Unknown near-miss names remain
 usage errors. Benchmark, fuzzing, and interoperability publication are later
 vectors.
+
+### TVG-0693
+
+Run the experimental benchmark smoke with `lzss-contextual-tans` and
+`lzss-contextual-tans-1m` over the same nonempty repository input and one
+iteration. Each command must complete its untimed public C encode/decode
+verification before reporting a sample. Require the selected name in help and
+reject unknown near-miss names through the existing usage path.
+
+For both names require finite encoded ratio and encode/decode throughput,
+nonzero direction-specific workspace extents, and a peak equal to the larger
+reported primary-plus-secondary-plus-views aggregate. The selected capacity
+planner must use 1 MiB frames and `112 + 9N + 9,159K`, while the frozen route
+retains `112 + 9N + 9,095K`. Measurements are descriptive and impose no speed
+or ratio threshold. Fuzzing and interoperability publication remain later
+vectors.
