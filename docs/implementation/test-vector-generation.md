@@ -9,6 +9,11 @@ input bytes, expected output bytes, and whether the vector is normative or only
 a regression fixture. Random fixtures must record their deterministic seed and
 generator algorithm.
 
+Starting 2026-08-14, local full-suite CTest validation uses a 300-second
+per-test timeout. This replaces the former 240-second operational ceiling as
+the schema-compatibility chain and registered inventory approach 200 seconds;
+it is scheduling margin, not permission to ignore a test-time regression.
+
 The version 1 stream and frame prefixes are assigned, but complete codec
 payload vectors are added independently before each encoder is implemented.
 
@@ -9348,3 +9353,29 @@ record mode, and provide output one byte short. Require a stable format error,
 unchanged destination descriptor or serialized sentinel bytes, checked size
 arithmetic, and no table, frame, or raw-output publication. Table construction
 and entropy inversion remain later vectors.
+
+### TVG-0687
+
+Run one selected-layout Contextual tANS operation sequence containing a
+distance-context Symbol request with alphabet 21 and value 20 followed by a
+20-bit bypass value. Require the variant-2 model builder to publish frequency-
+entry count 4,550, normalize only the selected 4,550-entry bank, build exactly
+131,072 encode and decode transitions, invert the operations through the
+selected state coder, consume the exact valid-bit extent, and finish at the
+canonical terminal state.
+
+Run the existing one-literal and Symbol-plus-bypass vectors through the default
+variant-1 route and require byte-identical descriptors, payloads, tables, and
+terminal results. Variant 1 must reject alphabet 21, class 20, and bypass width
+20; variant 2 must reject the old alphabet when the selected context requires
+21. Both variants reject unknown selections, inactive contexts, crossed
+descriptor counts, and nonzero unused fields without publishing model,
+transition, payload, decoded value, or terminal state.
+
+Exercise one-entry-short encode/decode table spans, descriptor/table aliasing,
+duplicate planning, count overflow, truncated additional bits, nonzero final
+padding, trailing bits, unused active contexts, and invalid initial/final
+states under the selected route. The transition extent remains fixed because
+the wider alphabet changes frequency partitioning inside each context table,
+not the number or size of table regions. Typed-token and frame integration are
+excluded from this vector.

@@ -16713,3 +16713,36 @@ bypass table. It does not yet parameterize model construction, table building,
 state coding, typed-token composition, frames, streaming, public C, CLI,
 benchmark, fuzzing, or interoperability. Frozen variant-1 bytes remain the
 compatibility oracle for every later stage.
+
+## DD-812: Contextual tANS coding core retains one immutable layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Pass `LzssFieldContextVariant` through operation model construction, frequency
+normalization, encode/decode transition-table construction, reverse writing,
+state decoding, and operation-level plan/encode/decode entry points. Each
+stateful builder, writer, or decoder selects and retains one immutable
+`LzssFieldContextLayout`; no operation, alphabet argument, descriptor count,
+table contents, or payload state may change or infer that selection. Preserve
+variant 1 as the default only for internal source migration.
+
+Grow count storage to the maximum 4,550 entries, but normalize and address only
+the selected offsets and alphabets. Publish frequency-entry count 4,518 or
+4,550 from that layout. Use its maximum bypass width, 16 or 20 bits, in model,
+writer, and decoder validation. Cumulative-frequency lookup and transition
+table extraction use the same selected offsets; inactive context regions
+remain zero.
+
+Retain exactly 131,072 encode and decode entries: 31 context regions plus one
+implicit bypass region, each containing 4,096 transitions. The wider distance
+alphabet changes the partition inside eight regions, not their extents. Reject
+unsupported selections, crossed alphabets, out-of-range symbols, over-wide
+bypass requests, and descriptor/layout mismatch before publishing output or
+mutable terminal state.
+
+Require variant-1 descriptor, payload, transition, and terminal byte identity
+and a variant-2 operation inversion using distance class 20 plus a 20-bit
+bypass. This coding-core stage does not yet select a typed-token variant or
+admit the extended identity through a frame, streaming lifecycle, public C,
+CLI, benchmark, fuzz target, or interoperability schema.

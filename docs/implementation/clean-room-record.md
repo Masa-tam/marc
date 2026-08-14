@@ -20372,3 +20372,22 @@ discarded and the reviewed seed retained.
   limit, including interoperability schema compatibility and documentation
   layout. The MSVC rebuild required the established elevated FileTracker route
   after the sandbox returned `E_ACCESSDENIED` in `ZERO_CHECK`.
+
+## CR-0853: 2026-08-14 - Contextual tANS selected coding-core design
+
+- Authoring method: derived the coding boundary from marc's admitted selected
+  descriptor and frozen tANS model, transition, writer, and decoder objects.
+- References used: DD-790 through DD-812; IR-0586; TVG-0665; TVG-0666;
+  TVG-0686; TVG-0687; marc's selected field-context and rANS core migrations.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, transition tables, state coders, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: retain one immutable layout per object; reserve 4,550
+  counts; keep 131,072 transitions; select 16/20-bit bypass bounds; require
+  frozen identity; and stop before typed-token or frame integration.
+- Generated-code task description: define selected model normalization,
+  cumulative and table addressing, operation inversion, atomic failures,
+  fixed workspace, legacy-byte tests, and the next integration boundary.
+- Similarity review: the design composes only marc-owned model, table, state,
+  and context abstractions. No external implementation expression entered the
+  design.

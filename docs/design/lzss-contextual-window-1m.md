@@ -328,6 +328,15 @@ reject crossed counts, unsupported variants, nonzero frozen tails, malformed
 records, truncation, trailing data, and short output atomically. No outer tANS
 consumer selects variant 2 yet.
 
+The following tANS coding-core stage passes that same immutable layout through
+model counting and normalization, encode/decode table construction, reverse
+state writing, forward state decoding, and operation-level entry points.
+Counts reserve 4,550 entries but address only the selected layout; bypass width
+is 16 or 20 bits. Both layouts retain 131,072 transitions, divided into 31
+Symbol regions and one bypass region of 4,096 entries each. A class-20 Symbol
+plus 20-bit bypass vector proves the new route before typed-token or frame
+integration.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

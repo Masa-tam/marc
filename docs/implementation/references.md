@@ -5220,3 +5220,13 @@ descriptor, shared selected field-context layouts, compact-model primitive,
 and completed Contextual rANS descriptor migration as first-party references.
 No external LZSS or tANS implementation, descriptor format, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0586
+
+The selected-layout Contextual tANS coding-core design uses DD-790 through
+DD-812, TVG-0665, TVG-0666, TVG-0686, and TVG-0687; marc's admitted selected
+tANS descriptor, frozen tANS transition builder and state machine, shared
+field-context layouts, and completed Contextual rANS coding-core migration as
+first-party references. No external LZSS or tANS implementation, transition
+table, state coder, source code, test, corpus, archive, patent text, or
+optimization description was consulted.
