@@ -17053,3 +17053,27 @@ The existing variant-1 hand vectors and operation APIs remain byte-identical.
 This stage admits only the entropy coding core. Typed-token composition,
 frames, streaming, public APIs, CLI, benchmarks, fuzzing, and interoperability
 remain later stages.
+
+## DD-823: Select the Contextual Blocked Huffman typed-token boundary explicitly
+
+- Date: 2026-08-15
+- Status: accepted
+
+Pass the field-context variant through direct LZSS typed-token planning,
+encoding, validation, and decoding, retaining variant 1 as the source-level
+default. Select the paired typed-token dictionary variant, every symbol
+alphabet, the bypass ceiling, and the maximum decisions per token from one
+immutable layout. Do not serialize or infer a new selector at this boundary.
+
+The encoder validates typed tokens under the selected dictionary variant,
+feeds the selected model builder directly, and writes the payload through the
+same selected canonical writer without materializing ModeledOperation storage.
+The decoder validates the selection and complete entropy/token sequence in a
+first pass, then repeats deterministically into caller token storage; no token
+is published after a malformed first pass. Variant 2 accepts distance 131,072
+as class 17 plus 17 LSB-first extra bits. Variant 1 rejects that token before
+descriptor or payload publication. Unknown variants and crossed descriptors
+fail atomically.
+
+This stage changes no stream bytes and admits no frame, streaming, public API,
+CLI, benchmark, fuzz, or interoperability surface.

@@ -5331,3 +5331,13 @@ field-context selector, and completed selected rANS/tANS coding cores as
 first-party references. No external Huffman or LZSS implementation, payload
 format, API, source code, test, corpus, archive, patent text, or optimization
 description was consulted.
+
+### IR-0597
+
+The selected Contextual Blocked Huffman typed-token design uses DD-790 through
+DD-823, TVG-0665, TVG-0666, TVG-0696 through TVG-0698, and marc's existing
+64 KiB direct adapter, selected entropy coding core, field-context token
+modeler/inverter, typed-token validators, and selected rANS/tANS direct
+adapters as first-party references. No external Huffman or LZSS
+implementation, adapter, format, API, source code, test, corpus, archive,
+patent text, or optimization description was consulted.

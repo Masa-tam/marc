@@ -2279,3 +2279,17 @@ atomically. All 2,926 registered Release tests, including schema 1 through 40
 compatibility, pass under both MSVC and ClangCL. This admits no typed-token,
 frame, streaming, public, benchmark, fuzz, or interoperability boundary for
 the new profile.
+
+### BR-0132
+
+The selected Contextual Blocked Huffman direct typed-token boundary is locally
+complete. Variant 2 validates and codes the 1 MiB token grammar directly,
+without retaining a ModeledOperation buffer, and its distance-131,072 vector
+produces the exact descriptor and payload of the selected reference operation
+path. Decode validates the complete entropy/token sequence before a second
+pass publishes tokens. Variant 1, unknown selections, and crossed descriptors
+fail atomically without changing caller descriptor, payload, tables, or token
+storage. All targets build warning-clean and all 2,927 registered Release
+tests pass under both MSVC and ClangCL, including schema compatibility through
+version 40. Complete-frame, streaming, public, benchmark, fuzz, and
+interoperability admission for the new profile remain pending.

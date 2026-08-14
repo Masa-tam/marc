@@ -8,6 +8,7 @@
 #include <array>
 #include <cstddef>
 #include <span>
+#include <vector>
 
 namespace {
 
@@ -21,6 +22,10 @@ constexpr LzssTypedToken literal_a{
     LzssTypedTokenKind::literal, 'A', 0, 0};
 constexpr LzssTypedToken match_1_5{
     LzssTypedTokenKind::match, 0, 1, 5};
+
+[[nodiscard]] constexpr LzssTypedToken sentinel_token() {
+    return {LzssTypedTokenKind::match, 0xcc, 0xccccccccU, 0xccccccccU};
+}
 
 [[nodiscard]] constexpr marc::dictionary::internal::
 LzssTypedFrameValidationContext frame_context(
@@ -117,6 +122,166 @@ TEST(LzssContextualBlockedHuffmanEncoder,
     EXPECT_TRUE(std::equal(
         token_bytes.begin(), token_bytes.begin() + token_size,
         operation_bytes.begin()));
+}
+
+TEST(LzssContextualBlockedHuffmanEncoder,
+     SelectedDistanceMatchesModeledBoundaryAndDecodesAtomically) {
+    constexpr std::uint32_t distance = 131072;
+    std::vector<LzssTypedToken> expected(distance + 1, literal_a);
+    expected.back() = {LzssTypedTokenKind::match, 0, distance, 5};
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = 1048576;
+    const auto limits = marc::core::DecoderLimits{};
+    const auto context = frame_context(
+        static_cast<std::uint32_t>(expected.size()), distance + 5);
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+
+    const auto operation_plan = plan_lzss_field_context_operations(
+        expected, parameters, context, limits, extended);
+    ASSERT_EQ(operation_plan.error, LzssFieldContextError::none);
+    std::vector<ModeledOperation> operations(operation_plan.operation_count);
+    ASSERT_EQ(model_lzss_field_context_tokens(
+                  expected, parameters, context, limits, operations,
+                  extended).error,
+              LzssFieldContextError::none);
+    ASSERT_EQ(operations[operations.size() - 2].alphabet_size, 21U);
+    ASSERT_EQ(operations[operations.size() - 2].value, 17U);
+    ASSERT_EQ(operations.back().bit_count, 17U);
+
+    ContextualBlockedHuffmanDescriptor reference_descriptor{};
+    const auto reference_plan =
+        marc::entropy::internal::plan_contextual_blocked_huffman_operations(
+            operations, limits, reference_descriptor, extended);
+    ASSERT_EQ(reference_plan.error,
+              marc::entropy::internal::
+                  ContextualBlockedHuffmanEncodeError::none);
+    std::vector<std::byte> reference_payload(reference_plan.payload_size);
+    ASSERT_EQ(
+        marc::entropy::internal::encode_contextual_blocked_huffman_operations(
+            operations, limits, reference_payload, reference_descriptor,
+            extended).error,
+        marc::entropy::internal::ContextualBlockedHuffmanEncodeError::none);
+
+    ContextualBlockedHuffmanDescriptor direct_descriptor{};
+    const auto direct_plan = plan_lzss_contextual_blocked_huffman_tokens(
+        expected, parameters, context, limits, direct_descriptor, extended);
+    ASSERT_EQ(direct_plan.error,
+              LzssContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(direct_plan.event_count, operations.size());
+    EXPECT_EQ(direct_plan.decision_count, reference_plan.decision_count);
+    EXPECT_EQ(direct_plan.payload_size, reference_payload.size());
+
+    std::vector<std::byte> direct_payload(direct_plan.payload_size);
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_tokens(
+                  expected, parameters, context, limits, direct_payload,
+                  direct_descriptor, extended).error,
+              LzssContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(direct_payload, reference_payload);
+
+    std::array<std::byte,
+               marc::entropy::internal::
+                   contextual_blocked_huffman_descriptor_capacity>
+        reference_bytes{};
+    auto direct_bytes = reference_bytes;
+    std::size_t reference_size{};
+    std::size_t direct_size{};
+    ASSERT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  reference_descriptor, reference_plan.decision_count,
+                  static_cast<std::uint32_t>(reference_plan.payload_size),
+                  limits, reference_bytes, reference_size, extended),
+              marc::entropy::internal::
+                  ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  direct_descriptor, direct_plan.decision_count,
+                  static_cast<std::uint32_t>(direct_plan.payload_size), limits,
+                  direct_bytes, direct_size, extended),
+              marc::entropy::internal::
+                  ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(direct_size, reference_size);
+    EXPECT_TRUE(std::equal(
+        reference_bytes.begin(), reference_bytes.begin() + reference_size,
+        direct_bytes.begin()));
+
+    std::array<HuffmanDecodeTable,
+               marc::entropy::internal::
+                   contextual_blocked_huffman_max_table_count>
+        tables{};
+    std::vector<LzssTypedToken> decoded(expected.size());
+    const LzssFieldContextValidationContext decode_context{
+        static_cast<std::uint32_t>(expected.size()),
+        static_cast<std::uint32_t>(direct_plan.event_count),
+        direct_plan.decision_count, distance + 5, 0};
+    const auto decoded_result =
+        decode_lzss_contextual_blocked_huffman_tokens(
+            direct_descriptor, direct_payload, parameters, decode_context,
+            limits, tables, decoded, extended);
+    ASSERT_EQ(decoded_result.error,
+              LzssContextualBlockedHuffmanDecodeError::none);
+    EXPECT_TRUE(std::equal(
+        expected.begin(), expected.end(), decoded.begin(),
+        [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+
+    ContextualBlockedHuffmanDescriptor sentinel{};
+    sentinel.decision_count = 0xa5a5;
+    auto rejected_payload = direct_payload;
+    std::ranges::fill(rejected_payload, std::byte{0xa5});
+    EXPECT_EQ(encode_lzss_contextual_blocked_huffman_tokens(
+                  expected, parameters, context, limits, rejected_payload,
+                  sentinel).error,
+              LzssContextualBlockedHuffmanEncodeError::
+                  token_validation_error);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+    EXPECT_TRUE(std::ranges::all_of(
+        rejected_payload,
+        [](const auto value) { return value == std::byte{0xa5}; }));
+
+    const auto invalid = static_cast<LzssFieldContextVariant>(99);
+    EXPECT_EQ(plan_lzss_contextual_blocked_huffman_tokens(
+                  expected, parameters, context, limits, sentinel,
+                  invalid).entropy_error,
+              marc::entropy::internal::
+                  ContextualBlockedHuffmanEncodeError::
+                      unsupported_context_variant);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+
+    for (auto& table : tables) table.node_count = 0xa5a5;
+    std::ranges::fill(decoded, sentinel_token());
+    const auto before = decoded;
+    const auto legacy_parameters =
+        marc::dictionary::internal::LzssParameters{};
+    const auto crossed = decode_lzss_contextual_blocked_huffman_tokens(
+        direct_descriptor, direct_payload, legacy_parameters, decode_context,
+        limits, tables, decoded);
+    EXPECT_EQ(crossed.error,
+              LzssContextualBlockedHuffmanDecodeError::entropy_error);
+    EXPECT_TRUE(std::equal(
+        decoded.begin(), decoded.end(), before.begin(),
+        [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+    EXPECT_TRUE(std::ranges::all_of(
+        tables, [](const auto& table) { return table.node_count == 0xa5a5; }));
+
+    const auto unsupported = decode_lzss_contextual_blocked_huffman_tokens(
+        direct_descriptor, direct_payload, parameters, decode_context, limits,
+        tables, decoded, invalid);
+    EXPECT_EQ(unsupported.error,
+              LzssContextualBlockedHuffmanDecodeError::invalid_parameters);
+    EXPECT_TRUE(std::equal(
+        decoded.begin(), decoded.end(), before.begin(),
+        [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+    EXPECT_TRUE(std::ranges::all_of(
+        tables, [](const auto& table) { return table.node_count == 0xa5a5; }));
 }
 
 TEST(LzssContextualBlockedHuffmanEncoder, FailuresPreserveOutputs) {

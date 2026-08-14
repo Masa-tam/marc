@@ -79,7 +79,8 @@ ContextualBlockedHuffmanEncodeError emit_bypass(
 template <typename Sink>
 [[nodiscard]] ContextualBlockedHuffmanEncodeError emit_token(
     Sink& sink, const LzssFieldContextState& state,
-    const LzssTypedToken& token, std::size_t& events) noexcept {
+    const LzssTypedToken& token, const LzssFieldContextLayout& layout,
+    std::size_t& events) noexcept {
     auto emit = [&](const auto error) {
         if (error != ContextualBlockedHuffmanEncodeError::none) return error;
         if (events == std::numeric_limits<std::size_t>::max()) {
@@ -111,7 +112,9 @@ template <typename Sink>
         if (error != ContextualBlockedHuffmanEncodeError::none) return error;
     }
     error = emit(emit_symbol(
-        sink, LzssFieldContextState::distance_context(length_class), 17,
+        sink, LzssFieldContextState::distance_context(length_class),
+        (*layout.alphabets)[
+            LzssFieldContextState::distance_context(length_class)],
         distance_class));
     if (error != ContextualBlockedHuffmanEncodeError::none) return error;
     return distance_class == 0
@@ -146,10 +149,18 @@ plan_lzss_contextual_blocked_huffman_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualBlockedHuffmanEncodeResult result{};
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        return fail_entropy(
+            result, ContextualBlockedHuffmanEncodeError::
+                unsupported_context_variant);
+    }
+    const auto& layout = selected.layout;
     result.token_validation = dictionary::internal::validate_lzss_typed_frame(
-        tokens, parameters, context, limits);
+        tokens, parameters, context, limits, layout.dictionary_variant);
     result.token_count = result.token_validation.token_count;
     result.token_index = result.token_validation.token_index;
     if (result.token_validation.error
@@ -167,12 +178,12 @@ plan_lzss_contextual_blocked_huffman_tokens(
         return result;
     }
 
-    ContextualBlockedHuffmanModelBuilder builder;
+    ContextualBlockedHuffmanModelBuilder builder{variant};
     LzssFieldContextState state{};
     for (std::size_t index = 0; index < tokens.size(); ++index) {
         result.token_index = index;
         const auto error = emit_token(
-            builder, state, tokens[index], result.event_count);
+            builder, state, tokens[index], layout, result.event_count);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
             return fail_entropy(result, error);
         }
@@ -198,7 +209,8 @@ encode_lzss_contextual_blocked_huffman_tokens(
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualBlockedHuffmanEncodeResult initial{};
     std::size_t token_bytes{};
     if (!core::checked_multiply(
@@ -219,7 +231,7 @@ encode_lzss_contextual_blocked_huffman_tokens(
     }
     entropy::internal::ContextualBlockedHuffmanDescriptor planned{};
     auto result = plan_lzss_contextual_blocked_huffman_tokens(
-        tokens, parameters, context, limits, planned);
+        tokens, parameters, context, limits, planned, variant);
     if (result.error != LzssContextualBlockedHuffmanEncodeError::none) {
         return result;
     }
@@ -228,12 +240,19 @@ encode_lzss_contextual_blocked_huffman_tokens(
             LzssContextualBlockedHuffmanEncodeError::payload_output_too_small;
         return result;
     }
-    ContextualBlockedHuffmanWriter writer(planned, payload_output);
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        return fail_entropy(
+            result, ContextualBlockedHuffmanEncodeError::
+                unsupported_context_variant);
+    }
+    ContextualBlockedHuffmanWriter writer(planned, payload_output, variant);
     LzssFieldContextState state{};
     std::size_t events{};
     for (std::size_t index = 0; index < tokens.size(); ++index) {
         result.token_index = index;
-        const auto error = emit_token(writer, state, tokens[index], events);
+        const auto error = emit_token(
+            writer, state, tokens[index], selected.layout, events);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
             return fail_entropy(result, error);
         }

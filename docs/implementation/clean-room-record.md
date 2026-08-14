@@ -21002,3 +21002,30 @@ discarded and the reviewed seed retained.
   all 14 direct Contextual Blocked Huffman encoder/decoder tests pass in both
   configurations; and both complete Release suites pass all 2,926 registered
   tests, including schema compatibility through version 40.
+
+## CR-0878: 2026-08-15 - Selected Contextual Blocked Huffman typed-token boundary
+
+- Authoring method: extended marc's existing direct LZSS typed-token adapter
+  from the accepted selected-layout design and the completed selected entropy
+  coding core.
+- References used: DD-823; IR-0597; TVG-0698; BR-0132; marc's field-context
+  selector, typed-token validators, direct 64 KiB adapter, and selected
+  rANS/tANS direct adapter patterns.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, adapters, stream formats, APIs, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: retain variant 1 as every source-level default;
+  derive the typed-token variant, distance alphabet, bypass ceiling, and
+  per-token decision bound from one immutable layout; avoid intermediate
+  ModeledOperation storage; and retain two-pass atomic token publication.
+- Generated-code task description: propagate explicit field-context selection
+  through direct typed-token planning, encoding, validation, and decoding;
+  prove byte identity at distance 131,072 and atomic rejection for legacy,
+  unknown, and crossed selections.
+- Similarity review: the implementation reuses marc-owned validators, model
+  builder, canonical writer, decoder, and two-pass adapter control flow. No
+  external implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL;
+  all 13 direct Contextual Blocked Huffman encoder/decoder tests pass in both
+  configurations; and both complete Release suites pass all 2,927 registered
+  tests, including schema compatibility through version 40.

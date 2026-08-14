@@ -1,6 +1,7 @@
 #ifndef MARC_CONTEXT_LZSS_CONTEXTUAL_BLOCKED_HUFFMAN_ENCODER_HPP
 #define MARC_CONTEXT_LZSS_CONTEXTUAL_BLOCKED_HUFFMAN_ENCODER_HPP
 
+#include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_blocked_huffman_encoder.hpp"
 
@@ -41,7 +42,9 @@ plan_lzss_contextual_blocked_huffman_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualBlockedHuffmanEncodeResult
 encode_lzss_contextual_blocked_huffman_tokens(
@@ -49,7 +52,9 @@ encode_lzss_contextual_blocked_huffman_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits, std::span<std::byte> payload_output,
-    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+    entropy::internal::ContextualBlockedHuffmanDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 

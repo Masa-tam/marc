@@ -482,6 +482,23 @@ bypass decoding. The extended hand payload is exact, crossed requests and
 unknown variants are atomic, and all frozen 64 KiB vectors remain unchanged.
 The next independent boundary is direct typed-token composition.
 
+That direct boundary will validate the selected typed-token dictionary
+variant, derive distance alphabets and bypass widths from the same immutable
+layout, and invoke the completed Contextual Blocked Huffman core without an
+intermediate operation buffer. Decoding remains two-pass: validate entropy,
+token grammar, distances, counts, and raw extent before publishing tokens.
+The selected proving vector uses 131,072 literal bytes followed by a distance-
+131,072 Match, forcing class 17 and a 17-bit bypass while keeping the permanent
+test materially smaller than a maximum-distance token prefix.
+
+That direct typed-token boundary is implemented. Its selected descriptor and
+payload are byte-identical to the ModeledOperation reference path for the
+distance-131,072 vector, and the two-pass decoder reconstructs every token
+without partial publication. Variant 1, unknown variants, and crossed
+descriptors fail atomically. The next independent boundary is complete-frame
+admission for the exact `2/3 + 1/2 + 2/2` identity; streaming, public C, CLI,
+benchmark, fuzz, and interoperability admission remain later stages.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

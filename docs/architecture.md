@@ -5286,3 +5286,13 @@ LSB-first payload writer are shared unchanged. Unknown layouts fail before
 descriptor or payload publication, while decode startup validates the selected
 descriptor before constructing caller-owned tables. Typed-token composition
 and all outer profile boundaries remain separate review stages.
+
+The direct LZSS typed-token to Contextual Blocked Huffman boundary now carries
+that same immutable selection without allocating an intermediate modeled-
+operation sequence. Token validation, field alphabets, bypass widths, model
+collection, and canonical writing all use the selected dictionary/context
+pair. Decode remains an atomic two-pass operation: the first pass validates
+the entire entropy and typed-token sequence, and only the second pass publishes
+tokens. Variant 1 remains the source-level default; crossed or unknown
+selections fail before caller descriptor, payload, table, or token mutation.
+Frame and public profile admission remain separate boundaries.

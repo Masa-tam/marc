@@ -9596,3 +9596,20 @@ value. Retain existing override-profitability, malformed-code, padding,
 trailing-bit, capacity, overlap, lifecycle, and hand-vector tests. No typed-
 token, frame, streaming, public, benchmark, fuzz, or schema vector belongs to
 this coding-core stage.
+
+### TVG-0698
+
+Construct 131,072 literal `A` tokens followed by a length-5 Match at distance
+131,072 under the 1 MiB dictionary/context pair. Require the common field-
+context modeler to emit a 21-symbol distance request with class 17 and a
+17-bit LSB-first bypass. Compare the direct Contextual Blocked Huffman
+descriptor and payload byte-for-byte with the selected ModeledOperation path,
+then decode through the two-pass direct adapter and compare every typed token.
+
+Under variant 1, reject the same token sequence during typed-token validation
+without changing a sentinel descriptor or payload. Reject an unknown variant
+and the selected descriptor under the crossed layout without changing caller
+tokens or decode tables. Retain all existing 64 KiB direct-adapter vectors,
+workspace/alias checks, malformed entropy checks, and raw/count validation.
+No frame, streaming, public, benchmark, fuzz, or schema vector belongs to this
+typed-token stage.

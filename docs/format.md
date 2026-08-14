@@ -6802,3 +6802,13 @@ admission for the selected profile. Schema 40 changes only bundle inventory
 and manifest identity; no stream representation changes.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).
+
+The private direct typed-token adapter admits the selected Contextual Blocked
+Huffman layout without defining another serialized field. For variant 2, a
+distance of 131,072 is represented by distance class 17 in the 21-symbol
+distance field followed by 17 LSB-first bypass bits. Direct encoding is
+byte-identical to applying the selected field-context operation mapping and
+then the selected Contextual Blocked Huffman coder. Variant 1 continues to use
+the frozen 17-symbol distance field and rejects that token. This adapter stage
+does not admit the selected layout at the complete-frame or public stream
+boundary.
