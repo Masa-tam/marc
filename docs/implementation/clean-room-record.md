@@ -20475,3 +20475,26 @@ discarded and the reviewed seed retained.
   registered Release tests pass under MSVC in 163.27 seconds and ClangCL in
   164.52 seconds with the 300-second per-test limit, including interoperability
   schema compatibility and documentation layout.
+
+## CR-0857: 2026-08-15 - Contextual tANS selected complete-frame design
+
+- Authoring method: derived the next frame boundary from marc's admitted
+  selected tANS token adapter, frozen `5/2` frame representation, reserved
+  extended identity, and completed selected Contextual rANS frame migration.
+- References used: DD-790 through DD-814; IR-0588; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0689; marc's tANS format, complete-frame encoder and
+  decoder, exact HashChain typed-token producer, and fixed transition tables.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, frame formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: use only the reserved header identity as selector;
+  retain fixed tables and tANS payload rules; derive exact selected descriptor
+  and conservative frame ceilings; require extended HashChain distance
+  evidence; preserve frozen bytes; and stop before streaming/profile work.
+- Generated-code task description: specify selected stream-header parsing,
+  complete-frame planning and writing, descriptor selection, fixed workspace,
+  atomic preflight/decode/reconstruction, extended-distance evidence, negative
+  crossings, frozen identity, and the next lifecycle boundary.
+- Similarity review: the design composes only marc-owned frame, typed-token,
+  tANS, selected-layout, and HashChain abstractions. No external implementation
+  expression entered the design.

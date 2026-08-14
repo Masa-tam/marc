@@ -9407,3 +9407,33 @@ payload, table sentinel where promised, and token output. Repeat one-entry-
 short table, one-token-short output, payload/table/token alias, truncation,
 padding, count, and reconstructed-distance failures under variant 2. Complete
 frame and streaming admission remain later vectors.
+
+### TVG-0689
+
+Serialize and parse a Contextual tANS stream header with the reserved
+`2/3 + 1/2 + 5/2` identity, 1,048,576-byte frame and window limits, and
+frequency-entry count 4,550. Require exact round trip and transactional output.
+Reject crossed known dictionary/context pairs, unknown variants, the wrong
+frequency-entry count, nonzero reserved bytes, and limits below the selected
+dictionary, descriptor, payload, or fixed 131,072-entry table requirement.
+Re-run the documented `2/2 + 1/1 + 5/2` header and one-Literal frame byte for
+byte.
+
+Construct deterministic raw input whose exact HashChain parse contains a
+Match distance above 65,536 under dictionary variant 3. Plan and encode the
+complete frame with the selected 1 MiB identity. Require its staged tokens to
+prove the extended distance, its descriptor to use selected entry count 4,550,
+and complete preflight and decoding to select variant 2 before table building,
+typed-token reconstruction, and exact raw round trip. The same bytes under the
+64 KiB identity, a crossed descriptor count, or a crossed alphabet must fail
+without raw publication.
+
+Run Exhaustive and HashChain complete-frame paths at ordinary sizes for both
+variants. Exercise selected 26/30 decision bounds, exact 9,029/9,093 descriptor
+ceilings, the common payload formula, one-byte-short token/table/raw/output
+workspaces, pairwise aliasing, aggregate-memory limits, truncation, padding,
+initial/final state, contradictory frame counts, unsupported selections, and
+plan/write disagreement. Planning may mutate only its documented token, table,
+and HashChain workspaces; serialized output remains untouched until the
+complete plan succeeds. Streaming, profiles, public C, CLI, benchmarks,
+fuzzing, and interoperability remain later stages.

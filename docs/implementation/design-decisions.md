@@ -16782,3 +16782,42 @@ same token sequence and crossed 64 KiB parameters. Unsupported variants fail
 before descriptor or token publication. This stage does not admit variant 2
 through a complete frame, stream header, streaming lifecycle, public C, CLI,
 benchmark, fuzz target, or interoperability schema.
+
+## DD-814: Contextual tANS complete frames admit the reserved 1 MiB identity
+
+- Date: 2026-08-15
+- Status: accepted
+
+Admit the reserved dictionary/context pair `2/3 + 1/2` for the existing
+Contextual tANS entropy identity `5/2`. Add explicit dictionary-variant,
+context-algorithm, and context-variant fields to the in-memory tANS stream
+header, retaining `2/2 + 1/1` as their defaults. Serialize those values in the
+already assigned common 112-byte locations. Parse only known values and use
+`select_lzss_field_context_layout` to reject crossed known pairs before
+publishing a header. Entropy algorithm, entropy variant, table log, state
+count, context count, flags, and all reserved bytes remain unchanged.
+
+Select that header-derived immutable layout before complete-frame planning,
+encoding, preflight, and decoding. Use its dictionary variant for Exhaustive
+and HashChain typed-token creation and raw reconstruction; use its context
+variant for direct tANS token composition, descriptor validation,
+serialization and parsing, table construction, and token decoding. Frame-count
+validation uses the selected 26- or 30-decision-per-token ceiling. Descriptor
+admission uses the exact selected 9,029- or 9,093-byte maximum while the fixed
+encode/decode transition requirement remains 131,072 entries.
+
+Retain the payload bound `2 + ceil(12 * decision_count / 8)`. For raw frame
+extent `F`, the selected conservative complete-frame ceilings are therefore
+`9F + 9,095` bytes for variant 1 and `9F + 9,159` bytes for variant 2, derived
+from the 64-byte frame header, selected descriptor maximum, and two-byte tANS
+initial state. These are allocation ceilings only and never pad or select a
+serialized descriptor.
+
+Require the documented 64 KiB one-Literal stream and frame bytes to remain
+exact. The first extended complete-frame vector uses an exact HashChain parse
+with a Match distance greater than 65,536 under a 1 MiB window, proves the
+selected header identity and 4,550-entry descriptor, and round trips through
+preflight, table construction, typed-token reconstruction, and raw output.
+Presenting the same identity or descriptor under variant 1 must fail before
+raw publication. This stage does not yet admit variant 2 through streaming,
+profile calculators, public C, CLI, benchmark, fuzzing, or interoperability.

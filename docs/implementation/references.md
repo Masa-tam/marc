@@ -5241,3 +5241,14 @@ core, and completed Contextual rANS token-composition migration as first-party
 references. No external LZSS or tANS implementation, composition format,
 source code, test, corpus, archive, patent text, or optimization description
 was consulted.
+
+### IR-0588
+
+The selected-layout Contextual tANS complete-frame design uses DD-790 through
+DD-814, TVG-0665, TVG-0666, and TVG-0686 through TVG-0689; marc's frozen
+64 KiB tANS stream and frame representation, reserved 1 MiB identity,
+selected direct token composition, exact HashChain encoder, fixed tANS table
+workspace, and completed selected Contextual rANS frame migration as first-
+party references. No external LZSS or tANS implementation, frame format,
+source code, test, corpus, archive, patent text, or optimization description
+was consulted.

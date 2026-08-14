@@ -364,6 +364,15 @@ final length-5 Match at distance 1,048,576 round trips through class 20 and 20
 bypass bits. Default calls retain the frozen 64 KiB route. No complete tANS
 frame selects variant 2 yet.
 
+The next tANS stage is complete-frame admission. The existing 112-byte stream
+header exposes the reserved `2/3 + 1/2 + 5/2` identity as the sole layout
+selector. The selected layout controls dictionary parsing, the 26/30 decision
+bound, the 9,029/9,093-byte descriptor ceiling, direct token coding, and raw
+reconstruction; the transition workspace remains 131,072 entries. With the
+unchanged tANS payload ceiling, conservative complete-frame storage becomes
+`9F + 9,095` or `9F + 9,159` bytes. The proving HashChain frame must contain a
+distance above 65,536 and round trip atomically before lifecycle promotion.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
