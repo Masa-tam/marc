@@ -5186,3 +5186,14 @@ directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
 producer locally and on Windows/MSVC. Exact fixture decoding and byte-identical
 re-encoding establish the extended Contextual rANS profile identity across all
 three recorded x86-64 producers.
+
+The Contextual tANS descriptor boundary now receives an explicit immutable
+field-context layout. Its fixed in-memory bank reserves 4,550 frequencies;
+variant 1 addresses 4,518 entries, requires the unused tail to be zero, and
+retains the exact 27-through-9,029-byte representation, while variant 2
+addresses all 4,550 entries and admits the reserved 27-through-9,093-byte
+grammar. Descriptor length and serialized entry count never select the
+layout. Analysis, parsing, validation, and serialization use the selected
+compact-model offsets and alphabets transactionally. The tANS coding core,
+131,072-entry transition workspace, typed-token bridge, frame identity,
+streaming lifecycle, public API, CLI, and schema remain on the frozen route.

@@ -17,7 +17,7 @@ namespace {
     case ContextualCompactModelError::none:
         return ContextualTansFormatError::none;
     case ContextualCompactModelError::unsupported_context_variant:
-        return ContextualTansFormatError::invalid_frequency_table;
+        return ContextualTansFormatError::unsupported_context_variant;
     case ContextualCompactModelError::invalid_active_context_mask:
         return ContextualTansFormatError::invalid_active_context_mask;
     case ContextualCompactModelError::truncated_records:
@@ -41,7 +41,14 @@ namespace {
 [[nodiscard]] ContextualTansFormatError validate_fields(
     const ContextualTansDescriptor& descriptor,
     const std::uint32_t expected_decision_count,
-    const std::uint32_t expected_payload_size) noexcept {
+    const std::uint32_t expected_payload_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualTansFormatError::unsupported_context_variant;
+    }
     if (descriptor.decision_count == 0) {
         return ContextualTansFormatError::invalid_decision_count;
     }
@@ -82,7 +89,7 @@ namespace {
         return ContextualTansFormatError::invalid_context_count;
     }
     if (descriptor.frequency_entry_count
-        != contextual_tans_frequency_entries) {
+        != selected.layout.frequency_entries) {
         return ContextualTansFormatError::invalid_frequency_entry_count;
     }
     if (descriptor.decision_count != expected_decision_count
@@ -120,20 +127,25 @@ ContextualTansFormatError validate_contextual_tans_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::size_t& serialized_size) noexcept {
+    std::size_t& serialized_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     const auto field_error = validate_fields(
-        descriptor, expected_decision_count, expected_payload_size);
+        descriptor, expected_decision_count, expected_payload_size, variant);
     if (field_error != ContextualTansFormatError::none) return field_error;
     const auto analysis =
-        analyze_contextual_compact_model(descriptor.frequencies);
+        analyze_contextual_compact_model(descriptor.frequencies, variant);
     const auto model_error = map_model_error(analysis.error);
     if (model_error != ContextualTansFormatError::none) return model_error;
     std::size_t total_size{};
+    const auto maximum_size =
+        variant == context::internal::LzssFieldContextVariant::field_context_64k
+        ? contextual_tans_max_descriptor_size_v1
+        : contextual_tans_max_descriptor_size_v2;
     if (!core::checked_add(
             contextual_tans_descriptor_prefix_size,
             analysis.records_size, total_size)
         || total_size < contextual_tans_min_descriptor_size
-        || total_size > contextual_tans_max_descriptor_size) {
+        || total_size > maximum_size) {
         return ContextualTansFormatError::invalid_descriptor_size;
     }
     const auto limit_error = validate_limits(descriptor, total_size, limits);
@@ -147,12 +159,23 @@ ContextualTansFormatError parse_contextual_tans_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    ContextualTansDescriptor& descriptor) noexcept {
+    ContextualTansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (input.size() < contextual_tans_descriptor_prefix_size) {
         return ContextualTansFormatError::truncated_descriptor;
     }
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualTansFormatError::unsupported_context_variant;
+    }
+    const auto maximum_size =
+        variant == context::internal::LzssFieldContextVariant::field_context_64k
+        ? contextual_tans_max_descriptor_size_v1
+        : contextual_tans_max_descriptor_size_v2;
     if (input.size() < contextual_tans_min_descriptor_size
-        || input.size() > contextual_tans_max_descriptor_size) {
+        || input.size() > maximum_size) {
         return ContextualTansFormatError::invalid_descriptor_size;
     }
     ContextualTansDescriptor parsed{};
@@ -171,17 +194,17 @@ ContextualTansFormatError parse_contextual_tans_descriptor(
     parsed.final_valid_bits = std::to_integer<std::uint8_t>(input[9]);
     if (reserved != 0) return ContextualTansFormatError::nonzero_reserved;
     const auto field_error = validate_fields(
-        parsed, expected_decision_count, expected_payload_size);
+        parsed, expected_decision_count, expected_payload_size, variant);
     if (field_error != ContextualTansFormatError::none) return field_error;
     const auto record_error = parse_contextual_compact_model(
         input.subspan(contextual_tans_descriptor_prefix_size), active_mask,
-        parsed.frequencies);
+        parsed.frequencies, variant);
     const auto mapped_error = map_model_error(record_error);
     if (mapped_error != ContextualTansFormatError::none) return mapped_error;
     std::size_t canonical_size{};
     const auto validation = validate_contextual_tans_descriptor(
         parsed, expected_decision_count, expected_payload_size, limits,
-        canonical_size);
+        canonical_size, variant);
     if (validation != ContextualTansFormatError::none) return validation;
     if (canonical_size != input.size()) {
         return ContextualTansFormatError::noncanonical_representation;
@@ -196,22 +219,23 @@ ContextualTansFormatError serialize_contextual_tans_descriptor(
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
     const std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept {
+    std::size_t& bytes_written,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     std::size_t serialized_size{};
     const auto validation = validate_contextual_tans_descriptor(
         descriptor, expected_decision_count, expected_payload_size, limits,
-        serialized_size);
+        serialized_size, variant);
     if (validation != ContextualTansFormatError::none) return validation;
     if (output.size() < serialized_size) {
         return ContextualTansFormatError::output_too_small;
     }
     const auto analysis =
-        analyze_contextual_compact_model(descriptor.frequencies);
+        analyze_contextual_compact_model(descriptor.frequencies, variant);
     const auto analysis_error = map_model_error(analysis.error);
     if (analysis_error != ContextualTansFormatError::none) {
         return analysis_error;
     }
-    std::array<std::byte, contextual_tans_max_descriptor_size> encoded{};
+    std::array<std::byte, contextual_tans_descriptor_capacity> encoded{};
     const std::span<std::byte> bytes{encoded};
     if (!core::store_le(bytes, 0, descriptor.decision_count)
         || !core::store_le(bytes, 4, descriptor.payload_size)
@@ -228,7 +252,7 @@ ContextualTansFormatError serialize_contextual_tans_descriptor(
     const auto record_error = serialize_contextual_compact_model(
         descriptor.frequencies,
         bytes.subspan(contextual_tans_descriptor_prefix_size),
-        records_written);
+        records_written, variant);
     const auto mapped_error = map_model_error(record_error);
     if (mapped_error != ContextualTansFormatError::none) return mapped_error;
     if (contextual_tans_descriptor_prefix_size + records_written
@@ -242,6 +266,8 @@ ContextualTansFormatError serialize_contextual_tans_descriptor(
 
 static_assert(contextual_tans_min_descriptor_size == 27);
 static_assert(contextual_tans_max_descriptor_size == 9029);
+static_assert(contextual_tans_max_descriptor_size_v1 == 9029);
+static_assert(contextual_tans_max_descriptor_size_v2 == 9093);
 static_assert(contextual_tans_decode_table_entries == 131072);
 static_assert(contextual_tans_total_frequency
               == contextual_compact_model_total_frequency);

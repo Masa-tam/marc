@@ -20344,3 +20344,31 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned format and model
   abstractions and follows its existing explicit-layout policy. No external
   implementation expression entered the design.
+
+## CR-0852: 2026-08-14 - Contextual tANS selected-descriptor admission
+
+- Authoring method: implemented DD-811 directly over marc's existing tANS
+  descriptor and selected compact-model primitive, with tests written first.
+- References used: DD-790; DD-791; DD-811; IR-0585; TVG-0665; TVG-0666;
+  TVG-0686; marc's frozen tANS descriptor vector and selected rANS format API.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, descriptor formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: add explicit trailing variant arguments with frozen
+  defaults; expose separate v1/v2 ceilings and one capacity; map unsupported
+  layouts distinctly; reuse selected compact records; and leave all coding and
+  frame callers on the default route.
+- Generated-code task description: add failing selected-layout tests; implement
+  capacity, errors, layout-derived counts and ceilings, compact parse/serialize
+  selection, zero-tail validation, atomic negative cases, and dual builds.
+- Similarity review: the implementation changes only marc-owned descriptor
+  composition and unit tests, mirroring its public internal API conventions
+  without copying external expression.
+- Local validation: the frozen one-literal vector remains byte-identical;
+  variant 2 round trips class 20 and reaches the exact 9,093-byte dense maximum;
+  crossings, unsupported layouts, nonzero tail, every strict prefix, trailing
+  input, malformed mask/mode, and short output fail atomically. All 2,906
+  registered Release tests pass under MSVC and ClangCL with the 240-second
+  limit, including interoperability schema compatibility and documentation
+  layout. The MSVC rebuild required the established elevated FileTracker route
+  after the sandbox returned `E_ACCESSDENIED` in `ZERO_CHECK`.

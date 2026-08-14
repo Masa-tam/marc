@@ -16,7 +16,10 @@ namespace {
 using marc::entropy::internal::ContextualTansDescriptor;
 using marc::entropy::internal::ContextualTansFormatError;
 using marc::entropy::internal::contextual_tans_decode_table_entries;
+using marc::entropy::internal::contextual_tans_descriptor_capacity;
 using marc::entropy::internal::contextual_tans_max_descriptor_size;
+using marc::entropy::internal::contextual_tans_max_descriptor_size_v2;
+using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualTansDescriptor literal_a_descriptor() {
     ContextualTansDescriptor descriptor{};
@@ -41,15 +44,29 @@ using marc::entropy::internal::contextual_tans_max_descriptor_size;
 }
 
 [[nodiscard]] std::vector<std::byte> serialize(
-    const ContextualTansDescriptor& descriptor) {
-    std::array<std::byte, contextual_tans_max_descriptor_size> storage{};
+    const ContextualTansDescriptor& descriptor,
+    const LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) {
+    std::array<std::byte, contextual_tans_descriptor_capacity> storage{};
     std::size_t written{};
     EXPECT_EQ(
         marc::entropy::internal::serialize_contextual_tans_descriptor(
             descriptor, descriptor.decision_count, descriptor.payload_size,
-            {}, storage, written),
+            {}, storage, written, variant),
         ContextualTansFormatError::none);
     return {storage.begin(), storage.begin() + written};
+}
+
+[[nodiscard]] ContextualTansDescriptor extended_distance_descriptor() {
+    ContextualTansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 2;
+    descriptor.frequency_entry_count = static_cast<std::uint32_t>(
+        marc::context::internal::lzss_field_context_frequency_entries_v2);
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets_v2[23];
+    descriptor.frequencies[offset + 20] = 4096;
+    return descriptor;
 }
 
 [[nodiscard]] ContextualTansDescriptor context_twenty_descriptor(
@@ -130,6 +147,138 @@ TEST(ContextualTansFormat, EveryDenseModelReachesExactMaximum) {
                   bytes, 1, 2, {}, parsed),
               ContextualTansFormatError::none);
     EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualTansFormat, SerializesAndParsesSelectedExtendedLayout) {
+    const auto descriptor = extended_distance_descriptor();
+    const auto bytes = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    ASSERT_EQ(bytes.size(), 27U);
+    EXPECT_EQ(bytes[24], std::byte{0x01});
+    EXPECT_EQ(bytes[25], std::byte{0x00});
+    EXPECT_EQ(bytes[26], std::byte{0x14});
+
+    ContextualTansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  bytes, 1, 2, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualTansFormat, SelectedExtendedDenseModelsReachExactMaximum) {
+    ContextualTansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 2;
+    descriptor.frequency_entry_count = static_cast<std::uint32_t>(
+        marc::context::internal::lzss_field_context_frequency_entries_v2);
+    for (std::size_t context_id = 0;
+         context_id < marc::context::internal::lzss_field_context_count;
+         ++context_id) {
+        const auto begin =
+            marc::context::internal::lzss_field_context_offsets_v2[context_id];
+        const auto alphabet =
+            marc::context::internal::lzss_field_context_alphabets_v2[context_id];
+        for (std::uint16_t symbol = 0; symbol + 1 < alphabet; ++symbol) {
+            descriptor.frequencies[begin + symbol] = 1;
+        }
+        descriptor.frequencies[begin + alphabet - 1] =
+            static_cast<std::uint16_t>(4096 - (alphabet - 1));
+    }
+
+    const auto bytes = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    ASSERT_EQ(bytes.size(), contextual_tans_max_descriptor_size_v2);
+    ContextualTansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  bytes, 1, 2, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualTansFormat, RejectsCrossedAndUnsupportedSelectedLayouts) {
+    std::size_t size = 0xa5a5;
+    const auto frozen = literal_a_descriptor();
+    const auto extended = extended_distance_descriptor();
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  frozen, 2, 2, {}, size,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  extended, 1, 2, {}, size,
+                  LzssFieldContextVariant::field_context_64k),
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  frozen, 2, 2, {}, size,
+                  static_cast<LzssFieldContextVariant>(0xff)),
+              ContextualTansFormatError::unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
+
+    auto nonzero_tail = frozen;
+    nonzero_tail.frequencies[
+        marc::context::internal::lzss_field_context_frequency_entries_v1] = 1;
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  nonzero_tail, 2, 2, {}, size),
+              ContextualTansFormatError::invalid_frequency_table);
+    EXPECT_EQ(size, 0xa5a5U);
+}
+
+TEST(ContextualTansFormat, ExtendedLayoutFailuresAreAtomic) {
+    const auto descriptor = extended_distance_descriptor();
+    const auto valid = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    for (std::size_t extent = 0; extent < valid.size(); ++extent) {
+        auto sentinel = literal_a_descriptor();
+        sentinel.flags = 0xa5;
+        const auto before = sentinel;
+        EXPECT_NE(marc::entropy::internal::parse_contextual_tans_descriptor(
+                      std::span<const std::byte>{valid}.first(extent), 1, 2,
+                      {}, sentinel,
+                      LzssFieldContextVariant::field_context_1m),
+                  ContextualTansFormatError::none)
+            << extent;
+        EXPECT_TRUE(descriptors_equal(sentinel, before)) << extent;
+    }
+
+    auto trailing = valid;
+    trailing.push_back(std::byte{});
+    auto sentinel = literal_a_descriptor();
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  trailing, 1, 2, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::trailing_data);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+
+    auto malformed = valid;
+    malformed[23] |= std::byte{0x80};
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  malformed, 1, 2, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::invalid_active_context_mask);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+    malformed = valid;
+    malformed[24] = std::byte{0x02};
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  malformed, 1, 2, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::invalid_mode);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+
+    std::array<std::byte, 26> output{};
+    std::ranges::fill(output, std::byte{0xa5});
+    std::size_t written = 0xa5a5;
+    EXPECT_EQ(marc::entropy::internal::serialize_contextual_tans_descriptor(
+                  descriptor, 1, 2, {}, output, written,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
 }
 
 TEST(ContextualTansFormat, RejectsEveryStrictPrefixAndTrailingData) {

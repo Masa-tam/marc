@@ -19,6 +19,8 @@ inline constexpr std::uint16_t contextual_tans_context_count =
     context::internal::lzss_field_context_count;
 inline constexpr std::size_t contextual_tans_frequency_entries =
     context::internal::lzss_field_context_frequency_entries;
+inline constexpr std::size_t contextual_tans_frequency_capacity =
+    context::internal::lzss_field_context_frequency_entries_v2;
 inline constexpr std::size_t contextual_tans_descriptor_prefix_size = 24;
 inline constexpr std::size_t contextual_tans_min_descriptor_size =
     contextual_tans_descriptor_prefix_size
@@ -26,6 +28,13 @@ inline constexpr std::size_t contextual_tans_min_descriptor_size =
 inline constexpr std::size_t contextual_tans_max_descriptor_size =
     contextual_tans_descriptor_prefix_size
     + contextual_compact_model_max_records_size;
+inline constexpr std::size_t contextual_tans_max_descriptor_size_v1 =
+    contextual_tans_max_descriptor_size;
+inline constexpr std::size_t contextual_tans_max_descriptor_size_v2 =
+    contextual_tans_descriptor_prefix_size
+    + contextual_compact_model_max_records_size_v2;
+inline constexpr std::size_t contextual_tans_descriptor_capacity =
+    contextual_tans_max_descriptor_size_v2;
 inline constexpr std::uint64_t contextual_tans_decode_table_entries =
     static_cast<std::uint64_t>(contextual_tans_context_count + 1)
     * contextual_tans_total_frequency;
@@ -44,6 +53,7 @@ struct ContextualTansDescriptor {
 
 enum class ContextualTansFormatError : std::uint8_t {
     none,
+    unsupported_context_variant,
     truncated_descriptor,
     invalid_descriptor_size,
     invalid_decision_count,
@@ -71,14 +81,18 @@ validate_contextual_tans_descriptor(
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::size_t& serialized_size) noexcept;
+    std::size_t& serialized_size,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualTansFormatError parse_contextual_tans_descriptor(
     std::span<const std::byte> input,
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    ContextualTansDescriptor& descriptor) noexcept;
+    ContextualTansDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualTansFormatError serialize_contextual_tans_descriptor(
     const ContextualTansDescriptor& descriptor,
@@ -86,7 +100,9 @@ validate_contextual_tans_descriptor(
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
     std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept;
+    std::size_t& bytes_written,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

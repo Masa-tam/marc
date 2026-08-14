@@ -321,6 +321,13 @@ Both layouts retain the same 131,072 transition-entry requirement because the
 transitions, typed-token composition, frames, and public admission remain
 separate later stages.
 
+That descriptor stage is implemented. The default internal calls retain the
+frozen 64 KiB layout and bytes; explicit variant-2 calls serialize and parse
+the 4,550-entry compact model, reach the exact 9,093-byte dense ceiling, and
+reject crossed counts, unsupported variants, nonzero frozen tails, malformed
+records, truncation, trailing data, and short output atomically. No outer tANS
+consumer selects variant 2 yet.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

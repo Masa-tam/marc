@@ -6171,14 +6171,15 @@ rule. Context 3 uses the one-symbol sparse record
 state `L` unchanged, so the payload is `00 00`, with no following bit byte.
 The complete frame is 96 bytes and the complete one-byte stream is 208 bytes.
 
-The private contextual tANS descriptor parser and serializer now implement
-these 27 through 9,029 bytes. They reconstruct all 4,518 frequencies in fixed
-local storage, require exact record consumption and canonical dense/sparse
-selection, validate the tANS-specific prefix and caller limits, and leave
-caller state and output unchanged on failure. The shared compact-record helper
-does not merge the distinct rANS and tANS descriptor identities. No tANS table,
-state transition, frame, streaming lifecycle, or public profile is admitted by
-this milestone.
+The private contextual tANS descriptor parser and serializer implement these
+27 through 9,029 variant-1 bytes and now accept an explicit selected layout for
+the reserved 27-through-9,093-byte variant-2 grammar. They reconstruct at most
+4,550 frequencies in fixed local storage, require a zero unused variant-1
+tail, exact record consumption, and canonical dense/sparse selection, validate
+the tANS-specific prefix and caller limits, and leave caller state and output
+unchanged on failure. The shared compact-record helper does not merge the
+distinct rANS and tANS descriptor identities. No tANS table, state transition,
+frame, streaming lifecycle, or public profile is admitted by this milestone.
 
 The private decoder-table builder now realizes the descriptor without changing
 these bytes. Entry regions `0..30` correspond directly to Symbol context IDs;
