@@ -5237,8 +5237,9 @@ profile sizing, and decoder construction binds strict admission before frame
 collection. The C11 lifecycle proves both selected identities and atomic
 cross-profile rejection; CLI remains separate.
 
-The next CLI boundary adds the explicit experimental selector
+The CLI boundary now exposes the explicit experimental selector
 `lzss-contextual-tans-1m` alongside the frozen `lzss-contextual-tans` name.
 The names configure 1,048,576-byte and 65,536-byte frame/window profiles
 respectively and bind the same strict public C admission in both directions.
-No auto-detection, fallback, alias, or format inference is introduced.
+Round-trip tests enforce both identities and crossed rejection. No
+auto-detection, fallback, alias, or format inference is introduced.

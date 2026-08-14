@@ -657,6 +657,7 @@ foreach(required_experimental_cli IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
         "`lzss-contextual-tans`"
+        "`lzss-contextual-tans-1m`"
         "`lzss-contextual-blocked-huffman`"
         "`lzss-contextual-adaptive-huffman`")
     string(FIND "${cli_content}" "${required_experimental_cli}"

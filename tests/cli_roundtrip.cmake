@@ -93,6 +93,19 @@ if(DEFINED CLI_REJECT_CODEC AND NOT CLI_REJECT_CODEC STREQUAL "")
         message(FATAL_ERROR
             "CLI retained output after profile-mismatch rejection")
     endif()
+    file(WRITE "${wrong_profile_output}" "profile-mismatch-sentinel")
+    file(READ "${wrong_profile_output}" wrong_profile_before HEX)
+    execute_process(
+        COMMAND "${MARC_CLI}" decode --codec "${CLI_REJECT_CODEC}"
+            "${encoded}" "${wrong_profile_output}"
+        RESULT_VARIABLE existing_wrong_profile_result)
+    file(READ "${wrong_profile_output}" wrong_profile_after HEX)
+    if(existing_wrong_profile_result EQUAL 0
+        OR NOT wrong_profile_after STREQUAL wrong_profile_before
+        OR EXISTS "${wrong_profile_output}.tmp")
+        message(FATAL_ERROR
+            "CLI changed existing output during profile rejection")
+    endif()
 endif()
 
 set(malformed "${TEST_DIR}/malformed.marc")

@@ -88,8 +88,10 @@ remains. `lzss-contextual-rans-1m` selects the additive `2/3 + 1/2` window
 profile. Encode and decode use the same explicit selector; neither rANS name
 auto-detects or admits the other profile.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
-tANS entropy variant 2. It likewise requires the explicit selector for both
-directions and remains outside the stable 42-profile inventory.
+tANS entropy variant 2 under the frozen 64 KiB identity. The additive
+`lzss-contextual-tans-1m` name selects `2/3 + 1/2 + 5/2`. Encode and decode
+require the same explicit name; neither profile auto-detects or admits the
+other. Both remain outside the stable 42-profile inventory.
 `lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
 Contextual Blocked Huffman entropy variant 2. It also requires the same
 explicit selector for encode and decode and remains experimental.
@@ -199,6 +201,13 @@ contextual-tANS configuration initializer, direction-specific requirements
 query, factory, process, and destroy functions. The queried opaque views own
 all typed tokens and tANS tables; the command-line layer neither names nor
 sizes those private layouts.
+
+The experimental `lzss-contextual-tans-1m` adapter uses 1,048,576-byte raw
+frames and LZSS window. Its decision ceiling is `6F = 6,291,456`, its payload
+ceiling is `9F + 2 = 9,437,186` bytes, and its internal-buffer policy is
+128 MiB. It changes only public profile and bounded configuration values
+before using the same public lifecycle; queried workspace extents remain
+authoritative.
 
 The experimental `lzss-contextual-blocked-huffman` adapter uses 65,536-byte
 raw frames, a `6F = 393,216` decision ceiling, and a

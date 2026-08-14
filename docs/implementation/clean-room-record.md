@@ -20684,3 +20684,30 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned CLI, public C,
   profile, workspace, streaming, tANS, and test-harness abstractions. No
   external implementation expression entered the design.
+
+## CR-0865: 2026-08-15 - Contextual tANS dual-name CLI admission
+
+- Authoring method: implemented DD-817 over marc's public tANS selector and
+  existing dual-name CLI dispatch, adding the crossed-profile vectors before
+  completing the adapter and runtime inventory test.
+- References used: DD-790 through DD-817; IR-0591; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0692; marc's CLI parser/configuration/factory dispatch,
+  public C lifecycle, round-trip harness, and output transaction policy.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, CLIs, adapters, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: use one profile parameter in the shared adapter;
+  derive every bound from the selected F; preserve exact public-only calls;
+  test absent and pre-existing mismatch destinations; and reject `-1M`.
+- Generated-code task description: add 1 MiB constants, enum/parser/help and
+  dispatch wiring, profile-aware public configuration, exact dual round trips,
+  crossed rejection, sentinel preservation, and runtime inventory validation.
+- Similarity review: the implementation composes only marc-owned CLI, public
+  C, profile, workspace, streaming, tANS, and CMake test code. No external
+  implementation expression entered the code or tests.
+- Local validation: both CLI names round trip exact `2/2 + 1/1 + 5/2` and
+  `2/3 + 1/2 + 5/2` streams, reject the crossed name without output or sentinel
+  replacement, reject trailing bytes, and keep help ordering and near-miss
+  rejection. All 2,916 registered Release tests pass under MSVC in 191.73
+  seconds and ClangCL in 193.20 seconds with the 300-second per-test limit,
+  including interoperability schema compatibility and documentation layout.
