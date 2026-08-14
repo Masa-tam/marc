@@ -345,6 +345,16 @@ decisions. Crossed alphabets and unsupported variants fail before publishing a
 descriptor. Typed-token composition and every outer tANS boundary remain a
 later stage.
 
+The next tANS stage is the direct typed-token boundary. It selects one layout
+before validating tokens, uses that layout's dictionary variant and distance
+alphabet in both forward modeling and reverse state writing, and passes the
+same selection into the completed coding core. Decode performs a validate-only
+pass before publishing typed tokens, using the selected 26- or 30-decision
+bound and dictionary reconstruction limit. Its maximum-distance vector grows a
+1 MiB prefix with bounded distance-1 Matches before emitting distance
+1,048,576, avoiding a million-Literal test while still forcing class 20 and 20
+bypass bits. Frame and lifecycle integration remain separate.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

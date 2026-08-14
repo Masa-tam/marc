@@ -16746,3 +16746,39 @@ and a variant-2 operation inversion using distance class 20 plus a 20-bit
 bypass. This coding-core stage does not yet select a typed-token variant or
 admit the extended identity through a frame, streaming lifecycle, public C,
 CLI, benchmark, fuzz target, or interoperability schema.
+
+## DD-813: Contextual tANS token composition shares the selected layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Pass one explicit `LzssFieldContextVariant` through the direct LZSS typed-token
+plus Contextual tANS planner, encoder, validator, and decoder. Select one
+`LzssFieldContextLayout` before token or entropy processing and use its
+dictionary variant, context alphabets, maximum bypass width, and maximum
+decisions per token throughout the call. Preserve variant 1 as the default
+only for internal source migration; token contents, LZSS parameters,
+descriptor count, or payload state never infer or override the selection.
+
+The encoder validates LZSS parameters and every typed token against the
+layout's dictionary variant, builds Symbol and bypass events with the selected
+distance alphabets, and passes the same variant to model construction, table
+construction, descriptor validation, and both sizing and writing traversals.
+The reverse traversal uses the selected distance alphabet while preserving the
+existing context-history reconstruction and exact variant-1 bytes.
+
+The decoder validates declared token/event/decision/raw bounds using the
+selected 26- or 30-decision-per-token ceiling, starts the selected tANS state
+decoder, reconstructs distance classes using the selected alphabet and bypass
+limit, and validates every reconstructed token with the layout's dictionary
+variant. Retain the existing validate-only pass before the publishing pass so
+short token output, malformed tokens, crossed layouts, entropy failure, and
+workspace overlap cannot publish a partial token sequence.
+
+Require direct typed-token output to equal the independently materialized
+field-operation route for both variants. Variant 2 must reconstruct a Match at
+distance 1,048,576 with class 20 and 20 bypass bits; variant 1 must reject that
+same token sequence and crossed 64 KiB parameters. Unsupported variants fail
+before descriptor or token publication. This stage does not admit variant 2
+through a complete frame, stream header, streaming lifecycle, public C, CLI,
+benchmark, fuzz target, or interoperability schema.

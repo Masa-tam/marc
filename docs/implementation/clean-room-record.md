@@ -20422,3 +20422,26 @@ discarded and the reviewed seed retained.
   registered Release tests pass under MSVC in 165.67 seconds and ClangCL in
   176.31 seconds with the 300-second per-test limit, including interoperability
   schema compatibility and documentation layout.
+
+## CR-0855: 2026-08-14 - Contextual tANS selected token-composition design
+
+- Authoring method: derived the next composition boundary from marc's admitted
+  selected tANS coding core, existing direct tANS typed-token adapter, and
+  completed selected Contextual rANS token migration.
+- References used: DD-790 through DD-813; IR-0587; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0688; marc's selected typed-token validator and field-
+  operation reference.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, composition formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select one layout before all token work; use its
+  dictionary variant, alphabets, bypass maximum, and decision bound; retain a
+  validate-only decode pass; construct the maximum-distance vector with
+  bounded Matches rather than one million Literals; and stop before frames.
+- Generated-code task description: specify selected direct-token planning,
+  reverse writing, entropy inversion, typed-token reconstruction, atomic
+  workspace behavior, frozen-byte preservation, maximum-distance evidence,
+  and the following frame boundary.
+- Similarity review: the design composes only marc-owned typed-token, context,
+  tANS, and validation abstractions. No external implementation expression
+  entered the design.

@@ -5230,3 +5230,14 @@ field-context layouts, and completed Contextual rANS coding-core migration as
 first-party references. No external LZSS or tANS implementation, transition
 table, state coder, source code, test, corpus, archive, patent text, or
 optimization description was consulted.
+
+### IR-0587
+
+The selected-layout LZSS Contextual tANS token-composition design uses DD-790
+through DD-813, TVG-0665, TVG-0666, and TVG-0686 through TVG-0688; marc's
+direct tANS typed-token encoder and decoder, materialized field-operation
+reference, selected typed-token validator, admitted selected Contextual tANS
+core, and completed Contextual rANS token-composition migration as first-party
+references. No external LZSS or tANS implementation, composition format,
+source code, test, corpus, archive, patent text, or optimization description
+was consulted.
