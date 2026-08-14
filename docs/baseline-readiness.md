@@ -2265,3 +2265,17 @@ codec suite and schema test are combined; ClangCL passes the complete suite in
 one run. This admits only the bounded descriptor layer. Entropy coding,
 composition, framing, streaming, public surfaces, fuzzing, benchmarking, and
 interoperability admission for the new profile remain pending.
+
+### BR-0131
+
+The selected Contextual Blocked Huffman entropy coding core is locally
+complete. Variant 1 remains the default 17-symbol/16-bit layout and preserves
+all existing payload bytes. Variant 2 carries the explicit 21-symbol/20-bit
+layout through model building, strict override planning, canonical writing,
+bounded table construction, symbol decoding, and bypass decoding. Its
+hand-checkable pooled-Single vector emits exact payload `de bc 0a` with 24
+decisions and four final valid bits. Crossed and unknown selections fail
+atomically. All 2,926 registered Release tests, including schema 1 through 40
+compatibility, pass under both MSVC and ClangCL. This admits no typed-token,
+frame, streaming, public, benchmark, fuzz, or interoperability boundary for
+the new profile.

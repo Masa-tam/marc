@@ -17027,3 +17027,29 @@ bound. Reject crossed layouts, selected-size violations, out-of-alphabet code
 lengths, noncanonical sparse/dense choice, and nonzero dense padding before
 table construction. Typed-token, frame, lifecycle, public, and
 interoperability admission remain later stages.
+
+## DD-822: Carry the selected Contextual Blocked Huffman layout through coding
+
+- Date: 2026-08-15
+- Status: accepted
+
+Pass the explicit field-context variant into Contextual Blocked Huffman model
+building, payload writing, operation-level planning/encoding, and decoder
+startup. Retain variant 1 as every source-level default. Resolve the immutable
+layout once per object or operation and use its selected context alphabets and
+maximum bypass width for every request; do not infer a layout from descriptor
+contents or operation values.
+
+Variant 1 continues to admit the 17-symbol pooled distance-class field and at
+most 16 bypass bits. Variant 2 admits the 21-symbol pooled distance-class field
+and at most 20 bypass bits. Both retain four pooled fields, 31 optional
+overrides, the same canonical Huffman construction, strict override
+profitability, LSB-first payload bits, maximum 15-bit codes, and at most 35
+decode tables. Unknown variants fail before descriptor publication, payload
+mutation, or decode-table construction. Crossed alphabet and bypass requests
+fail without publishing a decoded value.
+
+The existing variant-1 hand vectors and operation APIs remain byte-identical.
+This stage admits only the entropy coding core. Typed-token composition,
+frames, streaming, public APIs, CLI, benchmarks, fuzzing, and interoperability
+remain later stages.

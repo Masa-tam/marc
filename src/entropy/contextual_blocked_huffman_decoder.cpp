@@ -59,6 +59,7 @@ std::size_t contextual_blocked_huffman_required_decode_table_count(
 void ContextualBlockedHuffmanDecoder::reset() noexcept {
     payload_ = {};
     tables_ = {};
+    layout_ = {};
     field_models_ = {};
     override_models_ = {};
     requested_overrides_.fill(false);
@@ -88,8 +89,15 @@ ContextualBlockedHuffmanDecodeResult ContextualBlockedHuffmanDecoder::begin(
     const ContextualBlockedHuffmanDescriptor& descriptor,
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
-    const std::span<HuffmanDecodeTable> table_output) noexcept {
+    const std::span<HuffmanDecodeTable> table_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     reset();
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(ContextualBlockedHuffmanDecodeError::invalid_descriptor);
+    }
     if (payload.size() != descriptor.payload_size) {
         return fail(
             ContextualBlockedHuffmanDecodeError::payload_size_mismatch);
@@ -97,7 +105,7 @@ ContextualBlockedHuffmanDecodeResult ContextualBlockedHuffmanDecoder::begin(
     std::size_t descriptor_size{};
     if (validate_contextual_blocked_huffman_descriptor(
             descriptor, descriptor.decision_count, descriptor.payload_size,
-            limits, descriptor_size)
+            limits, descriptor_size, variant)
         != ContextualBlockedHuffmanFormatError::none) {
         return fail(ContextualBlockedHuffmanDecodeError::invalid_descriptor);
     }
@@ -189,6 +197,7 @@ ContextualBlockedHuffmanDecodeResult ContextualBlockedHuffmanDecoder::begin(
 
     payload_ = payload;
     tables_ = table_output.first(required_tables);
+    layout_ = selected.layout;
     field_models_ = fields;
     override_models_ = overrides;
     override_mask_ = descriptor.override_mask;
@@ -261,9 +270,8 @@ ContextualBlockedHuffmanDecoder::decode_symbol(
         >= context::internal::lzss_field_context_count) {
         return fail(ContextualBlockedHuffmanDecodeError::invalid_context);
     }
-    if (expected_alphabet
-        != context::internal::lzss_field_context_alphabets[
-            expected_context]) {
+    if (layout_.alphabets == nullptr
+        || expected_alphabet != (*layout_.alphabets)[expected_context]) {
         return fail(ContextualBlockedHuffmanDecodeError::invalid_alphabet);
     }
     if (decision_count_ >= expected_decisions_) {
@@ -306,7 +314,8 @@ ContextualBlockedHuffmanDecoder::decode_bypass(
     if (finished_) {
         return fail(ContextualBlockedHuffmanDecodeError::already_finished);
     }
-    if (expected_bit_count == 0 || expected_bit_count > 16) {
+    if (layout_.alphabets == nullptr || expected_bit_count == 0
+        || expected_bit_count > layout_.maximum_bypass_bits) {
         return fail(
             ContextualBlockedHuffmanDecodeError::invalid_bypass_width);
     }

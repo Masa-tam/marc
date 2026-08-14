@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <span>
@@ -11,6 +12,7 @@
 namespace {
 
 using namespace marc::entropy::internal;
+using marc::context::internal::LzssFieldContextVariant;
 using marc::context::internal::ModeledOperation;
 using marc::context::internal::ModeledOperationKind;
 
@@ -75,6 +77,85 @@ TEST(ContextualBlockedHuffmanEncoder, EmitsMixedCodesAndBypassLsbFirst) {
     }
     EXPECT_EQ(decoder.finish(operations.size(), 7).error,
               ContextualBlockedHuffmanDecodeError::none);
+}
+
+TEST(ContextualBlockedHuffmanEncoder, SelectsExtendedDistanceAndBypassLayout) {
+    constexpr std::array operations{
+        symbol(0, 2, 1), symbol(3, 256, 'A'), symbol(21, 8, 1),
+        symbol(23, 21, 20), bypass(20, 0xabcde)};
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+
+    ContextualBlockedHuffmanDescriptor descriptor{};
+    descriptor.decision_count = 0xccccccccU;
+    const auto sentinel = descriptor;
+    EXPECT_EQ(plan_contextual_blocked_huffman_operations(
+                  operations, {}, descriptor).error,
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
+    EXPECT_EQ(descriptor.decision_count, sentinel.decision_count);
+
+    std::array output{
+        std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}};
+    EXPECT_EQ(encode_contextual_blocked_huffman_operations(
+                  operations, {}, output, descriptor).error,
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
+    EXPECT_EQ(output, (std::array{
+                          std::byte{0xcc}, std::byte{0xcc},
+                          std::byte{0xcc}, std::byte{0xcc}}));
+    EXPECT_EQ(descriptor.decision_count, sentinel.decision_count);
+
+    const auto invalid = static_cast<LzssFieldContextVariant>(99);
+    EXPECT_EQ(plan_contextual_blocked_huffman_operations(
+                  operations, {}, descriptor, invalid).error,
+              ContextualBlockedHuffmanEncodeError::
+                  unsupported_context_variant);
+    EXPECT_EQ(descriptor.decision_count, sentinel.decision_count);
+
+    const auto plan = plan_contextual_blocked_huffman_operations(
+        operations, {}, descriptor, extended);
+    ASSERT_EQ(plan.error, ContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 24U);
+    EXPECT_EQ(plan.payload_size, 3U);
+    EXPECT_EQ(descriptor.field_active_mask, 0x0fU);
+    EXPECT_EQ(descriptor.field_models[3].single_symbol, 20U);
+    EXPECT_EQ(descriptor.final_valid_bits, 4U);
+
+    ASSERT_EQ(encode_contextual_blocked_huffman_operations(
+                  operations, {}, output, descriptor, extended).error,
+              ContextualBlockedHuffmanEncodeError::none);
+    constexpr std::array expected{
+        std::byte{0xde}, std::byte{0xbc}, std::byte{0x0a}};
+    EXPECT_TRUE(std::ranges::equal(
+        expected, std::span<const std::byte>{output}.first(expected.size())));
+    EXPECT_EQ(output.back(), std::byte{0xcc});
+
+    ContextualBlockedHuffmanDecoder decoder;
+    ASSERT_EQ(decoder.begin(
+                  descriptor,
+                  std::span<const std::byte>{output}.first(expected.size()),
+                  {}, {}, extended).error,
+              ContextualBlockedHuffmanDecodeError::none);
+    for (const auto& operation : operations) {
+        std::uint32_t value{0xccccccccU};
+        const auto decoded = operation.kind == ModeledOperationKind::symbol
+            ? decoder.decode_symbol(
+                  operation.context_id, operation.alphabet_size, value)
+            : decoder.decode_bypass(operation.bit_count, value);
+        ASSERT_EQ(decoded.error, ContextualBlockedHuffmanDecodeError::none);
+        EXPECT_EQ(value, operation.value);
+    }
+    EXPECT_EQ(decoder.finish(operations.size(), 24).error,
+              ContextualBlockedHuffmanDecodeError::none);
+
+    ContextualBlockedHuffmanModelBuilder frozen_builder;
+    EXPECT_EQ(frozen_builder.add_bypass(16, 0),
+              ContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(frozen_builder.add_bypass(17, 0),
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
+    ContextualBlockedHuffmanModelBuilder extended_builder{extended};
+    EXPECT_EQ(extended_builder.add_bypass(20, 0),
+              ContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(extended_builder.add_bypass(21, 0),
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
 }
 
 TEST(ContextualBlockedHuffmanEncoder, SelectsOnlyStrictlyProfitableOverrides) {

@@ -13,6 +13,7 @@ namespace marc::entropy::internal {
 
 enum class ContextualBlockedHuffmanEncodeError : std::uint8_t {
     none,
+    unsupported_context_variant,
     invalid_operation,
     frequency_overflow,
     huffman_build_error,
@@ -35,6 +36,11 @@ struct ContextualBlockedHuffmanEncodeResult {
 
 class ContextualBlockedHuffmanModelBuilder final {
 public:
+    explicit ContextualBlockedHuffmanModelBuilder(
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
+
     [[nodiscard]] ContextualBlockedHuffmanEncodeError add_symbol(
         std::uint16_t context_id, std::uint16_t alphabet_size,
         std::uint32_t value) noexcept;
@@ -49,6 +55,7 @@ public:
     }
 
 private:
+    context::internal::LzssFieldContextLayout layout_{};
     std::array<HuffmanFrequencies,
                context::internal::lzss_field_context_count>
         context_frequencies_{};
@@ -66,7 +73,10 @@ class ContextualBlockedHuffmanWriter final {
 public:
     ContextualBlockedHuffmanWriter(
         const ContextualBlockedHuffmanDescriptor& descriptor,
-        std::span<std::byte> payload_output) noexcept;
+        std::span<std::byte> payload_output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualBlockedHuffmanEncodeError encode_symbol(
         std::uint16_t context_id, std::uint16_t alphabet_size,
@@ -79,6 +89,7 @@ public:
 
 private:
     const ContextualBlockedHuffmanDescriptor* descriptor_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::span<std::byte> output_{};
     std::array<CanonicalHuffmanTable,
                contextual_blocked_huffman_max_table_count>
@@ -95,13 +106,19 @@ private:
 plan_contextual_blocked_huffman_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::
+            field_context_64k) noexcept;
 
 [[nodiscard]] ContextualBlockedHuffmanEncodeResult
 encode_contextual_blocked_huffman_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits, std::span<std::byte> payload_output,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::
+            field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

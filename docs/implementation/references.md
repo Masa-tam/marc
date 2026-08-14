@@ -5321,3 +5321,13 @@ field-context variant selectors, and completed 1 MiB Dynamic Range, rANS, and
 tANS paths as first-party references. No external Huffman or LZSS
 implementation, descriptor grammar, source code, test, corpus, archive,
 patent text, or optimization description was consulted.
+
+### IR-0596
+
+The selected-layout Contextual Blocked Huffman coding-core design uses DD-790
+through DD-822, TVG-0665, TVG-0666, TVG-0696, TVG-0697, and marc's existing
+64 KiB model builder, canonical writer, bounded decoder, selected descriptor,
+field-context selector, and completed selected rANS/tANS coding cores as
+first-party references. No external Huffman or LZSS implementation, payload
+format, API, source code, test, corpus, archive, patent text, or optimization
+description was consulted.

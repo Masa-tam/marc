@@ -6700,6 +6700,19 @@ serializer implement this selected boundary with variant 1 as the source-level
 default; entropy coding, typed-token, frame, lifecycle, and public 1 MiB
 admission remain later stages.
 
+The Contextual Blocked Huffman coding core also receives the externally
+selected layout. Model construction, operation planning, canonical payload
+writing, and decoder requests use the selected alphabet for every context.
+Variant 1 admits at most 16 bypass bits and variant 2 at most 20; bypass bits
+remain emitted and consumed least-significant bit first. Neither payload size,
+model symbols, nor requested bypass width may select or change the layout. The
+variant-2 hand vector with four required pooled Single models, including
+distance class 20, followed by 20-bit value `0xabcde` has decision count 24,
+payload `de bc 0a`, and final-valid-bit count 4. Variant 1 retains every
+existing hand vector byte. Unknown or crossed selections fail before caller-
+visible descriptor, payload, table, or decoded-value publication. Typed-token,
+frame, lifecycle, and public 1 MiB admission remain later stages.
+
 Contextual rANS descriptor parsing never selects that layout itself. The
 dictionary/context pair in the already validated stream header selects field-
 context variant 1 or 2, and that selection is supplied to descriptor analysis,

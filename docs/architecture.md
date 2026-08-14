@@ -5275,3 +5275,14 @@ Table count and bounded node storage remain 35 and 17,885. Variant selection
 precedes all prefix, record, table, and allocation work, and crossed layouts
 fail without publishing a descriptor. Entropy coding and outer frame
 admission remain separate review boundaries.
+
+The following Contextual Blocked Huffman coding boundary stores that selected
+layout in the model builder, canonical payload writer, and decoder for their
+complete lifetimes. Operation planning and encoding select the same layout
+once. Variant 1 retains the 17-symbol pooled distance field and 16-bit bypass
+ceiling; variant 2 uses 21 symbols and 20 bits. The four pooled models, 31
+override slots, 35-table limit, canonical tables, profitability rule, and
+LSB-first payload writer are shared unchanged. Unknown layouts fail before
+descriptor or payload publication, while decode startup validates the selected
+descriptor before constructing caller-owned tables. Typed-token composition
+and all outer profile boundaries remain separate review stages.

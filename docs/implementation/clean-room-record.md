@@ -20973,3 +20973,32 @@ discarded and the reviewed seed retained.
 - Local validation: the MSVC schema-compatibility test passes schemas 1 through
   40 after the change, and the full ClangCL suite passes all 2,924 tests with
   the same schema test included.
+
+## CR-0877: 2026-08-15 - Selected Contextual Blocked Huffman coding core
+
+- Authoring method: extended marc's existing bounded model builder, canonical
+  writer, and table-driven decoder directly from the accepted selected-layout
+  coding design.
+- References used: DD-822; IR-0596; TVG-0697; BR-0131; marc's selected
+  descriptor implementation, field-context selector, existing 64 KiB hand
+  vectors, and selected rANS/tANS coding-core patterns.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, payload formats, APIs, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: retain the coarse legacy invalid-operation category
+  for crossed operation fields; add a stable unsupported-variant encoder
+  category; keep decoder startup failures under invalid descriptor; select the
+  pooled distance alphabet from context 23; and preserve every existing API
+  call through a 64 KiB default argument.
+- Generated-code task description: propagate the immutable field-context
+  variant through model collection, payload planning/writing, decoder table
+  startup, symbol requests, and bypass requests; add an exact extended payload
+  vector and atomic crossed-selection regressions.
+- Similarity review: the implementation retains marc-owned control flow and
+  canonical Huffman primitives and changes only layout selection at established
+  validation boundaries. No external implementation expression entered the
+  change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL;
+  all 14 direct Contextual Blocked Huffman encoder/decoder tests pass in both
+  configurations; and both complete Release suites pass all 2,926 registered
+  tests, including schema compatibility through version 40.

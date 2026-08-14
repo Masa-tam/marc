@@ -14,28 +14,35 @@ namespace {
 using context::internal::ModeledOperation;
 using context::internal::ModeledOperationKind;
 
-constexpr std::array<std::uint16_t, 4> field_alphabets{2, 256, 8, 17};
-
 struct BuiltModel {
     ContextualBlockedHuffmanModel model{};
     std::uint64_t symbol_bits{};
     std::size_t record_size{};
 };
 
-[[nodiscard]] bool valid_symbol(const ModeledOperation& operation) noexcept {
+[[nodiscard]] std::array<std::uint16_t, 4> field_alphabets(
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
+    return {2, 256, 8, (*layout.alphabets)[23]};
+}
+
+[[nodiscard]] bool valid_symbol(
+    const ModeledOperation& operation,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
     return operation.kind == ModeledOperationKind::symbol
         && operation.bit_count == 0
+        && layout.alphabets != nullptr
         && operation.context_id < context::internal::lzss_field_context_count
-        && operation.alphabet_size
-            == context::internal::lzss_field_context_alphabets[
-                operation.context_id]
+        && operation.alphabet_size == (*layout.alphabets)[operation.context_id]
         && operation.value < operation.alphabet_size;
 }
 
-[[nodiscard]] bool valid_bypass(const ModeledOperation& operation) noexcept {
+[[nodiscard]] bool valid_bypass(
+    const ModeledOperation& operation,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
     return operation.kind == ModeledOperationKind::bypass_bits
         && operation.context_id == 0 && operation.alphabet_size == 0
-        && operation.bit_count != 0 && operation.bit_count <= 16
+        && layout.alphabets != nullptr && operation.bit_count != 0
+        && operation.bit_count <= layout.maximum_bypass_bits
         && operation.value < (UINT32_C(1) << operation.bit_count);
 }
 
@@ -105,6 +112,18 @@ struct BuiltModel {
 
 } // namespace
 
+ContextualBlockedHuffmanModelBuilder::ContextualBlockedHuffmanModelBuilder(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    layout_ = selected.layout;
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        error_ = ContextualBlockedHuffmanEncodeError::
+            unsupported_context_variant;
+    }
+}
+
 ContextualBlockedHuffmanEncodeError
 ContextualBlockedHuffmanModelBuilder::add_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet_size,
@@ -112,7 +131,7 @@ ContextualBlockedHuffmanModelBuilder::add_symbol(
     if (error_ != ContextualBlockedHuffmanEncodeError::none) return error_;
     const ModeledOperation operation{
         ModeledOperationKind::symbol, context_id, alphabet_size, value, 0};
-    if (!valid_symbol(operation)) {
+    if (!valid_symbol(operation, layout_)) {
         error_ = ContextualBlockedHuffmanEncodeError::invalid_operation;
         return error_;
     }
@@ -139,7 +158,7 @@ ContextualBlockedHuffmanModelBuilder::add_bypass(
     if (error_ != ContextualBlockedHuffmanEncodeError::none) return error_;
     const ModeledOperation operation{
         ModeledOperationKind::bypass_bits, 0, 0, value, bit_count};
-    if (!valid_bypass(operation)) {
+    if (!valid_bypass(operation, layout_)) {
         error_ = ContextualBlockedHuffmanEncodeError::invalid_operation;
         return error_;
     }
@@ -175,10 +194,12 @@ ContextualBlockedHuffmanModelBuilder::finish(
     }
     ContextualBlockedHuffmanDescriptor planned{};
     planned.decision_count = static_cast<std::uint32_t>(decision_count_);
+    const auto selected_field_alphabets = field_alphabets(layout_);
     std::array<BuiltModel, 4> fields{};
     for (std::size_t field = 0; field < fields.size(); ++field) {
         const auto error = build_model(
-            field_frequencies_[field], field_alphabets[field], fields[field]);
+            field_frequencies_[field], selected_field_alphabets[field],
+            fields[field]);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
             result.error = error;
             return result;
@@ -190,8 +211,7 @@ ContextualBlockedHuffmanModelBuilder::finish(
     std::array<BuiltModel, context::internal::lzss_field_context_count>
         contexts{};
     for (std::size_t context_id = 0; context_id < contexts.size(); ++context_id) {
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
+        const auto alphabet = (*layout_.alphabets)[context_id];
         const auto error = build_model(
             context_frequencies_[context_id], alphabet, contexts[context_id]);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
@@ -240,8 +260,7 @@ ContextualBlockedHuffmanModelBuilder::finish(
             : planned.field_models[
                   contextual_blocked_huffman_field_for_context(
                       static_cast<std::uint16_t>(context_id))];
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
+        const auto alphabet = (*layout_.alphabets)[context_id];
         for (std::uint16_t symbol = 0; symbol < alphabet; ++symbol) {
             std::uint64_t contribution{};
             if (!core::checked_multiply(
@@ -269,7 +288,7 @@ ContextualBlockedHuffmanModelBuilder::finish(
     std::size_t descriptor_size{};
     const auto format_error = validate_contextual_blocked_huffman_descriptor(
         planned, planned.decision_count, planned.payload_size, limits,
-        descriptor_size);
+        descriptor_size, layout_.context_variant);
     if (format_error == ContextualBlockedHuffmanFormatError::limit_exceeded) {
         result.error = ContextualBlockedHuffmanEncodeError::limit_exceeded;
         return result;
@@ -298,8 +317,18 @@ ContextualBlockedHuffmanModelBuilder::finish(
 
 ContextualBlockedHuffmanWriter::ContextualBlockedHuffmanWriter(
     const ContextualBlockedHuffmanDescriptor& descriptor,
-    const std::span<std::byte> payload_output) noexcept
+    const std::span<std::byte> payload_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept
     : descriptor_(&descriptor), output_(payload_output) {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    layout_ = selected.layout;
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        error_ = ContextualBlockedHuffmanEncodeError::
+            unsupported_context_variant;
+        return;
+    }
     if (output_.size() < descriptor.payload_size) {
         error_ = ContextualBlockedHuffmanEncodeError::payload_output_too_small;
         return;
@@ -315,7 +344,7 @@ ContextualBlockedHuffmanWriter::encode_symbol(
     if (error_ != ContextualBlockedHuffmanEncodeError::none) return error_;
     if (!valid_symbol({
             ModeledOperationKind::symbol, context_id, alphabet_size, value,
-            0})) {
+            0}, layout_)) {
         error_ = ContextualBlockedHuffmanEncodeError::invalid_operation;
         return error_;
     }
@@ -366,8 +395,9 @@ ContextualBlockedHuffmanEncodeError
 ContextualBlockedHuffmanWriter::encode_bypass(
     const std::uint8_t bit_count, const std::uint32_t value) noexcept {
     if (error_ != ContextualBlockedHuffmanEncodeError::none) return error_;
-    if (!valid_bypass({
-            ModeledOperationKind::bypass_bits, 0, 0, value, bit_count})) {
+    if (!valid_bypass(
+            {ModeledOperationKind::bypass_bits, 0, 0, value, bit_count},
+            layout_)) {
         error_ = ContextualBlockedHuffmanEncodeError::invalid_operation;
         return error_;
     }
@@ -408,9 +438,19 @@ ContextualBlockedHuffmanEncodeResult
 plan_contextual_blocked_huffman_operations(
     const std::span<const ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualBlockedHuffmanEncodeResult result{};
     result.operation_count = operations.size();
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = ContextualBlockedHuffmanEncodeError::
+            unsupported_context_variant;
+        return result;
+    }
+    const auto& layout = selected.layout;
     if (core::validate_limits(limits) != core::LimitError::none) {
         result.error = ContextualBlockedHuffmanEncodeError::limit_exceeded;
         return result;
@@ -423,7 +463,7 @@ plan_contextual_blocked_huffman_operations(
     for (std::size_t index = 0; index < operations.size(); ++index) {
         result.operation_index = index;
         const auto& operation = operations[index];
-        if (valid_bypass(operation)) {
+        if (valid_bypass(operation, layout)) {
             if (!core::checked_add(
                     decisions, static_cast<std::uint64_t>(operation.bit_count),
                     decisions)) {
@@ -433,7 +473,7 @@ plan_contextual_blocked_huffman_operations(
             }
             continue;
         }
-        if (!valid_symbol(operation)) {
+        if (!valid_symbol(operation, layout)) {
             result.error =
                 ContextualBlockedHuffmanEncodeError::invalid_operation;
             return result;
@@ -467,10 +507,12 @@ plan_contextual_blocked_huffman_operations(
 
     ContextualBlockedHuffmanDescriptor planned{};
     planned.decision_count = static_cast<std::uint32_t>(decisions);
+    const auto selected_field_alphabets = field_alphabets(layout);
     std::array<BuiltModel, 4> fields{};
     for (std::size_t field = 0; field < fields.size(); ++field) {
         const auto error = build_model(
-            field_frequencies[field], field_alphabets[field], fields[field]);
+            field_frequencies[field], selected_field_alphabets[field],
+            fields[field]);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
             result.error = error;
             return result;
@@ -485,7 +527,7 @@ plan_contextual_blocked_huffman_operations(
     for (std::size_t context_id = 0; context_id < contexts.size(); ++context_id) {
         const auto error = build_model(
             context_frequencies[context_id],
-            context::internal::lzss_field_context_alphabets[context_id],
+            (*layout.alphabets)[context_id],
             contexts[context_id]);
         if (error != ContextualBlockedHuffmanEncodeError::none) {
             result.error = error;
@@ -496,7 +538,7 @@ plan_contextual_blocked_huffman_operations(
             static_cast<std::uint16_t>(context_id));
         std::uint64_t base_bits{};
         for (std::uint16_t symbol = 0;
-             symbol < context::internal::lzss_field_context_alphabets[context_id];
+             symbol < (*layout.alphabets)[context_id];
              ++symbol) {
             std::uint64_t contribution{};
             if (!core::checked_multiply(
@@ -570,7 +612,7 @@ plan_contextual_blocked_huffman_operations(
     std::size_t descriptor_size{};
     const auto format_error = validate_contextual_blocked_huffman_descriptor(
         planned, planned.decision_count, planned.payload_size, limits,
-        descriptor_size);
+        descriptor_size, variant);
     if (format_error == ContextualBlockedHuffmanFormatError::limit_exceeded) {
         result.error = ContextualBlockedHuffmanEncodeError::limit_exceeded;
         return result;
@@ -602,7 +644,8 @@ encode_contextual_blocked_huffman_operations(
     const std::span<const ModeledOperation> operations,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualBlockedHuffmanEncodeResult initial{};
     std::size_t operation_bytes{};
     if (!core::checked_multiply(
@@ -622,14 +665,14 @@ encode_contextual_blocked_huffman_operations(
     }
     ContextualBlockedHuffmanDescriptor planned{};
     auto result = plan_contextual_blocked_huffman_operations(
-        operations, limits, planned);
+        operations, limits, planned, variant);
     if (result.error != ContextualBlockedHuffmanEncodeError::none) return result;
     if (payload_output.size() < result.payload_size) {
         result.error =
             ContextualBlockedHuffmanEncodeError::payload_output_too_small;
         return result;
     }
-    ContextualBlockedHuffmanWriter writer(planned, payload_output);
+    ContextualBlockedHuffmanWriter writer(planned, payload_output, variant);
     for (const auto& operation : operations) {
         const auto error = operation.kind == ModeledOperationKind::symbol
             ? writer.encode_symbol(

@@ -464,6 +464,24 @@ truncation, trailing bytes, and short output fail atomically. No entropy
 coding, typed-token, frame, streaming, public, or schema boundary selects the
 new descriptor yet.
 
+The next Contextual Blocked Huffman stage carries that immutable selection
+through the entropy coding core. Model builders, canonical payload writers,
+operation planners/encoders, and decoder startup receive the explicit field-
+context variant while retaining 64 KiB as the default. Variant 2 selects the
+21-symbol pooled distance field and permits 20-bit bypass values; variant 1
+retains 17 symbols and 16 bits. The exact extended hand payload is `de bc 0a`
+for four required pooled Single fields, including distance class 20, followed
+by bypass value `0xabcde`; its decision count is 24. Unknown and crossed
+selections must fail before observable output. This stage does not yet admit
+typed-token composition or any outer frame/profile surface.
+
+That coding-core stage is implemented. The selected layout now remains
+immutable through model collection, strict override selection, payload-size
+planning, canonical code emission, table construction, symbol decoding, and
+bypass decoding. The extended hand payload is exact, crossed requests and
+unknown variants are atomic, and all frozen 64 KiB vectors remain unchanged.
+The next independent boundary is direct typed-token composition.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

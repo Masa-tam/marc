@@ -54,7 +54,10 @@ public:
         const ContextualBlockedHuffmanDescriptor& descriptor,
         std::span<const std::byte> payload,
         const core::DecoderLimits& limits,
-        std::span<HuffmanDecodeTable> table_output) noexcept;
+        std::span<HuffmanDecodeTable> table_output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualBlockedHuffmanDecodeResult decode_symbol(
         std::uint16_t expected_context,
@@ -86,6 +89,7 @@ private:
 
     std::span<const std::byte> payload_{};
     std::span<const HuffmanDecodeTable> tables_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::array<ModelSelection,
                contextual_blocked_huffman_field_table_count>
         field_models_{};

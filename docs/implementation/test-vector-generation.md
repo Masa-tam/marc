@@ -9577,3 +9577,22 @@ invalid Huffman lengths, truncation at every byte, trailing data, and short
 output without publishing a descriptor. Prove the 35-table and 17,885-node
 ceilings remain unchanged. No typed-token, frame, streaming, public C, CLI,
 benchmark, fuzz, or schema vector belongs to this descriptor stage.
+
+### TVG-0697
+
+Retain every existing Contextual Blocked Huffman variant-1 payload and use an
+explicit variant-2 operation sequence containing one Single symbol in each of
+the four required pooled fields, including distance class 20, followed by the
+20-bit LSB-first value `0xabcde`. The Single models contribute no payload bits,
+so the exact payload is `de bc 0a`, the decision count is 24, and the final
+valid-bit count is 4. Decode the same symbols and bypass value under variant 2
+and finish with exact event, decision, and bit counts.
+
+Require variant 1 to reject the 21-symbol request and 20-bit bypass before
+publishing a descriptor or mutating output. Reject unknown variants before
+output or table construction. Under a started variant-2 decoder, reject the
+crossed 17-symbol request and a 21-bit bypass without changing the caller's
+value. Retain existing override-profitability, malformed-code, padding,
+trailing-bit, capacity, overlap, lifecycle, and hand-vector tests. No typed-
+token, frame, streaming, public, benchmark, fuzz, or schema vector belongs to
+this coding-core stage.

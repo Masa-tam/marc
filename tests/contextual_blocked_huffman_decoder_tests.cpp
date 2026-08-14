@@ -9,6 +9,7 @@
 namespace {
 
 using namespace marc::entropy::internal;
+using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualBlockedHuffmanDescriptor literal_a_descriptor() {
     ContextualBlockedHuffmanDescriptor descriptor{};
@@ -35,6 +36,23 @@ using namespace marc::entropy::internal;
     descriptor.field_models[2].single_symbol = 1;
     descriptor.field_models[3].active = true;
     descriptor.field_models[3].single_symbol = 1;
+    return descriptor;
+}
+
+[[nodiscard]] ContextualBlockedHuffmanDescriptor extended_descriptor() {
+    ContextualBlockedHuffmanDescriptor descriptor{};
+    descriptor.decision_count = 24;
+    descriptor.payload_size = 3;
+    descriptor.final_valid_bits = 4;
+    descriptor.field_active_mask = 0x0f;
+    descriptor.field_models[0].active = true;
+    descriptor.field_models[0].single_symbol = 1;
+    descriptor.field_models[1].active = true;
+    descriptor.field_models[1].single_symbol = 'A';
+    descriptor.field_models[2].active = true;
+    descriptor.field_models[2].single_symbol = 1;
+    descriptor.field_models[3].active = true;
+    descriptor.field_models[3].single_symbol = 20;
     return descriptor;
 }
 
@@ -115,6 +133,46 @@ TEST(ContextualBlockedHuffmanDecoder, SelectsOverrideBeforePooledFieldModel) {
     EXPECT_EQ(value, 65U);
     EXPECT_EQ(decoder.finish(2, 2).error,
               ContextualBlockedHuffmanDecodeError::none);
+}
+
+TEST(ContextualBlockedHuffmanDecoder, EnforcesExtendedSelectedRequests) {
+    constexpr std::array payload{
+        std::byte{0xde}, std::byte{0xbc}, std::byte{0x0a}};
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+    std::array<HuffmanDecodeTable, 1> tables{};
+    tables[0].node_count = 0xa5a5;
+
+    ContextualBlockedHuffmanDecoder decoder;
+    EXPECT_EQ(decoder.begin(
+                  extended_descriptor(), payload, {}, tables).error,
+              ContextualBlockedHuffmanDecodeError::invalid_descriptor);
+    EXPECT_EQ(tables[0].node_count, 0xa5a5U);
+
+    const auto invalid = static_cast<LzssFieldContextVariant>(99);
+    EXPECT_EQ(decoder.begin(
+                  extended_descriptor(), payload, {}, tables, invalid).error,
+              ContextualBlockedHuffmanDecodeError::invalid_descriptor);
+    EXPECT_EQ(tables[0].node_count, 0xa5a5U);
+
+    ASSERT_EQ(decoder.begin(
+                  extended_descriptor(), payload, {}, tables, extended).error,
+              ContextualBlockedHuffmanDecodeError::none);
+    std::uint32_t value{0xccccccccU};
+    EXPECT_EQ(decoder.decode_symbol(23, 17, value).error,
+              ContextualBlockedHuffmanDecodeError::invalid_alphabet);
+    EXPECT_EQ(value, 0xccccccccU);
+
+    ContextualBlockedHuffmanDecoder width_decoder;
+    ASSERT_EQ(width_decoder.begin(
+                  extended_descriptor(), payload, {}, tables, extended).error,
+              ContextualBlockedHuffmanDecodeError::none);
+    ASSERT_EQ(width_decoder.decode_symbol(23, 21, value).error,
+              ContextualBlockedHuffmanDecodeError::none);
+    EXPECT_EQ(value, 20U);
+    value = 0xccccccccU;
+    EXPECT_EQ(width_decoder.decode_bypass(21, value).error,
+              ContextualBlockedHuffmanDecodeError::invalid_bypass_width);
+    EXPECT_EQ(value, 0xccccccccU);
 }
 
 TEST(ContextualBlockedHuffmanDecoder, RejectsBeginFailuresBeforeStarting) {
