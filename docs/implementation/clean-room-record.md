@@ -20171,3 +20171,22 @@ discarded and the reviewed seed retained.
   2,897 registered tests pass under MSVC and ClangCL Release configurations
   with the 240-second per-test limit, including schema compatibility and
   documentation layout.
+
+## CR-0844: 2026-08-14 - Contextual rANS 1 MiB benchmark design
+
+- Authoring method: derived the measurement boundary from marc's selected
+  public rANS lifecycle and existing dual-profile benchmark policy.
+- References used: DD-790 through DD-808; IR-0582; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0683; marc's dependency-free benchmark infrastructure.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, benchmark adapters, capacity formulas, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: use one explicit 1 MiB name; derive the 9,161-byte
+  per-frame overhead from selected format bounds; query every workspace; keep
+  measurements descriptive; and defer fuzz and interoperability admission.
+- Generated-code task description: specify selector, public configuration,
+  checked capacity, pre-timing round trip, workspace reporting, smoke test,
+  comparison guidance, and unchanged stable/interoperability inventories.
+- Similarity review: the design composes only marc-owned benchmark, public C
+  lifecycle, profile, and format-bound components. No external implementation
+  expression entered the design.

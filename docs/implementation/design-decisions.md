@@ -16611,3 +16611,27 @@ data rejection, and ordinary transactional output cleanup.
 This selector changes no stream byte and remains outside the frozen Format 1
 interoperability inventory. Benchmark, fuzz, and interoperability admission
 remain separate later stages.
+
+## DD-808: The 1 MiB Contextual rANS benchmark is a public comparison adapter
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add `lzss-contextual-rans-1m` to the experimental dependency-free benchmark
+without adding it to the stable 42-profile matrix. Reuse the exact CLI policy:
+1,048,576-byte frame/window, public window-profile value 1, `6F` decisions,
+`12F + 8` payload bytes, maximum match length 258, and the 128 MiB aggregate
+limit. Construct each direction only through the public C requirements query
+and factory; queried workspace extents and alignment remain authoritative.
+
+For raw input extent `N` and nonempty frame count `K`, reserve checked complete
+output capacity `112 + 12N + 9,161K`. The per-frame term is the selected
+9,089-byte descriptor ceiling plus the 64-byte common frame header and 8-byte
+rANS final state. Require an untimed exact round trip before timing and report
+encoded extent, ratio, directional throughput, every returned workspace
+extent, and peak caller-owned reservation. Measurements are descriptive and
+must not become pass thresholds. Run the 64 KiB and 1 MiB names with identical
+input, build, and iteration count for meaningful comparison.
+
+This benchmark changes no format or public API and does not admit fuzzing or
+an interoperability archive.

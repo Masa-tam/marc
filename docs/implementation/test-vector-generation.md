@@ -9273,3 +9273,18 @@ Exercise trailing-byte rejection and the existing command-line transactional
 cleanup checks for the new selector. Preserve the unqualified selector's
 `2/2 + 1/1 + 4/3` identity and bytes. Do not append an interoperability
 archive or alter its schema in this CLI-only stage.
+
+### TVG-0683
+
+Run one Release iteration of
+`marc_benchmark lzss-contextual-rans-1m README.md 1` under each local
+compiler. Require the checked `112 + 12N + 9,161K` output-capacity formula,
+public window-profile value 1 in both directions, successful public encode and
+decode, byte-exact untimed verification, nonzero encoded extent, finite ratio
+and throughput fields, all three encoder and decoder workspace extents, and
+peak caller-owned reservation.
+
+Register the command as an experimental benchmark smoke. Run the existing
+64 KiB benchmark independently and preserve its name, configuration, and
+`112 + 12N + 9,097K` capacity. Treat measured ratio and speed only as
+descriptive evidence; do not alter the interoperability schema in this stage.

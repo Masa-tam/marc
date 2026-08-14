@@ -291,8 +291,11 @@ the other identity before frame allocation. The CLI stage uses the explicit
 `lzss-contextual-rans-1m` name for the selected 1 MiB public lifecycle and
 retains the unqualified name as the 64 KiB profile. Both directions require
 the same name, queried workspaces remain authoritative, and the two names
-reject one another. Benchmark, fuzz, and interoperability stages remain
-separate.
+reject one another. The benchmark stage uses the same explicit 1 MiB name and
+public configuration, with checked complete-stream capacity
+`112 + 12N + 9,161K`. It performs an exact untimed round trip before reporting
+descriptive speed, ratio, and caller-owned workspace values. Fuzz and
+interoperability stages remain separate.
 
 ## Required validation
 

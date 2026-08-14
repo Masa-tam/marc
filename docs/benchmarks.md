@@ -54,7 +54,8 @@ The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-dynamic-range-1m corpus.bin 5`,
-`marc_benchmark lzss-contextual-rans corpus.bin 5`, or
+`marc_benchmark lzss-contextual-rans corpus.bin 5`,
+`marc_benchmark lzss-contextual-rans-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
@@ -231,6 +232,17 @@ are constructed only through the public C lifecycle for canonical entropy
 variant 3. The report includes complete-stream ratio, both throughputs, peak
 caller-owned workspace, and all three directional workspace extents after an
 exact pre-timing round trip.
+
+The experimental `lzss-contextual-rans-1m` benchmark fixes raw frames and the
+LZSS window at 1,048,576 bytes and selects public window profile 1. It admits
+at most `6F` decisions and `12F + 8` payload bytes under the 128 MiB aggregate
+policy. Its checked complete-stream capacity for input extent `N` and nonempty
+frame count `K` is `112 + 12N + 9,161K`: the per-frame term contains the
+9,089-byte selected descriptor ceiling, 64-byte frame header, and 8-byte final
+state. Use identical input, build, and iteration count with the unqualified
+64 KiB command when comparing ratio, throughput, or workspace. Measurements
+are descriptive; the exact pre-timing round trip and bounded public lifecycle
+are normative.
 
 The experimental `lzss-contextual-tans` benchmark uses 65,536-byte raw
 frames, admits at most `6F` modeled decisions, reserves `9F + 2` payload

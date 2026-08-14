@@ -5184,3 +5184,12 @@ rANS C lifecycle, existing 64 KiB rANS CLI adapter, and Contextual Dynamic
 Range dual-profile CLI as first-party references. No external LZSS or rANS
 implementation, command-line adapter, workspace policy, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0582
+
+The Contextual rANS 1 MiB benchmark admission uses DD-790 through DD-808,
+TVG-0665, TVG-0666, and TVG-0676 through TVG-0683; marc's selected public
+rANS lifecycle, 64 KiB rANS benchmark adapter, and 1 MiB Contextual Dynamic
+Range benchmark as first-party references. No external LZSS or rANS
+implementation, benchmark adapter, capacity formula, source code, test,
+corpus, archive, patent text, or optimization description was consulted.
