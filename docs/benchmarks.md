@@ -1108,6 +1108,23 @@ establishes public-profile wiring, bounded capacity, reported workspace, and
 an untimed exact round trip. Same-corpus 64 KiB/1 MiB measurements on inputs
 large enough to contain distant repetition remain the useful comparison.
 
+### BM-0049: 1 MiB Contextual rANS benchmark admission
+
+One Release iteration over the 4,326-byte README emits 3,006 bytes at ratio
+0.695 through both `lzss-contextual-rans` and
+`lzss-contextual-rans-1m`. The selected 1 MiB encoder reports
+primary/secondary/views workspaces of 4,326/61,073/134,752 bytes; its decoder
+reports 12,592,073/1,048,576/13,344,768 bytes. Peak caller-owned workspace is
+26,985,417 bytes, compared with 2,409,353 bytes for the same 64 KiB command.
+
+The 1 MiB smoke reports 8.487/10.630 MiB/s encode/decode under MSVC Release and
+13.706/14.824 MiB/s under ClangCL Release. These single-iteration, small-input
+timings are descriptive and are not throughput claims. The equal encoded
+extent is expected because this input cannot use a distance beyond 64 KiB.
+Exact public round trip, selected workspace bounds, checked
+`112 + 12N + 9,161K` capacity, and independent smoke success under both local
+compilers are the normative evidence.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

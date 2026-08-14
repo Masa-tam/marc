@@ -604,6 +604,12 @@ if(MARC_BUILD_BENCHMARKS)
         set_tests_properties(
             marc_benchmark_lzss_contextual_rans_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_benchmark_lzss_contextual_rans_1m_smoke
+            COMMAND marc_benchmark lzss-contextual-rans-1m
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_rans_1m_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_tans_smoke
             COMMAND marc_benchmark lzss-contextual-tans
                 ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)

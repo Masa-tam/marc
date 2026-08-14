@@ -4475,12 +4475,14 @@ that failed decoding leaves no requested destination or temporary artifact.
 
 ### Contextual rANS benchmark boundary
 
-The dependency-free benchmark reaches `lzss-contextual-rans` through the same
-public-only lifecycle as the CLI. It owns caller storage returned by each
-direction's requirements query and treats opaque table/token views solely as
-aligned bytes. Complete-stream capacity includes the 112-byte prefix and each
-frame's 64-byte header, 9,052-byte descriptor, eight-byte state allowance, and
-`12N` payload allowance. Verification completes before timing begins.
+The dependency-free benchmark reaches `lzss-contextual-rans` and
+`lzss-contextual-rans-1m` through the same public-only lifecycle as the CLI.
+It owns caller storage returned by each direction's requirements query and
+treats opaque table/token views solely as aligned bytes. Checked complete-
+stream capacity is `112 + 12N + 9,097K` for the selected 9,025-byte 64 KiB
+descriptor ceiling and `112 + 12N + 9,161K` for the selected 9,089-byte 1 MiB
+ceiling; both per-frame terms also include the 64-byte header and eight-byte
+state. Verification completes before timing begins.
 
 The encoder path supplies that already bounded serialized-frame workspace
 directly to the transactional complete-frame encoder. It does not pre-plan the

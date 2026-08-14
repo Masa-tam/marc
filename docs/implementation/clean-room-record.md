@@ -20190,3 +20190,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned benchmark, public C
   lifecycle, profile, and format-bound components. No external implementation
   expression entered the design.
+
+## CR-0845: 2026-08-14 - Contextual rANS 1 MiB benchmark admission
+
+- Authoring method: implemented DD-808 over marc's public selected rANS
+  lifecycle and dependency-free benchmark adapter.
+- References used: DD-790 through DD-808; IR-0582; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0683; marc's existing capacity and workspace helpers.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, benchmark adapters, capacity formulas, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: reuse one codec enum through payload, workspace,
+  query, factory, and report paths; select 9,161 bytes per frame only for the
+  1 MiB name; preserve the old formula; and keep timings descriptive.
+- Generated-code task description: implement constants, selector, public
+  configuration, checked output capacity, workspace lifecycle, smoke
+  registration, dual-compiler run, and comparative measurement record.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned benchmark, public C lifecycle, format bounds, and CTest registration.
+  No external implementation expression entered the change.
+- Local validation: the 1 MiB command performs exact public round trip and
+  reports every workspace under MSVC and ClangCL Release; the README produces
+  the expected same 3,006 bytes as the 64 KiB profile while exposing the
+  selected resource increase; all 2,898 registered tests pass under both
+  compilers with the 240-second per-test limit, including benchmark smoke,
+  schema compatibility, and documentation layout.
