@@ -5175,3 +5175,12 @@ Contextual Dynamic Range public admission as first-party references. No
 external LZSS or rANS implementation, C ABI, factory, workspace policy,
 source code, test, corpus, archive, patent text, or optimization description
 was consulted.
+
+### IR-0581
+
+The Contextual rANS 1 MiB CLI admission uses DD-790 through DD-807,
+TVG-0665, TVG-0666, and TVG-0676 through TVG-0682; marc's public selected
+rANS C lifecycle, existing 64 KiB rANS CLI adapter, and Contextual Dynamic
+Range dual-profile CLI as first-party references. No external LZSS or rANS
+implementation, command-line adapter, workspace policy, source code, test,
+corpus, archive, patent text, or optimization description was consulted.

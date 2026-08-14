@@ -9260,3 +9260,16 @@ workspace overlap, null output handle, invalid direction, one-byte schedules,
 sticky terminal calls, and malformed final-frame atomicity for the selected
 profile. Preserve the existing value-0 requirements and encoded bytes. CLI,
 benchmark, fuzzing, and interoperability remain separate stages.
+
+### TVG-0682
+
+Encode deterministic binary input through `lzss-contextual-rans-1m` and
+require stream identities `2/3 + 1/2 + 4/3`, then decode through the same
+name and reproduce the input exactly. Require the unqualified 64 KiB name to
+reject that archive without retaining a destination and require the 1 MiB
+name to reject an archive produced by the unqualified name in the same way.
+
+Exercise trailing-byte rejection and the existing command-line transactional
+cleanup checks for the new selector. Preserve the unqualified selector's
+`2/2 + 1/1 + 4/3` identity and bytes. Do not append an interoperability
+archive or alter its schema in this CLI-only stage.

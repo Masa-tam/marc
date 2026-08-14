@@ -20126,3 +20126,23 @@ discarded and the reviewed seed retained.
   under MSVC and ClangCL Release configurations with the 240-second per-test
   limit, including the public C test, schema compatibility, and documentation
   layout.
+
+## CR-0842: 2026-08-14 - Contextual rANS 1 MiB CLI design
+
+- Authoring method: derived the command-line boundary from marc's selected
+  public rANS C lifecycle and the already admitted Dynamic Range dual-name
+  policy.
+- References used: DD-790 through DD-807; IR-0581; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0682; marc's existing CLI lifecycle adapters.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, command-line adapters, workspace policies, source code,
+  tests, corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: add one explicit 1 MiB name; retain the old name as
+  exact 64 KiB policy; require the same name for decode; derive only public
+  limits in the CLI; and defer benchmark, fuzz, and interoperability changes.
+- Generated-code task description: specify name resolution, selected public
+  C configuration, exact identity, reciprocal rejection, trailing-data and
+  output-cleanup tests, and unchanged interoperability inventory.
+- Similarity review: the design composes only marc-owned CLI, C lifecycle,
+  profile, and stream-admission components. No external implementation
+  expression entered the design.

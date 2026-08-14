@@ -16587,3 +16587,27 @@ Require the 1 MiB public lifecycle to serialize `2/3 + 1/2 + 4/3`, use the
 9,089-byte descriptor ceiling, round trip through matching public decode, and
 fail atomically through the other selector. CLI, benchmark, fuzz, and
 interoperability admission remain later stages.
+
+## DD-807: Contextual rANS CLI names select one exact window profile
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add `lzss-contextual-rans-1m` as the explicit command-line name for public
+Contextual rANS window-profile value 1. Retain `lzss-contextual-rans` as the
+64 KiB value-0 name without auto-detection, fallback, or compatibility alias.
+Both encode and decode configure the selected public C lifecycle before its
+requirements query, so each name admits only its exact dictionary/context
+identity and the decoder rejects the other profile before raw publication.
+
+The 1 MiB adapter fixes raw frame and LZSS window sizes at 1,048,576 bytes,
+uses the public `6F` decision and `12F + 8` payload ceilings, and retains the
+128 MiB aggregate internal-buffer policy. Queried workspace extents and
+alignment remain authoritative; the CLI must not reproduce private token,
+model-table, or frame partitions. Require exact `2/3 + 1/2 + 4/3` header
+identity, matching round trip, reciprocal cross-profile rejection, trailing-
+data rejection, and ordinary transactional output cleanup.
+
+This selector changes no stream byte and remains outside the frozen Format 1
+interoperability inventory. Benchmark, fuzz, and interoperability admission
+remain separate later stages.

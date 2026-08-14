@@ -6644,6 +6644,14 @@ The explicit CLI name `lzss-contextual-dynamic-range-1m` selects public value
 byte frames/window. Decode uses the same explicit name as encode; the two names
 do not auto-detect one another. No CLI name or policy value is serialized.
 
+The explicit CLI name `lzss-contextual-rans-1m` likewise selects public
+window-profile value 1, 1,048,576-byte frames, and a 1,048,576-byte window for
+the existing entropy identity `4/3`. The unqualified
+`lzss-contextual-rans` name remains value 0 with 65,536-byte frames/window.
+Encode and decode require the same explicit name and reject the other profile.
+Neither the CLI name nor its policy value is serialized, and this admission
+does not alter any header, descriptor, payload, state, padding, or reset rule.
+
 Interoperability schema 38 appends one archive generated through that explicit
 1 MiB selector after the exact 47-entry schema-37 order. The common 8,193-byte
 fixture exercises the extended stream identity and deterministic encoder/

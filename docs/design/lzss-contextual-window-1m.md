@@ -287,8 +287,12 @@ policy belongs to the public selector. The Contextual rANS C configuration now
 splits its former 64-bit reserved tail into the shared 32-bit `window_profile`
 and a 32-bit reserved word without changing ABI-1 extent. Public workspace
 queries and encoders select the exact profile, while public decoders reject
-the other identity before frame allocation. CLI, benchmark, fuzz, and
-interoperability stages remain separate.
+the other identity before frame allocation. The CLI stage uses the explicit
+`lzss-contextual-rans-1m` name for the selected 1 MiB public lifecycle and
+retains the unqualified name as the 64 KiB profile. Both directions require
+the same name, queried workspaces remain authoritative, and the two names
+reject one another. Benchmark, fuzz, and interoperability stages remain
+separate.
 
 ## Required validation
 
