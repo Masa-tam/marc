@@ -425,12 +425,18 @@ The benchmark stage mirrors `lzss-contextual-tans` and
 and two final-state bytes. The benchmark reports public queried workspace and
 uses the existing pre-timing exact round trip; timings remain descriptive.
 
-The next fuzz stage retains the single Contextual tANS target and invokes both
+The fuzz stage retains the single Contextual tANS target and invokes both
 strict public profile admissions beside the private profile-aware decoder.
 Its 1 KiB frame/token and 131,072-entry transition ceilings remain unchanged;
 only fixed descriptor backing grows by 64 bytes to 9,093. Both canonical
 profiles, malformed variants, and reciprocal mismatches must preserve atomic
 failure and sticky errors before a bounded sanitizer campaign is recorded.
+
+That stage is now implemented. Seven permanent regressions cover both
+canonical profiles, every truncation, saturated frame extents, descriptor
+padding, reciprocal strict-policy rejection, sentinel preservation, and
+sticky errors. The fixed-memory target also completed its bounded sanitizer
+campaign; interoperability publication remains the next independent boundary.
 
 ## Required validation
 

@@ -5250,7 +5250,7 @@ capacity `112 + 9N + 9,159K`, and queried directional workspace extents.
 Construction, allocation, file I/O, and verification remain outside timing;
 only transform processing is compared under identical input/build/iterations.
 
-The next Contextual tANS fuzz boundary retains one fixed-memory target. Its
+The Contextual tANS fuzz boundary retains one fixed-memory target. Its
 private decoder accepts either serialized profile while two strict public
 decoder invocations exercise exact 64 KiB and 1 MiB admission. Only descriptor
 backing grows from 9,029 to 9,093 bytes; raw publication, token staging, and

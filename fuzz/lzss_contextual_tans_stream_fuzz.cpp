@@ -26,7 +26,7 @@ constexpr std::size_t maximum_decisions = maximum_frame * 6;
 constexpr std::size_t maximum_payload = maximum_frame * 9 + 2;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::lzss_contextual_tans_frame_header_size
-    + marc::entropy::internal::contextual_tans_max_descriptor_size
+    + marc::entropy::internal::contextual_tans_max_descriptor_size_v2
     + maximum_payload;
 constexpr std::size_t table_entries =
     marc::entropy::internal::contextual_tans_decode_table_entries;
@@ -60,7 +60,7 @@ thread_local FuzzWorkspace workspace{};
     limits.max_block_size = maximum_decisions;
     limits.max_compressed_payload_size = maximum_payload;
     limits.max_internal_buffered_bytes = maximum_internal;
-    limits.max_lz_distance = maximum_frame;
+    limits.max_lz_distance = UINT64_C(1) << 20;
     limits.max_lz_match_length = 258;
     limits.max_entropy_table_entries = table_entries;
     return limits;
@@ -92,7 +92,8 @@ void exercise_complete_frame(const std::span<const std::byte> input) noexcept {
 }
 
 void exercise_public_streaming(
-    const std::span<const std::byte> input) noexcept {
+    const std::span<const std::byte> input,
+    const marc_lzss_contextual_window_profile window_profile) noexcept {
     marc_lzss_contextual_tans_config config{};
     if (marc_lzss_contextual_tans_config_init(
             MARC_DIRECTION_DECODE, &config) != MARC_STATUS_OK) {
@@ -103,9 +104,12 @@ void exercise_public_streaming(
     config.max_block_size = maximum_decisions;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.max_lz_distance = maximum_frame;
+    config.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    config.max_lz_distance = UINT64_C(1) << 20;
     config.max_lz_match_length = 258;
     config.max_entropy_table_entries = table_entries;
+    config.window_profile = window_profile;
 
     marc_workspace_requirements requirements{};
     if (marc_lzss_contextual_tans_workspace_requirements(
@@ -202,6 +206,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     const std::span<const std::byte> input{
         reinterpret_cast<const std::byte*>(data), bounded_size};
     exercise_complete_frame(input);
-    exercise_public_streaming(input);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
     return 0;
 }
