@@ -63,8 +63,9 @@ function Convert-Schema37To36([string]$Source, [string]$Destination) {
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+$schema40 = Join-Path $root 'schema40'
+$schema40Reordered = Join-Path $root 'schema40-reordered'
 $schema39 = Join-Path $root 'schema39'
-$schema39Reordered = Join-Path $root 'schema39-reordered'
 $schema38 = Join-Path $root 'schema38'
 $schema37 = Join-Path $root 'schema37'
 $schema36 = Join-Path $root 'schema36'
@@ -167,21 +168,23 @@ $schema37Profiles = @(
     })
 $schema38Profiles = $schema37Profiles + @(
     'lzss-contextual-dynamic-range-1m')
+$schema39Profiles = $schema38Profiles + @(
+    'lzss-contextual-rans-1m')
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema39 `
+        -OutputDirectory $schema40 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -BundleDirectory $schema39 `
-        -OutputDirectory (Join-Path $root 'verified39')
+        -BundleDirectory $schema40 `
+        -OutputDirectory (Join-Path $root 'verified40')
 
-    Copy-Item -LiteralPath $schema39 -Destination $schema39Reordered -Recurse
-    $reorderedManifestPath = Join-Path $schema39Reordered 'manifest.json'
+    Copy-Item -LiteralPath $schema40 -Destination $schema40Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema40Reordered 'manifest.json'
     $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
         ConvertFrom-Json
     $firstArchive = $reorderedManifest.archives[0]
@@ -192,8 +195,8 @@ try {
     try {
         & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
             -MarcCli $resolvedCli `
-            -BundleDirectory $schema39Reordered `
-            -OutputDirectory (Join-Path $root 'verified39-reordered')
+            -BundleDirectory $schema40Reordered `
+            -OutputDirectory (Join-Path $root 'verified40-reordered')
     } catch {
         if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
             throw
@@ -201,8 +204,14 @@ try {
         $reorderedRejected = $true
     }
     if (-not $reorderedRejected) {
-        throw 'Verifier accepted a reordered schema-39 manifest'
+        throw 'Verifier accepted a reordered schema-40 manifest'
     }
+
+    Convert-Bundle $schema40 $schema39 39 'marc-cli-v39' $schema39Profiles
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema39 `
+        -OutputDirectory (Join-Path $root 'verified39')
 
     Convert-Bundle $schema39 $schema38 38 'marc-cli-v38' $schema38Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
@@ -432,7 +441,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 39'
+    Write-Host 'Verified interoperability schemas 1 through 40'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

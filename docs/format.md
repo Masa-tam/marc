@@ -6747,10 +6747,14 @@ explicit `lzss-contextual-rans-1m` CLI archive as entry 49. The common
 8,193-byte fixture exercises the extended identity and deterministic encoder/
 decoder contract but cannot require a distance above 65,536. Schema 39 changes
 bundle inventory and manifest identity only; it does not alter a stream
-header, descriptor, payload, state, padding, or reset rule. Contextual tANS now
-has private complete-frame admission for the same selected dictionary/context
-pair, but its streaming, public C, CLI, benchmark, fuzz, and interoperability
-boundaries remain unavailable. Other entropy backends still require their own
-complete admission and hand-checkable serialized vector before release.
+header, descriptor, payload, state, padding, or reset rule.
+
+Interoperability schema 40 freezes all 49 schema-39 entries and appends the
+explicit `lzss-contextual-tans-1m` CLI archive as entry 50. The common fixture
+proves exact `2/3 + 1/2 + 5/2` identity and deterministic re-encoding but
+cannot require a distance above 65,536. Contextual tANS now has complete
+internal, streaming, public C, CLI, benchmark, fuzz, and local schema-40
+admission for the selected profile. Schema 40 changes only bundle inventory
+and manifest identity; no stream representation changes.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

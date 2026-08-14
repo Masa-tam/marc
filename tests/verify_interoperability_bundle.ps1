@@ -121,6 +121,8 @@ $schema38Profiles = $schema37Profiles + @(
     'lzss-contextual-dynamic-range-1m')
 $schema39Profiles = $schema38Profiles + @(
     'lzss-contextual-rans-1m')
+$schema40Profiles = $schema39Profiles + @(
+    'lzss-contextual-tans-1m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -316,6 +318,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema39Profiles
+} elseif ($manifest.schema_version -eq 40) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v40') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema40Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
