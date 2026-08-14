@@ -5222,5 +5222,8 @@ The selected private profile half is implemented. Its two-value configuration
 publishes the exact dictionary/context identity and model entry count, uses the
 selected descriptor ceiling in encoder and decoder storage, and preserves the
 fixed transition-table and HashChain extents. Default construction retains all
-64 KiB requirements exactly. Streaming still rejects variant 2 until the
-following state-machine admission commit.
+64 KiB requirements exactly. The streaming encoder now accepts either exact
+profile identity. The decoder applies `any/64k/1m` admission immediately after
+transactional header parsing, before frame collection. A selected profile
+round trips an extended-distance HashChain frame under one-byte input/output;
+public factories remain the following boundary.

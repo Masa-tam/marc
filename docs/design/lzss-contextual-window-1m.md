@@ -396,8 +396,13 @@ Profile selection and workspace calculation are now implemented. The 1 MiB
 profile publishes `2/3 + 1/2 + 5/2` with 4,550 frequency entries and increases
 the conservative serialized-frame requirement by exactly 64 bytes over the
 same 64 KiB raw extent. Unknown profile values and crossed dictionary limits
-leave requirements empty. The temporary streaming rejection remains in force
-until decoder admission and partial-buffer tests are implemented.
+leave requirements empty.
+
+The streaming half is now implemented as well. The selected encoder accepts
+the profile identity, and the decoder's `any/64k/1m` policy rejects mismatches
+before frame collection. A 65,546-byte selected frame is supplied and drained
+one byte at a time, contains a HashChain Match beyond 65,536, and round trips
+exactly. The private lifecycle is complete; public C selection remains next.
 
 ## Required validation
 

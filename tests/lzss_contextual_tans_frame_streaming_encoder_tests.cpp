@@ -1,5 +1,8 @@
 #include "frame/lzss_contextual_tans_frame_streaming_encoder.hpp"
 
+#include "frame/lzss_contextual_tans_frame_streaming_decoder.hpp"
+#include "frame/lzss_contextual_tans_profile.hpp"
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -16,6 +19,18 @@ using marc::core::ProcessFlags;
 using marc::core::StreamStatus;
 using marc::dictionary::internal::LzssTypedToken;
 using marc::entropy::internal::contextual_tans_encode_table_entries;
+
+struct AlignedWorkspace {
+    explicit AlignedWorkspace(const std::size_t size)
+        : storage((size + sizeof(std::max_align_t) - 1)
+                  / sizeof(std::max_align_t)) {}
+
+    [[nodiscard]] std::span<std::byte> bytes(const std::size_t size) {
+        return std::as_writable_bytes(std::span{storage}).first(size);
+    }
+
+    std::vector<std::max_align_t> storage;
+};
 
 [[nodiscard]] LzssContextualTansStreamHeader stream_config(
     const std::uint32_t frame_size,
@@ -88,6 +103,56 @@ using marc::entropy::internal::contextual_tans_encode_table_entries;
 
 [[nodiscard]] constexpr std::uint32_t end_flag() noexcept {
     return marc::core::flag_value(ProcessFlags::end_input);
+}
+
+[[nodiscard]] std::vector<std::byte> encode_one_byte_chunks(
+    LzssContextualTansFrameStreamingEncoder& encoder,
+    const std::span<const std::byte> input) {
+    std::vector<std::byte> output;
+    std::size_t input_offset{};
+    std::array<std::byte, 1> byte{};
+    StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, input.size() - input_offset);
+        const auto chunk = input.subspan(input_offset, count);
+        const auto flags = input_offset + count == input.size()
+            ? end_flag()
+            : 0U;
+        const auto result = encoder.process(chunk, byte, flags);
+        EXPECT_TRUE(marc::core::is_valid(result, chunk.size(), byte.size()));
+        EXPECT_NE(result.status, StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) output.push_back(byte[0]);
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    return output;
+}
+
+[[nodiscard]] std::vector<std::byte> decode_one_byte_chunks(
+    LzssContextualTansFrameStreamingDecoder& decoder,
+    const std::span<const std::byte> input) {
+    std::vector<std::byte> output;
+    std::size_t input_offset{};
+    std::array<std::byte, 1> byte{};
+    StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, input.size() - input_offset);
+        const auto chunk = input.subspan(input_offset, count);
+        const auto flags = input_offset + count == input.size()
+            ? end_flag()
+            : 0U;
+        const auto result = decoder.process(chunk, byte, flags);
+        EXPECT_TRUE(marc::core::is_valid(result, chunk.size(), byte.size()));
+        EXPECT_NE(result.status, StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) output.push_back(byte[0]);
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    return output;
 }
 
 } // namespace
@@ -331,10 +396,12 @@ TEST(LzssContextualTansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualTansFrameStreamingEncoder,
-     RejectsSelectedOneMiBIdentityUntilLifecycleSupport) {
+     AcceptsSelectedOneMiBIdentityAfterLifecycleAdmission) {
     auto selected = stream_config(1, 1);
+    selected.dictionary.window_size = UINT32_C(1) << 20;
     selected.dictionary_variant = 3;
     selected.context_variant = 2;
+    selected.frequency_entry_count = 4550;
     std::array<std::byte, 1> raw{};
     std::array<LzssTypedToken, 1> tokens{};
     auto table_storage = tables();
@@ -342,7 +409,81 @@ TEST(LzssContextualTansFrameStreamingEncoder,
     LzssContextualTansFrameStreamingEncoder encoder{
         selected, {}, raw, tokens, table_storage, frame};
 
-    const auto result = encoder.process({}, {}, 0);
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    std::array<std::byte, lzss_contextual_tans_stream_header_size> output{};
+    const auto result = encoder.process({}, output, 0);
+    EXPECT_EQ(result.status, StreamStatus::progress);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    EXPECT_EQ(result.output_produced, output.size());
+    EXPECT_EQ(output[14], std::byte{0x03});
+    EXPECT_EQ(output[98], std::byte{0x02});
+}
+
+TEST(LzssContextualTansFrameStreamingEncoder,
+     OneMiBProfileStreamsExtendedDistanceWithOneByteBuffers) {
+    constexpr std::size_t gap = 65536;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+
+    LzssContextualTansProfileConfig config{};
+    config.original_size = raw.size();
+    config.frame_size = static_cast<std::uint32_t>(raw.size());
+    config.dictionary.window_size = UINT32_C(1) << 20;
+    config.variant = LzssContextualTansProfileVariant::field_context_1m;
+    LzssContextualTansStreamHeader stream{};
+    LzssContextualTansEncoderWorkspaceRequirements encoder_requirements{};
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, {}, stream, encoder_requirements),
+              LzssContextualTansProfileError::none);
+    std::vector<std::byte> frame_input(
+        encoder_requirements.frame_input_bytes);
+    std::vector<std::byte> frame_encoded(
+        encoder_requirements.frame_encoded_bytes);
+    AlignedWorkspace encoder_owner(encoder_requirements.views_bytes);
+    LzssContextualTansEncoderViews encoder_views{};
+    ASSERT_EQ(partition_lzss_contextual_tans_encoder_views(
+                  encoder_requirements,
+                  encoder_owner.bytes(encoder_requirements.views_bytes),
+                  encoder_views),
+              LzssContextualTansWorkspaceError::none);
+    LzssContextualTansFrameStreamingEncoder encoder{
+        stream, {}, frame_input, encoder_views.tokens,
+        encoder_views.tables, encoder_views.match_finder, frame_encoded};
+    const auto encoded = encode_one_byte_chunks(encoder, raw);
+    ASSERT_EQ(encoded[14], std::byte{0x03});
+    ASSERT_EQ(encoded[98], std::byte{0x02});
+    ASSERT_TRUE(std::ranges::any_of(
+        encoder_views.tokens, [](const LzssTypedToken& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance > 65536;
+        }));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw.size();
+    limits.max_block_size = raw.size();
+    limits.max_compressed_payload_size = 1U << 20;
+    LzssContextualTansDecoderWorkspaceRequirements decoder_requirements{};
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder_requirements,
+                  LzssContextualTansProfileVariant::field_context_1m),
+              LzssContextualTansProfileError::none);
+    std::vector<std::byte> decode_encoded(
+        decoder_requirements.frame_encoded_bytes);
+    std::vector<std::byte> decode_raw(
+        decoder_requirements.frame_decoded_bytes);
+    AlignedWorkspace decoder_owner(decoder_requirements.views_bytes);
+    LzssContextualTansDecoderViews decoder_views{};
+    ASSERT_EQ(partition_lzss_contextual_tans_decoder_views(
+                  decoder_requirements,
+                  decoder_owner.bytes(decoder_requirements.views_bytes),
+                  decoder_views),
+              LzssContextualTansWorkspaceError::none);
+    LzssContextualTansFrameStreamingDecoder decoder{
+        limits, decode_encoded, decoder_views.tables, decoder_views.tokens,
+        decode_raw, LzssContextualTansStreamAdmission::field_context_1m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded), raw);
 }

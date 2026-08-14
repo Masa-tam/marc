@@ -11,6 +11,12 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualTansStreamAdmission : std::uint8_t {
+    any,
+    field_context_64k,
+    field_context_1m,
+};
+
 class LzssContextualTansFrameStreamingDecoder final
     : public core::Transform {
 public:
@@ -19,7 +25,9 @@ public:
         std::span<std::byte> serialized_frame_workspace,
         std::span<entropy::internal::TansDecodeEntry> table_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
-        std::span<std::byte> raw_frame_workspace) noexcept;
+        std::span<std::byte> raw_frame_workspace,
+        LzssContextualTansStreamAdmission admission =
+            LzssContextualTansStreamAdmission::any) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input,
@@ -50,6 +58,8 @@ private:
     std::span<entropy::internal::TansDecodeEntry> table_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<std::byte> raw_frame_workspace_{};
+    LzssContextualTansStreamAdmission admission_{
+        LzssContextualTansStreamAdmission::any};
     std::array<std::byte, lzss_contextual_tans_stream_header_size>
         stream_header_bytes_{};
     std::array<std::byte, lzss_contextual_tans_frame_header_size>

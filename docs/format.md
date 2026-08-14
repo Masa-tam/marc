@@ -6727,8 +6727,10 @@ exactly 131,072 entries for either layout. With `F` raw bytes, conservative
 complete-frame storage is `9F + 9,095` bytes for variant 1 or `9F + 9,159`
 bytes for variant 2, including the 64-byte frame header, descriptor maximum,
 and two-byte final tANS state. Crossed dictionary/context identities are
-malformed. The streaming and profile lifecycles do not yet admit variant 2 and
-reject that otherwise valid complete-frame identity explicitly.
+malformed. The private profile and streaming lifecycles admit variant 2 with
+the same selected ceilings. Streaming decoders may accept either supported
+identity or require exactly the 64 KiB or 1 MiB pair; admission policy is local
+API state and is not serialized.
 
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,

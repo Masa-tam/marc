@@ -297,19 +297,48 @@ TEST(LzssContextualTansFrameStreamingDecoder, RejectsRansStreamIdentity) {
 }
 
 TEST(LzssContextualTansFrameStreamingDecoder,
-     RejectsSelectedOneMiBIdentityUntilLifecycleSupport) {
-    auto encoded = stream(1);
+     AcceptsSelectedOneMiBEmptyIdentityAfterLifecycleAdmission) {
+    auto encoded = stream_header(1, 0);
     encoded[14] = std::byte{0x03};
+    encoded[66] = std::byte{0x10};
+    encoded[84] = std::byte{0xc6};
+    encoded[85] = std::byte{0x11};
     encoded[98] = std::byte{0x02};
-    std::array<std::byte, 96> frame{};
-    auto table_storage = tables();
-    std::array<LzssTypedToken, 1> tokens{};
-    std::array<std::byte, 1> raw{};
-    std::array<std::byte, 1> output{};
     LzssContextualTansFrameStreamingDecoder decoder{
-        {}, frame, table_storage, tokens, raw};
+        {}, {}, {}, {}, {}};
 
-    const auto result = decoder.process(encoded, output, end_flag());
+    const auto result = decoder.process(encoded, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+}
+
+TEST(LzssContextualTansFrameStreamingDecoder,
+     EnforcesExplicitProfileAdmissionBeforeFrames) {
+    const auto baseline = stream_header(1, 0);
+    LzssContextualTansFrameStreamingDecoder reject_baseline{
+        {}, {}, {}, {}, {},
+        LzssContextualTansStreamAdmission::field_context_1m};
+    auto result = reject_baseline.process(baseline, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+
+    auto extended = baseline;
+    extended[14] = std::byte{0x03};
+    extended[66] = std::byte{0x10};
+    extended[84] = std::byte{0xc6};
+    extended[85] = std::byte{0x11};
+    extended[98] = std::byte{0x02};
+    LzssContextualTansFrameStreamingDecoder reject_extended{
+        {}, {}, {}, {}, {},
+        LzssContextualTansStreamAdmission::field_context_64k};
+    result = reject_extended.process(extended, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+
+    LzssContextualTansFrameStreamingDecoder reject_unknown{
+        {}, {}, {}, {}, {},
+        static_cast<LzssContextualTansStreamAdmission>(255)};
+    result = reject_unknown.process(baseline, {}, end_flag());
     EXPECT_EQ(result.status, StreamStatus::error);
     EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
 }

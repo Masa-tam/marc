@@ -20584,3 +20584,32 @@ discarded and the reviewed seed retained.
   registered Release tests pass under MSVC in 175.71 seconds and ClangCL in
   176.95 seconds with the 300-second per-test limit, including interoperability
   schema compatibility and documentation layout.
+
+## CR-0861: 2026-08-15 - Contextual tANS selected streaming admission
+
+- Authoring method: completed DD-815 by replacing marc's temporary selected-
+  identity guards with explicit streaming admission, then added a selected
+  one-byte lifecycle vector using the admitted profile workspaces.
+- References used: DD-790 through DD-815; IR-0589; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0690; marc's frozen tANS state machines, selected frame
+  and profile, and dual-profile Contextual rANS streaming admission.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, streaming lifecycles, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: let the encoder rely on complete stream validation;
+  make decoder admission non-serialized local state; retain `any` as the
+  source-compatible default; reject explicit mismatches before frames; and
+  prove extended distance through one-byte input and output.
+- Generated-code task description: remove the selected encoder guard; add
+  `any/64k/1m` decoder admission; replace temporary rejection tests with empty
+  selected acceptance and mismatch rejection; construct a profile-driven
+  extended-distance streaming round trip; preserve all default bytes.
+- Similarity review: the implementation generalizes only marc-owned streaming,
+  profile, selected-layout, tANS, typed-token, and HashChain code. No external
+  implementation expression entered the code or tests.
+- Local validation: selected empty streams terminate under `any`, explicit
+  admissions reject the opposite identity before frames, and a 65,546-byte
+  raw frame with a Match beyond 65,536 round trips through one-byte input and
+  output. All 2,914 registered Release tests pass under MSVC in 175.54 seconds
+  and ClangCL in 177.51 seconds with the 300-second per-test limit, including
+  interoperability schema compatibility and documentation layout.
