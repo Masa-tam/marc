@@ -24,13 +24,14 @@ namespace {
 
 [[nodiscard]] bool normalize_context(
     const std::uint16_t context_id,
-    const std::array<std::uint32_t, contextual_tans_frequency_entries>& counts,
+    const std::array<std::uint32_t, contextual_tans_frequency_capacity>& counts,
     const std::array<std::uint32_t, contextual_tans_context_count>& totals,
-    ContextualCompactFrequencies& frequencies) noexcept {
+    ContextualCompactFrequencies& frequencies,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
     const auto total = totals[context_id];
     if (total == 0) return true;
-    const auto begin = context::internal::lzss_field_context_offsets[context_id];
-    const auto end = context::internal::lzss_field_context_offsets[context_id + 1];
+    const auto begin = (*layout.offsets)[context_id];
+    const auto end = (*layout.offsets)[context_id + 1];
     std::uint32_t sum{};
     for (auto index = begin; index < end; ++index) {
         if (counts[index] == 0) continue;
@@ -83,11 +84,11 @@ namespace {
 
 [[nodiscard]] TansDescriptor context_descriptor(
     const ContextualTansDescriptor& descriptor,
-    const std::size_t context_id) noexcept {
+    const std::size_t context_id,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
     TansDescriptor table{};
-    const auto begin = context::internal::lzss_field_context_offsets[context_id];
-    const auto alphabet =
-        context::internal::lzss_field_context_alphabets[context_id];
+    const auto begin = (*layout.offsets)[context_id];
+    const auto alphabet = (*layout.alphabets)[context_id];
     std::copy_n(
         descriptor.frequencies.begin() + begin, alphabet,
         table.frequencies.begin());
@@ -106,8 +107,9 @@ namespace {
 [[nodiscard]] std::uint16_t cumulative_for(
     const ContextualTansDescriptor& descriptor,
     const std::uint16_t context_id,
-    const std::uint32_t value) noexcept {
-    const auto offset = context::internal::lzss_field_context_offsets[context_id];
+    const std::uint32_t value,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
+    const auto offset = (*layout.offsets)[context_id];
     std::uint32_t cumulative{};
     for (std::uint32_t symbol = 0; symbol < value; ++symbol) {
         cumulative += descriptor.frequencies[offset + symbol];
@@ -117,19 +119,27 @@ namespace {
 
 } // namespace
 
+ContextualTansModelBuilder::ContextualTansModelBuilder(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    layout_ = context::internal::get_lzss_field_context_layout(variant).layout;
+}
+
 ContextualTansEncodeError ContextualTansModelBuilder::add_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet,
     const std::uint32_t value) noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualTansEncodeError::unsupported_context_variant;
+    }
     if (context_id >= contextual_tans_context_count) {
         return ContextualTansEncodeError::invalid_context;
     }
     if (alphabet
-        != context::internal::lzss_field_context_alphabets[context_id]) {
+        != (*layout_.alphabets)[context_id]) {
         return ContextualTansEncodeError::invalid_alphabet;
     }
     if (value >= alphabet) return ContextualTansEncodeError::invalid_symbol;
     const auto index =
-        context::internal::lzss_field_context_offsets[context_id] + value;
+        (*layout_.offsets)[context_id] + value;
     if (counts_[index] == UINT32_MAX || totals_[context_id] == UINT32_MAX
         || decision_count_ == UINT32_MAX) {
         return ContextualTansEncodeError::arithmetic_overflow;
@@ -142,7 +152,10 @@ ContextualTansEncodeError ContextualTansModelBuilder::add_symbol(
 
 ContextualTansEncodeError ContextualTansModelBuilder::add_bypass(
     const std::uint8_t bit_count, const std::uint32_t value) noexcept {
-    if (bit_count == 0 || bit_count > 16) {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualTansEncodeError::unsupported_context_variant;
+    }
+    if (bit_count == 0 || bit_count > layout_.maximum_bypass_bits) {
         return ContextualTansEncodeError::invalid_bypass_width;
     }
     if ((value >> bit_count) != 0) {
@@ -159,16 +172,21 @@ ContextualTansEncodeError ContextualTansModelBuilder::add_bypass(
 
 ContextualTansEncodeError ContextualTansModelBuilder::finish(
     ContextualTansDescriptor& descriptor) const noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualTansEncodeError::unsupported_context_variant;
+    }
     if (decision_count_ == 0) {
         return ContextualTansEncodeError::empty_operations;
     }
     ContextualTansDescriptor planned{};
     planned.decision_count = decision_count_;
     planned.payload_size = static_cast<std::uint32_t>(tans_min_payload_size);
+    planned.frequency_entry_count =
+        static_cast<std::uint32_t>(layout_.frequency_entries);
     for (std::uint16_t context_id = 0;
          context_id < contextual_tans_context_count; ++context_id) {
         if (!normalize_context(
-                context_id, counts_, totals_, planned.frequencies)) {
+                context_id, counts_, totals_, planned.frequencies, layout_)) {
             return ContextualTansEncodeError::normalization_error;
         }
     }
@@ -179,12 +197,13 @@ ContextualTansEncodeError ContextualTansModelBuilder::finish(
 ContextualTansEncodeError build_contextual_tans_encode_tables(
     const ContextualTansDescriptor& descriptor,
     const core::DecoderLimits& limits,
-    const std::span<std::uint16_t> output) noexcept {
+    const std::span<std::uint16_t> output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     const auto snapshot = descriptor;
     std::size_t descriptor_size{};
     const auto format_error = validate_contextual_tans_descriptor(
         snapshot, snapshot.decision_count, snapshot.payload_size, limits,
-        descriptor_size);
+        descriptor_size, variant);
     if (format_error == ContextualTansFormatError::limit_exceeded) {
         return ContextualTansEncodeError::limit_exceeded;
     }
@@ -197,19 +216,25 @@ ContextualTansEncodeError build_contextual_tans_encode_tables(
     if (output.size() < contextual_tans_encode_table_entries) {
         return ContextualTansEncodeError::table_output_too_small;
     }
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualTansEncodeError::unsupported_context_variant;
+    }
+    const auto& layout = selected.layout;
     TansTables scratch{};
     for (std::size_t context_id = 0;
          context_id < contextual_tans_context_count; ++context_id) {
         const auto begin =
-            context::internal::lzss_field_context_offsets[context_id];
-        const auto end =
-            context::internal::lzss_field_context_offsets[context_id + 1];
+            (*layout.offsets)[context_id];
+        const auto end = (*layout.offsets)[context_id + 1];
         const bool active = std::any_of(
             snapshot.frequencies.begin() + begin,
             snapshot.frequencies.begin() + end,
             [](const auto frequency) { return frequency != 0; });
         if (!active) continue;
-        if (build_tans_tables(context_descriptor(snapshot, context_id),
+        if (build_tans_tables(context_descriptor(snapshot, context_id, layout),
                               scratch) != TansTableError::none) {
             return ContextualTansEncodeError::table_error;
         }
@@ -224,16 +249,15 @@ ContextualTansEncodeError build_contextual_tans_encode_tables(
     for (std::size_t context_id = 0;
          context_id < contextual_tans_context_count; ++context_id) {
         const auto begin =
-            context::internal::lzss_field_context_offsets[context_id];
-        const auto end =
-            context::internal::lzss_field_context_offsets[context_id + 1];
+            (*layout.offsets)[context_id];
+        const auto end = (*layout.offsets)[context_id + 1];
         const bool active = std::any_of(
             snapshot.frequencies.begin() + begin,
             snapshot.frequencies.begin() + end,
             [](const auto frequency) { return frequency != 0; });
         if (!active) continue;
         const auto ignored = build_tans_tables(
-            context_descriptor(snapshot, context_id), scratch);
+            context_descriptor(snapshot, context_id, layout), scratch);
         (void)ignored;
         std::copy(
             scratch.encode_states.begin(), scratch.encode_states.end(),
@@ -251,8 +275,17 @@ ContextualTansEncodeError build_contextual_tans_encode_tables(
 ContextualTansReverseWriter::ContextualTansReverseWriter(
     const ContextualTansDescriptor& descriptor,
     const std::span<const std::uint16_t> encode_tables,
-    const std::span<std::byte> output) noexcept
+    const std::span<std::byte> output,
+    const context::internal::LzssFieldContextVariant variant) noexcept
     : descriptor_(descriptor), encode_tables_(encode_tables), output_(output) {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    layout_ = selected.layout;
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        error_ = ContextualTansEncodeError::unsupported_context_variant;
+        return;
+    }
     if (!output_.empty()) {
         std::size_t total_bits{};
         if (descriptor_.payload_size > tans_min_payload_size
@@ -334,25 +367,31 @@ ContextualTansEncodeError ContextualTansReverseWriter::encode_transition(
 ContextualTansEncodeError ContextualTansReverseWriter::encode_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet,
     const std::uint32_t value) noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return error_ = ContextualTansEncodeError::unsupported_context_variant;
+    }
     if (context_id >= contextual_tans_context_count) {
         return error_ = ContextualTansEncodeError::invalid_context;
     }
     if (alphabet
-        != context::internal::lzss_field_context_alphabets[context_id]) {
+        != (*layout_.alphabets)[context_id]) {
         return error_ = ContextualTansEncodeError::invalid_alphabet;
     }
     if (value >= alphabet) {
         return error_ = ContextualTansEncodeError::invalid_symbol;
     }
-    const auto offset = context::internal::lzss_field_context_offsets[context_id];
+    const auto offset = (*layout_.offsets)[context_id];
     return encode_transition(
-        context_id, cumulative_for(descriptor_, context_id, value),
+        context_id, cumulative_for(descriptor_, context_id, value, layout_),
         descriptor_.frequencies[offset + value]);
 }
 
 ContextualTansEncodeError ContextualTansReverseWriter::encode_bypass(
     const std::uint8_t bit_count, const std::uint32_t value) noexcept {
-    if (bit_count == 0 || bit_count > 16) {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return error_ = ContextualTansEncodeError::unsupported_context_variant;
+    }
+    if (bit_count == 0 || bit_count > layout_.maximum_bypass_bits) {
         return error_ = ContextualTansEncodeError::invalid_bypass_width;
     }
     if ((value >> bit_count) != 0) {

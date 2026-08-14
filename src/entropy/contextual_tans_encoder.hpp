@@ -24,14 +24,18 @@ struct ContextualTansEncodeResult {
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     std::span<std::uint16_t> private_encode_tables,
-    ContextualTansDescriptor& descriptor) noexcept;
+    ContextualTansDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualTansEncodeResult encode_contextual_tans_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     std::span<std::uint16_t> private_encode_tables,
     std::span<std::byte> payload_output,
-    ContextualTansDescriptor& descriptor) noexcept;
+    ContextualTansDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

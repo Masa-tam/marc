@@ -52,9 +52,10 @@ using context::internal::ModeledOperationKind;
 
 [[nodiscard]] ContextualTansEncodeResult plan_model(
     const std::span<const ModeledOperation> operations,
-    ContextualTansDescriptor& descriptor) noexcept {
+    ContextualTansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualTansEncodeResult result{};
-    ContextualTansModelBuilder builder;
+    ContextualTansModelBuilder builder{variant};
     for (const auto& operation : operations) {
         result.operation_index = result.operation_count;
         const auto error = add_operation(builder, operation);
@@ -78,8 +79,9 @@ using context::internal::ModeledOperationKind;
     const std::span<const std::uint16_t> tables,
     const std::span<std::byte> output,
     std::size_t& payload_size,
-    std::uint8_t& final_valid_bits) noexcept {
-    ContextualTansReverseWriter writer(descriptor, tables, output);
+    std::uint8_t& final_valid_bits,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    ContextualTansReverseWriter writer(descriptor, tables, output, variant);
     for (std::size_t reverse = operations.size(); reverse != 0; --reverse) {
         const auto error = encode_operation(writer, operations[reverse - 1]);
         if (error != ContextualTansEncodeError::none) return error;
@@ -128,7 +130,8 @@ ContextualTansEncodeResult plan_contextual_tans_operations(
     const std::span<const ModeledOperation> operations,
     const core::DecoderLimits& limits,
     const std::span<std::uint16_t> private_encode_tables,
-    ContextualTansDescriptor& descriptor) noexcept {
+    ContextualTansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualTansEncodeResult result{};
     if (operations.empty()) {
         return fail(result, ContextualTansEncodeError::empty_operations);
@@ -170,10 +173,10 @@ ContextualTansEncodeResult plan_contextual_tans_operations(
         return fail(result, ContextualTansEncodeError::limit_exceeded);
     }
     ContextualTansDescriptor planned{};
-    result = plan_model(operations, planned);
+    result = plan_model(operations, planned, variant);
     if (result.error != ContextualTansEncodeError::none) return result;
     const auto table_error = build_contextual_tans_encode_tables(
-        planned, limits, private_encode_tables);
+        planned, limits, private_encode_tables, variant);
     if (table_error != ContextualTansEncodeError::none) {
         return fail(result, table_error);
     }
@@ -181,7 +184,7 @@ ContextualTansEncodeResult plan_contextual_tans_operations(
     const auto encode_error = run_reverse(
         operations, planned,
         private_encode_tables.first(contextual_tans_encode_table_entries), {},
-        result.payload_size, final_valid_bits);
+        result.payload_size, final_valid_bits, variant);
     if (encode_error != ContextualTansEncodeError::none) {
         return fail(result, encode_error);
     }
@@ -193,7 +196,7 @@ ContextualTansEncodeResult plan_contextual_tans_operations(
     std::size_t descriptor_size{};
     const auto format_error = validate_contextual_tans_descriptor(
         planned, planned.decision_count, planned.payload_size, limits,
-        descriptor_size);
+        descriptor_size, variant);
     if (format_error == ContextualTansFormatError::limit_exceeded) {
         return fail(result, ContextualTansEncodeError::limit_exceeded);
     }
@@ -220,7 +223,8 @@ ContextualTansEncodeResult encode_contextual_tans_operations(
     const core::DecoderLimits& limits,
     const std::span<std::uint16_t> private_encode_tables,
     const std::span<std::byte> payload_output,
-    ContextualTansDescriptor& descriptor) noexcept {
+    ContextualTansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualTansEncodeResult initial{};
     std::size_t operation_bytes{};
     std::size_t table_bytes{};
@@ -244,7 +248,7 @@ ContextualTansEncodeResult encode_contextual_tans_operations(
     }
     ContextualTansDescriptor planned{};
     auto result = plan_contextual_tans_operations(
-        operations, limits, private_encode_tables, planned);
+        operations, limits, private_encode_tables, planned, variant);
     if (result.error != ContextualTansEncodeError::none) return result;
     if (payload_output.size() < result.payload_size) {
         return fail(result,
@@ -257,7 +261,7 @@ ContextualTansEncodeResult encode_contextual_tans_operations(
     const auto error = run_reverse(
         operations, planned,
         private_encode_tables.first(contextual_tans_encode_table_entries),
-        output, encoded_size, final_valid_bits);
+        output, encoded_size, final_valid_bits, variant);
     if (error != ContextualTansEncodeError::none
         || encoded_size != result.payload_size
         || final_valid_bits != planned.final_valid_bits) {

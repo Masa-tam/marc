@@ -5194,6 +5194,10 @@ retains the exact 27-through-9,029-byte representation, while variant 2
 addresses all 4,550 entries and admits the reserved 27-through-9,093-byte
 grammar. Descriptor length and serialized entry count never select the
 layout. Analysis, parsing, validation, and serialization use the selected
-compact-model offsets and alphabets transactionally. The tANS coding core,
-131,072-entry transition workspace, typed-token bridge, frame identity,
+compact-model offsets and alphabets transactionally. The tANS coding core now
+propagates the same immutable selection through model normalization,
+encode/decode transition-table construction, reverse state writing, forward
+state decoding, and operation-level planning and encoding. It reserves the
+fixed 131,072-entry transition workspace for either layout and applies the
+selected 16- or 20-bit bypass ceiling. The typed-token bridge, frame identity,
 streaming lifecycle, public API, CLI, and schema remain on the frozen route.

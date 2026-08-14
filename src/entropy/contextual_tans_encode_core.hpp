@@ -15,6 +15,7 @@ inline constexpr std::size_t contextual_tans_encode_table_entries =
 
 enum class ContextualTansEncodeError : std::uint8_t {
     none,
+    unsupported_context_variant,
     empty_operations,
     invalid_operation_kind,
     invalid_context,
@@ -34,6 +35,11 @@ enum class ContextualTansEncodeError : std::uint8_t {
 
 class ContextualTansModelBuilder {
 public:
+    explicit ContextualTansModelBuilder(
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::field_context_64k)
+        noexcept;
+
     [[nodiscard]] ContextualTansEncodeError add_symbol(
         std::uint16_t context_id,
         std::uint16_t alphabet,
@@ -51,7 +57,8 @@ public:
     }
 
 private:
-    std::array<std::uint32_t, contextual_tans_frequency_entries> counts_{};
+    context::internal::LzssFieldContextLayout layout_{};
+    std::array<std::uint32_t, contextual_tans_frequency_capacity> counts_{};
     std::array<std::uint32_t, contextual_tans_context_count> totals_{};
     std::uint32_t decision_count_{};
 };
@@ -59,14 +66,19 @@ private:
 [[nodiscard]] ContextualTansEncodeError build_contextual_tans_encode_tables(
     const ContextualTansDescriptor& descriptor,
     const core::DecoderLimits& limits,
-    std::span<std::uint16_t> output) noexcept;
+    std::span<std::uint16_t> output,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 class ContextualTansReverseWriter {
 public:
     ContextualTansReverseWriter(
         const ContextualTansDescriptor& descriptor,
         std::span<const std::uint16_t> encode_tables,
-        std::span<std::byte> output) noexcept;
+        std::span<std::byte> output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::field_context_64k)
+        noexcept;
 
     [[nodiscard]] ContextualTansEncodeError encode_symbol(
         std::uint16_t context_id,
@@ -88,6 +100,7 @@ private:
         std::uint16_t frequency) noexcept;
 
     const ContextualTansDescriptor& descriptor_;
+    context::internal::LzssFieldContextLayout layout_{};
     std::span<const std::uint16_t> encode_tables_{};
     std::span<std::byte> output_{};
     std::uint32_t state_{contextual_tans_total_frequency};

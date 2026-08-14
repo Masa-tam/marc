@@ -42,7 +42,9 @@ build_contextual_tans_decode_tables(
     const ContextualTansDescriptor& descriptor,
     const core::DecoderLimits& limits,
     std::span<TansDecodeEntry> output,
-    ContextualTansDecodeTables& tables) noexcept;
+    ContextualTansDecodeTables& tables,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

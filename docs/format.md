@@ -6698,6 +6698,17 @@ transition-table storage remains exactly 131,072 entries. Crossed counts,
 unsupported layout values, and records outside the selected alphabet are
 malformed.
 
+The Contextual tANS coding core receives that same externally selected layout;
+neither descriptor length nor operation contents may change it. Model counts
+reserve 4,550 entries but normalize only the selected 4,518 or 4,550 entries.
+Symbol transitions use the selected context offsets and alphabets, while the
+implicit bypass table remains binary and fixed at 4,096 states. Variant 1
+admits at most 16 LSB-first bypass decisions per bypass operation and variant 2
+admits at most 20. Both variants retain exactly 32 transition regions (31
+Symbol contexts plus bypass), hence 131,072 encode entries and 131,072 decode
+entries. The tANS state, bit order, payload, padding, and terminal-state rules
+are otherwise unchanged.
+
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
 public C, CLI, benchmark, fuzz, and schema-38 interoperability admission.

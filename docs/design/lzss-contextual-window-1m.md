@@ -337,6 +337,14 @@ Symbol regions and one bypass region of 4,096 entries each. A class-20 Symbol
 plus 20-bit bypass vector proves the new route before typed-token or frame
 integration.
 
+That coding-core stage is implemented. Variant 1 remains the default and
+retains its frozen operation bytes. An explicit variant-2 operation sequence
+normalizes distance context 23 over alphabet 21, writes and decodes class 20,
+then writes and decodes the LSB-first value `0xabcde` using 20 bypass
+decisions. Crossed alphabets and unsupported variants fail before publishing a
+descriptor. Typed-token composition and every outer tANS boundary remain a
+later stage.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

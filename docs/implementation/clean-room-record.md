@@ -20391,3 +20391,34 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned model, table, state,
   and context abstractions. No external implementation expression entered the
   design.
+
+## CR-0854: 2026-08-14 - Contextual tANS selected coding-core admission
+
+- Authoring method: implemented DD-812 over marc's selected tANS descriptor,
+  existing operation coder, and repository-owned field-context layouts, with
+  the extended operation test written first.
+- References used: DD-790 through DD-812; IR-0586; TVG-0665; TVG-0666;
+  TVG-0686; TVG-0687; marc's frozen Contextual tANS vectors and completed
+  selected Contextual rANS core.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, transition tables, state coders, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: keep variant 1 as every default; store one immutable
+  selected layout in each stateful builder, writer, and decoder; reserve the
+  maximum 4,550-entry count bank while iterating only the selected entries;
+  retain one fixed 131,072-entry transition extent; and stop before typed-token
+  or frame integration.
+- Generated-code task description: add the class-20 plus 20-bit-bypass failing
+  operation vector; propagate explicit layout selection through model
+  normalization, encode/decode table construction, reverse writing, forward
+  decoding, and operation-level plan/encode entry points; preserve frozen
+  defaults and atomic failures.
+- Similarity review: the implementation generalizes only marc-owned tANS and
+  selected-layout abstractions. No external implementation expression entered
+  the code or tests.
+- Local validation: the selected vector encodes and decodes class 20 followed
+  by LSB-first `0xabcde` in 20 bypass decisions; frozen calls retain variant 1;
+  crossed alphabets and unsupported variants fail atomically. All 2,907
+  registered Release tests pass under MSVC in 165.67 seconds and ClangCL in
+  176.31 seconds with the 300-second per-test limit, including interoperability
+  schema compatibility and documentation layout.

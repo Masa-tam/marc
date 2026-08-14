@@ -47,7 +47,10 @@ public:
         const ContextualTansDescriptor& descriptor,
         std::span<const std::byte> payload,
         const core::DecoderLimits& limits,
-        std::span<TansDecodeEntry> table_output) noexcept;
+        std::span<TansDecodeEntry> table_output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::field_context_64k)
+        noexcept;
 
     [[nodiscard]] ContextualTansDecodeResult decode_symbol(
         std::uint16_t expected_context,
@@ -74,6 +77,7 @@ private:
 
     std::span<const std::byte> payload_{};
     std::span<const TansDecodeEntry> tables_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::array<bool, contextual_tans_context_count> active_contexts_{};
     std::array<bool, contextual_tans_context_count> requested_contexts_{};
     std::uint32_t state_{};

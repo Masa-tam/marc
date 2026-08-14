@@ -13,6 +13,7 @@ void ContextualTansDecoder::reset() noexcept {
     tables_ = {};
     active_contexts_.fill(false);
     requested_contexts_.fill(false);
+    layout_ = {};
     state_ = 0;
     total_bits_ = 0;
     bit_offset_ = 0;
@@ -38,7 +39,8 @@ ContextualTansDecodeResult ContextualTansDecoder::begin(
     const ContextualTansDescriptor& descriptor,
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
-    const std::span<TansDecodeEntry> table_output) noexcept {
+    const std::span<TansDecodeEntry> table_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     reset();
     if (payload.size() != descriptor.payload_size) {
         return fail(ContextualTansDecodeError::payload_size_mismatch);
@@ -46,7 +48,8 @@ ContextualTansDecodeResult ContextualTansDecoder::begin(
     std::size_t descriptor_size{};
     if (validate_contextual_tans_descriptor(
             descriptor, descriptor.decision_count, descriptor.payload_size,
-            limits, descriptor_size) != ContextualTansFormatError::none) {
+            limits, descriptor_size, variant)
+        != ContextualTansFormatError::none) {
         return fail(ContextualTansDecodeError::invalid_descriptor);
     }
 
@@ -76,7 +79,7 @@ ContextualTansDecodeResult ContextualTansDecoder::begin(
 
     ContextualTansDecodeTables built{};
     const auto table_result = build_contextual_tans_decode_tables(
-        descriptor, limits, table_output, built);
+        descriptor, limits, table_output, built, variant);
     if (table_result.error
         == ContextualTansDecodeTableError::output_too_small) {
         return fail(ContextualTansDecodeError::table_output_too_small);
@@ -87,10 +90,17 @@ ContextualTansDecodeResult ContextualTansDecoder::begin(
                         ? ContextualTansDecodeError::invalid_descriptor
                         : ContextualTansDecodeError::invalid_table);
     }
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(ContextualTansDecodeError::invalid_descriptor);
+    }
 
     payload_ = payload;
     tables_ = built.entries;
     active_contexts_ = built.active_contexts;
+    layout_ = selected.layout;
     state_ = contextual_tans_total_frequency + offset;
     total_bits_ = total_bits;
     expected_decisions_ = descriptor.decision_count;
@@ -157,7 +167,7 @@ ContextualTansDecodeResult ContextualTansDecoder::decode_symbol(
         return fail(ContextualTansDecodeError::invalid_context);
     }
     if (expected_alphabet
-        != context::internal::lzss_field_context_alphabets[expected_context]) {
+        != (*layout_.alphabets)[expected_context]) {
         return fail(ContextualTansDecodeError::invalid_alphabet);
     }
     if (!active_contexts_[expected_context]) {
@@ -189,7 +199,8 @@ ContextualTansDecodeResult ContextualTansDecoder::decode_bypass(
     }
     if (error_ != ContextualTansDecodeError::none) return result();
     if (finished_) return fail(ContextualTansDecodeError::already_finished);
-    if (expected_bit_count == 0 || expected_bit_count > 16) {
+    if (expected_bit_count == 0
+        || expected_bit_count > layout_.maximum_bypass_bits) {
         return fail(ContextualTansDecodeError::invalid_bypass_width);
     }
     if (decision_count_ > expected_decisions_

@@ -29,6 +29,14 @@ using namespace marc::entropy::internal;
     };
 }
 
+[[nodiscard]] constexpr auto extended_operations() {
+    return std::array{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 21, 20, 0},
+        ModeledOperation{
+            ModeledOperationKind::bypass_bits, 0, 0, 0xabcde, 20},
+    };
+}
+
 [[nodiscard]] std::vector<std::uint16_t> encode_tables() {
     return std::vector<std::uint16_t>(contextual_tans_encode_table_entries);
 }
@@ -110,6 +118,61 @@ TEST(ContextualTansEncoder, EncodesAndDecodesLsbFirstBypassVector) {
               ContextualTansDecodeError::none);
     EXPECT_EQ(value, 2U);
     EXPECT_EQ(decoder.finish(2, 3).error, ContextualTansDecodeError::none);
+}
+
+TEST(ContextualTansEncoder, SelectedLayoutEncodesClassTwentyAndBypassTwenty) {
+    constexpr auto operations = extended_operations();
+    constexpr auto variant = LzssFieldContextVariant::field_context_1m;
+    auto tables = encode_tables();
+    ContextualTansDescriptor descriptor{};
+    const auto plan = plan_contextual_tans_operations(
+        operations, {}, tables, descriptor, variant);
+    ASSERT_EQ(plan.error, ContextualTansEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 21U);
+    EXPECT_EQ(descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v2);
+    const auto offset = lzss_field_context_offsets_v2[23];
+    EXPECT_EQ(descriptor.frequencies[offset + 20], 4096U);
+    EXPECT_EQ(plan.required_table_entries,
+              contextual_tans_encode_table_entries);
+
+    std::vector<std::byte> payload(plan.payload_size);
+    const auto encoded = encode_contextual_tans_operations(
+        operations, {}, tables, payload, descriptor, variant);
+    ASSERT_EQ(encoded.error, ContextualTansEncodeError::none);
+    EXPECT_EQ(encoded.payload_size, plan.payload_size);
+
+    auto decoder_tables = decode_tables();
+    ContextualTansDecoder decoder;
+    ASSERT_EQ(decoder.begin(
+                  descriptor, payload, {}, decoder_tables, variant).error,
+              ContextualTansDecodeError::none);
+    std::uint32_t value{};
+    ASSERT_EQ(decoder.decode_symbol(23, 21, value).error,
+              ContextualTansDecodeError::none);
+    EXPECT_EQ(value, 20U);
+    ASSERT_EQ(decoder.decode_bypass(20, value).error,
+              ContextualTansDecodeError::none);
+    EXPECT_EQ(value, 0xabcdeU);
+    EXPECT_EQ(decoder.finish(2, 21).error,
+              ContextualTansDecodeError::none);
+
+    ContextualTansDescriptor sentinel{};
+    sentinel.decision_count = 0xa5a5;
+    EXPECT_EQ(plan_contextual_tans_operations(
+                  operations, {}, tables, sentinel).error,
+              ContextualTansEncodeError::invalid_alphabet);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+    constexpr std::array crossed{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 17, 16, 0}};
+    EXPECT_EQ(plan_contextual_tans_operations(
+                  crossed, {}, tables, sentinel, variant).error,
+              ContextualTansEncodeError::invalid_alphabet);
+    EXPECT_EQ(plan_contextual_tans_operations(
+                  operations, {}, tables, sentinel,
+                  static_cast<LzssFieldContextVariant>(0xff)).error,
+              ContextualTansEncodeError::unsupported_context_variant);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
 }
 
 TEST(ContextualTansEncoder, NormalizesAndRoundTripsAlternatingContext) {
