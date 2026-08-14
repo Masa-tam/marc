@@ -20043,3 +20043,33 @@ discarded and the reviewed seed retained.
 - Similarity review: the design reuses only marc-owned format, profile,
   workspace, frame, and streaming components. No external implementation
   expression entered the design.
+
+## CR-0839: 2026-08-14 - Selected-layout Contextual rANS lifecycle
+
+- Authoring method: implemented DD-805 over marc's selected complete-frame
+  path, existing rANS workspace partitioners, and caller-owned stream state
+  machines.
+- References used: DD-790 through DD-805; IR-0579; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0680; marc's selected Contextual Dynamic Range profile
+  and lifecycle tests.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, lifecycle code, workspace policies, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: expose two internal profile values; derive the
+  descriptor ceiling from the selected layout; retain the fixed decode-table
+  count; let the private decoder auto-select valid serialized identity; and
+  keep explicit selection policy out of the public surface until later.
+- Generated-code task description: implement selected profile construction,
+  encoder and decoder workspace sizing, lifecycle admission, frozen 64 KiB
+  bounds, extended-distance one-byte streaming, unsupported selection, and
+  workspace boundary regressions.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned profile, format, frame, HashChain, workspace, and streaming code. No
+  external implementation expression entered the change.
+- Local validation: both profile variants retain their selected exact header
+  and descriptor bounds while sharing 126,976 decode-table entries; a
+  profile-derived one-byte-buffer lifecycle emits a real distance above
+  65,536 and round trips exactly; unsupported selections remain atomic; and
+  all 2,895 registered tests pass under MSVC and ClangCL Release
+  configurations with the 240-second per-test limit, including schema
+  compatibility and documentation layout.

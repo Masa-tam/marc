@@ -272,15 +272,19 @@ but variant 1 requires its unused 32-entry tail to be zero. Descriptor,
 coding-core, and direct token-composition stages retain variant 1 as their
 default while accepting an explicit selected layout.
 
-The canonical rANS complete-frame stage is now admitted internally. The
-stream header serializes and parses the reserved `2/3 + 1/2 + 4/3` identity,
+The canonical rANS complete-frame and streaming-lifecycle stages are now
+admitted internally. The stream header serializes and parses the reserved
+`2/3 + 1/2 + 4/3` identity,
 then selects one immutable layout for frame-count bounds, descriptor parsing,
 exact HashChain tokenization, direct token coding, decode-table construction,
-and typed-token reconstruction. A deterministic frame proves a generated
-distance above 65,536 and exact raw round trip, while the frozen 64 KiB literal
-frame remains unchanged. Streaming lifecycle code explicitly rejects the new
-identity until its profile and workspace admission is completed; public C,
-CLI, benchmark, fuzz, and interoperability stages also remain separate.
+and typed-token reconstruction. The internal profile explicitly selects the
+64 KiB or 1 MiB layout and derives caller-owned frame, token, HashChain,
+descriptor, decode-table, and raw workspace bounds. A deterministic one-byte-
+buffer lifecycle proves a generated distance above 65,536 and exact raw round
+trip, while the frozen 64 KiB requirements and bytes remain unchanged. The
+private decoder auto-selects a valid serialized identity; explicit profile
+policy belongs to the later public selector. Public C, CLI, benchmark, fuzz,
+and interoperability stages remain separate.
 
 ## Required validation
 

@@ -12,10 +12,17 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualRansProfileVariant : std::uint8_t {
+    field_context_64k,
+    field_context_1m,
+};
+
 struct LzssContextualRansProfileConfig {
     std::uint64_t original_size{};
     std::uint32_t frame_size{UINT32_C(1) << 16};
     dictionary::internal::LzssParameters dictionary{};
+    LzssContextualRansProfileVariant variant{
+        LzssContextualRansProfileVariant::field_context_64k};
 };
 
 struct LzssContextualRansEncoderWorkspaceRequirements {
@@ -74,7 +81,9 @@ make_lzss_contextual_rans_profile(
 [[nodiscard]] LzssContextualRansProfileError
 calculate_lzss_contextual_rans_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualRansDecoderWorkspaceRequirements& workspace) noexcept;
+    LzssContextualRansDecoderWorkspaceRequirements& workspace,
+    LzssContextualRansProfileVariant variant =
+        LzssContextualRansProfileVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualRansWorkspaceError
 partition_lzss_contextual_rans_encoder_views(

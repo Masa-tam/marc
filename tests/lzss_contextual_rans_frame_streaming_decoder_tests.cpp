@@ -282,7 +282,7 @@ TEST(LzssContextualRansFrameStreamingDecoder,
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,
-     KeepsOneMiBIdentityUnavailableUntilLifecycleAdmission) {
+     AcceptsOneMiBEmptyIdentityAfterLifecycleAdmission) {
     auto encoded = stream_header(1, 0);
     encoded[14] = std::byte{0x03};
     encoded[66] = std::byte{0x10};
@@ -291,6 +291,6 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     encoded[98] = std::byte{0x02};
     LzssContextualRansFrameStreamingDecoder decoder{{}, {}, {}, {}, {}};
     const auto result = decoder.process(encoded, {}, end_flag());
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
 }

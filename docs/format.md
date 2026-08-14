@@ -6685,8 +6685,10 @@ controls the 30-decision token ceiling, 9,089-byte descriptor ceiling,
 4,550-entry descriptor grammar, 21-symbol distance alphabets, 20-bit bypass
 ceiling, typed-token variant, and reconstruction limit. Complete-frame
 preflight must reject the same bytes under the `2/2 + 1/1` identity before raw
-publication. Its streaming lifecycle and every public surface remain
-unavailable until their own bounded-workspace admission. No other entropy
+publication. Its internal profile and streaming lifecycle select and enforce
+the same layout with caller-owned bounded workspaces; the private decoder
+auto-selects a valid serialized identity. Every public surface remains
+unavailable until its own admission. No other entropy
 backend is claimed here; each receives its own complete admission and
 hand-checkable serialized vector before release.
 The full design and staged validation contract is

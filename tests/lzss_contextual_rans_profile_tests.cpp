@@ -77,6 +77,19 @@ TEST(LzssContextualRansProfile, BuildsCanonicalWorkspaceBounds) {
     EXPECT_EQ(workspace.match_finder_bytes, 0U);
     EXPECT_EQ(workspace.views_bytes, 0U);
     EXPECT_EQ(workspace.views_alignment, 1U);
+
+    LzssContextualRansProfileConfig extended{};
+    extended.original_size = 17;
+    extended.frame_size = 17;
+    extended.dictionary.window_size = UINT32_C(1) << 20;
+    extended.variant = LzssContextualRansProfileVariant::field_context_1m;
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  extended, {}, stream, workspace),
+              LzssContextualRansProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 3U);
+    EXPECT_EQ(stream.context_variant, 2U);
+    EXPECT_EQ(stream.frequency_entry_count, 4550U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 9365U);
 }
 
 TEST(LzssContextualRansProfile, CalculatesDecoderWorkspaceFromLimits) {
@@ -96,6 +109,15 @@ TEST(LzssContextualRansProfile, CalculatesDecoderWorkspaceFromLimits) {
                   contextual_rans_decode_table_entries);
     EXPECT_EQ(workspace.token_count, 1024U);
 
+    LzssContextualRansDecoderWorkspaceRequirements extended{};
+    ASSERT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
+                  limits, extended,
+                  LzssContextualRansProfileVariant::field_context_1m),
+              LzssContextualRansProfileError::none);
+    EXPECT_EQ(extended.frame_encoded_bytes, 11'153U);
+    EXPECT_EQ(extended.table_count, workspace.table_count);
+    EXPECT_EQ(extended.token_count, workspace.token_count);
+
     limits.max_entropy_table_entries = workspace.table_count - 1;
     EXPECT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
                   limits, workspace),
@@ -112,6 +134,18 @@ TEST(LzssContextualRansProfile,
     EXPECT_EQ(make_lzss_contextual_rans_profile(
                   unsupported, {}, stream, workspace),
               LzssContextualRansProfileError::unsupported);
+    unsupported = {};
+    unsupported.variant =
+        static_cast<LzssContextualRansProfileVariant>(255);
+    EXPECT_EQ(make_lzss_contextual_rans_profile(
+                  unsupported, {}, stream, workspace),
+              LzssContextualRansProfileError::unsupported);
+    LzssContextualRansDecoderWorkspaceRequirements decoder_workspace{};
+    EXPECT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
+                  {}, decoder_workspace,
+                  static_cast<LzssContextualRansProfileVariant>(255)),
+              LzssContextualRansProfileError::unsupported);
+    EXPECT_EQ(decoder_workspace.views_bytes, 0U);
 
     auto limits = marc::core::DecoderLimits{};
     limits.max_compressed_payload_size = 211;

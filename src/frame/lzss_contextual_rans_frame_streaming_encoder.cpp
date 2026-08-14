@@ -163,9 +163,6 @@ LzssContextualRansFrameStreamingEncoder(
             stream_, limits_, stream_header_);
     if (!valid_extent
         || stream_error != LzssContextualRansStreamHeaderError::none
-        || stream_.dictionary_variant != 2
-        || stream_.context_algorithm != 1
-        || stream_.context_variant != 1
         || raw_frame_workspace_.size() < required_raw
         || raw_tokens != OverlapCheck::disjoint
         || raw_serialized != OverlapCheck::disjoint

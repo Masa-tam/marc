@@ -124,10 +124,7 @@ parse_collected_stream_header() noexcept {
         ? core::ErrorCode::limit_exceeded
         : core::ErrorCode::malformed_stream;
     return error == LzssContextualRansStreamHeaderError::none
-        && consumed == lzss_contextual_rans_stream_header_size
-        && stream_.dictionary_variant == 2
-        && stream_.context_algorithm == 1
-        && stream_.context_variant == 1;
+        && consumed == lzss_contextual_rans_stream_header_size;
 }
 
 bool LzssContextualRansFrameStreamingDecoder::prepare_collected_frame()
