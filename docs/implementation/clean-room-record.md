@@ -20279,3 +20279,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned CLI, bundle scripts,
   manifest rules, and compatibility tests. No external implementation
   expression entered the design.
+
+## CR-0849: 2026-08-14 - Contextual rANS schema-39 local admission
+
+- Authoring method: implemented DD-810 directly in marc's existing append-only
+  interoperability generator, verifier, and downgrade test chain.
+- References used: DD-790 through DD-810; IR-0584; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0685; marc's schema-38 scripts and public CLI.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, archives, manifests, interoperability suites, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: append the explicit profile at entry 49; inspect
+  dictionary/context bytes 14 and 98 as 3/2 during generation; require codec
+  set `marc-cli-v39`; reject reordered manifests; and remove only entry 49 to
+  recover schema 38 before applying the unchanged older conversions.
+- Generated-code task description: update the current inventory and manifest,
+  admit exact schema-39 verification, extend reorder rejection and downgrade,
+  run both local compiler routes, and record external work as pending.
+- Similarity review: the implementation changes only marc-owned PowerShell
+  scripts and documentation, using the repository's established append-only
+  schema pattern. No external implementation expression entered the change.
+- Local validation: MSVC and ClangCL each generate and verify all 49 current
+  archives, reject the reordered schema-39 manifest, and verify the complete
+  schema-1-through-39 downgrade chain. All 2,902 registered Release tests pass
+  under both compilers with the 240-second per-test limit, including the
+  interoperability schema compatibility and documentation layout tests.

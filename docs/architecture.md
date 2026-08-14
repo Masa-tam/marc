@@ -5167,3 +5167,16 @@ Exhaustive byte oracle. Profile sizing reserves the exact finder plus alignment
 allowance ahead of dictionary and frame staging in the secondary region.
 Decoder, stream identity, CLI selector, ABI signature, format, and schema are
 unchanged; no strategy field is serialized.
+
+Interoperability schema 39 freezes all 48 schema-38 entries and appends the
+explicit `lzss-contextual-rans-1m` CLI archive as entry 49. Generation proves
+the archive carries dictionary variant 3 and context-layout variant 2 before
+performing its local round trip. Verification requires the exact 49-entry
+identity and order, recorded sizes and hashes, foreign decoding, and
+byte-identical local re-encoding. The compatibility test rejects a reordered
+schema-39 manifest, removes only entry 49 to reconstruct schema 38, and then
+executes the complete established downgrade chain through schema 1. The shared
+8,193-byte fixture proves the extended profile identity and deterministic
+representation; dedicated long-distance vectors remain responsible for match
+references beyond 64 KiB. Cross-platform evidence is intentionally deferred
+until CI artifacts exist for the pushed revision.

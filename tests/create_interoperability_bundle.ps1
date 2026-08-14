@@ -117,7 +117,8 @@ $profiles = @(
     'lzss-contextual-tans',
     'lzss-contextual-blocked-huffman',
     'lzss-contextual-adaptive-huffman',
-    'lzss-contextual-dynamic-range-1m'
+    'lzss-contextual-dynamic-range-1m',
+    'lzss-contextual-rans-1m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -125,12 +126,13 @@ foreach ($profile in $profiles) {
     $archivePath = Join-Path $resolvedOutput $archiveName
     $decodedPath = Join-Path $resolvedOutput "$profile.decoded"
     Invoke-Marc @('encode', '--codec', $profile, $inputPath, $archivePath)
-    if ($profile -eq 'lzss-contextual-dynamic-range-1m') {
+    if ($profile -eq 'lzss-contextual-dynamic-range-1m' -or
+            $profile -eq 'lzss-contextual-rans-1m') {
         $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
         if ($archiveBytes.Length -le 98 -or
                 $archiveBytes[14] -ne 3 -or
                 $archiveBytes[98] -ne 2) {
-            throw '1 MiB archive does not carry dictionary/context variants 3/2'
+            throw "$profile archive does not carry dictionary/context variants 3/2"
         }
     }
     Invoke-Marc @('decode', '--codec', $profile, $archivePath, $decodedPath)
@@ -148,8 +150,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 38
-    codec_set = 'marc-cli-v38'
+    schema_version = 39
+    codec_set = 'marc-cli-v39'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler
