@@ -16475,3 +16475,29 @@ stage preserves the entropy identity `4/3`, frozen variant-1 descriptor and
 payload bytes, and every outer frame, streaming, public C, CLI, benchmark,
 fuzz, and interoperability surface. Outer 1 MiB Contextual rANS admission is a
 later format-controlled stage.
+
+## DD-803: Contextual rANS token composition uses one selected layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Pass one `LzssFieldContextVariant` through the direct LZSS typed-token plus
+Contextual rANS encoder and decoder. Select its layout before token processing,
+validate LZSS parameters and every typed token with the layout's dictionary
+variant, use the selected distance alphabet while constructing and requesting
+entropy symbols, and pass the same context variant to model building, reverse
+writing, descriptor validation/parsing, table construction, and decoding.
+
+Use `maximum_decisions_per_token` from the selected layout when preflighting
+declared counts: 26 for the 64 KiB profile and 30 for the 1 MiB profile. The
+first vector proving a representation unavailable to variant 1 uses distance
+131,072, class 17, alphabet 21, and a 17-bit bypass field after sufficient
+literal history. Require direct token coding to match the materialized
+field-operation reference exactly for the same selected variant.
+
+Retain variant 1 as the default internal route and preserve all of its
+descriptor and payload bytes. Reject unsupported or crossed selections before
+publishing descriptor, payload, table storage, or token output. This token-
+composition stage does not admit a new outer stream identity and changes no
+frame, streaming lifecycle, public C API, CLI, benchmark, fuzz target, or
+interoperability schema.

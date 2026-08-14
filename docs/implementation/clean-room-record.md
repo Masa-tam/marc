@@ -19916,3 +19916,25 @@ discarded and the reviewed seed retained.
   registered tests pass under MSVC and ClangCL Release configurations with the
   240-second per-test limit, including schema compatibility and documentation
   layout.
+
+## CR-0834: 2026-08-14 - Selected-layout Contextual rANS token-composition design
+
+- Authoring method: derived the token-composition boundary from marc's
+  selected typed-token layout and newly completed selected Contextual rANS
+  core.
+- References used: DD-790 through DD-803; IR-0577; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0678; marc's direct and materialized token-coding paths.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, composition formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select one layout before token processing; use its
+  dictionary variant, alphabets, and declared-decision ceiling throughout;
+  prove the first newly available distance class at 131,072; retain the direct
+  versus materialized equality oracle; and defer every outer stream surface.
+- Generated-code task description: specify selected-layout propagation across
+  direct LZSS Contextual rANS token planning, coding, validation, and decoding,
+  including an extended-distance reference vector and atomic crossed-layout,
+  bounds, capacity, aliasing, and malformed-input tests.
+- Similarity review: the design composes only repository-owned typed-token,
+  field-context, and Contextual rANS components. No external implementation
+  expression entered the design.

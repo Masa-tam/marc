@@ -9166,3 +9166,21 @@ contexts, decision budgets, and reuse after failure. Confirm the required
 decode-table extent remains exactly 126,976 entries and that output storage,
 views, descriptors, payload bytes, and decoded values remain unchanged on
 pre-publication failures.
+
+### TVG-0678
+
+Construct a variant-2 typed-token frame with 131,072 Literal `A` tokens
+followed by one Match of distance 131,072 and length 5. Use a 1 MiB LZSS
+window. Require the selected field model to produce distance class 17 in an
+alphabet of 21 plus a 17-bit bypass, then require the direct Contextual rANS
+token planner and encoder to match the materialized-operation reference in
+event count, decision count, descriptor, payload size, and payload bytes.
+
+Serialize the selected descriptor, validate and decode it back to the exact
+typed tokens, and require terminal event, decision, payload, token, and raw-
+size counts. Require `frequency_entry_count=4,550` and exact descriptor parse
+under variant 2 only. Run the existing frozen literal and mixed-token vectors
+through the default route unchanged. Reject the 1 MiB parameter/token frame,
+its selected descriptor, unsupported variants, crossed selections, inadequate
+table/token/payload capacity, aliasing, invalid declared counts, and malformed
+distance reconstruction atomically. Keep all outer stream paths unavailable.

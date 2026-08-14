@@ -5135,3 +5135,13 @@ field-context layout, compact descriptor, checked arithmetic, and atomic test
 helpers as first-party references. No external rANS implementation, coding
 core, table builder, source code, test, corpus, archive, patent text, or
 optimization description was consulted.
+
+### IR-0577
+
+The selected-layout LZSS Contextual rANS token-composition design uses DD-790
+through DD-803, TVG-0665, TVG-0666, TVG-0676 through TVG-0678; marc's direct
+token encoder and decoder, materialized field-operation reference, selected
+typed-token validator, selected Contextual rANS core, and atomic workspace
+checks as first-party references. No external LZSS or rANS implementation,
+composition format, source code, test, corpus, archive, patent text, or
+optimization description was consulted.
