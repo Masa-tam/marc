@@ -5256,3 +5256,10 @@ decoder invocations exercise exact 64 KiB and 1 MiB admission. Only descriptor
 backing grows from 9,029 to 9,093 bytes; raw publication, token staging, and
 the 131,072-entry transition table remain bounded at their existing fuzz
 limits. Reciprocal profile rejection is a permanent atomic regression.
+
+The next interoperability boundary freezes schema 39's 49 archives and
+appends only `lzss-contextual-tans-1m` as schema-40 entry 50. Generation
+requires the selected `2/3 + 1/2 + 5/2` stream identity and immediate local
+round trip. Compatibility removes only that final entry before exercising the
+unchanged schema-39-through-1 chain; external exchange remains post-push
+evidence.

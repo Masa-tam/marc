@@ -16968,3 +16968,28 @@ error information. Ordinary builds provide warning-clean compile evidence. A
 bounded sanitizer campaign is recorded separately and must use
 `-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512` without a persistent
 corpus. Interoperability admission remains a later stage.
+
+## DD-820: Schema 40 appends only the 1 MiB Contextual tANS archive
+
+- Date: 2026-08-15
+- Status: accepted
+
+Freeze schema 39's exact 49-entry inventory and append
+`lzss-contextual-tans-1m` once as entry 50. Set `schema_version=40` and
+`codec_set=marc-cli-v40`. Preserve the shared deterministic 8,193-byte
+fixture, full source revision, producer identity, CLI SHA-256, and every prior
+archive name, order, size, hash, and byte.
+
+Generation must require an immediate local round trip and inspect the new
+archive's dictionary/context identities as `3/2` and entropy identity as
+`5/2`. Verification requires exact schema/order, leaf names, unique codecs,
+size and SHA-256 agreement, foreign decode equality, and byte-identical local
+re-encoding. Reordered manifests must fail. The compatibility test removes
+only entry 50 to reconstruct schema 39, then runs the unchanged schema-39-
+through-1 downgrade chain.
+
+The fixture proves the selected identity and deterministic representation but
+is too short to require a distance beyond 65,536; dedicated extended-distance
+vectors remain authoritative. External Windows/Linux exchange is required
+after push and is recorded separately. This schema changes bundle inventory
+and manifest identity only, not any stream byte rule.

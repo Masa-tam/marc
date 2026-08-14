@@ -121,6 +121,10 @@ order. Schema 39 requires `marc-cli-v39` and all forty-nine archives, appending
 `lzss-contextual-rans-1m` to the frozen schema-38 order. No schema silently
 inherits profiles or names added by a later schema.
 
+The next planned schema 40 freezes those forty-nine entries and appends only
+`lzss-contextual-tans-1m` as entry 50. It is not the current published schema
+until its generator, verifier, downgrade chain, and local tests are admitted.
+
 ## Integrity and current evidence
 
 The SHA-256 values detect accidental artifact changes but are not signatures

@@ -5302,3 +5302,12 @@ memory tANS dual-decoder harness, selected public decoder policy, and completed
 Contextual rANS dual-profile fuzz route as first-party references. No external
 LZSS or tANS implementation, fuzz harness, corpus, finding, source code, test,
 archive, patent text, or optimization description was consulted.
+
+### IR-0594
+
+Schema-40 Contextual tANS interoperability uses DD-790 through DD-820,
+TVG-0665, TVG-0666, and TVG-0686 through TVG-0695; marc's frozen schema-39
+inventory, explicit 1 MiB tANS CLI, bundle generator, verifier, and downgrade
+compatibility chain as first-party references. No external LZSS or tANS
+implementation, archive, manifest, interoperability suite, source code, test,
+corpus, patent text, or optimization description was consulted.

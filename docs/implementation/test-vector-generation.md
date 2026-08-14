@@ -9535,3 +9535,26 @@ decisions, 9,218 payload bytes, and 131,072 decode entries. Build the existing
 sanitizer target and run a bounded campaign without a persistent corpus using
 `-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`. Do not add a second
 target or an interoperability archive.
+
+### TVG-0695
+
+Generate schema 40 from the unchanged deterministic 8,193-byte fixture and
+the exact schema-39 archive order, then append
+`lzss-contextual-tans-1m.marc` as entry 50. Require generation-time header
+identities `2/3 + 1/2 + 5/2`, immediate local round trip,
+`schema_version=40`, codec set `marc-cli-v40`, full revision, exact order,
+unique leaf names/codecs, size and SHA-256 agreement, fixture decode, and
+byte-identical local re-encoding.
+
+Swap the first two schema-40 records and require exact-order rejection. Remove
+only entry 50 to reconstruct schema 39, verify it, and continue the complete
+frozen schema-39-through-1 chain including the historical Contextual rANS
+rename. The shared fixture establishes identity rather than an extended-
+distance Match; do not import generated bundles into the repository.
+
+After push and successful CI, verify the Windows/MSVC and Ubuntu 24.04/Ninja
+schema-40 artifacts with Ubuntu 26.04/Clang. Generate and self-verify an
+Ubuntu 26.04 schema-40 bundle from the same revision, then verify it with the
+Windows/MSVC executable. Require all four final lines to report 50 archives,
+the expected producer label, and one identical full revision before recording
+external evidence.

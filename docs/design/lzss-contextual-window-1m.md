@@ -438,6 +438,13 @@ padding, reciprocal strict-policy rejection, sentinel preservation, and
 sticky errors. The fixed-memory target also completed its bounded sanitizer
 campaign; interoperability publication remains the next independent boundary.
 
+That publication boundary freezes all 49 schema-39 archives and appends only
+`lzss-contextual-tans-1m` as schema-40 entry 50. Its generator must verify
+selected identity `2/3 + 1/2 + 5/2` and an immediate exact round trip. The
+compatibility suite removes only entry 50 to reconstruct schema 39 before its
+existing complete downgrade chain; no earlier archive or representation may
+change.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

@@ -20804,3 +20804,24 @@ discarded and the reviewed seed retained.
   without a finding and peaks at 43 MiB RSS. All 2,921 registered Release
   tests pass under both compilers with the 300-second per-test limit, including
   interoperability schema compatibility and documentation layout.
+
+## CR-0870: 2026-08-15 - Contextual tANS schema-40 design
+
+- Authoring method: derived the new bundle boundary from marc's frozen
+  schema-39 inventory and explicit 1 MiB Contextual tANS CLI selector.
+- References used: DD-790 through DD-820; IR-0594; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0695; marc's generator, verifier, and compatibility
+  chain.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, archives, manifests, interoperability suites, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: append once at entry 50; validate `2/3 + 1/2 + 5/2`
+  at generation; preserve every schema-39 byte/order; remove only the new
+  entry for downgrade; and defer external evidence until a pushed revision
+  exists.
+- Generated-code task description: specify schema/codec-set increment, exact
+  inventory, generation round trip and identity, verifier admission, reorder
+  rejection, full downgrade chain, and four-direction handoff.
+- Similarity review: the design composes only marc-owned CLI, bundle scripts,
+  manifest rules, and compatibility tests. No external implementation
+  expression entered the design.
