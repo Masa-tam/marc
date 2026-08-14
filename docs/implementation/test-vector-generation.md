@@ -9210,3 +9210,29 @@ aliasing, malformed headers and descriptors, crossed layouts, and unsupported
 variants. This vector admits only complete-frame internals; streaming,
 profiles, public APIs, CLI, benchmarks, fuzzing, and interoperability remain
 separate later stages.
+
+### TVG-0680
+
+Query both Contextual rANS profile variants with identical bounded inputs.
+Require variant 1 to reproduce its frozen stream identity and every existing
+workspace extent. Require variant 2 to emit `2/3 + 1/2 + 4/3`, frequency-entry
+count 4,550, a 1,048,576-byte window when configured, and an encoded-frame
+ceiling that differs only by the selected descriptor maximum. Decoder queries
+must select the same 9,025- or 9,089-byte maximum while retaining exactly
+126,976 decode-table entries and checked aligned table/token partitioning.
+
+Drive a variant-2 streaming encoder with a raw frame containing one uniquely
+placed repeat at distance above 65,536. Use profile-derived input, token,
+HashChain, serialized-frame, decode-table, token, and raw workspaces. Require
+bounded multi-call input/output schedules to serialize the selected header,
+encode the extended Match, drain deterministically, decode with workspace
+sized for variant 2, and reproduce the raw bytes exactly. The private decoder
+must select the valid serialized identity independently of which query the
+caller used; require crossed dictionary/context header pairs to fail before
+raw publication. Public selector policy is deferred.
+
+Reject unsupported profile values, crossed parameters, descriptor and
+aggregate limits between the two selected ceilings, one-byte-short and
+misaligned workspaces, insufficient frame/token/table/raw capacity, malformed
+selected headers, trailing input, and sticky lifecycle misuse. Public C, CLI,
+benchmark, fuzzing, and interoperability remain unavailable in this stage.

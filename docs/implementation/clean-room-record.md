@@ -20020,3 +20020,26 @@ discarded and the reviewed seed retained.
   registered tests pass under MSVC and ClangCL Release configurations with
   the 240-second per-test limit, including schema compatibility and
   documentation layout.
+
+## CR-0838: 2026-08-14 - Selected-layout Contextual rANS lifecycle design
+
+- Authoring method: derived profile and streaming requirements from marc's
+  completed selected rANS frame path and existing caller-owned lifecycle
+  architecture.
+- References used: DD-790 through DD-805; IR-0579; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0680; marc's rANS workspace partitioners and selected
+  Contextual Dynamic Range lifecycle.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, lifecycle code, workspace policies, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: make profile selection explicit and process-local;
+  derive only descriptor-dependent extents from it; retain the fixed table
+  count; remove temporary lifecycle guards only with bounded queries; and
+  defer every public surface.
+- Generated-code task description: specify selected profile construction,
+  encoder/decoder workspace calculation and partitioning, multi-call streaming
+  encode/decode of an extended distance, cross-profile rejection, limits,
+  capacity, alignment, aliasing, and sticky terminal regressions.
+- Similarity review: the design reuses only marc-owned format, profile,
+  workspace, frame, and streaming components. No external implementation
+  expression entered the design.

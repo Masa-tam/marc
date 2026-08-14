@@ -5155,3 +5155,13 @@ token composition, exact HashChain encoder, and already admitted selected
 Contextual Dynamic Range frame path as first-party references. No external
 LZSS or rANS implementation, frame format, source code, test, corpus, archive,
 patent text, or optimization description was consulted.
+
+### IR-0579
+
+The selected-layout Contextual rANS profile and streaming-lifecycle design
+uses DD-790 through DD-805, TVG-0665, TVG-0666, and TVG-0676 through
+TVG-0680; marc's complete-frame admission, existing rANS workspace
+partitioners, selected Contextual Dynamic Range profile/lifecycle, and core
+stream-state contract as first-party references. No external LZSS or rANS
+implementation, lifecycle, workspace policy, source code, test, corpus,
+archive, patent text, or optimization description was consulted.

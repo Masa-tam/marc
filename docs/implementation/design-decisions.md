@@ -16531,3 +16531,33 @@ the same bytes are presented under the 64 KiB stream identity. Preserve the
 existing 64 KiB literal frame byte for byte. This stage does not yet admit the
 1 MiB identity through streaming lifecycle, profile calculators, public C,
 CLI, benchmark, fuzz, or interoperability schema.
+
+## DD-805: Contextual rANS profile selection owns lifecycle workspace bounds
+
+- Date: 2026-08-14
+- Status: accepted
+
+Add explicit `field_context_64k` and `field_context_1m` values to the internal
+Contextual rANS profile configuration and decoder-workspace query. The encoder
+profile selects the shared LZSS field layout before validating parameters,
+writes its exact dictionary/context identity and frequency-entry count into
+the stream header, and derives the encoded-frame ceiling using that layout's
+9,025- or 9,089-byte descriptor maximum. The decoder query uses the requested
+variant for the same descriptor ceiling. Both variants retain the fixed
+126,976-entry decode-table extent.
+
+Remove the temporary 1 MiB rejection from the private streaming encoder and
+decoder only after their caller-owned workspaces are calculable for the
+selected profile. Streaming continues to use the selected stream-header pair
+as the sole serialized selector and complete-frame code as the sole coding
+implementation. Require a multi-call lifecycle vector whose exact HashChain
+parse contains a distance above 65,536, with bounded input/output chunks,
+final drain, and exact decode. The private decoder auto-selects the valid
+serialized identity; profile variant is a sizing request, not a decode policy.
+Crossed header pairs, unsupported selections, one-byte-short workspaces, and
+aggregate memory limits must fail atomically. Explicit cross-profile policy
+belongs to the later public selector.
+
+Preserve all 64 KiB profile requirements and stream bytes. This stage remains
+internal and does not yet expose the 1 MiB selector through public C, CLI,
+benchmark, fuzz, or interoperability schema.
