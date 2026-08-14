@@ -9184,3 +9184,29 @@ through the default route unchanged. Reject the 1 MiB parameter/token frame,
 its selected descriptor, unsupported variants, crossed selections, inadequate
 table/token/payload capacity, aliasing, invalid declared counts, and malformed
 distance reconstruction atomically. Keep all outer stream paths unavailable.
+
+### TVG-0679
+
+Serialize and parse the Contextual rANS stream header with the reserved
+`2/3 + 1/2 + 4/3` identity, a 1,048,576-byte window, and matching entropy
+entry count 4,550. Require exact round trip, transactional output, and atomic
+rejection of crossed known dictionary/context pairs, unsupported identities,
+the wrong frequency-entry count, and limits below the selected dictionary or
+descriptor/table requirements. Re-run the canonical `2/2 + 1/1 + 4/3`
+header and documented one-Literal frame unchanged.
+
+Construct a deterministic raw frame whose exact HashChain parse contains a
+Match distance above 65,536 under dictionary variant 3. Plan and encode the
+complete frame with the selected 1 MiB identity; require descriptor validation
+under context variant 2, complete preflight, decode-table construction, typed-
+token reconstruction, and exact raw round trip. Inspect the staged tokens to
+prove that the frame exercised the extended distance. Present the same frame
+under the 64 KiB identity and require failure before raw output publication.
+
+Exercise both exhaustive and HashChain complete-frame paths at ordinary
+sizes, selected maximum decision and descriptor bounds, one-byte-short
+descriptor/table/token/raw/output workspaces, aggregate workspace limits,
+aliasing, malformed headers and descriptors, crossed layouts, and unsupported
+variants. This vector admits only complete-frame internals; streaming,
+profiles, public APIs, CLI, benchmarks, fuzzing, and interoperability remain
+separate later stages.

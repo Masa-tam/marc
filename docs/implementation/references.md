@@ -5145,3 +5145,13 @@ typed-token validator, selected Contextual rANS core, and atomic workspace
 checks as first-party references. No external LZSS or rANS implementation,
 composition format, source code, test, corpus, archive, patent text, or
 optimization description was consulted.
+
+### IR-0578
+
+The selected-layout Contextual rANS complete-frame design uses DD-790 through
+DD-804, TVG-0665, TVG-0666, and TVG-0676 through TVG-0679; marc's frozen
+64 KiB rANS stream and frame format, reserved 1 MiB identity, selected direct
+token composition, exact HashChain encoder, and already admitted selected
+Contextual Dynamic Range frame path as first-party references. No external
+LZSS or rANS implementation, frame format, source code, test, corpus, archive,
+patent text, or optimization description was consulted.

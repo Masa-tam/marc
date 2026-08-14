@@ -16501,3 +16501,33 @@ publishing descriptor, payload, table storage, or token output. This token-
 composition stage does not admit a new outer stream identity and changes no
 frame, streaming lifecycle, public C API, CLI, benchmark, fuzz target, or
 interoperability schema.
+
+## DD-804: Contextual rANS complete frames admit the selected 1 MiB identity
+
+- Date: 2026-08-14
+- Status: accepted
+
+Admit the already reserved dictionary/context pair `2/3 + 1/2` for the
+existing Contextual rANS entropy identity `4/3`. Add explicit dictionary and
+context identity fields to the in-memory stream header, retaining `2/2 + 1/1`
+as their defaults so every existing caller and frozen byte vector remains
+unchanged. The stream parser accepts only variants 2 or 3 and 1 or 2 at their
+respective fields, then uses `select_lzss_field_context_layout` to reject
+crossed known pairs before publishing the header.
+
+Select that same immutable layout before complete-frame planning, encoding,
+preflight, and decoding. Use its dictionary variant for typed-token creation
+and reconstruction, its context variant for direct rANS token composition and
+descriptor parsing, its `maximum_decisions_per_token` for declared-count
+validation, and its descriptor ceiling of 9,025 or 9,089 bytes. Never infer a
+layout from window size, descriptor size, serialized frequency-entry count,
+or token contents.
+
+The first complete-frame vector unavailable to the old profile uses a raw
+frame containing a deterministic distant repeat and the exact HashChain
+encoder under a 1 MiB window. It must emit at least one distance above 65,536,
+round trip through complete-frame preflight and decode, and be rejected when
+the same bytes are presented under the 64 KiB stream identity. Preserve the
+existing 64 KiB literal frame byte for byte. This stage does not yet admit the
+1 MiB identity through streaming lifecycle, profile calculators, public C,
+CLI, benchmark, fuzz, or interoperability schema.

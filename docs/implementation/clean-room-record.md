@@ -19967,3 +19967,26 @@ discarded and the reviewed seed retained.
   all 2,890 registered tests pass under MSVC and ClangCL Release
   configurations with the 240-second per-test limit, including schema
   compatibility and documentation layout.
+
+## CR-0836: 2026-08-14 - Selected-layout Contextual rANS complete-frame design
+
+- Authoring method: derived the complete-frame boundary from marc's reserved
+  1 MiB stream identity, selected typed-token layout, and completed direct
+  Contextual rANS token composition.
+- References used: DD-790 through DD-804; IR-0578; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0679; marc's existing 64 KiB rANS frame and selected
+  Contextual Dynamic Range frame paths.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, frame formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: serialize the already reserved identity pair; select
+  one layout from that pair; pass it through all complete-frame boundaries;
+  preserve frozen variant-1 bytes; prove a real extended HashChain distance;
+  and defer every lifecycle and public surface.
+- Generated-code task description: specify selected stream-header parsing,
+  complete-frame validation, reference and HashChain encoding, descriptor
+  handling, decoding, reconstruction, workspace limits, and atomic crossed-
+  layout regressions for Contextual rANS.
+- Similarity review: the design composes only repository-owned format,
+  dictionary, context, entropy, and frame components. No external
+  implementation expression entered the design.
