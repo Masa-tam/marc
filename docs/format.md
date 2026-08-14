@@ -6688,7 +6688,9 @@ preflight must reject the same bytes under the `2/2 + 1/1` identity before raw
 publication. Its internal profile and streaming lifecycle select and enforce
 the same layout with caller-owned bounded workspaces; the private decoder
 auto-selects a valid serialized identity. Every public surface remains
-unavailable until its own admission. No other entropy
+unavailable until its own admission except the Contextual rANS C lifecycle,
+whose explicit window selector admits exactly one identity. CLI, benchmark,
+fuzz, and interoperability remain unavailable. No other entropy
 backend is claimed here; each receives its own complete admission and
 hand-checkable serialized vector before release.
 The full design and staged validation contract is

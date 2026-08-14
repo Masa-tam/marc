@@ -294,3 +294,27 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     EXPECT_EQ(result.status, StreamStatus::end_of_stream);
     EXPECT_EQ(result.error.code, ErrorCode::none);
 }
+
+TEST(LzssContextualRansFrameStreamingDecoder,
+     EnforcesExplicitProfileAdmissionBeforeFrames) {
+    const auto baseline = stream_header(1, 0);
+    LzssContextualRansFrameStreamingDecoder reject_baseline{
+        {}, {}, {}, {}, {},
+        LzssContextualRansStreamAdmission::field_context_1m};
+    auto result = reject_baseline.process(baseline, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+
+    auto extended = baseline;
+    extended[14] = std::byte{0x03};
+    extended[66] = std::byte{0x10};
+    extended[84] = std::byte{0xc6};
+    extended[85] = std::byte{0x11};
+    extended[98] = std::byte{0x02};
+    LzssContextualRansFrameStreamingDecoder reject_extended{
+        {}, {}, {}, {}, {},
+        LzssContextualRansStreamAdmission::field_context_64k};
+    result = reject_extended.process(extended, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+}

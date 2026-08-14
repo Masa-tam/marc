@@ -283,8 +283,12 @@ descriptor, decode-table, and raw workspace bounds. A deterministic one-byte-
 buffer lifecycle proves a generated distance above 65,536 and exact raw round
 trip, while the frozen 64 KiB requirements and bytes remain unchanged. The
 private decoder auto-selects a valid serialized identity; explicit profile
-policy belongs to the later public selector. Public C, CLI, benchmark, fuzz,
-and interoperability stages remain separate.
+policy belongs to the public selector. The Contextual rANS C configuration now
+splits its former 64-bit reserved tail into the shared 32-bit `window_profile`
+and a 32-bit reserved word without changing ABI-1 extent. Public workspace
+queries and encoders select the exact profile, while public decoders reject
+the other identity before frame allocation. CLI, benchmark, fuzz, and
+interoperability stages remain separate.
 
 ## Required validation
 

@@ -50,11 +50,12 @@ LzssContextualRansFrameStreamingDecoder(
     const std::span<std::byte> serialized_frame_workspace,
     const std::span<entropy::internal::RansDecodeEntry> table_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
-    const std::span<std::byte> raw_frame_workspace) noexcept
+    const std::span<std::byte> raw_frame_workspace,
+    const LzssContextualRansStreamAdmission admission) noexcept
     : limits_(limits),
       serialized_frame_workspace_(serialized_frame_workspace),
       table_workspace_(table_workspace), token_workspace_(token_workspace),
-      raw_frame_workspace_(raw_frame_workspace) {
+      raw_frame_workspace_(raw_frame_workspace), admission_(admission) {
     std::size_t table_bytes{};
     std::size_t token_bytes{};
     const bool valid_extents = core::checked_multiply(
@@ -123,8 +124,21 @@ parse_collected_stream_header() noexcept {
         error == LzssContextualRansStreamHeaderError::limit_exceeded
         ? core::ErrorCode::limit_exceeded
         : core::ErrorCode::malformed_stream;
-    return error == LzssContextualRansStreamHeaderError::none
-        && consumed == lzss_contextual_rans_stream_header_size;
+    if (error != LzssContextualRansStreamHeaderError::none
+        || consumed != lzss_contextual_rans_stream_header_size) {
+        return false;
+    }
+    switch (admission_) {
+    case LzssContextualRansStreamAdmission::any:
+        return true;
+    case LzssContextualRansStreamAdmission::field_context_64k:
+        return stream_.dictionary_variant == 2
+            && stream_.context_variant == 1;
+    case LzssContextualRansStreamAdmission::field_context_1m:
+        return stream_.dictionary_variant == 3
+            && stream_.context_variant == 2;
+    }
+    return false;
 }
 
 bool LzssContextualRansFrameStreamingDecoder::prepare_collected_frame()

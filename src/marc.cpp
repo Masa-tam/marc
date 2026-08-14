@@ -609,6 +609,26 @@ typed_context_stream_admission(
               field_context_64k;
 }
 
+[[nodiscard]] marc::frame::internal::LzssContextualRansProfileVariant
+contextual_rans_profile_variant(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssContextualRansProfileVariant::
+              field_context_1m
+        : marc::frame::internal::LzssContextualRansProfileVariant::
+              field_context_64k;
+}
+
+[[nodiscard]] marc::frame::internal::LzssContextualRansStreamAdmission
+contextual_rans_stream_admission(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssContextualRansStreamAdmission::
+              field_context_1m
+        : marc::frame::internal::LzssContextualRansStreamAdmission::
+              field_context_64k;
+}
+
 bool load_config(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc::core::DecoderLimits& limits) noexcept {
@@ -642,7 +662,9 @@ bool load_config(
     if (config == nullptr
         || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0) {
+        || config->reserved != 0 || config->reserved2 != 0
+        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -1327,7 +1349,8 @@ marc_status contextual_rans_workspace_requirements(
             LzssContextualRansEncoderWorkspaceRequirements needed{};
         const auto error =
             marc::frame::internal::make_lzss_contextual_rans_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 contextual_rans_profile_variant(config->window_profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1346,7 +1369,8 @@ marc_status contextual_rans_workspace_requirements(
             LzssContextualRansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_rans_decoder_workspace(
-                limits, needed);
+                limits, needed,
+                contextual_rans_profile_variant(config->window_profile));
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return status_for(
@@ -1416,7 +1440,8 @@ marc_status create_contextual_rans(
             LzssContextualRansEncoderWorkspaceRequirements needed{};
         const auto error =
             marc::frame::internal::make_lzss_contextual_rans_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 contextual_rans_profile_variant(config->window_profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1440,7 +1465,8 @@ marc_status create_contextual_rans(
             LzssContextualRansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_rans_decoder_workspace(
-                limits, needed);
+                limits, needed,
+                contextual_rans_profile_variant(config->window_profile));
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1456,7 +1482,9 @@ marc_status create_contextual_rans(
         implementation = new (std::nothrow)
             marc::frame::internal::
                 LzssContextualRansFrameStreamingDecoder(
-                    limits, primary, views.tables, views.tokens, secondary);
+                    limits, primary, views.tables, views.tokens, secondary,
+                    contextual_rans_stream_admission(
+                        config->window_profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -4742,7 +4770,11 @@ marc_status marc_lzss_contextual_dynamic_range_create(
 marc_status marc_lzss_contextual_rans_config_init(
     const marc_direction direction,
     marc_lzss_contextual_rans_config* config) noexcept {
-    return initialize_contextual_rans_config(direction, config);
+    const auto status = initialize_contextual_rans_config(direction, config);
+    if (status == MARC_STATUS_OK) {
+        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    }
+    return status;
 }
 
 marc_status marc_lzss_contextual_rans_workspace_requirements(

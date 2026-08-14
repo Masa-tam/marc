@@ -20095,3 +20095,34 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned C ABI, profile,
   workspace, lifecycle, and stream-admission components. No external
   implementation expression entered the design.
+
+## CR-0841: 2026-08-14 - Contextual rANS public C admission
+
+- Authoring method: implemented DD-806 over marc's selected internal profile,
+  ABI-1 C configuration, workspace factories, and streaming decoder admission
+  boundary.
+- References used: DD-790 through DD-806; IR-0580; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0681; marc's Contextual rANS C tests and Contextual
+  Dynamic Range public selector.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, C ABIs, factories, workspace policies, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: preserve ABI extent and version; reuse selector
+  values; map encoder, decoder sizing, and decoder admission explicitly;
+  retain private `any` admission; and defer CLI and remaining outer surfaces.
+- Generated-code task description: implement the split reserved tail,
+  selector validation and initialization, selected requirements and factory,
+  strict public decoder admission, exact selected identity round trips,
+  cross-profile atomic failures, and ABI/workspace regressions.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned C configuration, profiles, workspace partitions, factories, and
+  streaming decoder. No external implementation expression entered the
+  change.
+- Local validation: the ABI-1 configuration remains exactly 112 bytes with
+  zero selecting the frozen profile; value 1 queries the wider descriptor
+  workspace, serializes `2/3 + 1/2 + 4/3`, round trips through its matching
+  public decoder, and fails atomically through value 0, while value 1 rejects
+  a frozen stream and value 2 is invalid; all 2,896 registered tests pass
+  under MSVC and ClangCL Release configurations with the 240-second per-test
+  limit, including the public C test, schema compatibility, and documentation
+  layout.

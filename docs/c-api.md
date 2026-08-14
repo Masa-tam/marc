@@ -163,7 +163,8 @@ all-zero meaning used by earlier callers. The profile remains outside the
 baseline CLI and interoperability inventories.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
-changing direction, known size, frame/LZSS parameters, or hard limits.
+changing direction, known size, frame/LZSS parameters, `window_profile`, or
+hard limits.
 Encoding uses primary for raw-frame input, secondary for the complete
 serialized frame, and aligned opaque views for typed tokens. Decoding uses
 primary for serialized input, secondary for atomic raw output, and views for
@@ -173,10 +174,15 @@ publishing a handle. No token or rANS table structure is exposed in the C ABI.
 Its public completion audit covers all required binary classes, deterministic
 one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
 malformed final-frame rejection without promoting it into the baseline matrix.
-This canonical lifecycle emits only variable-length entropy variant 3 and uses the
-9,025-byte maximum descriptor bound. Entropy variant 2 is retired and reserved;
-the decoder rejects it. Call the requirements function whenever direction,
-known size, frame/LZSS parameters, or hard limits change.
+This canonical lifecycle emits only variable-length entropy variant 3.
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K` is the initializer default, selects
+dictionary/context `2/2 + 1/1`, and uses the 9,025-byte descriptor ceiling.
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2` and uses the 9,089-byte
+ceiling. The selector is not inferred from `window_size`; encoding validates
+parameters against it and public decoding rejects the other profile before
+frame allocation. The field and trailing 32-bit reserved word retain the
+former 64-bit tail's ABI-1 extent and all-zero meaning. Entropy variant 2 is
+retired and reserved; the decoder rejects it.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, or hard limits
