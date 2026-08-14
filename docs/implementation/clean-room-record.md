@@ -20950,3 +20950,26 @@ discarded and the reviewed seed retained.
   complete ClangCL Release suite passes all 2,924 registered tests, while the
   MSVC Release codec suite passes 2,923 tests and its separately repeated
   schema-compatibility test passes all schemas 1 through 40.
+
+## CR-0876: 2026-08-15 - Self-contained interoperability SHA-256 calculation
+
+- Authoring method: replaced an unreliable PowerShell command-discovery
+  dependency with the platform-provided .NET SHA-256 API already available to
+  both supported Windows PowerShell and PowerShell runtimes.
+- References used: the repository's bundle creation, verification, and schema-
+  compatibility scripts; the observed CTest failure; and the successful
+  explicit module-load control run.
+- Known implementations intentionally not consulted: external archive tools,
+  hashing scripts, source code, tests, or command wrappers.
+- Independent decisions: open each artifact read-only; compute SHA-256 through
+  a fresh bounded cryptographic object; dispose both hash object and stream on
+  every path; and preserve lowercase manifest spelling exactly.
+- Generated-code task description: make bundle hashing independent of
+  PowerShell module auto-loading without weakening or skipping schema-
+  compatibility verification.
+- Similarity review: the change is a direct use of the standard .NET hashing
+  API and retains marc's existing manifest contract. No external
+  implementation expression entered the change.
+- Local validation: the MSVC schema-compatibility test passes schemas 1 through
+  40 after the change, and the full ClangCL suite passes all 2,924 tests with
+  the same schema test included.
