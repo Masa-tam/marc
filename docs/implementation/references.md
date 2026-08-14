@@ -5202,3 +5202,12 @@ dual-boundary harness, selected public decoder policy, and Dynamic Range
 dual-profile fuzz route as first-party references. No external LZSS or rANS
 implementation, fuzz harness, corpus, source code, test, archive, patent text,
 or optimization description was consulted.
+
+### IR-0584
+
+Schema-39 Contextual rANS interoperability admission uses DD-790 through
+DD-810, TVG-0665, TVG-0666, and TVG-0676 through TVG-0685; marc's frozen
+schema-38 inventory, explicit 1 MiB CLI, bundle generator, verifier, and
+downgrade compatibility chain as first-party references. No external LZSS or
+rANS implementation, archive, manifest, interoperability suite, source code,
+test, corpus, patent text, or optimization description was consulted.

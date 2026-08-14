@@ -6684,21 +6684,22 @@ may reserve 4,550 in-memory frequencies for both, but the unused final 32
 entries of a variant-1 descriptor are non-semantic and must be zero. They are
 never serialized or allowed to affect canonical model analysis.
 
-This subsection reserves the shared dictionary/context identity and the two
-exact ANS descriptor ceilings. Dynamic Range now has its complete internal,
-streaming, public C, CLI, benchmark, fuzz, and schema-38 interoperability
-admission. Contextual rANS now admits the exact `2/3 + 1/2 + 4/3` identity in
-its internal stream-header and complete-frame paths: the selected layout
+This subsection defines the shared dictionary/context identity and the two
+exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
+public C, CLI, benchmark, fuzz, and schema-38 interoperability admission.
+Contextual rANS likewise admits exact `2/3 + 1/2 + 4/3` through its internal,
+streaming, public C, CLI, benchmark, and fuzz boundaries. The selected layout
 controls the 30-decision token ceiling, 9,089-byte descriptor ceiling,
 4,550-entry descriptor grammar, 21-symbol distance alphabets, 20-bit bypass
-ceiling, typed-token variant, and reconstruction limit. Complete-frame
-preflight must reject the same bytes under the `2/2 + 1/1` identity before raw
-publication. Its internal profile and streaming lifecycle select and enforce
-the same layout with caller-owned bounded workspaces; the private decoder
-auto-selects a valid serialized identity. Every public surface remains
-unavailable until its own admission except the Contextual rANS C lifecycle,
-whose explicit window selector admits exactly one identity. CLI, benchmark,
-fuzz, and interoperability remain unavailable. No other entropy
+ceiling, typed-token variant, reconstruction limit, and strict public identity
+policy.
+
+Interoperability schema 39 freezes all 48 schema-38 entries and appends the
+explicit `lzss-contextual-rans-1m` CLI archive as entry 49. The common
+8,193-byte fixture exercises the extended identity and deterministic encoder/
+decoder contract but cannot require a distance above 65,536. Schema 39 changes
+bundle inventory and manifest identity only; it does not alter a stream
+header, descriptor, payload, state, padding, or reset rule. No other entropy
 backend is claimed here; each receives its own complete admission and
 hand-checkable serialized vector before release.
 The full design and staged validation contract is

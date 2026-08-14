@@ -301,7 +301,12 @@ public profiles. The 1 MiB identity and distance ceiling are admitted, but
 input remains 32 KiB, output 4 KiB, and frame/token storage 1 KiB; only the
 descriptor backing grows to the selected 9,089-byte maximum. Deterministic
 malformed regressions cover both profiles and their reciprocal rejection.
-Interoperability remains separate.
+The interoperability stage freezes schema 38 and appends the explicit
+Contextual rANS 1 MiB CLI archive once as schema-39 entry 49. Generation checks
+the 3/2 identity and local round trip; verification checks exact order, foreign
+decode, and byte-identical re-encoding. Removing only that final entry recovers
+schema 38 before the existing downgrade chain. External four-direction
+evidence remains pending until the schema-39 revision is pushed.
 
 ## Required validation
 

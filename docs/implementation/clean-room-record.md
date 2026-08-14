@@ -20259,3 +20259,23 @@ discarded and the reviewed seed retained.
   without finding and peaks at 44 MiB RSS; all 2,902 registered tests pass
   under both Release configurations with the 240-second per-test limit,
   including schema compatibility and documentation layout.
+
+## CR-0848: 2026-08-14 - Contextual rANS schema-39 design
+
+- Authoring method: derived the new bundle boundary from marc's frozen
+  schema-38 inventory and explicit 1 MiB Contextual rANS CLI selector.
+- References used: DD-790 through DD-810; IR-0584; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0685; marc's generator, verifier, and compatibility
+  chain.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, archives, manifests, interoperability suites, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: append once at entry 49; validate 3/2 at generation;
+  preserve every schema-38 byte/order; remove only the new entry for downgrade;
+  and defer external evidence until the pushed revision exists.
+- Generated-code task description: specify schema/codec-set increment, exact
+  inventory, generation round trip and identity, verifier admission, reorder
+  rejection, full downgrade chain, and four-direction handoff.
+- Similarity review: the design composes only marc-owned CLI, bundle scripts,
+  manifest rules, and compatibility tests. No external implementation
+  expression entered the design.

@@ -16661,3 +16661,27 @@ profile public decode to fail atomically and retain sticky error information.
 Ordinary builds provide warning-clean compile evidence. A bounded sanitizer
 campaign is recorded separately and must use explicit run, input-length,
 timeout, and RSS limits. Interoperability admission remains a later stage.
+
+## DD-810: Schema 39 appends only the 1 MiB Contextual rANS archive
+
+- Date: 2026-08-14
+- Status: accepted
+
+Freeze schema 38's exact 48-entry inventory and append
+`lzss-contextual-rans-1m` once as entry 49. Set `schema_version=39` and
+`codec_set=marc-cli-v39`. Preserve the shared deterministic 8,193-byte fixture,
+full source revision, producer identity, CLI SHA-256, and every prior archive
+name, order, size, hash, and byte.
+
+Generation must require an immediate local round trip and inspect the new
+archive's dictionary/context bytes as `3/2`. Verification requires exact
+schema/order, leaf names, unique codecs, size and SHA-256 agreement, foreign
+decode equality, and byte-identical local re-encoding. Reordered manifests
+must fail. The compatibility test removes only entry 49 to reconstruct schema
+38, then runs the unchanged schema-38-through-1 downgrade chain.
+
+The fixture proves the selected identity and deterministic representation but
+is too short to require a distance beyond 65,536; dedicated extended-distance
+vectors remain authoritative. External Windows/Linux exchange is required
+after push and is recorded separately. This schema changes bundle inventory
+and manifest identity only, not any stream byte rule.
