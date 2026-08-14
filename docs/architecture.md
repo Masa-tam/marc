@@ -5007,6 +5007,15 @@ producer locally and on Windows/MSVC. Exact fixture decoding and byte-identical
 re-encoding establish the extended Dynamic Range profile identity across all
 three recorded x86-64 producers.
 
+The next 1 MiB backend begins at the canonical Contextual rANS descriptor
+boundary. Descriptor storage may grow to the maximum 4,550 frequencies, but
+the stream-selected field-context layout determines the active slice,
+alphabets, entry-count field, and 9,025- or 9,089-byte ceiling. Layout is never
+inferred from attacker-controlled descriptor size or count. Variant 1's unused
+tail is required to be zero, preserving its canonical bytes while permitting
+one bounded representation type to serve both layouts. Frame decoding and all
+outer lifecycle surfaces remain outside this first slice.
+
 The Contextual rANS streaming encoder now selects HashChain Exact at the same
 typed-token boundary as its proven private frame route. Its opaque encoder
 views place aligned finder storage after the worst-case token array; profile

@@ -9128,3 +9128,21 @@ producer label, and the identical full revision. Each verifier pass covers
 manifest identity and order, size and SHA-256, fixture decoding, and
 byte-identical local re-encoding. Record only the results; do not import any
 bundle or generated archive into the repository.
+
+### TVG-0676
+
+Run the existing one-Literal and every-dense canonical Contextual rANS
+descriptor vectors explicitly with field-context variant 1 and require their
+bytes to remain unchanged, including `frequency_entry_count=4,518` and the
+9,025-byte all-dense maximum. Set any of the 32 unused backing entries and
+require variant-1 validation and serialization to reject without publication.
+
+Construct the corresponding variant-2 one-Literal descriptor with serialized
+`frequency_entry_count=4,550`; require parse/serialize identity only when
+variant 2 is selected. Fill every selected alphabet densely and require the
+exact 9,089-byte maximum, including 21-symbol distance records. Parse each
+descriptor under the other variant and require atomic
+`invalid_frequency_entry_count`. Exercise one-byte-short output, strict
+prefixes, trailing data, unsupported variants, and descriptor/table/buffer
+limits. The old default overload, if retained internally during migration,
+must select variant 1 only.

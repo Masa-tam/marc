@@ -5115,3 +5115,13 @@ The schema-38 external admission record uses DD-800, TVG-0675, pushed revision
 marc's repository-owned schema-38 verifier. No external compression
 implementation, source code, archive contents, corpus, test suite, patent
 text, or optimization description was consulted.
+
+### IR-0575
+
+The selected-layout Contextual rANS descriptor design uses DD-790, DD-791,
+DD-801, TVG-0665, TVG-0666, and TVG-0676; marc's canonical compact-model
+grammar, frozen variant-1 descriptor vectors, selected LZSS field-context
+layouts, checked arithmetic, and transactional parser as first-party
+references. No external rANS implementation, compact-model format, source
+code, test, corpus, archive, patent text, or optimization description was
+consulted.

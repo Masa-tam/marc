@@ -1843,3 +1843,13 @@ Schema 38 has four-direction external evidence at revision
 24.04/Ninja bundles verify on Ubuntu 26.04/Clang, while the Ubuntu 26.04 bundle
 verifies there and on Windows/MSVC. All 48 archives decode and re-encode
 byte-identically in every path.
+
+### CP-0113
+
+The first 1 MiB Contextual rANS stage is confined to compact descriptor/layout
+selection. The validated stream identity supplies field-context variant 1 or
+2; descriptor code validates exactly 4,518 or 4,550 frequencies and the
+matching 9,025- or 9,089-byte ceiling without inferring a profile from encoded
+sizes. Maximum fixed backing storage is allowed, but variant 1's unused tail
+must remain zero. No frame, streaming, public ABI, CLI, benchmark, fuzz, or
+schema surface is admitted by this design step.

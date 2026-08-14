@@ -262,6 +262,16 @@ exchange is complete at revision
 Ubuntu 26.04/Clang, and the Ubuntu 26.04 bundle verified there and on
 Windows/MSVC, with all 48 archives reproduced byte-identically.
 
+The canonical rANS path starts with a selected-layout descriptor stage. Its
+entropy identity remains `4/3`, context count remains 31, and decode tables
+remain 126,976 entries. Descriptor APIs receive the field-context variant
+already selected from the stream header. Variant 1 retains 4,518 meaningful
+frequencies and its exact 9,025-byte ceiling; variant 2 selects 4,550 and the
+reserved 9,089-byte ceiling. One maximum-size backing array may serve both,
+but variant 1 requires its unused 32-entry tail to be zero. Frame decoder,
+encoder, profile, public C, CLI, benchmark, fuzz, and interoperability stages
+remain separate.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

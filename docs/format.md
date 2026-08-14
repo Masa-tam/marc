@@ -6660,6 +6660,22 @@ Contextual Adaptive Huffman `2/2` retain their backend arithmetic and
 descriptor grammars, but their exact selected-layout table, tree, payload, and
 workspace bounds must be specified before either pairing is admitted.
 
+Contextual rANS descriptor parsing never selects that layout itself. The
+dictionary/context pair in the already validated stream header selects field-
+context variant 1 or 2, and that selection is supplied to descriptor analysis,
+parsing, validation, and serialization. The descriptor's serialized
+`frequency_entry_count` must then equal 4,518 for variant 1 or 4,550 for
+variant 2; a crossed count is contradictory rather than an alternate selector.
+
+Both variants retain the 20-byte prefix, 31-bit active-context mask, dense and
+sparse record grammar, total frequency 4,096, table log 12, and 126,976-entry
+decode-table requirement. Variant 1 retains its exact 23-through-9,025-byte
+descriptor range and 17-symbol distance records. Variant 2 uses 21-symbol
+distance records and the exact 23-through-9,089-byte range. An implementation
+may reserve 4,550 in-memory frequencies for both, but the unused final 32
+entries of a variant-1 descriptor are non-semantic and must be zero. They are
+never serialized or allowed to affect canonical model analysis.
+
 This subsection reserves the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range now has its complete internal,
 streaming, public C, CLI, benchmark, fuzz, and schema-38 interoperability

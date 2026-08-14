@@ -16428,3 +16428,22 @@ that Ubuntu 26.04 executable verifies both locally and with Windows/MSVC.
 Require every path to report the same full Git revision, expected producer
 label, and all 48 archives. Record exact decoding and byte-identical
 re-encoding evidence without importing generated bundles into the repository.
+
+## DD-801: Contextual rANS descriptor validation receives the selected layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Retain canonical Contextual rANS entropy identity `4/3`, its 20-byte compact-
+descriptor prefix, 31 contexts, table log 12, and 126,976 decode-table entries.
+Pass the already selected `LzssFieldContextVariant` into descriptor analysis,
+parse, validation, and serialization. Do not infer the layout from descriptor
+length or its serialized frequency-entry count.
+
+Use fixed in-memory capacity for 4,550 frequencies. Variant 1 selects exactly
+4,518 meaningful entries and a 9,025-byte descriptor ceiling; require its
+unused 32-entry tail to be zero so old bytes remain canonical. Variant 2
+selects all 4,550 entries and a 9,089-byte ceiling. Its eight distance records
+use alphabet 21. Require the serialized entry count to equal the selected
+layout and reject crossed values atomically. This format stage changes no
+frame, streaming, public C, CLI, benchmark, fuzz, or interoperability surface.

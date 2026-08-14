@@ -19812,3 +19812,24 @@ discarded and the reviewed seed retained.
   24.04/Ninja CI bundles and its own generated bundle; Windows/MSVC verified
   the Ubuntu 26.04 bundle. Every run reported 48 archives and revision
   `363a385168fcfab27adfc8eea3e302129cf01b15`.
+
+## CR-0830: 2026-08-14 - Selected-layout Contextual rANS descriptor design
+
+- Authoring method: derived the next backend stage from marc's already
+  reserved 1 MiB field-context layout and canonical compact rANS descriptor.
+- References used: DD-790; DD-791; DD-801; IR-0575; TVG-0665; TVG-0666;
+  TVG-0676; marc's compact-model grammar, descriptor parser, and frozen
+  variant-1 vectors.
+- Known implementations intentionally not consulted: external rANS
+  implementations, compact-model formats, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: pass layout selection from the stream identity;
+  allocate maximum fixed frequency capacity; retain selected-size descriptor
+  ceilings; require the unused variant-1 tail to be zero; and leave all outer
+  lifecycle admission to later stages.
+- Generated-code task description: specify the first 1 MiB Contextual rANS
+  implementation slice at the descriptor boundary, including exact selected
+  counts, sizes, rejection rules, frozen-byte requirements, and tests.
+- Similarity review: all terminology, constants, boundaries, and vectors derive
+  from marc-owned format and context-layout work. No external implementation
+  expression entered the design.
