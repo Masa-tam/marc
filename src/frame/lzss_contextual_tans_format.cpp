@@ -2,6 +2,7 @@
 
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
+#include "dictionary/lzss_typed_token.hpp"
 
 #include <algorithm>
 #include <array>
@@ -82,7 +83,10 @@ constexpr std::array frame_magic{
             header.table_log,
             header.state_count,
             header.context_count,
-            header.frequency_entry_count};
+            header.frequency_entry_count,
+            header.dictionary_variant,
+            header.context_algorithm,
+            header.context_variant};
 }
 
 [[nodiscard]] LzssContextualTansStreamHeader from_common_stream_header(
@@ -93,7 +97,10 @@ constexpr std::array frame_magic{
             header.table_log,
             header.state_count,
             header.context_count,
-            header.frequency_entry_count};
+            header.frequency_entry_count,
+            header.dictionary_variant,
+            header.context_algorithm,
+            header.context_variant};
 }
 
 } // namespace
@@ -109,17 +116,37 @@ validate_lzss_contextual_tans_stream_header(
                > limits.max_internal_buffered_bytes) {
         return LzssContextualTansStreamHeaderError::limit_exceeded;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        switch (selected.error) {
+        case context::internal::LzssFieldContextLayoutError::
+            unknown_dictionary_variant:
+            return LzssContextualTansStreamHeaderError::
+                unsupported_dictionary_variant;
+        case context::internal::LzssFieldContextLayoutError::
+            unknown_context_algorithm:
+            return LzssContextualTansStreamHeaderError::unknown_context_model;
+        case context::internal::LzssFieldContextLayoutError::
+            unsupported_context_variant:
+            return LzssContextualTansStreamHeaderError::
+                unsupported_context_variant;
+        default:
+            return LzssContextualTansStreamHeaderError::
+                contradictory_parameters;
+        }
+    }
     const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            header.dictionary, limits);
+        dictionary::internal::validate_lzss_typed_parameters(
+            header.dictionary, limits, selected.layout.dictionary_variant);
     if (dictionary_error
-        == dictionary::internal::LzssFormatError::limit_exceeded) {
+        == dictionary::internal::LzssTypedTokenError::limit_exceeded) {
         return LzssContextualTansStreamHeaderError::limit_exceeded;
     }
-    if (dictionary_error != dictionary::internal::LzssFormatError::none
-        || header.dictionary.min_match_length != 5
-        || header.dictionary.max_match_length > 258
-        || header.dictionary.window_size > 65536) {
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
         return LzssContextualTansStreamHeaderError::
             invalid_dictionary_parameters;
     }
@@ -128,7 +155,7 @@ validate_lzss_contextual_tans_stream_header(
         || header.context_count
                != entropy::internal::contextual_tans_context_count
         || header.frequency_entry_count
-               != entropy::internal::contextual_tans_frequency_entries) {
+               != selected.layout.frequency_entries) {
         return LzssContextualTansStreamHeaderError::invalid_entropy_parameters;
     }
     if (entropy::internal::contextual_tans_decode_table_entries
@@ -225,6 +252,13 @@ LzssContextualTansFrameHeaderError validate_lzss_contextual_tans_frame_header(
         != LzssContextualTansStreamHeaderError::none) {
         return LzssContextualTansFrameHeaderError::invalid_stream_header;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return LzssContextualTansFrameHeaderError::invalid_stream_header;
+    }
     if (header.flags != 0) {
         return LzssContextualTansFrameHeaderError::unknown_flags;
     }
@@ -252,7 +286,8 @@ LzssContextualTansFrameHeaderError validate_lzss_contextual_tans_frame_header(
         || !checked_product_at_most(
             6, header.uncompressed_size, header.decision_count)
         || !checked_product_at_most(
-            26, header.token_count, header.decision_count)) {
+            selected.layout.maximum_decisions_per_token,
+            header.token_count, header.decision_count)) {
         return LzssContextualTansFrameHeaderError::contradictory_counts;
     }
     std::uint64_t minimum_events{};
@@ -266,7 +301,13 @@ LzssContextualTansFrameHeaderError validate_lzss_contextual_tans_frame_header(
         || header.descriptor_size
                < entropy::internal::contextual_tans_min_descriptor_size
         || header.descriptor_size
-               > entropy::internal::contextual_tans_max_descriptor_size) {
+               > (selected.layout.context_variant
+                          == context::internal::LzssFieldContextVariant::
+                              field_context_1m
+                      ? entropy::internal::
+                            contextual_tans_max_descriptor_size_v2
+                      : entropy::internal::
+                            contextual_tans_max_descriptor_size_v1)) {
         return LzssContextualTansFrameHeaderError::contradictory_counts;
     }
     if (header.context_side_data_size != 0
@@ -404,7 +445,9 @@ LzssContextualTansFramePreflightResult preflight_lzss_contextual_tans_frame(
     const auto descriptor_error =
         entropy::internal::parse_contextual_tans_descriptor(
             descriptor_input, parsed.header.decision_count,
-            parsed.header.payload_size, context.limits, parsed.descriptor);
+            parsed.header.payload_size, context.limits, parsed.descriptor,
+            static_cast<context::internal::LzssFieldContextVariant>(
+                context.stream.context_variant));
     if (descriptor_error
         != entropy::internal::ContextualTansFormatError::none) {
         return {LzssContextualTansFramePreflightError::descriptor_error,

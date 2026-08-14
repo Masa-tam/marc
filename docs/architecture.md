@@ -5202,5 +5202,11 @@ fixed 131,072-entry transition workspace for either layout and applies the
 selected 16- or 20-bit bypass ceiling. The direct typed-token bridge now uses
 the same selection for dictionary validation, distance alphabets, reverse
 writing, declared decision bounds, entropy inversion, and atomic typed-token
-reconstruction. Frame identity, streaming lifecycle, public API, CLI, and
-schema remain on the frozen route.
+reconstruction. The private complete-frame encoder, decoder, and format
+boundary now admit the exact selected identity `2/3 + 1/2 + 5/2`, applying the
+same layout to the 26/30-decision bound, 9,029/9,093-byte descriptor ceiling,
+direct token coding, and raw reconstruction. A HashChain frame containing a
+distance-65,542 Match proves the extended route; crossed identity pairs fail
+before output publication. Streaming and profile construction still reject
+variant 2 explicitly, leaving public API, CLI, benchmark, fuzz, and schema on
+the frozen route until lifecycle workspace promotion is reviewed.

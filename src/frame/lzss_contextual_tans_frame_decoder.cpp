@@ -62,6 +62,14 @@ LzssContextualTansFrameDecodeResult decode_lzss_contextual_tans_frame(
             LzssContextualTansFrameDecodeError::output_size_unsupported;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = LzssContextualTansFrameDecodeError::preflight_error;
+        return result;
+    }
 
     result.required_table_entries = static_cast<std::size_t>(
         entropy::internal::contextual_tans_decode_table_entries);
@@ -139,7 +147,8 @@ LzssContextualTansFrameDecodeResult decode_lzss_contextual_tans_frame(
     result.token_decode =
         context::internal::decode_lzss_contextual_tans_tokens(
             layout.descriptor, payload, context.stream.dictionary,
-            token_context, context.limits, tables, tokens);
+            token_context, context.limits, tables, tokens,
+            selected.layout.context_variant);
     if (result.token_decode.error
         != context::internal::LzssContextualTansDecodeError::none) {
         result.error =
@@ -153,7 +162,8 @@ LzssContextualTansFrameDecodeResult decode_lzss_contextual_tans_frame(
         context.output_already_committed,
     };
     result.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
-        tokens, context.stream.dictionary, raw_context, context.limits, raw);
+        tokens, context.stream.dictionary, raw_context, context.limits, raw,
+        selected.layout.dictionary_variant);
     if (result.reconstruction.error
         != dictionary::internal::LzssTypedReconstructError::none) {
         result.error =

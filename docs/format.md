@@ -6715,8 +6715,20 @@ selected distance alphabet during forward model construction and reverse tANS
 writing, and reconstructs with the selected 26- or 30-decision-per-token
 ceiling. A validate-only decode pass must finish the selected entropy state and
 typed-token validation before a second pass publishes caller-visible tokens.
-This adapter changes no serialized byte and does not admit the extended layout
-through a frame or stream header.
+This adapter changes no serialized byte.
+
+The private complete-frame Contextual tANS boundary admits the extended layout
+only when the stream header carries the exact paired identity `2/3 + 1/2 +
+5/2`. The selected layout controls stream validation, frame preflight, the
+9,093-byte descriptor ceiling, the 30-decision-per-token bound, direct token
+coding, and dictionary reconstruction. Variant 1 retains the 9,029-byte
+descriptor ceiling and 26-decision bound. The transition workspace remains
+exactly 131,072 entries for either layout. With `F` raw bytes, conservative
+complete-frame storage is `9F + 9,095` bytes for variant 1 or `9F + 9,159`
+bytes for variant 2, including the 64-byte frame header, descriptor maximum,
+and two-byte final tANS state. Crossed dictionary/context identities are
+malformed. The streaming and profile lifecycles do not yet admit variant 2 and
+reject that otherwise valid complete-frame identity explicitly.
 
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
@@ -6733,8 +6745,10 @@ explicit `lzss-contextual-rans-1m` CLI archive as entry 49. The common
 8,193-byte fixture exercises the extended identity and deterministic encoder/
 decoder contract but cannot require a distance above 65,536. Schema 39 changes
 bundle inventory and manifest identity only; it does not alter a stream
-header, descriptor, payload, state, padding, or reset rule. No other entropy
-backend is claimed here; each receives its own complete admission and
-hand-checkable serialized vector before release.
+header, descriptor, payload, state, padding, or reset rule. Contextual tANS now
+has private complete-frame admission for the same selected dictionary/context
+pair, but its streaming, public C, CLI, benchmark, fuzz, and interoperability
+boundaries remain unavailable. Other entropy backends still require their own
+complete admission and hand-checkable serialized vector before release.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

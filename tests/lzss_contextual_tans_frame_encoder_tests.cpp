@@ -39,6 +39,17 @@ struct AlignedWorkspace {
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader stream_for_1m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = 1'048'576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    stream.frequency_entry_count = 4550;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
@@ -100,6 +111,68 @@ TEST(LzssContextualTansFrameEncoder, PlansAndEmitsDocumentedLiteralFrame) {
         std::span<const std::byte>{output}.first(result.serialized_size)));
     EXPECT_EQ(output.back(), std::byte{0xcc});
     EXPECT_EQ(tokens[1].literal, 0xcc);
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     OneMiBHashChainRoundTripExercisesExtendedDistance) {
+    constexpr std::size_t gap = 65536;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+    const auto stream = stream_for_1m(raw.size());
+    std::vector<LzssTypedToken> encode_tokens(raw.size());
+    auto encode_table_storage = encode_tables();
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            raw.size(), stream.dictionary, {});
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+
+    const auto plan = plan_lzss_contextual_tans_frame_hash_chain(
+        stream, {}, 0, 0, raw, encode_tokens, encode_table_storage,
+        workspace);
+    ASSERT_EQ(plan.error, LzssContextualTansFrameEncodeError::none);
+    ASSERT_TRUE(std::ranges::any_of(
+        std::span<const LzssTypedToken>{encode_tokens}.first(plan.token_count),
+        [](const LzssTypedToken& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance > 65536;
+        }));
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_tans_frame_hash_chain(
+                  stream, {}, 0, 0, raw, encode_tokens,
+                  encode_table_storage, workspace, encoded).error,
+              LzssContextualTansFrameEncodeError::none);
+    auto decode_table_storage = decode_tables();
+    std::vector<LzssTypedToken> decode_tokens(plan.token_count);
+    std::vector<std::byte> decoded(raw.size());
+    const auto result = decode_lzss_contextual_tans_frame(
+        encoded, {stream, {}, 0, 0}, decode_table_storage, decode_tokens,
+        decoded);
+    ASSERT_EQ(result.error, LzssContextualTansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
+
+    auto crossed = stream;
+    crossed.dictionary.window_size = 65536;
+    crossed.dictionary_variant = 2;
+    crossed.context_variant = 1;
+    crossed.frequency_entry_count = 4518;
+    std::ranges::fill(decoded, std::byte{0xcc});
+    const auto rejected = decode_lzss_contextual_tans_frame(
+        encoded, {crossed, {}, 0, 0}, decode_table_storage, decode_tokens,
+        decoded);
+    EXPECT_EQ(rejected.error,
+              LzssContextualTansFrameDecodeError::preflight_error);
+    EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
 }
 
 TEST(LzssContextualTansFrameEncoder, CompleteDecoderRecoversLiteral) {

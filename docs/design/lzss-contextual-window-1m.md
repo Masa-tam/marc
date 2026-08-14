@@ -373,6 +373,16 @@ unchanged tANS payload ceiling, conservative complete-frame storage becomes
 `9F + 9,095` or `9F + 9,159` bytes. The proving HashChain frame must contain a
 distance above 65,536 and round trip atomically before lifecycle promotion.
 
+The complete-frame stage is now admitted. Format validation selects only the
+reserved paired identity; the encoder and decoder propagate that selection
+through typed-token production, descriptor processing, the fixed transition
+workspace, payload coding, and reconstruction. The proving frame contains a
+distance-65,542 Match and rejects the crossed 64 KiB stream identity without
+publishing raw output. Streaming construction and parsing still reject the
+selected identity explicitly. This preserves a narrow review boundary: the
+next stage must derive and validate its larger caller-owned workspaces before
+promoting profile factories or partial-buffer lifecycle behavior.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

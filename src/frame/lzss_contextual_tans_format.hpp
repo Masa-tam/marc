@@ -26,6 +26,9 @@ struct LzssContextualTansStreamHeader {
     std::uint32_t frequency_entry_count{
         static_cast<std::uint32_t>(
             entropy::internal::contextual_tans_frequency_entries)};
+    std::uint16_t dictionary_variant{2};
+    std::uint16_t context_algorithm{1};
+    std::uint16_t context_variant{1};
 };
 
 enum class LzssContextualTansStreamHeaderError : std::uint8_t {

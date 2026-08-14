@@ -329,3 +329,20 @@ TEST(LzssContextualTansFrameStreamingEncoder,
     EXPECT_EQ(reset.process({}, {}, 0).error.code,
               ErrorCode::unsupported);
 }
+
+TEST(LzssContextualTansFrameStreamingEncoder,
+     RejectsSelectedOneMiBIdentityUntilLifecycleSupport) {
+    auto selected = stream_config(1, 1);
+    selected.dictionary_variant = 3;
+    selected.context_variant = 2;
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    auto table_storage = tables();
+    std::array<std::byte, 96> frame{};
+    LzssContextualTansFrameStreamingEncoder encoder{
+        selected, {}, raw, tokens, table_storage, frame};
+
+    const auto result = encoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+}

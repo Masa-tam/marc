@@ -295,3 +295,21 @@ TEST(LzssContextualTansFrameStreamingDecoder, RejectsRansStreamIdentity) {
     EXPECT_EQ(result.status, StreamStatus::error);
     EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
 }
+
+TEST(LzssContextualTansFrameStreamingDecoder,
+     RejectsSelectedOneMiBIdentityUntilLifecycleSupport) {
+    auto encoded = stream(1);
+    encoded[14] = std::byte{0x03};
+    encoded[98] = std::byte{0x02};
+    std::array<std::byte, 96> frame{};
+    auto table_storage = tables();
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+    std::array<std::byte, 1> output{};
+    LzssContextualTansFrameStreamingDecoder decoder{
+        {}, frame, table_storage, tokens, raw};
+
+    const auto result = decoder.process(encoded, output, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+}

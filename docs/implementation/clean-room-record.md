@@ -20498,3 +20498,37 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned frame, typed-token,
   tANS, selected-layout, and HashChain abstractions. No external implementation
   expression entered the design.
+
+## CR-0858: 2026-08-15 - Contextual tANS selected complete-frame admission
+
+- Authoring method: implemented DD-814 over marc's selected direct Contextual
+  tANS token adapter, frozen complete-frame transaction, and exact HashChain
+  typed-token producer, with selected identity and extended-distance tests
+  written alongside the admission.
+- References used: DD-790 through DD-814; IR-0588; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0689; marc's Contextual tANS format, complete-frame
+  encoder/decoder, selected descriptor and coding core, typed-token bridge,
+  shared field-context selector, and Contextual rANS selected-frame precedent.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, frame formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select layout only from the exact paired stream
+  identity; propagate it through dictionary parsing, descriptor bounds,
+  direct token coding, and reconstruction; retain fixed transition storage;
+  prove a useful distance above 64 KiB; reject crossed pairs atomically; and
+  keep streaming/profile construction unavailable until its workspace and
+  partial-buffer lifecycle receive a separate review.
+- Generated-code task description: admit `2/3 + 1/2 + 5/2` in the private
+  complete-frame format, encoder, and decoder; preserve the frozen default;
+  add extended HashChain round trip and crossed-identity failures; explicitly
+  reject selected streaming construction and parsing; document exact bounds
+  and the following lifecycle boundary.
+- Similarity review: the implementation generalizes only marc-owned format,
+  frame, selected-layout, typed-token, tANS, and HashChain code. No external
+  implementation expression entered the code or tests.
+- Local validation: the selected stream identity round trips exactly, a
+  HashChain frame containing a distance-65,542 Match decodes atomically, and
+  crossed or prematurely streamed selected identities fail without published
+  output. All 2,912 registered Release tests pass under MSVC in 174.93 seconds
+  and ClangCL in 181.59 seconds with the 300-second per-test limit, including
+  interoperability schema compatibility and documentation layout.
